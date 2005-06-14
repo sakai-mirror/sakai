@@ -1,0 +1,260 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_realms_edit.vm,v 1.3 2004/07/14 02:17:34 ggolden.umich.edu Exp $ -->
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = [#if(!$realm)"id"#else"provider"#end];
+</script>
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Edit: Realm $validator.escapeHtml($!realm.Id)<br/>Used for $validator.escapeHtml($!realm.Description)
+		</div>
+		<div class="chefPageviewTitle">
+			Review and modify this Realm's information.
+		</div>
+
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Realm
+				</legend>
+				<table class="chefEditItem" summary="Review and modify this Realm's information.">
+					<tr>
+						<td class="chefLabel">
+							<label #if(!$realm) for="id" #end>
+								#if(!$realm)<span class="chefAlert">*</span>#end Realm Id:
+							</label>
+						</td>
+						<td>
+							#if(!$realm)<input type="text" name="id" id="id"/>#else$validator.escapeHtml($realm.Id)#end
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="provider">
+								Provider Id:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="provider" id="provider" #if($realm) value="$!validator.escapeHtml($realm.ProviderRealmId)"#end />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="maintain">
+								Maintain Role:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="maintain" id="maintain" #if($realm) value="$!validator.escapeHtml($realm.MaintainRole)"#end />
+						</td>
+					</tr>
+				</table>
+				<fieldset>
+					<legend>
+						Complete the Realm Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Users
+					</legend>
+					<div class="chefPageviewTitle">
+						These are the Abilities granted to individual users in this Realm.  Click on an Id to edit.
+					</div>
+#if ($users.size() > 0)
+	#set ($userCount = 0)
+					<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Roles">
+						<tr>
+							<th id="Id">User Id</th>
+							<th id="Description">Abilities</th>
+						</tr>
+	#foreach ($user in $users)
+		#set ($userCount=$userCount + 1)
+						<tr>
+							<td headers="Id" #if ($userCount > 1) class="chefTopline" #end>
+								<a href="#" onclick="location = '#toolLink("$action" "doEdit_user")&target=$validator.escapeUrl($user.Id)'+buildQueryString('$form-name');return false;">
+									$validator.escapeHtml($user.Id)
+								</a>
+							</td>
+							<td headers="Description" #if ($userCount > 1) class="chefTopline" #end>
+							#foreach ($x in $realm.getUserLocks($user))
+								$x &nbsp;
+							#end
+							#foreach ($x in $realm.getUserRoles($user))
+								$x.Id &nbsp;
+							#end
+							</td>
+						</tr>
+	#end
+					</table>
+#else
+					<div class="chefListMessage">
+						No abilities have been granted to individual users.
+					</div>
+#end
+				</fieldset>
+				<fieldset>
+					<legend>
+						Complete the Realm Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Roles
+					</legend>
+					<div class="chefPageviewTitle">
+						These are the Roles defined within this Realm.  Click on an Id to edit.
+					</div>
+#if ($roles.size() > 0)
+	#set ($roleCount = 0)
+					<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Roles">
+						<tr>
+							<th id="Id">Role Id</th>
+						</tr>
+	#foreach ($role in $roles)
+		#set ($roleCount=$roleCount + 1)
+						<tr>
+							<td headers="Id" #if ($roleCount > 1) class="chefTopline" #end>
+								<a href="#" onclick="location = '#toolLink("$action" "doEdit_role")&target=$validator.escapeUrl($role.Id)'+buildQueryString('$form-name');return false;">
+									$validator.escapeHtml($role.Id)
+								</a>
+							</td>
+						</tr>
+	#end
+					</table>
+#else
+					<div class="chefListMessage">
+						No roles are defined.
+					</div>
+#end
+				</fieldset>
+
+				<fieldset>
+					<legend>
+						Anon
+					</legend>
+					<div class="chefPageviewTitle">
+						These are the Locks defined for the anon user.
+					</div>
+#if ($anonLocks.size() > 0)
+	#set ($anonLocksCount = 0)
+					<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Locks">
+						<tr>
+							<th id="Id">Lock</th>
+						</tr>
+	#foreach ($lock in $anonLocks)
+		#set ($anonLocksCount=$anonLocksCount + 1)
+						<tr>
+							<td headers="Id" #if ($anonLocksCount > 1) class="chefTopline" #end>
+								$validator.escapeHtml($lock)
+							</td>
+						</tr>
+	#end
+					</table>
+#else
+					<div class="chefListMessage">
+						No locks are defined.
+					</div>
+#end
+					<div class="chefPageviewTitle">
+						These are the Roles defined for the anon user.
+					</div>
+#if ($anonRoles.size() > 0)
+	#set ($anonRolesCount = 0)
+					<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Roles">
+						<tr>
+							<th id="Id">Role</th>
+						</tr>
+	#foreach ($role in $anonRoles)
+		#set ($anonRolesCount=$anonRolesCount + 1)
+						<tr>
+							<td headers="Id" #if ($anonRolesCount > 1) class="chefTopline" #end>
+								$validator.escapeHtml($role.Id)
+							</td>
+						</tr>
+	#end
+					</table>
+#else
+					<div class="chefListMessage">
+						No roles are defined.
+					</div>
+#end
+				</fieldset>
+
+				<fieldset>
+					<legend>
+						Auth
+					</legend>
+					<div class="chefPageviewTitle">
+						These are the Locks defined for the auth users.
+					</div>
+#if ($authLocks.size() > 0)
+	#set ($authLocksCount = 0)
+					<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Locks">
+						<tr>
+							<th id="Id">Lock</th>
+						</tr>
+	#foreach ($lock in $authLocks)
+		#set ($authLocksCount=$authLocksCount + 1)
+						<tr>
+							<td headers="Id" #if ($authLocksCount > 1) class="chefTopline" #end>
+								$validator.escapeHtml($lock)
+							</td>
+						</tr>
+	#end
+					</table>
+#else
+					<div class="chefListMessage">
+						No locks are defined.
+					</div>
+#end
+					<div class="chefPageviewTitle">
+						These are the Roles defined for the auth user.
+					</div>
+#if ($authRoles.size() > 0)
+	#set ($authRolesCount = 0)
+					<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Roles">
+						<tr>
+							<th id="Id">Role</th>
+						</tr>
+	#foreach ($role in $authRoles)
+		#set ($authRolesCount=$authRolesCount + 1)
+						<tr>
+							<td headers="Id" #if ($authRolesCount > 1) class="chefTopline" #end>
+								$validator.escapeHtml($role.Id)
+							</td>
+						</tr>
+	#end
+					</table>
+#else
+					<div class="chefListMessage">
+						No roles are defined.
+					</div>
+#end
+				</fieldset>
+
+				<fieldset>
+					<legend>
+						Complete the Realm Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+			</fieldset>
+		</form>
+	</div>
+</div>

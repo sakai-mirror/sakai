@@ -1,0 +1,30 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-type.vm,v 1.2 2004/10/14 18:44:53 zqian.umich.edu Exp $ -->
+## Creating site step 1: site type
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Creating a new site ...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form action="#toolForm("SiteAction")" method="post">
+			<span class ="chefPageviewTitle">
+				Choose the type of site you want to create.
+			</span>
+			<fieldset>
+				<legend>Type of site</legend>
+				#foreach ($type in $siteTypes)
+					<input type="radio" name="itemType" id="$type" value="$type" />
+					<label for = "$type">
+						$type website
+					</label><br />
+				#end
+			</fieldset>
+				<input type="hidden" name="back" value="0" />
+				<input type="hidden" name="template-index" value="1" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doSite_type" value="Continue" />
+				<input type="submit" name="eventSubmit_doCancel_create" value="Cancel" />
+			</div>
+		</form>				
+	</div>
+</div>	

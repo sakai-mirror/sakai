@@ -1,0 +1,80 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-otherInvite.vm,v 1.2 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+##Step 1 of 2 of creating an invitation to a site
+<div class ="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Publishing site  ...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefPageviewTitle">
+			Step 1 of 2: Enter information for an email invitation to join your site.
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<input type="hidden" name="cancel" value="0" />
+			<input type="hidden" name="template-index" value="13"/>
+			<input type="hidden" name="continue" value="14" />
+			<fieldset>
+				<legend>
+					Invitation
+				</legend>
+				<table class ="chefEditItem">
+					<tr>
+						<td class = "chefLabel">
+							To:
+						</td>
+						<td>
+							## href here will need to conform to link mechanism elsewhere
+							<div class ="chefInlineInstructions">Note: Enter uniqnames or full email addresses, one per line. If you are not sure of a uniqname, look it up in the <a href="http://directory.umich.edu" target = "_blank">University Directory</a></div>
+							<textarea name="addresses" rows="5" cols="20" wrap="virtual">$validator.escapeHtmlTextarea("$!form_addresses")</textarea>
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Subject:
+						</td>
+						<td>
+							Invitation to $validator.escapeHtml($form_title)
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Personal message:
+						</td>
+						<td>
+							<textarea name="message" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea("$!form_message")</textarea>
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Invitation required?
+						</td>
+						<td>
+							<input type="radio" name="invReq" id="invReqYes" value="Yes" 
+								#if ($form_invReqYes)
+									checked="checked" 
+								#end
+									/>	
+							<label for = "invReqYes">
+								Yes
+							</label><br />
+							<input type="radio" name="invReq" id="invReqNo" value="No" 
+								#if (!$form_invReqYes)
+									checked="checked" 
+								#end
+									/>	
+							<label for = "invReqNo">
+								No. Anyone can request access.
+							</label>
+						</td>
+					</tr>	
+				</table>		
+			</fieldset>	
+		</form>
+		<div class ="chefButtonRow">
+			<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+			<input type="submit" name="eventSubmit_doBack" value="Back" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</div>
+	</div>
+</div>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="org.sakaiproject.service.legacy.user.UserDirectoryProvider"
+			class="org.sakaiproject.component.legacy.user.SampleUserDirectoryProvider"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.realm.RealmProvider"
+			class="org.sakaiproject.component.legacy.realm.SampleRealmProvider"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+
+</beans>

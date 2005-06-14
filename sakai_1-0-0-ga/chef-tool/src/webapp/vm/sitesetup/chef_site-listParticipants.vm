@@ -1,0 +1,75 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-listParticipants.vm,v 1.4 2004/09/10 02:26:07 janderse.umich.edu Exp $ -->
+## List Participants List the participants of the worksite
+<div class ="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+		<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		 <form action="#toolForm("SiteAction")" name="removeUsersForm" method="post">
+				<span class ="chefPageviewTitle">
+					#if($course_site)
+						Add a participant or edit by checking box and choosing action above.
+					#else
+						Add a participant or edit by checking box and choosing action above.
+					#end
+				</span>
+				<br />
+				<span class ="chefPageviewTitle">
+					Participants in $validator.escapeHtml($SiteTitle).
+				</span>	
+
+			#if($participantList && $participantList.size() != 0)
+				<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds ..... Column 1 may hold .... Column 1 holds ..., column 2  holds .... Column 3 holds .... Headers hold links to sort ....">
+				<tr>
+					<th>
+						&nbsp;&nbsp;
+					</th>
+					<th id="name">
+						Name
+					</th>
+					<th id="uniqname">
+						Uniqname
+					</th>
+					<th id="id">
+						Roles
+					</th>
+				</tr>
+				#foreach($participant in $participantList)
+				<tr>
+					<td>
+						<input type="checkbox" name="removeUser" value="$participant.getUniqname()" 
+							#foreach($participantSelected in $participantSelectedList)
+								#if($participantSelected.getUniqname() == $participant.getUniqname())
+									checked
+								#end
+							#end
+						/>
+					</td>
+					<td headers="name">
+						$participant.getName()
+					</td>
+					<td headers="uniqname">
+						$participant.getUniqname()
+					</td>
+					<td headers="id">
+						#foreach ($role in $participant.getRoles())
+							$role.getId()
+						#end
+					</td>
+				</tr>
+				#end
+			</table>
+			#else
+				#if($course_site)
+					No participants other than registered class members have access to this site.
+				#else
+					No members have been added to this site.
+				#end
+			#end
+			<br />
+					<input type="hidden" name="continue" value="15" />
+					<input type="hidden" name="template-index" value="27" />
+					##template 29 -removeParticipants.vm was replaced by Remove button in 27 -listParticipants.vm
+					<input type="hidden" name="back" value="15" />
+			</form>
+	</div>
+</div>

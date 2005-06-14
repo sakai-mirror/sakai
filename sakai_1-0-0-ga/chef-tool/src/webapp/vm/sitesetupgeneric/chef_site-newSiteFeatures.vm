@@ -1,0 +1,98 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-newSiteFeatures.vm,v 1.2 2004/10/14 18:41:30 zqian.umich.edu Exp $ -->
+## Creating a site step 4: select features for site
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Creating a site ...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Choose which tools to add to your site.
+		</div>
+		<form name="featuresForm" action="#toolForm("$action")" method="post">
+			<input type="hidden" name="option" value="add" />
+			<input type="hidden" name="eventSubmit_doAdd_features" value="x" />
+			<fieldset>
+				<legend>
+					Tools
+				</legend>
+				<table class=“chefFlatListViewTable" cellspacing="0"”>
+					<tr>
+						<td valign="top">
+							<input type="checkbox" name="selectedTools" value="home"
+								#if ($check_home)
+									checked="checked"
+								#end
+							/>
+						</td>
+						<td valign="top">
+							Home
+						</td>
+						<td>
+							For viewing recent announcements, discussion, and chat items.
+						</td>
+					</tr>
+					<input type="hidden" name="selectedTools" value="chef.contactSupport" />
+					<input type="hidden" name="selectedTools" value="chef.siteinfogeneric" />
+					#foreach($tool in $toolRegistrationList)
+						<tr>
+							<td valign="top">	
+								<input type="checkbox" name="selectedTools" value="$tool.getId()" 
+									#if ($tool.getId() == "chef.contactSupport")
+										checked="checked" disabled="disabled" 
+									#elseif ($tool.getId() == "chef.siteinfogeneric")
+										checked="checked" disabled="disabled" 
+									#else
+										#if($toolRegistrationSelectedList)
+											#foreach($toolId in $toolRegistrationSelectedList)
+												#if ($toolId.indexOf($tool.getId()) != -1)
+													checked="checked"
+												#end
+											#end
+										#end
+										#if ($tool.getId().indexOf("chef.news") != -1)
+											onClick="document.featuresForm.option.value='addNews';javascript:document.featuresForm.submit();"
+										#elseif ($tool.getId().indexOf("chef.iframe") != -1)
+											onClick="document.featuresForm.option.value='addWebContent';javascript:document.featuresForm.submit();"
+										#end
+									#end
+								/>
+							</td>
+							<td valign="top">
+								$tool.getTitle()
+							</td>
+							<td>
+								$tool.getDescription()
+								#if ($tool.getId() == "chef.mailbox")
+									<br />Enter an email address: <input type="text"  name="emailId" value="$!emailId" size="32" style="width: 10em" />@$serverName
+								#elseif ($tool.getId().indexOf("chef.news") != -1)
+									#set($name = "titlefor")
+									#set($name = $name.concat($tool.getId()))
+									<br />Choose a title: <input type="text"  name="$name" value="$!newsTitles.get($tool.getId())" size="32" style="width: 10em" />
+								#elseif ($tool.getId().indexOf("chef.iframe") != -1)
+									#set($name = "titlefor")
+									#set($name = $name.concat($tool.getId()))
+									<br />Choose a title: <input type="text"  name="$name" value="$!wcTitles.get($tool.getId())" size="32" style="width: 10em" />
+								#end
+							</td>
+						</tr>	
+					#end
+				</table>
+			</fieldset>
+			<input type="hidden" name="back" value="9" />
+			<input type="hidden" name="template-index" value="10"/>
+			<input type="hidden" name="continue" value="38" />
+			<div class="chefButtonRow">
+				<input type="submit" name="Continue" 
+						value="Continue" 
+						onclick="document.featuresForm.option.value='continue';javascript:document.featuresForm.submit();" />
+				<input type="submit" name="Back" 
+						value="Back" 
+						onclick="document.featuresForm.option.value='back';javascript:document.featuresForm.submit();" />
+				<input type="submit" name="Cancel" 
+						value="Cancel" 
+						onclick="document.featuresForm.option.value='cancel';javascript:document.featuresForm.submit();" />
+			</div>
+		</form>
+	</div>
+</div>

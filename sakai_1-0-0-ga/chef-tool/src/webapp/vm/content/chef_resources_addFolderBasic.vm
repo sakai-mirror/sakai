@@ -1,0 +1,116 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/content/chef_resources_addFolderBasic.vm,v 1.3 2004/09/21 05:31:59 janderse.umich.edu Exp $ 
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["name1"];
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Adding folder(s)...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Location:
+			<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
+			#foreach ($id in $collectionPath)
+				#if ($dropboxMode && $id==$homeCollection)
+					$siteTitle Drop Box /
+				#else
+					$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName)) /
+				#end
+			#end
+			#if ($dropboxMode && $collectionId==$homeCollection)
+				$siteTitle Drop Box
+			#else
+				$validator.escapeHtml($service.getProperties($collectionId).getPropertyFormatted($resourceProperties.NamePropDisplayName))
+			#end		
+		</div>		
+		<div class="chefPageviewTitle">
+			Complete the form(s) then choose 'post' at the bottom. A <span class="chefRequiredInline">means</span> required information.
+		</div>
+		<form name="addFolderForm" method="post" action="#toolForm("ResourcesAction")">
+			<input type="hidden" name="stateName" value = "addFolder" />
+			<input type="hidden" name="from" value="add" />
+			<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+			<input type ="hidden" name = "itemType" value="emptyFolder" />
+			<input type="hidden" name="eventSubmit_doAddfolder" value="x" />
+			<input type="hidden" name="option" value="change" />
+			<span class="chefRequiredInline">Select number of folders to add: </span>
+			<select name="folderNumber" id="select" onchange="javascript:document.addFolderForm.submit();">
+				#foreach ($i in [1 .. 10])
+					#if ($i==$currentFolderNumber)
+						<option value="$i" selected="selected">$i</option>
+					#else
+						<option value="$i">$i</option>
+					#end
+				#end
+			</select>
+			#foreach( $i in [1 ..$currentFolderNumber] )
+				<fieldset>
+					<legend>
+						#if ($currentFolderNumber == 1)
+							Folder
+						#else
+							Folder $i of $currentFolderNumber
+						#end
+					</legend>
+					<table class="chefEditItem">
+						<tr>
+							<td class="chefLabel">
+								#if (( $unqualified_fields.get($i).indexOf($service.newResourceProperties().NamePropDisplayName)!=-1)||(($titles.get($i).length()>0) && ($unqualified_fields.get($i).indexOf($titles.get($i))!=-1)))
+									<span class="chefRequiredInline">Title:</span> 
+								#else
+									<span class="chefRequiredInline">Title:</span>
+								#end
+							</td>
+							<td>
+								<input type="text" name="name$i" id="name$i" value="$titles.get($i)" />
+							</td>
+						</tr>
+						<tr>
+							<td class="chefLabel">
+								Description: 
+							</td>
+							<td>
+								<textarea name="description$i" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($descriptions.get($i))</textarea>
+							</td>
+						</tr>
+						#if (!$dropboxMode)
+							## not show public view in drop box
+							<tr> 
+								<td class = "chefLabel"> 
+									Public View:
+								</td>
+								<td>
+									#set ($pubview = $pubviews.get($i))
+									#if ($pubviewset)
+										Set to Yes in a containing folder.
+									#else
+										<input type="radio" name="pubview$i" id="pubview_true$i" value="true" #if ($pubview) checked="checked" #end />Yes<br />
+										<input type="radio" name="pubview$i" id="pubview_false$i" value="false" #if (!$pubview) checked="checked" #end />No
+									#end
+								</td>
+							</tr>
+						#end
+					</table>
+				</fieldset>	
+			#end
+			<div class="chefButtonRow">
+				<input
+					type="button" 
+					name="Add folder" 
+					id="Add folder" 
+					value="Post"
+					onClick="document.addFolderForm.option.value='add'; document.addFolderForm.submit(); return false;"
+				/>
+				<input 
+					type="submit" 
+					name="Cancel" 
+					id="Cancel" 
+					value="Cancel"
+					onClick="document.addFolderForm.option.value='cancel'; document.addFolderForm.submit(); return false;"
+				/>
+			</div>
+		</form>
+	</div>
+</div>

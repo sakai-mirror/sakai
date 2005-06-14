@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="site.visit" />
+	<function name="site.visit.unp" />
+	<function name="site.upd" />
+	<function name="site.add" />
+	<function name="site.del" />
+	<function name="site.viewRoster" />
+
+	<tool
+			id="chef.sites"
+			url="/sakai-chef-tool/chef-sites"
+			title="Admin: Sites Editor"
+			description="An administration tool to edit Sites.">
+
+		<configuration name="pagesize" value="20" />
+
+	</tool>
+
+</registration>

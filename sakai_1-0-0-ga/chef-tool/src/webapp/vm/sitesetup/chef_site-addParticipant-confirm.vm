@@ -1,0 +1,94 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addParticipant-confirm.vm,v 1.5 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Confirming a participant to the worksite
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+ 		Confirming Add Participant(s) to $validator.escapeHtml($title)
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			The following will be added to your site when you click the Finish button below.<p />
+			They will #if (!$notify) not #end be sent an email notifying them of the site's availability. 
+		</div>
+		<form action="#toolForm("SiteAction")" method="post">
+			<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds the information of site participant. Column 1 holds the index number, column 2 holds the name, Column 3 holds uniqname, Column 4 holds the role">
+				<tr>
+					<th>
+						#
+					</th>
+					<th id="name">
+						<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_name" title ="Sort by name"> 
+							Name
+							#if ($currentSortedBy.equals("participant_name")) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by name ascending" alt ="Sort by name ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by name descending" alt ="Sort by name descending" /> 
+								#end 
+							#end 
+						</a>
+					</th>
+					<th id="uniqname">
+						<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_uniqname" title ="Sort by uniqname"> 
+							Username
+							#if ($currentSortedBy.equals("participant_uniqname")) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by uniqname ascending" alt ="Sort by uniqname ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by uniqname descending" alt ="Sort by uniqname descending" /> 
+								#end 
+							#end 
+						</a>
+					</th>
+					<th id="role">
+						<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_role" title ="Sort by role"> 
+							Role
+							#if ($currentSortedBy.equals("participant_role")) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by role ascending" alt ="Sort by role ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by role descending" alt ="Sort by role descending" /> 
+								#end 
+							#end 
+						</a>
+					</th>
+				</tr>	
+				#set($count = 1)
+				#foreach ($participant in $participants)
+					<tr>
+						<td>
+							$count
+						</td>
+						<td>
+							$participant.getName()
+						</td>
+						<td>
+							$participant.getUniqname()
+						</td>
+						<td>
+							#if ($same_role)
+								$selectedRole
+							#else
+								#foreach($role in $roles)
+									#if($role.Id == $!selectedRoles.get($participant.getUniqname()))
+										$role.Id
+									#end
+								#end
+							#end
+						</td>
+					</tr>
+					#set($count = $count + 1)
+				#end
+			</table>
+			<br/>
+			<input type="hidden" name="back" value="52" />
+			<input type="hidden" name="template-index" value="53" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doAdd_participant" value="Finish" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				
+			</div>
+		</form>
+	</div>
+</div>

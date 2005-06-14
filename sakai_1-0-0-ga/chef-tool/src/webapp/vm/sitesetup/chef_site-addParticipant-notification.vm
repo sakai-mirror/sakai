@@ -1,0 +1,59 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addParticipant-notification.vm,v 1.3 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Add a participant to the worksite
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+ 		Adding participant(s) to $validator.escapeHtml($title)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form action="#toolForm("SiteAction")" method="post">
+			<fieldset>
+				<legend>
+					Participant Notification
+				</legend>
+				<div class="chefSectionMessage">
+		           	<table class="chefEditItem" summary ="Table holds a text box for entering multiple usniqnames and checkboxes for associated role(s)." >
+						<tr>
+							<td colspan="2">
+								An email can be automatically sent to the added users notifying them of the site's availability.
+							</td>
+						</tr>
+						<tr>
+							<td valign="middle">
+								<input type="radio" name="notify" value="true" 
+									#if ($notify)
+										checked="checked"
+									#end
+								/>
+							</td>
+							<td valign="middle" nowrap="nowrap">
+								Send Now - send an email now to users notifying them that the site is available
+							</td>
+						</tr>
+						<tr>
+							<td valign="middle">
+								<input type="radio" name="notify" value="false"
+									#if (!$notify)
+										checked="checked"
+									#end
+								/>
+							</td>
+							<td valign="middle" nowrap="nowrap">
+								Don't Send - do not send an email notifying new participants about the site's availability
+							</td>
+						</tr>
+					</table>
+				</div>
+			</fieldset>
+			<br/>
+			<input type="hidden" name="continue" value="53" />
+			<input type="hidden" name="back" value="$backIndex" />
+			<input type="hidden" name="template-index" value="52" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

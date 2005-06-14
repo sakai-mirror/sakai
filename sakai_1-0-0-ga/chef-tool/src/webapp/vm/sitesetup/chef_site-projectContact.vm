@@ -1,0 +1,93 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-projectContact.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Creating a project site step 2: Contact info, affiliation of site
+<div class ="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Creating a project site...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefPageviewTitle">
+			Step 2: Enter or confirm your contact information. A check means this information is required.
+		</div>Creating a site...
+			<fieldset>
+				<legend>
+					My information
+				</legend>
+				<table class ="chefEditItem">
+					<tr>
+						<td class = "chefLabel">
+							<span class ="chefRequiredInline">&nbsp;</span>Primary school/college affiliation:
+						</td>
+						<td>
+						<select name="affiliation" onchange="blur()"> 
+							#foreach($affiliation in $affiliationList)
+								<option value ="$affiliation.id"
+									#if($affiliation.id == $form_affiliation)
+										selected
+									#end
+										>
+									$affiliation.text
+								</option>	
+							#end
+						</select> 
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Form of address you prefer:
+						</td>
+						<td>
+						<select name="honorific" onchange="blur()"> 
+							#foreach($honorific in $honorificList)
+								<option value ="$honorific.id"
+								#if($honorific.id == $form_honorific)
+									selected
+								#end
+										>
+								$honorific.text
+								</option>	
+							#end
+						</select> 
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Office address:
+						</td>
+						<td>
+							##if value pre-exists - fill it in below
+							<textarea name="office" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($form_office)</textarea>
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							<span class ="chefRequiredInline">&nbsp;</span>Office phone number:
+						</td>
+						<td>
+							##if value pre-exists - fill it in below
+							<input type="text" name="email" value="$form_phone" />
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Prefered email address:
+						</td>
+						<td>
+							##if value pre-exists - fill it in below
+							<input type="text" name="email" value="$form_email" />
+						</td>
+					</tr>	
+				</table>		
+			</fieldset>	
+				<input type="hidden" name="back" value="1" />
+				<input type="hidden" name="template-index" value="8"/>
+				<input type="hidden" name="continue" value="9" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel_create" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,63 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-dissertationProgram.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Confirming program information
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Creating a site...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<span class="chefPageviewTitle">
+			Step 3: Confirm the information below about your program.
+		</span>
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					My information
+				</legend>
+					<table cellpadding="5" class="chefItemDetail">
+						<tr>
+							<td class ="label">
+								Primary school/college affiliation:
+							</td>
+							<td>
+								$form_affiliation
+							</td>
+						</tr>	
+						<tr>
+							<td class ="label">
+								Office phone number:
+							</td>
+							<td>
+								$form_phone
+							</td>
+						</tr>	
+						<tr>	
+							<td class ="label">
+								Prefered email address:
+							</td>
+							<td>
+								$form_email
+							</td>
+						</tr>	
+						<tr>
+							<td class ="label">
+								UMID (listed in M-Card):
+							</td>
+							<td>
+								$!form_umid
+							</td>
+						</tr>	
+					</table>		
+			</fieldset>	
+		</form>
+			<input type="hidden" name="back" value="1" />
+			<input type="hidden" name="template-index" value="6"/>
+			<input type="hidden" name="continue" value="7" />
+		<div class ="chefButtonRow">
+			<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+			<input type="submit" name="eventSubmit_doBack" value="Back" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</div>
+	</div>
+</div>

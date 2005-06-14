@@ -1,0 +1,100 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-courseFeatures.vm,v 1.5 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Creating course site step 4: select features for site
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Creating a course site...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Step #if($from_auto_manual) 5#else 4#end: Choose which tools to add to the $validator.escapeHtml($title) site.
+		</div>
+		<form name="featuresForm" action="#toolForm("$action")" method="post">
+			<input type="hidden" name="option" value="add" />
+			<input type="hidden" name="courseOrProject" value="course" />
+			<input type="hidden" name="eventSubmit_doAdd_features" value="x" />
+			<fieldset>
+				<legend>
+					Tools
+				</legend>
+				<table cellspacing="0" cellpadding="0">
+					<tr>
+						<td valign="top">
+							<input type="checkbox" name="selectedTools" value="ctng.home"
+								#if ($check_home)
+									checked="checked"
+								#end
+							/>
+						</td>
+						<td valign="top">
+							Home 
+						</td>
+						<td>
+							For viewing recent announcements, discussion, and chat items.
+						</td>
+					</tr>	
+					<input type="hidden" name="selectedTools" value="chef.contactSupport" />
+					<input type="hidden" name="selectedTools" value="chef.siteinfo" />
+					#foreach($tool in $toolRegistrationList)
+						<tr>
+							<td valign="top">	
+								<input type="checkbox" name="selectedTools" value="$tool.getId()" 
+									#if ($tool.getId() == "chef.contactSupport")
+										checked="checked" disabled="disabled" 
+									#elseif ($tool.getId() == "chef.siteinfo")
+										checked="checked" disabled="disabled" 
+									#else
+										#if($toolRegistrationSelectedList)
+											#foreach($toolId in $toolRegistrationSelectedList)
+												#if ($toolId.indexOf($tool.getId()) != -1)
+													checked="checked"
+												#end
+											#end
+										#end
+										#if ($tool.getId().indexOf("chef.news") != -1)
+											onClick="document.featuresForm.option.value='addNews';javascript:document.featuresForm.submit();"
+										#elseif ($tool.getId().indexOf("chef.iframe") != -1)
+											onClick="document.featuresForm.option.value='addWebContent';javascript:document.featuresForm.submit();"
+										#end
+									#end
+								/>
+							</td>
+							<td valign="top">
+								$tool.getTitle() 
+							</td>
+							<td>
+								$tool.getDescription()
+								#if ($tool.getId() == "chef.mailbox")
+									<br />Enter site email address: <input type="text"  name="emailId" value="$!emailId" size="32" style="width: 10em" />@$serverName
+								#elseif ($tool.getId().indexOf("chef.news") != -1)
+									#set($name = "titlefor")
+									#set($name = $name.concat($tool.getId()))
+									<br />Choose a title: <input type="text"  name="$name" value="$!newsTitles.get($tool.getId())" size="32" style="width: 10em" />
+								#elseif ($tool.getId().indexOf("chef.iframe") != -1)
+									#set($name = "titlefor")
+									#set($name = $name.concat($tool.getId()))
+									<br />Choose a title: <input type="text"  name="$name" value="$!wcTitles.get($tool.getId())" size="32" style="width: 10em" />
+								#end
+							</td>
+						</tr>	
+					#end
+				</table>
+			</fieldset>
+			<input type="hidden" name="back" value="11" />
+			<input type="hidden" name="template-index" value="4"/>
+			<input type="hidden" name="continue" value="40" />
+			<div class="chefButtonRow">
+				<input type="submit" name="Continue" 
+						value="Continue" 
+						onclick="document.featuresForm.option.value='continue';javascript:document.featuresForm.submit();" />
+				<input type="submit" name="Back" 
+						value="Back" 
+						onclick="document.featuresForm.option.value='back';javascript:document.featuresForm.submit();" />
+				<input type="submit" name="Cancel" 
+						value="Cancel" 
+						onclick="document.featuresForm.option.value='cancel';javascript:document.featuresForm.submit();" />
+			</div>
+		</form>
+	</div>
+</div>

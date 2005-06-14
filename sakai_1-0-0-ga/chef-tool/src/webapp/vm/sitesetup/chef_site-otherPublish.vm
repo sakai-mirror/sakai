@@ -1,0 +1,72 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-otherPublish.vm,v 1.2 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+##Step 1 of 2 of creating an invitation to a site
+<div class ="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Publishing site  ...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefPageviewTitle">
+			Step 2 of 2: Confirm and send your invitation.
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Invitation
+				</legend>
+				<table class ="chefEditItem">
+					<tr>
+						<td class = "chefLabel">
+							To:
+						</td>
+						<td>
+							$validator.escapeHtml($inviteeList)
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Subject:
+						</td>
+						<td>
+							Invitation to $validator.escapeHtml($form_title)
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Message:
+						</td>
+						<td>
+							You have been invited by $form_creator to $validator.escapeHtml($form_title)
+							#if ($form_message)
+								<div class = "chefSectionTitle"
+									Personal message:
+								</div>	
+								<div class = "chefSectionContent"
+									$validator.escapeHtml($form_message)
+								</div>	
+							#end	
+							To join this site, click on the following link or copy and paste it into your browser.
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Invitation required?
+						</td>
+						<td>
+							"Yes" or "No. Anyone can request access."
+						</td>
+					</tr>	
+				</table>		
+			</fieldset>	
+		</form>
+			<input type="hidden" name="back" value="13" />
+			<input type="hidden" name="template-index" value="14"/>
+			<input type="hidden" name="continue" value="0" />
+		<div class ="chefButtonRow">
+			<input type="submit" name="eventSubmit_doPublish" value="Publish" />
+			<input type="submit" name="eventSubmit_doBack" value="Back" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</div>
+	</div>
+</div>

@@ -1,0 +1,53 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/calendar/chef_calendar-customize_fields.vm,v 1.1 2004/03/09 04:32:46 ggolden Exp $
+
+<script type="text/javascript">
+  focus_path = [ "textfield" ];
+</script>
+<div class="chefPortletContainer"> 
+	<div class="chefPortletContent">
+			<script> var a = document.MyCalendar; </script>
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			To add fields, enter field name, choose 'add' then choose 'save'.
+		</div>
+		<form name="Options" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Custom fields
+				</legend>
+				#if (!$addFieldsCalendarsCollectionIsEmpty)
+					<table class="ContentStyleClass" cellspacing="0" summary="Table contains list of additional fields. First column contains checkboxes, second contains the fieldname.">
+						<tr> 
+							<th id="checkbox">&nbsp;&nbsp;</th>
+							<th id="fieldname" align="left">Field Name</th>
+						</tr>
+						#foreach ($fieldEntry in $addFieldsCalendarsCollection)
+							<tr> 
+								<td headers="checkbox">
+									<input type="checkbox" id="$fieldEntry"  name="$fieldEntry" value="True" />
+								</td>
+								<td headers="fieldname" align="left">
+									<label for="$fieldEntry">$validator.escapeHtml($fieldEntry)</label>
+								</td>
+							</tr>
+						#end
+					</table>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doDeletefield" value="Remove" />
+					</div>
+					<hr />
+				#end
+				Field Name: 
+				<input type="text" name="textfield" id="textfield" />
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doAddfield" value="Add" />
+				</div>
+			</fieldset>
+			<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doUpdate" value="Save" />
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+			<input type="hidden" name="state" value="$state" />
+		</form>
+	</div>
+</div>

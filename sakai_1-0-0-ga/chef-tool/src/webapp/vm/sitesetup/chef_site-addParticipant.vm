@@ -1,0 +1,92 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addParticipant.vm,v 1.9 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Add a participant to the worksite
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+ 		Adding participant(s) to $validator.escapeHtml($title)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		<div class="chefPageviewTitle">
+			Enter the participants below that you would like to add to your site. You may enter more than one name in each text area below by putting each one on a separate line (no commas).
+		</div>
+		<form action="#toolForm("SiteAction")" method="post">
+			<fieldset>
+				<legend>
+					Participants
+				</legend>
+	           	<table cellspacing="0" cellpadding="0" class="chefEditItem" summary ="Table holds fields for entering users." >
+					<tr>
+						<td>
+							Username(s):
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<textarea id="uniqnames" name="uniqnames" tabindex="0" cols="30" rows="4" wrap="virtual">$!validator.escapeHtmlTextarea($form_uniqnames)</textarea><br />
+							<div class="chefInlineInstructions">
+								Multiple usernames are allowed by placing each on its own line (Press Return or Enter on your keyboard between each entry)
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							&nbsp;
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Guest(s) email address (those without an official username, ex. jdoe@yahoo.com):
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<textarea id="friends" name="friends" tabindex="0" cols="60" rows="4" wrap="virtual">$!validator.escapeHtmlTextarea($form_friends)</textarea><br />
+							<div class="chefInlineInstructions">
+								Multiple guest accounts are allowed by placing each on its own line (Press Return or Enter on your keyboard between each entry)
+							</div>
+						</td>
+					</tr>	
+				</table>
+			</fieldset>
+			<br />
+			<fieldset>
+				<legend>
+					Participant Roles
+				</legend>
+	           	<table cellspacing="0" cellpadding="0" class="chefEditItem" summary ="Table holds a radio button for role choices" >
+					<tr>
+						<td>
+							<input type="radio" name="same_role" value="true" 
+								#if ($!form_same_role == "true")
+									checked="checked"
+								#end
+							/>
+							Assign all participants to the same role
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="radio" name="same_role" value="false" 
+								#if ($!form_same_role == "false")
+									checked="checked"
+								#end
+							/>
+							Assign each participant a role individually
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+			<br/>
+			<input type="hidden" name="back" value="$backIndex" />
+			<input type="hidden" name="template-index" value="28" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doCancel" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

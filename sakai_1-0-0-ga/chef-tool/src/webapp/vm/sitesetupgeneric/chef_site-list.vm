@@ -1,0 +1,244 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-list.vm,v 1.1 2004/10/14 12:23:57 ggolden.umich.edu Exp $ -->
+## Site list Sites list on worksite setup home page
+<div class ="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+        
+	##cannot use id and label cause the values will not conform to XHTML
+	<div class="chef2ndToolbarWrap">
+		<table class="chef2ndToolbar" cellspacing="0" summary="this is for second toolbar, containing dropdown view list, search area and paging" >
+			<tr class="first">
+				<td class="left">
+					<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("SiteAction")">
+						<input type="hidden" name="eventSubmit_doView_sites" value="view" />
+						View:
+						<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+							#foreach($view in $views.keys())
+								<option value ="$views.get($view)"
+								#if($views.get($view) == $viewSelected) selected="selected" #end
+								> $view </option>
+							#end
+						</select>
+					</form>
+				</td>
+				<td class="right">
+					<form name="searchForm" class="toolbarForm" action="#toolForm("AssignmentAction")" method="post">
+						<input type="hidden" name="eventSubmit_doSearch" value="null" />
+						<input size="20" value="$!searchString" name="$form_search" id="$form_search" type="text" class="searchField" style="background-color:#fff;width:10em;color:#000" />
+						<a href="#" title="Search" onclick="location = '#toolLink("AssignmentAction" "doSearch")'+buildQueryString('searchForm');return false;">
+							Search
+        				</a>
+						#if (($!searchString) && (!$searchString.equals("")))
+							<a href="#" title="Clear search" onclick="location = '#toolLink("AssignmentAction" "doSearch_clear")'+buildQueryString('searchForm');return false;">
+								Clear Search
+							</a>
+						#end
+					</form>
+				</td>
+			</tr>
+			#if (($prev_page_exists) || ($next_page_exists))
+				<tr class="second">
+					<td class="left">
+						&nbsp;
+					</td>
+					<td class="right">
+						<form name="pagingForm" class="toolbarForm" method="post">
+							#if ($paged)
+								#if ($totalPageNumber > 1)
+									Page:
+									#if ($prev_page_exists)
+										<a href="#toolLink("AssignmentAction" "doList_prev")" title="View Previous Page"><img src="#imageLink("chef/back.gif")" alt="View Previous Page" border="0" width="4" height="9" align="baseline" /></a>
+									#else
+										<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+									#end
+									#foreach ($pageNumber in [1..$totalPageNumber])
+										#if ($pageNumber == $current_page)
+											<span class="chefAlert">$pageNumber</span>
+										#else
+											<a href="#toolLink("AssignmentAction" "doView_page")&$formPageNumber=$pageNumber" title="View page $pageNumber of $totalPageNumber">$pageNumber</a>
+										#end
+									#end
+									#if ($next_page_exists)
+										<a href="#toolLink("AssignmentAction" "doList_next")" title="View Next Page"><img src="#imageLink("chef/forward.gif")" alt="View Next Page" border="0" width="4" height="9" align="baseline" /></a>
+									#else
+										<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+									#end
+									|
+									<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show All">
+										Show All
+									</a>
+								#end
+							#else
+								<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show Paging">
+									Pages</a>
+								| Show All
+							#end
+						</form>
+					</td>
+				</tr>
+			#end
+		</table>
+	</div>
+	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<div class ="chefPortletContent">
+		<span class ="chefPageviewTitle">
+			Check box(es) to take action on a site. Click column title to sort.
+		</span>
+			 <form name="sitesForm" action="#toolForm("SiteAction")" method="post">
+					<table class ="chefFlatListViewTable" cellspacing="0" summary ="List of sites">
+						<tr>
+							<th id="checkbox">
+								&nbsp;&nbsp;
+							</th>
+							<th id="title">
+								<a href="#toolLink("SiteAction" "doSort_sites")&criterion=title" title ="Sort by title"> 
+									Worksite Title
+									#if ($currentSortedBy.equals("title")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by title ascending" alt ="Sort by title ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by title descending" alt ="Sort by title descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+							<th id="type">
+								<a href="#toolLink("SiteAction" "doSort_sites")&criterion=type" title ="Sort by type"> 
+									Type
+									#if ($currentSortedBy.equals("type")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by title ascending" alt ="Sort by type ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by title descending" alt ="Sort by type descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>					
+							<th id="owner">
+								<a href="#toolLink("SiteAction" "doSort_sites")&criterion=owner" title ="Sort by owner"> 
+									Owner
+									#if ($currentSortedBy.equals("owner"))
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by owner ascending" alt ="Sort by title ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by owner descending" alt ="Sort by title descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+							<th id="status">
+								<a href="#toolLink("SiteAction" "doSort_sites")&criterion=status" title ="Sort by status"> 
+									Status
+									#if ($currentSortedBy.equals("status")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by status ascending" alt ="Sort by status ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by status descending" alt ="Sort by status descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+							<th id="creation date">
+								<a href="#toolLink("SiteAction" "doSort_sites")&criterion=creationdate" title ="Sort by creation date"> 
+									Creation Date
+									#if ($currentSortedBy.equals("creationdate")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by creation date ascending" alt ="Sort by creation date ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by creation date descending" alt ="Sort by creation date descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+						</tr>
+					#if($sites && $sites.size() != 0)
+						#foreach ($site in $sites)
+							#set ($properties = $site.getProperties())
+							<tr>
+								<td headers="checkbox">
+									#if ($service.allowUpdateSite($site.Id))
+										<input type="checkbox" name="selectedMembers" value="$validator.escapeHtml($site.getId())" />
+									#end
+								</td>
+								<td headers="title">
+									#if ($service.allowAccessSite($site.Id))
+										#set($group = "/group/")
+										<a href="$site.Url" target="_top">
+											$validator.escapeHtml($site.getTitle())
+										</a>
+									#else
+										$validator.escapeHtml($site.getTitle())
+									#end
+								</td>
+								<td headers="type">
+									#set($type="")
+									#set($type = $site.getType())
+									$!type
+								</td>
+								<td headers="owner">
+									#set($uniqname = "")
+									#set($uniqname = $properties.getProperty('CHEF:creator'))
+										$!uniqname
+								</td>
+								<td headers="status">
+									#if($site.getStatus() == $site_status_published)
+										Published
+
+									#elseif($site.getStatus() == $site_status_unpublished)
+										Unpublished
+
+									#end
+								</td>
+								<td headers="creationdate">
+									$properties.getPropertyFormatted($properties.getNamePropCreationDate())
+								</td>
+							</tr>
+						#end
+					#end
+				</table>
+			<br />
+		</form>
+			#if (($prev_page_exists) || ($next_page_exists))
+				<table class="chef2ndToolbar" cellspacing="0" summary="Paging" style="margin-top:30px">
+					<tr class="second">
+						<td class="left">
+							&nbsp; 
+						</td>
+						<td class="right">
+							<form name="pagingForm" class="toolbarForm" method="post">
+								#if ($paged)
+									#if ($totalPageNumber > 1)
+										Page:
+										#if ($prev_page_exists)
+											<a href="#toolLink("AssignmentAction" "doList_prev")" title="View Previous Page"><img src="#imageLink("chef/back.gif")" alt="View Previous Page" border="0" width="4" height="9" align="baseline" /></a>
+										#else
+											<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+										#end
+										#foreach ($pageNumber in [1..$totalPageNumber])
+											#if ($pageNumber == $current_page)
+												<span class="chefAlert">$pageNumber</span>
+											#else
+												<a href="#toolLink("AssignmentAction" "doView_page")&$formPageNumber=$pageNumber" title="View page $pageNumber of $totalPageNumber">$pageNumber</a>
+											#end
+										#end
+										#if ($next_page_exists)
+											<a href="#toolLink("AssignmentAction" "doList_next")" title="View Next Page"><img src="#imageLink("chef/forward.gif")" alt="View Next Page" border="0" width="4" height="9" align="baseline" /></a>
+										#else
+											<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+										#end
+										|
+										<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show All">
+											Show All
+										</a>
+									#end
+								#else
+									<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show Paging">
+										Pages</a>
+									| Show All
+								#end
+							</form>
+						</td>
+					</tr>
+				</table>
+			#end	
+	</div>
+</div>

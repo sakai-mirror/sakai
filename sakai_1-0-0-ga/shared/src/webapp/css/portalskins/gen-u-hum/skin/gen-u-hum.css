@@ -1,0 +1,12 @@
+@import url("../../gen-u/skin/gen-u.css");
+.divColor{background-color:#fff !important;}
+#divLogo{
+	background-image: url(../institutional/divlogo.gif);
+	height:41px;
+	padding:0px;
+	margin:0;
+	display:block;
+	background-repeat: no-repeat;
+	text-align: right;
+	background-position: top;
+}

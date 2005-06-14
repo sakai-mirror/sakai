@@ -1,0 +1,61 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addClass-pickTerm.vm,v 1.3 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Add class step 1: pick term
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Adding classes to site $validator.escapeHtml($siteTitle)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end<br />
+		The following class(es) have access to this site:<br />
+		#foreach($umiacItem in $umiacCourseSectionList)
+			<label for = "$umiacItem.getKey()">
+				$umiacItem.getYear(),
+				$umiacItem.getTerm_code(),
+				$umiacItem.getCampus_code(),
+				$umiacItem.getSubject(),
+				$umiacItem.getCatalog_nbr(),
+				$umiacItem.getClass_section()
+			</label>
+			<br />
+		#end
+		#foreach($manualItem in $manualCourseSectionList)
+			<label for = "$manualItem.getKey()">
+				(requested)
+				$manualItem.getYear()
+				$manualItem.getTerm_code()
+				$manualItem.getSubject()
+				$manualItem.getCatalog_nbr()
+				$manualItem.getClass_section()
+			</label>
+			<br />
+		#end
+		<br />
+		<form name="addClassTermForm" action="#toolForm("SiteAction")" method="post">
+			Select the term for class(es) you wish to add:<br />
+			<div class="chefSectionMessage">
+				Academic term:<span class ="chefRequiredInline"> </span>
+				<select name="selectTerm">
+					#foreach($term in $termList)
+						#if ($term.id > 1)
+							##hide the Fall 2003, Winter 2004 term
+							<option value ="$term.id"
+								#if($term.id == $selectedTerm)
+									selected="selected"
+								#end
+							>
+							$term.text
+							</option>	
+						#end
+					#end
+				</select>
+			</div>
+			<input type="hidden" name="back" value="49" />
+			<input type="hidden" name="template-index" value="59" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>				
+	</div>
+</div>	

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+    <user email="nobody@nowhere" first-name="Sakai" id="admin"
+        last-name="Administrator" pw="ISMvKXpXpadDiUoOSoAf">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="CHEF:modifiedby" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwMjA4MjMwMDM1Mjc1ODE=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwMjA4MjMwMDM1MDYxNDA=&#xa;"/>
+        </properties>
+    </user>
+    <user email="nobody@nowhere" first-name="Sakai" id="postmaster"
+        last-name="Postmaster" pw="ISMvKXpXpadDiUoOSoAf">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="CHEF:modifiedby" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwMjA4MjMwMDM1Mjc1ODE=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwMjA4MjMwMDM1MDYxNDA=&#xa;"/>
+        </properties>
+    </user>
+</users>

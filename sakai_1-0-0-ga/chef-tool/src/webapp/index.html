@@ -1,0 +1,49 @@
+<html>
+	<head>
+		<title>
+			Sakai 1.0.0 : Chef Tools
+		</title>
+	</head>
+
+	<body>
+		<h1>
+			Sakai 1.0.0 : Chef Tools
+		</h1>
+		<p>
+			This is "index.html"
+		</p>
+		<p>
+			The CHEF "Legacy" tools must be run associated with a Tool placed in a Sakai
+			page / site.
+		</p>
+		<p>
+			See the <a href="/sakai-embedded/portal/"> embedded portal </a> for an example.
+		</p>
+		<p>
+			Snoop Test: <a href="/sakai-chef-tool/snoop"> /sakai-chef-tool/snoop </a>
+		</p>
+		<p>Snoop form test:</p>
+		<form	name="one" id="one" method="post"
+				action="/sakai-chef-tool/snoop/%C3%91%C3%8B?test=%C3%91%C3%8B&test=%C3%8B%C3%91"
+				enctype="application/x-www-form-urlencoded">
+			field:
+			<input size="32" name="field" id="field1"  type="text" /><br />
+			field:
+			<input size="32" name="field" id="field2"  type="text" /><br />
+			<input name="submit" type="submit" value="submit" />
+		</form>
+		<p>Snoop form w/ file test:</p>
+		<form	name="two" id="two" method="post"
+				action="/sakai-chef-tool/snoop/%C3%91%C3%8B?test=%C3%91%C3%8B&test=%C3%8B%C3%91"
+				enctype="multipart/form-data">
+			field:
+			<input name="field" id="field1" type="text" /><br />
+			field:
+			<input name="field" id="field2" type="text" /><br />
+			file:
+			<input name="file" id="file" type="file" /><br />
+			<input name="submit" type="submit" value="submit" />
+		</form>
+	</body>
+
+</html>

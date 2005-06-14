@@ -1,0 +1,98 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-customizeDiscussion.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Customizing discussion
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Customizing discussion...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Revise the setup for discussion
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Setup
+				</legend>
+				<table cellpadding="5" class="chefEditItem">
+					<tr>
+						<td class = "chefLabel">
+							Students post topics
+						</td>
+						<td>
+							<input type="radio" name="postTopics" id="postTopicsYes" checked="checked" />
+							<label for = "postTopicsYes">
+								Yes
+							</label>	
+							<input type="radio" name="postTopics" id="postTopicsNo" />
+							<label for = "postTopicsNo">
+								No
+							</label>	
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Students post categories
+						</td>
+						<td>
+							<input type="radio" name="postCategories" id="postCategoriesYes" checked="checked" />
+							<label for = "postCategoriesYes">
+								Yes
+							</label>	
+							<input type="radio" name="postCategories" id="postCategoriesNo" />
+							<label for = "postCategoriesNo">
+								No
+							</label>	
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Message word counts:
+						</td>
+						<td>
+							<input type="radio" name="wordCounts" id="wordCountsYes"  />
+							<label for = "wordCountsYes">
+								Yes
+							</label>	
+							<input type="radio" name="wordCounts" id="wordCountsNo" checked="checked"/>
+							<label for = "wordCountsNo">
+								No
+							</label>	
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Replies:
+						</td>
+						<td>
+							<input type="radio" name="replies" id="repliesTopic" checked="checked" />
+							<label for = "repliesTopic">
+								Replies always to topic
+							</label><br />
+							<input type="radio" name="replies" id="repliesReplies" />
+							<label for = "repliesReplies">
+								Replies to replies allowed
+							</label>	
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Other discussion:
+						</td>
+						<td>
+							<input type="text" name="otherDiscussion"  />
+						</td>
+					</tr>	
+				</table>		
+			</fieldset>	
+				<input type="hidden" name="back" value="15" />
+				<input type="hidden" name="template-index" value="22"/>
+				<input type="hidden" name="continue" value="0" />
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doSave_customized_discussion" value="Make these changes" />
+				<input type="submit" name="eventSubmit_doBack_to_customize" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

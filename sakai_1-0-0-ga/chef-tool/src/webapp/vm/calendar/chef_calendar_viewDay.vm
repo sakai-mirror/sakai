@@ -1,0 +1,369 @@
+<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/calendar/chef_calendar_viewDay.vm,v 1.5 2004/07/29 15:59:41 suiyy.umich.edu Exp $ -->
+#macro (iconImage $eventType $tooltip)
+#if ($eventType=="Academic Calendar")
+<img src = "#imageLink("chef/academic_calendar.gif")" alt="Academic Calendar" border="0">
+#elseif ($eventType =="Activity")
+<img src = "#imageLink("chef/activity.gif")" alt="Activity" border="0">
+#elseif ($eventType =="Cancellation")
+<img src = "#imageLink("chef/cancelled.gif")" alt="Cancelation" border="0">
+#elseif ($eventType =="Class section - Discussion")
+<img src = "#imageLink("chef/class_dis.gif")" alt ="Class section - Discussion" border="0">
+#elseif ($eventType =="Class section - Lab")
+<img src = "#imageLink("chef/class_lab.gif")" alt="Class section - Lab" border="0">
+#elseif ($eventType =="Class section - Lecture")
+<img src = "#imageLink("chef/class_lec.gif")" alt="Class section - Lecture" border="0">
+#elseif ($eventType =="Class section - Small Group")
+<img src = "#imageLink("chef/class_sma.gif")" alt="Class section - Small Group" border="0">
+#elseif ($eventType =="Class session")
+<img src = "#imageLink("chef/class_session.gif")" alt="Class session" border="0">
+#elseif ($eventType =="Computer Session")
+<img src = "#imageLink("chef/computersession.gif")" alt="Computer Session" border="0">
+#elseif ($eventType =="Deadline")
+<img src = "#imageLink("chef/deadline.gif")" alt="Deadline" border="0">
+#elseif ($eventType =="Exam")
+<img src = "#imageLink("chef/exam.gif")" alt="Exam" border="0">
+#elseif ($eventType =="Meeting")
+<img src = "#imageLink("chef/meeting.gif")" alt="Meeting" border="0">
+#elseif ($eventType =="Quiz")
+<img src = "#imageLink("chef/quiz.gif")" alt="Quiz" border="0">
+#elseif ($eventType =="Special event")
+<img src = "#imageLink("chef/special_event.gif")" alt="Special event" border="0">
+#elseif ($eventType =="Web Assignment")
+<img src = "#imageLink("chef/webassignment.gif")" alt="Web Assignment" border="0">
+#elseif ($eventType =="Multidisciplinary Conference")
+<img src = "#imageLink("chef/multi-conference.gif")" alt="Multidisciplinary Conference" border="0">
+#end
+#end
+
+<div class="chefPortletContainer">
+#if($menu)#toolbar($menu)#end
+
+<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div style="display:block;clear:both"></div>
+		
+<!-- drop down menu for different views -->
+<div class="chef2ndToolbarWrap">
+	<table class="chef2ndToolbar" cellspacing="0" summary="this is for second toolbar, containing dropdown view list" >
+		<tr class="first">
+			<td class="left">
+				<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("CalendarAction")">
+					<input type="hidden" name="eventSubmit_doView" value="view" />
+					View:
+					<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+						#foreach ($view in ["Calendar by day", "Calendar by week", "Calendar by month", "Calendar by year", "List of events"])
+							#if ($selectedView.equals($view))
+								<option value="$view" selected="selected" >$view</option>
+							#else
+								<option value="$view" >$view</option>
+							#end
+						#end
+					</select>
+				</form>
+			</td>
+		</tr>
+	</table>
+</div>
+		
+<table width="100%" cellspacing="0" border="0">
+<tr>
+    <td align="left" bgcolor="#ffffff">
+    #if ($page== "first")
+        <a href="#" onclick="location='#toolLink("$action" "doPreday")';return false;" title="Go earlier">
+        <img src = "#imageLink("chef/arrowUp.gif")" border="0" alt="Arrow up" />Yesterday
+    #else
+        <a href="#" onclick="location='#toolLink("$action" "doDpagep")';return false;" title="Go earlier">
+        <img src = "#imageLink("chef/arrowUp.gif")" border="0" alt="Arrow up" />
+        #if($page== "second") Before 8 AM #else Before 2 PM  #end
+    #end
+    </a>
+    </td>
+    <td>    
+    <form name="dayform" action="#toolForm("$action")" method="post">
+    <div class="chefButtonRowRight">
+    		<input type="submit" name="eventSubmit_doToday" value="Go to today" />
+		<input type="submit" name="eventSubmit_doPrev" value="&lt;" title="Go to previous day" />
+		#set ($day_of_Week = $calObj.getDay_Of_Week())
+                #if ($day_of_Week == 1)
+                Sunday
+                #elseif ($day_of_Week == 2)
+                Monday
+                #elseif ($day_of_Week == 3)
+                Tuesday
+                #elseif ($day_of_Week == 4)
+                Wednesday
+                #elseif ($day_of_Week == 5)
+                Thursday
+                #elseif ($day_of_Week == 6)
+                Friday
+                #elseif ($day_of_Week == 7)
+                Saturday
+                #end
+                $nameOfMonth $date.Day, $date.Year
+		<input type="submit" name="eventSubmit_doNext" value="&gt;" title="Go to next day" />
+	 </div>
+    </form>
+
+    </td>
+</tr>
+</table>
+
+<table width="100%" cellspacing="0" cellpadding="2" class="calendar">
+<!-- 1 section : every half an hour-->
+#set($section = 1)
+#set($v = 250)
+#set ($colspan = 1)
+
+#if($page== "second")
+    #set($timer = 8)
+    #set ($timeType = "AM")
+#elseif ( $page == "third" )
+    ## set start time to be 2 PM 
+    #set($timer = 2)
+    #set ($timeType = "PM")
+#else ##if ( $page == "first" )
+    #set($timer = 0)
+    #set ($timeType = "AM")
+#end
+
+#foreach($nx in [0..19])
+    #set($m = $date.getEventsBerDay($nx))
+    #if ($m.size() > $colspan) #set ($colspan = $m.size()) #end
+#end
+#set ($v = 95 / $colspan )
+
+#foreach($nx in [0..19])
+    #set($m = $date.getEventsBerDay($nx))
+
+    <tr align="left" valign="top" bgcolor="#FFFFFF">
+    #if ($section == 1)
+        #set($section = 2)
+
+        #if ( $page == "second")
+            #if($timer==12) 
+                #set ($timeType = "PM")
+            #elseif ($timer>12)
+                #set ($timeType = "PM")
+                #set($temp = $timer)
+                #set($timer = $timer - 12)
+            #end
+            <td width="5%" rowspan="2" align="right" bgcolor="#eeeeee" class="borderWhite" nowrap="nowrap">$timer $timeType</td>
+            #if ($temp>12) #set($timer = $temp) #end
+        #elseif ( $page == "third" )
+            <td width="5%" rowspan="2" align="right" bgcolor="#eeeeee" class="borderWhite" nowrap="nowrap">$timer $timeType</td>
+        #elseif ($page == "first")            
+            <td width="5%" rowspan="2" align="right" bgcolor="#eeeeee" class="borderWhite" nowrap="nowrap">
+            #if($timer == 0) 12 #else $timer #end
+            $timeType</td>
+        #end
+
+        #set($timer = $timer + 1)
+        #if($m.isEmpty())
+            #foreach($left in [1..$colspan])
+                <td  width="$v" class="borderGrayDayWeek">&nbsp;</td>
+            #end
+        #else
+            #set($counter = 0)
+            #foreach($x in $m)
+                #set($recounter = $colspan)
+                #if($counter<$colspan)
+                    #if($x.getFlag() == false) ##if the title exists
+                        #if ($x.getEvent().getRange().isSingleTime())
+                            <td width="$v%" class="borderTopLeft">
+                        #else
+                            ##<td width="$v%" bgcolor="#FFFF99" class="borderTopLeft">
+                            <td width="$v%" class="borderTopLeft">
+                        #end
+                        <a href="#toolLink("$action" "doDescription")&eventReference=$validator.escapeUrl($x.getEvent().getReference())" title="$x.getEvent().getDisplayName()">
+                        #set ($eventType = $x.getEvent().getType())
+                        #if ($eventType =="Academic Calendar")
+                        <img src = "#imageLink("chef/academic_calendar.gif")" alt="Academic Calendar" border="0">
+                        #elseif ($eventType=="Activity")
+                        <img src = "#imageLink("chef/activity.gif")" alt="Activity" border="0" />
+                        #elseif ($eventType =="Cancellation")
+                        <img src = "#imageLink("chef/cancelled.gif")" alt="Cancelation" border="0">
+                        #elseif ($eventType =="Class section - Discussion")
+                        <img src = "#imageLink("chef/class_dis.gif")" alt ="Class section - Discussion" border="0">
+                        #elseif ($eventType =="Class section - Lab")
+                        <img src = "#imageLink("chef/class_lab.gif")" alt="Class section - Lab" border="0">
+                        #elseif ($eventType =="Class section - Lecture")
+                        <img src = "#imageLink("chef/class_lec.gif")" alt="Class section - Lecture" border="0">
+                        #elseif ($eventType =="Class section - Small Group")
+                        <img src = "#imageLink("chef/class_sma.gif")" alt="Class section - Small Group" border="0">
+                        #elseif ($eventType =="Class session")
+                        <img src = "#imageLink("chef/class_session.gif")" alt="Class session" border="0">
+                        #elseif ($eventType =="Computer Session")
+                        <img src = "#imageLink("chef/computersession.gif")" alt="Computer Session" border="0">
+                        #elseif ($eventType =="Deadline")
+                        <img src = "#imageLink("chef/deadline.gif")" alt="Deadline" border="0">
+                        #elseif ($eventType =="Exam")
+                        <img src = "#imageLink("chef/meeting.gif")" alt="Exam" border="0">
+                        #elseif ($eventType =="Meeting")
+                        <img src = "#imageLink("chef/meeting.gif")" alt="Meeting" border="0">
+                        #elseif ($eventType =="Quiz")
+                        <img src = "#imageLink("chef/quiz.gif")" alt="Quiz" border="0">
+                        #elseif ($eventType =="Special event")
+                        <img src = "#imageLink("chef/special_event.gif")" alt="Special event" border="0">
+                        #elseif ($eventType =="Web Assignment")
+                        <img src = "#imageLink("chef/webassignment.gif")" alt="Web Assignment" border="0">
+                        #elseif ($eventType =="Multidisciplinary Conference")
+                        <img src = "#imageLink("chef/multi-conference.gif")" alt="Multidisciplinary Conference" border="0">
+                        #end
+                        $validator.escapeHtml($x.getEvent().getDisplayName())</a>   
+                        </td> 
+                        #set($counter = $counter +1)
+                    #else
+                    ## if no title exists, we will check if the event is expanding display an empty cell with ffffcc(yellow color), 
+                    ## if the event is finished an empty cell will be displayed with ffffff(white color)
+                        #if($x== "")
+                        <td width="$v%" class="borderTopLeftWhite">&nbsp;</td>
+                        #else
+                        ##<td width="$v%" bgcolor="#FFFF99" class="borderOnlyLeftDay">&nbsp;</td>
+                        <td width="$v%"  class="borderOnlyLeftDay">&nbsp;</td>
+                        #end
+                        #set($counter = $counter +1)
+                    #end
+                #end
+            #end
+
+            #set($recounter = $colspan - $counter)
+            #if ($recounter>0)
+                #foreach($left in [1..$recounter])
+                    <td width="$v%" class="borderTopLeftWhite" >&nbsp;</td>
+                #end
+            #end
+
+        #end
+    #else
+        #set($section = 1)
+        #if($m.isEmpty())
+            #foreach($left in [1..$colspan])
+                <td  width="$v%" class="borderFullGray">&nbsp;</td>
+            #end
+        #else
+            #set($counter = 0)
+            #foreach($x in $m)
+                #if($counter<$colspan)
+                    #if($x.getFlag() == false)
+                        #if($x== "")
+                            <td width="$v%" class="borderTopLeftWhite">&nbsp;</td>
+                        #else
+                            #if ($x.getEvent().getRange().isSingleTime())
+                                    <td width="$v%" class="borderTopLeft">
+                            #else
+                                    ##<td width="$v%" bgcolor="#FFFF99" class="borderTopLeft">
+                                    <td width="$v%" class="borderTopLeft">
+                            #end
+                            <a href="#" onclick="location='#toolLink("$action" "doDescription")&eventReference=$validator.escapeUrl($x.getEvent().getReference())';return false;" title="$x.getEvent().getDisplayName()">
+                            #set ($eventType = $x.getEvent().getType())
+                            #if ($eventType =="Academic Calendar")
+                            <img src = "#imageLink("chef/academic_calendar.gif")" border="0">
+                            #elseif ($eventType=="Activity")
+                            <img src = "#imageLink("chef/activity.gif")" border="0">
+                            #elseif ($eventType =="Cancellation")
+                            <img src = "#imageLink("chef/cancelled.gif")" border="0">
+                            #elseif ($eventType =="Class section - Discussion")
+                            <img src = "#imageLink("chef/class_dis.gif")" border="0">
+                            #elseif ($eventType =="Class section - Lab")
+                            <img src = "#imageLink("chef/class_lab.gif")" border="0">
+                            #elseif ($eventType =="Class section - Lecture")
+                            <img src = "#imageLink("chef/class_lec.gif")" border="0">
+                            #elseif ($eventType =="Class section - Small Group")
+                            <img src = "#imageLink("chef/class_sma.gif")" border="0">
+                            #elseif ($eventType =="Class session")
+                            <img src = "#imageLink("chef/class_session.gif")" border="0">
+                            #elseif ($eventType =="Computer Session")
+                            <img src = "#imageLink("chef/computersession.gif")" border="0">
+                            #elseif ($eventType =="Deadline")
+                            <img src = "#imageLink("chef/deadline.gif")" border="0">
+                            #elseif ($eventType =="Exam")
+                            <img src = "#imageLink("chef/exam.gif")" border="0">
+                            #elseif ($eventType =="Meeting")
+                            <img src = "#imageLink("chef/meeting.gif")" border="0">
+                            #elseif ($eventType =="Quiz")
+                            <img src = "#imageLink("chef/quiz.gif")" border="0">
+                            #elseif ($eventType =="Special event")
+                            <img src = "#imageLink("chef/special_event.gif")" border="0">
+                            #elseif ($eventType =="Web Assignment")
+                            <img src = "#imageLink("chef/webassignment.gif")" border="0">
+                            #elseif ($eventType =="Multidisciplinary Conference")
+                            <img src = "#imageLink("chef/multi-conference.gif")" border="0" />
+                            #end
+                            $validator.escapeHtml($x.getEvent().getDisplayName())
+                            </a>
+                            </td>
+                        #end
+                        #set($counter = $counter +1)
+                    #else
+                            #if($x== "")
+                                <td width="$v%" class="borderTopLeftWhite">&nbsp;</td>
+                            #else
+                                ##<td width="$v%" bgcolor="#FFFF99" class="borderOnlyLeftDay">&nbsp;</td>
+                                <td width="$v%"  class="borderOnlyLeftDay">&nbsp;</td>
+                            #end
+                            #set($counter = $counter +1)
+                    #end
+                #end
+            #end
+
+            #set($recounter = $colspan - $counter)
+            #if ($recounter>0)
+                #foreach($left in [1..$recounter])
+                    <td width="$v%" class="borderFullGray">&nbsp;</td>
+                #end
+            #end
+        #end
+    #end
+    </tr>
+#end ## foreach
+
+</table>
+<table>
+<tr><td align="left">
+#if ($page== "first")
+    <a href="#toolLink("$action" "doDpagen")" title="Go later">
+    <img src = "#imageLink("chef/arrowDown.gif")" border="0" alt="Arrow down" />After 9 AM</a>
+#else
+    #if($page== "second")
+        <a href="#toolLink("$action" "doDpagen")" title="Go later">
+        <img src = "#imageLink("chef/arrowDown.gif")" border="0" alt="Arrow down" />After 5 PM</a>
+    #else ## --third page
+        <a href="#" onclick="location='#toolLink("$action" "doNextday")';return false;" title="Go later">
+        <img src = "#imageLink("chef/arrowDown.gif")" border="0" alt="Arrow down" />Tomorrow</a>
+    #end
+#end
+</td></tr>
+</table>
+<table style="margin-right:auto;margin-left:auto;margin-top:10px" cellpadding="3">
+<tr><td colspan="3" style="border-bottom:1px solid silver"><p align="center">Legend</p></td></tr>
+<tr>
+<td><img src = "#imageLink("chef/academic_calendar.gif")" border="0" alt="Academic Calendar" /> Academic Calendar</td>
+<td><img src = "#imageLink("chef/activity.gif")" border="0" alt="Activity" /> Activity</td>
+<td><img src = "#imageLink("chef/cancelled.gif")" border="0" alt="Cancelled" /> Cancelled</td>
+</tr>
+<tr>
+<td><img src = "#imageLink("chef/class_dis.gif")" border="0" alt="Class Section - Discussion" /> Class Section - Discussion</td>
+<td><img src = "#imageLink("chef/class_lab.gif")" border="0" alt="Class Section - Lab" /> Class Section - Lab</td>
+<td><img src = "#imageLink("chef/class_lec.gif")" border="0" alt="Class Section - Lecture" /> Class Section - Lecture</td>
+</tr>
+<tr>
+<td><img src = "#imageLink("chef/class_sma.gif")" border="0" alt="Class Section - Small Group" /> Class Section - Small Group</td>
+<td><img src = "#imageLink("chef/class_session.gif")" border="0" alt="Class Session" /> Class Session</td>
+<td><img src = "#imageLink("chef/computersession.gif")" border="0" alt="Computer Session" /> Computer Session</td>
+</tr>
+<tr>
+<td><img src = "#imageLink("chef/deadline.gif")" border="0" alt="Deadline" /> Deadline</td>
+<td><img src = "#imageLink("chef/exam.gif")" border="0" alt="Exam" /> Exam</td>
+<td><img src = "#imageLink("chef/meeting.gif")" border="0" alt="Meeting" /> Meeting</td>
+</tr>
+<tr>
+<td><img src = "#imageLink("chef/multi-conference.gif")" border="0" alt="Multidisciplinary Conference" /> Multidisciplinary Conference</td>
+<td><img src = "#imageLink("chef/quiz.gif")" border="0" alt="Quiz" /> Quiz</td>
+<td><img src = "#imageLink("chef/special_event.gif")" border="0" alt="Special Event" /> Special Event</td>
+</tr>
+<tr>
+<td><img src = "#imageLink("chef/webassignment.gif")" border="0" alt="Web Assignment" /> Web Assignment</td>        
+</tr>
+</table>
+</div>
+</div>

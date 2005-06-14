@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="org.sakaiproject.service.legacy.alias.AliasService"
+			class="org.sakaiproject.component.legacy.alias.DbAliasService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.announcement.AnnouncementService"
+			class="org.sakaiproject.component.legacy.announcement.DbAnnouncementService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+		<property name="notificationService"><ref bean="org.sakaiproject.service.legacy.notification.NotificationService"/></property>
+ 		<property name="containerTableName"><value>ANNOUNCEMENT_CHANNEL</value></property>
+ 		<property name="resourceTableName"><value>ANNOUNCEMENT_MESSAGE</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.archive.ArchiveService"
+			class="org.sakaiproject.component.legacy.archive.BasicArchiveService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+ 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/archive/</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.assignment.AssignmentService"
+			class="org.sakaiproject.component.legacy.assignment.DbAssignmentService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+ 		<property name="assignmentTableName"><value>ASSIGNMENT_ASSIGNMENT</value></property>
+ 		<property name="contentTableName"><value>ASSIGNMENT_CONTENT</value></property>
+ 		<property name="submissionTableName"><value>ASSIGNMENT_SUBMISSION</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.calendar.CalendarService"
+			class="org.sakaiproject.component.legacy.calendar.DbCalendarService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+		<property name="idService"><ref bean="org.sakaiproject.service.legacy.id.IdService"/></property>
+ 		<property name="containerTableName"><value>CALENDAR_CALENDAR</value></property>
+ 		<property name="resourceTableName"><value>CALENDAR_EVENT</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.calendar.CalendarImporterService"
+			class="org.sakaiproject.component.legacy.calendar.GenericCalendarImporter"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="calendarService"><ref bean="org.sakaiproject.service.legacy.calendar.CalendarService"/></property>
+		<property name="timeService"><ref bean="org.sakaiproject.service.legacy.time.TimeService"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.chat.ChatService"
+			class="org.sakaiproject.component.legacy.chat.DbChatService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+ 		<property name="containerTableName"><value>CHAT_CHANNEL</value></property>
+ 		<property name="resourceTableName"><value>CHAT_MESSAGE</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.content.ContentHostingService"
+			class="org.sakaiproject.component.legacy.content.DbContentService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+		<property name="notificationService"><ref bean="org.sakaiproject.service.legacy.notification.NotificationService"/></property>
+		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+ 		<property name="collectionTableName"><value>CONTENT_COLLECTION</value></property>
+ 		<property name="resourceTableName"><value>CONTENT_RESOURCE</value></property>
+ 		<property name="resourceBodyTableName"><value>CONTENT_RESOURCE_BODY_BINARY</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+		<!-- <property name="bodyPath"><value>/usr/local/sakai/content/</value></property> -->
+
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.content.ContentTypeImageService"
+			class="org.sakaiproject.component.legacy.content.BasicContentTypeImageService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+ 		<property name="imageFile"><value>/usr/local/sakai/content_type_images.properties</value></property>
+ 		<property name="nameFile"><value>/usr/local/sakai/content_type_names.properties</value></property>
+ 		<property name="extensionFile"><value>/usr/local/sakai/content_type_extensions.properties</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.digest.DigestService"
+			class="org.sakaiproject.component.legacy.digest.DbDigestService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+		<property name="timeService"><ref bean="org.sakaiproject.service.legacy.time.TimeService"/></property>
+ 		<property name="tableName"><value>CHEF_DIGEST</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.discussion.DiscussionService"
+			class="org.sakaiproject.component.legacy.discussion.DbDiscussionService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+ 		<property name="containerTableName"><value>DISCUSSION_CHANNEL</value></property>
+ 		<property name="resourceTableName"><value>DISCUSSION_MESSAGE</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.email.MailArchiveService"
+			class="org.sakaiproject.component.legacy.email.DbMailArchiveService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+		<property name="notificationService"><ref bean="org.sakaiproject.service.legacy.notification.NotificationService"/></property>
+ 		<property name="containerTableName"><value>MAILARCHIVE_CHANNEL</value></property>
+ 		<property name="resourceTableName"><value>MAILARCHIVE_MESSAGE</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.event.EventTrackingService"
+			class="org.sakaiproject.component.legacy.event.ClusterEventTracking"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+		<property name="timeService"><ref bean="org.sakaiproject.service.legacy.time.TimeService"/></property>
+ 		<property name="checkDb"><value>true</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.id.IdService"
+			class="org.sakaiproject.component.legacy.id.ClusterIdService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.news.NewsService"
+			class="org.sakaiproject.component.legacy.news.BasicNewsService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.notification.NotificationService"
+			class="org.sakaiproject.component.legacy.notification.DbNotificationService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="eventTrackingService"><ref bean="org.sakaiproject.service.legacy.event.EventTrackingService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+ 		<property name="tableName"><value>CHEF_NOTIFICATION</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.preference.PreferencesService"
+			class="org.sakaiproject.component.legacy.preference.DbPreferencesService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+ 		<property name="tableName"><value>CHEF_PREFERENCES</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.presence.PresenceService"
+			class="org.sakaiproject.component.legacy.presence.ClusterPresenceService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+		<property name="eventTrackingService"><ref bean="org.sakaiproject.service.legacy.event.EventTrackingService"/></property>
+		<property name="usageSessionService"><ref bean="org.sakaiproject.service.framework.session.UsageSessionService"/></property>
+		<property name="userDirectoryService"><ref bean="org.sakaiproject.service.legacy.user.UserDirectoryService"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.realm.RealmService"
+			class="org.sakaiproject.component.legacy.realm.DbRealmService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+ 		<property name="tableName"><value>CHEF_REALM</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+		<property name="provider"><ref bean="org.sakaiproject.service.legacy.realm.RealmProvider"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.security.SecurityService"
+			class="org.sakaiproject.component.legacy.security.ChefSecurity"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.site.SiteService"
+			class="org.sakaiproject.component.legacy.site.DbSiteService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+ 		<property name="tableName"><value>CHEF_SITE</value></property>
+ 		<property name="locksInDb"><value>false</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.time.TimeService"
+			class="org.sakaiproject.component.legacy.time.BasicTimeService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.user.UserDirectoryService"
+			class="org.sakaiproject.component.legacy.user.DbUserService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+		<property name="provider"><ref bean="org.sakaiproject.service.legacy.user.UserDirectoryProvider"/></property>
+	</bean>
+
+</beans>

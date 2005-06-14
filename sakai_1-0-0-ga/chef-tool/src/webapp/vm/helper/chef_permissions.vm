@@ -1,0 +1,55 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/helper/chef_permissions.vm,v 1.1 2004/03/08 03:24:45 ggolden Exp $ -->
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+
+	<div class="chefPageviewTitle">
+		$!description
+	</div>
+		<form action="#toolForm("$action")" method="post">
+			#if ($!roles)
+				<table class="chefFlatListViewTable" cellspacing="0" summary ="List of roles and permissions that can be applied to this folder. Layout: each row lists the permissions of a role. Layout: column 1 lists the roles, the other columns list the permissions, checkboxes permit enabling a permission for a role." border="0">
+					<tr>
+						<th id="role">
+							Role
+							<a href="$config.getString("help.rolesurl")" target="umcthelp" onclick="sitehelp('$config.getString("help.rolesurl")');return false" title="Help on roles" ><img src = "#imageLink("help.gif")" border="0" alt ="Help" /></a>
+						</th>
+						#foreach($lock in $abilities)
+							<th id="$lock.substring($prefix.length())">$lock.substring($prefix.length())</th>
+						#end
+					</tr>
+					#foreach($role in $roles)
+						#set($myRole = $realm.getRole($role.Id))
+						#set($roleAbilities = $rolesAbilities.get($role.Id))
+						<tr>
+							<td headers="role">
+								$role.Id
+							</td>
+						#foreach($lock in $abilities)
+							<td headers="$lock.substring($prefix.length())" style="text-align: left;">
+								#if($roleAbilities.contains($lock))
+									<img src="#imageLink("chef/checkon.gif")" border="0" alt="already granted" hspace="5" />
+								#else
+									<input type="checkbox" name="$role.Id$lock" id="$role.Id$lock" value="$role.Id$lock" #if(($myRole) && ($myRole.Id==$role.Id) && ($myRole.Locks.contains($lock)))checked="checked"#end />
+								#end
+							</td>
+						#end
+						</tr>
+					#end
+				</table>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+			#else
+				<div class="chefAlertBox">Alert: there is currently no role defined.</div>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doCancel" value="Done" />
+				</div>
+			#end
+		</form>
+	</div>
+</div>

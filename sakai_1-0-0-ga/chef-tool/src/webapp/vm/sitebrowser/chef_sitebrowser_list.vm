@@ -1,0 +1,87 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitebrowser/chef_sitebrowser_list.vm,v 1.4 2004/04/28 18:11:14 suiyy Exp $ -->
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["search"];
+</script>
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			These are the Sites which meet the search criteria.  Click on one to view.
+		</div>
+#if ($sites.size() > 0)
+	#set ($siteCount = 0)
+		<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Groups">
+			<tr>
+				<th id="Title">Title</th>
+				<th id="Description">Description</th>
+				<th id="Created">Created</th>
+			</tr>
+			#foreach ($site in $sites)
+            	#set ($realm = $realms.getRealm($site.Reference,"@"))
+                #set ($siteCount=$siteCount + 1)
+                #set ($shortDesc = "")
+                #set ($desc = "")
+                <tr>
+                        <td headers="Title" #if ($siteCount > 1) class="chefTopline" #end>
+                                <a href="#toolLink("$action" "doVisit")&id=$validator.escapeUrl($site.Id)">
+                                        $validator.escapeHtml($site.Title)
+                                </a>
+                        </td>
+                        <td headers="Description" #if ($siteCount > 1) class="chefTopline" #end>
+                                #set ($shortDesc = $site.Properties.getPropertyFormatted("CTNG:short-description"))
+                                #if ($shortDesc)
+                                        #if ($shortDesc.equals(""))
+                                               #set ($desc = $site.Description)
+                                               #if ($desc)
+		                                               #if ($desc.length() > 85)
+		                                                       #set ($desc = $desc.substring(0, 85))
+		                                                       $validator.escapeHtml($desc)...
+		                                               #else
+		                                               		#if ($desc.equals(""))
+		                                               				&nbsp;
+		                                               		#else
+		                                                       		$validator.escapeHtml($desc)
+		                                                    #end
+		                                               #end
+                                               #else
+ 	                                           		&nbsp;
+                                               #end
+                                                     
+                                        #else
+                                                $validator.escapeHtml($shortDesc)
+                                        #end
+                                #else
+                                        #set ($desc = $site.Description)
+                                        #if ($desc)
+		                                        #if ($desc.length() > 85)
+		                                                #set ($desc = $desc.substring(0, 85))
+		                                                $validator.escapeHtml($desc)...
+		                                        #else
+		                                                #if ($desc.equals(""))
+		                                               			&nbsp;
+		                                               	#else
+		                                                	    $validator.escapeHtml($desc)
+		                                                #end
+		                                        #end
+		                                 #else
+ 	                                           	&nbsp;
+                                         #end
+                                #end &nbsp;
+                        </td>
+                        <td headers="Created" #if ($siteCount > 1) class="chefTopline" #end>
+                                <nobr>$site.Properties.getPropertyFormatted($site.Properties.NamePropCreationDate)</nobr><br />
+                                <nobr>$site.Properties.getPropertyFormatted($site.Properties.NamePropCreator)</nobr>
+                        </td>
+                </tr>
+			#end ##foreach
+		</table>
+#else
+		<div class="chefListMessage">
+			No Sites meet the search criteria.
+		</div>
+#end
+	</div>
+</div>

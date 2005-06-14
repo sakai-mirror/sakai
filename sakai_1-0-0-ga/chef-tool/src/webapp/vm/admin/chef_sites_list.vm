@@ -1,0 +1,94 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_sites_list.vm,v 1.2 2004/07/13 22:44:22 ggolden.umich.edu Exp $ -->
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["search"];
+</script>
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			These are the Sites defined within the system that meet the search criteria.  Click on an Id to edit.
+		</div>
+#if ($sites.size() > 0)
+	#set ($siteCount = 0)
+		<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Groups">
+			<tr>
+				<th id="Id">Site Id</th>
+				<th id="Title">Title</th>
+				<th id="Published">Published?</th>
+				<th id="Joinable">Joinable?</th>
+				<th id="Type">Type</th>
+				<th id="Description">Description, URLs</th>
+			</tr>
+	#foreach ($site in $sites)
+		#set ($realm = $realms.getRealm($site.Reference,"@"))
+		#set ($siteCount=$siteCount + 1)
+			<tr>
+				<td headers="Id" #if ($siteCount > 1) class="chefTopline" #end>
+					#if ($service.allowUpdateSite($site.Id))
+						<a href="#toolLink("$action" "doEdit")&id=$validator.escapeUrl($site.Id)">
+							$validator.escapeHtml($site.Id)
+						</a>
+					#else
+						$validator.escapeHtml($site.Id)
+					#end
+				</td>
+				<td headers="Title" #if ($siteCount > 1) class="chefTopline" #end>$validator.escapeHtml($site.Title)</td>
+				<td headers="Published" #if ($siteCount > 1) class="chefTopline" #end>&nbsp;#if($site.Status == 2)<img src="#imageLink("chef/checkon.gif")" border="0" alt="Published" />#end</td>
+				<td headers="Joinable" #if ($siteCount > 1) class="chefTopline" #end>&nbsp;#if($site.isJoinable())<img src="#imageLink("chef/checkon.gif")" border="0" alt="Joinable" />#end</td>
+				<td headers="Type" #if ($siteCount > 1) class="chefTopline" #end>$validator.escapeHtml($site.Type)</td>
+				<td headers="Description" #if ($siteCount > 1) class="chefTopline" #end>
+					#if ($site.Description && $site.Description !="")
+						<div class="chefSectionTitle">
+							Description:
+						</div>
+						<div class="chefSectionMessage">
+							$validator.escapeHtml($site.Description)
+						</div>
+					#end	
+					#if ($site.IconUrl && $site.IconUrl !="")
+						<div class="chefSectionTitle">
+							Icon URL:
+						</div>
+						<div class="chefSectionMessage">
+							$validator.escapeHtml($site.IconUrl)
+						</div>
+					#end
+					#if ($site.InfoUrl  && $site.InfoUrl !="")
+						<div class="chefSectionTitle">
+							Site info URL:
+						</div>
+						<div class="chefSectionMessage">
+							$validator.escapeHtml($site.InfoUrl)
+						</div>						
+					#end
+						<div class="chefSectionTitle">
+							Created:
+						</div>
+						<div class="chefSectionMessage">
+							$site.Properties.getPropertyFormatted($site.Properties.NamePropCreationDate) by
+							$site.Properties.getPropertyFormatted($site.Properties.NamePropCreator)
+#if ($site.Properties.getProperty("CHEF:creator")) (User Id: $site.Properties.getProperty("CHEF:creator")) #end
+						</div>
+					#if ($realm.ProviderRealmId)
+						<div class="chefSectionTitle">
+							Realm Provider Id:
+						</div>
+						<div class="chefSectionMessage">
+							$realm.ProviderRealmId
+						</div>
+					#end
+					&nbsp;
+				</td>
+			</tr>
+	#end
+		</table>
+#else
+		<div class="chefListMessage">
+			No sites are defined that meet the search criteria.
+		</div>
+#end
+	</div>
+</div>

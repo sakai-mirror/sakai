@@ -1,0 +1,163 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-roster-sorted.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Viewing sortable class roster 
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="PageviewTitle">
+			Participants in the official roster(s):
+		</div>
+		<table border ="0" cellspacing="0" cellpadding="4" summary ="Collection of roster information. First column indicates the student number, second column the name, third column the uniqname">
+				<tr style="background-color: #EBEBEB;text-align:left;">
+						##<td style="font-weight:normal;border-left:1px solid #BFBFBF;border-bottom:1px solid #BFBFBF">#</td>
+						##<td style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+							##Name
+						##</td>
+						##<td style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+							##Uniqname
+						##</td>
+						##<td style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+							##ID
+						##</td>
+						##<td style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+							##Level
+						##</td>
+						##<td style="font-weight:normal;border-right:1px solid #BFBFBF;border-bottom:1px solid #BFBFBF">
+							##Credits
+						##</td>
+				
+							<th style="font-weight:normal;border-left:1px solid #BFBFBF;border-bottom:1px solid #BFBFBF">#</th>
+							<th id="student_name" style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+								<a href="#toolLink("SiteAction" "doSort_roster")&criterion=student_name" title ="Sort by student name"> 
+									Name
+									#if ($currentSortedBy.equals("student_name")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by student name ascending" alt ="Sort by student name ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by student name descending" alt ="Sort by student name descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+							<th id="uniqname" style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+								<a href="#toolLink("SiteAction" "doSort_roster")&criterion=uniqname" title ="Sort by uniqname"> 
+									Uniqname
+									#if ($currentSortedBy.equals("uniqname")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by uniqname ascending" alt ="Sort by uniqname ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by uniqname descending" alt ="Sort by uniqname descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+							<th id="student_id" style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+								<a href="#toolLink("SiteAction" "doSort_roster")&criterion=student_id" title ="Sort by student id"> 
+									ID
+									#if ($currentSortedBy.equals("student_id")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by student id ascending" alt ="Sort by student id ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by student id descending" alt ="Sort by student id descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+							<th id="level" style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+								<a href="#toolLink("SiteAction" "doSort_roster")&criterion=level" title ="Sort by level"> 
+									Level
+									#if ($currentSortedBy.equals("level")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by level ascending" alt ="Sort by level ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by level descending" alt ="Sort by level descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+							<th id="credits" style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+								<a href="#toolLink("SiteAction" "doSort_roster")&criterion=credits" title ="Sort by credits"> 
+									Credits
+									#if ($currentSortedBy.equals("credits")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by credits ascending" alt ="Sort by creidts ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by creidts descending" alt ="Sort by creidts descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+						</tr>
+
+			#set ($lines=0)			
+			#foreach($student in $studentList)
+				#if ($student.getId() =="")				
+				#else
+					#if ($student.getRole()=="Instructor")
+					#else
+						#set ($lines = $lines + 1)					
+						<tr>
+							<td style="border-left:1px solid #BFBFBF;color:#949494">$lines</td>
+							<td >
+								$student.getName()
+							</td>
+							<td style="text-transform: lowercase">
+								$student.getUniqname()
+							</td>
+							<td>
+								$student.getId()
+							</td>
+							<td>
+								$student.getLevel()
+							</td>
+							<td style="border-right:1px solid #BFBFBF">
+								$student.getCredits()
+							</td>
+						</tr>
+					#end
+				#end
+			#end
+						<tr>
+							<td colspan="6" style="border-top:1px solid #BFBFBF;">
+							&nbsp;
+							</td>
+						</tr>
+
+		</table>
+		#if($participantList && $participantList.size() != 0)
+			<br />
+			<div class="PageviewTitle">
+				Participants in addition to official roster:
+			</div>
+			<br />
+			<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds participants added to site. Headers hold links to sort on.">
+				<tr>
+					<th id="name">
+						Name
+					</th>
+					<th id="uniqname">
+						Uniqname
+					</th>
+					<th id="role">
+						Role
+					</th>
+				</tr>
+				#foreach($participant in $participantList)
+					<tr>
+						<td headers="name">
+							$participant.getName()
+						</td>
+						<td headers="uniqname">
+							$participant.getUniqname()
+						</td>
+						<td headers="role">
+						#foreach($role in $participant.roles)
+							$role.getId()
+						#end
+						</td>
+					</tr>
+				#end
+			</table>
+		#end
+	</div>
+</div>

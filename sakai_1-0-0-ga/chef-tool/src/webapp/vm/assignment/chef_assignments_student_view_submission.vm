@@ -1,0 +1,595 @@
+<!--Assignments - Student New Assignment-->
+<div class="chefPortletContainer">
+	<div class="chefPortletContent">
+		#if ($currentTime.after($assignment.CloseTime) && (!$!submission.getSubmitted()))
+			<div class="chefAlertBox">The close date of the assignment has passed. You can no longer submit an answer.</div>
+		#else
+			#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+			<div class="chefPageviewTitle">
+				#if ($!submission)
+					#if ($submission.getSubmitted())
+						#if ($submission.returned)
+							#if ($submission.TimeReturned.after($submission.TimeSubmitted))
+								Assignment has been returned on $submission.TimeReturned.toStringLocalFull(). Please submit again with your changes.
+							#else
+								Assignment has been resubmitted on $submission.TimeSubmitted.toStringLocalFull().
+								#if ($submission.getTimeSubmitted().after($assignment.DueTime))
+									<span class="chefAlert"> late</span>
+								#end
+							#end
+						#elseif ($submission.getGraded() && ($submission.getGradeReleased() || $submission.Returned))
+							Assignment has been graded/commented.
+						#else
+							Assignment has been submitted on $submission.TimeSubmitted.toStringLocalFull()
+							#if ($submission.getTimeSubmitted().after($assignment.DueTime))
+								<span class="chefAlert"> late</span>
+							#end
+						#end
+					#else
+						Assignment is in progress. Update the submission form then choose the appropriate button below.
+					#end
+				#else
+					Assignment has not been started. Complete the submission form then choose the appropriate button below.	
+				#end
+			</div>
+		#end
+		<form action="#toolForm("AssignmentAction")" method="post">
+			<input type="hidden" name="$name_assignment_id" value="$assignment.Id" />
+			<fieldset>
+				<legend>Assignment</legend>
+				<table class="chefItemDetail" summary="The assignment info">
+					<tr>
+						<td class="chefLabel">
+							Title:
+						</td>
+						<td>
+							$validator.escapeHtml($assignment.getTitle())
+							#set ($deleted = false)
+							#set ($deleted = $assignment.getProperties().getProperty($assignment.getProperties().getNamePropAssignmentDeleted()))
+							#if ($!deleted.equalsIgnoreCase("true"))
+								<span class="chefAlert">(Assignment has been deleted)</span>
+							#end
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							Due:
+						</td>
+						<td>
+							$!assignment.getDueTime().toStringLocalFull()
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							Status:
+						</td>
+						<td>
+							#if ($!submission)
+								#if ($submission.getSubmitted())
+									#if ($submission.returned)
+										#if ($submission.TimeReturned.after($submission.TimeSubmitted))
+											Returned $submission.TimeReturned.toStringLocalFull()
+										#else
+											Re-submitted $submission.TimeSubmitted.toStringLocalFull()
+											#if ($submission.getTimeSubmitted().after($assignment.DueTime))
+												<span class="chefAlert"> late</span>
+											#end
+										#end
+									#elseif ($submission.getGraded() && $submission.getGradeReleased())
+										Graded
+									#else
+										Submitted $submission.timeSubmitted.toStringLocalFull()
+										#if ($submission.getTimeSubmitted().after($assignment.DueTime))
+											<span class="chefAlert">- late</span>
+										#end
+									#end
+								#else
+									In progress
+								#end
+							#else
+								Not started
+							#end
+						</td>
+					</tr>
+					#set ($gradeScale = $assignment.getContent().getTypeOfGradeString($assignment.getContent().getTypeOfGrade()))
+					#if ($submission.getGraded() && $submission.getGradeReleased())
+						<tr>	
+							<td class="chefLabel">
+								Grade:
+							</td>
+							<td>
+								#if ($assignment.getContent().TypeOfGrade != 1)
+									$submission.GradeDisplay
+								#else
+									No grade
+								#end
+								#if ($gradeScale == "Points")
+									(max $assignment.getContent().getMaxGradePointDisplay())
+								#end
+							</td>
+						</tr>
+					#else
+						<tr>	
+							<td class="chefLabel">
+								Grade scale:
+							</td>
+							<td>
+								$gradeScale
+								#if ($gradeScale == "Points")
+									(max $assignment.getContent().getMaxGradePointDisplay())
+								#end
+							</td>
+						</tr>
+					#end
+					#if ($assignment.getOpenTime().before($assignment.getTimeLastModified()))
+						<tr>
+							<td class="chefLabel">
+								<span class="chefAlert">
+									Modified by instructor:
+								</span>
+							</td>
+							<td>
+								<span class="chefAlert">
+									$assignment.getTimeLastModified().toStringLocalFull()
+								</span>
+							</td>
+						</tr>
+					#end
+				</table>
+				<table class="chefItemDetail">
+					<tr>
+						<td class ="chefLabel">
+							Assignment Instructions:
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="chefSectionMessage">
+								#if ($!assignment.getContent().getInstructions().length()>0)
+									<span class="chefPre">$validator.escapeHtmlFormattedText($!assignment.getContent().getInstructions())</span>
+								#else
+									<i>&lt;none&gt;</i>
+								#end
+							</div>
+						</td>
+					</tr>
+				</table>
+				##are there atts? Display fieldset, otherwise skip
+				#set ($size = 0)
+				#set ($props = false)
+				#foreach ($attachment in $assignment.getContent().getAttachments()) 
+					#set ($props = $attachment.Properties) 
+					#if ($!props)
+						#set ($size = $size + 1)
+					#end
+				#end
+				#if ($size > 0)
+					<fieldset class="chefAttachmentsF">
+						<legend class="chefAttachmentsL">	
+							Additional resources for assignment
+						</legend>
+							<ul class="chefAttachmentList">
+								#foreach ($attachment in $assignment.getContent().getAttachments()) 
+									#set ($props = false)
+									#set ($props = $attachment.Properties) 
+									#if ($!props)
+										<li>
+											#if ($props.getBooleanProperty($props.NamePropIsCollection))
+												<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+											#else
+												<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+											#end
+											<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+											#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+												($props.getPropertyFormatted($props.NamePropContentLength))
+											#end
+										</li>
+									#end
+								#end
+							</ul>
+						##end	 
+					</fieldset>
+				#end
+			</fieldset>
+			#if (!$submission.getSubmitted() || $submission.getReturned())
+				## if a draft submission or the submission has been returned and has not yet submitted
+				<fieldset>
+					<legend>
+						Submission
+					</legend>
+					## 1- text only; 2-attachment only; 3-text and attachment
+					#set ( $submissionType = $assignment.getContent().getTypeOfSubmission())
+					#if (($submissionType==1) || ($submissionType==3))
+						#if ($!deleted.equalsIgnoreCase("true"))
+							<div class="chefSectionTitle">
+								Your submission:
+							</div>
+							##if the assignment has been deleted, disable the action button
+							$validator.escapeHtmlFormattedText($!value_submission_text)
+						#else
+							#if (!$submission.Submitted)
+								## for draft submission
+								#if ($currentTime.after($assignment.CloseTime))
+									##disable input for submitted and not returned submission or when later than assignment close date
+									<div class="chefSectionTitle">
+										Your submission:
+									</div>
+									$validator.escapeHtmlFormattedText($!value_submission_text)
+								#else
+									<div class="chefSectionTitle">
+										#if ($submissionType==1)
+											This assignment allows submissions using the text box below only. Type in your submission. Save frequently while working.
+										#elseif ($submissionType==3)
+											This assignment allows submissions using both the text box below and attached documents. Type your comments in the box below 
+											and use the Attachment button to include other documents. Save frequently while working.
+										#end
+									</div>
+									<table border="0"><tr><td>
+									<textarea cols="80" rows="15" wrap="virtual" name="$name_submission_text" id="$name_submission_text" #if(!$allowSubmit)disabled="disabled"#end >#if($!value_submission_text)$validator.escapeHtmlFormattedTextarea($!value_submission_text)#end</textarea>						
+									#chef_setupformattedtextarea($name_submission_text)
+									</td></tr></table>
+									
+								#end
+							#elseif ($submission.getReturned())
+								#if ($submission.TimeReturned.after($submission.TimeSubmitted))
+									## for returned submission and not yet resubmitted, show the instructor comment as well
+									#if (!$submission.FeedbackText.equals($!value_submission_text))
+										<div class="chefSectionTitle">
+											Original submission text and attachment(s) with the instructor's comments inserted:
+										</div>
+										<div class="chefSectionContent">
+											<span class="chefPre">$cheffeedbackhelper.escapeAssignmentFeedback($submission.FeedbackText)</span>
+										</div>
+										<br />
+										Enter below for resubmission:
+									#end
+									<table border="0"><tr><td>
+									<textarea cols="80" rows="15" wrap="virtual" name="$name_submission_text" id="$name_submission_text" #if(!$allowSubmit)disabled="disabled"#end >#if($!value_submission_text)$validator.escapeHtmlFormattedTextarea($!value_submission_text)#end</textarea>
+									#chef_setupformattedtextarea($name_submission_text)
+									</td></tr></table>
+								#else
+									## for resubmitted submission, show the input disabled
+									<div class="chefSectionTitle">
+										Your submission:
+									</div>
+									$validator.escapeHtmlFormattedText($!value_submission_text)
+								#end							
+							#end
+						#end
+					#end
+					#if (($submissionType==2) || ($submissionType==3)) 
+						<div class="chefSectionTitle">
+							#if ($submissionType==2)
+								#if (($submission.getSubmitted() && !$submission.getReturned()) || ($submission.Returned && $submission.TimeReturned.before($submission.TimeSubmitted)) || $currentTime.after($assignment.CloseTime))
+									## for submitted not yet returned submission; or returned by resubmitted submission; or after close date
+									Your attached submission:
+								#else
+									This assignment allows submissions by attaching documents only.
+								#end
+							#end	
+						</div>
+						<fieldset class="chefAttachmentsF">
+							<legend class="chefAttachmentsL">	
+								Attachments
+							</legend>
+							#set ($size = 0)
+							#set ($props = false)
+							#foreach ($attachment in $attachments) 
+								#set ($props = $attachment.Properties) 
+								#if ($!props)
+									#set ($size = $size + 1)
+								#end
+							#end
+							#if ($size == 0)
+								No attachments...
+							#else
+								<ul class="chefAttachmentList">
+									#foreach ($attachment in $attachments) 
+										#set ($props = false)
+										#set ($props = $attachment.Properties) 
+										#if ($!props)
+											<li>
+												#if ($props.getBooleanProperty($props.NamePropIsCollection))
+													<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+												#else
+													<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+												#end
+												<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+												#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+													($props.getPropertyFormatted($props.NamePropContentLength))
+												#end
+											</li>
+										#end
+									#end
+								</ul>
+							#end	 
+							<br />
+							<div class="chefButtonRow">
+								#if ($!deleted.equalsIgnoreCase("true"))
+									##if the assignment has been deleted, disable the action button
+									<input type="submit" name="eventSubmit_doAttachments" value="Attachment" accesskey="a" disabled="disabled" />
+								#else
+									##if the submission has not been submitted or has been returned and not yet resubmitted
+									#if (!$submission.getSubmitted() || ($submission.getReturned() && $submission.TimeReturned.after($submission.TimeSubmitted)))
+										#if ($!assignment.CloseTime)
+											## there is close date. Can only submit before the close date
+											#if ($currentTime.before($assignment.CloseTime))
+												#if ($size == 0)
+													<input type="submit" name="eventSubmit_doAttachments" value="Add attachments" accesskey="a" #if(!$allowSubmit)disabled="disabled"#end />
+												#else
+													<input type="submit" name="eventSubmit_doAttachments" value="Add/drop attachments" accesskey="a" #if(!$allowSubmit)disabled="disabled"#end />
+												#end							
+											#end
+										#else
+											## there is no close date. Still can submit after due date
+											#if ($size == 0)
+												<input type="submit" name="eventSubmit_doAttachments" value="Add attachments" accesskey="a" #if(!$allowSubmit)disabled="disabled"#end />
+											#else
+												<input type="submit" name="eventSubmit_doAttachments" value="Add/drop attachments" accesskey="a" #if(!$allowSubmit)disabled="disabled"#end />
+											#end											
+										#end
+									#end
+								#end
+							</div>
+						</fieldset>
+					#end
+					<br />
+					#if ($submission.getReturned() && $submission.TimeReturned.after($submission.TimeSubmitted))
+						## for returned (not resubmitted ) submission, show the instructor feedback
+						<div class="chefSectionTitle">
+							Additional instructor's comments about your submission:
+						</div>
+						<div class="chefSectionContent">
+							#if (($!submission.FeedbackComment) && ($submission.FeedbackComment.length()>0))
+								<span class="chefPre">$validator.escapeHtmlFormattedText($submission.FeedbackComment)</span>
+							#else
+								&lt;none&gt;
+							#end
+						</div>
+						<table border="0" cellpadding="5" width="100%">
+							<tr>
+								<td valign="top" colspan="2">
+									#set ($size = 0)
+									#set ($props = false)
+									#set ($feedbackAttachments = $submission.FeedbackAttachments)
+									<fieldset class="chefAttachmentsF">
+										<legend class="chefAttachmentsL">	
+											Additional resources for grade
+										</legend>
+										#set ($size = 0)
+										#set ($props = false)
+										#foreach ($attachment in $feedbackAttachments) 
+											#set ($props = $attachment.Properties) 
+											#if ($!props)
+												#set ($size = $size + 1)
+											#end
+										#end
+										#if ($size == 0)
+											No attachments ...
+										#else
+											<ul class="chefAttachmentList">
+												#foreach ($attachment in $feedbackAttachments) 
+													#set ($props = false)
+													#set ($props = $attachment.Properties) 
+													#if ($!props)
+														<li>
+															#if ($props.getBooleanProperty($props.NamePropIsCollection))
+																<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+															#else
+																<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+															#end
+															<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+															#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+																($props.getPropertyFormatted($props.NamePropContentLength))
+															#end
+														</li>
+													#end
+												#end
+											</ul>
+										#end
+									</fieldset>
+								</td>
+							</tr>
+						</table>
+					#end
+					#if ($!assignment.getContent().HonorPledge!=1)
+						<p>
+							<span class="HonorPledge">
+								<label for="$name_submission_honor_pledge_yes">
+									Honor Pledge: I have neither given nor received aid on this assignment.
+								</label>
+								#if (($submission.getSubmitted() && !$submission.getReturned()) || ($submission.Returned && $submission.TimeReturned.before($submission.TimeSubmitted))||($currentTime.after($assignment.CloseTime)))
+									## for submitted submission not yet returned; or returned but resubmitted submission; or after the close time
+									#if ($value_submission_honor_pledge_yes.equals("false"))
+										<input id="$name_submission_honor_pledge_yes" type="checkbox" name="$name_submission_honor_pledge_yes" value="true" disabled="disabled" />
+									#else
+										<input id="$name_submission_honor_pledge_yes" name="$name_submission_honor_pledge_yes" type="checkbox" value="true" disabled="disabled" checked="checked" />
+									#end
+								#else
+									#if ($value_submission_honor_pledge_yes.equals("false"))
+										<input id="$name_submission_honor_pledge_yes" type="checkbox" name="$name_submission_honor_pledge_yes" value="true" />
+									#else
+										<input id="$name_submission_honor_pledge_yes" name="$name_submission_honor_pledge_yes" type="checkbox" value="true" checked="checked" />
+									#end					
+								#end
+								Yes
+								<br />
+								(You must respond to submit your assignment.)
+							</span>
+						</p>
+					#end
+				</fieldset>
+				<div class="chefButtonRow">
+					## student role
+					#if ($!deleted.equalsIgnoreCase("true"))
+						##if the assignment has been deleted, disable the action button
+						<input name="eventSubmit_doCancel_show_submission" type="submit" value="Done" />
+					#else
+						#if ($currentTime.after($assignment.CloseTime) || !$allowSubmit)
+							<input name="eventSubmit_doCancel_show_submission" type="submit" value="Done" />
+						#else
+							#if (!$submission.getSubmitted() || ($submission.getReturned()&&$submission.TimeReturned.after($submission.TimeSubmitted)))
+							   	<input name="eventSubmit_doPost_submission" type="submit" value="Submit" />
+								<input name="eventSubmit_doPreview_submission" type="submit" value="Preview" />
+								<input name="eventSubmit_doSave_submission" type="submit" value="Save Draft" />
+								<input name="eventSubmit_doCancel_show_submission" type="submit" value="Cancel" />
+							#else
+								<input name="eventSubmit_doCancel_show_submission" type="submit" value="Done" />
+							#end
+						#end
+					#end
+				</div>
+			#else
+				<fieldset>
+					<legend>Submission</legend>
+					<table class="chefItemDetail">
+						<tr>
+							<td colspan="5">
+								<table border="0" width="100%">
+									#if ($submission.getGradeReleased() && $!submission.FeedbackText && ($submission.FeedbackText.length()>0))
+										#set ($text = $submission.FeedbackText)
+										#if ($!text)
+											<tr valign="top">
+												<td colspan="5" valign="bottom">
+													<div class="chefSectionTitle">
+														Original submission text and attachment(s) with the instructor's comments inserted if applicable:
+													</div>
+													<div class="chefSectionContent">
+														<span class="chefPre">$cheffeedbackhelper.escapeAssignmentFeedback($text)</span>
+													</div>
+												</td>
+											</tr>
+										#end
+									#elseif ($!submission.submittedText && ($submission.SubmittedText.length()>0))
+										#set ($text = $submission.SubmittedText)
+										#if ($!text)
+											<tr valign="top">
+												<td colspan="5" valign="bottom">
+													<div class="chefSectionTitle">
+														Your submission	
+													</div>
+													<div class="chefSectionContent">
+														<span class="chefPre">$cheffeedbackhelper.escapeAssignmentFeedback($text)</span>
+													</div>
+												</td>
+											 </tr>
+										 #end
+									#end
+									<tr valign="top">
+										<td colspan="5" valign="bottom" nowrap>
+											#set ($submittedAttachments = $submission.SubmittedAttachments)
+											<fieldset class="chefAttachmentsF">
+												<legend class="chefAttachmentsL">	
+													Student attachments
+												</legend> 
+												#set ($size = 0)
+												#set ($props = false)
+												#foreach ($attachment in $submittedAttachments) 
+													#set ($props = $attachment.Properties) 
+													#if ($!props)
+														#set ($size = $size + 1)
+													#end
+												#end
+												#if ($size == 0)
+													No attachments ...
+												#else
+													<ul class="chefAttachmentList">
+														#foreach ($attachment in $submittedAttachments) 
+															#set ($props = false)
+															#set ($props = $attachment.Properties) 
+															#if ($!props)
+																<li>
+																	#if ($props.getBooleanProperty($props.NamePropIsCollection))
+																		<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+																	#else
+																		<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+																	#end
+																	<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+																	#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+																		($props.getPropertyFormatted($props.NamePropContentLength))
+																	#end
+																</li>
+															#end
+														#end
+													</ul>
+												#end	
+											</fieldset>
+										</td>
+									</tr>
+									#if ($submission.getGraded() && $submission.getGradeReleased())
+										<tr valign="top">
+											<td colspan="5" valign="bottom">
+												<div class="chefSectionTitle">
+													Additional instructor's comments about your submission:
+												</div>
+												<div class="chefSectionContent">
+													#if ($submission.getGradeReleased() &&($!submission.FeedbackComment) && ($submission.FeedbackComment.length()>0))
+														<span class="chefPre">$validator.escapeHtmlFormattedText($submission.FeedbackComment)</span>
+													#else
+														&lt;none&gt;
+													#end
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="5">
+												<table border="0" cellpadding="5" width="100%">
+													<tr>
+														<td valign="top" colspan="2">
+															#set ($size = 0)
+															#set ($props = false)
+															#set ($feedbackAttachments = $submission.FeedbackAttachments)
+															<fieldset class="chefAttachmentsF">
+																<legend class="chefAttachmentsL">	
+																	Additional resources for grade
+																</legend>
+																#set ($size = 0)
+																#set ($props = false)
+																#foreach ($attachment in $feedbackAttachments) 
+																	#set ($props = $attachment.Properties) 
+																	#if ($!props)
+																		#set ($size = $size + 1)
+																	#end
+																#end
+																#if ($size == 0)
+																	No attachments ...
+																#else
+																	<ul class="chefAttachmentList">
+																		#foreach ($attachment in $feedbackAttachments) 
+																			#set ($props = false)
+																			#set ($props = $attachment.Properties) 
+																			#if ($!props)
+																				<li>
+																					#if ($props.getBooleanProperty($props.NamePropIsCollection))
+																						<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+																					#else
+																						<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+																					#end
+																					<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+																					#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+																						($props.getPropertyFormatted($props.NamePropContentLength))
+																					#end
+																				</li>
+																			#end
+																		#end
+																	</ul>
+																#end
+															</fieldset>
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									#end
+								</table>
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				<div class="chefButtonRow">
+					<input name="eventSubmit_doCancel_show_submission" type="submit" value="Done" />
+				</div>
+			#end
+		</form>
+	</div>
+</div>

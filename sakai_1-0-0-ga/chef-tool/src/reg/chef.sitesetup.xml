@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.sitesetup"
+			url="/sakai-chef-tool/chef-site-setup"
+			title="Worksite Setup"
+			description="Modify your sites and create new ones.">
+
+	</tool>
+
+</registration>

@@ -1,0 +1,144 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-siteInfo-editInfoConfirm.vm,v 1.4 2004/09/10 19:46:35 zqian.umich.edu Exp $ -->
+## Edit Site Information Confirmation page
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Confirming edits to $validator.escapeHtml($!title)
+	</div>
+	<div class="chefPortletContent">
+		<div class="chefPageviewTitle">
+			Click Finish below to update your site with the following information. Fields that you have changed are shown in blue.
+		</div>
+		<fieldset>
+			<legend>
+				#if ($!isCourseSite) Class #elseif ($!isProjectSite)  Project #end information
+			</legend>
+			<form name = "classInformationForm" method = "post" action="#toolForm("SiteAction")">
+				<div class="chefSectionMessage">
+					<table class="chefEditItem">
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Site title:
+							</td>
+							<td align="left">
+								#if (!$!title.equals($!oTitle))
+									<span style="color:#6699ff">$validator.escapeHtml($!title)</span>
+								#else
+									$validator.escapeHtml($!title)
+								#end
+							</td>					
+						</tr>
+						#if ($!isProjectSite)
+							<tr>
+								<td class="chefLabel" nowrap="nowrap">
+									Available to public:
+								</td>
+								<td>
+									#if ($include != $!oInclude)
+										<span style="color:#6699ff">
+									#end
+									This site will
+									#if (!$!include)
+										not
+									#end 
+									be listed in the publicly viewable list of all sites on the Gateway page
+									#if ($include != $!oInclude)
+										</span>
+									#end
+								</td>
+							</tr>
+						#end
+						#if ($!isCourseSite)
+							<tr>
+								<td class="chefLabel" nowrap="nowrap">
+									Term:
+								</td>
+								<td align="left">
+									#if (!$!siteTerm.equals($!oSiteTerm))
+										<span style="color:#6699ff">$siteTerm</span>
+									#else
+										$siteTerm
+									#end
+								</td>					
+							</tr>
+						#end
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Description:
+							</td>
+							<td align="left">
+								#if (!$!description.equals($!oDescription))
+									<span style="color:#6699ff">$validator.escapeHtml($!description)</span>
+								#else
+									$validator.escapeHtml($!description)
+								#end
+							</td>					
+						</tr>
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Short description:
+							</td>
+							<td>
+								#if (!$!short_description.equals($!oShort_description))
+									<span style="color:#6699ff">$validator.escapeHtml($!short_description)</span>
+								#else
+									$validator.escapeHtml($!short_description)
+								#end
+							</td>
+						</tr>
+						#if ($!isCourseSite)
+							<tr>
+								<td class="chefLabel" nowrap="nowrap">
+									Appearance:
+								</td>
+								<td>
+									#foreach ($s in $skins)
+										#if ($s.css == $skin)
+											#if (!$!skin.equals($!oSkin))
+												<span style="color:#6699ff">$s.Unit</span>
+											#else
+												$s.Unit
+											#end
+										#end
+									#end
+								</td>
+							</tr>
+						#end
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Site contact name:
+							</td>
+							<td align="left">
+								#if (!$!name.equals($!oName))
+									<span style="color:#6699ff">$!name</span>
+								#else
+									$!name
+								#end
+							</td>					
+						</tr>
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Site contact email:
+							</td>
+							<td align="left">
+								#if (!$!email.equals($!oEmail))
+									<span style="color:#6699ff">$!email</span>
+								#else
+									$!email
+								#end
+							</td>					
+						</tr>
+					</table>
+				</div>	
+				<br />
+			</fieldset>	
+				<input type="hidden" name="back" value="43" />
+				<input type="hidden" name="template-index" value="44" />
+				<input type="hidden" name="continue" value="42" />
+				<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doSave_siteInfo" value="Finish"/>
+				<input type="submit" name="eventSubmit_doBack" value="Back"/>
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel"/>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/j2ee/dtds/web-app_2.3.dtd">
+
+<web-app>
+
+	<display-name>
+		sakai-dav
+	</display-name>
+
+    <servlet>
+        <servlet-name>
+           dav
+        </servlet-name>
+        <servlet-class>
+            org.sakaiproject.dav.DavServlet
+        </servlet-class>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>1000</param-value>
+		</init-param>
+		<init-param>
+			<param-name>listings</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<!-- Uncomment this to enable read and write access -->
+		<init-param>
+			<param-name>readonly</param-name>
+			<param-value>false</param-value>
+		</init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+       <servlet-name>
+          dav
+       </servlet-name>
+       <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+      <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>The Sakai DAV Access Point</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>PROPFIND</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>POST</http-method>
+			<http-method>PUT</http-method>
+			<http-method>LOCK</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>tomcat</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name></realm-name>
+	</login-config>
+
+	<security-role>
+		<description>
+			An example role defined in "conf/tomcat-users.xml"
+		</description>
+		<role-name>tomcat</role-name>
+	</security-role>
+
+</web-app>

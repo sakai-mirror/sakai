@@ -1,0 +1,33 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-publishUnpublish-sendEmail.vm,v 1.1 2004/10/15 01:10:47 zqian.umich.edu Exp $ -->
+## If publishing a site, this is the page to find out whether participants should be notified or not about the site's availability.
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Revising publish status for $validator.escapeHtml($title)
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form name="publishSendEmailForm" action="#toolForm("SiteAction")" method="post">
+			<div class ="chefPageviewTitle">
+				When the site is published, an email can be automatically sent to all participants announcing the availablity of the site.
+			</div>
+			<input type="radio" name="notify" id="notify" value="true" #if($willNotify)checked="checked"#end />
+			<label for = "send">
+				Send an email to all participants announcing the site's availability
+			</label>
+			<br />
+			<input type="radio" name="notify" id="notify" value="false" #if(!$willNotify)checked="checked"#end />
+			<label for = "project">
+				Do not send an email announcing the site's availability
+			</label>
+			<br />
+			<input type="hidden" name="back" value="34" />		
+			<input type="hidden" name="template-index" value="46" />
+			<input type="hidden" name="continue" value="47" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>				
+	</div>
+</div>	

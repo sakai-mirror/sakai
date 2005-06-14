@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="news.new" />
+	<function name="news.read" />
+	<function name="news.revise.any" />
+	<function name="news.revise.own" />
+	<function name="news.delete.any" />
+	<function name="news.delete.own" />
+
+	<tool
+			id="chef.news"
+			url="/sakai-chef-tool/chef-news"
+			title="News"
+			description="For viewing content from online sources.">
+
+		<configuration name="channel-url" value="http://www.umich.edu/news/news.xml" />
+
+	</tool>
+
+</registration>

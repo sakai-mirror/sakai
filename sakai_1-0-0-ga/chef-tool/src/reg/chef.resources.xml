@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="content.read" />
+	<function name="content.new" />
+	<function name="content.revise" />
+	<function name="content.delete" />
+
+	<tool
+			id="chef.resources"
+			url="/sakai-chef-tool/chef-content"
+			title="Resources"
+			description="For posting documents, URLs to other websites, etc.">
+
+		<configuration name="resources_mode" value="resources" />
+		<configuration name="home" value="" />
+
+	</tool>
+
+</registration>

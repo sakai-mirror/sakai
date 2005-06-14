@@ -1,0 +1,36 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-siteInfo-editAccess-globalAccess-confirm.vm,v 1.2 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Confirming global access for site
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+ 		Confirming Global Access for $validator.escapeHtml($title)
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			You have selected to make your site
+			#if ($!form_joinable)
+				joinable with the role $!form_joinerRole
+			#else
+				unjoinable
+			#end
+			. Click Finish below to confirm the change.
+			<br /><br />
+			#if ($!form_joinable)
+				Making a site joinable means anyone can add themselves as a participant to your site and will have the role you specified.
+			#else
+				Making a site unjoinable means that no one other than those you specifically add can become a participant of your site.
+			#end
+		</div>
+		<br />
+		<form action="#toolForm("SiteAction")" method="post">
+			<input type="hidden" name="back" value="54" />
+			<input type="hidden" name="cancel" value="49">
+			<input type="hidden" name="template-index" value="55" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doSiteinfo_save_globalAccess" value="Finish" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

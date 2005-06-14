@@ -1,0 +1,37 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/web/chef_iframe-customize.vm,v 1.1 2004/03/17 04:13:40 ggolden Exp $
+
+<script type="text/javascript">
+	focus_path = [ "source" ];
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Customizing frame...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+		<form action="#toolForm($action)" method="post">
+			<fieldset>
+				<legend>Frame settings</legend>
+				<table class="editItemDetail">
+					<tr><td class="chefLabel">Height:</td><td><input type="text" name="height" value="$!height" /></td></tr>
+					<tr><td class="chefLabel">Title:</td><td><input type="text" name="title" value="$!title" /></td></tr>
+					<tr><td colspan="2">
+					#if ($special == "site")
+						<input type="radio" value="site" name="special" #if ($special == "site") checked="checked" #end id"useoverall" /><label for ="useoverall"> Display server information</label><br />
+					#end
+					#if ($special == "workspace")
+						<input type="radio" value="workspace" name="special" #if ($special == "workspace") checked="checked" #end id="useworkspace" /><label for="useworkspace"> Display MyWorkspace information</label><br />
+					#end
+						<input type="radio" value="worksite" name="special" #if ($special == "worksite") checked="checked" #end id="useworksite" /><label for="useworksite"> Display this worksite's description (from setup)</label><br />
+						<input type="radio" value="" name="special" #if ($special == "") checked="checked" #end id="usesrcurl"/><label for="usesrcurl"> Display this URL</label><br />
+					</td></tr>
+					<tr><td class="chefLabel">URL:</td><td><input type="text" name="source" id="source" value="$!source" /></td></tr>
+				</table>
+			</fieldset>
+			<div class="chefButtonRow">
+				<input type="submit" name="$doUpdate" value="Save" />
+				<input type="submit" name="$doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

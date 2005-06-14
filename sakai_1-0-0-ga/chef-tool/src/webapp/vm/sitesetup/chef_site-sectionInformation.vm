@@ -1,0 +1,453 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-sectionInformation.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+##Revising section information
+<div class ="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Revising section information...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Section $form_section
+				</legend>
+				<table class ="chefEditItem">
+					<tr>
+						<td class = "chefLabel">
+							Instructor's uniqname:
+						</td>
+						<td>
+							<input type = "text" value ="$form_uniquname" />	
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Crosslistings:
+						</td>
+						<td>
+							## need a better way to input this. We can get official xlisting info from UMIAC
+							## but this does not account for non-official xlists, meet togethers
+							## another option below: all subjects, all sections
+							## another place where an external data source is good - as these values change from semester to semester
+			
+							<select onchange="blur()">
+
+#*
+							Zhen points out that this could have been done with 
+
+ 							#foreach ($i in [1..10])
+							    <option value="$i">$i</option>
+							#end
+ 							
+ 							at least for the parts that are sequential
+ 							but - again - this is a good place to rely on external data
+ *#
+							<select name="Section" onchange="blur()">
+
+							</select>
+						</td>
+					</tr>	
+					<tr>
+						<td colspan ="2">
+							<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds ..... Column 1 may hold .... Column 1 holds ..., column 2  holds .... Column 3 holds .... Headers hold links to sort ....">
+								<tr>
+									<th id="weekday">
+										Weekday
+									</th>
+									<th id="time">
+										Time
+									</th>									
+									<th id="duration">
+										Duration
+									</th>
+									<th id="location">
+										Location
+									</th>									
+								</tr>
+								<tr>
+									<td headers="weekday">
+										<input type ="checkbox" name ="selectMonday" id = "selectMonday" />
+										<label for ="selectMonday">Monday</label>
+									</td>
+									<td headers="time">
+										<select name ="timeMonday" onchange="blur()">
+											<option value ="8:00 AM">8:00 AM</option>
+											<option value ="9:00 AM">9:00 AM</option>
+											<option value ="10:00 AM">10:00 AM</option>
+											<option value ="11:00 AM">11:00 AM</option>
+											<option value ="12:00 AM">12:00 AM</option>
+											<option value ="1:00 PM">1:00 PM</option>
+											<option value ="2:00 PM">2:00 PM</option>
+											<option value ="3:00 PM">3:00 PM</option>
+											<option value ="4:00 PM">4:00 PM</option>
+											<option value ="5:00 PM">5:00 PM</option>
+											<option value ="6:00 PM">6:00 PM</option>
+											<option value ="7:00 PM">7:00 PM</option>
+											<option value ="8:00 PM">8:00 PM</option>
+											<option value ="9:00 PM">9:00 PM</option>
+											<option value ="10:00 PM">10:00 PM</option>
+											<option value ="11:00 PM">11:00 PM</option>
+											<option value ="12:00 PM">12:00 PM</option>
+											<option value ="1:00 AM">1:00 AM</option>
+											<option value ="2:00 AM">2:00 AM</option>
+											<option value ="3:00 AM">3:00 AM</option>
+											<option value ="4:00 AM">4:00 AM</option>
+											<option value ="5:00 AM">5:00 AM</option>
+											<option value ="6:00 AM">6:00 AM</option>
+											<option value ="7:00 AM">7:00 AM</option>
+										</select>
+									</td>
+									<td headers ="duration"
+										<select name ="durationMonday" onchange="blur()">
+											<option value="1">1 hour</option>
+											<option value="2">2 hours</option>
+											<option value="3">3 hours</option>
+											<option value="4">4 hours</option>
+											<option value="5">5 hours</option>
+											<option value="6">6 hours</option>
+											<option value="7">7 hours</option>
+											<option value="8">8 hours</option>
+											<option value="9">9 hours</option>
+											<option value="10">10 hours</option>
+											<option value="11">11 hours</option>
+											<option value="12">12 hours</option>
+										</select>
+									</td>	
+									<td headers ="location"
+										<input type ="text" name = "locationMonday" value ="$locationMonday" />
+									</td>	
+								</tr>
+								<tr>
+									<td headers="weekday">
+										<input type ="checkbox" name ="selectTuesday" id = "selectTuesday" />
+										<label for ="selectTuesday">Tuesday</label>
+									</td>
+									<td headers="time">
+										<select name ="timeTuesday" onchange="blur()">
+											<option value ="8:00 AM">8:00 AM</option>
+											<option value ="9:00 AM">9:00 AM</option>
+											<option value ="10:00 AM">10:00 AM</option>
+											<option value ="11:00 AM">11:00 AM</option>
+											<option value ="12:00 AM">12:00 AM</option>
+											<option value ="1:00 PM">1:00 PM</option>
+											<option value ="2:00 PM">2:00 PM</option>
+											<option value ="3:00 PM">3:00 PM</option>
+											<option value ="4:00 PM">4:00 PM</option>
+											<option value ="5:00 PM">5:00 PM</option>
+											<option value ="6:00 PM">6:00 PM</option>
+											<option value ="7:00 PM">7:00 PM</option>
+											<option value ="8:00 PM">8:00 PM</option>
+											<option value ="9:00 PM">9:00 PM</option>
+											<option value ="10:00 PM">10:00 PM</option>
+											<option value ="11:00 PM">11:00 PM</option>
+											<option value ="12:00 PM">12:00 PM</option>
+											<option value ="1:00 AM">1:00 AM</option>
+											<option value ="2:00 AM">2:00 AM</option>
+											<option value ="3:00 AM">3:00 AM</option>
+											<option value ="4:00 AM">4:00 AM</option>
+											<option value ="5:00 AM">5:00 AM</option>
+											<option value ="6:00 AM">6:00 AM</option>
+											<option value ="7:00 AM">7:00 AM</option>
+										</select>
+									</td>
+									<td headers ="duration"
+										<select name ="durationTuesday" onchange="blur()">
+											<option value="1">1 hour</option>
+											<option value="2">2 hours</option>
+											<option value="3">3 hours</option>
+											<option value="4">4 hours</option>
+											<option value="5">5 hours</option>
+											<option value="6">6 hours</option>
+											<option value="7">7 hours</option>
+											<option value="8">8 hours</option>
+											<option value="9">9 hours</option>
+											<option value="10">10 hours</option>
+											<option value="11">11 hours</option>
+											<option value="12">12 hours</option>
+										</select>
+									</td>	
+									<td headers ="location"
+										<input type ="text" name = "locationTuesday" value ="$locationTuesday" />
+									</td>	
+								</tr>
+								<tr>
+									<td headers="weekday">
+										<input type ="checkbox" name ="selectWednesday" id = "selectWednesday" />
+										<label for ="selectWednesday">Wednesday</label>
+									</td>
+									<td headers="time">
+										<select name ="timeWednesday" onchange="blur()">
+											<option value ="8:00 AM">8:00 AM</option>
+											<option value ="9:00 AM">9:00 AM</option>
+											<option value ="10:00 AM">10:00 AM</option>
+											<option value ="11:00 AM">11:00 AM</option>
+											<option value ="12:00 AM">12:00 AM</option>
+											<option value ="1:00 PM">1:00 PM</option>
+											<option value ="2:00 PM">2:00 PM</option>
+											<option value ="3:00 PM">3:00 PM</option>
+											<option value ="4:00 PM">4:00 PM</option>
+											<option value ="5:00 PM">5:00 PM</option>
+											<option value ="6:00 PM">6:00 PM</option>
+											<option value ="7:00 PM">7:00 PM</option>
+											<option value ="8:00 PM">8:00 PM</option>
+											<option value ="9:00 PM">9:00 PM</option>
+											<option value ="10:00 PM">10:00 PM</option>
+											<option value ="11:00 PM">11:00 PM</option>
+											<option value ="12:00 PM">12:00 PM</option>
+											<option value ="1:00 AM">1:00 AM</option>
+											<option value ="2:00 AM">2:00 AM</option>
+											<option value ="3:00 AM">3:00 AM</option>
+											<option value ="4:00 AM">4:00 AM</option>
+											<option value ="5:00 AM">5:00 AM</option>
+											<option value ="6:00 AM">6:00 AM</option>
+											<option value ="7:00 AM">7:00 AM</option>
+										</select>
+									</td>
+									<td headers ="duration"
+										<select name ="durationWednesday" onchange="blur()">
+											<option value="1">1 hour</option>
+											<option value="2">2 hours</option>
+											<option value="3">3 hours</option>
+											<option value="4">4 hours</option>
+											<option value="5">5 hours</option>
+											<option value="6">6 hours</option>
+											<option value="7">7 hours</option>
+											<option value="8">8 hours</option>
+											<option value="9">9 hours</option>
+											<option value="10">10 hours</option>
+											<option value="11">11 hours</option>
+											<option value="12">12 hours</option>
+										</select>
+									</td>	
+									<td headers ="location"
+										<input type ="text" name = "locationWednesday" value ="$locationWednesday" />
+									</td>	
+								</tr>
+								<tr>
+									<td headers="weekday">
+										<input type ="checkbox" name ="selectThursday" id = "selectThursday" />
+										<label for ="selectThursday">Thursday</label>
+									</td>
+									<td headers="time">
+										<select name ="timeThursday" onchange="blur()">
+											<option value ="8:00 AM">8:00 AM</option>
+											<option value ="9:00 AM">9:00 AM</option>
+											<option value ="10:00 AM">10:00 AM</option>
+											<option value ="11:00 AM">11:00 AM</option>
+											<option value ="12:00 AM">12:00 AM</option>
+											<option value ="1:00 PM">1:00 PM</option>
+											<option value ="2:00 PM">2:00 PM</option>
+											<option value ="3:00 PM">3:00 PM</option>
+											<option value ="4:00 PM">4:00 PM</option>
+											<option value ="5:00 PM">5:00 PM</option>
+											<option value ="6:00 PM">6:00 PM</option>
+											<option value ="7:00 PM">7:00 PM</option>
+											<option value ="8:00 PM">8:00 PM</option>
+											<option value ="9:00 PM">9:00 PM</option>
+											<option value ="10:00 PM">10:00 PM</option>
+											<option value ="11:00 PM">11:00 PM</option>
+											<option value ="12:00 PM">12:00 PM</option>
+											<option value ="1:00 AM">1:00 AM</option>
+											<option value ="2:00 AM">2:00 AM</option>
+											<option value ="3:00 AM">3:00 AM</option>
+											<option value ="4:00 AM">4:00 AM</option>
+											<option value ="5:00 AM">5:00 AM</option>
+											<option value ="6:00 AM">6:00 AM</option>
+											<option value ="7:00 AM">7:00 AM</option>
+										</select>
+									</td>
+									<td headers ="duration"
+										<select name ="durationThursday" onchange="blur()">
+											<option value="1">1 hour</option>
+											<option value="2">2 hours</option>
+											<option value="3">3 hours</option>
+											<option value="4">4 hours</option>
+											<option value="5">5 hours</option>
+											<option value="6">6 hours</option>
+											<option value="7">7 hours</option>
+											<option value="8">8 hours</option>
+											<option value="9">9 hours</option>
+											<option value="10">10 hours</option>
+											<option value="11">11 hours</option>
+											<option value="12">12 hours</option>
+										</select>
+									</td>	
+									<td headers ="location"
+										<input type ="text" name = "locationThursday" value ="$locationThursday" />
+									</td>	
+								</tr>
+								<tr>
+									<td headers="weekday">
+										<input type ="checkbox" name ="selectFriday" id = "selectFriday" />
+										<label for ="selectFriday">Friday</label>
+									</td>
+									<td headers="time">
+										<select name ="timeFriday" onchange="blur()">
+											<option value ="8:00 AM">8:00 AM</option>
+											<option value ="9:00 AM">9:00 AM</option>
+											<option value ="10:00 AM">10:00 AM</option>
+											<option value ="11:00 AM">11:00 AM</option>
+											<option value ="12:00 AM">12:00 AM</option>
+											<option value ="1:00 PM">1:00 PM</option>
+											<option value ="2:00 PM">2:00 PM</option>
+											<option value ="3:00 PM">3:00 PM</option>
+											<option value ="4:00 PM">4:00 PM</option>
+											<option value ="5:00 PM">5:00 PM</option>
+											<option value ="6:00 PM">6:00 PM</option>
+											<option value ="7:00 PM">7:00 PM</option>
+											<option value ="8:00 PM">8:00 PM</option>
+											<option value ="9:00 PM">9:00 PM</option>
+											<option value ="10:00 PM">10:00 PM</option>
+											<option value ="11:00 PM">11:00 PM</option>
+											<option value ="12:00 PM">12:00 PM</option>
+											<option value ="1:00 AM">1:00 AM</option>
+											<option value ="2:00 AM">2:00 AM</option>
+											<option value ="3:00 AM">3:00 AM</option>
+											<option value ="4:00 AM">4:00 AM</option>
+											<option value ="5:00 AM">5:00 AM</option>
+											<option value ="6:00 AM">6:00 AM</option>
+											<option value ="7:00 AM">7:00 AM</option>
+										</select>
+									</td>
+									<td headers ="duration"
+										<select name ="durationFriday" onchange="blur()">
+											<option value="1">1 hour</option>
+											<option value="2">2 hours</option>
+											<option value="3">3 hours</option>
+											<option value="4">4 hours</option>
+											<option value="5">5 hours</option>
+											<option value="6">6 hours</option>
+											<option value="7">7 hours</option>
+											<option value="8">8 hours</option>
+											<option value="9">9 hours</option>
+											<option value="10">10 hours</option>
+											<option value="11">11 hours</option>
+											<option value="12">12 hours</option>
+										</select>
+									</td>	
+									<td headers ="location"
+										<input type ="text" name = "locationFriday" value ="$locationFriday" />
+									</td>	
+								</tr>
+								<tr>
+									<td headers="weekday">
+										<input type ="checkbox" name ="selectSaturday" id = "selectSaturday" />
+										<label for ="selectSaturday">Saturday</label>
+									</td>
+									<td headers="time">
+										<select name ="timeSaturday" onchange="blur()">
+											<option value ="8:00 AM">8:00 AM</option>
+											<option value ="9:00 AM">9:00 AM</option>
+											<option value ="10:00 AM">10:00 AM</option>
+											<option value ="11:00 AM">11:00 AM</option>
+											<option value ="12:00 AM">12:00 AM</option>
+											<option value ="1:00 PM">1:00 PM</option>
+											<option value ="2:00 PM">2:00 PM</option>
+											<option value ="3:00 PM">3:00 PM</option>
+											<option value ="4:00 PM">4:00 PM</option>
+											<option value ="5:00 PM">5:00 PM</option>
+											<option value ="6:00 PM">6:00 PM</option>
+											<option value ="7:00 PM">7:00 PM</option>
+											<option value ="8:00 PM">8:00 PM</option>
+											<option value ="9:00 PM">9:00 PM</option>
+											<option value ="10:00 PM">10:00 PM</option>
+											<option value ="11:00 PM">11:00 PM</option>
+											<option value ="12:00 PM">12:00 PM</option>
+											<option value ="1:00 AM">1:00 AM</option>
+											<option value ="2:00 AM">2:00 AM</option>
+											<option value ="3:00 AM">3:00 AM</option>
+											<option value ="4:00 AM">4:00 AM</option>
+											<option value ="5:00 AM">5:00 AM</option>
+											<option value ="6:00 AM">6:00 AM</option>
+											<option value ="7:00 AM">7:00 AM</option>
+										</select>
+									</td>
+									<td headers ="duration"
+										<select name ="durationSaturday" onchange="blur()">
+											<option value="1">1 hour</option>
+											<option value="2">2 hours</option>
+											<option value="3">3 hours</option>
+											<option value="4">4 hours</option>
+											<option value="5">5 hours</option>
+											<option value="6">6 hours</option>
+											<option value="7">7 hours</option>
+											<option value="8">8 hours</option>
+											<option value="9">9 hours</option>
+											<option value="10">10 hours</option>
+											<option value="11">11 hours</option>
+											<option value="12">12 hours</option>
+										</select>
+									</td>	
+									<td headers ="location"
+										<input type ="text" name = "locationSaturday" value ="$locationSaturday" />
+									</td>	
+								</tr>
+								<tr>
+									<td headers="weekday">
+										<input type ="checkbox" name ="selectSunday" id = "selectSunday" />
+										<label for ="selectSunday">Sunday</label>
+									</td>
+									<td headers="time">
+										<select name ="timeSunday" onchange="blur()">
+											<option value ="8:00 AM">8:00 AM</option>
+											<option value ="9:00 AM">9:00 AM</option>
+											<option value ="10:00 AM">10:00 AM</option>
+											<option value ="11:00 AM">11:00 AM</option>
+											<option value ="12:00 AM">12:00 AM</option>
+											<option value ="1:00 PM">1:00 PM</option>
+											<option value ="2:00 PM">2:00 PM</option>
+											<option value ="3:00 PM">3:00 PM</option>
+											<option value ="4:00 PM">4:00 PM</option>
+											<option value ="5:00 PM">5:00 PM</option>
+											<option value ="6:00 PM">6:00 PM</option>
+											<option value ="7:00 PM">7:00 PM</option>
+											<option value ="8:00 PM">8:00 PM</option>
+											<option value ="9:00 PM">9:00 PM</option>
+											<option value ="10:00 PM">10:00 PM</option>
+											<option value ="11:00 PM">11:00 PM</option>
+											<option value ="12:00 PM">12:00 PM</option>
+											<option value ="1:00 AM">1:00 AM</option>
+											<option value ="2:00 AM">2:00 AM</option>
+											<option value ="3:00 AM">3:00 AM</option>
+											<option value ="4:00 AM">4:00 AM</option>
+											<option value ="5:00 AM">5:00 AM</option>
+											<option value ="6:00 AM">6:00 AM</option>
+											<option value ="7:00 AM">7:00 AM</option>
+										</select>
+									</td>
+									<td headers ="duration"
+										<select name ="durationSunday" onchange="blur()">
+											<option value="1">1 hour</option>
+											<option value="2">2 hours</option>
+											<option value="3">3 hours</option>
+											<option value="4">4 hours</option>
+											<option value="5">5 hours</option>
+											<option value="6">6 hours</option>
+											<option value="7">7 hours</option>
+											<option value="8">8 hours</option>
+											<option value="9">9 hours</option>
+											<option value="10">10 hours</option>
+											<option value="11">11 hours</option>
+											<option value="12">12 hours</option>
+										</select>
+									</td>	
+									<td headers ="location"
+										<input type ="text" name = "locationSunday" value ="$locationSunday" />
+									</td>	
+								</tr>
+							</table>
+						</td>
+					</tr>	
+				</table>		
+			</fieldset>	
+		</form>
+			<input type="hidden" name="back" value="17" />
+			<input type="hidden" name="template-index" value="19"/>
+			<input type="hidden" name="continue" value="0" />
+		<div class ="chefButtonRow">
+			<input type="submit" name="eventSubmit_doSave_section_information" value="Make these changes" />
+			<input type="submit" name="eventSubmit_doBack_to_customize" value="Cancel" />
+		</div>
+	</div>
+</div>

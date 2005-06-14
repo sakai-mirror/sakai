@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="jar:install">
+
+	<goal name="full">
+		<attainGoal name="jar:install" />
+	</goal>
+
+	<goal name="reg" />
+
+</project>

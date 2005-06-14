@@ -1,0 +1,298 @@
+/**********************************************************************************
+*
+* $Header: /cvs/sakai/util/src/java/org/sakaiproject/util/Xml.java.save,v 1.8 2004/09/03 02:34:10 janderse.umich.edu Exp $
+*
+***********************************************************************************
+*
+* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+* 
+* Licensed under the Educational Community License Version 1.0 (the "License");
+* By obtaining, using and/or copying this Original Work, you agree that you have read,
+* understand, and will comply with the terms and conditions of the Educational Community License.
+* You may obtain a copy of the License at:
+* 
+*      http://cvs.sakaiproject.org/licenses/license_1_0.html
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*
+**********************************************************************************/
+
+// package
+package org.sakaiproject.util;
+
+// imports
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.xerces.impl.dv.util.Base64;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.sakaiproject.service.framework.log.cover.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+
+/**
+* <p>Xml is a DOM XML helper object with static functions to help with XML.</p>
+* 
+* @author University of Michigan, CHEF Software Development Team
+* @version $Revision: 1.8 $
+*/
+public class Xml
+{
+	/**
+	* Create a new DOM Document.
+	* @return A new DOM document.
+	*/
+	public static Document createDocument()
+	{
+		try
+		{
+			DocumentBuilder builder = getDocumentBuilder();
+			Document doc = builder.newDocument();
+
+			return doc;
+		}
+		catch (Exception any)
+		{
+			Logger.warn("Xml.createDocument: " + any.toString());
+			return null;
+		}
+
+	}	// createDocument
+
+	/**
+	* Read a DOM Document from xml in a file.
+	* @param name The file name for the xml file.
+	* @return A new DOM Document with the xml contents.
+	*/
+	public static Document readDocument(String name)
+	{
+		try
+		{
+			// parse the xml from the url (code taken from log4j)
+			InputStreamReader in = new InputStreamReader(new FileInputStream(name), "UTF-8");
+			//FileReadersourceUrl.openStream();
+			DocumentBuilder docBuilder = getDocumentBuilder();
+			InputSource inputSource = new InputSource(in);
+			//Class clazz = this.getClass();
+			//URL dtdURL = clazz.getResource("/chef_services.dtd");
+			//inputSource.setSystemId(dtdURL.toString());
+			Document doc = docBuilder.parse(inputSource);
+			return doc;
+		}
+		catch (Exception any)
+		{
+			Logger.warn("Xml.readDocument: " + any.toString());
+			return null;
+		}
+
+	}	// readDocument
+
+	/**
+	* Read a DOM Document from xml in a string.
+	* @param in The string containing the XML
+	* @return A new DOM Document with the xml contents.
+	*/
+	public static Document readDocumentFromString(String in)
+	{
+		try
+		{
+			DocumentBuilder docBuilder = getDocumentBuilder();
+			InputSource inputSource = new InputSource(new StringReader(in));
+			//Class clazz = this.getClass();
+			//URL dtdURL = clazz.getResource("/chef_services.dtd");
+			//inputSource.setSystemId(dtdURL.toString());
+			Document doc = docBuilder.parse(inputSource);
+			return doc;
+		}
+		catch (Exception any)
+		{
+			Logger.warn("Xml.readDocumentFromString: " + any.toString());
+			any.printStackTrace();
+			return null;
+		}
+
+	}	// readDocumentFromString
+
+	
+	/**
+	* Write a DOM Document to an xml file.
+	* @param doc The DOM Document to write.
+	* @param fileName The complete file name path.
+	*/
+	public static void writeDocument(Document doc, String fileName)
+	{
+		try
+		{
+			// create a file that uses the UTF-8 encoding
+			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8");
+
+			// Note: using xerces %%% is there a org.w3c.dom way to do this?
+			XMLSerializer s = new XMLSerializer(out, new OutputFormat(
+								"xml", "UTF-8", true));
+			s.serialize(doc);
+			out.close();
+		}
+		catch (Exception any)
+		{
+			Logger.warn("Xml.writeDocument: " + any.toString());
+		}
+
+    }	// writeDocument
+
+   	/**
+	* Write a DOM Document to an output stream.
+	* @param doc The DOM Document to write.
+	* @param out The output stream.
+	*/
+	public static String writeDocumentToString(Document doc)
+	{
+		try
+		{
+			StringWriter sw = new StringWriter();
+			// Note: using xerces %%% is there a org.w3c.dom way to do this?
+			XMLSerializer s = new XMLSerializer(sw, new OutputFormat(
+								"xml", "UTF-8", true /*doc*/));
+			s.serialize(doc);
+
+			sw.flush();
+			return sw.toString();
+		}
+		catch (Exception any)
+		{
+			Logger.warn("Xml.writeDocumentToString: " + any.toString());
+			return null;
+		}
+
+    }	// writeDocument
+
+	/**
+	* Place a string into the attribute <tag> of the element <el>, encoded so special characters can be used.
+	* @param el The element.
+	* @param tag The attribute name.
+	* @param value The string.
+	*/
+	public static void encodeAttribute(Element el, String tag, String value)
+	{
+		// encode the message body base64, and make it an attribute
+		try
+		{
+			String encoded = Base64.encode(value.getBytes("UTF-8"));
+			el.setAttribute(tag, encoded);
+		}
+		catch (Exception e) { Logger.warn("Xml.encodeAttribute: " + e); }
+
+
+	}	// encodeAttribute
+
+	/**
+	* Decode a string from the attribute <tag> of the element <el>, that was made using encodeAttribute().
+	* @param el The element.
+	* @param tag The attribute name.
+	* @return The string; may be empty, won't be null.
+	*/
+	public static String decodeAttribute(Element el, String tag)
+	{
+		String body = StringUtil.trimToNull(el.getAttribute(tag));
+		if (body != null)
+		{
+			try
+			{
+				byte[] decoded = Base64.decode(body);
+				body = new String(decoded, "UTF-8");
+			}
+			catch (Exception e) { Logger.warn("Xml.decodeAttribute: " + e); }
+		}
+
+		if (body == null) body = "";
+
+		return body;
+
+	}	// decodeAttribute
+
+	/** Whether to cache the DocumentBuilder object - should be set to true for performance enhancement */
+	private static final boolean CACHE_DOCUMENT_BUILDER = true;
+	
+	/** Returns a DocumentBuilder object for XML parsing - the object is safe to use within the CURRENT thread only. */
+	private static DocumentBuilder getDocumentBuilder() throws ParserConfigurationException
+	{
+		DocumentBuilder ret = null;
+		if (CACHE_DOCUMENT_BUILDER)
+		{
+			ret = (DocumentBuilder) M_documentBuilderCache.get();
+		}
+		if (ret == null)
+		{
+			// expensive parser construction operations */
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			//dbf.setValidating(true);
+			ret = dbf.newDocumentBuilder();
+		}
+		if (CACHE_DOCUMENT_BUILDER) M_documentBuilderCache.put(ret);
+		return ret;
+	}	
+
+	/** Caches one DocumentBuilder object per Thread */
+	private static SingletonPerThreadManager M_documentBuilderCache = new SingletonPerThreadManager();	
+	
+	/** Caches an instance of a single class, per thread.  That is, each
+	 * thread gets its own cached object and reuses that object.
+	 * 
+	 * Some objects can be reused (which saves the expensive construction cost);
+	 * however, they are not thread-safe.  For example, the DocumentBuilderFactory and DocumentBuilder objects
+	 * used in XML parsing.  The simplest solution would be to synchronize
+	 * on a single singleton object per JVM.  When the object is often used, this 
+	 * can be expensive since thread contention for the object is expensive.  Also,
+	 * using a single object for the whole JVM becomes a choke-point for the application
+	 * if only one thread can use the object at a time.  
+	 * 
+	 * The solution is to cache a single instance per thread.  The object is then
+	 * safely reusable within the same thread.  Thus, the object is a kind of singleton
+	 * per thread (as opposed to a singleton for the whole JVM).
+	 */
+	static class SingletonPerThreadManager
+	{
+		/** Map from Thread to object; from Thread to  instance of object being cached. 
+		 * Must be synchronized so that modifications by different threads don't collide
+		 * and corrupt the map.  WeakReference is used so that once a thread is dead, its
+		 * cached object can be garbage collected.
+		 */
+		private Map m_cache = Collections.synchronizedMap(new WeakHashMap());
+		
+		public Object get()
+		{
+			WeakReference ref = (WeakReference) m_cache.get(Thread.currentThread());
+			return (ref != null) ? ref.get() : null;
+		}
+		
+		public void put(Object obj)
+		{
+			m_cache.put(Thread.currentThread(), new WeakReference(obj));
+		}
+	} // SingletonPerThreadManager	
+	
+}	// Xml
+
+/**********************************************************************************
+*
+* $Header: /cvs/sakai/util/src/java/org/sakaiproject/util/Xml.java.save,v 1.8 2004/09/03 02:34:10 janderse.umich.edu Exp $
+*
+**********************************************************************************/

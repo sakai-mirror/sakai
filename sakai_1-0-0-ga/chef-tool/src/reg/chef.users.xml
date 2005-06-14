@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="user.add" />
+	<function name="user.del" />
+	<function name="user.upd.any" />
+	<function name="user.upd.own" />
+
+	<tool
+			id="chef.users"
+			url="/sakai-chef-tool/chef-users"
+			title="Admin: User Editor"
+			description="An administration tool to edit Users.">
+
+		<configuration name="pagesize" value="20" />
+
+	</tool>
+
+</registration>

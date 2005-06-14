@@ -1,0 +1,58 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addRemoveParticipant.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Adding or removing participants
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end<br /><br />
+	<div class ="chefPortletToolBarMessage">
+		Add or remove other participants...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+		Participants and roles
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<table class=“chefFlatListViewTable" cellspacing="0"”>
+				<tr>
+					<th id="name">
+						Name
+					</th>
+					<th id="uniqname">
+						Uniqname
+					</th>
+					<th id="id">
+						Access role
+					</th>
+					<th id="level">
+						Maintain role
+					</th>
+				</tr>
+				#foreach($participant in $participantList)
+				<tr>
+					<td headers="name">
+						$participant.getName()
+					</td>
+					<td headers="uniqname">
+						$participant.getUniqname()
+					</td>
+					<td headers="id">
+						$participant.hasAccessRole()
+					</td>
+					<td headers="level">
+						$participant.hasMaintainRole()
+					</td>
+				</tr>
+				#end
+			</table>
+			
+				<br/>
+					<input type="hidden" name="back" value="15" />
+					<input type="hidden" name="template-index" value="17"/>
+					<input type="hidden" name="continue" value="15"/>
+				<div class ="chefButtonRow">
+					<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

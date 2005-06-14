@@ -1,0 +1,279 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-changeRoles.vm,v 1.5 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Change Roles Change the roles of participants of the worksite
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Changing role(s) for participants in $validator.escapeHtml($siteTitle)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		<form name="roleForm" action="#toolForm("SiteAction")" method="post">
+			<input type="hidden" name="option" value="x" /> 
+			<input type="hidden" name="eventSubmit_doSiteinfo_edit_role" value="x" />
+			#if ($participantSelectedList.size() == 1)
+				## only change one user's role?
+				<div class="chefPageviewTitle">
+					Selected a new role for the participant below.
+				</div>
+				<table class ="chefItemDetail">
+					#foreach($participant in $participantSelectedList)
+						<tr>
+							<td class="chefLabel">
+								Participant:
+							</td>
+							<td>
+								$participant.getName()
+							</td>
+						</tr>
+						<tr>
+							<td class="chefLabel">
+								Username:
+							</td>
+							<td>
+								$participant.getUniqname()
+							</td>
+						</tr>
+						<tr>
+							<td class="chefLabel">
+								Current Role:
+							</td>
+							<td>
+								#foreach ($role in $roles)
+									#if($participant.hasRole($role.getId())) 
+										$role.getId()<br />
+									#end
+								#end
+							</td>
+						</tr>
+					#end
+				</table>
+				<fieldset style="width:50%">
+					<legend>
+						Roles
+					</legend>
+					<div style="float:right;text-align:right">
+						<a href="$config.getString("help.rolesurl")" target="umcthelp" onclick="sitehelp('$config.getString("help.rolesurl")');return false" title="Help on roles" ><img src = "#imageLink("help.gif")" border="0" alt ="Help" /></a>
+					</div>
+					<table cellspacing="0" cellpadding="0" class="chefEditItem" summary ="Table holds checkboxes for different roles." >
+						#foreach ($role in $roles)
+							<tr>
+								<td valign="middle" nowrap="nowrap">
+									<input type="radio" name="role_to_all" value="$role.Id" 
+										#if ($currentRole == $role.Id)
+											checked="checked"
+										#end
+									/>
+									$role.Id
+								</td>
+								<td valign="middle" nowrap="nowrap">
+									<div class="chefInlineInstructions">
+										#set ($description = "")
+										#set ($description = $roleDescription.get($role.Id))
+										#if ($!description) $!description #end
+									</div>
+								</td>
+							</tr>
+						#end
+					</table>
+				</fieldset>
+			#else
+				##multiple users' change
+				<table cellspacing="0" cellpadding="0" class="chefEditItem" summary ="Table holds fields for entering users." >
+					<tr>
+						<td>
+							<input type="radio" name="same" value="true" 
+								#if ($same_role)
+									checked="checked"
+								#end
+								onClick="document.roleForm.option.value='same_role_true';javascript:document.roleForm.submit();"
+							/>
+							Change all participants to the same role
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="radio" name="same_role" value="false" 
+								#if (!$same_role)
+									checked="checked"
+								#end
+								onClick="document.roleForm.option.value='same_role_false';javascript:document.roleForm.submit();"
+							/>
+							Change participant roles individually
+						</td>
+					</tr>
+				</table>
+				<br />
+				#if ($same_role)
+					## change all participant role
+					<fieldset style="width:50%">
+						<legend>
+							Participants
+						</legend>
+						<div style="float:right;text-align:right">
+							<a href="$config.getString("help.rolesurl")" target="umcthelp" onclick="sitehelp('$config.getString("help.rolesurl")');return false" title="Help on roles" ><img src = "#imageLink("help.gif")" border="0" alt ="Help" /></a>
+						</div>
+						<table cellspacing="0" cellpadding="0" class="chefEditItem" summary ="Table holds checkboxes for different roles." >
+							#foreach ($role in $roles)
+								<tr>
+									<td valign="middle" nowrap="nowrap">
+										<input type="radio" name="role_to_all" value="$role.Id" 
+											#if ($currentRole == $role.Id)
+												checked="checked"
+											#end
+										/>
+										$role.Id
+									</td>
+									<td valign="middle" nowrap="nowrap">
+										<div class="chefInlineInstructions">
+											#set ($description = "")
+											#set ($description = $roleDescription.get($role.Id))
+											#if ($!description) $!description #end
+										</div>
+									</td>
+								</tr>
+							#end
+						</table>
+						<br />
+						<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds information of selected participants and their roles">
+							<tr>
+								<th id="name">
+									Name
+								</th>
+								<th id="uniqname">
+									Uniqname
+								</th>
+								<th id="id">
+									Roles
+									<a href="$config.getString("help.rolesurl")" target="umcthelp" onclick="sitehelp('$config.getString("help.rolesurl")');return false" title="Help on roles" ><img src = "#imageLink("help.gif")" border="0" alt ="Help" /></a>
+								</th>
+							</tr>
+							#foreach($participant in $participantSelectedList)
+								<tr>
+									<td headers="name">
+										$participant.getName()
+									</td>
+									<td headers="uniqname">
+										$participant.getUniqname()
+									</td>
+									<td headers="id">
+										#set($role = "")
+										#set($role = $participant.getRole())
+										$!role
+										#if ($role.length() == 0)
+											#if ($!role.length() == 0)
+												#foreach ($pRole in $participant.getRoles())
+													$pRole.getId()
+												#end
+											#end
+										#end
+									</td>
+								</tr>
+							#end
+						</table>
+						<br/>
+					</fieldset>
+				#else
+					## change roles individually 
+					<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds information of selected participants and their roles">
+						<tr>
+							<th id="name">
+								Name
+							</th>
+							<th id="uniqname">
+								Uniqname
+							</th>
+							<th id="id">
+								Roles
+								<a href="$config.getString("help.rolesurl")" target="umcthelp" onclick="sitehelp('$config.getString("help.rolesurl")');return false" title="Help on roles" ><img src = "#imageLink("help.gif")" border="0" alt ="Help" /></a>
+							</th>
+						</tr>
+						#foreach($participant in $participantSelectedList)
+							#set($uniqname = "")
+							#set($uniqname=$participant.getUniqname())
+							#set($oRole = "")
+							#set($oRole = $participant.getRole())
+							#if ($oRole.length() == 0)
+								#if ($!oRole.length() == 0)
+									#foreach ($pRole in $participant.getRoles())
+										#set($oRole = $pRole.getId())
+									#end
+								#end
+							#end
+							<tr>
+								<td headers="name">
+									$participant.getName()
+								</td>
+								<td headers="uniqname">
+									$uniqname
+								</td>
+								<td>
+									<select name="role$uniqname">
+										<option value="no_role_selected"
+											#if ($oRole == "")
+												selected="selected"
+											#end
+										>
+											Please select a role
+										</option>
+										#foreach($role in $roles)
+											<option value ="$role.Id"
+												#if($role.Id == $oRole)
+													selected="selected"
+												#end
+											>
+												$role.Id
+											</option>
+										#end
+									</select>
+								</td>
+							</tr>
+						#end
+					</table>
+					<table cellspacing="0" cellpadding="0" class="chefEditItem" summary ="Table holds a text box for entering associated role." >
+						<tr>
+							<td colspan="2">
+								Role Descriptions
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								&nbsp;
+							</td>
+						</tr>
+						#foreach ($role in $roles)
+							#set ($description = false)
+							<tr>
+								<td>
+									$role.Id
+								</td>
+								<td>
+									<div class="chefInlineInstructions">
+										#set ($description = $roleDescription.get($role.Id))
+										#if ($!description) $!description #end
+									</div>
+								</td>
+							</tr>
+						#end
+					</table>
+				#end
+			#end
+			<br/>
+			<input type="hidden" name="back" value="49" />
+			<input type="hidden" name="template-index" value="30" />
+			<input type="hidden" name="continue" value="56" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="Continue" 
+						value="Continue" 
+						onclick="document.roleForm.option.value='continue';javascript:document.roleForm.submit();" />
+				<input type="submit" name="Back" 
+						value="Back" 
+						onclick="document.roleForm.option.value='back';javascript:document.roleForm.submit();" />
+				<input type="submit" name="Cancel" 
+						value="Cancel" 
+						onclick="document.roleForm.option.value='cancel';javascript:document.roleForm.submit();" />
+			</div>
+		</form>
+	</div>
+</div>

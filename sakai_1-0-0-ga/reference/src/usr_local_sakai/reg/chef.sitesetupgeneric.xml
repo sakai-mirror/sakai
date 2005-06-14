@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.sitesetupgeneric"
+			url="/sakai-chef-tool/chef-site-setup-generic"
+			title="Worksite Setup"
+			description="Modify your sites and create new ones.">
+
+		<!-- types are seperated by , don't forget to put corresponding type_categories.xml into the reg folder-->
+		<configuration name="siteTypes" value="project" />
+
+	</tool>
+
+</registration>

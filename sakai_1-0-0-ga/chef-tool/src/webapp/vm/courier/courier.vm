@@ -1,0 +1,45 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/courier/courier.vm,v 1.4 2004/03/25 04:55:54 ggolden Exp $
+## This file controls delivery of updates to all tools and times automatic refreshes
+##  $message is the time to be displayed in the courier frame
+##  $deliveries is a List of Delivery objects to refresh tools
+##  $refresh is number of seconds between timed updates
+## 
+## font characteristics for $message need to be turned into a style
+#chef_start()
+<div class="chefPortletContainer chefCourierFrame">
+#if($message)
+  <span class="chefCourierClock">
+    $message
+  </span>
+#end
+</div>
+## process the deliveries
+<script type="text/javascript" language="JavaScript">
+
+## make sure we don't automatically update the courier!
+ignoreCourier = true;
+
+var beep = false;
+
+#foreach ($delivery in $deliveries)
+  $delivery.compose()
+  #if($logger)$logger.info("$delivery.compose()")#end
+#end
+## Note: the courier must be in a frame directly within the "top" parent
+setTimeout('parent.updCourier();', ${refresh}000);
+parent.courierRunning = false;
+
+#*
+#if ($config.getBoolean("java.beep"))
+if(beep)
+{
+  if(navigator.javaEnabled())
+  {
+    parent.document.getElementById("JavaBeep").oneBeep();
+  }
+}
+#end
+*#
+
+</script>
+#chef_end()

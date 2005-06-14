@@ -1,0 +1,32 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-roles.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Removing features in My Workspace site
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Help on roles ...
+	</div>
+	<div class="chefPortletContent">
+		The permissions of each role below are the default settings that are applied by the system.  These permissions can be customized to some degree in each tool by clicking on the Permissions button in the tool. 
+		<ul>
+			<li><b>Affiliate</b> -- This role is for an administrative or support person who may access the site to help with configuring it or setting it up or loading resources.  Affiliates have permissions similar to Instructors -- they can create and read anywhere in the site.</li>
+			<li><b>Assistant</b> -- Assistants have permissions much like Instructors, but they cannot delete assignments, discussions, archived emails, or create a site email alias. Assistants can modify the site and see the site when it is unpublished. A GSI might be given the Assistant role.</li>
+			<li><b>Candidate</b> -- This role is used in a special version of CourseTools NG called Grad Tools, which keeps track of progress on dissertations. A doctoral candidate gets this role in his or her Grad Tools site.
+			<li><b>Instructor</b> -- The instructor role is for those other than the site owner who might help conduct the class or project. The Instructor role can create, delete, and read anything in the site. Instructors have the same permissions as the Maintain role (see below) except they cannot delete the site.</li>
+			<li><b>Member</b> -- This is a user who has more privileges than a student typically does. For example, a member might be able to upload a resource, while a student may not be able to. This is a role used to provide peer-to-peer membership in a project site. Members can create resources, announcements, schedule events, discussion categories and topics, and they can email the site. Members cannot modify the site, and they do not see unpublished sites.</li>
+			<li><b>Observer</b> -- This is a role for a participant who should not be adding content or participating actively in the site, but who needs access to materials in the site. An observer can only see the site, but cannot make any changes, additions, or posts. An Observer does not see the unpublished site.</li>
+			<li><b>Student</b> -- Students are already granted student permissions in course sites when they register for a course. The student role allows posting of discussion replies and chat messages, and files can be put in a student's dropbox. Elsewhere in the site, a student can read content but they cannot create Resources, Discussion Categories, Announcements, or Schedule items.</li>
+			<li><b>access</b> -- This role is similar to the student role. It is included for legacy reasons.</li>
+			<li><b>maintain</b> -- This role has full permissions throughout the site. The maintain role is automatically given to the site creator. A user with the maintain role can delete the site. Otherwise, this role has the same permissions the Instructor role.</li>
+		</ul>
+		<form name="helpOnRolesForm" action="#toolForm("$action")" method="post">
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Done" />
+				#if ($action.equals("SiteAction"))
+					<input type="hidden" name="back" value="$from" />
+					<input type="hidden" name="template-index" value="38" />
+					<input type="hidden" name="continue" value="$from"/>
+				#elseif ($action.equals("PermissionAction"))
+				#end
+			</div>
+		</form>
+	</div>
+</div>

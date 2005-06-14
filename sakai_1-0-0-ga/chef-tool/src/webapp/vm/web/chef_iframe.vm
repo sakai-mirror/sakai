@@ -1,0 +1,22 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/web/chef_iframe.vm,v 1.3 2004/06/29 18:51:05 janderse.umich.edu Exp $ -->
+<div class="chefPortletContainer">
+		#if($menu)#toolbar($menu)#end
+	<div class="chefPortletContent" style="width:96%">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		#if ($!source && $source.length() != 0)
+			<iframe style="display:block;clear:both" 
+				width="100%"
+				#if ($height) height="$height" #end
+				frameborder="0"
+				marginwidth="0"
+				marginheight="0"
+				scrolling="auto"
+				align="middle"
+				src="$!source">
+			</iframe>
+		#else
+			$validator.escapeHtml($!text)
+		#end
+	</div>
+</div>
+

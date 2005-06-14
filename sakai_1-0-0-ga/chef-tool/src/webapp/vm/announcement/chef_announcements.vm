@@ -1,0 +1,149 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/announcement/chef_announcements.vm,v 1.4 2004/07/29 14:22:03 suiyy.umich.edu Exp $ 
+## this is showing the list view of all announcement, and the home view of this tool
+<div class="chefPortletContainer">
+	#if ($isOnWorkspaceTab.equals("false"))
+		#if($menu && $EnabledMenuItemExists)#toolbar($menu)#end
+	#end
+	<div class = "chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+
+		#set ($SiteColumnFlag = 0)
+	    #foreach ($item in $showMessagesList2)
+	       	#set ($itemChannel = $validator.escapeHtml($item.channelDisplayName))
+				#if (!$currentChannelDisplayName.equals($itemChannel))
+					#set ($SiteColumnFlag = $SiteColumnFlag + 1)
+				#end
+	    #end
+	    
+		<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post">
+
+		#if (!$messageListVector.iterator().hasNext())
+			<div class="chefPageviewTitle">
+				<div class ="chefLeftIndent">
+					There are currently no announcements at this location.
+				</div>	
+			</div>
+		#else
+			#if ($displayOptions.isShowAllColumns()) 
+				<table class="chefFlatListViewTable" cellspacing="0" summary="Table contains list of announcements. First column may contain checkboxes, second will contain the title, third the author, fourth the date. Headers can be used to sort.">
+			#else
+				<table border="0" cellspacing="0" summary="Table contains list of announcements. First column may contain checkboxes, second will contain the title, third the author, fourth the date. Headers can be used to sort.">
+			#end
+				#if ($displayOptions.isShowAllColumns()) 
+				<tr>
+					#if ($EnableItemCheckBoxes)
+						#if ($isOnWorkspaceTab.equals("false"))
+							<th id="checkbox">&nbsp;&nbsp;</th>
+						#end
+					#end
+                                        <th>&nbsp;</th> ## a saved space for the paperclip
+					<th id ="subject">
+						#if (!$currentSortedBy.equals("subject"))
+							<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject">Subject</a>
+						#else
+							#if ($currentSortAsc.equals("true"))
+								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject ascending">Subject <img src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort by subject ascending" /></a>
+							#else
+								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject ascending">Subject <img src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort by subject descending"/></a>
+							#end
+						#end
+					</th>
+					#if ($SiteColumnFlag > 0)
+					<th id ="Site">
+						#if (!$currentSortedBy.equals("channel"))
+							<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="channel">Site</a>
+						#else
+							#if ($currentSortAsc.equals("true"))
+								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="Sort by channel ascending">Site <img src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort by site ascending" /></a>
+							#else
+								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="Sort by channel ascending">Site <img src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort by site descending"/></a>
+							#end
+						#end
+					</th>
+					#end
+					<th id="author">
+						#if (!$currentSortedBy.equals("from"))
+							<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author">From</a>
+						#else
+							#if ($currentSortAsc.equals("true"))
+								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author ascending">From <img src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort by author ascending" /></a>
+							#else
+								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author descending">From <img src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort by author descending"/></a>
+							#end
+						#end
+					</th>
+					<th id ="date">
+						#if (!$currentSortedBy.equals("date"))
+							<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="Sort by date ascending">Date</a>
+						#else
+							#if ($currentSortAsc.equals("true"))
+								 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="Sort by date ascending">Date <img src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort by date ascending" /></a>
+							#else
+								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="Sort by date descending">Date <img src = "#imageLink("chef/sortdescending.gif")" border="0" alt ="Sort by date descending" /></a>
+							#end
+						#end
+					</th>
+				</tr>
+	            #end
+				#foreach ($ann_item in $showMessagesList)
+					<tr>
+						#if ($EnableItemCheckBoxes)
+							#if ($isOnWorkspaceTab.equals("false"))
+							<td valign="top" headers="checkbox">
+								#if ($ann_item.editable)
+								<input type="checkbox" name="selectedMembers" value="$ann_item.Reference" />
+								#end
+							</td>
+							#end
+						#end
+                                                <td> ## a column to show the paperclip if existing
+							#set ($size = 0)
+							#if (!$ann_item.Header.Attachments.isEmpty())
+									#set ($props = false)
+									#set ($size = $ann_item.Header.Attachments.size())
+									#foreach ($attachment in $ann_item.Header.Attachments)
+											#set ($props = $attachment.Properties)
+											#if (!$props)
+													#if ($size > 0) #set ($size = $size - 1) #end
+											#end
+									#end
+							#end
+							#if ($size == 0)
+							#else
+							<img src = "#imageLink("chef/attachments.gif")" border="0" alt="attachment" />
+							#end
+                                                </td>
+                                                <td headers="subject">
+							#if ($ann_item.Header.draft)
+									<a href="#toolLink("AnnouncementAction" "doReviseannouncement")&itemReference=$ann_item.reference" title="Edit draft announcement"><span class="chefAlert">Draft - </span>
+									$validator.escapeHtml($ann_item.Header.subject)</a>
+							#else
+								<a href="#toolLink("AnnouncementAction" "doShowmetadata")&itemReference=$ann_item.reference" title="View announcement">
+								$validator.escapeHtml($ann_item.Header.subject)</a>
+							#end
+							#if ($displayOptions.isShowAnnouncementBody()) 
+								<br/>
+								$ann_item.TrimmedBody
+								#if (!$displayOptions.isShowAllColumns()) 
+									<br/>
+									&nbsp;&nbsp;&nbsp;&nbsp;($validator.escapeHtml($ann_item.Header.From.DisplayName) - $ann_item.Header.Date.toStringLocalFull()) &nbsp;
+								#end
+							#end
+							</td>	
+						#if ($displayOptions.isShowAllColumns())
+							#if ($SiteColumnFlag > 0)
+								<td headers="channel">$validator.escapeHtml($ann_item.channelDisplayName)</td>
+							#end
+							<td headers="author">$validator.escapeHtml($ann_item.Header.From.DisplayName)</td>
+							<td headers="date">$ann_item.Header.Date.toStringLocalFull()</td>
+						#end
+					</tr>
+					#if (!$displayOptions.isShowAllColumns()) 
+						<tr><td>&nbsp;</td></tr>
+					#end
+				#end
+			</table>
+			#end
+		</form>
+	</div>
+</div>

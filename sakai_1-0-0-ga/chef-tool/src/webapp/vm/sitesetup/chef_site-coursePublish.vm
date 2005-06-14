@@ -1,0 +1,74 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-coursePublish.vm,v 1.2 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+##Step 2 of 2 publishing a site
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Publishing course site ...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Step 2 of 2: Confirm course information
+		</div>
+		<form action="#toolForm("$action")" method="post">
+				<fieldset>
+					<legend>
+						Course information
+					</legend>
+					<table cellpadding="5" class="chefItemDetail">
+						<tr>
+							<td class = "chefLabel">
+								Term:
+							</td>
+							<td>
+								$!form_term
+							</td>
+						</tr>	
+						<tr>
+							<td class ="chefLabel">  
+								Subject:
+							</td>
+							<td>
+								$!form_subject
+							</td>
+						</tr>
+						<tr>
+							<td class ="chefLabel">  
+								Course number:
+							</td>
+							<td>
+								$!form_course
+							</td>
+						</tr>
+						<tr>
+							<td class ="chefLabel">
+								Section(s):
+							</td>
+							<td>
+								#foreach ($section in $sectionsList)
+									$!section.text
+								#end
+							</td>
+						</tr>
+						<tr>
+							<td class ="chefLabel">
+								Additional information:
+							</td>
+							<td>
+								$validator.escapeHtml($!form_additional)
+							</td>
+						</tr>
+					</table>		
+				</fieldset>	
+				<input type="hidden" name="back" value="11" />
+				<input type="hidden" name="template-index" value="12"/>
+				<input type="hidden" name="continue" value="0" />
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doPublish_site" value="Publish" />
+				<input type="submit" name="eventSubmit_doFinish" value="Finish and Save" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

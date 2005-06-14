@@ -1,0 +1,74 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/news/chef_news-customize.vm,v 1.1 2004/03/11 05:29:59 ggolden Exp $
+## chef_chat-customize.vm, use with org.chefproject.ChatAction.java
+##     context: $chat_channel: String channel name
+##              $chat_ascending: Ascending flag
+##              $chat_channels: List of potential channel ids
+##              $chat_channel_form: form name for selected channel
+##				$new_chat_channel: 
+##              $chat_ascending_form: form name for ascending field
+##              $action: action= value
+##              $form-submit: submit button name
+##
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["$formfield_channel_title"];
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Customizing news...
+	</div>
+	<div class="chefPortletContent">
+#if ($alertMessage)
+		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both" />
+#end
+		<form name="customize" id="customize" action="#toolForm("$action")" method="post">
+			<p>
+			<fieldset>
+				<legend>
+					Frame Name
+				</legend>
+				<div class="chefInlineInstructions">
+					What name will be displayed on this frame?
+				</div>
+				<br />
+				<input 
+					type="text" 
+					name="$formfield_channel_title" 
+					id="$formfield_channel_title" 
+					value="$!current_channel_title"
+					size="50" />
+				<label for="$formfield_channel_title">
+				</label>
+				<br />
+			</fieldset>
+			</p>
+			<p>	
+			<fieldset>
+				<legend>
+					Internet Address
+				</legend>
+				<div class="chefInlineInstructions">
+					What is the complete URL (http:// ... ) for this 'rss' news feed? 
+				</div>
+				<br />
+				<input 
+					type="text" 
+					name="$formfield_channel_url" 
+					id="$formfield_channel_url" 
+					value="$!current_channel_url"
+					size="50" />
+				<label for="$formfield_channel_url">
+				</label>
+				<br />
+			</fieldset>
+			</p>
+			<div class="chefButtonRow">
+				<input type="submit" name="$form-submit" value="Save" />
+				<input type="submit" name="$form-cancel" value="Cancel" />
+			</div>
+			</p>
+		</form>
+	</div>
+</div>
+

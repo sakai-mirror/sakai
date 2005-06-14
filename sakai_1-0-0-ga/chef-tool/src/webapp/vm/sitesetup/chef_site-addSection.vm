@@ -1,0 +1,54 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addSection.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+##Adding a section to a site
+<div class ="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Adding a section  ...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					New section
+				</legend>
+				<table class ="chefEditItem">
+					<tr>
+						<td class = "chefLabel">
+							Current section(s):
+						</td>
+						<td>
+							List of sections (comma separated)
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							New section:
+						</td>
+						<td>
+							## this list is all the sections that as of today are used by all the units
+							## this really should come from some external source
+							## it should filter out the sections that the site already has
+							<select name="section">
+
+							</select>
+						</td>
+					</tr>	
+					<tr>
+						<td colspan ="2">
+							Adding/dropping sections is normally done before the semester starts, which allows you to create schedule and assignment entries based on that information. Although you can begin working with the new section information right away, students will not have access to your course site until it is published and linked to official registrar class lists. This should be possible 2 to 3 weeks prior to the start of a given term, or in a worst-case scenario, by the 2nd or 3rd day of a given term. This process is not fully automated - you may be contacted by administrative staff at your school or unit for additional information or confirmation about adding/dropping sections from your course site
+						</td>
+					</tr>	
+				</table>		
+			</fieldset>	
+		</form>
+			<input type="hidden" name="back" value="15" />
+			<input type="hidden" name="template-index" value="18"/>
+			<input type="hidden" name="continue" value="15" />
+		<div class ="chefButtonRow">
+			<input type="submit" name="eventSubmit_doContinue" value="Add Section(s)" />
+			##<input type="submit" name="eventSubmit_doBack_to_customize" value="Cancel" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</div>
+	</div>
+</div>

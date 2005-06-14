@@ -1,0 +1,116 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addRemoveClassConfirm.vm,v 1.3 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+##Confirmation page for adding or removing classes
+<div class ="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		#if ($remove)
+			Removing class(es) from site $validator.escapeHtml($siteTitle)...
+		#end
+		#if ($add)
+			Adding class(es) to site $validator.escapeHtml($siteTitle)...
+		#end
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			#if ($remove)
+				Please confirm the removal of the following sections from your class site.<br />
+			#elseif ($add)
+				Please confirm the addition of the following sections to your class site.<br />
+			#end
+		</div>
+		<form name = "addRemoveConfirmForm" method="post" action="#toolForm("SiteAction")">
+			<fieldset>
+				<legend>
+					Class Information
+				</legend>
+				The following class(es) were already assigned to this site:<br />
+				#foreach($umiacItem in $umiacCourseSectionList)
+					<label for = "$umiacItem.getKey()">
+						$umiacItem.getYear(),
+						$umiacItem.getTerm_code(),
+						$umiacItem.getCampus_code(),
+						$umiacItem.getSubject(),
+						$umiacItem.getCatalog_nbr(),
+						$umiacItem.getClass_section()
+					</label>
+					<br />
+				#end
+				#foreach($manualItem in $manualCourseSectionList)
+					<label for = "$manualItem.getKey()">
+						(requested)
+						$manualItem.getYear()
+						$manualItem.getTerm_code()
+						$manualItem.getSubject()
+						$manualItem.getCatalog_nbr()
+						$manualItem.getClass_section()
+					</label>
+					<br />
+				#end
+				<br />
+				You have indicated the following class(es) to 
+				#if ($remove)
+					remove from from this site:<br />
+					#foreach($umiacRemove in $removeClassUmiac)
+						<label for = "$umiacRemove.getKey()">
+							$umiacRemove.getYear(),
+							$umiacRemove.getTerm_code(),
+							$umiacRemove.getCampus_code(),
+							$umiacRemove.getSubject(),
+							$umiacRemove.getCatalog_nbr(),
+							$umiacRemove.getClass_section()
+							<br />
+						</label>
+					#end
+					#foreach($manualRemove in $removeClassManual)
+						<label for = "$manualRemove.getKey()">
+							(requested)
+							$manualRemove.getYear()
+							$manualRemove.getTerm_code()
+							$manualRemove.getSubject()
+							$manualRemove.getCatalog_nbr()
+							$manualRemove.getClass_section()
+							<br />
+						</label>
+					#end
+				#elseif ($add)
+					add to this site:<br />
+					#foreach($umiacAdd in $addClassUmiac)
+						<label for = "$umiacAdd.getKey()">
+							$umiacAdd.getYear(),
+							$umiacAdd.getTerm_code(),
+							$umiacAdd.getCampus_code(),
+							$umiacAdd.getSubject(),
+							$umiacAdd.getCatalog_nbr(),
+							$umiacAdd.getClass_section()
+							<br />
+						</label>
+					#end
+					#foreach($manualAdd in $addClassManual)
+						<label for = "$manualAdd.getKey()">
+							(requested)
+							$manualAdd.getYear()
+							$manualAdd.getTerm_code()
+							$manualAdd.getSubject()
+							$manualAdd.getCatalog_nbr()
+							$manualAdd.getClass_section()
+							<br />
+						</label>
+					#end
+				#end
+			</fieldset>	
+			<input type="hidden" name="back" value="$backIndex" />
+			<input type="hidden" name="template-index" value="58"/>
+			<input type="hidden" name="continue" value="49" />
+			<div class ="chefButtonRow">
+				#if ($remove)
+					<input type="submit" name="eventSubmit_doContinue" value="Remove Class(es)" />
+				#elseif ($add)
+					<input type="submit" name="eventSubmit_doContinue" value="Add Class(es)" />
+				#end
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

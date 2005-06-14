@@ -1,0 +1,186 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/content/chef_resources_addURLBasic.vm,v 1.3 2004/09/21 04:23:08 janderse.umich.edu Exp $ 
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["Url1"];
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Adding links...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Location:
+			<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
+			#foreach ($id in $collectionPath)
+				#if ($dropboxMode && $id==$homeCollection)
+					$siteTitle Drop Box /
+				#else
+					$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName)) /
+				#end
+			#end
+			#if ($dropboxMode && $collectionId==$homeCollection)
+				$siteTitle Drop Box
+			#else
+				$validator.escapeHtml($service.getProperties($collectionId).getPropertyFormatted($resourceProperties.NamePropDisplayName))
+			#end
+		</div>
+		<div class="chefPageviewTitle">
+			Complete the form(s) then choose 'post' at the bottom. A <span class="chefRequiredInline">means</span> required information.
+		</div>
+		<form name="addUrlBasicForm" action="#toolForm("ResourcesAction")" method="post">
+			<input type="hidden" name="stateName" value = "addUrlBasic" />
+			<input type="hidden" name="from" value="add" />
+			<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+			<input type ="hidden" name = "itemType" value="Url" />
+			<input type="hidden" name="eventSubmit_doAddurl" value="x" />
+			<input type="hidden" name="option" value="change" />
+			<span class="chefRequiredInline">Select</span> number links to add:
+			<select name="urlNumber" id="select" onchange="javascript:document.addUrlBasicForm.submit();">
+				#foreach ($i in [1 .. 10])
+					#if ($i==$currentUrlNumber)
+						<option value="$i" selected="selected">$i</option>
+					#else
+						<option value="$i">$i</option>
+					#end
+				#end
+			</select>
+			#foreach( $i in [1 ..$currentUrlNumber] )
+				<fieldset>
+					<legend>
+						#if ($currentUrlNumber == 1)
+							Link
+						#else
+							Link $i of $currentUrlNumber
+						#end
+					</legend>
+					<table class="chefEditItem">
+						<tr> 
+							<td class ="chefLabel">
+								#if ($unqualified_fields.get($i).indexOf("URLcontent")!=-1)
+									<span class="chefRequiredInline">URL:</span>
+								#else
+									<span class="chefRequiredInline">URL:</span>
+								#end
+							</td>
+							<td>
+								<input type="text" name="Url$i" id="Url$i" size="80" value="$validator.escapeHtml($urls.get($i))" />
+							</td>
+						</tr>
+						<tr>
+							<td class ="chefLabel"> 
+								#if (($titles.get($i).length()>0)&&($unqualified_fields.get($i).indexOf($titles.get($i))!=-1))
+									<span class="chefAlert">Title: </span>
+								#else
+									Title:
+								#end 
+							</td>
+							<td>
+								<input type="text" name="title$i" size="20" value="$validator.escapeHtml($titles.get($i))" />
+							</td>
+						</tr>
+						<tr> 
+							<td class ="chefLabel"> 
+								Description
+							</td>
+							<td>  
+								<textarea name="description$i" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($descriptions.get($i))</textarea>
+							</td>
+						</tr>
+						#* only allow open in new window for 2003 fall release
+						<tr>
+							<td class ="chefLabel">
+								Open in:
+							</td>
+							<td>
+								#if ($openIns.get($i)=="false")
+									<input type="radio" name="target$i" id="targetnew$i" value="true" />
+									<label for ="targetnew$i">New window</label> <br />
+									<input type="radio" name="target$i" id="targetthis$i" value="false" checked="checked" />
+									<label for ="targetthis$i">This window</label> <br />
+								#else
+									<input type="radio" name="target$i" id="targetnew$i" value="true" checked="checked"/>
+									<label for ="targetnew$i">New window</label> <br />
+									<input type="radio" name="target$i" id="targetthis$i" value="false" />
+									<label for ="targetthis$i">This window</label> <br />
+								#end
+							 </td>
+						</tr>
+						*#
+						<tr> 
+							<td class ="chefLabel">
+								#if ($unqualified_fields.get($i).indexOf($service.newResourceProperties().NamePropCopyright)!=-1)
+									<span class="chefRequiredInline">Copyright:</span>
+								#else
+									<span class="chefRequiredInline">Copyright:</span>
+								#end
+							</td>
+							<td>				
+								#if ($copyrights.get($i)!="newcopyright")
+									<input type="radio" name="copyright$i" value="$mycopyright" id ="mycopyright$i" checked="checked" />
+									<label for ="mycopyright$i">Use my copyright information</label> <br />
+									<input type="radio" name="copyright$i" id="newcopyright$i" value="newcopyright" />
+									<label for ="newcopyright$i">Use copyright below</label> <br />
+									<textarea name="newcopyright$i" rows="5" cols="40" wrap="virtual"></textarea>
+								#else
+									<input type="radio" name="copyright$i" value="$mycopyright" id ="mycopyright$i" />
+									<label for ="mycopyright$i">Use my copyright information</label> <br />
+									<input type="radio" name="copyright$i" id="newcopyright$i" value="newcopyright"  checked="checked" />
+									<label for ="newcopyright$i">Use copyright below</label> <br />
+									<textarea name="newcopyright$i" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($newcopyrights.get($i))</textarea>
+								#end
+							</td>
+						</tr>
+						#if (!$dropboxMode)
+							<tr> 
+								<td class = "chefLabel"> 
+									Public View:
+								</td>
+								<td>
+									#set ($pubview = $pubviews.get($i))
+									#if ($pubviewset)
+										Set to Yes in a containing folder.
+									#else
+										<input type="radio" name="pubview$i" id="pubview_true$i" value="true" #if ($pubview) checked="checked" #end />Yes<br />
+										<input type="radio" name="pubview$i" id="pubview_false$i" value="false" #if (!$pubview) checked="checked" #end />No
+									#end
+								</td>
+							</tr>
+						#end
+					</table>
+				</fieldset>	
+			#end
+			#if (!$dropboxMode && $notification)
+				## not show notification in dropbox mode
+				<table>
+						<tr>
+						<td style="vertical-align:middle">Email Notification:</td>
+						<td>
+							<select name="notify">
+								<option value="r">High - All participants</option>
+                                                                <option value="o">Low - Only participants who have opted in</option>
+                                                                <option value="n" selected="selected">None - No notification</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+			#end
+			<div class ="chefButtonRow">
+				<input
+					type="button" 
+					name="Add URL" 
+					id="Add URL" 
+					value="Post"
+					onClick="document.addUrlBasicForm.option.value='add'; document.addUrlBasicForm.submit(); return false;"
+				/>
+				<input 
+					type="submit" 
+					name="Cancel" 
+					id="Cancel" 
+					value="Cancel"
+					onClick="document.addUrlBasicForm.option.value='cancel'; document.addUrlBasicForm.submit(); return false;"
+				/>
+			</div>
+		</form>
+	</div>
+</div>

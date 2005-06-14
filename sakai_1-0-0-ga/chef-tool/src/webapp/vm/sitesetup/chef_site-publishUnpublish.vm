@@ -1,0 +1,36 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-publishUnpublish.vm,v 1.3 2004/07/15 18:33:00 zqian.umich.edu Exp $ -->
+## Changingthe status of a worksite to publsihed or unpublished
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Changing the status of a site ...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form action="#toolForm("SiteAction")" method="post">
+			<div class ="chefPageviewTitle">
+				Publishing your site makes it visible to your site participants.
+			</div>
+			<fieldset>
+				<legend>Status of site</legend>
+							<input type="radio" name="itemStatus" id="itemStatus" value="$publish_int_string" 
+								#if($publish) checked="checked" #end
+							/>
+							<label for = "class">
+								Publish worksite
+							</label><br />
+							<input type="radio" name="itemStatus" id="itemStatus" value="$unpublish_int_string" 
+								#if(!$publish) checked="checked" #end
+							/>
+							<label for = "project">
+								Unpublish worksite
+							</label>
+			</fieldset>
+				<input type="hidden" name="back" value="$backIndex" />		
+				<input type="hidden" name="template-index" value="34" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>				
+	</div>
+</div>	

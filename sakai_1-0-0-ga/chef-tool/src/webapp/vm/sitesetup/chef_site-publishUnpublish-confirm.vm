@@ -1,0 +1,33 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-publishUnpublish-confirm.vm,v 1.5 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## confirming the publish status
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Confirming the publish status for $validator.escapeHtml($title)
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form name="publishSendEmailForm" action="#toolForm("SiteAction")" method="post">
+			<div class ="chefPageviewTitle">
+				Click Finish below to change the status of your site to be #if ($!publish) published #else unpublished#end.
+				<p />
+				 #if ($!publish)
+					Participants#if ($!willNotify) will#else will not#end be notified of the site's availability.
+					<p />
+				#end
+				#if ($!publish)
+					A published site is viewable to all participants. 
+				#else
+					Unpublished sites are only viewable to those with permission to setup the site. For example, participants with the Student and Member role cannot see the site when it is unpublished, but those with the Assistant and Instructor roles can.
+				#end
+			</div>
+			<input type="hidden" name="back" value="$backIndex" />		
+			<input type="hidden" name="template-index" value="47" />
+			<input type="hidden" name="continue" value="$continueIndex" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Finish" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>				
+	</div>
+</div>	

@@ -1,0 +1,207 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addRemoveFeature.vm,v 1.10 2004/09/22 01:22:10 rwellis.umich.edu Exp $ -->
+## Adding/removing features in course, diss, proj sites
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class ="chefPortletToolBarMessage">
+		Revising site tools for $validator.escapeHtml($SiteTitle)...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		<div class="chefPageviewTitle">
+			Check boxes to add or remove tools from your site.
+		</div>
+		<form name="addremovefeaturesForm" action="#toolForm("$action")" method="post">
+			<input type="hidden" name="option" value="add" />
+			<input type="hidden" name="courseOrProject" value="$courseOrProject" />
+			<input type="hidden" name="eventSubmit_doAdd_remove_features" value="x" />
+			<fieldset>
+				<legend>
+					Tools
+				</legend>
+				<table cellspacing="0" cellpadding="3">
+					<tr>
+						<td  valign = "top">
+							#if (!$myworkspace_site && !$gradtools_rackham_site && !$gradtools_department_site)
+								<input type="checkbox" name="selectedTools" value="ctng.home"
+									#if ($check_home)
+										checked="checked"
+									#end
+								/>
+							#else
+								#if ($check_home)
+									<input type="hidden" name="selectedTools" value="ctng.home" />
+								#end
+							#end
+						</td>
+						#if($course_site)
+							<td  valign = "top">Home</td><td>Description of the class, recent announcements, discussion, and chat items.</td>
+						#else
+							#if($project_site || $gradtools_student_site)
+								<td  valign = "top">Home</td><td>Description of the project, recent announcements, discussion, and chat items.</td>
+							#end
+						#end
+					</tr>	
+					#set ($checkedNewsTool = 0)
+					#set ($checkedWCTool = 0)
+					#if (!$myworkspace_site && !($gradtools_student_site || $gradtools_rackham_site || $gradtools_department_site ))
+						<input type="hidden" name="selectedTools" value="chef.contactSupport" />
+					#end
+					#if (!$myworkspace_site)
+						<input type="hidden" name="selectedTools" value="chef.siteinfo" />
+					#end
+					#if($gradtools_student_site || $gradtools_rackham_site || $gradtools_department_site)
+						<input type="hidden" name="selectedTools" value="chef.aboutGradTools" />
+						<input type="hidden" name="selectedTools" value="chef.gradToolsHelp" />
+						<input type="hidden" name="selectedTools" value="chef.dissertation" />
+					#end
+					#if ($gradtools_rackham_site)
+						<input type="hidden" name="selectedTools" value="chef.dissertation.upload" />
+					#end
+					
+					#foreach($tool in $toolRegistrationList)
+						#set($toolId = $tool.getId())
+						#set ($toolfound=false)
+						#if($toolRegistrationSelectedList)
+							#foreach($tId in $toolRegistrationSelectedList)
+								#if($tId == $toolId)
+									#set($toolfound=true)
+								#end
+							#end
+						#end
+						#if ($myworkspace_site)
+							#if ($toolId == "chef.aboutGradTools" || $toolId == "chef.gradToolsHelp" || $toolId == "chef.dissertation") 
+								<input type="hidden" name="selectedTools" value="$toolId" />
+							#else
+								#if ($toolId.indexOf("chef.news") == -1 && $toolId.indexOf("chef.iframe") == -1)
+									##for tools other than News and WebContent tool
+									#if ($toolfound)
+										<input type="hidden" name="selectedTools" value="$toolId" />
+									#end
+								#end
+							#end
+						#end
+						#if (!$myworkspace_site)
+							<tr>
+								#if($toolId == "chef.contactSupport" && ($gradtools_student_site || $gradtools_rackham_site || $gradtools_department_site))
+								#else
+									<td valign="top">
+										<input type="checkbox" name="selectedTools" value="$toolId" 
+											#if ($toolId == "chef.contactSupport")
+												checked="checked" disabled="disabled" 
+											#elseif ($toolId == "chef.siteinfo")
+												checked="checked" disabled="disabled" 
+											#elseif ($toolId == "chef.aboutGradTools")
+												checked="checked" disabled="disabled" 
+											#elseif ($toolId == "chef.gradToolsHelp")
+												checked="checked" disabled="disabled" 
+											#elseif ($toolId == "chef.dissertation")
+												checked="checked" disabled="disabled"
+											#elseif ($toolId == "chef.dissertation.upload")
+												checked="checked" disabled="disabled"
+											#else
+												#if($toolRegistrationSelectedList)
+													#foreach($tId in $toolRegistrationSelectedList)
+														#if ($tId == $toolId)
+															checked="checked"
+														#end
+													#end
+												#end
+												#if ($toolId.indexOf("chef.news") != -1)
+													onClick="document.addremovefeaturesForm.option.value='addNews';javascript:document.addremovefeaturesForm.submit();"
+												#elseif ($toolId.indexOf("chef.iframe") != -1)
+													onClick="document.addremovefeaturesForm.option.value='addWebContent';javascript:document.addremovefeaturesForm.submit();"
+												#end
+											#end
+										/>
+									</td>
+									<td valign="top">
+										$tool.getTitle()
+									</td>
+									<td valign="top">
+										$tool.getDescription()
+										#if ($toolId == "chef.mailbox")
+											<br />Enter an email address: <input type="text"  name="emailId" value="$!emailId" size="32" style="width: 10em" />@$serverName
+										#elseif ($toolId.indexOf("chef.news") != -1)
+											#set($name = "titlefor")
+											#set($name = $name.concat($toolId))
+											<br />Choose a title: <input type="text"  name="$name" value="$!newsTitles.get($toolId)" size="32" style="width: 10em" />
+										#elseif ($toolId.indexOf("chef.iframe") != -1)
+											#set($name = "titlefor")
+											#set($name = $name.concat($toolId))
+											<br />Choose a title: <input type="text"  name="$name" value="$!wcTitles.get($toolId)" size="32" style="width: 10em" />
+										#end
+									</td>
+								#end
+							</tr>	
+						#else
+							##if of type MyWorkspace
+							#if ($toolId != "chef.aboutGradTools" && $toolId != "chef.gradToolsHelp" && $toolId != "chef.dissertation") 
+								#if ($toolId.indexOf("chef.news") != -1 || $toolId.indexOf("chef.iframe") != -1)
+									<tr>
+										<td valign="top">
+											<input type="checkbox" name="selectedTools" value="$toolId"
+												#if ($toolfound)
+													checked="checked"
+												#end 
+												#if ($toolId.indexOf("chef.news") != -1)
+													onClick="document.addremovefeaturesForm.option.value='addNews';javascript:document.addremovefeaturesForm.submit();"
+												#elseif ($toolId.indexOf("chef.iframe") != -1)
+													onClick="document.addremovefeaturesForm.option.value='addWebContent';javascript:document.addremovefeaturesForm.submit();"
+												#end
+											/>
+										</td>
+										<td valign="top">
+											$tool.getTitle()
+										</td>
+										<td valign="top">
+											$tool.getDescription()
+											#if ($toolId == "chef.mailbox")
+												<br />Enter an email address: <input type="text"  name="emailId" value="$!emailId" size="32" style="width: 10em" />@$serverName
+											#elseif ($toolId.indexOf("chef.news") != -1)
+												#set($name = "titlefor")
+												#set($name = $name.concat($toolId))
+												<br />Choose a title: <input type="text"  name="$name" value="$!newsTitles.get($toolId)" size="32" style="width: 10em" />
+											#elseif ($toolId.indexOf("chef.iframe") != -1)
+												#set($name = "titlefor")
+												#set($name = $name.concat($toolId))
+												<br />Choose a title: <input type="text"  name="$name" value="$!wcTitles.get($toolId)" size="32" style="width: 10em" />
+											#end
+										</td>
+									</tr>	
+								#else
+									#if ($toolfound)
+										<tr>
+											<td>
+												&nbsp;
+											</td>
+											<td valign="top">
+												$tool.getTitle()
+											</td>
+											<td>
+												$tool.getDescription()
+											</td>
+										</tr>	
+									#end
+								#end
+							#end
+						#end
+					#end
+				</table>
+			</fieldset>	
+			<input type="hidden" name="back" value="$backIndex" />
+			<input type="hidden" name="template-index" value="21" />
+			<input type="hidden" name="continue" value="45"/>
+			<div class="chefButtonRow">
+				<input type="submit" name="Continue" 
+						value="Continue" 
+						onclick="document.addremovefeaturesForm.option.value='save';javascript:document.addremovefeaturesForm.submit();" />
+				<input type="submit" name="Cancel" 
+						value="Cancel" 
+						onclick="document.addremovefeaturesForm.option.value='cancel';javascript:document.addremovefeaturesForm.submit();" />
+			</div>
+		</form>
+	</div>
+</div>

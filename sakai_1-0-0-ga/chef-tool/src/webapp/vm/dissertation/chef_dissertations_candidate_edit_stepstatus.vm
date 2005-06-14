@@ -1,0 +1,61 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_candidate_edit_stepstatus.vm,v 1.3 2004/07/26 20:12:26 rwellis.umich.edu Exp $ -->
+## Dissertations - Candidate's edit Dissertation Step view
+<div class="chefPortletContainer">
+	<div class="chefPageviewTitle">
+		Revise A Step
+	</div>
+	<form name="editForm" id="editForm" action="#toolForm($action)" method="post" >
+		<fieldset>
+			<legend>
+				Revise Step
+			</legend>
+			<div class="chefPortletContent">
+				<input type="hidden" name="statusreference" id="statusreference" value="$step.Reference" />
+				<table class="chefEditItem">
+					<tr> 
+						<td class="chefLabel" align="left" width="20%">
+							<label for="desc"><span class="chefRequiredInline">&nbsp;</span>Description&nbsp;:&nbsp;</label>
+						</td>
+						<td colspan=2>
+							<textarea name="desc" cols="70" rows="6" id="desc" wrap="virtual">$validator.escapeHtmlTextarea($step.InstructionsText)</textarea>
+						</td>
+					</tr>
+					#if ($currentprerequisites.hasNext())
+						<tr valign="top">
+							<td class="chefLabel" valign="top" width="20%">
+								<label for="removeprereq">Current prerequisites&nbsp;:&nbsp;<br />Select to remove. </label>
+							</td>
+							<td align="left">
+								<select onchange="blur()" name="removeprereqs" id="removeprereqs" multiple="multiple" tabindex="6">
+									#foreach ($currentprereq in $currentprerequisites)
+										<option value="$currentprereq.Reference">$currentprereq.ShortInstructionsText</option>
+									#end
+								</select>
+							</td>
+						</tr>
+					#else
+						<tr valign="top" clientHeight="100" offsetHeight="100">
+							<td clientHeight="100" offsetHeight="100" valign="top" width="20%">Current prerequisites&nbsp;:&nbsp;</td>  <td align="left">none</td>
+						</tr>
+					#end
+					<tr valign="top">
+						<td class="chefLabel" valign="top" width="20%">
+							<label for="addprereq">Add prerequisites for this step&nbsp;:&nbsp;</label>
+						</td>
+						<td align="left">
+							<select onchange="blur()" name="addprereqs" id="addprereqs" multiple="multiple" tabindex="6">
+								#foreach ($prereq in $prerequisites)
+									<option value="$prereq.Reference">$prereq.ShortInstructionsText</option>
+								#end
+							</select>
+						</td>
+					</tr>
+				</table>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doUpdate_stepstatus" value="Save" />
+					<input type="submit" name="eventSubmit_doCancel_candidate" value="Cancel" />
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>

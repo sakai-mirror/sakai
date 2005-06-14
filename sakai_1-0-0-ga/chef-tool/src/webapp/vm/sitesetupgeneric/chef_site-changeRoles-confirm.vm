@@ -1,0 +1,62 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-changeRoles-confirm.vm,v 1.1 2004/10/13 23:20:14 zqian.umich.edu Exp $ -->
+## Confirming changing roles of participant
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Confirming role change for $validator.escapeHtml($siteTitle)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		<div class="chefPageviewTitle">
+			The following roles will be assigned when you click the Finish button below.
+		</div>
+		<form name="roleConfirmForm" action="#toolForm("SiteAction")" method="post">
+			## change all participant role
+			<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds information of selected participants and their roles">
+				<tr>
+					<th id="name">
+						Name
+					</th>
+					<th id="uniqname">
+						Uniqname
+					</th>
+					<th id="id">
+						Roles
+						<a href="$config.getString("help.rolesurl")" target="umcthelp" onclick="sitehelp('$config.getString("help.rolesurl")');return false" title="Help on roles" ><img src = "#imageLink("help.gif")" border="0" alt ="Help" /></a>
+					</th>
+				</tr>
+				#foreach($participant in $participantSelectedList)
+					<tr>
+						<td headers="name">
+							$participant.getName()
+						</td>
+						<td headers="uniqname">
+							#set($uniqname=$participant.getUniqname())
+							$!uniqname
+						</td>
+						<td headers="id">
+							#if ($participantSelectedList.size() == 1 || $sameRole)
+								$!currentRole
+							#else
+								#set($role = "")
+								#set($role = $!selectedRoles.get($!uniqname))
+								$!role
+							#end
+						</td>
+					</tr>
+				#end
+			</table>
+			<br/>
+			<input type="hidden" name="back" value="30" />
+			<input type="hidden" name="template-index" value="56" />
+			<input type="hidden" name="continue" value="49" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doUpdate_participant_roles" value="Finish" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

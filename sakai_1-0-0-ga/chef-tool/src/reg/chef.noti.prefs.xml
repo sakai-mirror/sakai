@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="prefs.add" />
+	<function name="prefs.upd" />
+	<function name="prefs.del" />
+
+	<tool
+			id="chef.noti.prefs"
+			url="/sakai-chef-tool/chef-noti-prefs"
+			title="Preferences"
+			description="Select how you want to be notified of changes in sites.">
+
+	</tool>
+
+</registration>

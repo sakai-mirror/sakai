@@ -1,0 +1,46 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-customLayout.vm,v 1.2 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Creating a custom site - specify details
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+            Customizing background for $validator.escapeHtml($SiteTitle)...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Complete the form then choose 'save' at the bottom.
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Background
+				</legend>
+	
+					#if($course_site)
+							<p>Use background of affiliated unit:</p>
+						#if(!$form_css)
+							#set($form_css = "ctng.css")
+						#end
+						<div class ="chefLeftIndent">
+							#foreach($skin in $skins)	
+								<input type="radio" name="skin" value="$skin.css" id ="$skin.css" #if($skin.css == $form_css) checked="checked"#end />
+								<label for = "$skin.css">$skin.unit</label>
+								<br />
+							#end	 
+						</div>	
+					#else
+                  Enter the URL to the project's icon you would like to display above the left navigation (optimal size 120 W x 80 H pixels).<br />
+						<input type = "text" name="iconUrl" value="$!form_iconUrl" /> 
+					#end
+                                        
+			</fieldset>
+				<input type="hidden" name="back" value="15" />
+				<input type="hidden" name="template-index" value="22"/>
+				<input type="hidden" name="continue" value="15" />
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Save" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

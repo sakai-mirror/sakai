@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="disc.new" />
+	<function name="disc.read" />
+	<function name="disc.revise.any" />
+	<function name="disc.revise.own" />
+	<function name="disc.delete.any" />
+	<function name="disc.delete.own" />
+	<function name="disc.read.drafts" />
+	<function name="disc.new.topic" />
+
+	<tool
+			id="chef.discussion"
+			url="/sakai-chef-tool/chef-discussion"
+			title="Discussion"
+			description="For conversations in written form.">
+
+		<configuration name="category" value="false" />
+		<configuration name="channel" value="" />
+
+	</tool>
+
+</registration>

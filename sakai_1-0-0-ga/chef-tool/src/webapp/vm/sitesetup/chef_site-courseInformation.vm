@@ -1,0 +1,121 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-courseInformation.vm,v 1.6 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Creating course site step 3/4: pick up the description, comment, email alias, and skin for the site
+<script language="JavaScript">
+function LimitText(fieldObj,maxChars)
+{
+	var result = true;
+  	if (fieldObj.value.length >= maxChars)
+  	{
+  		fieldObj.value = fieldObj.value.substring(0,maxChars);
+		result = false;
+   	}
+  
+  	if (window.event)
+    	window.event.returnValue = result;
+    
+  	return result;
+}
+</script>
+  
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Creating a course site...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		<div class="chefPageviewTitle">
+			Step#if($from_auto_manual) 4#else 3#end: Enter information about the class. A <span class ="chefRequiredInline"> means</span> required information. <br /><br />
+			You are setting up a class site that includes the following class/sections:
+			<ul>
+				#foreach ($item in $selectedUmiacCourseSection)
+					<li>$item </li>
+				#end
+				#if ($fromManualAdd)
+					#foreach ($i in [0..$!manualAddNumber])
+						<li>(requested) $manualAddSubjects.get($i), $manualAddCourses.get($i), $manualAddSections.get($i)</li>
+					#end
+				#end
+			</ul>
+		</div>
+		<fieldset>
+			<legend>
+				Class information
+			</legend>
+			<form name = "classInformationForm" method = "post" action="#toolForm("SiteAction")">
+				<div class="chefSectionMessage">
+					<table class="chefEditItem">
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Description:
+							</td>
+							<td align="left">
+								<textarea name="description" rows="5" cols="40" tabindex="1" wrap="virtual">$validator.escapeHtmlTextarea($form_description)</textarea>
+								<div class="chefInlineInstructions">
+									Displayed on the site's home page.
+								</div>
+							</td>					
+						</tr>
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Short description:
+							</td>
+							<td>
+								<textarea name="short_description" id="short_description" tabindex="2" rows="2" cols="45" onkeyup="LimitText(this,80)">$validator.escapeHtmlTextarea($form_short_description)</textarea>
+								<div class="chefInlineInstructions">
+									Displayed in publicly viewable list of sites. Max 80 characters.
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Appearance:
+							</td>
+							<td>
+								<select name="skin" id="skin">
+									#foreach ($skin in $skins)
+										#if ($skin.css == $form_skin)
+											<option value="$skin.css" selected="selected">$skin.Unit</option>
+										#else
+											<option value="$skin.css">$skin.Unit</option>
+										#end
+									#end
+								</select>
+								<div class="chefInlineInstructions">
+									Site will have school affiliated look and feel.	
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Site contact name:
+							</td>
+							<td>
+								<input type="text" name="siteContactName" id="siteContactName" size="20" value="$!form_site_contact_name" />
+							</td>
+						</tr>
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Site contact email:
+							</td>
+							<td>
+								<input type="text" name="siteContactEmail" id="siteContactEmail" size="20" value="$!form_site_contact_email" />
+							</td>
+						</tr>
+					</table>
+				</div>	
+				<br />
+			</fieldset>	
+				<input type="hidden" name="back" value="$back" />
+				<input type="hidden" name="template-index" value="11" />
+				<input type="hidden" name="continue" value="4" />
+				<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue"/>
+				<input type="submit" name="eventSubmit_doBack" value="Back"/>
+				<input type="submit" name="eventSubmit_doCancel_create" value="Cancel"/>
+			</div>
+		</form>
+	</div>
+</div>

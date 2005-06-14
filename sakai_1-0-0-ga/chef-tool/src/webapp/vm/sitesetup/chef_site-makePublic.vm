@@ -1,0 +1,47 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-makePublic.vm,v 1.3 2004/09/10 02:27:51 janderse.umich.edu Exp $ -->
+##Make a site joinable 
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Editing participation for $validator.escapeHtml($SiteTitle)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form action="#toolForm("SiteAction")" method="post">
+			<fieldset>
+				<legend>
+					Participation
+				</legend>
+				<input type="radio" name="joinable" id="false" value="false" 
+					#if(!$form_joinable)
+							checked="checked" />
+					#else
+							checked="checked" />	
+					#end
+				<label for = "false">
+					Open only to those you add<br />
+				</label>
+				<br />
+				<input type="radio" name="joinable" id="true" value="true" #if($form_joinable)checked="checked" #end />
+					<label for="true">Open to any $config.getString("ui.service") user</label><br /><br />
+
+					<div class="chefLeftIndent">
+						Role to assign to users who join the site:
+						<a href="$config.getString("help.rolesurl")" target="umcthelp" onclick="sitehelp('$config.getString("help.rolesurl")');return false" title="Help on roles" ><img src = "#imageLink("help.gif")" border="0" alt ="Help" /></a>
+						<br />
+						#foreach($role in $roles)
+							<input type="radio" name="joinerRole" id ="$role.getId()" value="$role.getId()"#if($form_joinerRole == $role.getId()) checked="checked"#end />
+							<label for = "$role.getId()">$role.getId()</label><br />
+						#end
+					</div>	
+               <br />
+			</fieldset>
+				<input type="hidden" name="continue" value="15" />
+				<input type="hidden" name="template-index" value="32" />
+				<input type="hidden" name="back" value="15" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Save" />
+				<input type="submit" name="eventSubmit_doBack" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

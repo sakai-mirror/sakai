@@ -1,0 +1,84 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addMyWorkspaceFeature.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Adding features to My Workspace site
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class ="chefPortletToolBarMessage">
+		Adding tools to My Workspace...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Check boxes to add tools to My Workspace.
+		</div>
+			<form action="#toolForm("$action")" method="post">
+				<fieldset>
+					<legend>
+						Tools
+					</legend>
+						<table class ="chefFlatListViewTable" cellspacing="0" cellpadding="0" summary="List of tool registrations that may be added once.">
+								<tr>
+									<td  valign = "top" align="left">
+										#if(!$existsHome)
+											<input type="checkbox" name="selected" value="Home" />
+										#else
+											&nbsp;&nbsp;
+										#end
+									</td>
+									<td valign="top" align="left">
+										Home
+									</td>
+									<td align="left">
+										For viewing the Message of the Day and My Workspace information.
+									</td>
+								</tr>
+								#foreach($tool in $singleToolRegistrations)
+								#set($show = 0)
+								#if($MyWorkspaceTools)
+									#foreach($exists in $MyWorkspaceTools)
+										#if($tool.getId() == $exists.getToolId())
+											#set($show = 1)
+										#end
+									#end
+								#end	
+								<tr>
+									<td  valign = "top" align="left">
+									#if($show == 0)
+										<input type="checkbox" name="selected" value="$tool.getId()" />
+									#else
+										&nbsp;&nbsp;
+									#end
+									</td>
+									<td valign = "top" align="left">
+										$tool.getTitle()<br />
+									</td>
+									<td valign = "top" align="left">
+										$tool.getDescription()<br />
+									</td>
+								</tr>
+											
+							#end
+							#foreach($tool in $multipleToolRegistrations)
+								<tr>
+									<td  valign = "top" align = "left">
+										<input type="checkbox" name="selected" value="$tool.getId()" />
+									</td>
+									<td valign = "top" align = "left">
+										<div class="chefSectionTitle">$tool.getTitle()</div>
+									</td>
+									<td valign = "top" align = "left">
+										<div class="chefSectionMessage">Choose a unique title: <input type="text" name="$tool.getId()" value="$!tool.getTitle()"></div>
+									</td>
+								</tr>
+							#end
+						</table>
+						<div class="chefButtonRow">
+							<input type="hidden" name="back" value="15" />
+							<input type="hidden" name="template-index" value="36" />
+							<input type="hidden" name="continue" value="15"/>
+							<input type="submit" name="eventSubmit_doAdd_myworkspace_feature" value="Save">
+							<input type="submit" name="eventSubmit_doCancel" value="Cancel">
+						</div>
+			</fieldset>	
+		</form>		
+	</div>
+</div>

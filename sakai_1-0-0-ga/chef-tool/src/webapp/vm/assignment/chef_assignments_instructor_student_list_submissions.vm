@@ -1,0 +1,226 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/assignment/chef_assignments_instructor_student_list_submissions.vm,v 1.2 2004/09/30 15:00:51 zqian.umich.edu Exp $ -->
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<div class="chef2ndToolbarWrap">
+		<table class="chef2ndToolbar" cellspacing="0" summary="this is for second toolbar, containing dropdown view list, search area and paging" >
+			<tr class="first">
+				<td class="left">
+					<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("AssignmentAction")">
+						<input type="hidden" name="eventSubmit_doView" value="view" />
+						View:
+						<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+							#foreach ($view in ["Please Choose a View", "List of Assignments", "List of Assignments by student", "Grade Report", "Student View"])
+								#if ($selectedView.equals($view))
+									<option value="$view" selected="selected" >$view</option>
+								#else
+									<option value="$view" >$view</option>
+								#end
+							#end
+						</select>
+					</form>
+				</td>
+				<td class="right">
+					#*removed for now
+						<form name="searchForm" class="toolbarForm" action="#toolForm("AssignmentAction")" method="post">
+						<input size="20" value="$searchString" name="$form_search" id="$form_search" type="text" class="searchField" style="background-color:#fff;width:10em;color:#000" />
+						<input type="submit" name="eventSubmit_doSearch" value="Search" accesskey="a" />
+						#if (($!searchString) && (!$searchString.equals("")))
+							<input type="submit" name="eventSubmit_doSearch_clear" value="Clear Search" accesskey="a" />
+						#end
+					</form>*#
+					&nbsp;
+				</td>
+			</tr>
+			#if (($prev_page_exists) || ($next_page_exists))
+				<tr class="second">
+					<td class="left">
+						&nbsp;
+					</td>
+					<td class="right">
+						<form name="pagingForm" class="toolbarForm" method="post">
+							#if ($paged)
+								#if ($totalPageNumber > 1)
+									Page:
+									#if ($prev_page_exists)
+										<a href="#toolLink("AssignmentAction" "doList_prev")" title="View Previous Page"><img src="#imageLink("chef/back.gif")" alt="View Previous Page" border="0" width="4" height="9" align="baseline" /></a>
+									#else
+										<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+									#end
+									#foreach ($pageNumber in [1..$totalPageNumber])
+										#if ($pageNumber == $current_page)
+											<span class="chefAlert">$pageNumber</span>
+										#else
+											<a href="#toolLink("AssignmentAction" "doView_page")&$formPageNumber=$pageNumber" title="View page $pageNumber of $totalPageNumber">$pageNumber</a>
+										#end
+									#end
+									#if ($next_page_exists)
+										<a href="#toolLink("AssignmentAction" "doList_next")" title="View Next Page"><img src="#imageLink("chef/forward.gif")" alt="View Next Page" border="0" width="4" height="9" align="baseline" /></a>
+									#else
+										<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+									#end
+									|
+									<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show All">
+										Show All
+									</a>
+								#end
+							#else
+								<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show Paging">
+									Pages</a>
+								| Show All
+							#end
+						</form>
+					</td>
+				</tr>
+			#end	
+		</table>
+	</div>
+	<div class="chefPortletContent">
+		<div class="chefPageviewTitle">
+			 Choose triangular icon to view a student's status for assignments.
+		</div>
+		<form name="studentAssignmentForm" action="#toolForm("AssignmentAction")" method="post">
+	## -> shows table headers when there are no submissions (gsilver - delete this comment when done, OK?)
+			#if ($assignments.size()==0)
+				<div class="chefPageviewTitle">
+					<div class ="chefLeftIndent">
+						There are no submissions.
+					</div>	
+				</div>
+			#else
+				<table class="chefFlatListViewTable" cellspacing="0" summary="List the student submission for every assignment.">
+					<tr>
+						<th id="studentname">
+							Student
+						</th>
+						<th id="assignment">
+							Assignment
+						</th>
+						<th id="submitted">
+							Submitted
+						</th>
+						<th id="status">
+							Status
+						</th>
+						<th id="grade">
+							Grade
+						</th>
+					</tr>
+					#foreach ($member in $studentMembers)
+						<tr>
+							<td headers="studentname">	
+								#if (!$studentListShowTable.containsKey($member.Id))
+									<a href="#" onclick="location='#toolLink("AssignmentAction" "doShow_student_submission")&studentId=$member.Id'; return false;" title="Show student's assignments/submissions"><img src="#imageLink("chef/expand.gif")" alt="Show student's assignments/submissions" width="15" height="15" border="0" /></a>
+								#else
+									<a href="#" onclick="location='#toolLink("AssignmentAction" "doHide_student_submission")&studentId=$member.Id'; return false;" title="Hide student's assignments/submissions"><img src="#imageLink("chef/collapse.gif")" alt="Hide student's assignments/submissions" width="15" height="15" border="0" /></a>
+								#end
+								$member.DisplayName
+							</td>
+							<td colspan="4">
+							</td>
+						</tr>
+						#if ($studentListShowTable.containsKey($member.Id))
+							#foreach ($assignment in $assignments)
+								#set ($deleted = false)
+								#set ($deleted = $assignment.getProperties().getProperty($assignment.getProperties().getNamePropAssignmentDeleted()))
+								#if (!$assignment.Draft && !$deleted.equalsIgnoreCase("true"))
+									## not show the draft assignment
+									#set($submission = false)
+									#set($submission = $assignmentService.getSubmission($assignment.Reference, $member))
+									<tr>
+										<td headers="studentname">
+											&nbsp;
+										</td>
+										<td headers="assignment">
+											$validator.limit($validator.escapeHtml($assignment.Title), 40)
+											&nbsp;
+										</td>
+										<td headers="submitted">
+											#if ($!submission.submitted)
+												$!submission.TimeSubmitted.toStringLocalFull()
+												#if ($submission.getTimeSubmitted().after($assignment.DueTime))<span class="chefAlert">- late</span>
+												#end
+											#end
+											&nbsp;
+										</td>
+										<td headers="status">
+											#if ($!submission.Returned)
+												Returned
+											#else
+												#if ($!submission.getGraded())
+													#if ($!submission.getGradeReleased())
+														Released
+													#else
+														Graded
+													#end
+												#else
+													#if ($!submission.Submitted)
+														Ungraded
+													#end
+												#end
+											#end
+											&nbsp;
+										</td>
+										<td headers="grade">
+											#if ($!submission.Graded && ($!submission.GradeReleased || $!submission.Returned))
+												##show grade when it is released or when submission is returned
+												#if ($assignment.getContent().TypeOfGrade == 1)
+													No Grade
+												#else
+													$!submission.gradeDisplay
+												#end
+											#end
+										</td>
+									</tr>
+								#end
+							#end
+						#end
+					#end
+				</table>
+			#end
+		</form>
+		#if (($prev_page_exists) || ($next_page_exists))
+			<table class="chef2ndToolbar" cellspacing="0" summary="Paging" style="margin-top:30px">
+				<tr class="second">
+					<td class="left">
+						&nbsp; 
+					</td>
+					<td class="right">
+						<form name="pagingForm" class="toolbarForm" method="post">
+							#if ($paged)
+								#if ($totalPageNumber > 1)
+									Page:
+									#if ($prev_page_exists)
+										<a href="#toolLink("AssignmentAction" "doList_prev")" title="View Previous Page"><img src="#imageLink("chef/back.gif")" alt="View Previous Page" border="0" width="4" height="9" align="baseline" /></a>
+									#else
+										<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+									#end
+									#foreach ($pageNumber in [1..$totalPageNumber])
+										#if ($pageNumber == $current_page)
+											<span class="chefAlert">$pageNumber</span>
+										#else
+											<a href="#toolLink("AssignmentAction" "doView_page")&$formPageNumber=$pageNumber" title="View page $pageNumber of $totalPageNumber">$pageNumber</a>
+										#end
+									#end
+									#if ($next_page_exists)
+										<a href="#toolLink("AssignmentAction" "doList_next")" title="View Next Page"><img src="#imageLink("chef/forward.gif")" alt="View Next Page" border="0" width="4" height="9" align="baseline" /></a>
+									#else
+										<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+									#end
+									|
+									<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show All">
+										Show All
+									</a>
+								#end
+							#else
+								<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show Paging">
+									Pages</a>
+								| Show All
+							#end
+						</form>
+					</td>
+				</tr>
+			</table>
+		#end	
+	</div>
+</div>

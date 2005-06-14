@@ -1,0 +1,89 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-basicInformation.vm,v 1.5 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+##Customizing site setup...Basic information
+
+<script type="text/javascript">
+	focus_path = [ "description" ];
+
+	function LimitText(fieldObj,maxChars)
+	{
+	  var result = true;
+	  if (fieldObj.value.length >= maxChars)
+	    result = false;
+	  
+	  if (window.event)
+	    window.event.returnValue = result;
+	  return result;
+	}
+</script>
+<div class ="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Revising site...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form action="#toolForm("$action")" method="post">
+
+			<fieldset>
+				<legend>
+					Basic site information
+				</legend>
+				<table class ="chefEditItem">
+					<tr>
+						<td class = "chefLabel">
+							<span class ="chefLabel">&nbsp;</span>Title:
+						</td>
+						<td colspan="2">
+							$validator.escapeHtml($form_title)
+						</td>
+					</tr>
+					#if ($!form_projectsite)
+						<tr>
+							<td>
+								&nbsp;
+							</td>
+							<td valign="top">
+								#if ($form_include)
+									<input id="include" type="checkbox" name="include" value="true" checked="checked" />
+								#else
+									<input id="include" type= "checkbox" name="include" value="true" />
+								#end
+							</td>
+							<td>
+								Include this site in the Sites list 
+								<div class="chefInlineInstructions">
+									The sites list is where the public can browse a list of all sites and see site description without logging in.
+								</div>
+							</td>
+						</tr>
+					#end
+					<tr>
+						<td class = "chefLabel">
+							Description:
+						</td>
+						<td colspan="2">
+							<textarea name="description" id="description" rows="4" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($!form_description)</textarea>
+						</td>
+					</tr>
+					#if (!$form_gradtoolssite)
+					<tr>
+						<td class = "chefLabel">
+							Short description:
+						</td>
+						<td colspan="2">
+							<textarea name="short_description" id="short_description" tabindex="2" rows="2" cols="45" onkeypress="LimitText(this,80)" wrap="hard">$validator.escapeHtmlTextarea($!form_short_description)</textarea>
+						</td>
+					</tr>
+					#end
+				</table>		
+			</fieldset>	
+				<input type="hidden" name="template-index" value="16" />
+				<input type="hidden" name="back" value="15" />
+				<input type="hidden" name="continue" value="15" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Save" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

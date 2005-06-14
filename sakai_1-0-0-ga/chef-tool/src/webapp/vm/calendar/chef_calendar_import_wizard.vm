@@ -1,0 +1,135 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/calendar/chef_calendar-customize_fields.vm,v 1.1 2004/03/09 04:32:46 ggolden Exp $
+
+<script type="text/javascript">
+  focus_path = [ "textfield" ];
+</script>
+<div class="chefPortletContainer"> 
+	<div class ="chefPortletToolBarMessage">
+		#if ($importWizardState == "SELECT_TYPE")
+		Step 1 of 3: Selecting a type of calendar to import...
+		#elseif ($importWizardState == "GENERIC_SELECT_FILE")
+		Step 2 of 3: Doing a generic calendar import...
+		#elseif ($importWizardState == "OTHER_SELECT_FILE")
+		Step 2 of 3: Uploading calendar data...
+		#elseif ($importWizardState == "CONFIRM_IMPORT")
+		Step 3 of 3: Previewing calendar items to import...
+		#end
+	</div>
+	<div class="chefPortletContent">
+			<script> var a = document.MyCalendar; </script>
+			
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		
+		<div class="chefPageviewTitle">
+			
+			#if ($importWizardState == "SELECT_TYPE")
+				Select the type of calendar to import...
+				
+			#elseif ($importWizardState == "GENERIC_SELECT_FILE")
+			To do an import of generic calendar data, first download a zip file of our templates and a README instruction file. The templates are comma-separated files (.csv) and should open in Excel or a similar program. Copy and paste your data into the appropriate columns. Make sure your data matches the formats for dates and times. You may also choose activity types.<br/><br/>
+			<a href="#scheduleLink("CToolsCalendarTemplate.zip")" title="CToolsCalendarTemplate.zip" target="_blank">
+					<img src = "#imageLink("chef/excel_sc.gif")" border="0" alt="CTools Generic Import Template" />
+					CTools Generic Import Template
+				</a><br/><br/>
+				When you are done formatting your import file, upload it below.<br/>
+				
+			#elseif ($importWizardState == "OTHER_SELECT_FILE")
+				Browse your computer to find your exported calendar data, and upload it below.
+				
+			#elseif ($importWizardState == "CONFIRM_IMPORT")
+					Your custom import has $wizardImportedEvents.size() items. Please confirm that they are correct below. To drop any item that you do not want, uncheck the box next to it.<br/><br/>
+			#end
+		</div>
+
+		#if ($importWizardState == "SELECT_TYPE")
+			<form name="Options" action="#toolForm("$action")" method="post">
+				<input type="radio" name="importType" id="importType" value="Outlook"/>Microsoft Outlook<br/>
+				<input type="radio" name="importType" id="importType" value="MeetingMaker"/>Meeting Maker<br/>
+				<input type="radio" name="importType" id="importType" value="CSV" checked="checked"/>Generic calendar import (comma-separate values)<br/>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doScheduleContinue" value="Continue" />
+					<input type="submit" name="eventSubmit_doCancelImportWizard" value="Cancel" />
+				</div>
+			</form>
+		#elseif ($importWizardState == "GENERIC_SELECT_FILE")
+			<form name="Options" action="#toolForm("$action")" method="post" enctype="multipart/form-data">
+				File: <input type="file" name="importFile" id="importFile" class="upload" size="60" />
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doScheduleContinue" value="Continue" />
+					<input type="submit" name="eventSubmit_doScheduleBack" value="Back" />
+					<input type="submit" name="eventSubmit_doCancelImportWizard" value="Cancel" />
+				</div>
+			</form>
+		#elseif ($importWizardState == "OTHER_SELECT_FILE")
+			<form name="Options" action="#toolForm("$action")" method="post" enctype="multipart/form-data">
+				File: <input type="file" name="importFile" id="importFile" class="upload" size="60" />
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doScheduleContinue" value="Continue" />
+					<input type="submit" name="eventSubmit_doScheduleBack" value="Back" />
+					<input type="submit" name="eventSubmit_doCancelImportWizard" value="Cancel" />
+				</div>
+			</form>
+		#elseif ($importWizardState == "CONFIRM_IMPORT")
+			<form name="Options" action="#toolForm("$action")" method="post">
+					<table class="chefFlatListViewTable" cellspacing="0">
+						<tr>
+							<th scope="col">Keep?</th>
+							<th scope="col">Date</th>
+							<th scope="col">Activity and Time</th>
+						</tr>
+
+					#foreach($impEvent in $wizardImportedEvents)
+					  <tr>
+					    <td nowrap="nowrap" ><input name="eventSelected$impEvent.getLineNumber()" id="eventSelected$impEvent.getLineNumber()" type="checkbox" value="true" checked></td>
+					    <td nowrap="nowrap" >$impEvent.getDisplayStartDate()</td>
+					    <td nowrap="nowrap" >
+                            #if($impEvent.getType()=="Academic Calendar")
+                            	<img src = "#imageLink("chef/academic_calendar.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif ($impEvent.getType()=="Activity")
+                                <img src = "#imageLink("chef/activity.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif($impEvent.getType()=="Cancellation")
+                                <img src = "#imageLink("chef/cancelled.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif ($impEvent.getType()=="Class section - Discussion")
+                                <img src = "#imageLink("chef/class_dis.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif ($impEvent.getType()=="Class section - Lab")
+                                <img src = "#imageLink("chef/class_lab.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif ($impEvent.getType()=="Class section - Lecture")
+                                <img src = "#imageLink("chef/class_lec.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif ($impEvent.getType()=="Class section - Small Group")
+                                <img src = "#imageLink("chef/class_sma.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+   			    			#elseif ($impEvent.getType()=="Class session")
+                                <img src = "#imageLink("chef/class_session.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif($impEvent.getType()=="Computer Session")
+                                <img src = "#imageLink("chef/computersession.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif($impEvent.getType()=="Deadline")
+                                <img src = "#imageLink("chef/deadline.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif($impEvent.getType()=="Exam")
+                                <img src = "#imageLink("chef/exam.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif($impEvent.getType()=="Quiz")
+                                <img src = "#imageLink("chef/quiz.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif ($impEvent.getType()=="Meeting")
+                                <img src = "#imageLink("chef/meeting.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif($impEvent.getType()=="Special event")
+                                <img src = "#imageLink("chef/special_event.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif($impEvent.getType()=="Web Assignment")
+                                <img src = "#imageLink("chef/webassignment.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #elseif($impEvent.getType()=="Multidisciplinary Conference")
+                                <img src = "#imageLink("chef/multi-conference.gif")" border="0" alt="$validator.escapeHtml($impEvent.getType())" />
+                            #end
+                            &nbsp;$validator.escapeHtml($impEvent.getDisplayName())&nbsp;
+			    			($impEvent.getDisplayStartTime()&nbsp;-&nbsp;$impEvent.getDisplayEndTime())
+					    </td>
+					  </tr>
+					#end
+					
+					</table>
+				<br/>
+				<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doScheduleContinue" value="Add Events" />
+						<input type="submit" name="eventSubmit_doScheduleBack" value="Back" />
+						<input type="submit" name="eventSubmit_doCancelImportWizard" value="Cancel" />
+				</div>
+			</form>
+		#end
+	</div>
+</div>

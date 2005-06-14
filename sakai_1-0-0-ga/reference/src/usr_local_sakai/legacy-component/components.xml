@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="org.sakaiproject.service.legacy.alias.AliasService"
+			class="org.sakaiproject.component.legacy.alias.XmlFileAliasService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/alias.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.announcement.AnnouncementService"
+			class="org.sakaiproject.component.legacy.announcement.XmlFileAnnouncementService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="notificationService"><ref bean="org.sakaiproject.service.legacy.notification.NotificationService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/announcements.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.archive.ArchiveService"
+			class="org.sakaiproject.component.legacy.archive.BasicArchiveService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/archive/</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.assignment.AssignmentService"
+			class="org.sakaiproject.component.legacy.assignment.XmlFileAssignmentService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+ 		<property name="assignmentStoragePath"><value>/usr/local/sakai/db/assignment_assignment.xml</value></property>
+ 		<property name="contentStoragePath"><value>/usr/local/sakai/db/assignment_content.xml</value></property>
+ 		<property name="submissionStoragePath"><value>/usr/local/sakai/db/assignment_submission.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.calendar.CalendarService"
+			class="org.sakaiproject.component.legacy.calendar.XmlFileCalendarService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="idService"><ref bean="org.sakaiproject.service.legacy.id.IdService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/calendar.xml</value></property>
+	</bean>
+	
+	<bean id="org.sakaiproject.service.legacy.calendar.CalendarImporterService"
+			class="org.sakaiproject.component.legacy.calendar.GenericCalendarImporter"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="calendarService"><ref bean="org.sakaiproject.service.legacy.calendar.CalendarService"/></property>
+		<property name="timeService"><ref bean="org.sakaiproject.service.legacy.time.TimeService"/></property>
+	</bean>
+	
+	<bean id="org.sakaiproject.service.legacy.chat.ChatService"
+			class="org.sakaiproject.component.legacy.chat.XmlFileChatService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/chat.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.content.ContentHostingService"
+			class="org.sakaiproject.component.legacy.content.XmlFileContentService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="notificationService"><ref bean="org.sakaiproject.service.legacy.notification.NotificationService"/></property>
+		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+ 		<property name="storagePathR"><value>/usr/local/sakai/db/content_r.xml</value></property>
+ 		<property name="storagePathC"><value>/usr/local/sakai/db/content_c.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.content.ContentTypeImageService"
+			class="org.sakaiproject.component.legacy.content.BasicContentTypeImageService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+ 		<property name="imageFile"><value>/usr/local/sakai/content_type_images.properties</value></property>
+ 		<property name="nameFile"><value>/usr/local/sakai/content_type_names.properties</value></property>
+ 		<property name="extensionFile"><value>/usr/local/sakai/content_type_extensions.properties</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.digest.DigestService"
+			class="org.sakaiproject.component.legacy.digest.XmlFileDigestService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="timeService"><ref bean="org.sakaiproject.service.legacy.time.TimeService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/digest.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.discussion.DiscussionService"
+			class="org.sakaiproject.component.legacy.discussion.XmlFileDiscussionService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/discussion.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.email.MailArchiveService"
+			class="org.sakaiproject.component.legacy.email.XmlFileMailArchiveService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+		<property name="notificationService"><ref bean="org.sakaiproject.service.legacy.notification.NotificationService"/></property>
+		<property name="storagePath"><value>/usr/local/sakai/db/mailarchive.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.event.EventTrackingService"
+			class="org.sakaiproject.component.legacy.event.BasicEventTracking"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.id.IdService"
+			class="org.sakaiproject.component.legacy.id.BasicIdService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.news.NewsService"
+			class="org.sakaiproject.component.legacy.news.BasicNewsService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.notification.NotificationService"
+			class="org.sakaiproject.component.legacy.notification.XmlFileNotificationService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="eventTrackingService"><ref bean="org.sakaiproject.service.legacy.event.EventTrackingService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/notification.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.preference.PreferencesService"
+			class="org.sakaiproject.component.legacy.preference.XmlFilePreferencesService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/preferences.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.presence.PresenceService"
+			class="org.sakaiproject.component.legacy.presence.StandalonePresenceService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="eventTrackingService"><ref bean="org.sakaiproject.service.legacy.event.EventTrackingService"/></property>
+		<property name="usageSessionService"><ref bean="org.sakaiproject.service.framework.session.UsageSessionService"/></property>
+		<property name="userDirectoryService"><ref bean="org.sakaiproject.service.legacy.user.UserDirectoryService"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.realm.RealmService"
+			class="org.sakaiproject.component.legacy.realm.XmlFileRealmService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/realm.xml</value></property>
+		<property name="provider"><ref bean="org.sakaiproject.service.legacy.realm.RealmProvider"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.security.SecurityService"
+			class="org.sakaiproject.component.legacy.security.ChefSecurity"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.site.SiteService"
+			class="org.sakaiproject.component.legacy.site.XmlFileSiteService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/site.xml</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.time.TimeService"
+			class="org.sakaiproject.component.legacy.time.BasicTimeService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.user.UserDirectoryService"
+			class="org.sakaiproject.component.legacy.user.XmlFileUserService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+ 		<property name="storagePath"><value>/usr/local/sakai/db/user.xml</value></property>
+		<property name="provider"><ref bean="org.sakaiproject.service.legacy.user.UserDirectoryProvider"/></property>
+	</bean>
+
+</beans>

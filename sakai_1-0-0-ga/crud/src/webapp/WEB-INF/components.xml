@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- Register the CrudService implementation - used by the CrudService interceptor -->
+	<bean id="org.sakaiproject.component.sample.crud.CrudServiceImpl"
+			class="org.sakaiproject.component.sample.crud.CrudServiceImpl"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
+
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="securityService"><ref bean="org.sakaiproject.service.legacy.security.SecurityService"/></property>
+		<property name="usageSessionService"><ref bean="org.sakaiproject.service.framework.session.UsageSessionService"/></property>
+	</bean>
+
+	<!-- Register the CrudService as an interceptor which will use the impl registration above -->
+	<bean id="org.sakaiproject.service.sample.crud.CrudService"
+			class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager"><ref bean="transactionManager"/></property>
+		<property name="target"><ref bean="org.sakaiproject.component.sample.crud.CrudServiceImpl"/></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED</prop>
+				<prop key="findByName*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Register a Local DataSource that refers to an in-memory HSQL database -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName"><value>org.hsqldb.jdbcDriver</value></property>
+
+	<!-- Note: this configures hsql to run in in-memory mode - changes will be lost at server shutdown -->
+		<property name="url"><value>jdbc:hsqldb:.</value></property>
+
+	<!-- Note: this configureshsql to run in stand-alone mode - saving the data on disk in this folder.
+			The path must exist (it can be initially empty) else you will get runtime errors -->
+	<!-- <property name="url"><value>jdbc:hsqldb:/usr/local/sakai/crud/crud</value></property> -->
+
+		<property name="username"><value>SA</value></property>
+		<property name="password"><value></value></property>
+	</bean>
+
+	<!-- Register a Hibernate SessionFactory which uses the above DataSource for the CrudObject -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate.LocalSessionFactoryBean">
+		<property name="dataSource"><ref bean="dataSource"/></property>
+		<property name="mappingResources"><value>org/sakaiproject/component/sample/crud/CrudObject.hbm.xml</value></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">net.sf.hibernate.dialect.HSQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- Always drop and recreate the database schema on startup -->
+				<prop key="hbm2ddl.auto">create</prop>
+				<prop key="hibernate.query.substitutions">true 1, false 0, yes 'Y', no 'N'</prop>
+				<prop key="hibernate.jdbc.use_streams_for_binary">true</prop>
+				<prop key="hibernate.cache.use_query_cache">false</prop>
+				<prop key="hibernate.cache.provider_class">net.sf.hibernate.cache.HashtableCacheProvider</prop>
+			</props>
+		</property>
+		<!-- Always drop and recreate the database schema on startup -->
+		<property name="schemaUpdate"><value>true</value></property>
+	</bean>
+
+	<!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate.HibernateTransactionManager">
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
+	</bean>
+
+</beans>

@@ -1,0 +1,24 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_archive.vm,v 1.2 2004/03/31 01:46:11 ggolden Exp $ -->
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["archive-id"];
+</script>
+<div class="PortletContainer">
+	#if($menu)#menu($menu)#end
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Archive and Import
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<table width="90%" align="center" border="0">
+				<tr><td>from site</td><td><input type="text" size="80" name="archive-id" id="archive-id" /></td></tr>
+				<tr><td></td><td><input type="submit" name="eventSubmit_doArchive" value="Archive"/></td></tr>
+				<tr><td></td><td><hr></td></tr>
+				<tr><td>file</td><td><input type="text" size="80" name="import-file" /></td></tr>
+				<tr><td>to site</td><td><input type="text" size="80" name="import-id" /></td></tr>
+				<tr><td></td><td><input type="submit" name="eventSubmit_doImport" value="Import"/></td></tr>
+			</table>
+		</form>
+	</div>
+</div>

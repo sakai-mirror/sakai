@@ -1,0 +1,163 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addRemoveSection.vm,v 1.7 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+##Adding a section to a site
+<div class ="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Adding class(es) to site $validator.escapeHtml($siteTitle)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		<div class="chefPageviewTitle">
+			Update the form then choose 'save' at the bottom. A <span class ="chefRequiredInline"> means </span>required information.
+		</div>
+		<form name="editSectionForm" method = "post" action="#toolForm("SiteAction")">
+			<input type="hidden" name="option" value="add" />
+			<input type="hidden" name="eventSubmit_doAdd_manual_sections" value="x" />
+			<fieldset>
+				<legend>
+					Class Information
+				</legend>
+				<div class="chefSectionMessage">
+					Academic term:
+					#foreach($term in $termList)
+						#if ($term.id == $form_term)
+							$term.text
+						#end
+					#end
+				</div>
+			
+				The following class(es) were already assigned to this site:<br />
+				#foreach($umiacItem in $umiacCourseSectionList)
+					<label for = "$umiacItem.getKey()">
+						$umiacItem.getYear(),
+						$umiacItem.getTerm_code(),
+						$umiacItem.getCampus_code(),
+						$umiacItem.getSubject(),
+						$umiacItem.getCatalog_nbr(),
+						$umiacItem.getClass_section()
+					</label>
+					<br />
+				#end
+				#foreach($manualItem in $manualCourseSectionList)
+					<label for = "$manualItem.getKey()">
+						(requested)
+						$manualItem.getYear()
+						$manualItem.getTerm_code()
+						$manualItem.getSubject()
+						$manualItem.getCatalog_nbr()
+						$manualItem.getClass_section()
+					</label>
+					<br />
+				#end
+				<br />
+				You have so far selected the following classes(es) to add:<br />
+				#foreach($selectedUmiacItem in $selectedUmiacCourseSection)
+					<label for = "$selectedUmiacItem.getKey()">
+						(requested)
+						$selectedUmiacItem.getYear()
+						$selectedUmiacItem.getTerm_code()
+						$selectedUmiacItem.getSubject()
+						$selectedUmiacItem.getCatalog_nbr()
+						$selectedUmiacItem.getClass_section()
+					</label>
+					<br />
+				#end
+				<table class="chefEditItem">
+					<tr>
+						<td colspan="3">
+							Number of course/sections you would like to add to this site: 
+							<select name="number" id="select" onchange="document.editSectionForm.option.value='change';javascript:document.editSectionForm.submit();" tabindex = "1">
+								#foreach ($j in [1 .. 10])
+									#if ($j==$currentNumber)
+										<option value="$j" selected="selected">$j</option>
+									#else
+										<option value="$j">$j</option>
+									#end
+								#end
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>	
+							<div class="chefSectionMessage"><span class ="chefRequiredInline">Subject:(ie PSYCH) </span><div>					
+						</td>
+						<td>
+							<div class="chefSectionMessage"><span class ="chefRequiredInline">Course:(ie 101) </span><div>
+						</td>
+						<td>	
+							<div class="chefSectionMessage"><span class ="chefRequiredInline">Sections:(ie 001) </span><div>
+						</td>
+					</tr>
+					#set ($count = 2)
+					#foreach ($k in [0..$listSize])
+						<tr>
+							<td>
+								<input type="text" name="subject$k"  tabindex="$count" size="8" maxlength="8" value="$!subjects.get($k)" /> 
+								#set ($count = $count + 1)
+							</td>
+							<td>
+								<input type="text" name="course$k" tabindex="$count" size="3" maxlength="3" value="$!courses.get($k)" />
+								#set ($count = $count + 1)
+							</td>
+							<td>
+								<input type="text" name="section$k" tabindex="$count" size="3" maxlength="3" value="$!sections.get($k)" />
+								#set ($count = $count + 1)
+							</td>
+						</tr>
+					#end
+				</table>
+				<table class="chefEditItem">
+					<tr>
+						<td colspan="2">
+							Site Authorization:<br />
+							At this time we cannot verify you are the instructor of record, please enter the uniqname of 
+							a person that can verify you can create this site (ex. department head, previous semester instructor). 
+							An email requesting authorization will be sent to this person.
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							&nbsp;
+						</td>
+					</tr>
+					<tr>
+						<td nowrap="nowrap" valign="top">
+							<span class ="chefLabel">Authorizer's uniqname:<span class ="chefRequiredInline"> </span></span>
+						</td>
+						<td>
+							<input type="text" name="uniqname" tabindex="$count" size="40" value="$!value_uniqname"/>
+							<div class="chefInlineInstructions">
+								Email will be sent asking for authorization for you to create this site.
+							</div>
+							#set ($count = $count + 1)
+						</td>
+					</tr>
+					<tr>
+						<td nowrap="nowrap" valign="top">
+							<span class ="chefLabel">Special Instructions:</span>
+						</td>
+						<td>
+							<textarea name="additional" rows="4" cols="40" tabindex="$count" wrap="virtual">$validator.escapeHtmlTextarea($form_additional)</textarea>
+							<div class="chefInlineInstructions">
+								Please enter additional comments that may help us authorize your site request.
+							</div>
+							#set ($count = $count + 1)
+						</td>
+					</tr>
+				</table>
+				<br />
+			</fieldset>
+			<input type="hidden" name="back" value="$backIndex" />
+			<input type="hidden" name="template-index" value="18"/>
+			<input type="hidden" name="continue" value="58" />
+			<div class ="chefButtonRow">
+				<input type="button" name="Continue" value="Continue" onClick="document.editSectionForm.option.value='continue';javascript:document.editSectionForm.submit();" />
+				<input type="button" name="Back" value="Back" onClick="document.editSectionForm.option.value='back';javascript:document.editSectionForm.submit();" />
+				<input type="button" name="Cancel" value="Cancel" onClick="document.editSectionForm.option.value='cancel';javascript:document.editSectionForm.submit();" />
+			</div>
+		</form>
+	</div>
+</div>

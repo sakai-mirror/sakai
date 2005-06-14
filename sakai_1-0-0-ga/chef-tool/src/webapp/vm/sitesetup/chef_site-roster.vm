@@ -1,0 +1,116 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-roster.vm,v 1.2 2004/07/13 18:28:36 rwellis.umich.edu Exp $ -->
+## Viewing class roster _ added participants
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		#if($form_gradtoolssite)
+		#else
+			<div class="PageviewTitle">
+				Participants in the official roster(s):
+			</div>
+			<table border ="0" cellspacing="0" cellpadding="4" summary ="Collection of roster information. There may be more than one roster in the table. First column undicates the student number, second column the name, third column the uniqname">
+			#set ($lines=0)			
+				#foreach($student in $studentList)
+					#if ($student.getId() =="") 
+						<tr>
+							<td colspan="7" style="font-weight:bold;color:#616161; border-bottom:1px solid #BFBFBF;#if ($lines ==0) #else border-top:1px solid #BFBFBF;#end padding-top:15px">
+								$student.getName()
+							</td>
+						</tr>
+						<tr style="background-color: #EBEBEB;text-align:left;">
+							<td style="font-weight:normal;border-left:1px solid #BFBFBF;border-bottom:1px solid #BFBFBF">#</td>
+							<td style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+								Name
+							</td>
+							<td style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+								Uniqname
+							</td>
+							<td style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+								ID
+							</td>
+							<td style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+								Level
+							</td>
+							<td style="font-weight:normal;border-bottom:1px solid #BFBFBF">
+								Credits
+							</td>
+							<td style="font-weight:normal;border-right:1px solid #BFBFBF;border-bottom:1px solid #BFBFBF">
+								Role
+							</td>
+						</tr>	
+					#set ($lines=0)						
+					#else
+						#set ($lines = $lines + 1)					
+						<tr>
+							<td style="border-left:1px solid #BFBFBF;color:#949494">$lines</td>
+							<td >
+								$student.getName()
+							</td>
+							<td style="text-transform: lowercase">
+								$student.getUniqname()
+							</td>
+							<td>
+								$student.getId()
+							</td>
+							<td>
+								$student.getLevel()
+							</td>
+							<td>
+								$student.getCredits()
+							</td>
+							<td style="border-right:1px solid #BFBFBF">
+								$student.getRole()
+							</td>
+						</tr>
+					#end
+				#end
+							<tr>
+								<td colspan="7" style="border-top:1px solid #BFBFBF;">
+								&nbsp;
+								</td>
+							</tr>
+	
+			</table>
+		#end
+		#if($participantList && $participantList.size() != 0)
+		<br />
+		<div class="PageviewTitle">
+			#if($form_gradtoolssite)
+				Participants:
+			#else
+				Participants in addition to official roster:
+			#end
+		</div>
+		<br />
+		<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds ..... Column 1 may hold .... Column 1 holds ..., column 2  holds .... Column 3 holds .... Headers hold links to sort ....">
+			<tr>
+				<th id="name">
+					Name
+				</th>
+				<th id="uniqname">
+					Uniqname
+				</th>
+				<th id="role">
+					Role
+				</th>
+			</tr>
+			#foreach($participant in $participantList)
+			<tr>
+				<td headers="name">
+					$participant.getName()
+				</td>
+				<td headers="uniqname">
+					$participant.getUniqname()
+				</td>
+				<td headers="role">
+				#foreach($role in $participant.roles)
+					$role.getId()
+				#end
+				</td>
+			</tr>
+			#end
+		</table>
+		#end
+	</div>
+</div>	

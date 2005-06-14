@@ -1,0 +1,97 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/content/chef_resources_replace.vm,v 1.5 2004/09/21 05:40:03 janderse.umich.edu Exp $ -->
+## Note: a paitence display is required here %%% -ggolden
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Replacing file...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Location:
+			<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder" />
+			#foreach ($id in $collectionPath)
+				#if ($dropboxMode && $id==$homeCollection)
+					$siteTitle Drop Box /
+				#else
+					$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName)) /
+				#end
+			#end
+			#if ($dropboxMode && $collectionId==$homeCollection)
+				$siteTitle Drop Box
+			#else
+				$validator.escapeHtml($service.getProperties($collectionId).getPropertyFormatted($resourceProperties.NamePropDisplayName))
+			#end
+		</div>
+		<div class="chefPageviewTitle">
+			Replace file with a new file or different version? The replacement will remove the current file and let you upload a replacement. Have your new file ready to send!
+		</div>
+		<form name="replaceFileBasicForm" action="#toolForm("ResourcesAction")&special=upload" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+			<input type="hidden" name="replaceItems" value="$replaceItems" />
+				#foreach ( $i in [1 ..$replaceNumber] )
+					#set($item=$replaceItems.get($i))
+					<fieldset>
+						<legend>
+							File:  $validator.escapeHtml($service.getResource($item).getProperties().getPropertyFormatted($service.getResource($item).getProperties().NamePropDisplayName))
+						</legend>						
+						<table class ="chefEditItem">
+							<tr>
+								<td class="chefLabel">
+									#if ($unqualified_fields.get($i).indexOf($service.newResourceProperties().NamePropDisplayName)!=-1)
+										<span class="chefAlert">Replace with this file:</span>
+									#else
+										Replace with this file:
+									#end
+								</td>
+								<td>
+									#if ($osNames.get($i).length()==0)
+										<input type="file" name="fileName$i" class ="upload" />
+									#else
+										$osNames.get($i)<br />
+										To change: <br />
+										<input type="file" name="fileName$i" size="20" />
+									#end
+								</td>
+						  </tr>
+							<tr> 
+								<td class ="chefLabel">
+									#if (($titles.get($i).length()>0) && ($unqualified_fields.get($i).indexOf($titles.get($i))!=-1))
+										<span class="chefAlert">Title:</span>
+									#else
+										Title:
+									#end
+								</td>
+								<td>
+									<input type="text" name="title$i" value="$titles.get($i)" />
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+					#if (!$dropboxMode)
+						#if ($notification)
+							<table>
+									<tr>
+									<td style="vertical-align:middle">Email Notification:</td>
+									<td>
+										<select name="notify">
+											<option value="r">High - All participants</option>
+											<option value="o">Low - Only participants who have opted in</option>
+											<option value="n" selected="selected">None - No notification</option>
+										</select>
+									</td>
+								</tr>
+							</table>
+						#end
+					#end
+				#end
+			<div class ="chefButtonRow">
+				#if ($replaceNumber>1)
+					<input type="submit" name="eventSubmit_doReplacefile" value="Replace Items" />
+				#else
+					<input type="submit" name="eventSubmit_doReplacefile" value="Replace Item" />
+				#end
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

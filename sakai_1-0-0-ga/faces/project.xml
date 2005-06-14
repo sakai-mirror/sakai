@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Sakai JSF Extensions</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-jsf</id>
+	<currentVersion>1.0.0</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+	<package>org.sakaiproject</package>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-component</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-service</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jsp</groupId>
+			<artifactId>servlet</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<!-- Note: 1.0-s1 is jsf 1.0 with
+				c.s.faces.application.ApplicationImpl* and
+				c.s.faces.config.ManagedBeanFactory removed -->
+		<dependency>
+			<groupId>jsf</groupId>
+			<artifactId>jsf-impl</artifactId>
+			<version>1.0-s1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jsf</groupId>
+			<artifactId>jsf-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<sourceDirectory>src/java</sourceDirectory>
+
+		<resources>
+
+			<resource>
+				<directory>${basedir}/src/bundle</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+
+			<resource>
+				<directory>${basedir}/src</directory>
+				<includes>
+					<include>META-INF/*.tld</include>
+					<include>META-INF/*.xml</include>
+				</includes>
+			</resource>
+
+		</resources>
+
+	</build>
+
+</project>

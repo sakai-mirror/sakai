@@ -1,0 +1,57 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-removeMyWorkspaceFeature.vm,v 1.2 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Removing features in My Workspace site
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class ="chefPortletToolBarMessage">
+		Removing tools from My Workspace...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Check boxes to remove tools from My Workspace.
+		</div>
+		<form name="removeToolsForm" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Tools
+				</legend>
+					<table class ="chefFlatListViewTable" cellspacing="0" summary ="List of pages in My Workspace site.">
+							<tr>
+								<th>
+									&nbsp;&nbsp;
+								</th>
+								<th>
+									Page
+								</th>
+								<th>
+									Tools
+								</th>
+							</tr>
+						#foreach($page in $pages)
+							<tr>
+								<td  valign = "top">
+									<input type="checkbox" name="selected" value="$page.getId()" /> 
+								</td>
+								<td>
+									$validator.escapeHtml($page.getTitle())<br />
+								</td>
+								<td>
+									#set($tools = $page.getTools())
+									#foreach($tool in $tools)
+										$tool.getTitle()
+									#end
+								</td>
+							</tr>
+						#end
+					</table>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doRemove_myworkspace_feature" "value="Save">
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+						<input type="hidden" name="back" value="15" />
+						<input type="hidden" name="template-index" value="37" />
+						<input type="hidden" name="continue" value="15"/>
+					</div>
+			</fieldset>	
+		</form>
+	</div>
+</div>

@@ -1,0 +1,55 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-dissertationFeatures.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Creating dissertation site step 4 - select features
+## Might want to get these dynamically 
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Creating a site...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Step 4: Choose which tools to add to your website.
+		</div>
+		#foreach($selected in $selectedList)
+			$selected &nbsp;
+		#end
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Tools
+				</legend>
+				<table cellpadding="5" class="chefEditItem">
+					#foreach($feature in $featureList)
+					<tr>
+						<td>
+							<input type="checkbox" name="selectedFeatures" value="$feature.id"
+							#foreach($selected in $selectedList)
+								#if ($feature.id = $selected)
+									checked
+								#end
+							#end
+							/>	
+							<label for = "$feature.id">
+								$feature.text
+							</label>
+							#foreach($selected in $selectedList)
+								## testing
+								$feature.id &nbsp; $selected &nbsp; &nbsp; &nbsp;
+							#end
+						</td>
+					</tr>	
+					#end
+				</table>
+			</fieldset>
+				<input type="hidden" name="back" value="6" />
+				<input type="hidden" name="template-index" value="7"/>
+				<input type="hidden" name="continue" value="0" />
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Finish" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

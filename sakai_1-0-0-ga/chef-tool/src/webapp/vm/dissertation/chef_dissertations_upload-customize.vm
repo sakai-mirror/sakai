@@ -1,0 +1,37 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_upload-customize.vm,v 1.1 2004/03/22 15:31:01 ggolden Exp $
+## chef_dissertations_upload-customize.vm, use with org.chefproject.DissertationUploadAction.java
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Customizing upload...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+		<form name="customize" id="customize" action="#toolForm("$action")" method="post">
+			<p> </p>			
+			<fieldset>
+				<legend>
+					Message Display
+				</legend>
+				<div class="chefInlineInstructions">
+					<br/>What is the maximum number of error messages to be displayed?
+				</div>
+				<br />
+				<input 
+					type="text" 
+					name="messages" 
+					id="messages" 
+					size="5" 
+					value="$!messages" />
+				<label for="messages">messages</label>
+				<br />
+				
+			</fieldset>
+			<p> </p>
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doSave_setting" value="Save" />
+				<input type="submit" name="eventSubmit_doCancel_setting" value="Cancel" />
+			</div>
+			<p> </p>
+		</form>
+	</div>
+</div>

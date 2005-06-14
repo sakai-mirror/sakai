@@ -1,0 +1,26 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/chat/chef_chat-Control.vm,v 1.2 2004/03/25 04:55:54 ggolden Exp $ 
+##<!-- chef_chat-Controls.vm, use with org.chefproject.ChatAction.java
+##     context: $action: Action class name
+##              $form-submit: submit field event_submit value
+##              $form-message: form field for the text of the message
+##              $panel-control: controls panel name
+##              $allow-send: Boolean, if false don't do the send UI
+##              $message: error message
+##-->
+
+## this is double deep
+<script type="text/javascript" language="JavaScript">
+doubleDeep = true;
+</script>
+
+#if($menu)#toolbar($menu)#end
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+#if ($allow-send)
+<form name="chat_input" id="chat_input" action="#toolForm("$action")" method="post">
+    <label for="$form-message"></label>
+	<textarea name="$form-message" id="$form-message" rows="3" cols="60" wrap="virtual" onkeypress="formSubmitOnEnter(this, event)"></textarea>
+    <input type="hidden" name="$form-submit" id="$form-submit" value="x" />
+    <input type="submit" name="send" id="send" value="Send" />
+    <input type="reset" name="reset" id="reset" value="Clear" />
+</form>
+#end

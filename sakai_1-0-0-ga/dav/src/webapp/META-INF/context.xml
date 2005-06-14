@@ -1,0 +1,3 @@
+<Context path="/sakai-dav" docBase="sakai-dav">
+	<Realm className="org.sakaiproject.dav.DavRealm" />
+</Context>

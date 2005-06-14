@@ -1,0 +1,89 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_sites_pages.vm,v 1.1 2004/03/05 03:15:16 ggolden Exp $ -->
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Edit: Site $!site.Id
+		</div>
+		<div class="chefPageviewTitle">
+			These are the Pages defined in this Site.  Click on one to edit.  Use the up and down arrows to re-arrange.
+		</div>
+#if ($pages.size() > 0)
+	#set ($pageCount = 0)
+		<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Groups">
+			<tr>
+				<th id="move">&nbsp;&nbsp;</th>
+				<th id="Id">Page Id</th>
+				<th id="Title">Title</th>
+				<th id="Description">Description</th>
+			</tr>
+	#foreach ($page in $pages)
+		#set ($pageCount=$pageCount + 1)
+			<tr>
+				<td headers="move" #if ($pageCount > 1) class="chefTopline" #end>
+					#if ($pageCount > 1)
+					<a href="#toolLink("$action" "doEdit_page_up")&id=$validator.escapeUrl($page.Id)">
+						<img src = "#imageLink("chef/arrowUp.gif")" border="0" alt ="move page up" />
+					</a>
+					#end
+					#if ($pageCount < $pages.size())
+					<a href="#toolLink("$action" "doEdit_page_down")&id=$validator.escapeUrl($page.Id)">
+						<img src = "#imageLink("chef/arrowDown.gif")" border="0" alt ="move page down" />
+					</a>
+					#end
+				</td>
+				<td headers="Id" #if ($pageCount > 1) class="chefTopline" #end>
+					<a href="#toolLink("$action" "doEdit_page")&id=$validator.escapeUrl($page.Id)">
+						$validator.escapeHtml($page.Id)
+					</a>
+				</td>
+				<td headers="Title" #if ($pageCount > 1) class="chefTopline" #end>$validator.escapeHtml($page.Title)</td>
+				<td headers="Description" #if ($pageCount > 1) class="chefTopline" #end>
+					<div class="chefSectionTitle">
+						Layout:
+					</div>
+					<div class="chefSectionMessage">
+						$validator.escapeHtml($page.LayoutTitle)
+					</div>
+					<div class="chefSectionTitle">
+						Features:
+					</div>
+					<div class="chefSectionMessage">
+						#set ($pageTools = $page.Tools)
+						#foreach ($tool in $pageTools)
+							$tool.ToolId &nbsp;
+						#end
+					</div>
+				</td>
+			</tr>
+	#end
+		</table>
+#else
+		<div class="chefListMessage">
+			No pages are defined.
+		</div>
+#end
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Continue Editing
+				</legend>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doEdit_to_main" value="Done" />
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend>
+					Complete the Site Edit
+				</legend>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doSave_edit" value="Save" />
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

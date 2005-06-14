@@ -1,0 +1,108 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_realms_edit_user.vm,v 1.1 2004/03/05 03:15:15 ggolden Exp $ 
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["id"];
+</script>
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Edit: Realm $validator.escapeHtml($!realm.Id)<br/>Used for $validator.escapeHtml($!realm.Description)
+		</div>
+		<div class="chefToolviewTitle">
+			Set the Abilities and Roles for this User.
+		</div>
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					User Grants
+				</legend>
+				<table class="chefEditItem" summary="Review and modify this Tool's information.">
+					<tr>
+						<td class="chefLabel">
+							<label #if(!$user) for="id" #end>
+								#if(!$user)<span class="chefAlert">*</span>#end User Id:
+							</label>
+						</td>
+						<td>
+							#if(!$user)<input type="text" name="id" id="id"/>#else$validator.escapeHtml($user.Id)#end
+						</td>
+					</tr>
+				</table>
+				<fieldset>
+					<legend>
+						Roles
+					</legend>
+					<table class="chefEditItem" summary="Review and modify this Tool's configuration.">
+						<tr>
+							<td class="chefLabel">
+								Roles:
+							</td>
+							<td>
+								#foreach ($role in $allRoles)
+									<input type="checkbox" name="roles" id="role$velocityCount" value="$role.Id" #if($roles.contains($role))checked="checked"#end />
+									<label for="role$velocityCount">$role.Id</label> <br />
+								#end
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Continue Editing
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doDone_user" value="Done" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Complete the Realm Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave_user" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Abilities
+					</legend>
+					<table class="chefEditItem" summary="Review and modify this Tool's configuration.">
+						<tr>
+							<td class="chefLabel">
+								Abilities:
+							</td>
+							<td>
+								#foreach ($lock in $allLocks)
+									<input type="checkbox" name="locks" id="lock$velocityCount" value="$lock" #if($locks.contains($lock))checked="checked"#end />
+									<label for="lock$velocityCount">$lock</label> <br />
+								#end
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Continue Editing
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doDone_user" value="Done" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Complete the Realm Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave_user" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+			</fieldset>
+		</form>
+	</div>
+</div>

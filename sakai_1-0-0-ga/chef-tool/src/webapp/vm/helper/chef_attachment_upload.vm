@@ -1,0 +1,33 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/helper/chef_attachment_upload.vm,v 1.4 2004/09/09 04:25:50 ggolden.umich.edu Exp $ -->
+## #paitence("upload") %%% currently disabled -ggolden
+
+<script type="text/javascript">
+  focus_path = [ "file" ];
+</script>
+<div class="chefPortletContainer" id="chefPortletContainer">
+##	#menu($menu)
+	<div class ="chefPortletToolBarMessage">
+		$from
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Browse to locate a file, then choose 'Attach' at the bottom.  Please be patient - uploads may take some time.
+		</div>
+		<form name="form" action="#toolForm("$action")&special=upload" method="post" enctype="multipart/form-data">
+			<table class="chefEditItem">
+				<tr>	
+					<td class="chefLabel">Filename:</td>
+					<td ><input type="file" name="file" id="file" class="upload" /></td>
+				</tr>
+	## %%% paitence disabled -ggolden
+	## 				<input type="submit" name="eventSubmit_doAdd" value="Attach" onclick="showSubmitMessage();setMainFrameHeight('$validator.escapeJavascript("Main$data.Js_peid")'); " />
+			</table>
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doAdd" value="Attach" />
+				<input type="submit" name="eventSubmit_doCancel_add" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>
+

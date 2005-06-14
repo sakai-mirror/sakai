@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="annc.new" />
+	<function name="annc.read" />
+	<function name="annc.revise.any" />
+	<function name="annc.revise.own" />
+	<function name="annc.delete.any" />
+	<function name="annc.delete.own" />
+	<function name="annc.read.drafts" />
+
+	<tool
+			id="chef.announcements"
+			url="/sakai-chef-tool/chef-announcements"
+			title="Announcements"
+			description="For posting current, time-critical information.">
+
+		<configuration name="channel" value="" />
+
+	</tool>
+
+</registration>

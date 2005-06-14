@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.module"
+			url="/sakai-module/mytool/jsf.tool"
+			title="Sample"
+			description="Sample showing basic Sakai TPP Tool.">
+
+	</tool>
+
+</registration>

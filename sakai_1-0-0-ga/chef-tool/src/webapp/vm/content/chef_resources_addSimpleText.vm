@@ -1,0 +1,154 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/content/chef_resources_addSimpleText.vm,v 1.4 2004/09/21 05:32:37 janderse.umich.edu Exp $ 
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["title"];
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Adding plain text document...		
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Location:
+			<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder" />
+			#foreach ($id in $collectionPath)
+				#if ($dropboxMode && $id==$homeCollection)
+					$siteTitle Drop Box /
+				#else
+					$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName)) /
+				#end
+			#end
+			#if ($dropboxMode && $collectionId==$homeCollection)
+				$siteTitle Drop Box
+			#else
+				$validator.escapeHtml($service.getProperties($collectionId).getPropertyFormatted($resourceProperties.NamePropDisplayName))
+			#end
+		</div>
+		<div class="chefPageviewTitle">
+			Complete the form then choose 'post' at the bottom. A <span class="chefRequiredInline">means</span>required information.
+		</div>
+		<form name="addDocumentBasicForm" action="#toolForm("ResourcesAction")" method="post" >
+			<input type="hidden" name="from" value="add" />
+			<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+			<input type="hidden" name="addDocumentStep" value="basic" />	
+			<fieldset>
+				<legend>
+					Plain text
+				</legend>	
+				<table class="chefEditItem">
+					<tr>
+						<td class="chefLabel">
+							#if (( $unqualified_fields.indexOf($service.newResourceProperties().NamePropDisplayName)!=-1)||(($title.length()>0) && ($unqualified_fields.indexOf($title)!=-1)))
+								<span class="chefRequiredInline">Title:</span>
+							#else
+								<span class="chefRequiredInline">Title:</span>							#end
+						</td>
+						<td> 
+							<input type="text" name="title" id="title" size="20" value="$title" />
+						</td>
+					</tr>
+					<tr> 
+						<td class="chefLabel"> 
+							Description:
+						</td>
+						<td>  
+							<textarea name="description" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($description)</textarea>
+						</td>
+					</tr>
+					<tr> 
+						<td class="chefLabel">
+							#if ($unqualified_fields.indexOf("content")!=-1)
+								<span class="chefRequiredInline">Content:</span>
+							#else
+								<span class="chefRequiredInline">Content:</span>
+							#end
+						</td>
+						<td> 
+							<textarea name="content" rows="10" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($content)</textarea>
+						</td>
+					</tr>
+					#* only allow open in new window for 2003 fall release
+					<tr> 
+						<td class="chefLabel"> 
+							Open in:
+						</td>
+						<td>				
+							#if ($openIn == "false")
+								<input type="radio" name="target" id="targetnew"  value="true" />
+									<label for ="targetnew">New window</label> <br />
+								<input type="radio" name="target" id="targetthis" value="false" checked ="checked" />
+								<label for ="targetthis">This window</label> <br />
+							#else
+								<input type="radio" name="target" id="targetnew"  value="true"  checked ="checked" />
+									<label for ="targetnew">New window</label> <br />
+								<input type="radio" name="target" id="targetthis" value="false" />
+								<label for ="targetthis">This window</label> <br />
+							#end
+						</td>
+					</tr>
+					*#
+					<tr>
+						<td class="chefLabel">
+							#if ($unqualified_fields.indexOf($service.newResourceProperties().NamePropCopyright)!=-1)
+								<span class="chefRequiredInline">Copyright:</span>
+							#else
+								<span class="chefRequiredInline">Copyright:</span>
+							#end
+						</td>
+						<td> 
+							#if ($copyright!="newcopyright")
+								<input type="radio" name="copyright" id="mycopyright" value="my copyright" checked ="checked" />
+								<label for ="mycopyright">Use my copyright information</label> <br />
+								<input type="radio" name="copyright" id="newcopyright" value="newcopyright" />
+								<label for ="newcopyright">Use copyright below</label> <br />
+								<textarea rows="5" cols="40" wrap="virtual" name="newcopyright"></textarea>
+							#else
+								<input type="radio" name="copyright" id="mycopyright" value="my copyright" />
+								<label for ="mycopyright">Use my copyright information</label> <br />
+								<input type="radio" name="copyright" id="newcopyright" value="newcopyright" checked ="checked" />
+								<label for ="newcopyright">Use copyright below</label> <br />
+								<textarea rows="5" cols="40" wrap="virtual" name="newcopyright">$validator.escapeHtmlTextarea($newcopyright)</textarea>
+							#end
+						</td>
+					</tr>
+					#if (!$dropboxMode)
+						## not show public view in drop box mode
+						<tr> 
+							<td class = "chefLabel"> 
+								Public View:
+							</td>
+							<td>
+								#if ($pubviewset)
+									Set to Yes in a containing folder.
+								#else
+									<input type="radio" name="pubview" id="pubview_true" value="true" #if ($pubview) checked="checked" #end />Yes<br />
+									<input type="radio" name="pubview" id="pubview_false" value="false" #if (!$pubview) checked="checked" #end />No
+								#end
+							</td>
+						</tr>
+					#end
+				</table>
+			</fieldset>
+			#if(!$dropboxMode && $notification)
+				## not show notification in dropbox
+				<table>
+					<tr>
+						<td style="vertical-align:middle">Email Notification:</td>
+                                                <td>
+                                                        <select name="notify">
+                                                                <option value="r">High - All participants</option>
+                                                                <option value="o">Low - Only participants who have opted in</option>
+                                                                <option value="n" selected="selected">None - No notification</option>
+                                                        </select>
+						</td>
+					</tr>
+				</table>
+			#end
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doAdddocumentplaintext" value="Post" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

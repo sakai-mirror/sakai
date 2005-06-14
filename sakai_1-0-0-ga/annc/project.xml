@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Sakai Announcement Tool</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-annc</id>
+	<currentVersion>1.0.0</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-component</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-velocity</artifactId>
+			<version>1.0.0</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-service</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jsf</groupId>
+			<artifactId>jsf-impl</artifactId>
+			<version>1.0-s1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jsf</groupId>
+			<artifactId>jsf-api</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<sourceDirectory>src/java</sourceDirectory>
+
+		<resources>
+			<resource>
+				<directory>${basedir}/src/bundle</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	
+	</build>
+
+</project>

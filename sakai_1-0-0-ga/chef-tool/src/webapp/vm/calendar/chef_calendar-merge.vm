@@ -1,0 +1,45 @@
+<div class="chefPortletContainer"> 
+<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<div class="chefPageviewTitle">
+			Select what calendars you want to merge into this site.
+	</div>
+
+  <form name="Options" action="#toolForm("$action")" method="post">
+
+<fieldset>
+<legend>Show Schedule from Another Site</legend>
+
+    <table class="ContentStyleClass" cellspacing="0" >
+      <tr> 
+        <th id="schedule"><div align="left">Site</div></th>
+        <th id="checkbox"><div align="left">Show Schedule</div></th>
+      </tr>
+      <tr> 
+        <td colspan="2"> <hr align="left"> </td>
+      </tr>
+	  #foreach ($calendarEntry in $mergedCalendarsCollection)
+	      #if ($calendarEntry.isVisible())
+	      <tr> 
+	        <td headers="schedule"><div align="left">$calendarEntry.getDisplayName()</div></td>
+	        <td headers="checkbox"><div align="left">
+	            <input type="checkbox" name="$calendarEntry.getReference()" value="$calendarEntry.getReference()"
+	            #if($calendarEntry.isMerged())
+	            checked
+	            #end
+            />
+            Yes</div></td>
+	      </tr>
+	      #end
+      #end
+  </table>
+</fieldset>
+
+	<div class="chefButtonRow">
+	<input type="submit" name="eventSubmit_doUpdate" value="Save" />
+        <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+        </div>
+        <input type="hidden" name="state" value="$state" />
+  </form>
+</div>
+</div>

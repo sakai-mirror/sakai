@@ -1,0 +1,166 @@
+<div class="chefPortletContainer">
+	<div class="chefPortletToolBarMessage">
+		Previewing submission...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+
+                <fieldset>
+                    <legend>
+                        Assignment
+                    </legend>
+		<table class="chefItemDetail" summary="Assignment details">
+                         <tr>
+					<td class="chefLabel">
+						Title:
+					</td>
+					<td>
+						$validator.escapeHtml($assignment.getTitle())
+					</td>
+                        </tr>
+			 <tr>
+				<td class="chefLabel">
+					Due:
+				</td>
+				<td>
+					$!assignment.getDueTime().toStringLocalFull()
+				</td>
+			</tr>	
+			<tr>
+				<td class="chefLabel">
+					Status:
+				</td>
+				<td>
+					#if ($!submission)
+						#if ($!submission.getSubmitted())
+							#if ($submission.returned)
+								#if ($submission.TimeReturned.after($submission.TimeSubmitted))
+									Returned $submission.timeReturned.toStringLocalFull()
+								#else
+									Re-submitted $submission.TimeSubmitted.toStringLocalFull()
+									#if ($submission.getTimeSubmitted().after($assignment.DueTime))
+										<span class="chefAlert"> late</span>
+									#end
+								#end
+							#elseif ($submission.getGraded() && $submission.getGradeReleased())
+								Graded
+							#else
+								Submitted $submission.timeSubmitted.toStringLocalFull()
+								<!--missing -if saved...In progress-->
+							#end
+						#else
+							In progress
+						#end
+					#else
+						Not started
+					#end
+				</td>
+			</tr>	
+			<tr>
+				<td class="chefLabel">
+					Grade scale:
+				</td>
+				<td>
+					#set ($gradeScale = $assignment.getContent().getTypeOfGradeString($assignment.getContent().getTypeOfGrade()))
+					$gradeScale
+					#if ($gradeScale == "Points")
+						(max $assignment.getContent().getMaxGradePointDisplay())
+					#end
+				</td>
+			</tr>	
+			#if ($assignment.getOpenTime().before($assignment.getTimeLastModified()))
+				<tr>
+					<td class="chefLabel">
+						<span class="chefAlert">
+							Modified by instructor:
+						</span>
+					</td>
+					<td>
+						<span class="chefAlert">
+							$assignment.getTimeLastModified().toStringLocalFull()
+						</span>
+					</td>
+				</tr>	
+			#end
+		</table>
+                </fieldset>
+                <fieldset>
+                    <legend>
+                         Submission
+                    </legend>
+
+			#if ($!text.length()>0)
+				<div class ="chefSectionTitle">
+					Below is your submission:
+				</div>	
+				<div class ="chefSectionMessage">
+					$validator.escapeHtmlFormattedText($text)
+				</div>	
+			#end
+						#set ($size = 0)
+						#set ($props = false)
+						#foreach ($attachment in $attachments) 
+							#set ($props = $attachment.Properties) 
+							#if ($!props)
+								#set ($size = $size + 1)
+							#end
+						#end
+						#if ($size == 0)
+##							No attachments ...
+						#else
+							<fieldset class="chefAttachmentsF">
+								<legend class="chefAttachmentsL">	
+									Attachments
+								</legend> 
+									<ul class="chefAttachmentList">
+										#foreach ($attachment in $attachments) 
+											#set ($props = false)
+											#set ($props = $attachment.Properties) 
+											#if ($!props)
+												<li>
+													#if ($props.getBooleanProperty($props.NamePropIsCollection))
+														<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+													#else
+														<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+													#end
+													<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+													#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+														($props.getPropertyFormatted($props.NamePropContentLength))
+													#end
+												</li>
+											#end
+										#end
+									</ul>
+							</fieldset>
+						#end	
+
+			#if ($assignment.getContent().honorPledge!=1) 
+						<span class="chefHonorPledge"> 
+							Honor Pledge: I have neither given nor received aid on this assignment.
+						#if ($honor_pledge_yes.equals("true"))
+							<input name="Yes" type="checkbox" value="" checked disabled="disabled" />
+						#else
+							<input name="Yes" type="checkbox" value="" disabled="disabled" />
+						#end Yes 
+						<br />
+							(You must respond to submit your assignment.)
+						</span>
+			 #end
+                    </fieldset>     
+		<form action="#toolForm("AssignmentAction")" method="post">
+			<input type="hidden" name="$name_assignment_id" value="$assignment.Id" />
+			<div class="chefButtonRow">
+				#if ($!submission && $submission.getSubmitted() && !$submission.Returned)
+						<input name="eventSubmit_doSave_submission" type="submit" value="Save" disabled="disabled" />
+						<input name="eventSubmit_doPost_submission" type="submit" value="Submit" disabled="disabled" />
+						<input name="eventSubmit_doCancel_show_submission" type="submit" value="Revise" disabled="disabled" />
+				#else
+					<input name="eventSubmit_doSave_submission" type="submit" value="Save"  />
+					<input name="eventSubmit_doPost_submission" type="submit" value="Submit" />
+					<input name="eventSubmit_doDone_preview_submission" type="submit" value="Revise" />
+				#end
+				<input name="eventSubmit_doDone_preview_submission" type="submit" value="Done" />
+			</div>
+		</form>
+	</div>
+</div>

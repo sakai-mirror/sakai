@@ -1,0 +1,375 @@
+##<!-- chef_show.vm, use with org.chefproject.ContentListAction.java -->
+
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		#if ($collectionFlag == "true")
+			 <form name="showForm" action="#toolForm("ResourcesAction")" method="post">
+				<input type="hidden" name="source" value="0" />
+				<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+				<input type="hidden" name="from" value="revise" />
+				
+				#if (($service.allowGetCollection($collectionId)) && ($service.allowGetProperties($collectionId)))
+					<div class ="chefBreadCrumb">
+					Location: 
+					<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder" />
+					#foreach ($id in $collectionPath)
+						#if ($service.allowGetCollection($id))
+							<a href="#toolLink("ResourcesAction" "doNavigate")&cutFlag=$cutFlag&collectionId=$validator.escapeUrl($id)" title ="Go to '$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName))' folder">
+								#if ($dropboxMode && $id==$homeCollection)
+									$siteTitle Drop Box
+								#else
+									$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName))
+								#end
+							</a> /
+						#else
+							$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName)) /
+						#end
+					#end
+					#if ($dropboxMode && $collectionId==$homeCollection)
+						$siteTitle Drop Box
+					#else
+						 $validator.escapeHtml($service.getProperties($collectionId).getPropertyFormatted($resourceProperties.NamePropDisplayName))
+					#end
+					#if ($collectionId!=$homeCollection)
+						#if ($service.allowGetCollection($service.getContainingCollectionId($collectionId)))
+							<a href="#toolLink("ResourcesAction" "doNavigate")&cutFlag=$cutFlag&collectionId=$validator.escapeUrl($service.getContainingCollectionId($collectionId))" title= "Up one level">
+								<img src = "#imageLink("chef/onelevelup.gif")" border="0" alt ="Up one level"/></a>
+						#end
+					#end
+					<a href="#toolLink("ResourcesAction" "doMore")&from=show&id=$validator.escapeUrl($collectionId)&collectionId=$validator.escapeUrl($collectionId)" title="Information on this collection">
+						<img src = "#imageLink("chef/metainfo.gif")" border="0" alt ="Information on this collection" /></a>
+					</div>
+					#if (!$collectionMembers  || $collectionMembers.size() ==0)
+						<div class="chefPageviewTitle">
+							<div class ="chefLeftIndent">
+								<br />There are no 
+								#if ($dropboxMode)
+									drop box
+								#else
+									resource
+								#end
+								items at this location.
+							</div>	
+						</div>
+					#else			
+
+						<table cellspacing="0" class ="chefFlatListViewTable" border="0">
+							<tr>
+								<th>
+									#if ($collectionMembers.size()!=0)
+										#if ($selectallflag=="true")
+											<a href="#toolLink("ResourcesAction" "doUnselectall")" title ="Unselect all">
+												<img src = "#imageLink("chef/checkedbox.gif")" border="0" title ="Unselect all" alt="Check box" /> 
+											</a>
+										#else
+											<a href="#toolLink("ResourcesAction" "doSelectall")" title ="Select all">
+												<img src = "#imageLink("chef/checkbox.gif")" border="0" title ="Select all" alt ="check box" /> 
+											</a>
+										#end	
+									#end
+								</th>
+								<th>
+									<a href="#toolLink("ResourcesAction" "doSort")&criteria=title&collectionId=$validator.escapeUrl($collectionId)" title ="Sort by title"> 
+										Title
+										#if ($currentSortedBy.equals($resourceProperties.NamePropDisplayName)) 
+											#if ($currentSortAsc.equals("true")) 
+												<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by title ascending" alt ="Sort by title ascending" /> 
+											#else 
+												<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by title descending" alt ="Sort by title descending" /> 
+											#end 
+										#end 
+									</a>
+								</th>
+								<th>
+									<a href="#toolLink("ResourcesAction" "doSort")&criteria=size&collectionId=$validator.escapeUrl($collectionId)" title ="Sort by size"> 
+										Size
+										#if ($currentSortedBy.equals($resourceProperties.NamePropContentLength)) 
+											#if ($currentSortAsc.equals("true")) 
+												<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by size ascending" alt ="Sort by size ascending" /> 
+											#else 
+												<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by size descending" alt ="Sort by size descending" /> 
+											#end 
+										#end
+									</a>
+								</th>
+								#if (!($dropboxMode && $collectionId==$homeCollection))
+								<th>
+									<a href="#toolLink("ResourcesAction" "doSort")&criteria=created%20by&collectionId=$validator.escapeUrl($collectionId)" title ="Sort by date created">  
+										Created By
+									#if ($currentSortedBy.equals($resourceProperties.NamePropCreator)) 
+											#if ($currentSortAsc.equals("true")) 
+												<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by date created ascending" alt ="Sort by date created ascending" /> 
+											#else 
+												<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by date created descending" alt ="Sort by date created descending" /> 
+											#end 
+										#end 
+									</a>
+								</th>
+								#end
+								<th>
+									<a href="#toolLink("ResourcesAction" "doSort")&criteria=last%20modified&collectionId=$validator.escapeUrl($collectionId)" title ="Sort by date last modified"> 
+										Last Modified
+										#if ($currentSortedBy.equals($resourceProperties.NamePropModifiedDate)) 
+											#if ($currentSortAsc.equals("true")) 
+												<img src = "#imageLink("chef/sortascending.gif")" border="0"  title ="Sort by date last modified ascending"  alt ="Sort by date last modified ascending" /> 
+											#else 
+												<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by date last modified descending"  alt ="Sort by date last modified descending" /> 
+											#end 
+										#end 
+									</a>
+								</th>
+								<th>
+									&nbsp;
+								</th>
+							</tr>
+							#foreach ($member in $collectionMembers)
+								#set ( $props = $member.getProperties() )
+								#set ($memberId = $member.Id)
+								#if ($props.getPropertyFormatted($props.NamePropIsCollection)=="false")
+									#set ($target = $validator.getResourceTarget($props))
+								#end
+								<tr>
+									<td>
+										#if ($selectallflag == "true")
+											<input type="checkbox" name="selectedMembers" checked value="$validator.escapeHtml($memberId)" />
+										#else
+											<input type="checkbox" name="selectedMembers" value="$validator.escapeHtml($memberId)" />					
+										#end
+									</td>
+									#set ($depth = ($service.getDepth($memberId, $collectionId) - 1))
+									#set ($unit ="em")
+									#set ($width = "$depth$unit")
+									#set ($widthSp = ($depth + 1) )
+									#set ($widthSpDo = "$widthSp$unit")
+									<td style="text-indent:$width">
+										#if ($props.getPropertyFormatted($props.NamePropIsCollection)=="true")
+				##   Changed expandedCollections to be a Map so that can keep the resources available as well as the id.		
+				##							#if (!$expandedCollections.contains($memberId))
+											#if (!$expandedCollections.containsKey($memberId))
+												#if ($service.allowGetCollection($memberId))
+													<a href="#toolLink("ResourcesAction" "doExpand_collection")&collectionId=$validator.escapeUrl($member.Id)" title="Open this folder">
+														<img src = "#imageLink("chef/expand.gif")" border="0" title="Open this folder" alt="Closed folder" hspace="0" /></a>
+												#else
+													<img src = "#imageLink("chef/expand.gif")" border="0" alt = "Closed folder" hspace="0" />
+												#end
+											#else
+												<a href="#toolLink("ResourcesAction" "doCollapse_collection")&collectionId=$validator.escapeUrl($member.Id)" title="Close this folder">
+													<img src = "#imageLink("chef/collapse.gif")" border="0" title="Close this folder" alt="Opened folder" hspace="0" /></a>
+											#end
+										#else
+											#if ($service.allowGetResource($memberId))
+												<a href="$service.getUrl($member.Id)" target="$target">
+													<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border= "0" alt ="" hspace="0" /></a>
+											#else
+												<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt ="" hspace="0" />
+											#end
+										#end
+										#if ($props.getPropertyFormatted($props.NamePropIsCollection)=="true")
+											#if ($service.allowGetCollection($memberId))
+													<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=$validator.escapeUrl($member.Id)">
+				##   Changed expandedCollections to be a Map so that can keep the resources available as well as the id.									
+				##										#if (!$expandedCollections.contains($memberId))
+														#if (!$expandedCollections.containsKey($memberId))
+															<img src = "#imageLink("chef/dir_closed.gif")" border="0" title="Go to this folder" alt="Go to this folder" />
+														#else
+															<img src = "#imageLink("chef/dir_open.gif")" border="0" title="Go to this folder" alt="Go to this folder" />
+														#end	
+													</a>
+												<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=$validator.escapeUrl($member.Id)" title="Go to this folder">
+													$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))<br />
+												</a>
+											#else
+												$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))<br />
+											#end
+										#else
+											#if (($cutFlag=="true") || ($copyFlag =="true"))
+												#set ($cutFound = "false")
+												#set ($copyFound = "false")
+												#if ($cutFlag=="true")
+													#foreach ($i in $cutItems)
+														#if ($memberId.equals($i))
+															#set ($cutFound = "true")
+														#end
+													#end
+												#end
+												#if ($copyFlag=="true")
+													#foreach ($j in $copiedItems)
+														#if ($memberId.equals($j))
+															#set ($copyFound = "true")
+														#end
+													#end
+												#end
+												#if ($service.allowGetResource($memberId))
+													#if ($cutFound=="true")
+														<a href="$service.getUrl($member.Id)" target="$target">
+															<span class="Grayout">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</span>
+														</a>
+														<div class="chefInlineAlert" style="margin-left:$widthSpDo">cut - paste?</div>
+													#elseif ($copyFound=="true")
+														<a href="$service.getUrl($member.Id)" target="$target">
+															$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))
+														</a><br /><span class="chefInlineAlert" style="margin-left:$widthSpDo">copied - paste?</span>
+													#else
+														<a href="$service.getUrl($member.Id)" target="$target">
+															$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))
+														</a>								
+													#end
+												#else
+													#if ($cutFound=="true")
+														<span class="Grayout">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName)) <br /></span>
+														<div class="chefInlineAlert" style="margin-left:$widthSpDo">cut - paste?</div>
+													#elseif ($copyFound=="true")
+														$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))<br />
+														<div class="chefInlineAlert" style="margin-left:$widthSpDo">copied - paste?</div>
+													#else
+														$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))<br />							
+													#end										
+												#end
+											#else
+												#if ($service.allowGetResource($memberId))
+													<a href="$service.getUrl($member.Id)" target="$target">
+														$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))<br />
+													</a>
+												#else
+													$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))<br />
+												#end
+											#end
+										#end
+									</td>
+									<td>
+										#if ($props.getPropertyFormatted($props.NamePropIsCollection)=="false")
+											$props.getPropertyFormatted($props.NamePropContentLength)&nbsp;&nbsp;&nbsp;&nbsp;
+										#end
+									</td>
+									#if (!($dropboxMode && $collectionId==$homeCollection))
+									<td>
+										$validator.escapeHtml($props.getPropertyFormatted($props.NamePropCreator))
+									</td>
+									#end
+									<td>
+										$props.getPropertyFormatted($props.NamePropModifiedDate)
+									</td>
+									<td>
+										#if ($service.allowGetProperties($memberId))
+											<a href="#toolLink("ResourcesAction" "doMore")&from=show&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($collectionId)" title ="Get information on this item">
+												<img src = "#imageLink("chef/metainfo.gif")" border="0" alt ="Information on this item" />
+											</a>
+										#else
+											<img src = "#imageLink("chef/metainfo.gif")" border="0" alt ="Information on this item" />
+										#end
+									</td>
+								</tr>
+							#end
+						</table>
+					#end	
+				#else
+					<div class="chefAlertBox" >
+						You do not have permission to view the content of this collection.
+					</div>
+				#end
+			</form>
+		#else
+
+			 <form name="showForm" action="#toolForm("ResourcesAction")" method="post">
+				<input type="hidden" name="source" value="0" />
+				<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+			 </form>
+				 <div class ="chefBreadCrumb">
+				 	Location: #if($collectionDisplayName)$validator.escapeHtml($collectionDisplayName)#end
+					#if ($service.allowGetProperties($collectionId))
+						<a href="#toolLink("ResourcesAction" "doMore")&collectionId=$homeCollection&id=$homeCollection&from=show">
+							<img src = "#imageLink("chef/metainfo.gif")" border="0" title ="Information on this collection" alt ="Information on this collection" /></a>
+					#else
+						<img src = "#imageLink("chef/metainfo.gif")" border="0" alt ="Information on this collection" title ="Information on this collection" />
+					#end
+				</div>	
+					#if (!$collectionMembers  || $collectionMembers.size() ==0)
+						<div class="chefPageviewTitle">
+							<div class ="chefLeftIndent">
+								<br />There are no 
+								#if ($dropboxMode)
+									drop box
+								#else
+									resource
+								#end
+								items at this location.
+							</div>	
+						</div>
+					#else			
+				<table cellspacing="0" class ="chefFlatListViewTable">
+					<tr>
+						<th>
+							#if ($selectallflag=="true")
+								<a href="#toolLink("ResourcesAction" "doUnselectall")" >
+									<img src = "#imageLink("chef/checkedbox.gif")" border="0" alt="Check box" /> 
+								</a>
+							#else
+								<a href="#toolLink("ResourcesAction" "doSelectall")" >
+									<img src = "#imageLink("chef/checkbox.gif")" border="0" alt="Check box" /> 
+								</a>
+							#end	
+						</th>
+						<th>
+							&nbsp;
+						</th>
+						<th>
+							<a href="#toolLink("ResourcesAction" "doSort")&criteria=title"> 
+								Title
+								#if ($currentSortedBy.equals($resourceProperties.NamePropDisplayName)) 
+									#if ($currentSortAsc.equals("true")) 
+										<img src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort by title ascending" /> 
+									#else 
+										<img src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort by title descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						<th>
+							<a href="#toolLink("ResourcesAction" "doSort")&criteria=size&collectionId=$validator.escapeUrl($collectionId)">
+								Size
+								#if ($currentSortedBy.equals($resourceProperties.NamePropContentLength)) 
+									#if ($currentSortAsc.equals("true")) 
+										<img src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort by size ascending" /> 
+									#else 
+										<img src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort by size descending" /> 
+									#end 
+								#end
+							</a>
+						</th>
+						#if (!($dropboxMode && $collectionId==$homeCollection))
+						<th>
+							<a href="#toolLink("ResourcesAction" "doSort")&criteria=created%20by"> 
+								Created By
+								#if ($currentSortedBy.equals($resourceProperties.NamePropCreator)) 
+									#if ($currentSortAsc.equals("true")) 
+										<img src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort by creation date ascending" /> 
+									#else 
+										<img src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort by creation date descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						#end
+						<th>
+							<a href="#toolLink("ResourcesAction" "doSort")&criteria=last%20modified"> 
+								Last Modified
+								#if ($currentSortedBy.equals($resourceProperties.NamePropModifiedDate)) 
+									#if ($currentSortAsc.equals("true")) 
+										<img src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort by last modified date ascending" /> 
+									#else 
+										<img src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort by last modified date descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						<th>
+							&nbsp;
+						</th>
+					</tr>
+				</table>
+			#end
+		#end
+	</div>
+</div>

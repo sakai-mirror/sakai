@@ -1,0 +1,131 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-projectInformation.vm,v 1.4 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Creating project site step 3: Site info
+<script type="text/javascript">
+  	focus_path = [ "title" ];
+
+	function LimitText(fieldObj,maxChars)
+	{
+		var result = true;
+	  	if (fieldObj.value.length >= maxChars)
+	  	{
+	  		fieldObj.value = fieldObj.value.substring(0,maxChars);
+			result = false;
+	   	}
+	  
+	  	if (window.event)
+	    	window.event.returnValue = result;
+	    
+	  	return result;
+	}
+</script>
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Creating a project site...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Step 2: Enter information about your project. A <span class ="chefRequiredInline"> means</span> required information.
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Project information
+				</legend>
+				<table cellpadding="0" class="chefEditItem">
+					<tr>
+						<td class = "chefLabel" nowrap="nowrap">
+							Project title:
+						</td>
+						<td class="chefRequiredInline">
+							&nbsp;
+						</td>
+						<td colspan="2">
+							<input type="text" name="title" id="title" maxlength="20" size="20" value="$validator.escapeHtml($form_title)" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							&nbsp;
+						</td>
+						<td>
+							&nbsp;
+						</td>
+						<td valign="top">
+							#if ($form_include)
+								<input id="include" type="checkbox" name="include" value="true" checked="checked" />
+							#else
+								<input id="include" type= "checkbox" name="include" value="true" />
+							#end
+						</td>
+						<td>
+							Include this site in the Sites list 
+							<div class="chefInlineInstructions">
+								The sites list is where the public can browse a list of all sites and see site description without logging in.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class = "chefLabel" nowrap="nowrap">
+							Description:
+						</td>
+						<td>
+							&nbsp;
+						</td>
+						<td colspan="2">
+							<textarea name="description" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($form_description)</textarea>
+							<div class="chefInlineInstructions">
+								Displayed on the site's homepage.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class = "chefLabel" nowrap="nowrap">
+							Short description:
+						</td>
+						<td>
+							&nbsp;
+						</td>
+						<td colspan="2">
+							<textarea name="short_description" id="short_description" rows="2" cols="45" onkeyup="LimitText(this,80)" wrap="hard">$validator.escapeHtmlTextarea($form_short_description)</textarea>
+							<div class="chefInlineInstructions">
+								Displayed in publicly viewable list of sites. Max 80 characters.
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel" nowrap="nowrap">
+							Site contact name:
+						</td>
+						<td>
+							&nbsp;
+						</td>
+						<td colspan="2">
+							<input type="text" name="siteContactName" id="siteContactName" size="20" value="$!form_site_contact_name" />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel" nowrap="nowrap">
+							Site contact email:
+						</td>
+						<td>
+							&nbsp;
+						</td>
+						<td colspan="2">
+							<input type="text" name="siteContactEmail" id="siteContactEmail" size="20" value="$!form_site_contact_email" />
+						</td>
+					</tr>
+				</table>		
+			</fieldset>	
+				<input type="hidden" name="back" value="1" />
+				<input type="hidden" name="template-index" value="9"/>
+				<input type="hidden" name="continue" value="10" />
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel_create" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

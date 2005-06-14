@@ -1,0 +1,71 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-removeClass.vm,v 1.2 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+##Remove class
+<div class ="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Removing classes from site $validator.escapeHtml($siteTitle)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			#if($removable)
+				Select one more classes using the checkboxes, then click Remove Classes below to remove class rosters assigned to this site. A <span class="chefRequiredInline">means</span>required information.	
+			#else
+				There is currently no class for this site.
+			#end
+		</div>
+		<form name = "removeClassForm" method = "post" action="#toolForm("SiteAction")">
+			#if ($removable)
+			<fieldset>
+				<legend>
+					 Class Information
+				</legend>
+					<span class="chefRequiredInline">Classes</span> assigned to this site:<br />
+					#foreach($umiacItem in $umiacCourseSectionList)
+						<input type="checkbox" name="umiacDeletes" value="$umiacItem.getKey()" id="$umiacItem.getKey()" 
+							#foreach($umiacRemove in $removeClassUmiac)
+								#if ($umiacRemove.getKey() == $umiacItem.getKey())
+									checked = "checked"
+								#end
+							#end
+							/>
+						<label for = "$umiacItem.getKey()">
+							$umiacItem.getYear(),$umiacItem.getTerm_code(),$umiacItem.getCampus_code(),$umiacItem.getSubject(),$umiacItem.getCatalog_nbr(),$umiacItem.getClass_section()
+						</label>
+						<br />
+					#end
+					#foreach($manualItem in $manualCourseSectionList)
+						<input type="checkbox" name="manualDeletes" value="$manualItem.getKey()" id="$manualItem.getKey()" 
+							#foreach($manualRemove in $removeClassManual)
+								#if ($manualRemove.getKey() == $manualItem.getKey())
+									checked = "checked"
+								#end
+							#end
+						/>
+						<label for = "$manualItem.getKey()">
+							(requested)
+							$manualItem.getYear()
+							$manualItem.getTerm_code()
+							$manualItem.getSubject()
+							$manualItem.getCatalog_nbr()
+							$manualItem.getClass_section()
+						</label>
+						<br />
+					#end
+				#end
+			</fieldset>	
+			<input type="hidden" name="back" value="49" />
+			<input type="hidden" name="template-index" value="57"/>
+			<input type="hidden" name="continue" value="58" />
+			<div class="chefButtonRow">
+				#if ($removable)
+					<input type="submit" name="eventSubmit_doContinue" value="Remove Class(es)" />
+					<input type="submit" name="eventSubmit_doBack" value="Back" />
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				#else
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				#end
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="crud.create" />
+	<function name="crud.read" />
+	<function name="crud.update" />
+	<function name="crud.delete" />
+
+	<tool
+			id="sakai.crud"
+			url="/sakai-crud/crud/jsf.tool"
+			title="C. R. U. D."
+			description="Sample showing Create, Read, Update and Delete in a Sakai TPP Tool.">
+
+	</tool>
+
+</registration>

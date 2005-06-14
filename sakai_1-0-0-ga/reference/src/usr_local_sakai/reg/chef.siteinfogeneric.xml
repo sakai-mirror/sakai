@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.siteinfogeneric"
+			url="/sakai-chef-tool/chef-site-info-generic"
+			title="Site Info"
+			description="For showing worksite information and site participants">
+
+	</tool>
+
+</registration>

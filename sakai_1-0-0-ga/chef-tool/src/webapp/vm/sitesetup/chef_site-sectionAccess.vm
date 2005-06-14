@@ -1,0 +1,59 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-sectionAccess.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+##Customizing site setup...Section access<div class ="chefPortletContainer">
+	#if($section_menu)#toolbar($section_menu)#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefPageviewTitle">
+			Information about course sections, class times, locations and crosslistings
+		</div>
+		<form action="#toolForm("$action")" name="sectionAccessForm" method="post">
+			<table class="ChefFlatListViewTable" cellspacing="0" summary ="info on this table - what it contains, number of columns, number of entries, etc.">
+				<tr>
+					<th id="section">
+						<a href="">Section</a><!--href for sorting, if image, use alt, use title always for tooltips too-->
+					</th>
+					<th id="time">
+						<a href="">Time</a><!--href for sorting, if image, use alt, use title always for tooltips too-->
+					</th>
+					<th id="days">
+						<a href="">Days</a><!--href for sorting, if image, use alt, use title always for tooltips too-->
+					</th>
+					<th id="locations">
+						<a href="">Locations</a><!--href for sorting, if image, use alt, use title always for tooltips too-->
+					</th>
+					<th id="crosslist">
+						<a href="">Crosslist</a><!--href for sorting, if image, use alt, use title always for tooltips too-->
+					</th>				
+					<th id="instructor">
+						<a href="">Instructor</a><!--href for sorting, if image, use alt, use title always for tooltips too-->
+					</th>				
+				</tr>
+				#foreach ($section in $siteSections)
+					<tr>
+						<td headers="section">
+							$section
+						</td>
+						<td headers="time">
+							$time
+						</td>
+						<td headers="days">
+							$days
+						</td>
+						<td headers="locations">
+							$locations
+						</td>
+						<td headers="crosslist">
+							$crosslist
+						</td>
+						<td headers="instructor">
+							$instructor
+						</td>
+					</tr>
+				#end
+			</table>
+			<input type="hidden" name="back" value="15" />
+			<input type="hidden" name="template-index" value="17"/>
+			<input type="hidden" name="continue" value="15" />
+		</form>
+	</div>
+</div>

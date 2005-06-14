@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="realm.add" />
+	<function name="realm.del" />
+	<function name="realm.upd" />
+	<function name="realm.upd.own" />
+
+	<tool
+			id="chef.realms"
+			url="/sakai-chef-tool/chef-realms"
+			title="Admin: Realms Editor"
+			description="An administration tool to edit Realms.">
+
+		<configuration name="pagesize" value="20" />
+
+	</tool>
+
+</registration>

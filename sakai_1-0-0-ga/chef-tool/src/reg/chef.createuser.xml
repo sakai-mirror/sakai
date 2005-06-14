@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.createuser"
+			url="/sakai-chef-tool/chef-createuser"
+			title="New Account"
+			description="Create a new user account.">
+
+		<configuration name="create-type" value="registered" />
+		<configuration name="create-login" value="true" />
+
+	</tool>
+
+</registration>

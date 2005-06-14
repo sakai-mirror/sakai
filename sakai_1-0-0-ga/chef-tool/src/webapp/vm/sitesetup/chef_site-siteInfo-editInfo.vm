@@ -1,0 +1,159 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-siteInfo-editInfo.vm,v 1.4 2004/09/10 19:43:11 zqian.umich.edu Exp $ -->
+## Edit Site Information
+<script language="JavaScript">
+function LimitText(fieldObj,maxChars)
+{
+	var result = true;
+  	if (fieldObj.value.length >= maxChars)
+  	{
+  		fieldObj.value = fieldObj.value.substring(0,maxChars);
+		result = false;
+   	}
+  
+  	if (window.event)
+    	window.event.returnValue = result;
+    
+  	return result;
+}
+</script>
+  
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Revising site information for $validator.escapeHtml($title)
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Edit information about your #if ($!isCourseSite) class site. #elseif ($!isProjectSite)  project. #end
+		</div>
+		<fieldset>
+			<legend>
+				#if ($!isCourseSite) Class #elseif ($!isProjectSite)  Project #end information
+			</legend>
+			<form name = "classInformationForm" method = "post" action="#toolForm("SiteAction")">
+				<div class="chefSectionMessage">
+					<table class="chefEditItem">
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Site title:
+							</td>
+							<td align="left">
+								#if ($!isSuperUser)
+									<input type="text" name="title" id="title" maxlength="20" size="20" value="$validator.escapeHtml($!title)" />
+								#else
+									$validator.escapeHtml($!title)
+								#end
+							</td>					
+						</tr>
+						#if ($!isProjectSite)
+							<tr>
+								<td class="chefLabel" nowrap="nowrap">
+									Available to public:
+								</td>
+								<td>
+									#if ($include.equals("true"))
+										<input id="include" type="checkbox" name="include" value="false" />
+									#else
+										<input id="include" type= "checkbox" name="include" value="false" checked="checked" />
+									#end
+									Exclude this site from the public lists of sites.
+								</td>
+							</tr>
+						#end
+						#if ($!isCourseSite)
+							<tr>
+								<td class="chefLabel" nowrap="nowrap">
+									Term
+								</td>
+								<td align="left">
+									#if ($!isSuperUser)
+										#set($index = 0)
+										<select name="term" id="term">
+											#foreach ($term in $terms)
+												#if ($siteTerm == $term)
+													<option value="$index" selected="selected">$term</option>
+												#else
+													<option value="$index">$term</option>
+												#end
+												#set($index = $index + 1)
+											#end
+										</select>
+									#else
+										$!siteTerm
+									#end
+								</td>					
+							</tr>
+						#end
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Description:
+							</td>
+							<td align="left">
+								<textarea name="description" rows="5" cols="40" tabindex="1" wrap="virtual">$validator.escapeHtmlTextarea($!description)</textarea>
+								<div class="chefInlineInstructions">
+									Displayed on the site's home page.
+								</div>
+							</td>					
+						</tr>
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Short description:
+							</td>
+							<td>
+								<textarea name="short_description" id="short_description" tabindex="2" rows="2" cols="45" onkeyup="LimitText(this,80)">$validator.escapeHtmlTextarea($!short_description)</textarea>
+								<div class="chefInlineInstructions">
+									Displayed in publicly viewable list of sites. Max 80 characters.<br />
+								</div>
+							</td>
+						</tr>
+						#if ($!isCourseSite)
+							<tr>
+								<td class="chefLabel" nowrap="nowrap">
+									Appearance:
+								</td>
+								<td>
+									<select name="skin" id="skin">
+										#foreach ($s in $skins)
+											#if ($s.css == $skin)
+												<option value="$s.css" selected="selected">$s.Unit</option>
+											#else
+												<option value="$s.css">$s.Unit</option>
+											#end
+										#end
+									</select>
+									<div class="chefInlineInstructions">
+										Site will have school affiliated look and feel. <br />
+									</div>
+								</td>
+							</tr>
+						#end
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Site contact name:
+							</td>
+							<td>
+								<input type="text" name="siteContactName" id="siteContactName" size="20" value="$!form_site_contact_name" />
+							</td>
+						</tr>
+						<tr>
+							<td class="chefLabel" nowrap="nowrap">
+								Site contact email:
+							</td>
+							<td>
+								<input type="text" name="siteContactEmail" id="siteContactEmail" size="20" value="$!form_site_contact_email" />
+							</td>
+						</tr>
+					</table>
+				</div>	
+				<br />
+			</fieldset>	
+				<input type="hidden" name="back" value="42" />
+				<input type="hidden" name="template-index" value="43" />
+				<input type="hidden" name="continue" value="44" />
+				<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue"/>
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel"/>
+			</div>
+		</form>
+	</div>
+</div>

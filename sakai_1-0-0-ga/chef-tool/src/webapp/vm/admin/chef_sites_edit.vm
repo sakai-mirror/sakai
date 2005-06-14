@@ -1,0 +1,193 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_sites_edit.vm,v 1.3 2004/07/13 22:44:22 ggolden.umich.edu Exp $ -->
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = [#if(!$site)"id"#else"title"#end];
+</script>
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Edit: Site $!site.Id
+		</div>
+		<div class="chefPageviewTitle">
+			Review and modify this Site's information.
+		</div>
+
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Site
+				</legend>
+				<table class="chefEditItem" summary="Review and modify this Site's information.">
+					<tr>
+						<td class="chefLabel">
+							<label #if(!$site) for="id" #end>
+								#if(!$site)<span class="chefAlert">*</span>#end Site Id:
+							</label>
+						</td>
+						<td>
+							#if(!$site)<input type="text" name="id" id="id"/>#else$validator.escapeHtml($site.Id)#end
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="title">
+								Title:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="title" id="title" #if($site) value="$!validator.escapeHtml($site.Title)"#end />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="type">
+								Type:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="type" id="type" #if($site) value="$!validator.escapeHtml($site.Type)"#end />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="description">
+								Description:
+							</label>
+						</td>
+						<td>
+							<textarea wrap="virtual" name="description" id="description"  rows="3" cols="30">#if($site)$!validator.escapeHtmlTextarea($site.Description)#end</textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="status">
+								Status:
+							</label>
+						</td>
+						<td>
+							<input type="radio" value="1" name="status" id="status1" #if ((!$site) || ($site.Status==1)) checked="checked" #end /><label for="status1"> unpublished </label>
+							<input type="radio" value="2" name="status" id="status2" #if ($site.Status==2) checked="checked" #end /><label for="status1"> published </label>
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="joinable">
+								Joinable?:
+							</label>
+						</td>
+						<td>
+							<input type="radio" value="true" name="joinable" id="opentrue" #if ($site.isJoinable()) checked="checked" #end /><label for="opentrue"> yes </label>
+							<input type="radio" value="false" name="joinable" id="openfalse" #if (!$site || !$site.isJoinable()) checked="checked" #end /><label for="openfalse"> no</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="joinerRole">
+								Role to assign to joiners:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="joinerRole" id="joinerRole" #if($site) value="$!validator.escapeHtml($site.JoinerRole)"#end />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="icon">
+								Worksite Icon URL:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="icon" id="icon" #if($site) value="$!validator.escapeHtml($site.IconUrl)"#end />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="info">
+								Worksite Info URL:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="info" id="info" #if($site) value="$!validator.escapeHtml($site.InfoUrl)"#end />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="skin">
+								Skin:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="skin" id="skin" #if($site) value="$!validator.escapeHtml($site.Skin)"#end />
+						</td>
+					</tr>
+				</table>
+#if ($site)
+				<fieldset>
+					<legend>
+						Info
+					</legend>
+					<table class="chefItemDetail" summary="Review Site information">
+						<tr>
+							<td class="chefLabel">Created By:</td>
+							<td>
+								$validator.escapeHtml($site.Properties.getPropertyFormatted($site.Properties.NamePropCreator))
+							</td>
+						</tr>
+						<tr>
+							<td class="chefLabel">Created:</td>
+							<td>
+								$validator.escapeHtml($site.Properties.getPropertyFormatted($site.Properties.NamePropCreationDate))
+							</td>
+						</tr>
+						<tr>
+							<td class="chefLabel">Modified By:</td>
+							<td>
+								$validator.escapeHtml($site.Properties.getPropertyFormatted($site.Properties.NamePropModifiedBy))
+							</td>
+						</tr>
+						<tr>
+							<td class="chefLabel">Modified:</td>
+							<td>
+								$validator.escapeHtml($site.Properties.getPropertyFormatted($site.Properties.NamePropModifiedDate))
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+#end
+				<fieldset>
+					<legend>
+						Continue Editing
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doPages" value="Pages" />
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>
+						Special Conversion
+					</legend>
+					<div class="chefAlertBox">Sites created in prior versions may not have system-wide unique IDs
+					for pages and tools.  Use this converter to assign new IDs.</div>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doIds" value="Assign New IDs" />
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>
+						Complete the Site Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+			</fieldset>
+		</form>
+	</div>
+</div>

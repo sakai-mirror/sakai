@@ -1,0 +1,89 @@
+## $Header: /cvs/sakai/embedded/src/webapp/vm/portal.vm,v 1.7 2004/04/06 00:31:15 ggolden Exp $
+#if (!$sakai_fragment)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>$site.Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+##    <link href="/sakai-shared/sakai_core.css" type="text/css" rel="stylesheet" media="all" />
+    <script type="text/javascript" language="JavaScript" src="/sakai-chef-tool/js/headscripts.js">
+    </script>
+  </head>
+  <body>
+#end
+
+<iframe
+	name="login"
+	id="login"
+	height="250px"
+	width="100%"
+	src="$!{config.PortalTunnelUrl}/sakai-chef-tool/authn">
+</iframe>
+
+<hr />
+
+Site: $site.Title<br />
+Icon: $site.IconUrl<br />
+Pages:<br />
+#foreach($p in $site.Pages)
+- <a href="$p.Url">$p.Title</a><br />
+#end
+
+<hr />
+Page: $page.Title<br />
+Layout: $page.LayoutTitle<br />
+Tools:<br />
+#foreach($t in $page.Tools)
+- $t.ToolId - $t.Title<br />
+<iframe
+	name="$validator.escapeJavascript("Title$t.Id")"
+	id="$validator.escapeJavascript("Title$t.Id")"
+##	class ="chefTitleIFrame"
+	title="Title Bar (contains button to float or dock the tool)"
+	height="30px"
+	width="100%"
+	frameborder="0"
+	marginwidth="0"
+	marginheight="0"
+	scrolling="no"
+	align="middle"
+	src="$config.getToolRegistration($t.ToolId).Url?pid=$t.Id&panel=Title">
+</iframe>
+<br />
+<iframe
+	name="$validator.escapeJavascript("Main$t.Id")"
+	id="$validator.escapeJavascript("Main$t.Id")"
+	height="50px"
+	width="100%"
+	title="$t.Title"
+##	class ="chefContentIFrame"
+	frameborder="0"
+	marginwidth="0"
+	marginheight="0"
+	scrolling="auto"
+	src="$config.getToolRegistration($t.ToolId).Url?pid=$t.Id&panel=Main">
+</iframe>
+<br />
+#end
+
+<hr />
+Courier:<br />
+<iframe
+	name="courier"
+	id="courier"
+	height="30px"
+	width="200px"
+	src="$!{config.PortalTunnelUrl}/sakai-chef-tool/courier?site=$site.Id&page=$page.Id&auto=courier">
+</iframe>
+
+<hr />
+Presence:<br />
+<iframe
+	name="presence"
+	id="presence"
+	height="200px"
+	width="200px"
+	src="$!{config.PortalTunnelUrl}/sakai-chef-tool/presence?site=$site.Id">
+</iframe>
+
+#if (!$sakai_fragment)</body></html>#end

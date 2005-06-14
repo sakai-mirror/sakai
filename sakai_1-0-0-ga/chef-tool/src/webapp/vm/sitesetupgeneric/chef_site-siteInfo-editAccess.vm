@@ -1,0 +1,180 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-siteInfo-editAccess.vm,v 1.1 2004/10/13 23:25:00 zqian.umich.edu Exp $ -->
+## Site list Sites list on worksite setup home page
+<div class ="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class ="chefPortletContent">
+		#if (($!isCourseSite &&  $allowUpdate) || ($!isProjectSite && ($allowUpdate || $viewRoster)) || ($!isGradToolsSite && ($allowUpdate || $viewRoster)))
+			#if ($alertMessage)
+				<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+				<div style="display:block;clear:both"></div>
+			#end
+			<form name="editParticipantForm" action="#toolForm("SiteAction")" method="post">
+				<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds the information of site participant. Column 1 holds the index number, column 2 holds the name, Column 3 holds uniqname, Column 4 holds the role, Headers hold links for sorting">
+					<CAPTION>
+						Participant List 
+						#if ($!isCourseSite)
+							(NR = Not officially enrolled)
+						#end
+					</CAPTION>
+					<tr>
+						<th>
+							#
+						</th>
+						<th>
+							&nbsp;
+						</th>
+						<th id="name">
+							<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_name" title ="Sort by name"> 
+								Name
+								#if ($currentSortedBy.equals("participant_name")) 
+									#if ($currentSortAsc.equals("true")) 
+										<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by name ascending" alt ="Sort by name ascending" /> 
+									#else 
+										<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by name descending" alt ="Sort by name descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						<th id="uniqname">
+							<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_uniqname" title ="Sort by uniqname"> 
+								Username
+								#if ($currentSortedBy.equals("participant_uniqname")) 
+									#if ($currentSortAsc.equals("true")) 
+										<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by uniqname ascending" alt ="Sort by uniqname ascending" /> 
+									#else 
+										<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by uniqname descending" alt ="Sort by uniqname descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						#if ($!isCourseSite)
+							<th id="course">
+								<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_course" title ="Sort by class"> 
+									Class
+									#if ($currentSortedBy.equals("participant_course")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by class ascending" alt ="Sort by class ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by class descending" alt ="Sort by class descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+							<th id="section">
+								<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_section" title ="Sort by section"> 
+									Section
+									#if ($currentSortedBy.equals("participant_section")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by section ascending" alt ="Sort by section ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by section descending" alt ="Sort by section descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+							<th id="ID">
+								<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_id" title ="Sort by id"> 
+									ID
+									#if ($currentSortedBy.equals("participant_id")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by id ascending" alt ="Sort by id ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by id descending" alt ="Sort by id descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+						#end
+						<th id="role">
+							<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_role" title ="Sort by role"> 
+								Role
+								#if ($currentSortedBy.equals("participant_role")) 
+									#if ($currentSortAsc.equals("true")) 
+										<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by role ascending" alt ="Sort by role ascending" /> 
+									#else 
+										<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by role descending" alt ="Sort by role descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						#if ($!isCourseSite)
+							<th id="credits">
+								<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_credits" title ="Sort by credits"> 
+									Credits
+									#if ($currentSortedBy.equals("participant_credits")) 
+										#if ($currentSortAsc.equals("true")) 
+											<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by credits ascending" alt ="Sort by credits ascending" /> 
+										#else 
+											<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by credits descending" alt ="Sort by credits descending" /> 
+										#end 
+									#end 
+								</a>
+							</th>
+						#end
+					</tr>
+					#set($count = 1)
+					#foreach($participant in $participantList)
+						<tr>
+							<td>
+								$count
+							</td>
+							<td>
+								<input type="checkbox" name="selectedUser" value="$participant.getUniqname()" 
+									#foreach($participantSelected in $selectedParticipants)
+										#if($participantSelected.getUniqname() == $participant.getUniqname())
+											checked
+										#end
+									#end
+								/>
+							</td>
+							<td headers="name">
+								$participant.getName()
+							</td>
+							<td headers="uniqname">
+								$participant.getUniqname()
+							</td>
+							#if ($!isCourseSite)
+								<td headers="course">
+									#set($course="")
+									#set($course = $participant.getCourse())
+									$!course
+								</td>
+								<td headers="section">
+									#set($section="")
+									#set($section = $participant.getSection())
+									$!section
+								</td>
+								<td headers="uniqname">
+									#set($id="")
+									#set($id = $participant.getId())
+									$!id
+								</td>
+							#end
+							<td headers="role">
+								#set($role = "")
+								#set($role = $participant.getRole())
+								$!role
+								#if ($role.length() == 0)
+									#if ($!role.length() == 0)
+										#foreach ($pRole in $participant.getRoles())
+											$pRole.getId()
+										#end
+									#end
+								#end
+							</td>
+							#if ($!isCourseSite)
+								<td headers="credits">
+									#set($credits="NR")
+									#set($credits = $participant.getCredits())
+									$!credits
+								</td>
+							#end
+						</tr>
+						#set($count = $count + 1)
+					#end
+				</table>
+				<input type="hidden" name="template-index" value="49" />
+			</form>
+		#end
+	</div>
+</div>

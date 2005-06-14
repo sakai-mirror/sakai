@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infos>
+    <info chefid="aerocandid2" emplid="11112222" id="testidthree"
+        program="001" site="datalistener" siteid="diss001">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value=""/>
+            <property enc="BASE64" name="CHEF:modifiedby" value=""/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwNDAzMDQwNDQxMjg0MDI=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwNDAzMDQwNDQxMjg0MDI=&#xa;"/>
+        </properties>
+    </info>
+    <info chefid="edcandid2" emplid="22222222" id="testidfour"
+        program="044" site="datalistener" siteid="diss044">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value=""/>
+            <property enc="BASE64" name="CHEF:modifiedby" value=""/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwNDAzMDQwNDQxMjg0MDQ=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwNDAzMDQwNDQxMjg0MDQ=&#xa;"/>
+        </properties>
+    </info>
+    <info chefid="edcandid1" emplid="22221111" id="testidtwo"
+        program="044" site="datalistener" siteid="diss044">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value=""/>
+            <property enc="BASE64" name="CHEF:modifiedby" value=""/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwNDAzMDQwNDQxMjgzOTk=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwNDAzMDQwNDQxMjgzOTk=&#xa;"/>
+        </properties>
+    </info>
+    <info chefid="aerocandid1" emplid="11111111" id="testidone"
+        program="001" site="datalistener" siteid="diss001">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value=""/>
+            <property enc="BASE64" name="CHEF:modifiedby" value=""/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwNDAzMDQwNDQxMjgzODk=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwNDAzMDQwNDQxMjgzODk=&#xa;"/>
+        </properties>
+    </info>
+</infos>

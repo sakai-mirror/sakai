@@ -1,0 +1,44 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-setType.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Setting a missing site type
+<div class ="chefPortletContainer">
+	## rwellis: will never see a menu here, might as well take out
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Setting a site type...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form action="#toolForm("SiteAction")" method="post">
+			<span class ="chefPageviewTitle">
+				Identify the type of site you are editing
+			</span>
+			<div class="chefSectionMessage">
+				Please note that only UM instructors can create Official Course Sites.&nbsp;&nbsp;
+				Instructors and students can create Project Sites. <br />
+				<br />
+				Note to students: If you are a student and do not see a tab for your class, do not create an official
+				course website.  Contact your Instructor for information about when your class site will be available.
+			</div>
+			<fieldset>
+				<legend>Type of site</legend>
+							<input type="radio" name="itemType" id="class" value="class" checked="checked" />
+							<label for = "class">
+								Official course website (For UM Instructors, Faculty, GSIs only!)
+							</label>
+							<br />
+							<input type="radio" name="itemType" id="project" value="project" />
+							<label for = "project">
+								Project website
+							</label>
+			</fieldset>
+				<input type="hidden" name="back" value="0" />		
+				<input type="hidden" name="template-index" value="33" />
+				<input type="hidden" name="continue" value="15" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doSet_site_type" value="Continue" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>				
+	</div>
+</div>	
+

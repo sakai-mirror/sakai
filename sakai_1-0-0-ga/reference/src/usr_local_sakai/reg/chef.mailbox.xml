@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="mail.new" />
+	<function name="mail.read" />
+	<function name="mail.revise.any" />
+	<function name="mail.revise.own" />
+	<function name="mail.delete.any" />
+	<function name="mail.delete.own" />
+
+	<tool
+			id="chef.mailbox"
+			url="/sakai-chef-tool/chef-mailbox"
+			title="Email Archive"
+			description="For viewing email sent to the site.">
+
+		<configuration name="channel" value="" />
+		<configuration name="pagesize" value="20" />
+
+	</tool>
+
+</registration>

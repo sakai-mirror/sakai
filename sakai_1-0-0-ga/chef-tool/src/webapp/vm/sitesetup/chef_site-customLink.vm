@@ -1,0 +1,69 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-customLink.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Adding a custom link
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["name"];
+</script>
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Adding a custom link...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Add your custom link information below. Your custom link will appear in the main CourseTools NG menu
+			for this site. A check means this information is required.
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Custom link
+				</legend>
+				<table cellpadding="5" class="chefEditItem">
+					<tr>
+						<td class = "chefLabel">
+							Name:							
+						</td>
+						<td>
+							<input type="text" name="name" id="name" /><br />
+							<div class ="chefInlineInstructions">
+								Note: 15 character limit
+							</div>
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							URL:							
+						</td>
+						<td>
+							<input type="text" name="url"  />
+						</td>
+					</tr>	
+					<tr>
+						<td class = "chefLabel">
+							Opens in:							
+						</td>
+						<td>
+							<input type="radio" name="targetWindow" id="_top" />
+							<label for = "_top">
+								This window
+							</label><br />
+							<input type="radio" name="targetWindow" id="_blank" checked="checked"  />
+							<label for = "_blank">
+								New window
+							</label>	
+						</td>
+					</tr>	
+				</table>		
+			</fieldset>	
+				<input type="hidden" name="back" value="15" />
+				<input type="hidden" name="template-index" value="23"/>
+				<input type="hidden" name="continue" value="15" />
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doAdd_custom_link" value="Link" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

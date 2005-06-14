@@ -1,0 +1,59 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/support/chef_contactsupport_doc.vm,v 1.6 2004/09/14 14:50:07 suiyy.umich.edu Exp $
+
+<script type="text/javascript">
+	focus_path = [ "username" ];
+</script>
+
+<div class="chefPortletContainer">
+<div class="chefPortletContent">
+
+<form action="#toolForm("$action")" method="post">
+<p><div class="chefButtonRow">
+    <input type="button" value="Help Guide" onclick="sitehelp('$config.getString("help.url")')" title="opens in a new window" />
+    <input type="submit" name="eventSubmit_doNew" value="Contact Us" />
+</div>
+</p>
+
+<div class="helpDocHeader">* Don't see a tab for your course? Or do you see too many tabs?</div>
+<div class="helpDocContent">
+In $config.getString("ui.service") we do not yet have a way of ordering tabs or sorting them by term. As a result, tabs are only organized alphabetically and you'll see tabs for current courses as well as courses you've already taken. We're developing a tab management feature. In the meantime, we're happy to work with faculty who would like to rename sites from previous terms. Instructors -- Have you published your course site? Students -- If you recently registered for a course, it may take up to 24 hours for your information to be processed.<br>
+</div>
+
+<div class="helpDocHeader">* Don't see a link for a site in My Courses?</div>
+<div class="helpDocContent">
+$config.getString("ui.service") does not work with My Courses the way the original UM.CourseTools did. The best way to find sites for your courses is to open $config.getString("ui.service") and look for the site tab for your course.<br>
+</div>
+
+<div class="helpDocHeader">* Having trouble using your browser's back button?</div>
+<div class="helpDocContent">
+DON'T USE YOUR BROWSER'S BACK BUTTON! In the $config.getString("ui.service"), the back button won't always render the desired results. Please use the navigation tools in $config.getString("ui.service"), instead.</div>
+
+<div class="helpDocHeader">* Don't see your course content?</div>
+<div class="helpDocContent">If you don't see your course content, make sure you have selected the correct tab along the top of the main window.</div>
+
+<div class="helpDocHeader">* Questions about course content?</div>
+<div class="helpDocContent">If you have questions about course content, please contact your instructor.</div>
+
+<div class="helpDocHeader">* Need to return to the first page of a tool?</div>
+<div class="helpDocContent">
+To return to the first page of a tool (discussions, resources, schedule, etc.)
+click the
+<img src = "#imageLink("toolhome.gif")" border="0" />
+button, which is located in the upper left corner of the main window. </div>
+
+<div class="helpDocHeader">* Would you like to set up a course site or project site?</div>
+<div class="helpDocContent">Click the <b>My Worksite</b> tab if you are not in your workspace. Click the <b>Worksite Setup</b> button on the left menubar. Select the type of worksite you wish to create, and follow the on-screen setup steps. (Only instructors can set up course sites.)</div>
+
+<br/><br/>If you don't see an answer to your question above, click the <b>Help Guide</b>
+button below for more comprehensive instructions or click the <b>Contact Us</b>
+button to send us comments.
+
+<p><div class="chefButtonRow">
+    <input type="button" value="Help Guide" onclick="sitehelp('$config.getString("help.url")')" title="opens in a new window" />
+    <input type="submit" name="eventSubmit_doNew" value="Contact Us" />
+</div>
+</p>
+</form>
+
+</div>
+</div>

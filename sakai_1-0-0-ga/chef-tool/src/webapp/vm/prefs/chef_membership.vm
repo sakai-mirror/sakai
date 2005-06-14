@@ -1,0 +1,68 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/prefs/chef_membership.vm,v 1.1 2004/03/11 05:29:59 ggolden Exp $ -->
+<div class="chefPortletContainer">
+	#if($menu)#menu($menu)#end
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Check box(es) then choose 'join' or 'unjoin' to change your membership.
+		</div>
+#if ($fixedSites)
+		<table class = "chefFlatListViewTable" cellspacing="0" summary ="Table holds a list of sites that you have access to and cannot unjoin. Column 1 has the site title. Column 2 has a description of the site.">
+			<tr>
+				<th id="worksite">Worksite</th>
+				<th id="description">Description</th>
+			</tr>
+			#foreach ($site in $fixedSites)
+					<tr>
+						<td headers="worksite"><a href="$site.Url" target="_top">$validator.escapeHtml($site.Title)</a></td>
+						<td headers="description">$!validator.escapeHtml($!site.Description)</td>
+					</tr>
+			#end
+			</table>
+#end
+#if ($unjoinableSites)
+	<form action="#toolForm("$action")" method="post">
+		<table class = "chefFlatListViewTable" cellspacing="0" summary ="Table holds a list of sites that you have access to. Column 1 will hold checkboxes so that you can select and remove yourself from the site. Column 2 holds the site titl. Column 3 may have a description of the site.">
+			<tr>
+				<th id="checkbox">&nbsp;&nbsp;</th>
+				<th id="worksite">Worksite</th>
+				<th id="description">Description</th>
+			</tr>
+			#foreach ($site in $unjoinableSites)
+					<tr>
+						<td headers="checkbox"><input type="checkbox" name="unjoin" value="$validator.escapeHtml($site.Id)"></td>
+						<td headers="worksite"><a href="$site.Url" target="_top">$validator.escapeHtml($site.Title)</a></td>
+						<td headers="description">$!validator.escapeHtml($!site.Description)</td>
+					</tr>
+			#end
+			</table>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doUnjoin" value=" Unjoin " />
+				</div>
+	</form>
+#end
+#if ($openSites)
+		<div class="chefPageviewTitle">
+			Joinable Worksites:
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<table class = "chefFlatListViewTable" cellspacing="0" summary ="Table holds a list of sites that you can get have access to. Column 1 will hold checkboxes so that you can select and add yourself to the site. Column 2 holds the site title. Column 3 may have a description of the site.">
+				<tr>
+					<th id="checkbox">&nbsp;</th>
+					<th id="worksite">Worksite</th>
+					<th id="description">Description</th>
+				</tr>
+				#foreach ($site in $openSites)
+					<tr>
+						<td headers ="checkbox"><input type="checkbox" name="join" value="$validator.escapeHtml($site.Id)"></td>
+						<td headers="worksite">$!validator.escapeHtml($!site.Title) ($validator.escapeHtml($site.Id))</td>
+						<td headers="description">$!validator.escapeHtml($!site.Description)</td>
+					</tr>
+				#end
+			</table>
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doJoin" value=" Join " />
+			</div>
+		</form>
+#end
+</div>

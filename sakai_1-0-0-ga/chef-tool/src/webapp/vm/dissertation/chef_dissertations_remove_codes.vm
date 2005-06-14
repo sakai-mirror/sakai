@@ -1,0 +1,46 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_remove_codes.vm,v 1.2 2004/07/11 18:11:25 rwellis.umich.edu Exp $ 
+## Dissertations - Administrator's form for loading OARD Doctoral System and MPathways data extracts
+<div class="chefPortletContainer" id="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<span class ="chefPortletToolBarMessage">
+		Removing FOS code...
+	</span>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Are you sure you want to remove the FOS code(s) below? This will only remove
+			the FOS from the table, not delete any Grad Tools sites that may have used
+			this FOS.
+		</div>
+			<form name="confirmRemoveCode" id="confirmRemoveCode" action="#toolForm($action)" method="post" enctype="multipart/form-data">
+				<table class="chefFlatListViewTable" cellspacing="0" summary="Confirm intent to remove the listed FOS code(s)">
+					#foreach($field in $fields)
+					<tr>
+						<td class="chefLabel">
+							FOS:
+						</td>
+						<td class="chefLabel">
+							$field.getFieldCode()
+						</td>
+						<td class="chefLabel">
+							&nbsp;&nbsp;
+						</td>
+						<td class="chefLabel">
+							BGG:
+						</td>
+						<td>
+							$field.getGroupCode()
+						</td>
+						<td class="chefLabel">
+							$field.getGroupName()
+						</td>
+					</tr>
+					#end
+				</table>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doRemove_codes_confirmed" id="eventSubmit_doRemove_code_confirmed" value="Remove" />
+					<input type="submit" name="eventSubmit_doCancel_code" id="eventSubmit_doCancel_code" value="Cancel" />
+				</div>
+			</form>
+	</div>
+</div>

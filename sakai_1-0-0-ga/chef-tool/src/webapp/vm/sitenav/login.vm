@@ -1,0 +1,46 @@
+#if (!$sakai_fragment)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title>$config.getString("ui.service","") : Please Login</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link href="${sakai_portalskin}skin/${sakai_skin_id}.css" type="text/css" rel="stylesheet" media="all" />
+		<script type="text/javascript" language="JavaScript" src="/sakai-chef-tool/js/headscripts.js">
+		</script>
+	</head>
+
+	<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
+#end
+
+	<form method="post" action="${sakai_ActionURL}" enctype="application/x-www-form-urlencoded">
+		<table class="mast-head" cellpadding="0" cellspacing="0" border="0" width="100%">
+			<tr>
+#if (!$minimal)
+				<td style="padding:2px" valign="middle" align="left">
+					<img title="" alt="" src="${sakai_portalskin}institutional/logo_inst.gif">
+				</td>
+				<td style="text-indent:.3em" width="100%">
+					<img title="" alt="" src="${sakai_portalskin}institutional/banner_inst.gif">
+				</td>
+#end
+				<td class="mast-head-r">
+					#if ($top_login)
+						$userid_text:
+						<input size="32" name="username" id="username"  type="text" style ="width: 10em" />
+						password:
+						<input size="32" name="password" type="password" style ="width: 10em" />
+						<input name="submit" class ="button" type="submit" value="Log in" />
+					</form>
+					#else
+					<input type="button" class="button" value="Login" onclick="parent.location='$login_url'" />
+					#end
+				</td>
+			</tr>
+		</table>
+		<div class="divColor" id="tabBottom"><br /></div>
+	</form>
+
+#if (!$sakai_fragment)
+	</body>
+</html>
+#end

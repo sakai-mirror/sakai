@@ -1,0 +1,31 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-sitePublishUnpublish.vm,v 1.2 2004/07/29 16:51:46 zqian.umich.edu Exp $ -->
+## Creating project site: publish the site or not
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Creating a $courseOrProject site...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Your $courseOrProject site has been created! <br /><br />
+			<b>One last question</b> - Do you want to publish the site now, or wait until later?<br /><br />
+			A published site is viewable to all participants. Unpublished sites are only viewable to those with permission to set up the site. 
+			For example, participants with the Student and Member roles cannot see the site when it is unpublished, but those with the Assistant and Instructor roles can. <br /><br />
+			If you choose to leave the site unpublished for now, you can publish it later at any time using the Site Info tool, which is visible in the menu bar of each project or course site.
+		</div>
+		<form name="publishForm" action="#toolForm("$action")" method="post">
+			<input type="hidden" name="template-index" value="41"/>
+			<input type="hidden" name="option" value="" />
+			<input type="hidden" name="eventSubmit_doPublish_created_site" value="x" />
+			<div class="chefButtonRow">
+				<input type="submit" name="Publish Site" 
+							value="Publish Site" 
+							onclick="document.publishForm.option.value='publish';javascript:document.publishForm.submit();" />
+				<input type="submit" name="Leave Site Unpublished" 
+							value="Leave Site Unpublished" 
+							onclick="document.publishForm.option.value='unpublish';javascript:document.publishForm.submit();" />
+			</div>
+		</form>
+	</div>
+</div>

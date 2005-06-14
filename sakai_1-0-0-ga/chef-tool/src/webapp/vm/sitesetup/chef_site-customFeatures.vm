@@ -1,0 +1,86 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-customFeatures.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Creating custom page 
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Creating a custom page ...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Step 4: Choose which features you want to have on your custom page. A link to the page will be available in the left hand menu.	
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Features
+				</legend>
+				<table cellpadding="5" class="chefEditItem">
+					<tr>
+						<td>
+							<input type="checkbox" name="features" id="announcements" checked ="" />
+							<label for = "announcements">
+								Announcements
+							</label>	
+						</td>
+					</tr>	
+					<tr>
+						<td>
+							<input type="checkbox" name="features" id="resources" checked ="" />
+							<label for = "resources">
+								Resources
+							</label>	
+						</td>
+					</tr>	
+					<tr>
+						<td>
+							<input type="checkbox" name="features" id="schedule" checked ="" />
+							<label for = "schedule">
+								Schedule
+							</label>	
+						</td>
+					</tr>	
+					<tr>
+						<td>
+							<input type="checkbox" name="features" id="discussion" checked ="" />
+							<label for = "discussion">
+								Discussion
+							</label>	
+						</td>
+					</tr>	
+					<tr>
+						<td>
+							<input type="checkbox" name="features" id="chat" checked ="" />
+							<label for = "chat">
+								Chat
+							</label>	
+						</td>
+					</tr>	
+					<tr>
+						<td>
+							<input type="checkbox" name="features" id="assignments" checked ="" />
+							<label for = "assignments">
+								Assignments
+							</label>	
+						</td>
+					</tr>	
+					<tr>
+						<td>
+							<input type="checkbox" name="features" id="news" checked ="" />
+							<label for = "news">
+								News
+							</label>	
+						</td>
+					</tr>				
+				</table>		
+			</fieldset>	
+				<input type="hidden" name="back" value="17" />
+				<input type="hidden" name="template-index" value="26"/>
+				<input type="hidden" name="continue" value="24" />
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doBack" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

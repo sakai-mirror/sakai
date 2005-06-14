@@ -1,0 +1,70 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-type.vm,v 1.5 2004/08/27 20:12:36 zqian.umich.edu Exp $ -->
+## Creating site step 1: site type
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Creating a new site ...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form action="#toolForm("SiteAction")" method="post">
+			<span class ="chefPageviewTitle">
+				Step 1: Choose the type of site you want to create.
+			</span>
+			<div class="chefSectionMessage">
+				Please note that only instructors can create Official Course Sites.&nbsp;&nbsp;
+				Instructors and students can create Project Sites. <br />
+				<br />
+				Note to students: If you are a student and do not see a tab for your class, do not create an official
+				course website.  Contact your Instructor for information about when your class site will be available.
+				#if ($isGradStudent.booleanValue() && $noGradToolsSite.booleanValue())
+				<br /><br />
+				Graduate students may create a Grad Tools site. A Grad Tools site contains tools that are meant to be helpful
+				to graduate students.
+				#end
+			</div>
+			<fieldset>
+				<legend>Type of site</legend>
+				<input type="radio" name="itemType" id="class" value="class" checked="checked" />
+				<label for = "class">
+					Official course website (For Instructors, Faculty, GSIs only!)<br />
+					<div class="chefSectionMessage">
+						<div class="chefSectionMessage">
+							Academic term:<span class ="chefRequiredInline"> </span>
+							<select name="selectTerm">
+								#foreach($term in $termList)
+									#if ($term.id > 1)
+										##hide the Fall 2003, Winter 2004S term
+										<option value ="$term.id"
+											#if($term.id == $selectedTerm)
+												selected="selected"
+											#end
+										>
+										$term.text
+										</option>	
+									#end
+								#end
+							</select> 
+						</div>
+					</div>
+				</label><br />
+				<input type="radio" name="itemType" id="project" value="project" />
+				<label for = "project">
+					Project website
+				</label>
+				#if ($isGradStudent.booleanValue() && $noGradToolsSite.booleanValue())
+				<br /><br />
+				<input type="radio" name="itemType" id="gradtools" value="gradtools" />
+				<label for = "project">
+					Grad Tools website
+				</label>
+				#end
+			</fieldset>
+				<input type="hidden" name="back" value="0" />
+				<input type="hidden" name="template-index" value="1" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doSite_type" value="Continue" />
+				<input type="submit" name="eventSubmit_doCancel_create" value="Cancel" />
+			</div>
+		</form>				
+	</div>
+</div>	

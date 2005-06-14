@@ -1,0 +1,31 @@
+<html>
+<head><title>Test</title></head>
+<body>
+#if ($one) <p>String "one": $one</p> #end
+#if ($two) <p>File "two": $two.fileName  $two.contentType</p> #end
+#if ($three) <p>String "three": $three</p> #end
+#if ($four) <p>File "four": $four.fileName  $four.contentType</p> #end
+#if ($five) <p>String "five": $five</p> #end
+#if ($six) <p>File "six": $six.fileName  $six.contentType</p> #end
+#if ($seven) <p>File "seven": $seven.fileName  $seven.contentType</p> #end
+#if ($eight) <p>String "eight": $eight</p> #end
+#if ($nine) <p>String "nine": $nine</p> #end
+<hr />
+<form action="$sakai_ActionURL.setParameter("eight", "8").setParameter("nine", "9").toString()" method="post" enctype="multipart/form-data">
+<input type="text" name ="one" value="" /><br />
+<input type="file" name="two" size="20" /><br />
+<input type="submit" name="submit" />
+</form>
+<hr />
+<form action="$sakai_ActionURL.setParameter("eight", "8").setParameter("nine", "9").toString()" method="post">
+<input type="text" name ="three" value="" /><br />
+<input type="file" name="four" size="20" /><br />
+<input type="submit" name="submit" />
+</form>
+<form action="$sakai_ActionURL.setParameter("eight", "8").setParameter("nine", "9").toString()" method="post" enctype="multipart/form-data">
+<input type="text" name ="five" value="" /><br />
+<input type="file" name="six" size="20" /><br />
+<input type="file" name="seven" size="20" /><br />
+<input type="submit" name="submit" />
+</body>
+</html>

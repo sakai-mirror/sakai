@@ -1,0 +1,33 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/recent/chef_synoptic_message-List.vm,v 1.4 2004/08/02 17:30:46 janderse.umich.edu Exp $
+<div class="chefPortletContainer">
+#if($menu)
+#toolbar($menu)
+#end
+	<div class="chefPortletContent" style="overflow: auto; width: 96%;">
+		#if ($alertMessage)<div class="chefAlertBox">Alert:$validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+#set($counter = 0)
+#foreach ($item in $messages)
+        #set ($counter = $counter + 1)
+	#if ($showSubject)
+		#set ($text=$item.Header.Subject)
+	#else
+		#set ($text=$item.Body)
+	#end
+	#if(!$showSubject)<span class="chefPre">#end
+		#if ($show_newlines)
+			$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}
+		#else
+			$!{validator.escapeHtmlFormattedTextPreserveNewlines($validator.limitFormattedText($text,$length))}
+		#end
+	#if(!$showSubject)</span>#end
+	<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( $!{validator.escapeHtml($item.Header.From.DisplayName)} - $!{item.Header.Date.toStringLocalFull()} )<br/>
+	&nbsp;<br/>
+#end
+		#if ($counter == 0)
+                    <div class ="chefLeftIndent">
+                            There are currently no messages at this location.
+                    </div>
+                #end
+	</div>
+</div>

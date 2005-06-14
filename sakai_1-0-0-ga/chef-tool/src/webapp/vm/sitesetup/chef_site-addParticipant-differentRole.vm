@@ -1,0 +1,84 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-addParticipant-differentRole.vm,v 1.2 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Add participants to the worksite with different role
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+ 		Adding participant(s) to $validator.escapeHtml($title)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Choose roles for the participants you are adding.
+		</div>
+       	<table cellspacing="0" cellpadding="0" class="chefEditItem" summary ="Table holds a text box for entering associated role." >
+			<tr>
+				<td colspan="2">
+					Role Descriptions
+				</td>
+			</tr>
+			#foreach ($role in $roles)
+				#set ($description = false)
+				<tr>
+					<td>
+						$role.Id
+					</td>
+					<td>
+						<div class="chefInlineInstructions">
+							#set ($description = $roleDescription.get($role.Id))
+							#if ($!description) $!description #end
+						</div>
+					</td>
+				</tr>
+			#end
+		</table>
+		<br />
+		<form action="#toolForm("SiteAction")" method="post">
+           	<table cellspacing="0" cellpadding="0" class ="chefFlatListViewTable" summary ="Table holds a radio button for role choices" >
+				<tr>
+					<th>
+						Name
+					</th>
+					<th>
+						Role
+					</th>
+				</tr>
+				#foreach ($participant in $participantList)
+					#set($uniqname = $participant.getUniqname())
+					<tr>
+						<td>
+							$uniqname
+						</td>
+						<td>
+							<select name="role$uniqname">
+								<option value="no_role_selected"
+									#if ($!selectedRoles.get($uniqname) == "no_role_selected")
+										selected="selected"
+									#end
+								>
+									Please select a role
+								</option>
+								#foreach($role in $roles)
+									<option value ="$role.Id"
+										#if($role.Id == $!selectedRoles.get($uniqname))
+											selected="selected"
+										#end
+									>
+										$role.Id
+									</option>
+								#end
+							</select>
+						</td>
+					</tr>
+				#end
+			</table>
+			<br/>
+			<input type="hidden" name="back" value="28" />
+			<input type="hidden" name="continue" value="52" />
+			<input type="hidden" name="template-index" value="51" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

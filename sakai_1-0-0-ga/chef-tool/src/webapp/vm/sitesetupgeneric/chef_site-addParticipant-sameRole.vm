@@ -1,0 +1,76 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-addParticipant-sameRole.vm,v 1.1 2004/10/13 23:18:38 zqian.umich.edu Exp $ -->
+## Add participants to the worksite with same role
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+ 		Adding participant(s) to $validator.escapeHtml($title)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		<div class="chefPageviewTitle">
+			Choose the role for the participants you are adding.	
+		</div>
+		<form action="#toolForm("SiteAction")" method="post">
+			<fieldset>
+				<legend>
+					Participants
+				</legend>
+	           	<table cellspacing="0" cellpadding="0" class ="chefFlatListViewTable" summary ="Table hold ids for participants." >
+					<tr>
+						<th>
+							Name
+						</th>
+					</tr>
+					#foreach ($participant in $participantList)
+						<tr>
+							<td>
+								$participant.getUniqname()
+							</td>
+						</tr>
+					#end
+					<tr>
+				</table>
+			</fieldset>
+			<br />
+			<fieldset>
+				<legend>
+					Participant's Role
+				</legend>
+	           	<table cellspacing="0" cellpadding="0" class="chefEditItem" summary ="Table holds a text box for entering associated role." >
+					#foreach ($role in $roles)
+						#set ($description = false)
+						<tr>
+							<td valign="middle" nowrap="nowrap">
+								<input type="radio" name="selectRole" value="$role.Id"
+									#if($form_selectedRole == $role.Id)
+										checked="checked"
+									#end
+								/>
+							</td>
+							<td valign="middle" nowrap="nowrap">
+								$role.Id
+							</td>
+							<td valign="middle" nowrap="nowrap">
+								<div class="chefInlineInstructions">
+									#set ($description = $roleDescription.get($role.Id))
+									#if ($!description) $!description #end
+								</div>
+							</td>
+						</tr>
+					#end
+				</table>
+			</fieldset>
+			<br/>
+			<input type="hidden" name="continue" value="52" />
+			<input type="hidden" name="back" value="28" />
+			<input type="hidden" name="template-index" value="50" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

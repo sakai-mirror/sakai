@@ -1,0 +1,76 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-customize.vm,v 1.3 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Worksite Setup/Customization Home
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Revising $validator.escapeHtml($SiteTitle)...			
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+			#if(!$admin)
+				<span class ="chefPageviewTitle">
+					Choose a topic to see or change information about this site. If you are returning to this page after making changes, you must choose 'finish'.
+				</span>
+				<br />
+			#end
+			<form action="#toolForm("SiteAction")" method="post">
+				#if(!$admin)
+					Site settings<br />
+					<hr style="color:gray;width:50%;height:1px;" align="left" />
+						#if($type == "CTNG-MyWorkspace")
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=36">Add tools</a><br />
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=37">Remove tools</a><br />
+						#elseif($type == "CTNG-project")
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=16">Edit site description and information</a><br />
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=21">Add or remove tools</a><br />
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=22">Edit background appearance</a><br/>
+						#elseif($type == "CTNG-course")
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=16">Edit site description and information</a><br />
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=21">Add or remove tools</a><br />
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=22">Edit background appearance</a><br/>
+						#elseif($type == "GradToolsStudent")
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=16">Edit site description and information</a><br />
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=21">Add or remove tools</a><br />
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=22">Edit background appearance</a><br/>
+						#else
+							##"Other" sites get project options
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=16">Edit site description and information</a><br />
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=21">Add or remove tools</a><br />
+							<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=22">Edit background appearance</a><br/>
+						#end
+					<br/>
+					#if ($type!="CTNG-MyWorkspace")
+						## do not show the Site access section for My workspace type
+						Site access<br />
+						<hr style="color:gray;width:50%;height:1px;" align="left" />
+							#if($type=="CTNG-project")
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=34">Publish, unpublish site</a><br />
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=25">View participants</a><br />
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=27">Add/Edit participants</a><br/>
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=32">Make site joinable</a><br/>
+							#elseif($type=="CTNG-course")
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=34">Publish, unpublish site</a><br />
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=25">View participants</a><br />
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=27">Add/Edit participants</a><br/>
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=18">Edit sections</a><br />
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=32">Make site joinable</a><br/>
+							#elseif($type=="GradToolsStudent")
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=34">Publish, unpublish site</a><br />
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=25">View participants</a><br />
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=27">Add/Edit participants</a><br/>
+							#else
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=34">Publish, unpublish site</a><br />
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=25">View participants</a><br />
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=27">Add/Edit participants</a><br/>
+								<a href="#toolLink("SiteAction" "doContinue")&template-index=15&continue=32">Make site joinable</a><br/>
+							#end
+						#end
+					#end
+					<br />
+## rwellis: -> change the wording here, add a Cancel? Dependent on way things lock/unlock, I guess.	
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doBack_to_list" value="Finish" />
+				</div>
+			</form>
+	</div>	
+</div>
+

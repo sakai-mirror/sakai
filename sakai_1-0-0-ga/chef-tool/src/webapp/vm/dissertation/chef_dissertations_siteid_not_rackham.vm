@@ -1,0 +1,7 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_siteid_not_rackham.vm,v 1.1 2004/03/22 15:31:01 ggolden Exp $ -->
+## Dissertations - This message appears if DissertationUploadAction is called from a site other than the Rackham site - view.
+<div class="chefPortletContainer">
+	<div class="chefPortletContent">
+		This tool is only for use by the Rackham Graduate School.
+	</div>
+</div>

@@ -1,0 +1,356 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/assignment/chef_assignments_instructor_list_assignments.vm,v 1.6 2004/07/27 13:25:49 zqian.umich.edu Exp $ -->
+## Assignments - Instructor list view
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["search"];
+</script>
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class="chef2ndToolbarWrap">
+		<table class="chef2ndToolbar" cellspacing="0" summary="this is for second toolbar, containing dropdown view list, search area and paging" >
+			<tr class="first">
+				<td class="left">
+					<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("AssignmentAction")">
+						<input type="hidden" name="eventSubmit_doView" value="view" />
+						View:
+						<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+							#foreach ($view in ["Please Choose a View", "List of Assignments", "List of Assignments by student", "Grade Report", "Student View"])
+								#if ($selectedView.equals($view))
+									<option value="$view" selected="selected" >$view</option>
+								#else
+									<option value="$view" >$view</option>
+								#end
+							#end
+						</select>
+					</form>
+				</td>
+				<td class="right">
+					<form name="searchForm" class="toolbarForm" action="#toolForm("AssignmentAction")" method="post">
+						<input type="hidden" name="eventSubmit_doSearch" value="null" />
+						<input size="20" value="$!searchString" name="$form_search" id="$form_search" type="text" class="searchField" style="background-color:#fff;width:10em;color:#000" />
+						<a href="#" title="Search" onclick="location = '#toolLink("AssignmentAction" "doSearch")'+buildQueryString('searchForm');return false;">
+							Search
+        				</a>
+						#if (($!searchString) && (!$searchString.equals("")))
+							<a href="#" title="Clear search" onclick="location = '#toolLink("AssignmentAction" "doSearch_clear")'+buildQueryString('searchForm');return false;">
+								Clear Search
+							</a>
+						#end
+					</form>
+				</td>
+			</tr>
+			#if (($prev_page_exists) || ($next_page_exists))
+				<tr class="second">
+					<td class="left">
+						&nbsp; 
+					</td>
+					<td class="right">
+						<form name="pagingForm" class="toolbarForm" method="post">
+							#if ($paged)
+								#if ($totalPageNumber > 1)
+									Page:
+									#if ($prev_page_exists)
+										<a href="#toolLink("AssignmentAction" "doList_prev")" title="View Previous Page"><img src="#imageLink("chef/back.gif")" alt="View Previous Page" border="0" width="4" height="9" align="baseline" /></a>
+									#else
+										<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+									#end
+									#foreach ($pageNumber in [1..$totalPageNumber])
+										#if ($pageNumber == $current_page)
+											<span class="chefAlert">$pageNumber</span>
+										#else
+											<a href="#toolLink("AssignmentAction" "doView_page")&$formPageNumber=$pageNumber" title="View page $pageNumber of $totalPageNumber">$pageNumber</a>
+										#end
+									#end
+									#if ($next_page_exists)
+										<a href="#toolLink("AssignmentAction" "doList_next")" title="View Next Page"><img src="#imageLink("chef/forward.gif")" alt="View Next Page" border="0" width="4" height="9" align="baseline" /></a>
+									#else
+										<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+									#end
+									|
+									<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show All">
+										Show All
+									</a>
+								#end
+							#else
+								<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show Paging">
+									Pages</a>
+								| Show All
+							#end
+						</form>
+					</td>
+				</tr>
+			#end	
+		</table>
+		</div>
+		<div class="chefPortletContent">
+			#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+			<div class="chefPageviewTitle">
+				To take action on an assignment, check the box next to the item(s).
+			</div>
+		<form name="listAssignmentsForm" action="#toolForm("AssignmentAction")" method="post">
+			<input type="hidden" name="source" value="0" />
+			#if (!$assignments.hasNext())
+				<div class="chefPageviewTitle">
+					<div class ="chefLeftIndent">
+						There are no assignments presently.
+					</div>	
+				</div>
+			#else			
+				<table class="chefFlatListViewTable" cellspacing="0" summary="this is a list of assignments" >
+					<tr> 
+						<th id="checkbox"> 
+							&nbsp;
+						</th>
+						<th id="attachments"> 
+							&nbsp;
+						</th>
+						<th id="title">
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=title'; return false;" title="Sort by title">
+								Assignment title
+								#if ($sortedBy.equals("title")) 
+									#if ($sortedAsc.equals("true")) 
+										<img id="sortascendingtitle" src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort ascending" /> 
+									#else 
+										<img id="sortdescendingtitle" src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						#*
+						<th id="section">
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=section'; return false;" title="Sort by section">
+								Section
+								#if ($sortedBy.equals("section")) 
+									#if ($sortedAsc.equals("true")) 
+										<img id="sortascendingsection" src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort ascending" /> 
+									#else 
+										<img id="sortdescendingsection" src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						*#
+						<th id="status">
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=assignment_status'; return false;" title="Sort by status">
+								Status
+								#if ($sortedBy.equals("assignment_status")) 
+									#if ($sortedAsc.equals("true")) 
+										<img id="sortascendingstatus" src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort ascending" /> 
+									#else 
+										<img id="sortdescendingstatus" src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						<th id="openDate">
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=opendate'; return false;" title="Sort by open date">
+								Open
+								#if ($sortedBy.equals("opendate")) 
+									#if ($sortedAsc.equals("true")) 
+										<img id="sortascendingopendate" src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort ascending" /> 
+									#else 
+										<img id="sortdescendingopendate" src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						<th id="dueDate">
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=duedate'; return false;" title="Sort by due date">
+								Due
+								#if ($sortedBy.equals("duedate")) 
+									#if ($sortedAsc.equals("true")) 
+										<img id="sortascendingduedate" src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort ascending" /> 
+									#else 
+										<img id="sortdescendingduedate" src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						<th id="num_submissions">
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=num_submissions'; return false;" title="Sort by number of total submissions">In</a>
+								#if ($sortedBy.equals("num_submissions")) 
+									<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=num_submissions'; return false;" title="Sort by number of total submissions">
+										#if ($sortedAsc.equals("true")) 
+											<img id="sortascendingtotalsubmissions" src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort ascending" />
+										#else 
+											<img id="sortdescendingtotalsubmissions" src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort descending" />
+										#end 
+									</a>
+								#end
+								/
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=num_ungraded'; return false;" title="Sort by number of ungraded submissions">New</a>
+								#if ($sortedBy.equals("num_ungraded")) 
+									<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=num_ungraded'; return false;" title="Sort by number of ungraded submissions">
+										#if ($sortedAsc.equals("true")) 
+											<img id="sortascendingungradedsubmissions" src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort ascending" />
+										#else 
+											<img id="sortdescendingungradedsubmissions" src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort descending" />
+										#end 
+									</a>	
+								#end
+						</th>
+						<th id="maxgrade">
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=max_grade'; return false;" title="Sort by max grade available">
+								Scale
+								#if ($sortedBy.equals("max_grade")) 
+									#if ($sortedAsc.equals("true")) 
+										<img id="sortascendingungraded" src = "#imageLink("chef/sortascending.gif")" border="0" alt="Sort ascending" /> 
+									#else 
+										<img id="sortdescendingungraded" src = "#imageLink("chef/sortdescending.gif")" border="0" alt="Sort descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+					</tr>
+					#set ($assignmentCount = 0)
+					#foreach ($assignment in $assignments)
+						#set ($assignmentCount = $assignmentCount + 1)
+						#if (($assignment.draft && $service.allowUpdateAssignment($assignment.Reference)) || (!$assignment.draft && $service.allowGetAssignment($assignment.Reference)))
+							<tr> 
+								<td headers="checkbox"> 
+									<input type="checkbox" name="selectedAssignments" value="$assignment.Reference" />
+								</td>
+								<td headers="attachments">
+									#set ($attachments = $assignment.getContent().getAttachments())
+									#set ($size = 0)
+									#set ($props = false)
+									#if (!$!attachments.isEmpty())
+										#foreach ($attachment in $attachments)
+											#set ($props = $attachment.Properties) 
+											#if ($!props)
+												#set ($size = $size + 1)
+											#end
+										#end
+									#end
+									#if ($size > 0)
+										<img id="attachment$assignmentCount" src="#imageLink("chef/attachments.gif")" alt="Attachment" width="13" height="11" border="0" /> 
+									#else
+										&nbsp;
+									#end
+								</td>
+								<td headers="title" nowrap="nowrap">
+										#if ($assignment.draft)
+											<a href="#toolLink("AssignmentAction" "doEdit_assignment")&selectedAssignments=$assignment.Reference">
+												<span class="chefAlert">Draft - </span>
+												$validator.limit($validator.escapeHtml($!assignment.getTitle()), 40)
+											</a>
+										#else
+											<a href="#toolLink("AssignmentAction" "doView_assignment")&assignmentId=$assignment.Reference">
+												$validator.limit($validator.escapeHtml($!assignment.getTitle()), 40)
+											</a>
+										#end
+								</td>
+								#*
+								<td headers="section">
+									$assignment.Section 
+								</td>
+								*#
+								<td headers="status">
+									#if ($!assignment.Draft)
+										<span class="chefAlert">Draft</span>
+									#else
+										#if ($!assignment.getOpenTime().after($currentTime))
+											Not Open
+										#elseif ($!assignment.getDueTime().after($currentTime))
+											Open
+										#elseif (($!assignment.getCloseTime())&&($assignment.getCloseTime().before($currentTime)))
+											Closed
+										#else
+											Due
+										#end
+									#end
+								</td>
+								<td headers="openDate">
+									$!assignment.openTime.toStringLocalFull()
+								</td>
+								<td headers="dueDate">
+									$!assignment.dueTime.toStringLocalFull()
+								</td>
+								<td headers="num_submissions">
+									#set ($totalSubmission = $service.getSubmissions($assignment))
+									#set ($totalNumber = 0)
+									#set ($ungradedNumber = 0)
+									#foreach ($s in $totalSubmission)
+										#if ($s.Submitted)
+											#set ($totalNumber = $totalNumber + 1)
+											#if (!$s.Graded)
+												#set ($ungradedNumber = $ungradedNumber + 1)
+											#end
+										#end
+									#end
+									<a href="#" onclick="location='#toolLink("AssignmentAction" "doGrade_assignment_from")&assignmentId=$assignment.Reference'; return false;">
+									$totalNumber/$ungradedNumber</a>
+								</td>
+								<td headers="maxgrade">
+									#set ($gradeScale = $assignment.getContent().getTypeOfGrade())
+									#if ($gradeScale == -1)
+										## Grade type not set 
+										Not Set
+									#elseif ($gradeScale == 1)
+										## Ungraded grade type
+										No grade
+									#elseif ($gradeScale == 2)
+										## Letter grade type 
+										A-F
+									#elseif ($gradeScale == 3)
+										## Score based grade type
+										0-$assignment.getContent().getMaxGradePointDisplay()
+									#elseif ($gradeScale == 4)
+										## Pass/fail grade type 
+										P/F
+									#elseif ($gradeScale == 5)
+										## Grade type that only requires a check
+										<img src="#imageLink("chef/checkon.gif")" border="0" alt="Checkmark" />
+									#end
+								</td>
+							</tr>
+						#end
+					#end
+				</table>
+			#end
+		</form>
+		#if (($prev_page_exists) || ($next_page_exists))
+			<table class="chef2ndToolbar" cellspacing="0" summary="Paging" style="margin-top:30px">
+				<tr class="second">
+					<td class="left">
+						&nbsp; 
+					</td>
+					<td class="right">
+						<form name="pagingForm" class="toolbarForm" method="post">
+							#if ($paged)
+								#if ($totalPageNumber > 1)
+									Page:
+									#if ($prev_page_exists)
+										<a href="#toolLink("AssignmentAction" "doList_prev")" title="View Previous Page"><img src="#imageLink("chef/back.gif")" alt="View Previous Page" border="0" width="4" height="9" align="baseline" /></a>
+									#else
+										<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+									#end
+									#foreach ($pageNumber in [1..$totalPageNumber])
+										#if ($pageNumber == $current_page)
+											<span class="chefAlert">$pageNumber</span>
+										#else
+											<a href="#toolLink("AssignmentAction" "doView_page")&$formPageNumber=$pageNumber" title="View page $pageNumber of $totalPageNumber">$pageNumber</a>
+										#end
+									#end
+									#if ($next_page_exists)
+										<a href="#toolLink("AssignmentAction" "doList_next")" title="View Next Page"><img src="#imageLink("chef/forward.gif")" alt="View Next Page" border="0" width="4" height="9" align="baseline" /></a>
+									#else
+										<img src="#imageLink("chef/s.gif")" alt="" border="0" width="4" height="9" align="baseline" />
+									#end
+									|
+									<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show All">
+										Show All
+									</a>
+								#end
+							#else
+								<a href="#toolLink("AssignmentAction" "doToggle_paging")" title="Show Paging">
+									Pages</a>
+								| Show All
+							#end
+						</form>
+					</td>
+				</tr>
+			</table>
+		#end		
+	</div>
+</div>
+

@@ -1,0 +1,83 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-courseClass.vm,v 1.6 2004/09/10 02:17:05 janderse.umich.edu Exp $ -->
+## Creating course site step 2: Automatically creat a course site
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Creating a course site...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			#if (!$siteEdit)
+				Step 2: Select course/sections that will be included in the class site. A <span class ="chefRequiredInline"> means</span> required information.
+			#else
+				Adding class(es) to site $validator.escapeHtml($siteTitle)
+			#end
+		</div>
+		<form name = "selectCourseForm" method = "post" action="#toolForm("SiteAction")">
+			<fieldset>
+				<legend>
+					Class information
+				</legend>
+				#if (!$siteEdit)
+					<div class="chefSectionMessage">
+						Academic Term:
+						#foreach($term in $termList)
+							#if($term.id == $form_term)
+								$term.text
+							#end
+						#end
+					</div>
+				#else
+					The following class(es) are already assigned to this class site:
+					<ul>
+						#foreach($umiacItem in $umiacCourseSectionList)
+							<li>
+								<label for = "$umiacItem.getKey()">
+									$umiacItem.getYear(),$umiacItem.getTerm_code(),$umiacItem.getCampus_code(),$umiacItem.getSubject(),$umiacItem.getCatalog_nbr(),$umiacItem.getClass_section()
+								</label>
+							</li>
+						#end
+						#foreach($manualItem in $manualCourseSectionList)
+							<li>
+								<label for = "$manualItem.getKey()">
+									(requested)
+									$manualItem.getYear()
+									$manualItem.getTerm_code()
+									$manualItem.getSubject()
+									$manualItem.getCatalog_nbr()
+									$manualItem.getClass_section()
+								</label>
+							</li>
+						#end
+					</ul>
+				#end
+				<span class ="chefRequiredInline">Course/sections to include in this site:</span><br />
+				## display only subject, course number and section
+				##and finally - the labels work, but having commas in the id does not validate. Can we concatenate or replace with underscore? Here is reqs on ids and labels: an id attribute value must begin with a letter (A-Z or a-z) and consist of the following characters: (A-Z), (a-z), (0-9), hyphens (-), underscores (_), colons (:), and periods (.).
+				#foreach($termCourseSection in $termCourseSectionList)
+					<input type="checkbox" name="umiacAdds" value="$termCourseSection.key" id="add_$termCourseSection.key" 
+						#foreach($umiacCourseSectionKey in $!selectedUmiacCourseSection)
+							#if($umiacCourseSectionKey.key == $termCourseSection.key)
+								checked="checked"
+							#end
+						#end
+						/>
+					<label for = "add_$termCourseSection.key">
+						$validator.escapeHtml($termCourseSection.key)
+						$validator.escapeHtml($termCourseSection.crosslist)</label><br />
+				#end
+				## instructor could choose to go to the manual creation page
+				<input type="checkbox" name="manualAdds" value="manual add" id="manual add" #if ($manualAdd) checked="checked" #end/>
+					<label for = "manual add">I would like to add a course/section not listed above to this site. </label><br />
+			</fieldset>	
+				<input type="hidden" name="template-index" value="3" />
+				<input type="hidden" name="back" value="$backIndex" />
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,47 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetup/chef_site-deleteSection.vm,v 1.1 2004/03/22 19:57:53 ggolden Exp $ -->
+## Deleting a section
+<div class="chefPortletContainer">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<div class ="chefPortletToolBarMessage">
+		Deleting a section...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefInfoBox">
+			Note: Dropping a section does not remove any schedule or assignment items for this group, nor does it remove any documents contributed by section members - it only prevents them from accessing all non-public course materials.
+		</div>
+		<form action="#toolForm("$action")" method="post">
+
+			<fieldset>
+				<legend>
+					Section
+				</legend>
+				<table cellpadding="5" class="chefEditItem">
+				<tr>
+					<td class = "chefLabel">
+						Section to delete
+					</td>
+					<td>
+						<select>
+							#foreach ($section in $siteSections)
+							#end
+							<option value ="001">001</option>
+							<option value ="002">002</option>
+							<option value ="003">003</option>
+							<option value ="004">004</option>
+							<option value ="005">005</option>
+						</select>	
+					</td>
+				</tr>	
+				</table>		
+			</fieldset>	
+				<input type="hidden" name="back" value="15" />
+				<input type="hidden" name="template-index" value="20"/>
+				<input type="hidden" name="continue" value="15" />
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doContinue" value="Delete Section(s)" />
+				<input type="submit" name="eventSubmit_doBack_to_customize" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

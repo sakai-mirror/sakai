@@ -1,0 +1,89 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_sites_tools.vm,v 1.1 2004/03/05 03:15:16 ggolden Exp $ -->
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Edit: Site $!site.Id / Page $!page.Id
+		</div>
+		<div class="chefPageviewTitle">
+			These are the Tools defined in this Page.  Click on one to edit.  Use the up and down arrows to re-arrange.
+		</div>
+#if ($tools.size() > 0)
+	#set ($toolCount = 0)
+		<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Groups">
+			<tr>
+				<th id="move">&nbsp;&nbsp;</th>
+				<th id="Id">Tool Id</th>
+				<th id="Feature">Feature</th>
+				<th id="Title">Title</th>
+				<th id="Description">Description</th>
+			</tr>
+	#foreach ($tool in $tools)
+		#set ($toolCount=$toolCount + 1)
+			<tr>
+				<td headers="move" #if ($toolCount > 1) class="chefTopline" #end>
+					#if ($toolCount > 1)
+					<a href="#toolLink("$action" "doEdit_tool_up")&id=$validator.escapeUrl($tool.Id)">
+						<img src = "#imageLink("chef/arrowUp.gif")" border="0" alt ="move tool up" />
+					</a>
+					#end
+					#if ($toolCount < $tools.size())
+					<a href="#toolLink("$action" "doEdit_tool_down")&id=$validator.escapeUrl($tool.Id)">
+						<img src = "#imageLink("chef/arrowDown.gif")" border="0" alt ="move tool down" />
+					</a>
+					#end
+				</td>
+				<td headers="Id" #if ($toolCount > 1) class="chefTopline" #end>
+					<a href="#toolLink("$action" "doEdit_tool")&id=$validator.escapeUrl($tool.Id)">
+						$validator.escapeHtml($tool.Id)
+					</a>
+				</td>
+				<td headers="Feature" #if ($toolCount > 1) class="chefTopline" #end>$validator.escapeHtml($tool.ToolId)</td>
+				<td headers="Title" #if ($toolCount > 1) class="chefTopline" #end>$validator.escapeHtml($tool.Title)</td>
+				<td headers="Description" #if ($toolCount > 1) class="chefTopline" #end>
+					<div class="chefSectionTitle">
+						Configuration:
+					</div>
+					<div class="chefSectionMessage">
+						#set ($toolParams = $tool.Properties)
+						#set ($paramNames = $toolParams.PropertyNames)
+						#foreach ($name in $paramNames)
+							$name = $toolParams.getPropertyFormatted($name)<br/>
+						#end
+						#if ($tool.LayoutHints)
+							Layout Hints: $tool.LayoutHints
+						#end
+					</div>
+				</td>
+			</tr>
+	#end
+		</table>
+#else
+		<div class="chefListMessage">
+			No tools are defined.
+		</div>
+#end
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Continue Editing
+				</legend>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doEdit_to_page" value="Done" />
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend>
+					Complete the Site Edit
+				</legend>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doSave_edit" value="Save" />
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
