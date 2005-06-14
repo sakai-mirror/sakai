@@ -1,0 +1,153 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/prefs/chef_noti_prefs_edit.vm,v 1.4 2005/02/15 14:27:42 csev.umich.edu Exp $ 
+##<script type="text/javascript">
+##	focus_path = [ "$form-pagesize" ];
+##</script>
+
+#macro(chef_noti_prefs_edit_flds key value)
+##	changed to radios (gsilver)
+        #if ($key == "annc")
+            #if($value == 0) #set($value = 3) #end
+            <input type="radio" name="$key" id="_3$key"  value="3" #if($value == 3) checked="checked" #end /> 
+                    <label for ="_3$key">receive individually when posted</label><br />
+            <input type="radio" name="$key" id="_2$key" value="2" #if($value == 2) checked="checked" #end /> 
+                    <label for ="_2$key">daily digest (summary)</label><br />
+            <input type="radio" name="$key" id="_1$key" value="1" #if($value == 1) checked="checked" #end /> 
+                    <label for ="_1$key">block</label><br />
+        #elseif ($key == "rsrc")
+            #if($value == 0) #set($value = 3) #end
+            <input type="radio" name="$key" id="_3$key"  value="3" #if($value == 3) checked="checked" #end /> 
+                    <label for ="_3$key">receive individually when posted</label><br />
+            <input type="radio" name="$key" id="_2$key" value="2" #if($value == 2) checked="checked" #end /> 
+                    <label for ="_2$key">daily digest</label><br />
+            <input type="radio" name="$key" id="_1$key" value="1" #if($value == 1) checked="checked" #end /> 
+                    <label for ="_1$key">block</label><br />
+        #elseif ($key == "mail")
+            #if($value == 0) #set($value = 3) #end
+            <input type="radio" name="$key" id="_3$key"  value="3" #if($value == 3) checked="checked" #end /> 
+                    <label for ="_3$key">receive emails when sent to the site</label><br />
+            <input type="radio" name="$key" id="_2$key" value="2" #if($value == 2) checked="checked" #end /> 
+                    <label for ="_2$key">daily digest</label><br />
+            <input type="radio" name="$key" id="_1$key" value="1" #if($value == 1) checked="checked" #end /> 
+                    <label for ="_1$key">block</label><br />
+        #elseif ($key == "refresh")
+            #if($value != 1) #set($value = 2) #end
+            <input type="radio" name="$key" id="_2$key" value="2" #if($value == 2) checked="checked" #end /> 
+                    <label for ="_2$key">Enable Refresh (default)</label><br />
+            <input type="radio" name="$key" id="_1$key" value="1" #if($value == 1) checked="checked" #end /> 
+                    <label for ="_1$key">Disable Refresh (requires you to manually refresh a page to see new information such as chat messages).</label><br />
+        #end
+#end
+
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class ="chefPortletToolBarMessage">
+		Edit preferences for $preferences_for
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+	<div class="chefPageviewTitle">
+		User settable preferences.
+	</div>
+		<form action="#toolForm($action)" method="post">
+			<fieldset>
+				<legend>
+					Accessibility Options
+				</legend>
+				<table class ="chefItemDetail">
+					<tr>
+						<td>
+							Automatic Refresh
+						</td>
+                     </tr>
+					<tr>
+						<td>
+							#chef_noti_prefs_edit_flds("refresh" $refresh)
+						</td>	
+					</tr>
+                                <tr>
+                                        <td>
+											 This feature requires a modern browser.  If your browser does not support this feature
+											 you may be logged out prematurely.  If you disable automatic refresh 
+											 and you are logged off after a minute of inactivity, you should re-enable automatic refresh.
+                                        </td>
+                               </tr>
+				</table>	
+			</fieldset>
+			<fieldset>
+                                <legend>
+                                        High Priority Notifications
+                                </legend>
+                                <table class ="chefItemDetail">
+                                <tr>
+                                        <td colspan=2>
+                                                High priority site activity notifications are received as soon as they are sent.
+                                        </td>
+                               </tr>
+                               </table> 
+                        </fieldset>
+                        <fieldset>
+				<legend>
+					Low Priority Notifications
+				</legend>
+				<table class ="chefItemDetail">
+                                <tr>
+                                        <td>
+                                                Choose how you would like to receive low priority site activity notifications.
+                                        </td>
+                               </tr>
+##					<tr>
+##						<td>
+##							Default Preferences
+##						</td>
+##						<td>
+##							#chef_noti_prefs_edit_flds("default" $default)
+##						</td>	
+##					</tr>
+					<tr>
+						<td>
+							<br />Announcements
+						</td>
+                                        </tr>
+					<tr>
+						<td>
+							#chef_noti_prefs_edit_flds("annc" $annc)
+						</td>	
+					</tr>
+					<tr>
+						<td>
+							<br />Email Archive
+                                                        (Choose how you would like to receive emails sent to the site.)
+						</td>
+                                        </tr>
+                                        <tr>
+						<td>
+							#chef_noti_prefs_edit_flds("mail" $mail)
+						</td>	
+					</tr>
+					<tr>
+						<td>
+							<br />Resources
+						</td>
+                                        </tr>
+					<tr>
+						<td>
+							#chef_noti_prefs_edit_flds("rsrc" $rsrc)
+						</td>	
+					</tr>	
+##					<tr>
+##						<td>
+##							Schedule
+##						</td>
+##						<td>
+##							#chef_noti_prefs_edit_flds("schd" $schd)
+##						</td>	
+##					</tr>
+				</table>	
+			</fieldset>
+	<div class="chefButtonRow">
+				<input type="submit" name="$form_submit" value="Update Preferences" />
+				<input type="submit" name="$form_cancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

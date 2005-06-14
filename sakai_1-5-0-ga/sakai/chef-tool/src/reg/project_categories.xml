@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<category name="project">
+
+		<tool id = "chef.schedule" />
+		<tool id = "chef.announcements" />
+		<tool id = "chef.resources" />
+		<tool id = "chef.discussion" />
+		<tool id = "chef.assignment" />
+		<tool id = "sakai.samigo" />
+		<tool id = "chef.dropbox" />
+		<tool id = "chef.chat" />
+		<tool id = "chef.mailbox" />
+		<tool id = "chef.news" />
+		<tool id = "chef.iframe" />
+		<tool id = "chef.siteinfo" />
+
+	</category>
+	
+	<default-tool name="project">
+		
+		<tool id = "chef.siteinfo" />
+		
+	</default-tool>
+
+</registration>

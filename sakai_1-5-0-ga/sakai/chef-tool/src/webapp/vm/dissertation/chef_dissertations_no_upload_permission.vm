@@ -1,0 +1,7 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_no_upload_permission.vm,v 1.1 2004/03/22 15:31:01 ggolden Exp $ -->
+## Dissertations - Administrator's no permission to upload extracts message - view.
+<div class="chefPortletContainer">
+	<div class="chefPortletContent">
+		In order to upload new data you must have permission to update the Rackham site. Please e-mail gradtools@umich.edu if you need assistance with permissions.
+	</div>
+</div>

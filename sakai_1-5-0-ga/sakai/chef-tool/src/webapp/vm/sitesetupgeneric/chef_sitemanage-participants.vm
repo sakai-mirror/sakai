@@ -1,0 +1,98 @@
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["search"];
+</script>
+<div class="chefPortletContainer">
+
+	<div class="chefToolBarWrapForm">
+	<a href="#" onclick="location='#toolLink("$action" "doNew_participant")';return false;" title ="Search">Add Participants</a>
+	</div>
+	
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		
+	<h3 class="insColor insBak">$site.Title Participants List</h3>
+	
+#if ($participants.size() > 0)
+
+ 	<p>
+    <span class="leftNav">
+        View and edit roles and participants for $site.Title below.
+    </span>
+    <span class="rightNav">
+        <span class="instruction">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</span>
+        <br />
+        #if ($pagesize != 0)
+			#if ($goPPButton == "true")
+				<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+				<input type="submit" name="eventSubmit_doList_prev" value="Previous $pagesize" />
+				</form>
+			#end
+		#end
+		
+		<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
+		<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
+		<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+		<option value="5" #if($pagesize == 5) selected="selected" #end>show 5 items per page</option>
+		<option value="10" #if($pagesize == 10) selected="selected" #end>show 10 items per page</option>
+		<option value="20" #if($pagesize == 20) selected="selected" #end>show 20 items per page</option>
+		<option value="50" #if($pagesize == 50) selected="selected" #end>show 50 items per page</option>
+		<option value="100" #if($pagesize == 100) selected="selected" #end>show 100 items per page</option>
+		<option value="200" #if($pagesize == 200) selected="selected" #end>show 200 items per page</option>
+		</select>
+		</form>
+		
+		#if ($pagesize != 0)
+			#if ($goNPButton == "true")
+				<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+				<input type="submit" name="eventSubmit_doList_next" value="Next $pagesize" />
+				</form>
+			#end
+		#end
+        <br />
+	</span>
+    </p>
+    
+	<table class="listHier">
+		<tr>
+			<th scope="col" id="name">Name</th>
+			<th scope="col" id="username">Username</th>
+			<th scope="col" id="role">Role</th>
+			<th scope="col" id="status">User Status</th>
+			<th scope="col" id="Remove">Remove?</th>
+		</tr>
+	#foreach ($participant in $participants)
+		<tr>
+			<td headers="name">
+			<div class="indnt1">
+				<a href="#">$validator.escapeHtml($participant.Name)</a>
+				<div class="itemAction">
+					<a href="#">Go to Site in user's role</a> 
+				</div>
+			</div>
+			</td>
+			<td headers="username">$validator.escapeHtml($participant.Uniqname)</td>
+			<td headers="role">
+				<select name="selectRole">
+				## #set ($roles = $participant.Roles())
+				#set ($roles = $participant.roles)
+				#foreach ($role in $roles)
+					<option value="$role">$role.Id</option>
+				#end
+			</td>
+			<td headers="status">$validator.escapeHtml($participant.Status)</td>
+			<td headers="remove">
+				<input type="checkbox" name="remove" id="remove" value="remove" />
+			</td>
+		</tr>
+	#end
+	</table>
+	<form action="#toolForm("$action")" method="post">
+		<p class="act">
+			<input class="mainBtn" type="submit" name="eventSubmit_doUpdate_participants" value="Update" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</p>
+	</form>
+	
+#end
+	</div>
+</div>

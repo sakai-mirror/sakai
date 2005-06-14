@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.gradToolsHelp"
+			url="/sakai-chef-tool/chef-iframe"
+			title="Grad Tools Help"
+			description="Help guides for using Grad Tools.">
+
+		<configuration name="source" value="https://coursetools.ummu.umich.edu/disstools/help.nsf" />
+		<configuration name="height" value="800px" />
+		<configuration name="special" value="" />
+
+	</tool>
+
+</registration>

@@ -1,0 +1,47 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_presence-List.vm,v 1.4 2004/09/30 20:21:41 ggolden.umich.edu Exp $ -->
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletToolBarMessage">
+		Users present
+	</div>
+	<div class="chefPortletContent">
+#if ($alertMessage)
+		<div class="chefAlertBox">
+			Alert: $validator.escapeHtml($alertMessage)
+		</div>
+#end
+		<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds users present">
+#foreach ($location in $locations)
+	#set($list = $service.getPresence($location))
+			<tr>
+				<td class="highLight">
+					$list.size()
+				</td>
+				<td class="highLight">
+					at location: $validator.escapeHtml($location) : $validator.escapeHtml($service.getLocationDescription($location))
+				</td>
+			</tr>
+	#foreach($entry in $list)
+			<tr>
+				<td>
+				</td>
+				<td>
+					$validator.escapeHtml($entry.UserId) &nbsp;&nbsp;&nbsp;&nbsp; $validator.escapeHtml($entry.Id) &nbsp;&nbsp;&nbsp;&nbsp; $validator.escapeHtml($entry.IpAddress) <br />
+					$validator.escapeHtml($entry.UserAgent)<br />
+					$validator.escapeHtml($entry.Server) &nbsp;&nbsp;&nbsp;&nbsp; $validator.escapeHtml($entry.getStart().toStringLocalFull())
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+				</td>
+				<td>
+				</td>
+			</tr>
+	#end
+#end
+		</table>
+	</div>
+</div>

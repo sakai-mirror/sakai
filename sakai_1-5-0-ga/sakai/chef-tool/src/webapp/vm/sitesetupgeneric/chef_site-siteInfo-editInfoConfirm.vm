@@ -1,0 +1,131 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-siteInfo-editInfoConfirm.vm,v 1.7 2005/02/14 17:41:54 zqian.umich.edu Exp $ -->
+## Edit Site Information Confirmation page
+<div class="portletBody">
+	<h3 class="insColor insBak insBor">
+		Confirming edits to $validator.escapeHtml($!title)
+	</h3>
+	<p class="instruction">
+		Click Finish below to update your site with the following information. Fields that you have changed are shown in blue.
+	</p>
+	<form name = "classInformationForm" method = "post" action="#toolForm("SiteAction")">
+		<table class="itemSummary">
+			<tr>
+				<th>
+					Site Title:
+				</th>
+				<td>
+					#if (!$!title.equals($!oTitle))
+						<span style="color:#6699ff">$validator.escapeHtml($!title)</span>
+					#else
+						$validator.escapeHtml($!title)
+					#end
+				</td>					
+			</tr>
+			#if ($!isCourseSite)
+				<tr>
+					<th>
+						Term:
+					</th>
+					<td>
+						#if ($!isSuperUser)
+							#if (!$!siteTerm.equals($!oSiteTerm))
+								<span style="color:#6699ff">$!siteTerm</span>
+							#else
+								$!siteTerm
+							#end
+						#else
+							$!siteTerm
+						#end
+					</td>					
+				</tr>
+			#end
+			<tr>
+				<th>
+					Description:
+				</th>
+				<td>
+					#if (!$!description.equals($!oDescription))
+						<span style="color:#6699ff">$validator.escapeHtml($!description)</span>
+					#else
+						$validator.escapeHtml($!description)
+					#end
+				</td>					
+			</tr>
+			<tr>
+				<th>
+					Short Description:
+				</th>
+				<td>
+					#if (!$!short_description.equals($!oShort_description))
+						<span style="color:#6699ff">$validator.escapeHtml($!short_description)</span>
+					#else
+						$validator.escapeHtml($!short_description)
+					#end
+				</td>
+			</tr>
+			#if ($!isCourseSite)
+				<tr>
+					<th>
+						Appearance:
+					</th>
+					<td>
+						#foreach ($s in $skins)
+							#if ($s.css == $skin)
+								#if (!$!skin.equals($!oSkin))
+									<span style="color:#6699ff">$s.Unit</span>
+								#else
+									$s.Unit
+								#end
+							#end
+						#end
+					</td>
+				</tr>
+			#else
+				<tr>
+					<th>
+						Site Icon URL:
+					</th>
+					<td>
+						#if (!$!icon.equals($!oIcon))
+							<span style="color:#6699ff">$!icon</span>
+						#else
+							$!icon
+						#end
+					</td>
+				</tr>
+			#end
+			<tr>
+				<th>
+					Site Contact Name:
+				</th>
+				<td align="left">
+					#if (!$!name.equals($!oName))
+						<span style="color:#6699ff">$!name</span>
+					#else
+						$!name
+					#end
+				</td>					
+			</tr>
+			<tr>
+				<th>
+					Site Contact Email:
+				</th>
+				<td align="left">
+					#if (!$!email.equals($!oEmail))
+						<span style="color:#6699ff">$!email</span>
+					#else
+						$!email
+					#end
+				</td>					
+			</tr>
+		</table>
+		<input type="hidden" name="back" value="13" />
+		<input type="hidden" name="template-index" value="14" />
+		<input type="hidden" name="continue" value="12" />
+		<p class="act">
+			<input type="submit" class="active" name="eventSubmit_doSave_siteInfo" value="Finish"/>
+			<input type="submit" name="eventSubmit_doBack" value="Back"/>
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel"/>
+		</p>
+	</form>
+</div>

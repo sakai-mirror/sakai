@@ -1,0 +1,64 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_admin_edit_dissertation_step_prereqs.vm,v 1.4 2004/09/02 20:05:43 rwellis.umich.edu Exp $ -->
+## Dissertations -  Administrator's edit Dissertation Step Prerequisites view
+<div class="chefPortletContainer">
+	<div class="chefPageViewTitle">
+		Edit Dissertation Step
+	</div>
+	<form name="editForm" id="editForm" action="#toolForm($action)" method="post" >
+		<div class="chefPortletContent">
+			<table class="chefEditItem">
+				<tr valign="top">
+					<td class="chefLabel" width="20%"  align="left">
+						<label for="">Description&nbsp;:&nbsp;</label>
+					</td>
+					<td align="left">
+						$validator.escapeHtml($step.InstructionsText)
+					</td>
+				</tr>
+				<tr valign="top"> 
+					<td class="chefLabel" width="20%" align="left">
+						<label for="">Actors&nbsp;:&nbsp;</label>
+					</td>
+					<td>$validationTypeTable.get($step.ValidationType)</td>
+				</tr>
+				<tr valign="top">
+					<td class="chefLabel" width="20%" valign="top">
+						<label for="removeprereqs">Current prerequisites&nbsp;:&nbsp;<br />Select to remove. </label>
+					</td>
+					<td>
+						<select onchange="blur()" name="removeprereqs" id="removeprereqs" multiple="multiple" tabindex="6">
+							#foreach ($currentprereq in $currentprerequisites)
+								<option value="$currentprereq.Reference">$currentprereq.ShortInstructionsText</option>
+							#end
+						</select>
+					</td>
+				</tr>
+				<tr valign="top">
+					<td class="chefLabel" width="20%" valign="top">
+						<label for="addprereqs">Add prerequisites for this step&nbsp;:&nbsp;</span></label>
+					</td>
+					<td>
+						<select onchange="blur()" name="addprereqs" id="addprereqs" multiple="multiple" tabindex="6">
+							#foreach ($prereq in $prerequisites)
+								<option value="$prereq.Reference">$prereq.ShortInstructionsText</option>
+							#end
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						#if ($activepaths.booleanValue())
+						<br/><br/>
+							<input type="checkbox" checked="checked" name="retroactive" id="retroactive" value="retroactive" /> 
+								Apply this change to all current students<br/><br/>
+						#end
+					</td>
+				</tr>
+			</div>
+		</table>
+		<div class="chefButtonRow">
+			<input type="submit" name="eventSubmit_doUpdate_step_prereqs" value="Save" />
+			<input type="submit" name="eventSubmit_doCancel_admin" value="Cancel" />
+		</div>
+	</form>
+</div>

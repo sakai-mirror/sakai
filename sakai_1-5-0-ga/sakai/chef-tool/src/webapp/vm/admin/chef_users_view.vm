@@ -1,0 +1,109 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_users_view.vm,v 1.7 2004/11/04 00:34:10 ggolden.umich.edu Exp $
+
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+#if ($alertMessage)
+		<div class="chefAlertBox">
+			Alert: $validator.escapeHtml($alertMessage)
+		</div>
+#end
+		<div class="chefPageviewTitle">
+			Review my profile.
+		</div>
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					User
+				</legend>
+				<table class="chefEditItem" summary="Review and modify this User's information.">
+					<tr>
+						<td class="chefLabel">
+							<label>
+								User Id:
+							</label>
+						</td>
+						<td>
+							$validator.escapeHtml($user.Id)
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label>
+								First Name:
+							</label>
+						</td>
+						<td>
+							$validator.escapeHtml($user.FirstName)
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label>
+								Last Name:
+							</label>
+						</td>
+						<td>
+							$validator.escapeHtml($user.LastName)
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="email">
+								Email:
+							</label>
+						</td>
+						<td>
+							$validator.escapeHtml($user.Email)
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="type">
+								Type:
+							</label>
+						</td>
+						<td>
+							$validator.escapeHtml($user.Type)
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+			<table class="chefItemDetail" summary="Review User information">
+				<tr>
+					<td class="chefLabel">Created By:</td>
+					<td>
+						$validator.escapeHtml($user.CreatedBy.DisplayName)
+					</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">Created:</td>
+					<td >
+						$validator.escapeHtml($user.CreatedTime.toStringLocalFull())
+					</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">Modified By:</td>
+					<td>
+						$validator.escapeHtml($user.ModifiedBy.DisplayName)
+					</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">Modified:</td>
+					<td>
+						$validator.escapeHtml($user.ModifiedTime.toStringLocalFull())
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" id="id" name="id" value="$validator.escapeHtml($user.Id)" />
+#if($enableEdit)
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doModify" value="Modify" />
+			</div>
+#end
+		</form>
+	</div>
+</div>
+

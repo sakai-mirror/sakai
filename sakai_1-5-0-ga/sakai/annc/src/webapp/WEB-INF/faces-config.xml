@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config>
+
+  <application>
+    <message-bundle>org.sakaiproject.tool.annc.bundle.Messages</message-bundle>
+    <locale-config>
+      <default-locale>en</default-locale>
+      <supported-locale>de</supported-locale>
+      <supported-locale>fr</supported-locale>
+      <supported-locale>es</supported-locale>
+    </locale-config>
+  </application>
+
+  <!-- =================== Tool Beans ============== -->
+
+	<managed-bean>
+		<description>Tool Bean for announcements</description>
+		<managed-bean-name>AnnouncementTool</managed-bean-name>
+		<managed-bean-class>org.sakaiproject.tool.annc.AnnouncementTool</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+		
+		<!-- a configuration property -->
+		<!-- let this be set by tool config or automatically
+		<managed-property>
+			<description>Configure the channel</description>
+			<property-name>channel</property-name>
+			<value>/announcement/channel/!site/motd</value>
+		</managed-property>
+		-->
+
+		<!-- a configuration property -->
+		<managed-property>
+			<description>Provide the Tool Config</description>
+			<property-name>toolConfig</property-name>
+			<value>#{toolConfig}</value>
+		</managed-property>
+
+		<!-- a service dependency / locator property:
+		     The logger will be found and "injected" into the logger property -->
+		<managed-property>
+			<description>Service Dependency: logging service</description>
+			<property-name>logger</property-name>
+			<value>#{Components["org.sakaiproject.service.framework.log.Logger"]}</value>
+		</managed-property>
+
+		<!-- a service dependency -->
+		<managed-property>
+			<description>Service Dependency: announcement service</description>
+			<property-name>announcementService</property-name>
+			<value>#{Components["org.sakaiproject.service.legacy.announcement.AnnouncementService"]}</value>
+		</managed-property>
+
+		<!-- a service dependency -->
+		<managed-property>
+			<description>Service Dependency: portal service</description>
+			<property-name>portalService</property-name>
+			<value>#{Components["org.sakaiproject.service.framework.portal.PortalService"]}</value>
+		</managed-property>
+
+	</managed-bean>
+
+</faces-config>

@@ -1,0 +1,186 @@
+## Zhen: when saving a draft reply I am returned to the item in edit mode (with a few errors). Should the behaviour not be the same as for topic?
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Responding to "$validator.escapeHtml($currentMessage.getDiscussionHeader().getSubject())" by $validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFull())
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<table class="chefItemDetail" cellspacing="0" cellpadding="0" summary="Message you are replying to." style="background-color:#F5F5F5;border:.5em solid #F5F5F5;margin:0 1em !important">
+			#set ($starOrThread = "thread")
+			#set ($props = $topic.getProperties())
+			#if ($!props)
+				#set ($starOrThread = $props.getProperty($props.getNamePropReplyStyle()))
+			#end
+			<tr>
+				<td class="chefLabel">
+						In reply to:
+				</td>
+				<td>
+					#if ($starOrThread != "thread")
+						$validator.escapeHtml($currentMessage.DiscussionHeader.Category) &gt; $topic.getDiscussionHeader().getSubject()
+					#else	
+						$validator.escapeHtml($currentMessage.DiscussionHeader.Category) &gt; 
+						#if ($topic.getDiscussionHeader().getSubject() == $validator.escapeHtml($currentMessage.getDiscussionHeader().getSubject()))
+							$topic.getDiscussionHeader().getSubject() 
+						#else	
+							$topic.getDiscussionHeader().getSubject() &gt; $validator.escapeHtml($currentMessage.getDiscussionHeader().getSubject())
+						#end
+					#end	
+				</td>
+			</tr>
+			<tr>
+				<td class="chefLabel">
+					From:
+				</td>
+				<td>
+					$validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFull())
+				</td>
+			</tr> 
+			<tr>
+				<td class="chefLabel">
+					Message:
+				</td>
+				<td>
+## (gsilver) returns <a>message</a>				
+					$validator.escapeHtmlFormattedText($currentMessage.getBody())
+				</td>
+			</tr>
+
+			#set ($size = 0)
+			#set ($props = false)
+			#foreach ($attachment in $currentMessage.Header.Attachments) 
+				#set ($props = $attachment.Properties) 
+				#if ($!props)
+					#set ($size = $size + 1)
+				#end
+			#end
+			#if ($size == 0)
+			#else
+				<tr>
+					<td class="chefLabel">
+						Attachments:
+					</td>
+					<td>
+						<ul class="chefAttachmentList">
+							#foreach ($attachment in $currentMessage.Header.Attachments) 
+								#set ($props = false)
+								#set ($props = $attachment.Properties) 
+								#if ($!props)
+									<li>
+										#if ($props.getBooleanProperty($props.NamePropIsCollection))
+											<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+										#else
+											<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+										#end
+										<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+										#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+											($props.getPropertyFormatted($props.NamePropContentLength))
+										#end
+									</li>
+								#end
+							#end
+						</ul>
+					</td>
+				</tr>
+			#end
+		</table>
+		<script type="text/javascript">
+			focus_path = [ "subject" ];
+			if (parent) if (parent.parent) parent.parent.window.scrollTo(0,400);
+		</script>
+		<form action="#toolForm($action)" method="post">
+			<input type="hidden" name="portletid" value="$portlet.ID" />
+			<input type="hidden" name="topicId" value="$topic.Id" />
+			<input type="hidden" name="messageId" value="$currentMessage.Id" />
+			<table class="chefEditItem" border ="0" summary="This table contains the information for a reply message">	
+				#if ($currentMessage.ReplyToDepth != 0)
+					#if ($starOrThread.equals("star"))
+						<input type="hidden" name="replyto" value="totopic" id ="replytotopic" />
+					#else
+						<tr>
+							<td class="chefLabel">
+								Reply to:
+							</td>
+							<td></td>
+							<td>
+								#if ($!replyto=="totopic")
+									<input type="radio" name="replyto" value="totopic" id ="replytotopic" checked="checked" /><label for="replytotopic">topic</label>
+									<input type="radio" name="replyto" value="tomessage" id="replytomessage" /><label for="replytomessage">this message</label>
+								#else
+									<input type="radio" name="replyto" value="totopic" id ="replytotopic" /><label for="replytotopic">topic</label>
+									<input type="radio" name="replyto" value="tomessage" id="replytomessage" checked="checked" /><label for="replytomessage">this message</label>
+								#end
+							</td>
+						</tr>
+					#end
+				#else
+					<tr><td colspan="3"><input type="hidden" name="replyto" value="totopic" /></td></tr>
+				#end
+				<tr>
+						<td class="chefLabel">
+						Subject:
+					</td>
+					<td class ="chefRequiredInline">&nbsp;</td>
+					<td>
+						<input type="text" name="subject" id="subject" value="$!subject" />
+					</td>
+				</tr>
+			</table>
+			<div style="font-weight:bold;margin:.3em 1em">
+				Message:
+			</div>
+			<table border="0" style="margin:.3em 1em"><tr><td>
+			<textarea name="body" id="body" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea("$!body")</textarea>
+			#chef_setupformattedtextarea("body")
+			</td></tr></table>
+			<fieldset class="chefAttachmentsF" style="margin:.3em 1em;width:50%">
+				<legend class="chefAttachmentsL">	
+					Attachments
+				</legend> 
+				#set ($size = 0)
+				#set ($props = false)
+				#foreach ($attachment in $attachments) 
+					#set ($props = $attachment.Properties) 
+					#if ($!props)
+						#set ($size = $size + 1)
+					#end
+				#end
+				#if ($size == 0)
+					No attachments ...
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doAttachments" value="Add attachments" />
+				</div>
+				#else
+					<ul class="chefAttachmentList">
+						#foreach ($attachment in $attachments) 
+							#set ($props = false)
+							#set ($props = $attachment.Properties) 
+							#if ($!props)
+								<li>
+									#if ($props.getBooleanProperty($props.NamePropIsCollection))
+										<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+									#else
+										<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+									#end
+									<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+									#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+										($props.getPropertyFormatted($props.NamePropContentLength))
+									#end
+								</li>
+							#end
+						#end
+					</ul>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doAttachments" value="Add/remove attachments" />
+					</div>
+				#end							
+			</fieldset>
+			<div class="chefButtonRow"  style="margin:.3em 1em">
+				<input type="submit" name="eventSubmit_doRespond" value="Post" />
+				<input type="submit" name="eventSubmit_doPreview" value="Preview" />
+				<input type="submit" name="eventSubmit_doRespond_draft" value="Save Draft" />
+				<input type="submit" name="eventSubmit_doCancel_reply" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

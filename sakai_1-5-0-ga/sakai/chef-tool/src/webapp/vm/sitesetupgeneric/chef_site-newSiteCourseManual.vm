@@ -1,0 +1,169 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-newSiteCourseManual.vm,v 1.8 2005/02/15 20:59:29 gsilver.umich.edu Exp $ -->
+<div class="portletBody">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+		#if (!$!siteEdit)
+			<h3 class="insColor insBak insBor">Creating a New Class Site</h3>
+			<p class="step">
+				Step $!step of $!totalSteps: Choose classes for this site...
+			</p>
+		#else
+			<h3 class="insColor insBak insBor">Editing site...</h3>
+		#end
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+			#if ($!siteEdit)
+				The following class(es) are already assigned to this class site:
+				<ul>
+					#foreach($id in $!providerCourseList)
+						<li>
+							<label for = "$id">
+								$id
+							</label>
+						</li>
+					#end
+					#foreach($id in $!requestedCourseList)
+						<li>
+							<label for = "$id">
+								$id
+							</label>
+						</li>
+					#end
+				</ul>
+			#end
+			<form name = "requestCourseForm" method = "post" action="#toolForm("$action")">
+				<input type="hidden" name="option" value="add" />
+				<input type="hidden" name="eventSubmit_doManual_add_course" value="x" />
+				<div class="chefSectionMessage">
+					Academic Term:
+					$term.Id
+				</div>
+				<br />
+				#if ($!selectedProviderCourse)
+					<div class="chefSectionTitle">
+						You have so far selected the following course/section(s) #if($!siteEdit) to add to #else for #end this course site: <br />
+						<ul>
+							#foreach ($item in $!selectedProviderCourse)
+								<li>$item </li>
+							#end
+						</ul>
+					</div>	
+				#end
+				<div class="chefSectionMessage">
+					<table class="chefEditItem">
+						<tr>
+							<td colspan="3">
+								Enter the information for each class/section you would like to add to this site. A <span class="reqStar">*</span> means the information is required.<br /><br />
+							</td>
+						</tr>
+						<tr>
+							<td>	
+								Subject:(ie PSYCH)<span class ="chefRequiredInline"> </span>						
+							</td>
+							<td>
+								Course:(ie 101)<span class ="chefRequiredInline"> </span>
+							</td>
+							<td>	
+								Sections:(ie 001)<span class ="chefRequiredInline"> </span>
+							</td>
+						</tr>
+						#set ($count = 1)
+						#foreach ($k in [0..$listSize])
+							<tr>
+								<td>
+									<input type="text" name="subject$k"  tabindex="$count" size="$!subjectsize" maxlength="$!subjectsize"
+										#if($form_subject)
+											value="$!subjects.get($k)"
+										#end
+										/> 
+									#set ($count = $count + 1)
+								</td>
+								<td>
+									<input type="text" name="course$k" tabindex="$count" size="$!coursesize" maxlength="$!coursesize"
+										#if($form_course)
+											value="$!courses.get($k)"
+										#end
+										/>
+									#set ($count = $count + 1)
+								</td>
+								<td>
+									<input type="text" name="section$k" tabindex="$count" size="$!sectionsize" maxlength="$!sectionsize"
+	 									#if($form_section)
+											value="$!sections.get($k)"
+										#end
+										/>
+									#set ($count = $count + 1)
+								</td>
+							</tr>
+						#end
+						<tr>
+							<td colspan="3" align="right">
+								<select name="number" id="number" onchange="document.requestCourseForm.option.value='change';javascript:document.requestCourseForm.submit();" tabindex = "$count">
+									<option selected="selected">Add More Classes/Sections?</option>
+									#foreach ($j in [1..3])
+										<option value="$j">$j more</option>
+									#end
+								</select>
+							</td>
+						</tr>
+					</table>
+					<table class="chefEditItem">
+						<tr>
+							<td colspan="2">
+								Site Authorization:<br />
+								At this time we cannot verify you are the instructor of record, please enter the username of 
+								a person that can verify you can create this site (ex. department head, previous semester instructor). 
+								An email requesting authorization will be sent to this person.
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td nowrap="nowrap" valign="top">
+								<span class ="chefLabel">Authorizer's username:<span class ="chefRequiredInline"> </span></span>
+							</td>
+							<td>
+								<span class="reqStar">*</span><input type="text" name="uniqname" class="req" tabindex="$count" size="40" value="$!value_uniqname"/>
+								<div class="chefInlineInstructions">
+									<div class="indnt1">Email will be sent asking for authorization for you to create this site.</div>
+								</div>
+								#set ($count = $count + 1)
+							</td>
+						</tr>
+						<tr>
+							<td nowrap="nowrap" valign="top">
+								<span class ="chefLabel">Special Instructions:</span>
+							</td>
+							<td>
+								<span class="indnt1"><textarea name="additional" rows="4" cols="40" tabindex="$count" wrap="virtual">$validator.escapeHtmlTextarea($form_additional)</textarea></span>
+								<div class="chefInlineInstructions">
+									<div class="indnt1">Please enter additional comments that may help us authorize your site request.</div>
+								</div>
+								#set ($count = $count + 1)
+							</td>
+						</tr>
+					</table>
+				</div>	
+			<input type="hidden" name="back" value="$back" />
+			<input type="hidden" name="template-index" value="37" />
+			<input type="hidden" name="continue" value="4" />
+			<p class="act">
+				<input type="submit" name="Add" 
+						value="Continue" 
+						class="active" 
+						onClick="document.requestCourseForm.option.value='add'; document.requestCourseForm.submit(); return false;" />
+				<input type="submit" name="Back" 
+						value="Back"
+						onClick="document.requestCourseForm.option.value='back'; document.requestCourseForm.submit(); return false;" />
+				<input type="submit" name="Cancel" 
+						value="Cancel" 
+						onClick="document.requestCourseForm.option.value='cancel'; document.requestCourseForm.submit(); return false;"/>
+			</p>
+		</form>
+	</div>

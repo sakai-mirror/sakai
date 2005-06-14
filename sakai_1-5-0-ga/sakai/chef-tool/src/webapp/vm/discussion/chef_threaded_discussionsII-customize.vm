@@ -1,0 +1,81 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/discussion/chef_threaded_discussionsII-customize.vm,v 1.1 2004/03/08 19:21:39 ggolden Exp $ 
+
+<script type="text/javascript">
+	focus_path = [ "$form-pagesize" ];
+</script>
+
+#if($optSize) #set($sizeValue=$optSize) #else #set($sizeValue=$pagesize) #end
+#if($optOpen) #set($openValue=$optOpen) #else #set($openValue=$channel.Open) #end
+#if($optAlias)
+	#set($aliasValue=$optAlias)
+#else
+	#if ($alias)
+		#set($aliasValue=$alias)
+	#else
+		#set($aliasValue="")
+	#end
+#end
+
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Customizing discussion...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+		<form action="#toolForm($action)" method="post">
+			<fieldset>
+				<legend>
+					discussion Display
+				</legend>
+				<div class="chefSectionTitle ">
+					How many messages will be displayed on each page?
+				</div>
+				<div class="chefSectionMessage">
+					<input type="text" name="$form-pagesize" id="$form-pagesize" value="$sizeValue" />
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend>
+					Mail Settings
+				</legend>
+				<div class="chefSectionTitle ">
+					Who are messages accepted from?
+				</div>
+				<div class="chefSectionMessage">
+					<input 
+						type="radio" #if ($openValue) checked="checked" #end
+						name="${form-open}" 
+						id="${form-open}-true" 
+						value="true" /> 
+					<label for="${form-open}-true">
+						Anyone
+					</label>
+					<br />
+					<input 
+						type="radio" #if (!$openValue) checked="checked" #end
+						name="${form-open}" 
+						id="${form-open}-false" 
+						value="false" /> 
+					<label for="${form-open}-false">
+						Only users with site access
+					</label>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend>
+					Mail Alias
+				</legend>
+				<div class="chefSectionTitle ">
+					Use this alias email address for addressing email to the participants of this worksite:
+				</div>
+				<div class="chefSectionMessage">
+					<input type="text" name="$form-alias" id="$form-alias" value="$aliasValue" />
+				</div>
+			</fieldset>
+			<div class="chefButtonRow">
+				<input type="submit" name="$form-submit" value="Save" />
+				<input type="submit" name="$form-cancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

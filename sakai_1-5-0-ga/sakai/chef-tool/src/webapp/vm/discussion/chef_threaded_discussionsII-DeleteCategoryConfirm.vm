@@ -1,0 +1,48 @@
+## Zhen: when saving a draft reply I am returned to the item in edit mode (with a few errors). Should the behaviour not be the same as for topic?
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Deleting category...
+	</div>	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<script type="text/javascript">
+			focus_path = [ "eventSubmit_doDelete_category" ];
+			if (parent) if (parent.parent) parent.parent.window.scrollTo(0,400);
+		</script>
+		#if (!$delete_messages || !$delete_messages.hasNext())
+			<div class="chefAlertBox">Are you sure you want to delete the empty category $category? </div>
+		#else
+			<div class="chefAlertBox">Are you sure you want to delete the category $category?  All messages in the category will be permanently deleted.</div>
+			<br />
+			<br />
+			<form name="forNotLetDeleteSelectedOnLoad"></form>
+        		<table class="chefFlatListViewTable" cellspacing="0">
+        			<tr>
+        				<th>Subject</th>
+        				<th>From</th>
+        				<th>Date</th>
+        			</tr>
+        			#foreach ($delete_item in $delete_messages)
+        				<tr>
+        					<td>
+        						#if ($delete_item.Header.draft)
+        							<span class="chefAlert">Draft - </span>
+        						#end
+        						$validator.escapeHtml($delete_item.Header.subject)
+        					</td>
+        					<td>$validator.escapeHtml($delete_item.Header.From.DisplayName)</td>
+        					<td>$delete_item.Header.Date.toStringLocalFull()</td>
+        				</tr>
+        			#end
+        		</table>
+		#end
+		<br />
+		
+		<form action="#toolForm($action)" method="post">
+			<div class="chefButtonRow">
+				<input type="hidden" name="category" value="$validator.escapeHtml($category)" />
+				<input type="submit" name="eventSubmit_doDelete_category" id="eventSubmit_doDelete_category" value="Delete" />
+				<input type="submit" name="eventSubmit_doCancel_delete_category" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,60 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/email/chef_mailbox-view.vm,v 1.2 2004/06/25 20:46:43 janderse.umich.edu Exp $ -->
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<table class ="chefItemDetail">
+			<tr>
+				<td class="chefLabel">Date:</td>
+				<td >$email.Header.DateSent.toStringLocalFull()</td>
+			</tr>
+			<tr>
+				<td class="chefLabel">From:</td>
+				<td>$validator.escapeHtml($email.Header.FromAddress)</td>
+			</tr>
+			<tr>
+				<td class="chefLabel">Subject:</td>
+				<td>$validator.escapeHtml($email.Header.Subject)</td>
+			</tr>
+			#if ($viewheaders)
+				<tr>
+					<td class="chefLabel">Headers:</td>
+					<td>
+						#set($headers = $email.Header.MailHeaders)
+						#foreach ($header in $headers)
+							$validator.escapeHtml($header)<br/>
+						#end
+					</td>
+				</tr>
+			#end
+			<tr>
+				<td class="chefLabel">Body:</td>
+				<td>$validator.escapeHtmlFormattedText($email.Body)</td>
+			</tr>
+			#set ($attachments = $email.Header.Attachments)
+			#if (!$attachments.isEmpty())
+				<tr>
+					<td class="chefLabel">Attachments:</td>
+					<td width="85%">
+						<ul ="chefAttachmentList">
+							#foreach ($attachment in $attachments)                                        
+								#set ($props = $attachment.Properties)
+								#if ($props.getBooleanProperty($props.NamePropIsCollection))
+									<li><img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder" />
+								#else
+									<li><img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt ="$props.getProperty($props.NamePropContentType)" />
+								#end
+								<a href="$attachment.Url" target="_new">
+								$validator.escapeHtml($attachment.Properties.getPropertyFormatted("DAV:displayname"))</a>
+								#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+									($props.getPropertyFormatted($props.NamePropContentLength))
+								#end
+								</li>
+							#end
+						</ul>	
+					</td>
+				</tr>
+			#end
+		</table>
+	</div>
+</div>

@@ -1,0 +1,164 @@
+/* PART 2:GENERIC SELECTORS*/
+body{font-family:Verdana,Arial,Helvetica,sans-serif;font-size:.8em;background-color:#000}
+A{color:#FB574C;text-decoration:none}
+A:link,A:visited{color:Lime;text-decoration:none}
+A:hover{color:#000;background-color:Lime}
+H1{font-size:30pt}
+H2{font-size:12pt}
+/* PART 3:CHEF-MAIN.VM AND PORTLET SELECTORS*/
+td.chefTitleStyleClass{background-color:#000;font-size:.9em;color:Lime;height:2px;font-weight:normal;padding:2px 4px 2px 4px;vertical-align:middle}
+td.chefActionTitleStyleClass{background-color:#000;color:Lime;padding:2px 4px 2px 2px;text-align:right;vertical-align:top}
+.chefPortletToolBarMessage{
+background-color:#000;
+border-bottom:1px dotted Lime;
+text-decoration:blink;
+display:block;
+font-size:.8em;
+margin:5px 0px 0px 8px;
+padding:4px 0px 4px 0px;
+text-align:left;
+width:auto;
+color:#000
+}
+.chefToolBarWrap a:active{border:1px solid #000;background-color:Lime;color:#000;text-decoration:none}
+.searchField{font-size:.9em;margin:0px;border:1px solid #000}
+.toolbarForm{margin:0px;padding:0px;display:inline}
+.chef2ndToolbarWrap{background-color:#000;display:block;margin:4px 0px 3px 8px;padding:0px;text-align:left}
+table.chef2ndToolbar{color:Lime;margin:0px 0px 10px 0px;text-align:left;width:100%;font-size:.8em}
+table.chef2ndToolbar td.right{text-align:right;padding:3px 3px 0px 0px;vertical-align:middle}
+table.chef2ndToolbar td.right a{background-color:#000;border:1px solid Lime;padding:2px;color:Lime;text-decoration:none}
+table.chef2ndToolbar td.right a:hover{background-color:Lime;border:1px solid Lime;padding:2px;color:#000;text-decoration:none}
+table.chef2ndToolbar td.left{vertical-align:middle;padding:0px 5px 0px 5px}
+table.chef2ndToolbar tr.first{}
+table.chef2ndToolbar tr.first td{padding-bottom:5px}
+table.chef2ndToolbar tr.second td.right{border-top:1px solid Lime;color:Lime}
+table.chef2ndToolbar tr.second td.left{border-top:1px solid Lime}
+table.chef2ndToolbar td.left select{background-color:#000;font-size:1em;vertical-align:middle;color:Lime}
+table.chef2ndToolbar td.right input{font-size:1em;background-color:#000;color:Lime;border:1px solid Lime}
+.chefPortletContainer{margin:0px 0px 0px 0px;padding:0px 0px 0px 0px;width:98%}
+.chefPortletContent{background-color:#000;clear:both;margin-right:0px;padding:6px;width:98%;color:Lime}
+.chefAlert{color:#CA0000}
+.chefAlertBox{background-color:Lime;border:1px solid #000;clear:both;color:#000;float:left;font-size:x-small;margin:5px 0px 5px 0px;padding:5px 5px 5px 25px}
+.chefInfoBox{background-color:#000;border:1px solid Lime;clear:both;float:left;font-size:x-small;margin:5px 0px 5px 0px;padding:5px 5px 5px 5px}
+.chefInlineInstructions{color:#000;background-color:Lime;padding:3px;display:block;font-size:.9em}
+.chefInlineAlert{background-color:Lime;color:#000;font-size:.9em;margin:0px 0px 0px 5px;padding:0px 0px 0px 10px}
+.chefInlineAlert:before{content:"^ "}
+.chefPageviewTitle{clear:both;display:block;margin:0px 0px 5px 0px;width:70%}
+.chefListMessage{font-size:small;margin:0px 0px 5px 0px}
+.chefPortletContainer .chefBreadCrumb{clear:both;margin:5px 5px 5px 0px}
+.chefSectionMessage{font-size:small;margin:0px 0px 5px 10px}
+.chefSectionTitle{display:block;font-weight:normal;margin:5px 0px 5px 0px}
+.chefHonorPledge{color:#FB574C;font-size:x-small;font-weight:bold}
+/*CALENDAR HORRORS */
+table.calendar th{background-color:#000;font-weight:normal;text-align:center}
+.borderGrayDayWeek{border-bottom:none;border-collapse:collapse;border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #000}
+.borderGrayTodayEmptyMiddleBottom{background-color:000;border:2px solid #000}
+.borderGrayTodayMiddleBottom{border:2px solid #000}
+.borderOnlyLeftDay{background-color:#000;border-left:1px solid #000}
+.borderOnlyLeft{border-left:1px solid #000}
+.borderTopLeft{background-color:#000;border-left:1px solid #000;border-right:1px solid  #000;border-top:1px solid #000}
+.borderTopLeftWhite{border-left:1px solid #000;
+border-right:1px solid  Lime;border-top:1px solid #000}
+.borderWhiteYear{background-color:#000;border:1px solid #000;text-align:center}
+/* PART 4:INPUTS*/
+.chefPortletContainer textarea{font-family:Verdana,Arial,Helvetica,sans-serif;font-size:1em;background-color:#000;border:1px solid Lime;color:Lime;margin:2px;padding:2px 0px 2px 2px}
+.chefPortletContainer  input.radio{}
+.chefPortletContainer input.checkbox{}
+.chefButtonRow{clear:both;margin:10px 0px 10px 0px}
+.chefButtonRowRight{clear:both;float:right;margin:5px 0px 5px 0px}
+.chefButtonRowRight input,.chefButtonRow input{background-color:#000;border:1px solid Lime;color:Lime;padding:1px 3px 1px 3px}
+.chefButtonRow	input:hover,.chefButtonRowRight	input:hover{background-color:Lime;border:1px solid Lime;color:#000;padding:1px 3px 1px 3px}
+.chefPortletContainer .chefRequiredInline{background-image:url(/sakai-portal/image/required.gif);background-position:center left;background-repeat:no-repeat;padding:4px 4px 4px 14px}
+.chefPortletContainer td.chefRequiredInline{background-image:url(/sakai-portal/image/required.gif);background-position:.4em left;background-repeat:no-repeat;padding:4px 4px 4px 4px}
+.chefPortletContainer .chefRequired{
+background-image:url(/sakai-portal/image/required.gif);
+background-position:3px 3px;
+background-repeat:no-repeat;
+border:1px solid #FB574C;
+margin:2px;
+padding:3px 3px 3px 15px;
+text-decoration:none
+}
+/*PART 5:LAYOUTS*/
+fieldset{border:1px solid Lime;clear:both;display:block;margin:3px 0px 3px 0px;padding:5px;width:70%}
+legend{border:1px solid Lime;color:Lime;font-size:.8em;font-weight:bold;margin:3px 0px 3px 0px;padding:2px 10px 2px 10px}
+.chefAttachmentsF{border:1px dotted Lime;display:block;padding:5px}
+.chefAttachmentsL{border:1px dotted Lime;background-color:#000;color:Lime;font-size:.8em;font-weight:bold;padding:2px 10px 2px 10px}
+.chefPortletContainer  table.chefFlatListViewTable th{border-bottom:2px solid Lime;font-size:.9em;font-weight:normal;padding:3px 8px 3px 8px;text-align:left;white-space:nowrap}
+.chefPortletContainer  table.chefFlatListViewTable caption {padding:1em 0 1em 0;text-align:left}
+.chefPortletContainer  table.chefFlatListViewTable td.chefTopline{border-top:1px dotted Lime}
+.chefLightFlatListViewTable{border:1px solid Lime;clear:both;font-size:.9em}
+.chefPortletContainer  table.chefLightFlatListViewTable th{border-bottom:1px solid Lime;font-size:.9em;font-weight:normal;padding:3px 8px 3px 8px;text-align:left;white-space:nowrap}
+table.chefItemDetail{font-size:.9em;margin:0px 0px 5px 20px;width:auto}
+table.chefItemDetail td.chefLabel{padding-right:4px;font-weight:bold;text-align:left;vertical-align:text-top;white-space:nowrap}
+table.chefSectionContent{margin:10px 10px 0px 15px;width:98%}
+table.chefSectionContent th{background-color:#000;font-size:.9em;font-weight:normal;padding:3px;text-align:left}
+table.chefSectionContent td.content{border:1px solid Lime}
+.chefPortletContainer   table.chefEditItem{margin:20px 10px 0px 10px;width:auto}
+.chefPortletContainer  table.chefEditItem td.chefLabel{padding-right:10px;text-align:left;vertical-align:text-top}
+.chefPortletContainer table.chefSectionContent td.content{border:1px solid Lime;padding:5px}
+.chefPortletContainer   table.chefEditItem td.chefContent{}
+.chefPortletContainer table td{padding-right:5px}
+.chefPortletContainer .chefAttachmentList{margin:5px 5px 5px 5px;padding:0px 0px 5px 0px}
+.chefPortletContainer .chefAttachmentList li{font-size:.8em;list-style:none;margin:0px;padding:0px 0px 5px 0px}
+.chefLeftIndent{clear:both;margin-left:1.3em;padding:0px}
+/*.chefPre{font-size:1em;white-space:-moz-pre-wrap;}
+*/
+.chefPre{font-size:1em}
+.chefWorksiteUnit{border-bottom:1px solid #778CBF;border-top:10px solid #778CBF;padding:0px;width:100%}
+.chefPresenceText{font-size:.7em;white-space:nowrap;color:Lime;background-color:#000}
+.chefPresenceListItem{font-family:Verdana,Arial,Helvetica,sans-serif;font-size:.8em;margin-left:3px;white-space:nowrap;color:Lime;background-color:#000}
+.presenceList{background-color:#000;border-top:1em solid #000;border-bottom:1em solid #000}
+.chefChatUserName{font-weight:bold}
+.chefChatTimeStamp{font-size:.8em;font-weight:normal}
+.chefChatMessageBody{}
+.chefTitleIFrame{display:block;height:21px;margin:0px}
+.chefContentIFrame{display:block;height:50px;margin:0px}
+.helpDocHeader{color:Lime;font-weight:bold;padding-bottom:15px;padding-top:15px}
+.helpDocContent{padding-left:1.5em;text-align:left}
+.PortletContainer{}
+STRONG,H3{font-size:9pt}
+.chefPortletContainer .chefToolBarWrap,.chefPortletContainer .chefToolBarWrapForm{
+background-color:#000;
+border-color:Lime;
+border-style:dotted;
+border-width:0 0 1px 0;
+display:block;
+font-size:.8em;
+margin:5px 0px 0px 8px;
+padding:1px 0px 1px 0px;
+text-align:left;
+line-height:1.7em;
+width:auto
+}
+.chefToolBarWrap  a,.chefToolBarWrapForm a{border:1px solid #000;color:Lime;margin:0px 1px 0px 1px;padding:1px;text-decoration:none}
+.chefToolBarWrap  a:hover,.chefToolBarWrapForm a:hover{border:1px solid Lime;background-color:Lime;color:#000;text-decoration:none}
+table.calendar,.chefPortletContainer  table.chefFlatListViewTable td.highLight{background-color:#000}
+.borderGrayBackground,.borderWhite{border-bottom:none;border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #000}
+.borderGrayTodayBgCenter,.borderOnlyLeftTodayCenter{border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #000}
+.borderGrayTodayRightBottom,.borderGrayTodayBottom,.borderGrayTodayLeftBottom{border-bottom:2px solid #000;border-left:2px solid #000;border-right:2px solid #000;border-top:2px solid #000}
+.borderOnlyLeftTodayBottom,.borderTodayBottom{border-bottom:1px solid #000;border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #000}
+.borderToday,.borderFullGray,.borderGrayMonth{border:1px solid #000}
+.borderTodayCenter,.borderTodayTop{border-bottom:1px solid #000;
+border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #000}
+.chefPortletContainer table.chefFlatListViewTable,.chefPortletContainer table.chefHierListViewTable{border:1px solid Lime;clear:both}
+.chefPortletContainer table.chefFlatListViewTable tr.bottom th,.chefPortletContainer table.chefHierListViewTable tr.bottom th{border-bottom:0px solid Lime;border-top:1px solid Lime}
+.chefPortletContainer  table.chefFlatListViewTable td,.chefPortletContainer  table.chefLightFlatListViewTable td{padding:3px 8px 3px 8px;text-align:left;vertical-align:top}
+table.chefItemDetail td.chefValue,table.chefItemDetail td{padding:3px;vertical-align:top}
+.borderGrayYear,.borderTodayWithActivity,.borderTodayWithoutActivity,.bgActivity,.bgWithoutActivity{background-color:#000;border:1px solid #000;text-align:right}
+.borderGrayTodayRightCenter,.borderGrayTodayCenter,.borderGrayTodayEmptyMiddleCenter,.borderGrayTodayEmptyRightBottom,.borderGrayTodayEmptyRightCenter,.borderGrayTodayLeftCenter,.borderGrayTodayMiddleCenter{border-left:2px solid #000;border-right:2px solid #000;border-top:2px solid #000}
+.chefPortletContainer input,.chefPortletContainer input.upload,.chefPortletContainer select,.chefPortletContainer option{border:1px solid Lime;background-color:#000;color:Lime;margin:2px;padding:1px 2px 1px 2px}
+#submitnotif{
+background-color:#FFFFD6;
+background-image:url(/sakai-portal/image/warn.gif);
+background-position: 3px 3px;
+background-repeat:no-repeat;
+border:1px solid #CA0000;
+clear:none;
+color:#CA0000;
+font-size:x-small;
+text-decoration:blink;
+vertical-align: text-top;
+margin:0;
+padding:5px 5px 5px 25px
+}

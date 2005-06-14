@@ -1,0 +1,152 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/calendar/chef_calendar_setFrequency.vm,v 1.5 2005/02/01 00:32:39 gsilver.umich.edu Exp $
+
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Setting frequency for schedule item...
+	</div>
+<div class="chefPortletContent">
+#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+<div style="display:block;clear:both"></div>
+
+<div class="chefPageviewTitle">
+To set the event frequency, complete the form and choose 'Save' at the bottom. <br/>
+A <span class="chefRequiredInline">means</span> required information.
+</div>
+
+<form name="setFrequencyForm" id="setFrequencyForm" action="#toolForm("$action")" method="post">
+<input type="hidden" name="eventSubmit_doChangefrequency" value="changefrequency" />
+
+<table class="chefEditItem" cellspacing="0">  
+<tr><td colspan="2">
+<span class="chefRequiredInline">Select</span>the event frequency:  
+<select name="frequencySelect" id="frequencySelect" onchange="javascript:document.setFrequencyForm.submit();">
+    #if ($freq == "once") <option value="once" selected="selected">once</option> #else <option value="once">once</option> #end
+    #if ($freq == "day") <option value="day" selected="selected">daily</option> #else <option value="day">daily</option> #end
+    #if ($freq == "week") <option value="week" selected="selected">weekly</option> #else <option value="week">weekly</option> #end
+    #if ($freq == "month") <option value="month" selected="selected">monthly</option> #else <option value="month">monthly</option> #end
+    #if ($freq == "year") <option value="year" selected="selected">yearly</option> #else <option value="year">yearly</option> #end
+</select>
+</td></tr>
+</table>
+</form>
+
+<form name="setFrequencyFormII" id="setFrequencyFormII" action="#toolForm("$action")" method="post">
+<input type="hidden" name="frequencySelect" value="$freq" />
+<table class="chefEditItem" cellspacing="0">  
+<tr><td colspan="2">&nbsp;</td></tr>
+
+#if ($freq == "once")
+<tr><td colspan="2">
+    The only occurrence is on
+    #set($month = $savedData.getMonth())
+    #if ($month == 1)JAN #end
+    #if ($month == 2)FEB #end
+    #if ($month == 3)MAR #end
+    #if ($month == 4)APR #end
+    #if ($month == 5)MAY #end
+    #if ($month == 6)JUN #end
+    #if ($month == 7)JUL #end
+    #if ($month == 8)AUG #end
+    #if ($month == 9)SEP #end
+    #if ($month == 10)OCT #end
+    #if ($month == 11)NOV #end
+    #if ($month == 12)DEC #end
+    $savedData.Day, $savedData.Year
+</td></tr>
+#else ## for daily, weekly, and etc.
+
+
+
+<tr>
+<td  class="chefLabel">Every: </td>
+<td>
+#set ($interval = $rule.Interval)
+<select name="interval" onchange="blur()">
+    #foreach($i in [1..31])
+        #if($interval == $i)
+            <option selected="selected">$i</option>
+        #else
+            <option >$i</option>
+        #end
+    #end
+</select>
+#if ($freq == "day")day(s)#end
+#if ($freq == "week")week(s)#end
+#if ($freq == "month")month(s)#end
+#if ($freq == "year")year(s)#end
+</td>
+</tr>
+
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr>
+<td class="chefLabel">Ends:</td>
+<td><input type="radio" name="CountOrTill" value="Never"
+#if (($rule.Count == 0)&&(!($rule.Until)))checked="checked" #end/> Never</td>
+</tr>
+
+#set($month = $savedData.getMonth())
+#set ($day = $savedData.Day)
+#set ($year = $savedData.Year)
+#set ($yearInt = $savedData.getYearInt())
+#if ($rule.Until)
+    #set($isTillChecked = "checked")
+    #set($month = $rule.Until.breakdownLocal().Month)
+    #set($day = $rule.Until.breakdownLocal().Day)
+    #set($year = $rule.Until.breakdownLocal().year)
+	#set($yearInt = $rule.Until.breakdownLocal().year)
+#else
+    #set($isTillChecked = "")
+#end
+<tr>
+<td class="chefLabel"></td>
+<td>
+<input type="radio" name="CountOrTill" value="Till" $isTillChecked> On
+
+#set($todayYear = $realDate.breakdownLocal().Year)
+#set($earliestYear = $todayYear - 3)
+#set($latestYear = $todayYear + 4)
+
+#chef_dateselectionwidget("endYear" "endMonth" "endDay" $earliestYear $latestYear $yearInt $month $day)
+
+</td>
+</tr>
+
+<tr>
+<td class="chefLabel"></td>
+<td>
+#if (!($rule.Count == 0))
+    #set($isCountChecked = "checked")
+    #set($month = $rule.Until.breakdownLocal().Month)
+    #set($day = $rule.Until.breakdownLocal().Day)
+    #set($year = $rule.Until.breakdownLocal().year)
+#else
+    #set($isCountChecked = "")
+#end
+<input type="radio" name="CountOrTill" value="Count" $isCountChecked> After
+<select name="count" onchange="blur()">
+    #set ($count = $rule.Count)
+    #foreach($c in [1..100])
+        #if($count == $c)
+            <option selected="selected">$c</option>
+        #else
+            <option >$c</option>
+        #end
+    #end
+</select>time(s)
+</td>
+</tr>
+
+#end ## end of if freq is only once
+
+</table>
+
+<div class="chefButtonRow">
+    <input type="submit" name="eventSubmit_doSavefrequency" value="Save" />
+    <input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+</div>
+
+
+</form>
+
+</div>
+</div>

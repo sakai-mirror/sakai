@@ -1,0 +1,60 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-siteInfo-editClass.vm,v 1.4 2005/01/17 17:30:52 zqian.umich.edu Exp $ -->
+## edit classes list in course site
+<div class ="portletBody">
+	#if($menu)#toolbar($menu)#end
+	#if ($alertMessage)
+		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	<h3 class="insColor insBak insBor">
+		Edit classes for $!siteTitle
+	</h3>
+	<form name="removeClassForm" id="removeClassForm" action="#toolForm("$action")" method="post">
+	#if ($!providerCourseList || $!manualCourseList)
+			<table class ="listHier indnt3"  cellpadding="0" cellspacing="0" summary ="Table holds the information of site classes.">
+				<tr>
+					<th id="class">
+						Class
+					</th>
+					<th id="remove">
+						Remove
+					</th>
+				</tr>
+				#foreach($id in $!providerCourseList)
+					<tr>
+						<td headers="class">
+							$id
+						</td>
+						<td headers="remove">
+							<input type="checkbox" name="providerClassDeletes" value="$id" />
+						</td>
+					</tr>
+				#end
+				#foreach($id in $!manualCourseList)
+					<tr>
+						<td headers="class">
+							$id(requested)
+						</td>
+						<td headers="remove">
+							<input type="checkbox" name="manualClassDeletes" value="$id" />
+						</td>
+					</tr>
+				#end
+			</table>
+			<p class="act">
+				<input type="hidden" name="back" value="12" />
+				<input type="hidden" name="template-index" value="43" />
+				<input type="submit" class="active" name="eventSubmit_doContinue" value="Update" />
+				<input type="submit" name="eventSubmit_doBack" value="Cancel" />
+			</p>
+		
+	#else
+		There is no class assigned to the site $!siteTitle yet.
+		<p class="act">
+			<input type="hidden" name="back" value="12" />
+			<input type="submit" name="eventSubmit_doBack" value="Cancel"/>
+		</p>
+		
+	#end
+	</form>
+</div>

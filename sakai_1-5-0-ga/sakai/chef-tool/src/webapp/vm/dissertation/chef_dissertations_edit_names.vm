@@ -1,0 +1,59 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_edit_names.vm,v 1.3 2004/07/26 15:54:31 rwellis.umich.edu Exp $ 
+## Dissertations - Administrator's form for loading OARD Doctoral System and MPathways data extracts
+<div class="chefPortletContainer" id="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<span class ="chefPortletToolBarMessage">
+		Edit Codes
+	</span>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Complete the form below to change the name associated with a Field of Study or 
+			Block Grant Group code. Please contact Grad Tools Support to have a change 
+			made to a departmental site name.
+		</div>
+		<form name="editNames" id="editName" action="#toolForm($action)" method="post" enctype="multipart/form-data">
+			<fieldset>
+				<legend>Edit Names
+				</legend>
+				<table  class="chefEditItem" summary="Form to provide names for Field of Study and Block Grant Group." >
+					<tr>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<label for="FOS">FOS:</label>
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								$field.getFieldCode()
+							</div>
+						</td>
+						<td>
+							<input type="text" value="$field.getFieldName()" name="FOS_name" id="FOS_name" class="" size="40" />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<label for="BGG">BGG:</label>
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								$field.getGroupCode()
+							</div>
+						</td>
+						<td>
+							<input type="text" value="$field.getGroupName()" name="BGG_name" id="BGG_name" size="40" />
+						</td>
+					</tr>
+				</table>
+				<div class="chefButtonRow">
+					<input type="hidden" name="FOS_code" id="FOS_code" value="$field.getFieldCode()" />
+					<input type="submit" name="eventSubmit_doSave_edited_names" id="eventSubmit_doSave_edited_names" value="Save" />
+					<input type="submit" name="eventSubmit_doCancel_code" id="eventSubmit_doCancel_code" value="Cancel" />
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

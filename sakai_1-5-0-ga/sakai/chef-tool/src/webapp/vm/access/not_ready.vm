@@ -1,0 +1,4 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/access/not_ready.vm,v 1.1 2004/03/12 03:46:13 ggolden Exp $
+#chef_start()
+<h1>Access is not ready</h1>
+#chef_end()

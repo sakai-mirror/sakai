@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+    <classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
+    <classpathentry kind="src" path="/sakai-component"/>
+    <classpathentry kind="src" path="/sakai-service"/>
+    <classpathentry kind="src" path="/sakai-jsf"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jsf/jars/jsf-api-1.1.01.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jsf/jars/jsf-impl-1.1.01.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jsp/jars/servlet-2.3.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
+

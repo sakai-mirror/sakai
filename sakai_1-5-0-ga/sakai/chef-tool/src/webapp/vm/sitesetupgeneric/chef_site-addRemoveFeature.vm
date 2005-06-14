@@ -1,0 +1,180 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-addRemoveFeature.vm,v 1.10 2004/12/22 00:08:51 zqian.umich.edu Exp $ -->
+## Adding/removing features
+<div class="portletBody">
+	#if($menu)#toolbar($menu)#end
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+	<h3 class="insColor insBak insBor">
+		Revising site tools for $validator.escapeHtml($SiteTitle)...
+	</h3>
+	<p  class="instruction">
+		Check boxes to add or remove tools from your site.
+	</p>
+	<form name="addremovefeaturesForm" action="#toolForm("$action")" method="post">
+		<input type="hidden" name="option" value="add" />
+		<input type="hidden" name="eventSubmit_doAdd_remove_features" value="x" />
+		<table  class="listHier">
+			<tr>
+				<td>
+					#if (!$myworkspace_site)
+						<input type="checkbox" name="selectedTools" id="home" value="home"
+							#if ($check_home)
+								checked="checked"
+							#end
+						/>
+					#else
+						#if ($check_home)
+							<input type="hidden" name="selectedTools" id="home" value="home" checked="checked" />
+						#end								
+						&nbsp;
+					#end
+				</td>
+				<td><label for="home">Home</label></td><td>Description of the project, recent announcements, discussion, and chat items.</td>
+			</tr>	
+			#set ($checkedNewsTool = 0)
+			#set ($checkedWCTool = 0)
+			#foreach($tool in $toolRegistrationList)
+				#set($toolId = $tool.getId())
+				#set ($toolfound=false)
+				#if($toolRegistrationSelectedList)
+					#foreach($tId in $toolRegistrationSelectedList)
+						#if($tId == $toolId)
+							#set($toolfound=true)
+						#end
+					#end
+				#end
+				#if ($myworkspace_site)
+					#if ($toolId.indexOf("chef.news") == -1 && $toolId.indexOf("chef.iframe") == -1)
+						##for tools other than News and WebContent tool
+						#if ($toolfound)
+							<input type="hidden" name="selectedTools" value="$toolId" />
+						#end
+					#end
+				#end
+				#if (!$myworkspace_site)
+					#if ($!defaultTools.indexOf($toolId) != -1)
+						<input type="hidden" name="selectedTools" value="$toolId" />
+					#end
+					<tr>
+						<td>
+							<input type="checkbox" name="selectedTools" value="$toolId" id="$toolId"  
+								#if ($!defaultTools.indexOf($toolId) != -1)
+									checked="checked" disabled="disabled" 
+								#else
+									#if($toolRegistrationSelectedList)
+										#foreach($tId in $toolRegistrationSelectedList)
+											#if ($tId == $toolId)
+												checked="checked"
+											#end
+										#end
+									#end
+								#end
+							/>
+						</td>
+						<td>
+							#if ($toolId.indexOf("chef.news") != -1)
+								## show title for News tool
+								#if ($toolRegistrationSelectedList.contains($toolId))
+									<label for="$toolId">$newsTitles.get($toolId)</label>
+								#else
+									<label for="$toolId">$tool.getTitle()</label>
+								#end
+							#elseif ($toolId.indexOf("chef.iframe") != -1)
+								## show url for Web Content tool
+								#if ($toolRegistrationSelectedList.contains($toolId))
+									<label for="$toolId">$wcTitles.get($toolId)</label>
+								#else
+									<label for="$toolId">$tool.getTitle()</label>
+								#end
+							#else
+								<label for="$toolId" >$tool.getTitle()</label>
+							#end
+						</td>
+						<td>
+							#if ($toolId.indexOf("chef.news") != -1)
+								## show url for News tool
+								#if ($toolRegistrationSelectedList.contains($toolId))
+									$newsUrls.get($toolId)
+								#else
+									$tool.getDescription()
+								#end
+							#elseif ($toolId.indexOf("chef.iframe") != -1)
+								## show url for Web Content tool
+								#if ($toolRegistrationSelectedList.contains($toolId))
+									$wcUrls.get($toolId)
+								#else
+									$tool.getDescription()
+								#end
+							#else
+								$tool.getDescription()
+							#end
+						</td>
+					</tr>	
+				#else
+					##if of type MyWorkspace
+					#if ($toolId.indexOf("chef.news") != -1 || $toolId.indexOf("chef.iframe") != -1)
+						<tr>
+							<td>
+								<input type="checkbox" name="selectedTools" value="$toolId"
+									#if ($toolfound)
+										checked="checked"
+									#end 
+									#if ($toolId.indexOf("chef.news") != -1)
+										onClick="document.addremovefeaturesForm.option.value='addNews';javascript:document.addremovefeaturesForm.submit();"
+									#elseif ($toolId.indexOf("chef.iframe") != -1)
+										onClick="document.addremovefeaturesForm.option.value='addWebContent';javascript:document.addremovefeaturesForm.submit();"
+									#end
+								/>
+							</td>
+							<td>
+								$tool.getTitle()
+							</td>
+							<td>
+								$tool.getDescription()
+								#if ($toolId == "chef.mailbox")
+									<br />Enter an email address: <input type="text"  name="emailId" value="$!emailId" size="32" style="width: 10em" />@$serverName
+								#elseif ($toolId.indexOf("chef.news") != -1)
+									#set($name = "titlefor")
+									#set($name = $name.concat($toolId))
+									<br />Choose a title: <input type="text"  name="$name" value="$!newsTitles.get($toolId)" size="32" style="width: 10em" />
+								#elseif ($toolId.indexOf("chef.iframe") != -1)
+									#set($name = "titlefor")
+									#set($name = $name.concat($toolId))
+									<br />Choose a title: <input type="text"  name="$name" value="$!wcTitles.get($toolId)" size="32" style="width: 10em" />
+								#end
+							</td>
+						</tr>	
+					#else
+						#if ($toolfound)
+							<tr>
+								<td>
+									&nbsp;
+								</td>
+								<td>
+									$tool.getTitle()
+								</td>
+								<td>
+									$tool.getDescription()
+								</td>
+							</tr>	
+						#end
+					#end
+				#end
+			#end
+		</table>
+		<input type="hidden" name="back" value="$backIndex" />
+		<input type="hidden" name="template-index" value="4" />
+		<input type="hidden" name="continue" value="45" />
+		<div class="act">
+			<input type="submit" name="Continue" 
+					value="Continue"
+					class="active"
+					onclick="document.addremovefeaturesForm.option.value='save';javascript:document.addremovefeaturesForm.submit();" />
+			<input type="submit" name="Cancel" 
+					value="Cancel" 
+					onclick="document.addremovefeaturesForm.option.value='cancel';javascript:document.addremovefeaturesForm.submit();" />
+		</div>
+	</form>
+</div>

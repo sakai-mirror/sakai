@@ -1,0 +1,107 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-newSiteCourse.vm,v 1.4 2005/02/14 18:22:19 zqian.umich.edu Exp $ -->
+<div class="portletBody">
+	#if (!$!siteEdit)
+		<h3 class="insColor insBak insBor">Creating a New Class Site</h3>
+		<p class="step">
+			Step 1 of $!totalSteps: Choose classes for this site...
+		</p>
+	#else
+		<h3 class="insColor insBak insBor">Editing site $!siteTitle...</h3>
+	#end
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			#if (!$!siteEdit)
+				Select course/sections that will be included in the class site. A <span class ="chefRequiredInline"> means</span> required information.
+			#else
+				Adding class(es) to site $!siteTitle:
+			#end
+		</div>
+		<form name = "addCourseForm" method="post" action="#toolForm($action)">
+			<fieldset>
+				<legend>
+					Course information
+				</legend>
+				#if (!$siteEdit)
+					<div class="chefSectionMessage">
+						Academic Term:
+						$term.Id
+					</div>
+				#else
+					The following class(es) are already assigned to this class site:
+					<ul>
+						#foreach($id in $!providerCourseList)
+							<li>
+								<label for = "$id">
+									$id
+								</label>
+							</li>
+						#end
+						#foreach($id in $!requestedCourseList)
+							<li>
+								<label for = "$id">
+									$id
+								</label>
+							</li>
+						#end
+					</ul>
+					<div class="chefSectionMessage">
+						Academic term:<span class ="chefRequiredInline"> </span>
+						<select name="selectTerm" id="selectTerm" onchange="javascript:document.addCourseForm.option.value='change';document.addCourseForm.submit();">
+							#foreach($t in $termList)
+								<option value ="$t.Id"
+									#if($t.Id == $term.Id)
+										selected="selected"
+									#end
+								>
+								$t.Id
+								</option>
+							#end
+						</select> 
+					</div>
+				#end
+				#if ($!termCourseList)
+					You may add one or more of the following classes to this site:<br />
+					## display only subject, course number and section
+					##and finally - the labels work, but having commas in the id does not validate. Can we concatenate or replace with underscore? Here is reqs on ids and labels: an id attribute value must begin with a letter (A-Z or a-z) and consist of the following characters: (A-Z), (a-z), (0-9), hyphens (-), underscores (_), colons (:), and periods (.).
+					#foreach($course in $termCourseList)
+						<input type="checkbox" name="providerCourseAdd" value="$course.Id" id="$course.Id" 
+							/>
+						<label for="$course.Id">
+							$validator.escapeHtml($course.Id)
+							$validator.escapeHtml($course.Crosslist)</label><br />
+					#end
+				#end
+				## instructor could choose to go to the manual creation page
+				<input type="checkbox" name="manualAdds" value="manual add" id="manual add" #if ($manualAdd) checked="checked" #end/>
+					<label for = "manual add">I would like to add a course/section not listed above to this site. </label><br />
+			</fieldset>	
+			<input type="hidden" name="template-index" value="36" />
+			<input type="hidden" name="back" value="1" />
+			<div class="chefButtonRow">
+				#if (!$siteEdit)
+					<input type="submit" name="eventSubmit_doContinue" value="Continue" />
+					<input type="submit" name="eventSubmit_doBack" value="Back" />
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				#else
+					<input type="hidden" name="option" value="x" />
+					<input type="hidden" name="eventSubmit_doAdd_class_select" value="x" />
+					<input
+						type="button" 
+						name="AddClass" 
+						id="Add Class" 
+						value="Continue"
+						onclick="document.addCourseForm.option.value='add'; document.addCourseForm.submit(); return false;"
+						/>
+					<input
+						type="button" 
+						name="Cancel" 
+						id="Cancel" 
+						value="Cancel"
+						onclick="document.addCourseForm.option.value='cancel'; document.addCourseForm.submit(); return false;"
+					/>
+				#end
+			</div>
+		</form>
+	</div>
+</div>

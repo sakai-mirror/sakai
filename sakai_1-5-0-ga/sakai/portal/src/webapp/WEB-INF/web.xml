@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE web-app
+	  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+	  "http://java.sun.com/j2ee/dtds/web-app_2.3.dtd">
+
+<web-app>
+  
+  <!-- $Header: /cvs/sakai/portal/src/webapp/WEB-INF/web.xml,v 1.12 2004/12/17 14:58:52 dlhaines.umich.edu Exp $ -->
+
+  <display-name>sakai-portal</display-name>
+  <description>Sakai Multi Portal</description>
+
+  <!-- ============= -->
+  <!-- Servlet definitions -->
+  
+  <!-- the vm handling servlet -->
+  <servlet>
+    <servlet-name>
+      vm
+    </servlet-name>
+    <servlet-class>
+      org.sakaiproject.vm.VelocityServlet
+    </servlet-class>
+    <init-param>
+      <param-name> properties </param-name>
+      <param-value> velocity.properties </param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <!-- the portal servlet -->
+  <servlet>
+    <servlet-name>
+      varuna
+    </servlet-name>
+    <servlet-class>
+      org.sakaiproject.portal.varuna.VarunaServlet
+    </servlet-class>
+    <init-param>
+      <param-name> face </param-name>
+      <param-value> portal3 </param-value>
+      <!-- <param-value> portal </param-value> -->
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <!-- ================ -->
+  <!-- Servlet url mappings -->
+  
+  <servlet-mapping>
+    <servlet-name>
+      vm
+    </servlet-name>
+    <url-pattern>
+      *.vm
+    </url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>
+      varuna
+    </servlet-name>
+    <url-pattern>
+      /varuna/*
+    </url-pattern>
+  </servlet-mapping>
+  
+  <!-- ================= -->
+  <!-- misc. -->
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+</web-app>

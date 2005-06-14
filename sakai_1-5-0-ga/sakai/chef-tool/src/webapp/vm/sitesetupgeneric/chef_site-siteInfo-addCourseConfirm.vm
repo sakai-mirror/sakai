@@ -1,0 +1,60 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-siteInfo-addCourseConfirm.vm,v 1.4 2005/02/02 20:54:11 zqian.umich.edu Exp $ -->
+##Confirmation page for adding  classes
+<div class ="portletBody">
+	<h3 class ="insBor insBak insCol">
+		Adding class(es) to site $validator.escapeHtml($siteTitle)...
+	</h3>
+	#if ($alertMessage)
+		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	<p class="instruction">
+		Please confirm the addition of the following sections to your class site.
+	</p>
+	<form name = "addRemoveConfirmForm" method="post" action="#toolForm($action)">
+	<h4 class ="insBor insBak insCol">
+		Class Information
+	</h4>
+	<p class="instruction">
+		The following class(es) were already assigned to this site:<br />
+	</p>
+	<ul>
+		#foreach($c in $providerCourseList)
+			<li>
+				$c
+			</li>
+		#end
+		#foreach($c in $manualCourseList)
+			<li>
+				$c(requested)
+			</li>
+		#end
+	</ul>
+	<p class="instruction">
+		You have indicated the following class(es) to add to this site:<br />
+	</p>
+	<ul>
+		#foreach($c in $providerAddCourses)
+			<li>
+				$c
+			</li>
+		#end
+		#foreach($k in [0..$manualAddNumber])
+			<li>
+				$requestSubjects.get($k)
+				$requestCourses.get($k)
+				$requestSections.get($k)
+				(requested)
+			</li>
+		#end
+	</ul>
+		<input type="hidden" name="back" value="$backIndex" />
+		<input type="hidden" name="template-index" value="44"/>
+		<input type="hidden" name="continue" value="43" />
+		<p class ="act">
+			<input type="submit" class="active" name="eventSubmit_doContinue" value="Add Class(es)" />
+			<input type="submit" name="eventSubmit_doBack" value="Back" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</p>
+	</form>
+</div>

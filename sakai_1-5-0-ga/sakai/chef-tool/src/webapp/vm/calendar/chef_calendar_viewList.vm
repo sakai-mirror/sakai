@@ -1,0 +1,300 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/calendar/chef_calendar_viewList.vm,v 1.10 2005/02/01 00:32:39 gsilver.umich.edu Exp $
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		#set ($counter = 1 )
+		<div style="display:block; clear:both"></div>
+		<div class="chef2ndToolbarWrap">
+			<table class="chef2ndToolbar" cellspacing="0" summary="this is for second toolbar, containing dropdown view list" border="0">
+				<tr class="first">
+					<td class="left">
+						<form name="viewForm" class="toolbarForm" action="#toolForm("$action")" method="post">
+							<input type="hidden" name="eventSubmit_doView" value="view" />
+							<label for="view" style="float:left;display:inline;width:4em;border:1px solid #fff;vertical-align:middle;padding-top:.3em">View:</label>
+							<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();" id="view">
+								#foreach ($view in ["Calendar by day", "Calendar by week", "Calendar by month", "Calendar by year", "List of events"])
+									#if ($selectedView.equals($view))
+										<option value="$view" selected="selected" >$view</option>
+									#else
+										<option value="$view" >$view</option>
+									#end
+								#end
+							</select>
+						</form>
+					</td>
+					<td align="center">
+						<form name="todayForm" action="#toolForm("$action")" method="post">
+							<div class="chefButtonRowRight">
+								<input type="submit" name="eventSubmit_doToday" value="Go to today" />
+							</div>
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td class="left">
+						<form name="listform2" class="toolbarForm" method="post" action="#toolForm("SiteAction")">
+							<input type="hidden" value="Go to today" name="eventSubmit_doFilter" />
+							<label for="timeFilterOption" style="float:left;display:inline;width:4em;border:1px solid #fff;vertical-align:middle;padding-top:.3em">Show:</label><select name="timeFilterOption" onchange="blur();document.listform2.submit();" id="timeFilterOption">
+								<option value="SHOW_ALL" #if ($timeFilterOption == "SHOW_ALL") selected="selected" #end >All activities</option>
+								<option value="SHOW_DAY" #if ($timeFilterOption == "SHOW_DAY") selected="selected" #end >Activities for today</option>
+								<option value="SHOW_WEEK" #if ($timeFilterOption == "SHOW_WEEK") selected="selected" #end >Activities for this week</option>
+								<option value="SHOW_MONTH" #if ($timeFilterOption == "SHOW_MONTH") selected="selected" #end >Activities for this month</option>
+								<option value="SHOW_YEAR" #if ($timeFilterOption == "SHOW_YEAR") selected="selected" #end >Activities for this year</option>
+								<option value="SHOW_CUSTOM_RANGE" #if ($timeFilterOption == "SHOW_CUSTOM_RANGE") selected="selected" #end >Custom date range</option>
+							</select>
+						</form>
+					</td>
+				</tr>
+				#if ($timeFilterOption == "SHOW_CUSTOM_RANGE")
+				<tr>
+					<td class="left" colspan="3">
+						<form name="listform1" class="toolbarForm" method="post" action="#toolForm("SiteAction")">
+							<div class="chefButtonRow" style="border-top:1px solid gray;padding-top:1em">
+			#*					Start Date:<input name="customStartDate" type="text" value="$customStartDate" size="10">
+								&nbsp;
+								End Date:<input name="customEndDate" type="text" value="$customEndDate" size="10">
+								&nbsp;
+			*#
+								<label for="customStartMonth" style="float:left;display:inline;width:4em;border:1px solid #fff;vertical-align:middle;padding-top:.3em">Start:</label>
+								#chef_dateselectionwidget("customStartYear" "customStartMonth" "customStartDay" $ddStartYear $ddEndYear $customStartYear $customStartMonth $customStartDay)
+								<br />
+								<label for="customEndMonth" style="float:left;display:inline;width:4em;border:1px solid #fff;vertical-align:middle;padding-top:.3em">End:</label>
+								#chef_dateselectionwidget("customEndYear" "customEndMonth" "customEndDay" $ddStartYear $ddEndYear $customEndYear $customEndMonth $customEndDay)
+								<input name="eventSubmit_doCustomDate" type="submit" value="Apply Change" />
+							</div>
+						</form>
+					</td>
+				</tr>
+				#end
+			</table>
+		</div>
+		#set ($showLegned = "false")
+		<form name="listform" action="#toolForm("$action")" method="post">
+			<input type="hidden" name="source" value="0" />
+
+#* 		Joanne: need a check here - if messages, display, otherwise do not.
+			Not sure what was available in the context to do this. (gsilver) *#
+
+				<table class="chefFlatListViewTable" cellspacing="0">
+					<tr>
+						<th>Date</th>
+						<th>Activity and time</th>
+					</tr>
+					#foreach ($key in $yearMap.keySet())  ##foreach--1
+							#set ($thisYear = $key)
+							#set ($theseMonths = $yearMap.get($key))
+							#set ($yearShown = "false") ## false - the current year is not shown in the list
+
+							#foreach ($aMonth in $theseMonths)  ##foreach--2
+									#set ($monthShown = "false") ## when false, the current month is not shown in the list
+									#set($row = $aMonth.getRow())
+
+
+									#foreach ($xn in [0..$row])  ##foreach--3
+											#foreach ($u in [0..6])  ##foreach--4
+													#set ($dayShown = "false") ## when false, the number of current day is not shown in the list
+													#set ($mu = $aMonth.getDay($xn,$u))
+													#if (!($mu.getFlag() == 0)) ## only include the days inside this month
+															#set ($eventsn = $mu.getEvents())
+
+															#set($noEvent = "true")
+															#set($eventNumber=0)
+															#foreach ($m in $eventsn)  ##foreach--5
+																	#set ($noEvent = "false")
+																	#set ($eventNumber = $eventNumber +1)
+																	#set ($showLegend = "true")
+															#end  ##foreach--5
+
+															#if ($noEvent == "false")
+																	#foreach ($m in $eventsn)  ##foreach--6
+																			<tr>
+																			<td nowrap="nowrap"  #if ($counter == 1) #else #if ($dayShown == "false") class="chefTopline" #end #end>
+																			#if ($dayShown == "false")
+																					#if ($aMonth.getMonthName() == "Jan") #set ($monthNumber = 0)
+																					#elseif ($aMonth.getMonthName() == "Feb") #set ($monthNumber = 1)
+																					#elseif ($aMonth.getMonthName() == "Mar") #set ($monthNumber = 2)
+																					#elseif ($aMonth.getMonthName() == "Apr") #set ($monthNumber = 3)
+																					#elseif ($aMonth.getMonthName() == "May") #set ($monthNumber = 4)
+																					#elseif ($aMonth.getMonthName() == "Jun") #set ($monthNumber = 5)
+																					#elseif ($aMonth.getMonthName() == "Jul") #set ($monthNumber = 6)
+																					#elseif ($aMonth.getMonthName() == "Aug") #set ($monthNumber = 7)
+																					#elseif ($aMonth.getMonthName() == "Sep") #set ($monthNumber = 8) 
+																					#elseif ($aMonth.getMonthName() == "Oct") #set ($monthNumber = 9) 
+																					#elseif ($aMonth.getMonthName() == "Nov") #set ($monthNumber = 10)
+																					#elseif ($aMonth.getMonthName() == "Dec") #set ($monthNumber = 11) 
+																					#end
+					## (gsilver: not sure what this </a> is doing here, comment for now - as it does not validate </a>
+																					<a href="#toolLink("$action" "doGomonth")&month=$monthNumber&year=$thisYear">$aMonth.MonthName</a>
+																					<a href="#toolLink("$action" "doDay")&day=$mu.getDay()&month=$mu.Month&year=$mu.Year">$mu.Day</a>, 
+																					<a href="#toolLink("$action" "doGoyear")&year=$thisYear">$thisYear</a>
+																			#else
+																				&nbsp;
+																			#end
+																		</td>
+																			<td #if ($counter == 1) #else #if ($dayShown == "false") class="chefTopline" #end #end>
+																				#set ($dayShown = "true")
+																					<a href="#toolLink("$action" "doDescription")&eventReference=$validator.escapeUrl($m.getReference())" title="$validator.escapeHtml($m.getDisplayName())">
+																							#if($m.getType()=="Academic Calendar")
+																								<img src = "#imageLink("chef/academic_calendar.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif ($m.getType()=="Activity")
+																									<img src = "#imageLink("chef/activity.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif($m.getType()=="Cancellation")
+																									<img src = "#imageLink("chef/cancelled.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif ($m.getType()=="Class section - Discussion")
+																									<img src = "#imageLink("chef/class_dis.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif ($m.getType()=="Class section - Lab")
+																									<img src = "#imageLink("chef/class_lab.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif ($m.getType()=="Class section - Lecture")
+																									<img src = "#imageLink("chef/class_lec.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif ($m.getType()=="Class section - Small Group")
+																									<img src = "#imageLink("chef/class_sma.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																				#elseif ($m.getType()=="Class session")
+																									<img src = "#imageLink("chef/class_session.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif($m.getType()=="Computer Session")
+																									<img src = "#imageLink("chef/computersession.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif($m.getType()=="Deadline")
+																									<img src = "#imageLink("chef/deadline.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif($m.getType()=="Exam")
+																									<img src = "#imageLink("chef/exam.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif($m.getType()=="Quiz")
+																									<img src = "#imageLink("chef/quiz.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif ($m.getType()=="Meeting")
+																									<img src = "#imageLink("chef/meeting.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif($m.getType()=="Special event")
+																									<img src = "#imageLink("chef/special_event.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif($m.getType()=="Web Assignment")
+																									<img src = "#imageLink("chef/webassignment.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#elseif($m.getType()=="Multidisciplinary Conference")
+																									<img src = "#imageLink("chef/multi-conference.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
+																							#end
+																				 $validator.escapeHtml($m.getDisplayName())</a>              
+
+																			#set ($counter= $counter + 1)
+
+																			#set ($startTime = $m.getRange().firstTime().toStringLocalShort())
+																			#set ($endTime = $m.getRange().lastTime().toStringLocalShort())
+
+																			#if ($startTime == $endTime)
+																					$startTime
+																			#else
+																					#if ($endTime.endsWith("am")) #set ($endTimeType = "am") #else #set ($endTimeType = "pm") #end
+																					#set ($endMin = $m.getRange().lastTime().breakdownLocal().Min)
+																					#set ($endHour = $m.getRange().lastTime().breakdownLocal().Hour)
+
+																					#set( $foo = $endMin % 10 )
+																					#if (($foo == 4) || ($foo == 9))
+																							#set ($endMin = $endMin + 1)
+																							#if ($endMin == 60)
+																									#set ($endMin = "00")
+																									#set ($endHour = $endHour + 1)
+																									#if (($endHour == 12)||($endHour == 24))
+																											 #if ($endTime.endsWith("am")) #set ($endTimeType = "pm") #else #set ($endTimeType = "am") #end
+																									#end
+																							#end
+																					#end
+																					#if ($endHour > 12)
+																							#set ($endHour = $endHour - 12)
+																					#end
+
+																					($startTime - $endHour:#if(($endMin == 0)||($endMin == 5))0$endMin#else$endMin#end $endTimeType)
+																			#end
+																	</td>
+																	</tr>
+
+																	<tr>
+																	<td>&nbsp;</td>
+																	<td><div class="chefLeftIndent">
+																	<span class="chefPre">$validator.escapeHtmlFormattedText($m.DescriptionFormatted)</span>
+																	#set ($size = 0)
+																	#if (!$m.Attachments.isEmpty())
+																			<br /><br />
+																			<ul class="chefAttachmentList">
+																			#set ($props = false)
+																			#set ($size = $m.Attachments.size())
+																			#foreach ($attachment in $m.Attachments)
+																					#set ($props = $attachment.Properties)
+																					#if (!$props)
+																							#if ($size > 0) #set ($size = $size - 1) #end
+																					#else
+																							#if ($props.getBooleanProperty($props.NamePropIsCollection))
+																									<li><img src = "#imageLink("chef/attachments.gif")" alt="folder" border="0" />
+																									<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" alt="folder" border="0" />
+																							#else
+																									<li><img src = "#imageLink("chef/attachments.gif")" alt="attachment"  border="0" />
+																									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" alt="attachment"  border="0" />
+																							#end
+																							<a href="$attachment.Url" target="_blank">
+																							$validator.escapeHtml($attachment.Properties.getPropertyFormatted("DAV:displayname"))</a>
+																							#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+																											($props.getPropertyFormatted($props.NamePropContentLength))
+																							#end
+																							</li>
+																					#end
+																			#set ($props = false)
+																			#end
+																			</ul>
+																	#end
+																	</div>
+																	</td>
+																	</tr>
+
+																	#set ($calObj = $CalendarService.getCalendar($m.CalendarReference))
+																	#if ($calObj.getContext() != $PortalService.CurrentSiteId )
+																	<tr>
+																	<td>&nbsp;</td>
+																	#set ($siteDisplay = $SiteService.getSiteDisplay($calObj.getContext()))
+													#set ($leftBrkIndex = $siteDisplay.indexOf('('))
+																	<td><div class="chefLeftIndent">From Site: $siteDisplay.substring(0, $leftBrkIndex)</div></td>
+																	</tr>
+																	#end
+
+															#end   ##foreach--6
+															#end ##if ($noEvent == "false")
+													#end  ## -- end of if
+											#end   ##foreach--4
+									#end  ##foreach--3
+							#end  ##foreach--2
+					 #end  ##foreach--1
+		</table>
+
+		## if there is at least one event shown, then the legend should be shown too
+		#if ($showLegend == "true")
+			<table style="margin-right:auto;margin-left:auto;margin-top:10px" cellpadding="3">
+				<tr>
+					<td colspan="3" style="border-bottom:1px solid silver"><p align="center">Legend</p></td>
+				</tr>
+				<tr>
+					<td><img src = "#imageLink("chef/academic_calendar.gif")" border="0" alt="Academic Calendar" /> Academic Calendar</td>
+					<td><img src = "#imageLink("chef/activity.gif")" border="0" alt="Activity" /> Activity</td>
+					<td><img src = "#imageLink("chef/cancelled.gif")" border="0" alt="Cancelled" /> Cancelled</td>
+				</tr>
+				<tr>
+					<td><img src = "#imageLink("chef/class_dis.gif")" border="0" alt="Class Section - Discussion" /> Class Section - Discussion</td>
+					<td><img src = "#imageLink("chef/class_lab.gif")" border="0" alt="Class Section - Lab" /> Class Section - Lab</td>
+					<td><img src = "#imageLink("chef/class_lec.gif")" border="0" alt="Class Section - Lecture" /> Class Section - Lecture</td>
+				</tr>
+				<tr>
+					<td><img src = "#imageLink("chef/class_sma.gif")" border="0" alt="Class Section - Small Group" /> Class Section - Small Group</td>
+					<td><img src = "#imageLink("chef/class_session.gif")" border="0" alt="Class Session" /> Class Session</td>
+					<td><img src = "#imageLink("chef/computersession.gif")" border="0" alt="Computer Session" /> Computer Session</td>
+				</tr>
+				<tr>
+					<td><img src = "#imageLink("chef/deadline.gif")" border="0" alt="Deadline" /> Deadline</td>
+					<td><img src = "#imageLink("chef/exam.gif")" border="0" alt="Exam" /> Exam</td>
+					<td><img src = "#imageLink("chef/meeting.gif")" border="0" alt="Meeting" /> Meeting</td>
+				</tr>
+				<tr>
+					<td><img src = "#imageLink("chef/multi-conference.gif")" border="0" alt="Multidisciplinary Conference" /> Multidisciplinary Conference</td>
+					<td><img src = "#imageLink("chef/quiz.gif")" border="0" alt="Quiz" /> Quiz</td>
+					<td><img src = "#imageLink("chef/special_event.gif")" border="0" alt="Special Event" /> Special Event</td>
+				</tr>
+				<tr>
+					<td><img src = "#imageLink("chef/webassignment.gif")" border="0" alt="Web Assignment" /> Web Assignment</td>        
+				</tr>
+			</table>
+		#end
+
+		</form>
+	</div>
+</div>

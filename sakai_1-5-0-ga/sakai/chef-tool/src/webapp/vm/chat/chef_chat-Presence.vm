@@ -1,0 +1,14 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/chat/chef_chat-Presence.vm,v 1.4 2005/02/08 22:44:51 gsilver.umich.edu Exp $ 
+## show the list of users
+##
+
+## this is double deep
+<script type="text/javascript" language="JavaScript">
+doubleDeep = true;
+</script>
+
+<div class="chefPortletContent chefPresenceListItem">
+#foreach ($user in $users)
+    $validator.escapeHtml($user.DisplayName)<br />
+#end
+</div>

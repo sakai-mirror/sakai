@@ -1,0 +1,85 @@
+## Sitemanage Site access info editing page
+<div class ="portletBody">
+	#if($menu)#toolbar($menu)#end
+	#if ($alertMessage)
+		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	<h3 class="insColor insBak insBor">
+		Change Access for $site.Title	
+	</h3>
+	<form name="editParticipantForm" action="#toolForm("SiteAction")" method="post">
+		<h4 class="insColor insBak insBor">
+			Site Status
+		</h4>
+		<p class="instruction">
+			Publishing your site makes it available to the site participants. Global access settings  allow you to decide who has access to your site once it is published. You can change  these settings later by going to Site Info.
+		</p>
+		<p class="checkbox indnt1">
+			<input type="checkbox" name="publishunpublish" id="publishunpublish" value="publish" #if ($site.isPublished())checked="checked"#end />	
+			<label for="publishunpublish">
+				Publish site
+			</label>
+		</p>	
+		<h4 class="insColor insBak insBor">
+			Global Access
+		</h4>
+		<p class="instruction">
+			Your site can be accessed by those you add as participants. Would you like others to have access to your site?
+		</p>
+		<p class="checkbox indnt1">
+			<input type="radio" name="include" id="access_private" value="false" #if(!$!include)checked="checked"#end />
+			<label for="access_private">
+				Private
+			</label>
+		</p>
+		<p class="checkbox indnt1">
+			<input type="radio" name="include" id="access_public" value="true" #if($!include)checked="checked"#end />
+			<label for="access_public">
+				Public - Title and basic information only
+			</label>
+		</p>
+##		<p class="checkbox indnt1">
+##			<input type="radio" name="include" id="access_public_select" value="false" #if(!$!includeSelected)checked="checked"#end />
+##			<label for="access_public select">
+##				Public - Selected Materials Only
+##			</label>
+##		</p>
+##		<p class="checkbox indnt1">
+##			<input type="radio" name="include" id="access_public_all" value="false" #if(!$!includeAll)checked="checked"#end />
+##			<label for="access_public select">
+##				Public - All Materials Shared
+##			</label>
+##		</p>
+		<p class="checkbox indnt1">
+			<input type="checkbox" name="joinable" id="joinable" value="true" #if ($site.isJoinable()) checked="checked"#end />
+			<label for="joinable">
+				Can be joined by anyone with authorization to log in<br />
+			</label>
+		</p>
+		<p class="checkbox indnt3">
+			<label for="joinerRole">
+				Role for people that join site:
+			</label>
+			<select name="joinerRole" id="joinerRole">
+				#foreach($r in $roles)
+					<option value ="$r.Id"
+						#if($r.Id == $site.getJoinerRole())
+							selected="selected"
+						#end
+					>
+						$r.Id
+					</option>
+				#end
+			</select>
+		</p>
+		<input type="hidden" name="continue" value="31" />
+		<input type="hidden" name="template-index" value="39" />
+		<input type="hidden" name="back" value="31" />
+		<div class ="act">
+			<input type="submit" class="active" name="eventSubmit_doSitemanage_update_site_access" value="Update" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</div>
+	</form>
+</div>
+

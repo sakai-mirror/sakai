@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.sitesetup"
+			url="/sakai-chef-tool/chef-site-setup"
+			title="Worksite Setup"
+			description="Modify your sites and create new ones.">
+
+		<!-- types are seperated by , don't forget to put corresponding type_categories.xml into the reg folder-->
+		<configuration name="siteTypes" value="course,project" />
+		<!-- default site type -->
+		<configuration name="defaultSiteType" value="project" />
+		<!-- types of sites that can either be public or private -->
+		<configuration name="publicChangeableSiteTypes" value="project" />
+		<!-- types of sites that are always public -->
+		<configuration name="publicSiteTypes" value="course" />
+		<!-- types of sites that are always private -->
+		<configuration name="privateSiteTypes" value="" />
+
+	</tool>
+
+</registration>

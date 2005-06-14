@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<project xmlns:j="jelly:core"
+	xmlns:license="license"
+	xmlns:util="jelly:util"
+	xmlns:ant="jelly:ant"
+	xmlns:artifact="artifact">
+
+	<!--==================================================================-->
+	<!-- Default goal : Deploy dependencies to Tomcat                     -->
+	<!--==================================================================-->    
+	<goal name="tcdeploy" prereqs="tcdeploy:tcdeploy" description="Deploy dependencies to Tomcat"/>
+	
+	<!--==================================================================-->
+	<!-- Deploy deppendencies to Tomcat                                   -->
+	<!--==================================================================-->    
+	<goal name="tcdeploy:tcdeploy" description="Deploy dependencies to Tomcat">
+
+		<ant:echo>Processing Deployment ${pom.artifactId}</ant:echo>
+		
+		<j:forEach var="lib" items="${pom.artifacts}">
+			<j:set var="dep" value="${lib.dependency}"/>     
+
+			<ant:echo>Deploying ${dep.type} ${dep.groupId} : ${dep.artifactId} (version ${dep.version})</ant:echo>
+
+			<!-- jars go to shared/lib -->
+			<j:if test="${dep.type=='jar'}">
+
+				<j:set var="destination" value="shared/lib/"/>
+				<j:if test="${dep.getProperty('common.lib')=='true'}">
+					<j:set var="destination" value="common/lib/"/>
+				</j:if>
+				<j:if test="${dep.getProperty('server.lib')=='true'}">
+					<j:set var="destination" value="server/lib/"/>
+				</j:if>
+
+				<ant:copy file="${lib.path}"
+						tofile="${maven.tomcat.home}${destination}${dep.artifactId}-${dep.version}.jar"
+						overwrite="true" />
+			</j:if>
+
+			<!-- wars to to webapps (and delete the old expansion) -->
+			<j:if test="${dep.type=='war'}">
+				<j:set var="destination" value="${maven.tomcat.home}/webapps/"/>
+
+				<!-- some go to /usr/local/sakai/ -->
+				<j:if test="${dep.getProperty('usr.local.sakai')=='true'}">
+					<j:set var="destination" value="/usr/local/sakai/"/>
+				</j:if>
+			
+				<delete dir="${destination}${dep.artifactId}"/>
+				<j:if test="${dep.getProperty('unzip')=='true'}">
+					<ant:unwar src="${lib.path}"
+							dest="${destination}${dep.artifactId}"
+							overwrite="true" />
+				</j:if>
+				<j:if test="${dep.getProperty('unzip')!='true'}">
+					<ant:copy file="${lib.path}"
+							tofile="${destination}${dep.artifactId}.war"
+							overwrite="true" />
+				</j:if>
+			</j:if>
+			<ant:echo></ant:echo>
+		</j:forEach>            
+
+	</goal>
+
+</project>

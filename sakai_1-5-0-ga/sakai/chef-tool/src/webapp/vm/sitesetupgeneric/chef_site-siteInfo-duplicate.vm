@@ -1,0 +1,36 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-siteInfo-duplicate.vm,v 1.7 2005/02/14 18:22:55 zqian.umich.edu Exp $ -->
+## enter the site title for duplicated site.
+<div class="portletBody">
+	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form name = "classInformationForm" method = "post" action="#toolForm("SiteAction")">
+			<h3 class="insColor insBak insBor">
+				Duplicate site $siteTitle	
+			</h3>
+				#if (!$!siteDuplicated)
+					<p class="instruction">
+						Duplicating a class site will create a site exactly like the original, except that it will not include student-entered material. Only content posted by instructors will be included. 
+					</p>
+					<p class="shorttext">
+						<label for="title">
+							Site Title:
+						</label>
+						<input type="text" name="title" id="title" maxlength="20" size="20" value="" />
+					</p>	
+					<input type="hidden" name="back" value="12" />
+					<input type="hidden" name="continue" value="12" />
+				#else
+					<p class="instruction">
+						Duplicated site "$!duplicatedName" has been created.
+					</p>
+				#end
+			<input type="hidden" name="template-index" value="29" />
+			<div class="act">
+				#if (!$!siteDuplicated)
+					<input type="submit" class="active" name="eventSubmit_doContinue" value="Duplicate" />
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				#else
+					<input type="submit" class="active" name="eventSubmit_doContinue" value="Finish" />
+				#end
+			</div>
+		</form>
+</div>

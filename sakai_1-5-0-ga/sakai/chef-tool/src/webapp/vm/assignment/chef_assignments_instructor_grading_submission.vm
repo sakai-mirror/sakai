@@ -1,0 +1,294 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/assignment/chef_assignments_instructor_grading_submission.vm,v 1.4 2004/10/01 01:18:29 janderse.umich.edu Exp $ -->
+## no focus_path
+<div class="chefPortletContainer">
+	<div class="chefPortletToolBarMessage">
+		Grading submission...
+	</div>
+	<div class="chefPortletContent">
+		#set ($submissionProperties = $submission.getProperties())
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<fieldset>
+			<legend>
+					Assignment
+			</legend>
+			## 1- text only; 2-attachment only; 3-text and attachment
+			#set ( $submissionType = $assignment.getContent().TypeOfSubmission)
+			<table class="chefItemDetail" cellspacing="0" summary="Assignment details">
+							 <tr>
+						<td class="chefLabel">
+							Title:
+						</td>
+						<td>
+							$validator.escapeHtml($assignment.title)
+						</td>
+							</tr>
+				<tr>
+					<td class="chefLabel">
+						Student:
+					</td>	
+					<td>
+						#foreach ($user in $submission.Submitters)
+							$user.DisplayName
+						#end
+					</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">
+						Submitted:
+					</td>	
+					<td>
+						$submission.TimeSubmitted.toStringLocalFull()
+						#if ($submission.getTimeSubmitted().after($assignment.DueTime))
+							<span class="chefAlert">- late</span>
+						#end
+					</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">
+						Status:
+					</td>	
+					<td>
+						#if ($submission.Graded)
+							Graded
+						#else
+							Ungraded
+						#end
+					</td>
+				</tr>
+			</table>
+			<div class="chefLabel">
+				#if ($assignment_expand_flag)
+					<a href="#" onclick="location='#toolLink("AssignmentAction" "doHide_submission_assignment_instruction")'; return false;">
+						<img src="#imageLink("chef/collapse.gif")" alt="Open, click to close assignment instruction" border="0" width="15" height="15" align="top" /></a>
+				#else
+					<a href="#" onclick="location='#toolLink("AssignmentAction" "doShow_submission_assignment_instruction")'; return false;">
+						<img src="#imageLink("chef/expand.gif")" alt="Close, click to open assignment instructions" border="0" width="15" height="15" align="top" /></a>
+				#end
+				Assignment Instructions:
+			</div>
+			#if ($assignment_expand_flag)
+				<div class="chefSectionMessage" style="margin:10px 10px 10px 20px">
+					#if ($assignment.getContent().getInstructions().length()>0)
+						<span class="chefPre">$validator.escapeHtmlFormattedText($assignment.getContent().getInstructions())</span>
+					#else
+						<i>&lt;none&gt;</i>
+					#end
+					<fieldset class="chefAttachmentsF">
+						<legend class="chefAttachmentsL">	
+							Additional resources for assignment
+						</legend> 
+						#set ($size = 0)
+						#set ($attachments = $assignment.getContent().Attachments)
+						#set ($props = false)
+						#foreach ($attachment in $attachments) 
+							#set ($props = $attachment.Properties) 
+							#if ($!props)
+								#set ($size = $size + 1)
+							#end
+						#end
+						#if ($size == 0)
+							No attachments ...
+						#else
+							<ul class="chefAttachmentList">
+								#foreach ($attachment in $attachments) 
+									#set ($props = false)
+									#set ($props = $attachment.Properties) 
+									#if ($!props)
+										<li>
+											#if ($props.getBooleanProperty($props.NamePropIsCollection))
+												<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+											#else
+												<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+											#end
+											<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+											#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+												($props.getPropertyFormatted($props.NamePropContentLength))
+											#end
+										</li>
+									#end
+								#end
+							</ul>
+						#end	
+					</fieldset>
+				</div>	
+			#end	## show the assignment content
+		</fieldset> ## for assignment fieldset
+		<form action="#toolForm("AssignmentAction")" method="post" >   
+			<fieldset>
+				<legend>
+					Grade
+				</legend>
+					## if there is a text
+					#if ($submissionType!=2)
+						<div class="chefInlineInstructions">
+							Below is the submission from a student. You can insert comments into this text by clicking in the box, then type your comments. Comments surrounded by double curly braces, {{<span class="chefAlert">like this</span>}}, will appear red to the student.
+						</div>
+						<table border="0"><tr><td>
+						<textarea name="$name_feedback_text" id="$name_feedback_text" rows="15" wrap="virtual" cols="80">$cheffeedbackhelper.escapeAssignmentFeedbackTextarea("$!value_feedback_text")</textarea>		
+						#chef_setupformattedtextarea($name_feedback_text)
+						</td></tr></table>
+						#set ($previousFeedbackText =  $submissionProperties.getProperty($submissionProperties.getNamePropSubmissionPreviousFeedbackText()))
+						#if ($!previousFeedbackText.length() != 0 )
+							<br />Previous Feedback Text:
+							<br /><span class="chefPre">$cheffeedbackhelper.escapeAssignmentFeedback($previousFeedbackText)</span>
+						#end
+					#end
+					## if there is a attachment
+					#set ($size = 0)
+							<fieldset class="chefAttachmentsF">
+								<legend class="chefAttachmentsL">	
+									Student attachments:
+								</legend> 
+								#set ($size = 0)
+								#set ($props = false)
+								#foreach ($attachment in $submission.SubmittedAttachments) 
+									#set ($props = $attachment.Properties) 
+									#if ($!props)
+										#set ($size = $size + 1)
+									#end
+								#end
+								#if ($size == 0)
+									No attachments ...
+								#else
+									<ul class="chefAttachmentList">
+										#foreach ($attachment in $submission.SubmittedAttachments) 
+											#set ($props = false)
+											#set ($props = $attachment.Properties) 
+											#if ($!props)
+												<li>
+													#if ($props.getBooleanProperty($props.NamePropIsCollection))
+														<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+													#else
+														<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+													#end
+													<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+													#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+														($props.getPropertyFormatted($props.NamePropContentLength))
+													#end
+												</li>
+											#end
+										#end
+									</ul>
+								#end									
+							</fieldset>
+							<div class="chefInlineInstructions">
+								#if ($submissionType==2)
+									Use the box below to enter summary comments about this submission's attachment or the grade:
+								#else
+									Use the box below to enter additional summary comments about this submission:
+								#end
+							</div>
+							<table border="0"><tr><td>
+							<textarea name="$name_feedback_comment" id="$name_feedback_comment" rows="15" wrap="virtual" cols="80">#if($!value_feedback_comment)$validator.escapeHtmlFormattedTextarea($!value_feedback_comment)#end</textarea>
+							#chef_setupformattedtextarea($name_feedback_comment)
+							</td></tr></table>
+							#set ($previousFeedbackComment =  $submissionProperties.getProperty($submissionProperties.getNamePropSubmissionPreviousFeedbackComment()))
+							#if ($!previousFeedbackComment.length() != 0 )
+								<br />Previous Feedback Additional Comment: 
+								<br />$previousFeedbackComment
+							#end
+							#set ($size = 0)
+							<fieldset class="chefAttachmentsF">
+								<legend class="chefAttachmentsL">	
+									Attachments for grading purpose:
+								</legend> 
+								#set ($size = 0)
+								#set ($props = false)
+								#foreach ($attachment in $gradingAttachments) 
+									#set ($props = $attachment.Properties) 
+									#if ($!props)
+										#set ($size = $size + 1)
+									#end
+								#end
+								#if ($size == 0)
+									No attachments ...
+								#else
+									<ul class="chefAttachmentList">
+										#foreach ($attachment in $gradingAttachments) 
+											#set ($props = false)
+											#set ($props = $attachment.Properties) 
+											#if ($!props)
+												<li>
+													#if ($props.getBooleanProperty($props.NamePropIsCollection))
+														<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+													#else
+														<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+													#end
+													<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+													#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+														($props.getPropertyFormatted($props.NamePropContentLength))
+													#end
+												</li>
+											#end
+										#end
+									</ul>
+								#end			
+								<br />
+								<div class="chefInlineInstructions">
+									Attachments to return with grade:
+								</div>
+								<div class="chefButtonRow">
+									#if ($!props)
+										<input type="submit" name="eventSubmit_doAttachments" value="Add / Drop attachments" accesskey="a" />
+									#else
+										<input type="submit" name="eventSubmit_doAttachments" value="Add attachments" accesskey="a" />
+									#end
+								</div>
+							</fieldset>
+						<!-- Grade types
+							GRADE_TYPE_NOT_SET: -1; 
+							UNGRADED_GRADE_TYPE: 1; 
+							LETTER_GRADE_TYPE: 2; 
+							SCORE_GRADE_TYPE = 3; 
+							PASS_FAIL_GRADE_TYPE = 4;
+							CHECK_GRADE_TYPE = 5;
+						-->
+							Grade:
+							#set ($gradeType = $assignment.getContent().TypeOfGrade)
+							#if ($gradeType == 1)
+								<input type="hidden" name="$name_grade" value="ungraded" />
+								no grade
+							#elseif ($gradeType == 2)
+								<select name="$name_grade">
+									#foreach ($i in ["ungraded", "A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "E", "F"])
+										#if ($value_grade.equals($i))
+											<OPTION  value="$i" selected>$i</option>	
+										#else
+											<OPTION  value="$i">$i</option>
+										#end
+									#end
+								</select>
+							#elseif ($gradeType == 3)
+								<input type="text" name="$name_grade" size="5" value="$value_grade" />( out of $assignment.getContent().getMaxGradePointDisplay())
+							#elseif ($gradeType == 4)
+								<select name="$name_grade">
+									#foreach ($i in ["ungraded", "Pass", "Fail"])
+										#if ($value_grade.equals($i))
+											<OPTION  value="$i" selected>$i</option>	
+										#else
+											<OPTION  value="$i">$i</option>
+										#end
+									#end
+								</select>
+							#elseif ($gradeType == 5)
+								#if ($value_grade.equals("graded"))
+									<input name="$name_grade" type="checkbox" value="graded" checked="checked" />Graded
+								#else
+									<input name="$name_grade" type="checkbox" value="graded" />Graded
+								#end
+							#end
+							#set ($previousGrades =  $submissionProperties.getProperty($submissionProperties.getNamePropSubmissionScaledPreviousGrades()))
+							#if ($!previousGrades.length() != 0 )
+								<br />Previous Grade: $previousGrades
+							#end
+				</fieldset>
+				<div class="chefButtonRow">
+					<input name="eventSubmit_doReturn_grade_submission" type="submit" value="Return" />
+                    <input name="eventSubmit_doRelease_grade_submission" type="submit" value="Release" />
+					<input name="eventSubmit_doPreview_grade_submission" type="submit" value="Preview" />
+					<input name="eventSubmit_doSave_grade_submission" type="submit" value="Save draft" />
+					<input name="eventSubmit_doCancel_grade_submission" type="submit" value="Cancel" />
+				</div>
+		</form>
+	</div>
+</div>

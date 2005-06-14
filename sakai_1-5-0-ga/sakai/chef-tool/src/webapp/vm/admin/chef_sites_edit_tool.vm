@@ -1,0 +1,120 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_sites_edit_tool.vm,v 1.1 2004/03/05 03:15:15 ggolden Exp $ -->
+#if($tool && $tool.ToolId)
+<script type="text/javascript">
+  focus_path = [ "title" ];
+</script>
+#end
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Edit: Site $!site.Id / Page $!page.Id / Tool $!tool.Id
+		</div>
+		<div class="chefToolviewTitle">
+			Review and modify this Tool's information.
+		</div>
+
+		<form name="thisOne" id="thisOne" action="#toolForm("$action")" method="post">
+			<input type="hidden" name="eventSubmit_doDone_feature" value="x" />
+			<fieldset>
+				<legend>
+					Tool Feature
+				</legend>
+				<table class="chefEditItem" summary="Review and modify this Tool's information.">
+					<tr>
+						<td class="chefLabel">Tool Id:</td>
+						<td>
+							$validator.escapeHtml($tool.Id)
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							Feature:
+						</td>
+						<td>
+							#foreach ($reg in $features)
+								<input type="radio" name="feature" id="feature$velocityCount" value="$reg.Id" #if($reg.Id==$tool.ToolId)checked="checked"#end
+										onclick="document.getElementById('thisOne').submit();"/>
+								<label for="feature$velocityCount">$reg.Title ($reg.Id)</label> <br />
+							#end							
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</form>
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Tool Configuration
+				</legend>
+				<table class="chefEditItem" summary="Review and modify this Tool's information.">
+					<tr>
+						<td class="chefLabel">
+							<label for="title">
+								Title:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="title" id="title" #if($tool) value="$!validator.escapeHtml($tool.Title)"#end />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="layoutHints">
+								LayoutHints<br/><span class="chefInlineInstructions">(row, col 0 based):</span>
+							</label>
+						</td>
+						<td>
+							<input type="text" name="layoutHints" id="layoutHints" #if($tool) value="$!validator.escapeHtml($tool.LayoutHints)"#end />
+						</td>
+					</tr>
+				</table>
+				#if ($toolReg)
+					<fieldset>
+						<legend>
+							Configuration
+						</legend>
+						<table class="chefEditItem" summary="Review and modify this Tool's configuration.">
+							#set ($regParams = $toolReg.DefaultConfiguration)
+							#set ($paramNames = $regParams.PropertyNames)
+							#set ($toolParams = $tool.Properties)
+							#foreach ($paramName in $paramNames)
+								#set ($paramValue = $toolParams.getPropertyFormatted($paramName))
+								<tr>
+									<td class="chefLabel">
+										<label for="param_$paramName">
+											$paramName:
+										</label>
+									</td>
+									<td>
+										<input type="text" name="param_$paramName" id="param_$paramName" value="$validator.escapeHtml($paramValue)" />
+									</td>
+								</tr>
+							#end
+						</table>
+					</fieldset>
+				#end
+				<fieldset>
+					<legend>
+						Continue Editing
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doDone_tool" value="Done" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Complete the Site Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave_tool" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+			</fieldset>
+		</form>
+	</div>
+</div>

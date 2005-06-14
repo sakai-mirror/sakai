@@ -1,0 +1,4 @@
+<Context path="/sakai-portal" 
+             docBase="sakai-portal" 
+             crossContext="true" >
+</Context>

@@ -1,0 +1,47 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_upload.vm,v 1.2 2004/07/26 15:55:23 rwellis.umich.edu Exp $ 
+## Dissertations - Administrator's form for loading OARD Doctoral System and MPathways data extracts
+<div class="chefPortletContainer" id="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<span class ="chefPortletToolBarMessage">
+		Load extracts...
+	</span>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Complete the form fields and then choose 'Upload' at the bottom.
+		</div>
+		<form name="upload" id="upload" action="#toolForm($action)" method="post" enctype="multipart/form-data">
+			<fieldset>
+				<legend>Extract files
+				</legend>
+				<table  class="chefEditItem" summary="extract file upload form" >
+					<tr>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<label for="OARD">OARD extract</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td><input type="file" name="OARD" id="OARD" class="upload" size="60" />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<label for="MP">MPathways extract</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td><input type="file" name="MP" id="MP" class="upload" size="60" />
+						</td>
+					</tr>
+				</table>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doUpload" id="eventSubmit_doUpload" value="Upload" />
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

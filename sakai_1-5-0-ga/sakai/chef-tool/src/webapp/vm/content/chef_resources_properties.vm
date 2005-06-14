@@ -1,0 +1,294 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/content/chef_resources_properties.vm,v 1.15 2005/01/20 14:47:40 zqian.umich.edu Exp $ 
+##<!-- chef_resources_properties.vm, use with org.chefproject.ResourcesAction.java -->
+<script type="text/javascript">
+	function enableNewCopyright(obj_mycopyright, obj_newcopyright)
+	{
+		obj_mycopyright.checked = false;
+		obj_newcopyright.checked = true;
+	}
+
+	function clearNewCopyright(obj_textarea)
+	{
+		obj_textarea.value = "";
+	}
+	
+	function checkItem(copyrightIndex)
+	{
+		var obj_alert_name="copyrightAlert";
+		var obj_alert_item=document.getElementById(obj_alert_name);
+		var obj_newcopyright_name="newcopyright";
+		var obj_newcopyright_item=document.getElementById(obj_newcopyright_name);
+		if (copyrightIndex == 0)
+		{
+			obj_alert_item.checked=false;
+			obj_newcopyright_item.disabled=true;
+		}
+		else if (copyrightIndex < 5)
+		{
+			obj_alert_item.checked=true;
+			obj_newcopyright_item.disabled=true;
+		}
+		else if (copyrightIndex == 5)
+		{
+			obj_alert_item.checked=true;
+			obj_newcopyright_item.disabled=false;
+		}
+	}
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Revising resource...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Update the form then choose 'post' at the bottom. A <span class="chefAlert">*</span> means required information.
+		</div>
+		<form name="propertyForm" action="#toolForm("ResourcesAction")" method="post" >
+			<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+			<input type="hidden" name="stateName" value = "show" />
+			<input type="hidden" name="from" value="$from" />
+			<input type="hidden" name="$properties.NamePropContentType" value="$properties.getProperty($properties.NamePropContentType)" />
+			<fieldset>
+				<legend>Resource</legend>
+				<table class ="chefEditItem" cellspacing="0">
+					<tr>
+						<td class = "chefLabel">
+							#if (!$homeCollectionId.equals($id))
+								#if (( $unqualified_fields.indexOf($service.newResourceProperties().NamePropDisplayName)!=-1)||(($title.length()>0) && ($unqualified_fields.indexOf($title)!=-1)))
+									<span class="chefAlert">*Title:</span> 
+								#else
+									<span class="chefAlert">*</span>Title: 
+								#end
+							#else
+								Title:
+							#end
+						</td>
+						<td>
+							#if (!$homeCollection.equals($id))						 
+								<input type="text" size="40" name = "$properties.NamePropDisplayName" value="$validator.escapeHtml($properties.getPropertyFormatted($properties.NamePropDisplayName))" />
+							#else
+								#if ($dropboxMode)
+									$siteTitle Drop Box
+								#else
+									$properties.getPropertyFormatted($properties.NamePropDisplayName)
+								#end
+							#end
+						</td>
+					</tr>
+					<tr> 
+						<td class = "chefLabel"> 
+							Description:
+						</td>
+						<td>
+							<textarea name="$properties.NamePropDescription" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($properties.getPropertyFormatted($properties.NamePropDescription))</textarea>
+						</td>
+					</tr>
+					#if ($properties.getPropertyFormatted($properties.NamePropIsCollection)=="false") 
+						#if ($!copyrightTypes)
+							<tr>
+								<td class ="chefLabel"> 
+									#if ($unqualified_fields.indexOf($service.newResourceProperties().NamePropCopyright)!=-1)
+										<span class="chefAlert">Copyright Status:</span>
+									#else
+										Copyright Status:
+									#end
+								</td>
+								<td>
+									#if ($!fairuseurl)
+										For information on copyright and fair use, please refer to: $fairuseurl<br />
+									#end
+									#foreach ($k in [0..$copyrightTypesSize])
+										#set($copyright = $copyrightTypes.get($k))
+										<input type="radio" name="copyright" id ="copyright" value="$copyright" #if ($copyrightChoice == $copyright)checked="checked"#end />$copyright<br />
+									#end
+									#if ($!newcopyrightinput == "true")
+										<textarea name="newcopyright" id="newcopyright" rows="5" cols="40" wrap="virtual" >$validator.escapeHtmlTextarea($!newcopyright)</textarea><br />
+									#end
+									<br />
+									<input type="checkbox" name="copyrightAlert" id ="copyrightAlert" value="true" #if($copyrightAlert)checked="checked"#end) />Display copyright alert below and require acknowledgement.<br />
+									<div class="chefAlertBox">
+										<ul>
+											<li>You may download or copy this file for use in this site.</li>
+											<li>You may NOT download or copy this file to another site.</li>
+											<li>You may NOT download or copy this file for publication or sale.</li>
+										</ul>
+									</div>
+								</td>
+							</tr>
+						#end
+					#end
+					#if (!$dropboxMode)
+						<tr> 
+							<td class = "chefLabel"> 
+								Public View:
+							</td>
+							<td>
+								#if($pubviewset)
+									Set to Yes in a containing folder.
+								#else
+									<input type="radio" name="pubview" id="pubview_true" value="true" #if ($pubview) checked="checked" #end />Yes<br />
+									<input type="radio" name="pubview" id="pubview_false" value="false" #if (!$pubview) checked="checked" #end />No
+								#end
+							</td>
+						</tr>
+					#end
+#if($setQuota)
+					<tr>
+						<td class = "chefLabel"> 
+							Special Quota<br />(in KBytes, 0 for unlimited):
+						</td>
+						<td>
+							<input type="hidden" name="setQuota" value="true" />
+							<input type="checkbox" name="hasQuota" id="hasQuota" value="true" #if ($hasQuota) checked="checked" #end />
+							<input type="text" size="10" name="quota" id="quota" value="$!quota" />
+						</td>
+					</tr>
+#end
+					#* only allow open in new window for 2003 fall release
+					#if ($properties.getPropertyFormatted($properties.NamePropIsCollection)=="false") 
+						<tr>
+							<td class = "chefLabel"> 
+							  Open in:
+							</td>
+							<td>
+								#set ($openIn=$properties.getPropertyFormatted($properties.NamePropOpenNewWindow))
+								#if (($openIn == "false") || ( $openIn == "_self"))
+									<input type="radio" name="$properties.NamePropOpenNewWindow" value="true" />New Window<br />
+									<input type="radio" name="$properties.NamePropOpenNewWindow" value="false" checked="checked" />This window
+								#else
+									<input type="radio" name="$properties.NamePropOpenNewWindow" value="true" checked="checked" />New window<br />
+									<input type="radio" name="$properties.NamePropOpenNewWindow" value="false" />This window
+								#end
+							</td>
+						</tr>
+					#end
+					*#
+					#if ($properties.getProperty($properties.NamePropContentType).equalsIgnoreCase($properties.TypeUrl)) 
+						<tr> 
+							<td class = "chefLabel"> 
+								Original URL:
+							</td>
+							<td>
+								<input type="text" name="content" value="$content" size="45" />
+							</td>
+						</tr>
+					#end
+					#if ($properties.getProperty($properties.NamePropContentType)== "text/plain") 
+						<tr> 
+							<td class = "chefLabel">
+								Content:
+							</td>
+							<td>
+								<textarea name="content" id="content" rows="10" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($content)</textarea>
+							</td>
+						</tr>
+					#end
+					#if ($properties.getProperty($properties.NamePropContentType)== "text/html")
+						<tr> 
+							<td class = "chefLabel">
+								Content:
+							</td>
+							<td>
+								<table border="0"><tr><td>
+								<textarea name="content" id="content" rows="30" cols="80" wrap="virtual">$validator.escapeHtmlTextarea($content)</textarea>
+								#chef_setupformattedtextarea("content")
+								</td></tr></table>
+							</td>
+						</tr>
+					#end
+					#if (!($dropboxMode && $collectionId==$homeCollectionId))
+						<tr> 
+							<td class="chefLabel"> 
+								Created By:
+							</td>
+							<td>
+								$validator.escapeHtml($properties.getPropertyFormatted($properties.NamePropCreator))
+							</td>
+						</tr>
+					#end
+						<tr> 
+							<td class="chefLabel"> 
+								Creation Time:
+							</td>
+							<td>
+								$properties.getPropertyFormatted($properties.NamePropCreationDate)
+							</td>
+						</tr>
+				  #if ($properties.getPropertyFormatted($properties.NamePropIsCollection)=="false")
+						<tr> 
+							<td class="chefLabel"> 
+								Stored As:
+							</td>
+							<td>
+								$service.getUrl($id)
+							</td>
+						</tr>
+				  #end
+				  <tr> 
+						<td class="chefLabel"> 
+							Last Modified:
+						</td>
+						<td>
+							$properties.getPropertyFormatted($properties.NamePropModifiedDate)
+						</td>
+					</tr>
+				#if (!($dropboxMode && $collectionId==$homeCollectionId))
+					<tr>
+						<td class="chefLabel"> 
+							Last Modified By:
+						</td>
+						<td>
+							$validator.escapeHtml($properties.getPropertyFormatted($properties.NamePropModifiedBy))
+						</td>
+					</tr>
+				#end
+					#if ($properties.getPropertyFormatted($properties.NamePropIsCollection)=="false")
+						<tr> 
+							<td class="chefLabel"> 
+								Type:
+							</td>
+							<td>
+								$properties.getProperty($properties.NamePropContentType)
+							</td>
+						</tr>
+						<tr> 
+							<td class="chefLabel"> 
+								Size:
+							</td>
+							<td>
+								$properties.getPropertyFormatted($properties.NamePropContentLength) ($validator.getFileSizeWithDividor($properties.getProperty($properties.NamePropContentLength)) bytes)
+							</td>
+						</tr>
+					#end
+				</table>
+			</fieldset>
+			#if (!$dropboxMode)
+				#if ((!$properties.getBooleanProperty($properties.NamePropIsCollection)))
+					#if ($notification)
+						<table>
+							<tr>
+								<td style="vertical-align:middle">Email Notification:</td>
+								<td>
+									<select name="notify">
+										<option value="r">High - All participants</option>
+										<option value="o">Low - Only participants who have opted in</option>
+										<option value="n" selected="selected">None - No notification</option>
+									</select>
+								</td>
+							</tr>
+						</table>
+					#end
+				#end
+			#end
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doModifyproperties" value="Post" />
+				#if ($replaceable)
+					<input type="submit" name="eventSubmit_doPrereplace" value="Replace" />
+				#end
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+
+			</div>
+		</form>
+	</div>
+</div>

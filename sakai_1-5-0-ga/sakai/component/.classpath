@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src/java"/>
+    <classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
+    <classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4-20030804.000000.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar"/>
+    <classpathentry kind="var"
+        path="MAVEN_REPO/springframework/jars/spring-full-1.0.1.jar" sourcepath="SPRING_HOME/src"/>
+    <classpathentry kind="output" path="target/classes"/>
+</classpath>

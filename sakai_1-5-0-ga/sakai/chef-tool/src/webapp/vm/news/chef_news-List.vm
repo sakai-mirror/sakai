@@ -1,0 +1,38 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/news/chef_news-List.vm,v 1.2 2004/10/21 19:18:13 ggolden.umich.edu Exp $ 
+## chef_news-List.vm, use with org.chefproject.NewsAction.java
+##     context: $news_items: iterator of NewsItems
+##
+
+#if($alertMessage)
+	<div class="chefAlertBox">
+		$validator.escapeHtml($alertMessage)
+	</div>
+#end
+	<div id="digest" style="width:96%;">
+#foreach ($item in $news_items)
+		<div style="width:96%;">
+#if($item.Title)
+			<div class="chefChatUserName">
+				$validator.escapeHtml($item.Title)
+			</div>
+#end
+#if($item.Description)
+			<span class="chefChatMessageBody">
+				$validator.escapeHtml($item.Description)
+			</span>
+#end
+#if($item.Link)
+			<span class="chefChatMessageBody">
+				<a href="$validator.escapeHtml($item.Link)" target="_blank">($full_story)</a>
+			</span>
+#end
+#if($item.Pubdate)
+			<span class="chefChatTimeStamp">
+				($item.Pubdate)
+			</span>
+#end
+		</div>
+		<br />
+#end
+	</div>
+

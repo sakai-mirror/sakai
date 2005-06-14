@@ -1,0 +1,145 @@
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["search"];
+</script>
+<div class="chefPortletContainer">
+
+	<div class="chefToolBarWrapForm">
+	<a href="#" onclick="location='#toolLink("$action" "doMenu_sitemanage_addParticipant")';return false;" title ="Search">Add Participants</a>
+	</div>
+	
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		
+	<h3 class="insColor insBak">$site.Title Participants List</h3>
+	
+#if ($participants.size() > 0)
+
+ 	<p>
+    <span class="leftNav">
+        View and edit roles and participants for $site.Title below.
+    </span>
+    <span class="rightNav">
+        <span class="instruction">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber participants</span>
+        <br />
+        #if ($pagesize != 0)
+			#if ($goPPButton == "true")
+				<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+				<input type="submit" name="eventSubmit_doList_prev" value="Previous $pagesize" />
+				</form>
+			#end
+		#end
+		
+		<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
+		<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
+		<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+		<option value="5" #if($pagesize == 5) selected="selected" #end>show 5 items per page</option>
+		<option value="10" #if($pagesize == 10) selected="selected" #end>show 10 items per page</option>
+		<option value="20" #if($pagesize == 20) selected="selected" #end>show 20 items per page</option>
+		<option value="50" #if($pagesize == 50) selected="selected" #end>show 50 items per page</option>
+		<option value="100" #if($pagesize == 100) selected="selected" #end>show 100 items per page</option>
+		<option value="200" #if($pagesize == 200) selected="selected" #end>show 200 items per page</option>
+		</select>
+		</form>
+		
+		#if ($pagesize != 0)
+			#if ($goNPButton == "true")
+				<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+				<input type="submit" name="eventSubmit_doList_next" value="Next $pagesize" />
+				</form>
+			#end
+		#end
+        <br />
+	</span>
+    </p>
+    <form action="#toolForm("$action")" method="post">
+			<table class ="listHier indnt3"  cellpadding="0" cellspacing="0">
+			<tr>
+				<th scope="col" id="name">Name</th>
+				<th scope="col" id="username">Username</th>
+				<th scope="col" id="role">Role</th>
+				#if ($allowUpdate)
+					#if ($!activeInactiveUser)
+						<th scope="col" id="status">User Status</th>
+					#end
+					<th scope="col" id="Remove">Remove?</th>
+				#end
+			</tr>
+				</tr>
+				#foreach($participant in $participants)
+					#set($uniqname = $participant.getUniqname())
+					<tr>				
+						<td headers="name">
+							#set ($participantName=$participant.getName())
+							#if ($participantName ==", ") 	
+							#else
+								$participantName
+							#end
+						</td>
+						<td headers="uniqname">
+							$uniqname
+						</td>
+						<td headers="role">
+							#set($uRole = "")
+							#set($uRole = $participant.getRole())
+							<select name="role$uniqname">
+								#foreach($r in $roles)
+									<option value ="$r.Id"
+										#if($r.Id == $uRole)
+											selected="selected"
+										#end
+									>
+										$r.Id
+									</option>
+								#end
+							</select>
+						</td>
+						#if ($allowUpdate)
+							#if ($!activeInactiveUser)
+								<td>
+									#set($grant = $realm.getUserGrant($uniqname))
+									#set($grantActive = $!grant.isActive())
+									<select name="activeGrant$uniqname">
+										#if ($!grant.isActive())
+											<option value="true" selected="selected" >Active</option>
+											<option value="false">Inactive</option>
+										#else
+											<option value="true" >Active</option>
+											<option value="false" selected="selected" >Inactive</option>
+										#end
+									</select>
+								</td>
+							#end
+							<td>
+								<input type="checkbox" name="selectedUser" value="$uniqname" 
+									#foreach($participantSelected in $selectedParticipants)
+										#if($participantSelected.getUniqname() == $uniqname)
+											checked
+										#end
+									#end
+								/>
+							</td>
+						#end
+					</tr>
+						#end
+			</table>
+		<input type="hidden" name="template-index" value="32" />
+		<input type="hidden" name="back" value="31" />
+		<p class="act">
+			<input class="mainBtn" type="submit" name="eventSubmit_doUpdate_participant" value="Update" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</p>
+	</form>
+#else
+	<span class="instruction">No participants</span>
+
+    <form action="#toolForm("$action")" method="post">	
+		<input type="hidden" name="template-index" value="32" />
+		<input type="hidden" name="back" value="31" />
+		<p class="act">
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</p>
+	</form>
+#end
+
+	</div>
+</div>

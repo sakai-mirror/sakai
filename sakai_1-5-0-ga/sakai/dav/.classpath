@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src/java"/>
+    <classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
+    <classpathentry kind="src" path="/sakai-service"/>
+    <classpathentry kind="src" path="/sakai-component"/>
+    <classpathentry kind="src" path="/sakai-util"/>
+    <classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.3.jar"/>
+    <classpathentry kind="var" path="TOMCAT_HOME/server/lib/catalina.jar"/>
+    <classpathentry kind="var" path="TOMCAT_HOME/common/lib/naming-resources.jar"/>
+    <classpathentry kind="var" path="TOMCAT_HOME/server/lib/catalina-optional.jar"/>
+    <classpathentry kind="src" path="/sakai-velocity"/>
+    <classpathentry kind="src" path="/sakai-dav-common"/>
+    <classpathentry kind="output" path="target/classes"/>
+</classpath>

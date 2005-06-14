@@ -1,0 +1,48 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/support/chef_contactsupport_form.vm,v 1.2 2004/09/09 14:33:41 suiyy.umich.edu Exp $
+
+<script type="text/javascript">
+	focus_path = [ "username" ];
+</script>
+<div class="chefPortletContainer">
+<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+
+<div class="chefPageviewTitle">Use this form to ask questions, make comments, or report problems. You will see a confirmation message after you send it.</div>
+
+<form action="#toolForm("$action")" method="post">
+<fieldset>
+<legend>Comments or questions</legend>
+
+<table class="chefEditItem" cellspacing="0">
+<tr>
+<td  class="chefLabel">Name</td>
+<td><input type="text" name="displayName" id="displayName" size="32" maxlength="50"></td>
+</tr>
+<tr>
+<td  class="chefLabel">Unique Name</td>
+<td><input type="text" name="username" id="username" size="32" maxlength="50" value = "$validator.escapeHtml($user.Id)"></td>
+</tr>
+		      
+<tr>
+<td class="chefLabel">Comments</td>
+<td><textarea name="comments" width="100%" wrap="virtual" rows="4" cols="50"></textarea></td>
+</tr>
+    
+<tr>
+<td class="chefLabel">Email</td>
+<td><input type="text" name="email" size="32" maxlength="50" value="$validator.escapeHtml($user.Email)"></td>
+</tr>
+
+</table>
+</fieldset>
+
+<p><div class="chefButtonRow">
+    <input type="submit" name="eventSubmit_doSend" value="Send" />
+    <input type="reset" name="reset" />
+    <input type="submit" name="eventSubmit_doDoc" value="Go back" />
+</div>
+</p>
+</form>
+
+</div>
+</div>

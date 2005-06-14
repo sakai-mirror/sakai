@@ -1,0 +1,10 @@
+#chef_start()
+<form method="post" action="${sakai_ActionURL}${login_path}" enctype="application/x-www-form-urlencoded">
+	<input type="hidden" name="fromLogin" value="true" />
+	$userid_text:
+	<input size="32" name="username" id="username"  type="text" style ="width: 10em" />
+	password:
+	<input size="32" name="password" type="password" style ="width: 10em" />
+	<input name="submit" type="submit" value="Log in" />
+</form>
+#chef_end()

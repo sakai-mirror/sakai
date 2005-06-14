@@ -1,0 +1,7 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_no_candidate_path.vm,v 1.1 2004/03/22 15:31:01 ggolden Exp $ -->
+## Dissertations - Administrator's no candidate path yet created for candidate view.
+<div class="chefPortletContainer">
+	<div class="chefPortletContent">
+		This student has not yet started to use the checklist.
+	</div>
+</div>

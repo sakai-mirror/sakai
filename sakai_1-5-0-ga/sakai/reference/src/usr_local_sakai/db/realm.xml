@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<realms>
+    <realm created-id="admin" created-time="20041206173647862"
+        id="!site.template" modified-id="admin" modified-time="20041206173647862">
+        <properties/>
+        <role id="maintain">
+            <ability lock="mail.delete.any"/>
+            <ability lock="dis.step.add"/>
+            <ability lock="dis.step.read"/>
+            <ability lock="annc.new"/>
+            <ability lock="annc.read"/>
+            <ability lock="chat.new"/>
+            <ability lock="annc.revise.any"/>
+            <ability lock="dis.dis.del"/>
+            <ability lock="asn.read"/>
+            <ability lock="dis.status.read"/>
+            <ability lock="disc.delete.own"/>
+            <ability lock="chat.revise.own"/>
+            <ability lock="realm.upd"/>
+            <ability lock="content.revise"/>
+            <ability lock="content.new"/>
+            <ability lock="site.visit.unp"/>
+            <ability lock="dis.status.add"/>
+            <ability lock="disc.new"/>
+            <ability lock="mail.delete.own"/>
+            <ability lock="chat.read"/>
+            <ability lock="dis.step.upd"/>
+            <ability lock="dis.step.del"/>
+            <ability lock="annc.delete.any"/>
+            <ability lock="annc.delete.own"/>
+            <ability lock="dis.dis.add"/>
+            <ability lock="disc.read"/>
+            <ability lock="calendar.revise"/>
+            <ability lock="asn.revise"/>
+            <ability lock="mail.revise.own"/>
+            <ability lock="dis.path.add"/>
+            <ability lock="site.del"/>
+            <ability lock="chat.delete.any"/>
+            <ability lock="disc.revise.own"/>
+            <ability lock="dis.status.upd"/>
+            <ability lock="calendar.read"/>
+            <ability lock="disc.read.drafts"/>
+            <ability lock="dis.path.read"/>
+            <ability lock="content.read"/>
+            <ability lock="calendar.delete"/>
+            <ability lock="site.visit"/>
+            <ability lock="calendar.new"/>
+            <ability lock="disc.new.topic"/>
+            <ability lock="dis.path.del"/>
+            <ability lock="disc.delete.any"/>
+            <ability lock="annc.revise.own"/>
+            <ability lock="asn.new"/>
+            <ability lock="content.delete"/>
+            <ability lock="realm.del"/>
+            <ability lock="chat.delete.own"/>
+            <ability lock="annc.read.drafts"/>
+            <ability lock="mail.read"/>
+            <ability lock="dis.dis.upd"/>
+            <ability lock="disc.revise.any"/>
+            <ability lock="chat.revise.any"/>
+            <ability lock="dis.dis.read"/>
+            <ability lock="dis.status.del"/>
+            <ability lock="mail.revise.any"/>
+            <ability lock="asn.delete"/>
+            <ability lock="site.upd"/>
+        </role>
+        <role id="access">
+            <ability lock="dis.step.read"/>
+            <ability lock="dis.status.add"/>
+            <ability lock="dis.path.upd"/>
+            <ability lock="annc.read"/>
+            <ability lock="mail.read"/>
+            <ability lock="disc.new"/>
+            <ability lock="chat.new"/>
+            <ability lock="disc.revise.own"/>
+            <ability lock="dis.status.upd"/>
+            <ability lock="calendar.read"/>
+            <ability lock="dis.dis.read"/>
+            <ability lock="asn.submit"/>
+            <ability lock="content.read"/>
+            <ability lock="site.visit"/>
+            <ability lock="chat.read"/>
+            <ability lock="dropbox.own"/>
+            <ability lock="dis.status.del"/>
+            <ability lock="asn.read"/>
+            <ability lock="dis.status.read"/>
+            <ability lock="disc.read"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647856"
+        id="!user.template.maintain" modified-id="admin" modified-time="20041206173647856">
+        <properties/>
+        <role id=".anon">
+            <ability lock="user.add"/>
+        </role>
+        <role id=".auth">
+            <ability lock="prefs.add"/>
+            <ability lock="realm.upd.own"/>
+            <ability lock="prefs.del"/>
+            <ability lock="user.upd.own"/>
+            <ability lock="site.add.usersite"/>
+            <ability lock="realm.add"/>
+            <ability lock="site.add"/>
+            <ability lock="prefs.upd"/>
+            <ability lock="user.add"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647921"
+        id="/dissertation/g/rackham" modified-id="admin" modified-time="20041206173647921">
+        <properties/>
+        <role id=".auth">
+            <ability lock="dis.grp.upd"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647919"
+        id="/content/attachment/" modified-id="admin" modified-time="20041206173647919">
+        <properties/>
+        <role id=".anon">
+            <ability lock="content.read"/>
+        </role>
+        <role id=".auth">
+            <ability lock="content.delete"/>
+            <ability lock="content.new"/>
+            <ability lock="content.read"/>
+            <ability lock="content.revise"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647919"
+        id="/announcement/channel/!site/motd" modified-id="admin" modified-time="20041206173647919">
+        <properties/>
+        <role id=".anon">
+            <ability lock="annc.read"/>
+        </role>
+        <role id=".auth">
+            <ability lock="annc.read"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647921"
+        id="/site/!urlError" modified-id="admin" modified-time="20041206173647921">
+        <properties/>
+        <role id=".anon">
+            <ability lock="site.visit"/>
+        </role>
+        <role id=".auth">
+            <ability lock="site.visit"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647846"
+        id="!site.helper" modified-id="admin" modified-time="20041206173647846">
+        <properties/>
+        <role id="maintain">
+            <ability lock="realm.del"/>
+            <ability lock="realm.upd"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647920"
+        id="/site/!error" modified-id="admin" modified-time="20041206173647920">
+        <properties/>
+        <role id=".anon">
+            <ability lock="site.visit"/>
+        </role>
+        <role id=".auth">
+            <ability lock="site.visit"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647921"
+        id="/dissertation/p/rackham" modified-id="admin" modified-time="20041206173647921">
+        <properties/>
+        <role id=".auth">
+            <ability lock="dis.path.del"/>
+            <ability lock="dis.path.upd"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20040125182959730"
+        id="/site/rackham" modified-id="admin" modified-time="20040125182959730">
+        <properties/>
+        <role id="access">
+            <ability lock="dis.status.add"/>
+            <ability lock="dis.step.read"/>
+            <ability lock="dis.path.upd"/>
+            <ability lock="annc.read"/>
+            <ability lock="mail.read"/>
+            <ability lock="disc.new"/>
+            <ability lock="chat.new"/>
+            <ability lock="disc.revise.own"/>
+            <ability lock="dis.status.upd"/>
+            <ability lock="calendar.read"/>
+            <ability lock="dis.dis.read"/>
+            <ability lock="asn.submit"/>
+            <ability lock="content.read"/>
+            <ability lock="site.visit"/>
+            <ability lock="chat.read"/>
+            <ability lock="dropbox.own"/>
+            <ability lock="dis.status.del"/>
+            <ability lock="asn.read"/>
+            <ability lock="dis.status.read"/>
+            <ability lock="disc.read"/>
+        </role>
+        <role id="maintain">
+            <ability lock="mail.delete.any"/>
+            <ability lock="dis.step.add"/>
+            <ability lock="annc.new"/>
+            <ability lock="dis.step.read"/>
+            <ability lock="annc.read"/>
+            <ability lock="chat.new"/>
+            <ability lock="annc.revise.any"/>
+            <ability lock="dis.dis.del"/>
+            <ability lock="asn.read"/>
+            <ability lock="dis.status.read"/>
+            <ability lock="disc.delete.own"/>
+            <ability lock="chat.revise.own"/>
+            <ability lock="realm.upd"/>
+            <ability lock="content.revise"/>
+            <ability lock="content.new"/>
+            <ability lock="site.visit.unp"/>
+            <ability lock="dis.status.add"/>
+            <ability lock="disc.new"/>
+            <ability lock="mail.delete.own"/>
+            <ability lock="chat.read"/>
+            <ability lock="dis.step.upd"/>
+            <ability lock="dis.step.del"/>
+            <ability lock="annc.delete.any"/>
+            <ability lock="annc.delete.own"/>
+            <ability lock="disc.read"/>
+            <ability lock="dis.dis.add"/>
+            <ability lock="calendar.revise"/>
+            <ability lock="asn.revise"/>
+            <ability lock="mail.revise.own"/>
+            <ability lock="dis.path.add"/>
+            <ability lock="site.del"/>
+            <ability lock="chat.delete.any"/>
+            <ability lock="disc.revise.own"/>
+            <ability lock="dis.status.upd"/>
+            <ability lock="calendar.read"/>
+            <ability lock="disc.read.drafts"/>
+            <ability lock="dis.path.read"/>
+            <ability lock="calendar.delete"/>
+            <ability lock="content.read"/>
+            <ability lock="site.visit"/>
+            <ability lock="calendar.new"/>
+            <ability lock="disc.new.topic"/>
+            <ability lock="dis.path.del"/>
+            <ability lock="disc.delete.any"/>
+            <ability lock="annc.revise.own"/>
+            <ability lock="asn.new"/>
+            <ability lock="realm.del"/>
+            <ability lock="content.delete"/>
+            <ability lock="chat.delete.own"/>
+            <ability lock="annc.read.drafts"/>
+            <ability lock="dis.dis.upd"/>
+            <ability lock="mail.read"/>
+            <ability lock="disc.revise.any"/>
+            <ability lock="chat.revise.any"/>
+            <ability lock="dis.dis.read"/>
+            <ability lock="dis.status.del"/>
+            <ability lock="mail.revise.any"/>
+            <ability lock="site.upd"/>
+            <ability lock="asn.delete"/>
+        </role>
+        <role id="Observer">
+            <ability lock="site.visit"/>
+            <ability lock="content.read"/>
+            <ability lock="chat.read"/>
+            <ability lock="dis.step.read"/>
+            <ability lock="annc.read"/>
+            <ability lock="mail.read"/>
+            <ability lock="asn.read"/>
+            <ability lock="dis.status.read"/>
+            <ability lock="disc.read"/>
+            <ability lock="calendar.read"/>
+            <ability lock="dis.path.read"/>
+            <ability lock="dis.dis.read"/>
+        </role>
+        <role id="Instructor">
+            <ability lock="dis.grp.upd"/>
+            <ability lock="dis.step.add"/>
+            <ability lock="dis.step.read"/>
+            <ability lock="annc.new"/>
+            <ability lock="annc.read"/>
+            <ability lock="dis.grp.add"/>
+            <ability lock="chat.new"/>
+            <ability lock="annc.revise.any"/>
+            <ability lock="dis.dis.del"/>
+            <ability lock="asn.read"/>
+            <ability lock="dis.status.read"/>
+            <ability lock="disc.delete.own"/>
+            <ability lock="realm.upd"/>
+            <ability lock="content.revise"/>
+            <ability lock="content.new"/>
+            <ability lock="site.visit.unp"/>
+            <ability lock="dis.status.add"/>
+            <ability lock="disc.new"/>
+            <ability lock="dis.grp.del"/>
+            <ability lock="chat.read"/>
+            <ability lock="dis.step.upd"/>
+            <ability lock="dis.step.del"/>
+            <ability lock="annc.delete.any"/>
+            <ability lock="annc.delete.own"/>
+            <ability lock="dis.dis.add"/>
+            <ability lock="disc.read"/>
+            <ability lock="calendar.revise"/>
+            <ability lock="dis.grp.read"/>
+            <ability lock="asn.revise"/>
+            <ability lock="dis.path.upd"/>
+            <ability lock="disc.revise.own"/>
+            <ability lock="dis.status.upd"/>
+            <ability lock="calendar.read"/>
+            <ability lock="disc.read.drafts"/>
+            <ability lock="dis.path.read"/>
+            <ability lock="content.read"/>
+            <ability lock="calendar.delete"/>
+            <ability lock="site.visit"/>
+            <ability lock="calendar.new"/>
+            <ability lock="disc.new.topic"/>
+            <ability lock="disc.delete.any"/>
+            <ability lock="annc.revise.own"/>
+            <ability lock="asn.new"/>
+            <ability lock="realm.del"/>
+            <ability lock="content.delete"/>
+            <ability lock="mail.new"/>
+            <ability lock="annc.read.drafts"/>
+            <ability lock="mail.read"/>
+            <ability lock="dis.dis.upd"/>
+            <ability lock="disc.revise.any"/>
+            <ability lock="dis.dis.read"/>
+            <ability lock="dis.status.del"/>
+            <ability lock="asn.delete"/>
+            <ability lock="site.upd"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647920"
+        id="!pubview" modified-id="admin" modified-time="20041206173647920">
+        <properties/>
+        <role id=".anon">
+            <ability lock="content.read"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647935"
+        id="/dissertation/ss/rackham" modified-id="admin" modified-time="20041206173647935">
+        <properties/>
+        <role id=".auth">
+            <ability lock="dis.status.add"/>
+            <ability lock="dis.status.del"/>
+            <ability lock="dis.status.read"/>
+            <ability lock="dis.status.upd"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647935"
+        id="/dissertation/d/rackham" modified-id="admin" modified-time="20041206173647935">
+        <properties/>
+        <role id=".auth">
+            <ability lock="dis.dis.upd"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647862"
+        id="/content/public/" modified-id="admin" modified-time="20041206173647862">
+        <properties/>
+        <role id=".anon">
+            <ability lock="content.read"/>
+        </role>
+        <role id=".auth">
+            <ability lock="content.read"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647920"
+        id="/site/!gateway" modified-id="admin" modified-time="20041206173647920">
+        <properties/>
+        <role id=".anon">
+            <ability lock="site.visit"/>
+        </role>
+        <role id=".auth">
+            <ability lock="site.visit"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647854"
+        id="!user.template" modified-id="admin" modified-time="20041206173647854">
+        <properties/>
+        <role id=".anon">
+            <ability lock="user.add"/>
+        </role>
+        <role id=".auth">
+            <ability lock="prefs.add"/>
+            <ability lock="realm.upd.own"/>
+            <ability lock="prefs.del"/>
+            <ability lock="user.upd.own"/>
+            <ability lock="site.add.usersite"/>
+            <ability lock="realm.add"/>
+            <ability lock="prefs.upd"/>
+            <ability lock="user.add"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647922"
+        id="/dissertation/s/rackham" modified-id="admin" modified-time="20041206173647922">
+        <properties/>
+        <role id=".auth">
+            <ability lock="dis.step.upd"/>
+            <ability lock="dis.step.add"/>
+            <ability lock="dis.step.read"/>
+            <ability lock="dis.step.del"/>
+        </role>
+    </realm>
+    <realm created-id="admin" created-time="20041206173647853"
+        id="!site.user" modified-id="admin" modified-time="20041206173647853">
+        <properties/>
+        <role id="maintain">
+            <ability lock="calendar.revise"/>
+            <ability lock="mail.delete.any"/>
+            <ability lock="mail.revise.own"/>
+            <ability lock="annc.new"/>
+            <ability lock="annc.read"/>
+            <ability lock="chat.new"/>
+            <ability lock="chat.delete.any"/>
+            <ability lock="disc.revise.own"/>
+            <ability lock="disc.read.drafts"/>
+            <ability lock="calendar.read"/>
+            <ability lock="site.visit"/>
+            <ability lock="calendar.delete"/>
+            <ability lock="content.read"/>
+            <ability lock="calendar.new"/>
+            <ability lock="annc.revise.any"/>
+            <ability lock="disc.new.topic"/>
+            <ability lock="disc.delete.any"/>
+            <ability lock="annc.revise.own"/>
+            <ability lock="disc.delete.own"/>
+            <ability lock="chat.revise.own"/>
+            <ability lock="realm.upd"/>
+            <ability lock="content.revise"/>
+            <ability lock="realm.del"/>
+            <ability lock="content.new"/>
+            <ability lock="content.delete"/>
+            <ability lock="chat.delete.own"/>
+            <ability lock="site.visit.unp"/>
+            <ability lock="annc.read.drafts"/>
+            <ability lock="mail.read"/>
+            <ability lock="disc.new"/>
+            <ability lock="disc.revise.any"/>
+            <ability lock="mail.delete.own"/>
+            <ability lock="chat.revise.any"/>
+            <ability lock="chat.read"/>
+            <ability lock="annc.delete.any"/>
+            <ability lock="mail.revise.any"/>
+            <ability lock="annc.delete.own"/>
+            <ability lock="disc.read"/>
+            <ability lock="site.upd"/>
+        </role>
+        <role id="access">
+            <ability lock="site.visit"/>
+            <ability lock="content.read"/>
+            <ability lock="chat.read"/>
+            <ability lock="annc.read"/>
+            <ability lock="mail.read"/>
+            <ability lock="disc.new"/>
+            <ability lock="chat.new"/>
+            <ability lock="disc.revise.own"/>
+            <ability lock="disc.read"/>
+            <ability lock="calendar.read"/>
+        </role>
+    </realm>
+</realms>

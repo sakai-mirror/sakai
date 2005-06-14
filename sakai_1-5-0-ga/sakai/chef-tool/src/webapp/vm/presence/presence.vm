@@ -1,0 +1,10 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/presence/presence.vm,v 1.4 2004/11/15 16:46:13 ajpoland.iupui.edu Exp $
+#chef_start()
+<div class="presenceList">
+#if($showPresence)
+	#foreach ($user in $users)
+ 	   <span class="chefPresenceListItem">#chef_html($user.DisplayName)</span><br/>
+	#end
+#end
+</div>		
+#chef_end()

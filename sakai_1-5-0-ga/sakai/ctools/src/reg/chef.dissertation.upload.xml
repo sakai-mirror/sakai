@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<registration>
+	<function name="dis.grp.read" />
+	<function name="dis.grp.add" />
+	<function name="dis.grp.del" />
+	<function name="dis.grp.upd" />
+	<tool
+			id="chef.dissertation.upload"
+			url="/sakai-chef-tool/chef-dissertation-upload"
+			title="Dissertation Upload"
+			description="Grad Tools Rackham Data Upload tool.">
+
+	</tool>
+	
+</registration>

@@ -1,0 +1,113 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-sitemanage-list.vm,v 1.10 2005/01/12 17:07:27 gsilver.umich.edu Exp $ -->
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["search"];
+</script>
+<div class="portletBody">
+	<div class="chefToolBarWrapForm">
+		<a href="#" onclick="location='#toolLink("$action" "doSitemanage_showsearch")';return false;" title ="Search">Search</a>
+	</div>
+	<br />
+	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	#if ($sites.size() > 0)
+		<p class="instruction">
+				#if ("$!siteType" == "") #set($siteType="Any") #end
+				#if ($termSelection)
+					$allMsgNumber site(s) found that matched your search for "$siteType" type of site, "$!searchText" Text and "$termSelection" Academic Term.    	
+				#else
+					$allMsgNumber site(s) found that matched your search for "$siteType" type of site, and "$!searchText" Text.
+				#end
+		</p>
+		#if ($pagesize < $allMsgNumberInt ||  $allMsgNumberInt > 20 ||  $allMsgNumberInt == 20)
+			<span class="rightNav">
+				<span class="instruction">
+					Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items&nbsp;
+				</span>
+				#if ($pagesize != 0)
+					#if ($goPPButton == "true")
+						<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<input type="submit" name="eventSubmit_doList_prev" value="&lt;" />
+						</form>
+					#else
+						<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<input type="submit" name="eventSubmit_doList_prev" disabled="disabled" value="&lt;" />
+						</form>
+					#end
+				#end
+				<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
+					<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
+					<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+						<option value="5" #if($pagesize == 5) selected="selected" #end>show 5 items per page</option>
+						<option value="10" #if($pagesize == 10) selected="selected" #end>show 10 items per page</option>
+						<option value="20" #if($pagesize == 20) selected="selected" #end>show 20 items per page</option>
+						<option value="50" #if($pagesize == 50) selected="selected" #end>show 50 items per page</option>
+						<option value="100" #if($pagesize == 100) selected="selected" #end>show 100 items per page</option>
+						<option value="200" #if($pagesize == 200) selected="selected" #end>show 200 items per page</option>
+					</select>
+				</form>
+				#if ($pagesize != 0)
+					#if ($goNPButton == "true")
+						<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<input type="submit" name="eventSubmit_doList_next" value="&gt;" />
+						</form>
+					#else
+						<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<input type="submit" name="eventSubmit_doList_next" disabled="disabled" value="&gt;" />
+						</form>
+					#end
+				#end
+			</span>
+		#end ##(end of if total sites > sites displayed in page)
+		#set ($siteCount = 0)
+		<table class="listHier" width="100%">
+			<tr>
+				<th scope="col" id="Id">Worksite Title</th>
+				<th scope="col" id="Type">Type/Term</th>
+				<th scope="col" id="Owner">Owner</th>
+##				<th scope="col" id="Classes">Classes</th>
+				<th scope="col" id="DateCreated">Date Created</th>
+			</tr>
+			#foreach ($site in $sites)
+				<tr>
+					<td headers="Id">
+						$validator.escapeHtml($site.Title)
+						<div class="itemAction">
+							<a href="#toolLink("$action" "doSitemanage_edit_site_access")&id=$site.Id">Access</a> |
+							#if ($service.allowUpdateSite($site.Id))
+								<a href="#toolLink("$action" "doSitemanage_participants")&id=$site.Id">Participants</a> | <a href="#toolLink("$action" "doSitemanage_edit_site_info")&id=$site.Id">Info</a>
+							#end
+						</div>
+					</td>
+					<td headers="Type">
+						#if ($termProp)
+							#if ($type == $termSearchSiteType)
+								#if ($!site.Properties.getProperty($termProp))
+									$!site.Properties.getProperty($termProp)
+								#else
+									$type
+								#end
+							#else
+								$validator.escapeHtml($site.Type)
+							#end
+						#end
+					</td>
+					<td headers="Owner">
+						#if ($site.CreatedBy) $site.CreatedBy.DisplayName #end
+					</td>
+	##				<td headers="Classes">n/a</td>
+					<td headers="Description">
+						#if($site.CreatedTime) $site.CreatedTime.toStringLocalFull()#end
+					</td>
+				</tr>
+			#end
+		</table>
+		#else
+		<p class="instruction">
+			#if ("$!siteType" == "") #set($siteType="Any") #end
+			#if ($termSelection)
+				0 sites were found that matched your search for "$siteType" type of site, "$!searchText" Text and "$termSelection" Academic Term.    	
+			#else
+				0 sites were found that matched your search for "$siteType" type of site, and "$!searchText" Text.
+			#end
+		</p>
+	#end
+</div>

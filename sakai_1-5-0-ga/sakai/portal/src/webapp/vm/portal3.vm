@@ -1,0 +1,353 @@
+## $Header: /cvs/sakai/portal/src/webapp/vm/portal3.vm,v 1.29 2005/02/08 22:36:02 gsilver.umich.edu Exp $
+## iframe macro to make it easier to enter the iframes
+
+#macro( presenceIframe $name $width $height $frameborder $marginwidth $marginheight $scrolling $style $src )
+	<iframe 
+		name="$name"
+		id="$name"
+		title="$name"
+		height="$height"
+		width="$width"
+		frameborder="$frameborder"
+		marginwidth="$marginwidth"
+		marginheight="$marginheight"
+		scrolling="$scrolling"
+		style="$style"
+		src="$src"
+		>
+	</iframe>
+#end
+
+#macro (iframe $name $id $title $class $height $width $frameborder $marginwidth $marginheight $scrolling $src )
+	<iframe
+ 		name="$name"
+ 		id="$id"
+ 		title="$title"
+ 		class="$class"
+ 		height="$height"
+ 		width="$width"
+ 		frameborder="$frameborder"
+ 		marginwidth="$marginwidth"
+ 		marginheight="$marginheight"
+ 		scrolling="$scrolling"
+ 		src="$src" 
+		>
+	</iframe>
+#end
+
+### Display a tool in the first column of a two column display
+#macro (toolCol0 $t)
+	#set ( $titleId = $validator.escapeJavascript("Title$t.Id") )
+	<div class="channeltitlewrap">
+		#iframe( "$titleId" "$titleId" "Title Bar" "channelTitleIframe" "20" "99%" "0" "0" "0" "no" "$config.getToolRegistration($t.ToolId).Url?pid=$t.Id&panel=Title" )
+	</div>
+	<div class="uportalchannelcontent">
+		#set ( $mainId = $validator.escapeJavascript("Main$t.Id") )
+		#iframe( "$mainId" "$mainId" "$t.Title" "channelMainIframe" "50" "100%"  "0" "0" "0" "auto" "$config.getToolRegistration($t.ToolId).Url?pid=$t.Id&panel=Main" )
+	</div>
+#end
+	
+### Display a tool in the second column of a two column display
+#macro (toolCol1 $t)
+	#set ( $titleId = $validator.escapeJavascript("Title$t.Id") )
+	<div class="channeltitlewrap">
+		#iframe( "$titleId" "$titleId" "Title Bar" "channelTitleIframe" "20" "99%" "0" "0" "0" "no" "$config.getToolRegistration($t.ToolId).Url?pid=$t.Id&panel=Title" )
+	</div>	
+	<div class="uportalchannelcontent">
+		#set ( $mainId = $validator.escapeJavascript("Main$t.Id") )
+		#iframe( "$mainId" "$mainId" "$t.Title" "channelMainIframe" "50" "100%"  "0" "0" "0" "auto" "$config.getToolRegistration($t.ToolId).Url?pid=$t.Id&panel=Main" )
+	</div>
+#end
+
+### Display a tool in a single column display.  
+#macro (toolOneCol $t)
+	#set ( $titleId = $validator.escapeJavascript("Title$t.Id") )
+	<div class="channeltitlewrap">
+		#iframe( "$titleId" "$titleId" "Title Bar" "channelTitleIframe" "22" "99%" "0" "0" "0" "no" "$config.getToolRegistration($t.ToolId).Url?pid=$t.Id&panel=Title" )
+	</div>	
+	<div class="uportalchannelcontent">
+		#set ( $mainId = $validator.escapeJavascript("Main$t.Id") )
+		#iframe( "$mainId" "$mainId" "$t.Title" "channelMainIframe" "50" "100%"  "0" "0" "0" "auto" "$config.getToolRegistration($t.ToolId).Url?pid=$t.Id&panel=Main" )
+	</div>
+#end
+
+## This simply holds the Javascript needed to support the XMLHttpRequest based courier replacement
+#macro(courierJavascript)
+
+var lastUrl;
+var req;
+
+function setStatus(s)
+{
+   ## The alert is useful for verbose debugging
+   ## alert(s);
+   window.status = s.toString();
+}
+
+function httpCourier()
+{       	
+   if ( ! courierUrl ) {
+      alert("courierUrl not set="+courierUrl);
+   } else {
+	  ## It may be important to set the timer before loading the XML Doc for some browsers
+      setTimeout('httpCourier()', 10000);
+      loadXMLDoc(courierUrl);
+   }
+} 
+
+function loadXMLDoc(url) {
+   if ( req && callInProgress(req) ) {
+      setStatus("Previous courier request had not completed stat="+req.status+" state="+req.readyState);
+      req.abort();
+   }
+	
+   // Add a random number to defeat caching regardless of the user setting
+   lastUrl = url + "&rand=" + Math.random();
+
+    if (window.XMLHttpRequest) {
+	    req = new XMLHttpRequest();
+        if ( req ) {
+	        req.onreadystatechange = processReqChange;
+    	        req.open("GET", lastUrl, true);
+        	    req.send(null); 
+	        ## setStatus("XML Request started "+lastUrl);
+	    } else {
+	    	    setStatus("Cannot create XML Request Object for Courier");
+	    	}
+    // branch for IE/Windows ActiveX version
+    } else if (window.ActiveXObject) {
+	    req = new ActiveXObject("Microsoft.XMLHTTP");
+	    
+        if (req) {
+            req.onreadystatechange = processReqChange;
+            req.open("GET", lastUrl, true);
+            req.send();
+	        ## setStatus("ActiveX Request started "+lastUrl);
+        } else {
+	    	    setStatus("Cannot create XML Request Control for Courier");
+        }
+    } else {
+       setStatus("Cannot suppress automatic refresh with this browser.");
+    }
+
+}
+
+function callInProgress(xmlhttp) {
+    switch ( xmlhttp.readyState ) {
+        case 1, 2, 3:
+            return true;
+        break;
+
+        // Case 4 and 0
+        default:
+            return false;
+        break;
+    }
+}
+
+function processReqChange() {
+	## setStatus("process state="+req.readyState);
+    if (req.readyState == 4) {
+        // only if "OK"
+        if (req.status == 200) {
+			   ## For now we just discard the courier..
+			   ## In a later version, we may parse and deliver the courier response using the eval function
+            	   resp = req.responseText;
+            	   // setStatus("Courier reply"+resp.length+" url="+lastUrl);
+        } else {
+            setStatus("Unable to maintain connection to server:" +req.statusText);
+        }
+    }
+}
+#end
+
+####################### Default values ##################
+
+## The value of displayLevel is set in the calling servlet.  Lower levels 
+## allow seeing more context.  The value can be set a parameter on the url.
+## If no value is set then it will default to 1.
+## 1 implies seeing entire portal including branding.
+## 2 implies seeing site navigation but suppressing branding and authentication fields.  The
+##   suppression is actually handled in the sitenav servlet.
+## 3 implies seeing a page, without site navigation but with page navigation.
+## 4 implies seeing a page with it's contained tools, but without page navigation.
+## 5 implies seeing a single tool.  By default it will be the first tool on the page.
+
+## Default value for the id of the content div.  
+## To use corresponding css info (say to offset the content div when the sidebar appears) assign this 
+## to have a different value.  The currently defined values are 'content', which will supply an
+## offset via the css file and 'contentFull'.  If this not defined in the css file, and currently
+## it is not, then no special processing will be applied and no offset will be seen.
+
+
+#set( $contentDivId = "contentFull")
+
+################################ Layout #################
+
+#if (!$sakai_fragment)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		#if($page)
+		<title>$config.getString("ui.service","") : $site.Title : $page.Title</title>
+		#else
+		<title>$config.getString("ui.service","") : $site.Title</title>
+		#end
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link href="${sakai_portalskin}skin/${sakai_skin_id}.css" type="text/css" rel="stylesheet" media="all" />
+		<script type="text/javascript" language="JavaScript" src="/sakai-chef-tool/js/headscripts.js">
+		</script>
+		
+<script type="text/javascript" language="JavaScript">
+var courierUrl = "$!{config.PortalTunnelUrl}/sakai-chef-tool/courier?site=$site.Id&page=$page.Id&auto=courier$!tools";
+
+function doLoad()
+{
+	#if ( $suppressRefresh )
+	#if ( $loggedIn )
+	setTimeout('httpCourier()', 1000);
+	#end
+	#end
+}
+
+## Include the Javascrip/XMLHttpRequest based Courier replacement
+## This could be an include file, but it would need to move to TEMPLATE_ROOT
+
+#if ( $loggedIn )
+  #if ( $suppressRefresh )
+    #courierJavascript()
+  #end
+#end
+
+</script>
+
+	</head>
+	<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0" onload="doLoad();">
+#end
+
+	<!-- $Source: /cvs/sakai/portal/src/webapp/vm/portal3.vm,v $ $Date: 2005/02/08 22:36:02 $ -->
+		## are we showing the sitenav at all?
+		#if ($displayLevel <= 2)
+			#if ($minimal) 
+				## just neeed the site tabs
+				#set ( $sitenavHeight = 30 )
+			#else
+				#if ($loggedIn)
+					## need banner and site tabs
+					#set ( $sitenavHeight = 104 )
+				#else
+					## don't need space for the site tabs
+					#set ( $sitenavHeight = 80 )
+				#end
+			#end
+			#iframe( "sitenav" "sitenav" "" "sitenavClass" $sitenavHeight "100%" "0" "0" "0" "no" "$!{config.PortalTunnelUrl}/sakai-chef-tool/sitenav?site=$site.Id&minimal=$minimal" )
+		#end
+		
+		<div id="container">		
+		#if ($displayLevel <=3) ## sidebar?
+			<div class="divColor" id="sidebar">
+					#set( $contentDivId = "content")
+					#if (!$site.isPublished())
+						<div class="sakaiAlertBox">
+							Unpublished site
+						</div>
+					#end
+				<div id="divLogo" style="text-align:center">
+					#if($site.IconUrl)
+						<img src="$site.IconUrlFull" border="0" />
+					#end
+				</div>
+				<div id="leftnavlozenge">
+					<ul>
+						#foreach($p in $site.Pages)
+							#if ($p.id == $page.Id)
+								<li><a class="selected" href="#">$p.Title</a></li>
+							#else
+								<li><a href="$p.Url">$p.Title</a></li>
+							#end
+						#end
+						#if($sakai_HelpURL)
+						<li>
+						    <a href="javascript:;" onClick="window.open('$!{config.PortalTunnelUrl}/sakai-help-tool/help/jsf.tool','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')">Help</a>
+						</li>
+						#end
+					</ul>
+				</div>
+				#if ($loggedIn)
+					## add the presence section.				
+					#if($showPresence)
+							<div style="text-indent:1em;font-size:70%;margin:0 0 1em 0;white-space:nowrap;width:auto"  id="pres_title">
+								Users present:
+							</div>
+					#end
+					## presence for site (could be site/page if we add the &page=page.Id parameter)
+					## showPresence is also checked in the servlet.
+					#presenceIframe( "presence" "100%" "200" "0" "0" "0" "auto" "width:8.3em" "$!{config.PortalTunnelUrl}/sakai-chef-tool/presence?site=$site.Id" )	
+				#end
+			</div> ## end of sidebar div
+			#end  ## end of sidebar if
+			## Display multiple tools or a specific tool?
+			#if ($displayLevel <= 4)
+			<div id="$contentDivId">
+				#if ($page.Layout==1) ## do two column layout.  In this case ==1 means 2 columns :(
+					<div style="width:49%;float:left;margin:0;">
+						#foreach($t in $page.getTools(0))
+							#toolCol0($t)
+						#end
+					</div>	
+					<div style="width:50%;float:right">
+						#foreach($t in $page.getTools(1))
+							#toolCol1($t)
+						#end
+					</div>
+				#else  ## above was two column layout, below is 1 column layout
+					<div>
+						#foreach($t in $page.getTools(0))
+							#toolOneCol($t)
+						#end
+					</div>	
+				#end	 ## end of tool layout
+			</div> ## end of content div
+			#else ## end of the tool in page display, start of stand alone tool section.
+				## see if there is a specific tool id
+				#if ($toolIdConfig)
+					#toolOneCol($toolIdConfig)
+				#else
+					## default the tool to display if none is specified
+					## you probably shouldn't be here.
+					#foreach ($t in $page.getTools(0))
+						#if ($velocityCount == 1)
+							#toolOneCol($t)
+						#end
+					#end
+				#end
+			#end
+		</div>	## end of container div
+		## present the footer if the user can see the displayLevels that show the site nav
+		#if ($displayLevel <= 2)
+			<div align="center" id="footer">
+				<div class="footerExtNav" align="center">
+					|
+					#foreach ($link in $bottomnav)
+					$link | 
+					#end
+				</div>
+				<div id="footerInfo">
+					<a href="http://sakaiproject.org" target="_blank"><img border="0" src="/sakai-portal/image/sakai_powered.gif" alt="Powered by Sakai" /></a><br />
+						#if ($bottomcopyrighttext) 
+						<span class="sakaiCopyrightInfo">$bottomcopyrighttext<br />
+						#end
+					$config.getString("ui.service","Service") $config.getString("version.service","?") - Sakai $config.getString("version.sakai","?") - Server "$config.ServerId"</span>
+				</div>	
+			</div>	## end of footer
+			#end
+		## Always have the courier around (as long as you are logged in and refresh is normal).
+		#if ( !$suppressRefresh )
+		#if ($loggedIn)
+			#iframe( "courier" "courier" "courier" "courierClass" "1" "1" "0" "0" "0" "no" "$!{config.PortalTunnelUrl}/sakai-chef-tool/courier?site=$site.Id&page=$page.Id&auto=courier$!tools" )
+		#end
+		#end
+#if (!$sakai_fragment)
+	</body>
+</html>
+#end

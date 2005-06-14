@@ -1,0 +1,34 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_admin_alphabetical_candidate_chooser.vm,v 1.3 2005/02/09 15:08:54 rwellis.umich.edu Exp $ -->
+## Dissertations - Administrator's choose candidate view
+<div class="chefPortletContainer">
+	<div class="chefPageviewTitle">
+		Select a letter.
+	</div>
+	<form name="alphabetForm" id="alphabetForm" action="#toolForm($action)" method="post" >
+		<fieldset>
+			<div class="chefPortletContent">
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doAdministration" value="Back To Checklist" />
+				</div>
+				<center>
+				#foreach ($letter in $letters)
+					#if ($letter.hasMembers())
+						<a href="#" onclick="location = '#toolLink($action "doAlphabetical_choice")&selected=$letter.Letter';return false;">$letter.Letter</a>
+					#else
+						$letter.Letter
+					#end
+				#end
+				</center>
+				<br /><br /><br /><br />
+				#if ($hasusers.booleanValue())
+					Select a student to view their progress&nbsp;:&nbsp;<br /><br />
+				#end
+				<ul>
+					#foreach ($user in $users)
+						<li><a href="#" onclick="location = '#toolLink($action "doCandidate_chosen")&selectedcandidate=$user.Id';return false;">$user.SortName $emplids.get($user.Id)</a></li>
+					#end
+				</ul>
+			</div>
+		</fieldset>
+	</form>
+</div>

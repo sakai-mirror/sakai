@@ -1,0 +1,118 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_admin_add_dissertation_step.vm,v 1.5 2004/09/02 20:05:15 rwellis.umich.edu Exp $ -->
+## Dissertations - Administrator's add new Dissertation Step view
+<div class="chefPortletContainer">
+	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<div class="chefPageviewTitle">
+		Create A New Step.  The <span class="chefRequiredInline">&nbsp;</span> means this information is required.
+	</div>
+	<form name="addStep" id="addStep" action="#toolForm($action)" method="post">
+		<fieldset>
+			<legend>
+				New Step
+			</legend>
+			<div class="chefPortletContent">
+				<table class="chefEditItem">
+					<tr> 
+						<td class="chefLabel" valign="top">
+							<label for="desc"><span class="chefRequiredInline">&nbsp;</span>Description&nbsp;:&nbsp;</label>
+						</td>
+						<td colspan=2>
+							<textarea name="desc" cols="70" rows="6" id="desc" wrap="virtual"></textarea>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td class="chefLabel">
+							<label for="vtype"><span class="chefRequiredInline">&nbsp;</span>Actors&nbsp;:&nbsp;</label>
+						</td>
+						<td align="left">
+							<select onchange="blur()" name="vtype" id="vtype" tabindex="5">
+								#foreach ($type in $validationtypes)
+									<option value="$type">$validationTypeTable.get($type)</option>
+								#end
+							</select>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td class="chefLabel">
+								<label for="prereq">Prerequisites&nbsp;:&nbsp;</label>
+						</td>
+						<td>
+							<select onchange="blur()" name="prereq" id="prereq" multiple="multiple" tabindex="6">
+								#foreach ($prereq in $orderedsteps)
+									<option value="$prereq.Reference">$prereq.ShortInstructionsText</option>
+								#end
+							</select>
+							<div class="chefSectionMessage">
+								Note : To select more than one, hold Apple-select on mac, Ctrl-select on pc.
+							</div>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td class="chefLabel">
+							<label for="location"><span class="chefRequiredInline">&nbsp;</span>Location&nbsp;:&nbsp;</span></label>
+						</td>
+						<td>
+							<select onchange="blur()" name="location" id="location" tabindex="6">
+								<option selected="selected" value="start">START</option>
+								#foreach ($step in $orderedsteps)
+									<option value="$step.Reference">$step.ShortInstructionsText</option>
+								#end
+							</select>
+							<div class="chefSectionMessage">
+								Note : The new step will appear AFTER the selected step.
+							</div>
+						</td>
+					</tr>
+					#if ($userrole.equals("schoolrole"))
+						<tr valign="top">
+							<td class="chefLabel">
+								<label for="section"><span class="chefRequiredInline">&nbsp;</span>Section&nbsp;:&nbsp;</label>
+							</td>
+							<td>
+								<select onchange="blur()" name="section" id="section" tabindex="6">
+									#foreach($section in $sections)
+										#if($section != "None")
+											<option value ="$section"
+											#if($section.equals($step.section))
+													selected="selected"
+											#end
+											>
+											$section
+											</option>
+										#end
+									#end
+								</select> 
+							</td>
+						</tr>
+						<tr valign="top">
+							<td class="chefLabel">
+								<label for="autovalid">Auto Validation Number&nbsp;:&nbsp;</label>
+							</td>
+							<td>
+								<select onchange="blur()" name="autovalid" id="autovalid" tabindex="6">
+									<option selected="selected" value"">None</option>
+									#foreach ($index in [1..12])
+										<option value="$index">$index</option>
+									#end
+								</select>
+							</td>
+						</tr>
+					#end
+					<tr>
+						<td colspan="3">
+							#if ($activepaths.booleanValue())
+							<br/><br/>
+								<input type="checkbox" checked="checked" name="retroactive" id="retroactive" value="retroactive" /> 
+									Apply this change to all current students<br/><br/>
+							#end
+						</td>
+					</tr>
+				</table>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doAddnew_dissertation_step" value="Save" />
+					<input type="submit" name="eventSubmit_doCancel_admin" value="Cancel" />
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>

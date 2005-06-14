@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="chat.new" />
+	<function name="chat.read" />
+	<function name="chat.revise.any" />
+	<function name="chat.revise.own" />
+	<function name="chat.delete.any" />
+	<function name="chat.delete.own" />
+
+	<tool
+			id="chef.chat"
+			url="/sakai-chef-tool/chef-chat"
+			title="Chat Room"
+			description="For real-time conversations in written form.">
+
+		<configuration name="display-date" value="true" />
+		<configuration name="display-time" value="true" />
+		<configuration name="display-user" value="true" />
+		<configuration name="sound-alert" value="true" />
+		<configuration name="filter-type" value="SelectMessagesByTime" />
+		<configuration name="filter-param" value="3" />
+		<configuration name="channel" value="" />
+
+	</tool>
+
+</registration>

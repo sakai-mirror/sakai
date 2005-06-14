@@ -1,0 +1,144 @@
+BODY{width:100%;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;background-color:#000}
+
+/*GROUP 1 - top navigation*/
+
+#tabNavigation {
+	background: #000;
+	white-space: nowrap;
+	list-style: none none none;
+	font-size: .8em;
+	margin: 0;
+	padding: 0;
+	width:100%;
+}
+#tabBottom{
+	color:#000;
+	font-size: .7em;
+	border: 1px solid Lime;
+	background-color: Lime;
+	text-align: right;
+	padding:3px 12px 3px 3px;
+	margin-bottom:0;
+}	
+.tabHolder{width:100%;height:auto;padding-top:1px;background: #000;} 
+#tabBottom a, #tabBottom a:link, #tabBottom a:visited {color:Lime;white-space: nowrap;text-decoration:none;padding:3px}
+#tabBottom  a:hover {color:#000;text-decoration: underline;white-space: nowrap;background-color: Lime;}
+html #tabNavigation/* */ {padding: 4px 0 4px 0}
+html>body #tabNavigation {margin: 0;padding: 4px 0 4px 0}
+#tabNavigation li {display: inline;line-height: .9em;}
+#tabNavigation a, #tabNavigation a:link, #tabNavigation a:visited {
+	background: #000;
+	border-bottom: 1px solid Lime;
+	border-right: 1px solid Lime;
+		border-left: 1px solid Lime;
+	border-top:1px solid Lime;
+	color: Lime;
+	height: .7em;
+	margin: -1px 0 -1px 0;
+	padding: 3px 6px 3px 6px;
+	text-decoration: none
+}
+html #tabNavigation a/* */, html #tabNavigation a:link/* */, html #tabNavigation a:visited/* */ {
+	border-bottom: none;
+	height: auto;
+	margin: 0
+}
+html>body #tabNavigation a, html>body #tabNavigation a:link, html>body #tabNavigation a:visited {border-bottom: none;padding: 4px 6px 4px 6px}
+\head+body #tabNavigation a, \head+body #tabNavigation a:link, \head+body #tabNavigation a:visited {padding: 3px 6px 3px 6px}
+#tabNavigation a:hover {background: Lime;color: #000}
+#tabNavigation .selectedTab a, #tabNavigation .selectedTab a:link, #tabNavigation .selectedTab a:visited, #tabNavigation .selectedTab a:hover {
+	background: Lime;
+	border-bottom: none;
+	color: #000;
+	padding: 3px 5px 4px 5px
+}
+select{
+	border:1px solid Lime;
+	background-color:#000;
+	color:Lime
+}
+html>body #tabNavigation .selectedTab a, html>body #tabNavigation .selectedTab a:link, html>body #tabNavigation .selectedTab a:visited {padding: 4px 5px 5px 5px}
+\head+body #tabNavigation .selectedTab a, \head+body #tabNavigation .selectedTab a:link, \head+body #tabNavigation .selectedTab a:visited, \head+body #tabNavigation .selectedTab a:hover {padding: 3px 5px 4px 5px}
+.fixTabsIE {visibility: hidden;display:none;border-width:0;}
+
+/*GROUP 2 - masthead */
+
+.mast-head{width: 100%;background-color: #000;margin:0px;font-size:.8em;color:Lime}
+.mast-head-r{text-align: right;white-space: nowrap;padding-right:15px;}
+.mast-head-r a, .mast-head-r a:visited{color: Lime;text-decoration: none;padding:3px}
+.mast-head-r a:hover {color : #000;background-color:Lime;padding:3px}
+.mast-head-r ul{margin:5px;list-style: none;font-size: .8em;}
+.mast-head-r ul li{display: inline;margin:0px;}
+input {border-width:0 0  1px 0;
+border-style: solid;border-color: Lime;background-color:#000;padding:3px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:Lime}
+.button {border:1px solid Lime;background-color:#000;color: Lime;margin-left:1em;padding:1px}
+.button:hover {border:1px dotted Lime;background-color:Lime;color: #000;margin-left:1em;padding:1px}
+
+/* GROUP 3 - content and channels */
+/*the middle layer - tool menu and content*/
+.sakaiAlertBox /*used in alert for unpub sites*/{
+background-color:#000;
+background-image:url(/sakai-portal/image/warn.gif);
+background-position: 3px 3px;
+background-repeat:no-repeat;
+border:1px solid  Lime;
+clear:both;
+color:Lime;
+font-size:x-small;
+margin:5px 2px 15px 2px;
+padding:3px 3px 3px 20px
+}
+html .sakaiAlertBox/* */{background-position:3px center/* - adj for ie - */}
+
+#leftnavlozenge{width:11em;padding:0;margin-bottom:1em;margin-right:0em;margin-left:0px;font-size:70%;color:Lime;clear:both}
+#leftnavlozenge ul{list-style:none;margin:0;padding:0;border:none}
+#leftnavlozenge li{margin:0;width:auto}
+#leftnavlozenge li a{
+		display: block;
+		padding: 5px 5px 5px 0.5em;
+		color: Lime;
+		border-top: 1px solid #000;		
+		border-bottom: 1px solid #000;		
+		text-decoration: none;
+		width: 100%;
+		}
+/*	adjust for moz + safari*/
+html>body #leftnavlozenge li a{width:auto;border-width:1px 0 1px 1px;border-color:transparent;border-style:solid}
+#presence{width:100%;border-bottom:1px dotted Lime;border-top:1px dotted Lime;}
+/* GROUP 4 - content and channels */
+.channelTitleIframe{border-width:1px;border-color:Lime;border-style: solid solid none solid}
+.uportalchannelcontent{border:1px solid Lime;background-color:#000;text-align:left;width:99%; margin-bottom:.5em}
+/*GROUP 5:tableless layout*/
+#container{}
+#content{padding:.3em .3em .3em .3em;margin-left:8.5em;background-color:#000}
+#sidebar{float:left;width:8.4em;line-height:17px;color:Lime}
+#footer{background-color:#000;color:Lime;font-size:xx-small;margin:0px;padding:0;width:auto;clear:both;top:0}
+.footerExtNav{padding-top:.5em;padding-bottom:.5em;border:1px solid Lime;background-color:#000;}
+.footerExtNav a,.footerExtNav A:link,.footerExtNav A:visited{color:Lime;text-decoration:none;margin:1em}
+.footerExtNav a:hover{color:Lime;text-decoration:underline;margin:1em}
+#footerInfo{background-color:#000;font-size:xx-small;text-align:center;clear:both}
+#footerInfo img{margin-top:.5em;margin-bottom:.5em}
+#leftnavlozenge li a.selected{
+		display: block;
+		padding: 5px 5px 5px 0.5em;		
+		border-top: 1px solid Lime;		
+		border-bottom: 1px solid Lime;		
+		background-color: #000;
+		color: Lime;
+		text-decoration: none;
+		width: 100%;
+		background-image: url(../icons/gib-h.gif);
+		background-position: center right;
+		background-repeat: no-repeat; 
+	}
+	#leftnavlozenge li a:hover{
+		text-decoration:none;
+		border-bottom: 1px dashed Lime;		
+		border-top: 1px dashed Lime;		
+		background-color: #000;
+		color: Lime;
+		width: 100%;
+		background-image: url(../icons/gib.gif);
+		background-position: center right;
+		background-repeat: no-repeat; 
+		}	

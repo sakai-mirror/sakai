@@ -1,0 +1,42 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-siteInfo-import.vm,v 1.6 2005/02/07 22:03:08 zqian.umich.edu Exp $ -->
+## Creating project site step 4: select features for site
+## Might want to get these dynamically 
+<div class="portletBody">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	#if ($alertMessage)
+		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	<h3 class="insColor insBak insBor">
+		Re-use Material from Other Sites
+	</h3>
+	<p class="step">
+		Step 1 of 2: Select sites...
+	</p>
+	<p class="instruction">
+		You can choose to re-use material only from other sites that you own. You can combine material from more than one site.
+	</p>
+	<form name="featuresForm" action="#toolForm("$action")" method="post">
+		#foreach($site in $sites)
+			#if ($!currentSite && ($site.Id != $!currentSite.Id))
+				<p class="checkbox indnt3">
+				<input type="checkbox" name="importSites" id="site_$site.getId()" value="$site.getId()" 
+					#if ($!importSiteList.containsKey($!site))
+						checked="checked"
+					#end
+				 />
+					<label for="site_$site.getId()">
+						$site.getTitle()
+					</label>
+				</p>	
+			#end
+		#end
+		<input type="hidden" name="back" value="12" />
+		<input type="hidden" name="template-index" value="28" />
+		<input type="hidden" name="continue" value="27" />
+		<p class="act">
+			<input type="submit" class="active" name="eventSubmit_doContinue" value="Continue" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</p>
+	</form>
+</div>

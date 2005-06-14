@@ -1,0 +1,120 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_admin_edit_dissertation_step.vm,v 1.6 2004/09/02 20:05:29 rwellis.umich.edu Exp $ -->
+## Dissertations - Administrator's edit Dissertation Step view
+<div class="chefPortletContainer">
+	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<div class="chefPageviewTitle">
+		Revise A Step
+	</div>
+	<form name="editForm" id="editForm" action="#toolForm($action)" method="post" >
+		<input type="hidden" name="stepreference" id="stepreference" value="$step.Reference" />
+		<div class="chefPortletContent">
+			<table class="chefEditItem">
+				<tr> 
+					<td class="chefLabel" align="left" width="20%">
+						<label for="desc"><span class="chefRequiredInline">&nbsp;</span>Description&nbsp;:&nbsp;</label>
+					</td>
+					<td colspan=2> 
+						<textarea name="desc" cols="70" rows="6" id="desc" wrap="virtual">$validator.escapeHtmlTextarea($step.InstructionsText)</textarea>
+					</td>
+				</tr>
+				<tr valign="top"> 
+					<td class="chefLabel" align="left" width="20%">
+						<label for="vtype"><span class="chefRequiredInline">&nbsp;</span>Actors&nbsp;:&nbsp;</label>
+					</td>
+					<td align="left">
+						<select onchange="blur()" name="vtype" id="vtype" tabindex="5">
+							#foreach ($type in $validationtypes)
+								#if ($type.equals($step.getValidationType()))
+									<option value="$type" selected="selected">$validationTypeTable.get($type)</option>
+								#else
+									<option value="$type">$validationTypeTable.get($type)</option>
+								#end
+							#end
+						</select>
+					</td>
+				</tr>
+				#if ($step.hasPrerequisites())
+					<tr valign="top">
+						<td class="chefLabel" valign="top" width="20%">
+							<label for="removeprereqs"> Current prerequisites&nbsp;:&nbsp;<br />Select to remove.</label>
+						</td>
+						<td align="left">
+							<select onchange="blur()" name="removeprereqs" id="removeprereqs" multiple tabindex="6">
+								#foreach ($currentprereq in $step.PrerequisiteSteps)
+									<option value="$currentprereq.Reference">$currentprereq.ShortInstructionsText</option>
+								#end
+							</select>
+						</td>
+					</tr>
+				#else
+					<tr valign="top" clientHeight="100" offsetHeight="100">
+						<td class="chefLabel" clientHeight="100" offsetHeight="100" valign="top" width="20%">Current prerequisites&nbsp;:&nbsp;</td>  <td align="left">none</td>
+					</tr>
+				#end
+				<tr valign="top">
+					<td class="chefLabel" valign="top" width="20%">
+						<label for="addprereqs">Add prerequisites for this step&nbsp;:&nbsp;</label>
+					</td>
+					<td align="left">
+						<select onchange="blur()" name="addprereqs" id="addprereqs" multiple tabindex="6">
+							#foreach ($prereq in $prerequisites)
+								<option value="$prereq.Reference">$prereq.ShortInstructionsText</option>
+							#end
+						</select>
+					</td>
+				</tr>
+				#if ($userrole.equals("schoolrole"))
+					<tr valign="top">
+						<td class="chefLabel" valign="top" width="20%">
+							<label for="section">Section&nbsp;:&nbsp;</label>
+						</td>
+						<td align="left">
+							<select onchange="blur()" name="section" id="section" tabindex="6">
+							#foreach($section in $sections)
+								#if($section != "None")
+									<option value ="$section"
+									#if($section == $stepToMoveHeader)
+										selected="selected"
+									#end
+									>
+									$section
+									</option>
+								#end
+							#end
+							</select> 
+						</td>
+					</tr>
+					<tr valign="top">
+						<td class="chefLabel" valign="top">
+							<label for="autovalid">Auto Validation Number&nbsp;:&nbsp;</label>
+						</td>
+						<td>
+							<select onchange="blur()" name="autovalid" id="autovalid" tabindex="6">
+								#foreach ($id in $autovalidids)
+									#if ($id.equals($step.getAutoValidationId()))
+										<option selected="selected" value="$id">$id</option>
+									#else
+										<option value="$id">$id</option>
+									#end
+								#end
+							</select>
+						</td>
+					</tr>
+				#end
+					<tr>
+						<td colspan="3">
+							#if ($activepaths.booleanValue())
+							<br/><br/>
+								<input type="checkbox" checked="checked" name="retroactive" id="retroactive" value="retroactive" /> 
+									Apply this change to all current students<br/><br/>
+							#end
+						</td>
+					</tr>
+			</table>
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doUpdate_step" value="Save" />
+				<input type="submit" name="eventSubmit_doCancel_admin" value="Cancel" />
+			</div>
+		</div>
+	</form>
+</div>

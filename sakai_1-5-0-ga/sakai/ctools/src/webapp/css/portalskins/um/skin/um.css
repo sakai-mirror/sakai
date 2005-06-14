@@ -1,0 +1,9 @@
+@import url("../../core/skin/core.css");
+.divColor{background-color:#b8c2ce !important;}
+#divLogo{}
+#tabNavigation .selectedTab a, #tabNavigation .selectedTab a:link, #tabNavigation .selectedTab a:visited, #tabNavigation .selectedTab a:hover {
+	background-color:#b8c2ce;
+	border-bottom: none;
+	color: #2E3C52;
+	padding: 3px 5px 4px 5px
+}

@@ -1,0 +1,89 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/chat/chef_chat-Layout.vm,v 1.4 2005/02/08 22:44:51 gsilver.umich.edu Exp $
+## chef_chat-Layout.vm, use with org.chefproject.ChatAction.java
+##     context: $panel-monitor: String list panel url addition
+##              $panel-control: String controls panel url addition
+##              $panel-presence: String presence panel url addition
+##              $panel: String name of panel parameter
+##
+<script type="text/javascript">
+#set($count = 0)
+	focus_path = [ #foreach($element in $focus_path)#if($count>0), #end"$element"#set($count = $count + 1)#end ];
+</script>
+<div class="chefPortletContainer">
+	<iframe
+		name="$validator.escapeJavascript("$panel-toolbar")"
+		id="$validator.escapeJavascript("$panel-toolbar")"
+		title="$panel-toolbar"
+		class="chefPortletContainer"
+		width="100%"
+		style="line-height:1.7em;height:1.7em;"
+		frameborder="0"
+		marginwidth="0"
+		marginheight="0"
+		scrolling="no"
+		align="left"
+		src="#contentCourierLink("$panel-toolbar")">
+	</iframe>
+	<div class="chefPortletContent" style="width:auto !important;margin:0 !important;">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="layout">
+			<tr>
+				<td width="84%"  style="padding-bottom:.5em;color:#9E9E9E">
+					Please note: All chat messages are archived and can be read by any site participant.
+				</td>
+				<td width="16%"  style="padding-bottom:.5em">
+					<div class="chefInterportLetNavTextItem" style="color:#9E9E9E;">Users in Chat</div>
+				</td>
+			</tr>
+			<tr valign="top">
+				<td style="border-top:1px dashed silver !important;padding-top:.3em;margin:0;border-right:1px dashed silver">
+					<iframe
+						name="$validator.escapeJavascript("$panel-monitor")"
+						id="$validator.escapeJavascript("$panel-monitor")"
+						title="$panel-monitor"
+						width="100%"
+						height="300"
+						frameborder="0"
+						marginwidth="0"
+						marginheight="0"
+						scrolling="auto"
+						src="#chatlogLink("$panel-monitor")">
+					</iframe>
+				</td>
+				<td style="border-top:1px dashed silver;padding-top:.3em">
+					<iframe 
+						name="$validator.escapeJavascript("$panel-presence")"
+						id="$validator.escapeJavascript("$panel-presence")"
+						title="$panel-presence"
+						width="100%"
+						height="300"
+						frameborder="0"
+						marginwidth="0"
+						marginheight="0"
+						scrolling="no"
+						align="right"
+						src="#contentLink("$panel-presence")">
+					</iframe>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" valign="top">
+					<iframe
+						name="$validator.escapeJavascript("$panel-control")"
+						id="$validator.escapeJavascript("$panel-control")"
+						title="$panel-control"
+						class="chefPortletContainer"
+						width="100%"
+						height="120"
+						frameborder="0"
+						marginwidth="0"
+						marginheight="0"
+						scrolling="no"
+						align="middle"
+						src="#contentCourierLink("$panel-control")">
+					</iframe>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

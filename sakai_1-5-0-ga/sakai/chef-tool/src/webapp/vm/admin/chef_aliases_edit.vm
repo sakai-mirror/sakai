@@ -1,0 +1,76 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_aliases_edit.vm,v 1.2 2004/03/05 19:09:35 ggolden Exp $
+<script type="text/javascript" language="JavaScript">
+  focus_path = [#if(!$alias)"id"#else"target"#end];
+</script>
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Review and modify this Alias.
+		</div>
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Alias
+				</legend>
+				<table class="chefEditItem" summary="Review and modify this Alias.">
+					<tr>
+						<td class="chefLabel">
+							<label #if(!$alias) for="id" #end>
+								#if(!$alias)<span class="chefAlert">*</span>#end Alias:
+							</label>
+						</td>
+						<td>
+							#if(!$alias)<input type="text" name="id" id="id"/>#else$validator.escapeHtml($alias.Id)#end
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="target">
+								Target:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="target" id="target" #if($alias)value="$validator.escapeHtml($alias.Target)"#end/>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+#if ($alias)
+			<table class="chefItemDetail" summary="Review Alias=">
+				<tr>
+					<td class="chefLabel">Created By:</td>
+					<td>
+						$validator.escapeHtml($alias.Properties.getPropertyFormatted($alias.Properties.NamePropCreator))
+					</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">Created:</td>
+					<td >
+						$validator.escapeHtml($alias.Properties.getPropertyFormatted($alias.Properties.NamePropCreationDate))
+					</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">Modified By:</td>
+					<td>
+						$validator.escapeHtml($alias.Properties.getPropertyFormatted($alias.Properties.NamePropModifiedBy))
+					</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">Modified:</td>
+					<td>
+						$validator.escapeHtml($alias.Properties.getPropertyFormatted($alias.Properties.NamePropModifiedDate))
+					</td>
+				</tr>
+			</table>
+#end
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doSave" value="Save" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

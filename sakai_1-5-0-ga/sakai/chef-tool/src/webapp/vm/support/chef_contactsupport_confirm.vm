@@ -1,0 +1,20 @@
+<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/support/chef_contactsupport_confirm.vm,v 1.1 2004/03/11 05:29:59 ggolden Exp $ -->
+<div class="chefPortletContainer">
+    <div class="chefPortletContent">
+        #if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+
+        #if (!$alertMessage)
+        <div class="chefInfoBox">
+            Thank you. Your comments/questions have been sent out successfully. 
+        </div>
+        #end
+
+        <form action="#toolForm("$action")" method="post">
+        <p><div class="chefButtonRow">
+            <input type="submit" name="eventSubmit_doNew" value="More comments" />
+            <input type="submit" name="eventSubmit_doDoc" value="Go to the Help page" />
+        </div></p>
+        </form>
+
+    </div>
+</div>

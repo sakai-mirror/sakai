@@ -1,0 +1,79 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_move_step.vm,v 1.5 2004/09/02 20:06:09 rwellis.umich.edu Exp $ -->
+## Dissertations - All roles, move Dissertation Step View
+<div class="chefPortletContainer">
+	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<div class="chefPageviewTitle">
+		Move a Step
+	</div>
+	<form name="moveForm" id="moveForm" action="#toolForm($action)" method="post">
+		<div class="chefPortletContent">
+			<div class="chefPortletToolBarMessage">
+  				You have chosen to move this step&nbsp;:&nbsp;$stepdesc
+			</div>
+			<table class="chefEditItem">
+				<tr valign="top">
+					<td class="chefLabel" valign="top" width="15%">
+						<label for="location"><span class="chefRequiredInline">&nbsp;</span>Location&nbsp;:&nbsp;</label>
+					</td>
+					<td>
+						<select onchange="blur()" name="location" id="location" tabindex="6">
+							<option selected="selected" value="start">START</option>
+							#foreach ($step in $orderedsteps)
+								<option value="$step.Reference">$step.ShortInstructionsText</option>
+							#end
+						</select>
+						<div class="chefSectionMessage">
+							Note : The step will appear AFTER the step you select.
+						</div>
+					</td>
+				</tr>
+			#if($userrole.equals("schoolrole"))
+				<tr>
+					<td class="chefLabel" valign="top" width="15%">
+						<label for="section">Section&nbsp;:&nbsp</label>
+					</td>
+					<td>
+						<select onchange="blur()" name="section" id="section">
+						#foreach($section in $sections)
+							#if($section != "None")
+								<option value ="$section"
+								#if($section == $stepToMoveHeader)
+									selected="selected"
+								#end
+								>
+								$section
+								</option>
+							#end
+						#end
+						</select>
+						<div class="chefSectionMessage">
+							Note: A change in section is required only if a location change moved the step to a different section.
+						</div>
+					</td>
+				</tr>
+			#end
+				<tr>
+					<td colspan="2">
+						#if ($activepaths.booleanValue())
+						<br/><br/>
+							<input type="checkbox" checked="checked" name="retroactive" id="retroactive" value="retroactive" /> 
+								Apply this change to all current students<br/><br/>
+						#end
+					</td>
+				</tr>
+			</table>
+			<div class="chefButtonRow">
+				#if ($userrole.equals("adminrole") || $userrole.equals("schoolrole"))
+					<input type="submit" name="eventSubmit_doUpdate_step_location" value="Move" />
+					<input type="submit" name="eventSubmit_doCancel_admin" value="Cancel" />
+				#elseif ($userrole.equals("committeerole"))
+					<input type="submit" name="eventSubmit_doUpdate_stepstatus_location_comm" value="Move" />
+					<input type="submit" name="eventSubmit_doCancel_committee" value="Cancel" />
+				#elseif ($userrole.equals("candidaterole"))
+					<input type="submit" name="eventSubmit_doUpdate_stepstatus_location" value="Move" />
+					<input type="submit" name="eventSubmit_doCancel_candidate" value="Cancel" />
+				#end
+			</div>
+		</div>
+	</form>
+</div>

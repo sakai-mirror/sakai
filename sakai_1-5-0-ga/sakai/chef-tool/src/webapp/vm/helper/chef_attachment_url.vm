@@ -1,0 +1,28 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/helper/chef_attachment_url.vm,v 1.1 2004/03/08 03:24:45 ggolden Exp $ -->
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["url"];
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		$from
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Enter the URL and choose 'Attach' at the bottom.			
+		</div>
+		<form name="form" action="#toolForm("AttachmentAction")" method="post">
+			<table class="chefEditItem">
+				<tr>
+					<td class="chefLabel">URL:</td>
+					<td><input type="text" name="url" id="url" size="80" onkeypress="return clickOnEnter(event, 'eventSubmit_doAdd');"/></td>
+				</tr>
+			</table>
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doAdd" id="eventSubmit_doAdd" value="Attach" />
+				<input type="submit" name="eventSubmit_doCancel_add" id="eventSubmit_doCancel_add" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content>
+    <collection id="/group-user/">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="CHEF:is-collection" value="dHJ1ZQ==&#xa;"/>
+            <property enc="BASE64" name="DAV:displayname" value="Z3JvdXAtdXNlcg==&#xa;"/>
+            <property enc="BASE64" name="CHEF:modifiedby" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+        </properties>
+    </collection>
+    <collection id="/group/">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="CHEF:is-collection" value="dHJ1ZQ==&#xa;"/>
+            <property enc="BASE64" name="DAV:displayname" value="Z3JvdXA=&#xa;"/>
+            <property enc="BASE64" name="CHEF:modifiedby" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+        </properties>
+    </collection>
+    <collection id="/public/">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="CHEF:is-collection" value="dHJ1ZQ==&#xa;"/>
+            <property enc="BASE64" name="DAV:displayname" value="cHVibGlj&#xa;"/>
+            <property enc="BASE64" name="CHEF:modifiedby" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+        </properties>
+    </collection>
+    <collection id="/">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="CHEF:is-collection" value="dHJ1ZQ==&#xa;"/>
+            <property enc="BASE64" name="DAV:displayname" value="cm9vdA==&#xa;"/>
+            <property enc="BASE64" name="CHEF:modifiedby" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+        </properties>
+    </collection>
+    <collection id="/user/">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="CHEF:is-collection" value="dHJ1ZQ==&#xa;"/>
+            <property enc="BASE64" name="DAV:displayname" value="dXNlcg==&#xa;"/>
+            <property enc="BASE64" name="CHEF:modifiedby" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+        </properties>
+    </collection>
+    <collection id="/attachment/">
+        <properties>
+            <property enc="BASE64" name="CHEF:creator" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="CHEF:is-collection" value="dHJ1ZQ==&#xa;"/>
+            <property enc="BASE64" name="DAV:displayname" value="YXR0YWNobWVudA==&#xa;"/>
+            <property enc="BASE64" name="CHEF:modifiedby" value="YWRtaW4=&#xa;"/>
+            <property enc="BASE64" name="DAV:getlastmodified" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+            <property enc="BASE64" name="DAV:creationdate" value="MjAwMjA0MDEwMDAwMDAwMDA=&#xa;"/>
+        </properties>
+    </collection>
+</content>

@@ -1,0 +1,62 @@
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		#if ($message.hasReplies())
+			Deleting messages...
+		#else
+			Deleting message...
+		#end
+	</div>	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<script type="text/javascript">
+			focus_path = [ "eventSubmit_doDelete_topiic" ];
+			if (parent) if (parent.parent) parent.parent.window.scrollTo(0,400);
+		</script>
+		#if ($message.hasReplies())
+			<div class="chefAlertBox">Are you sure you want to delete these messages? All replies to the selected message will also be deleted. </div>
+		#else
+			<div class="chefAlertBox">Are you sure you want to delete this message?</div>
+		#end
+			<br />
+			<br />
+			<form name="forNotLetDeleteSelectedOnLoad"></form>
+        		<table class="chefFlatListViewTable" cellspacing="0">
+        			<tr>
+        				<th>Subject</th>
+        				<th>From</th>
+        				<th>Date</th>
+        			</tr>
+				<tr>
+        					<td>
+    						#if ($message.Header.draft)
+    							<span class="chefAlert">Draft - </span>
+    						#end
+    						$validator.escapeHtml($message.Header.subject)
+    					</td>
+    					<td>$validator.escapeHtml($message.Header.From.DisplayName)</td>
+    					<td>$message.Header.Date.toStringLocalFull()</td>
+    				</tr>
+        			#foreach ($delete_item in $delete_messages)
+        				<tr>
+        					<td>
+        						#if ($delete_item.Header.draft)
+        							<span class="chefAlert">Draft - </span>
+        						#end
+        						$validator.escapeHtml($delete_item.Header.subject)
+        					</td>
+        					<td>$validator.escapeHtml($delete_item.Header.From.DisplayName)</td>
+        					<td>$delete_item.Header.Date.toStringLocalFull()</td>
+        				</tr>
+        			#end
+        		</table>
+		
+		<br />
+		
+		<form action="#toolForm($action)" method="post">
+			<div class="chefButtonRow">
+				<input type="hidden" name="messageId" value="$message.id" />
+				<input type="submit" name="eventSubmit_doDelete_message" id="eventSubmit_doDelete_message" value="Delete" />
+				<input type="submit" name="eventSubmit_doCancel_delete_message" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

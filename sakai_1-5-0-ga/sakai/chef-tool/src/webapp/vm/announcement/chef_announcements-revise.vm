@@ -1,0 +1,136 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/announcement/chef_announcements-revise.vm,v 1.4 2004/10/01 01:18:16 janderse.umich.edu Exp $ 
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["subject"];
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		#if ( $newAnn =="true")
+			Adding announcement...
+		#else
+			Revising announcement...
+		#end
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			#if ( $newAnn =="true")
+				Complete the form, then choose the appropriate button at the bottom. A <span class="chefRequiredInline">means</span> required information.
+			#else
+				Update the form, then choose the appropriate button at the bottom. A <span class="chefRequiredInline">means</span> required information.
+			#end
+		</div>
+		<form name="reviseForm" action="#toolForm("AnnouncementAction")" method="post">
+			<input type="hidden" name="fromInterface" value="revise" />
+			<fieldset>
+				<legend>Announcement</legend>
+				<table class="chefEditItem" cellspacing="0">
+				<tr>
+					<td  class="chefLabel"><span class="chefRequiredInline">Subject:</span></td>
+					<td>
+						#if ($new=="true")
+							<input type="text" name="subject" id="subject" value="$validator.escapeHtml($tempSubject)" />                
+						#else
+							<input type="text" name="subject" id="subject" value="$validator.escapeHtml($message.Header.subject)" />
+						#end
+					</td>
+				 </tr>
+				 <tr>
+					<td class="chefLabel" nowrap="nowrap"><span class="chefRequiredInline">Announcement:</span></td>
+					<td>
+						<table border="0"><tr><td>
+						<textarea name="body" id="body" cols="80" rows="15" wrap="virtual">#if ($new=="true")$validator.escapeHtmlFormattedTextarea($tempBody)#else$validator.escapeHtmlFormattedTextarea($message.body)#end</textarea>
+						#chef_setupformattedtextarea("body")
+						</td></tr></table>
+					</td>
+				</tr>
+				<tr> 
+					<td class = "chefLabel"> 
+						Public View:
+					</td>
+					<td>
+                                            #if($pubviewset)
+                                                Set to Yes at a higher level.
+                                            #else
+						<input type="radio" name="pubview" id="pubview_true" value="true" #if ($pubview) checked="checked" #end />Yes<br />
+						<input type="radio" name="pubview" id="pubview_false" value="false" #if (!$pubview) checked="checked" #end />No
+                                            #end
+					</td>
+				</tr>
+				<tr>	
+					<td class="chefLabel"></td>
+					<td>
+						<fieldset class="chefAttachmentsF">
+							<legend class="chefAttachmentsL">Attachments</legend>
+							#set ($size = 0)
+							#if (!$attachments.isEmpty())
+								 #set ($props = false)
+								 #set ($size =  $attachments.size())
+##Note(gds): next node should not render if there are no attachments - XHTML does not allow <ul> nodes with no children
+								 <ul class="chefAttachmentList">
+									 #foreach ($attachment in $attachments)
+										#set ($props = $attachment.Properties)
+										#if (!$props)
+												#if ($size > 0) #set ($size = $size - 1) #end
+										#else
+												#if ($props.getBooleanProperty($props.NamePropIsCollection))
+													<li><img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder" />
+												#else
+													<li>
+														<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt ="$props.getProperty($props.NamePropContentType)" />
+												#end
+												<a href="$attachment.Url" target="_blank">
+												$validator.escapeHtml($attachment.Properties.getPropertyFormatted("DAV:displayname"))</a>
+												#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+													($props.getPropertyFormatted($props.NamePropContentLength))
+												#end
+												</li>
+										#end
+										#set ($props = false)
+									#end
+								</ul>	
+							#end
+							#if ($size == 0) No attachments ...
+								<div class="chefButtonRow">
+									 <input type="submit" name="eventSubmit_doAttachments" value="Add attachments" />
+								</div>
+							#else
+								<div class="chefButtonRow">
+									 <input type="submit" name="eventSubmit_doAttachments" value="Add/drop attachments" />
+								</div>
+							 #end
+					  </fieldset>
+					  </td>
+				 </tr>
+				 </table>
+			</fieldset>
+			#if ($notification)
+				<table>
+						<tr>
+						<td style="vertical-align:middle">Email Notification:</td>
+						<td>
+							<select name="notify">
+                                                            #if ($noti)
+								<option value="r" #if($noti=="r") selected="selected" #end>High - All participants</option>
+								<option value="o" #if($noti=="o") selected="selected" #end>Low - Only participants who have opted in</option>
+								<option value="n" #if($noti=="n") selected="selected" #end>None - No notification</option>
+                                                             #else
+                                                                <option value="r">High - All participants</option>
+								<option value="o">Low - Only participants who have opted in</option>
+								<option value="n" selected="selected">None - No notification</option>
+                                                             #end
+							</select>
+						</td>
+					</tr>
+				</table>
+			#end
+
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doPost" value=" Post " />
+				<input type="submit" name="eventSubmit_doRevisepreview" value="Preview" />
+				<input type="submit" name="eventSubmit_doSavedraft" value="Save Draft" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />     
+			</div>
+		</form>
+	</div>
+</div>

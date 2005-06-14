@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<category name="myworkspace">
+
+		<tool id = "chef.membership" />
+		<tool id = "chef.sitesetup" />
+		<tool id = "chef.schedule" />
+		<tool id = "chef.announcements" />
+		<tool id = "chef.resources" />
+		<tool id = "chef.news" />
+		<tool id = "chef.iframe" />
+		<tool id = "chef.noti.prefs" />
+		<tool id = "chef.singleuser" />
+	</category>
+
+	<default-tool name="myworkspace">
+	</default-tool>
+
+</registration>

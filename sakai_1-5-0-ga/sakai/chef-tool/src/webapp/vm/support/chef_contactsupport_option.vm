@@ -1,0 +1,29 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/support/chef_contactsupport_option.vm,v 1.1 2004/09/02 14:07:40 suiyy.umich.edu Exp $ 
+
+<div class="PortletContainer"> 
+<div class="chefPortletContent">
+
+<form name="Options" action="#toolForm("$action")" method="post">
+	<fieldset>
+	<legend>Help tool Options</legend>
+	    <table class="chefEditItem">
+			<tr>
+				<td class="label"><label>Help Guide URL:</label></td>
+				<td><input type="text" id="newHelpGuideUrl" name="newHelpGuideUrl"  value=""/></td>
+			</tr>
+			<tr>
+				<td class="label"><label>Contact Us Email:</label></td>
+				<td><input type="text" id="newHelpEmail" name="newHelpEmail"  value=""/></td>
+			</tr>
+		</table>
+	</fieldset>
+	
+	<div class="chefButtonRow">
+	<input type="submit" name="eventSubmit_doSave" value="Save">
+	<input type="submit" name="eventSubmit_doCancel" value="Cancel">
+	</div>
+</form>
+
+</div>
+</div>
+

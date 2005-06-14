@@ -1,0 +1,133 @@
+BODY{width:100%;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;}
+/*GROUP 1 - top navigation*/
+
+#tabNavigation {
+	background-color: #CCC;
+	white-space: nowrap;
+	list-style: none none none;
+	font-size: .8em;
+	margin: 0 0 0 3px;
+	padding: 4px 0 4px 0;
+	width:100%;
+}
+#tabBottom{
+	color:#630063;
+	font-size: .7em;
+	text-align: right;
+	padding:16px 12px 3px 3px;
+	margin:0;
+	clear:both;
+}	
+.tabHolder{width:100%;height:auto;padding-top:1px;background: #CCC;} 
+#tabBottom a, #tabBottom a:link, #tabBottom a:visited {color:#fff;white-space: nowrap;text-decoration:none}
+#tabBottom  a:hover {color:#fff;text-decoration: underline;white-space: nowrap;}
+/*moz*/
+html #tabNavigation/* */ {padding: 4px 0 4px 0;}
+html>body #tabNavigation {margin: 0 0 0 3px;padding: 4px 0 4px 0;}
+#tabNavigation li {display: inline;line-height: .9em;margin-top:10px}
+#tabNavigation a, #tabNavigation a:link, #tabNavigation a:visited {
+	background-image: url(topleft-tab.gif);
+	background-position: top left;
+	background-repeat: no-repeat; 
+	background-color: #630063;
+	color: #fff;
+	height: .8em;
+	margin: 0px 0 0px 0;
+	padding: 2px 6px 2px 6px;
+	text-decoration: none
+}
+html #tabNavigation a/* */, html #tabNavigation a:link/* */, html #tabNavigation a:visited/* */ {
+	border-bottom: none;
+	height: auto;
+	margin: 0
+}
+html>body #tabNavigation a, html>body #tabNavigation a:link, html>body #tabNavigation a:visited {border-bottom: none;padding: 4px 6px 4px 6px}
+\head+body #tabNavigation a, \head+body #tabNavigation a:link, \head+body #tabNavigation a:visited {padding: 3px 6px 3px 6px}
+#tabNavigation a:hover {background-color: #FC0;color: #2E3C52;	background-image: url(topleft-tab_hov.gif);
+	background-position: top left;
+	background-repeat: no-repeat; 
+}
+#tabNavigation .selectedTab a, #tabNavigation .selectedTab a:link, #tabNavigation .selectedTab a:visited, #tabNavigation .selectedTab a:hover {
+	background-image: url(topleft-curtab.gif);
+	background-position: top left;
+	background-repeat: no-repeat; 
+	margin:10px 0 0 0;
+	background-color: #C6BEC6;
+	border-bottom:1px solid #C6BEC6;
+	padding: 2px 6px 2px 6px;
+	color: #630063;
+}
+.divColor{background-color:#C6BEC6 !important;}
+
+html>body #tabNavigation .selectedTab a, html>body #tabNavigation .selectedTab a:link, html>body #tabNavigation .selectedTab a:visited {padding: 4px 5px 5px 5px}
+\head+body #tabNavigation .selectedTab a, \head+body #tabNavigation .selectedTab a:link, \head+body #tabNavigation .selectedTab a:visited, \head+body #tabNavigation .selectedTab a:hover {padding: 3px 5px 4px 5px}
+.fixTabsIE {visibility: hidden;display:none;border-width:0;}
+
+/*GROUP 2 - masthead */
+
+.mast-head{width: 100%;background-color: #CCC;margin:0px:0px;font-size:.8em;color:#630063;}
+.mast-head-r{text-align: right;white-space: nowrap;padding-right:15px;}
+.mast-head-r a, .mast-head-r a:visited{color: #5F245F;text-decoration: none;}
+.mast-head-r a:hover {color : #5F245F;text-decoration: underline;}
+.mast-head-r ul{margin:5px;list-style: none;font-size: .8em;}
+.mast-head-r ul li{display: inline;margin:0px;}
+input {border:1px solid #00309C;background-color:#FFFFDF;padding:3px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:#00309C}
+.button {border:1px solid #00309C;background-color:#FFFFDF;margin-left:1em;padding:1px;color:#2E3C52}	
+
+.sakaiAlertBox
+{
+	background-color:#FFF8DF;
+	background-image:url(/sakai-portal/image/warn.gif);
+	background-position:.3em .3em;
+	background-repeat:no-repeat;
+	border:1px solid #B8B88A;
+	clear:both;
+	color:#663300;
+	font-size:x-small;
+	margin:5px 2px 15px 2px;
+	padding:3px 3px 5px 25px
+}
+#presence{
+	border:1px solid #C6BEC6
+}
+* GROUP 3 - content and channels */
+/*the middle layer - tool menu and content*/
+.sakaiAlertBox /*used in alert for unpub sites*/{
+background-color:#fff;
+background-image:url(/sakai-portal/image/warn.gif);
+background-position: 3px 3px;
+background-repeat:no-repeat;
+border:1px solid  #536377;
+clear:both;
+color:#1A506A;
+font-size:x-small;
+margin:5px 2px 15px 2px;
+padding:3px 3px 3px 20px
+}
+html .sakaiAlertBox/* */{background-position:3px center/* - adj for ie - */}
+
+#leftnavlozenge{width:11.2em;padding:0;margin-bottom:1em;margin-right:0em;margin-left:0px;font-size:70%;color:#fff;clear:both}
+#leftnavlozenge ul{list-style:none;margin:0;padding:0;border:none}
+#leftnavlozenge li{margin:0;width:auto}
+#leftnavlozenge li a{display:block;padding:5px 5px 5px 0.5em;text-decoration:none;width:100%;color:#630063;}
+/*	adjust for moz + safari*/
+html>body #leftnavlozenge li a{width:auto;border-width:1px 0 1px 1px;border-color:transparent;border-style:solid}
+#presence{width:100%;border-bottom:1px solid #C6BEC6;}
+/* GROUP 4 - content and channels */
+.channeltitlewrap{
+	padding:0;width:99.2%
+}
+.channelTitleIframe{width:100% !important;margin:0 !important;}
+
+.uportalchannelcontent{border:1px solid #B8C2CE;background-color:#fff;text-align:left;width:99%; margin-bottom:.5em}
+/*GROUP 5:tableless layout*/
+#container{}
+#content{padding:.3em .3em .3em .3em;margin-left:8.5em;background-color:#fff}
+#sidebar{float:left;width:8.4em;line-height:17px;color:#fff}
+#footer{background-color:#C6BEC6;color:#1A506A;font-size:xx-small;margin:0px;padding:0;width:auto;clear:both;top:0}
+.footerExtNav{padding-top:.5em;padding-bottom:.5em}
+.footerExtNav a,.footerExtNav A:link,.footerExtNav A:visited{color:#630063;text-decoration:none;margin:1em}
+.footerExtNav a:hover{color:#630063;text-decoration:underline;margin:1em}
+#footerInfo{background-color:#FFF;font-size:xx-small;text-align:center;clear:both}
+#footerInfo img{margin-top:.5em;margin-bottom:.5em}
+#leftnavlozenge li a.selected,#leftnavlozenge li a:hover{padding:5px 5px 5px 0.5em;width:100%;background-color:#fff;color:#630063 }

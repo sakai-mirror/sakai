@@ -1,0 +1,80 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/news/chef_news-Layout.vm,v 1.4 2004/10/21 19:18:13 ggolden.umich.edu Exp $
+## chef_news-Layout.vm, use with org.chefproject.NewsAction.java
+##     context: $panel-monitor: String list panel url addition
+##              $panel-control: String controls panel url addition
+##
+<div class="chefPortletContainer">
+#if($menu)#toolbar($menu)#end
+#if ($alertMessage)
+	<div class="chefAlertBox">
+		Alert: $validator.escapeHtml($alertMessage)
+	</div>
+#end
+	<div class="chefPortletContent">
+#if($channel.ImageUrl)
+		<div style="text-align: center;margin-bottom:1em">
+  			<a href="$channel.ImageLink" target="_blank">
+  				<img src="$channel.ImageUrl" border="0" alt="$channel.ImageTitle" alt="$channel.ImageDescription" width="$channel.ImageWidth" height="$channel.ImageHeight" />
+  			</a>
+  			<br />
+		</div>
+#end
+#if($channel.Title)
+		<div class="chefChatUserName">
+			$channel.Title
+		</div>
+#end
+#if($channel.Description)
+		<div class="chefChatMessageBody">
+			$channel.Description
+		</div>
+#end
+#if($channel.Copyright)
+		<div class="chefChatTimeStamp">
+			$channel.Copyright
+		</div>
+#end
+#if($channel.Lastbuilddate)
+		<div class="chefChatTimeStamp">
+			Last build date: $channel.Lastbuilddate
+		</div>
+#end
+#if($channel.Link)
+		<div class="chefChatTimeStamp">
+			<a href="$validator.escapeHtml($channel.Link)" target="_blank">($graphic_version)</a>
+		</div>
+#end
+		<hr />
+		<br />
+		<iframe
+			name="$validator.escapeJavascript("$panel-monitor")"
+			id="$validator.escapeJavascript("$panel-monitor")"
+			title="$panel-monitor"
+			class="chefPortletContainer"
+			width="100%"
+			height="350"
+			frameborder="0"
+			marginwidth="0"
+			marginheight="0"
+			scrolling="auto"
+			align="middle"
+			src="#contentLink("$panel-monitor")">
+		</iframe>
+		<br />
+		<iframe
+			name="$validator.escapeJavascript("$panel-control")"
+			id="$validator.escapeJavascript("$panel-control")"
+			title="$panel-control"
+			class="chefPortletContainer"
+			width="100%"
+			height="50"
+			frameborder="0"
+			marginwidth="0"
+			marginheight="0"
+			scrolling="no"
+			align="middle"
+			src="#contentCourierLink("$panel-control")">
+		</iframe>
+	</div>
+</div>
+

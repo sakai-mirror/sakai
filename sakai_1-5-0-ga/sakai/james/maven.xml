@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- default goal for the project builds and installs the war in the local repository -->
+<project default="war:install">
+
+	<!-- the common "full" goal invokes the default goal.  Used in maven -Dgoal=full multiproject:goal from .. -->
+	<goal name="full">
+		<attainGoal name="war:install" />
+	</goal>
+
+	<goal name="reg" />
+	
+</project>

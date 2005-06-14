@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Sakai DAV</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-dav</id>
+	<currentVersion>sakai.1.5.0</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2002</inceptionYear>
+
+	<dependencies>
+
+		<!-- to be able to access the Sakai utilitiy classes -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util</artifactId>
+			<version>sakai.1.5.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-component</artifactId>
+			<version>sakai.1.5.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-service</artifactId>
+			<version>sakai.1.5.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-dav-common</artifactId>
+			<version>sakai.1.5.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-velocity</artifactId>
+			<version>sakai.1.5.0</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+
+		<dependency>
+			<groupId>servletapi</groupId>
+			<artifactId>servletapi</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>catalina</groupId>
+			<artifactId>naming-resources</artifactId>
+			<version>tomcat5.0.27</version>
+		</dependency>
+
+		<dependency>
+			<groupId>catalina</groupId>
+			<artifactId>catalina</artifactId>
+			<version>tomcat5.0.27</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+
+		<dependency>
+			<groupId>catalina</groupId>
+			<artifactId>catalina-optional</artifactId>
+			<version>tomcat5.0.27</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<sourceDirectory>src/java</sourceDirectory>
+
+		<resources>
+			<resource>
+				<directory>${basedir}/src/bundle</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	
+	</build>
+
+</project>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.module"
+			url="/sakai-module/mytool/jsf.tool"
+			title="Example JSF Tool (Hello World)"
+			description="Example JSF Tool (Hello World)">
+
+	</tool>
+
+</registration>

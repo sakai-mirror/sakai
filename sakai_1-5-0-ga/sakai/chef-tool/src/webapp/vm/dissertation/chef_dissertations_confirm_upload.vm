@@ -1,0 +1,44 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_confirm_upload.vm,v 1.1 2004/03/22 15:31:01 ggolden Exp $ -->
+## Dissertations - Administrator's form for confirming selection of OARD Doctoral System and MPathways extract files
+<div class="chefPortletContainer" id="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<span class ="chefPortletToolBarMessage">
+		Confirm extracts...
+	</span>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+			<form name="loadExtracts" id="loadExtracts" action="#toolForm($action)" method="post" enctype="multipart/form-data">
+				<fieldset>
+					<legend>OARD Extract
+					</legend>
+						<br />
+						$!OARDFileName &nbsp;&nbsp;<br />
+						$!OARDLines #if($OARDLines)record(s)#end &nbsp;&nbsp;<br />
+						$!OARDContentType #if($OARDContentType)content#end &nbsp;&nbsp;<br />
+						<br />
+				</fieldset>
+				<fieldset>
+					<legend>MPathways Extract
+					</legend>
+						<br />
+						$!MPFileName &nbsp;&nbsp;<br />
+						$!MPLines #if($MPLines)record(s)#end &nbsp;&nbsp;<br />
+						$!MPContentType #if($MPContentType)content#end &nbsp;&nbsp;<br />
+						<br />
+				</fieldset>
+				<div class="chefSectionMessage">
+					<br />
+					If the file information above is correct, click 'Continue.'
+					Otherwise, click 'Cancel' to return to the file upload form.<br />
+					<br />
+					Please click only once, and wait until the data have finished 
+					loading before logging out or disconnecting.<br />
+					<br />
+				</div>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doContinue_load" id="eventSubmit_doContinue_upload" value="Continue" />
+					<input type="submit" name="eventSubmit_doCancel_load" id="eventSubmit_doCancel_upload" value="Cancel" />
+				</div>
+			</form>
+	</div>
+</div>

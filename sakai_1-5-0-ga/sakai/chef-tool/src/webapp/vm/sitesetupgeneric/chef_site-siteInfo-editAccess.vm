@@ -1,0 +1,117 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-siteInfo-editAccess.vm,v 1.12 2005/02/14 18:24:23 zqian.umich.edu Exp $ -->
+## Site list Sites list on worksite setup home page
+<div class ="portletBody">
+	#if($menu)#toolbar($menu)#end
+	#if ($alertMessage)
+		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	#if ($!siteEdit)
+		<h3 class="insColor insBak insBor">
+			Change Access for $site.Title
+		</h3>
+	#else
+		<h3 class="insCol insBak insBor">
+			Set Site Access
+		</h3>
+		#if ($!isProjectSite)
+			<p class="step">
+				Step $!step of $!totalSteps: Set access options for your site...
+			</p>
+		#elseif ($!isCourseSite)
+			<p class="step">
+				Step $!step of $!totalSteps: Set access options for your site...
+			</p>
+		#else
+			<p class="step">
+				Set access options for your site...
+			</p>
+		#end
+	#end
+	</h3>
+	<form name="editParticipantForm" action="#toolForm("SiteAction")" method="post">
+		<h4 class="insColor insBak insBor">
+			Site Status
+		</h4>
+		<p class="instruction">
+			Publishing your site makes it available to the site participants. Global access settings  allow you to decide who has access to your site once it is published. You can change  these settings later by going to Site Info.
+		</p>
+		<p class="checkbox indnt1">
+			#if ($!siteEdit)
+				<input type="checkbox" name="publishunpublish" id="publishunpublish" value="publish" #if ($site.isPublished())checked="checked"#end />	
+			#else
+				<input type="checkbox" name="publishunpublish" id="publishunpublish" value="publish" #if ($!published)checked="checked"#end />	
+			#end
+			<label for="publishunpublish">
+				Publish site
+			</label>
+		</p>	
+		<h4 class="insColor insBak insBor">
+			Global Access
+		</h4>
+		<p class="instruction">
+			Your site can be accessed by those you add as participants. Would you like others to have access to your site?
+		</p>
+		#if ($!publicChangeable)
+			<p class="checkbox indnt1">
+				<input type="radio" name="include" id="access_private" value="false" #if(!$!include)checked="checked"#end />
+				<label for="access_private">
+					Private
+				</label>
+			</p>
+			<p class="checkbox indnt1">
+				<input type="radio" name="include" id="access_public" value="true" #if($!include)checked="checked"#end />
+				<label for="access_public">
+					Display my site in the directory, and share files I select
+				</label>
+	##			<tr>
+	##				<td>
+	##					<input type="radio" name="publicChoice" id="access" value="all" />
+	##				</td>
+	##				<td>
+	##					Public - All Materials Shared
+	##				</td>
+	##			</tr>
+			</p>
+		#end
+		<div style="display:block;clear:both"></div>
+		<div style="display:block;clear:both"></div>
+		<p class="checkbox indnt1">
+			<input type="checkbox" name="joinable" id="joinable" value="true" #if ($joinable) checked="checked"#end />
+			<label for="joinable">
+				Can be joined by anyone with authorization to log in<br />
+			</label>
+		</p>
+		<p class="checkbox indnt3">
+			<label for="joinerRole">
+				Role for people that join site:
+			</label>
+			<select name="joinerRole" id="joinerRole">
+				<option value="">Please select a role:</role>
+				#foreach($r in $roles)
+					<option value ="$r.Id"
+						#if($r.Id == $joinerRole)
+							selected="selected"
+						#end
+					>
+						$r.Id
+					</option>
+				#end
+			</select>
+		</p>
+		<input type="hidden" name="continue" value="$!continue" />
+		<input type="hidden" name="template-index" value="18" />
+		<input type="hidden" name="back" value="$!back" />
+		<div class ="act">
+			#if($!siteEdit)
+				<input type="submit" class="active" name="eventSubmit_doUpdate_site_access" value="Update" />
+				<input type="submit" name="eventSubmit_doCancel" value="Back" />
+			#else
+				<input type="submit" class="active" name="eventSubmit_doUpdate_site_access" value="Continue" />
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+				<input type="submit" name="eventSubmit_doCancel_create" value="Cancel" />
+			#end
+		</div>
+	</form>
+</div>
+

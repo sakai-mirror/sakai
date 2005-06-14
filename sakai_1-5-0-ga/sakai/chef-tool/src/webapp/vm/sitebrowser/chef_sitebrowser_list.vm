@@ -1,0 +1,184 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitebrowser/chef_sitebrowser_list.vm,v 1.11 2004/11/29 21:51:45 suiyy.umich.edu Exp $ -->
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["search"];
+</script>
+	
+<div class="portletBody">
+	
+	#*
+	<div class="chefToolBarWrapForm">
+		#if (($menu) && (!$menu.isEmpty()))
+			#foreach ($item in $menu.Items)
+				## figure the link
+				#set ($base=$sakai_ActionURL.reset().setParameter("sakai_action", $item.Action).toString())
+		
+				## enabled not field not divider (i.e. a button)
+				#if (!$item.IsField)
+					<a href="#" title="$item.Title" onclick="location = '$base'#if($item.Form)+buildQueryString('$item.Form')#end;return false;">
+						$item.Title
+					</a>
+				## here's a text field in a form for the toolbar
+				#else
+				<form name="$item.Form" action="$base" class="toolbarForm" method="post">
+					<input size="15" value="$item.Value" name="$item.Title" id="$item.Title" type="text" class="searchField" />
+				</form>
+				#end
+			## end of foreach loop
+			#end
+		## end if "if there's a menu" if
+		#end
+	</div>
+	*#
+	<div class="chefToolBarWrapForm">
+	<a href="#" onclick="location='#toolLink("$action" "doShow_simple_search")';return false;" title ="Search">Search</a>
+	</div>
+	
+	<h3 class="insColor insBak insBor">Results</h3>
+		
+#if ($sites.size() > 0)
+
+ 	<p>
+    <span class="leftNav">
+    	#if ("$!siteType" == "") #set($siteType="Any") #end
+
+    	#if ($termSelection)
+        $allMsgNumber sites were found that matches your search for "$siteType" type of site, "$!searchText" Text and "$termSelection" Academic Term.    	
+    	#else
+        $allMsgNumber sites were found that matches your search for "$siteType" type of site, and "$!searchText" Text.
+        #end
+    </span>
+    <span class="rightNav">
+        <span class="instruction">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</span>
+        <br />
+        #if ($pagesize != 0)
+			#if ($goPPButton == "true")
+				<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+				<input type="submit" name="eventSubmit_doList_prev" value="Previous $pagesize" />
+				</form>
+			#end
+		#end
+		
+		<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
+		<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
+		<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+		<option value="5" #if($pagesize == 5) selected="selected" #end>show 5 items per page</option>
+		<option value="10" #if($pagesize == 10) selected="selected" #end>show 10 items per page</option>
+		<option value="20" #if($pagesize == 20) selected="selected" #end>show 20 items per page</option>
+		<option value="50" #if($pagesize == 50) selected="selected" #end>show 50 items per page</option>
+		<option value="100" #if($pagesize == 100) selected="selected" #end>show 100 items per page</option>
+		<option value="200" #if($pagesize == 200) selected="selected" #end>show 200 items per page</option>
+		</select>
+		</form>
+		
+		#if ($pagesize != 0)
+			#if ($goNPButton == "true")
+				<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+				<input type="submit" name="eventSubmit_doList_next" value="Next $pagesize" />
+				</form>
+			#end
+		#end
+        <br />
+	</span>
+    </p>
+
+	#set ($siteCount = 0)
+		<table summary ="List of Sites" class="listHier">
+		
+			<tr>
+				<th scope="col" id="Title">Worksite Title</th>
+				<th scope="col" id="Type">Type</th>
+				<th scope="col" id="Owner">Owner</th>
+				<th scope="col" id="Joinable">Joinable</th>
+				<th scope="col" id="Term">Term</th>
+				<th scope="col" id="Description">Description</th>
+			</tr>
+			#foreach ($site in $sites)
+                #set ($siteCount=$siteCount + 1)
+                #set ($shortDesc = "")
+                #set ($desc = "")
+                <tr>
+                        <td headers="Title">
+                        	<div class="indnt1">
+                                <a href="#toolLink("$action" "doVisit")&id=$validator.escapeUrl($site.Id)">
+                                        $validator.escapeHtml($site.Title)
+                                </a>
+                            </div>
+                        </td>
+
+                        <td headers="Type">
+                        #set($type = $site.Type)
+                     	$validator.escapeHtml($!type)
+                        </td>
+                        
+                        <td headers="Creator">
+                        $site.CreatedBy.DisplayName
+                        </td>
+                        
+                        <td headers="Joinable">
+                        $site.isJoinable()
+                        </td>
+
+                        <td hearders="Term">
+             			#if ($termProp)
+             				#if ($site.getProperties().getProperty($termProp))
+	                        	$site.getProperties().getProperty($termProp)
+	                        #else
+	                        	n/a
+	                        #end
+             			#else
+	                        n/a
+	                    #end
+                        </td>
+                                                
+                        <td headers="Description">
+                                #set ($shortDesc = $site.ShortDescription)
+
+                                #if ($shortDesc)
+                                        #if ($shortDesc.equals(""))
+                                               #set ($desc = $site.Description)
+                                               #if ($desc)
+		                                               #if ($desc.length() > 85)
+		                                                       #set ($desc = $desc.substring(0, 85))
+		                                                       $validator.escapeHtml($desc)...
+		                                               #else
+		                                               		#if ($desc.equals(""))
+		                                               				&nbsp;
+		                                               		#else
+		                                                       		$validator.escapeHtml($desc)
+		                                                    #end
+		                                               #end
+                                               #else
+ 	                                           		&nbsp;
+                                               #end
+                                                     
+                                        #else
+                                                $validator.escapeHtml($shortDesc)
+                                        #end
+                                #else
+                                        #set ($desc = $site.Description)
+                                        #if ($desc)
+		                                        #if ($desc.length() > 85)
+		                                                #set ($desc = $desc.substring(0, 85))
+		                                                $validator.escapeHtml($desc)...
+		                                        #else
+		                                                #if ($desc.equals(""))
+		                                               			&nbsp;
+		                                               	#else
+		                                                	    $validator.escapeHtml($desc)
+		                                                #end
+		                                        #end
+		                                 #else
+ 	                                           	&nbsp;
+                                         #end
+                                #end &nbsp;
+                        </td>
+                </tr>
+			#end ##foreach
+		</table>
+#else
+		<P>
+			No Sites meet the search criteria.
+		</P>
+#end
+
+</div>

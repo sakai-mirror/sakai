@@ -1,0 +1,59 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/calendar/chef_calendar-customize_fields.vm,v 1.2 2005/02/01 00:32:39 gsilver.umich.edu Exp $
+
+<script type="text/javascript">
+  focus_path = [ "textfield" ];
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Adding/revising custom fields...
+	</div>
+	<div class="chefPortletContent">
+		<script type="text/javascript"> var a = document.MyCalendar; </script>
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		<div class="chefPageviewTitle">
+			To add fields, enter field name, choose 'add' then choose 'save'.
+		</div>
+		<form name="Options" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Custom fields
+				</legend>
+				#if (!$addFieldsCalendarsCollectionIsEmpty)
+					<table class="ContentStyleClass" cellspacing="0" summary="Table contains list of additional fields. First column contains checkboxes, second contains the fieldname.">
+						<tr> 
+							<th id="checkbox">&nbsp;&nbsp;</th>
+							<th id="fieldname" align="left">Field Name</th>
+						</tr>
+						#foreach ($fieldEntry in $addFieldsCalendarsCollection)
+							<tr> 
+								<td headers="checkbox">
+									<input type="checkbox" id="$fieldEntry"  name="$fieldEntry" value="True" />
+								</td>
+								<td headers="fieldname" align="left">
+									<label for="$fieldEntry">$validator.escapeHtml($fieldEntry)</label>
+								</td>
+							</tr>
+						#end
+					</table>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doDeletefield" value="Remove" />
+					</div>
+					<hr />
+				#end
+				Field Name: 
+				<input type="text" name="textfield" id="textfield" />
+				<span class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doAddfield" value="Add" />
+				</span>
+			</fieldset>
+			<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doUpdate" value="Save" />
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+			<input type="hidden" name="state" value="$state" />
+		</form>
+	</div>
+</div>

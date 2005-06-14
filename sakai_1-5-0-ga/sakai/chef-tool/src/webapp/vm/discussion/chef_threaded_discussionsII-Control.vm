@@ -1,0 +1,286 @@
+	##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/discussion/chef_threaded_discussionsII-Control.vm,v 1.6 2005/02/08 22:46:05 gsilver.umich.edu Exp $ -->
+#* Zhen - I think this is good to go.
+One thing remaining is the toolbar vs messagebar - the toolbar should only show when looking at an item, not editing, nor creating. In fact, if you hit reply while creating a topic you get an error. I have "sketched" the logic needed below...*#
+
+
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+
+#*
+# if (am looking at an item)	
+		You are looking at an item - output toolbar 
+#else	
+	<div class ="chefPortletToolBarMessage">
+				#if ($creating new topic)
+					Creating topic...
+				#elseif ($creating new category)
+					Creating category...
+				#elseif ($deleting a category)
+					Deleting category...
+				#elseif ($deleting a topic)
+					Deleting topic...
+				#elseif ($deleting a draft response)
+					Deleting draft response....
+				#elseif ($deleting a draft item)
+					Deleting posted item....
+				#else (anythng else I may have forgotten)
+						Anything else...	
+				#end
+		</div>
+ *#
+
+## this is double deep
+<script type="text/javascript" language="JavaScript">
+doubleDeep = true;
+</script>
+## to prevent horiz scroll on IE
+<!--[if IE]>
+	<script type="text/javascript" language="JavaScript">
+		document.body.style.width='95%'
+	</script>
+<![endif]--> 
+
+		#set ($form="controlform")
+		#set($id = $!currentMessage.getId())
+		#if ($!id.length()>0)
+			#set ($category = $currentMessage.getDiscussionHeader().getCategory())
+			#set ($starOrThread = "thread")
+			#set ($props = $topic.getProperties())
+			#if ($!props)
+				#set ($starOrThread = $props.getProperty($props.getNamePropReplyStyle()))
+			#end
+			#if ($currentMessage.getDiscussionHeader().getDraft())
+				<script type="text/javascript">
+					focus_path = [ "subject" ];
+					if (parent) if (parent.parent) parent.parent.window.scrollTo(0,400);
+				</script>
+					<div class ="chefPortletToolBarMessage">
+						Editing draft...
+					</div>
+					<div class="chefPortletContent">
+					#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+						<form action="#toolForm($action)" method="post">
+								<input type="hidden" name="messageId" value="$id" />
+								<table class="chefEditItem" summary="This table contains the information for a draft message">	
+									<tr>
+										<td class="chefLabel">
+											Category: 
+										</td>
+										<td>
+											$validator.escapeHtml($draftCategory)
+										</td>
+									</tr>
+									#if ($currentMessage.ReplyToDepth != 0)
+										<tr>
+											<td class="chefLabel">
+												Topic: 
+											</td>
+											<td>
+												$topic.getDiscussionHeader().getSubject()
+											</td>
+										</tr>
+									#end
+									<tr>
+										<td class="chefLabel">
+											#if ($currentMessage.ReplyToDepth != 0)
+												Subject:
+											#else
+												Topic:
+											#end
+										</td>
+										<td>
+											<input type="text" name ="subject" id ="subject" value="$validator.escapeHtml($draftSubject)" />
+										</td>
+									</tr> 
+									<tr>
+										<td class="chefLabel">
+											From:
+										</td>
+										<td>
+											$validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName())
+										</td>
+									</tr> 
+									<tr>
+										<td class="chefLabel">
+											Date:
+										</td>
+										<td>
+											$currentMessage.getDiscussionHeader().getDate().toStringLocalFull()
+										</td>
+									</tr>
+								</table>	
+								<div style="font-weight:bold;margin:.3em 1em">
+									Message:
+								</div>
+								<table style="margin:.3em 1em" border="0"><tr><td>
+								<textarea name = "body" id = "body" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($draftBody)</textarea>
+								#chef_setupformattedtextarea("body")
+								</td></tr></table>
+								<table class="chefEditItem" summary="This table contains the information for a draft message">	
+									<tr>
+										<td class="chefLabel">
+											Reply type:
+										</td>
+										<td>
+											#if ($currentMessage.getReplyToDepth()==0)
+												#if ($draftStyle.equals("thread"))
+													<input type="radio" name="style" value="thread" checked="checked" id="styleThread" /><label for="styleThread">Allow reply to any message</label><br />
+													<input type="radio" name="style" value="star" id="styleStar" /><label for="styleStar">Allow reply to topic only</label>
+												#else
+													<input type="radio" name="style" value="thread" /><label for="styleThread">Allow reply to any message</label><br />
+													<input type="radio" name="style" value="star" checked="checked" id="styleStar"  /><label for="styleStar">Allow reply to topic only</label>
+												#end
+											#else
+												#if ($starOrThread == "thread")
+													Allow reply to any message
+												#else
+													Allow reply to topic only
+												#end
+											#end
+										</td>
+									</tr>						
+									<tr>
+										<td class="chefLabel">
+											Attachments:
+										</td>
+										<td>
+											<fieldset class="chefAttachmentsF">
+												<legend class="chefAttachmentsL">	
+													Attachments
+												</legend> 
+												#set ($size = 0)
+												#set ($props = false)
+												#foreach ($attachment in $attachments) 
+													#set ($props = $attachment.Properties) 
+													#if ($!props)
+														#set ($size = $size + 1)
+													#end
+												#end
+												#if ($size == 0)
+													No attachments ...
+													<div class="chefButtonRow">
+														<input type="submit" name="eventSubmit_doAttachments" value="Add attachments" />
+													</div>
+												#else
+													<ul class="chefAttachmentList">
+														#foreach ($attachment in $attachments) 
+															#set ($props = false)
+															#set ($props = $attachment.Properties) 
+															#if ($!props)
+																<li>
+																	#if ($props.getBooleanProperty($props.NamePropIsCollection))
+																		<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+																	#else
+																		<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+																	#end
+																	<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+																	#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+																		($props.getPropertyFormatted($props.NamePropContentLength))
+																	#end
+																</li>
+															#end
+														#end
+													</ul>
+													<div class="chefButtonRow">
+														<input type="submit" name="eventSubmit_doAttachments" value="Add/remove attachments" />
+													</div>
+												#end							
+											</fieldset>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<div class="chefButtonRow">
+												<input type="submit" name="eventSubmit_doPost" value="Post" />
+												<input type="submit" name="eventSubmit_doSave" value="Save Draft" />
+												<input type="submit" name="eventSubmit_doCancel_draft" value="Cancel" />
+											</div>
+										</td>
+									</tr>
+								</table>
+						</form>
+					#else
+				## a posted message
+					<div class ="chefPortletToolBarMessage">
+## (gsilver) should trim the subject below as is done in the list	
+## below - if the top topic subject and the subject of this message parents is the same, just do one, as it is likely I am seeing a reply to a topic.
+##						$validator.escapeHtml($category) &gt; $topic.getDiscussionHeader().getSubject() &gt; $validator.escapeHtml($currentMessage.getDiscussionHeader().getSubject())
+						$validator.escapeHtml($category) &gt; 
+						#if ($topic.getDiscussionHeader().getSubject() == $validator.escapeHtml($currentMessage.getDiscussionHeader().getSubject()))
+							$topic.getDiscussionHeader().getSubject()
+						#else	
+							$topic.getDiscussionHeader().getSubject() &gt; $validator.escapeHtml($currentMessage.getDiscussionHeader().getSubject())
+						#end	
+					</div>
+## for IE in an iframe horizontal scroll avoidance					
+					<!--[if IE]>
+						<div class="chefPortletContent" style="width:95% !important">
+					<![endif]--> 
+					<![if !IE]>
+						<div class="chefPortletContent" style="width:auto !important">
+					<![endif]> 
+					<p style="width:100%;font-weight:bold;margin:.3em 0;padding:0">
+						<span style="margin:0;display:inline;font-weight:normal;width:70%;float:left"><span style="font-weight:bold">From:</span> $validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFull())</span>
+						<span style="margin:0;display:inline;float:right;width:20%;text-align: right;">
+												<form action="#toolForm($action)" method="post" style="display:inline;margin:0">
+													<span class="chefButtonRow" >
+													<input type="submit" name="eventSubmit_doSet_reply" value="Reply" />
+													</span>
+												</form>
+
+						</span>
+					</p>
+					<!--[if IE]>
+						<p style="margin:1em 0;clear:both">
+					<![endif]--> 
+					<![if !IE]>
+						<p style="margin:2em 0;clear:both">
+					<![endif]> 
+## (gsilver) - this is returning a block with a <a> parent node
+##	certain browsers interpret it as such - formatting it as a <a> with the :hover and :active pseudoclasses
+	
+						$validator.escapeHtmlFormattedText($currentMessage.getBody())
+					</p>
+					#set ($size = 0)
+					#set ($props = false)
+					#foreach ($attachment in $currentMessage.Header.Attachments) 
+						#set ($props = $attachment.Properties) 
+						#if ($!props)
+							#set ($size = $size + 1)
+						#end
+					#end
+					#if ($size != 0)
+								<span style="font-weight:bold">Attachments:</span>
+								<ul class="chefAttachmentList">
+									#foreach ($attachment in $currentMessage.Header.Attachments) 
+										#set ($props = false)
+										#set ($props = $attachment.Properties) 
+										#if ($!props)
+											<li>
+												#if ($props.getBooleanProperty($props.NamePropIsCollection))
+													<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+												#else
+													<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+												#end
+												<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+												#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+													($props.getPropertyFormatted($props.NamePropContentLength))
+												#end
+											</li>
+										#end
+									#end
+								</ul>
+					#end
+## (gsilver) display at top, since the iframe is so small	
+##					<form action="#toolForm($action)" method="post">
+##						<div class="chefButtonRow">
+##						<input type="submit" name="eventSubmit_doSet_reply" value="Reply" />
+##						</div>
+##					</form>
+			#end
+		#else
+			<form action="#toolForm($action)" method="post">
+			</form>
+		#end
+	</div>
+</div>

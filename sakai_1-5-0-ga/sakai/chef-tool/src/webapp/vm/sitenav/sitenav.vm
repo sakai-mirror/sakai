@@ -1,0 +1,78 @@
+#if (!$sakai_fragment)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link href="${sakai_portalskin}skin/${sakai_skin_id}.css" type="text/css" rel="stylesheet" media="all" />
+		<script type="text/javascript" language="JavaScript" src="/sakai-chef-tool/js/headscripts.js">
+		</script>
+	</head>
+
+	<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
+#end
+
+	#if(!$minimal)
+		<table class="mast-head" cellpadding="0" cellspacing="0" border="0" width="100%">
+			<tr>
+				<td style="padding:2px" valign="middle" align="left">
+					<img title="" alt="" src="${sakai_portalskin}institutional/logo_inst.gif">
+				</td>
+				<td style="text-indent:.3em" width="100%">
+					<img title="" alt="" src="${sakai_portalskin}institutional/banner_inst.gif">
+				</td>
+				<td class="mast-head-r">
+					<a href="$sakai_ActionURL.setParameter("action","logout")" target="_parent">Logout</a>
+				</td>
+			</tr>
+		</table>
+	#end
+	
+	<div class="tabHolder">
+		<table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td style="padding:0;">
+					<ul id="tabNavigation">
+						#if($curMyWorkspace)
+							<li class="selectedTab"><a>MyWorkspace</a></li>
+						#else
+							<li><a href="$portal" target="_parent">MyWorkspace</a></li>
+						#end
+						#foreach($site in $sites)
+							#if ($site.Id.equals($cursite))
+								<li class="selectedTab"><a>$sakai_Validator.escapeHtml($site.Title)</a></li>
+							#else
+								<li><a href="$site.Url" target="_parent">$sakai_Validator.escapeHtml($site.Title)</a></li>
+							#end
+						#end
+						#if ($extra)
+							<li class="selectedTab"><a>$sakai_Validator.escapeHtml($extra.Title)</a></li>
+						#end
+						<li style="display:none;border-width:0" class="fixTabsIE"><a href="javascript:void(0);">#x20;</a></li>
+					</ul>
+				</td>
+			#if ($more)
+				<td style="margin:0;text-align:left;padding:-1px">
+					<select style="display:inline;font-size:.7em;margin:0 0 0 3px;padding:0"
+							onchange="if (this.options[this.selectedIndex].value != '') { parent.location = this.options[this.selectedIndex].value; } else { this.selectedIndex = 0; }">
+						<option value="" selected="selected">- more -</option>
+						#foreach ($m in $more)
+							<option value="$m.Url">$sakai_Validator.escapeHtml($m.Title)</option> 
+						#end
+					</select>
+ 				</td>
+			#end
+			#if ($minimal)
+				<td class="mast-head-r" cellpadding="0" cellspacing="0" border="0" width="100%">
+					<a href="$sakai_ActionURL.setParameter("action","logout")" target="_parent">Logout</a>
+				</td>
+			#end
+			</tr>
+		</table>
+	</div>
+	<div class="divColor" id="tabBottom"><br/></div>
+
+#if (!$sakai_fragment)
+	</body>
+</html>
+#end

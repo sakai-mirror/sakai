@@ -1,0 +1,30 @@
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Choosing resource type...	
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form name="form2" method="post" action="#toolForm("ResourcesAction")" >
+			<input type="hidden" name="from" value="show" />
+			<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+			<fieldset>
+				<legend>Resource type</legend>
+				<input type="radio" name="itemType" value="file" id="file" checked="checked" />
+					<label for="file">Local file on your computer</label><br />
+				<input type="radio" name="itemType" value="emptyFolder" id="emptyFolder" />
+					<label for="emptyFolder">Empty folder</label><br />
+				<input type="radio" name="itemType" value="Url" id="Url" />
+					<label for="Url">URL (link to website)</label><br />
+				<input type="radio" name="itemType" value="plaintextdocument" id="plaintextdocument" />
+					<label for="plaintextdocument">New plain text document</label><br />
+				<input type="radio" name="itemType" value="htmldocument" id="htmldocument" />
+					<label for="htmldocument">New HTML document</label><br />
+			</fieldset>
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doAdditem" value="Continue"  />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>	
+		</form>
+	</div>
+</div>
+

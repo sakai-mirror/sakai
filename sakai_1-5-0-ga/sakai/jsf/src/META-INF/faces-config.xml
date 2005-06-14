@@ -1,0 +1,320 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+
+<faces-config>
+
+  <!-- =================== Beans ============== -->
+
+	<!-- This bean, placed into the application scope, can be used in managed-bean managed-property
+	     entries to provide backing beans with service components.  It surfaces the registered components
+	     as a map -->
+	<managed-bean>
+		<description>Component Manager Map</description>
+		<managed-bean-name>Components</managed-bean-name>
+		<managed-bean-class>org.sakaiproject.component.ComponentMap</managed-bean-class>
+		<managed-bean-scope>application</managed-bean-scope>
+	</managed-bean>
+	
+	<!-- These are DUMMY BEAN REGISTRATIONS in the application scope.  The 
+         SakaiVariableResolver resolves the variables DIRECTLY, 
+         (as implicit variables) and so these dummy beans
+         are never actually created.  This bean registration is to
+         convince Sun's JSF that the beans exist, so that it 
+         won't complain that it doesn't know about the bean.  
+    -->
+	<managed-bean>
+		<description>toolConfig DUMMY BEAN</description>
+		<managed-bean-name>toolConfig</managed-bean-name>
+		<managed-bean-class>java.lang.Object</managed-bean-class>
+		<managed-bean-scope>application</managed-bean-scope>
+	</managed-bean>
+	
+	<managed-bean>
+		<description>toolScope DUMMY BEAN</description>
+		<managed-bean-name>toolScope</managed-bean-name>
+		<managed-bean-class>java.lang.Object</managed-bean-class>
+		<managed-bean-scope>application</managed-bean-scope>
+	</managed-bean>
+	
+  <!-- =================== Components ============== -->
+
+  <component>
+    <component-type>SakaiButtonBar</component-type>
+    <component-class>org.sakaiproject.jsf.component.ButtonBar</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiButtonBarItem</component-type>
+    <component-class>org.sakaiproject.jsf.component.ButtonBarItem</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiComment</component-type>
+    <component-class>org.sakaiproject.jsf.component.Comment</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiDocProperties</component-type>
+    <component-class>org.sakaiproject.jsf.component.DocProperties</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiDocSection</component-type>
+    <component-class>org.sakaiproject.jsf.component.DocSection</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiDocSectionTitle</component-type>
+    <component-class>org.sakaiproject.jsf.component.DocSectionTitle</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiFlatList</component-type>
+    <component-class>org.sakaiproject.jsf.component.FlatList</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiGroupBox</component-type>
+    <component-class>org.sakaiproject.jsf.component.GroupBox</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiInstructionMessage</component-type>
+    <component-class>org.sakaiproject.jsf.component.InstructionMessage</component-class>
+  </component>
+  
+  <component>
+    <component-type>SakaiMessagePopup</component-type>
+    <component-class>org.sakaiproject.jsf.component.MessagePopup</component-class>
+  </component>
+  
+  <component>
+    <component-type>SakaiPanelEdit</component-type>
+    <component-class>org.sakaiproject.jsf.component.PanelEdit</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiToolbar</component-type>
+    <component-class>org.sakaiproject.jsf.component.Toolbar</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiToolbarItem</component-type>
+    <component-class>org.sakaiproject.jsf.component.ToolbarItem</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiToolbarMessage</component-type>
+    <component-class>org.sakaiproject.jsf.component.ToolbarMessage</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiToolbarSpacer</component-type>
+    <component-class>org.sakaiproject.jsf.component.ToolbarSpacer</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiViewContainer</component-type>
+    <component-class>org.sakaiproject.jsf.component.ViewContainer</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiViewContent</component-type>
+    <component-class>org.sakaiproject.jsf.component.ViewContent</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiDateInput</component-type>
+    <component-class>org.sakaiproject.jsf.component.DateInput</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiDateOutput</component-type>
+    <component-class>org.sakaiproject.jsf.component.DateOutput</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiTitleBar</component-type>
+    <component-class>org.sakaiproject.jsf.component.TitleBar</component-class>
+  </component>
+  
+  <component>
+    <component-type>SakaiRichTextEditArea</component-type>
+    <component-class>org.sakaiproject.jsf.component.RichTextEditArea</component-class>
+  </component>
+
+  <component>
+    <component-type>SakaiMessages</component-type>
+    <component-class>org.sakaiproject.jsf.component.Messages</component-class>
+  </component>
+ 
+  <component>
+    <component-type>SakaiSnoop</component-type>
+    <component-class>org.sakaiproject.jsf.component.Snoop</component-class>
+  </component>
+
+  <!-- =================== Renderers ============== -->
+ 
+  <render-kit>
+
+    <renderer>
+      <component-family>SakaiButtonBar</component-family>
+      <renderer-type>SakaiButtonBar</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.ButtonBar</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Command</component-family>
+      <renderer-type>SakaiButtonBarItem</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.ButtonBarItem</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiComment</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.Comment</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiDocSection</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.DocSection</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiDocSectionTitle</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.DocSectionTitle</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiGroupBox</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.GroupBox</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiInstructionMessage</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.InstructionMessage</renderer-class>
+    </renderer>
+    
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiMessagePopup</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.MessagePopup</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>SakaiToolbar</component-family>
+      <renderer-type>SakaiToolbar</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.Toolbar</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Command</component-family>
+      <renderer-type>SakaiToolbarItem</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.ToolbarItem</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiToolbarMessage</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.ToolbarMessage</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>SakaiToolbarSpacer</component-family>
+      <renderer-type>SakaiToolbarSpacer</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.ToolbarSpacer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiViewContainer</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.ViewContainer</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiViewContent</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.ViewContent</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>SakaiDateInput</component-family>
+      <renderer-type>SakaiDateInput</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.DateInput</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>SakaiDateOutput</component-family>
+      <renderer-type>SakaiDateOutput</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.DateOutput</renderer-class>
+    </renderer>
+
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiTitleBar</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.TitleBar</renderer-class>
+    </renderer>
+    
+    <renderer>
+      <component-family>SakaiRichTextEditArea</component-family>
+      <renderer-type>SakaiRichTextEditArea</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.RichTextEditArea</renderer-class>
+    </renderer>
+    
+    <renderer>
+      <component-family>javax.faces.Output</component-family>
+      <renderer-type>SakaiSnoop</renderer-type>
+      <renderer-class>org.sakaiproject.jsf.renderer.Snoop</renderer-class>
+    </renderer> 
+
+    <renderer>
+       <component-family>javax.faces.Output</component-family>
+       <renderer-type>PagerButton</renderer-type>
+    <renderer-class>org.sakaiproject.jsf.renderer.PagerButtonRenderer</renderer-class>
+    </renderer>
+
+ </render-kit>
+
+  <!-- Configure Object Factories -->
+
+  <factory>
+    <faces-context-factory>
+      org.sakaiproject.jsf.custom.SakaiFacesContextFactory
+    </faces-context-factory>
+  </factory>
+
+  <!-- Configure Application Objects -->
+
+  <application>
+    <view-handler>
+      org.sakaiproject.jsf.custom.SakaiViewHandler
+    </view-handler>
+    <navigation-handler>
+      org.sakaiproject.jsf.custom.SakaiNavigationHandler
+    </navigation-handler>
+    <variable-resolver>
+      org.sakaiproject.jsf.custom.SakaiVariableResolver
+    </variable-resolver>
+    <state-manager>
+      org.sakaiproject.jsf.custom.SakaiStateManager
+    </state-manager>
+  </application>
+
+  <!-- =================== Converters ============== -->
+ 
+<!--
+   <converter>
+     <converter-id>SakaiTimeConverter</converter-id>
+     <converter-for-class>org.sakaiproject.service.legacy.time.Time</converter-for-class>
+     <converter-class>org.sakaiproject.jsf.convert.TimeConverter</converter-class>
+   </converter>
+-->
+
+</faces-config>

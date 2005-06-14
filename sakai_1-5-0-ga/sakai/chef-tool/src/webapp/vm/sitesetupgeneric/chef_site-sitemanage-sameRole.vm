@@ -1,0 +1,64 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-sitemanage-sameRole.vm,v 1.2 2004/12/10 19:59:39 suiyy.umich.edu Exp $ -->
+## Add participants to the worksite with same role
+<div class ="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+ 		Choose a Role for Participants
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		<div class="chefPageviewTitle">
+			Choose the role for the participants you are adding.	
+		</div>
+		<form action="#toolForm("SiteAction")" method="post">
+	       	<table cellspacing="0" cellpadding="0" class="chefEditItem" summary ="Table holds a text box for entering associated role." >
+				#foreach ($role in $roles)
+					#set ($description = false)
+					<tr>
+						<td valign="middle" nowrap="nowrap">
+							<input type="radio" name="selectRole" value="$role.Id"
+								#if($form_selectedRole == $role.Id)
+									checked="checked"
+								#end
+							/>
+						</td>
+						<td valign="middle" nowrap="nowrap">
+							$role.Id
+						</td>
+						<td valign="middle" nowrap="nowrap">
+							<div class="chefInlineInstructions">
+								#set ($description = $roleDescription.get($role.Id))
+								#if ($!description) $!description #end
+							</div>
+						</td>
+					</tr>
+				#end
+			</table>
+			<br />
+           	<table cellspacing="0" cellpadding="0" class ="chefFlatListViewTable" summary ="Table hold ids for participants." >
+				<tr>
+					<th>
+						Username
+					</th>
+				</tr>
+				#foreach ($participant in $participantList)
+					<tr>
+						<td>
+							$participant.getUniqname()
+						</td>
+					</tr>
+				#end
+				<tr>
+			</table>
+			<br/>
+			<input type="hidden" name="back" value="33" />
+			<input type="hidden" name="template-index" value="34" />
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doSitemanage_participants_save" value="Save" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

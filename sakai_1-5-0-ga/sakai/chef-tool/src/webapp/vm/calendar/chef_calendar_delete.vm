@@ -1,0 +1,175 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/calendar/chef_calendar_delete.vm,v 1.3 2005/02/01 00:32:39 gsilver.umich.edu Exp $
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Deleting schedule item...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>s
+		#end
+	<div class="chefAlertBox">Are you sure you want to delete this item?</div>
+	<div style="display:block;clear:both"></div>
+	<form name="deleteTemplateForm" action="#toolForm("$action")" method="post">
+		<table class="chefItemDetail" cellspacing="0">
+			<tr>
+				<td class="chefLabel">Title:</td>
+				<td><b>$validator.escapeHtml($event.getDisplayName())</b></td>
+			</tr>
+			<tr>
+				<td class="chefLabel">Date:</td> 
+				<td>$event.getRange().firstTime().toStringLocalFull().substring(0,12)</td>
+			</tr>
+			<tr>
+				<td class="chefLabel">Time:</td>
+				<td>
+					#set ($startTime = $event.getRange().firstTime().toStringLocalShort())
+					#set ($endTime = $event.getRange().lastTime().toStringLocalShort())
+					#if ($startTime == $endTime)
+						$startTime
+					#else
+						#if ($endTime.endsWith("am"))
+							#set ($endTimeType = "am")
+						#else
+							#set ($endTimeType = "pm")
+						#end
+						#set ($endMin = $event.getRange().lastTime().breakdownLocal().Min)
+						#set ($endHour = $event.getRange().lastTime().breakdownLocal().Hour)
+						#set( $foo = $endMin % 10 )
+						#if (($foo == 4) || ($foo == 9))
+							#set ($endMin = $endMin + 1)
+							#if ($endMin == 60)
+								#set ($endMin = "00")
+								#set ($endHour = $endHour + 1)
+								#if (($endHour == 12)||($endHour == 24))
+									 #if ($endTime.endsWith("am"))
+										#set ($endTimeType = "pm")
+									#else
+										#set ($endTimeType = "am")
+									#end
+								#end
+							#end
+							#if ($endHour > 12)
+									#set ($endHour = $endHour - 12)
+							#end
+						#end
+						$startTime - $endHour:#if(($endMin == 0)||($endMin == 5))0$endMin#else$endMin#end $endTimeType
+					#end
+				</td>
+			</tr>
+			<tr>
+				<td class="chefLabel">Frequency:</td> 
+				<td>
+					#if ($rule)
+						Every $rule.Interval $freq(s)
+						#if (!($rule.Count == 0)) , Number of occurrences: $rule.Count Times <br/>#end
+						#if ($rule.Until) , Ends on $rule.Until.breakdownLocal().Month/$rule.Until.breakdownLocal().Day/$rule.Until.breakdownLocal().year <br/>#end
+					#else
+						One occurrence
+					#end
+				</td>
+			</tr>
+			<tr>
+				<td class="chefLabel">Item type:</td>
+					<td>
+						#if($event.getType()=="Academic Calendar")
+						<img src = "#imageLink("chef/academic_calendar.gif")" border="0"/> Academic Calendar 
+						#elseif ($event.getType()=="Activity")
+						<img src = "#imageLink("chef/activity.gif")" border="0"/ > Activity
+						#elseif($event.getType()=="Cancellation")
+						<img src = "#imageLink("chef/cancelled.gif")" border="0"/> Cancellation 
+						#elseif ($event.getType()=="Class section - Discussion")
+						<img src = "#imageLink("chef/class_dis.gif")" border="0"/> Class section - Discussion 
+						#elseif ($event.getType()=="Class section - Lab")
+						<img src = "#imageLink("chef/class_lab.gif")" border="0"/> Class section - Lab 
+						#elseif ($event.getType()=="Class section - Lecture")
+						<img src = "#imageLink("chef/class_lec.gif")" border="0"/> Class section - Lecture 
+						#elseif ($event.getType()=="Class section - Small Group")
+						<img src = "#imageLink("chef/class_sma.gif")" border="0"/> Class section - Small Group 
+						#elseif ($event.getType()=="Class session")
+						<img src = "#imageLink("chef/class_session.gif")" border="0"/> Class session 
+						#elseif($event.getType()=="Computer Session")
+						<img src = "#imageLink("chef/computersession.gif")" border="0"/> Computer Session 
+						#elseif($event.getType()=="Deadline")
+						<img src = "#imageLink("chef/deadline.gif")" border="0"/> Deadline 
+						#elseif($event.getType()=="Exam")
+						<img src = "#imageLink("chef/exam.gif")" border="0"/> Exam 
+						#elseif ($event.getType()=="Meeting")
+						<img src = "#imageLink("chef/meeting.gif")" border="0"/ > Meeting
+						#elseif($event.getType()=="Quiz")
+						<img src = "#imageLink("chef/quiz.gif")" border="0"/> Quiz 
+						#elseif($event.getType()=="Special event")
+						<img src = "#imageLink("chef/special_event.gif")" border="0"/> Special event 
+						#elseif($event.getType()=="Web Assignment")
+						<img src = "#imageLink("chef/webassignment.gif")" border="0"/> Web Assignment 
+						#elseif($event.getType()=="Multidisciplinary Conference")
+						<img src = "#imageLink("chef/multi-conference.gif")" border="0" />Multidisciplinary Conference 
+						#end	 
+					</td>
+			</tr>
+			#if (!$validator.escapeHtml($event.Location)=="")
+				<tr> 
+					<td class="chefLabel">Location:</td>
+					<td><span class="chefPre">$validator.escapeHtml($event.Location)</span></td>
+				</tr>
+			#end
+		</table>
+
+	#if (!$event.DescriptionFormatted.equals(""))
+	<div class="chefSectionTitle">Description:</div>
+	<div class="chefSectionContent indnt2"><span class="chefPre">$validator.escapeHtmlFormattedText($event.DescriptionFormatted)</span></div>
+	#end
+
+	<div class="chefSectionTitle">Attachments:</div>
+	<div class="chefSectionContent">
+			#set ($size = 0)
+			#if (!$event.Attachments.isEmpty())
+					#set ($props = false)
+					#set ($size = $event.Attachments.size())
+					<ul class="chefAttachmentList">
+					#foreach ($attachment in $event.Attachments)
+							#set ($props = $attachment.Properties)
+							#if (!$props)
+									#if ($size >0) #set ($size = $size - 1) #end
+							#else
+									#if ($props.getBooleanProperty($props.NamePropIsCollection))
+											<li><img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
+									#else
+											<li><img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" />
+									#end
+
+									<a href="$attachment.Url" target="_new">$validator.escapeHtml($attachment.Properties.getPropertyFormatted("DAV:displayname"))</a>
+									#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+													($props.getPropertyFormatted($props.NamePropContentLength))
+									#end
+									</li>
+							#end
+							#set ($props = false)
+					#end
+			#end
+			#if ($size == 0) <div class="indnt2">No attachments ...</div>#end
+	</div>
+
+	#if ($event.RecurrenceRule)
+	<table class="chefItemDetail" cellspacing="0">
+	<tr>
+		<td style="vertical-align:middle">&nbsp;</td>
+		<td>
+			<select name="intention">
+				<option value="a" selected="selected">Delete all occurrences</option>
+				<option value="t">Delete only this occurrence</option>
+			</select>
+		</td>
+	</tr>
+	</table>
+	#end
+
+	<p>
+	<div class="chefButtonRow">
+	<input type="submit" name="eventSubmit_doConfirm" value="Delete">
+	<input type="submit" name="eventSubmit_doBack" value="Cancel">
+	</div>
+	</p>
+	</form>
+	</div>
+</div>

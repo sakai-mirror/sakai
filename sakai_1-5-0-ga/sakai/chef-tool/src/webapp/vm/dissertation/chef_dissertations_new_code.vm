@@ -1,0 +1,106 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_new_code.vm,v 1.2 2004/07/26 15:54:42 rwellis.umich.edu Exp $ 
+## Dissertations - Administrator's form for adding a Field of Study or Block Grant Group.
+<div class="chefPortletContainer" id="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<span class ="chefPortletToolBarMessage">
+		Edit Codes
+	</span>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+Enter a code, or choose one from the menu below, to add a Field of Study or a Block Grant Group. Please note that you can only add a new Block Grant Group Code if a Grad Tools site has already been created for that department.
+		</div>
+		<form name="new_codes" id="new_codes" action="#toolForm($action)" method="post" enctype="multipart/form-data">
+			<fieldset>
+				<legend>New Matching Codes
+				</legend>
+				<table  class="chefEditItem" summary="extract file upload form" >
+					<tr>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<label for="FOS Code">FOS Code:</label>
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<input type="text" size="4" maxlength="4" name="FOS_code" id="FOS_code" value="$!FOS_code" />
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<label for="BGG Code">BGG Code:</label>
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<input type="text" size="3" maxlength="3" name="BGG_code" id="BGG_code" value="$!BGG_code" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<label for="FOS Name">FOS Name:</label>
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<input type="text" size="20" name="FOS_name" id="FOS_name" value="$!FOS_name" />
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<label for="BGG Name">BGG Name:</label>
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<input type="text"  size="34" name="BGG_name" id="BGG_name" value="$!BGG_name" />
+								<br/>
+								OR
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								&nbsp;&nbsp;
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								&nbsp;&nbsp;
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<label for="Existing BGG">Existing BGG:</label>
+							</div>
+						</td>
+						<td class="chefLabel">
+							<div class="chefInlineInstructions">
+								<select name="BGG_group" 
+									onchange="javascript:document.new_codes.submit();">
+								<option value=""></option>
+								#foreach ($group in $groups)
+									<option value ="$group.getCode()"
+										#if($group.getCode()== $BGG_group)
+											selected="selected"
+										#end
+										>
+										$group.getDescription()
+									</option>	
+								#end
+								</select>	
+							</div>
+						</td>
+					</tr>
+				</table>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doPreview_code" id="eventSubmit_doPreview_code" value="Preview" />
+					<input type="submit" name="eventSubmit_doCancel_code" id="eventSubmit_doCancel_code" value="Cancel" />
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

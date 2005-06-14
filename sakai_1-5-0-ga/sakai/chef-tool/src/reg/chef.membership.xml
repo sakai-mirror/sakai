@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.membership"
+			url="/sakai-chef-tool/chef-membership"
+			title="Membership"
+			description="View and modify your membership in sites you may join.">
+
+	</tool>
+
+</registration>

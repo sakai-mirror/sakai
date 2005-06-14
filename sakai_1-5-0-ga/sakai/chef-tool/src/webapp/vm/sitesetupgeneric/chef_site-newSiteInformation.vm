@@ -1,0 +1,139 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-newSiteInformation.vm,v 1.12 2005/02/15 20:53:48 gsilver.umich.edu Exp $ -->
+## Creating a site step 3: Site info
+<script type="text/javascript">
+  	focus_path = [ "title" ];
+
+	function LimitText(fieldObj,maxChars)
+	{
+		var result = true;
+	  	if (fieldObj.value.length >= maxChars)
+	  	{
+	  		fieldObj.value = fieldObj.value.substring(0,maxChars);
+			result = false;
+	   	}
+	  
+	  	if (window.event)
+	    	window.event.returnValue = result;
+	    
+	  	return result;
+	}
+</script>
+<div class="portletBody">
+	#if ($alertMessage)
+		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	#if ($!isProjectSite)
+		<h3 class="insCol insBak insBor">
+			Project Information
+		</h3>
+		<p class="step">
+			Step $!step of $!totalSteps: Enter basic information about the project site...
+		</p>
+	#elseif ($!isCourseSite)
+		<h3 class="insCol insBak insBor">
+			Class Information
+		</h3>
+		<p class="step">
+			Step $!step of $!totalSteps: Enter basic information about the class site...
+		</p>
+	#else
+		Creating a site...
+	#end
+	#if ($isCourseSite)
+		You are setting up a course site for the following class(es) and section(s):
+		<ul>
+			#foreach ($item in $!selectedProviderCourse)
+				<li>$item </li>
+			#end
+		</ul>
+		#if ($!manualAddNumber)
+			<ul>
+				#foreach ($k in [0..$manualAddNumber])
+					<li>$!manualAddSubjects.get($k) $!manualAddCourses.get($k) $!manualAddSections.get($k)</li>
+				#end
+			</ul>
+		#end
+	#end
+	<p class="instruction">
+		Enter information about your site.#if ($!isProjectSite) A <span class ="reqStar">*</span> means required information. #end
+	</p>
+	<form action="#toolForm("$action")" method="post">
+		<p class="shorttext">
+			<label for="title">
+				Site Title:
+			</label>
+			#if ($!isProjectSite)
+				<span class="reqStar">*</span><input type="text" name="title" class="req" id="title" maxlength="20" size="20" value="$validator.escapeHtml($form_title)" />
+			#end
+			#if ($isCourseSite)
+				<input type="text" name="title" id="title" maxlength="20" size="20" value="$validator.escapeHtml($form_title)" disabled="disabled" />
+			#end
+
+		</p>
+		<p class="longtext">
+			<label for="description">
+				Description:
+			</label>
+			<textarea  name="description" id="description" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($form_description)</textarea><br />
+			<span class="instruction labelindnt">
+				Displayed on the site's homepage.
+			</span>
+		</p>	
+		<p class="longtext">
+			<label for="short_description"> 
+				Short Description:
+			</label>
+			<textarea name="short_description" id="short_description" rows="2" cols="45" onkeyup="LimitText(this,80)" wrap="hard">$validator.escapeHtmlTextarea($form_short_description)</textarea>
+			<span class="instruction labelindnt">
+				Displayed in publicly viewable list of sites. Max 80 characters.
+			</span>
+		</p>
+		#if ($!isCourseSite && $!skins.size() > 0)
+			<p class="longtext">
+				<label for="short_description">
+					Appearance (skin):
+				</label>
+				<select name="skin">
+					#foreach($skin in $!skins)
+						<option value ="$skin.css"
+							#if($selectedSkin == $skin.css)
+								selected="selected"
+							#end
+						>
+						$skin.unit
+						</option>
+					#end
+				</select>
+			</p>
+		#else
+			<div class="shorttext">
+				<label for="iconUrl">Icon URL:</label>
+				<input type="text" name="iconUrl" id="icon" size="40" value="$!validator.escapeHtml($iconUrl)" />
+			</div>
+		#end
+		<p class="shorttext">
+			<label for="siteContactName">
+				Site Contact Name:
+			</label>
+			<input type="text" name="siteContactName" id="siteContactName" size="20" value="$!form_site_contact_name" />
+		</p>
+		<p class="shorttext">
+			<label for="siteContactEmail">
+				Site Contact Email:
+			</label>
+			<input type="text" name="siteContactEmail" id="siteContactEmail" size="20" value="$!form_site_contact_email" />
+		</p>
+		<input type="hidden" name="back" value="$back" />
+		<input type="hidden" name="template-index" value="2" />
+		<input type="hidden" name="continue" value="3" />
+		<p class="act">
+			<input type="submit" class="active" name="eventSubmit_doContinue" value="Continue" />
+			#if ($!siteTypes.size() > 1)
+				<input type="submit" name="eventSubmit_doBack" value="Back" />
+			#end
+			<input type="submit" name="eventSubmit_doCancel_create" value="Cancel" />
+		</p>
+	</form>
+</div>
+

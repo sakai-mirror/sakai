@@ -1,0 +1,122 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-siteInfo-editInfo.vm,v 1.11 2005/02/14 17:41:54 zqian.umich.edu Exp $ -->
+## Edit Site Information
+<script language="JavaScript" type="text/javascript">
+function LimitText(fieldObj,maxChars)
+{
+	var result = true;
+  	if (fieldObj.value.length >= maxChars)
+  	{
+  		fieldObj.value = fieldObj.value.substring(0,maxChars);
+		result = false;
+   	}
+  
+  	if (window.event)
+    	window.event.returnValue = result;
+    
+  	return result;
+}
+</script>
+  
+<div class="portletBody">
+	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<h3 class="insColor insBak insBor">
+		Revising Site Information for $validator.escapeHtml($title)
+	</h3>
+	<form name = "classInformationForm" method = "post" action="#toolForm("SiteAction")">
+		<p class="shorttext">
+			<label for="title">
+				Site Title:
+			</label>
+			#if ($!isSuperUser)
+				<input type="text" name="title" id="title" maxlength="20" size="20" value="$validator.escapeHtml($!title)" />
+			#else
+				$validator.escapeHtml($!title)
+			#end
+		</p>
+		#if ($!isCourseSite)
+			<p class="shorttext">
+				<label for="term">
+					Term
+				</label>
+				#if ($!isSuperUser)
+					<select name="term">
+						#foreach($term in $termList)
+							<option value ="$term.Id"
+								#if($term.id == $!selectedTerm)
+									selected="selected"
+								#end
+							>
+							$term.Id
+							</option>
+						#end
+					</select>
+				#else
+					$!selectedTerm
+				#end
+			</p>	
+		#end
+		<p class="longtext">
+			<label for="description">
+				Description:
+			</label>
+			<textarea id="description" name="description" rows="5" cols="40" tabindex="1" wrap="virtual">$validator.escapeHtmlTextarea($!description)</textarea>
+				<span class="instruction labelindnt">
+					Displayed on the site's home page.
+				</span>
+		</p>
+		<p class="longtext">
+			<label for="short_description">
+				Short Description:
+			</label>
+			<textarea name="short_description" id="short_description" tabindex="2" rows="2" cols="45" onkeyup="LimitText(this,80)">$validator.escapeHtmlTextarea($!short_description)</textarea>
+			<span class="instruction labelindnt">	
+				Displayed in publicly viewable list of sites. Max 80 characters.
+			</span>
+		</p>	
+		#if ($!isCourseSite)
+			<p class ="shorttext">
+				<label for="skin">
+					Appearance:
+				</label>
+				<select name="skin" id="skin">
+					#foreach ($s in $skins)
+						#if ($s.css == $selectedSkin)
+							<option value="$s.css" selected="selected">$s.Unit</option>
+						#else
+							<option value="$s.css">$s.Unit</option>
+						#end
+					#end
+				</select>
+				<div class="labelindnt"
+					<span class="instruction">
+						Site will have school affiliated look and feel.
+					</span>
+				</div>
+			</p>
+		#else
+			<div class="shorttext">
+				<label for="icon">Icon URL:</label>
+				<input type="text" name="icon" id="icon" size="40" value="$!validator.escapeHtml($!iconUrl)" />
+			</div>
+		#end
+		<p class="shorttext">
+			<label for="siteContactName">
+				Site Contact Name:
+			</label>
+			<input type="text" name="siteContactName" id="siteContactName" size="20" value="$!form_site_contact_name" />
+		</p>				
+		<p class="shorttext">
+			<label for="siteContactEmail">
+				Site Contact Email:
+			</label>	
+			<input type="text" name="siteContactEmail" id="siteContactEmail" size="20" value="$!form_site_contact_email" />
+		</p>
+		<input type="hidden" name="back" value="12" />
+		<input type="hidden" name="template-index" value="13" />
+		<input type="hidden" name="continue" value="14" />
+		<div class="act">
+		<input type="submit" class= "active" name="eventSubmit_doContinue" value="Continue" />
+		<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+	</div>
+</form>
+	</div>

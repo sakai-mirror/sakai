@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Sakai</name>
+	<groupId>sakaiproject</groupId>
+	<currentVersion>sakai.1.5.0</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+
+	<dependencies>
+	</dependencies>
+
+	<build>	
+	</build>
+
+</project>

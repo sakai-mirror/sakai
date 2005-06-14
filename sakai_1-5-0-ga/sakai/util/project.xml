@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Sakai Util Module</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-util</id>
+	<currentVersion>sakai.1.5.0</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+
+	<dependencies>
+		<!-- to be able to access the Sakai component manager -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-component</artifactId>
+			<version>sakai.1.5.0</version>
+		</dependency>
+
+		<!-- to be able to use the Sakai Service APIs -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-service</artifactId>
+			<version>sakai.1.5.0</version>
+		</dependency>
+
+		<!-- servlet -->
+		<dependency>
+			<groupId>servletapi</groupId>
+			<artifactId>servletapi</artifactId>
+			<version>2.3</version>
+		</dependency>
+		
+		<!-- xerces -->
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>icu4j</groupId>
+			<artifactId>icu4j-unicodenormalize</artifactId>
+			<version>3.0</version>
+		</dependency>
+	</dependencies>
+	<build>
+
+		<!-- java source -->
+		<sourceDirectory>src/java</sourceDirectory>
+
+		<!-- other resources for the jar - the message bundles -->
+		<resources>
+			<resource>
+				<directory>${basedir}/src/bundle</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	
+	</build>
+
+</project>

@@ -1,0 +1,14 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_memory.vm,v 1.2 2004/08/29 20:01:40 ggolden.umich.edu Exp $ -->
+<div class="PortletContainer">
+	#if($menu)#menu($menu)#end
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<p>Memory</p>
+	#if ($status)<div class="chefAlertBox">$validator.escapeHtml($status)</div>#end
+	<form action="#toolForm("$action")" method="post">
+		<table width="90%" align="center" border="0" cellspacing="10" cellpadding="0">
+			<tr><td>Available Memory:</td><td>$memory</td></tr>
+			<tr><td/><td><input type="submit" name="eventSubmit_doReset" value=" Reset All Caches " /></td></tr>
+			<tr><td/><td><input type="submit" name="eventSubmit_doStatus" value=" Status " /></td></tr>
+		</table>
+	</form>
+</div>
