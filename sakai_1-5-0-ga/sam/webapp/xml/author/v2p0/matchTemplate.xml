@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_item_v2p0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_item_v2p0 ../imsqti_item_v2p0.xsd"
+    identifier="match" title="Matching" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="directedPair">
+        <correctResponse>
+            <value>A 1</value><!-- SET MULTIPLE -->
+        </correctResponse>
+        <mapping defaultValue="0">
+            <mapEntry mapKey="A 1" mappedValue="0"/><!-- SET MULTIPLE -->
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>
+    <itemBody>
+        <matchInteraction responseIdentifier="RESPONSE" shuffle="true" maxAssociations="4">
+            <prompt>ITEM_TEXT<!-- SET --></prompt>
+            <simpleMatchSet><!-- SET ALL THESE, MULTIPLE -->
+                <simpleAssociableChoice identifier="A" matchMax="1">CHOICE_TEXT</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="B" matchMax="1">CHOICE_TEXT</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="C" matchMax="1">CHOICE_TEXT</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="D" matchMax="1">CHOICE_TEXT</simpleAssociableChoice>
+            </simpleMatchSet>
+            <simpleMatchSet><!-- SET ALL THESE, MULTIPLE -->
+                <simpleAssociableChoice identifier="1" matchMax="1">CHOICE_TEXT</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="2" matchMax="1">CHOICE_TEXT</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="3" matchMax="1">CHOICE_TEXT</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="4" matchMax="1">CHOICE_TEXT</simpleAssociableChoice>
+            </simpleMatchSet>
+            </matchInteraction>
+    </itemBody>
+    <responseProcessing template="http://www.imsglobal.org/xml/imsqti_item_v2p0/rpMapResponse" templateLocation="../RPTemplates/rpMapResponse.xml"/>
+</assessmentItem>

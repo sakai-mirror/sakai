@@ -1,0 +1,126 @@
+/* Welcome to the AAM stylesheet! Most classes are organized around common html tags first, and then which pages they are used. For instance, tdEditorSide is used on td tags for the main editor page on the side column.
+
+Other special-purpose classes like instruction and errors are application specific blocks of text.
+
+Finally, there are some classes for general purpose blocks of text or labelling like heading1 and heading2.
+
+These classes are depricated: tdEditorSideDark, tdSideRedText, */
+
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+th {
+	background-color: #E1E1E1;
+	vertical-align: top;
+	text-align: left;
+	font-weight: normal;
+	font-size: .9em;
+}
+td {
+	font-size: 1em;
+	vertical-align: top;
+}
+.trOdd {
+	background-color: #FFFFFF;
+}
+.trEven {
+	background-color: #E1E1E1;
+}
+.trEvenGray {
+	background-color: #E6E6E6;
+}
+.tblMain {
+	margin: 2px;
+	padding: 4px;
+	border: 0px;
+	width: 100%;
+}
+.tblGrayedOut {
+	color: #666666;
+	background-color: #CCCCCC;
+}
+.tblMedia {
+	margin: 1px;
+	padding: 2px;
+	font-size: 0.9em;
+}
+.tdEditorEditView {
+	width: 70px;
+	background-color: #CCCCCC;
+	font-size: 0.9em;
+}
+.tdEditorSide {
+	background-color: #CCCCCC;
+	width: 150px;
+}
+.tdEditorTop {
+	background-color: #CCCCCC;
+}
+.tdEditorTopFeature {
+	background-color: #CCCCCC;
+	width: 200px;
+}
+.tblEdit {
+	margin: 2px;
+	padding: 4px;
+	border: 0px;
+	width: 700px;
+}
+.tdEditSide {
+	background-color: #CCCCCC;
+	width: 150px;
+}
+.tdEditTop {
+	background-color: #CCCCCC;
+}
+.tdEditEditView {
+	width: 70px;
+	background-color: #CCCCCC;
+	font-size: 0.9em;
+}
+.instructions {
+	font-style: italic;
+}
+.courseTitle {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 1.25em;
+	color: #660000;
+	font-weight: bold;
+}
+.pageTitle {
+	color: #660000;
+	margin-bottom: 3px;
+	font-size: 1.25em;
+	font-weight: bold;
+}	
+.breadcrumb {
+	font-size: 0.9em;
+}
+.heading1 {
+	font-size: 24px;
+	font-weight: bold;
+	color: #660000;
+}
+.heading2 {
+	font-size: 16px;
+	font-weight: bold;
+	color: #660000;
+}
+.heading3 {
+	font-size: 12px;
+	font-weight: bold;
+	color: #660000;
+}
+.textSmall {
+	font-size: 0.9em;
+}
+.errors {
+	font-weight: bold;
+	color: #660000;
+}
+.tdindexTop {
+	font-size: 0.9em;
+	font-weight: bold;
+}

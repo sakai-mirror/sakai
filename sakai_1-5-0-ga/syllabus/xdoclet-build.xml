@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="_generation_" name="XDoclet Generator">
+<path id="xdoclet.classpath">
+<fileset dir="C:/Program Files/MyEclipse/eclipse/plugins/com.genuitec.jboss.ide.eclipse.xdoclet.core_3.7.200">
+<include name="*.jar"/>
+</fileset><pathelement location="C:/java/projects/syllabus/bin"/>
+<pathelement location="C:/java/projects/syllabus/target/sakai-syllabus/WEB-INF/lib/sakai-velocity-1.0.rc2.jar"/>
+<pathelement location="C:/Program Files/Java/j2re1.4.2_05/lib/rt.jar"/>
+<pathelement location="C:/Program Files/Java/j2re1.4.2_05/lib/sunrsasign.jar"/>
+<pathelement location="C:/Program Files/Java/j2re1.4.2_05/lib/jsse.jar"/>
+<pathelement location="C:/Program Files/Java/j2re1.4.2_05/lib/jce.jar"/>
+<pathelement location="C:/Program Files/Java/j2re1.4.2_05/lib/charsets.jar"/>
+<pathelement location="C:/Program Files/Java/j2re1.4.2_05/lib/ext/dnsns.jar"/>
+<pathelement location="C:/Program Files/Java/j2re1.4.2_05/lib/ext/ldapsec.jar"/>
+<pathelement location="C:/Program Files/Java/j2re1.4.2_05/lib/ext/localedata.jar"/>
+<pathelement location="C:/Program Files/Java/j2re1.4.2_05/lib/ext/sunjce_provider.jar"/>
+</path>
+<target name="_generation_" depends=""/>
+</project>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+  "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans> 
+  
+  <bean id="HypersonicDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName"><value>org.hsqldb.jdbcDriver</value></property>
+    <property name="url"><value>jdbc:hsqldb:.</value></property>
+    <property name="username"><value>SA</value></property>
+    <property name="password"><value></value></property>
+  </bean>
+    
+  <bean id="BasicDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName">
+      <value>${driver.class}</value>
+    </property> 
+    <property name="url">
+      <value>${connection.string}</value>
+    </property> 
+    <property name="username">
+      <value>${user.name}</value>
+    </property>
+    <property name="password">
+      <value>${user.pass}</value>
+    </property>        
+  </bean>
+          
+  <bean id="hibernateSessionFactory" 
+    class="org.springframework.orm.hibernate.LocalSessionFactoryBean">  
+    <property name="dataSource">
+      <ref local="BasicDataSource"/>
+    </property>    
+
+    <property name="mappingResources">
+      <list>
+        
+        <value>/org/navigoproject/data/ItemResultBean.hbm.xml</value>
+        <value>/org/navigoproject/data/RealizationBean.hbm.xml</value>
+        <value>/org/navigoproject/data/QtiSettingsBean.hbm.xml</value>
+        <value>/org/navigoproject/data/PublishedAssessmentBean.hbm.xml</value>
+        
+        <!-- ************ OKI definitions ******************** -->
+        <value>/org/sakai/osid/authz/impl/data/AuthorizationBean.hbm.xml</value>
+        <value>/org/sakai/osid/authz/impl/data/FunctionBean.hbm.xml</value>
+        <value>/org/sakai/osid/authz/impl/data/QualifierBean.hbm.xml</value>
+
+        <value>/org/sakai/osid/dr/impl/data/AssetBean.hbm.xml</value>
+        <value>/org/sakai/osid/dr/impl/data/DrAssetMapBean.hbm.xml</value>
+
+        <value>/org/sakai/osid/shared/impl/data/AgentBean.hbm.xml</value>
+        <value>/org/sakai/osid/shared/impl/data/GroupBean.hbm.xml</value>
+        <value>/org/sakai/osid/shared/impl/data/TypeBean.hbm.xml</value>
+        
+      </list>
+    </property>
+    
+    <!-- Loading from hibernate.properties -->
+    <!--<property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.dialect">net.sf.hibernate.dialect.Oracle9Dialect</prop>
+        <prop key="hibernate.show_sql">true</prop>
+        <prop key="hibernate.query.substitutions">true 1, false 0, yes 'Y', no 'N'</prop>
+        <prop key="hibernate.jdbc.use_streams_for_binary">true</prop>
+        <prop key="hibernate.cache.use_query_cache">true</prop>
+        <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.Provider</prop>
+      </props>
+    </property>    
+    -->
+    <!--<property name="schemaUpdate"><value>true</value></property>-->
+    
+  </bean>
+  
+  </beans>
+
+
+

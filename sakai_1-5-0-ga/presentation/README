@@ -1,0 +1,25 @@
+This is an emergent project and is in a state of flux.
+
+To use,
+
+cd dev/sakai
+maven
+cvs -q -z9 -d :ext:sakaicvs:/cvs co -P presentation
+cd presentation
+maven
+
+cp present-tool/src/reg//sakai.present.xml /usr/local/sakai/reg/
+
+Start Sakai
+
+Make a site and add the presentation tool to the site
+Make the site joinable and published
+
+Make a new user and join the site
+
+As Admin in the Resource tool, make a folder called Presentation
+Within that make a folder called One
+Upload some number of GIF or JPG files to that folder
+
+Go to the presentation tool - you should see the presentation.
+Check the Select box and press Show

@@ -1,0 +1,200 @@
+<?xml version = "1.0" encoding = "UTF-8" standalone = "no"?>
+<!DOCTYPE questestinterop SYSTEM "ims_qtiasiv1p2.dtd">
+
+<!--
+ * <p>Title: NavigoProject.org</p>
+ * <p>Description: Test Example </p>
+ * <p>Copyright: Copyright 2003 Trustees of Indiana University</p>
+ * <p>Company: </p>
+ * @author <a href="mailto:rshastri@indiana.edu">Rashmi Shastri</a>
+ * @version $Id: xmlAssessmentExample.xml,v 1.1.1.1 2004/07/28 21:32:07 rgollub.stanford.edu Exp $
+-->
+
+
+<!-- Advanced Example with A(1)S(1)I(4)-->
+<questestinterop>
+	<assessment title = "Midterm" ident = "20030620122045478-687201301829965738-iu.edu"  >
+
+		<qticomment>A Complex Assessment example.</qticomment>
+                 <duration>60</duration>
+                  <qtimetadata>
+                        <vocabulary>MAX_ATTEMPTS, AUTO_SUBMIT</vocabulary>
+<!-- To Do : Make a text file containing all the QtiMatadata Lists-->
+                         <qtimetadatafield>
+                             <fieldlabel>MAX_ATTEMPTS</fieldlabel>
+                               <fieldentry>1</fieldentry>
+                         </qtimetadatafield>
+                          <qtimetadatafield>
+                             <fieldlabel>AUTO_SUBMIT</fieldlabel>
+                               <fieldentry>True</fieldentry>
+                         </qtimetadatafield>
+                  </qtimetadata>
+		<objectives view = "Candidate">
+			<flow_mat>
+				<material>
+					<mattext>This is a Mid Term Test.</mattext>
+				</material>
+			</flow_mat>
+		</objectives>
+                <section title = "Mid Term 2003" ident = "section1">
+<!-- True and false -->
+		       <item title = "Battle of Hastings " ident = "item1" >
+
+	 			<presentation label = "Resp001">
+					<flow>
+						<material>
+							<mattext>The Battle of Hastings was fought in 1066. ?</mattext>
+						</material>
+						<response_lid ident = "mc1">
+							<render_choice shuffle = "Yes">
+								<response_label ident = "LID01_A">
+									<flow_mat>
+										<material>
+											<mattext>True</mattext>
+										</material>
+									</flow_mat>
+								</response_label>
+								<response_label ident = "LID01_B">
+									<flow_mat>
+										<material>
+											<mattext>False</mattext>
+										</material>
+									</flow_mat>
+								</response_label>
+							</render_choice>
+						</response_lid>
+					</flow>
+				</presentation>
+    		</item>
+<!--Simple FIll in Blank  -->
+               <item title="Simple" ident="item 2">
+                <presentation label="Resp002">
+	          <flow>
+                    <material>
+                     <matimage imagtype="text/html" uri="http://www.mcescher.com/Biography/lw435f2.jpg"></matimage>
+                    </material>
+	            <material>
+		      <mattext>Please provide analysis of the above image.</mattext>
+                     </material>
+                      <response_str ident="FIB91" rcardinality="Ordered" rtiming="No">
+                        <render_fib fibtype="String" prompt="Box" rows="20" columns="40">
+                            <response_label ident="A"/>
+                        </render_fib>
+                      </response_str>
+                  </flow>
+                </presentation>
+             </item>
+ <!-- Multiple Choice  Multiple Correct Answers -->
+             <item title = "Multiple Correct" ident = "item3">
+                  <presentation label = "Resp003">
+                     <flow>
+                            <material>
+                                    <mattext>Which one of them is a State in USA</mattext>
+                            </material>
+                            <response_lid ident = "LID02" rcardinality = "Multiple">
+                                    <render_choice shuffle = "Yes" minnumber = "1" maxnumber = "4">
+                                            <response_label ident = "LID02_A">
+                                                    <flow_mat>
+                                                            <material>
+                                                                    <mattext>Indiana</mattext>
+                                                            </material>
+                                                    </flow_mat>
+                                            </response_label>
+                                            <response_label ident = "LID02_B">
+                                                    <flow_mat>
+                                                            <material>
+                                                                    <mattext>Nevada</mattext>
+                                                            </material>
+                                                    </flow_mat>
+                                            </response_label>
+                                            <response_label ident = "LID02_C">
+                                                    <flow_mat>
+                                                            <material>
+                                                                    <mattext>Chicago</mattext>
+                                                            </material>
+                                                    </flow_mat>
+                                            </response_label>
+                                            <response_label ident = "LID02_D">
+                                                    <flow_mat>
+                                                            <material>
+                                                                    <mattext>Illinois</mattext>
+                                                            </material>
+                                                    </flow_mat>
+                                            </response_label>
+                                            <response_label ident = "LID02_D">
+                                                    <flow_mat>
+                                                            <material>
+                                                                    <mattext>Bloomington</mattext>
+                                                            </material>
+                                                    </flow_mat>
+                                            </response_label>
+                                    </render_choice>
+                            </response_lid>
+                    </flow>
+            </presentation>
+           </item>
+<!-- Fill in the Blank (Flow case)-->
+      <item title="FIB with Flow" ident="item 4">
+          <presentation label="Resp004">
+            <flow>
+               <material>
+                   <mattext>Fill-in-the blanks. </mattext>
+                </material>
+                <flow>
+                  <material>
+                      <mattext>Water is made of two elements </mattext>
+                 </material>
+                  <response_str ident="FIB_01" rcardinality="Single" rtiming="No">
+                    <render_fib fibtype="String" prompt="Dashline" maxchars="6">
+                      <response_label ident="A"/>
+                    </render_fib>
+                  </response_str>
+                <material>
+                  <mattext> and </mattext>
+                </material>
+                <response_str ident="FIB_02" rcardinality="Single" rtiming="No">
+                  <render_fib fibtype="String" prompt="Dashline" maxchars="6">
+                    <response_label ident="B"/>
+                  </render_fib>
+                </response_str>
+              </flow>
+           </flow>
+        </presentation>
+      </item>
+<!-- Matching Question-->
+   <item title="Matching Case" ident="item5">
+        <presentation>
+           <flow>
+              <material>
+                      <mattext texttype="text/plain">Match The following States with their respective Capitals
+                      </mattext>
+              </material>
+            <response_grp ident="CapitalsAndState" rcardinality="Multiple">
+              <render_choice>
+                <response_label ident="Source1" match_max="1"
+                    match_group="Nevada, Ohio,Indiana, Illinois, Utah"> Salt Lake City
+                </response_label>
+                <response_label ident="Source2" match_max="1"
+                    match_group="Nevada, Ohio,Indiana, Illinois, Utah">Columbus
+                </response_label>
+                <response_label ident="Source3" match_max="1"
+                     match_group="Nevada, Ohio,Indiana, Illinois, Utah">Spring Field</response_label>
+                <response_label ident="Source4" match_max="1"
+                    match_group="Nevada, Ohio,Indiana, Illinois, Utah">Indianapolis
+                </response_label>
+                <response_label ident="Source5" match_max="1"
+                    match_group="Nevada, Ohio,Indiana, Illinois, Utah">Carson City
+                </response_label>
+                <response_label ident="Target1">Nevada</response_label>
+                <response_label ident="Target2">Ohio</response_label>
+                <response_label ident="Target3">Indiana</response_label>
+                <response_label ident="Target4">Illinois</response_label>
+                <response_label ident="Target5">Utah</response_label>
+              </render_choice>
+           </response_grp>
+        </flow>
+      </presentation>
+    </item>
+   </section>
+  </assessment>
+</questestinterop>

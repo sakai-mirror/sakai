@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+   type="WEB"
+   name="sam_1-5-0-ga"
+   id="myeclipse.1059275657820"
+   context-root="/Navigo"
+   j2ee-spec="1.3"
+   archive="sam_1-5-0-ga.war">
+   <attributes>
+      <attribute name="webrootdir" value="/webapp" />
+   </attributes>
+</project-module>
+

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+    <pomVersion>1</pomVersion>
+    <name>Sakai Syllabus</name>
+    <groupId>sakaiproject</groupId>
+    <id>sakai-syllabus-deploy</id>
+    <currentVersion>sakai.1.5.0</currentVersion>
+    <organization>
+        <name>Sakai Project</name>
+        <url>http://sakaiproject.org/</url>
+    </organization>
+    <inceptionYear>2004</inceptionYear>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-tcdeploy</artifactId>
+            <version>sakai.1.5.0</version>
+            <type>plugin</type>
+        </dependency>
+       
+       <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-service-syllabus</artifactId>
+            <version>sakai.1.5.0</version>
+            <type>jar</type>
+        </dependency>        
+        
+       <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-component-syllabus</artifactId>
+            <type>jar</type>            
+            <version>sakai.1.5.0</version>
+        </dependency>        
+
+       <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-syllabus</artifactId>
+            <type>war</type>
+            <version>sakai.1.5.0</version>
+        </dependency>         
+<!--        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-component-syllabus-web</artifactId>
+            <type>war</type>
+            <version>sakai.1.5.0</version>
+        </dependency>-->
+        
+
+    </dependencies>
+
+    <build>
+    </build>
+
+</project>

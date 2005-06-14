@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     Oct 8, 2004 4:13:10 PM                                                        
+
+     distribution    
+     build file to customize a Sakai quickstart distribution.
+                   
+     haines                                                                
+     ====================================================================== -->
+
+<project name="sakai-customize-CORE" default="customizeSakai">
+	<description>
+            Ant build file to customize Sakai quickstart distribution.
+    </description>
+
+	<property file="customize.properties"/>
+	<property environment="env" />
+
+
+	<!-- ================================= 
+          target: help              
+         ================================= -->
+	<target name="help" description="print out information on using build file">
+		<echo>
+			This script will customize a distribution of the Sakai quickstart.
+ By default it will ensure that Sakai will find it's support files 
+ in the directory specified in the customize.properties file.  The other 
+ thing that can be customized is the underlying data storage method.
+ The quick start comes configured to use a custom XML file storage 
+ mechanism.  This can be changed to use MySQL by following the directions on the
+ quickstart web page.
+		</echo>
+	</target>
+
+	<!-- Install the proper context.  First determine the OS then
+		call both windows and Unix installs.  The wrong one won't
+		run because of the property test in the target element.  -->
+
+	<target name="findOS" description="Determine the current host OS" >
+		<!-- set properties depending the host os -->
+		<condition property="windows">
+			<os family="windows"/>
+		</condition>
+		<condition property="unix">
+			<os family="unix"/>
+		</condition>
+	</target>
+
+	<target name="installWindowsContext" if="windows">
+		<echo>installing Windows context.xml</echo>
+		<copy tofile="${work.tomcat.installed.dir}/context.xml" file="${work.helper.dirname}/sakai-dispatch/META-INF/context_windows.xml"/> 
+	</target>
+
+	<target name="installUnixContext" if="unix">
+		<echo>installing Unix (and OS X) context.xml </echo>
+		<copy tofile="${work.tomcat.installed.dir}/context.xml" file="${work.helper.dirname}/sakai-dispatch/META-INF/context.xml"/> 
+	</target>
+	
+	<!-- Install the Sakai files for a particular underlying db store. -->
+	
+	<target name="installDbConf" >
+		<copy tofile="${work.helper.path}/framework-component/components.xml" 
+			file="${work.helper.path}/confdb/db/framework-component/components.xml" 
+			filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy tofile="${work.helper.path}/legacy-component/components.xml" 
+			file="${work.helper.path}/confdb/db/legacy-component/components.xml" 
+			filtering="false" preservelastmodified="true" overwrite="true" />
+	</target>
+
+	<!--
+	<target name="installXMLConf" >
+		<copy tofile="${work.helper.path}/framework-component/components.xml" 
+			file="${work.helper.path}/confdb/xml/framework-component/components.xml" 
+			filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy tofile="${work.helper.path}/legacy-component/components.xml" 
+			file="${work.helper.path}/confdb/xml/legacy-component/components.xml" 
+			filtering="false" preservelastmodified="true" overwrite="true" />
+	</target>
+	-->
+	
+	<!-- need to delete okiosid, pluto, portlet -->
+	
+	<!-- allow configuring the local preference for the location of the sakai configuration files -->
+	<target name="modifyLocalConfigDir" 
+		description="modify the value of the directory holding sakai configuration information in relevant xml files." >
+		<replace token="${sakai.configfilepathpattern}" value="${work.helper.dirname}"
+			dir="${work.helper.dirname}" includes="**/*.xml, **/*.properties" />
+	</target>
+
+
+	<target name="adjustLocalFileReference" >
+               <replace summary="yes" token="${sakai.configfilepathpattern}" value="${work.helper.path}" 
+			dir="${work.tomcat.installed.dir}"
+			includes="**/*.xml,**/*.properties"/>
+
+		<replace summary="yes" token="${sakai.configfilepathpattern}" value="${work.helper.path}" 
+			dir="${work.helper.path}"
+			includes="**/*.xml,**/*.properties"/>
+				
+<!--		<copy todir="${work.tomcat.installed.dir}/conf/Catalina/localhost/" file="${work.helper.dirname}/sakai-dispatch/META-INF/context.xml" /> -->
+		<copy tofile="${work.tomcat.installed.dir}/conf/Catalina/localhost/sakai-dispatch.xml" 
+			file="${work.helper.path}/sakai-dispatch/META-INF/context.xml" />
+		<copy tofile="${work.tomcat.installed.dir}/conf/Catalina/localhost/sakai-dav.xml" 
+			file="${work.tomcat.installed.dir}/webapps/sakai-dav/META-INF/context.xml" />
+	</target>
+
+	<target name="makeExecutible">
+		<chmod dir="${work.rootdir}" perm="ugo+rx" includes="**/*.sh"/>
+	</target>
+	
+	<!-- <target name="customizeSakai" description="run customizations for this sakai installation."  depends="installXMLConf, adjustLocalFileReference, makeExecutible"> -->
+	 <target name="customizeSakai" description="run customizations for this sakai installation."  depends="adjustLocalFileReference, makeExecutible"> 
+		<echo> 
+			Changing path to local Sakai files from: ${sakai.configfilepathpattern} to ${work.helper.path}. 
+			The tomcat in use is: ${work.tomcat.installed.dir}.
+			</echo>
+		<echo> add install db and fixed install context</echo>
+		</target>
+
+	<target name="mysql" description="customize Sakai to use a local MySQL installation." depends="installDbConf, adjustLocalFileReference, makeExecutible">
+	</target>
+
+
+	<target name="hsqldb" description="customize Sakai to use a local Hsqldb installation." depends="installDbConf, adjustLocalFileReference, makeExecutible">
+	</target>
+
+<!--	
+	<target name="xml" description="customize Sakai to use the Sakai XML datastore." depends="installXMLConf, adjustLocalFileReference, makeExecutible">
+	</target>
+-->
+	
+<!-- $Header -->	
+</project>
+

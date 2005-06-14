@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="component/src/test"/>
+	<classpathentry kind="src" path="tool/src/java"/>
+	<classpathentry kind="src" path="tool/src/webapp/WEB-INF"/>
+	<classpathentry kind="src" path="component/src/java"/>
+	<classpathentry kind="src" path="service/src/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="com.genuitec.eclipse.j2eedt.core.J2EE13_CONTAINER"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-fileupload/jars/commons-fileupload-1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jsf/jars/jsf-api-1.1.01.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jsf/jars/jsf-impl-1.1.01.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-component-sakai.1.5.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/aopalliance-sf1.0.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/jta-sf1.0.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.6.jar"/>
+	<classpathentry sourcepath="SPRING_HOME/src" kind="var" path="MAVEN_REPO/springframework/jars/spring-full-1.0.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-jsf-sakai.1.5.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-service-sakai.1.5.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,314 @@
+<?xml version="1.0" ?>
+
+<!-- ====================================================================== 
+     Oct 8, 2004 4:13:10 PM                                                        
+
+     distribution    
+     build file to generate Sakai quickstart distribution
+                   
+     haines                                                                
+     ====================================================================== -->
+
+<project name="sakai-dist_1-5" default="help">
+	<description>
+            build file to generate Sakai quickstart distribution for 1.5
+    </description>
+
+	<property file="package.properties"/>
+	<property environment="env" />
+
+	<!-- ================================= 
+          target: help              
+         ================================= -->
+	<target name="help" description="print out information on using build file">
+		<echo>getSakaiSourceCvs - get the source of Sakai for a particular tag value.</echo>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: getSakaiSourceCVS                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="getSakaiSourceCVS" description="get the source for Sakai" depends="clean">
+		<echo>
+			extract Sakai version: ${CVS.tag}
+		</echo>
+		<cvs command="export" cvsroot="${CVS.ROOT}" 
+			dest="${work.build}" package="${CVS.moduleName}" tag="${CVS.tag}" 
+			cvsrsh="ssh" output="${LOGSDIR}/export.log"
+			failonerror="true"
+			quiet="true"
+		/>
+		
+		<!-- get rid of the wrong deploy -->
+		<echo>extract version of deploy for this distribution </echo>
+		<cvs command="export" cvsroot="${CVS.ROOT}"
+			package="${sakai.deploy.package}/project.xml" 
+			cvsrsh="ssh" output="${LOGSDIR}/deploy.log" tag="HEAD"
+			failonerror="false"
+			dest="${work.build}/${CVS.moduleName}/deploy"
+		/>
+		
+			<!-- get the required utilities -->
+		<echo>extract utilities: ${sakai.deploy.package} </echo>
+		<cvs command="export" cvsroot="${CVS.ROOT}"
+			package="${sakai.deploy.package}" 
+			cvsrsh="ssh" output="${LOGSDIR}/utils.log" tag="HEAD"
+			failonerror="false"
+			dest="${work.build}"
+		/>
+
+	</target>
+
+	<!-- - - - - 
+	 target: clean
+	- - - - - - -->
+	<target name="clean" description="provide clean environment">
+		<delete dir="${work.build}" verbose="false" />
+		<mkdir dir="${LOGSDIR}" />
+	</target>
+
+	<!-- - - -
+	target: compile
+	- - - -->
+	<target name="compile" description="compile Sakai via maven" depends="getSakaiSourceCVS">
+		<mkdir dir="${work.build}/sakai"/>
+		<delete dir="${work.build}/sakai/ctools" />
+		<delete dir="${work.build}/sakai/crud" />
+		<delete dir="${work.build}/sakai/module" />
+		<delete dir="${work.build}/sakai/annc" />
+		<exec executable="${local.MavenPath}/bin/maven" dir="${work.build}/sakai">
+			<arg value="-Dmaven.tomcat.home=${work.tomcat.path}" />
+		</exec>
+	</target>
+
+	<target name="tomcatPrep"
+	        description="make some changes to tomcat directory">
+		<mkdir dir="${work.localfile.path}" />
+		<!--
+		<copy todir="${sakaiLocalFileDir}" verbose="true">
+			<fileset dir="/usr/local/sakai/sakai-dispatch"/>
+		</copy>
+		-->
+		<echo>work.localfile.path: ${work.localfile.path}/sakai-dispatch</echo>
+		<mkdir dir="${work.localfile.path}" />
+		<mkdir dir="${work.localfile.path}/sakai-dispatch" />
+		<mkdir dir="${work.tomcat.installed.dir}/logs" />
+		<mkdir dir="${work.tomcat.installed.dir}/temp" />
+		<echo> fix reference for sakai-dispatch</echo>
+		<move todir="${work.localfile.path}/sakai-dispatch">
+		<fileset dir="/usr/local/sakai/sakai-dispatch" /> 
+		</move>
+	
+		<move todir="${work.tomcat.installed.dir}/webapps/ROOT_OLD"
+		      failonerror="false">
+			<fileset dir="${work.tomcat.installed.dir}/webapps/ROOT" />
+		</move>
+
+		<!-- make sure that the support files are copied over to the localFiles -->
+		<copy todir="${work.localfile.path}" verbose="true">
+			<fileset dir="${work.build}/sakai/reference/src/usr_local_sakai" />
+		</copy>
+
+		<copy todir="${work.localfile.path}/db" verbose="true">
+<!-- 			<fileset dir="${work.build}/sakai/reference/src/sql/legacy/hsqldb/sakaidb.*" /> -->
+ 			<fileset dir="${work.build}/sakai/reference/src/sql/legacy/hsqldb" >
+			  <include name="sakaidb.*" />
+			  </fileset>
+		</copy>
+		
+		<!-- copy the registration files -->
+		<copy todir="${work.localfile.path}/reg" flatten="true" verbose="true">
+			<fileset dir="${work.build}/sakai">
+				<include name="**/reg/**/*.xml" />
+			</fileset>
+		</copy>
+		
+		<!-- Get rid of some that are UM specific -->
+		<delete verbose="true">
+			<fileset dir="${work.localfile.path}/reg">
+				<include name="chef.dissertation*.xml" />
+				<include name="chef.annc.xml" />
+				<include name="chef.sitesetup.xml" />
+				<include name="chef.siteinfo.xml" />
+				<include name="GradTools**.xml" />
+				<include name="CTNG**.xml" />
+				<include name="sakai.crud.xml" />
+				<include name="sakai.module.xml" />
+			</fileset>
+		</delete>
+
+		<delete verbose="true">
+			<fileset  dir="${work.tomcat.installed.dir}">
+<!--				<include name="**/OkiOSID*.jar" /> -->
+				<include name="**/pluto*.jar" />
+				<include name="**/portlet*.jar" />
+			</fileset>
+		</delete>
+		
+	</target>
+
+	<target name="unwarWebapps" description="unwar the war files in webapps">
+		<antcall target="unwarWebapp">
+			<param name="useWar" value="sakai-chef-tool"/>
+		</antcall>
+		<antcall target="unwarWebapp">
+			<param name="useWar" value="sakai-dav"/>
+		</antcall>
+		<!--
+		<antcall target="unwarWebapp">
+			<param name="useWar" value="sakai-embedded"/>
+		</antcall>
+		-->
+		<antcall target="unwarWebapp">
+			<param name="useWar" value="sakai-framework-component"/>
+		</antcall>
+		<antcall target="unwarWebapp">
+			<param name="useWar" value="sakai-james"/>
+		</antcall>
+		<antcall target="unwarWebapp">
+			<param name="useWar" value="sakai-legacy-component"/>
+		</antcall>
+		<antcall target="unwarWebapp">
+			<param name="useWar" value="sakai-provider"/>
+		</antcall>
+		<!--
+		<antcall target="unwarWebapp">
+			<param name="useWar" value="sakai-shared"/>
+		</antcall>
+		-->
+		<antcall target="unwarWebapp">
+			<param name="useWar" value="sakai-portal"/>
+		</antcall>
+
+		<antcall target="unwarWebapp">
+			<param name="useWar" value="sakai-z-last"/>
+		</antcall>
+		
+		<!-- destroy any remaining war files -->
+		<delete>
+			<fileset dir="${work.tomcat.installed.dir}/webapps">
+				<include name="*.war"/>
+			</fileset>
+		</delete>
+		
+	</target>
+
+	<target name="unwarWebapp" description="expand a single war file in place" >
+		<property name="useWar" value="dummy" />
+		<property name="webappsDir" value="${work.tomcat.installed.dir}/webapps/"/>
+		<mkdir dir="${local.tmpDir}" />
+		<unwar src="${webappsDir}/${useWar}.war" dest="${webappsDir}/${useWar}"/>
+		<delete file="${webappsDir}/${useWar}.war"/>
+	</target>
+
+	<target name="packDistribution" depends="installTomcat, installAnt, compile, tomcatPrep, storeDbConf, getUtilities, unwarWebapps">
+		<echo>
+			Make sure that you are working with appropriate Sakai TAG: current tag: ${CVS.tag}
+		</echo>
+
+		<zip destfile="${work.build}/sakai.${CVS.tag}.zip" >
+			<!-- add tomcat and ant -->
+			<zipfileset dir="${work.tomcat.path}" prefix="${CVS.moduleName}/${download.tomcat.version}"/>
+			<zipfileset dir="${work.ant.path}" prefix="${CVS.moduleName}/${download.ant.version}"/>
+			<!-- add the sakai support files -->
+			<zipfileset dir="${work.localfile.path}" prefix="${CVS.moduleName}/${work.localfile.dirname}"/>	
+			<!-- add the install directory -->
+
+	    	<zipfileset dir="${work.helper.path}" prefix="${CVS.moduleName}/${work.helper.dirname}"/>	
+			<!-- add the top level files -->
+			<zipfileset dir="${work.build}/${sakai.deploy.package}" prefix="${CVS.moduleName}"> 
+<!-- 			<zipfileset dir="${quickstartfilessource}/${sakai.deploy.package}" prefix="${CVS.moduleName}">  -->
+					<include name="**/README.TXT" />
+					<include name="**/start.sh"/>
+					<include name="**/stop.sh" />					
+					<include name="**/start.bat"/>
+					<include name="**/stop.bat" />
+			</zipfileset>		
+		</zip>
+		<echo>Created zip file: ${work.build}/sakai.${CVS.tag}.zip</echo>
+	</target>
+
+	<available file="${download.tomcat.version}.tar.gz" filepath="${download.tomcat.path}"  property="haveTomcat" />
+	<available file="${download.tomcat.version}" filepath="${work.tomcat.path}"  property="haveTomcatDir" />
+	
+	<available file="${download.ant.version}.tar.gz" filepath="${download.ant.path}"  property="haveAnt" />
+
+
+	<target name="storeDbConf" description="put the files for specific db database access methods in a known spot" >
+		<mkdir dir="${work.localfile.path}/confdb" />
+		
+		<!-- do it for the normal db configuration -->
+		<mkdir dir="${work.localfile.path}/confdb/db"/>
+		<!-- Not in 1-0-0 -->
+		<copy todir="${work.localfile.path}/confdb/db">
+			<fileset dir="${work.sakai}/reference/src/sql/legacy"/>
+		</copy>
+		<!-- -->
+		<mkdir dir="${work.localfile.path}/confdb/db/framework-component"/>
+		<copy tofile="${work.localfile.path}/confdb/db/framework-component/components.xml" 
+			file="${work.sakai}/framework-component/src/webapp/WEB-INF/components_db.xml" 
+			filtering="false" preservelastmodified="true" overwrite="true" />
+		<mkdir dir="${work.localfile.path}/confdb/db/legacy-component"/>
+		<copy tofile="${work.localfile.path}/confdb/db/legacy-component/components.xml" 
+			file="${work.sakai}/legacy-component/src/webapp/WEB-INF/components_db.xml" 
+			filtering="false" preservelastmodified="true" overwrite="true" />
+			
+		<!-- do it for the xml db configuration -->
+<!-- no more xml
+ 		<mkdir dir="${work.localfile.path}/confdb/xml"/>
+		<mkdir dir="${work.localfile.path}/confdb/xml/framework-component"/>
+		<copy tofile="${work.localfile.path}/confdb/xml/framework-component/components.xml" 
+			file="${work.sakai}/framework-component/src/webapp/WEB-INF/components.xml" 
+			filtering="false" preservelastmodified="true" overwrite="true" />
+		<mkdir dir="${work.localfile.path}/confdb/xml/legacy-component"/>
+		<copy tofile="${work.localfile.path}/confdb/xml/legacy-component/components.xml" 
+			file="${work.sakai}/legacy-component/src/webapp/WEB-INF/components.xml" 
+			filtering="false" preservelastmodified="true" overwrite="true" />
+-->
+	</target>
+
+	<target name="establishTomcat" unless="haveTomcat">
+		<mkdir dir="${download.tomcat.path}"/>
+		<get dest="${download.tomcat.path}/${download.tomcat.version}.tar.gz" src="${download.tomcat.url}"/>
+	</target>
+
+	<target name="installTomcat" depends="establishTomcat">
+		<delete dir="${download.tomcat.path}/${download.tomcat.version}" />
+		<untar compression="gzip" dest="${work.tomcat.path}/.." src="${download.tomcat.path}/${download.tomcat.version}.tar.gz"/>
+		<delete dir="${work.tomcat.path}/webapps/tomcat-docs" />
+		<delete dir="${work.tomcat.path}/webapps/webdav" />
+	</target>
+
+	<target name="establishAnt" unless="haveAnt">
+		<mkdir dir="${download.ant.path}"/>
+		<get dest="${download.ant.path}/${download.ant.version}.tar.gz" src="${download.ant.url}"/>
+	</target>
+
+	<target name="installAnt" depends="establishAnt">
+		<delete dir="${download.ant.path}/${download.ant.version}" />
+		<untar compression="gzip" dest="${work.ant.path}/.." src="${download.ant.path}/${download.ant.version}.tar.gz"/>
+		<delete dir="${work.ant.path}/docs" />
+	</target>
+
+
+	<target name="getUtilities" description="add some utilities that for installations customization">
+			<mkdir dir="${work.localfile.path}/util"/>
+			
+		<copy todir="${work.localfile.path}" verbose="true">
+			<fileset dir="${work.build}/sakai/reference/src/usr_local_sakai" />
+		</copy>
+
+		<mkdir dir="${work.helper.path}" />
+		<copy todir="${work.helper.path}" 			
+			filtering="false" preservelastmodified="true" overwrite="true" flatten="true" >
+<!--					<fileset dir="${work.build}/${sakai.deploy.package}">  -->
+<!-- changed so that can test changes without checkin -->
+					<fileset dir="${work.build}/${sakai.deploy.package}"> 
+						<include name="customize.xml" />
+						<include name="customize.properties" />
+						</fileset>		
+			</copy>
+	</target>
+	
+    <!-- $Header: /cvs/quickstart/qs-1-0-0/package.xml,v 1.1 2005/02/20 21:13:44 dlhaines.umich.edu Exp $ -->
+</project>
+

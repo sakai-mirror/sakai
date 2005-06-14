@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.present"
+			url="/sakai-present-tool/mytool/jsf.tool"
+			title="Presentation Tool"
+			description="Presentation Tool is used to show slides.">
+
+	</tool>
+
+</registration>

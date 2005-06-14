@@ -1,0 +1,189 @@
+DROP TABLE TYPE CASCADE CONSTRAINTS
+;
+CREATE TABLE TYPE (
+   TYPEID	    INTEGER   NOT NULL,
+   AUTHORITY    VARCHAR(255) NOT NULL,
+   DOMAIN    VARCHAR(255) NOT NULL,
+   KEYWORD      VARCHAR(255) NOT NULL,
+   DESCRIPTION    LONG VARCHAR,
+   STATUS            INTEGER NOT NULL,
+   CREATEDBY     VARCHAR(36) NOT NULL,
+   CREATEDDATE   DATETIME NOT NULL,
+   LASTMODIFIEDBY   VARCHAR(36) NOT NULL,
+   LASTMODIFIEDDATE DATETIME NOT NULL,
+   CONSTRAINT PK_TYPE PRIMARY KEY (TYPEID)
+)
+;
+commit;
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (1 , 'stanford.edu' ,'assessment.item' ,'Multiple Choice' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (2 , 'stanford.edu' ,'assessment.item' ,'Multiple Correct' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (3 , 'stanford.edu' ,'assessment.item' ,'Multiple Choice Survey' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (4 , 'stanford.edu' ,'assessment.item' ,'True - False' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (5 , 'stanford.edu' ,'assessment.item' ,'Short Answer/Essay' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (6 , 'stanford.edu' ,'assessment.item' ,'File Upload' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (7 , 'stanford.edu' ,'assessment.item' ,'Audio Recording' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (8 , 'stanford.edu' ,'assessment.item' ,'Fill in Blank' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (9 , 'stanford.edu' ,'assessment.item' ,'Matching' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (21 , 'stanford.edu' ,'assessment.section' ,'Default' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (22 , 'stanford.edu' ,'assessment.section' ,'Normal' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (41 , 'stanford.edu' ,'assessment.template' ,'Quiz' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (42 , 'stanford.edu' ,'assessment.template' ,'Homework' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (43 , 'stanford.edu' ,'assessment.template' ,'Mid Term' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (44 , 'stanford.edu' ,'assessment.template' ,'Final' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (61 , 'stanford.edu' ,'assessment' ,'Quiz' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (62 , 'stanford.edu' ,'assessment' ,'Homework' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (63 , 'stanford.edu' ,'assessment' ,'Mid Term' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (64 , 'stanford.edu' ,'assessment' ,'Final' ,NULL ,1 ,1 ,
+    SYSDATE ,1 ,SYSDATE);
+
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (0 , 'stanford.edu' ,'assessment.questionpool' ,'Default' ,
+    'Stanford Question Pool',1 ,1 , SYSDATE ,1 ,SYSDATE);
+
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (30 , 'stanford.edu' ,'assessment.questionpool.access' ,'Access Denied' ,
+    'Access Denied',1 ,1 , SYSDATE ,1 ,SYSDATE);
+
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (31 , 'stanford.edu' ,'assessment.questionpool.access' ,'Read Only' ,
+    'Read Only',1 ,1 , SYSDATE ,1 ,SYSDATE);
+
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (32 , 'stanford.edu' ,'assessment.questionpool.access' ,'Read and Copy' ,
+    'Read and Copy',1 ,1 , SYSDATE ,1 ,SYSDATE);
+
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (33 , 'stanford.edu' ,'assessment.questionpool.access' ,'Read/Write' ,
+    'Read/Write',1 ,1 , SYSDATE ,1 ,SYSDATE);
+
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (34 , 'stanford.edu' ,'assessment.questionpool.access' ,'Administration' ,
+    'Adminstration',1 ,1 , SYSDATE ,1 ,SYSDATE);
+
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (81 , 'stanford.edu' ,'assessment.taking' ,'Taking Assessment' ,
+    'Taking Assessment',1 ,1 , SYSDATE ,1 ,SYSDATE);
+
+INSERT INTO TYPE ("TYPEID" ,"AUTHORITY" ,"DOMAIN" ,"KEYWORD",
+    "DESCRIPTION" ,
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" ,
+    "LASTMODIFIEDDATE" )
+    VALUES (101 , 'stanford.edu' ,'assessment.published' ,'A Published Assessment' ,
+    'A Published Assessment',1 ,1 , SYSDATE ,1 ,SYSDATE);
+
+commit;

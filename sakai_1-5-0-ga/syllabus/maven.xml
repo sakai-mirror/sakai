@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  default="clean_full"
+  xmlns:j="jelly:core"
+  xmlns:ant="jelly:ant"
+  xmlns:u="jelly:util">
+
+        <goal name="clean_full">
+                <j:set var="goal" value="clean,full" />
+                <attainGoal name="multiproject:goal" />
+        </goal> 
+
+        <goal name="full">
+                <j:set var="goal" value="clean,full" />
+                <attainGoal name="multiproject:goal" />
+        </goal> 
+
+        <goal name="clean">
+
+    		<ant:delete dir="tool/target"/>
+    		<ant:delete dir="tool/doc"/>
+    		<ant:delete dir="service/target"/> 
+    		<ant:delete dir="component/target"/>
+    		<ant:delete dir="component/doc"/>
+        </goal> 
+        
+ 	      <goal name="reg">
+      		<copy todir="/usr/local/sakai/reg/" filtering="false" preservelastmodified="true" overwrite="true">
+			      <fileset dir="tool/src/reg">
+      				<include name="*.xml" />
+			      </fileset>
+      		</copy>
+      	</goal>
+
+</project>

@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.sakaiproject.tool.assessment.data.dao.authz.AuthorizationData"
+        table="sam_authzData_t">
+      <id name="surrogateKey" type="long">
+        <column name="id" not-null="true" length="19" />
+          <generator class="native">
+            <param name="sequence">sam_AuthzData_s</param>
+          </generator>
+      </id>
+      
+      <version name="lockId" />
+              
+      <property name="agentIdString">
+        <column name="agentId" unique-key="uniqueAuthz"
+                not-null="true" index="sam_authz_agentId_idx" />
+      </property>
+      <property name="functionId">
+        <column name="functionId" unique-key="uniqueAuthz"
+                not-null="true" index="sam_authz_functionId_idx" />
+      </property>
+      <property name="qualifierId">
+        <column name="qualifierId" unique-key="uniqueAuthz"
+                not-null="true" index="sam_authz_qualifierId_idx" />
+      </property>
+      
+      
+      <property  name="authorizationEffectiveDate">
+        <column name="effectiveDate" sql-type="date" not-null="false" />
+      </property>
+      <property  name="authorizationExpirationDate">
+        <column name="expirationDate" sql-type="date" not-null="false" />
+      </property>
+      <property  name="lastModifiedBy">
+        <column name="lastModifiedBy" sql-type="varchar(36)"  not-null="true" />
+      </property>
+      <property  name="lastModifiedDate">
+        <column name="lastModifiedDate" sql-type="date" not-null="true" />
+      </property>
+      <property  name="isExplicitBoolean">
+        <column name="isExplicit" sql-type="integer" />
+      </property>
+    </class>
+    
+    <class  name="org.sakaiproject.tool.assessment.data.dao.authz.FunctionData"
+      table="sam_functionData_t">
+      <id  name="functionId" column="functionId"  type="long">
+        <generator class="sequence">
+          <param name="sequence">sam_functionId_s</param>
+        </generator>
+      </id>
+      <property  name="referenceName">
+        <column name="referenceName" sql-type="varchar(255)" not-null="true" />
+      </property>
+      <property  name="displayName">
+        <column name="displayName" sql-type="varchar(255)" />
+      </property>
+      <property  name="description">
+        <column name="description" sql-type="varchar(4000)" />
+      </property>
+      <property  name="functionTypeId">
+        <column name="functionTypeId" sql-type="varchar(4000)" />
+      </property>
+    </class>
+
+    <class  name="org.sakaiproject.tool.assessment.data.dao.authz.QualifierData"
+        table="sam_qualifierData_t">
+        <id  name="qualifierId" column="qualifierId"  type="long">
+          <generator class="assigned">
+            <param name="sequence">sam_qualifierId_s</param>
+          </generator>
+        </id>
+        <property  name="referenceName">
+          <column name="referenceName" sql-type="varchar(255)" not-null="true" />
+        </property>
+        <property  name="displayName">
+          <column name="displayName" sql-type="varchar(255)" />
+        </property>
+        <property  name="description">
+          <column name="description" sql-type="varchar(4000)" />
+        </property>
+        <property  name="qualifierTypeId">
+          <column name="qualifierTypeId" sql-type="varchar(4000)" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,74 @@
+To activate Samigo in the Sakai 1.5 Quickstart perform the following
+steps.  
+
+Note that all files are stored relative to the directory in which the
+Quickstart was unzipped. The literal $PWD below should be changed to
+the path to that directory appropriate for your installation.
+
+A) Register Samigo
+
+1 - Copy the contents of the directory $PWD/localfiles/reg.samigo to the
+$PWD/localfiles/reg directory. 
+
+
+B) Manually Install the war file
+
+Installation of the war file is manual because we need to customize some
+information in the war file.
+
+1 - Rename the $PWD/jakarta-tomcat-5.0.28/webapps/samigo.war.hide file to
+$PWD/jakarta-tomcat-5.0.28/webapps/samigo.war.
+
+2 - Go to the $PWD/jakarta-tomcat-5.0.28/webapps directory, create a samigo
+directory, copy the samigo.war file into the samigo directory, go to that 
+directory and run 'jar xf samigo.war'.  The war file is installed manually because of the
+next step.
+
+C) Update the webapp information. 
+
+Note that using the forward slash ('/') in these file names will work on Windows as 
+well as on Unix based operating systems.  Using the backwards slash ('\') in properties files can cause problems.
+
+1 - Change the value starting with 'file:' in
+$PWD/jakarta-tomcat-5.0.28/webapps/samigo/WEB-INF/classes/org/sakaiproject/spring/applicationContext.xml
+to be the location of the samigo.xml file:
+$PWD/localfiles/opt/sa_forms/java/dev/org/sakaiproject/security/sam/samigo.xml
+
+2 - In the
+$PWD/jakarta-tomcat-5.0.28/webapps/samigo/webapp/WEB-INF/web.xml file
+change the value of the PathToSecurity parameter to point to the value
+"$PWD/localfiles/opt/sa_forms/java/dev".
+ 
+3 - In the
+$PWD/jakarta-tomcat-5.0.28/webapps/samigo/webapp/WEB-INF/web.xml file
+change the value of the PathToSettings parameter value to be
+"$PWD/localfiles/opt/j2ee/dev".
+
+
+D) Configure Samigo database access
+
+1 - Change the values in
+$PWD/localfiles/opt/sa_forms/java/dev/org/sakaiproject/security/sam/samigo.xml
+to be appropriate for your Oracle installation.
+
+2 - Make sure an appropriate Oracle driver is installed in
+$PWD/jakarta-tomcat-5.0.28/common/lib.
+
+3- Create the required tables in your Oracle database by running 
+   the following ddl files via SQLPlus in this order.
+   i.  01_schema_oracle.sql which contains SQL statement for creating all the 
+       required tables and sequence, please be sure to commit.
+   ii. 02_defaultSetUp_oracle.sql which contains SQL statements for populating 
+       basic information (such as Type and  a Default Template) required for 
+       running Samigo
+
+Both files are located inside $PWD/localfiles/ddl/samigo-ddl/. You may
+want to capture the output to check that all the tables and sequence
+are created accordingly.  There may be errors around deleting elements that 
+don't exist.  These errors are harmless and don't indicate a problem.
+
+Samigo should then be available as the Quiz and Test tool can be
+placed in sites via Worksite Setup.
+
+
+$Header: /cvs/quickstart/qs-1-5-0/installingSamigo.txt,v 1.3 2005/03/05 20:20:17 dlhaines.umich.edu Exp $

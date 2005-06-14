@@ -1,0 +1,1 @@
+<a href="http://www.indiana.edu/copyright.html" title="Click here for Indiana University's Copyright Statement">Copyright</a> 1999-2002<br>The Trustees of <a href="http://www.iu.edu" title="Click here to go to Indiana University's homepage">Indiana University</a>

@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.ItemData" table="sam_item_t">
+    <id name="itemId" column="itemId" type="java.lang.Long" unsaved-value="0">
+      <generator class="sequence">
+        <param name="sequence">sam_item_id_s</param>
+      </generator>
+    </id>
+    <many-to-one name="section"
+      class="org.sakaiproject.tool.assessment.data.dao.assessment.SectionData"
+      column="sectionId" />
+    <property name="itemIdString">
+      <column name="itemIdString" not-null="false" sql-type="varchar(36)" />
+    </property>
+    <property name="sequence">
+      <column name="sequence" not-null="false" sql-type="integer" />
+    </property>
+    <property name="duration">
+      <column name="duration" not-null="false" sql-type="integer" />
+    </property>
+    <property name="triesAllowed">
+      <column name="triesAllowed" not-null="false" sql-type="integer" />
+    </property>
+    <property name="instruction">
+      <column name="instruction" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="description">
+      <column name="description" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="typeId">
+      <column name="typeId" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="grade">
+      <column name="grade" not-null="false" sql-type="varchar(80)" />
+    </property>
+    <property name="score">
+      <column name="score" not-null="false" sql-type="float" />
+    </property>
+    <property name="hint">
+      <column name="hint" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="hasRationale">
+      <column name="hasRationale" not-null="false" sql-type="varchar(1)" />
+    </property>
+    <property name="status">
+      <column name="status" not-null="true" sql-type="integer" />
+    </property>
+    <property name="createdBy">
+      <column name="createdBy" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="createdDate">
+      <column name="createdDate" not-null="true" sql-type="date" />
+    </property>
+    <property name="lastModifiedBy">
+      <column name="lastModifiedBy" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="lastModifiedDate">
+      <column name="lastModifiedDate" not-null="true" sql-type="date" />
+    </property>
+    <set name="itemTextSet" table="sam_itemText_t" cascade="all" order-by="sequence asc" inverse="true" lazy="false">
+       <key column="itemId"/>
+       <one-to-many class="org.sakaiproject.tool.assessment.data.dao.assessment.ItemText"/>
+    </set>
+    <set name="itemMetaDataSet" table="sam_itemMetaData_t" cascade="all" inverse="true" lazy="false">
+       <key column="itemId"/>
+       <one-to-many class="org.sakaiproject.tool.assessment.data.dao.assessment.ItemMetaData"/>
+    </set>
+    <set name="itemFeedbackSet" table="sam_itemFeedback_t" cascade="all" inverse="true" lazy="false">
+       <key column="itemId"/>
+       <one-to-many class="org.sakaiproject.tool.assessment.data.dao.assessment.ItemFeedback"/>
+    </set>
+  </class>
+
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.ItemText" table="sam_itemText_t">
+    <id name="id" column="itemTextId" type="java.lang.Long" unsaved-value="0">
+      <generator class="sequence">
+        <param name="sequence">sam_itemText_id_s</param>
+      </generator>
+    </id>
+    <many-to-one name="item" class="org.sakaiproject.tool.assessment.data.dao.assessment.ItemData"
+      column="itemId" not-null="true" />
+    <property name="sequence">
+      <column name="sequence" not-null="true" sql-type="integer" />
+    </property>
+    <property name="text">
+      <column name="text" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <set name="answerSet" table="sam_answer_t" cascade="all" inverse="true" lazy="false" order-by="sequence asc">
+       <key column="itemTextId"/>
+       <one-to-many class="org.sakaiproject.tool.assessment.data.dao.assessment.Answer"/>
+    </set>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.ItemMetaData" table="sam_itemMetaData_t">
+    <id name="id" column="itemMetaDataId" type="java.lang.Long" unsaved-value="0">
+      <generator class="sequence">
+        <param name="sequence">sam_itemMetaData_id_s</param>
+      </generator>
+    </id>
+    <many-to-one name="item" class="org.sakaiproject.tool.assessment.data.dao.assessment.ItemData"
+      column="itemId" not-null="true" />
+    <property name="label">
+      <column name="label" not-null="true" sql-type="varchar(255)" />
+    </property>
+    <property name="entry">
+      <column name="entry" not-null="false" sql-type="varchar(255)" />
+    </property>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.ItemFeedback" table="sam_itemFeedback_t">
+    <id name="id" column="itemFeedbackId" type="java.lang.Long" unsaved-value="0">
+      <generator class="sequence">
+        <param name="sequence">sam_itemFeedback_id_s</param>
+      </generator>
+    </id>
+    <many-to-one name="item" class="org.sakaiproject.tool.assessment.data.dao.assessment.ItemData"
+      column="itemId" not-null="true" />
+    <property name="typeId">
+      <column name="typeId" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="text">
+      <column name="text" not-null="false" sql-type="varchar(4000)" />
+    </property>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.Answer" table="sam_answer_t">
+    <id name="id" column="answerId" type="java.lang.Long" unsaved-value="0">
+      <generator class="sequence">
+        <param name="sequence">sam_answer_id_s</param>
+      </generator>
+    </id>
+    <many-to-one name="itemText" class="org.sakaiproject.tool.assessment.data.dao.assessment.ItemText"
+      column="itemTextId" not-null="true" />
+    <many-to-one name="item" class="org.sakaiproject.tool.assessment.data.dao.assessment.ItemData"
+      column="itemId" not-null="true" />
+    <property name="text">
+      <column name="text" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="sequence">
+      <column name="sequence" not-null="true" sql-type="integer" />
+    </property>
+    <property name="label">
+      <column name="label" not-null="false" sql-type="varchar(20)" />
+    </property>
+    <property name="isCorrect">
+      <column name="isCorrect" not-null="false" sql-type="varchar(1)" />
+    </property>
+    <property name="grade">
+      <column name="grade" not-null="false" sql-type="varchar(80)" />
+    </property>
+    <property name="score">
+      <column name="score" not-null="false" sql-type="float" />
+    </property>
+    <set name="answerFeedbackSet" table="sam_answerFeedback_t" cascade="all" inverse="true" lazy="false">
+      <key column="answerId" />
+      <one-to-many class="org.sakaiproject.tool.assessment.data.dao.assessment.AnswerFeedback" />
+    </set>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.AnswerFeedback" table="sam_answerFeedback_t">
+    <id name="id" column="answerFeedbackId" type="java.lang.Long" unsaved-value="0">
+      <generator class="sequence">
+        <param name="sequence">sam_answerFeedback_id_s</param>
+      </generator>
+    </id>
+    <many-to-one name="answer" class="org.sakaiproject.tool.assessment.data.dao.assessment.Answer"
+       column="answerId" not-null="true"/>
+    <property name="typeId">
+      <column name="typeId" not-null="false" sql-type="varchar(36)" />
+    </property>
+    <property name="text">
+      <column name="text" not-null="false" sql-type="varchar(4000)" />
+    </property>
+  </class>
+
+</hibernate-mapping>

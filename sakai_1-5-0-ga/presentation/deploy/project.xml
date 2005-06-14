@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+    <pomVersion>3</pomVersion>
+    <name>Sakai Present Install</name>
+    <groupId>sakaiproject</groupId>
+    <id>sakai-present-deploy</id>
+    <currentVersion>sakai.1.5.0</currentVersion>
+    <organization>
+        <name>University of Michigan</name>
+        <url>http://sakaiproject.org/</url>
+    </organization>
+    <inceptionYear>2004</inceptionYear>
+
+    <dependencies>
+
+        <!-- Access to the sakai types -->
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-present-service</artifactId>
+            <version>sakai.1.5.0</version>
+            <type>jar</type>
+        </dependency>
+
+        <!-- deploy our local products -->
+
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-present-tool</artifactId>
+            <type>war</type>
+            <version>sakai.1.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-present-component</artifactId>
+            <type>war</type>
+            <version>sakai.1.5.0</version>
+        </dependency>
+
+        <!-- our tomcat deploy plugin -->
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-tcdeploy</artifactId>
+            <version>sakai.1.5.0</version>
+            <type>plugin</type>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <!-- Nothing here... -->
+    </build>
+
+</project>

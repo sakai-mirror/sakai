@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_0.dtd">
+
+<!-- =========== FACES CONFIGURATION FILE ================================== -->
+
+<faces-config>
+
+  <application>
+    <message-bundle>org.sakaiproject.tool.mytool.bundle.Messages</message-bundle>
+    <locale-config>
+      <default-locale>en</default-locale>
+    </locale-config>
+  </application>
+
+  <!-- =================== Tool Beans ============== -->
+
+	<managed-bean>
+		<description>Presentation Tool Bean</description>
+		<managed-bean-name>PresentationTool</managed-bean-name>
+		<managed-bean-class>org.sakaiproject.tool.mytool.PresentationTool</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+
+		<!-- Inject the PresentationManager into prMgr. -->
+		<managed-property>
+			<description>Service Dependency: Presentation Service</description>
+			<property-name>prMgr</property-name>
+			<value>#{Components["org.sakaiproject.service.presentation.PresentationManager"]}</value>
+		</managed-property>
+
+		<managed-property>
+			<description>Service Dependency: Id Manager</description>
+			<property-name>idMgr</property-name>
+			<value>#{Components["org.osid.id.IdManager"]}</value>
+		</managed-property>
+
+	</managed-bean>
+
+</faces-config>

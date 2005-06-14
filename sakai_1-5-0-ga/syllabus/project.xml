@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>1</pomVersion>
+	<name>Sakai-Syllabus</name>
+	<groupId>sakai-syllabus</groupId>
+	<currentVersion>sakai.1.5.0</currentVersion>
+	<organization>
+		<name>Sakai Project</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2004</inceptionYear>
+
+	<dependencies>
+	</dependencies>
+
+	<build>	
+	</build>
+
+</project>

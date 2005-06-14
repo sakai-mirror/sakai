@@ -1,0 +1,302 @@
+/*
+ *                       Navigo Software License
+ *
+ * Copyright 2003, Trustees of Indiana University, The Regents of the University
+ * of Michigan, and Stanford University, all rights reserved.
+ *
+ * This work, including software, documents, or other related items (the
+ * "Software"), is being provided by the copyright holder(s) subject to the
+ * terms of the Navigo Software License. By obtaining, using and/or copying this
+ * Software, you agree that you have read, understand, and will comply with the
+ * following terms and conditions of the Navigo Software License:
+ *
+ * Permission to use, copy, modify, and distribute this Software and its
+ * documentation, with or without modification, for any purpose and without fee
+ * or royalty is hereby granted, provided that you include the following on ALL
+ * copies of the Software or portions thereof, including modifications or
+ * derivatives, that you make:
+ *
+ *    The full text of the Navigo Software License in a location viewable to
+ *    users of the redistributed or derivative work.
+ *
+ *    Any pre-existing intellectual property disclaimers, notices, or terms and
+ *    conditions. If none exist, a short notice similar to the following should
+ *    be used within the body of any redistributed or derivative Software:
+ *    "Copyright 2003, Trustees of Indiana University, The Regents of the
+ *    University of Michigan and Stanford University, all rights reserved."
+ *
+ *    Notice of any changes or modifications to the Navigo Software, including
+ *    the date the changes were made.
+ *
+ *    Any modified software must be distributed in such as manner as to avoid
+ *    any confusion with the original Navigo Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *
+ * The name and trademarks of copyright holder(s) and/or Indiana University,
+ * The University of Michigan, Stanford University, or Navigo may NOT be used
+ * in advertising or publicity pertaining to the Software without specific,
+ * written prior permission. Title to copyright in the Software and any
+ * associated documentation will at all times remain with the copyright holders.
+ * The export of software employing encryption technology may require a specific
+ * license from the United States Government. It is the responsibility of any
+ * person or organization contemplating export to obtain such a license before
+ * exporting this Software.
+ */
+
+/*
+ * $Header: /cvs/sam/src/org/navigoproject/ui/web/asi/importing/Attic/UploadAction.java,v 1.1.1.1 2004/07/28 21:32:07 rgollub.stanford.edu Exp $
+ * $Revision: 1.1.1.1 $
+ * $Date: 2004/07/28 21:32:07 $
+ *
+ * ====================================================================
+ *
+ * The Apache Software License, Version 1.1
+ *
+ * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowlegement may appear in the software itself,
+ *    if and wherever such third-party acknowlegements normally appear.
+ *
+ * 4. The names "The Jakarta Project", "Struts", and "Apache Software
+ *    Foundation" must not be used to endorse or promote products derived
+ *    from this software without prior written permission. For written
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache"
+ *    nor may "Apache" appear in their names without prior written
+ *    permission of the Apache Group.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ *
+ */
+package org.navigoproject.ui.web.asi.importing;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+
+import org.xml.sax.SAXException;
+
+/**
+ * This class takes the UploadForm and retrieves the text value
+ * and file attributes and puts them in the request for the display.jsp
+ * page to display them
+ *
+ * @author Mike Schachter
+ * @version $Revision: 1.1.1.1 $ $Date: 2004/07/28 21:32:07 $
+ */
+public class UploadAction
+  extends Action
+{
+  private final static org.apache.log4j.Logger LOG =
+    org.apache.log4j.Logger.getLogger(UploadAction.class);
+
+  /**
+   * DOCUMENTATION PENDING
+   *
+   * @param mapping DOCUMENTATION PENDING
+   * @param form DOCUMENTATION PENDING
+   * @param request DOCUMENTATION PENDING
+   * @param response DOCUMENTATION PENDING
+   *
+   * @return DOCUMENTATION PENDING
+   *
+   * @throws Exception DOCUMENTATION PENDING
+   */
+  public ActionForward execute(
+    ActionMapping mapping, ActionForm form, HttpServletRequest request,
+    HttpServletResponse response)
+    throws Exception
+  {
+    if(LOG.isDebugEnabled())
+    {
+      LOG.debug(
+        "execute(ActionMapping " + mapping + ", ActionForm " + form +
+        ", HttpServletRequest " + request + ", HttpServletResponse" + response +
+        ")");
+    }
+
+    String newAssessId = null;
+
+    if(form instanceof UploadForm)
+    {
+      //this line is here for when the input page is upload-utf8.jsp,
+      //it sets the correct character encoding for the response
+      String encoding = request.getCharacterEncoding();
+      if((encoding != null) && (encoding.equalsIgnoreCase("utf-8")))
+      {
+        response.setContentType("text/html; charset=utf-8");
+      }
+
+      UploadForm theForm = (UploadForm) form;
+
+      //retrieve the text data
+      String text = theForm.getTheText();
+
+      //retrieve the query string value
+      String queryValue = theForm.getQueryParam();
+
+      //retrieve the file representation
+      FormFile file = theForm.getTheFile();
+
+      //retrieve the file name
+      String fileName = file.getFileName();
+
+      //retrieve the content type
+      String contentType = file.getContentType();
+
+      boolean writeFile = theForm.getWriteFile();
+
+      //retrieve the file size
+      String size = (file.getFileSize() + " bytes");
+
+      String data = null;
+
+      Boolean validXmlFile = new Boolean(true);
+
+      try
+      {
+        //retrieve the file data
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        InputStream stream = file.getInputStream();
+        if(! writeFile)
+        {
+          //only write files out that are less than 1MB
+          if(file.getFileSize() < (4 * 1024000))
+          {
+            byte[] buffer = new byte[8192];
+            int bytesRead = 0;
+            while((bytesRead = stream.read(buffer, 0, 8192)) != -1)
+            {
+              baos.write(buffer, 0, bytesRead);
+            }
+
+            data = new String(baos.toByteArray());
+
+            // MultiPartRequestWrapper work-around
+            //            if (request instanceof MultipartRequestWrapper)
+            //          {
+            //             request=((MultipartRequestWrapper)request).getRequest();
+            //           }
+            newAssessId = XmlImportingService.importXmlFile(data, text);
+          }
+          else
+          {
+            data =
+              new String(
+                "The file is greater than 4MB, " +
+                " and has not been written to stream." + " File Size: " +
+                file.getFileSize() + " bytes. This is a" +
+                " limitation of this particular web application, hard-coded" +
+                " in org.apache.struts.webapp.upload.UploadAction");
+          }
+        }
+        else
+        {
+          //write the file to the file specified
+          OutputStream bos = new FileOutputStream(theForm.getFilePath());
+          int bytesRead = 0;
+          byte[] buffer = new byte[8192];
+          while((bytesRead = stream.read(buffer, 0, 8192)) != -1)
+          {
+            bos.write(buffer, 0, bytesRead);
+          }
+
+          bos.close();
+          data =
+            "The file has been written to \"" + theForm.getFilePath() + "\"";
+        }
+
+        //close the stream
+        stream.close();
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        return null;
+      }
+      catch(IOException ioe)
+      {
+        return null;
+      }
+      catch(SAXException se)
+      {
+        validXmlFile = Boolean.FALSE;
+      }
+
+      //place the data into the request for retrieval from display.jsp
+      request.setAttribute("text", text);
+      request.setAttribute("queryValue", queryValue);
+      request.setAttribute("fileName", fileName);
+      request.setAttribute("contentType", contentType);
+      request.setAttribute("size", size);
+      request.setAttribute("data", data);
+      request.setAttribute("validXmlFile", validXmlFile);
+      request.setAttribute("assessmentID", newAssessId);
+      request.setAttribute("action", "Questions");
+
+      //destroy the temporary file created
+      file.destroy();
+
+      //return a forward to display.jsp
+      //            return mapping.findForward("display");
+      //return mapping.findForward("DISPLAY_ASSETS");
+      return mapping.findForward("questions");
+    }
+
+    //this shouldn't happen in this example
+    return null;
+  }
+}

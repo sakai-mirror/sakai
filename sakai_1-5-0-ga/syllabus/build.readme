@@ -1,0 +1,5 @@
+1.  Modify ./tool/src/webapp/WEB-INF/components.xml:
+		Modify the following line which correlates to the target database:
+		<prop key="hibernate.dialect">net.sf.hibernate.dialect.Oracle9Dialect</prop>
+		
+2.	Run "maven" from the root of this module.

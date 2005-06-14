@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+  "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans> 
+    
+  <bean id="PersistenceService" class="org.navigoproject.osid.impl.PersistenceService">
+    <property name="qtiQueries" >
+      <ref bean="QtiQueries"/>
+    </property>
+    <property name="assessmentQueries" >
+      <ref bean="AssessmentQueries"/>
+    </property>
+    <property name="publishedAssessmentQueries" >
+      <ref bean="PublishedAssessmentQueries"/>
+    </property>    
+    <property name="publishingService">
+      <ref bean="PublishingService"/>
+    </property>
+    <property name="questionPoolQueries" >
+      <ref bean="QuestionPoolQueries"/>
+    </property>    
+    <property name="typeImplQueries" >
+      <ref bean="TypeImplQueries"/>
+    </property>    
+    <property name="typeFacadeQueries" >
+      <ref bean="TypeFacadeQueries"/>
+    </property>    
+    <property name="questionPoolFacadeQueries" >
+      <ref bean="QuestionPoolFacadeQueries"/>
+    </property>    
+    <property name="sectionFacadeQueries" >
+      <ref bean="SectionFacadeQueries"/>
+    </property>    
+    <property name="itemFacadeQueries" >
+      <ref bean="ItemFacadeQueries"/>
+    </property>    
+    <property name="assessmentFacadeQueries" >
+      <ref bean="AssessmentFacadeQueries"/>
+    </property>    
+    <property name="publishedAssessmentFacadeQueries" >
+      <ref bean="PublishedAssessmentFacadeQueries"/>
+    </property>    
+    <property name="assessmentGradingFacadeQueries" >
+      <ref bean="AssessmentGradingFacadeQueries"/>
+    </property>    
+    <property name="authorizationFacadeQueries" >
+      <ref bean="AuthorizationFacadeQueries"/>
+    </property>    
+    <property name="pagingUtilQueries" >
+      <ref bean="PagingUtilQueries"/>
+    </property>    
+<!--chen change-->
+<property name="authzQueriesFacade">
+  <ref bean="AuthzQueriesFacade"/>
+</property>
+<!--chen unit test-->
+<!--
+<property name="testQueryFacade">
+  <ref bean="TestQueryFacade"/>
+</property>-->
+  </bean>   
+  
+  <bean id="QtiQueries" class="org.navigoproject.data.QtiQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>   
+  
+  <bean id="AssessmentQueries" class="org.navigoproject.data.AssessmentQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>     
+  
+  <bean id="PublishedAssessmentQueries" class="org.navigoproject.data.PublishedAssessmentQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>
+
+  <bean id="PublishingServiceImpl" class="org.navigoproject.osid.assessment.impl.PublishingService" /> 
+  <bean id="QuestionPoolQueries" class="org.sakaiproject.tool.assessment.queries.QuestionPoolQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+  <bean id="TypeImplQueries" class="org.sakaiproject.tool.assessment.queries.TypeImplQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+  
+  <bean id="TypeFacadeQueries" class="org.sakaiproject.tool.assessment.facade.TypeFacadeQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+  <bean id="QuestionPoolFacadeQueries" class="org.sakaiproject.tool.assessment.facade.QuestionPoolFacadeQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+
+  <bean id="ItemFacadeQueries" class="org.sakaiproject.tool.assessment.facade.ItemFacadeQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+  
+  <bean id="AssessmentFacadeQueries" class="org.sakaiproject.tool.assessment.facade.AssessmentFacadeQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+
+  <bean id="SectionFacadeQueries" class="org.sakaiproject.tool.assessment.facade.SectionFacadeQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+
+  <bean id="PublishedAssessmentFacadeQueries" class="org.sakaiproject.tool.assessment.facade.PublishedAssessmentFacadeQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+
+  <bean id="AssessmentGradingFacadeQueries" class="org.sakaiproject.tool.assessment.facade.AssessmentGradingFacadeQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+
+  <bean id="AuthorizationFacadeQueries" class="org.sakaiproject.tool.assessment.facade.authz.AuthorizationFacadeQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+
+  <bean id="PagingUtilQueries" class="org.sakaiproject.tool.assessment.util.PagingUtilQueries">
+    <property name="sessionFactory" >
+      <ref bean="sessionFactory"/>
+    </property>
+  </bean>    
+
+<!--chen change-->
+<bean id="AuthzQueriesFacade" class="org.sakaiproject.tool.assessment.facade.AuthzQueriesFacade">
+  <property name="sessionFactory" >
+    <ref bean="sessionFactory"/>
+  </property>
+</bean>
+<!--chen unit test-->
+<!--
+<bean id="TestQueryFacade" class="test.org.sakaiproject.tool.assessment.facade.TestQueryFacade">
+  <property name="sessionFactory">
+    <ref bean="sessionFactory"/>
+  </property>
+</bean>
+-->
+</beans>
+
+
+

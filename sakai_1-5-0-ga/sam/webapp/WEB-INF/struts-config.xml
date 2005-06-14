@@ -1,0 +1,1009 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+  "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+  "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+<struts-config>
+    <!-- ========== Data Source Configuration =============================== -->
+    <data-sources/>
+    <!-- ========== Form Bean Definitions ================================== -->
+    <form-beans>
+        <form-bean name="itemActionForm" type="org.navigoproject.ui.web.ItemActionForm"/>
+        <form-bean name="loginForm" type="org.navigoproject.ui.web.login.DefaultLoginActionForm"/>
+        <form-bean name="navigationForm" type="org.navigoproject.ui.web.navigation.NavigationForm"/>
+        <form-bean name="displayMessageForm" type="org.navigoproject.ui.web.misc.DisplayMessageForm"/>
+        <form-bean name="simpleFormLoginActionForm" type="org.navigoproject.ui.web.login.SimpleFormLoginActionForm"/>
+        <form-bean name="deliveryActionForm" type="org.navigoproject.ui.web.asi.delivery.DeliveryActionForm"/>
+        <form-bean name="selectAssessmentForm" type="org.navigoproject.ui.web.asi.select.SelectAssessmentForm"/>
+        <form-bean name="assessmentActionForm" type="org.navigoproject.ui.web.asi.author.assessment.AssessmentActionForm"/>
+        <form-bean name="publishedAssessmentActionForm" type="org.navigoproject.ui.web.asi.author.assessment.published.PublishedAssessmentActionForm"/>
+        <form-bean name="sectionActionForm" type="org.navigoproject.ui.web.asi.author.section.SectionActionForm"/>
+	    <form-bean name="itemActionForm" type="org.navigoproject.ui.web.asi.author.item.ItemActionForm"/>
+        <form-bean name="xmlDeliveryActionForm" type="org.navigoproject.ui.web.asi.delivery.XmlDeliveryForm"/>
+        <form-bean name="uploadForm" type="org.navigoproject.ui.web.asi.importing.UploadForm"/>
+        <form-bean name="displayAssetsForm" type="org.navigoproject.ui.web.asi.delivery.DisplayAssetsForm"/>
+        <form-bean name="gradeResultsForm" type="org.navigoproject.ui.web.asi.result.GradeResultsForm"/>
+
+        <!-- AAM configuration -->
+            <!-- ========== Form Bean (ActionForm) Definitions ============================== -->
+    <form-bean name="index" type="org.navigoproject.ui.web.form.IndexForm" />
+<!-- TESTING -->
+    <form-bean name="histogramScores" type="org.navigoproject.ui.web.form.evaluation.HistogramScoresForm" />
+ <form-bean name="histogramQuestionScores" type="org.navigoproject.ui.web.form.evaluation.HistogramQuestionScoresForm" />
+<!-- END TESTING -->
+    <form-bean name="templateEditorForm" type="org.navigoproject.ui.web.form.edit.TemplateForm" />
+    <form-bean name="access" type="org.navigoproject.ui.web.form.edit.AccessForm" />
+    <form-bean name="description" type="org.navigoproject.ui.web.form.edit.DescriptionForm" />
+    <form-bean name="display" type="org.navigoproject.ui.web.form.edit.DisplayForm" />
+    <form-bean name="evaluation" type="org.navigoproject.ui.web.form.edit.EvaluationForm" />
+    <form-bean name="feedback" type="org.navigoproject.ui.web.form.edit.FeedbackForm" />
+    <form-bean name="submissions" type="org.navigoproject.ui.web.form.edit.SubmissionsForm" />
+    <form-bean name="notification" type="org.navigoproject.ui.web.form.edit.NotificationForm" />
+    <form-bean name="part" type="org.navigoproject.ui.web.form.edit.PartForm" />
+    <form-bean name="question" type="org.navigoproject.ui.web.form.edit.QuestionForm" />
+    <form-bean name="distribution" type="org.navigoproject.ui.web.form.edit.DistributionForm" />
+    <form-bean name="assessmentTaken" type="org.navigoproject.ui.web.form.realization.AssessmentTakenForm" />
+    <form-bean name="taken" type="org.navigoproject.ui.web.form.realization.AssessmentTakenForm2" />
+    <form-bean name="fileUpload" type="org.navigoproject.ui.web.form.edit.FileUploadForm" />
+    <form-bean name="totalScores" type="org.navigoproject.ui.web.form.evaluation.TotalScoresForm" />
+    <form-bean name="questionScores" type="org.navigoproject.ui.web.form.evaluation.QuestionScoresForm" />
+    <form-bean name="emailPersonal" type="org.navigoproject.ui.web.form.evaluation.EmailPersonalForm" />
+    <form-bean name="reorder" type="org.navigoproject.ui.web.form.edit.ReorderForm" />
+    <form-bean name="partReorder" type="org.navigoproject.ui.web.form.edit.PartReorderForm" />
+   <form-bean name="questionReorder" type="org.navigoproject.ui.web.form.edit.QuestionReorderForm" />
+    <form-bean name="deleteConfirm" type="org.navigoproject.ui.web.form.edit.DeleteConfirmForm" />
+    <form-bean name="questionpool" type="org.navigoproject.ui.web.form.questionpool.QuestionPoolForm" />
+<form-bean name="submissionStatus" type="org.navigoproject.ui.web.form.evaluation.TotalScoresForm" />
+ <form-bean name="anonymous" type="org.navigoproject.ui.web.form.evaluation.TotalScoresForm" />
+    <form-bean name="anonymous"
+      type="org.navigoproject.ui.web.asi.delivery.anonymous.AnonymousDeliveryForm"
+      />
+
+    </form-beans>
+    <!-- ========== Global Forward Definitions =============================== -->
+    <global-forwards>
+        <forward name="DEBUG_SESSION" path="/test/DebugSession.do"/>
+        <forward name="NAVIGATION" path="/Navigation.do"/>
+        <forward name="LOGIN" path="/Login.do" redirect="true"/>
+        <forward name="FORWARD" path="/Forward.do"/>
+        <forward name="EXIT" path="/Exit.do"/>
+        <forward name="DISPLAY_MESSAGE" path="/misc/DisplayMessage.do"/>
+        <forward name="INDEX" path="/Index.do"/>
+        <forward name="BECOME" path="/login/Become.do" redirect="true"/>
+        <forward name="SIMPLE_FORM_LOGIN" path="/login/SimpleFormLogin.do" redirect="true"/>
+        <forward name="SELECT_ASSESSMENT" path="/asi/select/selectAssessment.do"/>
+        <forward name="SELECT_ASSESSMENT_RESULT" path="/asi/result/selectAssessment.do"/>
+        <forward name="XML" path="/asi/delivery/xmlAction.do"/>
+        <forward name="AUTHOR" path="/asi/author/selectAuthoredAssessment.do"/>
+        <forward name="DISPLAY_ASSETS" path="/asi/delivery/displayAssets.do"/>
+        <forward name="AUTHOR_ERROR" path="/asi/author/errorDisplay.do"/>
+        <forward name="EXPORT" path="/asi/exporting/exportAssessmentAction.do"/>
+        <forward name="TEMPLATEEDITOR" path="/AAMLogin.do" />
+    </global-forwards>
+    <!-- ========== Action Mapping Definitions =============================== -->
+
+    <action-mappings>
+
+        <action attribute="loginForm" name="loginForm" path="/Login"
+            scope="request"
+            type="org.navigoproject.ui.web.login.DefaultLoginAction" validate="false"/>
+        <action attribute="loginForm" input="/jsp/login/Become.jsp"
+            name="loginForm" parameter="BECOME" path="/login/Become"
+            scope="request"
+            type="org.navigoproject.ui.web.login.DefaultLoginAction" validate="false">
+            <description>This action is used in the "become" case where one user
+                wants to log in as another user.</description>
+        </action>
+        <action attribute="navigationForm"
+            input="/jsp/navigation/Navigation.jsp" name="navigationForm"
+            path="/Navigation" scope="request"
+            type="org.navigoproject.ui.web.navigation.NavigationAction" validate="false">
+            <description>This is the primary application navigation action.</description>
+            <forward name="Upload" path="/jsp/asi/importing/Upload.jsp"/>
+            <forward name="PDFServlet" path="/servlet/PDFServlet"/>
+        </action>
+        <action path="/Forward" type="org.navigoproject.ui.web.misc.ForwardAction"/>
+        <action path="/Exit" type="org.navigoproject.ui.web.logout.ExitAction"/>
+        <action attribute="displayMessageForm"
+            input="/jsp/misc/DisplayMessage.jsp" name="displayMessageForm"
+            path="/misc/DisplayMessage" scope="request"
+            type="org.navigoproject.ui.web.misc.DisplayMessageAction" validate="false"/>
+        <action input="/jsp/test/DebugSession.jsp" path="/test/DebugSession" type="org.navigoproject.ui.web.debug.DebugSessionAction"/>
+        <action input="/jsp/index/Index.jsp" path="/Index" type="org.navigoproject.ui.web.index.IndexAction"/>
+        <action attribute="simpleFormLoginActionForm"
+            input="/jsp/login/SimpleFormLogin.jsp"
+            name="simpleFormLoginActionForm" path="/login/SimpleFormLogin"
+            scope="request" type="org.navigoproject.ui.web.login.SimpleFormLoginAction"/>
+        <action attribute="selectAssessmentForm"
+            input="/jsp/asi/select/SelectAssessment.jsp"
+            name="selectAssessmentForm" path="/asi/select/selectAssessment"
+            scope="request"
+            type="org.navigoproject.ui.web.asi.select.SelectAssessmentAction" validate="false">
+            <forward name="DisplayAssessments" path="asi/select/DisplayAssessments.dox"/>
+            <forward name="SelectAssessment" path="/asi/delivery/xmlSelectAction.do"/>
+        </action>
+        <action input="/jsp/asi/select/SelectAssessment.jsp"
+            name="selectAssessmentForm"
+            path="/asi/realize/authorizeAssessmentAction" scope="request"
+            type="org.navigoproject.ui.web.asi.realize.AuthorizeAssessmentAction" validate="false"/>
+        <!--BEGIN RESULT REPORTING-->
+        <action
+            path="/asi/result/selectAssessment"
+            type="org.navigoproject.ui.web.asi.select.SelectAssessmentAction"
+            attribute="selectAssessmentForm"
+            name="selectAssessmentForm"
+            scope="request"
+            validate="false">
+            <forward
+            	name="DisplayAssessments"
+            	path="asi/result/DisplayAssessments.dox"/>
+        </action>
+        <action input="/asi/result/selectAssessment.do"
+            path="/asi/result/selectAssessmentResult"
+            type="org.navigoproject.ui.web.asi.result.SelectAssessmentResultAction">
+            <forward name="viewResult" path="asi/result/viewAssessmentResult.dox"/>
+            <forward name="gradeResult" path="asi/result/gradeResult.dox"/>
+        </action>
+        <action input="/asi/result/result/selectAssessmentResult.do"
+            path="/asi/result/gradeResultsAction"
+            type="org.navigoproject.ui.web.asi.result.GradeResultsAction"
+            validate="false">
+            <forward name="save" path="/asi/result/selectAssessment.do"/>
+            <forward name="cancel" path="/asi/result/selectAssessment.do"/>
+        </action>
+        <!--END RESULT REPORTING-->
+        <!--Begin Grading-->
+        <action
+            path="/asi/grading/xmlSelectAction"
+            type="org.navigoproject.ui.web.asi.grading.SelectAssessmentReport"
+            attribute="xmlDeliveryActionForm"
+            name="xmlDeliveryActionForm"
+            scope="request">
+            <forward
+                name="ContentTree"
+                path="asi/grading/contentTree.dox"/>
+        </action>
+        <action
+            path="/asi/grading/gradingAction"
+            type="org.navigoproject.ui.web.asi.grading.GradingAction"
+            attribute="xmlDeliveryActionForm"
+            name="xmlDeliveryActionForm"
+            scope="request">
+            <forward
+                name="ContentTree"
+                path="asi/grading/contentTree.dox"/>
+            <forward
+                name="Success"
+                path="asi/grading/delivery.dox"/>
+        </action>
+        <!--End Grading-->
+        <action attribute="xmlDeliveryActionForm"
+            input="/asi/select/selectAssessment.do" name="xmlDeliveryActionForm"
+            path="/asi/delivery/xmlSelectAction" scope="request" type="org.navigoproject.ui.web.asi.delivery.XmlSelectAction">
+            <forward name="Entry" path="asi/delivery/entry.dox"/>
+        </action>
+
+        <action attribute="xmlDeliveryActionForm"
+            input="/asi/select/selectAssessment.do" name="xmlDeliveryActionForm"
+            path="/asi/delivery/ContentTreeAction" scope="request" type="org.navigoproject.ui.web.asi.delivery.ContentTreeAction">
+            <forward name="ContentTree" path="asi/delivery/contentTree.dox"/>
+        </action>
+
+        <action name="assessmentActionForm"
+            path="/asi/exporting/exportAssessmentAction" scope="request"
+            type="org.navigoproject.ui.web.asi.exporting.ExportAssessmentAction" validate="false"/>
+   <!--***********************Authoring entries Begin******************************** -->
+        <action name="assessmentActionForm" path="/asi/author/assessment/assessmentAction"
+            scope="request"
+            type="org.navigoproject.ui.web.asi.author.assessment.AssessmentAction" validate="false">
+            <forward name="main" path="asi/author/main.dox"/>
+            <forward name="upload" path="/jsp/asi/importing/Upload.jsp"/>
+            <forward name="getAssessments" path="/asi/author/selectAuthoredAssessment.do"/>
+            <forward name="sectionAction" path="/asi/author/section/sectionAction.do"/>
+            <forward name="delete" path="asi/author/assessment/deleteAssessmentConfirmation.dox"/>
+            <forward name="assessmentSettings" path="asi/author/assessment/settings/assessmentSettings.dox"/>
+            <forward name="showCompleteAssessment" path="asi/author/assessment/showCompleteAssessment.dox"/>
+            <forward name="sectionAuthor" path="asi/author/section/sectionAuthor.dox"/>
+            <forward name="questionChooser" path="/questionChooser.do" redirect="true" />
+             <forward name="totalScores" path="/totalScores.do"/>
+        </action>
+        <action name="publishedAssessmentActionForm" path="/asi/author/assessment/published/publishedAssessmentAction"
+            scope="request"
+            type="org.navigoproject.ui.web.asi.author.assessment.published.PublishedAssessmentAction" validate="false">
+            <forward name="settings" path="asi/author/assessment/published/settings/assessmentSettings.dox"/>
+            <forward name="authoringMain" path="/asi/author/selectAuthoredAssessment.do"/>
+            <forward name="responses" path="/totalScores.do"/>
+            <forward name="revokeConfirmation" path="asi/author/assessment/published/settings/revokeConfirmation.dox"/>
+        </action>
+        <action  path="/asi/author/assessment/deleteAssessmentAction"
+            scope="request"
+            type="org.navigoproject.ui.web.asi.author.assessment.DeleteAssessmentAction" validate="false">
+            <forward name="getAssessments" path="/asi/author/selectAuthoredAssessment.do"/>
+       </action>
+       <action name="assessmentActionForm" path="/asi/author/assessment/assessmentSettingsAction"
+            scope="request"
+            type="org.navigoproject.ui.web.asi.author.assessment.AssessmentSettingsAction" validate="false">
+            <forward name="getAssessments" path="/asi/author/selectAuthoredAssessment.do"/>
+            <forward name="showCompleteAssessment" path="asi/author/assessment/showCompleteAssessment.dox"/>
+            <forward name="publishConfirm" path="asi/author/assessment/settings/publishConfirmation.dox"/>
+         </action>
+        <action name="assessmentActionForm"        path="/asi/author/selectAuthoredAssessment" scope="request"
+            type="org.navigoproject.ui.web.asi.author.SelectAuthoredAssessment" validate="false">
+            <forward name="main" path="asi/author/main.dox"/>
+         </action>
+        <action name="assessmentActionForm" path="/asi/author/errorDisplay"
+            scope="request"
+            type="org.navigoproject.ui.web.asi.author.ErrorDisplayAction" validate="false">
+            <forward name="error" path="asi/author/error.dox"/>
+            <forward name="authoringMain" path="/asi/author/selectAuthoredAssessment.do"/>
+        </action>
+
+        <action name="itemActionForm" path="/asi/author/item/itemAction"
+            scope="request"
+            type="org.navigoproject.ui.web.asi.author.item.ItemAction" validate="false">
+            <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+            <forward name="itemPreview" path="asi/delivery/item.dox"/>
+            <forward name="itemAuthor" path="asi/author/item/itemAuthor.dox"/>
+             <forward name="delete" path="asi/author/item/deleteItemConfirmation.dox"/>
+            <forward name="questionChooser" path="/questionChooser.do" redirect="true" />
+            <forward name="questionEditor" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+           <forward name="showCompleteAssessment" path="asi/author/assessment/showCompleteAssessment.dox"/>
+            <forward name="authoringMain" path="/asi/author/selectAuthoredAssessment.do"/>
+        </action>
+        <action name="itemActionForm" path="/asi/author/item/editItemAction"
+            scope="request"
+            type="org.navigoproject.ui.web.asi.author.item.EditItemAction" validate="false">
+            <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+            <forward name="questionChooser" path="/questionChooser.do" redirect="true" />
+            <forward name="questionEditor" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+	    <forward name="editPool" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+            <forward name="itemAuthor" path="asi/author/item/itemAuthor.dox"/>
+            <forward name="showCompleteAssessment" path="asi/author/assessment/showCompleteAssessment.dox"/>
+            <forward name="matchContinued" path="asi/author/item/matchContinued.dox"/>
+             <forward name="authoringMain" path="/asi/author/selectAuthoredAssessment.do"/>
+        </action>
+        <action name="sectionActionForm" path="/asi/author/section/sectionAction" scope="request"
+            type="org.navigoproject.ui.web.asi.author.section.SectionAction" validate="false">
+            <forward name="sectionAuthor" path="asi/author/section/sectionAuthor.dox"/>
+            <forward name="showCompleteAssessment" path="asi/author/assessment/showCompleteAssessment.dox"/>
+            <forward name="authoringMain" path="/asi/author/selectAuthoredAssessment.do"/>
+            <forward name="delete" path="asi/author/section/deleteSectionConfirmation.dox"/>
+        </action>
+        <action path="/asi/author/objectbank/objectbankAction" scope="request"
+            type="org.navigoproject.ui.web.asi.author.objectbank.ObjectbankAction" validate="false">
+            <forward name="showCompleteAssessment" path="asi/author/assessment/showCompleteAssessment.dox"/>
+            <forward name="bankMain" path="asi/author/objectbank/bankMain.dox"/>
+            <forward name="bankAuthor" path="asi/author/objectbank/bankAuthor.dox"/>
+            <forward name="bankPreview" path="asi/author/objectbank/bankPreview.dox"/>
+            <forward name="authoringMain" path="/asi/author/selectAuthoredAssessment.do"/>
+        </action>
+  <!--****************************Authoring Ends****************************************** -->
+        <action input="/jsp/asi/select/SelectAssessment.jsp"
+            name="xmlDeliveryActionForm" path="/asi/delivery/xmlAction"
+            scope="request" type="org.navigoproject.ui.web.asi.delivery.DeliveryAction">
+            <forward name="transform" path="simple/index.dox"/>
+            <forward name="Entry" path="asi/delivery/entry.dox"/>
+            <forward name="Success" path="asi/delivery/delivery.dox"/>
+            <forward name="BeginTestForAutoSave" path="asi/delivery/startAutoSaveDelivery.dox"/>
+            <forward name="AutoSaveTest" path="asi/delivery/deliveryAutoSave.dox"/>
+            <forward name="previewAssessment" path="asi/delivery/previewAssessment.dox"/>
+            <forward name="Summary" path="asi/delivery/summary.dox"/>
+            <forward name="Confirm" path="asi/delivery/confirm.dox"/>
+            <forward name="Receipt" path="asi/delivery/receipt.dox"/>
+            <forward name="ContentTree" path="asi/delivery/contentTree.dox"/>
+            <forward name="Failure" path="/asi/select/selectAssessment.do"/>
+            <forward name="Cancel" path="/asi/select/selectAssessment.do"/>
+            <forward name="LateHandling" path="asi/delivery/lateHandling.dox"/>
+        </action>
+        <!-- ********* Review Starts *********** -->
+        <action attribute="xmlDeliveryActionForm"
+            input="/asi/select/selectAssessment.do" name="xmlDeliveryActionForm"
+            path="/asi/review/xmlSelectAction" scope="request" type="org.navigoproject.ui.web.asi.review.SelectReviewTestAction">
+            <forward name="Entry" path="asi/review/entry.dox"/>
+            <forward name="Feedback" path="asi/review/feedback.dox"/>
+            <forward name="Failure" path="/asi/select/selectAssessment.do"/>
+            <forward name="Cancel" path="/asi/select/selectAssessment.do"/>
+        </action>
+        <action input="/jsp/asi/select/SelectAssessment.jsp"
+            name="xmlDeliveryActionForm" path="/asi/review/reviewAction"
+            scope="request" type="org.navigoproject.ui.web.asi.review.ReviewAction">
+            <forward name="Entry" path="asi/delivery/entry.dox"/>
+            <forward name="Success" path="asi/review/review.dox"/>
+            <forward name="ContentTree" path="asi/review/contentTree.dox"/>
+            <forward name="Failure" path="/asi/select/selectAssessment.do"/>
+            <forward name="Cancel" path="/asi/select/selectAssessment.do"/>
+        </action>
+        <!-- ********* Review Ends *********** -->
+        <action attribute="uploadForm" input="/jsp/asi/importing/Upload.jsp"
+            name="uploadForm" path="/asi/select/upload" scope="request" type="org.navigoproject.ui.web.asi.importing.UploadAction">
+            <forward name="display" path="/jsp/asi/importing/Display.jsp"/>
+            <forward name="questions" path="/asi/author/assessment/assessmentAction.do"/>
+        </action>
+        <action attribute="displayAssetsForm" name="displayAssetsForm"
+            path="/asi/delivery/displayAssets" scope="request" type="org.navigoproject.ui.web.asi.delivery.DisplayAssetsAction">
+            <forward name="display" path="/jsp/asi/importing/Display.jsp"/>
+        </action>
+
+        <!-- AAM's Actions -->
+
+    <action name="index" type="org.navigoproject.ui.web.action.IndexAction"
+      validate="false" scope="request" path="/AAMLogin">
+      <forward name="index" path="/jsp/aam/index.jsp" redirect="true" />
+    </action>
+            <!-- create/edit assessments index page -->
+    <action name="index" type="org.navigoproject.ui.web.action.IndexAction"
+      validate="true" input="/index.jsp" scope="session" path="/submitIndex">
+      <forward name="templateEditor" path="/jsp/aam/edit/description.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+
+
+<!-- TESTING -->
+
+    <action name="histogramScores" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/totalScores.jsp" scope="session" path="/histogramScores">
+      <forward name="histogramScores" path="/jsp/aam/evaluation/histogramScores.jsp" redirect="true" />
+ <forward name="histogramQuestionScores" path="/jsp/aam/evaluation/histogramScores.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+ <action name="histogramQuestionScores" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/histogramQuestionScores.jsp" scope="session" path="/histogramQuestionScores">
+
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+<!-- END TESTING -->
+
+
+    <!-- take assessment page from the student view index -->
+    <action  name="assessmentTaken" type="org.navigoproject.ui.web.action.TakeAssessmentAction"
+      validate="true" input="/realization/index.jsp" scope="session" path="/takeAssessment">
+      <forward name="takeAssessmentUI" path="/jsp/aam/realization/takeAssessment.jsp" />
+    </action>
+    <!-- assessment taken -->
+    <action  type="org.navigoproject.ui.web.action.TakeAssessmentAction"
+      validate="true" input="/realization/index.jsp" scope="session" path="/submitTakeAssessment">
+      <forward name="takeAssessmentUI" path="/jsp/aam/realization/takeAssessment.jsp" />
+    </action>
+    <!-- create new template -->
+    <action name="templateEditorForm" type="org.navigoproject.ui.web.action.IndexAction"
+      validate="false" input="/indexTemplates.jsp" scope="request" path="/newTemplate">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="noTitle" path="/jsp/aam/noTitle.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <!-- edit existing template -->
+    <action name="templateEditorForm" type="org.navigoproject.ui.web.action.IndexAction"
+      validate="false" input="/indexTemplates.jsp" scope="session" path="/editTemplate">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <!-- confirm delete a template or assessment -->
+    <action name="index" type="org.navigoproject.ui.web.action.IndexAction" validate="false" input="/indexTemplates.jsp" scope="session" path="/confirmDelete">
+      <forward name="confirmDelete" path="/jsp/aam/confirmTempRemove.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <!-- confirm delete a part -->
+    <action name="part" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/templateEditor.jsp" scope="session" path="/deletePart">
+      <forward name="confirmDelete" path="/jsp/aam/bconfirm.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <!-- confirm delete a quetion -->
+    <action name="question" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/templateEditor.jsp" scope="session" path="/deleteQuestion">
+      <forward name="confirmDelete" path="/jsp/aam/bconfirm.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <!-- delete assessment or template -->
+    <action name="index" type="org.navigoproject.ui.web.action.IndexAction" validate="false" input="/confirm.jsp" scope="session" path="/deleteAction">
+      <forward name="indexTemplates" path="/jsp/aam/indexTemplates.jsp" redirect="true" />
+      <forward name="index" path="/jsp/aam/index.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <!-- delete part or question -->
+    <action name="part" type="org.navigoproject.ui.web.action.AssessmentAction" validate="false" input="/bconfirm.jsp" scope="session" path="/bdeleteAction">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <!-- edit assessment -->
+    <action name="editAssessment" type="org.navigoproject.ui.web.action.IndexAction"
+      validate="false" input="/index.jsp" scope="session" path="/editAssessment">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="taken" type="org.navigoproject.ui.web.action.TakeAssessmentAction"
+      validate="false" input="/index.jsp" scope="session" path="/assessmentTaken">
+      <forward name="content" path="/jsp/aam/realization/content.jsp" redirect="true" />
+      <forward name="assessmentTaken" path="/jsp/aam/realization/assessmentTaken.html" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="taken" type="org.navigoproject.ui.web.action.TakeAssessmentAction"
+      validate="true" input="/realization/assessmentTaken.jsp" scope="session" path="/submitAssessmentTaken">
+      <forward name="confirm" path="/jsp/aam/realization/confirm.jsp" redirect="true" />
+      <forward name="next" path="/jsp/aam/realization/assessmentTaken.html" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+ <action name="taken" type="org.navigoproject.ui.web.action.TakeAssessmentAction"
+      validate="true" input="/realization/confirm.jsp" scope="session" path="/studentIndex">
+      <forward name="studentIndex" path="/jsp/aam/realization/index.jsp" redirect="true" />
+
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="templateEditorForm" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" scope="session" path="/editDescription">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="access" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/access.jsp" scope="session" path="/editAccess">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="access" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/groups.jsp" scope="session" path="/editGroups">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="display" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/display.jsp" scope="session" path="/editDisplay">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="evaluation" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/evaluation.jsp" scope="session" path="/editEvaluation">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="feedback" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/feedback.jsp" scope="session" path="/editFeedback">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="submissions" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/submissions.jsp" scope="session" path="/editSubmissions">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="notification" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/notification.jsp" scope="session" path="/editNotification">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="part" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/part.jsp" scope="session" path="/editPart">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="question" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/question.jsp" scope="session" path="/editQuestion">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="question" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/questionEditor.jsp" scope="session" path="/editQuestionEditor">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="questionChooser" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="startQuestionMetadata" path="/jsp/aam/edit/questionMetadata.jsp" redirect="false"/>
+      <forward name="startQuestionEditor" path="/jsp/aam/edit/questionEditor.jsp" redirect="false" />
+      <forward name="startFileUploadQuestion" path="/jsp/aam/startFileUploadQuestion.do" redirect="true"/>
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="part" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startPartEditor">
+      <forward name="part" path="/jsp/aam/edit/part.jsp" redirect="true" />
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="access" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startAccess">
+      <forward name="access" path="/jsp/aam/edit/access.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="fileUpload" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startFileUploadPart">
+      <forward name="fileUpload" path="/jsp/aam/edit/fileUpload.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="fileUpload" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startFileUploadPartItem">
+      <forward name="fileUpload" path="/jsp/aam/edit/fileUpload.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="fileUpload" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/fileUpload.jsp" scope="session" path="/fileUpload">
+      <forward name="description" path="/jsp/aam/templateEditor.jsp#description" redirect="true" />
+      <forward name="partItem" path="/jsp/aam/templateEditor.jsp#part" redirect="true" />
+      <forward name="part" path="/jsp/aam/templateEditor.jsp#part" redirect="true" />
+      <forward name="question" path="/jsp/aam/edit/questionEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="deleteConfirm" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/deleteFileUploadPartItem">
+      <forward name="deleteConfirm" path="/jsp/aam/edit/deleteConfirm.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+ <action name="fileUpload" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startFileUploadDescription">
+      <forward name="fileUpload" path="/jsp/aam/edit/fileUpload.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+ </action>
+ <action name="deleteConfirm" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/deleteFileUploadDescription">
+      <forward name="deleteConfirm" path="/jsp/aam/edit/deleteConfirm.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+ </action>
+ <action name="deleteConfirm" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/deleteFileUploadPart">
+      <forward name="deleteConfirm" path="/jsp/aam/edit/deleteConfirm.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+
+ </action>
+   <action name="deleteConfirm" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/deleteConfirm">
+      <forward name="description" path="/jsp/aam/templateEditor.jsp#description" redirect="true" />
+      <forward name="part" path="/jsp/aam/templateEditor.jsp#part" redirect="true" />
+      <forward name="PartItem" path="/jsp/aam/templateEditor.jsp#part" redirect="true" />
+      <forward name="question" path="/jsp/aam/edit/questionEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="fileUpload" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/edit/description.jsp" scope="session" path="/startFileUploadQuestion">
+      <forward name="fileUpload" path="/jsp/aam/edit/fileUpload.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="deleteConfirm" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/edit/questionEditor.jsp" scope="session" path="/deleteFileUploadQuestion">
+      <forward name="deleteConfirm" path="/jsp/aam/edit/deleteConfirm.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="fileUpload" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/edit/description.jsp" scope="session" path="/showMedia">
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <!-- wysiwyg editor link image and audio -->
+    <!--  image  -->
+    <action name="fileUpload"
+        type="org.navigoproject.ui.web.action.AssessmentMediaAction"
+        validate="true"
+        input="/htmlarea/navigo_popups/insert_image.jsp"
+        scope="session"
+        path="/htmlInlineUpload">
+      <forward name="Success" path="/jsp/aam/htmlInlineAdded.jsp"
+        redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <!-- link -->
+    <action name="fileUpload"
+        type="org.navigoproject.ui.web.action.AssessmentMediaAction"
+        validate="true"
+        input="/htmlarea/navigo_popups/insert_link.jsp"
+        scope="session"
+        path="/htmlInlineUpload">
+      <forward name="Success" path="/jsp/aam/htmlInlineAdded.jsp"
+        redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <!-- audio -->
+    <action name="fileUpload"
+        type="org.navigoproject.ui.web.action.AssessmentMediaAction"
+        validate="true"
+        input="/jsp/aam/applet/soundRecorder.jsp"
+        scope="session"
+        path="/htmlInlineUpload">
+      <forward name="Success" path="/jsp/aam/htmlInlineAdded.jsp"
+        redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+
+    <!-- file submitted as answer to question, daisyf -->
+    <action name="fileUpload"
+      type="org.navigoproject.ui.web.action.AssessmentMediaAction"
+      validate="true"
+      input="/htmlarea/navigo_popups/file_upload.jsp"
+      scope="session"
+      path="/htmlInlineAnswer">
+      <forward name="Success" path="/jsp/aam/htmlInlineAnswer.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <!-- capture recording submitted for audio question, daisyf -->
+    <action name="fileUpload"
+        type="org.navigoproject.ui.web.action.AssessmentMediaAction"
+        validate="true"
+        input="/jsp/aam/applet/soundRecorder_captured.jsp"
+        scope="session"
+        path="/htmlInlineAnswer">
+      <forward name="Success" path="/jsp/aam/htmlInlineAnswer.jsp"
+        redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+
+    <action name="question" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startQuestionEditor">
+      <forward name="questionEditor" path="/jsp/aam/edit/questionEditor.jsp" redirect="true" />
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="question" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/questionEditor.jsp" scope="session" path="/startQuestionMetadata">
+      <forward name="questionMetadata" path="/jsp/aam/edit/questionMetadata.jsp" redirect="true" />
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="question" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/questionMetadata.jsp" scope="session" path="/editQuestionMetadata">
+      <forward name="questionEditor" path="/jsp/aam/edit/questionEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="distribution" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/edit/distribution.jsp" scope="session" path="/editDistribution">
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="totalScores" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/index.jsp" scope="session" path="/totalScores">
+      <forward name="totalScores" path="/jsp/aam/evaluation/totalScores.jsp" redirect="true" />
+      <forward name="gradingAutoSave" path="/jsp/aam/evaluation/gradingAutoSave.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="totalScores" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/totalScores.jsp" scope="session" path="/editTotalResults">
+	  <forward name="totalScores" path="/jsp/aam/evaluation/totalScores.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+     <action name="totalScores" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/questionScore.jsp" scope="session" path="/totalScores">
+      <forward name="totalScores" path="/jsp/aam/evaluation/totalScores.jsp" redirect="true" />
+      <forward name="gradingAutoSave" path="/jsp/aam/evaluation/gradingAutoSave.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+ <action name="submissionStatus" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/anonymous.jsp" scope="session" path="/submissionStatus">
+      <forward name="submissionStatus" path="/jsp/aam/evaluation/submissionStatus.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+ <action name="anonymous" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/totalScores.jsp" scope="session" path="/anonymous">
+      <forward name="anonymous" path="/jsp/aam/evaluation/anonymous.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="emailPersonal" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/totalScores.jsp" scope="session" path="/emailPersonal">
+      <forward name="emailPersonal" path="/jsp/aam/evaluation/emailPersonal.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+  <action name="emailPersonal" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/emailPersonal.jsp" scope="session" path="/submitEmail">
+      <forward name="confirmEmail" path="/jsp/aam/evaluation/emailConfirm.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+ <action name="emailPersonal" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/emailConfirm.jsp" scope="session" path="/confirmEmail">
+      <forward name="totalscores" path="/jsp/aam/evaluation/totalScores.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="questionScores" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/totalScores.jsp" scope="session" path="/questionScores">
+      <forward name="questionScores" path="/jsp/aam/evaluation/questionScore.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="questionScores" type="org.navigoproject.ui.web.action.EvaluationAction" validate="true" input="/evaluation/questionScores.jsp" scope="session" path="/editQuestionResults">
+      <forward name="questionScores" path="/jsp/aam/evaluation/questionScore.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="questionScores"
+			type="org.navigoproject.ui.web.action.EvaluationAction"
+			validate="true" input="/evaluation/questionScores.jsp"
+			scope="session" path="/exportZip">
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true" />
+    </action>
+    <action name="assessmentTaken" type="org.navigoproject.ui.web.action.TakeAssessmentAction" validate="true" input="/realization/assessmentTaken.jsp" scope="session" path="/autosave">
+      <forward name="assessmentTaken" path="/jsp/aam/realization/assessmentTaken.jsp" />
+    </action>
+    <!-- here's the reorder stuff -->
+    <action name="reorder" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startReorderDescription">
+      <forward name="reorder" path="/jsp/aam/reorder.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="partReorder" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startReorderPart">
+      <forward name="reorder" path="/jsp/aam/partReorder.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="partReorder" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/partReorder.jsp" scope="session" path="/cancelPartReorder" >
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp#part" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="partReorder" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/partReorder.jsp" scope="session" path="/partReorder" >
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp#part" redirect="true" />
+      <forward name="partReorder" path="/jsp/aam/partReorder.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+<action name="questionReorder" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startQuestionReorder">
+      <forward name="reorder" path="/jsp/aam/questionReorder.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionReorder" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/questionReorder.jsp" scope="session" path="/cancelQuestionReorder" >
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp#part" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionReorder" type="org.navigoproject.ui.web.action.AssessmentAction" validate="true" input="/questionReorder.jsp" scope="session" path="/questionReorder" >
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp#part" redirect="true" />
+      <forward name="questionReorder" path="/jsp/aam/questionReorder.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="reorder" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startReorderPartItem">
+      <forward name="reorder" path="/jsp/aam/reorder.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="reorder" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/startReorderQuestion">
+      <forward name="reorder" path="/jsp/aam/reorder.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="reorder" type="org.navigoproject.ui.web.action.AssessmentMediaAction" validate="true" input="/templateEditor.jsp" scope="session" path="/reorder" >
+      <forward name="description" path="/jsp/aam/templateEditor.jsp#description" redirect="true" />
+      <forward name="partItem" path="/jsp/aam/templateEditor.jsp#part" redirect="true" />
+      <forward name="part" path="/jsp/aam/edit/part.jsp" redirect="true" />
+      <forward name="question" path="/jsp/aam/edit/questionEditor.jsp" redirect="true" />
+      <forward name="reorder" path="/jsp/aam/reorder.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+
+    <action name="itemActionForm" type="org.navigoproject.ui.web.action.QuestionAction" validate="false" scope="session" parameter="method" path="/addQuestion" >
+      <forward name="itemAuthor" path="asi/author/item/itemAuthor.dox"/>
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionAction" validate="false" scope="session" parameter="method" path="/copyQuestion" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="questionEditor" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionAction" validate="false" scope="session" parameter="method" path="/moveQuestion" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="questionEditor" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionAction" validate="false" scope="session" parameter="method" path="/removeQuestion" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="questionEditor" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionAction" validate="false" scope="session" parameter="method" path="/exportQuestion" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="questionEditor" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionAction" validate="false" scope="session" parameter="method" path="/startImportQuestion" >
+      <forward name="importQuestion" path="/jsp/aam/questionpool/importQuestion.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionAction" validate="false" scope="session" parameter="method" path="/importQuestion" >
+      <forward name="createPool" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+      <forward name="questionEditor" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+      <forward name="importQuestion" path="/jsp/aam/questionpool/importQuestion.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionAction" validate="false" scope="session" parameter="method" path="/addToAssessment" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="questionEditor" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+      <forward name="showCompleteAssessment" path="asi/author/assessment/showCompleteAssessment.dox"/>
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionDispatchAction" validate="false" scope="session" parameter="method" path="/startQuestionAction" >
+      <forward name="copyQuestion" path="/jsp/aam/questionpool/copyQuestion.jsp" redirect="true" />
+      <forward name="moveQuestion" path="/jsp/aam/questionpool/moveQuestion.jsp" redirect="true" />
+      <forward name="addToAssessment" path="/jsp/aam/questionpool/addToAssessment.jsp" redirect="true" />
+      <forward name="addToAssessmentFromAuthoring" path="/addToAssessment.do" redirect="true" />
+      <forward name="removeQuestion" path="/jsp/aam/questionpool/removeQuestion.jsp" redirect="true" />
+      <forward name="exportQuestion" path="/exportQuestion.do" redirect="true" />
+      <forward name="addQuestionToAssessment" path="/jsp/aam/questionpool/addQuestionToAssessment.jsp" redirect="true" />
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="showCompleteAssessment" path="/asi/author/assessment/assessmentAction.do" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+<!-- <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionDispatchAction" validate="false" scope="session" parameter="method" path="/asi/author/assessment/assessmentAction">
+      <forward name="showCompleteAssessment" path="asi/author/assessment/showCompleteAssessment.dox" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+</action> -->
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolDispatchAction" validate="false" scope="session" parameter="method" path="/startPoolAction" >
+      <forward name="copyPool" path="/jsp/aam/questionpool/copyPool.jsp" redirect="true" />
+      <forward name="movePool" path="/jsp/aam/questionpool/movePool.jsp" redirect="true" />
+      <forward name="removePool" path="/jsp/aam/questionpool/removePool.jsp" redirect="true" />
+<!--
+      <forward name="exportPool" path="/jsp/aam/questionpool/exportPool.jsp" redirect="true" />
+-->
+      <forward name="exportPool" path="/exportPool.do" redirect="true" />
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/getAllPools" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/poolquestions" >
+      <forward name="questionChooser" path="/jsp/aam/questionpool/questionpool.jsp" redirect="true" />
+      <forward name="templateEditor" path="/jsp/aam/templateEditor.jsp" redirect="true" />
+      <forward name="questionEditor" path="/jsp/aam/edit/questionEditor.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/startCopyPool" >
+      <forward name="copyPool" path="/jsp/aam/questionpool/copyPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/searchQuestion" >
+      <forward name="searchQuestion" path="/jsp/aam/questionpool/searchQuestion.jsp" redirect="true" />
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/userAdmin" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="userAdmin" path="/jsp/aam/questionpool/userAdmin.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/startImportPool" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="importPool" path="/jsp/aam/questionpool/importPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+<action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/importPool" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="importPool" path="/jsp/aam/questionpool/importPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+
+
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/exportPool" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="exportPool" path="/jsp/aam/questionpool/exportPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/removePool" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="removePool" path="/jsp/aam/questionpool/removePool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/movePool" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="movePool" path="/jsp/aam/questionpool/movePool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/startAddQuestion" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="createPool" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+      <forward name="selectQuestionType" path="/jsp/aam/questionpool/selectQuestionType.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/copyPool" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="copyPool" path="/jsp/aam/questionpool/copyPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/questionChooser" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/questionAdder" >
+      <forward name="questionPools" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" path="/startCreatePool" >
+      <forward name="createPool" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="questionpool" type="org.navigoproject.ui.web.action.QuestionPoolAction" validate="false" scope="session" input="/questionpool/createPool.jsp" path="/editpool" >
+      <forward name="questionChooser" path="/jsp/aam/questionpool/questionList.jsp" redirect="true" />
+      <forward name="createPool" path="/jsp/aam/questionpool/createPool.jsp" redirect="true" />
+      <forward name="Success" path="/jsp/aam/success.jsp" redirect="true" />
+      <forward name="Failure" path="/jsp/aam/fail.jsp" redirect="true"/>
+    </action>
+    <action name="index" type="org.navigoproject.ui.web.action.IndexAction" validate="false" scope="session" path="/precompile">
+      <forward name="access" path="/jsp/aam/edit/access.jsp" />
+      <forward name="description" path="/jsp/aam/edit/description.jsp" />
+      <forward name="display" path="/jsp/aam/edit/display.jsp" />
+      <forward name="distribution" path="/jsp/aam/edit/distribution.jsp" />
+      <forward name="evaluation" path="/jsp/aam/edit/evaluation.jsp" />
+      <forward name="feedback" path="/jsp/aam/edit/feedback.jsp" />
+      <forward name="groups" path="/jsp/aam/edit/groups.jsp" />
+      <forward name="notification" path="/jsp/aam/edit/notification.jsp" />
+      <forward name="part" path="/jsp/aam/edit/part.jsp" />
+      <forward name="question" path="/jsp/aam/edit/question.jsp" />
+      <forward name="submissions" path="/jsp/aam/edit/submissions.jsp" />
+    </action>
+
+    <action path="/assessment" name="anonymous"
+      type="org.navigoproject.ui.web.asi.delivery.anonymous.AnonymousDeliveryAction"
+      validate="false" scope="request">
+      <description>This is the URI that is exposed externally for assessments;
+        it may be accessed anonymously (if authorized)</description>
+      <forward name="xmlSelect" path="/asi/select/selectAssessment.do"/>
+    </action>
+
+
+
+    </action-mappings>
+    <!-- ========== Controller Configuration ================================ -->
+    <controller processorClass="org.navigoproject.struts.RequestProcessor" contentType="text/html; charset=utf-8"/>
+
+    <!-- ========== Message Resources Definitions ============================ -->
+    <message-resources
+        factory="com.oroad.stxx.util.PropertyMessageResourcesFactory" parameter="org.navigoproject.ApplicationResources"/>
+    <message-resources key="option" parameter="org.navigoproject.options" />
+
+    <!-- ========== Plug Ins Configuration ================================= -->
+    <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+      <set-property property="pathnames" value="/WEB-INF/validator-rules.xml,     /WEB-INF/validation.xml"/>
+    </plug-in>
+    <plug-in className="org.apache.struts.tiles.TilesPlugin">
+      <set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml"/>
+    </plug-in>
+    <plug-in className="com.oroad.stxx.plugin.StxxPlugin">
+      <set-property property="pipeline-config" value="/WEB-INF/stxx-pipelines.xml"/>
+    </plug-in>
+</struts-config>

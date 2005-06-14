@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Samigo" default="buildlib-local-runtime" basedir="..">
+
+  <target name="buildlib-local-runtime">
+    <echo message="noop" />
+  </target>
+
+</project>
