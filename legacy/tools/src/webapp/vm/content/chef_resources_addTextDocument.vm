@@ -1,0 +1,195 @@
+## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/content/chef_resources_addTextDocument.vm,v 1.5 2005/06/04 13:22:49 jimeng.umich.edu Exp $ 
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["title"];
+  
+	function openSampleCopyrightWindow() 
+	{ 
+	  window.open("$copyright_alert_url","SampleCopyrightAlert","scrollbars=no,menubar=no,height=400,width=700,resizable=no,toolbar=no,location=no,status=no");
+	  return false;
+	}
+	function enableNewCopyright(obj_mycopyright, obj_newcopyright)
+	{
+		obj_mycopyright.checked = false;
+		obj_newcopyright.checked = true;
+	}
+
+	function clearNewCopyright(obj_textarea)
+	{
+		obj_textarea.value = "";
+	}
+	
+	function checkItem(copyrightIndex)
+	{
+		var obj_alert_name="copyrightAlert";
+		var obj_alert_item=document.getElementById(obj_alert_name);
+		var obj_newcopyright_name="newcopyright";
+		var obj_newcopyright_item=document.getElementById(obj_newcopyright_name);
+		if (copyrightIndex == 0)
+		{
+			obj_alert_item.checked=false;
+			obj_newcopyright_item.disabled=true;
+		}
+		else if (copyrightIndex < 5)
+		{
+			obj_alert_item.checked=true;
+			obj_newcopyright_item.disabled=true;
+		}
+		else if (copyrightIndex == 5)
+		{
+			obj_alert_item.checked=true;
+			obj_newcopyright_item.disabled=false;
+		}
+	}
+</script>
+<div class="portletBody">
+	<h3>
+		$tlang.getString("gen.additems")
+	</h3>
+
+	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" ></div>#end
+	<p class="instruction">
+		$tlang.getString("addh.instr1")
+	</p>	
+	<p class="instruction">
+		$tlang.getString("gen.instr2") <span class="reqStarInline">*</span> 
+	</p>
+	<div class ="breadCrumb">
+		<label><strong>$tlang.getString("gen.location")</strong></label>
+		<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString('gen.folder')" />
+		#foreach ($id in $collectionPath)
+			#if ($dropboxMode && $id==$homeCollection)
+				$siteTitle Drop Box /
+			#else
+				$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName)) /
+			#end
+		#end
+		#if ($dropboxMode && $collectionId==$homeCollection)
+			$siteTitle Drop Box
+		#else
+			$validator.escapeHtml($service.getProperties($collectionId).getPropertyFormatted($resourceProperties.NamePropDisplayName))
+		#end
+	</div>
+	
+	
+	<form name="addItemForm" id="addItemForm" method="post" action="#toolForm("ResourcesAction")" >
+		<input type="hidden" name="from" value="list" />
+		<input type="hidden" name="sakai_action" value="doAdditem" />
+		<input type="hidden" name="doAdditem" value="x" />
+		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+		<p class="shorttext">
+			<label for="itemType">$tlang.getString("addi.change")</label>
+				<select id="itemType"  name="itemType" onchange="javascript:document.forms.addItemForm.submit();">
+				<option value="file" id="file">$tlang.getString("addi.upload")</option>
+				<option value="Url" id="Url">$tlang.getString("addi.url")</option>
+				<option value="htmldocument" id="htmldocument">$tlang.getString("addi.txthtml")</option>
+				<option value="plaintextdocument" id="plaintextdocument" selected="selected">$tlang.getString("addi.txttxt")</option>
+			</select>
+		</p>
+	</form>				
+	<form name="addDocumentForm" action="#toolForm("ResourcesAction")" method="post" >
+		<input type="hidden" name="from" value="list" />
+		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+		<input type="hidden" name="addDocumentStep" value="basic" />
+		<h4>			
+			$tlang.getString("addi.txttxt")
+		</h4>	
+		<p class="shorttext">
+			<span class="reqStar">*</span>
+			<label for="title">
+				#if (( $unqualified_fields.indexOf($service.newResourceProperties().NamePropDisplayName)!=-1)||(($title.length()>0) && ($unqualified_fields.indexOf($title)!=-1)))
+					$tlang.getString("gen.title")
+				#else
+					$tlang.getString("gen.title")							
+				#end
+			</label>	
+			<input type="text" name="title" id="title" value="$title" size="40" />
+		</p>
+		<p class="longtext">
+			<table border="0"><tr><td>
+			<textarea name="content" id="content" rows="30" cols="80" wrap="virtual">$validator.escapeHtmlTextarea($content)</textarea>
+			</td></tr></table>
+		</p>	
+		<h4>			
+			$tlang.getString("list.props")
+		</h4>	
+
+		<p class="shorttext">
+			<label for="description">
+				$tlang.getString("gen.description")
+			</label>
+			<textarea id="description" name="description" rows="3" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($description)</textarea>
+		</p>
+		
+		#if ($!copyrightTypes)
+			<p class="shorttext">
+				<span class="reqStar">*</span>
+				<label for="copyright">
+				#if ($unqualified_fields.indexOf($service.newResourceProperties().NamePropCopyright)!=-1)
+					$tlang.getString("gen.cpst")
+				#else
+					$tlang.getString("gen.cpst")
+				#end
+				</label>
+				<select name="copyright" id ="copyright">
+					#foreach ($k in [0..$copyrightTypesSize])
+						#set($copyright = $copyrightTypes.get($k))
+						<option value="$copyright"#if($copyrightChoice == $copyright) selected="selected"#end>$copyright</option>
+						##	<input type="radio" name="copyright" id ="copyright" value="$copyright" #if ($copyrightChoice == $copyright)checked="checked"#end />$copyright<br />
+					#end
+				</select>
+				#if ($!fairuseurl)
+					(<a href="$fairuseurl" target="_blank">$tlang.getString("edit.fairuse")</a>)
+				#end
+			</p>
+			<p class="shorttext">
+				<label for="newcopyright">
+					$tlang.getString("edit.cinfo")
+				</label>
+				#if ($!newcopyrightinput == "true")
+					<textarea name="newcopyright" id="newcopyright" rows="5" cols="40" wrap="virtual" >$validator.escapeHtmlTextarea($!newcopyright)</textarea><br />
+				#end
+			</p>
+			<p class="shorttext">
+				<label for="copyrightAlert">
+					$tlang.getString("edit.calert")
+				</label>	
+				<input type="checkbox" style="bnorder:none" name="copyrightAlert" id ="copyrightAlert" value="true" #if($copyrightAlert)checked="checked"#end) style="border:none"/>
+				$tlang.getString("edit.display1")
+				<a href="#" onclick="javascript:openSampleCopyrightWindow();">$tlang.getString("edit.display2")</a>
+				$tlang.getString("edit.display3")
+			</p>
+		#end
+		## not show the public view in dropbox
+		#if (!$dropboxMode)
+			<p class="shorttext">
+				<label for="pubview">
+					$tlang.getString("edit.access1")
+				</label>	
+				<input type="checkbox" name="pubview" id="pubview" value="true" #if($pubview) checked="checked"#end style="border:none" />
+				#set ($pubview = $pubviews.get($i))
+				#if ($pubviewset)
+					$tlang.getString("gen.setyes")
+				#else
+					$tlang.getString("edit.access2")
+				#end
+			</p>
+		#end
+		#if(!$dropboxMode && $notification)
+			## not show notification in dropbox
+			<p class="shorttext">
+				<label for="notify">
+					$tlang.getString("gen.email1")
+				</label>	
+				<select name="notify">
+					<option value="r">$tlang.getString("gen.email2")</option>
+					<option value="o">$tlang.getString("gen.email3")</option>
+					<option value="n" selected="selected">$tlang.getString("gen.email4")</option>
+				</select>
+			</p>	
+		#end
+		<p class="act">
+			<input type="submit" class="active" name="eventSubmit_doAdddocumentplaintext" value="$tlang.getString("gen.add")" />
+			<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("gen.cancel")" />
+		</p>
+	</form>
+</div>

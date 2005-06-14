@@ -1,0 +1,99 @@
+##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/helper/chef_attachment_browse.vm,v 1.4 2005/06/08 17:30:03 zqian.umich.edu Exp $ -->
+<div class="portletBody">
+	<h3>
+		 $validator.escapeHtml($from) ... 
+	</h3>
+
+		#if ($alertMessage)<div class="chefAlertBox">$thelp.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	<div class="instruction">
+		$thelp.getString("bro.toatt")</br>
+	</div>
+	<div class="breadCrumb">	
+	$thelp.getString("bro.loc") #if($collectionDisplayName)$validator.escapeHtml($collectionDisplayName)#end
+			#if ($includeUp == true)
+				<a href="#" onClick="document.browseResourcesForm.option.value='up'; document.browseResourcesForm.submit(); return false;" title="$thelp.getString("bro.goup")">
+					<img alt="up one level" src="#imageLink("sakai/onelevelup.gif")" border="0" ></a>
+			#end
+	</div>
+	<form name="browseResourcesForm" action="#toolForm("$action")" method="post">
+		<input type="hidden" name="itemId" value="null" />
+		<input type="hidden" name="option" value="done" />
+		<input type="hidden" name="eventSubmit_doBrowse_option" value="x" />
+		#if (!$collectionMembers  || $collectionMembers.size() ==0)
+			<div class="instruction">
+				$thelp.getString("bro.thearecur")
+			</div>
+		#else			
+			<table cellspacing ="0" cellpadding ="0" border="0" class="listHier" summary="$thelp.getString("bro.lisres")">
+				<tr>		  
+				  <th id="checkbox" >&nbsp;</th>
+				  <th id="typeicon">&nbsp;</th>
+				  <th id ="title">$thelp.getString("gen.tit")</th>
+				  <th id ="size">$thelp.getString("gen.siz")</th>
+				  <th id ="type"> $thelp.getString("gen.typ")</th>
+				  <th id ="createdby">$thelp.getString("gen.creby")</th>
+				  <th id ="modified">$thelp.getString("gen.lasmod")</th>
+				</tr>
+				#set( $checkCount=0)
+			#foreach ($member in $collectionMembers)
+			#set( $checkCount=$checkCount + 1)
+				#set ($props = $member.Properties)
+				#if ($props.getBooleanProperty("CHEF:is-collection"))
+					#set ($isCol = true)
+					#set ($access = $contentHostingService.allowGetCollection($member.Id))
+				#else
+					#set ($isCol = false)
+					#set ($access = $contentHostingService.allowGetResource($member.Id))
+				#end
+				<tr>
+					## checkbox col
+					<td headers="checkbox">
+					#if (!$isCol)
+						<input type="checkbox" name="selectedMembers" value="$validator.escapeHtml($member.Id)" #if($attachments.contains($member))checked="checked"#end  id="checkbox_$checkCount" />
+					#else
+						&nbsp;
+					#end
+					</td>
+					## icon col
+					<td headers="typeicon">
+						#if ($isCol == true)
+							<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder" />
+						#else
+							<label for="checkbox_$checkCount" class="skip">Select $validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</label><img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt ="$props.getProperty($props.NamePropContentType)" />
+						#end
+					</td>
+					## display name and link
+					<td headers="title">
+						#if ($access == true)
+							#if ($isCol == true)
+								<a href="#" onClick="document.browseResourcesForm.itemId.value='$validator.escapeJsQuoted($member.Id)'; document.browseResourcesForm.option.value='down'; document.browseResourcesForm.submit(); return false;">
+							#else
+								<a href="$member.Url" target="_blank">
+							#end
+						#end
+						$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))
+						#if ($access == true)
+							</a>
+						#end
+					</td>
+					<td headers="size">
+						#if (!$isCol)
+							$props.getPropertyFormatted($props.NamePropContentLength)
+						#else
+							-
+						#end
+					</td>
+					<td headers="type">$props.getPropertyFormatted($props.NamePropContentType)</td>
+					<td headers="createdby">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropCreator))</td>
+					<td headers="modified">$props.getPropertyFormatted($props.NamePropModifiedDate)</td>
+				</tr>
+			#end
+		</table>
+	#end
+		<div class="act">
+			<input type="button" name="doBrowse_option" id="doBrowse_option" value="$thelp.getString("gen.con")" onClick="document.browseResourcesForm.option.value='continue'; document.browseResourcesForm.submit(); return false;" />
+			<input type="button" name="doCancel_add" id="doCancel_add" value="$thelp.getString("gen.can")" onClick="document.browseResourcesForm.option.value='cancel'; document.browseResourcesForm.submit(); return false;"" />		
+		</div>
+	</form>
+</div>
+
