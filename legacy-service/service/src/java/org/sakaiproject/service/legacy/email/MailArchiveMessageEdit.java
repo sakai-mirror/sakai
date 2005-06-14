@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.message.MessageEdit;
 * <p>MailArchiveMessageEdit is an editable MailArchiveMessage.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface MailArchiveMessageEdit
 	extends MailArchiveMessage, MessageEdit

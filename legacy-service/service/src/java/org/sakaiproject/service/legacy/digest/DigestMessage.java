@@ -31,7 +31,7 @@ package org.sakaiproject.service.legacy.digest;
 * <p>DigestMessage is one message in a digest</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class DigestMessage
 {

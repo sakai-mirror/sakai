@@ -45,7 +45,7 @@ import org.w3c.dom.NodeList;
 * <p>ExclusionSeqRecurrenceRule is a rule which excludes specific sequence numbers from a list of instances.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class ExclusionSeqRecurrenceRule
 	implements RecurrenceRule

@@ -47,7 +47,7 @@ import org.sakaiproject.util.java.StringUtil;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.4 $
+ * @version $Revision$
  */
 public class JamesServlet extends HttpServlet
 {

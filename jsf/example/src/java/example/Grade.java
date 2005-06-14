@@ -32,7 +32,7 @@ import java.io.Serializable;
  * <p>Copyright: Copyright  Sakai (c) 2005</p>
  * <p> </p>
  * @author Ed Smiley
- * @version $Id: Grade.java,v 1.3 2005/05/10 03:36:58 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class Grade implements Serializable {

@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: GroupBean.java,v 1.1 2005/05/11 15:41:14 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class GroupBean extends AgentBean implements
     org.sakaiproject.api.common.agent.Group

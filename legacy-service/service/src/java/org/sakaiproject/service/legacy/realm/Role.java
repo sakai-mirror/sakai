@@ -32,7 +32,7 @@ import java.util.Set;
 * <p>Role is a collection set of security locks (Strings).</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface Role
 	extends Comparable

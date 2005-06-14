@@ -30,7 +30,7 @@ import javax.faces.webapp.UIComponentTag;
  * <p>DocSectionTitle is a custom Sakai tag for JSF, to place an document section title in the response.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class DocSectionTitle extends UIComponentTag
 {

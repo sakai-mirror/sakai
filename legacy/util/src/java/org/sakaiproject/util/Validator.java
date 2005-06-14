@@ -36,7 +36,7 @@ import org.sakaiproject.service.legacy.resource.ResourceProperties;
 * <p>It is also a Turbine PULL tool so it can be used in a .vm file</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.4 $
+* @version $Revision$
 */
 public class Validator
 {

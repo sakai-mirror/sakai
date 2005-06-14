@@ -33,7 +33,7 @@ import java.util.ResourceBundle;
 * <p>CalendarUtil is a bunch of utility methods added to a java Calendar object.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class CalendarUtil
 {

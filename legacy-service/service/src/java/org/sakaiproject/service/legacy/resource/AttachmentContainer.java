@@ -32,7 +32,7 @@ package org.sakaiproject.service.legacy.resource;
 * <p>An Attachment is a reference string to a CHEF Resource.  Attachments is a list of these.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface AttachmentContainer
 {

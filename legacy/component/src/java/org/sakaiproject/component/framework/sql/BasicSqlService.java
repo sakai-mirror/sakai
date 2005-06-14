@@ -64,7 +64,7 @@ import org.sakaiproject.service.legacy.time.Time;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.8 $
+ * @version $Revision$
  */
 public class BasicSqlService implements SqlService
 {

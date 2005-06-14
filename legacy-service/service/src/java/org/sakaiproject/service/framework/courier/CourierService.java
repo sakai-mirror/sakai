@@ -39,7 +39,7 @@ import java.util.List;
 * particular type of delivery. </p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public interface CourierService
 {

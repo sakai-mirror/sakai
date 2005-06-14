@@ -34,7 +34,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <p>A Site Page is grouping of tools in a Site.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface SitePage
 	extends Resource

@@ -32,7 +32,7 @@ import javax.faces.webapp.UIComponentTag;
  * on various JSF variables and scopes, and should not be used in production.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class Snoop extends UIComponentTag
 {

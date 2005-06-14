@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <p>ContentResource is the core interface for a Resource object in the GenericContentHostingService.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.service.generic.GenericContentHostingService
 * @see org.chefproject.core.Resource
 */

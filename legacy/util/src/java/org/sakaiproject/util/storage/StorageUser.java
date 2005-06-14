@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 * <p>StorageUser is ...%%% callbacks from the BaseXmlFileStorage and other Storage classes...</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.service.generic.UserDirectoryService
 */
 public interface StorageUser

@@ -51,7 +51,7 @@ import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: AgentGroupManagerImpl.java,v 1.6 2005/05/13 21:50:25 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class AgentGroupManagerImpl extends HibernateDaoSupport implements
     AgentGroupManager, LifeCycleAware

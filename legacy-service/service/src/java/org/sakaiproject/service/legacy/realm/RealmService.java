@@ -42,7 +42,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <p>RealmService manages Realms.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface RealmService
 {

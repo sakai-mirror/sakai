@@ -36,7 +36,7 @@ import javax.faces.render.Renderer;
  * <p>This does not render children, but can deal with children by surrounding them in a comment.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class Toolbar extends Renderer
 {

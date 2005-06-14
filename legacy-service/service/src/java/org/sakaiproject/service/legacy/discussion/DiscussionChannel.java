@@ -40,7 +40,7 @@ import org.sakaiproject.service.legacy.resource.ReferenceVector;
 * Discussion service discussion channel.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface DiscussionChannel
 	extends MessageChannel

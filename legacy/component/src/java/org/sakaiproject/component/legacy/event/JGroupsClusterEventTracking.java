@@ -44,7 +44,7 @@ import org.sakaiproject.service.legacy.user.User;
  * Events are backed by a JGroups NotificationBus.</p>
  *
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: JGroupsClusterEventTracking.java,v 1.4 2005/05/19 00:05:20 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class JGroupsClusterEventTracking extends BaseEventTrackingService
 {

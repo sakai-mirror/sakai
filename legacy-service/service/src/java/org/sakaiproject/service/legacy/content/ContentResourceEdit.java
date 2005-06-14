@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.resource.Edit;
 * <p>ContentResource is an editable ContentResource.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.service.generic.GenericContentHostingService
 * @see org.chefproject.core.Resource
 */

@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <p>The DigestService collects sets of messages for different users, and sends them out periodically.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface DigestService
 {

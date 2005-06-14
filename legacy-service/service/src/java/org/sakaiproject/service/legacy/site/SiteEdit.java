@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.resource.Edit;
 * It represents a Site in the CHEF interface.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface SiteEdit
 	extends Site, Edit

@@ -47,7 +47,7 @@ import org.sakaiproject.api.kernel.tool.ToolManager;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class ConfigTool
 {

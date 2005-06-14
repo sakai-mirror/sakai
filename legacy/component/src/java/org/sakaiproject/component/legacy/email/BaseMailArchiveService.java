@@ -67,7 +67,7 @@ import org.w3c.dom.NodeList;
 * <p>BaseMailArchiveService extends the BaseMessageService for the specifics of MailArchive.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public abstract class BaseMailArchiveService extends BaseMessageService implements MailArchiveService
 {

@@ -44,7 +44,7 @@ import org.sakaiproject.service.legacy.user.User;
 * <li>none</li></ul></p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.core.User
 */
 public interface SecurityService

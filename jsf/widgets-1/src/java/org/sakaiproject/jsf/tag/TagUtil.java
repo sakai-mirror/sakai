@@ -43,7 +43,7 @@ import java.util.HashMap;
  * <p>Copyright: Copyright (c) 2004 Sakai</p>
  * <p> </p>
  * @author Ed Smiley
- * @version $Id: TagUtil.java,v 1.2 2005/05/10 03:11:04 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class TagUtil

@@ -49,7 +49,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.11 $
+ * @version $Revision$
  */
 public class CompTest1Tool extends HttpServlet
 {

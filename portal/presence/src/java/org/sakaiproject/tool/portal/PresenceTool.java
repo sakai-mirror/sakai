@@ -55,7 +55,7 @@ import org.sakaiproject.util.courier.PresenceObservingCourier;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Id: PresenceTool.java,v 1.9 2005/05/12 23:48:09 ggolden.umich.edu Exp $
+ * @version $Id$
  */
 public class PresenceTool extends HttpServlet
 {

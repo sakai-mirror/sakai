@@ -29,7 +29,7 @@ package org.sakaiproject.exception;
 * <p>TypeException is thrown whenever type mismatch occurs.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 
 public class TypeException extends Exception

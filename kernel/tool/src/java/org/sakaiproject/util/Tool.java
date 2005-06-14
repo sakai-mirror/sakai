@@ -35,7 +35,7 @@ import java.util.Set;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.8 $
+ * @version $Revision$
  */
 public class Tool implements org.sakaiproject.api.kernel.tool.Tool, Comparable
 {

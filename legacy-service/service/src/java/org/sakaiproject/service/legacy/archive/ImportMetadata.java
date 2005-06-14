@@ -26,7 +26,7 @@ package org.sakaiproject.service.legacy.archive;
 
 /**
  * @author rshastri <a href="mailto:rshastri@iupui.edu ">Rashmi Shastri</a>
- * @version $Id: ImportMetadata.java,v 1.1 2005/06/03 22:58:11 lance.indiana.edu Exp $
+ * @version $Id$
  *  
  */
 

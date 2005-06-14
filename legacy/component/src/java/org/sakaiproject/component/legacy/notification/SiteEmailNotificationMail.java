@@ -47,7 +47,7 @@ import org.sakaiproject.util.FormattedText;
 * the notification event.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class SiteEmailNotificationMail
 	extends SiteEmailNotification

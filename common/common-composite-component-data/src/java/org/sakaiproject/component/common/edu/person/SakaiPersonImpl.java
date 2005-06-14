@@ -33,7 +33,7 @@ import org.sakaiproject.api.common.edu.person.SakaiPerson;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: SakaiPersonImpl.java,v 1.1 2005/05/11 15:41:15 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class SakaiPersonImpl extends EduPersonImpl implements Person,
     OrganizationalPerson, InetOrgPerson, SakaiPerson

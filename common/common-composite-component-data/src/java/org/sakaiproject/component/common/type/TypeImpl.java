@@ -31,7 +31,7 @@ import org.sakaiproject.component.common.manager.PersistableImpl;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: TypeImpl.java,v 1.1 2005/05/11 15:41:14 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class TypeImpl extends PersistableImpl implements Type
 {

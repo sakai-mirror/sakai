@@ -33,7 +33,7 @@ import java.util.Vector;
 * <p>MenuField is a text entry field in a menu / toolbar.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class MenuField implements MenuItem
 {

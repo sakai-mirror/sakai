@@ -29,7 +29,7 @@ package org.sakaiproject.service.framework.memory;
  * <p>Cachers may be asked to clear their caches to free up memory or re-sync with external stores.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface Cacher
 {

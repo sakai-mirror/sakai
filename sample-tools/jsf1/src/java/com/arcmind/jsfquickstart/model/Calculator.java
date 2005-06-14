@@ -5,7 +5,7 @@ package com.arcmind.jsfquickstart.model;
  *
  * from http://www-106.ibm.com/developerworks/library/j-jsf1/
  * @author $author$
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class Calculator {
     //~ Methods ----------------------------------------------------------------

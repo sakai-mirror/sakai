@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <p>Location is a combination of site id, (optional) page id and (optional) tool id</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public interface PresenceService
 {

@@ -35,7 +35,7 @@ import org.sakaiproject.api.common.type.UuidTypeResolvable;
  * to get a reference back to the object that the Node refers to.
  * 
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: RegistryManager.java,v 1.1 2005/05/10 21:23:26 lance.indiana.edu Exp $
+ * @version $Id$
  * @since Sakai 2.0
  */
 public interface RegistryManager

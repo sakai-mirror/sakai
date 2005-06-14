@@ -31,7 +31,7 @@ import javax.faces.webapp.UIComponentTag;
  * <p>ToolbarMessage is a custom Sakai tag for JSF, to place a message in place of a toolbar.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class ToolbarMessage extends UIComponentTag
 {

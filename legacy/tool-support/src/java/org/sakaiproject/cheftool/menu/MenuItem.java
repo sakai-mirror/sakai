@@ -32,7 +32,7 @@ import java.util.List;
 * <p>MenuItem is the interface for all the objects that can live on a menu.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface MenuItem
 {

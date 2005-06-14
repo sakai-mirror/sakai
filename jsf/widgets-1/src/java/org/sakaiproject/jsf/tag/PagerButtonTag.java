@@ -61,7 +61,7 @@ optional:
  * <p>Copyright: Copyright (c) 2004</p>
  * <p>Organization: Sakai Project</p>
  * @author Ed Smiley
- * @version $Id: PagerButtonTag.java,v 1.2 2005/05/10 03:11:04 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class PagerButtonTag

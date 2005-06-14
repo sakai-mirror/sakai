@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <p>A Collection has a list of internal members, each a resource id.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface ContentCollection
 	extends Resource

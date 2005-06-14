@@ -43,7 +43,7 @@ import org.sakaiproject.jsf.util.RendererUtil;
  * <p>Copyright: Copyright (c) 2004</p>
  * <p>Organization: Sakai Project</p>
  * @author Ed Smiley
- * @version $Id: ScriptRenderer.java,v 1.2 2005/05/10 03:05:08 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class ScriptRenderer extends Renderer

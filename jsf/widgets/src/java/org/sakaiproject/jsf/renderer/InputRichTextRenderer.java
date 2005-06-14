@@ -63,7 +63,7 @@ import java.util.Locale;
  * <p>Copyright: Copyright (c) 2004 Sakai</p>
  * @author cwen@iu.edu
  * @author Ed Smiley esmiley@stanford.edu (modifications)
- * @version $Id: InputRichTextRenderer.java,v 1.9 2005/05/12 15:22:24 janderse.umich.edu Exp $
+ * @version $Id$
  */
 public class InputRichTextRenderer extends Renderer
 {

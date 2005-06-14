@@ -31,7 +31,7 @@ import org.sakaiproject.service.legacy.message.MessageHeader;
 * <p>AnnouncementMessageHeader is the Interface for a Sakai Announcement Message header.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface AnnouncementMessageHeader
 	extends MessageHeader

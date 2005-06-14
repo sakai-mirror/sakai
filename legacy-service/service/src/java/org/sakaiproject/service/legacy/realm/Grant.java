@@ -28,7 +28,7 @@ package org.sakaiproject.service.legacy.realm;
  * <p>A role grant for a user in a realm</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface Grant
 	extends Comparable

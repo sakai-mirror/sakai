@@ -101,7 +101,7 @@ import org.w3c.dom.NodeList;
 * todo: deal with already removed resource/collection. %%% -ggolden
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.10 $
+* @version $Revision$
 * @see org.chefproject.service.generic.ContentHostingService
 * @see ContentCollection
 * @see ResourceProperties

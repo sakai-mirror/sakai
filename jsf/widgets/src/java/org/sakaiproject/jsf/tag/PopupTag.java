@@ -39,7 +39,7 @@ import org.sakaiproject.jsf.util.TagUtil;
  * <p>Copyright: Copyright (c) 2005</p>
  * <p>Organization: Sakai Project</p>
  * @author Ed Smiley
- * @version $Id: PopupTag.java,v 1.3 2005/05/10 02:46:19 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class PopupTag extends UIComponentTag

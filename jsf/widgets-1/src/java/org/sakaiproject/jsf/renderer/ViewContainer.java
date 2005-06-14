@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
  * <p>ViewContainer is an HTML renderer which renders the head and body needed for an HTML view.</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.9 $
+ * @version $Revision$
  */
 public class ViewContainer extends Renderer
 {

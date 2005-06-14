@@ -31,7 +31,7 @@ package org.sakaiproject.service.legacy.content;
 * <p>ContentTypeImageService is the Interface for looking up proper image based on the content type.  It also
 * associates a display name and a set of file extensions to known types.</p>
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface ContentTypeImageService
 {

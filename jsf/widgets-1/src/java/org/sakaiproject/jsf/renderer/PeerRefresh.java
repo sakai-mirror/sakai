@@ -37,7 +37,7 @@ import javax.faces.render.Renderer;
  * <p>PeerRefresh is an HTML renderer for the Sakai "peer_refresh" tag in JSF.</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class PeerRefresh extends Renderer
 {

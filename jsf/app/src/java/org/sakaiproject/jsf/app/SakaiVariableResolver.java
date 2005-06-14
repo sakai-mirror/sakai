@@ -42,7 +42,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class SakaiVariableResolver extends VariableResolver
 {

@@ -33,7 +33,7 @@ import java.util.Properties;
 * <p>ResourcePropertiesEdit is the core interface for read/write ResourceProperties.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface ResourcePropertiesEdit
 	extends ResourceProperties

@@ -32,7 +32,7 @@ import org.sakaiproject.service.framework.component.cover.ComponentManager;
  * <p>This is an adapter for the CHEF 1.x Log interface.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class Log
 {

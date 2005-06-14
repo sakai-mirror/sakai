@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
 * text is HTML.
 * This includes text formatting in user input such as bold, underline, and fonts.  
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public class FormattedText
 {

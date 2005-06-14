@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 * <p>DbAssignmentService is the database-storing service class for Assignments.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 * @see org.chefproject.core.Assignment
 * @see org.chefproject.core.AssignmentContent
 * @see org.chefproject.core.AssignmentSubmission

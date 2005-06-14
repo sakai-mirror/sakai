@@ -38,7 +38,7 @@ import org.sakaiproject.service.legacy.user.UserDirectoryService;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: AgentGroupManagerUserDirectoryProxy.java,v 1.1 2005/05/17 20:05:09 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class AgentGroupManagerUserDirectoryProxy implements AgentGroupManager
 {

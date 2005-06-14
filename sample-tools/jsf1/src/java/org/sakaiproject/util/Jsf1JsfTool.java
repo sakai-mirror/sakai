@@ -36,7 +36,7 @@ import org.sakaiproject.jsf.util.JsfTool;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class Jsf1JsfTool extends JsfTool
 {

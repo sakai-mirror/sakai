@@ -53,7 +53,7 @@ import org.sakaiproject.util.courier.PresenceObservingCourier;
 * <p>PresenceToolAction is the CHEF presence display tool showing everyone everywhere.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.3 $
+* @version $Revision$
 */
 public class PresenceToolAction
 	extends VelocityPortletPaneledAction

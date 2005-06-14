@@ -49,7 +49,7 @@ import org.springframework.core.io.FileSystemResource;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.20 $
+ * @version $Revision$
  */
 public class SpringCompMgr implements ComponentManager
 {

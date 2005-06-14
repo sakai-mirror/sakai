@@ -35,7 +35,7 @@ import org.sakaiproject.api.common.type.Typeable;
  * are one of the targets to which permissions are assigned.
  * 
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: Agent.java,v 1.2 2005/05/13 20:09:36 lance.indiana.edu Exp $
+ * @version $Id$
  * @since Sakai 2.0
  */
 public interface Agent extends Persistable, Typeable

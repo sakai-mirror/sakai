@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.presence.cover.PresenceService;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.4 $
+ * @version $Revision$
  */
 public class PresenceObservingCourier extends EventObservingCourier
 {

@@ -59,7 +59,7 @@ import org.sakaiproject.util.java.StringUtil;
 * <p>SynopticMessageAction is a the CHEF synopsis tool for messages (chat, announcement, discussion).</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.7 $
+* @version $Revision$
 */
 public class SynopticMessageAction
 	extends VelocityPortletPaneledAction

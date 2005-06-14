@@ -51,7 +51,7 @@ import java.util.Set;
  * and {@link #getRegisteredInterfaces <code>getRegisteredInterfaces</code>} methods.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface ComponentManager
 {

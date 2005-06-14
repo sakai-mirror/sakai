@@ -33,7 +33,7 @@ import org.sakaiproject.exception.IdUnusedException;
 * These are used by a course management service to access external course information.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface CourseManagementProvider
 {

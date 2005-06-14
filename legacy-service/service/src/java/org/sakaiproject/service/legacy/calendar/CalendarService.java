@@ -43,7 +43,7 @@ import org.sakaiproject.service.legacy.time.TimeRange;
 * <p>The service manages a set of calendars, each containing a set of events.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface CalendarService
 	extends ResourceService

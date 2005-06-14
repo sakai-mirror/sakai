@@ -53,7 +53,7 @@ import org.sakaiproject.util.java.StringUtil;
 * <p>Dropbox handles details of the Dropbox feature, used with the Resources tool and the ContentHosting service.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.4 $
+* @version $Revision$
 */
 
 public class Dropbox

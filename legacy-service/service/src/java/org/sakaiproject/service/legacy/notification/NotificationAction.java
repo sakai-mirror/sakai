@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 * <p>NotificationAction is the helper class that does the notify() for a notification. </p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface NotificationAction
 {

@@ -46,7 +46,7 @@ import javax.faces.model.SelectItem;
  * </p>
  * <p>Copyright: Copyright (c) 2004 Sakai</p>
  * @author Ed Smiley esmiley@stanford.edu
- * @version $Id: RendererUtil.java,v 1.3 2005/05/10 03:32:09 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class RendererUtil

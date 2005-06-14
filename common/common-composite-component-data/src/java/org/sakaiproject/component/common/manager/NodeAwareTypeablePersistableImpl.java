@@ -31,7 +31,7 @@ import org.sakaiproject.api.common.superstructure.NodeAware;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: NodeAwareTypeablePersistableImpl.java,v 1.1 2005/05/11 15:41:15 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public abstract class NodeAwareTypeablePersistableImpl extends
     TypeablePersistableImpl implements NodeAware

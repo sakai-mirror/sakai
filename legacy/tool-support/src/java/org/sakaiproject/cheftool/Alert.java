@@ -30,7 +30,7 @@ import java.io.Serializable;
 * <p>Alert is a set of messages intended for user display in the user interface.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class Alert implements Serializable
 {

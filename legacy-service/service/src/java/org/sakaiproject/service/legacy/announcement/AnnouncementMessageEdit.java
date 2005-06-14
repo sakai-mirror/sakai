@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.message.MessageEdit;
 * <p>AnnouncementMessageEdit is an editable AnnouncementMessage.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface AnnouncementMessageEdit
 	extends AnnouncementMessage, MessageEdit

@@ -62,7 +62,7 @@ import org.w3c.dom.NodeList;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.17 $
+ * @version $Revision$
  */
 public class ActiveToolComponent extends ToolComponent implements ActiveToolManager
 {

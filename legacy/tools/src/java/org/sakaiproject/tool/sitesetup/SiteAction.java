@@ -133,7 +133,7 @@ import org.xml.sax.SAXException;
 * <p>SiteAction controls the interface for worksite setup.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.35 $
+* @version $Revision$
 */
 
 // Not all of the templates have been implemented.

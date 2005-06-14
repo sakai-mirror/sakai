@@ -51,7 +51,7 @@ import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: SakaiPersonManagerImpl.java,v 1.5 2005/05/13 18:56:30 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
     SakaiPersonManager

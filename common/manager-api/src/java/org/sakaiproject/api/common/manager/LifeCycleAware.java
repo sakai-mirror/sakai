@@ -26,7 +26,7 @@ package org.sakaiproject.api.common.manager;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: LifeCycleAware.java,v 1.1 2005/05/10 21:23:26 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public interface LifeCycleAware
 {

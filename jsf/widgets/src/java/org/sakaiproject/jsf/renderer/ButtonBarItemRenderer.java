@@ -31,7 +31,7 @@ import org.sakaiproject.jsf.util.JSFDepends;
  * <p>ButtonBarItem is an HTML renderer for the ...</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class ButtonBarItemRenderer extends JSFDepends.ButtonRenderer
 {

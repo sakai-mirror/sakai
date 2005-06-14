@@ -36,7 +36,7 @@ import org.sakaiproject.util.storage.StorageUser;
 * <p>DbPreferencesService is an extension of the BasePreferencesService with database storage.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class DbPreferencesService
 	extends BasePreferencesService

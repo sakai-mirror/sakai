@@ -48,7 +48,7 @@ import org.sakaiproject.service.framework.log.Logger;
  * <p>See the {@link org.sakaiproject.service.framework.email.EmailService} interface for details.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class BasicEmailService implements EmailService
 {

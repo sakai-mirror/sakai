@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.resource.Edit;
 * <p>RealmEdit is an editable Reaml.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface RealmEdit
 	extends Realm, Edit

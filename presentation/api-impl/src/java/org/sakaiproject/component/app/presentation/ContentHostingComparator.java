@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.time.Time;
 * <p>ContentHostingComparator can be used to sort stuff (collections, resources) from the content hosting service.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class ContentHostingComparator
 	implements Comparator

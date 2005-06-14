@@ -31,7 +31,7 @@ import javax.faces.webapp.UIComponentTag;
  * <p>InstructionMessage is a custom Sakai tag for JSF, to place an instruction message.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class InstructionMessage extends UIComponentTag
 {

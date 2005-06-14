@@ -34,7 +34,7 @@ import org.sakaiproject.component.common.manager.PersistableImpl;
 
 /**
  * @author <a href="mailto:jlannan.iupui.edu">Jarrod Lannan</a>
- * @version $Id: AuthorizationImpl.java,v 1.1 2005/05/11 15:41:15 lance.indiana.edu Exp $
+ * @version $Id$
  * 
  */
 public class AuthorizationImpl extends PersistableImpl implements Persistable,

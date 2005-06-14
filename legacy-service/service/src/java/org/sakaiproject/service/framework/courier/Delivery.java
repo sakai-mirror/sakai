@@ -33,7 +33,7 @@ package org.sakaiproject.service.framework.courier;
 * <p>Address is a client window address. </p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public interface Delivery
 {

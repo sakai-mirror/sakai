@@ -71,7 +71,7 @@ import org.w3c.dom.NodeList;
 * <p>BaseDigestService is the base service for DigestService.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public abstract class BaseDigestService
 	implements DigestService, StorageUser, Runnable

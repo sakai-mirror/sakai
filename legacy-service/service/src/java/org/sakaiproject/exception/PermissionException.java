@@ -29,7 +29,7 @@ package org.sakaiproject.exception;
 * <p>PermissionException indicates an invalid unlock attempt by a user for a lock and a resource.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class PermissionException extends Exception
 {

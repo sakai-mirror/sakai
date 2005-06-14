@@ -29,7 +29,7 @@ package org.sakaiproject.api.common.superstructure;
  * SuperStructure.
  * 
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: NodeAware.java,v 1.1 2005/05/10 21:23:25 lance.indiana.edu Exp $
+ * @version $Id$
  * @since Sakai 2.0
  */
 public interface NodeAware

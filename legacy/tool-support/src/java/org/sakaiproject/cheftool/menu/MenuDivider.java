@@ -33,7 +33,7 @@ import java.util.Vector;
 * <p>MenuDivider is a menu item that makes a visible divider in the menu.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class MenuDivider implements MenuItem
 {

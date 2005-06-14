@@ -98,7 +98,7 @@ import org.w3c.dom.Element;
  * own new and manage all the announcement items, under certain permission check.
  *
  * @author University of Michigan, CHEF Software Development Team
- * @version $Revision: 1.9 $
+ * @version $Revision$
  */
 
 public class AnnouncementAction 

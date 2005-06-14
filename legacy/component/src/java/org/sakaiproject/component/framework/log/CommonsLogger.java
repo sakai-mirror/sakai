@@ -32,7 +32,7 @@ import org.sakaiproject.service.framework.log.Logger;
  * <p>CommonsLogger is an implementation of the Sakai log Service API using the Apache Jakarta Commons Logger.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class CommonsLogger implements Logger
 {

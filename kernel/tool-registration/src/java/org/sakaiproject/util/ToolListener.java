@@ -40,7 +40,7 @@ import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class ToolListener implements ServletContextListener
 {

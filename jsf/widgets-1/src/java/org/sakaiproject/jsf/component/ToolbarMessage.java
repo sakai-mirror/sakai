@@ -30,7 +30,7 @@ import javax.faces.component.UIOutput;
  * <p>ToolbarMessage is ...</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class ToolbarMessage extends UIOutput
 {

@@ -37,7 +37,7 @@ import javax.faces.render.Renderer;
  * <p>MessagePopup is an HTML renderer for the Sakai "message_popup" tag in JSF.</p>
  *
  * @author Stanford University, Sakai Software Development Team
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class MessagePopup extends Renderer
 {

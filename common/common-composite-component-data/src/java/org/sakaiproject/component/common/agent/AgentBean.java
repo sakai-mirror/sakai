@@ -30,7 +30,7 @@ import org.sakaiproject.component.common.manager.NodeAwareTypeablePersistableImp
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: AgentBean.java,v 1.2 2005/05/13 20:10:19 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class AgentBean extends NodeAwareTypeablePersistableImpl implements
     org.sakaiproject.api.common.agent.Agent

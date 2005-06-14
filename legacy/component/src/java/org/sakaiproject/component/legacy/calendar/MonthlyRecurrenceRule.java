@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 * <p>MonthlyRecurrenceRule is a time range generating rule that is based on a monthly recurrence.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class MonthlyRecurrenceRule extends RecurrenceRuleBase
 {

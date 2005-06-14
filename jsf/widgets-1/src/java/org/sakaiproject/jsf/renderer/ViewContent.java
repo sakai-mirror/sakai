@@ -36,7 +36,7 @@ import javax.faces.render.Renderer;
  * <p>ViewContent is ...</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class ViewContent extends Renderer
 {

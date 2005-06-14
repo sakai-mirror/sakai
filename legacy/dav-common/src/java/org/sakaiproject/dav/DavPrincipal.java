@@ -30,7 +30,7 @@ import java.security.Principal;
  * Implementation of Principal for Dav support in Sakai - holds the user name and password
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class DavPrincipal implements Principal
 {

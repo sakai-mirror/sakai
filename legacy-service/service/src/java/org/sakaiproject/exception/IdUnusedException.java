@@ -30,7 +30,7 @@ package org.sakaiproject.exception;
 * <p>The id is available as part of the exception.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 
 public class IdUnusedException extends Exception

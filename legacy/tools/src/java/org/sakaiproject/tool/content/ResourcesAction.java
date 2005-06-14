@@ -107,7 +107,7 @@ import org.sakaiproject.util.java.StringUtil;
 * <p>ResourceAction is a ContentHosting application</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.46 $
+* @version $Revision$
 */
 public class ResourcesAction
 extends VelocityPortletPaneledAction

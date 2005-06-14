@@ -50,7 +50,7 @@ import org.sakaiproject.service.legacy.user.UserDirectoryService;
 * <p>Implements the PresenceService, all but a Storage model.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.6 $
+* @version $Revision$
 */
 public abstract class BasePresenceService implements PresenceService
 {

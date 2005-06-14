@@ -41,7 +41,7 @@ import javax.faces.webapp.UIComponentTag;
  * <p>Copyright: Copyright (c) 2004 Sakai</p>
  * <p> </p>
  * @author Ed Smiley
- * @version $Id: TagUtil.java,v 1.2 2005/05/10 03:32:09 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class TagUtil

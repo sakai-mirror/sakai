@@ -44,7 +44,7 @@ import org.w3c.dom.Element;
 * <p>Pre-defined property names are defined in static string here. </p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface ResourceProperties
 {

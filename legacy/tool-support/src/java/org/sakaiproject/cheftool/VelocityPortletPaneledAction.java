@@ -63,7 +63,7 @@ import org.sakaiproject.vm.ActionURL;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.16 $
+ * @version $Revision$
  */
 public abstract class VelocityPortletPaneledAction extends ToolServlet
 {

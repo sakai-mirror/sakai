@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.resource.Edit;
 * <p>CalendarEdit is an editable Calendar.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface CalendarEdit
 	extends Calendar, Edit

@@ -36,7 +36,7 @@ import java.util.ResourceBundle;
 * <p>The colors are standard names for HTML colors.</p>
 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class ColorMapper
 {

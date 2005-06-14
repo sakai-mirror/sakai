@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
 * <p>Event handling is defined in the specific extension classes.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.sakaiproject.service.legacy.MessageService
 * @see org.sakaiproject.core.Message
 */

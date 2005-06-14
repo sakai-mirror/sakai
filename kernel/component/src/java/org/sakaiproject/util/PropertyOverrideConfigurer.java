@@ -67,7 +67,7 @@ import org.springframework.beans.factory.config.PropertyResourceConfigurer;
  * This could be an extension, just defining a new processKey(), but for the *private* members that the extension does not have access to...
  * </p>
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.5 $
+ * @version $Revision$
  */
 public class PropertyOverrideConfigurer extends PropertyResourceConfigurer
 {

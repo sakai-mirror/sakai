@@ -46,7 +46,7 @@ import org.sakaiproject.util.ParameterParser;
 * <p>Extending VmServlet provides support for component location and use of the Velocity Template Engine.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.3 $
+* @version $Revision$
 */
 public abstract class ToolServlet extends VmServlet
 {

@@ -34,7 +34,7 @@ import org.sakaiproject.service.legacy.time.TimeRange;
 * <p>CalendarEventEdit is an editable CalendarEvent</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface CalendarEventEdit
 	extends CalendarEvent, Edit, AttachmentContainerEdit

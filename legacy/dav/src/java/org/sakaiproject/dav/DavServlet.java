@@ -160,7 +160,7 @@ import org.xml.sax.InputSource;
  * are handled by the DefaultServlet.
  *
  * @author Remy Maucherat
- * @version $Revision: 1.6 $ $Date: 2005/06/05 23:19:50 $
+ * @version $Revision$ $Date$
  */
 
 public class DavServlet

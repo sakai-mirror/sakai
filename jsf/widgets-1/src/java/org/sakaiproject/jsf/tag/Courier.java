@@ -31,7 +31,7 @@ import javax.faces.webapp.UIComponentTag;
  * <p>Courier tag to place the Sakai Courier in the rendered view.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class Courier extends UIComponentTag
 {

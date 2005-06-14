@@ -36,7 +36,7 @@ import org.w3c.dom.Document;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public interface ToolManager
 {

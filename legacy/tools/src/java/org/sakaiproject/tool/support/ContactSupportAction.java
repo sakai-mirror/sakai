@@ -52,7 +52,7 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
  * The ContactSupport tool.
  *
  * @author University of Michigan, CHEF Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class ContactSupportAction extends VelocityPortletPaneledAction
 {

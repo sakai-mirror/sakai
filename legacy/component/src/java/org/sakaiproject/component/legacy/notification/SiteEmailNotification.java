@@ -45,7 +45,7 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 * The mail header to: field will show the site's best email address, as will the reply-to header.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class SiteEmailNotification
 	extends EmailNotification

@@ -34,7 +34,7 @@ import org.sakaiproject.service.legacy.user.User;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: AgentUserProxy.java,v 1.1 2005/05/17 20:05:09 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class AgentUserProxy implements Agent
 {

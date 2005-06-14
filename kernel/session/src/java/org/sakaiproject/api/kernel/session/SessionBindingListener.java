@@ -35,7 +35,7 @@ import java.util.EventListener;
  * (Based on HttpSessionBindingListener from the Servlet API).
  * </p>
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision$
  * @author University of Michigan, Sakai Software Development Team
  */
 public interface SessionBindingListener extends EventListener

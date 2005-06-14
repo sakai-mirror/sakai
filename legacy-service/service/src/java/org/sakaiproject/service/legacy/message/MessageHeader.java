@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 * to all message service message headers are defined here.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface MessageHeader extends AttachmentContainer
 {

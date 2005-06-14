@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
  * Authorizations. The implementation of this class is not thread safe.
  * 
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: PermissionsMask.java,v 1.1 2005/05/10 21:23:25 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class PermissionsMask implements Map
 {

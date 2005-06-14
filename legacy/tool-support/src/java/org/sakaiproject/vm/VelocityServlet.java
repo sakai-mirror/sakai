@@ -44,7 +44,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 * The template and context references are specified in the request.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public class VelocityServlet
 	extends org.apache.velocity.servlet.VelocityServlet

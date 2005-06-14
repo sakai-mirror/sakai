@@ -42,7 +42,7 @@ import org.sakaiproject.util.web.Web;
  * <p>Courier renderer to place the Sakai Courier in the rendered view.</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class Courier extends Renderer
 {

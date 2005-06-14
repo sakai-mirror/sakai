@@ -71,7 +71,7 @@ import org.w3c.dom.NodeList;
 * <p>BaseUserDirectoryService is a Sakai user directory services implementation.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.6 $
+* @version $Revision$
 * @see org.chefproject.core.User
 */
 public abstract class BaseUserDirectoryService implements UserDirectoryService, StorageUser, CacheRefresher

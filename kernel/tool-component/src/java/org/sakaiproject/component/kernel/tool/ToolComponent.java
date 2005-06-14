@@ -52,7 +52,7 @@ import EDU.oswego.cs.dl.util.concurrent.ConcurrentReaderHashMap;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.6 $
+ * @version $Revision$
  */
 public class ToolComponent implements ToolManager
 {

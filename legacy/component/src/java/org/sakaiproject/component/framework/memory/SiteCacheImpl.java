@@ -41,7 +41,7 @@ import EDU.oswego.cs.dl.util.concurrent.ConcurrentReaderHashMap;
  * <p>SiteCacheImpl implements the SiteCache.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class SiteCacheImpl extends MemCache implements SiteCache
 {

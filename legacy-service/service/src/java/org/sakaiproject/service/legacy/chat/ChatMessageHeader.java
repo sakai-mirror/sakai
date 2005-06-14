@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.message.MessageHeader;
 * <p>ChatMessageHeader is the Interface for a CHEF Chat Message header.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.core.MessageHeader
 */
 public interface ChatMessageHeader

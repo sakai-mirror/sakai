@@ -105,7 +105,7 @@ import org.w3c.dom.NodeList;
 * <p>The Concrete Service classes extending this are the XmlFile and DbCached storage classes.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.6 $
+* @version $Revision$
 * @see org.chefproject.core.Assignment
 */
 public abstract class BaseAssignmentService 

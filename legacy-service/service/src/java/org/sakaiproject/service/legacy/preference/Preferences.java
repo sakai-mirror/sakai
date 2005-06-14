@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.resource.ResourceProperties;
 * <p>Preferences stores keyed sets of properties for a given user (id).</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface Preferences
 	extends Resource, Comparable

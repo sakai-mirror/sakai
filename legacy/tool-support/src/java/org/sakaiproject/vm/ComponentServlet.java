@@ -40,7 +40,7 @@ import org.sakaiproject.util.ParameterParser;
  * <p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public abstract class ComponentServlet extends HttpServlet
 {

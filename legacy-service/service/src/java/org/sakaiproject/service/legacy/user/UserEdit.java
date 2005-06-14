@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.resource.Edit;
 * <p>UserEdit is the core interface for the editable CHEF User object.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface UserEdit
 	extends User, Edit

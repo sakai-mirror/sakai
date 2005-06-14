@@ -39,7 +39,7 @@ import org.sakaiproject.util.courier.EventObservingCourier;
 * extra information, specifically the reference to the message referenced by the event.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public class ChatObservingCourier
 	extends EventObservingCourier

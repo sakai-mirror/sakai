@@ -32,7 +32,7 @@ import org.sakaiproject.service.framework.session.SessionState;
  * <p>PortalService is our interface to the portal engine and related information in the request.</p>
  *
  * @author University of Michigan, CHEF Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface PortalService
 {

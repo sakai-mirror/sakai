@@ -61,7 +61,7 @@ import org.sakaiproject.util.java.StringUtil;
 * <p>RealmsAction is the CHEF realms editor.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.5 $
+* @version $Revision$
 */
 public class RealmsAction
 	extends PagedResourceActionII

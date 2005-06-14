@@ -25,7 +25,7 @@
 package org.sakaiproject.api.common.authorization;
 
 /**
- * @version $Id: Authorization.java,v 1.1 2005/05/10 21:23:25 lance.indiana.edu Exp $
+ * @version $Id$
  */
 import java.util.Date;
 
@@ -43,7 +43,7 @@ import org.sakaiproject.api.common.manager.Persistable;
  * 
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
  * @author <a href="mailto:jlannan@iupui.edu">Jarrod Lannan</a>
- * @version $Id: Authorization.java,v 1.1 2005/05/10 21:23:25 lance.indiana.edu Exp $
+ * @version $Id$
  * @since Sakai 2.0
  */
 public interface Authorization extends Persistable

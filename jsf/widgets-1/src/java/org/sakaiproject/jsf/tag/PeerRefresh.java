@@ -31,7 +31,7 @@ import javax.faces.webapp.UIComponentTag;
  * <p>PeerRefresh is a custom Sakai tag for JSF, to cause a peer html element to refresh.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class PeerRefresh extends UIComponentTag
 {

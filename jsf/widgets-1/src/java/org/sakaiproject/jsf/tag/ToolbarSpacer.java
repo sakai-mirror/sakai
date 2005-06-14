@@ -30,7 +30,7 @@ import javax.faces.webapp.UIComponentTag;
  * <p>ToolbarItem is a custom Sakai tag for JSF, to place a toolbar item within a toolbar in the response.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class ToolbarSpacer extends UIComponentTag
 {

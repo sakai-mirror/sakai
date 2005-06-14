@@ -32,7 +32,7 @@ import java.util.Map;
 * <p>RealmProvider provides Role for Users in a Realm, as defined "elsewhere" in some way.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface RealmProvider
 {

@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 * <p>Resource is the interface for objects that are considered Sakai resources and have unique URL addresses.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface Resource
 {

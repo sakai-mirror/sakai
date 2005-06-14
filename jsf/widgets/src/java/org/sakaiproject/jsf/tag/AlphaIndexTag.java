@@ -38,7 +38,7 @@ import org.sakaiproject.jsf.util.TagUtil;
  * <p>Copyright: Copyright (c) 2004</p>
  * <p>Organization: Sakai Project</p>
  * @author Ed Smiley
- * @version $Id: AlphaIndexTag.java,v 1.2 2005/05/10 02:46:19 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 

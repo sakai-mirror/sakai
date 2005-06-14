@@ -30,7 +30,7 @@ import org.sakaiproject.api.common.type.Type;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: SakaiPersonManager.java,v 1.2 2005/05/13 18:56:20 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public interface SakaiPersonManager
 {

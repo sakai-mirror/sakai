@@ -31,7 +31,7 @@ package org.sakaiproject.exception;
 * <p>The id of the Resource is available as part of the exception.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 
 public class OverQuotaException

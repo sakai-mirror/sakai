@@ -39,7 +39,7 @@ import org.apache.catalina.realm.RealmBase;
  * within CHEF - so in this realm, we simply indicate "true".
  *
  * @author Charles Severance
- * @version $Revision: 1.1 $ $Date: 2005/05/29 02:18:17 $
+ * @version $Revision$ $Date$
  */
 
 public final class DavRealm extends RealmBase

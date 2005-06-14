@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.message.MessageChannelEdit;
 * <p>AnnouncementChannelEdit is an editable AnnouncementChannel. </p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface AnnouncementChannelEdit
 	extends AnnouncementChannel, MessageChannelEdit

@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <p>Message is the base interface for all Sakai communications messages.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.sakaiproject.core.MessageHeader
 */
 public interface Message

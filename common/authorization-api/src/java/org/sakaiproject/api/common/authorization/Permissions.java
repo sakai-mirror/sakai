@@ -32,7 +32,7 @@ import org.sakaiproject.api.common.manager.Persistable;
  * @see org.sakaiproject.service.common.authorization.DefaultPermissions
  * @author <a href="mailto:jlannan@iupui.edu">Jarrod Lannan</a>
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: Permissions.java,v 1.1 2005/05/10 21:23:25 lance.indiana.edu Exp $
+ * @version $Id$
  * @since Sakai 2.0
  */
 public interface Permissions extends Persistable

@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.message.MessageEdit;
 * <p>ChatMessageEdit is an editable ChatMessage.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface ChatMessageEdit
 	extends ChatMessage, MessageEdit

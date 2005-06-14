@@ -48,7 +48,7 @@ import org.sakaiproject.util.java.StringUtil;
 * <p>The sql scripts in src/sql/chef_event.sql must be run on the cluster database.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.3 $
+* @version $Revision$
 */
 public class ClusterEventTracking
 	extends BaseEventTrackingService

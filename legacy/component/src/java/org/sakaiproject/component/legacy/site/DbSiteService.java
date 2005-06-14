@@ -54,7 +54,7 @@ import org.sakaiproject.util.storage.BaseDbFlatStorage;
 * <p>DbSiteService is an extension of the BaseSiteService with a database storage.</p>
 * 
 * @author gniversity of Michigan, Sakai Software Development Team
-* @version $Revision: 1.4 $
+* @version $Revision$
 */
 public class DbSiteService
 	extends BaseSiteService

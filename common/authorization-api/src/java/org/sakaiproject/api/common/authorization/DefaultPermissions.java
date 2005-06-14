@@ -67,7 +67,7 @@ package org.sakaiproject.api.common.authorization;
  * <p>
  * 
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: DefaultPermissions.java,v 1.1 2005/05/10 21:23:25 lance.indiana.edu Exp $
+ * @version $Id$
  * @since Sakai 2.0
  */
 public interface DefaultPermissions extends Permissions

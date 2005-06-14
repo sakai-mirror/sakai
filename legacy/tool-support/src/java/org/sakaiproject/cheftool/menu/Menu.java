@@ -36,7 +36,7 @@ import org.sakaiproject.cheftool.VelocityPortlet;
 * <p>Menu is an ordered list of MenuItems.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class Menu implements MenuItem
 {

@@ -39,7 +39,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <p>AliasService provides aliases for CHEF resources.  Aliases are not case sensitive.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface AliasService
 {

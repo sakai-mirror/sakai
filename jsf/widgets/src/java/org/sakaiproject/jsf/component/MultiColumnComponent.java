@@ -65,7 +65,7 @@ import javax.faces.component.UIData;
  * Extends UIDAta so that it can iterate.</p>
  * <p>Copyright: Copyright  Sakai (c) 2005</p>
  * @author Ed Smiley
- * @version $Id: MultiColumnComponent.java,v 1.2 2005/04/28 18:48:39 janderse.umich.edu Exp $
+ * @version $Id$
  */
 public class MultiColumnComponent extends UIData
 {

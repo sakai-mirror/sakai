@@ -62,7 +62,7 @@ import org.sakaiproject.service.legacy.time.cover.TimeService;
 * should be inserted as fields in a PreparedStatement.  Databases handle Unicode better in fields.
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public class BaseDbFlatStorage
 {

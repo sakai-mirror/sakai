@@ -32,7 +32,7 @@ import java.util.Map;
  * <p>SessionState is a collection of named attributes associated with the current session.
  * SessionState implements Map, but the Map methods should only be used to get attributes, 
  * not to set or remove attributes.</p>
- * @version $Revision: 1.1 $
+ * @version $Revision$
  * @author University of Michigan, Sakai Software Development Team
  */
 public interface SessionState extends Map

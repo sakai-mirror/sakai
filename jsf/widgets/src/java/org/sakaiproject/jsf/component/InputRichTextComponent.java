@@ -80,7 +80,7 @@ import javax.faces.component.UIInput;
  * <p>Copyright: Copyright (c) 2004 Sakai</p>
  * @author cwen@iu.edu
  * @author Ed Smiley esmiley@stanford.edu (modifications)
- * @version $Id: InputRichTextComponent.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
+ * @version $Id$
  */
 
 public class InputRichTextComponent extends UIInput

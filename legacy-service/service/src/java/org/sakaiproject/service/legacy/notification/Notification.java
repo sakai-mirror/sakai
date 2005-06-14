@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <p>Notification the interface for classes that act to notify, used with the GenericNotificationService. </p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface Notification
 	extends Resource

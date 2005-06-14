@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * <p>This interface is not a full service interface.</p>
  * 
  * @author University of Michigan, CHEF Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface ResourceService
 {

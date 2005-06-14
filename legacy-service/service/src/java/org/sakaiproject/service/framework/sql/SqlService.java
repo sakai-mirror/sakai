@@ -39,7 +39,7 @@ import org.sakaiproject.exception.ServerOverloadException;
 * <p>The Connection objects managed by this service are standard java.sql.Connection objects.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public interface SqlService
 {

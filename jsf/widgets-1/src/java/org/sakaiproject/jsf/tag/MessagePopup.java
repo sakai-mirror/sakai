@@ -28,7 +28,7 @@ import javax.faces.webapp.UIComponentTag;
  * <p>MessagePopup is a custom Sakai tag for JSF, to generate a message popup window.</p>
  * 
  * @author Stanford University, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class MessagePopup extends UIComponentTag
 {

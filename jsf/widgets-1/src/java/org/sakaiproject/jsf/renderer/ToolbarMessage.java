@@ -36,7 +36,7 @@ import javax.faces.render.Renderer;
  * <p>ToolbarMessage is an HTML renderer for the Sakai "toolbar_message" tag in JSF.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class ToolbarMessage extends Renderer
 {

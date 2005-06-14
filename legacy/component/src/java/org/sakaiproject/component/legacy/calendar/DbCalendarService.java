@@ -41,7 +41,7 @@ import org.sakaiproject.util.storage.StorageUser;
 * <p>The sql scripts in src/sql/chef_calendar.sql must be run on the database.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class DbCalendarService
 	extends BaseCalendarService

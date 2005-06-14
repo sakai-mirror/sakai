@@ -39,7 +39,7 @@ import org.sakaiproject.jsf.util.RendererUtil;
  * <p>Extends the default renderer to render disabled buttons in a custom way.</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class ToolBarItemRenderer extends JSFDepends.CommandLinkRenderer
 {

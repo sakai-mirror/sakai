@@ -30,7 +30,7 @@ import org.sakaiproject.jsf.util.JSFDepends;
  * <p>Messages ... </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class MessagesTag extends JSFDepends.MessagesTag
 {

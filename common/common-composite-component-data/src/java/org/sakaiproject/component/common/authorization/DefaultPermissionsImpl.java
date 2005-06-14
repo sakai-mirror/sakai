@@ -34,7 +34,7 @@ import org.sakaiproject.component.common.manager.TypeablePersistableImpl;
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
  * @author <a href="mailto:jlannan.iupui.edu">Jarrod Lannan </a>
- * @version $Id: DefaultPermissionsImpl.java,v 1.1 2005/05/11 15:41:15 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class DefaultPermissionsImpl extends TypeablePersistableImpl implements
     DefaultPermissions

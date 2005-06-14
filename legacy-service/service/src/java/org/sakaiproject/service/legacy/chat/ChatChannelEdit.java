@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.message.MessageChannelEdit;
 * <p>ChatChannelEdit is an editable ChatChannel.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface ChatChannelEdit
 	extends ChatChannel, MessageChannelEdit

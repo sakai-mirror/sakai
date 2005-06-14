@@ -32,7 +32,7 @@ import java.sql.ResultSet;
 * <p>SqlReader is the Interface for objects that can read stuff from a SQL request ResultSet.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface SqlReader
 {

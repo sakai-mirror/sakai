@@ -39,7 +39,7 @@ import javax.faces.render.Renderer;
  * <p>Snoop is an HTML renderer for the Sakai Snoop UIComponent in JSF.</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class Snoop extends Renderer
 {

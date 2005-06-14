@@ -46,7 +46,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <li>mailarchive.channel.remove - mail archive channel resource id</li></ul></p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.core.MailArchiveChannel
 */
 public interface MailArchiveService

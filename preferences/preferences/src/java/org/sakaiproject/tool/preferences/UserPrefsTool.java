@@ -56,7 +56,7 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
  * UserPrefsTool is a Sakai Admin tool to view and edit anyone's preferences.
  * 
  * @author <a href="mailto:htripath@indiana.edu">Himansu Tripathy</a>
- * @version $Id: UserPrefsTool.java,v 1.11 2005/06/04 23:36:40 ggolden.umich.edu Exp $
+ * @version $Id$
  */
 public class UserPrefsTool
 {

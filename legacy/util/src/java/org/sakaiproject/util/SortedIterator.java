@@ -36,7 +36,7 @@ import java.util.Collections;
 * the order controlled by a Comparator function provided at construction.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class SortedIterator 
 	implements Iterator

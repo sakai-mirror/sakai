@@ -45,7 +45,7 @@ import org.sakaiproject.util.web.Web;
  * </p>
  * 
  * @author University of Michigan, CHEF Software Development Team
- * @version $Revision: 1.11 $
+ * @version $Revision$
  */
 public abstract class VmServlet extends ComponentServlet
 {

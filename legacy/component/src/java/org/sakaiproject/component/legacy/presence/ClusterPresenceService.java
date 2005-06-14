@@ -35,7 +35,7 @@ import org.sakaiproject.service.framework.sql.SqlService;
 * for a cluster of CHEF app servers, backed by a shared DB table.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class ClusterPresenceService
 	extends BasePresenceService

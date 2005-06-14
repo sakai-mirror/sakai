@@ -44,7 +44,7 @@ import org.sakaiproject.util.courier.ObservingCourier;
 * <p>PagedResourceAction is a base class that handles paged display of lists of Resourecs.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.3 $
+* @version $Revision$
 */
 public abstract class PagedResourceAction
 	extends VelocityPortletPaneledAction

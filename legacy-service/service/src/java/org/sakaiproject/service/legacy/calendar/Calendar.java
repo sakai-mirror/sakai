@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
 * <p>Calendars contains collections of CalendarEvents.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface Calendar
 	extends Resource

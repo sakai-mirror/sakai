@@ -44,7 +44,7 @@ import org.sakaiproject.service.legacy.presence.cover.PresenceService;
 * <p>SakaiClusterService is a Sakai cluster service implementation.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class SakaiClusterService implements ClusterService
 {

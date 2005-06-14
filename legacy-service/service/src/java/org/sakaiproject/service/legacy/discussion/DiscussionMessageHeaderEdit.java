@@ -31,7 +31,7 @@ import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 * <p>DiscussionMessageHeaderEdit is an editable DiscussionMessageHeader</p> 
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface DiscussionMessageHeaderEdit
 	extends DiscussionMessageHeader, MessageHeaderEdit

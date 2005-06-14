@@ -44,7 +44,7 @@ import org.sakaiproject.jsf.util.RendererUtil;
  *
  * @author esmiley@stanford.edu
  * @author based partly on some previous code in DateOutput.java ggolden@umich.edu
- * @version $Revision: 1.14 $
+ * @version $Revision$
  *
  *
  */

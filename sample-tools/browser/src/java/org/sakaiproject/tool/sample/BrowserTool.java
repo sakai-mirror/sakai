@@ -63,7 +63,7 @@ import org.sakaiproject.util.web.Web;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.12 $
+ * @version $Revision$
  */
 public class BrowserTool extends HttpServlet
 {

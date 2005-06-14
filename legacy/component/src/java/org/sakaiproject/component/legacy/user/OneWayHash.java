@@ -38,7 +38,7 @@ import org.sakaiproject.service.framework.log.cover.Logger;
 * <p>OneWayHash converts a plain text string into an encoded string.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class OneWayHash
 {

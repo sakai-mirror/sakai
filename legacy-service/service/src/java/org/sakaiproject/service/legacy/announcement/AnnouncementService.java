@@ -46,7 +46,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <li>announcement.channel.remove - announcement channel resource id</li></ul></p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.sakaiproject.core.AnnouncementChannel
 */
 public interface AnnouncementService

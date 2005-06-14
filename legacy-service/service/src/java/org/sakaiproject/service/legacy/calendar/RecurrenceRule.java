@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 * <p>RecurrenceRule is the interface for objects which add or remove multiple occurrences of timeranges.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface RecurrenceRule
 {

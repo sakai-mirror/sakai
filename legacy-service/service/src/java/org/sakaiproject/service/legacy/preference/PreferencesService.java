@@ -36,7 +36,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <p>The PreferencesService keeps sets of preferences for each user.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface PreferencesService
 {

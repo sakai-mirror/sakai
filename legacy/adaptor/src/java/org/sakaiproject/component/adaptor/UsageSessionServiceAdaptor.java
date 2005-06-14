@@ -63,7 +63,7 @@ import org.sakaiproject.util.LoginUtil;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.8 $
+ * @version $Revision$
  */
 public class UsageSessionServiceAdaptor implements UsageSessionService
 {

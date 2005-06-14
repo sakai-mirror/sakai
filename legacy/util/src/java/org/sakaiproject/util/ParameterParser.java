@@ -34,7 +34,7 @@ import org.sakaiproject.util.java.EnumerationIterator;
  * ParameterParser is a wrapper over the request that provides compatibility with Sakai 1.5 and before.
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.5 $
+ * @version $Revision$
  */
 public class ParameterParser
 {

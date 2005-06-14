@@ -42,7 +42,7 @@ import org.sakaiproject.util.java.StringUtil;
 * implemented as a Turbine service.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.3 $
+* @version $Revision$
 */
 public class BasicCourierService
 	implements CourierService

@@ -38,7 +38,7 @@ import org.sakaiproject.service.framework.courier.CourierService;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public abstract class ObservingCourier implements Observer
 {

@@ -43,7 +43,7 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 * <p>External Dependencies:<ul><li>none</li></ul></p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class NoSecurity
 	implements SecurityService

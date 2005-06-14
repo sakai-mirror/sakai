@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.time.Time;
 * their authentication password).</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.sakaiproject.service.legacy.generic.GenericUserDirectoryService
 */
 public interface User

@@ -37,7 +37,7 @@ import org.sakaiproject.component.kernel.component.SpringCompMgr;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.7 $
+ * @version $Revision$
  */
 public class ComponentManager
 {

@@ -72,7 +72,7 @@ import org.sakaiproject.util.java.StringUtil;
 * <p>MailboxAction is a the Sakai mailbox tool.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.6 $
+* @version $Revision$
 */
 public class MailboxAction
 extends PagedResourceActionII

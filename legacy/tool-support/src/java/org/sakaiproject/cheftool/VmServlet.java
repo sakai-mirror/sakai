@@ -33,7 +33,7 @@ import org.sakaiproject.util.Validator;
 * <p>VmServlet adds a standard validator to the VmServlet from the velocity module {@link org.sakaiproject.vm.VmServlet}.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public abstract class VmServlet extends org.sakaiproject.vm.VmServlet
 {

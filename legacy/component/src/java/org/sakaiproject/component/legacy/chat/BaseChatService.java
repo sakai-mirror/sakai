@@ -54,7 +54,7 @@ import org.w3c.dom.Element;
 * <p>BaseChatService extends the BaseMessageService for the specifics of Chat.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.service.generic.ChatService
 * @see org.chefproject.core.ChatChannel
 * @see org.chefproject.core.ChatMessage

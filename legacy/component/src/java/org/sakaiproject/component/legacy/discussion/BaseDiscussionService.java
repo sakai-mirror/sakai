@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
 * <p>BaseDiscussionService extends the BaseMessageService for the specifics of Discussion.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.4 $
+* @version $Revision$
 *
 * Note: when a message is posted to a channel, it may have a new category.  This category is NOT automatically added to the
 * categories of a channel, which may exist without a message.  To get the full list of categories, you must get the channel's

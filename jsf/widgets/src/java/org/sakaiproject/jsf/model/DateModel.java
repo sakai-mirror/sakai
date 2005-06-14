@@ -35,7 +35,7 @@ import javax.faces.model.*;
  * <p>Includes localized slect lists.</p>
  * <p>Copyright: Copyright  Sakai (c) 2005</p>
  * @author Ed Smiley
- * @version $Id: DateModel.java,v 1.2 2005/05/10 03:28:33 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class DateModel

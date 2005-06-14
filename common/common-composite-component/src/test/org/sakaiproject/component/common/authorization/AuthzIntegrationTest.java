@@ -20,7 +20,7 @@ import org.sakaiproject.component.junit.spring.ApplicationContextBaseTest;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: AuthzIntegrationTest.java,v 1.2 2005/05/12 16:48:51 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class AuthzIntegrationTest extends ApplicationContextBaseTest
 {

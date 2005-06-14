@@ -10,7 +10,7 @@
 //
 ///**
 // * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
-// * @version $Id: AllTests.java,v 1.1 2005/05/11 15:38:42 lance.indiana.edu Exp $
+// * @version $Id$
 // */
 //public class AllTests
 //{

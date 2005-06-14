@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.event.Event;
 * <p>Events are just logged, and observers notified.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class BasicEventTracking
 	extends BaseEventTrackingService

@@ -46,7 +46,7 @@ import org.springframework.web.context.WebApplicationContext;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.5 $
+ * @version $Revision$
  */
 public class ContextLoader extends
 		org.springframework.web.context.ContextLoader

@@ -79,7 +79,7 @@ import org.w3c.dom.Document;
 * <li>EventTrackingService</li></ul></p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.sakaiproject.service.legacy.resource.ResourceProperties
 */
 public interface ContentHostingService

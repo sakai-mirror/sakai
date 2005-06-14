@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.message.Message;
 * message also has an id, unique within the channel.  All fields are read only.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface AnnouncementMessage
 	extends Message

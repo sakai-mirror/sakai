@@ -32,7 +32,7 @@ import org.sakaiproject.api.kernel.component.cover.ComponentManager;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class ToolManager
 {

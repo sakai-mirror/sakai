@@ -53,7 +53,7 @@ import com.sun.faces.util.MessageFactory;
  * </p>
  * 
  * @author Mark Norton
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class PresentationTool
 {

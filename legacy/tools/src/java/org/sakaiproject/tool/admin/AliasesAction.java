@@ -52,7 +52,7 @@ import org.sakaiproject.util.courier.EventObservingCourier;
 * <p>AliasesAction is the CHEF aliases editor.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.3 $
+* @version $Revision$
 */
 public class AliasesAction
 	extends PagedResourceActionII

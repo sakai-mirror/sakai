@@ -46,7 +46,7 @@ import org.sakaiproject.util.web.Web;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.22 $
+ * @version $Revision$
  */
 public class JsfTool extends HttpServlet
 {

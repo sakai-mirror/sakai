@@ -33,7 +33,7 @@ import org.sakaiproject.exception.IdUnusedException;
 * <p>CourseManagemeentService provides ways to access and manupilate Term and Course objects. </p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface CourseManagementService
 {	

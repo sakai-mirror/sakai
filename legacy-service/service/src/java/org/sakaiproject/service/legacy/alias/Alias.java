@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.user.User;
 * their authentication password).</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.service.generic.GenericAliasDirectoryService
 */
 public interface Alias

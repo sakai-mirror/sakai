@@ -58,7 +58,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * @author David Geary
  * @author (modifications) Daisy Flemming
  * @author (modifications) Ed Smiley
- * @version $Id: FileUploadFilter.java,v 1.3 2005/05/10 16:35:23 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 public class FileUploadFilter
   implements Filter {

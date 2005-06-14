@@ -32,7 +32,7 @@ import javax.faces.webapp.UIComponentTag;
  * Provides for integration with the Sakai Help tool (for context-sensitive help)</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class TitleBar extends UIComponentTag
 {

@@ -39,7 +39,7 @@ import org.sakaiproject.service.legacy.time.TimeRange;
 * grained time range access to the events returned.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class CalendarEventVector
 	extends Vector

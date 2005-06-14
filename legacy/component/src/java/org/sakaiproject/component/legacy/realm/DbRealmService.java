@@ -60,7 +60,7 @@ import org.w3c.dom.Element;
 * <p>DbRealmService is an extension of the BaseRealmService with database storage.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.3 $
+* @version $Revision$
 */
 public class DbRealmService
 	extends BaseRealmService

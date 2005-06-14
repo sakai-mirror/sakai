@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.time.Time;
 * <p>Digest stores sets of messages for a given user (id).</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface Digest
 	extends Resource, Comparable

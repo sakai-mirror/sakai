@@ -32,7 +32,7 @@ import java.util.Collection;
 * <p>RoleEdit is an editable Role.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface RoleEdit
 	extends Role

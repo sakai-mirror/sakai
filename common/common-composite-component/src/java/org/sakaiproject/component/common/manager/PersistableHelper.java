@@ -35,7 +35,7 @@ import org.sakaiproject.api.kernel.session.SessionManager;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: PersistableHelper.java,v 1.2 2005/05/13 17:22:17 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class PersistableHelper
 {

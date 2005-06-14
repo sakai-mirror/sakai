@@ -54,7 +54,7 @@ import org.sakaiproject.jsf.util.RendererUtil;
  * @author David Geary
  * @author (modifications) Daisy Flemming
  * @author (modifications) Ed Smiley
- * @version $Id: InputFileUploadRenderer.java,v 1.1 2005/05/12 16:13:50 janderse.umich.edu Exp $
+ * @version $Id$
  */
 
 public class InputFileUploadRenderer

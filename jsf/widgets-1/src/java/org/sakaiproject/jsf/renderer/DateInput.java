@@ -36,7 +36,7 @@ import javax.faces.render.Renderer;
  * <p>Dates are rendered as three fields (year, month, day) and a picker widget.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class DateInput extends Renderer
 {

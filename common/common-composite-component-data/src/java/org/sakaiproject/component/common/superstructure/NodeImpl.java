@@ -36,7 +36,7 @@ import org.sakaiproject.component.common.manager.TypeablePersistableImpl;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: NodeImpl.java,v 1.1 2005/05/11 15:41:14 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class NodeImpl extends TypeablePersistableImpl implements Node,
     Persistable, Typeable

@@ -34,7 +34,7 @@ import java.util.Vector;
 * <p>ReferenceVector is a Vector of References, just like Vector with the added contains(Reference) member.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class ReferenceVector
 	extends Vector

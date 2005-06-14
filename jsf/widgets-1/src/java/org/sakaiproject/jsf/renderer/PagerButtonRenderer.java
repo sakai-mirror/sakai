@@ -40,7 +40,7 @@ import javax.faces.render.Renderer;
  * <p>Copyright: Copyright (c) 2004</p>
  * <p>Organization: Sakai Project</p>
  * @author Ed Smiley
- * @version $Id: PagerButtonRenderer.java,v 1.3 2005/05/10 03:01:28 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class PagerButtonRenderer extends Renderer

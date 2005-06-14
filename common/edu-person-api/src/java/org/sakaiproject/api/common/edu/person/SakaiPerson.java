@@ -26,7 +26,7 @@ package org.sakaiproject.api.common.edu.person;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: SakaiPerson.java,v 1.1 2005/05/10 21:23:24 lance.indiana.edu Exp $
+ * @version $Id$
  */
 
 public interface SakaiPerson extends EduPerson

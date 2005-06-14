@@ -30,7 +30,7 @@ import javax.faces.component.UIOutput;
  * <p>TitleBar is the component to use in a title bar panel of a tool to show the title text.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class TitleBar extends UIOutput
 {

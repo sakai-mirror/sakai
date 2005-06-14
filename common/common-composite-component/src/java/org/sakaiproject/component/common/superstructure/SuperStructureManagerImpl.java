@@ -49,7 +49,7 @@ import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: SuperStructureManagerImpl.java,v 1.2 2005/05/13 17:22:17 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class SuperStructureManagerImpl extends HibernateDaoSupport implements
     SuperStructureManager

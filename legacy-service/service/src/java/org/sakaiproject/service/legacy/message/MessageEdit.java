@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.resource.Edit;
 * <p>MessageEdit is the base interface for all Sakai communications messages in r/w mode.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface MessageEdit
 	extends Message, Edit

@@ -32,7 +32,7 @@ import org.sakaiproject.api.common.manager.Persistable;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: PersistableImpl.java,v 1.1 2005/05/11 15:41:15 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public abstract class PersistableImpl implements Persistable
 {

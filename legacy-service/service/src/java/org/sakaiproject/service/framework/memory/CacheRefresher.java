@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.event.Event;
 * <p>Utility API for classes that will refresh a cache entry when expired.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface CacheRefresher
 {

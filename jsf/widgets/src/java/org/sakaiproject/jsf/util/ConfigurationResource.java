@@ -33,7 +33,7 @@ import java.util.Locale;
 /**
  * Thin wrapper for lookup of configuration of resources.
  * @author Ed Smiley
- * @version $Id: ConfigurationResource.java,v 1.3 2005/05/10 16:35:23 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 public class ConfigurationResource
 {

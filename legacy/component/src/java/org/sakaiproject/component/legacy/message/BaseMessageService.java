@@ -100,7 +100,7 @@ import org.w3c.dom.NodeList;
 * inherit from two places in the extensions.  A non-edit version is implemented by the edit version. -ggolden
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public abstract class BaseMessageService implements MessageService, StorageUser, CacheRefresher
 {

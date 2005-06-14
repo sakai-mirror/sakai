@@ -59,7 +59,7 @@ import org.sakaiproject.service.legacy.resource.Reference;
 * <p>PermissionsAction is a helper Action that other tools can use to edit their permissions.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class PermissionsAction
 {

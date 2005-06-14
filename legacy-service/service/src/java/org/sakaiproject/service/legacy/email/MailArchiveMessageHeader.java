@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.time.Time;
 * <p>MailArchiveMessageHeader is the Interface for a CHEF Mail Archive Message header.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface MailArchiveMessageHeader
 	extends MessageHeader

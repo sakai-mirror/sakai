@@ -44,7 +44,7 @@ import org.sakaiproject.service.legacy.resource.ReferenceVector;
 * <li>chat.message.channel.post - chat message resource id</li></p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.service.generic.GenericChatService
 * @see org.chefproject.core.ChatMessage
 */

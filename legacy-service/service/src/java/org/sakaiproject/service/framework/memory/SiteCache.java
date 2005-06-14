@@ -30,7 +30,7 @@ import org.sakaiproject.service.legacy.site.ToolConfiguration;
  * <p>SiteCache is a cache that holds Site objects, and gives access to the cached site's ToolConfigurations by their id.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface SiteCache extends Cache
 {

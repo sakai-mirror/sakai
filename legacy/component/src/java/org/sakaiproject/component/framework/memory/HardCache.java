@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.event.EventTrackingService;
  * <p>HardCache is a MemCache set to use hard, not soft references.</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class HardCache extends MemCache
 {

@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.time.Time;
 * <p>Term has a unique Id assigned by the implementation, a default-term boolean value, a title, a list abbreviation, a start date, and a end-date. </p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class Term
 {

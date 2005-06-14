@@ -36,7 +36,7 @@ import org.sakaiproject.service.legacy.user.User;
 * <p>Site is the object that knows the information, tools and layouts for a CHEF Site.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 */
 public interface Site
 	extends Resource, Comparable

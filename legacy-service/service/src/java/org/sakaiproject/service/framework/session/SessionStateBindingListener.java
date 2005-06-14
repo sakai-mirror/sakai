@@ -28,7 +28,7 @@ package org.sakaiproject.service.framework.session;
  * <p>SessionStateBindingListener is an interface for objects that wish to be
  * notified when they are bound to and unbound from a SessionState.</p>
  * <p>This is loosely modeled on the HttpSessionBindingListener.</p>
- * @version $Revision: 1.1 $
+ * @version $Revision$
  * @author University of Michigan, Sakai Software Development Team
  */
 public interface SessionStateBindingListener

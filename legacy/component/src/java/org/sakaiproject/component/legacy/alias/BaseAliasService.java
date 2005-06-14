@@ -70,7 +70,7 @@ import org.w3c.dom.NodeList;
 * <p>BaseAliasService is a CHEF Alias services implemented as a Turbine Service.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.3 $
+* @version $Revision$
 */
 public abstract class BaseAliasService
 	implements AliasService, StorageUser

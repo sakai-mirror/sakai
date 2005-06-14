@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.time.TimeRange;
 * <p>RecurrenceInstance is one instance of a recurrence sequence, with the time range and sequence # of the instance.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class RecurrenceInstance
 {

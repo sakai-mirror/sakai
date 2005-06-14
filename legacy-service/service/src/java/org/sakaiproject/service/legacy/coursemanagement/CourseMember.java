@@ -29,7 +29,7 @@ package org.sakaiproject.service.legacy.coursemanagement;
 * <p>CourseMember contains member's registar information.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class CourseMember
 {

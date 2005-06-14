@@ -46,7 +46,7 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 * <p>MembershipAction is a tool which displays Sites and lets the user join and un-join joinable Sites.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.10 $
+* @version $Revision$
 */
 public class MembershipAction extends PagedResourceActionII
 {

@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.event.Event;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
- * @version $Id: EventImpl.java,v 1.1 2005/05/19 00:05:20 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class EventImpl implements Event, Serializable
 {

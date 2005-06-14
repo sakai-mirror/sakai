@@ -43,7 +43,7 @@ import org.sakaiproject.component.common.superstructure.NodeImpl;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: DenormalizationInterceptor.java,v 1.1 2005/05/11 15:38:42 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class DenormalizationInterceptor implements Interceptor
 {

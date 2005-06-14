@@ -45,7 +45,7 @@ import org.sakaiproject.service.legacy.content.ContentTypeImageService;
 * <p>External Dependencies:<ul><li>none</li></ul></p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 * @see org.chefproject.service.ContentTypeImageService
 */
 public class BasicContentTypeImageService implements ContentTypeImageService

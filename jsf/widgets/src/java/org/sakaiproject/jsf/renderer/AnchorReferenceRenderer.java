@@ -41,7 +41,7 @@ import org.sakaiproject.jsf.util.RendererUtil;
  * <p>Copyright: Copyright (c) 2005</p>
  * <p>Organization: Sakai Project</p>
  * @author Ed Smiley
- * @version $Id: AnchorReferenceRenderer.java,v 1.2 2005/05/10 03:05:08 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class AnchorReferenceRenderer extends Renderer

@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
 * <p>BaseResourceProperties is the base class for ResourcePropertiesEdit implementations.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.core.ResourceProperties
 */
 public class BaseResourcePropertiesEdit

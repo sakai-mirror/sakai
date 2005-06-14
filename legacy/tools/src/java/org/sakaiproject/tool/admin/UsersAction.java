@@ -68,7 +68,7 @@ import org.sakaiproject.util.java.StringUtil;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.7 $
+ * @version $Revision$
  */
 public class UsersAction extends PagedResourceActionII
 {

@@ -31,7 +31,7 @@ import java.util.List;
  * <p>EmailService is an interface to sending emails.</p>
  * 
  * @author University of Michigan, CHEF Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface EmailService
 {

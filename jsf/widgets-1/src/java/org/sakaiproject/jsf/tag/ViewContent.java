@@ -32,7 +32,7 @@ import javax.faces.webapp.UIComponentTag;
  * <p>ViewContent is ...</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class ViewContent extends UIComponentTag
 {

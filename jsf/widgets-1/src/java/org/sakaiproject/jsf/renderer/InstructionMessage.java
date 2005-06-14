@@ -37,7 +37,7 @@ import javax.faces.render.Renderer;
  * <p>InstructionMessage is an HTML renderer for the Sakai "instruction_message" tag in JSF.</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.4 $
+ * @version $Revision$
  */
 public class InstructionMessage extends Renderer
 {

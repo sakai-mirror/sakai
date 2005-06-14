@@ -51,7 +51,7 @@ import org.sakaiproject.util.web.Web;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.4 $
+ * @version $Revision$
  */
 public class AuthnPortal extends HttpServlet
 {

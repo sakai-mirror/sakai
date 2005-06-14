@@ -44,7 +44,7 @@ import org.sakaiproject.jsf.util.ConfigurationResource;
  * <p>Copyright: Copyright (c) 2004</p>
  * <p>Organization: Sakai Project</p>
  * @author Ed Smiley
- * @version $Id: HideDivisionRenderer.java,v 1.4 2005/05/19 02:14:28 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class HideDivisionRenderer extends Renderer

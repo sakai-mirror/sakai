@@ -40,7 +40,7 @@ import org.sakaiproject.api.common.authentication.IdPwEvidence;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class OpenAuthnComponent implements AuthenticationManager
 {

@@ -37,7 +37,7 @@ import org.sakaiproject.api.kernel.component.cover.ComponentManager;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class ComponentManagerAdaptor implements org.sakaiproject.service.framework.component.ComponentManager
 {

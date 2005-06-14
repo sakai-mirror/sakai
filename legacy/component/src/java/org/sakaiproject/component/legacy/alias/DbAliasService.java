@@ -59,7 +59,7 @@ import org.w3c.dom.Element;
 * Code to find and convert records from before, from the XML based CHEF_ALIAS table is included.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.3 $
+* @version $Revision$
 */
 public class DbAliasService
 	extends BaseAliasService

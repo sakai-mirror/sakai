@@ -31,7 +31,7 @@ package org.sakaiproject.service.legacy.id;
 * <p>IdService is the work interface for the Sakai Id Service API to generates unique ids.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface IdService
 {

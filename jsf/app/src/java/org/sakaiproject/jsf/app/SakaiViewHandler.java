@@ -43,7 +43,7 @@ import org.sakaiproject.util.web.Web;
  * SakaiViewHandler extends the basic ViewHandler functionality for getActionURL(). getActionURL() is extended ...
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.9 $
+ * @version $Revision$
  */
 public class SakaiViewHandler extends ViewHandler
 {

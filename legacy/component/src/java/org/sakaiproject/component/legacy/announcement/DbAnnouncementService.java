@@ -55,7 +55,7 @@ import org.w3c.dom.Element;
 * <p>The sql scripts in src/sql/chef_announcement.sql must be run on the database.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 * @see org.chefproject.service.BaseAnnouncementService
 */
 public class DbAnnouncementService

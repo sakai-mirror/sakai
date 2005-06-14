@@ -30,7 +30,7 @@ import javax.faces.component.UIOutput;
  * <p>DateOutput is ...</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class DateOutput extends UIOutput
 {

@@ -14,7 +14,7 @@
 //
 ///**
 // * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
-// * @version $Id: HierarchyTree.java,v 1.1 2005/05/11 15:38:44 lance.indiana.edu Exp $
+// * @version $Id$
 // */
 //public class HierarchyTree extends ApplicationContextBaseTest
 //{

@@ -81,7 +81,7 @@ import org.w3c.dom.NodeList;
 * named ROLE_PUBVIEW - all the abilities in this role become the public view abilities for any resource.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.4 $
+* @version $Revision$
 */
 public abstract class BaseRealmService implements RealmService, StorageUser
 {

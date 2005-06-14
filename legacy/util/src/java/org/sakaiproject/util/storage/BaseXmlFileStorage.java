@@ -53,7 +53,7 @@ import org.w3c.dom.NodeList;
 * turn Resource and Edit into something more type specific to the service.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.2 $
+* @version $Revision$
 * @see org.chefproject.service.component.BaseUserService
 */
 public class BaseXmlFileStorage

@@ -50,7 +50,7 @@ import org.sakaiproject.util.java.StringUtil;
 * <p>IFrameAction is the CHEF tool to place any web content in an IFrame on the page.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.9 $
+* @version $Revision$
 */
 public class IFrameAction
 	extends VelocityPortletPaneledAction

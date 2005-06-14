@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.resource.Edit;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface SitePageEdit extends SitePage, Edit
 {

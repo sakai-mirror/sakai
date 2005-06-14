@@ -31,7 +31,7 @@ package org.sakaiproject.service.legacy.resource;
 * <p>AttachmentContainer is the interface for objects that may contain attachments and may modify them.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface AttachmentContainerEdit
 	extends AttachmentContainer

@@ -34,7 +34,7 @@ import org.sakaiproject.service.legacy.resource.Edit;
 * in read/write mode.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface MessageChannelEdit
 	extends MessageChannel, Edit

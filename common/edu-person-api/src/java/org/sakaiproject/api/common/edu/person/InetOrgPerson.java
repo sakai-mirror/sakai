@@ -31,7 +31,7 @@ import java.io.BufferedOutputStream;
  * See RFC 2798.
  * 
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: InetOrgPerson.java,v 1.1 2005/05/10 21:23:24 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public interface InetOrgPerson extends OrganizationalPerson
 {

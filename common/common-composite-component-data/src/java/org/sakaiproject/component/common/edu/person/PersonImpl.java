@@ -29,7 +29,7 @@ import org.sakaiproject.component.common.manager.PersistableImpl;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: PersonImpl.java,v 1.1 2005/05/11 15:41:15 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class PersonImpl extends PersistableImpl implements Person
 {

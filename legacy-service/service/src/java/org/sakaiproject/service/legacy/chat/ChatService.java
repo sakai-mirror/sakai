@@ -43,7 +43,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * <li>chat.message.channel.remove - chat channel resource id</li></ul></p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.core.ChatChannel
 * @see org.chefproject.core.ChatMessage
 */

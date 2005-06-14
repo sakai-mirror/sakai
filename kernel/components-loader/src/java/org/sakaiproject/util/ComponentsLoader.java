@@ -45,7 +45,7 @@ import org.springframework.core.io.FileSystemResource;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.4 $
+ * @version $Revision$
  */
 public class ComponentsLoader implements
 		org.sakaiproject.api.kernel.component.ComponentsLoader

@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 * <p>TODO: support changing the day-of-week of recurrences -ggolden</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class WeeklyRecurrenceRule extends RecurrenceRuleBase
 {

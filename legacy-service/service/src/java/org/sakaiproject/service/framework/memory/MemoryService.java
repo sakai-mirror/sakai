@@ -32,7 +32,7 @@ import org.sakaiproject.exception.PermissionException;
  * and can be asked to report memory usage.</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface MemoryService
 {

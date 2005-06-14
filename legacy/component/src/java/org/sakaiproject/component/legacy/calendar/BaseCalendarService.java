@@ -91,7 +91,7 @@ import org.w3c.dom.NodeList;
 * implement object creation, access and storage.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.3 $
+* @version $Revision$
 */
 public abstract class BaseCalendarService
 	implements CalendarService, StorageUser, CacheRefresher

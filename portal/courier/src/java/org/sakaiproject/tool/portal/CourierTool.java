@@ -55,7 +55,7 @@ import org.sakaiproject.util.RequestFilter;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Id: CourierTool.java,v 1.3 2005/05/12 15:53:04 ggolden.umich.edu Exp $
+ * @version $Id$
  */
 public class CourierTool extends HttpServlet
 {

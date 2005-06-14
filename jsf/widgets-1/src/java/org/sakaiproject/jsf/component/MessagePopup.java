@@ -26,7 +26,7 @@ import javax.faces.component.UIOutput;
  * <p>MessagePopup is the tag to render a popup window for a message based on some conditions.</p>
  * 
  * @author Stanford University, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public class MessagePopup extends UIOutput
 {

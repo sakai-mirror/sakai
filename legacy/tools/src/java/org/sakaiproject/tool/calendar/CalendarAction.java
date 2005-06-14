@@ -93,7 +93,7 @@ import org.sakaiproject.util.java.StringUtil;
  * The schedule tool.
  *
  * @author University of Michigan, CHEF Software Development Team
- * @version $Revision: 1.11 $
+ * @version $Revision$
  */
 public class CalendarAction
 extends VelocityPortletStateAction

@@ -63,7 +63,7 @@ import org.sakaiproject.api.kernel.tool.Tool;
  * RequestFilter Filters all requests to Sakai tools. It is responsible for keeping the Sakai session, done using a cookie to the end user's browser storing the user's session id.
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.33 $
+ * @version $Revision$
  */
 public class RequestFilter implements Filter
 {

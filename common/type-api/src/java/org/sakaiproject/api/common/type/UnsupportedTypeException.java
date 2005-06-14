@@ -30,7 +30,7 @@ package org.sakaiproject.api.common.type;
  * 
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
  * @see {@link java.lang.Error}
- * @version $Id: UnsupportedTypeException.java,v 1.1 2005/05/10 21:23:25 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class UnsupportedTypeException extends Error
 {

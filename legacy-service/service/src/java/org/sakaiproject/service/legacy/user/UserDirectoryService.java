@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
 * objects into the directory and updating existing user objects.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.core.User
 */
 public interface UserDirectoryService

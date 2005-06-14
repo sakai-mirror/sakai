@@ -35,7 +35,7 @@ import org.sakaiproject.util.Filter;
 * Messages in the NewsChannel are NewsItems.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.service.NewsService
 * @see org.chefproject.core.NewsItem
 */

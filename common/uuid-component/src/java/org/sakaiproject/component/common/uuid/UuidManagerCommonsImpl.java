@@ -31,7 +31,7 @@ import org.sakaiproject.api.common.uuid.UuidManager;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: UuidManagerCommonsImpl.java,v 1.1 2005/05/11 15:42:51 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class UuidManagerCommonsImpl implements UuidManager
 {

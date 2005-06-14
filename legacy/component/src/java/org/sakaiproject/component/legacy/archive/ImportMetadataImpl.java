@@ -30,7 +30,7 @@ import org.sakaiproject.service.legacy.archive.ImportMetadata;
 
 /**
  * @author rshastri <a href="mailto:rshastri@iupui.edu ">Rashmi Shastri </a>
- * @version $Id: ImportMetadataImpl.java,v 1.1 2005/06/03 23:03:35 lance.indiana.edu Exp $
+ * @version $Id$
  *  
  */
 public class ImportMetadataImpl implements ImportMetadata

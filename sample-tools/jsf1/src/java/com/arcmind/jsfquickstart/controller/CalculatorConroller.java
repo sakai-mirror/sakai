@@ -11,7 +11,7 @@ import com.arcmind.jsfquickstart.model.Calculator;
  * Calculator Controller from http://www-106.ibm.com/developerworks/library/j-jsf1/
  * 
  * @author $author$
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class CalculatorConroller
 {

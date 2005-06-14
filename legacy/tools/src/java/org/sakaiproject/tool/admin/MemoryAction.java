@@ -39,7 +39,7 @@ import org.sakaiproject.service.framework.session.SessionState;
 * <p>MemoryAction is the CHEF memory tool.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class MemoryAction
 	extends VelocityPortletPaneledAction

@@ -73,7 +73,7 @@ import org.sakaiproject.util.java.StringUtil;
 * <p>ChatAction is the CHEF chat tool.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.13 $
+* @version $Revision$
 */
 public class ChatAction
 	extends VelocityPortletPaneledAction

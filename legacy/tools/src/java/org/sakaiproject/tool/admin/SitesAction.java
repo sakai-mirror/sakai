@@ -65,7 +65,7 @@ import org.sakaiproject.util.java.StringUtil;
 * <p>SitesAction is the CHEF sites editor.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.9 $
+* @version $Revision$
 */
 public class SitesAction
 	extends PagedResourceActionII

@@ -44,7 +44,7 @@ import org.sakaiproject.service.legacy.time.cover.TimeService;
 * <p>BasicCourseManagementService is a course management services implemented as a Turbine Service.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class BasicCourseManagementService implements CourseManagementService
 {	

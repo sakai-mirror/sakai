@@ -31,7 +31,7 @@ package org.sakaiproject.service.legacy.archive;
 * <p>GenericArchiveService takes care of exporting and importing resources.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface ArchiveService
 {

@@ -31,7 +31,7 @@ package org.sakaiproject.service.framework.current;
  * something expires.</p>
  * 
  * @author University of Michigan, CHEF Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface CurrentService
 {

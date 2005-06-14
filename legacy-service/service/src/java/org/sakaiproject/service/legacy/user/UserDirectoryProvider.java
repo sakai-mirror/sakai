@@ -30,7 +30,7 @@ package org.sakaiproject.service.legacy.user;
 * These are used by a user directory service to access external user information.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface UserDirectoryProvider
 {

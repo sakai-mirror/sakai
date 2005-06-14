@@ -30,7 +30,7 @@ import org.sakaiproject.api.common.superstructure.Node;
 
 /**
  * @author <a href="mailto:lance@indiana.edu">Lance Speelmon </a>
- * @version $Id: NodeParentChildMapImpl.java,v 1.1 2005/05/11 15:41:14 lance.indiana.edu Exp $
+ * @version $Id$
  */
 public class NodeParentChildMapImpl
 {

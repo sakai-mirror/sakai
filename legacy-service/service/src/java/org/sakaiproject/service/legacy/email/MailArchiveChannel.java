@@ -55,7 +55,7 @@ import org.sakaiproject.service.legacy.user.User;
 * <li>mailarchive.channel.post - mailarchive message resource id</li></p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.core.MailArchiveMessage
 */
 public interface MailArchiveChannel

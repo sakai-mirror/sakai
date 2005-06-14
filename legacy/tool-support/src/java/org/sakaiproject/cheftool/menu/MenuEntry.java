@@ -33,7 +33,7 @@ import java.util.Vector;
 * <p>MenuEntry is a clickable entry in a menu. </p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 * @see org.chefproject.util.MenuItem
 */
 public class MenuEntry implements MenuItem

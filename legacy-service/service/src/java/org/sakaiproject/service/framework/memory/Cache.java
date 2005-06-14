@@ -34,7 +34,7 @@ import java.util.List;
 * The update is done in a separate thread.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface Cache
 	extends Cacher

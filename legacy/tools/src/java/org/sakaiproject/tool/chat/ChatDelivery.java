@@ -48,7 +48,7 @@ import org.sakaiproject.util.web.Web;
 *    in the HTML element identified by the address and elementID.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.4 $
+* @version $Revision$
 */
 
 // maybe this could be generalized to append anything to any HTML element with an "append" function,

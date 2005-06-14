@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.message.MessageChannelEdit;
 * <p>DiscussionChannel is an editable DiscussionChannel</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface DiscussionChannelEdit
 	extends DiscussionChannel, MessageChannelEdit

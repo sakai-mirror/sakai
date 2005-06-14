@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
 
 /**
  * @author rshastri <a href="mailto:rshastri@iupui.edu ">Rashmi Shastri</a>
- * @version $Id: ImportMetadataService.java,v 1.2 2005/06/06 22:03:57 lance.indiana.edu Exp $
+ * @version $Id$
  *  
  */
 public interface ImportMetadataService

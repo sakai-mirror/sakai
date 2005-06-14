@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.message.MessageChannelEdit;
 * <p>MailArchiveChannelEdit is an editable MailArchiveChannel. </p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface MailArchiveChannelEdit
 	extends MailArchiveChannel, MessageChannelEdit

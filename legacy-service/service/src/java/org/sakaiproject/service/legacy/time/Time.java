@@ -28,7 +28,7 @@ package org.sakaiproject.service.legacy.time;
  * <p>Time ...</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.1 $
+ * @version $Revision$
  */
 public interface Time extends Cloneable, Comparable
 {

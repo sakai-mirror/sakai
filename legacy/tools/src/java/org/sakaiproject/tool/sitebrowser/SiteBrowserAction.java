@@ -58,7 +58,7 @@ import org.sakaiproject.util.java.StringUtil;
 * public resources of each when selected.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.6 $
+* @version $Revision$
 */
 public class SiteBrowserAction
 	extends PagedResourceActionII

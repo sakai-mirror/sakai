@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.message.MessageHeader;
 * created and are not publically available yet.</p> 
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface DiscussionMessageHeader
 	extends MessageHeader

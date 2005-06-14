@@ -28,7 +28,7 @@ package org.sakaiproject.javax;
 * <p>PagingPosition models a current position in a paging display, with a first and last item value, 1 based.</p>
 * <p>Implementation note: the default Object.equals() is fine for this class.</p>
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class PagingPosition implements Cloneable
 {

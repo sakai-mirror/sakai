@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * @author rshastri <a href="mailto:rshastri@iupui.edu ">Rashmi Shastri </a>
- * @version $Id: ImportMetadataServiceImpl.java,v 1.2 2005/06/06 21:51:15 rshastri.iupui.edu Exp $
+ * @version $Id$
  *  
  */
 

@@ -35,7 +35,7 @@ import javax.faces.context.ResponseWriter;
  * <p>Description: Renderer for MultiColumn component.</p>
  * <p>Copyright: Copyright (c) 2005 Sakai Project</p>
  * @author Ed Smiley
- * @version $Id: MultiColumnRenderer.java,v 1.2 2005/05/10 03:05:08 esmiley.stanford.edu Exp $
+ * @version $Id$
  */
 
 public class MultiColumnRenderer  extends DynaRendererBase

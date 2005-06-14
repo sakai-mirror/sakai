@@ -35,7 +35,7 @@ import org.sakaiproject.service.legacy.time.TimeRange;
 * <p>Each event has a time range, and other information in the event's (Resource) properties.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public interface CalendarEvent
 	extends Resource, Comparable, AttachmentContainer

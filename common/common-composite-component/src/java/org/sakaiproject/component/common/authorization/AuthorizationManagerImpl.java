@@ -55,7 +55,7 @@ import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
 /**
  * @author <a href="mailto:jlannan.iupui.edu">Jarrod Lannan</a>
- * @version $Id: AuthorizationManagerImpl.java,v 1.2 2005/05/13 17:22:17 lance.indiana.edu Exp $
+ * @version $Id$
  * 
  */
 public class AuthorizationManagerImpl extends HibernateDaoSupport implements

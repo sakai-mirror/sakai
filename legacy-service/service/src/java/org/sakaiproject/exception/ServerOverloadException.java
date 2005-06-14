@@ -30,7 +30,7 @@ package org.sakaiproject.exception;
 * some critical resource of the server being in too short supply.</p>
 *
 * @author University of Michigan, Sakai Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 
 public class ServerOverloadException extends Exception

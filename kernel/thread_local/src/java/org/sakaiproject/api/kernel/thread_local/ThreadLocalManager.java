@@ -33,7 +33,7 @@ package org.sakaiproject.api.kernel.thread_local;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.4 $
+ * @version $Revision$
  */
 public interface ThreadLocalManager
 {

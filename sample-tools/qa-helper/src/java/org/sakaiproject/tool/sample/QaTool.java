@@ -55,7 +55,7 @@ import org.sakaiproject.util.web.Web;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class QaTool extends HttpServlet
 {

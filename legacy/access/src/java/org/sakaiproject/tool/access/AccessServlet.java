@@ -79,7 +79,7 @@ import org.sakaiproject.util.web.Web;
  * <p>AccessServlet is ...</p>
  * 
  * @author University of Michigan, CHEF Software Development Team
- * @version $Revision: 1.6 $
+ * @version $Revision$
  */
 public class AccessServlet
 	extends VmServlet

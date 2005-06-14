@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
 * <p>ExclusionRecurrenceRule is a rule which excludes specific time ranges from a list of instances.</p>
 *
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.1 $
+* @version $Revision$
 */
 public class ExclusionRecurrenceRule
 	implements RecurrenceRule

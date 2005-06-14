@@ -88,7 +88,7 @@ import org.sakaiproject.util.java.StringUtil;
  * <p>AssignmentAction is the action class for the dicussion tool.</p>
  *
  * @author University of Michigan, CHEF Software Development Team
- * @version $Revision: 1.16 $
+ * @version $Revision$
  */
 
 public class AssignmentAction

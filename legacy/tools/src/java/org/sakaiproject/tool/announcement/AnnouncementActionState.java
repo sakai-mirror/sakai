@@ -52,7 +52,7 @@ import org.sakaiproject.util.java.StringUtil;
 * changes occur.</p>
 * 
 * @author University of Michigan, CHEF Software Development Team
-* @version $Revision: 1.4 $
+* @version $Revision$
 */
 
 public class AnnouncementActionState extends ControllerState implements SessionStateBindingListener

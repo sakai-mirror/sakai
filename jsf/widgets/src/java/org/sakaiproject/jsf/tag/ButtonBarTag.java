@@ -34,7 +34,7 @@ import org.sakaiproject.jsf.util.TagUtil;
  * <p>ButtonBarTag is a custom Sakai tag for JSF, to place a button bar in the response.</p>
  *
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.2 $
+ * @version $Revision$
  */
 public class ButtonBarTag extends UIComponentTag
 {

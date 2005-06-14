@@ -30,7 +30,7 @@ package org.sakaiproject.api.common.authentication;
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
- * @version $Revision: 1.3 $
+ * @version $Revision$
  */
 public class AuthenticationUnknownException extends AuthenticationException
 {
