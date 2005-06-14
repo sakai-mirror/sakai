@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="workspaceOverview" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>workspace_overview</value></property>
+      <property name="name"><value>Workspace Overview</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apph.html</value></property>
+   </bean>
+   
+   <bean id="clMenubar" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>cl_menubar</value></property>
+      <property name="name"><value>Sakai Menubar</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/appg.html</value></property>
+   </bean>
+   
+    <bean id="org.sakaiproject.service.help.TableOfContents" 
+          class="org.sakaiproject.component.help.model.TableOfContentsBean">
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="workspaceCategory" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>My Workspace</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="workspaceOverview"/>
+                     <ref bean="clMenubar"/>
+                  </list>
+               </property>
+            </bean>
+           </list>
+       </property>
+    </bean>
+</beans>
+

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+
+    <class
+        name="org.sakaiproject.component.help.model.ResourceBean"
+        table="help_resource">
+
+        <id name="id">
+            <column name="id" not-null="true" length="19" />
+            <generator class="native">
+                <param name="sequence">Help_ResourceBean_Sequence</param>
+            </generator>
+        </id>
+
+        <property name="docId">
+            <column name="document_id" length="36" not-null="true" index="true"
+                unique="true" />
+        </property>
+
+        <property name="name" type="string" column="name" not-null="false"/>
+        <property name="location" type="string" column="location" not-null="false"/>
+
+        <many-to-one name="source" column="source_id" not-null="false" 
+         class="org.sakaiproject.component.help.model.SourceBean"/>
+         
+        <set name="contexts" table="help_resource_context" cascade="all">
+           <key column="resource_id"/>
+           <many-to-many column="source_id" 
+            class="org.sakaiproject.component.help.model.ContextBean"/>
+        </set>
+    </class>
+  
+    <query name="query.getResourceByDocId">
+        <![CDATA[from org.sakaiproject.component.help.model.ResourceBean r where r.docId = :docId]]>
+    </query>
+
+</hibernate-mapping>

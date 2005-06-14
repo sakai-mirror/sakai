@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="assignmentOverview" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>chef-assignment</value></property>
+      <property name="name"><value>Assignments Overview</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apll.html</value></property>
+   </bean>
+
+   <bean id="createAssignment" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>create_assignment</value></property>
+      <property name="name"><value>Create Assignment</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aplm.html</value></property>
+   </bean>
+      <bean id="reviseAssignment" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>revise_assignment</value></property>
+      <property name="name"><value>Revise Assignment</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apln.html</value></property>
+   </bean>
+      <bean id="deleteAssignment" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>delete_assignment</value></property>
+      <property name="name"><value>Duplicate or Delete Assignment</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aplq.html</value></property>
+   </bean>
+   
+    <bean id="org.sakaiproject.service.help.TableOfContents" 
+          class="org.sakaiproject.component.help.model.TableOfContentsBean">
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="assignmentCategory" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Assignment</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="assignmentOverview"/>
+                     <ref bean="createAssignment"/>
+                     <ref bean="reviseAssignment"/>
+                     <ref bean="deleteAssignment"/>
+                  </list>
+               </property>
+            </bean>
+           </list>
+         </property>
+       </bean>
+</beans>

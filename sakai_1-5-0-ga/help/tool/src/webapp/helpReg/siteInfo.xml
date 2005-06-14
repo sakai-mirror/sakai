@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="siteInfo" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>chef-site-info</value></property>
+      <property name="name"><value>About Site Info Tool</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apmp.html</value></property>
+   </bean>
+   
+   <bean id="editASite" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>edit_site</value></property>
+      <property name="name"><value>Edit Site</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/appe.html</value></property>
+   </bean>
+   
+   <bean id="grantGlobalAccess" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>grant_global_access</value></property>
+      <property name="name"><value>Grant Global Access</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apmu.html</value></property>
+   </bean>
+   
+   <bean id="addRemoveParticipant" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>add_remove_participant</value></property>
+      <property name="name"><value>Add/Remove Participant</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apms.html</value></property>
+   </bean>
+   
+   <bean id="permissionRoleOverview" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>permission_role_overview</value></property>
+      <property name="name"><value>Permission and Role Overview</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apkv.html</value></property>
+   </bean>
+   
+   <bean id="participantRole" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>participantRole</value></property>
+      <property name="name"><value>Pariticipant Roles</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/appz.html</value></property>
+   </bean>
+   
+   <bean id="changeParticipantRole" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>change_participant_role</value></property>
+      <property name="name"><value>Changing Participant Roles</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/appz.html</value></property>
+   </bean>
+
+   
+    <bean id="org.sakaiproject.service.help.TableOfContents" 
+          class="org.sakaiproject.component.help.model.TableOfContentsBean">
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="siteInfoCategory" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Site Info Tool</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="siteInfo"/>
+                     <ref bean="editASite"/>
+                     <ref bean="grantGlobalAccess"/>
+                     <ref bean="addRemoveParticipant"/>
+                     <ref bean="permissionRoleOverview"/>
+                     <ref bean="participantRole"/>
+                     <ref bean="changeParticipantRole"/>
+                  </list>
+               </property>
+            </bean>
+           </list>
+         </property>
+       </bean>
+</beans>

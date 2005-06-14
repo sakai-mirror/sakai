@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Sakai Help Service</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-help-service</id>
+	<currentVersion>sakai.1.5.0</currentVersion>
+	<organization>
+		<name>Sakai Project</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>                                        
+	<inceptionYear>2004</inceptionYear>
+ 	<dependencies>
+		<dependency>
+			<groupId>OKI</groupId>
+			<artifactId>OkiOSID</artifactId>
+			<version>2.0</version>
+		</dependency>
+		        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-service</artifactId>
+            <version>sakai.1.5.0</version>
+        </dependency>
+		
+	</dependencies>
+ 
+
+	<build>
+
+		<!-- java source -->
+		<sourceDirectory>src/java</sourceDirectory>
+	
+	</build>
+
+</project>
+

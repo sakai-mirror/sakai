@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="gradingOverview" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>grading_overview</value></property>
+      <property name="name"><value>Grade Assignment/Reivew Student Satus</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aplo.html</value></property>
+   </bean>
+   
+<!--    <bean id="gradebookLocation" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>gradebook_location</value></property>
+      <property name="name"><value>Where is gradebook</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aqcf.html</value></property>
+   </bean> -->
+
+   
+    <bean id="org.sakaiproject.service.help.TableOfContents" 
+          class="org.sakaiproject.component.help.model.TableOfContentsBean">
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="gradingCategory" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Grading</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="gradingOverview"/>
+                 <!--     <ref bean="gradebookLocation"/> -->
+                  </list>
+               </property>
+            </bean>
+           </list>
+         </property>
+       </bean>
+</beans>

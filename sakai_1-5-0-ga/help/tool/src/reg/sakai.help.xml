@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.help"
+			url="/sakai-help-tool/help/jsf.tool"
+			
+			title="Help (JSF)"
+			description="For accessing help document.">
+
+	</tool>
+
+</registration>

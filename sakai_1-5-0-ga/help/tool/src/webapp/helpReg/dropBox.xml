@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="dropBoxOverview" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>chef-dropbox</value></property>
+      <property name="name"><value>Drop Box Overview</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apmo.html</value></property>
+   </bean>
+
+   
+    <bean id="org.sakaiproject.service.help.TableOfContents" 
+          class="org.sakaiproject.component.help.model.TableOfContentsBean">
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="dropBoxCategory" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Drop Box</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="dropBoxOverview"/>
+                  </list>
+               </property>
+            </bean>
+           </list>
+         </property>
+       </bean>
+</beans>

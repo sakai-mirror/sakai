@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping>
+    <class
+        name="org.sakaiproject.component.help.model.CategoryBean"
+        table="help_category">
+
+        <id name="id">
+            <column name="id" not-null="true" length="19" />
+            <generator class="native">
+                <param name="sequence">Help_CategoryBean_Sequence</param>
+            </generator>
+        </id>
+
+        <property name="name" type="string" column="name" not-null="false"/>
+        <list name="resources" table="help_resource_category" cascade="all">
+           <key column="category_id"/>
+           <index column="name"/>
+           <many-to-many column="resource_id" class="org.sakaiproject.component.help.model.ResourceBean"/>
+        </list>
+    </class>
+</hibernate-mapping>

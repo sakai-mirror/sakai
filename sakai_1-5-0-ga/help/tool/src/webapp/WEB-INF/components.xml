@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+ 
+	<bean id="helpIdManager" class="org.sakaiproject.component.help.shared.IdManager">
+    </bean>
+    
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		 <property name="driverClassName"><value>org.hsqldb.jdbcDriver</value></property>
+		 <property name="url"><value>jdbc:hsqldb:.</value></property>
+		 <property name="username"><value>SA</value></property>
+		 <property name="password"><value></value></property>
+	 </bean>
+
+	 <bean id="helpSessionFactory" class="org.springframework.orm.hibernate.LocalSessionFactoryBean">
+		 <property name="dataSource"><ref bean="dataSource"/></property>
+		 <property name="mappingResources">
+		     <list>
+		         <value>org/sakaiproject/component/help/model/ResourceBean.hbm.xml</value>
+		         <value>org/sakaiproject/component/help/model/SourceBean.hbm.xml</value>
+		         <value>org/sakaiproject/component/help/model/ContextBean.hbm.xml</value>
+		         <value>org/sakaiproject/component/help/model/CategoryBean.hbm.xml</value>
+		     </list>
+		 </property>
+		 <property name="hibernateProperties">
+			 <props>
+				 <prop key="hibernate.dialect">net.sf.hibernate.dialect.HSQLDialect</prop>
+				 <prop key="hibernate.show_sql">true</prop>
+				 <prop key="hbm2ddl.auto">create</prop>
+				 <prop key="hibernate.query.substitutions">true 1, false 0, yes 'Y', no 'N'</prop>
+				 <prop key="hibernate.jdbc.use_streams_for_binary">true</prop>
+				 <prop key="hibernate.cache.use_query_cache">false</prop>
+				 <prop key="hibernate.cache.provider_class">net.sf.hibernate.cache.HashtableCacheProvider</prop>
+			 </props>
+		 </property>
+		 <property name="schemaUpdate"><value>true</value></property>
+	 </bean>
+
+   <bean id="org.sakaiproject.service.help.HelpManager" 
+   class="org.sakaiproject.component.help.HelpManagerImpl"
+   init-method="init"
+   destroy-method="destroy"
+   singleton="true"
+   >
+      <property name="contextSize"><value>6</value></property>
+      <property name="indexOnStartup"><value>true</value></property>
+ 
+      <property name="sessionFactory"><ref bean="helpSessionFactory"/></property>
+ 
+      <property name="idManager"><ref bean="helpIdManager"/></property>
+      <property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+      <property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+   </bean>
+
+<!-- 
+   <bean id="ws_resource1" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="name"><value>Your Repository</value></property>
+      <property name="location"><value>http://kb.indiana.edu/data/anfg.html</value></property>
+   </bean>
+
+   <bean id="kb_resource" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="name"><value>Find more help</value></property>
+      <property name="location"><value>http://kb.indiana.edu/data/anfg.html</value></property>
+   </bean>
+
+   <bean id="rsn_source" class="org.sakaiproject.component.help.model.Source">
+      <property name="name"><value>rsn</value></property>
+      <property name="attributes">
+         <map>
+            <entry key="institution"><value>iupui</value></entry>
+			</map>
+      </property>
+      <property name="urlAppenders">
+         <set>
+            <ref bean="sourceAttributeAppender"/>
+         </set>
+      </property>
+   </bean>
+
+   <bean id="sourceAttributeAppender" class="org.sakaiproject.component.help.model.SourceAttributeAppender"/>
+
+    
+    <bean id="org.sakaiproject.service.help.TableOfContents" class="org.sakaiproject.component.help.model.TableOfContentsBean"
+       init-method="init"
+   		destroy-method="destroy"
+   		singleton="true"
+    >
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="category1" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Presentation</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="kb_resource"/>
+                  </list>
+               </property>
+               <property name="indent"><value>0</value></property>
+            </bean>
+
+            <bean id="category2.1" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Profile</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="ws_resource1"/>
+                  </list>
+               </property>
+               <property name="indent"><value>1</value></property>
+            </bean>
+            <bean id="category2.2" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Repository</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="ws_resource1"/>
+                  </list>
+               </property>
+               <property name="indent"><value>1</value></property>
+            </bean>
+            <bean id="category2.2.1" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Uploading files</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="ws_resource1"/>
+                  </list>
+               </property>
+               <property name="indent"><value>2</value></property>
+            </bean>
+            <bean id="category2.2.2" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Managing folders</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="ws_resource1"/>
+                  </list>
+               </property>
+               <property name="indent"><value>2</value></property>
+            </bean>
+            <bean id="category2.3" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>WebDAV</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="ws_resource1"/>
+                  </list>
+               </property>
+               <property name="indent"><value>1</value></property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+    -->
+</beans>

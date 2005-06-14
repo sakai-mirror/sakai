@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="announcementOverview" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>chef-announcements</value></property>
+      <property name="name"><value>Announcements Overview</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apkh.html</value></property>
+   </bean>
+
+   <bean id="createAnnouncement" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>create_announcement</value></property>
+      <property name="name"><value>Create Announcement</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apkf.html</value></property>
+   </bean>
+      <bean id="postAnnouncement" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>post_announcement</value></property>
+      <property name="name"><value>Post Announcement</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apkg.html</value></property>
+   </bean>
+      <bean id="reviseAnnouncement" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>revise_announcement</value></property>
+      <property name="name"><value>Revise Announcement</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apkb.html</value></property>
+   </bean>
+      <bean id="deleteAnnouncement" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>delete_announcement</value></property>
+      <property name="name"><value>Delete Announcement</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apkd.html</value></property>
+   </bean>
+   
+    <bean id="org.sakaiproject.service.help.TableOfContents" 
+          class="org.sakaiproject.component.help.model.TableOfContentsBean">
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="announcementCategory" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Announcement</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="announcementOverview"/>
+                     <ref bean="createAnnouncement"/>
+                     <ref bean="postAnnouncement"/>
+                     <ref bean="reviseAnnouncement"/>
+                     <ref bean="deleteAnnouncement"/>
+                  </list>
+               </property>
+            </bean>
+           </list>
+         </property>
+       </bean>
+</beans>
