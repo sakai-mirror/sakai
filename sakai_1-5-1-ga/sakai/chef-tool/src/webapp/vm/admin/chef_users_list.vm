@@ -1,0 +1,48 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_users_list.vm,v 1.2 2004/07/14 02:17:34 ggolden.umich.edu Exp $
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["search"];
+</script>
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			These are the Users defined within the system that meet the search criteria.  Click a User Id to edit or view detail.
+			<br/>Note: users defined by an external user authority are not listed here.
+		</div>
+#if ($users.size() > 0)
+##		<div id="chefOverContent">
+			<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Users">
+				<tr>
+					<th id="Id">User Id</th>
+					<th id="Name">Name</th>
+					<th id="Email">Email</th>
+					<th id="Type">Type</th>
+				</tr>
+	#foreach ($user in $users)
+				<tr>
+					<td headers="Id">
+		#if ($service.allowUpdateUser($user.Id))
+						<a href="#toolLink("$action" "doEdit")&id=$validator.escapeUrl($user.Id)">
+							$validator.escapeHtml($user.Id)
+						</a>
+		#else
+						$validator.escapeHtml($user.Id)
+		#end
+					</td>
+					<td headers="Name">$validator.escapeHtml($user.SortName)</td>
+					<td headers="Email">$validator.escapeHtml($user.Email)</td>
+					<td headers="Type">$validator.escapeHtml($user.Type)</td>
+				</tr>
+	#end
+			</table>
+##		</div>
+#else
+		<div class="chefListMessage">
+			No users are defined that meet the search criteria.
+		</div>
+#end
+	</div>
+</div>

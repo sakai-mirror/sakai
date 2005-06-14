@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="calendar.read" />
+	<function name="calendar.new" />
+	<function name="calendar.delete" />
+	<function name="calendar.import" />
+	<function name="calendar.revise" />
+
+	<tool
+			id="chef.schedule"
+			url="/sakai-chef-tool/chef-calendar"
+			title="Schedule"
+			description="For posting and viewing deadlines, events, etc.">
+
+		<configuration name="calendar" value="" />
+
+	</tool>
+
+</registration>

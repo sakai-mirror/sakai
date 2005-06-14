@@ -1,0 +1,48 @@
+<div class="PortletContainer"> 
+<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+  <form name="Options" action="#toolForm("$action")" method="post">
+<div class="chefPageviewTitle">
+			Select what announcements you want to merge into this site.
+	</div>
+
+<fieldset>
+<legend>Show Announcements from Another Site</legend>
+    <table class="ContentStyleClass" cellspacing="0" >
+      <tr> 
+        <th id="announcementSite"><div align="left">Site</div></th>
+        <th id="checkbox"><div align="left">Show Announcements</div></th>
+      </tr>
+      <tr> 
+        <td colspan="2"> <hr align="left"> </td>
+      </tr>
+	  #foreach ($announcementEntry in $mergedAnnouncementsCollection)
+	      #if ($announcementEntry.isVisible())
+	      <tr> 
+	        <td headers="schedule"><div align="left">$announcementEntry.getDisplayName()</div></td>
+	        <td headers="checkbox"><div align="left"> 
+	            <input type="checkbox" name="$announcementEntry.getReference()" value="$announcementEntry.getReference()"
+	            #if($announcementEntry.isMerged())
+	            checked
+	            #end
+            >
+            Yes</div></td>
+	      </tr>
+	      #end
+      #end
+      <tr> 
+
+  </table>
+</fieldset>
+	<div class="chefButtonRow">
+	<input type="submit" name="eventSubmit_doUpdate" value="Save">
+        <input type="submit" name="eventSubmit_doCancel" value="Cancel">
+        </div>
+        <input type="hidden" name="state" value="$state" />
+    <br/>
+  </form>
+  <br/>
+  <br/>
+</div>
+</div>
+

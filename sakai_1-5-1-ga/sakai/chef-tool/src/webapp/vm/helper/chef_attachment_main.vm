@@ -1,0 +1,97 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/helper/chef_attachment_main.vm,v 1.1 2004/03/08 03:24:45 ggolden Exp $ -->
+<div class="chefPortletContainer">
+#if($menu)#toolbar($menu)#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end<br />
+		#set ($size = $attachments.size())
+	<form name="mainForm" action="#toolForm("$action")" method="post">
+		<input type="hidden" name="source" value="0" />
+		#if ($size == 0)
+			<div class="chefPageviewTitle">
+				#if (!$has_attachment_before)
+					No $from have been created. Choose the type of attachment to add from the toolbar.
+				#else
+					You have removed all the attachment(s). Please click 'Done' to continue.
+				#end
+			</div>
+		#elseif ($size > 0)
+			<div class="chefPageviewTitle">
+				To add the listed $from, choose 'Save' at the bottom. Or, select from the toolbar to add additional attachments.	
+			</div>
+			<table cellspacing ="0" cellpadding ="0" border="0" class="chefFlatListViewTable">
+				<tr>		  
+				  <th align="checkbox" >&nbsp;&nbsp;</th>
+				  <th id="typeicon">&nbsp;&nbsp;</th>
+				  <th id ="title">Title</th>
+				  <th id ="size">Size</th>
+				  <th id ="type"> Type</th>
+				  <th id ="createdby">Created by</th>
+				  <th id ="modified">Last modified</th>
+				</tr>
+				#foreach ($attachment in $attachments)
+					#set ($props = $attachment.Properties)
+					#if ($!props)
+						#if ($props.getBooleanProperty($props.NamePropIsCollection))
+							#set ($isCol = true)
+						#else
+							#set ($isCol = false)
+						#end
+						<tr>
+							## checkbox col
+							<td headers="checkbox">
+								<input type="checkbox" name="select" value="$velocityCount">
+							</td>
+							## icon col
+							<td headers="typeicon">
+								#if ($isCol == true)
+									<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
+								#else
+									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" />
+								#end
+							</td>
+							## display name and link
+							<td headers="title">
+								<a href="$attachment.Url" target="_blank">
+									$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))
+								</a>
+							</td>
+							<td headers="size">
+								#if (!$isCol)
+									$props.getPropertyFormatted($props.NamePropContentLength)
+								#else
+									-
+								#end
+							</td>
+							<td headers="type">
+								$props.getPropertyFormatted($props.NamePropContentType)
+							</td>
+							<td headers="createdby">
+								$validator.escapeHtml($props.getPropertyFormatted($props.NamePropCreator))
+							</td>
+							<td headers="modified">
+								$props.getPropertyFormatted($props.NamePropModifiedDate)
+							</td>
+						</tr>
+					#else
+						#if ($size > 0)
+							#set ($size = $size - 1)
+						#end
+					#end
+				#end
+			</table>
+		#end
+	</form>
+	<form name="formII" action="#toolForm("$action")" method="post">
+		<div class="chefButtonRow">
+			#if ($attachments.size()>0)
+				## there is more than one attachment 
+				<input type="submit" name="eventSubmit_doSave" value="Save" />
+			#elseif ($has_attachment_before && $attachments.size()== 0)
+				## current session removes the previous attachment(s)
+				<input type="submit" name="eventSubmit_doSave" value="Done" />
+			#end
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</div>	
+	</form>
+</div>
+</div>

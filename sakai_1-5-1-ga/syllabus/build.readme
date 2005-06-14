@@ -1,0 +1,10 @@
+1.  Modify ./tool/src/webapp/WEB-INF/components.xml:
+		Modify the following line which correlates to the target database:
+		<prop key="hibernate.dialect">net.sf.hibernate.dialect.Oracle9Dialect</prop>
+		
+2. Run the ddl to the database under /syllabus/component/src/sql/ddl/*
+	 For Oracle - sakai-component-syllabus-sakai.1.5.0-schema-oracle.sql
+	 For MySql - sakai-component-syllabus-sakai.1.5.0-schema-mysql.sql
+	 For hsqldb - sakai-component-syllabus-sakai.1.5.0-schema-hsql-new.sql
+
+3.	Run "maven" from the root of this module.

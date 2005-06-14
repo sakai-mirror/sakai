@@ -1,0 +1,69 @@
+<div class="chefPortletContainer">
+	<div class="chefPortletToolBarMessage">
+		#if ($assignments.size()>1)
+			Delete assignments...
+		#else
+			Delete an assignment...
+		#end
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		#else
+			<div class="chefAlertBox">
+				Are you sure you want to delete
+				#if ($assignments.size() > 1)
+					these assignments?
+				#else
+					this assignment?
+				#end
+			</div>
+		#end
+		<form name="form1" method="post" action="#toolForm("AssignmentAction")">
+			<table class="chefFlatListViewTable" cellspacing="0" summary="List of assignments to be deleted">
+				<tr>
+					<th id="title">Title</th>
+					<th id="duedate">Due date</th>
+					##<th id="section">Section</th>
+					<th id="status">Status</th>
+					<th id="submissions">Submissions</th>
+				</tr>
+				#foreach ($assignment in $assignments)
+					<tr>
+						<td headers="title">
+							#if ($assignment.draft)
+								<span class="chefAlert">Draft - </span>
+							#end
+							$validator.escapeHtml($assignment.Title)</td>
+						<td headers="duedate">$assignment.DueTime.toStringLocalFull()</td>
+						##<td headers="section">$assignment.Section</td>
+						<td headers="status">
+							  #if ($assignment.getOpenTime().after($currentTime))
+								Not Open
+							  #elseif ($assignment.getDueTime().after($currentTime))
+								Open
+							  #elseif (($!assignment.getCloseTime())&&($assignment.getCloseTime().before($currentTime)))
+								Closed
+							  #else
+								Due
+							  #end
+						</td>
+						<td headers="submissions">
+							#set($count=0)
+							#foreach ($sub in $service.getSubmissions($assignment))
+								#if ($sub.getSubmitted())
+									#set($count=$count+1)
+								#end
+							#end
+							$count
+						</td>
+					</tr>
+				#end
+			</table>
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doDelete_assignment" value="Delete" />
+				<input type="submit" name="eventSubmit_doCancel_delete_assignment" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

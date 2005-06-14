@@ -1,0 +1,83 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_realms_edit_role.vm,v 1.2 2004/11/19 20:48:41 ggolden.umich.edu Exp $
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["id"];
+</script>
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Edit: Realm $validator.escapeHtml($!realm.Id)<br/>Used for $validator.escapeHtml($!realm.Description)
+		</div>
+		<div class="chefToolviewTitle">
+			Set the Functions for this Role.
+		</div>
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Role
+				</legend>
+				<table class="chefEditItem" summary="Review and modify this Role's information.">
+					<tr>
+						<td class="chefLabel">
+							<label #if(!$role) for="id" #end>
+								#if(!$role)<span class="chefAlert">*</span>#end Role Id:
+							</label>
+						</td>
+						<td>
+							#if(!$role)<input type="text" name="id" id="id"/>#else$validator.escapeHtml($role.Id)#end
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="description">
+								Description:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="description" id="description" #if($role) value="$!role.Description"#end />
+						</td>
+					</tr>
+				</table>
+				<fieldset>
+					<legend>
+						Functions
+					</legend>
+					<table class="chefEditItem" summary="">
+						<tr>
+							<td class="chefLabel">
+								Functions:
+							</td>
+							<td>
+								#foreach ($lock in $allLocks)
+									<input type="checkbox" name="locks" id="lock$velocityCount" value="$lock" #if($role.Locks.contains($lock))checked="checked"#end />
+									<label for="lock$velocityCount">$lock</label> <br />
+								#end
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Continue Editing
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doDone_role" value="Done" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Complete the Realm Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave_role" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+			</fieldset>
+		</form>
+	</div>
+</div>

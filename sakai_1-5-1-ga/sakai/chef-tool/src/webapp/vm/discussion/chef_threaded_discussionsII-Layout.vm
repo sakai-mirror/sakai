@@ -1,0 +1,90 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/discussion/chef_threaded_discussionsII-Layout.vm,v 1.4 2005/02/08 22:46:05 gsilver.umich.edu Exp $ -->
+<div class="chefPortletContainer" style="padding:0 !important; border:0px solid pink;width:auto !important">
+	<iframe
+		name="$validator.escapeJavascript("$panel-toolbar")"
+		id="$validator.escapeJavascript("$panel-toolbar")"
+		title="$panel-toolbar"
+		class="chefPortletContainer"
+		style="height:5em;border:0px solid red;width:100%"
+		frameborder="0"
+		marginwidth="0"
+		marginheight="0"
+		scrolling="no"
+		align="left"
+		src="#contentCourierLink("$panel-toolbar")">
+	</iframe>
+##	<div class="chefPortletContent" style="width:98% !important">
+		#if (!$layout_left_right)
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="layout" style="border-width:1px 0 0 0;border-style:solid;border-color:silver;clear:both;width:100%">
+				<tr>
+					<td style="padding:0">
+						<iframe
+							name="$validator.escapeJavascript("$panel-monitor")"
+							id="$validator.escapeJavascript("$panel-monitor")"
+							title="$panel-monitor"
+							width="100%"
+							height="250"
+							frameborder="0"
+							marginwidth="0"
+							marginheight="0"
+							scrolling="auto"
+							align="middle"
+							src="#contentLink("$panel-monitor")">
+						</iframe>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding:0;border-width:1px 0 0 0;border-style:solid;border-color:silver;">
+						<iframe
+							name="$validator.escapeJavascript("$panel-control")"
+							id="$validator.escapeJavascript("$panel-control")"
+							title="$panel-control"
+							width="100%"
+							frameborder="0"
+							marginwidth="0"
+							marginheight="0"
+							scrolling="auto"
+							src="#contentCourierLink("$panel-control")">
+						</iframe>
+					</td>
+				</tr>
+			</table>
+		#else
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="layout" style="border-top:1px solid silver;clear:both">
+				<tr>
+					<td width="50%" style="padding:0">
+						<iframe
+							name="$validator.escapeJavascript("$panel-monitor")"
+							id="$validator.escapeJavascript("$panel-monitor")"
+							title="$panel-monitor"
+							width="100%"
+							height="600"
+							frameborder="0"
+							marginwidth="0"
+							marginheight="0"
+							scrolling="auto"
+							align="left"
+							src="#contentLink("$panel-monitor")">
+						</iframe>
+					</td>
+					<td style="padding:0">
+						<iframe
+							name="$validator.escapeJavascript("$panel-control")"
+							id="$validator.escapeJavascript("$panel-control")"
+							title="$panel-control"
+							width="100%"
+							height="600"
+							style="border-left:1px solid gray"							
+							frameborder="0"
+							marginwidth="0"
+							marginheight="0"
+							scrolling="auto"
+							align="right"
+							src="#contentCourierLink("$panel-control")">
+						</iframe>
+					</td>
+				</tr>
+			</table>
+		#end
+##	</div>
+</div>

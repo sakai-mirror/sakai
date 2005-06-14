@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+<class name="org.sakaiproject.tool.assessment.data.dao.shared.TypeD" table="sam_type_t">
+  <id name="typeId" column="typeId" type="java.lang.Long" unsaved-value="0">
+        <generator class="identity"/>
+  </id>
+  <property name="authority">
+    <column name="authority" not-null="false" sql-type="varchar(255)" />
+  </property>
+  <property name="domain">
+    <column name="domain" not-null="false" sql-type="varchar(255)" />
+  </property>
+  <property name="keyword">
+    <column name="keyword" not-null="false" sql-type="varchar(255)" />
+  </property>
+  <property name="description">
+    <column name="description" not-null="false" sql-type="varchar(4000)" />
+  </property>
+  <property name="status">
+    <column name="status" not-null="true" sql-type="integer" />
+  </property>
+  <property name="createdBy">
+    <column name="createdBy" not-null="true" sql-type="varchar(36)" />
+  </property>
+  <property name="createdDate">
+    <column name="createdDate" not-null="true" sql-type="datetime" />
+  </property>
+  <property name="lastModifiedBy">
+    <column name="lastModifiedBy" not-null="true" sql-type="varchar(36)" />
+  </property>
+  <property name="lastModifiedDate">
+    <column name="lastModifiedDate" not-null="true" sql-type="datetime" />
+  </property>
+</class>
+
+</hibernate-mapping>

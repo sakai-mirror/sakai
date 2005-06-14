@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="org.navigoproject.data.RealizationBean"
+        table="QTI_ASSESSMENT_TAKEN"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="assessmentTakenId"
+            column="ASSESSMENT_TAKEN_ID"
+            type="java.lang.String"
+        >
+            <generator class="assigned">
+            </generator>
+        </id>
+
+        <property
+            name="assessmentPublishedId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="ASSESSMENT_PUB_ID"
+        />
+
+        <property
+            name="agentId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="AGENT_ID"
+        />
+
+        <property
+            name="submitted"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="SUBMITTED"
+        />
+
+        <property
+            name="lateSubmission"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="LATE_SUBMISSION"
+        />
+
+        <property
+            name="submissionTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            access="property"
+            column="SUBMISSION_TIME"
+        />
+
+        <property
+            name="beginTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            access="property"
+            column="BEGIN_TIME"
+        />
+
+        <property
+            name="endTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            access="property"
+            column="END_TIME"
+        />
+
+        <property
+            name="assessmentTitle"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="ASSESSMENT_TITLE"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-RealizationBean.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

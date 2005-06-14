@@ -1,0 +1,126 @@
+## Sitemanage Edit Site Information
+<script language="JavaScript" type="text/javascript">
+function LimitText(fieldObj,maxChars)
+{
+	var result = true;
+  	if (fieldObj.value.length >= maxChars)
+  	{
+  		fieldObj.value = fieldObj.value.substring(0,maxChars);
+		result = false;
+   	}
+  
+  	if (window.event)
+    	window.event.returnValue = result;
+    
+  	return result;
+}
+</script>
+  
+  
+<div class="portletBody">
+	#if($menu)#toolbar($menu)#end
+##	<div class="chefToolBarWrapForm">
+##	<a href="#" onclick="location='#toolLink("$action" "doSitemanage_saveas_request")';return false;" title ="Save as">Save as</a>
+##	</div>
+	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<h3 class="insColor insBak insBor">
+		#if ($!isCourseSite) Class #end Site Information 
+	</h3>
+	<form name = "site-form" method = "post" action="#toolForm("SiteAction")">
+		<p class="shorttext">
+			<label for="title">
+				Site Title:
+			</label>
+			#if ($!isSuperUser)
+				<input type="text" name="title" id="title" maxlength="20" size="20" value="$validator.escapeHtml($!title)" />
+			#else
+				$validator.escapeHtml($!title)
+			#end
+		</p>
+		<p class="shorttext">
+			<label for="siteType">Site Type</label>
+			<select name="type" id="siteType">
+				#foreach ($type in $types)
+					#if ($siteType == $type)
+						<option value="$type" selected="selected">$type</option>
+					#else
+						<option value="$type">$type</option>
+					#end
+				#end
+			</select>
+		</p>
+		<p class="longtext">
+			<label for="description">
+				Description:
+			</label>
+			<textarea id="description" name="description" rows="5" cols="40" tabindex="1" wrap="virtual">$validator.escapeHtmlTextarea($!description)</textarea>
+				<span class="instruction labelindnt">
+					Displayed on the site's home page.
+				</span>
+		</p>
+		<p class="longtext">
+			<label for="short_description">
+				Short Description:
+			</label>
+			<textarea name="short_description" id="short_description" tabindex="2" rows="5" cols="40" onkeyup="LimitText(this,80)">$validator.escapeHtmlTextarea($!short_description)</textarea>
+			<span class="instruction labelindnt">	
+				Displayed in publicly viewable list of sites. Max 80 characters.
+			</span>
+		</p>	
+		#if ($!siteType == "course")
+			<div class="shorttext">
+				<label for="skin">Appearance (Skin):</label>
+				<select name="skin" id="skin">
+					#foreach ($s in $skins)
+						#if ($s.css == $skin)
+							<option value="$s.css" selected="selected">$s.Unit</option>
+						#else
+							<option value="$s.css">$s.Unit</option>
+						#end
+					#end
+				</select>
+			</div>
+		#else
+##				<label for="logo">Choose Logo:</label>
+##				<input type="file" name="filename" id="filename" class ="upload" />
+		<p class="shorttext">
+			<label for="icon">Icon URL:</label>
+			<input type="text" name="icon" id="icon" size=40 #if($site) value="$!validator.escapeHtml($iconUrl)"#end />
+		</p>
+		#end
+		<p class="shorttext">
+			<label for="siteContactName">
+				Site Contact Name:
+			</label>
+			<input type="text" name="siteContactName" id="siteContactName" size="20" value="$!form_site_contact_name" />
+		</p>
+		<p class="shorttext">
+			<label for="siteContactEmail">
+				Site Contact Email:
+			</label>	
+			<input type="text" name="siteContactEmail" id="siteContactEmail" size="20" value="$!form_site_contact_email" />
+		</p>
+		<h4>Site size allowed</h4>
+		<p class="instructions">	
+			This setting limits the total size of files in the Resources tool. Choose an option below to change the site size limit.
+		</p>
+		<p class="checkbox indnt1">
+			<input type="radio" name="size" id="size_set" #if ($!default_size_selected) checked="checked" #end value="1GB" />
+			<label for="size_set">1 GB</label>
+		</p>
+		<p class="checkbox indnt1">
+			<input type="radio" name="size" id="size_open" #if (!$default_size_selected) checked="checked" #end value="other" />
+			<label for="size_open">
+				Other:
+			</label>
+			<input type="text" name="otherSize" id="otherSize" /> (for example - 500 MB, 2 GB)
+		</p>
+		<input type="hidden" name="back" value="31" />
+		<input type="hidden" name="template-index" value="38" />
+		<input type="hidden" name="continue" value="31" />
+		<p class="act">
+			<input type="submit" class= "active" name="eventSubmit_doContinue" value="Save changes" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</p>
+	</form>
+</div>

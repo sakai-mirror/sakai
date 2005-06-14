@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+       
+    <bean id="syllabus.javax.sql.DataSource"
+        class="org.apache.commons.dbcp.BasicDataSource"       
+        destroy-method="close">
+        <property name="driverClassName">            
+            <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+                <property name="targetObject"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+                <property name="targetMethod"><value>getString</value></property>
+                <property name="arguments">
+                    <list>
+                        <value>sql.driver</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="url">
+           <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+                <property name="targetObject"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+                <property name="targetMethod"><value>getString</value></property>
+                <property name="arguments">
+                    <list>
+                        <value>sql.connect</value>
+                    </list>
+                </property>
+            </bean>        
+        </property>
+        <property name="username">
+           <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+                <property name="targetObject"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+                <property name="targetMethod"><value>getString</value></property>
+                <property name="arguments">
+                    <list>
+                        <value>sql.user</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="password">
+           <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+                <property name="targetObject"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+                <property name="targetMethod"><value>getString</value></property>
+                <property name="arguments">
+                    <list>
+                        <value>sql.pw</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    
+
+    <!-- Base Hibernate SessionFactory -->
+    <bean id="org.springframework.orm.hibernate.SyllabusSessionFactory" 
+        class="org.springframework.orm.hibernate.LocalSessionFactoryBean">
+        <property name="dataSource">
+            <ref local="syllabus.javax.sql.DataSource" />
+        </property>
+        <property name="mappingResources">
+            <list>            	
+            	<value>org/sakaiproject/component/syllabus/data/SyllabusItemImpl.hbm.xml</value>
+            	<value>org/sakaiproject/component/syllabus/data/SyllabusDataImpl.hbm.xml</value>
+            </list>
+        </property>        
+                   
+        <property name="hibernateProperties">        
+            <props>
+                <prop key="hibernate.dialect">net.sf.hibernate.dialect.HSQLDialect</prop>
+<!--                 <prop key="hibernate.dialect">net.sf.hibernate.dialect.MySQLDialect</prop> -->
+<!--                 <prop key="hibernate.dialect">net.sf.hibernate.dialect.Oracle9Dialect</prop> -->
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.query.substitutions">
+                    true 1, false 0, yes 'Y', no 'N'
+                </prop>
+                <prop key="hibernate.jdbc.use_streams_for_binary">true</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.cache.provider_class">
+                    net.sf.ehcache.hibernate.Provider
+                </prop>
+            </props>
+        </property>
+        
+        <!--  update the database schema when starting -->
+        <property name="schemaUpdate">
+            <value>true</value>
+        </property>        
+        
+    </bean>
+
+    <bean id="org.sakaiproject.service.syllabus.data.SyllabusManager"
+        class="org.sakaiproject.component.syllabus.data.SyllabusManagerImpl"
+        singleton="true">
+        <property name="sessionFactory">
+            <ref bean="org.springframework.orm.hibernate.SyllabusSessionFactory" />
+        </property>
+    </bean>
+
+</beans>

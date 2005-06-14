@@ -1,0 +1,8 @@
+<html>
+<head><title>Login Error</title></head>
+<body>
+<p>
+$msg
+</p>
+</body>
+</html>

@@ -1,0 +1,197 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/content/chef_resources_addSimpleText.vm,v 1.10 2005/01/20 14:47:40 zqian.umich.edu Exp $ 
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["title"];
+  
+	function enableNewCopyright(obj_mycopyright, obj_newcopyright)
+	{
+		obj_mycopyright.checked = false;
+		obj_newcopyright.checked = true;
+	}
+
+	function clearNewCopyright(obj_textarea)
+	{
+		obj_textarea.value = "";
+	}
+	
+	function checkItem(copyrightIndex)
+	{
+		var obj_alert_name="copyrightAlert";
+		var obj_alert_item=document.getElementById(obj_alert_name);
+		var obj_newcopyright_name="newcopyright";
+		var obj_newcopyright_item=document.getElementById(obj_newcopyright_name);
+		if (copyrightIndex == 0)
+		{
+			obj_alert_item.checked=false;
+			obj_newcopyright_item.disabled=true;
+		}
+		else if (copyrightIndex < 5)
+		{
+			obj_alert_item.checked=true;
+			obj_newcopyright_item.disabled=true;
+		}
+		else if (copyrightIndex == 5)
+		{
+			obj_alert_item.checked=true;
+			obj_newcopyright_item.disabled=false;
+		}
+	}
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Adding plain text document...		
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Location:
+			<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder" />
+			#foreach ($id in $collectionPath)
+				#if ($dropboxMode && $id==$homeCollection)
+					$siteTitle Drop Box /
+				#else
+					$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName)) /
+				#end
+			#end
+			#if ($dropboxMode && $collectionId==$homeCollection)
+				$siteTitle Drop Box
+			#else
+				$validator.escapeHtml($service.getProperties($collectionId).getPropertyFormatted($resourceProperties.NamePropDisplayName))
+			#end
+		</div>
+		<div class="chefPageviewTitle">
+			Complete the form then choose 'post' at the bottom. A <span class="chefRequiredInline">means</span>required information.
+		</div>
+		<form name="addDocumentBasicForm" action="#toolForm("ResourcesAction")" method="post" >
+			<input type="hidden" name="from" value="add" />
+			<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+			<input type="hidden" name="addDocumentStep" value="basic" />	
+			<fieldset>
+				<legend>
+					Plain text
+				</legend>	
+				<table class="chefEditItem">
+					<tr>
+						<td class="chefLabel">
+							#if (( $unqualified_fields.indexOf($service.newResourceProperties().NamePropDisplayName)!=-1)||(($title.length()>0) && ($unqualified_fields.indexOf($title)!=-1)))
+								<span class="chefRequiredInline">Title:</span>
+							#else
+								<span class="chefRequiredInline">Title:</span>							
+							#end
+						</td>
+						<td> 
+							<input type="text" name="title" id="title" value="$title" size="40" />
+						</td>
+					</tr>
+					<tr> 
+						<td class="chefLabel"> 
+							Description:
+						</td>
+						<td>  
+							<textarea name="description" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($description)</textarea>
+						</td>
+					</tr>
+					<tr> 
+						<td class="chefLabel">
+							#if ($unqualified_fields.indexOf("content")!=-1)
+								<span class="chefRequiredInline">Content:</span>
+							#else
+								<span class="chefRequiredInline">Content:</span>
+							#end
+						</td>
+						<td> 
+							<textarea name="content" rows="10" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($content)</textarea>
+						</td>
+					</tr>
+					#* only allow open in new window for 2003 fall release
+					<tr> 
+						<td class="chefLabel"> 
+							Open in:
+						</td>
+						<td>				
+							#if ($openIn == "false")
+								<input type="radio" name="target" id="targetnew"  value="true" />
+									<label for ="targetnew">New window</label> <br />
+								<input type="radio" name="target" id="targetthis" value="false" checked ="checked" />
+								<label for ="targetthis">This window</label> <br />
+							#else
+								<input type="radio" name="target" id="targetnew"  value="true"  checked ="checked" />
+									<label for ="targetnew">New window</label> <br />
+								<input type="radio" name="target" id="targetthis" value="false" />
+								<label for ="targetthis">This window</label> <br />
+							#end
+						</td>
+					</tr>
+					*#
+					#if ($!copyrightTypes)
+						## show copyright choices
+						<tr>
+							<td class ="chefLabel"> 
+								#if ($unqualified_fields.indexOf($service.newResourceProperties().NamePropCopyright)!=-1)
+									<span class="chefAlert">Copyright Status:</span>
+								#else
+									Copyright Status:
+								#end
+							</td>
+							<td>
+								#if ($!fairuseurl)
+									For information on copyright and fair use, please refer to: $fairuseurl<br />
+								#end
+								#foreach ($k in [0..$copyrightTypesSize])
+									#set($copyright = $copyrightTypes.get($k))
+									<input type="radio" name="copyright" id ="copyright" value="$copyright" #if ($copyrightChoice == $copyright)checked="checked"#end />$copyright<br />
+								#end
+								#if ($!newcopyrightinput == "true")
+									<textarea name="newcopyright" id="newcopyright" rows="5" cols="40" wrap="virtual" >$validator.escapeHtmlTextarea($!newcopyright)</textarea><br />
+								#end
+								<br />
+								<input type="checkbox" name="copyrightAlert" id ="copyrightAlert" value="true" #if($!copyrightAlert.equalsIgnoreCase("true")) checked="checked"#end) />Display copyright alert below and require acknowledgement.<br />
+								<div class="chefAlertBox">
+									<ul>
+										<li>You may download or copy this file for use in this site.</li>
+										<li>You may NOT download or copy this file to another site.</li>
+										<li>You may NOT download or copy this file for publication or sale.</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+					#end
+					#if (!$dropboxMode)
+						## not show public view in drop box mode
+						<tr> 
+							<td class = "chefLabel"> 
+								Public View:
+							</td>
+							<td>
+								#if ($pubviewset)
+									Set to Yes in a containing folder.
+								#else
+									<input type="radio" name="pubview" id="pubview_true" value="true" #if ($pubview) checked="checked" #end />Yes<br />
+									<input type="radio" name="pubview" id="pubview_false" value="false" #if (!$pubview) checked="checked" #end />No
+								#end
+							</td>
+						</tr>
+					#end
+				</table>
+			</fieldset>
+			#if(!$dropboxMode && $notification)
+				## not show notification in dropbox
+				<table>
+					<tr>
+						<td style="vertical-align:middle">Email Notification:</td>
+                                                <td>
+                                                        <select name="notify">
+                                                                <option value="r">High - All participants</option>
+                                                                <option value="o">Low - Only participants who have opted in</option>
+                                                                <option value="n" selected="selected">None - No notification</option>
+                                                        </select>
+						</td>
+					</tr>
+				</table>
+			#end
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doAdddocumentplaintext" value="Post" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

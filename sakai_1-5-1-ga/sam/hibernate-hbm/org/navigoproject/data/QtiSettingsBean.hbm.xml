@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="org.navigoproject.data.QtiSettingsBean"
+        table="QTI_SETTINGS"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <id
+            name="id"
+            column="id"
+            type="java.lang.String"
+        >
+            <generator class="assigned">
+            </generator>
+        </id>
+
+        <property
+            name="displayName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="DISPLAY_NAME"
+        />
+
+        <property
+            name="maxAttempts"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="MAX_ATTEMPTS"
+        />
+
+        <property
+            name="autoSubmit"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="AUTO_SUBMIT"
+        />
+
+        <property
+            name="autoSave"
+            type="java.lang.Character"
+            update="true"
+            insert="true"
+            access="property"
+            column="AUTO_SAVE"
+        />
+
+        <property
+            name="testDisabled"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="TEST_DISABLED"
+        />
+
+        <property
+            name="startDate"
+            type="java.sql.Timestamp"
+            update="true"
+            insert="true"
+            access="property"
+            column="START_DATE"
+        />
+
+        <property
+            name="endDate"
+            type="java.sql.Timestamp"
+            update="true"
+            insert="true"
+            access="property"
+            column="END_DATE"
+        />
+
+        <property
+            name="createdDate"
+            type="java.sql.Timestamp"
+            update="true"
+            insert="true"
+            access="property"
+            column="CREATED_DATE"
+        />
+
+        <property
+            name="feedbackDate"
+            type="java.sql.Timestamp"
+            update="true"
+            insert="true"
+            access="property"
+            column="FEEDBACK_DATE"
+        />
+
+        <property
+            name="retractDate"
+            type="java.sql.Timestamp"
+            update="true"
+            insert="true"
+            access="property"
+            column="RETRACT_DATE"
+        />
+
+        <property
+            name="ipRestrictions"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="IP_RESTRICTIONS"
+        />
+
+        <property
+            name="passwordRestriction"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="PASSWORD_RESTRICTION"
+        />
+
+        <property
+            name="usernameRestriction"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="USERNAME_RESTICTION"
+        />
+
+        <property
+            name="feedbackType"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="FEEDBACK_TYPE"
+        />
+
+        <property
+            name="lateHandling"
+            type="java.lang.Character"
+            update="true"
+            insert="true"
+            access="property"
+            column="LATE_HANDLING"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-QtiSettingsBean.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

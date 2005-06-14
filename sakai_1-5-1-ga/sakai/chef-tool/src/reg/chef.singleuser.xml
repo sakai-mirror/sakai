@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.singleuser"
+			url="/sakai-chef-tool/chef-myuser"
+			title="Account"
+			description="View and modify my user profile.">
+
+		<configuration name="include-password" value="true" />
+
+	</tool>
+
+</registration>

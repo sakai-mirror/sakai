@@ -1,0 +1,52 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-addParticipant-sameRole.vm,v 1.6 2004/12/08 18:00:25 gsilver.umich.edu Exp $ -->
+## Add participants to the worksite with same role
+<div class ="portletBody">
+	#if ($alertMessage)
+		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	<h3 class="insColor insBak insBor">
+		Choose a Role for Participants
+	</h3>
+	<p class="instruction">
+		Choose the role for the participants you are adding.	
+	</p>
+		<form action="#toolForm("SiteAction")" method="post">
+		<h4 class="insColor insBak insBor">
+			Roles
+		</h4>
+		#foreach ($role in $roles)
+			<p class="checkbox indnt1">
+				<input type="radio" name="selectRole" id="selectRole_$role.Id" value="$role.Id"
+					#if($form_selectedRole == $role.Id)
+						checked="checked"
+					#end
+				/>
+				<label for="selectRole_$role.Id">
+					$role.Id
+				</label>	
+				<span class="instruction indnt2">
+					#set($description = "")
+					#set($description = $role.Description)
+					$!description
+				</span>
+			</p>
+		#end
+           	<h4 class="insColor insBak insBor">
+			Participants
+		</h4>	
+		<ul class="attachList indnt1">
+			#foreach ($participant in $participantList)
+				<li>$participant.getUniqname()</li>
+			#end
+		</ul>	
+		<input type="hidden" name="continue" value="21" />
+		<input type="hidden" name="back" value="5" />
+		<input type="hidden" name="template-index" value="19" />
+		<p class ="act">
+			<input type="submit" class="active" name="eventSubmit_doContinue" value="Continue" />
+			<input type="submit" name="eventSubmit_doBack" value="Back" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</p>
+	</form>
+</div>

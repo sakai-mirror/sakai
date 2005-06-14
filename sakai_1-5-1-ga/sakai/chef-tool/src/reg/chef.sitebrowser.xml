@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.sitebrowser"
+			url="/sakai-chef-tool/chef-sitebrowser"
+			title="Site Browser"
+			description="Find and view summarys of Sites.">
+
+		<configuration name="pagesize" value="20" />
+
+	</tool>
+
+</registration>

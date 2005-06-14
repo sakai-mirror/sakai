@@ -1,0 +1,65 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-addParticipant.vm,v 1.6.2.1 2005/03/21 15:19:09 lance.indiana.edu Exp $ -->
+## Add a participant to ssite
+<div class ="portletBody">
+	#if ($alertMessage)
+		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	<h3 class="insColor insBak insBor">
+ 		Add participant(s) to $validator.escapeHtml($title)...
+	</h3>
+	<p class="instruction">
+		Enter the participants below that you would like to add to your site. You may enter more than one name in each text area below by putting each one on a separate line (no commas).
+	</p>
+	<form action="#toolForm("SiteAction")" method="post">
+		<p class="longtext block">
+			<label for="noEmailInIdAccount" class="block">
+				$!noEmailInIdAccountLabel                                                          
+			</label>
+			<textarea id="noEmailInIdAccount" name="noEmailInIdAccount"  cols="30" rows="4" wrap="virtual">$!validator.escapeHtmlTextarea($!noEmailInIdAccountValue)</textarea><br />
+			<span class="instruction">
+				#set($noEmailInIdAccountNames=$!noEmailInIdAccountName.concat("s"))
+				Multiple $!noEmailInIdAccountNames are allowed by placing each on its own line (Press Return or Enter on your keyboard between each entry)
+			</span>
+		</p>
+		<p class="longtext block">
+			<label for="emailInIdAccount" class="block">
+				$!emailInIdAccountLabel                                                          
+			</label>
+			<textarea id="emailInIdAccount" name="emailInIdAccount"  cols="30" rows="4" wrap="virtual">$!validator.escapeHtmlTextarea($!emailInIdAccountValue)</textarea><br />
+			<span class="instruction">
+				Multiple email addresses are allowed by placing each on its own line (Press Return or Enter on your keyboard between each entry)
+			</span>
+		</p>
+		<h4 class="insColor insBak insBor">
+			Participant Roles
+		</h4>
+		<p class="checkbox">
+			<input type="radio" id="same_role_true" name="same_role" value="true" 
+				#if ($!form_same_role == "true")
+					checked="checked"
+				#end
+			/>
+			<label for="same_role_true">
+				Assign all participants to the same role
+			</label>
+		</p>
+		<p class="checkbox">
+			<input type="radio" id="same_role_false" name="same_role" value="false" 
+				#if ($!form_same_role == "false")
+					checked="checked"
+				#end
+			/>
+			<label for="same_role_false">
+				Assign each participant a role individually
+			</label>
+		</p>	
+		<input type="hidden" name="back" value="$backIndex" />
+		<input type="hidden" name="template-index" value="5" />
+		<div class ="act">
+			<input type="submit" class="active" name="eventSubmit_doContinue" value="Continue" />
+			<input type="submit" name="eventSubmit_doCancel" value="Back" />
+			<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+		</div>
+	</form>
+</div>

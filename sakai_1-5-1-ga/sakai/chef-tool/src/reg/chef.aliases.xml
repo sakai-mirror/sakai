@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="alias.add" />
+	<function name="alias.upd" />
+	<function name="alias.del" />
+
+	<tool
+			id="chef.aliases"
+			url="/sakai-chef-tool/chef-alias"
+			title="Admin: Alias Editor"
+			description="An administration tool to edit Aliases.">
+	</tool>
+
+</registration>

@@ -1,0 +1,74 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/discussion/chef_threaded_discussionsII-topic_content.vm,v 1.3 2005/02/08 22:46:05 gsilver.umich.edu Exp $ -->
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Viewing topic contents...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+		<table width="100%" border="0">
+			<tr>	
+				<td style="border-bottom:1px solid silver">
+						#if ($topic.DiscussionHeader.Draft)
+						<span class="chefAlert">Draft - </span>
+					#end
+					 <span style="color:#738CBD;font-weight:bold"> $topic.DiscussionHeader.Subject</span>
+					#set($replyNumber = $topic.NumberOfReplies)
+					#if ($replyNumber>0)
+						#if ($replyNumber==1) 
+							[ 1 response ]
+						#else
+							[$replyNumber responses]
+						#end
+					#end
+					- $validator.escapeHtml($topic.DiscussionHeader.From.DisplayName)
+					($topic.DiscussionHeader.Date.toStringLocalFull())
+				</td>
+			</tr>
+			<tr>
+				<td style="padding:0">
+					$validator.escapeHtmlFormattedText($topic.Body)
+				</td>
+			</tr>
+		</table>
+
+			#set($thread = $channel.getThread($topic))
+			#foreach ($message in $thread)
+			<table border ="0" style="margin-top:1em">
+				<tr>
+					<td nowrap="nowrap" style="letter-spacing:.3em">
+						#set($depth = $message.ReplyToDepth)
+						#foreach ($i in [1..$depth]) .#end
+					</td>
+					<td style="border-bottom:1px solid silver">
+						#if ($message.DiscussionHeader.Draft)
+							<span class="chefAlert">Draft - </span>
+						#end
+						<span style="color:#738CBD;font-weight:bold">$message.DiscussionHeader.Subject</span>
+						#set($replyNumber = $message.NumberOfReplies)
+						#if ($replyNumber>0)
+							#if ($replyNumber==1) 
+								[1 response]
+							#else
+								[$replyNumber responses]
+							#end
+						#end
+						 - $validator.escapeHtml($message.DiscussionHeader.From.DisplayName)
+						($message.DiscussionHeader.Date.toStringLocalFull())
+					</td>
+				</tr>
+				<tr>
+					<td>
+					</td>
+					<td style="padding:0">
+							$validator.escapeHtmlFormattedText($message.Body)
+					</td>
+				</tr>
+			</table>	
+			#end
+					<form name="formII" action="#toolForm("$action")" method="post">
+						<div class="chefButtonRow">
+							<input type="submit" name="eventSubmit_doCancel_show_topic_content" value="Done"/>
+						</div>
+					</form>
+	</div>
+</div>

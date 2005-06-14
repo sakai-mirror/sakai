@@ -1,0 +1,76 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/prefs/chef_noti_prefs.vm,v 1.4 2005/01/10 22:07:13 csev.umich.edu Exp $ 
+
+#macro(chef_noti_prefs_flds key value)
+#if ($value == 0)
+        #if ($key == "mail") 
+                receive emails when sent to the site
+        #else 
+                receive individually when posted
+        #end
+#elseif ($value == 1) block
+#elseif ($value == 2) daily digest 
+#elseif ($value == 3)
+        #if ($key == "mail") 
+                receive emails when sent to the site
+        #else 
+                receive individually when posted
+        #end
+#end
+#end
+
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+	<div class="chefPageviewTitle">
+		Notification preferences for $preferences_for
+	</div>
+ 	<table class ="chefItemDetail">
+		<tr>
+ 			<td>
+ 				Automatic Refresh:
+ 			</td>
+ 			<td>
+ 				#if ($refresh == 1 ) 
+ 				Off
+ 				#else
+ 				On (default)
+ 				#end
+ 			</td>
+ 		</tr>	
+ 		<tr>
+ 			<td>
+ 				Announcements:
+ 			</td>
+ 			<td>
+ 				#chef_noti_prefs_flds("annc" $annc)
+ 			</td>
+ 		</tr>	
+		<tr>
+ 			<td>
+ 				Email Archive:
+ 			</td>
+ 			<td>
+ 				#chef_noti_prefs_flds("mail" $mail)
+ 			</td>
+ 		</tr>			
+		<tr>
+ 			<td>
+ 				Resources:
+ 			</td>
+ 			<td>
+ 				#chef_noti_prefs_flds("rsrc" $rsrc)
+ 			</td>
+ 		</tr>			
+##		<tr>
+## 			<td>
+## 				Schedule:
+## 			</td>
+## 			<td>
+## 				#chef_noti_prefs_flds("schd" $schd)
+## 			</td>
+## 		</tr>			
+	</table>	
+		
+	</div>
+</div>

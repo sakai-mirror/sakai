@@ -1,0 +1,32 @@
+<form-validation>
+    <formset>
+      <form name="simpleFormLoginActionForm">
+        <field property="username" depends="required,minlength">
+	  <arg0 key="login.username.displayname"/>
+	  <arg1 name="minlength" key="${var:minlength}" resource="false" />
+	  <var>
+	    <var-name>minlength</var-name>
+	    <var-value>5</var-value>
+	  </var>
+        </field>
+        <field property="password" depends="required,minlength">
+	  <arg0 key="login.password.displayname"/>
+	  <arg1 name="minlength" key="${var:minlength}" resource="false" />
+	  <var>
+	    <var-name>minlength</var-name>
+	    <var-value>6</var-value>
+	  </var>
+        </field>
+      </form>
+    </formset>
+    <global>
+      <constant>
+    	<constant-name>zip</constant-name>
+    	<constant-value>^\d{5}(-\d{4})?$</constant-value>
+      </constant>
+      <constant>
+    	<constant-name>phone</constant-name>
+    	<constant-value>^\(?(\d{3})\)?[-| ]?(\d{3})[-| ]?(\d{4})$</constant-value>
+      </constant>
+    </global>
+</form-validation>

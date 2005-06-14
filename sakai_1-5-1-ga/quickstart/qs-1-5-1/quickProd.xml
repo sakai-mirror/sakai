@@ -1,0 +1,352 @@
+<?xml version="1.0" ?>
+
+<!-- $Header: /cvs/quickstart/qs-1-5-1/quickProd.xml,v 1.1 2005/05/06 16:23:50 dlhaines.umich.edu Exp $ -->
+
+<!-- ====================================================================== 
+     Oct 8, 2004 4:13:10 PM                                                        
+
+     distribution    
+     build file to generate the QuickProd installation
+     
+     haines                                                                
+     ====================================================================== -->
+
+<!-- <project name="sakai-dist_1-5-1" default="extractSakaiSource"> -->
+<project name="sakai-dist_1-5-1" default="zipQuickProd" >
+  <description>
+    build file to generate Sakai QuickProd distribution for 1.5.1
+  </description>
+
+  <property file="package.properties"/>
+  <property file="samigo.properties"/>
+  <property environment="env" />
+
+  <!-- ================================= 
+       target: help              
+       ================================= -->
+  <target name="help" description="print out information on using build file">
+    <echo>Generate a QuickProd zip file</echo>
+  </target>
+
+
+  <!-- - - - - - - - - - - - - - - - - - 
+       target: getSakaiSourceCVS                      
+       - - - - - - - - - - - - - - - - - -->
+
+  <target name="getSakaiSourceCVS" description="get the source for Sakai">
+    <echo>
+      extract Sakai version: ${CVS.tag}
+    </echo>
+    <delete dir="${work.build}/sakai"/> 
+    <mkdir dir="${work.build}/sakai"/> 
+
+    <cvs command="export" cvsroot="${CVS.ROOT}" 
+	 dest="${work.build}" package="${CVS.sakaiName}" tag="${CVS.tag}" 
+	 cvsrsh="ssh" output="${LOGSDIR}/sakai.export.log"
+	 failonerror="true"
+	 quiet="true"
+	 />
+    
+    <!-- get the required utilities -->
+    <!--
+    <echo>extract utilities: ${sakai.deploy.package} </echo>
+    <cvs command="export" cvsroot="${CVS.ROOT}"
+	 package="${sakai.deploy.package}" 
+	 cvsrsh="ssh" output="${LOGSDIR}/sakai.utils.log" tag="HEAD"
+	 failonerror="false"
+	 dest="${work.build}"
+	 />
+    -->
+
+  </target>
+
+
+  <!-- - - - - - - - - - - - - - - - - - 
+       target: getHelpSourceCVS                      
+       - - - - - - - - - - - - - - - - - -->
+
+  <target name="getHelpSourceCVS" description="get the source for Help tool">
+
+    <echo>extract Help tool version: ${CVS.tag}</echo>
+
+    <cvs command="export" cvsroot="${CVS.ROOT}" 
+	 dest="${work.build}/sakai" package="${CVS.helpName}" tag="${CVS.tag}" 
+	 cvsrsh="ssh" output="${LOGSDIR}/help.export.log"
+	 failonerror="true"
+	 quiet="false"
+	 />
+
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - 
+       target: getPresentationSourceCVS                      
+       - - - - - - - - - - - - - - - - - -->
+
+  <target name="getPresentationSourceCVS" description="get the source for the Presentation tool">
+
+    <echo>extract Presentation tool version: ${CVS.tag}</echo>
+
+    <cvs command="export" cvsroot="${CVS.ROOT}" 
+	 dest="${work.build}/sakai" package="${CVS.presentationName}" tag="${CVS.tag}" 
+	 cvsrsh="ssh" output="${LOGSDIR}/presentation.export.log"
+	 failonerror="true"
+	 quiet="false"
+	 />
+
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - 
+       target: getSyllabusSourceCVS                      
+       - - - - - - - - - - - - - - - - - -->
+
+  <target name="getSyllabusSourceCVS" description="get the source for the Syllabus tool">
+
+    <echo>extract Syllabus tool version: ${CVS.tag}</echo>
+
+    <cvs command="export" cvsroot="${CVS.ROOT}" 
+	 dest="${work.build}/sakai" package="${CVS.syllabusName}" tag="${CVS.tag}" 
+	 cvsrsh="ssh" output="${LOGSDIR}/syllabus.export.log"
+	 failonerror="true"
+	 quiet="false"
+	 />
+
+  </target>
+
+
+  <!-- - - - - 
+       target: clean
+       - - - - - - -->
+  <target name="clean" description="provide clean environment">
+    <delete dir="${work.root}" verbose="false" /> 
+    <mkdir dir="${LOGSDIR}" />
+  </target>
+
+  <!-- - - -
+       target: extract
+       - - - -->
+  <target name="extractSakai" description="extract Sakai " depends="getSakaiSourceCVS">
+  </target>
+
+  <target name="extractHelp" description="extract Help " depends="getHelpSourceCVS">
+  </target>
+
+  <target name="extractPresentation" description="extract Presentation " depends="getPresentationSourceCVS">
+  </target>
+
+  <target name="extractSyllabus" description="get syllabus code" depends="getSyllabusSourceCVS">
+    <copy todir="${work.localfile.path}/ddl/mysql" verbose="true" 
+	  file="${work.build}/sakai/syllabus/component/src/sql/ddl/sakai-component-syllabus-sakai.1.5.0-schema-mysql.sql" />
+    <copy todir="${work.localfile.path}/ddl/oracle" verbose="true" 
+	  file="${work.build}/sakai/syllabus/component/src/sql/ddl/sakai-component-syllabus-sakai.1.5.0-schema-oracle.sql" />
+  </target>
+
+  <target name="extractSakaiSource" description="do necessary compilation" 
+	  depends="clean,extractSakai,extractHelp,extractPresentation,extractSyllabus">
+    <copy todir="${work.build}/docs" verbose="true" >
+      <fileset dir="${quickstart.directory}/docs"/>
+    </copy>
+
+    
+  </target>
+
+  <target name="notify">
+    <echo>
+      Make sure that you are working with appropriate Sakai TAG: current tag: ${CVS.tag}
+    </echo>
+  </target>
+
+
+  <target name="zipSakaiSrc" depends="extractSakaiSource">
+
+    <zip destfile="${work.build}/sakai.${CVS.tag}.src.zip" >
+      <zipfileset dir="${work.build}/sakai" />
+    </zip>
+    <echo>Created zip file: ${work.build}/sakai.${CVS.tag}.src.zip</echo>
+  </target>
+
+
+  <target name="dbConfigure" description="put the files for specific db database access methods in a known spot" > 
+    <!--  <target name="storeDbConf" description="put the files for specific db database access methods in a known spot" > -->
+    <!--    <mkdir dir="${work.localfile.path}/confdb" /> -->
+    
+    <!-- do it for the normal db configuration -->
+    <!--
+	<mkdir dir="${work.localfile.path}/confdb/db"/>
+	-->
+    <!-- Not in 1-0-0 -->
+    <copy todir="${work.localfile.path}/db">
+      <fileset dir="${work.sakai}/reference/src/sql/legacy"/>
+    </copy>
+
+    <mkdir dir="${work.localfile.path}/framework-component"/>
+    <copy tofile="${work.localfile.path}/framework-component/components.xml" 
+	  file="${work.sakai}/framework-component/src/webapp/WEB-INF/components_db.xml" 
+	  filtering="false" preservelastmodified="true" overwrite="true" />
+    <mkdir dir="${work.localfile.path}/legacy-component"/>
+    <copy tofile="${work.localfile.path}/legacy-component/components.xml" 
+	  file="${work.sakai}/legacy-component/src/webapp/WEB-INF/components_db.xml" 
+	  filtering="false" preservelastmodified="true" overwrite="true" />
+    <!--
+	<mkdir dir="${work.localfile.path}/confdb/db/framework-component"/>
+	<copy tofile="${work.localfile.path}/confdb/db/framework-component/components.xml" 
+	      file="${work.sakai}/framework-component/src/webapp/WEB-INF/components_db.xml" 
+	      filtering="false" preservelastmodified="true" overwrite="true" />
+	<mkdir dir="${work.localfile.path}/confdb/db/legacy-component"/>
+	<copy tofile="${work.localfile.path}/confdb/db/legacy-component/components.xml" 
+	      file="${work.sakai}/legacy-component/src/webapp/WEB-INF/components_db.xml" 
+	      filtering="false" preservelastmodified="true" overwrite="true" />
+	-->
+  </target>
+
+
+  <!--
+      <target name="getUtilities" description="add some utilities that are useful for installation customization">
+	<mkdir dir="${work.localfile.path}/util"/>
+	
+	<copy todir="${work.localfile.path}" verbose="true">
+	  <fileset dir="${work.build}/sakai/reference/src/usr_local_sakai" />
+	</copy>
+
+	<mkdir dir="${work.helper.path}" />
+	<copy todir="${work.helper.path}" 			
+	      filtering="false" preservelastmodified="true" overwrite="true" flatten="true" >
+	  <fileset dir="${work.build}/${sakai.deploy.package}"> 
+	    <include name="customize.xml" />
+	    <include name="customize.properties" />
+	  </fileset>		
+	</copy>
+      </target>
+      -->
+
+  <target name="prepareWork" >
+    <delete dir="${work.build}/${CVS.samigoName}"/>
+    <mkdir dir="${work.build}/${CVS.samigoName}"/>
+    <mkdir dir="${LOGSDIR}" />
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - 
+       target: getSamigoSourceTagCVS                      
+       - - - - - - - - - - - - - - - - - -->
+
+  <target name="getSamigoTagSourceCVS" description="get the source for Samigo tool"
+	  depends="prepareWork">
+
+    <echo>(branch) extract Samigo tool tag: ${CVS.samigoTag}</echo>
+
+
+    <cvs command="export" cvsroot="${CVS.ROOT}" 
+	 dest="${work.build}" package="${CVS.samigoName}" tag="${CVS.samigoTag}"
+	 cvsrsh="ssh" output="${LOGSDIR}/samigo.update.log"
+	 failonerror="true"
+	 quiet="false"
+	 />
+
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - 
+       target: getSakaiSamigoSourceCVS                      
+       - - - - - - - - - - - - - - - - - -->
+
+  <target name="getSakaiSamigoSourceCVS" description="get the source for Sakai Samigo integration">
+
+    <echo>extract Sakai-Samigo integration version: ${CVS.sakaiSamigoTag}</echo>
+
+    <delete dir="${work.build}/${CVS.sakaiSamigoName}"/>
+    <mkdir dir="${work.build}/${CVS.sakaiSamigoName}"/>
+
+    <cvs command="export" cvsroot="${CVS.ROOT}" 
+	 dest="${work.build}" package="${CVS.sakaiSamigoName}" tag="${CVS.sakaiSamigoTag}" 
+	 cvsrsh="ssh" output="${LOGSDIR}/sakaiSamigo.export.log"
+	 failonerror="true"
+	 quiet="false"
+	 />
+  </target>
+
+
+  <target name="getSourceCVS" description="get the source for samigo and sakai-samigo integration" 
+	  depends="getSamigoTagSourceCVS,getSakaiSamigoSourceCVS">
+  </target>
+
+  <target name="buildSamigoSource" description="get Sakai Samigo source together and compiled" 
+	  depends="notify,getSourceCVS,mergeSource">
+    <echo>sakai-samigo integration build finished</echo>
+  </target>
+
+
+  <target name="mergeSource" description="merge samigo and sakai-samigo source">
+    <echo> copy from ${work.build}/${CVS.sakaiSamigoName} to ${work.build}/${CVS.samigoName}</echo>
+
+    <copy todir="${work.build}/${CVS.samigoName}" verbose="true" overwrite="true">
+      <fileset dir="${work.build}/${CVS.sakaiSamigoName}">
+	<include name="**/*"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <!--
+      <target name="copySamigoConf" description="copy over the files that needed to the quickstart">
+	<copy todir="${work.localfile.path}/opt" verbose="true">
+	  <fileset dir="${work.build}/sam/conf/opt" > 
+	    <exclude name="../CVS" />
+	  </fileset>
+	</copy>
+	<copy todir="${work.localfile.path}/ddl" verbose="true">
+	  <fileset dir="${work.build}/sam/ddl" > 
+	    <exclude name="../CVS" />
+	  </fileset>
+	</copy>
+      </target>
+
+      <target name="customizeSettings" description="do customization as required">
+      </target>
+      -->
+
+  <target name="register" description="register the samigo tool">
+
+    <echo>work.localfile.path: ${work.localfile.path}</echo>
+    <echo>work.build: ${work.build}</echo>
+    <mkdir dir="${work.localfile.path}/reg.samigo"/>
+    <copy todir="${work.localfile.path}/reg.samigo" flatten="true" verbose="true">
+      <fileset dir="${work.build}/sakai-samigo/reg">
+	<include name="*.xml" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="deploySamigoDb" description="deploy Samigo db to the quickstart">
+    <copy todir="${work.localfile.path}/samigo" verbose="true">
+      <fileset dir="${samigo.dbsrc}">
+	<include name="samigodb.*" />
+      </fileset>
+    </copy>
+    
+  </target>
+
+
+
+  <target name="zipSamigoSrc" depends="buildSamigoSource">
+
+    <zip destfile="${work.build}/samigo.${CVS.tag}.src.zip" >
+      <zipfileset dir="${work.build}/sam" />
+    </zip>
+    <echo>Created zip file: ${work.build}/samigo.${CVS.tag}.src.zip</echo>
+  </target>
+
+
+  <target name="zipSrc" depends="zipSakaiSrc,zipSamigoSrc">
+  </target>
+
+  <target name="zipQuickProd" depends="extractSakaiSource,buildSamigoSource">
+    <zip destfile="${work.build}/sakai.${CVS.tag}.quickprod.zip" >
+      <zipfileset dir="${work.build}/sam"   prefix="sam"/>
+      <zipfileset dir="${work.build}/sakai" prefix="sakai" />
+      <zipfileset dir="${work.build}/docs"   prefix="docs" />
+    </zip>
+    <echo>Created zip file: ${work.build}/sakai.${CVS.tag}.quickprod.zip</echo>
+  </target>
+
+    
+
+</project>
+

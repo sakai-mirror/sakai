@@ -1,0 +1,409 @@
+<div class="chefPortletContainer">
+	<div class="chefPortletToolBarMessage">
+		Viewing assignment...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form name="viewAssignmentsForm" action="#toolForm("AssignmentAction")" method="post">
+			<input type="hidden" name="assignmentId" value="$assignment.Reference" />
+			<input type="hidden" name="assignmentContentId" value="$assignment.ContentReference" />
+			#if (!$hideAssignmentFlag)
+				<table cellpadding="0" cellspacing="0" class="chefSectionContent" summary="Assignment information">
+					<tr> 
+						<th>
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doHide_view_assignment")'; return false;" title="Hide assignment info">
+								<img src="#imageLink("chef/collapse.gif")" alt="Open, click to close" border="0" width="15" height="15" align="top" /></a>
+								  Settings for "$validator.escapeHtml($assignment.title)"
+						</th>
+					</tr>
+					<tr>
+						<td class="content">
+							<table class ="chefItemDetail">
+								<tr>
+								#*
+									<td class="chefLabel">
+										Section:
+									</td>
+									<td>
+										$assignment.Section
+									</td>
+									*#
+									<td class="chefLabel">
+										Created by:
+									</td>
+									<td>
+										$userDirectoryService.getUser($assignment.getCreator()).DisplayName
+									</td>
+								</tr>
+								<tr> 
+									<td class="chefLabel">
+										Open:
+									</td>
+									<td>
+										$assignment.OpenTime.toStringLocalFull()
+									</td>
+									<td class="chefLabel">
+										Date created:
+									</td>
+									<td>
+										$assignment.TimeCreated.toStringLocalFull()
+									</td>
+								</tr>
+								<tr> 
+									<td class="chefLabel">
+										Due:
+									</td>
+									<td>
+										$assignment.DueTime.toStringLocalFull()
+									</td>
+									<td class="chefLabel">
+										Date modified:
+									</td>
+									<td>
+										$assignment.TimeLastModified.toStringLocalFull()
+									</td>
+								</tr>
+								#set ($closeDate = $assignment.getCloseTime())
+								#if ($!closeDate)
+									<tr> 
+										<td class="chefLabel">
+											<label for="$name_EnableCloseDate">
+												Accept submissions until:
+											</label>:
+										</td>
+										<td>
+											$assignment.CloseTime.toStringLocalFull()
+										</td>
+										<td>
+											&nbsp;
+										</td>
+										<td>
+											&nbsp;
+										</td>
+									</tr>
+								#end
+								<tr> 
+									<td class="chefLabel">
+										Student submissions:
+									</td>
+									<td>
+										$submissionTypeTable.get($assignment.getContent().getTypeOfSubmission())
+									</td>
+									<td>
+										&nbsp;
+									</td>
+									<td>
+										&nbsp;
+									</td>
+								</tr>
+								<tr> 
+									<td  class="chefLabel">
+										Grade scale:
+									</td>
+									<td>
+										#set ($gradeScale = $assignment.getContent().getTypeOfGradeString($assignment.getContent().getTypeOfGrade()))
+										$gradeScale
+										#if ($gradeScale == "Points")
+											(max $assignment.getContent().getMaxGradePointDisplay())
+										#end
+									</td>
+									<td>
+										&nbsp;
+									</td>
+									<td>
+										&nbsp;
+									</td>
+								</tr>
+								<tr> 
+									<td class="chefLabel">
+										Add due date to schedule:
+									</td>
+									<td>
+										#set ($scheduled = $assignment.getProperties().getProperty($assignment.getProperties().getNamePropNewAssignmentCheckAddDueDate()))
+										#if ($!scheduled == "true")
+											Yes
+										#else
+											No
+										#end
+									</td>
+									<td>
+										&nbsp;
+									</td>
+									<td>
+										&nbsp;
+									</td>
+								</tr>
+								<tr> 
+									<td class="chefLabel">
+										Announce the open date:
+									</td>
+									<td>
+										#set ($announced = $assignment.getProperties().getProperty($assignment.getProperties().getNamePropNewAssignmentCheckAutoAnnounce()))
+										#if ($!announced == "true")
+											Yes
+										#else
+											No
+										#end
+									</td>
+									<td>
+										&nbsp;
+									</td>
+									<td>
+										&nbsp;
+									</td>
+								</tr>
+								<tr> 
+									<td class="chefLabel">
+										Honor pledge:
+									</td>
+									<td> 
+										#if ($assignment.getContent().HonorPledge == 1)
+											No
+										#else
+											Yes
+										#end
+									</td>
+									<td>
+										&nbsp;
+									</td>
+									<td>
+										&nbsp;
+									</td>
+								</tr>
+							</table>
+							<div class="chefSectionTitle">
+								Assignment instructions:
+							</div>
+							<div class="chefSectionMessage">					
+								#if ($assignment.getContent().getInstructions().length()==0)
+									&lt;none&gt;
+								#else
+									<span class="chefPre">$validator.escapeHtmlFormattedText($assignment.getContent().getInstructions())</span>
+								#end
+							</div>
+							<fieldset class="chefAttachmentsF">
+								<legend class="chefAttachmentsL">	
+									Additional resources for assignment
+								</legend> 
+								#set ($size = 0)
+								#set ($props = false)
+								#foreach ($attachment in $assignment.getContent().getAttachments()) 
+									#set ($props = $attachment.Properties) 
+									#if ($!props)
+										#set ($size = $size + 1)
+									#end
+								#end
+								#if ($size == 0)
+									No attachments ...
+								#else
+									<ul class="chefAttachmentList">
+										#foreach ($attachment in $assignment.getContent().getAttachments()) 
+											#set ($props = false)
+											#set ($props = $attachment.Properties) 
+											#if ($!props)
+												<li>
+													#if ($props.getBooleanProperty($props.NamePropIsCollection))
+														<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+													#else
+														<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+													#end
+													<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+													#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+														($props.getPropertyFormatted($props.NamePropContentLength))
+													#end
+												</li>
+											#end
+										#end
+									</ul>
+								#end	
+							</fieldset>
+						</td>
+					</tr>	
+				</table>	
+			#else
+				<table cellpadding="0" cellspacing="0"  class="chefSectionContent" summary="The assignment infos">
+					<tr> 
+						<th>
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doShow_view_assignment")'; return false;" title="Show assignment infos">	
+								<img src="#imageLink("chef/expand.gif")" alt="Open, click to close" border="0" width="15" height="15" align="top" alt="Show assignment info" /></a>
+								Settings for "$validator.escapeHtml($assignment.title)"
+						</th>
+					</tr>
+				</table>
+			#end
+			#if (!$hideStudentViewFlag)
+				<table cellpadding="0" cellspacing="0"  class="chefSectionContent" summary="Student view of assignment">
+					<tr>
+						<th>
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doHide_view_student_view")'; return false;">
+								<img src="#imageLink("chef/collapse.gif")" alt="Open, click to close" border="0" width="15" height="15" align="top" /></a>
+							Student view of "$assignment.title"
+						</th>
+					</tr>
+					<tr>
+						<td class="content">
+							<table class ="chefItemDetail" cellspacing="0" cellpadding ="0">
+								<tr>
+									<td class="chefLabel">
+										Due:<br />
+										Status:<br />
+										Grade Scale:<br />
+										##show alert when assignment is modified and the modified date is after its open date	
+										#set($newAssignment=false)
+										#set($newAssignment=$assignment.getProperties().getProperty("newAssignment"))
+										#if ($assignment.getTimeLastModified().after($assignment.getOpenTime()) && !$!newAssignment)
+											<span class="chefAlert">
+												Modified by instructor:
+											</span>
+										#end
+									</td>
+									<td> 
+										$!assignment.getDueTime().toStringLocalFull()
+										<br />
+										#if ($!submission)
+											#if ($submission.getSubmitted())
+												#if ($submission.returned)
+													#if ($submission.TimeReturned.before($submission.TimeSubmitted))
+														Returned $submission.TimeReturned.toStringLocalFull()
+													#else
+														Re-submitted $submission.TimeSubmitted.toStringLocalFull()
+														#if ($submission.getTimeSubmitted().after($assignment.DueTime))
+															<span class="chefAlert"> late</span>
+														#end
+													#end
+												#elseif ($submission.getGraded() && $submission.getGradeReleased())
+													Graded
+												#else
+													Submitted $submission.timeSubmitted.toStringLocalFull()
+													#if ($submission.getTimeSubmitted().after($assignment.DueTime))
+														<span class="chefAlert">- late</span>
+													#end
+												#end
+											#else
+												In progress
+											#end
+										#else
+											Not started
+										#end<br />
+										#set ($gradeScale = $assignment.getContent().getTypeOfGradeString($assignment.getContent().getTypeOfGrade()))
+										$gradeScale
+										#if ($gradeScale == "Points")
+											(max $assignment.getContent().getMaxGradePointDisplay())
+										#end<br />
+										##show alert when assignment is modified and the modified date is after its open date	
+										#if ($assignment.getTimeLastModified().after($assignment.getOpenTime()) && !$!newAssignment)
+											<span class="chefAlert">
+												$assignment.getTimeLastModified().toStringLocalFull()
+											</span>
+										#end
+									</td>
+								</tr>
+							</table>	
+								<div class="chefSectionTitle">
+									Assignment instructions:
+								</div>
+								<div class="chefSectionMessage">
+									#if ($!assignment.getContent().getInstructions().length()>0)
+										<span class="chefPre">$validator.escapeHtmlFormattedText($!assignment.getContent().getInstructions())</span>
+									#else
+										<i>&lt;none&gt;</i>
+									#end
+								</div>
+								<fieldset class="chefAttachmentsF">
+									<legend class="chefAttachmentsL">	
+										Additional resources for assignment
+									</legend> 
+									#set ($size = 0)
+									#set ($props = false)
+									#foreach ($attachment in $assignment.getContent().getAttachments()) 
+										#set ($props = $attachment.Properties) 
+										#if ($!props)
+											#set ($size = $size + 1)
+										#end
+									#end
+									#if ($size == 0)
+										No attachments ...
+									#else
+										<ul class="chefAttachmentList">
+											#foreach ($attachment in $assignment.getContent().getAttachments()) 
+												#set ($props = false)
+												#set ($props = $attachment.Properties) 
+												#if ($!props)
+													<li>
+														#if ($props.getBooleanProperty($props.NamePropIsCollection))
+															<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder attachment" />
+														#else
+															<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="File attachment" />
+														#end
+														<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+														#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+															($props.getPropertyFormatted($props.NamePropContentLength))
+														#end
+													</li>
+												#end
+											#end
+										</ul>
+									#end	
+								</fieldset>
+							<div class="chefSectionTitle">
+								Start assignment:
+							</div>	
+					## 1- text only; 2-attachment only; 3-text and attachment
+					#set ( $submissionType = $assignment.getContent().getTypeOfSubmission())
+					#if (($submissionType==1) || ($submissionType==3))
+							<div class="chefSectionMessage">
+								#if ($submissionType==1)
+									This assignment allows submissions using the text box below only. Please type in your submission and save frequently while working.
+								#elseif ($submissionType==3)
+									This assignment allows both typed in text and/or attached documents.Type in your comments in the box below, 
+									and use the Attachment button to include other documents as part of your submission. Save frequently while working.
+								#end
+							</div>
+							<textarea cols="80" rows="8" wrap="virtual" name="textarea" id="textarea" disabled="disabled">&nbsp;</textarea><br />
+					#end
+					#if (($submissionType==2) || ($submissionType==3)) 
+								#if ($submissionType==2)
+									This assignment allows submissions by attaching documents only. Use the Attachments button below to attach 1 or more documents.
+								#end	
+								<br />
+								<fieldset>
+									<legend>
+										Attachments
+									</legend>
+									No attachment ...
+									<div class="chefButtonRow">
+										<input type="button" name="eventSubmit_doAttachments" value="Attachment" />
+									</div>
+								</fieldset>
+								#end
+								## if honor pledge is required
+								#if ($assignment.getContent().HonorPledge != 1)
+											Honor Pledge: I have neither given nor received aid on this assignment.
+											<input name="Yes" type="checkbox" value="" />Yes<br />
+											(You must respond to submit your assignment.)
+								#end
+						</td>
+					</tr>
+				</table>
+			#else
+				<table cellspacing="0" cellpadding="0" class="chefSectionContent" summary="Student view of assignment">
+					<tr>
+						<th>
+							<a href="#" onclick="location='#toolLink("AssignmentAction" "doShow_view_student_view")'; return false;">
+								<img src="#imageLink("chef/expand.gif")" alt="Open, click to close" border="0" width="15" height="15" align="top" /></a>
+								Student view of "$assignment.title"
+						</th>
+					</tr>
+				</table>
+			#end
+			<div class="chefButtonRow">
+				#if ($assignment.Draft)
+					<input type="submit" name="eventSubmit_doPost_assignment" value="Post" />
+                     <input type="submit" name="eventSubmit_doDone_view_assignment" value="Cancel" />
+				#else
+                 	<input type="submit" name="eventSubmit_doDone_view_assignment" value="Done" />
+                #end
+			</div>
+		</form>
+	</div>
+</div>

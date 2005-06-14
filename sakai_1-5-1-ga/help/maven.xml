@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  default="clean_full"
+  xmlns:j="jelly:core"
+  xmlns:ant="jelly:ant"
+  xmlns:u="jelly:util">
+
+        <goal name="clean_full">
+                <j:set var="goal" value="clean,full" />
+                <attainGoal name="multiproject:goal" />
+        </goal> 
+
+        <goal name="full">
+                <j:set var="goal" value="clean,full" />
+                <attainGoal name="multiproject:goal" />
+        </goal> 
+
+        <goal name="clean">
+
+		<!-- We need to do the clean directly here because if we just use the
+		     default maven clean task, it will try to resolve dependencies 
+		     in project.xml first - Uh Duh!
+		     There is a feature request in maven to allow dependencies 
+		     to be suppressed for a tag, when that is fixed, we can use the builtin
+		     clean goal.  See google://maven goal prerequisite   -->
+
+    		<ant:delete dir="tool/target"/>
+    		<ant:delete dir="tool/doc"/>
+    		<ant:delete dir="service/target"/> 
+    		<ant:delete dir="component/target"/>
+    		<ant:delete dir="component/doc"/>
+        </goal> 
+        <goal name="reg">
+                <copy todir="/usr/local/sakai/reg/" filtering="false" preservelastmodified="true" overwrite="true">
+                        <fileset dir="tool/src/reg">
+                                <include name="*.xml" />
+                        </fileset>
+                </copy>
+        </goal>
+</project>

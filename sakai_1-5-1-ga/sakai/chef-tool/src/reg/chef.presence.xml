@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.presence"
+			url="/sakai-chef-tool/chef-presence"
+			title="Admin: On-Line"
+			description="See who's on-line and where they are.">
+
+	</tool>
+
+</registration>

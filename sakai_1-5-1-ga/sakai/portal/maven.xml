@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="war:install">
+
+<!-- comment this in if want to add the debugging aspects to the maven (not eclipse) build.
+  <preGoal name="java:compile">
+    <attainGoal name="aspectj"/>
+   </preGoal>
+-->
+
+
+	<goal name="full">
+		<attainGoal name="war:install" />
+	</goal>
+
+	<goal name="reg" />
+
+</project>

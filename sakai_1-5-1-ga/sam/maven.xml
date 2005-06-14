@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  default="clean_full"
+  xmlns:j="jelly:core"
+  xmlns:ant="jelly:ant"
+  xmlns:u="jelly:util">
+
+       <goal name="reg">
+      		<copy todir="/usr/local/sakai/reg/" filtering="false" preservelastmodified="true" overwrite="true">
+			      <fileset dir="src/reg">
+      				<include name="*.xml" />
+			      </fileset>
+      		</copy>
+      	</goal>
+
+</project>

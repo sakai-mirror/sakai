@@ -1,0 +1,8 @@
+# Fill in these values as appropriate for your database installation.
+
+db.driverClassName=oracle.jdbc.driver.OracleDriver
+db.url=jdbc:oracle:thin:yourserver:port:sid
+db.username=yourusername
+db.password=yourpassword
+
+# $Header: /cvs/quickstart/qs-1-5-1/samigo.xml,v 1.1 2005/03/27 18:40:20 dlhaines.umich.edu Exp $

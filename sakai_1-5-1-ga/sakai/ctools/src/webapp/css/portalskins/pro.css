@@ -1,0 +1,26 @@
+@import url("../../core/skin/core.css");
+.divColor{background-color:#C7BEA9 !important;}
+#divLogo{/*
+	background-image: url(../institutional/divlogo.gif);
+	height:45px;
+	padding:0px;
+	margin:0 0 1em 0;
+	width:8em; 
+	display:block;
+	background-repeat: no-repeat;
+	background-position:center top;
+*/}
+.content-table		{
+margin:0;
+background-color:#C7BEA9;
+border-right:10px solid #C7BEA9;
+border-bottom:10px solid #C7BEA9;
+}
+#tabNavigation .selectedTab a, #tabNavigation .selectedTab a:link, #tabNavigation .selectedTab a:visited, #tabNavigation .selectedTab a:hover {
+	background-color:#C7BEA9;
+	border-bottom: none;
+	border-right: 1px solid #C0C0C0;
+	border-top: 1px solid #C0C0C0;
+	color: #2E3C52;
+	padding: 3px 5px 4px 5px
+}

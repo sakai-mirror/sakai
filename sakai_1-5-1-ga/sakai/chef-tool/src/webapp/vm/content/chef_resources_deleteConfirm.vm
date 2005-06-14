@@ -1,0 +1,111 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/content/chef_resources_deleteConfirm.vm,v 1.4 2004/09/21 05:35:56 janderse.umich.edu Exp $ -->
+## #paitence("delete") %%% currently disabled -ggolden
+<div class="chefPortletContainer" id="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Delete confirmation...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<span class="chefAlertBox">Are you sure you want to delete the following item(s)?</span>
+		<div class ="chefBreadCrumb">
+			Location:
+			<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" alt= "folder" border="0" />
+			#foreach ($id in $collectionPath)
+				#if ($dropboxMode && $id==$homeCollection)
+					$siteTitle Drop Box /
+				#else
+					$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName)) /
+				#end
+			#end
+			#if ($dropboxMode && $collectionId==$homeCollection)
+				$siteTitle Drop Box
+			#else
+				$validator.escapeHtml($service.getProperties($collectionId).getPropertyFormatted($resourceProperties.NamePropDisplayName))
+			#end
+		</div>
+		<form action="#toolForm("ResourcesAction")" name="deleteFileForm" method="post" >
+			<input type="hidden" name="deleteResourceIds" value="$deleteResourceIds">
+			<input type="hidden" name="view" value="general" />
+			<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+			<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds ..... Column 1 may hold .... Column 1 holds ..., column 2  holds .... Column 3 holds .... Headers hold links to sort ....">
+				#if ($deleteResourceIds.size()>0)
+					<tr>
+						<th>
+							&nbsp;&nbsp;
+						</th>
+						<th align="left">
+							Title
+						</th>
+						<th>
+							Size
+						</th>
+						#if (!($dropboxMode && $collectionId==$homeCollection))
+						<th>
+							Created By
+						</th>
+						#end
+						<th>
+							Last Modified
+						</th>
+						<th>
+							&nbsp;&nbsp;
+						</th>
+					</tr>
+					#foreach ($member in $deleteResourceIds)
+						#set ( $props = $service.getProperties($member) )
+						#if (($!props) && ($!props.getPropertyFormatted($props.NamePropDisplayName).length() > 0))
+							<tr>
+								<td>
+									#if ($props.getPropertyFormatted($props.NamePropIsCollection)=="true")
+										<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" alt ="folder" />
+									#else
+										<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" alt ="($props.getProperty($props.NamePropContentType))" />
+									#end
+								</td>
+								<td>
+									<a href="$service.getUrl($member)" target="_blank">
+										$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))
+									</a>
+								</td>
+								<td>
+									$validator.escapeHtml($props.getPropertyFormatted($props.NamePropContentLength))
+								</td>
+								#if (!($dropboxMode && $collectionId==$homeCollection))
+								<td>
+									$validator.escapeHtml($props.getPropertyFormatted($props.NamePropCreator))
+								</td>
+								#end
+								<td>
+									$props.getPropertyFormatted($props.NamePropModifiedDate)
+								</td>
+								<td>
+									<a href="#toolLink("ResourcesAction" "doMore")&collectionId=$validator.escapeUrl($collectionId)&deleteResourceIds=$validator.escapeUrl($deleteResourceIds)&id=$validator.escapeUrl($member)&from=deleteConfirm" title ="Get information on this item">
+										<img src = "#imageLink("chef/metainfo.gif")" border="0" alt = "Get information on this item" title ="Get information on this item" />
+									</a>
+								</td>					
+							</tr>
+						#else
+							<tr>
+								<td id="ID">
+									Resource ID:
+								</td>
+								<td colspan="5">
+									$validator.escapeHtml($member)
+								</td>				
+							</tr>
+						#end
+					#end
+				#end
+			</table>
+				<div class ="chefButtonRow">
+						#if ($deleteResourceIds.size()>0)
+## %%% paitence disabled -ggolden
+##							<input type="submit" name="eventSubmit_doDelete" value="Delete" onClick="showSubmitMessage();setMainFrameHeight('$validator.escapeJavascript("Main$data.Js_peid")');" />
+							<input type="submit" name="eventSubmit_doDelete" value="Delete" />
+						#end
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				</div>
+		</form>
+	</div>
+</div>
+

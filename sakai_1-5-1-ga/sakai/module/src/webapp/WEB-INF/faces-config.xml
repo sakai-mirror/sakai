@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+
+<!-- =========== FACES CONFIGURATION FILE ================================== -->
+
+<faces-config>
+
+  <!-- Example custom JSF component used only in this tool -->
+  <component>
+    <component-type>MyCustomJSF</component-type>
+    <component-class>org.sakaiproject.component.sample.myjsf.MyCustomJSFComponent</component-class>
+  </component>
+  <render-kit>
+    <renderer>
+      <component-family>MyCustomJSF</component-family>
+      <renderer-type>MyCustomJSF</renderer-type>
+      <renderer-class>org.sakaiproject.component.sample.myjsf.MyCustomJSFRenderer</renderer-class>
+    </renderer>
+  </render-kit>
+
+  <application>
+    <message-bundle>org.sakaiproject.tool.mytool.bundle.Messages</message-bundle>
+    <locale-config>
+      <default-locale>en</default-locale>
+      <supported-locale>de</supported-locale>
+      <supported-locale>fr</supported-locale>
+      <supported-locale>es</supported-locale>
+    </locale-config>
+  </application>
+
+  <!-- =================== Tool Beans ============== -->
+
+	<managed-bean>
+		<description>Sample Tool Bean</description>
+		<managed-bean-name>MyTool</managed-bean-name>
+		<managed-bean-class>org.sakaiproject.tool.mytool.MyTool</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+
+		<!-- a configuration property - not currently used -->
+		<managed-property>
+			<description>Configure the channel</description>
+			<property-name>param</property-name>
+			<value>sample configuration value</value>
+		</managed-property>
+
+		<!-- a service dependency property - for the Logger -->
+		<managed-property>
+			<description>Service Dependency: logging service</description>
+			<property-name>logger</property-name>
+			<value>#{Components["org.sakaiproject.service.framework.log.Logger"]}</value>
+		</managed-property>
+
+		<!-- a service dependency property - for the greeting service -->
+		<managed-property>
+			<description>Service Dependency: myservice service</description>
+			<property-name>service</property-name>
+			<value>#{Components["org.sakaiproject.service.sample.myservice.GreetingService"]}</value>
+		</managed-property>
+
+		<managed-property>
+			<description>Service Dependency: UserDirectoryService</description>
+			<property-name>userDirectoryService</property-name>
+			<value>#{Components["org.sakaiproject.service.legacy.user.UserDirectoryService"]}</value>
+		</managed-property>
+
+		<managed-property>
+			<description>Service Dependency: SiteService</description>
+			<property-name>siteService</property-name>
+			<value>#{Components["org.sakaiproject.service.legacy.site.SiteService"]}</value>
+		</managed-property>
+
+		<managed-property>
+			<description>Service Dependency: PortalService</description>
+			<property-name>portalService</property-name>
+			<value>#{Components["org.sakaiproject.service.framework.portal.PortalService"]}</value>
+		</managed-property>
+
+	</managed-bean>
+
+</faces-config>

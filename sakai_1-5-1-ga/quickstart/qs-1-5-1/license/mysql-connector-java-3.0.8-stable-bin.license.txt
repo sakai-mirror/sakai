@@ -1,0 +1,32 @@
+
+
+MySQL AB has two licensing options. No matter which license you choose, the overall business benefit of the MySQL database is a dramatically lower total cost of ownership.
+
+The guiding business principle of MySQL is one of fair exchange, or Quid pro Quo ("something for something"). From a licensing perspective, we have two different products depending on usage and distribution, though technically they have the same source code.
+
+Thanks to our licensing model, we are capable of producing superior software at a much lower cost than proprietary software vendors. That's why MySQL is the world's most popular open source database. Our licensing options include:
+
+The Commercial License, which allows you to provide commercial software licenses to your customers or distribute MySQL-based applications within your organization. This is for organizations that do not want to release the source code for their applications as open source / free software; in other words they do not want to comply with the GNU General Public License (GPL). For more detail on the Commercial non-GPL License, click here. Or, if you want more information on pricing, click here.
+
+For those developing open source applications, the Open Source License allows you to offer your software under an open source / free software license to all who wish to use, modify, and distribute it freely. The Open Source License allows you to use the software at no charge under the condition that if you use MySQL in an application you redistribute, the complete source code for your application must be available and freely redistributable under reasonable conditions. MySQL AB bases its interpretation of the GPL on the Free Software Foundation's Frequently Asked Questions. For more information on MySQL's Open Source License, click here.
+
+At MySQL AB, we believe in open source / free software and we welcome all initiatives to publish more software under the GPL license, just as we have done.
+
+In their simplest form, the following are general licensing guidelines:
+
+If your software is licensed under either the GPL-compatible Free Software License as defined by the Free Software Foundation or approved by OSI, then use our GPL licensed version.
+
+If you distribute a proprietary application in any way, and you are not licensing and distributing your source code under GPL, you need to purchase a commercial license of MySQL
+
+If you are unsure, we recommend that you buy our cost effective commercial licenses. That is the safest solution. Licensing questions can submitted online for our advice, and we encourage you to refer to the Free Software Foundation or a lawyer as appropriate.
+
+Commercially licensed customers get commercially supported product with assurances from MySQL. Commercially licensed users are also free from the requirement of making their own application open source.
+
+For OEM's, ISVs, corporate, and government users, a commercial license is the proper solution because it provides you with assurance from the vendor and releases you from the strict requirements of the GPL license.
+
+Nevertheless, you can test MySQL under the GPL license and inspect the source code before you purchase a commercial non-GPL license.
+
+We also have created a license exception which enables Free and Open Source software ("FLOSS") to be able to include the GPL-licensed MySQL client libraries despite the fact that not all open source licenses are compatible with the GPL. Read more about the exception.
+
+Version 4.1, 12 March 2004
+

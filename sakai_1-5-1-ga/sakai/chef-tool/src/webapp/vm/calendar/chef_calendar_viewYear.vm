@@ -1,0 +1,135 @@
+<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/calendar/chef_calendar_viewYear.vm,v 1.3 2004/05/20 02:58:33 gsilver Exp $ -->
+<div class="chefPortletContainer">
+#if($menu)#toolbar($menu)#end
+<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+
+<!-- drop down menu for different views -->
+<div class="chef2ndToolbarWrap">
+	<table class="chef2ndToolbar" cellspacing="0" summary="this is for second toolbar, containing dropdown view list" >
+		<tr class="first">
+			<td class="left">
+				<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("CalendarAction")">
+					<input type="hidden" name="eventSubmit_doView" value="view" />
+					View:
+					<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+						#foreach ($view in ["Calendar by day", "Calendar by week", "Calendar by month", "Calendar by year", "List of events"])
+							#if ($selectedView.equals($view))
+								<option value="$view" selected="selected" >$view</option>
+							#else
+								<option value="$view" >$view</option>
+							#end
+						#end
+					</select>
+				</form>
+			</td>
+			<td>
+			<form action="#toolForm("$action")" method="post" style="display:block; clear:both">
+			 <div class="chefButtonRowRight" >
+				<input type="submit" name="eventSubmit_doToday" value="Go to today" />
+				 <input type="submit" name="eventSubmit_doPrev" value="&lt;" title="Go to previous year" />
+				 $year
+				 <input type="submit" name="eventSubmit_doNext" value="&gt;" title="Go to next year" />
+			 </div>
+			 </form>
+		</td>
+		</tr>
+	</table>
+</div>
+
+<!-- how to draw a year-->
+<table width="100%" cellspacing="5">
+   #foreach ($xn in [0..3])
+    <tr>
+        #foreach ($mn in [0..2])
+            <td>
+                <!--<table>-->
+                <table width="100%" cellspacing="0" class="calendar">
+                        #set ($mm = $yearArray.getMonth($xn,$mn))
+                        <tr>
+                            ##<td colspan="7" class="borderWhiteYear">
+                            <th colspan="7">
+                                #set ($monthNumber = $xn*3 + $mn)
+                                <a href="#toolLink("$action" "doGomonth")&month=$monthNumber">
+                                $mm.MonthName</a>
+                            </th>
+                        </tr>
+
+                        ## JS -----  add new line to show dates
+                        <tr>
+                         <th class="borderWhiteYear"> Su </th>
+                         <th class="borderWhiteYear"> Mo </th>
+                         <th class="borderWhiteYear"> Tu </th>
+                         <th class="borderWhiteYear"> We </th>
+                         <th class="borderWhiteYear"> Th </th>
+                         <th class="borderWhiteYear"> Fr </th>
+                         <th class="borderWhiteYear"> Sa </th>
+                         </tr>
+                        ## JS -----  add new line to show dates
+
+                        #set ($row = $mm.getRow())
+                        #foreach($n in [0..$row])
+                        <tr>
+                              #foreach($u in [0..6])    
+                                #set ($mu = $mm.getDay($n,$u))
+				#set($flag = "false")
+				
+				#set($eventsn = $mu.getEvents())
+				#if ($eventsn.size()!=0)     
+				    #set($flag = "true")
+				#end
+
+                                #if ($mu.getFlag() == 1)   ## JS comment -- it is today
+                                    ## If there is at least one activity, then the background is yellow
+				    #if ($flag == "true")
+					<td class="borderTodayWithActivity">
+                                           <a href="#toolLink("$action" "doDay")&day=$mu.getDay()&month=$mu.getMonth()&year=$mu.getYear()">
+					    <b>$mu.getDay()</b>
+					    </a>
+					</td>                
+				    #else
+					<td class="borderTodayWithoutActivity">
+                                            <a href="#toolLink("$action" "doDay")&day=$mu.getDay()&month=$mu.getMonth()&year=$mu.getYear()">
+					    <b>$mu.getDay()</b>
+					    </a>
+					</td>
+				    #end
+                                #elseif ($mu.getFlag()== 0)    ## JS comment -- it is out of this month
+                                    ##<td align="right"  bgcolor=#cccccc >
+                                    <td class="borderGrayYear">
+                                        <a href="#toolLink("$action" "doDay")&day=$mu.getDay()&month=$mu.getMonth()&year=$mu.getYear()">
+                                        $mu.getDay()</a>
+                                   </td>
+                                #else   ## JS comment -- it is within this month
+				    #if ($flag == "true")
+					<td class="bgActivity">
+                                            <a href="#toolLink("$action" "doDay")&day=$mu.getDay()&month=$mu.getMonth()&year=$mu.getYear()">
+					    $mu.getDay()
+					    </a>
+					</td> 
+				    #else
+					<td class="bgWithoutActivity">
+                                            <a href="#toolLink("$action" "doDay")&day=$mu.getDay()&month=$mu.getMonth()&year=$mu.getYear()">
+					    $mu.getDay()
+					    </a>
+					</td> 
+				    #end
+                                #end
+                              #end
+                        </tr>
+                        #end
+                 #if ($row == 4)
+                 		<tr>
+                    #foreach($u in [0..6])
+                             <td align="right"  class="borderGrayYear" >&nbsp;</td>
+                    #end
+							</tr>
+                 #end
+                </table>
+            </td>
+        #end
+    </tr>
+   #end
+</table>
+</div>
+</div>

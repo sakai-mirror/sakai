@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="org.sakaiproject.service.framework.config.ServerConfigurationService"
+			class="org.sakaiproject.component.framework.config.BasicConfigurationService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+
+		<property name="properties">
+			<props>
+				<prop key="serverId">localhost</prop>
+				<prop key="serverUrl">http://localhost:8080</prop>
+				<prop key="serverName">localhost</prop>
+
+				<prop key="gatewaySiteId">!gateway</prop>
+ 				<prop key="loginUrl">/tunnel/sakai-chef-tool/authn</prop>
+ 				<prop key="loggedOutUrl">/portal</prop>
+ 				<prop key="accessPath">/access</prop>
+ 				<prop key="portalPath">/portal</prop>
+		 		<prop key="portalTunnelPath">/tunnel</prop>
+
+				<prop key="email-for-user-id">false</prop>
+
+				<prop key="server.info.url">/content/public/server_info.html</prop>
+				<prop key="myworkspace.info.url">/content/public/myworkspace_info.html</prop>
+			</props>
+		</property>
+
+ 		<property name="additionalProperties"><value>/usr/local/sakai/cluster.properties</value></property>
+ 		<property name="overrideProperties"><value>/usr/local/sakai/sakai.properties</value></property>
+ 		<property name="registrationPath"><value>/usr/local/sakai/reg/</value></property>
+
+	</bean>
+
+	<bean id="org.sakaiproject.service.framework.courier.CourierService"
+			class="org.sakaiproject.component.framework.courier.BasicCourierService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.framework.email.EmailService"
+			class="org.sakaiproject.component.framework.email.BasicEmailService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<!-- <property name="smtp"><value></value></property> -->
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+	</bean>
+
+	<!-- for testing email - comment out the BasicEmailService and use this
+	<bean id="org.sakaiproject.service.framework.email.EmailService"
+			class="org.sakaiproject.component.framework.email.TestEmailService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+	-->
+
+	<!-- Note: dependency on legacy -ggolden -->
+	<bean id="org.sakaiproject.service.framework.memory.MemoryService"
+			class="org.sakaiproject.component.framework.memory.BasicMemoryService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+ 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+ 		<property name="eventTrackingService"><ref bean="org.sakaiproject.service.legacy.event.EventTrackingService"/></property>
+		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.framework.portal.PortalService"
+			class="org.sakaiproject.component.framework.portal.BasicPortalService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="currentService"><ref bean="org.sakaiproject.service.framework.current.CurrentService"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.framework.session.UsageSessionService"
+			class="org.sakaiproject.component.framework.session.BasicUsageSessionService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+		<property name="currentService"><ref bean="org.sakaiproject.service.framework.current.CurrentService"/></property>
+		<property name="timeService"><ref bean="org.sakaiproject.service.legacy.time.TimeService"/></property>
+		<property name="idService"><ref bean="org.sakaiproject.service.legacy.id.IdService"/></property>
+ 		<property name="sessionInactiveTimeoutSeconds"><value>1800</value></property>
+ 		<property name="sessionLostTimeoutSeconds"><value>30</value></property>
+	</bean>
+
+</beans>

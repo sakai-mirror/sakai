@@ -1,0 +1,48 @@
+## Zhen: when saving a draft reply I am returned to the item in edit mode (with a few errors). Should the behaviour not be the same as for topic?
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Creating new category...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<script type="text/javascript">
+				focus_path = [ "newcategory" ];
+				if (parent) if (parent.parent) parent.parent.window.scrollTo(0,400);
+		</script>
+		<div class="chefPageviewTitle">
+			Complete the form, then choose "Post" at the bottom. A <span class="chefRequiredInline"> means</span> this information is required.
+		</div>
+		<form action="#toolForm($action)" method="post">
+			<input type="hidden" name="channelId" value="$channel.getId()" />
+			<input type="hidden" name="from" value="normalView" />
+				<table class="chefEditItem" summary="This table contains the information for a new category" border="0">		
+				#if ($categories)
+					<tr>
+						<td class="chefLabel">
+							Existing categories:
+						</td>
+						<td>&nbsp;</td>
+						<td style="padding-bottom:1em">
+							#foreach ($c in $categories)
+								$validator.escapeHtml($c)<br />
+							#end
+						</td>
+					</tr>
+				#end
+					<tr>
+						<td class="chefLabel">
+							Create a new category:
+						</td>
+						<td class ="chefRequiredInline">&nbsp;</td>
+						<td>
+							<input type="text" name="newcategory" id="newcategory" value="" />
+						</td>
+					</tr>
+				</table>
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doNew_category" value="Post" />
+				<input type="submit" name="eventSubmit_doCancel_new_category" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

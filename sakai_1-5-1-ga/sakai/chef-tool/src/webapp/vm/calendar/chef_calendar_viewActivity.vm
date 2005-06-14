@@ -1,0 +1,170 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/calendar/chef_calendar_viewActivity.vm,v 1.3 2005/02/01 00:32:39 gsilver.umich.edu Exp $
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		#if ($noEvent=="true")
+			## this event doesn't exist. show nothing.
+		#else
+			<br />
+			<p class="chefPageViewTitle">Schedule item</p>
+				<table class="chefItemDetail" cellspacing="0">
+				<tr>
+					<td class="chefLabel">Title:</td>
+					<td><b>$validator.escapeHtml($event.getDisplayName())</b></td>
+				</tr>
+				<tr>
+					 <td class="chefLabel">Date:</td> 
+					 <td>$event.getRange().firstTime().toStringLocalFull().substring(0,12)</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">Time:</td>
+					<td>
+						#set ($startTime = $event.getRange().firstTime().toStringLocalShort())
+						#set ($endTime = $event.getRange().lastTime().toStringLocalShort())
+							#if ($startTime == $endTime)
+								$startTime
+							#else
+								#if ($endTime.endsWith("am"))
+								#set ($endTimeType = "am")
+								#else
+								#set ($endTimeType = "pm")
+								#end
+								#set ($endMin = $event.getRange().lastTime().breakdownLocal().Min)
+								#set ($endHour = $event.getRange().lastTime().breakdownLocal().Hour)
+								#set( $foo = $endMin % 10 )
+								#if (($foo == 4) || ($foo == 9))
+										#set ($endMin = $endMin + 1)
+										#if ($endMin == 60)
+												#set ($endMin = "00")
+												#set ($endHour = $endHour + 1)
+												#if (($endHour == 12)||($endHour == 24))
+														 #if ($endTime.endsWith("am"))
+																#set ($endTimeType = "pm")
+														#else
+																#set ($endTimeType = "am")
+														#end
+												#end
+										#end
+								#end
+								#if ($endHour > 12)
+										#set ($endHour = $endHour - 12)
+								#end
+								$startTime - $endHour:#if(($endMin == 0)||($endMin == 5))0$endMin#else$endMin#end $endTimeType
+							#end
+						</td>
+				</tr>
+				<tr>     
+					 <td class="chefLabel">Frequency:</td> 
+					 <td>
+						#if ($rule)
+								Every $rule.Interval $freq(s)
+								#if (!($rule.Count == 0)) , Number of occurrences: $rule.Count Times <br />#end
+								#if ($rule.Until) , Ends on $rule.Until.breakdownLocal().Month/$rule.Until.breakdownLocal().Day/$rule.Until.breakdownLocal().year <br />#end
+						#else
+								One occurrence
+						#end
+						</td>
+				</tr>
+				<tr>
+						<td class="chefLabel">Item type:</td>
+						<td>
+							#if ($event.getType()=="")
+							#elseif($event.getType()=="Academic Calendar")
+								<img src = "#imageLink("chef/academic_calendar.gif")" border="0" alt ="Academic calendar" /> Academic Calendar 
+							#elseif ($event.getType()=="Activity")
+								<img src = "#imageLink("chef/activity.gif")" border="0" alt="Activity"  /> Activity
+							#elseif($event.getType()=="Cancellation")
+								<img src = "#imageLink("chef/cancelled.gif")" border="0" alt="Cancellation" /> Cancellation  
+							#elseif ($event.getType()=="Class section - Discussion")
+								<img src = "#imageLink("chef/class_dis.gif")" border="0" alt="Class section - Discussion" /> Class section - Discussion
+							#elseif ($event.getType()=="Class section - Lab")
+								<img src = "#imageLink("chef/class_lab.gif")" border="0" alt="Class section - Lab" /> Class section - Lab
+							#elseif ($event.getType()=="Class section - Lecture")
+								<img src = "#imageLink("chef/class_lec.gif")" border="0" alt="Class section - Lecture" /> Class section - Lecture
+							#elseif ($event.getType()=="Class section - Small Group")
+								<img src = "#imageLink("chef/class_sma.gif")" border="0" alt="Class section - Small Group" /> Class section - Small Group
+							#elseif ($event.getType()=="Class session")
+								<img src = "#imageLink("chef/class_session.gif")" border="0" alt="Class session" /> Class session
+							#elseif($event.getType()=="Computer Session")
+								<img src = "#imageLink("chef/computersession.gif")" border="0" alt="Computer Session" /> Computer Session 
+							#elseif($event.getType()=="Deadline")
+								<img src = "#imageLink("chef/deadline.gif")" border="0" alt="Deadline" /> Deadline 
+							#elseif($event.getType()=="Exam")
+								<img src = "#imageLink("chef/exam.gif")" border="0" alt="Exam" /> Exam 
+							#elseif ($event.getType()=="Meeting")
+								<img src = "#imageLink("chef/meeting.gif")" border="0" alt="Meeting" /> Meeting
+							#elseif($event.getType()=="Quiz")
+								<img src = "#imageLink("chef/quiz.gif")" border="0" alt="Quiz" /> Quiz 
+							#elseif($event.getType()=="Special event")
+								<img src = "#imageLink("chef/special_event.gif")" border="0" alt="Special Event" /> Special event 
+							#elseif($event.getType()=="Web Assignment")
+								<img src = "#imageLink("chef/webassignment.gif")" border="0" alt="Web ASssignment" /> Web Assignment 
+							#elseif($event.getType()=="Multidisciplinary Conference")
+								<img src = "#imageLink("chef/multi-conference.gif")" border="0" alt="Multidisciplinary Conference" />Multidisciplinary Conference 
+							#end
+						</td>	
+				</tr>
+				#if($event.Location && $event.Location !="")
+					<tr> 
+						 <td class="chefLabel">Location:</td>
+						 <td><span class="chefPre">$validator.escapeHtml($event.Location)</span></td>
+					</tr>
+				#end
+				#set ($calObj = $CalendarService.getCalendar($event.CalendarReference))
+				#if ($calObj.getContext() != $PortalService.CurrentSiteId )
+					<tr> 
+						<td class="chefLabel">From Site:</td>
+						<td class="chefSectionMessage"><span class="chefPre">$SiteService.getSiteDisplay($calObj.getContext())</span></td>
+					</tr>
+				#end
+
+				#foreach ($fieldEntry in $addFieldsCalendarsCollection)
+				<tr>
+					<td class="chefLabel">$validator.escapeHtml($fieldEntry):</td>
+					<td class="chefSectionMessage"><span class="chefPre">$validator.escapeHtml($event.getField($fieldEntry))</span></td>
+				</tr>
+				#end
+			</table>
+			#if (!$event.DescriptionFormatted.equals(""))
+			<div class="chefSectionTitle">Description:</div>
+			<div class="chefSectionMessage indnt2"><span class="chefPre">$validator.escapeHtmlFormattedText($event.DescriptionFormatted)</span></div>
+			#end
+
+			#if (!$event.Attachments.isEmpty())
+			<div class="chefSectionTitle">Attachments:</div>
+			<div class="chefSectionMessage indnt2">
+			#set ($size = 0)
+					#set ($props = false)
+					#set ($size = $event.Attachments.size())
+					<ul class="chefAttachmentList">
+					#foreach ($attachment in $event.Attachments)
+							#set ($props = $attachment.Properties)
+							#if (!$props)
+									#if ($size > 0) #set ($size = $size - 1) #end
+							#else
+									#if ($props.getBooleanProperty($props.NamePropIsCollection))
+													<li><img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder" />
+									#else
+													<li><img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$validator.escapeHtml($props.getProperty($props.NamePropContentType))" />
+									#end
+									<a href="$attachment.Url" target="_blank">
+									$validator.escapeHtml($attachment.Properties.getPropertyFormatted("DAV:displayname"))</a>
+									#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+													($props.getPropertyFormatted($props.NamePropContentLength))
+									#end
+									</li>
+							#end
+							#set ($props = false)
+					#end
+					</ul>
+			#end
+			#if ($size == 0) No attachments ...#end
+				<div class="chefSectionTitle">
+					<a href="#" onclick="location='#toolLink("$action" "doOk")';return false;">Back</a>	</div>
+				</div>
+	#end ## if noEvent == true
+</div>

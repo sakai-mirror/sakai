@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping package="org.sakaiproject.component.help.model">
+
+   <class name="ResourceBean" table="help_resource">
+      <id name="id" length="32" type="org.sakaiproject.component.help.shared.IdType" column="id">
+         <generator class="org.sakaiproject.component.help.shared.IdGenerator"/>
+      </id>
+      <property name="name" type="string" column="name" not-null="false"/>
+      <property name="location" type="string" column="location" not-null="false"/>
+      <many-to-one name="source" column="source_id" not-null="false" class="SourceBean"/>
+      <set name="contexts" table="help_resource_context" cascade="all">
+         <key column="resource_id"/>
+         <many-to-many column="source_id" class="ContextBean"/>
+      </set>
+   </class>
+
+   <class name="SourceBean" table="help_source">
+      <id name="id" length="32" type="org.sakaiproject.component.help.shared.IdType" column="id">
+         <generator class="org.sakaiproject.component.help.shared.IdGenerator"/>
+      </id>
+      <property name="name" type="string" column="name" not-null="false"/>
+      <map name="attributes" table="help_source_attribute">
+          <key column="id"/>
+          <index column="name" type="string"/>
+          <element column="value" type="string"/>
+      </map>
+   </class>
+
+   <class name="ContextBean" table="help_context">
+      <id name="id" length="32" type="org.sakaiproject.component.help.shared.IdType" column="id">
+         <generator class="org.sakaiproject.component.help.shared.IdGenerator"/>
+      </id>
+      <property name="name" type="string" column="name" not-null="false"/>
+   </class>
+
+</hibernate-mapping>

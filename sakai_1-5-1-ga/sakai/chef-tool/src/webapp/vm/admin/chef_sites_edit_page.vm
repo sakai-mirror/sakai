@@ -1,0 +1,74 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_sites_edit_page.vm,v 1.1 2004/03/05 03:15:15 ggolden Exp $ -->
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["title"];
+</script>
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Edit: Site $!site.Id / Page $!page.Id
+		</div>
+		<div class="chefPageviewTitle">
+			Review and modify this Page's information.
+		</div>
+
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Page
+				</legend>
+				<table class="chefEditItem" summary="Review and modify this User's information.">
+					<tr>
+						<td class="chefLabel">Page Id:</td>
+						<td>
+							$validator.escapeHtml($page.Id)
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="title">
+								Title:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="title" id="title" #if($page) value="$!validator.escapeHtml($page.Title)"#end />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							Layout:
+						</td>
+						<td>
+							#foreach ($layout in $layouts)
+								<input type="radio" name="layout" id="layout$velocityCount" value="$velocityCount" #if($velocityCount==($page.Layout+1))checked="checked"#end />
+								<label for="layout$velocityCount">$layout</label> <br />
+							#end							
+						</td>
+					</tr>
+				</table>
+				<fieldset>
+					<legend>
+						Continue Editing
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doDone_page" value="Done" />
+						<input type="submit" name="eventSubmit_doTools" value="Tools" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Complete the Site Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave_page" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+			</fieldset>
+		</form>
+	</div>
+</div>

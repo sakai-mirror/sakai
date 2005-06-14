@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+  <class name="org.sakaiproject.tool.assessment.data.dao.grading.ItemGradingData" table="sam_itemGrading_t">
+    <id name="ItemGradingId" column="itemGradingId" type="java.lang.Long" unsaved-value="0" >
+        <generator class="identity"/>
+    </id>
+    <many-to-one name="assessmentGrading" class="org.sakaiproject.tool.assessment.data.dao.grading.AssessmentGradingData"
+       column="assessmentGradingId" not-null="true"/>
+    <many-to-one name="publishedItem" class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedItemData"
+       column="publishedItemId" not-null="true"/>
+    <many-to-one name="publishedItemText" class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedItemText"
+       column="publishedItemTextId" not-null="true"/>
+
+    <property name="agentId">
+      <column name="agentId" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="submittedDate">
+      <column name="submittedDate" not-null="true" sql-type="datetime" />
+    </property>
+    <many-to-one name="publishedAnswer" class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAnswer"
+       column="publishedAnswerId" not-null="false"/>
+    <property name="rationale">
+      <column name="rationale" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="answerText">
+      <column name="answerText" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="autoScore">
+      <column name="autoScore" not-null="false" sql-type="float" />
+    </property>
+    <property name="overrideScore">
+      <column name="overrideScore" not-null="false" sql-type="float" />
+    </property>
+    <property name="comments">
+      <column name="Comments" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="gradedBy">
+      <column name="gradedBy" not-null="false" sql-type="varchar(36)" />
+    </property>
+    <property name="gradedDate">
+      <column name="gradedDate" not-null="false" sql-type="datetime" />
+    </property>
+    <property name="review">
+      <column name="review" not-null="false" sql-type="integer" />
+    </property>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.grading.AssessmentGradingData" table="sam_assessmentGrading_t">
+    <id name="assessmentGradingId" column="assessmentGradingId" type="java.lang.Long" unsaved-value="0" >
+        <generator class="identity"/>
+    </id>
+    <many-to-one name="publishedAssessment" class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAssessmentData"
+       column="publishedAssessmentId" not-null="true"/>
+    <property name="agentId">
+      <column name="agentId" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="submittedDate">
+      <column name="submittedDate" not-null="true" sql-type="datetime" />
+    </property>
+    <property name="isLate">
+      <column name="isLate" not-null="true" sql-type="varchar(1)" />
+    </property>
+    <property name="forGrade">
+      <column name="forGrade" not-null="true" sql-type="integer" />
+    </property>
+    <property name="totalAutoScore">
+      <column name="totalAutoScore" not-null="false" sql-type="float" />
+    </property>
+    <property name="totalOverrideScore">
+      <column name="totalOverrideScore" not-null="false" sql-type="float" />
+    </property>
+    <property name="finalScore">
+      <column name="finalScore" not-null="false" sql-type="float" />
+    </property>
+    <property name="comments">
+      <column name="comments" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="gradedBy">
+      <column name="gradedBy" not-null="false" sql-type="varchar(36)" />
+    </property>
+    <property name="gradedDate">
+      <column name="gradedDate" not-null="false" sql-type="datetime" />
+    </property>
+    <property name="status">
+      <column name="status" not-null="true" sql-type="integer" />
+    </property>
+    <property name="attemptDate">
+      <column name="attemptDate" not-null="false" sql-type="datetime" />
+    </property>
+    <property name="timeElapsed">
+      <column name="timeElapsed" not-null="false" sql-type="integer" />
+    </property>
+    <set name="itemGradingSet" table="sam_itemGrading_t" cascade="all" order-by="itemGradingId asc"
+      inverse="true" lazy="false">
+      <key column="assessmentGradingId"/>
+      <one-to-many class="org.sakaiproject.tool.assessment.data.dao.grading.ItemGradingData"/>
+    </set>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.grading.AssessmentGradingSummaryData" table="sam_gradingSummary_t">
+    <id name="assessmentGradingSummaryId" column="assessmentGradingSummaryId" type="java.lang.Long" unsaved-value="0" >
+        <generator class="identity"/>
+    </id>
+    <many-to-one name="publishedAssessment" class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAssessmentData"
+       column="publishedAssessmentId" not-null="true"/>
+    <property name="agentId">
+      <column name="agentId" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="totalSubmitted">
+      <column name="totalSubmitted" not-null="false" sql-type="integer" />
+    </property>
+    <property name="totalSubmittedForGrade">
+      <column name="totalSubmittedForGrade" not-null="false" sql-type="integer" />
+    </property>
+    <one-to-one name="lastSubmittedAssessmentGrading"
+      class="org.sakaiproject.tool.assessment.data.dao.grading.AssessmentGradingData"
+       />
+    <property name="lastSubmittedDate">
+      <column name="lastSubmittedDate" not-null="false" sql-type="datetime" />
+    </property>
+    <property name="lastSubmittedAssessmentIsLate">
+      <column name="lastSubmittedAssessmentIsLate" not-null="true" sql-type="integer" />
+    </property>
+    <property name="sumOf_autoScoreForGrade">
+      <column name="sumOf_autoScoreForGrade" not-null="false" sql-type="float" />
+    </property>
+    <property name="average_autoScoreForGrade">
+      <column name="average_autoScoreForGrade" not-null="false" sql-type="float" />
+    </property>
+    <property name="highest_autoScoreForGrade">
+      <column name="highest_autoScoreForGrade" not-null="false" sql-type="float" />
+    </property>
+    <property name="lowest_autoScoreForGrade">
+      <column name="lowest_autoScoreForGrade" not-null="false" sql-type="float" />
+    </property>
+    <property name="last_autoScoreForGrade">
+      <column name="last_autoScoreForGrade" not-null="false" sql-type="float" />
+    </property>
+    <property name="sumOf_overrideScoreForGrade">
+      <column name="sumOf_overrideScoreForGrade" not-null="false" sql-type="float" />
+    </property>
+    <property name="average_overrideScoreForGrade">
+      <column name="average_overrideScoreForGrade" not-null="false" sql-type="float" />
+    </property>
+    <property name="highest_overrideScoreForGrade">
+      <column name="highest_overrideScoreForGrade" not-null="false" sql-type="float" />
+    </property>
+    <property name="lowest_overrideScoreForGrade">
+      <column name="lowest_overrideScoreForGrade" not-null="false" sql-type="float" />
+    </property>
+    <property name="last_overrideScoreForGrade">
+      <column name="last_overrideScoreForGrade" not-null="false" sql-type="float" />
+    </property>
+    <property name="scoringType">
+      <column name="scoringType" not-null="false" sql-type="integer" />
+    </property>
+    <one-to-one name="acceptedAssessmentGrading"
+      class="org.sakaiproject.tool.assessment.data.dao.grading.AssessmentGradingData"
+       />
+    <property name="acceptedAssessmentIsLate">
+      <column name="acceptedAssessmentIsLate" not-null="false" sql-type="integer" />
+    </property>
+    <property name="finalAssessmentScore">
+      <column name="finalAssessmentScore" not-null="false" sql-type="float" />
+    </property>
+    <property name="feedToGradeBook">
+      <column name="feedToGradeBook" not-null="false" sql-type="integer" />
+    </property>
+  </class>
+</hibernate-mapping>

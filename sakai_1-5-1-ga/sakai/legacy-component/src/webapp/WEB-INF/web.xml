@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app PUBLIC
+    "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+	<display-name>
+		sakai-legacy-component
+	</display-name>
+
+    <servlet>
+        <servlet-name>
+           components
+        </servlet-name>
+        <servlet-class>
+            org.sakaiproject.component.ComponentsServlet
+        </servlet-class>
+
+		<!-- pick the components xml for registration -->
+        <init-param>
+            <param-name>components-file</param-name>
+            <!-- <param-value>components_db.xml</param-value> -->
+            <param-value>components.xml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ex-components-path</param-name>
+            <param-value>/usr/local/sakai/legacy-component/components.xml</param-value>
+        </init-param>
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+       <servlet-name>
+          components
+       </servlet-name>
+       <url-pattern>
+         /components/*
+       </url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+      <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>

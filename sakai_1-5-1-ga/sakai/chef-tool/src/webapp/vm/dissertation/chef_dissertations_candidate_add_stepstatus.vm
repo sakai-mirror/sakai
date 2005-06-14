@@ -1,0 +1,62 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_candidate_add_stepstatus.vm,v 1.2 2004/07/26 20:12:15 rwellis.umich.edu Exp $ -->
+## Dissertations - Candidate's add new StepStatus form
+<div class="chefPortletContainer">
+	<div class="chefPageviewTitle">
+		Create A New Step
+	</div>
+	<form name="addStep" id="addStep" action="#toolForm($action)" method="post" >
+		<fieldset>
+			<legend>
+				New Step
+			</legend>
+			<div class="chefPortletContent">
+				The <span class="chefRequiredInline">&nbsp;</span> means this information is required.<br /><br />
+				<table class="chefEditItem">
+					<tr>
+						<td class="chefLabel" width="18%"  align="left">
+							<label for="desc"><span class="chefRequiredInline">&nbsp;</span>Description&nbsp;:&nbsp;</label>
+						</td>
+						<td colspan=2>  
+							<textarea name="desc" cols="70" rows="6" id="desc" wrap="virtual"></textarea>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td class="chefLabel" valign="top">
+							<label for="prereq">Prerequisites&nbsp;:&nbsp;</label>
+						</td>
+						<td>
+							<select onchange="blur()" name="prereq" id="prereq" multiple="multiple">
+								#foreach ($prereq in $orderedsteps)
+									<option value="$prereq.Reference">$prereq.ShortInstructionsText</option>
+								#end
+							</select>
+							<div class="chefSectionMessage">
+								Note&nbsp;:&nbsp;To select more than one, hold Apple-select on mac, Ctrl-select on pc.
+							</div>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td class="chefLabel" valign="top">
+							<label for="location"><span class="chefRequiredInline">&nbsp;</span>Location&nbsp;:&nbsp;</label>
+						</td>
+						<td>
+							<select onchange="blur()" name="location" id="location">
+								<option selected="selected" value="start">START</option>
+								#foreach ($step in $orderedsteps)
+									<option value="$step.Reference">$step.ShortInstructionsText</option>
+								#end
+							</select>
+							<div class="chefSectionMessage">
+								Note&nbsp;:&nbsp;The new step will appear AFTER the selected step.
+							</div>
+						</td>
+					</tr>
+				</table>
+				<div class="chefButtonRow">
+					<input type="submit" name="eventSubmit_doAddnew_stepstatus" value="Save" />
+					<input type="submit" name="eventSubmit_doCancel_candidate" value="Cancel" />
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>

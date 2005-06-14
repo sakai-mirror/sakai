@@ -1,0 +1,360 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-siteInfo-list.vm,v 1.26 2005/02/03 20:28:33 zqian.umich.edu Exp $ -->
+## Site list Sites list on worksite setup home page
+<div class ="portletBody">
+	#if($menu)#toolbar($menu)#end
+	#if ($alertMessage)
+		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	#if ($fromWSetup)
+		<form name="siteForm" id="siteForm" class="toolbarForm" action="#toolForm("SiteAction")" method="post">
+			<input type="hidden" name="option" value="x" />
+			<input type="hidden" name="eventSubmit_doNavigate_to_site" value="x" />
+			<p class="nav">
+				#if ($!prevSite)
+					<input type="submit" 
+						name="previous" 
+						value="Previous: $prevSite.Title" 
+						onclick="document.siteForm.option.value='$prevSite.Id';javascript:document.siteForm.submit();" />
+				#end
+				<input type="submit" 
+						name="back" 
+						value="Return to Sites List" 
+						onclick="document.siteForm.option.value='';javascript:document.siteForm.submit();" />
+				#if ($!nextSite)
+					<input type="submit" 
+						name="next" 
+						value="Next: $nextSite.Title" 
+						onclick="document.siteForm.option.value='$nextSite.Id';javascript:document.siteForm.submit();" />
+				#end
+			</p>		
+		</form>
+	#end
+	<h3 class="insColor insBak insBor">
+		$validator.escapeHtml($!siteTitle)
+	</h3>
+	<table cellpadding="0" cellspacing="0" class="itemSummary indnt3" summary="Site Information">
+		<tr> 
+			<th>
+				Site Description:
+			</th>
+			<td>
+				$validator.escapeHtml($!siteDescription)
+			</td>
+		</tr>
+		#if ($!isCourseSite)
+			<tr> 
+				<th>
+					Courses included in site:
+				</th>
+				<td>
+					#foreach($id in $!providerCourseList)
+						$id<br />
+					#end
+					#foreach($id in $!manualCourseList)
+						$id(requested)<br />
+					#end
+				</td>
+			</tr>
+			<tr> 
+				<th>
+					Term:
+				</th>
+				<td>
+					$!term
+				</td>
+			</tr>
+		#end
+		<tr>
+			<th>
+				Site Contact and email:
+			</th>
+			<td>
+				$validator.escapeHtml($!contactName), <a href="mailto:$!contactEmail">$!contactEmail</a>
+			</td>
+		</tr>
+		<tr> 
+			<th>
+				Available to:
+			</th>
+			<td>
+				#if ($!published)
+					#if ($!siteJoinable)
+						Site can be joined by anyone with authorization to login
+					#else
+						Site participants only
+					#end
+				#else
+					## unpublished site
+					Site owner and organizers
+				#end
+			</td>
+		</tr>
+		<tr>
+			<th>
+				Included on public sites list:
+			</th>
+			<td>
+				#if ($!published && $!include)
+					Yes
+				#else
+					No
+				#end
+			</td>
+		</tr>
+		<tr>
+			<th>
+				Creation Date:
+			</th>
+			<td>
+				$!siteCreationDate
+			</td>
+		</tr> 
+		
+		<tr>
+		#if ($!isCourseSite)
+			<th>
+				Appearance:
+			</th>
+			<td>
+				$!siteUnit
+			</td>
+
+		#else
+			<th>
+				Icon URL:
+			</th>
+			<td>
+				$!siteIcon
+			</td>
+		#end
+		</tr>
+	</table>	
+	#if ($!allowUpdate || $!viewRoster)
+		<hr />
+		<h4 class="insColor insBak insBor">		
+			$validator.escapeHtml($!siteTitle) Participant List (# $!participantListSize)
+		</h4>
+		#if ($participantList.size() > 0)
+			<div class="chef2ndToolbarWrap">
+				<table class="chef2ndToolbar"  cellpadding="0" cellspacing="0" summary ="Table holds paging option">
+					<tr>
+						<td class="left">
+							<span class="left">
+						    		<span class="instruction">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</span>
+							</span>
+						</td>
+						<td class="right">
+					        #if ($pagesize != 0)
+								#if ($goPPButton == "true")
+									<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+									<input type="submit" name="eventSubmit_doList_prev" value="Previous $pagesize" />
+									</form>
+								#end
+							#end
+							<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
+								<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
+								<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+									#foreach ($i in $!pagesizes)
+										<option value="$i" #if($pagesize == $i) selected="selected" #end>show $i items per page</option>
+									#end
+								</select>
+							</form>
+							#if ($pagesize != 0)
+								#if ($goNPButton == "true")
+									<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+									<input type="submit" name="eventSubmit_doList_next" value="Next $pagesize" />
+									</form>
+								#end
+							#end
+						</td>
+					</tr>
+				</table>
+			</div>
+		#end
+		<form name="participantForm" id="participantForm" action="#toolForm("SiteAction")" method="post">
+			<table class ="listHier indnt3"  cellpadding="0" cellspacing="0" summary ="Table holds the information of site participant. Column 1 holds the index number, column 2 holds the name, Column 3 holds uniqname, Column 4 holds the role, Headers hold links for sorting">
+				<tr>
+					<th id="name">
+						<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_name" title ="Sort by name"> 
+							Name
+							#if ($currentSortedBy.equals("participant_name")) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by name ascending" alt ="Sort by name ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by name descending" alt ="Sort by name descending" /> 
+								#end 
+							#end 
+						</a>
+					</th>
+					#if ($!isCourseSite)
+						<th id="coursename">
+							<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_course" title ="Sort by course name"> 
+								Enrolled In
+								#if ($currentSortedBy.equals("participant_course")) 
+									#if ($currentSortAsc.equals("true")) 
+										<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by course name ascending" alt ="Sort by course name ascending" /> 
+									#else 
+										<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by course name descending" alt ="Sort by course name descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						<th id="id">
+							<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_id" title ="Sort by participant id"> 
+								Id
+								#if ($currentSortedBy.equals("participant_id")) 
+									#if ($currentSortAsc.equals("true")) 
+										<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by participant id ascending" alt ="Sort by participant id ascending" /> 
+									#else 
+										<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by participant id descending" alt ="Sort by participant id descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+						<th id="credits">
+							<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_credits" title ="Sort by participant credits"> 
+								Credits
+								#if ($currentSortedBy.equals("participant_credits")) 
+									#if ($currentSortAsc.equals("true")) 
+										<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by participant credits ascending" alt ="Sort by participant credits ascending" /> 
+									#else 
+										<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by participant credits descending" alt ="Sort by participant credits descending" /> 
+									#end 
+								#end 
+							</a>
+						</th>
+					#end
+					<th id="role">
+						<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_role" title ="Sort by role"> 
+							Role 
+							#if ($currentSortedBy.equals("participant_role")) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by role ascending" alt ="Sort by role ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by role descending" alt ="Sort by role descending" /> 
+								#end 
+							#end
+						</a>	
+					</th>
+					#if ($allowUpdate)
+						#if ($!activeInactiveUser)
+							<th id="status">
+								Status
+							</th>
+						#end
+						<th id="remove">
+							Remove
+						</th>
+					#end
+				</tr>
+				#foreach($participant in $participantList)
+					#set($uniqname = $participant.getUniqname())
+					<tr>
+				## (gsilver) need a better way of handling null names - in any case - need to avoid rendering ", " if there is none associated with an entry					
+						<td headers="name">
+							#set ($participantName=$participant.getName())
+							#if ($participantName ==", ") 	
+							#else
+								$participantName
+							#end
+							($participant.getUniqname())
+						</td>
+						#if ($!isCourseSite)
+							<td headers="coursename">
+								#set($partCourse = "")
+								#set($partCourse = $participant.getCourse())
+								#set($partSection = "")
+								#set($partSection = $participant.getSection())
+								$!partCourse $!partSection
+							</td>
+							<td headers="id">
+								#set($partId = "")
+								#set($partId = $participant.getId())
+								$!partId
+							</td>
+							<td headers="id">
+								#set($partCredits = "")
+								#set($partCredits = $participant.getCredits())
+								$!partCredits
+							</td>
+						#end
+						<td headers="role">
+							#set($uRole = "")
+							#set($uRole = $participant.getRole())
+							#if ($allowUpdate)
+								<select name="role$uniqname">
+									#foreach($r in $roles)
+										<option value ="$r.Id"
+											#if($r.Id == $uRole)
+												selected="selected"
+											#end
+										>
+											$r.Id
+										</option>
+									#end
+								</select>
+							#else
+								$!uRole
+							#end
+						</td>
+						#if ($allowUpdate)
+							#if ($!activeInactiveUser)
+								<td>
+									#set($grant = $realm.getUserGrant($uniqname))
+									#set($grantActive = $!grant.isActive())
+									<select name="activeGrant$uniqname">
+										#if ($!grant.isActive())
+											<option value="true" selected="selected" >Active</option>
+											<option value="false">Inactive</option>
+										#else
+											<option value="true" >Active</option>
+											<option value="false" selected="selected" >Inactive</option>
+										#end
+									</select>
+								</td>
+							#end
+							<td>
+##  (gsilver) removed an id attribute here (id="selectedUser" ) as it retuned same value for all entries	
+								#if ($participant.isRemoveable())						
+									<input type="checkbox" name="selectedUser" value="$uniqname" 
+										#foreach($participantSelected in $selectedParticipants)
+											#if($participantSelected.getUniqname() == $uniqname)
+												checked="checked" 
+											#end
+										#end
+									/>
+								#end
+							</td>
+						#end
+					</tr>
+				#end
+			</table>
+			<div class="act">
+				<input type="submit" class="active" name="eventSubmit_doUpdate_participant" value="Update" />
+				#if ($fromWSetup)
+					<input type="submit" name="eventSubmit_doBack_to_site_list" value="Cancel" />
+				#end
+			</div>
+		</form>
+		<hr />
+		<h4 class="insColor insBak insBor"><a name="roleDescription">Role Descriptions</a></h4>
+		<table cellspacing="0" cellpadding="0" class="itemSummary indnt3" summary ="Role definitions - first column the role name, second column the description." >
+			#foreach ($role in $roles)
+				#set ($description = false)
+				<tr>
+					<td>
+						$role.Id
+					</td>
+					<td>
+						<div class="chefInlineInstructions">
+							#set($description = "")
+							#set($description = $role.Description)
+							$validator.escapeHtml($!description)
+						</div>
+					</td>
+				</tr>
+			#end
+		</table>
+	#end
+</div>

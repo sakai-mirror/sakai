@@ -1,0 +1,312 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAssessmentData"
+    table="sam_publishedAssessment_t">
+    <id name="publishedAssessmentId" column="id" type="java.lang.Long" unsaved-value="0">
+        <generator class="identity"/>
+    </id>
+    <many-to-one name="assessment" class="org.sakaiproject.tool.assessment.data.dao.assessment.AssessmentData"
+       column="assessmentId" not-null="true"/>
+    <property name="title">
+      <column name="title" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="description">
+      <column name="description" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="comments">
+      <column name="comments" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="typeId">
+      <column name="typeId" not-null="false" sql-type="varchar(36)" />
+    </property>
+    <property name="instructorNotification">
+      <column name="instructorNotification" not-null="false" sql-type="integer" />
+    </property>
+    <property name="testeeNotification">
+      <column name="testeeNotification" not-null="false" sql-type="integer" />
+    </property>
+    <property name="multipartAllowed">
+      <column name="multipartAllowed" not-null="false" sql-type="integer" />
+    </property>
+    <property name="status">
+      <column name="status" not-null="true" sql-type="integer" />
+    </property>
+    <property name="createdBy">
+      <column name="createdBy" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="createdDate">
+      <column name="createdDate" not-null="true" sql-type="datetime" />
+    </property>
+    <property name="lastModifiedBy">
+      <column name="lastModifiedBy" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="lastModifiedDate">
+      <column name="lastModifiedDate" not-null="true" sql-type="datetime" />
+    </property>
+    <set name="sectionSet" table="sam_publishedSection_t" cascade="all" order-by="sequence asc"
+      inverse="true" lazy="true">
+      <key column="assessmentId"/>
+      <one-to-many class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedSectionData"/>
+    </set>
+    <one-to-one name="assessmentAccessControl"
+      class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAccessControl"
+      cascade="all" />
+    <one-to-one name="evaluationModel"
+      class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedEvaluationModel"
+      cascade="all" />
+    <one-to-one name="assessmentFeedback"
+      class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedFeedback"
+      cascade="all" />
+
+    <set name="assessmentMetaDataSet" table="sam_publishedMetaData_t" cascade="all"
+      inverse="true" lazy="false">
+      <key column="assessmentId"/>
+      <one-to-many class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedMetaData"/>
+    </set>
+
+    <set name="securedIPAddressSet" table="sam_publishedSecuredIP_t" cascade="all"
+      inverse="true" lazy="false">
+      <key column="assessmentId"/>
+      <one-to-many class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedSecuredIPAddress"/>
+    </set>
+ </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAccessControl"
+    table="sam_publishedAccessControl_t">
+    <id name="id" column="assessmentId">
+        <generator class="foreign">
+            <param name="property">assessment</param>
+        </generator>
+    </id>
+    <one-to-one name="assessment"
+      class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAssessmentData"
+      constrained="true" cascade="all" />
+    <property name="unlimitedSubmissions">
+      <column name="unlimitedSubmissions" not-null="false" sql-type="integer" />
+    </property>
+    <property name="submissionsAllowed">
+      <column name="submissionsAllowed" not-null="false" sql-type="integer" />
+    </property>
+    <property name="submissionsSaved">
+      <column name="submissionsSaved" not-null="false" sql-type="integer" />
+    </property>
+    <property name="assessmentFormat">
+      <column name="assessmentFormat" not-null="false" sql-type="integer" />
+    </property>
+    <property name="bookMarkingItem">
+      <column name="bookMarkingItem" not-null="false" sql-type="integer" />
+    </property>
+    <property name="timeLimit">
+      <column name="timeLimit" not-null="false" sql-type="integer" />
+    </property>
+    <property name="timedAssessment">
+      <column name="timedAssessment" not-null="false" sql-type="integer" />
+    </property>
+    <property name="retryAllowed">
+      <column name="retryAllowed" not-null="false" sql-type="integer" />
+    </property>
+    <property name="lateHandling">
+      <column name="lateHandling" not-null="false" sql-type="integer" />
+    </property>
+    <property name="startDate">
+      <column name="startDate" not-null="false" sql-type="datetime" />
+    </property>
+    <property name="dueDate">
+      <column name="dueDate" not-null="false" sql-type="datetime" />
+    </property>
+   <property name="scoreDate">
+      <column name="scoreDate" not-null="false" sql-type="datetime" />
+    </property>
+    <property name="feedbackDate">
+      <column name="feedbackDate" not-null="false" sql-type="datetime" />
+    </property>
+    <property name="retractDate">
+      <column name="retractDate" not-null="false" sql-type="datetime" />
+    </property>
+    <property name="autoSubmit">
+      <column name="autoSubmit" not-null="false" sql-type="integer" />
+    </property>
+    <property name="itemNavigation">
+      <column name="itemNavigation" not-null="false" sql-type="integer" />
+    </property>
+    <property name="itemNumbering">
+      <column name="itemNumbering" not-null="false" sql-type="integer" />
+    </property>
+    <property name="submissionMessage">
+      <column name="submissionMessage" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="releaseTo">
+      <column name="releaseTo" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="username">
+      <column name="username" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="password">
+      <column name="password" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="finalPageUrl">
+      <column name="finalPageUrl" not-null="false" sql-type="varchar(1023)" />
+    </property>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedEvaluationModel"
+    table="sam_publishedEvaluation_t">
+    <id name="id" column="assessmentId">
+        <generator class="foreign">
+            <param name="property">assessment</param>
+        </generator>
+    </id>
+    <one-to-one name="assessment"
+      class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAssessmentData"
+      constrained="true" cascade="all" />
+    <property name="evaluationComponents">
+      <column name="evaluationComponents" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="scoringType">
+      <column name="scoringType" not-null="false" sql-type="integer" />
+    </property>
+    <property name="numericModelId">
+      <column name="numericModelId" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="fixedTotalScore">
+      <column name="fixedTotalScore" not-null="false" sql-type="integer" />
+    </property>
+    <property name="gradeAvailable">
+      <column name="gradeAvailable" not-null="false" sql-type="integer" />
+    </property>
+    <property name="isStudentIdPublic">
+      <column name="isStudentIdPublic" not-null="false" sql-type="integer" />
+    </property>
+    <property name="anonymousGrading">
+      <column name="anonymousGrading" not-null="false" sql-type="integer" />
+    </property>
+    <property name="autoScoring">
+      <column name="autoScoring" not-null="false" sql-type="integer" />
+    </property>
+    <property name="toGradeBook">
+      <column name="toGradeBook" not-null="false" sql-type="integer" />
+    </property>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedFeedback"
+    table="sam_publishedFeedback_t">
+    <id name="id" column="assessmentId">
+        <generator class="foreign">
+            <param name="property">assessment</param>
+        </generator>
+    </id>
+    <one-to-one name="assessment"
+      class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAssessmentData"
+      constrained="true" cascade="all" />
+    <property name="feedbackDelivery">
+      <column name="feedbackDelivery" not-null="false" sql-type="integer" />
+    </property>
+    <property name="editComponents">
+      <column name="editComponents" not-null="false" sql-type="integer" />
+    </property>
+    <property name="showQuestionText">
+      <column name="showQuestionText" not-null="false" sql-type="integer" />
+    </property>
+    <property name="showStudentResponse">
+      <column name="showStudentResponse" not-null="false" sql-type="integer" />
+    </property>
+    <property name="showCorrectResponse">
+      <column name="showCorrectResponse" not-null="false" sql-type="integer" />
+    </property>
+    <property name="showStudentScore">
+      <column name="showStudentScore" not-null="false" sql-type="integer" />
+    </property>
+    <property name="showQuestionLevelFeedback">
+      <column name="showQuestionLevelFeedback" not-null="false" sql-type="integer" />
+    </property>
+    <property name="showSelectionLevelFeedback">
+      <column name="showSelectionLevelFeedback" not-null="false" sql-type="integer" />
+    </property>
+    <property name="showGraderComments">
+      <column name="showGraderComments" not-null="false" sql-type="integer" />
+    </property>
+    <property name="showStatistics">
+      <column name="showStatistics" not-null="false" sql-type="integer" />
+    </property>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedMetaData"
+    table="sam_publishedMetaData_t">
+    <id name="id" column="assessmentMetaDataId" type="java.lang.Long" unsaved-value="0">
+        <generator class="identity"/>
+    </id>
+    <many-to-one name="assessment" class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAssessmentData"
+      column="assessmentId" not-null="true" />
+    <property name="label">
+      <column name="label" not-null="true" sql-type="varchar(255)" />
+    </property>
+    <property name="entry">
+      <column name="entry" not-null="false" sql-type="varchar(255)" />
+    </property>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedSectionData" table="sam_publishedSection_t">
+    <id name="sectionId" column="sectionId" type="java.lang.Long" unsaved-value="0">
+        <generator class="identity"/>
+    </id>
+    <many-to-one name="assessment"
+      class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAssessmentData"
+      column="assessmentId" not-null="true" />
+    <property name="duration">
+      <column name="duration" not-null="false" sql-type="integer" />
+    </property>
+    <property name="sequence">
+      <column name="sequence" not-null="false" sql-type="integer" />
+    </property>
+    <property name="title">
+      <column name="title" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="description">
+      <column name="description" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="typeId">
+      <column name="typeId" not-null="true" sql-type="integer" />
+    </property>
+    <property name="status">
+      <column name="status" not-null="true" sql-type="integer" />
+    </property>
+    <property name="createdBy">
+      <column name="createdBy" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="createdDate">
+      <column name="createdDate" not-null="true" sql-type="datetime" />
+    </property>
+    <property name="lastModifiedBy">
+      <column name="lastModifiedBy" not-null="true" sql-type="varchar(36)" />
+    </property>
+    <property name="lastModifiedDate">
+      <column name="lastModifiedDate" not-null="true" sql-type="datetime" />
+    </property>
+    <set name="itemSet" table="sam_publishedItem_t" cascade="all" order-by="sequence asc"
+      inverse="true" lazy="false">
+      <key column="sectionId"/>
+      <one-to-many class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedItemData"/>
+    </set>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedSecuredIPAddress"
+    table="sam_publishedSecuredIP_t">
+    <id name="id" column="ipAddressId" type="java.lang.Long" unsaved-value="0">
+        <generator class="identity"/>
+    </id>
+    <many-to-one name="assessment"
+      class="org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAssessmentData"
+      column="assessmentId" not-null="true" />
+    <property name="hostname">
+      <column name="hostname" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="ipAddress">
+      <column name="ipAddress" not-null="false" sql-type="varchar(255)" />
+    </property>
+  </class>
+
+</hibernate-mapping>

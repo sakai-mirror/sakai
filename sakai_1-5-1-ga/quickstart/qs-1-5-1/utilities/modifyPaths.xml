@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     Oct 8, 2004 4:13:10 PM                                                        
+
+     Sample script to perform a global string change in properties and xml files.
+     As supplied it is not structured to perform any particular task for installation
+     it provides examples of how to change strings in the configuration files.
+     
+     Note that there needs to be different processing for strings in xml files 
+     and strings in properties files.  This problem is apparent with the Windows XP
+     OS.
+     
+     haines                                                                
+     ====================================================================== -->
+
+
+<project name="customizeStrings" default="help">
+  <description>
+    Perform a global string change in properties and xml files.
+  </description>
+
+  <!-- Make a properties file and environment variables available to the script. -->
+  <property file="modifyPaths.properties"/>
+  <property environment="env" />
+
+  <!-- ================================= 
+       target: help              
+       ================================= -->
+  <target name="help" description="print out information on using build file">
+    <echo>
+      This script will perform a global search and replace on strings found in 
+      xml and properties files.  It is designed to aid the installation of Sakai 1.5.1.
+      By default it will use values from the modifyPaths properties files.
+    </echo>
+  </target>
+
+  <!-- allow configuring the local preference for the location of the sakai configuration files -->
+
+  <target name="adjustFileReference" 
+	  description="modify the value of the directory holding sakai configuration information in relevant xml files." >
+    
+    <replace summary="yes" token="${sakai.configfilepathpattern}" value="${work.helper.dirname}"
+	     dir="${work.helper.dirname}" 
+	     includes="**/*.xml, **/*.properties" 
+	     />
+    
+    <!-- change paths in the tomcat directory from the original to the new string. -->
+    <replace summary="yes" token="${sakai.configfilepathpattern}" value="${work.helper.path}" 
+	     dir="${work.tomcat.installed.dir}"
+	     includes="**/*.xml"
+	     excludes="**/work"
+	     />
+
+    <replace summary="yes" token="${sakai.configfilepathpattern}" value="${work.helper.path}" 
+	     dir="${work.helper.path}"
+	     includes="**/*.xml"
+	     excludes="**/work"
+	     />
+
+    <!--  *.properties files require Unix-style paths.  Windows-style paths aren't parsed correctly. -->
+    <!--    For example, if the Windows-style path is "c:\dev\QuickDemo\sakai", the Unix-style      -->
+    <!--    path that the properties files need is "c:/dev/QuickDemo/sakai".  Java will properly    -->
+    <!--    parse the Unix-style paths even though it looks wierd.                                   -->
+
+    <path id="work.helper.path.tmp">
+      <pathelement location="${work.helper.path}"/>
+    </path>
+
+    <!-- convert the work.helper.path.tmp property into a unix style path name to use
+	 in properties files. -->
+    <pathconvert targetos="unix" property="work.helper.path.unixstyle" refid="work.helper.path.tmp" />
+    
+    <replace summary="yes" token="${sakai.configfilepathpattern.withoutslash}" value="${work.helper.path.unixstyle}" 
+	     dir="${work.tomcat.installed.dir}"
+	     includes="**/*.properties"/>
+    
+    <replace summary="yes" token="${sakai.configfilepathpattern.withoutslash}" value="${work.helper.path.unixstyle}" 
+	     dir="${work.helper.path}"
+	     includes="**/*.properties"/>
+
+  </target>
+
+  <!-- ================== Example Targets =================== -->
+  <!-- These targets are not used in this file, but they provide examples of 
+       how to perform some conversion tasks.
+    -->
+  
+  <!-- This is useful to determine the host operating system.  This can be useful if there
+       are some files that have OS specific contents.		-->
+  
+  <target name="findOS" description="Determine the current host OS" >
+    <!-- set properties depending the host os -->
+    <condition property="windows">
+      <os family="windows"/>
+    </condition>
+    <condition property="unix">
+      <os family="unix"/>
+    </condition>
+  </target>
+
+  <!-- Comment out entries in Sakai.properties -->
+  <target name="commentSqlEntries" 
+	  description="modify sakai.properties to take out existing references to sql values.">
+
+    <!-- turn off sql settings in sakai.properties -->
+    <replaceregexp>
+      <regexp pattern="^(\s*sql.*)" />
+      <substitution expression="#\1" />
+      <fileset dir="${work.helper.path}">
+	<include name="sakai.properties" />
+      </fileset>
+    </replaceregexp>
+
+  </target>
+
+  <!-- example of target to find a particular value and reset it -->
+  <target name="setSyllabusSchemaUpdate" description="Set the value of the schemaUpdate parameter for Syllabus">
+    <replaceregexp flags="s">
+      <!-- Note that the use of xml entities rather than regular characters
+	   in these strings. -->
+      <regexp pattern="(&quot;schemaUpdate&quot;&gt;.*&lt;value&gt;)true&lt;" />
+      <substitution expression="\1false&lt;" />
+      <fileset dir="${work.tomcat.installed.dir}/webapps/sakai-syllabus/WEB-INF" 	includes="components.xml" />
+    </replaceregexp>
+  </target>
+
+  <!-- $Header: /cvs/quickstart/qs-1-5-1/utilities/modifyPaths.xml,v 1.2 2005/05/10 15:32:16 dlhaines.umich.edu Exp $ -->
+
+</project>
+

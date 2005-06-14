@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<!-- for legacy CHEF 1.2.10 support, same as chef.discussion -->
+
+	<tool
+			id="chef.threadeddiscussion"
+			url="/sakai-chef-tool/chef-discussion"
+			title="Discussion"
+			description="For conversations in written form.">
+
+		<configuration name="category" value="false" />
+		<configuration name="channel" value="" />
+
+	</tool>
+
+</registration>

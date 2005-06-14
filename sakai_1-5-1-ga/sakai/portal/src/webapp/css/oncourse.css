@@ -1,0 +1,375 @@
+/* PART 2:GENERIC SELECTORS*/
+body{font-family:Verdana,Arial,Helvetica,sans-serif;font-size:.8em}
+.chefPortletContent a:visited{color:#8FA3BE;text-decoration:none}
+.chefPortletContent a:hover{color:#51698D;text-decoration:underline}
+A:hover{color:#62739E;text-decoration:underline}
+H1{font-size:30pt}
+H2{font-size:12pt}
+ins{color:red;text-decoration: none;}
+/* PART 3:PORTLET SELECTORS*/
+table.chefPortletStyleClass{border-bottom:3px solid #666699 ;}
+td.chefTitleStyleClass{
+background-color:#666699;
+color:#FFF;
+padding:2px 4px 2px 4px;
+height:16px;
+border-bottom:3px solid #666699;
+}
+td.chefTitleStyleClass img{margin:0;
+vertical-align: text-bottom;
+}
+td.chefActionTitleStyleClass{
+background-image:url(portalskins/oncourse/skin/topright-p-title.gif);
+background-position:top right;
+background-repeat:no-repeat;
+background-color:#666699;
+color:#FFF;
+padding:4px 18px 2px 2px;
+text-align:right;
+vertical-align:top;
+}
+.chefPortletToolBarMessage{
+background-color:#E7E7EF;
+border-bottom:1px dashed #B8C2CE;
+display:block;
+color:#51698D;
+font-size:85%;
+margin:0;
+padding:4px;
+text-align:left;
+width:auto;
+}
+.chefToolBarWrap a:active{border-color:#51698D;border-style:solid;border-width:1px;color:#51698D}
+.searchField{font-size:.9em;margin:0px;border:1px solid #B0BED0}
+.toolbarForm{margin:0px;padding:0px;display:inline}
+.toolbarForm a{border:0 none #fff !important;background-color:#fff !important}
+.chef2ndToolbarWrap{background-color:#fff;display:block;margin:4px 0px 0px 8px;padding:0px;text-align:left}
+table.chef2ndToolbar{color:#51698D;margin:0px 0px 10px 0px;text-align:left;width:98%;font-size:85%}
+table.chef2ndToolbar td.right{text-align:right;padding:3px 3px 0px 0px;vertical-align:middle}
+table.chef2ndToolbar td.left{vertical-align:middle;padding:0px 5px 0px 5px}
+table.chef2ndToolbar tr.first{background-color:#FFF}
+table.chef2ndToolbar tr.first td{padding-bottom:5px}
+table.chef2ndToolbar tr.second td.right{border-top:1px solid #51698D;color:#000}
+table.chef2ndToolbar tr.second td.left{border-top:1px solid #51698D}
+table.chef2ndToolbar td.left select{font-size:1em;vertical-align:middle;background-color:#FFF;color:#51698D}
+table.chef2ndToolbar td.right input{font-size:1em;vertical-align:middle;background-color:#DDE3EB;color:#51698D;border:1px solid #B0BED0}
+.chefPortletContainer{margin:0px 0px 0px 0px;padding:0px 0px 0px 0px;width:100%}
+.chefPortletContent{background-color:#fff;clear:both;margin-right:0px;padding:6px;width:96%;}
+.chefAlert{color:#CA0000}
+.chefAlertBox{
+background-color:#FFF8DF;
+background-image:url(/sakai-portal/image/warn.gif);
+background-position:.3em .3em;
+background-repeat:no-repeat;
+border:1px solid #B8B88A;
+clear:both;
+color:#663300;
+float:left;
+font-size:x-small;
+margin:5px 0px 5px 0px;
+padding:5px 5px 5px 25px
+}
+.chefInfoBox{background-color:#FFF;border:1px solid #778CBF;clear:both;float:left;font-size:x-small;margin:5px 0px 5px 0px;padding:5px 5px 5px 5px}
+.chefInlineInstructions{color:#62739E;display:block;font-size:.9em}
+.chefInlineAlert{
+background-image:url(/sakai-portal/image/arrowUpWarn.gif);
+background-position:center left;
+background-repeat:no-repeat;
+color:#CA0000;
+font-size:.9em;
+margin:0px 0px 0px 0px;
+padding:0px 0px 0px 10px
+}
+.chefPageviewTitle{clear:both;display:block;margin:0px 0px 5px 0px;width:70%}
+.chefListMessage{font-size:small;margin:0px 0px 5px 0px}
+.chefPortletContainer .chefBreadCrumb{clear:both;margin:5px 5px 5px 0px}
+.chefSectionMessage{font-size:small;margin:0px 0px 5px 10px}
+.chefSectionTitle{display:block;font-weight:normal;margin:5px 0px 5px 0px}
+.chefHonorPledge{color:#62739E;font-size:x-small;font-weight:bold}
+table.calendar{}
+table.calendar th{background-color:#FFFFCC;font-weight:normal;text-align:center}
+.bgActivity{background-color:#FFFFCA;border:1px solid #dadada;text-align:right}
+.bgWithoutActivity{background-color:#fff;border:1px solid #dadada;text-align:right}
+.borderGrayYear{background-color:#ccc;border:1px solid #dadada;text-align:right}
+.borderGrayDayWeek{border-bottom:none;border-collapse:collapse;border-left:1px solid #dadada;border-right:1px solid #dadada;border-top:1px solid #dadada}
+.borderGrayBackground{background-color:#FFFF99;border-bottom:none;border-left:1px solid #dadada;border-right:1px solid #dadada;border-top:1px solid #dadada}
+.borderGrayTodayBgCenter{background-color:#FFFFCA;border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #dadada}
+.borderGrayTodayEmptyMiddleBottom{background-color:white;border:1px solid #dadada}
+.borderGrayTodayEmptyMiddleCenter{background-color:white;border-left:1px solid #dadada;border-right:1px solid #dadada;border-top:1px solid #dadada}
+.borderGrayTodayLeftBottom{border-bottom:1px solid #dadada;border-left:1px solid #000;border-right:1px solid #dadada;border-top:1px solid #dadada}
+.borderGrayTodayLeftCenter{border-left:1px solid #000;border-right:1px solid #dadada;border-top:1px solid #dadada}
+.borderGrayTodayMiddleCenter{border-left:1px solid #dadada;border-right:1px solid #dadada;border-top:1px solid #dadada}
+.borderGrayTodayRightBottom{border-bottom:1px solid #dadada;border-left:1px solid #dadada;border-right:1px solid #000;border-top:1px solid #dadada}
+.borderGrayTodayRightCenter{border-left:1px solid #dadada;border-right:1px solid #000;border-top:1px solid #dadada}
+.borderOnlyLeftDay{background-color:#FFFF99;border-left:1px solid #dadada}
+.borderOnlyLeft{border-left:1px solid #dadada}
+.borderToday{border:1px solid #000}
+.borderTodayCenter{border-bottom:1px solid #dadada;border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #dadada}
+.borderTodayTop{border-bottom:1px solid #dadada;border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #000}
+.borderTodayWithActivity{background-color:#FFFFCA;border:1px solid #000;text-align:right}
+.borderTodayWithoutActivity{background-color:#FFF;border:1px solid #000;text-align:right}
+.borderTopLeft{background-color:#FFFF99;border-left:1px solid #dadada;border-right:1px solid  #dadada;border-top:1px solid #dadada}
+.borderTopLeftWhite{border-left:1px solid #dadada;border-right:1px solid  #dadada;border-top:1px solid #dadada}
+.borderWhiteYear{background-color:#FFFFCA;border:1px solid #fff;text-align:center}
+.borderWhite{border-bottom:none;border-left:1px solid #fff;border-right:1px solid #fff;border-top:1px solid #fff}
+/* PART 4:INPUTS*/
+.chefPortletContainer input.text{border:1px solid #A9A9A9;margin:2px;padding:0px 2px 0px 2px}
+.chefPortletContainer input.upload{border:1px solid #A9A9A9;margin:2px;padding:2px}
+.chefPortletContainer select{background-color:#FFF;border:1px solid #A9A9A9;margin:2px}
+.chefPortletContainer textarea{font-family:Verdana,Arial,Helvetica,sans-serif;font-size:1em;background-color:#FFFFFF;border:1px solid #A9A9A9;margin:2px;padding:2px 0px 2px 2px}
+.chefPortletContainer  input.radio{}
+.chefPortletContainer input.checkbox{}
+.chefButtonRow{clear:both;margin:10px 0px 10px 0px}
+.chefButtonRowRight{clear:both;float:right;margin:5px 0px 5px 0px}
+.chefButtonRowRight input,.chefButtonRow input{background-color:#DDDCD7;border:1px solid #4A5573;color:#4A5573;padding:1px 3px 1px 3px}
+.chefButtonRow	input:hover,.chefButtonRowRight	input:hover{background-color:#DDDCD7;border:1px dashed #4A5573;color:#4A5573;padding:1px 3px 1px 3px}
+.chefPortletContainer .chefRequiredInline{background-image:url(/sakai-portal/image/required.gif);background-position:center left;background-repeat:no-repeat;padding:4px 4px 4px 14px}
+.chefPortletContainer td.chefRequiredInline{background-image:url(/sakai-portal/image/required.gif);background-position:.4em left;background-repeat:no-repeat;padding:4px 4px 4px 4px}
+.chefPortletContainer .chefRequired{
+background-image:url(/sakai-portal/image/required.gif);
+background-position:3px 3px;
+background-repeat:no-repeat;
+border:1px solid #A9A9A9;
+margin:2px;
+padding:3px 3px 3px 15px;
+text-decoration:none
+}
+/*PART 5:LAYOUTS*/
+
+fieldset{border-width:1px;border-style:solid none solid none;border-color:#AAAAAA;clear:both;display:block;margin:3px 0px 3px 0px;padding:5px;width:70%}
+legend{border:1px solid #AAAAAA;color:#AAAAAA;font-size:.8em;font-weight:bold;margin:3px 0px 3px 0px;padding:2px 10px 2px 10px}
+.chefAttachmentsF{border:1px solid #DDDCD7;display:block;padding:5px}
+.chefAttachmentsL{border:1px solid #A9A9A9;color:#A9A9A9;font-size:.8em;font-weight:bold;padding:2px 10px 2px 10px}
+.chefPortletContainer  table.chefFlatListViewTable th{background-color:#FFF8DF;border-bottom:1px solid #B8B88A;font-size:.9em;font-weight:normal;padding:3px 8px 3px 8px;text-align:left;white-space:nowrap}
+.chefPortletContainer  table.chefFlatListViewTable caption {padding:1em 0 1em 0;text-align:left}
+.chefPortletContainer  table.chefFlatListViewTable td.chefTopline{border-top:1px dotted #B8B88A}
+.chefPortletContainer  table.chefFlatListViewTable td.highLight{background-color:#EAEAE7}
+.chefLightFlatListViewTable{border:1px solid #DDDCD7;clear:both;font-size:.9em}
+.chefPortletContainer  table.chefLightFlatListViewTable th{border-bottom:1px solid #DDDCD7;font-size:.9em;font-weight:normal;padding:3px 8px 3px 8px;text-align:left;white-space:nowrap}
+table.chefItemDetail{font-size:.9em;margin:0px 0px 5px 20px;width:auto}
+table.chefItemDetail td.chefLabel{padding-right:4px;font-weight:bold;text-align:left;vertical-align:text-top;white-space:nowrap}
+table.chefItemDetail td{padding:3px;vertical-align:top}
+table.chefSectionContent{margin:10px 10px 0px 15px;width:98%}
+table.chefSectionContent th{background-color:#B4C0DB;font-size:.9em;font-weight:normal;padding:3px;text-align:left}
+table.chefSectionContent td.content{border:1px solid #B4C0DB}
+.chefPortletContainer   table.chefEditItem{margin:20px 10px 0px 10px;width:auto}
+.chefPortletContainer  table.chefEditItem td.chefLabel{border-right:1px solid #FFFFFF;padding-right:10px;text-align:left;vertical-align:text-top;font-weight:bold}
+.chefPortletContainer table.chefSectionContent td.content{border:1px solid #B4C0DB;padding:5px}
+.chefPortletContainer   table.chefEditItem td.chefContent{}
+.chefPortletContainer table td{padding-right:5px}
+.chefPortletContainer .chefAttachmentList{margin:5px 5px 5px 5px;padding:0px 0px 5px 0px}
+.chefPortletContainer .chefAttachmentList li{font-size:.8em;list-style:none;margin:0px;padding:0px 0px 5px 0px}
+.chefLeftIndent{clear:both;margin-left:1.3em;padding:0px}
+.chefPre{font-size:1em}
+.chefPresenceText{font-size:.7em;white-space:nowrap}
+.chefPresenceListItem{font-family:Verdana,Arial,Helvetica,sans-serif;font-size:.8em;margin-left:3px;white-space:nowrap;}
+.presenceList{background-color:#fff;border-top:1em solid #fff;border-bottom:1em solid #fff}
+#chefPaneTitle{color:#3A548E;margin:5px;padding:0px}
+.chefChatUserName{font-weight:bold}
+.chefChatTimeStamp{font-size:.8em;font-weight:normal}
+.chefChatMessageBody{}
+.chefTitleIFrame{display:block;height:21px;margin:0px}
+.chefContentIFrame{display:block;height:50px;margin:0px}
+.helpDocHeader{color:blue;font-weight:bold;padding-bottom:15px;padding-top:15px}
+.helpDocContent{padding-left:1.5em;text-align:left}
+.PortletContainer{}
+table.chefFlatListViewTable th a:visited,A:link,A:visited,.chefPortletContent a:link{color:#51698D;text-decoration:none}
+STRONG,H3{font-size:9pt}
+.chefPortletContainer .chefToolBarWrap,.chefPortletContainer .chefToolBarWrapForm{
+background-color:#E7E7EF;
+border-color:#B8C2CE;
+border-style:solid;
+border-width:0 0 1px 0;
+display:block;
+font-size:85%;
+margin:0;
+padding:0;
+text-align:left;
+line-height:1.8em;
+width:auto
+}
+table.chef2ndToolbar td.right a,.chefToolBarWrap  a,.chefToolBarWrapForm a{border:1px solid #B8C2CE;color:#51698D;margin:1px;padding:1px 2px;text-decoration:none;white-space:nowrap}
+table.chef2ndToolbar td.right a:hover,.chefToolBarWrap  a:hover,.chefToolBarWrapForm a:hover{background-color:#FFF8DF;border-color:#51698D;border-style:solid;border-width:1px;color:#51698D;text-decoration:none}
+.borderGrayTodayCenter,.borderOnlyLeftTodayCenter{border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #dadada}
+.borderGrayTodayEmptyRightBottom,.borderGrayTodayEmptyRightCenter{background-color:white;border-left:1px solid #dadada;border-right:1px solid #000;border-top:1px solid #dadada}
+.borderGrayTodayMiddleBottom,.borderFullGray,.borderGrayMonth{border:1px solid #dadada}
+.borderTodayBottom,.borderGrayTodayBottom,.borderOnlyLeftTodayBottom{border-bottom:1px solid #000;border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #dadada}
+.chefPortletContainer table.chefFlatListViewTable,.chefPortletContainer table.chefHierListViewTable{border:1px solid #B8B88A;clear:both}
+.chefPortletContainer table.chefFlatListViewTable tr.bottom th,.chefPortletContainer table.chefHierListViewTable tr.bottom th{border-bottom:0px solid #B8B88A;border-top:1px solid #B8B88A}
+.chefPortletContainer  table.chefFlatListViewTable td,.chefPortletContainer  table.chefLightFlatListViewTable td{padding:3px 8px 3px 8px;text-align:left;vertical-align:top}
+#submitnotif{
+background-color:#FFFFD6;
+background-image:url(/sakai-portal/image/warn.gif);
+background-position: 3px 3px;
+background-repeat:no-repeat;
+border:1px solid #CA0000;
+clear:none;
+color:#CA0000;
+font-size:x-small;
+text-decoration:blink;
+vertical-align: text-top;
+margin:0;
+padding:5px 5px 5px 25px
+}
+
+/* new style guide specific selectors and definitions - 
+
+<body> and <a> commented out */
+/*GROUP 1 - generic selectors*/
+
+/*body
+{font-family:verdana,arial,helvetica,sans-serif;font-size:.8em} 
+a,a:link{color:#44A;text-decoration:none}
+a:hover
+{color:#44A;text-decoration:underline}
+a:visited
+{color:#43196F}*/
+.portletBody{padding:.3em 1em}
+hr
+{height:0}
+h3{font-size:130%}
+h4{font-size:120%}
+h5{font-size:110%}
+h3, h4, h5{font-weight:bold;clear:both;margin:1em 0}
+/* comment out for now - as it conflicts with core definition
+fieldset
+{border:none;margin-top:1em}
+legend
+{font-weight:bold;color:#000;font-size:100%;margin-left:0;padding-left:0}
+*/
+/* GROUP 2:institutional color settings
+any box can use any/all of these in addition to it's own class - change her eand they change everywhere */
+
+.insColor{color:#000}
+.insBak{background-color:#FFF}
+.insBor{border:1px solid #fff}
+
+/* GROUP 3:indent padding override classes */
+
+.tier0, .indnt0{margin-left:0 !important}
+.tier1, .indnt1{margin-left:1em !important}
+.tier2, .indnt2{margin-left:2em !important}
+.tier3, .indnt3{margin-left:3em !important}
+.tier4, .indnt4{margin-left:4em !important}
+.tier5, .indnt5{margin-left:5em !important}
+.tier6, .indnt6{margin-left:6em !important}
+.tier7, .indnt7{margin-left:7em !important}
+.tier8, .indnt8{margin-left:8em !important}
+.tier9, .indnt9{margin-left:9em !important}
+.tier10, .indnt10{margin-left:10em !important}
+.pad0{padding-left:0 !important}
+
+/*GROUP 4:standard "named" UI components*/
+
+/*subgroup 4.1 - navigation*/
+
+/*navigator for the top of the mode*/
+.navIntraTool
+{background-color:#CCC;text-align:center;padding:.3em;vertical-align:middle}
+/*for navigators flush right when there is just one navigator in same row*/
+.nav
+{text-align:right}
+.nav input{}
+/*for action controls */
+.act
+{padding:1em 0}
+.act input{}
+/*the default action control*/
+.act input.active
+{border:2px solid #000}
+/*disclosure triangle - can be used in conjunction with insColor insBak insBor*/
+.discTria
+{padding:.3em}
+/*for navigators flush left when there is another navigator flush right in same row - use as span inside a block element such as a <p>*/
+.leftNav
+{float:left;vertical-align:bottom;text-align:left;line-height:2em}
+/*for navigators flush right when there is another navigator flush left in same row - use as span inside a block element such as a <p>*/
+.rightNav
+{float:right;vertical-align:bottom;text-align:right;line-height:2em}
+/*for abc or 123 navigators*/
+span.abc{letter-spacing:.3em;color:#555}
+span.abc a:hover{color:maroon;text-decoration:none}
+span.abc a,span.abc a:link{}
+
+/*subgroup 4.2 - messages*/
+
+/*for status text in wizards - note: should really collapse into a generalized box*/
+/*11/11 (gds - changed height to line-height to accomodate multiline and wraps) */
+.step
+{line-height:1.5em;background-color:#CCC;padding:.3em .5em;margin:1em 0;font-size:x-small;}
+/*for instructions*/
+.instruction
+{font-size:12px;color:gray;line-height:1.2em;margin: 0;display:block;font-weight:normal}
+.inlinstruction
+{font-size:x-small;line-height:1.2em;margin:1em 0;display:inline}
+
+/*validation message - overrides rules in effect in box applied to*/
+.validation
+{background-color:#FFC !important;border:1px solid maroon  !important;padding:1em 2em  !important;background-image:url(../image/validation.gif)  !important;background-repeat:no-repeat  !important;background-position:5px 50%  !important}
+p.validation
+{padding:20px 30px}
+
+/*subgroup 4.3 - inputs*/
+
+.shorttext label
+{margin-left:0;margin-right:1em;width:14em;font-weight:bold;float:left}
+/*11/11 (gds: added font-family sizes to the input and textarea - not all browsers inherit these */
+.shorttext input
+{border:1px solid #333;margin-left:1em;padding:.2em;font-size:100%}
+.shorttext select
+{margin-left:1em;font-size:100%}
+.longtext label{font-weight:bold;margin-right:1em;width:14em;float:left}
+.longtext label.block{display:block;float:none;clear:both;width:auto}
+.longtext textarea
+{font-family:verdana,arial,helvetica,sans-serif;margin:0  1em;border:1px solid #333;padding:.2em;font-size:100%}
+.longtext.block textarea{margin-left:0 !important}
+
+/*11/11 (gds removed a r/l margin of 1em from below - if every element is going to have a r/l margin, better to give the container a padding)*/ 
+.checkbox,.shorttext,.longtext{margin:1em 0}
+.labelindnt{font-size:1em !important;margin:0 0 0 16em !important}
+label.hiddenlabel{display:none}
+/*11/11 (gds added - use with labels to display a background image next to the input)*/
+.req{margin-left:0 !important
+}
+.reqStar{color:red;width:1em;margin:0 .2em 0 0}
+p {}
+
+/*subgroup 4.4 - mode layouts*/
+
+/*table for displaying lists*/
+table.listHier
+{clear:both;font-size:1em;clear:both;margin-top:1em}
+table.listHier th
+{font-weight:normal;text-align:left;white-space:nowrap;background-color:#CCC;margin:0px;padding:.2em .8em .2em .4em}
+table.listHier td
+{padding:.2em .8em .2em .4em;vertical-align:text-top}
+table.listHier td img
+{margin-right:.2em;vertical-align:text-top}
+table.listHier td a:hover,table.listHier th a:hover 
+{text-decoration:none}
+/*assorted items used in this table*/
+.itemAction
+{font-size:80%;margin-left:1.5em}
+.folder
+{background:url(../images/sstree/folder-closed.gif)  no-repeat;float:left;height:14px;width:26px;padding-right:3px}
+/* table for displaying items */
+.itemSummary
+{margin-top:1em;margin-bottom:2em}
+table.itemSummary th
+{font-weight:bold;white-space:nowrap;vertical-align:top;text-align:left;padding:.3em 1em .3em .3em}
+table.itemSummary td
+{vertical-align:top;text-align:left;padding:.3em 1em .3em .3em;vertical-align:top}
+table.itemSummary caption
+{text-align:left;font-weight:bold;padding:1em 0 0 0}
+ul.attachList
+{margin:0;padding:0}
+ul.attachList img
+{vertical-align:middle;margin:0 1em 0 0}
+ul.attachList li
+{list-style:none;margin:0 0 .3em 0}
+
+/*subgroup 4.4 - not sure - not used?*/
+hr.itemSeparator{}
+/*could we not just do display:none? */
+.skip
+{display:inline;position:absolute;top:-999px;left:-999px;height:0}

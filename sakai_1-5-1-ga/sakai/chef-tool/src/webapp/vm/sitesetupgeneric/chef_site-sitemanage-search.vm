@@ -1,0 +1,44 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-sitemanage-search.vm,v 1.5 2005/01/03 23:21:59 gsilver.umich.edu Exp $ -->
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["search"];
+</script>
+<div class="portletBody">
+	<h3 class="insColor insBak insBor">Search for Sites</h3>
+	<p class="instruction">The Site Management tool allows administrators to search for sites, view and edit participants in sites.</p>
+	<form action="#toolForm("$action")" method="post">		
+		<p>Type of Site:</p>
+		<div class="checkbox indnt1">
+			<input type="radio" name="siteType" id="siteType" value="Any" checked="checked" onclick="clearNewCopyright(newcopyrighttext$i);" />
+			<label for="siteType">Any</label>
+		</div>
+		#foreach ($type in $siteTypes)
+			#if ($type == $termSearchSiteType)
+				<div class="checkbox indnt1">
+					<input  type="radio" name="siteType" id="siteType" value="$type" />
+					<label for="classSite">$type</label>
+				</div>
+				<div class="indnt3">
+					Academic Term:
+					<select name="selectTerm">
+					<option value="Any">Any</option>
+					#foreach ($term in $terms)
+					<option value="$term.Id">$term.Id</option>
+					#end
+					</select>
+				</div>	
+			#else
+				<div class="checkbox indnt1">
+					<input type="radio" name="siteType" id="siteType" value="$type" />
+					<label for="siteType">$type</label>
+				</div>
+			#end
+		#end
+		<div class="shorttext indnt1">
+			<label for="shorttext1">Search for:</label>
+			<input type="text" name="search" id="search" size="32" maxlength="50" value="">
+		</div>
+		<p class="act">
+			 <input type="submit" name="eventSubmit_doSitemanage_search" value="Search for Sites" />
+		</p>
+	</form>
+</div>

@@ -1,0 +1,9 @@
+# HSQL account information for Samigo
+# $Header: /cvs/quickstart/qs-1-5-1/samigo.hsqldb.xml,v 1.1 2005/04/15 17:37:20 dlhaines.umich.edu Exp $
+
+db.driverClassName=org.hsqldb.jdbcDriver
+db.url=jdbc:hsqldb:file:/Volumes/UserData/Users/dlhaines/tmp/dbtests/tmp_mysql_02/sakai/localfiles//samigo/samigodb
+db.username=sa
+db.password=
+
+# end

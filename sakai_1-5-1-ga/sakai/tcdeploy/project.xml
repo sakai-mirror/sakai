@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Maven plugin for deploy to Tomcat</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-tcdeploy</id>
+	<currentVersion>sakai.1.5.1</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+
+	<build>
+
+		<sourceDirectory>src/java</sourceDirectory>
+
+		<resources>
+			<resource>
+				<directory>${basedir}/src</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+					<include>**/*.jelly</include>
+				</includes>
+			</resource>
+		</resources>
+	
+	</build>
+
+</project>

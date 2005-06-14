@@ -1,0 +1,149 @@
+## $Header: /cvs/sakai/portal/src/webapp/vm/portalII.vm,v 1.21 2004/07/27 02:34:49 ggolden.umich.edu Exp $
+#if (!$sakai_fragment)
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>$config.ServerName : $site.Title : $page.Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="$sakai_skin" type="text/css" rel="stylesheet" media="all" />
+    <script type="text/javascript" language="JavaScript" src="/sakai-chef-tool/js/headscripts.js">
+    </script>
+
+<style type="text/css">
+.top
+{
+	width: 100%;
+	background-image: url(/sakai-embedded/image/ripple1280x86opaque.jpg);
+	padding:0px;
+	border: none;
+	border-bottom: 1px solid #cccccc;
+}
+.top_logo
+{
+	padding:0px;
+	border: none;
+	border-bottom: 1px solid #cccccc;
+}
+</style>
+
+  </head>
+  <body>
+#end
+
+## courier only if logged in
+#if ($loggedIn)
+<iframe
+	name="courier"
+	id="courier"
+	height="30px"
+	width="100%"
+	frameborder="0"
+	marginwidth="0"
+	marginheight="0"
+	src="$!{config.PortalTunnelUrl}/sakai-chef-tool/courier?site=$site.Id&page=$page.Id&auto=courier">
+</iframe>
+#end
+
+<table>
+<tr height="86px" valign="top">
+<td width="150px" class="top_logo">
+	<img src="$config.getString("portal.logo","/sakai-embedded/image/sakai.jpg")" width="150" height="86" border="0">
+</td>
+<td width="100%" class="top" valign="bottom">
+	<iframe
+		name="sitenav"
+		id="sitenav"
+		height="50px"
+		width="100%"
+		frameborder="0"
+		marginwidth="0"
+		marginheight="0"
+		src="$!{config.PortalTunnelUrl}/sakai-chef-tool/sitenav?site=$site.Id">
+	</iframe>
+</td>
+</tr>
+<tr height="100%" valign="top">
+<td width="150px">
+	#if($site.IconUrl)
+		<img src="$site.IconUrlFull" border="0">
+		<br />
+	#end
+	#foreach($p in $site.Pages)
+		#if ($p.id == $page.Id)
+			$p.Title<br />
+		#else
+			<a href="$p.Url">$p.Title</a><br />
+		#end
+	#end
+## presence only if logged in
+#if ($loggedIn)
+	<br />Users Present <br /><br />
+## presence for site (could be site/page if we add the &page=page.Id parameter)
+	<iframe
+		name="presence"
+		id="presence"
+		height="200px"
+		width="100%"
+		frameborder="0"
+		marginwidth="0"
+		marginheight="0"
+		src="$!{config.PortalTunnelUrl}/sakai-chef-tool/presence?site=$site.Id">
+	</iframe>
+#end
+</td>
+<td>
+
+<div id ="chefPaneTitle" class ="chefPaneHolder">
+	$site.Title : $page.Title
+</div>
+
+#foreach($t in $page.Tools)
+<iframe
+	name="$validator.escapeJavascript("Title$t.Id")"
+	id="$validator.escapeJavascript("Title$t.Id")"
+##	class ="chefTitleIFrame"
+	title="Title Bar"
+	height="30px"
+	width="100%"
+	frameborder="0"
+	marginwidth="0"
+	marginheight="0"
+	scrolling="no"
+	align="middle"
+	src="$config.getToolRegistration($t.ToolId).Url?pid=$t.Id&panel=Title">
+</iframe>
+<br />
+<iframe
+	name="$validator.escapeJavascript("Main$t.Id")"
+	id="$validator.escapeJavascript("Main$t.Id")"
+	height="50px"
+	width="100%"
+	title="$t.Title"
+##	class ="chefContentIFrame"
+	frameborder="0"
+	marginwidth="0"
+	marginheight="0"
+	scrolling="auto"
+	src="$config.getToolRegistration($t.ToolId).Url?pid=$t.Id&panel=Main">
+</iframe>
+<br />
+#end
+</td>
+</tr>
+<tr valign="top">
+<td colspan="2">
+<div align="center" class="chefExternalNav">|
+	#foreach ($link in $bottomnav)
+	$link | 
+	#end
+</div>
+<div id="chefBottom" align="center">
+	<a href="http://sakaiproject.org" target="_blank"><img border="0" src="/sakai-embedded/image/sakai_powered.gif" alt="Powered by Sakai" /></a><br />
+	<span class="chefCopyrightInfo">&copy; 2003, 2004 sakaiproject.org. All rights reserved.<br />
+	$config.getString("ui.service","Service") $config.getString("version.service","?") - Sakai $config.getString("version.sakai","?") - Server "$config.ServerId"</span>
+</div>
+</td>
+</tr>
+</table>
+
+#if (!$sakai_fragment)</body></html>#end

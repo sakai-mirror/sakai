@@ -1,0 +1,32 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/chat/chef_chat-delete.vm,v 1.2 2005/02/08 22:44:51 gsilver.umich.edu Exp $
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Deleting chat message...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block; clear:both"></div>#end
+		<div class="chefAlertBox" style="clear:both">Are you sure you want to permanently delete this message?</div>
+		<div style="display:block; clear:both"></div>
+		<form name="deleteTemplateForm" action="#toolForm("$action")" method="post">
+			<table class="chefItemDetail" cellspacing="0">
+				<tr>
+					<td class="chefLabel">From:</td>
+					<td>$validator.escapeHtml($validator.escapeHtml($message.Header.From.DisplayName))</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">Date:</td> 
+					<td>$message.Header.Date.toStringLocalFull()</td>
+				</tr>
+				<tr>
+					<td class="chefLabel">Message:</td>
+					<td><span class="chefChatMessageBody"><span class="chefPre">$validator.escapeHtmlFormattedText($message.Body)</span></span></td>
+				</tr>
+			</table>
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doDeleteMessage" value="Delete">
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel">
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,226 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-list.vm,v 1.14.2.3 2005/03/21 15:19:09 lance.indiana.edu Exp $ -->
+## Site list Sites list on worksite setup home page
+<div class ="portletBody">
+	#if($menu)#toolbar($menu)#end
+    	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<div style="clear:both;margin:1em 0">
+	<div class="chef2ndToolbarWrap">
+		<table class="chef2ndToolbar" cellspacing="0" summary="this is for second toolbar, containing dropdown view list, search area and paging" >
+			<tr class="first">
+				<td class="left">
+					<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("SiteAction")" style="display:inline">
+						<input type="hidden" name="eventSubmit_doView_sites" value="view" />
+						View:
+						<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+							#foreach($view in $views.keys())
+								<option value ="$views.get($view)"
+								#if($views.get($view) == $viewSelected) selected="selected" #end
+								> $view </option>
+							#end
+						</select>
+					</form>
+				</td>
+				<td class="right">
+					#if ($!superUser || (!$!superUser && $viewSelected != "My Workspace"))
+						## hide search form when in normal user login and in my workspace sites view
+						<form name="searchForm" class="toolbarForm" action="#toolForm("SiteAction")" method="post" style="display:inline">
+							<input type="hidden" name="eventSubmit_doSite_search" value="null" />
+							<input size="20" value="$!searchString" name="$form_search" id="$form_search" type="text" class="searchField" style="background-color:#fff;width:10em;color:#000" />
+							<a href="#" title="Search" onclick="location = '#toolLink($action "doSite_search")'+buildQueryString('searchForm');return false;">
+								Search
+							</a>
+							#if (($!searchString) && (!$searchString.equals("")))
+								<a href="#" title="Clear search" onclick="location = '#toolLink($action "doSite_search_clear")'+buildQueryString('searchForm');return false;">
+									Clear Search
+								</a>
+							#end
+						</form>
+					#end
+				</td>
+			</tr>
+			#if ($sites.size() > 0)
+				#if ($!superUser || (!$!superUser && $viewSelected != "My Workspace"))
+					<tr>
+						<td class="left">
+							<span class="left">
+							 	#if (($!searchString) && (!$searchString.equals("")))
+									#if($!allMsgNumber == "1") 1 site was#else $allMsgNumber sites were#end found that matched your search for "$!searchString" in the view of "$!viewSelected".
+							    #end
+						    		<span class="instruction">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</span>
+							</span>
+						</td>
+						<td align="right" nowrap="nowrap">
+					        #if ($pagesize != 0)
+								#if ($goPPButton == "true")
+									<form name="nextpageForm" style="display:inline;white-space:nowrap" method="post" action="#toolForm("$action")">
+									<input type="submit" name="eventSubmit_doList_prev" title="Show previous $pagesize items" value="<" />
+									</form>
+								#else
+									<input type="submit" disabled="disabled" name="eventSubmit_doList_prev" value="<" />
+									#end
+							#end
+							<form name="pagesizeForm" style="display:inline;white-space:nowrap" method="post" action="#toolForm("$action")">
+								<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
+								<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+									#foreach ($i in $!pagesizes)
+										<option value="$i" #if($pagesize == $i) selected="selected" #end>show $i items per page</option>
+									#end
+								</select>
+							</form>
+							
+							#if ($pagesize != 0)
+								#if ($goNPButton == "true")
+									<form name="nextpageForm" style="display:inline;white-space:nowrap" method="post" action="#toolForm("$action")">
+									<input type="submit" name="eventSubmit_doList_next" title="Show next $pagesize items" value=">" />
+									</form>
+								#else
+									<input type="submit" disabled="disabled" name="eventSubmit_doList_next" value=">" />
+								#end
+							#end
+						</td>
+					</tr>
+				#end
+			#end
+		</table>
+	</div>
+	#if ($sites.size() > 0)
+		<p class ="instruction" style="clear:both;margin:1.5em  0 0 0">
+			Check box(es) to take action on a site. Click column title to sort.
+		</p>
+		<form name="sitesForm" action="#toolForm("SiteAction")" method="post">
+			<table class ="listHier" cellspacing="0" summary ="List of sites">
+				<tr>
+					<th id="checkbox">
+						&nbsp;&nbsp;
+					</th>
+					<th id="title">
+						<a href="#toolLink("SiteAction" "doSort_sites")&criterion=$validator.escapeUrl($sortby_title)" title ="Sort by title"> 
+							Worksite Title
+							#if ($currentSortedBy.equals($sortby_title)) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by title ascending" alt ="Sort by title ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by title descending" alt ="Sort by title descending" /> 
+								#end 
+							#end 
+						</a>
+					</th>
+					<th id="type">
+						<a href="#toolLink("SiteAction" "doSort_sites")&criterion=$validator.escapeUrl($sortby_type)" title ="Sort by type"> 
+							Type
+							#if ($currentSortedBy.equals($sortby_type)) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by title ascending" alt ="Sort by type ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by title descending" alt ="Sort by type descending" /> 
+								#end 
+							#end 
+						</a>
+					</th>					
+					<th id="createdBy">
+						<a href="#toolLink("SiteAction" "doSort_sites")&criterion=$validator.escapeUrl($sortby_createdby)" title ="Sort by owner"> 
+							Owner
+							#if ($currentSortedBy.equals($sortby_createdby))
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by owner ascending" alt ="Sort by title ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by owner descending" alt ="Sort by title descending" /> 
+								#end 
+							#end 
+						</a>
+					</th>
+					<th id="term">
+						##<a href="#toolLink("SiteAction" "doSort_sites")&criterion=term" title ="Sort by term"> 
+							Term
+							#*if ($currentSortedBy.equals("term")) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by term ascending" alt ="Sort by title ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by term descending" alt ="Sort by title descending" /> 
+								#end 
+							#end 
+						</a>*#
+					</th>
+					<th id="published">
+						<a href="#toolLink("SiteAction" "doSort_sites")&criterion=$validator.escapeUrl($sortby_publish)" title ="Sort by status"> 
+							Status
+							#if ($currentSortedBy.equals($sortby_publish)) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by published ascending" alt ="Sort by status ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by published descending" alt ="Sort by status descending" /> 
+								#end 
+							#end 
+						</a>
+					</th>
+					<th id="createdOn">
+						<a href="#toolLink("SiteAction" "doSort_sites")&criterion=$validator.escapeUrl($sortby_createdon)" title ="Sort by creation date"> 
+							Creation Date
+							#if ($currentSortedBy.equals($sortby_createdon))
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("chef/sortascending.gif")" border="0" title ="Sort by creation date ascending" alt ="Sort by creation date ascending" /> 
+								#else 
+									<img src = "#imageLink("chef/sortdescending.gif")" border="0" title ="Sort by creation date descending" alt ="Sort by creation date descending" /> 
+								#end 
+							#end 
+						</a>
+					</th>
+				</tr>
+				#if($sites && $sites.size() != 0)
+					#foreach ($site in $sites)
+						#set ($properties = $site.getProperties())
+						<tr>
+							<td headers="checkbox">
+								#if ($service.allowUpdateSite($site.Id))
+									<input type="checkbox" name="selectedMembers" value="$validator.escapeHtml($site.getId())" />
+								#end
+							</td>
+							<td headers="title">
+								<a href="$site.Url" target="_top">
+									$validator.escapeHtml($site.getTitle())
+								</a>
+							</td>
+							<td headers="type">
+								#set($type="")
+								#set($type = $site.getType())
+								$!type
+							</td>
+							<td headers="owner">
+								#if ($site.CreatedBy)
+									$site.CreatedBy.Id
+								#end
+							</td>
+							<td headers="term">
+								#if($site.getType()=="course")
+									#set($term = "")
+									#set($term = $properties.getProperty('term'))
+									$!term
+								#else
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								#end
+							</td>
+							<td headers="status">
+								#if($site.isPublished())
+									Published
+								#else
+									Unpublished
+								#end
+							</td>
+							<td headers="creationdate">
+								#set($createdTime="")
+								#set($createdTime = $!site.getCreatedTime())
+								$!createdTime.toStringLocalFull()
+							</td>
+						</tr>
+					#end
+				#end
+			</table>
+		</form>
+	#else
+		No sites were found 
+		#if ($!searchString && !$searchString.equals(""))
+			that match your search for "$!searchString"
+		#end
+		in the view of "$!viewSelected".
+	#end
+</div>

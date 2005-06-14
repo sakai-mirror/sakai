@@ -1,0 +1,9 @@
+# Oracle account information for Samigo.
+# $Header: /cvs/quickstart/qs-1-5-1/samigo.oracle.xml,v 1.1 2005/04/15 17:37:20 dlhaines.umich.edu Exp $
+
+db.driverClassName=oracle.jdbc.driver.OracleDriver
+# db.url=jdbc:oracle:thin:yourserver.stanford.edu:1521:sid
+db.url=jdbc:oracle:thin:yourserver:port:sid
+db.username=yourusername
+db.password=yourpassword
+

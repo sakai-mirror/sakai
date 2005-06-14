@@ -1,0 +1,68 @@
+<div class="PortletContainer">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+<table cellspacing="0" height=5 >
+	<tr>
+		<td colspan=3>
+			&nbsp;
+		</td>
+	</tr>
+	<tr>
+		<td colspan=3>
+			Choose the kind of attachment you want to add:
+		</td>
+	</tr>
+	<tr>
+		<td colspan=3>
+			&nbsp;
+		</td>
+	</tr>
+	<form name="form2" method="post" action="#toolForm("AttachmentAction")" >
+		<input type="hidden" name="from" value="show" />
+		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+		<tr>
+			<td width="10%" align="left">
+				&nbsp;
+			</td>
+			<td colspan=2>
+				<input type="radio" name="itemType" value="file" checked>
+					Document on your computer
+				</input>
+			</td>
+		</tr>
+
+		<tr>
+			<td width="10%">
+				&nbsp;
+			</td>
+			<td colspan=2>
+				<input type="radio" name="itemType" value="Url">
+					URL (link to website)
+				</input>
+			</td>
+		</tr>
+		<tr>
+			<td width="10%">
+				&nbsp;
+			</td>
+			<td colspan=2>
+				<input type="radio" name="itemType" value="fromResources">
+					From Site's Resources
+				</input>
+			</td>
+		</tr>
+		<tr>
+			<td width="10%">
+				&nbsp;
+			</td>
+			<td width ="30%">
+				<input type="submit" name="eventSubmit_doAdditem" value="Continue"  />
+				&nbsp;&nbsp;
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</td>
+			<td>
+				&nbsp;
+			</td>
+		</tr>
+	</form>
+</table>
+</div>

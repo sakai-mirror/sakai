@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src/java"/>
+    <classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
+    <classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.3.jar"/>
+    <classpathentry kind="src" path="/sakai-velocity"/>
+    <classpathentry kind="src" path="/sakai-component"/>
+    <classpathentry kind="src" path="/sakai-util"/>
+    <classpathentry kind="src" path="/sakai-service"/>
+    <classpathentry kind="var" path="MAVEN_REPO/javamail/jars/mail-1.3.1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/james-phoenix/jars/james-2.1.3.jar"/>
+    <classpathentry kind="output" path="target/classes"/>
+</classpath>

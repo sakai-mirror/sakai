@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!-- ====================================================================== 
+     Oct 8, 2004 4:13:10 PM                                                        
+
+     build file to install Samigo into the quickstart.
+     
+     haines                                                                
+     ====================================================================== -->
+
+<project name="sakai-customize-samigo" default="customizeSamigo">
+  <description>
+    Ant build file to customize Sakai quickstart distribution.
+  </description>
+
+  <property file="customize.properties"/>
+  <property environment="env" />
+
+
+  <!-- ================================= 
+       target: help              
+       ================================= -->
+
+  <target name="help" description="print out information on using build file">
+    <echo>
+      This script will install Samigo into the Sakai Quickstart.
+    </echo>
+  </target>
+
+  <target name="register" description="register the samigo tool">
+    <!-- copy the registration files -->
+    <copy todir="${work.helper.path}/reg" flatten="true" verbose="true">
+      <fileset dir="${work.helper.path}/reg.samigo">
+	<include name="*.xml" />
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- install the local security file -->
+  <target name="installSecurity"
+	  description="install the samigo.xml file to specify Oracle connection information">
+    <copy tofile="${work.helper.path}/opt/sa_forms/java/dev/org/sakaiproject/security/sam/samigo.xml"
+	  file="./samigo.xml"/>
+  </target>
+
+  <target name="fixOptPath" description="Reset the /opt path for Samigo configuration information">
+    <replaceregexp match="^/opt/sa_forms/java/dev/" replace="${work.helper.path}/opt/sa_forms/java/dev/" 
+		   dir="${work.helper.path}"
+		   includes="**/*.xml"/>  
+  </target>
+
+  <target name="installSamigoFiles" depends="fixOptPath,installSecurity,register" />
+
+  <!-- $Header: /cvs/quickstart/qs-1-5-1/customize-samigo.xml,v 1.2 2005/04/08 20:06:21 dlhaines.umich.edu Exp $ -->	
+</project>

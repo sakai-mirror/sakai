@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="ctools.reserves"
+			url="/sakai-chef-tool/ctools-reserves"
+			title="Library Reserves"
+			description="For showing items on Course Reserve through the Library.">
+			
+			<configuration name="channel-url" value="http://www.lib.umich.edu/r/rss-reserves/rss.php?" />
+
+	</tool>
+
+</registration>

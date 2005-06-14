@@ -1,0 +1,30 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_users_confirm_remove.vm,v 1.1 2004/03/05 03:15:16 ggolden Exp $
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefAlertBox">
+			Are you sure you want to remove the following user:
+		</div>
+		<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Users">
+			<tr>
+				<th id="Id">User Id</th>
+				<th id="Name">Name</th>
+				<th id="Email">Email</th>
+			</tr>
+			<tr>
+				<td headers="Id"> $validator.escapeHtml($user.Id)</td>
+				<td headers="Name">$validator.escapeHtml($user.DisplayName)</td>
+				<td headers="Email">$validator.escapeHtml($user.Email)</td>
+			</tr>
+		</table>
+		<form action="#toolForm("$action")" method="post">
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doRemove_confirmed" value="Remove" />
+				<input type="submit" name="eventSubmit_doCancel_remove" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

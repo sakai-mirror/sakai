@@ -1,0 +1,73 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/dissertation/chef_dissertations_confirm_delete_step.vm,v 1.3 2004/09/02 20:05:56 rwellis.umich.edu Exp $ -->
+## Dissertations - All roles, confirm delete step
+<div class="chefPortletContainer">
+	<form name="confirmDelete" id="confirmDelete" method="post" action="#toolForm($action)">
+		<div class="chefPortletContent">
+     			<table class="PageviewTextMessage">
+				<tr>
+					<td colspan="5"> 
+						<div class="chefPortletToolBarMessage">
+							#if ($multidelete.booleanValue())
+								Delete Dissertation Steps
+							#else
+								Delete a Dissertation Step
+							#end
+						</div>
+						#if ($alertMessage.length()>0)
+							<span class="chefAlertBox"> $validator.escapeHtml($alertMessage)
+							Are you sure you still want to delete
+							#if ($multidelete.booleanValue())
+								these dissertation steps?
+							#else
+								this dissertation step?
+							#end
+							</span>
+						#else
+							<span class="chefAlertBox">Are you sure you want to delete
+							#if ($multidelete.booleanValue())
+								these dissertation steps?
+							#else
+								this dissertation step?
+							#end
+							</span>
+						#end
+						<br /><br />
+					</td>
+				</tr>
+				<tr>
+					<td align="left">Description</td>
+				</tr>
+				#foreach ($step in $steps)
+					<tr>
+						<td align="left">$validator.escapeHtml($step.Instructions)</td>
+						</td>
+						<td align="left">
+						</td>
+					</tr>
+				#end
+				<tr>
+					<td colspan="5">
+						#if ($activepaths.booleanValue())
+						<br/><br/>
+							<input type="checkbox" checked="checked" name="retroactive" id="retroactive" value="retroactive" /> 
+								Apply this change to all current students<br/><br/>
+						#end
+					</td>
+				</tr>
+			</table>
+			<div class="chefButtonRow">
+				#if ($userrole.equals("adminrole") || $userrole.equals("schoolrole"))
+					<input type="submit" name="eventSubmit_doDelete_step_admin" value="Delete" />
+					<input type="submit" name="eventSubmit_doCancel_admin" value="Cancel" />
+				#elseif ($userrole.equals("committeerole"))
+					<input type="submit" name="eventSubmit_doDelete_step_comm" value="Delete" />
+					<input type="submit" name="eventSubmit_doCancel_committee" value="Cancel" />
+			
+				#elseif ($userrole.equals("candidaterole"))
+					<input type="submit" name="eventSubmit_doDelete_step_candidate" value="Delete" />
+					<input type="submit" name="eventSubmit_doCancel_candidate" value="Cancel" />
+				#end
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,37 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-siteDeleteConfirm.vm,v 1.2 2004/11/03 19:50:02 zqian.umich.edu Exp $ -->
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Removing Site...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<form action="#toolForm("$action")" method="post">
+		#if($removals && $removals.size() != 0)
+			<div class="chefAlertBox">
+				Deleting a site removes all content and cannot be undone.
+				#if($removals.size() == 1)
+					You have selected the following site for removal: 
+				#else
+					You have selected the following sites for removal: 
+				#end
+				#foreach($site in $removals)
+					<div class="chefLeftIndent">
+						<input type="hidden" name="selectedMembers" value="$site.getId()">
+							$validator.escapeHtml($site.getTitle()) <br />
+					</div>
+				#end
+				Deleting a site removes the entire site's content and is not recoverable - no one else will be able to access the deleted site. If you are trying to remove yourself from the site, use the Membership tool in your My Workspace to unjoin yourself from the site. 
+			</div>
+		#end
+			<input type="hidden" name="continue" value="0" />
+			<input type="hidden" name="template-index" value="8" />
+			<input type="hidden" name="back" value="0" />
+			<div class="chefButtonRow">
+			#if($removals && $removals.size() != 0)
+				<input type="submit" name="eventSubmit_doSite_delete_confirmed" value="Remove" />
+			#end
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

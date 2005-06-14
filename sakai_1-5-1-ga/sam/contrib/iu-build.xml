@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Samigo" default="buildlib-local-runtime" basedir="..">
+
+  <target name="buildlib-local-runtime">
+    <!-- Copy OKI Implementation -->
+    <condition property="oki.impl"
+               value="${UIS_java_lib.home}/OKI-0.8/OKI-SPRING-HIBERNATE.jar"
+    >
+      <not>
+        <isset property="oki.impl" />
+      </not>
+    </condition>
+    <copy file="${oki.impl}" todir="${webapp.lib}" verbose="true" />
+
+    <!-- Copy CAS (authentication) library -->
+    <copy file="${UIS_java_lib.home}/casfilter-1.2/casfilter.jar"
+          todir="${webapp.lib}"
+          verbose="true"
+    />
+    <copy file="${UIS_java_lib.home}/ONC/OncCasFilter/OncCasFilter.jar"
+          todir="${webapp.lib}"
+          verbose="true"
+    />
+
+    <copy file="${UIS_java_lib.home}/uisutilities-1.4.2/uisutilities.jar"
+          todir="${webapp.lib}"
+          verbose="true"
+    />
+
+    <!-- copy mygds client -->
+    <copy todir="${webapp.lib}" verbose="true">
+      <fileset dir="${UIS_java_lib.home}">
+        <!-- this version can be used if behind firewall (prd, stg) -->
+        <include name="mygds-1.01/client.jar" if="isProduction" />
+        <include name="mygds-1.01/client.jar" if="isStaging" />
+        <!-- this version should be used if outside firewall -->
+        <include name="mygds-without-caching/client.jar"
+                 unless="isProduction"
+        />
+        <exclude name="mygds-without-caching/client.jar" if="isProduction" />
+        <exclude name="mygds-without-caching/client.jar" if="isStaging" />
+      </fileset>
+    </copy>
+
+    <copy file="${UIS_java_lib.home}/thirdpartyclient-1.0rc2/lib/thirdpartyclient.jar"
+          todir="${webapp.lib}"
+          verbose="true"
+    />
+    <copy file="${UIS_java_lib.home}/axis-1_1/lib/axis.jar"
+          todir="${webapp.lib}"
+          verbose="true"
+    />
+    <copy file="${UIS_java_lib.home}/axis-1_1/lib/jaxrpc.jar"
+          todir="${webapp.lib}"
+          verbose="true"
+    />
+    <copy file="${UIS_java_lib.home}/axis-1_1/lib/saaj.jar"
+          todir="${webapp.lib}"
+          verbose="true"
+    />
+    <copy file="${UIS_java_lib.home}/axis-1_1/lib/wsdl4j.jar"
+          todir="${webapp.lib}"
+          verbose="true"
+    />
+  </target>
+</project>

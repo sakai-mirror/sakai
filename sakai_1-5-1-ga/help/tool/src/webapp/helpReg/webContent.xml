@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="webContentOverview" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>web_content_overview</value></property>
+      <property name="name"><value>Web Content Overview</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aplr.html</value></property>
+   </bean>
+    
+       <bean id="webContentWindow" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>web_content_window</value></property>
+      <property name="name"><value>Add Info in Web Content Window</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/apls.html</value></property>
+   </bean>
+
+   
+    <bean id="org.sakaiproject.service.help.TableOfContents" 
+          class="org.sakaiproject.component.help.model.TableOfContentsBean">
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="webContentCategory" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Web Content Tool</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="webContentOverview"/>
+                      <ref bean="webContentWindow"/>
+                  </list>
+               </property>
+            </bean>
+           </list>
+         </property>
+       </bean>
+</beans>

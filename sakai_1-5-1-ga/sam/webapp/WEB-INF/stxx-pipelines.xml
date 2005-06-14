@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pipeline-definitions>
+  <pipeline match="simple/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/item.xsl"/>
+      <param name="render" value="server"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/select/DisplayAssessments.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/select/displayAssessments.xsl"/>
+      <param name="render" value="server"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/delivery/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/delivery/{1}.xsl"/>
+      <param name="render" value="server"/>
+      <param name="messages" value="delivery.*"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/review/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/review/{1}.xsl"/>
+      <param name="render" value="server"/>
+      <param name="messages" value="review.*"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/grading/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/grading/{1}.xsl"/>
+      <param name="render" value="server"/>
+      <param name="messages" value="grading.*"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/result/DisplayAssessments.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/result/listAssessmentReports.xsl"/>
+      <param name="render" value="server"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/result/viewAssessmentResult.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/result/viewAssessmentResult.xsl"/>
+      <param name="render" value="server"/>
+      <param name="mode" value="view"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/result/gradeResult.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/result/viewAssessmentResult.xsl"/>
+      <param name="render" value="server"/>
+      <param name="mode" value="grade"/>
+    </transform>
+  </pipeline>
+  <!--******************Authoring Begins************************************** -->
+  <pipeline match="asi/author/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/author/{1}.xsl"/>
+      <param name="render" value="server"/>
+      <param name="messages" value="author.common.*"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/author/assessment/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/author/assessment/{1}.xsl"/>
+      <param name="render" value="server"/>
+      <param name="messages" value="author.common.*"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/author/assessment/settings/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/author/assessment/settings/{1}.xsl"/>
+      <param name="render" value="server"/>
+      <param name="messages" value="author.assessment.*"/>
+      <param name="messages" value="author.common.*"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/author/assessment/published/settings/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/author/assessment/published/settings/{1}.xsl"/>
+      <param name="render" value="server"/>
+      <param name="messages" value="author.assessment.*"/>
+      <param name="messages" value="author.common.*"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/author/assessment/published/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/author/assessment/published/{1}.xsl"/>
+      <param name="render" value="server"/>
+      <param name="messages" value="author.assessment.*"/>
+      <param name="messages" value="author.common.*"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/author/item/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/author/item/{1}.xsl"/>
+      <param name="render" value="server"/>
+      <param name="messages" value="author.item.*"/>
+      <param name="messages" value="author.common.*"/>
+    </transform>
+  </pipeline>
+  <pipeline match="asi/author/section/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/author/section/{1}.xsl"/>
+      <param name="render" value="server"/>
+      <param name="messages" value="author.common.*"/>
+    </transform>
+  </pipeline>
+  <!--  <pipeline match="asi/author/objectbank/*.dox">
+    <transform type="html">
+      <param name="path" value="/xml/xsl/author/objectbank/{1}.xsl" />
+      <param name="render" value="server" />  
+      <param name="messages" value="author.*" />          
+    </transform>
+  </pipeline>  
+	<pipeline match="asi/author/author.dox">
+    	<transform type="html">
+        	<param name="path" value="/xml/xsl/author/author.xsl" />
+        	<param name="render" value="server" />
+   		</transform>
+  	</pipeline>
+  	<pipeline match="asi/author/preview.dox">
+    	<transform type="html">
+        	<param name="path" value="/xml/xsl/author/preview.xsl" />
+        	<param name="render" value="server" />
+          <param name = "debug" value ="true"/>	
+   		 </transform>
+  	</pipeline>
+  -->
+  <!--******************Authoring Ends************************************** -->
+</pipeline-definitions>

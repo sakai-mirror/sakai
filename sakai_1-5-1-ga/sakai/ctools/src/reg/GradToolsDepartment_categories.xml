@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<category name="GradToolsDepartment">
+
+		<tool id = "chef.aboutGradTools" />
+		<tool id = "chef.dissertation" />
+		<tool id = "chef.announcements" />
+		<tool id = "chef.schedule" />
+		<tool id = "chef.resources" />
+		<tool id = "chef.discussion" />
+		<tool id = "chef.chat" />
+		<tool id = "chef.iframe" />
+		<tool id = "chef.siteinfo" />
+		<tool id = "chef.gradToolsHelp" />
+
+	</category>
+
+	<default-tool name="GradToolsDepartment">
+		
+		<tool id = "chef.aboutGradTools" />
+		<tool id = "chef.dissertation" />
+		<tool id = "chef.siteinfo" />
+		<tool id = "chef.gradToolsHelp" />
+		
+	</default-tool>
+</registration>

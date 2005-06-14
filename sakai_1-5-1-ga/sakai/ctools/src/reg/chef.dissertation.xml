@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="dis.dis.read" />
+	<function name="dis.dis.add" />
+	<function name="dis.dis.del" />
+	<function name="dis.dis.upd" />
+	<function name="dis.path.upd" />
+	<function name="dis.path.upd.comm" />
+	<function name="dis.path.add" />
+	<function name="dis.path.read" />
+	<function name="dis.path.del" />
+	<function name="dis.status.read" />
+	<function name="dis.status.upd" />
+	<function name="dis.status.add" />
+	<function name="dis.status.del" />
+	<function name="dis.step.read" />
+	<function name="dis.step.add" />
+	<function name="dis.step.del" />
+	<function name="dis.step.upd" />
+
+	<tool
+			id="chef.dissertation"
+			url="/sakai-chef-tool/chef-dissertation"
+			title="Dissertation Checklist"
+			description="Grad Tools Dissertation Checklist tool.">
+
+	</tool>
+
+</registration>

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Sakai Deploy to the local Tomcat</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-deploy</id>
+	<currentVersion>sakai.1.5.1</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+
+	<!-- each dependency will be an artifact deployed to Tomcat -->
+	<dependencies>
+
+		<!-- our tomcat deploy plugin -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-tcdeploy</artifactId>
+			<version>sakai.1.5.1</version>
+			<type>plugin</type>
+		</dependency>
+
+		<!-- jars for tomcat/shared/lib and common/lib -->
+
+		<dependency>
+			<groupId>OKI</groupId>
+			<artifactId>OkiOSID</artifactId>
+			<version>2.0</version>
+			<url>http://sourceforge.net/projects/okiproject</url>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-javax</artifactId>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util</artifactId>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-component</artifactId>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-service</artifactId>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+
+		<!-- in tomcat common/lib
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>2.1</version>
+		</dependency>
+		-->
+
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>1.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+
+		<!-- for Spring (w/ Hibernate & hsql) -->
+		<dependency>
+			<groupId>springframework</groupId>
+			<artifactId>spring-full</artifactId>
+			<version>1.0.1</version>
+			<url>http://www.springframework.org</url>
+		</dependency>
+		<dependency>
+			<groupId>hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>2.1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>springframework</groupId>
+			<artifactId>aopalliance</artifactId>
+			<!-- Note: this came from the springframework 1.0.1 release (sf1.0.1) -->
+			<version>sf1.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>springframework</groupId>
+			<artifactId>jta</artifactId>
+			<!-- Note: this came from the springframework 1.0.1 release (sf1.0.1) -->
+			<version>sf1.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-full</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+            <groupId>odmg</groupId>
+            <artifactId>odmg</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>0.9</version>
+        </dependency>        
+		<dependency>
+			<groupId>icu4j</groupId>
+			<artifactId>icu4j-unicodenormalize</artifactId>
+			<version>3.0</version>
+		</dependency>
+		<!-- in tomcat common lib
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>1.1</version>
+		</dependency>
+		-->
+		<!-- in tomcat common lib
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.1</version>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<!-- this needs to be where commons-dbcp is, and it's distributed with Tomcat 5 in common/lib -->
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>1.7.2.2</version>
+			<properties>
+				<common.lib>true</common.lib>
+			</properties>
+		</dependency>		
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javamail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-dav-common</artifactId>
+			<version>sakai.1.5.1</version>
+			<properties>
+				<common.lib>true</common.lib>
+			</properties>
+		</dependency>
+
+		<!-- Note: this goes in server/lib -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-dav-server</artifactId>
+			<version>sakai.1.5.1</version>
+			<properties>
+				<server.lib>true</server.lib>
+			</properties>
+		</dependency>
+
+		<!-- for pluto/portlet API -->
+		<dependency>
+			<groupId>pluto</groupId>
+			<artifactId>pluto</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>portlet-api</groupId>
+			<artifactId>portlet-api</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+
+		<!-- wars for tomcat/webapps -->
+
+	<!--
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-shared</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+		-->
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-framework-component</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-legacy-component</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-provider</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-annc</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-chef-tool</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+<!--
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-embedded</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+-->
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-portal</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-james</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-module</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-crud</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+<!--
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-broadcast</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+-->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-dav</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-dispatch</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+			<properties>
+				<usr.local.sakai>true</usr.local.sakai>
+				<unzip>true</unzip>
+			</properties>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-z-last</artifactId>
+			<type>war</type>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<!-- <sourceDirectory>src/java</sourceDirectory> -->
+	</build>
+
+</project>

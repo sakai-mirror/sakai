@@ -1,0 +1,101 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/content/chef_resources_addFileOptions.vm,v 1.2 2004/09/21 05:31:49 janderse.umich.edu Exp $ 
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["title1"];
+</script>
+<div class="PortletContainer">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+The form below allows you to provide additional information about your documents.<br/>
+<span class="Alert">*</span> means this information is required.<p/>
+<table border="0" cellspacing="1" cellpadding="3" width=100%>
+	<form name="addFileBasicForm" action="#toolForm("ResourcesAction")" method="post" enctype="multipart/form-data" >
+		<input type="hidden" name="from" value="addFileBasic" />
+		<input type="hidden" name="fileNumber" value="$fileNumber" />
+		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+		<input type="hidden" name="addFileStep" value="Set Properties" />
+
+		##set($i=1)
+		#set($j=0)
+		#foreach ($i in [1..$fileNumber])
+		##foreach( $titleElement in $titles )
+		<tr> 
+		  <td width="30%" valign="top">
+		    #if (( $unqualified_fields.get($i).indexOf($service.newResourceProperties().NamePropDisplayName)!=-1)|| (($titles.get($i).length()>0)&&($unqualified_fields.get($i).indexOf($titles.get($i))!=-1)))
+				<span class="Alert">Title:</span>
+		    #else
+				Title:
+		    #end 
+		    <input type="text" name="title$i" value="$titles.get($i)" />
+		  </td>
+ 		  <td width="20%" align="right" valign="top"> 
+			Description:
+		  </td>
+		  <td>  
+			<textarea name="description$i" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($descriptions.get($i))</textarea>
+		  </td>
+		</tr>
+		<tr> 
+		  <td width="30%"> 
+			&nbsp;
+		  </td>
+ 		  <td width="20%" align="right" valign="top">
+			#if ($unqualified_fields.get($i).indexOf($service.newResourceProperties().NamePropCopyright)!=-1)
+			    <span class="Alert">*Copyright:</span>
+			#else
+			    <span class="Alert">*</span>Copyright: 
+			#end
+		  </td>
+		  <td>  
+			#if ($copyrights.get($i)!="newcopyright")
+				<input type="radio" name="copyright$i" value="mycopyright" checked>
+				Use my copyright information<br>
+				<input type="radio" name="copyright$i" value="newcopyright">
+				Use copyright below<br>
+				<textarea name="newcopyright$i" rows="5" cols="40" wrap=virtual></textarea>
+			#else
+				<input type="radio" name="copyright$i" value="mycopyright">
+				Use my copyright information<br>
+				<input type="radio" name="copyright$i" value="newcopyright" checked>
+				Use copyright below<br>
+				<textarea name="newcopyright$i" rows="5" cols="40" wrap=virtual>$validator.escapeHtmlTextarea($newcopyrights.get($i))</textarea>				
+			#end
+		  </td>
+		 </tr>
+		<tr> 
+		  <td width="30%"> 
+			&nbsp;
+		  </td>
+		  <td width="20%" valign="top" align="right"> 
+			Open in: </span>
+		  </td>
+			<td>		
+				#if ($openIns.get($i) == "false")
+					<input type="radio" name="target$i" value="true">
+					New window<br>
+					<input type="radio" name="target$i" value="false" checked>
+					This window
+				#else
+					<input type="radio" name="target$i" value="true" checked>
+					New window<br>
+					<input type="radio" name="target$i" value="false">
+					This window<br>
+				#end
+			</td>
+		</tr>
+		<tr> 
+		  <td colspan=3>
+			<hr/>
+		  </td>
+		</tr>
+		##set ($i=$i+1)
+		#set ($j=$j+1)
+		#end
+			<tr>
+				<td colspan=3>
+					<INPUT type="submit" name="eventSubmit_doAdd_file_options" value="Save Properties" />
+					<INPUT type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				</td>
+			</tr>
+	</form>
+</table>
+</div>

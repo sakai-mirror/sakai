@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  default="clean_full"
+  xmlns:j="jelly:core"
+  xmlns:u="jelly:util">
+
+  	<goal name="clean_env">
+		<!-- whatI'd like to do here is rm -rf tomcat/webapps/sakai-*, but I can't figure out
+		     how to do that in any or jelly.  If anyone has a better way, email me! -ggolden@umich.edu -->
+		<delete dir="${maven.tomcat.home}/webapps/chef" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-annc" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-chef-tool" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-crud" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-portal" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-framework-component" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-james" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-legacy-component" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-provider" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-ctools" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-module" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-broadcast" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-dav" />
+		<delete dir="/usr/local/sakai/sakai-dispatch" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-z-last" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-chef-service" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-oki-impl" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-oki-osid-impl" />
+		<delete dir="${maven.tomcat.home}/webapps/sakai-chef1service" />
+		<delete>
+			<fileset dir="${maven.tomcat.home}/webapps">
+				<include name="sakai-*.war" />
+				<include name="chef.war" />
+			</fileset>
+		</delete>
+		<delete>
+			<fileset dir="${maven.tomcat.home}/logs">
+				<include name="*" />
+			</fileset>
+		</delete>
+		<delete>
+			<fileset dir="${maven.tomcat.home}/shared/lib">
+				<include name="*.jar" />
+			</fileset>
+		</delete>
+		<delete>
+			<fileset dir="${maven.tomcat.home}/common/lib">
+				<include name="hsqldb-*.jar" />
+				<include name="sakai-*.jar" />
+			</fileset>
+		</delete>
+		<delete>
+			<fileset dir="${maven.tomcat.home}/server/lib">
+				<include name="sakai-*.jar" />
+			</fileset>
+		</delete>
+		<delete dir="${maven.tomcat.home}/work" />
+		<delete>
+			<fileset dir="${maven.tomcat.home}/conf/Catalina/localhost">
+				<include name="sakai-*.xml" />
+			</fileset>
+		</delete>
+		<delete dir="${maven.repo.local}/sakaiproject" />
+	</goal>
+
+	<goal name="clean_full">
+		<delete dir="javadoc"/>
+		<delete file="sakai-src.zip" />
+		<j:set var="goal" value="clean,full" />
+		<j:set var="maven.test.failure.ignore" value="true" />
+		<attainGoal name="multiproject:goal" />
+	</goal>
+
+	<goal name="clean">
+		<delete dir="javadoc"/>
+		<delete file="sakai-src.zip" />
+		<j:set var="goal" value="clean" />
+		<j:set var="maven.test.failure.ignore" value="true" />
+		<attainGoal name="multiproject:goal" />
+	</goal>
+
+	<goal name="full">
+		<j:set var="goal" value="full" />
+		<j:set var="maven.test.failure.ignore" value="true" />
+		<attainGoal name="multiproject:goal" />
+	</goal>
+
+	<!-- Note: this needs updating -ggolden -->
+	<goal name="dist">
+		<copy todir="reference/src/usr_local_sakai/reg" filtering="false" preservelastmodified="true" overwrite="true">
+			<fileset dir="chef-tool/src/reg">
+				<include name="*.xml" />
+			</fileset>
+		</copy>
+		<copy todir="reference/src/usr_local_sakai/reg" filtering="false" preservelastmodified="true" overwrite="true">
+			<fileset dir="crud/src/reg">
+				<include name="*.xml" />
+			</fileset>
+		</copy>
+		<copy todir="reference/src/usr_local_sakai/reg" filtering="false" preservelastmodified="true" overwrite="true">
+			<fileset dir="module/src/reg">
+				<include name="*.xml" />
+			</fileset>
+		</copy>
+		<copy todir="reference/src/usr_local_sakai/reg" filtering="false" preservelastmodified="true" overwrite="true">
+			<fileset dir="annc/src/reg">
+				<include name="*.xml" />
+			</fileset>
+		</copy>
+
+		<copy todir="reference/src/usr_local_sakai/framework-component" filtering="false" preservelastmodified="true" overwrite="true">
+			<fileset dir="framework-component/src/webapp/WEB-INF">
+				<include name="comp*.xml" />
+			</fileset>
+		</copy>
+		<copy todir="reference/src/usr_local_sakai/legacy-component" filtering="false" preservelastmodified="true" overwrite="true">
+			<fileset dir="legacy-component/src/webapp/WEB-INF">
+				<include name="comp*.xml" />
+			</fileset>
+		</copy>
+		<copy todir="reference/src/usr_local_sakai/provider" filtering="false" preservelastmodified="true" overwrite="true">
+			<fileset dir="provider/src/webapp/WEB-INF">
+				<include name="comp*.xml" />
+			</fileset>
+		</copy>
+
+		<jar jarfile="sakai-src.zip" basedir="."
+			excludes="CVS/**,*/target/**,*.zip,build.xml,docs/**,covers/**,site/**,javadoc/**"/>
+
+		<!-- <jar jarfile="sakai-deploy-src.zip" basedir="."
+			excludes="CVS/**,*/target/**,*.zip,build.xml"
+			includes="deploy/**"/> -->
+
+		<delete>
+			<fileset dir="reference/src/usr_local_sakai/reg">
+				<include name="*.xml" />
+			</fileset>
+		</delete>
+		<delete>
+			<fileset dir="reference/src/usr_local_sakai/framework-component">
+				<include name="comp*.xml" />
+			</fileset>
+		</delete>
+		<delete>
+			<fileset dir="reference/src/usr_local_sakai/legacy-component">
+				<include name="comp*.xml" />
+			</fileset>
+		</delete>
+		<delete>
+			<fileset dir="reference/src/usr_local_sakai/provider">
+				<include name="comp*.xml" />
+			</fileset>
+		</delete>
+
+	</goal>
+
+	<!-- to create the taglib:
+		java -jar /usr/local/taglibrarydoc-1_1/tlddoc.jar -d ~/sakai-tld ~/dev/jsf-1_0/lib/jsf_core.tld ~/dev/jsf-1_0/lib/html_basic.tld ~/dev/sakai/faces/src/META-INF/sakai_jsf.tld
+	-->
+	<goal name="ziptaglib">
+		<jar jarfile="sakai-taglib.zip" basedir="../../sakai-tld" />
+	</goal>
+
+	<goal name="zipuserdoc">
+		<jar jarfile="sakai-userdoc.zip" basedir="../../sakai-userdoc" />
+	</goal>
+
+	<goal name="javadoc">
+		<delete dir="javadoc/api"/>
+		<!-- <attainGoal name="clean_full" /> -->
+		<javadoc packagenames="org.sakaiproject.*"
+			useexternalfile="yes"
+			destdir="javadoc/api" author="true" version="true" use="true"
+			classpath="${maven.repo.local}/servletapi/jars/servletapi-2.3.jar,${maven.repo.local}/jsf/jars/jsf-api-1.0.jar,${maven.repo.local}/jsf/jars/jsf-impl-1.0-s1.jar,annc/target/classes,chef-tool/target/classes,component/target/classes,crud/target/classes,portal/target/classes,faces/target/classes,framework-component/target/classes,james/target/classes,legacy-component/target/classes,module/target/classes,service/target/classes,tunnet/target/classes,util/target/classes,velocity/target/classes"
+			>
+			<link href="http://java.sun.com/products/jdk/1.4/docs/api" />
+
+			<fileset dir="annc/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="chef-tool/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="component/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="crud/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+             
+			<fileset dir="portal/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="faces/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="framework-component/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="james/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="legacy-component/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="provider/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="module/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="service/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="tunnel/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="util/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+			<fileset dir="velocity/src/java" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+
+		</javadoc>
+		<jar jarfile="sakai-javadoc.zip" basedir="javadoc/api" />
+	</goal>
+
+	<!-- move all the registration files from their assorted source locations to /usr/local/sakai/reg -->
+	<goal name="reg">
+		<j:set var="goal" value="reg" />
+		<attainGoal name="multiproject:goal" />
+	</goal>
+
+	<!-- move the components.xml files for XML configuration from the source locations into /usr/local/sakai -->
+	<goal name="conf_xml">
+		<copy
+				tofile="/usr/local/sakai/framework-component/components.xml"
+				file="framework-component/src/webapp/WEB-INF/components.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy
+				tofile="/usr/local/sakai/legacy-component/components.xml"
+				file="legacy-component/src/webapp/WEB-INF/components.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy
+				tofile="/usr/local/sakai/provider/components.xml"
+				file="provider/src/webapp/WEB-INF/components.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy
+				tofile="/usr/local/sakai/z-last/components.xml"
+				file="z-last/src/webapp/WEB-INF/components.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+	</goal>
+		
+	<!-- move the XML database files from distribution into /usr/local/sakai/db
+		WARNING: exsting files will be lost! -->
+	<goal name="populate_xml">
+		<delete dir="/usr/local/sakai/db/" />
+		<copy todir="/usr/local/sakai/db/" filtering="false" preservelastmodified="true" overwrite="true">
+			<fileset dir="reference/src/usr_local_sakai/db">
+				<include name="*.xml" />
+			</fileset>
+		</copy>
+	</goal>
+
+	<!-- deploy context files to tomcat - tomcat 5.0.27 won't do this properly -->
+	<goal name="tomcat_context_windows">
+		<delete>
+			<fileset dir="${maven.tomcat.home}/conf/Catalina/localhost">
+				<include name="sakai-*.xml" />
+			</fileset>
+		</delete>
+		<copy
+				tofile="${maven.tomcat.home}/conf/Catalina/localhost/sakai-dav.xml"
+				file="dav/src/webapp/META-INF/context.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy
+				tofile="${maven.tomcat.home}/conf/Catalina/localhost/sakai-dispatch.xml"
+				file="dispatch/src/webapp/META-INF/context_windows.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy
+				tofile="${maven.tomcat.home}/conf/Catalina/localhost/sakai-portal.xml"
+				file="portal/src/webapp/META-INF/context.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+	</goal>
+
+	<!-- deploy context files to tomcat - tomcat 5.0.27 won't do this properly -->
+	<goal name="tomcat_context">
+		<delete>
+			<fileset dir="${maven.tomcat.home}/conf/Catalina/localhost">
+				<include name="sakai-*.xml" />
+			</fileset>
+		</delete>
+		<copy
+				tofile="${maven.tomcat.home}/conf/Catalina/localhost/sakai-dav.xml"
+				file="dav/src/webapp/META-INF/context.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy
+				tofile="${maven.tomcat.home}/conf/Catalina/localhost/sakai-dispatch.xml"
+				file="dispatch/src/webapp/META-INF/context.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy
+				tofile="${maven.tomcat.home}/conf/Catalina/localhost/sakai-portal.xml"
+				file="portal/src/webapp/META-INF/context.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+	</goal>
+
+	<!-- move the components.xml files (and starter database) for DB configuration from the source locations into /usr/local/sakai -->
+	<goal name="conf_db">
+		<copy
+				tofile="/usr/local/sakai/framework-component/components.xml"
+				file="framework-component/src/webapp/WEB-INF/components_db.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy
+				tofile="/usr/local/sakai/legacy-component/components.xml"
+				file="legacy-component/src/webapp/WEB-INF/components_db.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy
+				tofile="/usr/local/sakai/provider/components.xml"
+				file="provider/src/webapp/WEB-INF/components.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<copy
+				tofile="/usr/local/sakai/z-last/components.xml"
+				file="z-last/src/webapp/WEB-INF/components.xml"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+		<!-- Copy over the default starter HSQLDB database -->
+		<copy 
+				todir="/usr/local/sakai/db" 
+				filtering="false" preservelastmodified="true" overwrite="false">
+				<fileset dir="reference/src/sql/legacy/hsqldb">
+					<include name="sakaidb.*" />
+				</fileset>
+		</copy>
+		<copy
+				tofile="/usr/local/sakai/db/server.properties"
+				file="reference/src/sql/legacy/hsqldb/server.properties"
+				filtering="false" preservelastmodified="true" overwrite="true" />
+	</goal>
+
+	<!-- create a log of changes to cvs over the last time period -->
+	<goal name="cvs_changes">
+		<cvschangelog dir="." destfile="changelog.xml" daysinpast="4" package="sakai" cvsRoot=":ext:sakai_anon_cvs:/cvs" />
+		<style in="changelog.xml" out="changelog.html" style="changelog.xsl">
+			<param name="title" expression="Sakai CVS commits" />
+			<param name="module" expression="ant" />
+			<param name="cvsweb" expression="http://cvs.sakaiproject.org/cgi-bin/cvsweb.cgi/" />
+		</style>
+	</goal>
+
+</project>

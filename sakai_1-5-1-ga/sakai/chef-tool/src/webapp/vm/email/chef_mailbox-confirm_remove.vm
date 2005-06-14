@@ -1,0 +1,29 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/email/chef_mailbox-confirm_remove.vm,v 1.1 2004/03/08 19:21:39 ggolden Exp $ -->
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Removing email message...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefAlertBox">Please confirm the removal of this email archive message:</div>
+		<form action="#toolForm($action)" method="post">
+			<table class ="chefFlatListViewTable" cellspacing="0" summary ="Table holds ..... Column 1 may hold .... Column 1 holds ..., column 2  holds .... Column 3 holds .... Headers hold links to sort ....">
+				<tr>
+					<th id="from">From</th>
+					<th id="subject">Subject</th>
+					<th id="date">Sent</th>
+				</tr>
+				<tr>
+					<td headers ="from">$validator.escapeHtml($email.Header.FromAddress)</td>
+					<td headers="subject">$validator.escapeHtml($email.Header.Subject)</td>
+					<td headers="date">$email.Header.DateSent.toStringLocalFull()</td>
+				</tr>
+			</table>
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doRemove_confirmed" value="Remove" />
+				<input type="submit" name="eventSubmit_doRemove_cancel" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>
+

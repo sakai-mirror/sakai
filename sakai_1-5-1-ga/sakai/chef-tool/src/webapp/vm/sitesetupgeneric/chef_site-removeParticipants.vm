@@ -1,0 +1,90 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-removeParticipants.vm,v 1.2 2004/11/03 19:49:38 zqian.umich.edu Exp $ -->
+## Remove Participants Remove participants from the worksite
+<div class ="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+	<div class ="chefPortletToolBarMessage">
+		Confirming removal of participants from $validator.escapeHtml($title)...
+	</div>
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<span class ="chefPageviewTitle">
+			The following will no longer have access when you click the Finish button below.
+		</span>
+		<div class="PortletContent">
+			 <form action="#toolForm("SiteAction")" method="post">
+				#if($removeableList)
+					<table class ="chefFlatListViewTable" cellspacing="0" summary ="info on this table - what it contains, number of columns, number of entries, etc.">
+						<tr>
+							<th>
+								Name
+							</th>
+							<th>
+								Username
+							</th>
+							<th>
+								Role
+							</th>
+						</tr>
+						#foreach($participant in $removeableList)
+						<tr>
+							<td>	
+								$participant.getName()
+							</td>
+							<td>
+								$participant.getUniqname()
+							</td>
+							<td>
+								#foreach($role in $participant.roles)
+									$role.getId()
+								#end
+							</td>
+						</tr>
+						#end
+					</table>
+				#end
+				#if ($unremoveableList.size() > 0)
+					<p />
+					The participant listed below cannot be removed because they are officially registered 
+					for the course.  However, you can change their roles in the site by clicking the Change Role(s) 
+					command (...under Revise, Edit Access).
+					<p />
+					<table class ="chefFlatListViewTable" cellspacing="0" summary ="info on this table - what it contains, number of columns, number of entries, etc.">
+						#foreach($user in $unremoveableList)
+							<tr>
+								<th>
+									Name
+								</th>
+								<th>
+									Username
+								</th>
+								<th>
+									Role
+								</th>
+							</tr>
+							<tr>
+								<td>	
+									$user.getName()
+								</td>
+								<td>
+									$user.getUniqname()
+								</td>
+								<td>
+									$user.getRole()
+								</td>
+							</tr>
+						#end
+					</table>
+				#end
+				<br/>
+					<input type="hidden" name="continue" value="$backIndex" />
+					<input type="hidden" name="template-index" value="6" />
+					<input type="hidden" name="back" value="$backIndex" />
+				<div class ="chefButtonRow">
+					<input type="submit" name="eventSubmit_doContinue" value="Finish" />
+					<input type="submit" name="eventSubmit_doBack" value="Back" />
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				</div>
+			</form>
+		</div>	
+	</div>
+</div>

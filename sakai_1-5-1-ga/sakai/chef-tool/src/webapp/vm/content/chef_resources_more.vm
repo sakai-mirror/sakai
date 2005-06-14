@@ -1,0 +1,185 @@
+##<!-- chef_contentList_more.vm, use with org.chefproject.ContentListAction.java -->
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Viewing properties...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)
+			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+	#if (!$notExistFlag)
+	<table class="chefItemDetail" cellspacing="0">
+			<tr> 
+				<td class="chefLabel"> 
+					Title:
+				</td>
+				<td>
+					#if ($dropboxMode && $homeCollection.equals($id))
+						$siteTitle Drop Box
+					#else
+						#if ($properties.getPropertyFormatted($properties.NamePropIsCollection)=="false")
+							<a href="$service.getUrl($id)" target="_blank">$validator.escapeHtml($properties.getPropertyFormatted($properties.NamePropDisplayName))</a>
+						#else
+							$validator.escapeHtml($properties.getPropertyFormatted($properties.NamePropDisplayName))
+						#end
+					#end
+				</td>
+			</tr>
+			<tr> 
+				<td class ="chefLabel"> 
+					Description:
+				</td>
+				<td>
+					<span class="chefPre">$validator.escapeHtml($properties.getPropertyFormatted($properties.NamePropDescription))</span>
+				</td>
+			</tr>
+			#if ($properties.getPropertyFormatted($properties.NamePropIsCollection)=="false" && $!copyrightTypes)
+				## don't show copyright info for collection
+				<tr> 
+					<td class="chefLabel"> 
+						Copyright:
+					</td>
+					<td>
+	## special escape to fix the &#169; copyright symbol placed by ResourcesAction before 1.1.05 -ggolden
+						<span class="chefPre">$validator.escapeHtmlFixCopyright($properties.getPropertyFormatted($properties.NamePropCopyright))</span>
+					</td>
+				</tr>
+			#end
+			#if (!$dropboxMode)
+				<tr> 
+					<td class="chefLabel"> 
+						Public View:
+					</td>
+					<td>
+						<span class="chefPre">#if($pubview) Yes #else No #end</span>
+					</td>
+				</tr>
+			#end
+#if($hasQuota)
+			<tr> 
+				<td class="chefLabel"> 
+					Special Quota<br \>(KBytes):
+				</td>
+				<td>
+					<span class="chefPre">$quota</span>
+				</td>
+			</tr>
+#end
+		#if (!($dropboxMode && $collectionId==$homeCollection))
+			<tr> 
+				<td class="chefLabel"> 
+					Created By:
+				</td>
+				<td> 
+					$validator.escapeHtml($properties.getPropertyFormatted($properties.NamePropCreator))
+				</td>
+			</tr>
+		#end
+			<tr> 
+				<td class="chefLabel"> 
+					Creation Time:
+				</td>
+				<td>
+					$properties.getPropertyFormatted($properties.NamePropCreationDate)
+				</td>
+			</tr>
+			<tr> 
+				<td class="chefLabel"> 
+					Last Modified:
+				</td>
+				<td>
+					$properties.getPropertyFormatted($properties.NamePropModifiedDate)
+				</td>
+			</tr>
+		#if (!($dropboxMode && $collectionId==$homeCollection))
+			<tr> 
+				<td class="chefLabel"> 
+					Last Modified By: 
+				</td>
+				<td>
+					$validator.escapeHtml($properties.getPropertyFormatted($properties.NamePropModifiedBy))
+				</td>
+			</tr>
+		#end
+			#if ($properties.getPropertyFormatted($properties.NamePropIsCollection)=="false")
+				<tr> 
+					<td class="chefLabel"> 
+						Type:
+					</td>
+					<td>
+						$properties.getProperty($properties.NamePropContentType)
+					</td>
+				</tr>
+				<tr> 
+					<td class="chefLabel"> 
+						Size:
+					</td>
+					<td>
+						$properties.getPropertyFormatted($properties.NamePropContentLength) ($validator.getFileSizeWithDividor($properties.getProperty($properties.NamePropContentLength)) bytes)
+					</td>
+				</tr>
+				#* only allow open in new window for 2003 fall release
+				<tr>
+					<td class="chefLabel"> 
+						Open in:
+					</td>
+					<td>
+						#set ($openIn=$properties.getPropertyFormatted($properties.NamePropOpenNewWindow))
+						#if (($openIn == "false") || ( $openIn == "_self"))
+							This window
+						#else 
+							New window
+						#end
+					</td>
+				</tr>
+				*#
+					#if ($properties.getProperty($properties.NamePropContentType).equalsIgnoreCase($properties.TypeUrl))
+						<tr> 
+							<td  class="chefLabel"> 
+								Original URL:
+							</td>
+							<td>
+								$content
+							</td>
+						</tr>
+					#end
+				#end
+				<tr>
+					<td  class="chefLabel"> 
+						Stored As:
+					</td>
+					<td>
+						$service.getUrl($id)
+					</td>
+				</tr>
+			</table> 
+		#end
+		#if ($from=="show")
+			<div class="chefButtonRow">
+				<form name="moreForm" action="#toolForm("ResourcesAction")" method="post" >
+					<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+					<input type="hidden" name="id" value="$id" />
+					<input type="hidden" name="from" value = "show" />
+					<input type="hidden" name="view" value="general" />
+					#if (($service.allowGetProperties($id)) && ($service.allowAddProperty($id)) 
+							&& (($properties.getPropertyFormatted($properties.NamePropIsCollection)=="true")
+							|| (($properties.getPropertyFormatted($properties.NamePropIsCollection)=="false") && ($service.allowUpdateResource($id)))))
+						<input type="submit" name="eventSubmit_doProperties" value="Revise" />			
+					#end
+					<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				</form>
+			</div>	
+		#elseif ($from=="deleteConfirm")
+			<div class="chefButtonRow">
+				<form name="moreForm" action="#toolForm("ResourcesAction")" method="post" >
+				<input type="hidden" name="collectionId" value="$collectionId" />
+				<input type="hidden" name="id" value="$id" />
+				<input type="hidden" name = "deleteResourceIds" value="$deleteResourceIds" />
+				<input type="hidden" name="from" value = "deleteConfirm" />
+				<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+				</form>
+			</div>	
+		#end
+	</div>
+</div>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Presentation Tool</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-present-tool</id>
+	<currentVersion>sakai.1.5.1</currentVersion>
+	<organization>
+		<name>Mark J. Norton</name>
+		<url>http://www.nolaria.org/</url>
+	</organization>
+	<inceptionYear>2004</inceptionYear>
+
+	<dependencies>
+
+
+                <!-- servlet - only unti lthings are properly refactored -->
+                <dependency>
+                        <groupId>servletapi</groupId>
+                        <artifactId>servletapi</artifactId>
+                        <version>2.3</version>
+                </dependency>
+
+                <!-- to be able to access the Sakai utilitiy classes -->
+                <dependency>
+                        <groupId>sakaiproject</groupId>
+                        <artifactId>sakai-util</artifactId>
+                        <version>sakai.1.5.1</version>
+                </dependency>
+
+		<!-- to be able to access the Sakai component manager -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-component</artifactId>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<!-- to be able to use the Sakai Service APIs -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-service</artifactId>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<!-- to be able to use the Present Service APIs -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-present-service</artifactId>
+			<version>sakai.1.5.1</version>
+		</dependency>
+
+		<!-- for our OKI APIs -->
+                <dependency>
+                        <groupId>OKI</groupId>
+                        <artifactId>OkiOSID</artifactId>
+                        <version>2.0</version>
+                        <url>http://sourceforge.net/projects/okiproject</url>
+                </dependency>
+
+           <!-- for our Faces based tools -->
+                <dependency>
+                        <groupId>jsf</groupId>
+                        <artifactId>jsf-impl</artifactId>
+                        <version>1.1.01</version>
+                        <properties>
+                                <war.bundle>true</war.bundle>
+                        </properties>
+
+                </dependency>
+
+                <!-- for our Faces based tools -->
+                <dependency>
+                        <groupId>jsf</groupId>
+                        <artifactId>jsf-api</artifactId>
+                        <version>1.1.01</version>
+                        <properties>
+                                <war.bundle>true</war.bundle>
+                        </properties>
+                </dependency>
+
+                <!-- for our Faces based tools -->
+                <dependency>
+                        <groupId>sakaiproject</groupId>
+                        <artifactId>sakai-jsf</artifactId>
+                        <version>sakai.1.5.1</version>
+                        <properties>
+                                <war.bundle>true</war.bundle>
+                        </properties>
+                </dependency>
+
+                <dependency>
+                        <groupId>sakaiproject</groupId>
+                        <artifactId>sakai-velocity</artifactId>
+                        <version>sakai.1.5.1</version>
+                        <properties>
+                                <war.bundle>true</war.bundle>
+                        </properties>
+                </dependency>
+
+	</dependencies>
+
+	<build>
+
+		<!-- java source -->
+		<sourceDirectory>src/java</sourceDirectory>
+
+		<!-- other resources for the jar - the message bundles -->
+		<resources>
+			<resource>
+				<directory>${basedir}/src/bundle</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	
+	</build>
+
+</project>

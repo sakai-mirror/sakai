@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  author: <a href="mailto:lance@indiana.edu">Lance Speelmon</a>
+  author: <a href="mailto:rpembry@indiana.edu">Randall P. Embry</a>
+  author: <a href="mailto:rgollub@stanford.edu">Rachel Gollub</a>
+  Version: $Id: build.xml,v 1.8.2.13 2005/04/04 20:09:09 daisyf.stanford.edu Exp $
+-->
+
+<project name="Samigo" default="dist" basedir=".">
+  <description>Samigo</description>
+
+  <!-- read property files, overrides global variables -->
+  <property file="build.properties" />
+
+  <!-- global variables, do not modify -->
+  <property name="app.code" value="sam" />
+  <property name="build.dir" location="build" />
+  <property name="dist.dir" location="dist" />
+  <property name="doc" location="doc" />
+  <property name="lib" location="lib" />
+  <property name="osidlib" location="osid" />
+  <property name="conf" location="conf" />
+  <property name="tmpl" location="templates" />
+  <property name="src" location="src" />
+  <property name="build.src" location="${build.dir}/src" />
+  <property name="src.test" location="src-test" />
+  <property name="reports.tests" location="${build.dir}/report/tests" />
+  <property name="webapp" location="${build.dir}/samigo" />
+  <property name="webapp.lib" location="${webapp}/WEB-INF/lib" />
+  <property name="build.webapp" location="${build.dir}/samigo" />
+  <property name="conf" location="conf" />
+  <property name="war.lib" value="${webapp}/WEB-INF/lib" />
+  <property name="more.lib" value="dist/lib" />
+  <property name="classes" value="${build.dir}/classes" />
+  <property name="appserver" value="tomcat" />
+  <property name="applet" value="${webapp}/jsp/aam/applet" />
+  <property name="applet.jar" value="audio/dist/applet" />
+  <property name="oki.ejb.flag" value="true" />
+  <property name="xdoclet.lib.dir" location="lib-xdoclet" />
+  <property name="hibernate.hbm.dir" location="hibernate-hbm" />
+  <property name="exclude-hibernate" value="false" />
+
+  <path id="xdoclet.lib.path">
+    <fileset dir="${xdoclet.lib.dir}" includes="*.jar" />
+  </path>
+
+  <path id="compile.classpath">
+    <!-- Application specific lib files -->
+    <fileset dir="${lib}">
+      <include name="*.jar" />
+    </fileset>
+    <fileset dir="${osidlib}">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
+  <target name="noop" description="Print project name">
+    <echo message="Samigo Project" />
+    <echo message="JDK: ${ant.java.version}" />
+  </target>
+
+  <target name="init" depends="noop">
+    <!-- Create the time stamp -->
+    <tstamp />
+    <condition property="jdk.has-regex">
+      <equals arg1="${ant.java.version}" arg2="1.4" />
+    </condition>
+
+    <condition property="isProduction">
+      <equals arg1="${build.environment}" arg2="prd" casesensitive="false" />
+    </condition>
+
+    <condition property="isStaging">
+      <equals arg1="${build.environment}" arg2="stg" casesensitive="false" />
+    </condition>
+
+    <!-- set the local runtime builder if none exists -->
+    <condition property="samigo.local.runtime" value="contrib/noop-build.xml">
+      <not>
+        <isset property="samigo.local.runtime" />
+      </not>
+    </condition>
+
+    <condition property="exclude.hibernate">
+      <equals arg1="${exclude-hibernate}" arg2="true" />
+    </condition>
+
+    <echo message="database=${samigo.db}" />
+    <condition property="is.oracle" value="true">
+      <equals arg1="${samigo.db}" arg2="oracle" />
+    </condition>
+    <condition property="is.hsqldb" value="true">
+      <equals arg1="${samigo.db}" arg2="hsqldb" />
+    </condition>
+    <condition property="is.mysql" value="true">
+      <equals arg1="${samigo.db}" arg2="mysql" />
+    </condition>
+
+    <condition property="use.identity" value="true">
+      <or>
+        <equals arg1="${samigo.db}" arg2="hsqldb" />
+        <equals arg1="${samigo.db}" arg2="mysql" />
+      </or>
+    </condition>
+    <condition property="use.sequence" value="true">
+      <or>
+        <equals arg1="${samigo.db}" arg2="oracle" />
+      </or>
+    </condition>
+
+    <!-- Create output directories -->
+    <mkdir dir="${build.dir}" />
+    <!-- set the default build.environment to "dev" if none exists -->
+    <condition property="build.environment" value="dev">
+      <not>
+        <isset property="build.environment" />
+      </not>
+    </condition>
+    <echo message="build.environment=${build.environment}" />
+
+    <!-- set the default war.file name if none exists -->
+    <condition property="war.file" value="${app.code}-${build.environment}.war">
+      <not>
+        <isset property="war.file" />
+      </not>
+    </condition>
+    <!-- set the default jar.file name if none exists -->
+    <condition property="jar.file" value="${app.code}-${build.environment}.jar">
+      <not>
+        <isset property="jar.file" />
+      </not>
+    </condition>
+    <!-- set the default ear.file name if none exists -->
+    <condition property="ear.file" value="${app.code}-${build.environment}.ear">
+      <not>
+        <isset property="ear.file" />
+      </not>
+    </condition>
+    <available file="${appserver.deployment.dir}/${ear.file}"
+               type="file"
+               property="app.deployed"
+    />
+    <condition property="cvs.tag" value="HEAD">
+      <not>
+        <isset property="cvs.tag" />
+      </not>
+    </condition>
+    <echo message="cvs.tag=${cvs.tag}" />
+    <condition property="appserver.jboss">
+      <equals arg1="${appserver}"
+              arg2="jboss"
+              trim="true"
+              casesensitive="false"
+      />
+     </condition>
+     <condition property="appserver.tomcat">
+      <equals arg1="${appserver}"
+              arg2="tomcat"
+              trim="true"
+              casesensitive="false"
+      />
+    </condition>
+  </target>
+
+  <target name="buildlib-runtime" depends="copy-src">
+    <mkdir dir="${webapp.lib}" />
+    <!-- Copy all the library files into the war -->
+    <copy todir="${webapp.lib}" verbose="false">
+      <fileset dir="${lib}">
+        <exclude name="**/CVS" />
+        <exclude name="**/servlet.jar" />
+        <exclude name="**/javax.servlet.jar" />
+        <exclude name="**/xalan*.jar" />
+        <exclude name="**/xerces*.jar" />
+        <exclude name="**/xml-apis.jar" />
+        <exclude name="**/sakai-component-*.jar" />
+        <exclude name="**/sakai-service-*.jar" />
+        <exclude name="**/hibernate*.jar" if="exclude.hibernate" />
+      </fileset>
+    </copy>
+
+    <echo message="samigo.local.runtime=${samigo.local.runtime}"/>
+    <ant antfile="${samigo.local.runtime}"
+         target="buildlib-local-runtime"
+         inheritall="true"
+    />
+  </target>
+
+  <!-- build audio recording applet -->
+  <target name="audio">
+    <ant antfile="audio/build.xml" inheritAll="false" />
+  </target>
+
+  <target name="copy-src" depends="init">
+    <sync todir="${build.src}" failonerror="true">
+      <fileset dir="${src}">
+        <exclude name="**/CVS" />
+        <exclude name="**/*.jbx" />
+      </fileset>
+    </sync>
+    <sync todir="${build.webapp}" failonerror="true">
+      <fileset dir="webapp">
+        <exclude name="**/CVS" />
+      </fileset>
+    </sync>
+  </target>
+
+  <target name="update-build-info" depends="buildlib-runtime">
+    <!-- update build.properties -->
+    <echo message="cvs.tag=${cvs.tag}" />
+    <propertyfile file="${build.src}/org/navigoproject/build.properties">
+      <entry key="build.tag" value="${cvs.tag}" />
+      <entry key="build.time"
+             value="now"
+             type="date"
+             pattern="dd MMM yyyy HH:mm:ss Z"
+      />
+    </propertyfile>
+  </target>
+
+  <target name="compile"
+          depends="update-build-info,audio,hibernate-gen,select-db"
+          description="compile the source "
+  >
+    <mkdir dir="${classes}" />
+    <javac debug="true" deprecation="false" destdir="${classes}">
+      <src path="${build.src}" />
+      <classpath refid="compile.classpath" />
+    </javac>
+    <copy todir="${classes}" includeemptydirs="false" verbose="true">
+      <fileset dir="${build.src}">
+        <exclude name="**/*.java" />
+      </fileset>
+    </copy>
+    <copy todir="${build.webapp}/WEB-INF/classes" includeemptydirs="false" verbose="false">
+      <fileset dir="${classes}" />
+    </copy>
+    <copy todir="${applet}" includeemptydirs="false" verbose="true">
+      <fileset dir="${applet.jar}" />
+    </copy>
+  </target>
+
+  <target name="select-db" depends="select-sequence,select-identity">
+  </target>
+
+  <target name="select-identity" if="use.identity">
+    <!-- use the right applicationContext.xml accordingly -->
+    <copy file="${build.src}/org/sakaiproject/spring/applicationContext_identity.xml"
+          tofile="${build.src}/org/sakaiproject/spring/applicationContext.xml"
+          overwrite="true"
+          verbose="true" 
+    />
+  </target>
+
+  <target name="select-sequence" if="use.sequence">
+    <!-- use the right applicationContext.xml accordingly -->
+    <copy file="${build.src}/org/sakaiproject/spring/applicationContext_sequence.xml"
+          tofile="${build.src}/org/sakaiproject/spring/applicationContext.xml"
+          overwrite="true"
+          verbose="true" 
+    />
+  </target>
+
+  <target name="hibernate-gen"
+          depends="hibernate-test-gen"
+          description="generate hibernate descriptor files"
+  >
+    <taskdef name="hibernatedoclet"
+             classname="xdoclet.modules.hibernate.HibernateDocletTask"
+             classpathref="xdoclet.lib.path"
+    />
+    <hibernatedoclet destdir="${classes}"
+                     excludedtags="@version,@author,@todo,@see,@desc"
+                     addedtags="@xdoclet-generated at ${TODAY}@copyright yourCompany,@author yourCompany,@version ${version}"
+                     force="true"
+                     mergedir="merge"
+                     verbose="true"
+    >
+
+      <fileset dir="${build.src}">
+        <include name="org/navigoproject/data/**/*.java" />
+        <exclude name="**/*PK*" />
+      </fileset>
+
+      <hibernate version="2.0" />
+    </hibernatedoclet>
+
+    <copy file="hibernate.properties" todir="${classes}" />
+    <antcall target="disable-hibernate-sql-debug"/>
+  </target>
+
+  <target name="hibernate-test-gen"
+          description="generate hibernate descriptor files"
+  >
+    <taskdef name="hibernatedoclet"
+             classname="xdoclet.modules.hibernate.HibernateDocletTask"
+             classpathref="xdoclet.lib.path"
+    />
+    <hibernatedoclet destdir="${hibernate.hbm.dir}"
+                     excludedtags="@version,@author,@todo,@see,@desc"
+                     addedtags="@xdoclet-generated at ${TODAY}@copyright yourCompany,@author yourCompany,@version ${version}"
+                     force="true"
+                     mergedir="merge"
+                     verbose="true"
+    >
+
+      <fileset dir="${build.src}">
+        <include name="org/navigoproject/data/**/*.java" />
+        <exclude name="**/*PK*" />
+      </fileset>
+
+      <hibernate version="2.0" />
+    </hibernatedoclet>
+
+    <copy file="hibernate.properties" todir="${hibernate.hbm.dir}"/>
+  </target>
+
+  <target name="dist" depends="init,compile" description="Build ear file">
+    <delete dir="${dist.dir}" />
+    <mkdir dir="${dist.dir}" />
+    <mkdir dir="${more.lib}" />
+    <mkdir dir="${dist.dir}/META-INF" />
+    <copy file="${conf}/application.xml"
+          todir="${dist.dir}/META-INF"
+          verbose="true"
+    />
+
+    <!-- update the environment variables -->
+    <echo message="${build.webapp}/WEB-INF/web.xml" />
+    <echo message="${dist.dir}/META-INF/application.xml" />
+    <echo message="build.environment=${build.environment}" />
+    <replaceregexp match="\b(dev|unt|reg|stg|trn|prd)\b"
+                   replace="${build.environment}"
+                   flags="g"
+                   byline="true"
+    >
+      <fileset file="${build.webapp}/WEB-INF/web.xml" />
+      <fileset file="${build.src}/org/navigoproject/spring/applicationContext.xml" />
+      <!-- kind of a hack, but quickest thing to do LDS -->
+      <fileset file="${classes}/org/navigoproject/spring/applicationContext.xml" />
+      <fileset file="${dist.dir}/META-INF/application.xml" />
+    </replaceregexp>
+
+    <jar jarfile="${dist.dir}/${war.file}" compress="false">
+      <manifest>
+        <attribute name="Class-Path" value="lib/more.jar" />
+      </manifest>
+      <fileset dir="${build.webapp}">
+        <exclude name="**/CVS" />
+        <!-- JBuilder junk -->
+        <exclude name="**/*.jbx" />
+        <exclude name="**/*.class" />
+        <exclude name="**/*.jar" />
+        <exclude name="**/classes/**" />
+      </fileset>
+      <fileset dir="${build.webapp}">
+        <include name="**/CapturePlayback.jar" />
+      </fileset>
+    </jar>
+
+    <jar jarfile="${dist.dir}/${jar.file}" compress="false">
+      <manifest>
+        <attribute name="Class-Path" value="lib/more.jar" />
+      </manifest>
+      <fileset dir="${conf}">
+        <include name="**/META-INF/**" />
+      </fileset>
+      <fileset dir="${classes}">
+        <include name="**/ejb/**" />
+      </fileset>
+    </jar>
+
+    <jar jarfile="${more.lib}/more.jar" compress="false">
+      <fileset dir="${classes}" />
+      <fileset dir="${build.webapp}/WEB-INF/lib" />
+    </jar>
+
+    <jar jarfile="${dist.dir}/${ear.file}" compress="false">
+      <manifest>
+        <attribute name="Class-Path" value="lib/more.jar" />
+      </manifest>
+      <fileset dir="${dist.dir}" />
+    </jar>
+
+    <jar jarfile="${dist.dir}/samigo.war" compress="false">
+      <fileset dir="${build.webapp}" />
+    </jar>
+
+    <!--  static web content to be served by apache -->
+    <jar jarfile="${dist.dir}/web.zip" compress="false">
+      <fileset dir="${webapp}">
+        <include name="css/**/**" />
+        <include name="html/**/**" />
+        <include name="htmlarea/**/**" />
+        <include name="images/**/**" />
+        <include name="js/**/**" />
+        <exclude name="**/CVS" />
+      </fileset>
+    </jar>
+
+    <ant antfile="audio/build.xml" target="clean" inheritAll="false" />
+  </target>
+
+  <target name="all" depends="clean,dist" description="Build everything">
+    <echo message="Application built" />
+  </target>
+
+  <target name="clean" depends="noop" description="Clean all build products">
+    <delete dir="${webapp.lib}" />
+    <delete dir="${build.dir}" />
+    <ant antfile="audio/build.xml" target="clean" inheritAll="false" />
+  </target>
+
+  <target name="compile-tests"
+          depends="init,compile"
+          description="compile the source "
+  >
+    <!-- Compile the java code from ${src.test} into ${build.dir} -->
+    <mkdir dir="${build.tests}" />
+    <javac srcdir="${src.test}" destdir="${build.tests}">
+      <classpath>
+        <pathelement location="lib/" />
+        <pathelement path="${java.class.path}" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="deploy"
+          depends="undeploy,dist"
+          description="Deploy Application to App Server"
+  >
+    <property name="exclude-hibernate" value="false" />
+    <echo message="Deploy web application" />
+  	<!-- antcall target="schemaexport" / -->
+    <antcall target="deploy-jboss" />
+    <antcall target="deploy-tomcat" />
+  </target>
+
+  <target name="deploy-in-sakai"
+          depends="undeploy,dist"
+          description="Deploy Application to App Server"
+  >
+    <property name="exclude.hibernate" value="true" />
+    <echo message="Deploy web application" />
+  	<!-- antcall target="schemaexport" / -->
+    <antcall target="deploy-tomcat" />
+  </target>
+
+
+  <target name="deploy-jboss" if="appserver.jboss">
+    <copy file="${dist.dir}/${ear.file}"
+          todir="${appserver.deployment.dir}"
+          verbose="true"
+    />
+  </target>
+  <target name="deploy-tomcat" if="appserver.tomcat">
+    <copy file="${dist.dir}/samigo.war"
+          todir="${appserver.deployment.dir}"
+          verbose="true"
+    />
+  </target>
+
+  <target name="undeploy"
+          depends="init"
+          description="Undeploy Application"
+          if="app.deployed"
+  >
+    <!--
+         Only undeploy if the app is deployed.  Since there is no way (that
+         I know of) to query tomcat from within ant, we'll look to see if the
+         war file is there.  If so, we assume we need to undeploy
+    -->
+    <echo message="Undeploy web application" />
+    <antcall target="undeploy-jboss" />
+    <antcall target="undeploy-tomcat" />
+  </target>
+
+  <target name="undeploy-jboss" if="appserver.jboss">
+    <delete file="${appserver.deployment.dir}/${ear.file}" verbose="true" />
+  </target>
+  <target name="undeploy-tomcat" if="appserver.tomcat">
+    <delete file="${appserver.deployment.dir}/samigo.war" verbose="true" />
+  </target>
+
+  <target name="src-dist"
+          depends="init"
+          description="generate the source distribution"
+  >
+    <!-- Put everything in ${build.dir} into the Samigo-${DSTAMP}.jar file -->
+    <jar destfile="${dist.dir}/Samigo-${DSTAMP}-src.jar"
+         basedir="./"
+         includes="src/**"
+         compress="true"
+    />
+    <jar destfile="${dist.dir}/Samigo-${DSTAMP}-src.jar"
+         basedir="./"
+         includes="doc/**"
+         update="true"
+         compress="true"
+    />
+    <jar destfile="${dist.dir}/Samigo-${DSTAMP}-src.jar"
+         basedir="./"
+         includes="${webapp}/**"
+         excludes="**/*.class **/*.jar **/*.tld **/WEB-INF/classes/**"
+         update="true"
+         compress="true"
+    />
+  </target>
+
+  <target name="test" depends="compile-tests" description="JUnit unit tests">
+    <mkdir dir="${reports.tests}" />
+    <junit printsummary="yes">cf
+      <classpath>
+        <pathelement location="${build.dir}" />
+        <pathelement location="${build.tests}" />
+        <pathelement path="${java.class.path}" />
+      </classpath>
+      <formatter type="plain" />
+      <batchtest todir="${reports.tests}">
+        <fileset dir="${build.tests}">
+          <include name="**/*Test*.class" />
+          <exclude name="**/AllTests.class" />
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="changelog" description="CVS changes today">
+    <cvschangelog dir="." destfile="changelog.xml" daysinpast="4" />
+    <style in="changelog.xml" out="changelog.html" style="conf/changelog.xsl">
+      <param name="title" expression="Ant ChangeLog" />
+      <param name="module" expression="ant" />
+      <param name="cvsweb" expression="http://cvs.apache.org/viewcvs/" />
+    </style>
+  </target>
+
+  <!-- target name="disable-hibernate-sql-debug" if="isProduction" -->
+  <target name="disable-hibernate-sql-debug">
+    <echo message="update ${classes}/hibernate.properties" />
+    <echo message="set hibernate.show_sql=false" />
+    <propertyfile file="${classes}/hibernate.properties">
+      <entry key="hibernate.show_sql" value="false" />
+    </propertyfile>
+  </target>
+
+  <target name="schemaexport" depends="init">
+	<taskdef name="schemaexport"
+	         classname="net.sf.hibernate.tool.hbm2ddl.SchemaExportTask">
+	  <classpath>
+		<fileset dir="lib">
+		  <include name="**/*.jar"/>
+		</fileset>
+		<pathelement location="${build.dir}/classes"/>
+	  </classpath>
+	</taskdef>
+	<schemaexport
+		  	  quiet="no"
+		  	  text="yes"
+		  	  drop="no"
+		  	  delimiter=";"
+		  	  output="schema-export.sql">
+
+	  <fileset dir="src/org/sakaiproject/tool/assessment/data/dao">
+		<include name="**/*identity.hbm.xml" if="use.identity" />
+		<include name="assessment/AssessmentBase.hbm.xml" if="is.oracle" />
+		<include name="assessment/ItemData.hbm.xml" if="is.oracle" />
+		<include name="assessment/PublishedAssessmentBase.hbm.xml" if="is.oracle" />
+		<include name="assessment/PublishedItemData.hbm.xml" if="is.oracle" />
+		<include name="authz/AuthorizationData.hbm.xml" if="is.oracle" />
+		<include name="grading/GradingData.hbm.xml" if="is.oracle" />
+		<include name="grading/MediaData.hbm.xml" if="is.oracle" />
+		<include name="questionpool/QuestionPoolData.hbm.xml" if="is.oracle" />
+		<include name="shared/TypeData.hbm.xml" if="is.oracle" />
+	  </fileset>  	        
+	</schemaexport>
+  </target>
+
+</project>
+
+
+

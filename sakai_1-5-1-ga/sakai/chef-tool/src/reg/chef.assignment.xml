@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<function name="asn.read" />
+	<function name="asn.new" />
+	<function name="asn.revise" />
+	<function name="asn.delete" />
+	<function name="asn.submit" />
+	<function name="asn.grade" />
+
+	<tool
+			id="chef.assignment"
+			url="/sakai-chef-tool/chef-assignment"
+			title="Assignments"
+			description="For posting, submitting and grading online.">
+
+	</tool>
+
+</registration>

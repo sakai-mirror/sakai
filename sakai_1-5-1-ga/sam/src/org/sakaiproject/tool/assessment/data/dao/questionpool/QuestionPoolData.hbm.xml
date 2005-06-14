@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+  <class name="org.sakaiproject.tool.assessment.data.dao.questionpool.QuestionPoolData" table="sam_questionPool_t">
+    <id name="questionPoolId" column="questionPoolId" type="java.lang.Long" unsaved-value="0">
+      <generator class="sequence">
+        <param name="sequence">sam_questionPool_id_s</param>
+      </generator>
+    </id>
+    <property name="title">
+      <column name="title" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="description">
+      <column name="description" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="parentPoolId">
+      <column name="parentPoolId" not-null="false" sql-type="integer" />
+    </property>
+    <property name="ownerId">
+      <column name="ownerId" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="organizationName">
+      <column name="organizationName" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="dateCreated">
+      <column name="dateCreated" not-null="false" sql-type="date" />
+    </property>
+    <property name="lastModified">
+      <column name="lastModifiedDate" not-null="false" sql-type="date" />
+    </property>
+    <property name="lastModifiedById">
+      <column name="lastModifiedBy" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="accessTypeId">
+      <column name="defaultAccessTypeId" not-null="false" sql-type="integer" />
+    </property>
+    <property name="objectives">
+      <column name="objective" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="keywords">
+      <column name="keywords" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="rubric">
+      <column name="rubric" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="typeId">
+      <column name="typeId" not-null="false" sql-type="integer" />
+    </property>
+    <property name="intellectualPropertyId">
+      <column name="intellectualPropertyId" not-null="false" sql-type="integer" />
+    </property>
+    <set name="questionPoolItems" table="sam_questionPoolItem_t" cascade="all" inverse="true" lazy="false">
+      <key column="questionPoolId"/>
+      <one-to-many class="org.sakaiproject.tool.assessment.data.dao.questionpool.QuestionPoolItemData" />
+    </set>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.questionpool.QuestionPoolItemData" table="sam_questionPoolItem_t">
+    <composite-id>
+      <key-property name="questionPoolId" column="questionPoolId" />
+      <key-property name="itemId" column="itemId" />
+    </composite-id>
+  </class>
+
+  <class name="org.sakaiproject.tool.assessment.data.dao.questionpool.QuestionPoolAccessData" table="sam_questionPoolAccess_t">
+    <composite-id>
+      <key-property name="questionPoolId" column="questionPoolId" />
+      <key-property name="agentId" column="agentId" />
+      <key-property name="accessTypeId" column="accessTypeId" />
+    </composite-id>
+  </class>
+
+</hibernate-mapping>

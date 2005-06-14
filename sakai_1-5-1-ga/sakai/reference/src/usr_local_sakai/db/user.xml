@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+    <user created-id="admin" created-time="20020823003506140"
+        email="nobody@nowhere" first-name="Sakai" id="admin"
+        last-name="Administrator" modified-id="admin"
+        modified-time="20020823003527581" pw="ISMvKXpXpadDiUoOSoAf">
+        <properties/>
+    </user>
+    <user created-id="admin" created-time="20020823003506140"
+        email="nobody@nowhere" first-name="Sakai" id="postmaster"
+        last-name="Postmaster" modified-id="admin"
+        modified-time="20020823003527581" pw="ISMvKXpXpadDiUoOSoAf">
+        <properties/>
+    </user>
+</users>

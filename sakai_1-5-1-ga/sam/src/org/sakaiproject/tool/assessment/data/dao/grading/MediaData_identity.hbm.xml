@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+  <class name="org.sakaiproject.tool.assessment.data.dao.grading.MediaData" table="sam_media_t">
+    <id name="mediaId" column="mediaId" type="java.lang.Long" unsaved-value="0">
+        <generator class="identity"/>
+    </id>
+    <many-to-one name="itemGradingData"
+      class="org.sakaiproject.tool.assessment.data.dao.grading.ItemGradingData"
+      column="itemGradingId" />
+    <property name="media">
+      <column name="media" not-null="false"/>
+    </property>
+    <property name="fileSize">
+      <column name="fileSize" not-null="false" sql-type="integer"/>
+    </property>
+    <property name="mimeType">
+      <column name="mimeType" not-null="false" sql-type="varchar(80)" />
+    </property>
+    <property name="description">
+      <column name="description" not-null="false" sql-type="varchar(4000)" />
+    </property>
+    <property name="location">
+      <column name="location" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="filename">
+      <column name="filename" not-null="false" sql-type="varchar(255)" />
+    </property>
+    <property name="isLink">
+      <column name="isLink" not-null="false" sql-type="integer" />
+    </property>
+    <property name="isHtmlInline">
+      <column name="isHtmlInline" not-null="false" sql-type="integer" />
+    </property>
+    <property name="status">
+      <column name="status" not-null="false" sql-type="integer" />
+    </property>
+    <property name="createdBy">
+      <column name="createdBy" not-null="false" sql-type="varchar(36)" />
+    </property>
+    <property name="createdDate">
+      <column name="createdDate" not-null="false" sql-type="datetime" />
+    </property>
+    <property name="lastModifiedBy">
+      <column name="lastModifiedBy" not-null="false" sql-type="varchar(36)" />
+    </property>
+    <property name="lastModifiedDate">
+      <column name="lastModifiedDate" not-null="false" sql-type="datetime" />
+    </property>
+  </class>
+
+</hibernate-mapping>

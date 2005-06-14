@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="chef.aboutGradTools"
+			url="/sakai-chef-tool/chef-iframe"
+			title="About Grad Tools"
+			description="Description of the features of Grad Tools.">
+
+		<configuration name="source" value="/content/public/GradToolsInfo.html" />
+		<configuration name="height" value="475px" />
+		<configuration name="special" value="" />
+
+	</tool>
+
+</registration>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launchConfiguration type="org.eclipse.ant.AntBuilderLaunchConfigurationType">
+    <booleanAttribute
+        key="org.eclipse.ui.externaltools.ATTR_RUN_IN_BACKGROUND" value="false"/>
+    <stringAttribute
+        key="org.eclipse.ui.externaltools.ATTR_RUN_BUILD_KINDS" value="full,incremental"/>
+    <booleanAttribute
+        key="org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT" value="true"/>
+    <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/Navigo/xdoclet-build.xml}"/>
+    <booleanAttribute
+        key="org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE" value="true"/>
+</launchConfiguration>

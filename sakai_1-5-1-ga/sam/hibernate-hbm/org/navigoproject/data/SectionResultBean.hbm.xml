@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="org.navigoproject.data.SectionResultBean"
+        table="SECTION_RESULT"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+
+        <composite-id
+            name="sectionResultPK"
+            class="org.navigoproject.data.SectionResultPK"
+        >
+                     <key-property
+                        name="assessmentId"
+                        type="java.lang.String"
+                        column="ASSESSMENT_ID"
+                />
+
+                     <key-property
+                        name="sectionId"
+                        type="java.lang.String"
+                        column="SECTION_ID"
+                />
+
+        </composite-id>
+
+        <property
+            name="elementId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="ELEMENT_ID"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-SectionResultBean.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

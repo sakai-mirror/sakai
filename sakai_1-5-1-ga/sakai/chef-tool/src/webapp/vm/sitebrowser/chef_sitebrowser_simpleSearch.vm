@@ -1,0 +1,55 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitebrowser/chef_sitebrowser_simpleSearch.vm,v 1.4 2004/04/28 18:11:14 suiyy Exp $ -->
+<script type="text/javascript" language="JavaScript">
+	focus_path = ["search"];
+</script>
+<div class="portletBody">
+	
+		<h3 class="insColor insBak insBor">Search for Sites</h3>
+		<p class="instruction">Complete the form below to find specific sites.</p>
+	
+		<form action="#toolForm("$action")" method="post">		
+		<fieldset>
+			<legend class="radio">Type of Site:</legend>
+			<div class="checkbox indnt1">
+				<input type="radio" name="siteType" id="siteType" value="Any" checked="checked" onclick="clearNewCopyright(newcopyrighttext$i);" />
+				<label for="siteType">Any</label>
+			</div>
+			#if ($siteTypes.size() > 0 )
+				#foreach ($type in $siteTypes)
+					#if ($type == $termSearchSiteType)
+						<input type="hidden" name="ClassSiteFromSystem" value="true" />
+						<div class="checkbox indnt1">
+							<input  type="radio" name="siteType" id="siteType" value="$type" />
+							<label for="classSite">Course</label>
+						</div>
+						<div class="indnt3">
+							Academic Term:
+							<select name="selectTerm">
+							<option value="Any">Any</option>
+							#foreach ($term in $terms)
+							<option value="$term.Id">$term.Id</option>
+							#end
+							</select>
+						</div>	
+					#else
+						<div class="checkbox indnt1">
+							<input type="radio" name="siteType" id="siteType" value="$type" />
+							<label for="siteType">$type</label>
+						</div>
+					#end
+				#end
+			#end
+		</fieldset>
+
+		<div class="shorttext indnt1">
+			<label for="shorttext1">Search for:</label>
+			<input type="text" name="search" id="search" size="32" maxlength="50" value="" onkeypress="formSubmitOnEnter(this, event)">
+			<input type="hidden" name="eventSubmit_doSearch" id="eventSubmit_doSearch" value="Search for Sites" />
+		</div>
+		
+		<p class="act">
+			 <input type="submit" name="eventSubmit_doSearch" value="Search for Sites" />
+		</p>
+		</form>
+
+</div>

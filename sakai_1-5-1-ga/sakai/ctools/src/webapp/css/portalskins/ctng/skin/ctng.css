@@ -1,0 +1,13 @@
+@import url("../../core/skin/core.css");
+.divColor{background-color:#c2c2c2 !important;}
+#divLogo{}
+#tabNavigation .selectedTab a, #tabNavigation .selectedTab a:link, #tabNavigation .selectedTab a:visited, #tabNavigation .selectedTab a:hover
+ {
+	background-image:url(topleft-curtab.gif);background-position:top left;background-repeat:no-repeat;
+	background-color:#c2c2c2;
+	border-bottom: none;
+	color: #2E3C52;
+	padding: 3px 5px 4px 5px
+}
+#leftnavlozenge li a{background-color:#c2c2c2;color:#2E3C52;display:block;padding:5px 5px 5px 0.5em;text-decoration:none;width:100%}
+.content-table{background-color:#fff;border-bottom:5px solid #c2c2c2;border-right:5px solid #c2c2c2;border-top:5px solid #c2c2c2;margin:0}

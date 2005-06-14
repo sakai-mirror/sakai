@@ -1,0 +1,206 @@
+<project default="help">
+
+  <!-- $Header: /cvs/quickstart/qs-1-5-1/build151WebSite.xml,v 1.5 2005/05/27 19:50:09 dlhaines.umich.edu Exp $ -->
+  <!--
+      Will build into the 'outputs' directory for intermediate results.
+      Will take input from the 'inputs' directory.
+      Will put the final organization in the 'final' directory.
+    -->
+
+  <property file="build151WebSite.properties" />
+
+  <!-- top level targets -->
+  <target name="help">
+    <echo>help for build Web Site</echo>
+  </target>
+
+  <target name="assembleAll" description="build entire website" 
+	  depends="clean,generateWebDocs,copyMavenArtifacts,copyDistributions,installOtherDocs,zipSite" >
+    <echo>created website zip file: ${website.zip}</echo>
+  </target>
+
+  <target name="generateWebDocs" description="generate the web pages and other documents">
+    <copy todir="${finaldir}/docs">
+      <fileset dir="${docs.dir}" includes="**/*.pdf" />
+      <fileset dir="${docs.dir}" includes="**/SAM1_5**" />
+      <fileset dir="${docs.dir}" includes="**/SakaiSG*" />
+      <fileset dir="${docs.dir}" includes="**/SakaiSG*" />
+    </copy>
+
+    <copy todir="${finaldir}/html">
+      <fileset dir="${docs.dir}"> 
+	<include name="**/*.htm*"/> 
+	<exclude name="**/index-dev.htm*"/> 
+	<exclude name="**/prod.htm*"/> 
+	<exclude name="**/sidebar.htm*"/> 
+	</fileset>
+    </copy>
+    <copy todir="${finaldir}/other">
+      <fileset dir="${docs.dir}" includes="build.properties" />
+    </copy>
+  </target>
+
+  <target name="copyDistributions" description="copy the zipped distributions">
+    <copy todir="${finaldir}/other" file="${src.quickdemo.zip}"/>
+    <copy todir="${finaldir}/other" file="${src.quickprod.zip}"/>
+  </target>
+
+  
+  <target name="zipSite">
+
+    <zip destfile="${website.zip}">
+
+      <zipfileset dir="${finaldir}/docs" prefix="docs"/>	
+      <zipfileset dir="${finaldir}/html" />	
+      <zipfileset dir="${finaldir}/other" prefix="other" />	
+      <zipfileset dir="${finaldir}/javadoc" prefix="javadoc" />	
+      <zipfileset dir="${finaldir}/tagdoc" prefix="tagdoc" />	
+
+    </zip>
+  </target>
+
+  <target name="copyMavenArtifacts" description="assemble the maven repository artifacts">
+    <!-- 	<mkdir dir="${finaldir}/artifacts" /> -->
+    <copy todir="${finaldir}/artifacts/sakaiproject">
+      <fileset dir="${maven.repository}" />
+    </copy>
+  </target>
+
+  <target name="generateOtherDocs" description="generate javadoc and tag docs" depends="generateJavaDocs,generateTagLib">
+    <copy todir="${finaldir}/final/other" >
+      <fileset dir="${destdir}" />
+    </copy>
+  </target>
+
+  <!-- ================ processing targets =================== -->
+
+  <target name="installOtherDocs" description="install the taglib and javadoc files">
+    <unzip src="${destdir}/sakai-javadoc.zip" dest="${dest.javadocs.unzipped}" />
+    <unzip src="${destdir}/sakai-taglib.zip" dest="${dest.taglib.unzipped}" />
+    <copy file="${src.javadocs.zip}" todir="${finaldir}/other" />
+    <copy file="${src.taglib.zip}" todir="${finaldir}/other" />
+
+  </target>
+
+
+<!--
+  <uptodate property="uptodate.taglib" targetfile="${destdir}/sakai-taglib.zip">
+    <srcfiles file="${tld.sakai}" includes="*" />
+    <srcfiles file="${tld.jsf_core}" includes="*" />
+    <srcfiles file="${tld.html_basic}" includes="*" />
+  </uptodate>
+
+
+
+  <target name="generateTagLib" description="generateTaglib" depends="" >
+    <antcall target="generateTagLibWork" />
+  </target>
+-->
+
+  <target name="generateTagLib" description="generateTaglib" depends="" unless="uptodate.taglib">
+
+    <java fork="true" jar="${tlddocjar}" failonerror="true">
+<!--      <arg line="-d ${tmpdir}/tmp-taglib/sakai-taglib/doc" /> -->
+      <arg line="-d ${tmpdir}/tmp-taglib" /> 
+      <arg value="${tld.sakai}" />
+      <arg value="${tld.jsf_core}" />
+      <arg value="${tld.html_basic}" />
+    </java>
+
+    <jar jarfile="${tmpdir}/sakai-taglib.zip" basedir="${tmpdir}/tmp-taglib" />
+    <move file="${tmpdir}/sakai-taglib.zip" todir="${destdir}" />
+    <delete dir="${tmpdir}/tmp-taglib" />
+    
+  </target>
+
+<!--
+  <uptodate property="uptodate.javadoc" targetfile="${destdir}/sakai-javadoc.zip">
+    <srcfiles dir="${src.help.sourcedir}" defaultexcludes="yes">
+      <include name="**/*.java" />
+    </srcfiles>
+
+    <srcfiles dir="${src.presentation.sourcedir}" defaultexcludes="yes">
+      <include name="**/*.java" />
+    </srcfiles>
+
+    <srcfiles dir="${src.sakai.sourcedir}" defaultexcludes="yes">
+      <include name="**/*.java" />
+    </srcfiles>
+
+    <srcfiles dir="${src.syllabus.sourcedir}" defaultexcludes="yes">
+      <include name="**/*.java" />
+    </srcfiles>
+
+  </uptodate>
+
+
+  <target name="generateJavaDocs" description="generate javadocs">
+    <antcall target="generateJavaDocsWork" />
+  </target>
+-->
+
+<!--  <target name="generateJavaDocs" description="generate javadocs" unless="uptodate.javadoc"> -->
+
+  <target name="generateJavaDocs" description="generate javadocs">
+
+    <delete dir="${tmpdir}/sakai-javadoc.zip" />
+    <delete dir="${tmpdir}/sakai-javadoc" />
+
+    <javadoc destdir="${tmpdir}/sakai-javadoc" useexternalfile="yes" author="true" version="true" use="true">
+      <!--
+      <fileset dir="${src.help.sourcedir}" defaultexcludes="yes">
+	<include name="**/*.java" />
+      </fileset>
+      <fileset dir="${src.presentation.sourcedir}" defaultexcludes="yes">
+	<include name="**/*.java" />
+      </fileset>
+      -->
+      <fileset dir="${src.sakai.sourcedir}" defaultexcludes="yes">
+	<include name="**/*.java" />
+      </fileset>
+      <!--
+      <fileset dir="${src.syllabus.sourcedir}" defaultexcludes="yes">
+	<include name="**/*.java" />
+      </fileset>
+      -->
+    </javadoc>
+
+    <jar jarfile="${tmpdir}/sakai-javadoc.zip" basedir="${tmpdir}/sakai-javadoc" />
+    <move file="${tmpdir}/sakai-javadoc.zip" todir="${destdir}" />
+    <delete dir="${tmpdir}/sakai-javadoc" />
+
+    <delete dir="${tmpdir}/sam-javadoc.zip" />
+    <delete dir="${tmpdir}/sam-javadoc" />
+    <javadoc destdir="${tmpdir}/sam-javadoc" useexternalfile="yes" author="true" version="true" use="true">
+      <fileset dir="${src.sam.sourcedir}" defaultexcludes="yes">
+	<include name="**/*.java" />
+      </fileset>
+    </javadoc>
+
+    <jar jarfile="${tmpdir}/sam-javadoc.zip" basedir="${tmpdir}/sam-javadoc" />
+    <move file="${tmpdir}/sam-javadoc.zip" todir="${destdir}" />
+    <delete dir="${tmpdir}/sam-javadoc" />
+
+  </target>
+
+
+  <!-- ======== utilities =========== -->
+  <target name="clean">
+    <delete dir="${work.base}/tmp/build-site" verbose="true" />
+    <mkdir dir="${work.base}/tmp/build-site" />
+    <delete dir="${finaldir}" />
+    <mkdir dir="${finaldir}" />
+  </target>
+
+  <target name="variables" description="print values of variables used">
+    <echo> home: ${home}</echo>
+    <echo> work.base: ${work.base}</echo>
+    <echo> src.quickdemo.zip: ${src.quickdemo.zip}</echo>
+    <echo> src.quickprod.zip: ${src.quickprod.zip}</echo>
+    <echo> src.sakai.sourcedir: ${src.sakai.sourcedir}</echo>
+    <echo> src.help.sourcedir: ${src.help.sourcedir}</echo>
+    <echo> destdir: ${destdir}</echo>
+  </target>
+
+
+</project>

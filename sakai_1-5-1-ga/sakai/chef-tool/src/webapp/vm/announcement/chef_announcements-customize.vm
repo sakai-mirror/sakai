@@ -1,0 +1,112 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/announcement/chef_announcements-customize.vm,v 1.1 2004/03/08 03:24:45 ggolden Exp $ 
+
+<script type="text/javascript">
+	focus_path = [ "$form-notify" ];
+</script>
+
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		$!description
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+		<form action="#toolForm("$action")" method="post">
+		<br />
+		<fieldset>
+			<legend>
+				Display Options
+			</legend>
+			<input 	type="checkbox"
+				name="$displayOptions.getVarNameShowAllColumns()" 
+				id="${displayOptions.getVarNameShowAllColumns()}Check" 
+				value="true" 
+				#if ($displayOptions.isShowAllColumns()) 
+					checked
+	            #end
+				/> 
+			<label for="${displayOptions.getVarNameShowAllColumns()}Check">
+				Show all columns
+			</label>
+			<br />
+
+			<input 	type="checkbox"
+				name="$displayOptions.getVarNameShowAnnouncementBody()" 
+				id="${displayOptions.getVarNameShowAnnouncementBody()}Check" 
+				value="true" 
+				#if ($displayOptions.isShowAnnouncementBody()) 
+					checked="checked" 
+				#end
+				/> 
+			<label for="${displayOptions.getVarNameShowAnnouncementBody()}Check">
+				Show announcement body
+			</label>
+			<br/>
+			<label for="${displayOptions.getVarNameNumberCharsPerAnnouncement()}EntryField">
+				Characters in body: 
+			</label>
+			<input type="text" 
+				id="${displayOptions.getVarNameNumberCharsPerAnnouncement()}EntryField"" 
+				name="$displayOptions.getVarNameNumberCharsPerAnnouncement()" 
+			#if ($displayOptions.isEnforceNumberOfCharsPerAnnouncement()) 
+				value="$displayOptions.NumberOfCharsPerAnnouncement"
+			#else
+				value=""
+			#end
+				/>
+		</fieldset>
+		<fieldset>
+			<legend>
+				Display Limits
+			</legend>
+			<div class="chefInlineInstructions">
+				How will announcements display in the announcement list?
+			</div>
+			<br />
+
+			<table class="chefEditItem">
+				<tr>
+					<td class="label">
+						<label for="${displayOptions.getVarNameNumberOfDaysInPast()}EntryField">
+							Number of days in the past: 
+						</label>
+					</td>
+					<td>
+						<input type="text" id="${displayOptions.getVarNameNumberOfDaysInPast()}EntryField" 
+						name="$displayOptions.getVarNameNumberOfDaysInPast()" 
+				#if ($displayOptions.isEnforceNumberOfDaysInThePastLimit()) 
+						value="$displayOptions.NumberOfDaysInThePast"
+				#else
+						value=""
+				#end
+						/>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">
+						<label for="${displayOptions.getVarNameNumberOfAnnouncements()}EntryField">
+							Number of announcements: 
+						</label>
+					</td>
+					<td>
+						<input type="text" 
+						id="${displayOptions.getVarNameNumberOfAnnouncements()}EntryField" 
+						name="$displayOptions.getVarNameNumberOfAnnouncements()" 
+					#if ($displayOptions.isEnforceNumberOfAnnouncementsLimit()) 
+						value="$displayOptions.NumberOfAnnouncements"
+					#else
+						value=""
+					#end
+						/>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+		<p>&nbsp;</p>
+		<div class="chefButtonRow">
+			<input type="submit" name="eventSubmit_doUpdate" value="Save">
+        	<input type="submit" name="eventSubmit_doCancel" value="Cancel">
+        </div>
+		</form>
+	</div>
+</div>
+

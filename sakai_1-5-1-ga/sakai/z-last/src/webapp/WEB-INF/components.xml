@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- Register the default logger - no dependencies -->
+	<!--
+	<bean id="org.sakaiproject.service.framework.log.Logger"
+			class="org.sakaiproject.component.framework.log.CommonsLogger"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+	</bean>
+	-->
+
+	<bean id="org.sakaiproject.service.framework.log.Logger"
+			class="org.sakaiproject.component.framework.log.Jdk14Logger"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+ 		<property name="filePath"><value>/usr/local/sakai/logs/sakai%u.log</value></property>
+ 		<property name="level"><value>info</value></property>
+	</bean>
+
+	<!-- Register the component module's current service implementation -->
+	<bean id="org.sakaiproject.service.framework.current.CurrentService"
+			class="org.sakaiproject.component.framework.current.BasicCurrentService"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	</bean>
+
+</beans>

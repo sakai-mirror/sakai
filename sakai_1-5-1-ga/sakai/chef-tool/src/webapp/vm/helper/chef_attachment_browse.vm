@@ -1,0 +1,99 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/helper/chef_attachment_browse.vm,v 1.1 2004/03/08 03:24:45 ggolden Exp $ -->
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		 $from ...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<div class="chefPageviewTitle">
+		To attach a site resource, check the box(es), then choose 'Continue' at the bottom. Folders are not currently attachable.</br>
+	</div>
+	<div class="chefBreadCrumb">	
+	Location: #if($collectionDisplayName)$validator.escapeHtml($collectionDisplayName)#end
+			#if ($includeUp == true)
+				<a href="#" onClick="document.browseResourcesForm.option.value='up'; document.browseResourcesForm.submit(); return false;" title="go up one level">
+					<img alt="up one level" src="#imageLink("chef/onelevelup.gif")" border="0" ></a>
+			#end
+	</div>
+	<form name="browseResourcesForm" action="#toolForm("$action")" method="post">
+		<input type="hidden" name="itemId" value="null" />
+		<input type="hidden" name="option" value="done" />
+		<input type="hidden" name="eventSubmit_doBrowse_option" value="x" />
+		#if (!$collectionMembers  || $collectionMembers.size() ==0)
+			<div class="chefPageviewTitle">
+				<div class ="chefLeftIndent">
+					There are currently no resource items at this location.
+				</div>	
+			</div>
+		#else			
+			<table cellspacing ="0" cellpadding ="0" border="0" class="chefFlatListViewTable" summary="List of resource items available to attach">
+				<tr>		  
+				  <th id="checkbox" >&nbsp;&nbsp;</th>
+				  <th id="typeicon">&nbsp;&nbsp;</th>
+				  <th id ="title">Title</th>
+				  <th id ="size">Size</th>
+				  <th id ="type"> Type</th>
+				  <th id ="createdby">Created by</th>
+				  <th id ="modified">Last modified</th>
+				</tr>
+			#foreach ($member in $collectionMembers)
+				#set ($props = $member.Properties)
+				#if ($props.getBooleanProperty("CHEF:is-collection"))
+					#set ($isCol = true)
+					#set ($access = $contentHostingService.allowGetCollection($member.Id))
+				#else
+					#set ($isCol = false)
+					#set ($access = $contentHostingService.allowGetResource($member.Id))
+				#end
+				<tr>
+					## checkbox col
+					<td headers="checkbox">
+					#if (!$isCol)
+						<input type="checkbox" name="selectedMembers" value="$validator.escapeHtml($member.Id)" #if($attachments.contains($member))checked="checked"#end />
+					#else
+						&nbsp;
+					#end
+					</td>
+					## icon col
+					<td headers="typeicon">
+						#if ($isCol == true)
+							<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="folder" />
+						#else
+							<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt ="$props.getProperty($props.NamePropContentType)" />
+						#end
+					</td>
+					## display name and link
+					<td headers="title">
+						#if ($access == true)
+							#if ($isCol == true)
+								<a href="#" onClick="document.browseResourcesForm.itemId.value='$validator.escapeJsQuoted($member.Id)'; document.browseResourcesForm.option.value='down'; document.browseResourcesForm.submit(); return false;">
+							#else
+								<a href="$member.Url" target="_blank">
+							#end
+						#end
+						$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))
+						#if ($access == true)
+							</a>
+						#end
+					</td>
+					<td headers="size">
+						#if (!$isCol)
+							$props.getPropertyFormatted($props.NamePropContentLength)
+						#else
+							-
+						#end
+					</td>
+					<td headers="type">$props.getPropertyFormatted($props.NamePropContentType)</td>
+					<td headers="createdby">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropCreator))</td>
+					<td headers="modified">$props.getPropertyFormatted($props.NamePropModifiedDate)</td>
+				</tr>
+			#end
+		</table>
+	#end
+		<div class="chefButtonRow">
+			<input type="button" name="doBrowse_option" id="doBrowse_option" value="Continue" onClick="document.browseResourcesForm.option.value='continue'; document.browseResourcesForm.submit(); return false;" />
+			<input type="button" name="doCancel_add" id="doCancel_add" value="Cancel" onClick="document.browseResourcesForm.option.value='cancel'; document.browseResourcesForm.submit(); return false;"" />		
+		</div>
+	</form>
+</div>
+</div>

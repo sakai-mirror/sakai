@@ -1,0 +1,38 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_realms_saveas.vm,v 1.1 2004/07/14 02:17:34 ggolden.umich.edu Exp $ -->
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["id"];
+</script>
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		Save As ...
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class="chefPageviewTitle">
+			Enter a new realm id to create a new realm that is a copy of the selected realm.
+		</div>
+		<form action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Realm
+				</legend>
+				<table class="chefEditItem" summary="Enter a new Realm id.">
+					<tr>
+						<td class="chefLabel">
+							<label for="id">
+								<span class="chefAlert">*</span> Realm Id:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="id" id="id"/>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+			<div class="chefButtonRow">
+				<input type="submit" name="eventSubmit_doSaveas" value="Save" />
+				<input type="submit" name="eventSubmit_doCancel_saveas" value="Cancel" />
+			</div>
+		</form>
+	</div>
+</div>

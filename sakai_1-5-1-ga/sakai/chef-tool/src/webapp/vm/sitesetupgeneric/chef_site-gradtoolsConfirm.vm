@@ -1,0 +1,46 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/sitesetupgeneric/chef_site-gradtoolsConfirm.vm,v 1.3 2005/02/14 17:49:36 zqian.umich.edu Exp $ -->
+<div class="portletBody">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	<h3 class ="insCo insBor insBak">
+		Creating a Grad Tools site...
+	</h3>
+	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	<form action="#toolForm("$action")" method="post">
+		<table class ="itemSummary" cellspacing="0" summary="info on the new project site">
+			<tr>
+				<th>
+					Site name:
+				</th>
+				<td>
+					$validator.escapeHtml($title)
+				</td>
+			</tr>
+			<tr>
+				<th>
+					Description:
+				</th>
+				<td>
+					$validator.escapeHtml($description)
+				</td>
+			</tr>
+			<tr>
+				<th>
+					Short Description:
+				</th>
+				<td>
+					$validator.escapeHtml($short_description)
+				</td>
+			</tr>
+		</table>
+
+		<input type="hidden" name="back" value="0" />
+		<input type="hidden" name="template-index" value="42"/>
+		<input type="hidden" name="continue" value="0" />
+		<p class="act">
+			<input type="submit" class="active" name="eventSubmit_doFinish_grad_tools" value="Create Site" />
+			<input type="submit" name="eventSubmit_doBack" value="Back" />
+			<input type="submit" name="eventSubmit_doCancel_create" value="Cancel" />
+		</p>
+	</form>
+</div>
+

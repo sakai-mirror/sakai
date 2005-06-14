@@ -1,0 +1,14 @@
+## $Header: /cvs/sakai/chef-tool/src/webapp/vm/chat/chef_chat-Toolbar.vm,v 1.2 2004/03/25 04:55:54 ggolden Exp $ 
+## chef_chat-Toolbar.vm, use with org.chefproject.ChatAction.java
+##     context: $menu: the toolbar to be shown, defined in buildToolbarPanelContext
+##
+
+## this is double deep
+<script type="text/javascript" language="JavaScript">
+doubleDeep = true;
+</script>
+
+<div class="chefPortletContainer">
+	#if($menu)#toolbar($menu)#end
+</div>	
+

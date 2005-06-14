@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+ <!--    <bean id="generalInfo" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>generalInfo.xml</value></property>
+   </bean> -->  
+   <bean id="announcement" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>announcement.xml</value></property>
+   </bean>
+   
+   <bean id="assignment" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>assignment.xml</value></property>
+   </bean>
+   <bean id="chatRoom" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>chatRoom.xml</value></property>
+   </bean>
+   <bean id="discussion" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>discussion.xml</value></property>
+   </bean>
+   <bean id="dropbox" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>dropBox.xml</value></property>
+   </bean>
+   
+   <bean id="emailArchive" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>emailArchive.xml</value></property>
+   </bean>
+   
+   <bean id="grading" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>grading.xml</value></property>
+   </bean>
+   
+   <bean id="news" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>news.xml</value></property>
+   </bean>
+   
+   <bean id="resource" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>resource.xml</value></property>
+   </bean>
+   
+   <bean id="schedule" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>schedule.xml</value></property>
+   </bean>
+   
+   <bean id="siteInfo" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>siteInfo.xml</value></property>
+   </bean>
+   
+   <bean id="webContent" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>webContent.xml</value></property>
+   </bean>
+   
+   <bean id="workSite" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>workSite.xml</value></property>
+   </bean>
+   
+   <bean id="workspace" class="org.sakaiproject.tool.help.RegistrationFile">
+      <property name="name"><value>workspace.xml</value></property>
+   </bean>
+   
+   <bean id="org.sakaiproject.tool.help.HelpRegistration" class="org.sakaiproject.tool.help.HelpRegistration">
+      <property name="registrationFiles">
+          <list>
+         <!--     <ref bean="generalInfo"/> -->
+             <ref bean="workspace"/>
+             <ref bean="announcement"/>
+             <ref bean="assignment"/>
+             <ref bean="chatRoom"/>
+             <ref bean="discussion"/>
+             <ref bean="dropbox"/>
+             <ref bean="emailArchive"/>
+             <ref bean="grading"/>
+             <ref bean="news"/>
+             <ref bean="resource"/>
+             <ref bean="schedule"/>
+             <ref bean="siteInfo"/>
+             <ref bean="webContent"/>
+             <ref bean="workSite"/>
+          </list>
+      </property>
+   </bean>
+</beans>

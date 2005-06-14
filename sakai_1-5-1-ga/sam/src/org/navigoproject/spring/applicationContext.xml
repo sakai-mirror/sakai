@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+  "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+<!-- Configurer that replaces ${...} placeholders with values from properties files -->
+  <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <value>file:/opt/sa_forms/java/dev/org/sakaiproject/security/sam/samigo.xml</value>
+      </list>
+    </property>
+  </bean>
+
+<bean id="OracleDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+  <property name="driverClassName">
+    <value>${db.driverClassName}</value>
+  </property>
+  <property name="url">
+    <value>${db.url}</value>
+  </property>
+  <property name="username">
+    <value>${db.username}</value>
+  </property>
+  <property name="password">
+    <value>${db.password}</value>
+  </property>
+</bean>
+
+  <!-- bean id="OracleDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName">
+      <value>jdbc/sam/dev/samigo</value>
+    </property> 
+  </bean -->
+  
+  <bean id="HypersonicDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName"><value>org.hsqldb.jdbcDriver</value></property>
+    <property name="url"><value>jdbc:hsqldb:.</value></property>
+    <property name="username"><value>SA</value></property>
+    <property name="password"><value></value></property>
+  </bean>
+  
+          
+  <bean id="sessionFactory" 
+    class="org.springframework.orm.hibernate.LocalSessionFactoryBean">  
+    <property name="dataSource">
+      <ref local="OracleDataSource"/>
+    </property>    
+
+    <property name="mappingResources">
+      <list>
+        
+        <value>/org/navigoproject/data/AssessmentResultBean.hbm.xml</value>
+        <value>/org/navigoproject/data/SectionResultBean.hbm.xml</value>
+        <value>/org/navigoproject/data/ItemResultBean.hbm.xml</value>
+        <value>/org/navigoproject/data/RealizationBean.hbm.xml</value>
+        <value>/org/navigoproject/data/QtiSettingsBean.hbm.xml</value>
+        <value>/org/navigoproject/data/PublishedAssessmentBean.hbm.xml</value>
+        <!-- question pool -->
+        <value>/org/sakaiproject/tool/assessment/data/dao/questionpool/QuestionPool.hbm.xml</value>
+        <value>/org/sakaiproject/tool/assessment/data/dao/questionpool/AssetBeanie.hbm.xml</value>
+        <value>/org/navigoproject/osid/shared/impl/TypeData.hbm.xml</value>
+        <value>/org/navigoproject/osid/shared/impl/StanfordType.hbm.xml</value>
+        <value>/org/sakaiproject/tool/assessment/data/dao/assessment/AssessmentBase.hbm.xml</value>
+        <value>/org/sakaiproject/tool/assessment/data/dao/assessment/ItemData.hbm.xml</value>
+        <value>/org/sakaiproject/tool/assessment/data/dao/shared/TypeData.hbm.xml</value>
+        <value>/org/sakaiproject/tool/assessment/data/dao/questionpool/QuestionPoolData.hbm.xml</value>
+        <value>/org/sakaiproject/tool/assessment/data/dao/assessment/PublishedAssessment.hbm.xml</value>
+        <value>/org/sakaiproject/tool/assessment/data/dao/assessment/PublishedItemData.hbm.xml</value>
+        <value>/org/sakaiproject/tool/assessment/data/dao/grading/GradingData.hbm.xml</value>
+        <value>/org/sakaiproject/tool/assessment/data/dao/grading/MediaData.hbm.xml</value>
+        <value>/org/sakaiproject/tool/assessment/data/dao/authz/AuthorizationData.hbm.xml</value>
+        
+        <!-- ************ OKI definitions ******************** -->
+        <value>/org/sakai/osid/authz/impl/data/AuthorizationBean.hbm.xml</value>
+        <value>/org/sakai/osid/authz/impl/data/FunctionBean.hbm.xml</value>
+        <value>/org/sakai/osid/authz/impl/data/QualifierBean.hbm.xml</value>
+
+        <value>/org/sakai/osid/dr/impl/data/AssetBean.hbm.xml</value>
+        <value>/org/sakai/osid/dr/impl/data/ContentBean.hbm.xml</value> 
+        <value>/org/sakai/osid/dr/impl/data/DrAssetMapBean.hbm.xml</value>
+
+        <value>/org/sakai/osid/shared/impl/data/AgentBean.hbm.xml</value>
+        <value>/org/sakai/osid/shared/impl/data/GroupBean.hbm.xml</value>
+        <value>/org/sakai/osid/shared/impl/data/TypeBean.hbm.xml</value>
+         <value>/org/sakai/osid/shared/reference/data/HTTPBasicPersonBean.hbm.xml</value>
+         <value>/org/sakai/osid/coursemanagement/reference/data/CourseRosterBean.hbm.xml</value>
+         <value>/org/sakai/osid/coursemanagement/reference/data/CourseSectionBean.hbm.xml</value>
+         <value>/org/sakai/osid/coursemanagement/reference/data/CourseGroupBean.hbm.xml</value>
+        
+        
+      </list>
+    </property>
+    
+    <!-- Loading from hibernate.properties -->
+    <!--<property name="schemaUpdate"><value>true</value></property>-->
+    
+  </bean>
+  
+  <bean id="transactionManager" class="org.springframework.orm.hibernate.HibernateTransactionManager">
+    <property name="sessionFactory">
+      <ref local="sessionFactory"/>
+    </property>
+  </bean>
+  
+  <bean id="AuthzQueries" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <property name="transactionManager"><ref bean="transactionManager"/></property>
+    <property name="target"><ref bean="AuthzQueriesImpl"/></property>    
+    <property name="proxyTargetClass"><value>true</value></property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="persistQualifierBean">PROPAGATION_REQUIRED</prop>
+        <prop key="persistAuthorizationBean">PROPAGATION_REQUIRED</prop>        
+      </props>
+    </property>
+  </bean>
+  
+  <bean id="PublishingService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <property name="transactionManager"><ref bean="transactionManager"/></property>
+    <property name="target"><ref bean="PublishingServiceImpl"/></property>    
+    <property name="proxyTargetClass"><value>true</value></property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="createPublishedAssessment">PROPAGATION_REQUIRED</prop>
+      </props>
+    </property>
+  </bean>  
+
+<bean id="SamigoConnectionManager" class="org.navigoproject.data.GenericConnectionManager">
+  <property name="dataSource">
+    <ref bean="OracleDataSource"/>
+  </property>
+</bean>  
+</beans>
+
+
+

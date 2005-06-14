@@ -1,0 +1,8 @@
+# MySQL account information for Samigo
+# $Header: /cvs/quickstart/qs-1-5-1/samigo.mysql.xml,v 1.1 2005/04/15 17:37:20 dlhaines.umich.edu Exp $
+
+db.driverClassName=com.mysql.jdbc.Driver
+db.url=jdbc:mysql://127.0.0.1:3306/sakai?useUnicode=true&characterEncoding=UTF-8
+db.username=sakaiuser
+db.password=sakaipassword
+

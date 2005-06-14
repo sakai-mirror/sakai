@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+    <pomVersion>1</pomVersion>
+    <name>Sakai Help</name>
+    <groupId>sakaiproject</groupId>
+    <id>sakai-help-deploy</id>
+    <currentVersion>sakai.1.5.1</currentVersion>
+    <organization>
+        <name>Sakai Project</name>
+        <url>http://sakaiproject.org/</url>
+    </organization>
+    <inceptionYear>2004</inceptionYear>
+
+    <dependencies>
+
+        <!-- our tomcat deploy plugin -->
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-tcdeploy</artifactId>
+            <version>sakai.1.5.1</version>
+            <type>plugin</type>
+        </dependency>
+       <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-help-service</artifactId>
+            <version>sakai.1.5.1</version>
+            <type>jar</type>
+        </dependency>
+        
+           <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-help-tool</artifactId>
+            <type>war</type>
+            <version>sakai.1.5.1</version>
+        </dependency>
+ 
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-help-component</artifactId>
+            <version>sakai.1.5.1</version>
+            <type>jar</type>
+        </dependency>
+
+
+        
+        <dependency>
+			<groupId>lucene</groupId>
+			<artifactId>lucene</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>OKI</groupId>
+			<artifactId>OkiOSID</artifactId>
+			<version>2.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>2.1.7c</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>odmg</groupId>
+			<artifactId>odmg</artifactId>
+			<version>3.0</version>
+		</dependency>
+        <!-- Id Generator Jar -->
+        <dependency>
+            <groupId>commons-id</groupId>
+            <artifactId>commons-id</artifactId>
+            <version>0.1-dev</version>
+            <url>
+                http://brutus.apache.org/gump/public/jakarta-commons-sandbox/commons-id/
+            </url>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>springframework</groupId>
+            <artifactId>spring-full</artifactId>
+            <version>1.0.1</version>
+            <url>http://www.springframework.org/</url>
+        </dependency>
+        
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-component</artifactId>
+            <version>sakai.1.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-service</artifactId>
+            <version>sakai.1.5.1</version>
+        </dependency>
+        
+
+    </dependencies>
+
+    <build>
+        <!-- Nothing here... -->
+    </build>
+
+</project>

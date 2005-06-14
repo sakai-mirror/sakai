@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<skins>
+	<!-- the skin name is a reference to the folder of the same name in the skins directory -->
+	<!-- this name will get passed to the framework to find the CSS and image files -->
+	<skin>
+		<skin>SakaiA</skin>
+		<skin-name>SakaiaA</skin-name>
+		<skin-description>Core skin for CTools</skin-description>
+	</skin>
+	<skin>
+		<skin>med</skin>
+		<skin-name>Medical School</skin-name>
+		<skin-description>Skin used by UM Med School.</skin-description>
+	</skin>
+	<skin>
+		<skin>matrix</skin>
+		<skin-name>Matrix Skin</skin-name>
+		<skin-description>Silly skin.</skin-description>
+	</skin>
+	<skin>
+		<skin>glrc</skin>
+		<skin-name>Matrix Skin</skin-name>
+		<skin-description>Silly skin.</skin-description>
+	</skin>
+
+</skins>

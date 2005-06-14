@@ -1,0 +1,167 @@
+##<!-- $Header: /cvs/sakai/chef-tool/src/webapp/vm/admin/chef_realms_edit.vm,v 1.4 2004/11/19 20:48:41 ggolden.umich.edu Exp $ -->
+
+<script type="text/javascript" language="JavaScript">
+  focus_path = [#if(!$realm)"id"#else"provider"#end];
+</script>
+<div class="chefPortletContainer">
+#if($menu)
+	#toolbar($menu)
+#end
+	<div class ="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		<div class ="chefBreadCrumb">
+			Edit: Realm $validator.escapeHtml($!realm.Id)<br/>Used for $validator.escapeHtml($!realm.Description)
+		</div>
+		<div class="chefPageviewTitle">
+			Review and modify this Realm's information.
+		</div>
+
+		<form name="$form-name" action="#toolForm("$action")" method="post">
+			<fieldset>
+				<legend>
+					Realm
+				</legend>
+				<table class="chefEditItem" summary="Review and modify this Realm's information.">
+					<tr>
+						<td class="chefLabel">
+							<label #if(!$realm) for="id" #end>
+								#if(!$realm)<span class="chefAlert">*</span>#end Realm Id:
+							</label>
+						</td>
+						<td>
+							#if(!$realm)<input type="text" name="id" id="id"/>#else$validator.escapeHtml($realm.Id)#end
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="provider">
+								Provider Id:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="provider" id="provider" #if($realm) value="$!validator.escapeHtml($realm.ProviderRealmId)"#end />
+						</td>
+					</tr>
+					<tr>
+						<td class="chefLabel">
+							<label for="maintain">
+								Maintain Role:
+							</label>
+						</td>
+						<td>
+							<input type="text" name="maintain" id="maintain" #if($realm) value="$!validator.escapeHtml($realm.MaintainRole)"#end />
+						</td>
+					</tr>
+				</table>
+				<fieldset>
+					<legend>
+						Complete the Realm Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Users
+					</legend>
+					<div class="chefPageviewTitle">
+						These are the Roles granted to individual users in this Realm.  Click on an Id to edit.
+					</div>
+#if ($grants.size() > 0)
+	#set ($userCount = 0)
+					<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Roles">
+						<tr>
+							<th id="Id">User Id</th>
+							<th id="Description">Role</th>
+							<th id="Active">Active</th>
+							<th id="Provided">From Provider</th>
+						</tr>
+	#foreach ($grant in $grants)
+		#set ($userCount=$userCount + 1)
+						<tr>
+							<td headers="Id" #if ($userCount > 1) class="chefTopline" #end>
+								<a href="#" onclick="location = '#toolLink("$action" "doEdit_user")&target=$validator.escapeUrl($grant.UserId)'+buildQueryString('$form-name');return false;">
+									$validator.escapeHtml($grant.UserId)
+								</a>
+							</td>
+							<td headers="Description" #if ($userCount > 1) class="chefTopline" #end>
+								$validator.escapeHtml($grant.Role.Id)
+							</td>
+							<td headers="Active" #if ($userCount > 1) class="chefTopline" #end>
+								#if ($grant.Active)
+									<img src="#imageLink("chef/checkon.gif")" border="0" alt="active" hspace="5" />
+								#end
+							</td>
+							<td headers="Provided" #if ($userCount > 1) class="chefTopline" #end>
+								#if ($grant.Provided)
+									<img src="#imageLink("chef/checkon.gif")" border="0" alt="provided" hspace="5" />
+								#end
+							</td>
+						</tr>
+	#end
+					</table>
+#else
+					<div class="chefListMessage">
+						No Roles have been granted to any users.
+					</div>
+#end
+				</fieldset>
+				<fieldset>
+					<legend>
+						Complete the Realm Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						Roles
+					</legend>
+					<div class="chefPageviewTitle">
+						These are the Roles defined within this Realm.  Click on an Id to edit.
+					</div>
+#if ($roles.size() > 0)
+	#set ($roleCount = 0)
+					<table class="chefFlatListViewTable" cellspacing="0" summary ="List of Roles">
+						<tr>
+							<th id="Id">Role Id</th>
+							<th id="Description">Description</th>
+						</tr>
+	#foreach ($role in $roles)
+		#set ($roleCount=$roleCount + 1)
+						<tr>
+							<td headers="Id" #if ($roleCount > 1) class="chefTopline" #end>
+								<a href="#" onclick="location = '#toolLink("$action" "doEdit_role")&target=$validator.escapeUrl($role.Id)'+buildQueryString('$form-name');return false;">
+									$validator.escapeHtml($role.Id)
+								</a>
+							</td>
+							<td headers="Description" #if ($roleCount > 1) class="chefTopline" #end>
+								$validator.escapeHtml($!role.Description)
+							</td>
+						</tr>
+	#end
+					</table>
+#else
+					<div class="chefListMessage">
+						No roles are defined.
+					</div>
+#end
+				</fieldset>
+
+				<fieldset>
+					<legend>
+						Complete the Realm Edit
+					</legend>
+					<div class="chefButtonRow">
+						<input type="submit" name="eventSubmit_doSave" value="Save" />
+						<input type="submit" name="eventSubmit_doCancel" value="Cancel" />
+					</div>
+				</fieldset>
+			</fieldset>
+		</form>
+	</div>
+</div>

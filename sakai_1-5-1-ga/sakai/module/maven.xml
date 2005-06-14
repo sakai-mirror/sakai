@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- default goal for the project builds and installs the war in the local repository -->
+<project default="war:install">
+
+	<!-- the common "full" goal invokes the default goal.  Used in maven -Dgoal=full multiproject:goal from .. -->
+	<goal name="full">
+		<attainGoal name="war:install" />
+	</goal>
+
+	<!-- move all the registration files to /usr/local/sakai/reg -->
+	<goal name="reg">
+		<copy todir="/usr/local/sakai/reg/" filtering="false" preservelastmodified="true" overwrite="true">
+			<fileset dir="src/reg">
+				<include name="*.xml" />
+			</fileset>
+		</copy>
+	</goal>
+
+</project>

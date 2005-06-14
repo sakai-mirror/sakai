@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="resourceOverview" class="org.sakaiproject.component.help.model.ResourceBean">
+      <property name="docId"><value>chef-content</value></property>
+      <property name="name"><value>Resources Overview</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aplu.html</value></property>
+   </bean>
+
+   <bean id="createResource" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>create_resource</value></property>
+      <property name="name"><value>Create Resource</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aplv.html</value></property>
+   </bean>
+      <bean id="moveResource" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>move_resource</value></property>
+      <property name="name"><value>Move Resource</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aplx.html</value></property>
+   </bean>
+      <bean id="reviseResource" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>revise_resource</value></property>
+      <property name="name"><value>Revise Resource</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aplw.html</value></property>
+   </bean>
+      <bean id="deleteResource" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>delete_resource</value></property>
+      <property name="name"><value>Delete Resource</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aplz.html</value></property>
+      </bean>
+    
+          <bean id="replaceResource" class="org.sakaiproject.component.help.model.ResourceBean">
+         <property name="docId"><value>replace_resource</value></property>
+      <property name="name"><value>ReplaceResource</value></property>
+      <property name="location"><value>/sakai-help-tool/helpDocs/aply.html</value></property>
+   </bean>
+   
+    <bean id="org.sakaiproject.service.help.TableOfContents" 
+          class="org.sakaiproject.component.help.model.TableOfContentsBean">
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="resourceCategory" class="org.sakaiproject.component.help.model.CategoryBean">
+               <property name="name"><value>Resources</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="resourceOverview"/>
+                     <ref bean="createResource"/>
+                     <ref bean="reviseResource"/>
+                      <ref bean="replaceResource"/>
+                      <ref bean="moveResource"/>
+                     <ref bean="deleteResource"/>
+                  </list>
+               </property>
+            </bean>
+           </list>
+         </property>
+       </bean>
+</beans>

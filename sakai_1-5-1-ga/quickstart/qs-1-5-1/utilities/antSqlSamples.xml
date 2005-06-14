@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+
+<!-- 
+     This provides examples of a couple of ways to use Ant to load data
+     into a database via sql. The most practical way to use it is probably to 
+     make copies that can be modified to your local needs.
+  -->
+
+<project name="load sql via jdbc" default="singleFileLoad">
+
+  <property file="antSqlSamples.properties"/>
+
+  <!-- load a single file with sql commands -->
+  <target name="singleFileLoad">
+
+    <sql driver="${jdbc.driver}"
+	 classpath="${jdbc.classpath}"
+	 url="jdbc:mysql://127.0.0.1:3306/sakai?useUnicode=true&amp;characterEncoding=UTF-8" 
+	 userid="sakaiuser"
+	 password="sakaipassword" 
+	 print="true"
+	 src="${syllabus.mysql.schema}"
+	 >
+    </sql>
+
+  </target>
+
+
+  <!-- Execute sql commands directly from inline source -->
+
+  <target name="inlineSql" >
+    <sql driver="${jdbc.driver}"
+	 classpath="${jdbc.classpath}"
+	 url="jdbc:mysql://127.0.0.1:3306/sakai?useUnicode=true&amp;characterEncoding=UTF-8" 
+	 userid="sakaiuser"
+	 password="sakaipassword" 
+	 print="true"
+	 >
+      SHOW TABLES;
+      DESCRIBE SYLLABUS_T;
+    </sql>
+  </target>
+
+  <!-- Load a set of files in the specified order. -->
+  <target name="multipleFileLoad">
+
+    <!-- may need to set attribute onerror="continue" if errors show up -->
+    <!-- may need to set attribute autocommit="true" -->
+    <!-- reference is at page 173 in "ant the definitive guide" for 1.4 2002 -->
+
+    <sql driver="${jdbc.driver}"
+	 classpath="${jdbc.classpath}"
+	 url="jdbc:mysql://127.0.0.1:3306/sakai?useUnicode=true&amp;characterEncoding=UTF-8" 
+	 userid="sakaiuser"
+	 password="sakaipassword" 
+	 print="false"
+	 >
+      <fileset dir="/yourDirectoryHere/sakai/syllabus/component/src/sql/ddl">
+	<include name="sakai-component-syllabus-sakai.1.5.0-schema-mysql.sql"/>
+      </fileset>
+      <fileset dir="/yourDirectoryHere/sam/ddl/samigo-ddl">
+	<include name="01_schema_mysql.sql" />
+	<include name="02_defaultSetUp_mysql.sql" />
+      </fileset>
+    </sql>
+  </target>
+
+
+</project>
+
+<!-- $Header: /cvs/quickstart/qs-1-5-1/utilities/antSqlSamples.xml,v 1.1 2005/05/10 15:24:48 dlhaines.umich.edu Exp $ -->

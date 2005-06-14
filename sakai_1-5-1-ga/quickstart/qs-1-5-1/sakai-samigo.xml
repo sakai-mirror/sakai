@@ -1,0 +1,263 @@
+<?xml version="1.0" ?>
+
+<!-- ====================================================================== 
+     Oct 8, 2004 4:13:10 PM                                                        
+
+     distribution    
+     build file to generate Sakai quickstart distribution
+     
+     need to:
+     - change settings
+     - copy /opt
+     - checkout / compile / copy changes
+     - register samigo
+     - redeploy
+
+     haines                                                                
+     ====================================================================== -->
+
+<project name="sakai-samigo-dist_1-5" default="installSamigo">
+  <description>
+    install Sakai-samigo into an existing quickstart
+  </description>
+
+  <property file="package.properties"/>
+  <property file="samigo.properties"/>
+  <property environment="env" />
+
+  <!-- ================================= 
+       target: help              
+       ================================= -->
+  <target name="help" description="print out information on using build file">
+    <echo> I'm not yet helpful help</echo>
+  </target>
+
+
+  <!-- - - - - - - - - - - - - - - - - - 
+       target: getSamigoBranchSourceCVS                      
+       - - - - - - - - - - - - - - - - - -->
+
+  <target name="getSamigoBranchSourceCVS" description="get the source for Samigo tool" depends="clean">
+
+    <!--
+    <echo>extract Samigo tool version: branch: ${CVS.samigoBranchTag}</echo>
+
+    <delete dir="${work.build}/${CVS.samigoName}"/>
+    <mkdir dir="${work.build}/${CVS.samigoName}"/>
+
+    <cvs command="export" cvsroot="${CVS.ROOT}" 
+	 dest="${work.build}" package="${CVS.samigoName}" tag="${CVS.samigoBranch}" 
+	 cvsrsh="ssh" output="${LOGSDIR}/samigoBranch.co.log"
+	 failonerror="true"
+	 quiet="false"
+	 />
+-->
+  </target>
+
+
+  <!-- - - - - - - - - - - - - - - - - - 
+       target: getSamigoSourceTagCVS                      
+       - - - - - - - - - - - - - - - - - -->
+
+  <target name="getSamigoTagSourceCVS" description="get the source for Samigo tool" depends="clean">
+
+    <echo>(branch) extract Samigo tool tag: ${CVS.samigoTag}</echo>
+
+    <delete dir="${work.build}/${CVS.samigoName}"/>
+    <mkdir dir="${work.build}/${CVS.samigoName}"/>
+
+    <cvs command="export" cvsroot="${CVS.ROOT}" 
+	 dest="${work.build}" package="${CVS.samigoName}" tag="${CVS.samigoTag}"
+	 cvsrsh="ssh" output="${LOGSDIR}/samigo.update.log"
+	 failonerror="true"
+	 quiet="false"
+	 />
+
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - 
+       target: getSakaiSamigoSourceCVS                      
+       - - - - - - - - - - - - - - - - - -->
+
+  <target name="getSakaiSamigoSourceCVS" description="get the source for Sakai Samigo integration" depends="clean">
+
+    <echo>extract Sakai-Samigo integration version: ${CVS.sakaiSamigoTag}</echo>
+
+	<delete dir="${work.build}/${CVS.sakaiSamigoName}"/>
+	<mkdir dir="${work.build}/${CVS.sakaiSamigoName}"/>
+
+	<cvs command="export" cvsroot="${CVS.ROOT}" 
+	     dest="${work.build}" package="${CVS.sakaiSamigoName}" tag="${CVS.sakaiSamigoTag}" 
+	     cvsrsh="ssh" output="${LOGSDIR}/sakaiSamigo.export.log"
+	     failonerror="true"
+	     quiet="false"
+	     />
+  </target>
+
+  <target name="getSamigoSourceCVS" description="get the source for Sakai Samigo integration" 
+	  depends="getSamigoBranchSourceCVS,getSamigoTagSourceCVS">
+
+    <echo>(all) extract Sakai-Samigo integration version: branch: ${CVS.samigoBranch} ${CVS.samigoTag}</echo>
+
+  </target>
+
+
+
+
+  <target name="getSourceCVS" description="get the source for samigo and sakai-samigo integration" 
+	  depends="getSamigoSourceCVS,getSakaiSamigoSourceCVS">
+  </target>
+
+  <target name="notify">
+    <echo> building samigo and sakai-samigo integration</echo>
+  </target>
+
+
+  <target name="buildSakaiSamigo" description="get Sakai Samigo source together and compiled" 
+	  depends="notify,compileSakaiSamigo">
+    <!-- get rid of these old ones -->
+    <!--
+    <delete file="${work.build}/lib/sakai-component-1.0.0.jar" failonerror="false"/>
+    <delete file="${work.build}/lib/sakai-service-1.0.0.jar" failonerror="false"/>
+    -->
+
+    <echo>sakai-samigo integration build finished</echo>
+  </target>
+
+
+  <!-- - - - - 
+       target: clean
+       - - - - - - -->
+  <target name="clean" description="provide clean environment">
+    <!--
+    <delete dir="${work.build}" verbose="true" />
+    <mkdir dir="${LOGSDIR}" />
+    -->
+  </target>
+
+  <target name="compileSakaiSamigo" description="compile Sakai Samigo integration via ant">
+    <echo> copy from ${work.build}/${CVS.sakaiSamigoName} to ${work.build}/${CVS.samigoName}</echo>
+
+    <copy todir="${work.build}/${CVS.samigoName}" verbose="true">
+      <fileset dir="${work.build}/${CVS.sakaiSamigoName}">
+	<include name="**/*"/>
+      </fileset>
+    </copy>
+
+    <!-- try subant since ant doesn't work ant call gets wrong directory somehow -->
+    <!--
+    <subant target="deploy" failonerror="false" >
+      <dirset dir="${work.build}/${CVS.samigoName}"/>
+    </subant>
+    -->
+
+    <!--
+    <echo> antfile="build.xml" dir="${work.build}/${CVS.samigoName}" target="deploy" inheritAll="true" inheritRefs="true"</echo>
+    <ant antfile="build.xml" dir="${work.build}/${CVS.samigoName}" target="deploy" inheritAll="true" inheritRefs="true"/>
+    -->
+  </target>
+
+  <target name="updateSakaiSamigo" description="compile Sakai Samigo integration via ant">
+    <echo> copy from ${work.build}/${CVS.sakaiSamigoName} to ${work.build}/${CVS.samigoName}</echo>
+
+    <copy todir="${work.build}/${CVS.samigoName}" verbose="true" overwrite="true">
+      <fileset dir="${work.build}/${CVS.sakaiSamigoName}">
+	<include name="**/*"/>
+      </fileset>
+    </copy>
+
+  </target>
+
+
+  <target name="unwarWebapps" description="unwar the war files in webapps">
+    <antcall target="unwarWebapp">
+      <param name="useWar" value="samigo"/>
+    </antcall>
+
+    <!-- destroy any remaining war files -->
+    <delete>
+      <fileset dir="${work.tomcat.installed.dir}/webapps">
+	<include name="*.war"/>
+      </fileset>
+    </delete>
+    
+  </target>
+
+
+  <target name="unwarWebapp" description="expand a single war file in place" >
+    <property name="useWar" value="dummy" />
+    <property name="webappsDir" value="${work.tomcat.installed.dir}/webapps/"/>
+    <mkdir dir="${local.tmpDir}" />
+    <unwar src="${webappsDir}/${useWar}.war" dest="${webappsDir}/${useWar}"/>
+    <delete file="${webappsDir}/${useWar}.war"/>
+  </target>
+
+
+  <!--
+  <available file="samigo.xml" filepath="."  property="haveSamigo.xml" />
+  -->
+
+  <target name="copySamigoConf" description="copy over the files that needed to the quickstart">
+    <!-- copy over the /opt information -->
+    <copy todir="${work.localfile.path}/opt" verbose="true">
+<!--      <fileset dir="${work.build}/sakai-samigo/conf/" > -->
+      <fileset dir="${work.build}/sam/conf/opt" > 
+	<exclude name="../CVS" />
+      </fileset>
+      </copy>
+    <copy todir="${work.localfile.path}/ddl" verbose="true">
+      <fileset dir="${work.build}/sam/ddl" > 
+	<exclude name="../CVS" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="customizeSettings" description="do customization as required">
+  </target>
+
+  <target name="installSamigoWar" description="install war in webapps." >
+
+    <!--
+    <antcall target="unwarWebapp">
+      <param name="useWar" value="samigo" />
+    </antcall>
+    -->
+
+  </target>
+
+  <target name="register" description="register the samigo tool">
+
+    <echo>work.localfile.path: ${work.localfile.path}</echo>
+    <echo>work.build: ${work.build}</echo>
+    <mkdir dir="${work.localfile.path}/reg.samigo"/>
+    <!-- copy the registration files -->
+<!--    <copy todir="${work.localfile.path}/reg" flatten="true" verbose="true"> -->
+    <copy todir="${work.localfile.path}/reg.samigo" flatten="true" verbose="true">
+      <fileset dir="${work.build}/sakai-samigo/reg">
+	<include name="*.xml" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="deploySamigoDb" description="deploy Samigo db to the quickstart">
+    <copy todir="${work.localfile.path}/samigo" verbose="true">
+      <fileset dir="${samigo.dbsrc}">
+	<include name="samigodb.*" />
+      </fileset>
+    </copy>
+    
+  </target>
+
+
+  <!--
+  <target name="deploySamigo" description="deploy Samigo to the quickstart">
+  </target>
+-->
+
+  <target name="installSamigo" description="install the Sakai tool version of Samigo"
+	  depends="buildSakaiSamigo,installSamigoWar,copySamigoConf,register,deploySamigoDb">
+    
+  </target>
+
+  <!-- $Header: /cvs/quickstart/qs-1-5-1/sakai-samigo.xml,v 1.2 2005/04/08 20:39:13 dlhaines.umich.edu Exp $ -->
+</project>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<registration>
+  
+<!--  <function name="syllabus.read" />
+  <function name="syllabus.add" />
+  <function name="syllabus.update" />
+  <function name="syllabus.delete" />
+  <function name="syllabusItem.create" />
+  <function name="syllabusItem.get" />
+  <function name="syllabusItem.save" />-->
+  
+	<tool
+			id="sakai.syllabus"
+			url="/sakai-syllabus/syllabus/jsf.tool" 
+			helpUrl="/sakai-syllabus/helpReg/syllabus_help.xml" 
+			title="Syllabus"
+			description="Syllabus tool for sakai.">
+
+	</tool>
+</registration>

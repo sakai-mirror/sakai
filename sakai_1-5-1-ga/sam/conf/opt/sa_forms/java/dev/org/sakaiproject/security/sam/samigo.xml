@@ -1,0 +1,5 @@
+db.driverClassName=oracle.jdbc.driver.OracleDriver
+# db.url=jdbc:oracle:thin:yourserver.stanford.edu:1521:sid
+db.url=jdbc:oracle:thin:yourserver:port:sid
+db.username=yourusername
+db.password=yourpassword

@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE web-app PUBLIC
+    "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+    <display-name>sakai-module</display-name>
+    <description>Sakai Sample Tool &amp; Service Module</description>
+
+    <!-- MyFaces JSF - Listener, that does all the startup work (configuration, init). -->
+    <!-- (Comment this out for Sun JSF) -->
+
+	<!-- 
+    <listener>
+        <listener-class>net.sourceforge.myfaces.webapp.StartupServletContextListener</listener-class>
+    </listener>
+	-->
+    
+
+    <context-param>
+        <param-name>javax.faces.CONFIG_FILES</param-name>
+        <param-value>
+            /WEB-INF/examples-config.xml
+        </param-value>
+        <description>
+            Comma separated list of URIs of (additional) faces config files.
+            (e.g. /WEB-INF/my-config.xml)
+            See JSF 1.0 PRD2, 10.3.2
+        </description>
+    </context-param>
+    
+
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+        <description>
+            State saving method: "client" or "server" (= default)
+            See JSF Specification 2.5.2
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>net.sourceforge.myfaces.ALLOW_JAVASCRIPT</param-name>
+        <param-value>true</param-value>
+        <description>
+            This parameter tells MyFaces if javascript code should be allowed in the
+            rendered HTML output.
+            If javascript is allowed, command_link anchors will have javascript code
+            that submits the corresponding form.
+            If javascript is not allowed, the state saving info and nested parameters
+            will be added as url parameters.
+            Default: "true"
+        </description>
+    </context-param>
+    
+    <context-param>
+        <param-name>net.sourceforge.myfaces.DETECT_JAVASCRIPT</param-name>
+        <param-value>false</param-value>
+        <description>
+            This parameter tells MyFaces if javascript code should be allowed in the
+            rendered HTML output.
+            If javascript is allowed, command_link anchors will have javascript code
+            that submits the corresponding form.
+            If javascript is not allowed, the state saving info and nested parameters
+            will be added as url parameters.
+            Default: "false"
+
+            Setting this param to true should be combined with STATE_SAVING_METHOD "server" for
+            best results.
+
+            This is an EXPERIMENTAL feature. You also have to enable the detector filter/filter mapping below to get
+            JavaScript detection working.
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>net.sourceforge.myfaces.PRETTY_HTML</param-name>
+        <param-value>true</param-value>
+        <description>
+            If true, rendered HTML code will be formatted, so that it is "human readable".
+            i.e. additional line separators and whitespace will be written, that do not
+            influence the HTML code.
+            Default: "true"
+        </description>
+    </context-param>
+
+    <context-param>
+        <param-name>net.sourceforge.myfaces.AUTO_SCROLL</param-name>
+        <param-value>true</param-value>
+        <description>
+            If true, a javascript function will be rendered that is able to restore the
+            former vertical scroll on every request. Convenient feature if you have pages
+            with long lists and you do not want the browser page to always jump to the top
+            if you trigger a link or button action that stays on the same page.
+            Default: "false"
+        </description>
+    </context-param>
+    
+    <!-- MultiPart Filter
+    <filter>
+        <filter-name>multipartFilter</filter-name>
+        <filter-class>net.sourceforge.myfaces.custom.fileupload.MultipartFilter</filter-class>
+        <init-param>
+            <param-name>maxFileSize</param-name>
+            <param-value>10m</param-value>
+            <description>Set the size limit for uploaded files.
+                Format: 10 - 10 bytes
+                        10k - 10 KB
+                        10m - 10 MB
+            </description>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>multipartFilter</filter-name>
+        <url-pattern>*.tool</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+ 		<dispatcher>INCLUDE</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+ 
+     <filter-mapping>
+        <filter-name>multipartFilter</filter-name>
+        <url-pattern>*.jsf</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+ 		<dispatcher>INCLUDE</dispatcher>
+ 		<dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+ 
+     <filter-mapping>
+        <filter-name>multipartFilter</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+  		<dispatcher>INCLUDE</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+ 	 -->
+  
+    <!-- Faces Servlet -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup> 2 </load-on-startup>
+    </servlet>
+
+    <!-- Dispatch Servlet -->
+    <servlet>
+        <servlet-name>dispatch</servlet-name>
+        <servlet-class>org.sakaiproject.vm.DispatchServlet</servlet-class>
+        <load-on-startup> 1 </load-on-startup>
+    </servlet>
+
+	<!-- to register our service components -->
+    <servlet>
+        <servlet-name>
+           components
+        </servlet-name>
+        <servlet-class>
+            org.sakaiproject.component.ComponentsServlet
+        </servlet-class>
+
+		<!-- pick the components xml for registration -->
+        <init-param>
+            <param-name>components-file</param-name>
+            <param-value>components.xml</param-value>
+        </init-param>
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- Faces Servlet Mapping -->
+    <!-- 
+
+         This mapping identifies a jsp page as having JSF content.  If a
+         request comes to the server for foo.jsf, the container will
+         send the request to the FacesServlet, which will expect a
+         corresponding foo.jsp page to exist containing the content.
+
+    -->
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
+
+    <!-- Dispatch Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>dispatch</servlet-name>
+        <url-pattern>*.tool</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+       <servlet-name>
+          components
+       </servlet-name>
+       <url-pattern>
+         /components/*
+       </url-pattern>
+    </servlet-mapping>
+
+	<welcome-file-list>
+	  <welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>
