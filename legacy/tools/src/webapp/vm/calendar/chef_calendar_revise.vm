@@ -1,4 +1,4 @@
-## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/calendar/chef_calendar_revise.vm,v 1.4 2005/06/02 14:19:40 suiyy.umich.edu Exp $
+## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/calendar/chef_calendar_revise.vm,v 1.5 2005/06/14 20:13:33 suiyy.umich.edu Exp $
 
 <script type="text/javascript">
 focus_path = [ "activitytitle" ];
@@ -448,7 +448,7 @@ function ampmChange(FieldName)
 		</p>
 		<p class="longtext">
 			<label for="body" class="block">
-				<span class="reqStar">*</span>$tlang.getString("new.descr")
+				$tlang.getString("new.descr")
 			</label>	
 			<table border="0"><tr><td>
 			#if($savedData.getDescription().length() != 0)

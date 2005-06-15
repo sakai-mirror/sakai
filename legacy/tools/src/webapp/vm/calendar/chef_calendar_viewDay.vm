@@ -1,4 +1,4 @@
-<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/calendar/chef_calendar_viewDay.vm,v 1.9 2005/06/07 18:47:22 gsilver.umich.edu Exp $ -->
+<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/calendar/chef_calendar_viewDay.vm,v 1.10 2005/06/14 20:11:56 suiyy.umich.edu Exp $ -->
 #macro (iconImage $eventType $tooltip)
 #if ($eventType=="Academic Calendar")
 <img src = "#imageLink("sakai/academic_calendar.gif")" alt="$tlang.getString('del.acad')" border="0">
@@ -77,9 +77,18 @@
 						Saturday
 					#end
 					$nameOfMonth $date.Day, $date.Year</span>
+				
+				#set($isToday = false)
+				#if ($date.Year == $todayYear)
+					#if ($monthInt == $todayMonth)
+						#if ($date.Day == $todayDay)
+							#set($isToday = true)
+						#end
+					#end
+				#end
 				<form name="dayform" action="#toolForm("$action")" method="post" style="margin-top:0">
 					<input type="submit" name="eventSubmit_doPrev" value="$tlang.getString('view.lasday')" title="$tlang.getString('view.gotopd')" />
-					<input type="submit" name="eventSubmit_doToday" value="$tlang.getString('view.today')" title="$tlang.getString('view.gotoday')" #if ($!isToday) disabled="disabled" #end />
+					<input type="submit" name="eventSubmit_doToday" value="$tlang.getString('view.today')" title="$tlang.getString('view.gotoday')" #if ($isToday) disabled="disabled" #end />
 					<input type="submit" name="eventSubmit_doNext" value="$tlang.getString('view.nexday')" title="$tlang.getString('view.goto')" />
 				</form>
 			</div>

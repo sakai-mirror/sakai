@@ -1,5 +1,5 @@
 /**********************************************************************************
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/sitesetup/SiteAction.java,v 1.35 2005/06/09 19:31:37 zqian.umich.edu Exp $
+* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/sitesetup/SiteAction.java,v 1.36 2005/06/13 18:09:35 zqian.umich.edu Exp $
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -662,6 +662,15 @@ public class SiteAction extends PagedResourceActionII
 
 		String contextString = ToolManager.getCurrentPlacement().getContext();
 		String siteRef = SiteService.siteReference(contextString);
+		
+		// if it is in Worksite setup tool, pass the selected site's reference
+		if (state.getAttribute(STATE_SITE_MODE) != null && ((String) state.getAttribute(STATE_SITE_MODE)).equals(SITE_MODE_SITESETUP))
+		{
+			if (state.getAttribute(STATE_SITE_INSTANCE) != null)
+			{
+				siteRef = ((Site) state.getAttribute(STATE_SITE_INSTANCE)).getReference();
+			}
+		}
 
 		// setup for editing the permissions of the site for this tool, using the roles of this site, too
 		state.setAttribute(PermissionsAction.STATE_REALM_ID, siteRef);
@@ -12528,5 +12537,5 @@ public class SiteAction extends PagedResourceActionII
 }	// SiteAction
 
 /**********************************************************************************
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/sitesetup/SiteAction.java,v 1.35 2005/06/09 19:31:37 zqian.umich.edu Exp $
+* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/sitesetup/SiteAction.java,v 1.36 2005/06/13 18:09:35 zqian.umich.edu Exp $
 **********************************************************************************/

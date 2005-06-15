@@ -1,4 +1,4 @@
-##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_list_submissions.vm,v 1.9 2005/05/28 03:04:35 ggolden.umich.edu Exp $ -->
+##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_list_submissions.vm,v 1.10 2005/06/14 16:07:00 zqian.umich.edu Exp $ -->
 <div class="portletBody">
 	<div class="chefToolBarWrap">
 		#if ($allowAddAssignment)
@@ -20,7 +20,7 @@
 	#else
 		<div class="chefToolBarWrap">
 			<a href="$accessPointUrl" title="$!tlang.getString('downall')">$!tlang.getString('downall')</a>
-			#if ($withGrade)<a href="#toolLink("$action" "doRelease_grades")" title="$!tlang.getString('relgrad')">$!tlang.getString('relgrad')</a>#end
+			#if ($withGrade)<a href="#toolLink("$action" "doRelease_grades")&assignmentId=$!assignment.Reference" title="$!tlang.getString('relgrad')">$!tlang.getString('relgrad')</a>#end
 		</div>
 		<div class="rightNav">
 			<span class="instruction">

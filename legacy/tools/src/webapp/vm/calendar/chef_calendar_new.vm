@@ -1,4 +1,4 @@
-## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/calendar/chef_calendar_new.vm,v 1.6 2005/06/02 14:19:26 suiyy.umich.edu Exp $
+## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/calendar/chef_calendar_new.vm,v 1.7 2005/06/14 20:13:13 suiyy.umich.edu Exp $
 
 <script type="text/javascript">
 
@@ -416,7 +416,7 @@ function ampmChange(FieldName)
 		</p>
 		<p class="longtext">
 			
-			<label for="body" class="block" style="margin-bottom:0;important!"><span class="reqStar">*</span>$tlang.getString("new.descr")</label>
+			<label for="body" class="block" style="margin-bottom:0;important!">$tlang.getString("new.descr")</label>
 			#if ($savedData.getDescription().length() !=0)
 				<table border="0">
 					<tr>

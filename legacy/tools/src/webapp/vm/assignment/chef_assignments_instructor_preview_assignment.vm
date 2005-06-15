@@ -1,4 +1,4 @@
-##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_preview_assignment.vm,v 1.8 2005/05/28 03:04:35 ggolden.umich.edu Exp $ -->
+##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_preview_assignment.vm,v 1.9 2005/06/14 14:47:34 zqian.umich.edu Exp $ -->
 <div class="portletBody">
 	<div class="chefToolBarWrap">
 		#if ($allowAddAssignment)
@@ -275,10 +275,9 @@
 				#if (($value_SubmissionType==1) || ($value_SubmissionType==3))
 							<div class="instruction">
 								#if ($value_SubmissionType==1)
-									$tlang.getString("gen.theassall4")
+									$tlang.getString("viewassig.theassall5")
 								#elseif ($value_SubmissionType==3)
-									$tlang.getString("gen.theassall6")
-									Type your comments in the box below and use the Attachment button to include other documents. Save frequently while working.
+									$tlang.getString("viewassig.theassall1")
 								#end
 							</div>
 							<textarea cols="80" rows="8" wrap="virtual" name="textarea" id="textarea" disabled="disabled">&nbsp;</textarea>						
@@ -286,7 +285,7 @@
 				#if (($value_SubmissionType==2) || ($value_SubmissionType==3)) 
 					#if ($value_SubmissionType==2)
 						<div class="instruction">
-							$tlang.getString("prevassig.theassall3")
+							$tlang.getString("viewassig.theassall3")
 						</div>
 					#end
 					<h4>	

@@ -1,6 +1,6 @@
 /**********************************************************************************
 *
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/discussion/BaseDiscussionService.java,v 1.4 2005/06/09 20:49:53 zqian.umich.edu Exp $
+* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/discussion/BaseDiscussionService.java,v 1.5 2005/06/13 20:39:04 zqian.umich.edu Exp $
 *
 ***********************************************************************************
 *
@@ -876,7 +876,6 @@ public abstract class BaseDiscussionService
 		public boolean addCategory(String category)
 			throws PermissionException
 		{
-			unlock(SECURE_ADD_TOPIC, getReference());
 
 			if (	(category != null) && (category.length() > 0)
 				&&	(!m_categories.contains(category)))
@@ -924,7 +923,7 @@ public abstract class BaseDiscussionService
 			unlock(SECURE_REMOVE_ANY, getReference());
 			try 
 			{
-				DiscussionChannelEdit e = (DiscussionChannelEdit) editChannel(this.getReference());
+				DiscussionChannelEdit e = (DiscussionChannelEdit) m_storage.editChannel(this.getReference());
 				
 				if (e != null)
 				{
@@ -945,20 +944,25 @@ public abstract class BaseDiscussionService
 					
 						l.remove(category);
 						e.setCategories(l);
-					}
 					
-					m_storage.commitChannel(e);
-						
-					//track event (no notification)
-					Event event = EventTrackingService.newEvent(eventId(((BaseDiscussionChannelEdit) e).getEvent()), e.getReference(), true, NotificationService.NOTI_NONE);
-					EventTrackingService.post(event);
-					//channel notification
-					notify(event);
-						
-					// close the edit object
-					((BaseDiscussionChannelEdit) e).closeEdit();
-						
-					return true;
+						m_storage.commitChannel(e);
+							
+						//track event (no notification)
+						Event event = EventTrackingService.newEvent(eventId(((BaseDiscussionChannelEdit) e).getEvent()), e.getReference(), true, NotificationService.NOTI_NONE);
+						EventTrackingService.post(event);
+						//channel notification
+						notify(event);
+							
+						// close the edit object
+						((BaseDiscussionChannelEdit) e).closeEdit();
+						return true;
+					}
+					else
+					{
+						// close the edit object
+						((BaseDiscussionChannelEdit) e).closeEdit();
+						return false;
+					}
 				}
 			}
 			catch (Exception e){}
@@ -1613,6 +1617,6 @@ public abstract class BaseDiscussionService
 
 /**********************************************************************************
 *
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/discussion/BaseDiscussionService.java,v 1.4 2005/06/09 20:49:53 zqian.umich.edu Exp $
+* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/discussion/BaseDiscussionService.java,v 1.5 2005/06/13 20:39:04 zqian.umich.edu Exp $
 *
 **********************************************************************************/

@@ -1,6 +1,6 @@
 /**********************************************************************************
  *
- * $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/calendar/CalendarAction.java,v 1.11 2005/06/02 20:13:37 suiyy.umich.edu Exp $
+ * $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/calendar/CalendarAction.java,v 1.12 2005/06/14 20:08:47 suiyy.umich.edu Exp $
  *
  ***********************************************************************************
  * *
@@ -2876,15 +2876,12 @@ extends VelocityPortletStateAction
 		int stateYear = b.getYear();
 		int stateMonth = b.getMonth();
 		int stateDay = b.getDay();
+		context.put("todayYear", new Integer(stateYear));
+		context.put("todayMonth", new Integer(stateMonth));
+		context.put("todayDay", new Integer(stateDay));
+		
 		if ((sstate.getAttribute(STATE_YEAR) != null) && (sstate.getAttribute(STATE_MONTH) != null) && (sstate.getAttribute(STATE_DAY) != null))
-		{
-			if ((((Integer)sstate.getAttribute(STATE_YEAR)).intValue() == stateYear)
-				&& (((Integer)sstate.getAttribute(STATE_MONTH)).intValue() == stateMonth)
-				&& (((Integer)sstate.getAttribute(STATE_DAY)).intValue() == stateDay))
-				{
-					context.put("isToday", Boolean.TRUE);
-				}
-			
+		{	
 			stateYear = ((Integer)sstate.getAttribute(STATE_YEAR)).intValue();
 			stateMonth = ((Integer)sstate.getAttribute(STATE_MONTH)).intValue();
 			stateDay = ((Integer)sstate.getAttribute(STATE_DAY)).intValue();
@@ -3020,6 +3017,7 @@ extends VelocityPortletStateAction
 		} 
     
 		context.put("nameOfMonth",calObj.getMonth());
+		context.put("monthInt", new Integer(calObj.getMonthInteger()));
 		context.put("firstpage","true");
 		context.put("secondpage","false");
 		context.put("page",state.getCurrentPage());
@@ -6981,6 +6979,6 @@ extends VelocityPortletStateAction
 
 /**********************************************************************************
  *
- * $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/calendar/CalendarAction.java,v 1.11 2005/06/02 20:13:37 suiyy.umich.edu Exp $
+ * $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/calendar/CalendarAction.java,v 1.12 2005/06/14 20:08:47 suiyy.umich.edu Exp $
  *
  **********************************************************************************/

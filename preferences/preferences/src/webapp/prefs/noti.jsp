@@ -4,7 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%-- Sakai JSF tag library --%>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
-
 <f:view>
 	<sakai:view_container title="Preferences">
 	<sakai:view_content>
@@ -26,26 +25,25 @@
 	
 				<sakai:messages />
 				
-				<br><br>
-				<h:outputText value="Notifications" style="font-size: 12px;font-weight: bold;font-family: verdana, arial, helvetica, sans-serif;"/>
+				<h3>Notifications</h3>
+				
+				<p class="instruction">You will receive all high priority notifications via email. Set low priority notifications below. </p>
 				<br>
-				<h:outputText value="You will receive all high priority notifications via email. Set low priority notifications below." style="font-size: 12px;font-family: verdana, arial, helvetica, sans-serif;"/>
-				<br><br>
-				<h:outputText value="Announcements" style="font-size: 12px;font-weight: bold;font-family: verdana, arial, helvetica, sans-serif;"/>
+				<h4>Announcements</h4>
 				<h:selectOneRadio value="#{UserPrefsTool.selectedAnnItem}" layout="pageDirection" style="font-size: 12px;font-family: verdana, arial, helvetica, sans-serif;">
     			<f:selectItem itemValue="3" itemLabel="Send me each notification separately"/><br>
     			<f:selectItem itemValue="2" itemLabel="Send me one email per day summarizing all low priority announcements"/><br>
     			<f:selectItem itemValue="1" itemLabel="Do not send me low priority announcements"/>
   			</h:selectOneRadio>
   			<br>
-				<h:outputText value="Email Archive" style="font-size: 12px;font-weight: bold;font-family: verdana, arial, helvetica, sans-serif;"/>
+  			<h4>Email Archive</h4>
 				<h:selectOneRadio value="#{UserPrefsTool.selectedMailItem}" layout="pageDirection" style="font-size: 12px;font-family: verdana, arial, helvetica, sans-serif;">
     			<f:selectItem itemValue="3" itemLabel="Send me each mail sent to site separately"/><br>
     			<f:selectItem itemValue="2" itemLabel="Send me one email per day summarizing all emails"/><br>
     			<f:selectItem itemValue="1" itemLabel="Do not send me emails sent to the site"/>
   			</h:selectOneRadio>
   			<br>
-				<h:outputText value="Resources" style="font-size: 12px;font-weight: bold;font-family: verdana, arial, helvetica, sans-serif;"/>
+  			<h4>Resources</h4>
 				<h:selectOneRadio value="#{UserPrefsTool.selectedRsrcItem}" layout="pageDirection" style="font-size: 12px;font-family: verdana, arial, helvetica, sans-serif;">
     			<f:selectItem itemValue="3" itemLabel="Send me each resource separately"/><br>
     			<f:selectItem itemValue="2" itemLabel="Send me one email per day summarizing all low priority resource notifications"/><br>
@@ -53,11 +51,8 @@
   			</h:selectOneRadio>
   				
 				<br><br>
-				<sakai:button_bar>
-					<sakai:button_bar_item action="#{UserPrefsTool.processActionNotiSave}" value="Update Preferences" />
-					<sakai:button_bar_item action="#{UserPrefsTool.processActionNotiCancel}" value="Cancel" />
-				</sakai:button_bar>
-
+				<h:commandButton id="submit" style="active;" value="Update Preferences" action="#{UserPrefsTool.processActionNotiSave}"></h:commandButton>
+				<h:commandButton id="cancel" style="active;" value="Cancel" action="#{UserPrefsTool.processActionNotiCancel}"></h:commandButton>
 					
 		 </h:form>
 	</sakai:view_content>

@@ -310,7 +310,7 @@
 					</h4>
 					<p>$tlang.getString("gen.noatt")</p> 
 					<p class="act">
-						<input type="button" name="eventSubmit_doAttachments" value="Attachment" />
+						<input type="button" name="eventSubmit_doAttachments" value="$tlang.getString("gen.addatt")" />
 					</p>
 				#end
 				## if honor pledge is required
