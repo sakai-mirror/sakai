@@ -1,6 +1,6 @@
 /**********************************************************************************
 *
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/discussion/BaseDiscussionService.java,v 1.5 2005/06/13 20:39:04 zqian.umich.edu Exp $
+* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/discussion/BaseDiscussionService.java,v 1.6 2005/06/15 14:25:00 zqian.umich.edu Exp $
 *
 ***********************************************************************************
 *
@@ -874,37 +874,36 @@ public abstract class BaseDiscussionService
 		* @exception PermissionException If the user does not have write permission to the channel.
 		*/
 		public boolean addCategory(String category)
-			throws PermissionException
+			throws PermissionException, InUseException
 		{
 
 			if (	(category != null) && (category.length() > 0)
 				&&	(!m_categories.contains(category)))
 			{
 				// in-storage modification
-				try 
-				{
-					//ignore the cache - get the channel with a lock from the info store
-					DiscussionChannelEdit e = (DiscussionChannelEdit) m_storage.editChannel(this.getReference());
+				DiscussionChannelEdit e = (DiscussionChannelEdit) m_storage.editChannel(this.getReference());
 					
-					if (e != null)
-					{
-						List l = e.getCategories(true);
-						l.add(category);
-						e.setCategories(l);
-						m_storage.commitChannel(e);
-						
-						//track event (no notification)
-						Event event = EventTrackingService.newEvent(eventId(((BaseDiscussionChannelEdit) e).getEvent()), e.getReference(), true, NotificationService.NOTI_NONE);
-						EventTrackingService.post(event);
-						//channel notification
-						notify(event);
-						// close the edit object
-						((BaseDiscussionChannelEdit) e).closeEdit();
-						
-						return true;
-					}
+				if (e != null)
+				{
+					List l = e.getCategories(true);
+					l.add(category);
+					e.setCategories(l);
+					m_storage.commitChannel(e);
+					
+					//track event (no notification)
+					Event event = EventTrackingService.newEvent(eventId(((BaseDiscussionChannelEdit) e).getEvent()), e.getReference(), true, NotificationService.NOTI_NONE);
+					EventTrackingService.post(event);
+					//channel notification
+					notify(event);
+					// close the edit object
+					((BaseDiscussionChannelEdit) e).closeEdit();
+					
+					return true;
 				}
-				catch (Exception e){}
+				else
+				{
+					throw new InUseException(this.getReference());
+				}
 			}
 
 			return false;
@@ -918,7 +917,7 @@ public abstract class BaseDiscussionService
 		* @exception PermissionException If the user does not have write permission to the channel.
 		*/
 		public boolean removeCategory(String category)
-			throws PermissionException
+			throws InUseException, PermissionException
 		{
 			unlock(SECURE_REMOVE_ANY, getReference());
 			try 
@@ -960,9 +959,14 @@ public abstract class BaseDiscussionService
 					else
 					{
 						// close the edit object
+						m_storage.commitChannel(e);
 						((BaseDiscussionChannelEdit) e).closeEdit();
 						return false;
 					}
+				}
+				else
+				{
+					throw new InUseException(this.getReference());
 				}
 			}
 			catch (Exception e){}
@@ -1617,6 +1621,6 @@ public abstract class BaseDiscussionService
 
 /**********************************************************************************
 *
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/discussion/BaseDiscussionService.java,v 1.5 2005/06/13 20:39:04 zqian.umich.edu Exp $
+* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/discussion/BaseDiscussionService.java,v 1.6 2005/06/15 14:25:00 zqian.umich.edu Exp $
 *
 **********************************************************************************/

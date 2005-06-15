@@ -1,6 +1,6 @@
 /**********************************************************************************
 *
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/discussion/DiscussionChannel.java,v 1.1 2005/05/12 15:45:34 ggolden.umich.edu Exp $
+* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/discussion/DiscussionChannel.java,v 1.2 2005/06/15 14:15:41 zqian.umich.edu Exp $
 *
 ***********************************************************************************
 *
@@ -96,7 +96,7 @@ public interface DiscussionChannel
 	* @exception PermissionException If the user does not have write permission to the channel.
 	*/
 	public boolean addCategory(String category)
-		throws PermissionException;
+		throws InUseException, PermissionException;
 
 	/**
 	* Remove a category for this channel.
@@ -105,8 +105,7 @@ public interface DiscussionChannel
 	* @exception PermissionException If the user does not have write permission to the channel.
 	*/
 	public boolean removeCategory(String category)
-		throws PermissionException;
-	
+		throws InUseException, PermissionException;
 	/**
 	* A (DiscussionMessage) cover for addMessage to add a new message to this channel.
 	* Must commitEdit() to make official, or cancelEdit() when done!
@@ -193,6 +192,6 @@ public interface DiscussionChannel
 
 /**********************************************************************************
 *
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/discussion/DiscussionChannel.java,v 1.1 2005/05/12 15:45:34 ggolden.umich.edu Exp $
+* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/discussion/DiscussionChannel.java,v 1.2 2005/06/15 14:15:41 zqian.umich.edu Exp $
 *
 **********************************************************************************/

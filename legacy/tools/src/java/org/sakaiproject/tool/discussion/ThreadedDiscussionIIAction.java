@@ -1,6 +1,6 @@
 /*********************************************************************************
 *
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/discussion/ThreadedDiscussionIIAction.java,v 1.16 2005/06/09 20:48:46 zqian.umich.edu Exp $
+* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/discussion/ThreadedDiscussionIIAction.java,v 1.17 2005/06/15 14:28:48 zqian.umich.edu Exp $
 *
 ***********************************************************************************
 *
@@ -51,6 +51,7 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
+import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.content.ContentTypeImageService;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannel;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannelEdit;
@@ -227,7 +228,8 @@ public class ThreadedDiscussionIIAction
 	/************** delete message context ********************/
 	/** the delete message id **/
 	private static final String DELETE_MESSAGE_ID = "threadeddiscussionII.delete_message_id";
-
+	private static final String DELETE_WARNING = "delete_message_warning";
+	
 	/** Modes. */
 	private static final String MODE_NORMAL_VIEW = "frameView";
 	
@@ -266,11 +268,8 @@ public class ThreadedDiscussionIIAction
 	/** UI messages. */
 	private static final String PERMISSION_POST_MESSAGE = rb.getString("youdonot5");
 	private static final String POST_PROBLEM_MESSAGE = rb.getString("thewaspro");
-   private static final String STATE_DISPLAY_MESSAGE = "display_message";
+	private static final String STATE_DISPLAY_MESSAGE = "display_message";
 	private static final String STATE_LIST_PANNEL_UPDATED = "state_list_pannel_updated";
-    
-	/** the alert message to be shown when there is a InUseException */
-    private static final String INUSE_ERROR_MESSAGE = rb.getString("someone");
 	
 	/** the category to be deleted */
 	private static final String DELETE_CATEGORY = "delete_category";
@@ -938,6 +937,13 @@ public class ThreadedDiscussionIIAction
 										SessionState state)
 	{
 		context.put("tlang",rb);
+		
+		if (state.getAttribute(DELETE_WARNING) != null)
+		{
+			addAlert(state, (String) state.getAttribute(DELETE_WARNING));
+			state.removeAttribute(DELETE_WARNING);
+		}
+		
 		String search = (String) state.getAttribute(STATE_SEARCH);
 		if (search == null || search.equals(""))
 		{
@@ -1167,18 +1173,21 @@ public class ThreadedDiscussionIIAction
 				allowViewContent = DiscussionService.allowGetChannel(channelId);
 			}
 
-			DisplayMessage d = (DisplayMessage) state.getAttribute(STATE_DISPLAY_MESSAGE);
-			try
+			if (state.getAttribute(STATE_DISPLAY_MESSAGE) != null)
 			{
-				channel.getDiscussionMessage(d.getId());
-				context.put("currentMessage", state.getAttribute(STATE_DISPLAY_MESSAGE));
-			}
-			catch (Exception e)
-			{
-				// current displayed message no longer exist, refresh the control pannel
-				state.removeAttribute(STATE_DISPLAY_MESSAGE);
-				String peid = ((JetspeedRunData) rundata).getJs_peid();
-				schedulePeerFrameRefresh(VelocityPortletPaneledAction.mainPanelUpdateId(peid) + "." + CONTROL_PANEL);
+				DisplayMessage d = (DisplayMessage) state.getAttribute(STATE_DISPLAY_MESSAGE);
+				try
+				{
+					channel.getDiscussionMessage(d.getId());
+					context.put("currentMessage", state.getAttribute(STATE_DISPLAY_MESSAGE));
+				}
+				catch (Exception e)
+				{
+					// current displayed message no longer exist, refresh the control pannel
+					state.removeAttribute(STATE_DISPLAY_MESSAGE);
+					String peid = ((JetspeedRunData) rundata).getJs_peid();
+					schedulePeerFrameRefresh(VelocityPortletPaneledAction.mainPanelUpdateId(peid) + "." + CONTROL_PANEL);
+				}
 			}
 			
 			// inform the observing courier that we just updated the page...
@@ -1938,14 +1947,25 @@ public class ThreadedDiscussionIIAction
 			}
 			else
 			{
-				// Note: removed code to detect that the category already exists - we just "fail" quietly to add it again -ggolden
-				addCategory(state, channel, category);
-				
-				// clean the input frame
-				state.removeAttribute(STATE_DISPLAY_MESSAGE);
-				
-				// clean the state mode
-				state.removeAttribute(STATE_MODE);
+				try
+				{
+					// Note: removed code to detect that the category already exists - we just "fail" quietly to add it again -ggolden
+					addCategory(state, channel, category);
+					
+					// clean the input frame
+					state.removeAttribute(STATE_DISPLAY_MESSAGE);
+					
+					// clean the state mode
+					state.removeAttribute(STATE_MODE);
+			  	}
+				catch (InUseException e)
+				{
+					addAlert(state, rb.getString("someone") + " channel.");
+				}
+				catch (PermissionException e)
+				{
+					addAlert(state, rb.getString("youdonot1"));
+				}
 			}
 		}
 		catch (IdUnusedException e)
@@ -2055,8 +2075,19 @@ public class ThreadedDiscussionIIAction
 
 							// if the category is newly added
 							if (newCategory)
-							{						
-								addCategory(state, channel, category);
+							{		
+								try
+								{
+									addCategory(state, channel, category);
+								}
+								catch (InUseException e)
+								{
+									addAlert(state, rb.getString("someone") + " channel.");
+								}
+								catch (PermissionException e)
+								{
+									addAlert(state, rb.getString("youdonot1"));
+								}
 							}
 							setCategoryExpanded(state, category, true, channel);
 							
@@ -2421,31 +2452,38 @@ public class ThreadedDiscussionIIAction
 		ParameterParser params = data.getParameters();
 		String category = params.getString("category");
 		
-		String currentMessageId = null;
-		if (state.getAttribute(STATE_DISPLAY_MESSAGE) != null)
-		{
-			currentMessageId = ((DisplayMessage) state.getAttribute(STATE_DISPLAY_MESSAGE)).getId();
-		}
-		
 		try
 		{
 			//remove the category from the channel
 			DiscussionChannel channel = (DiscussionChannel) DiscussionService.getChannel((String) state.getAttribute(STATE_CHANNEL_REF));
-			if (channel.removeCategory(category))
+			try
 			{
-				// remove the category from the set of categories expanded on the user interface
-				HashSet expandedCategories = (HashSet) state.getAttribute(STATE_EXPAND_CATEGORY_LIST);
-				expandedCategories.remove(category);
-				state.setAttribute(STATE_EXPAND_CATEGORY_LIST, expandedCategories);
+				if (!channel.removeCategory(category))
+				{
+					state.setAttribute(DELETE_WARNING, rb.getString("cannotfin7"));
+				}
 			}
+			catch (InUseException e)
+			{
+				state.setAttribute(DELETE_WARNING, rb.getString("someone") + " channel. ");
+			}
+			catch (PermissionException e)
+			{
+				state.setAttribute(DELETE_WARNING, rb.getString("youarenot2"));
+			}
+		
+			//remove the category from the set of categories expanded on the user interface
+			HashSet expandedCategories = (HashSet) state.getAttribute(STATE_EXPAND_CATEGORY_LIST);
+			expandedCategories.remove(category);
+			state.setAttribute(STATE_EXPAND_CATEGORY_LIST, expandedCategories);
 		}
 		catch (IdUnusedException e)
 		{
-			addAlert(state, rb.getString("cannotfin5"));
+			state.setAttribute(DELETE_WARNING, rb.getString("cannotfin5"));
 		}
 		catch (PermissionException e)
 		{
-			addAlert(state, rb.getString("youarenot2"));
+			state.setAttribute(DELETE_WARNING, rb.getString("youarenot2"));
 		}
 		
 		state.setAttribute(DELETE_CATEGORY, "");
@@ -2527,7 +2565,7 @@ public class ThreadedDiscussionIIAction
 			}
 			catch (IdUnusedException e)
 			{
-				addAlert(state, rb.getString("cannotfin6"));
+				state.setAttribute(DELETE_WARNING, rb.getString("cannotfin6"));
 			}
 			catch (PermissionException e)
 			{
@@ -2536,11 +2574,11 @@ public class ThreadedDiscussionIIAction
 		}
 		catch (IdUnusedException e)
 		{
-			addAlert(state, rb.getString("cannotfin5"));
+			state.setAttribute(DELETE_WARNING, rb.getString("cannotfin5"));
 		}
 		catch (PermissionException e)
 		{
-			addAlert(state, rb.getString("youarenot1"));
+			state.setAttribute(DELETE_WARNING, rb.getString("youarenot1"));
 		}
 		
 		state.removeAttribute(STATE_DISPLAY_MESSAGE);
@@ -3671,6 +3709,7 @@ public class ThreadedDiscussionIIAction
      * add the category to the state attribute
      */
     private void addCategory (SessionState state, DiscussionChannel channel, String category)
+    				throws InUseException, PermissionException
     {
     		try
 		{
@@ -3683,10 +3722,14 @@ public class ThreadedDiscussionIIAction
 			Hashtable h = (Hashtable) state.getAttribute(STATE_CATEGORIES_SHOW_LIST);
 			h.put(category, new Vector());
 			state.setAttribute(STATE_CATEGORIES_SHOW_LIST, h);
-		}
-    		catch (PermissionException ignore) 
+	    }
+		catch (InUseException e)
 		{
-    			addAlert(state, rb.getString("youdonot1"));
+			throw new InUseException(channel.getId());
+		}
+		catch (PermissionException e)
+		{
+			throw new PermissionException(UsageSessionService.getSessionUserId(), null, null);
 		}
 
 	}	// addCategory
@@ -3934,6 +3977,6 @@ public class ThreadedDiscussionIIAction
 
 /**********************************************************************************
 *
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/discussion/ThreadedDiscussionIIAction.java,v 1.16 2005/06/09 20:48:46 zqian.umich.edu Exp $
+* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/discussion/ThreadedDiscussionIIAction.java,v 1.17 2005/06/15 14:28:48 zqian.umich.edu Exp $
 *
 **********************************************************************************/
