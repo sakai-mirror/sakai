@@ -8,11 +8,11 @@
 	<p class="instruction">
 		$tlang.getString("sitetype.chothetyp")
 	</p>
-	<form action="#toolForm("$action")" method="post">
+	<form name="typeform" id="typeform" action="#toolForm("$action")" method="post">
 		#foreach ($type in $siteTypes)
 			#if ($type != "GradToolsStudent" || ($type == "GradToolsStudent" && $!withDissertation && $!isGradStudent.booleanValue() && $!noGradToolsSite.booleanValue()))
 				<p class="checkbox indnt1">
-					<input type="radio" name="itemType" id="$type" value="$type" />
+					<input type="radio" name="itemType" id="$type" value="$type" #if ($type == $typeSelected) checked="checked" #end/>
 						<label for = "$type">
 							#if ($type == "GradToolsStudent")
 								$tlang.getString("sitetype.gratooweb")
@@ -28,11 +28,17 @@
 									<label for="">
 										$tlang.getString("sitetype.acater")
 									</label>	
-									<select name="selectTerm">
+									<select name="selectTerm" onclick="document.typeform.course.checked=true;">
 										#foreach($term in $termList)
 											<option value ="$term.Id"
-												#if($term.id == $selectedTerm || $term.isCurrentTerm())
-													selected="selected"
+												#if ($!selectedTerm)
+													#if ($term.id == $selectedTerm.Id)
+														selected="selected"
+													#end
+												#else
+													#if ($term.isCurrentTerm())
+														selected="selected"
+													#end
 												#end
 											>
 											$term.Id

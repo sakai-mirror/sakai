@@ -1002,15 +1002,17 @@ public class SiteAction extends PagedResourceActionII
 					context.put("withDissertation", Boolean.FALSE);
 				}
 				context.put("siteTypes", state.getAttribute(STATE_SITE_TYPES));
-				context.put("form_type", siteInfo.site_type);
+				context.put("typeSelected", siteInfo.site_type);
 				
 				List terms = CourseManagementService.getTerms();
 				if (terms != null && terms.size() >0)
 				{
 					context.put("termList", terms);
 				}
-				// Clean out site in state, if there is one (i.e., we went Back), before creating a new one
-				cleanState(state);
+				if (state.getAttribute(STATE_TERM_SELECTED) != null)
+				{
+					context.put("selectedTerm", state.getAttribute(STATE_TERM_SELECTED));
+				}
 				return (String)getContext(data).get("template") + TEMPLATE[1];
 			case 2: 
 				/*   buildContextForTemplate chef_site-newSiteInformation.vm 
@@ -3773,6 +3775,10 @@ public class SiteAction extends PagedResourceActionII
 		throws Exception
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		
+		// start clean
+		cleanState(state);
+		
 		List siteTypes = (List) state.getAttribute(STATE_SITE_TYPES);
 		if ((siteTypes != null) && siteTypes.size() == 1)
 		{
