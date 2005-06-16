@@ -38,6 +38,7 @@ update SAKAI_SITE_TOOL set REGISTRATION='sakai.preferences' where REGISTRATION='
 update SAKAI_SITE_TOOL set REGISTRATION='sakai.online' where REGISTRATION='sakai.presence';
 update SAKAI_SITE_TOOL set REGISTRATION='sakai.siteinfo' where REGISTRATION='sakai.siteinfogeneric';
 update SAKAI_SITE_TOOL set REGISTRATION='sakai.sitesetup' where REGISTRATION='sakai.sitesetupgeneric';
+update SAKAI_SITE_TOOL set REGISTRATION='sakai.discussion' where REGISTRATION='sakai.threadeddiscussion';
 
 /*
 update SAKAI_SITE_TOOL set REGISTRATION='ctools.dissertation' where REGISTRATION='sakai.dissertation';
@@ -69,7 +70,7 @@ delete from sakai_site_user where site_id = '!gateway';
 delete from sakai_site_tool_property where site_id = '!gateway';
 delete from sakai_site_tool where site_id = '!gateway';
 delete from sakai_site_page where site_id = '!gateway';
-delete from sakai_site where site_id like = '!gateway';
+delete from sakai_site where site_id like '!gateway';
 INSERT INTO SAKAI_SITE VALUES('!gateway', 'Gateway', null, null, 'The Gateway Site', null, null, null, 1, 0, 0, '', null, null, null, null, 1, 0 );
 UPDATE SAKAI_SITE SET MODIFIEDBY='admin' WHERE SITE_ID = '!gateway';
 UPDATE SAKAI_SITE SET MODIFIEDON=TO_TIMESTAMP('20031126034522061','YYYYMMDDHHMISSFF3') WHERE SITE_ID = '!gateway';
