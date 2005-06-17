@@ -1523,8 +1523,6 @@ public class SiteAction extends PagedResourceActionII
 							}
 						}
 						
-						b.add( new MenuEntry(rb.getString("permis"), "doPermissions") );
-						
 						context.put("menu", b);	
 						context.put("tlang",rb);
 					}
