@@ -25,6 +25,7 @@ in the Sakai Development site.
    2.2.4 Database DDL and Seed Data Configuration
    2.2.5 Email Setup
    2.2.6 Personalizing your Sakai
+   2.2.7 File Based Content Hosting
   2.3 Tomcat configuration
     2.3.1 Character Encoding
     2.3.2 Other Tomcat Configuration
@@ -380,6 +381,63 @@ Sakai has a number of places where your institution and service names, and the h
     bottomnav.2 = <a href="http://sakaiproject.org/cms" target="_blank">The Sakai Project</a>
 
 You can add more or other links by setting the proper bottomnav.count value, and adding bottomnav.N values, 1 through the number of links.
+
+2.2.7 File Based Content Hosting
+
+Anytime you want to use the file system feature of content hosting, to store the content hosting resource body binary bytes in files in a file system instead of records in the database, you must
+
+    1) configure your Sakai to do this, and
+
+    2) run a conversion to bring your files out of your database and into the file system.
+
+This conversion is needed even for a brand new database, since there are some resources shipped with the started Sakai db.
+
+2.2.7.1 Configuration
+
+The best place for configuring this is the sakai.properties file.
+
+    # the file system root for content hosting's external stored files (default is null, i.e. store them in the db)
+    bodyPath@org.sakaiproject.service.legacy.content.ContentHostingService =${sakai.home}content
+
+Enable the above line, and point at the root folder for the files to be stored.
+
+    # when storing content hosting's body bits in files, an optional set of folders just within the content.filesystem.root
+    # to act as volumes to distribute the files among - a comma separate list of folders.  If left out, no volumes will be used.
+    bodyVolumes@org.sakaiproject.service.legacy.content.ContentHostingService = v1,v2,v3
+
+Enable the above line, and set the list of "volumes" for storage.  You can specify one or more volume names, comma separated on this line.  These are folders under the file system root.  Files will be distributed among these volumes.
+
+If you are going to use multiple volume devices, you need to map them to these volume names that live "under" the root.  We have done this with our AFS file storage system at the University of Michigan.  If you are not using separate devices, then you can use any folder names for the volumes.  Provide at least one.
+
+Files will be stored under each volume in a way so that there are not too many in any one folder.  The folder structure we use is:
+
+    YYYY/DDD/HH/id, where YYYY=year, DDD=day of year, HH=hour of day, and the 1111...=an id-based file name
+
+for example,
+
+    2005/070/03/3223479379834-2343
+
+or, using the above root and volumes, it might be:
+
+    /usr/local/tomcat/sakai/content/v2/2005/070/03/3223479379834-2343
+
+Note that the resource name and type is not at all encoded here.  The date/time used to form the file name is the date/time of file creation.
+
+2.2.7.2 Conversion
+
+Once you have your database setup, and your file values configured, and the file system read/write accessible to your application server, you need to configure your Sakai to run and convert.  Do this once, shutdown after conversion is complete, and re-configure Sakai to no longer do the conversion.  At that point you could remove the table CONTENT_RESOURCE_BODY_BINARY.
+
+To convert, add this to your sakai.properties:
+
+    convertToFile@org.sakaiproject.service.legacy.content.ContentHostingService = true
+
+As soon as Sakai starts up, it will create a file system file for any content hosting resource that has a null "FILE_PATH" field.  This could take a long time, if you have many resources.  If the process dies mid way, you can restart it, and it will pick up about where it left off (since it does not update the "FILE_PATH" until it has written out the file).
+
+2.2.7.3 Clustering
+
+If you are running multiple application servers, it is vital that you choose a file system technology that is equally available to all the servers at once.  We use our campus AFS system for this.  Any network file system should work.  Make sure that the file system is mounted in the same place on all the application servers.
+
+The file path is stored in the content hosting resource record.  This includes the path from the volume name all the way to the file name.  It does NOT include the root.  You can change the root location over time, or have it different on each app server, as long as the app server is properly configured.  But you can never change the volume names under the root (you could add, but you cannot remove).
 
 2.3 Tomcat configuration
 
