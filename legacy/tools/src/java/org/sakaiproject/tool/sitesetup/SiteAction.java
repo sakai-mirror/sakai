@@ -973,8 +973,7 @@ public class SiteAction extends PagedResourceActionII
 						String userId = StringUtil.trimToZero(UsageSessionService.getSessionUserId());
 						
 						//am I a grad student?
-						// TODO: fix this
-						Boolean isGradStudent = new Boolean(/*DissertationService.isCandidate(userId)*/ false);
+						Boolean isGradStudent = new Boolean(isGradToolsCandidate(userId));
 						context.put("isGradStudent", isGradStudent);
 						
 						//if I am a grad student, do I already have a Grad Tools site?
