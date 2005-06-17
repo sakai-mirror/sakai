@@ -35,7 +35,7 @@
 		<copy file="${basedir}/demo/toolOrder.xml" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/sakai/toolOrder.xml" />
 		<copy file="${basedir}/demo/readme.txt" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/demo_readme.txt" />
 		<copy file="${basedir}/docs/readme_java.txt" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/java_readme.txt" />
-		<copy file="${basedir}/docs/readme.txt" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/sakai_readme.txt" />
+		<copy file="${basedir}/docs/readme_2-0-0.txt" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/sakai_readme.txt" />
 		<copy todir="${basedir}/target/demo/jakarta-tomcat-5.5.9/licenses/">
 			<fileset dir="${basedir}/licenses">
 				<exclude name="CVS/**"/>

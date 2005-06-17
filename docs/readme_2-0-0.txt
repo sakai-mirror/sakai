@@ -26,6 +26,7 @@ in the Sakai Development site.
    2.2.5 Email Setup
    2.2.6 Personalizing your Sakai
    2.2.7 File Based Content Hosting
+   2.2.8 How to CASify Sakai
   2.3 Tomcat configuration
     2.3.1 Character Encoding
     2.3.2 Other Tomcat Configuration
@@ -438,6 +439,37 @@ As soon as Sakai starts up, it will create a file system file for any content ho
 If you are running multiple application servers, it is vital that you choose a file system technology that is equally available to all the servers at once.  We use our campus AFS system for this.  Any network file system should work.  Make sure that the file system is mounted in the same place on all the application servers.
 
 The file path is stored in the content hosting resource record.  This includes the path from the volume name all the way to the file name.  It does NOT include the root.  You can change the root location over time, or have it different on each app server, as long as the app server is properly configured.  But you can never change the volume names under the root (you could add, but you cannot remove).
+
+2.2.8 How to CASify Sakai 2.0 (also works for other SSOs) (thanks to Seth Theriault slt@columbia.edu)
+
+1) Install mod_cas (or its equivalent) under Apache.
+
+2) Edit Apache's httpd.conf and add this:
+
+    <Location /sakai-login/container>
+        AuthType CAS
+        Require valid-user
+    </Location>
+
+3) Edit Tomcat's server.xml
+
+Disable Tomcat's container authentication by adding the following parameter to the JK2 connector configuration:
+
+    tomcatAuthentication="false"
+
+When you're done, the connector declaration should look something like this:
+
+    <Connector port="8009" 
+        enableLookups="false" redirectPort="8443" debug="0"
+        tomcatAuthentication="false" URIEncoding="UTF-8"
+        protocol="AJP/1.3" />
+
+4) edit sakai.properties
+
+    top.login = false
+    container.auth = true
+
+If you want to install a servlet filter, it needs to go in the sakai-login webapp and protect the /container path.
 
 2.3 Tomcat configuration
 
