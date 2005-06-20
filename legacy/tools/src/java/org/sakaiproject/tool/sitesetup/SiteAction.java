@@ -1517,8 +1517,14 @@ public class SiteAction extends PagedResourceActionII
                                   if (updatableSites.size() > 0)
 								{
 									b.add( new MenuEntry(rb.getString("java.import"), "doMenu_siteInfo_import"));
-									//htripath: June 4th added as per Kris and changed desc of above
-									b.add(new MenuEntry(rb.getString("java.importFile"), "doAttachmentsMtrlFrmFile"));
+									
+									// a configuration param for showing/hiding import from file choice
+									String importFromFile = ServerConfigurationService.getString("site.setup.import.file", Boolean.TRUE.toString());
+									if (importFromFile.equalsIgnoreCase("true"))
+									{
+										//htripath: June 4th added as per Kris and changed desc of above
+										b.add(new MenuEntry(rb.getString("java.importFile"), "doAttachmentsMtrlFrmFile"));
+									}
 								}
 							}
 						}
