@@ -101,6 +101,12 @@ public class BasicArchiveService
 	public String[] CT_roles = {"Affiliate", "Assistant", "Instructor", "Maintain", "Organizer", "Owner"};
 	public String[] WT_roles = {};
 	
+	// tool id updates
+	private String old_toolId_prefix = "chef.";
+	private String new_toolId_prefix = "sakai.";
+	private String[] old_toolIds = {"sakai.noti.prefs", "sakai.presence", "sakai.siteinfogeneric", "sakai.sitesetupgeneric", "sakai.threadeddiscussion"};
+	private String[] new_toolIds = {"sakai.preferences", "sakai.online", "sakai.siteinfo", "sakai.sitesetup", "sakai.discussion"};
+	
 	// only these Sakai tools will be imported
 	public String[] SakaiServicesToImport = 
 		{AnnouncementService.SERVICE_NAME, 
@@ -1138,6 +1144,23 @@ public class BasicArchiveService
 			if (child.getNodeType() != Node.ELEMENT_NODE) continue;
 			Element element2 = (Element)child;
 			if (!element2.getTagName().equals("site")) continue;
+			
+			NodeList toolChildren = element2.getElementsByTagName("tool");
+			final int tLength = toolChildren.getLength();
+			for(int i2 = 0; i2 < tLength; i2++)
+			{
+				Element element3 = (Element) toolChildren.item(i2);
+				String toolId = element3.getAttribute("toolId");
+				if (toolId != null)
+				{
+					toolId = toolId.replaceAll(old_toolId_prefix, new_toolId_prefix);
+					for (int j = 0; j < old_toolIds.length; j++)
+					{
+						toolId = toolId.replaceAll(old_toolIds[i], new_toolIds[i]);
+					}
+				}
+				element3.setAttribute("toolId", toolId);
+			}
 				
 			// merge the site info first
 			try
