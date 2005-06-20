@@ -569,19 +569,6 @@ public class ThreadedDiscussionIIAction
                 DiscussionChannel channel = DiscussionService.getDiscussionChannel((String) state.getAttribute(STATE_CHANNEL_REF));
 				
 				// save the input infos for the respond message
-				String replyToType = params.getString("replyto");
-				
-				String replyToId = "";
-				if (replyToType.equalsIgnoreCase ("tomessage"))
-				{
-					replyToId = params.getString("messageId");
-				}
-				else if (replyToType.equalsIgnoreCase ("totopic"))
-				{
-					replyToId = params.getString("topicId");
-				}
-				state.setAttribute(RESPOND_REPLY_TO, replyToId);
-				
 				subject = ((String) params.getString ("subject")).trim();
 				state.setAttribute(RESPOND_SUBJECT, subject);
 
