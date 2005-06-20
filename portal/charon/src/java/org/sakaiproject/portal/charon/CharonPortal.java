@@ -222,7 +222,9 @@ public class CharonPortal extends HttpServlet
 		// the 'little' top area
 		includeGalleryNav(out, req, session, siteId);
 
-		out.println("<div id=\"container\">");
+		String siteType = calcSiteType(siteId);
+		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\""+siteType+"\"" : "") + ">");
+		
 		includeWorksite(out, req, session, site, page, toolContextPath, "gallery");
 		out.println("<div>");
 
@@ -522,7 +524,9 @@ public class CharonPortal extends HttpServlet
 		PrintWriter out = startResponse(res, title, page.getSkin());
 
 		// div to wrap the works
-		out.println("<div id=\"container\">");
+		String siteType = calcSiteType(site.getId());
+		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\""+siteType+"\"" : "") + ">");
+		
 		includePage(out, req, page, toolContextPath, "contentFull");
 		out.println("</div>");
 
@@ -729,7 +733,9 @@ public class CharonPortal extends HttpServlet
 		// the 'full' top area
 		includeSiteNav(out, req, session, siteId);
 
-		out.println("<div id=\"container\">");
+		String siteType = calcSiteType(siteId);
+		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\""+siteType+"\"" : "") + ">");
+		
 		includeWorksite(out, req, session, site, page, toolContextPath, "site");
 		out.println("<div>");
 
@@ -903,7 +909,9 @@ public class CharonPortal extends HttpServlet
 		// start the response
 		PrintWriter out = startResponse(res, title, site.getSkin());
 
-		out.println("<div id=\"container\">");
+		String siteType = calcSiteType(siteId);
+		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\""+siteType+"\"" : "") + ">");
+		
 		includeWorksite(out, req, session, site, page, toolContextPath, "worksite");
 		out.println("<div>");
 
@@ -1247,6 +1255,10 @@ public class CharonPortal extends HttpServlet
 	protected void includeTabs(PrintWriter out, HttpServletRequest req, Session session, String siteId, String prefix,
 			boolean addLogout) throws IOException
 	{
+
+	    // for skinning
+	    String siteType = calcSiteType(siteId);
+	    
 		// is the current site the end user's myWorkspace?
 		boolean curMyWorkspace = ((siteId == null) || (SiteService.isUserSite(siteId) && (SiteService.getSiteUserId(siteId)
 				.equals(session.getUserId()))));
@@ -1369,7 +1381,8 @@ public class CharonPortal extends HttpServlet
 			}
 		}
 
-		out.println("<div class=\"tabHolder\">");
+		String cssClass = (siteType != null) ? "tabHolder " + siteType : "tabHolder";
+		out.println("<div class=\""+cssClass+"\">");
 		out.println("	<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">");
 		out.println("		<tr>");
 		out.println("			<td class=\"tabCell\">");
@@ -1629,6 +1642,38 @@ public class CharonPortal extends HttpServlet
 		return out;
 	}
 
+	/**
+	 * Returns the type ("course", "project", "workspace", 
+	 * "mySpecialSiteType", etc) of the given site; 
+	 * special handling of returning "workspace" for user workspace sites.  
+	 * This method is tightly coupled to site skinning.
+	 */
+	private String calcSiteType(String siteId)
+	{
+	    String siteType = null;
+	    if (siteId != null && siteId.length() != 0)
+	    {
+	        if (SiteService.isUserSite(siteId))
+	        {
+	           siteType = "workspace"; 
+	        }
+	        else
+	        {
+			    try
+		        {
+		           siteType = SiteService.getSite(siteId).getType();
+		        }
+		        catch (IdUnusedException ex)
+		        {
+		            // ignore, the site wasn't found
+		        }
+	        }
+	    }
+	    
+	    if (siteType != null && siteType.trim().length() == 0) siteType = null;
+	    return siteType;
+	}
+	
 	/**
 	 * Find the site in the list that has this id - return the position.
 	 * 
