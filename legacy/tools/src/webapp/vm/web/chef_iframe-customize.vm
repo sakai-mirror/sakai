@@ -39,7 +39,7 @@
 		#end
 
 		#if ($special == "workspace")
-			<h4 class="indnt1">Description display</h4>
+			<h4 class="indnt1">$tlang.getString("gen.desc")</h4>
 			<p class="checkbox indnt2">
 				<input type="radio" value="workspace" name="source_type" #if ($source_type == "workspace") checked="checked" #end id="useworkspace" />
 				<label for="useworkspace"> $tlang.getString("gen.displaymy")</label>
@@ -58,7 +58,7 @@
 			</p>	
 		#else 
 			#if ($special == "worksite")
-				<h4 class="indnt1">Description display</h4>
+				<h4 class="indnt1">$tlang.getString("gen.desc")</h4>
 				<p class="checkbox indnt2">
 					<input type="radio" value="worksite" name="source_type" #if ($source_type == "worksite") checked="checked" #end id="useworksite" />
 					<label for="useworksite"> $tlang.getString("gen.displaythis")</label>
