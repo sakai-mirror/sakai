@@ -588,7 +588,7 @@ At runtime, the Sakai provider module will be missing, your new module will be p
 
 4.4 Providers and Single-Signon
 
-If you integrate Sakai in some sort of single-signon environment, you will need to also make your provider for users work with the same environment.  Most requests come in from browsers and will trigger the single-singon for authentication.  But our WebDAV support bypasses this normal route and relies on the internal authentication system in Sakai.  This works with the UserDirectoryProvider to check authentication against external sources.  Sakai also has a direct login path to bypass the single signon and invoke internal authentication directly.
+If you integrate Sakai in some sort of single-signon environment, you will need to also make your provider for users work with the same environment.  Most requests come in from browsers and will trigger the single-singon for authentication.  But our WebDAV support bypasses this normal route and relies on the internal authentication system in Sakai.  This works with the UserDirectoryProvider to check authentication against external sources.  Sakai also has a direct login path (/portal/xlogin) to bypass the single signon and invoke internal authentication directly.
 
 5. Sakai and SSL / HTTPS
 
