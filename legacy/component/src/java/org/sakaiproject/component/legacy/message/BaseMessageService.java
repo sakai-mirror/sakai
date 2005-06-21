@@ -52,7 +52,7 @@ import org.sakaiproject.service.framework.memory.MemoryService;
 import org.sakaiproject.service.framework.session.SessionStateBindingListener;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
-import org.sakaiproject.service.legacy.discussion.DiscussionChannelEdit;
+import org.sakaiproject.service.legacy.discussion.DiscussionChannel;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.id.cover.IdService;
@@ -1087,8 +1087,8 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 											{
 												MessageChannelEdit c = editChannel(channelRef);
 												String category = element4.getAttribute("name");
-												((DiscussionChannelEdit) c).addCategory(category);
 												commitChannel(c);
+												((DiscussionChannel) c).addCategory(category);
 											}
 										}
 									}
@@ -1232,7 +1232,8 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 												if (fromSakai || fromCT)
 												{
 													// only merge this message when the userId has the right role
-													if (!userSet.contains(element4.getAttribute("from"))) 
+													String fUserId = element4.getAttribute("from");
+													if (!fUserId.equalsIgnoreCase("postmaster") && !userSet.contains(element4.getAttribute("from"))) 
 													{
 														goAhead = false;
 													}
