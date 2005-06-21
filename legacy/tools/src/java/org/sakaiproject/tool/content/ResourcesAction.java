@@ -7574,12 +7574,8 @@ extends VelocityPortletPaneledAction
 					
 					if(isCollection)
 					{
-						ContentCollection subCollection = (ContentCollection) resource;
-						if (collection.getMemberResources().size() != 0)
-						{
-							// add all the items in the subfolder to newItems
-							newItems.addAll(getBrowseItems(itemId, expandedCollections, sortedBy, sortedAsc, folder, state));
-						}
+						// add all the items in the subfolder to newItems
+						newItems.addAll(getBrowseItems(itemId, expandedCollections, sortedBy, sortedAsc, folder, state));
 					}
 					else
 					{
