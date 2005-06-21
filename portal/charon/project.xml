@@ -79,6 +79,15 @@
 			</properties>
 		</dependency>
 
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util-java</artifactId>
+			<version>${pom.currentVersion}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+
 	</dependencies>
 
 	<build>

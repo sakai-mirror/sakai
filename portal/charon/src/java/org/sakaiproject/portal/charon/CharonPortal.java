@@ -49,6 +49,7 @@ import org.sakaiproject.api.kernel.tool.ActiveTool;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
@@ -59,6 +60,7 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.web.Web;
 
 /**
@@ -223,8 +225,8 @@ public class CharonPortal extends HttpServlet
 		includeGalleryNav(out, req, session, siteId);
 
 		String siteType = calcSiteType(siteId);
-		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\""+siteType+"\"" : "") + ">");
-		
+		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\"" + siteType + "\"" : "") + ">");
+
 		includeWorksite(out, req, session, site, page, toolContextPath, "gallery");
 		out.println("<div>");
 
@@ -382,8 +384,8 @@ public class CharonPortal extends HttpServlet
 		// recognize help
 		else if ((parts.length >= 2) && (parts[1].equals("help")))
 		{
-			doHelp(req, res, session, req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 2), Web
-					.makePath(parts, 2, parts.length));
+			doHelp(req, res, session, req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 2), Web.makePath(parts,
+					2, parts.length));
 		}
 
 		// recognize and dispatch the 'login' option
@@ -392,8 +394,8 @@ public class CharonPortal extends HttpServlet
 			doLogin(req, res, session, null, false);
 		}
 
-		// recognize and dispatch the 'login' option
-		else if ((parts.length == 2) && (parts[1].equals("xlogin")))
+		// recognize and dispatch the 'login' options
+		else if ((parts.length == 2) && ((parts[1].equals("xlogin"))))
 		{
 			doLogin(req, res, session, null, true);
 		}
@@ -423,7 +425,8 @@ public class CharonPortal extends HttpServlet
 		}
 	}
 
-	protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath, boolean skipContainer) throws IOException
+	protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath,
+			boolean skipContainer) throws IOException
 	{
 		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
 		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
@@ -448,7 +451,7 @@ public class CharonPortal extends HttpServlet
 		{
 			// where to go after
 			String loggedOutUrl = ServerConfigurationService.getLoggedOutUrl();
-			session.setAttribute(Tool.HELPER_DONE_URL,loggedOutUrl);
+			session.setAttribute(Tool.HELPER_DONE_URL, loggedOutUrl);
 		}
 
 		ActiveTool tool = ActiveToolManager.getActiveTool("sakai.login");
@@ -525,8 +528,8 @@ public class CharonPortal extends HttpServlet
 
 		// div to wrap the works
 		String siteType = calcSiteType(site.getId());
-		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\""+siteType+"\"" : "") + ">");
-		
+		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\"" + siteType + "\"" : "") + ">");
+
 		includePage(out, req, page, toolContextPath, "contentFull");
 		out.println("</div>");
 
@@ -578,8 +581,8 @@ public class CharonPortal extends HttpServlet
 		// recognize help
 		else if ((parts.length >= 2) && (parts[1].equals("help")))
 		{
-			doHelp(req, res, session, req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 2), Web
-					.makePath(parts, 2, parts.length));
+			doHelp(req, res, session, req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 2), Web.makePath(parts,
+					2, parts.length));
 		}
 
 		// handle an unrecognized request
@@ -630,13 +633,14 @@ public class CharonPortal extends HttpServlet
 
 		// form a placement based on the site and the fact that this is that site's presence...
 		// Note: the placement is transient, but will always have the same id and context based on the siteId
-		org.sakaiproject.util.Placement placement = new org.sakaiproject.util.Placement(siteId + "-presence", tool, null, siteId, null);
+		org.sakaiproject.util.Placement placement = new org.sakaiproject.util.Placement(siteId + "-presence", tool, null, siteId,
+				null);
 
 		forwardTool(tool, req, res, placement, skin, toolContextPath, toolPathInfo);
 	}
 
-	protected void doHelp(HttpServletRequest req, HttpServletResponse res, Session session,
-			String toolContextPath, String toolPathInfo) throws IOException
+	protected void doHelp(HttpServletRequest req, HttpServletResponse res, Session session, String toolContextPath,
+			String toolPathInfo) throws IOException
 	{
 		// permission check - none
 
@@ -706,7 +710,7 @@ public class CharonPortal extends HttpServlet
 		}
 
 		// find the page, or use the first page if pageId not found
-		SitePage page = site.getPage(pageId);		
+		SitePage page = site.getPage(pageId);
 		if (page == null)
 		{
 			List pages = site.getPages();
@@ -734,8 +738,8 @@ public class CharonPortal extends HttpServlet
 		includeSiteNav(out, req, session, siteId);
 
 		String siteType = calcSiteType(siteId);
-		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\""+siteType+"\"" : "") + ">");
-		
+		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\"" + siteType + "\"" : "") + ">");
+
 		includeWorksite(out, req, session, site, page, toolContextPath, "site");
 		out.println("<div>");
 
@@ -770,7 +774,7 @@ public class CharonPortal extends HttpServlet
 			doError(req, res, session, ERROR_WORKSITE);
 			return;
 		}
-		
+
 		// find the tool registered for this
 		ActiveTool tool = ActiveToolManager.getActiveTool(siteTool.getTool().getId());
 		if (tool == null)
@@ -819,8 +823,10 @@ public class CharonPortal extends HttpServlet
 		// setup html information that the tool might need (skin, body on load, js includes, etc).
 		if (skin == null || skin.length() == 0) skin = ServerConfigurationService.getString("skin.default");
 		String skinRepo = ServerConfigurationService.getString("skin.repo");
-		String headCssToolBase = "<link href=\"" + skinRepo + "/tool_base.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
-		String headCssToolSkin = "<link href=\"" + skinRepo + "/" + skin + "/tool.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
+		String headCssToolBase = "<link href=\"" + skinRepo
+				+ "/tool_base.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
+		String headCssToolSkin = "<link href=\"" + skinRepo + "/" + skin
+				+ "/tool.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
 		String headCss = headCssToolBase + headCssToolSkin;
 		String headJs = "<script type=\"text/javascript\" language=\"JavaScript\" src=\"/library/js/headscripts.js\"></script>\n";
 		String head = headCss + headJs;
@@ -832,13 +838,13 @@ public class CharonPortal extends HttpServlet
 		}
 		bodyonload.append("setFocus(focus_path);");
 
-// to force all non-legacy tools to use the standard css 
-// to help in transition (needs corresponding entry in properties)		
-//		if ("true".equals(ServerConfigurationService.getString("skin.force")))
-//		{
-//			headJs = headJs + headCss;
-//		}
-		
+		// to force all non-legacy tools to use the standard css
+		// to help in transition (needs corresponding entry in properties)
+		// if ("true".equals(ServerConfigurationService.getString("skin.force")))
+		// {
+		// headJs = headJs + headCss;
+		// }
+
 		req.setAttribute("sakai.html.head", head);
 		req.setAttribute("sakai.html.head.css", headCss);
 		req.setAttribute("sakai.html.head.css.base", headCssToolBase);
@@ -910,8 +916,8 @@ public class CharonPortal extends HttpServlet
 		PrintWriter out = startResponse(res, title, site.getSkin());
 
 		String siteType = calcSiteType(siteId);
-		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\""+siteType+"\"" : "") + ">");
-		
+		out.println("<div id=\"container\"" + ((siteType != null) ? " class=\"" + siteType + "\"" : "") + ">");
+
 		includeWorksite(out, req, session, site, page, toolContextPath, "worksite");
 		out.println("<div>");
 
@@ -966,12 +972,13 @@ public class CharonPortal extends HttpServlet
 
 		out.println("	</div>");
 		out.println("	<div id=\"footerInfo\">");
-		if ((poweredByUrl != null) && (poweredByImage != null) && (poweredByAltText != null) && (poweredByUrl.length == poweredByImage.length) && (poweredByUrl.length == poweredByAltText.length))
+		if ((poweredByUrl != null) && (poweredByImage != null) && (poweredByAltText != null)
+				&& (poweredByUrl.length == poweredByImage.length) && (poweredByUrl.length == poweredByAltText.length))
 		{
 			for (int i = 0; i < poweredByUrl.length; i++)
 			{
-				out.println("		<a href=\"" + poweredByUrl[i] + "\" target=\"_blank\">"
-						+ "<img border=\"0\" src=\"" + poweredByImage[i] + "\" alt=\"" + poweredByAltText[i] + "\" /></a>");
+				out.println("		<a href=\"" + poweredByUrl[i] + "\" target=\"_blank\">" + "<img border=\"0\" src=\""
+						+ poweredByImage[i] + "\" alt=\"" + poweredByAltText[i] + "\" /></a>");
 			}
 		}
 		else
@@ -990,24 +997,11 @@ public class CharonPortal extends HttpServlet
 
 	protected void includeGalleryLogin(PrintWriter out, HttpServletRequest req, Session session, String siteId) throws IOException
 	{
-		String logInOutUrl = Web.serverUrl(req);
-		String message = null;
-		if (session.getUserId() == null)
-		{
-			logInOutUrl += "/portal/login_gallery";
-			message = "log.login";
-		}
-		else
-		{
-			logInOutUrl += "/portal/logout_gallery";
-			message = "sit.log";
-		}
-
 		out.println("<div class=\"siteNavBlock\">");
 		out.println("<table class=\"mast-head\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">");
 		out.println("	<tr>");
 		out.println("		<td class=\"right mast-head-r right\">");
-		out.println("			<a href=\"" + logInOutUrl + "\" target=\"_parent\">" + rb.getString(message) + "</a>");
+		this.includeLogin(out, req, session);
 		out.println("		</td>");
 		out.println("	</tr>");
 		out.println("</table>");
@@ -1056,18 +1050,6 @@ public class CharonPortal extends HttpServlet
 		String logo = skinRepo + "/" + skin + "/images/logo_inst.gif";
 		String banner = skinRepo + "/" + skin + "/images/banner_inst.gif";
 
-		String logInOutUrl = Web.serverUrl(req);
-		String message = null;
-		if (session.getUserId() == null)
-		{
-			logInOutUrl += "/portal/login";
-			message = "log.login";
-		}
-		else
-		{
-			logInOutUrl += "/portal/logout";
-			message = "sit.log";
-		}
 		out.println("<div class=\"siteNavBlock\">");
 		out.println("<table class=\"mast-head\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">");
 		out.println("	<tr>");
@@ -1078,10 +1060,102 @@ public class CharonPortal extends HttpServlet
 		out.println("			<img title=\"Banner\" alt=\"Banner\" src=\"" + banner + "\" />");
 		out.println("		</td>");
 		out.println("		<td class=\"mast-head-r right\">");
-		out.println("			<a href=\"" + logInOutUrl + "\" target=\"_parent\">" + rb.getString(message) + "</a>");
+		includeLogin(out, req, session);
 		out.println("		</td>");
 		out.println("	</tr>");
 		out.println("</table>");
+	}
+
+	protected void includeLogin(PrintWriter out, HttpServletRequest req, Session session)
+	{
+		// for the main login/out link
+		String logInOutUrl = Web.serverUrl(req);
+		String message = null;
+		String image1 = null;
+
+		// for a possible second link
+		String logInOutUrl2 = null;
+		String message2 = null;
+		String image2 = null;
+
+		// check for the top.login (where the login fields are present instead of a login link,
+		// but ignore it if container.login is set
+		boolean topLogin = Boolean.TRUE.toString().equalsIgnoreCase(ServerConfigurationService.getString("top.login"));
+		boolean containerLogin = Boolean.TRUE.toString().equalsIgnoreCase(ServerConfigurationService.getString("container.login"));
+		if (containerLogin) topLogin = false;
+
+		// if not logged in they get login
+		if (session.getUserId() == null)
+		{
+			// we don't need any of this if we are doing top login
+			if (!topLogin)
+			{
+				logInOutUrl += "/portal/login";
+				message = rb.getString("log.login");
+
+				// check for an image for the login
+				image1 = StringUtil.trimToNull(ServerConfigurationService.getString("login.icon"));
+
+				// check for a possible second, xlogin link
+				if (Boolean.TRUE.toString().equalsIgnoreCase(ServerConfigurationService.getString("xlogin.enabled")))
+				{
+					message2 = StringUtil.trimToNull(ServerConfigurationService.getString("xlogin.text"));
+					image2 = StringUtil.trimToNull(ServerConfigurationService.getString("xlogin.icon"));
+					logInOutUrl2 = "/portal/xlogin";
+				}
+			}
+		}
+
+		// if logged in they get logout
+		else
+		{
+			logInOutUrl += "/portal/logout";
+			message = rb.getString("sit.log");
+
+			// check for an image for the logout
+			image1 = StringUtil.trimToNull(ServerConfigurationService.getString("logout.icon"));
+
+			// since we are doing logout, cancel top.login
+			topLogin = false;
+		}
+
+		// put out the links version
+		if (!topLogin)
+		{
+			out.println("			<a href=\"" + logInOutUrl + "\" target=\"_parent\" alt=\"" + message + "\">"
+					+ ((image1 == null) ? message : "<img src=\"" + image1 + "\"/>") + "</a>");
+			if (logInOutUrl2 != null)
+			{
+				out.println("			<a href=\"" + logInOutUrl2 + "\" target=\"_parent\" alt=\"" + message2 + "\">"
+						+ ((image2 == null) ? message2 : "<img src=\"" + image2 + "\"/>") + "</a>");
+			}
+		}
+
+		// else put out the fields that will send to the login interface
+		else
+		{
+			// find the login tool
+			Tool loginTool = ToolManager.getTool("sakai.login");
+			String eidWording = null;
+			String pwWording = null;
+			if (loginTool != null)
+			{
+				eidWording = StringUtil.trimToNull(loginTool.getRegisteredConfig().getProperty("eid"));
+				pwWording = StringUtil.trimToNull(loginTool.getRegisteredConfig().getProperty("pw"));
+			}
+
+			if (eidWording == null) eidWording = "eid";
+			if (pwWording == null) pwWording = "pw";
+			String loginWording = rb.getString("log.login");
+
+			out.println("<form method=\"post\" action=\"/portal/xlogin\" enctype=\"application/x-www-form-urlencoded\" target=\"_parent\">");
+			out.println(eidWording + "<input name=\"eid\" id=\"eid\" type=\"text\" style =\"width: 10em\" />");
+			out.println(pwWording + "<input name=\"pw\" type=\"password\" style =\"width: 10em\" />");
+			out.println("<input name=\"submit\" type=\"submit\" id=\"submit\" value=\"" + loginWording + "\" /> </form>");
+
+			// setup for the redirect after login
+			session.setAttribute(Tool.HELPER_DONE_URL, ServerConfigurationService.getPortalUrl());
+		}
 	}
 
 	protected void includePage(PrintWriter out, HttpServletRequest req, SitePage page, String toolContextPath, String wrapperClass)
@@ -1154,11 +1228,11 @@ public class CharonPortal extends HttpServlet
 		}
 		if (type != null)
 		{
-			if	(type.equals("project"))
+			if (type.equals("project"))
 			{
 				out.println("<p id=\"siteType\">" + type + "</p>");
 			}
-		}	
+		}
 		if (iconUrl != null)
 		{
 			out.println("	<img src=\"" + iconUrl + "\" border=\"0\" />");
@@ -1169,7 +1243,7 @@ public class CharonPortal extends HttpServlet
 
 		// order the pages based on their tools and the tool order for the site type
 		List pages = site.getOrderedPages();
-		
+
 		for (Iterator i = pages.iterator(); i.hasNext();)
 		{
 			SitePage p = (SitePage) i.next();
@@ -1181,15 +1255,14 @@ public class CharonPortal extends HttpServlet
 			else
 			{
 				// show as option
-				out.println("			<li><a href=\"" + pageUrl + Web.escapeUrl(p.getId()) + "\">"
-						+ Web.escapeHtml(p.getTitle()) + "</a></li>");
+				out.println("			<li><a href=\"" + pageUrl + Web.escapeUrl(p.getId()) + "\">" + Web.escapeHtml(p.getTitle())
+						+ "</a></li>");
 			}
 		}
 
 		String helpUrl = ServerConfigurationService.getHelpUrl(null);
 		out.println("			<li>");
-		out.println("				<a href=\"javascript:;\" "
-				+ "onclick=\"window.open('" + helpUrl + "'"
+		out.println("				<a href=\"javascript:;\" " + "onclick=\"window.open('" + helpUrl + "'"
 				+ ",'Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\">Help</a>");
 		out.println("			</li>");
 
@@ -1256,9 +1329,9 @@ public class CharonPortal extends HttpServlet
 			boolean addLogout) throws IOException
 	{
 
-	    // for skinning
-	    String siteType = calcSiteType(siteId);
-	    
+		// for skinning
+		String siteType = calcSiteType(siteId);
+
 		// is the current site the end user's myWorkspace?
 		boolean curMyWorkspace = ((siteId == null) || (SiteService.isUserSite(siteId) && (SiteService.getSiteUserId(siteId)
 				.equals(session.getUserId()))));
@@ -1382,7 +1455,7 @@ public class CharonPortal extends HttpServlet
 		}
 
 		String cssClass = (siteType != null) ? "tabHolder " + siteType : "tabHolder";
-		out.println("<div class=\""+cssClass+"\">");
+		out.println("<div class=\"" + cssClass + "\">");
 		out.println("	<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">");
 		out.println("		<tr>");
 		out.println("			<td class=\"tabCell\">");
@@ -1458,7 +1531,7 @@ public class CharonPortal extends HttpServlet
 		out.println("		</tr>");
 		out.println("	</table>");
 		out.println("<div class=\"divColor\" id=\"tabBottom\"><br /></div></div>");
-		//Glenn -> needed to close things when not in gallery, and logged in (gsilver)
+		// Glenn -> needed to close things when not in gallery, and logged in (gsilver)
 		if (addLogout)
 		{
 		}
@@ -1471,11 +1544,11 @@ public class CharonPortal extends HttpServlet
 	protected void includeTool(PrintWriter out, HttpServletRequest req, ToolConfiguration placement) throws IOException
 	{
 		// Note: at present (sakai 2.0), we don't fully support aggregation - tools, such as
-		//       velocity based tools, might do some things to the response object to interfere
-		//       with subsequent tool use of the object. We will have to have more protective
-		//       response objects for each tool. For now, tools get forwarded, not included.
-		//       This means that Charon will cheat about placing the tool's initial (aggregated)
-		//       display; the title and main iframes. Varuna did, too! -ggolden
+		// velocity based tools, might do some things to the response object to interfere
+		// with subsequent tool use of the object. We will have to have more protective
+		// response objects for each tool. For now, tools get forwarded, not included.
+		// This means that Charon will cheat about placing the tool's initial (aggregated)
+		// display; the title and main iframes. Varuna did, too! -ggolden
 
 		// find the tool registered for this
 		ActiveTool tool = ActiveToolManager.getActiveTool(placement.getTool().getId());
@@ -1643,37 +1716,34 @@ public class CharonPortal extends HttpServlet
 	}
 
 	/**
-	 * Returns the type ("course", "project", "workspace", 
-	 * "mySpecialSiteType", etc) of the given site; 
-	 * special handling of returning "workspace" for user workspace sites.  
-	 * This method is tightly coupled to site skinning.
+	 * Returns the type ("course", "project", "workspace", "mySpecialSiteType", etc) of the given site; special handling of returning "workspace" for user workspace sites. This method is tightly coupled to site skinning.
 	 */
 	private String calcSiteType(String siteId)
 	{
-	    String siteType = null;
-	    if (siteId != null && siteId.length() != 0)
-	    {
-	        if (SiteService.isUserSite(siteId))
-	        {
-	           siteType = "workspace"; 
-	        }
-	        else
-	        {
-			    try
-		        {
-		           siteType = SiteService.getSite(siteId).getType();
-		        }
-		        catch (IdUnusedException ex)
-		        {
-		            // ignore, the site wasn't found
-		        }
-	        }
-	    }
-	    
-	    if (siteType != null && siteType.trim().length() == 0) siteType = null;
-	    return siteType;
+		String siteType = null;
+		if (siteId != null && siteId.length() != 0)
+		{
+			if (SiteService.isUserSite(siteId))
+			{
+				siteType = "workspace";
+			}
+			else
+			{
+				try
+				{
+					siteType = SiteService.getSite(siteId).getType();
+				}
+				catch (IdUnusedException ex)
+				{
+					// ignore, the site wasn't found
+				}
+			}
+		}
+
+		if (siteType != null && siteType.trim().length() == 0) siteType = null;
+		return siteType;
 	}
-	
+
 	/**
 	 * Find the site in the list that has this id - return the position.
 	 * 
@@ -1695,7 +1765,7 @@ public class CharonPortal extends HttpServlet
 		}
 
 		return -1;
-	}	
+	}
 }
 
 /**************************************************************************************************************************************************************************************************************************************************************

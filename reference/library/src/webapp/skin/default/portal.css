@@ -71,6 +71,8 @@ html>body #tabNavigation a,html>body #tabNavigation a:link,html>body #tabNavigat
 .mast-head td.right{text-align:right;white-space:nowrap;padding-right:15px}
 .mast-head td.right a,.mast-head .right a:visited{color:#084A87}
 .mast-head td.right a:hover{color:#000; text-decoration:none; }
+.mast-head td.right a img {margin-top:1.2em;border:none}
+.mast-head td.right form {margin-top:2em}
 /*since this skin is used as default - some definition for the login form elements*/
 input{
 	border:1px solid #90A1C6;
