@@ -173,13 +173,13 @@
 					#if ($item.isPlaintext()) 
 						<p class="shorttext"> 
 							<label for="content">&nbsp;</label>
-							<textarea name="content" id="content" rows="10" cols="40" wrap="virtual">$validator.escapeHtmlTextarea("$item.contentString")</textarea>
+							<textarea name="content" id="content" rows="10" cols="40" wrap="virtual">$validator.escapeHtmlTextarea("$!item.contentString")</textarea>
 						</p>
 					#elseif ($item.isHtml())
 						<p class="shorttext"> 
 							<label for="content">&nbsp;</label>
 							<table border="0"><tr><td>
-								<textarea name="content" id="content" rows="30" cols="80" wrap="virtual">$validator.escapeHtmlTextarea("$item.contentString")</textarea>
+								<textarea name="content" id="content" rows="30" cols="80" wrap="virtual">$validator.escapeHtmlTextarea("$!item.contentString")</textarea>
 								#chef_setupformattedtextarea("content")
 							</td></tr></table>
 						</p>

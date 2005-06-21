@@ -7541,101 +7541,104 @@ extends VelocityPortletPaneledAction
 			String url = contentService.getUrl(collectionId);
 			folder.setUrl(url);
 
-			// Get the collection members from the 'new' collection
-			List newMembers = collection.getMemberResources ();
 			
-			folder.setIsEmpty(newMembers.size() == 0);
-			
+			// folder.setIsEmpty(newMembers.size() == 0);
+			folder.setIsEmpty(false);			
 			folder.setDepth(depth);
-			
 			newItems.add(folder);
-						
-			Collections.sort (newMembers, new ContentHostingComparator (sortedBy, Boolean.valueOf (sortedAsc).booleanValue ()));
-			// loop thru the (possibly) new members and add to the list 
-			Iterator it = newMembers.iterator();
-			while(expandedCollections.containsKey (collectionId) && it.hasNext())
+			
+			if(expandedCollections.containsKey (collectionId))
 			{
-				Resource resource = (Resource) it.next();
-				ResourceProperties props = resource.getProperties();
-				
-				String itemId = resource.getId();
-				
-				boolean isCollection = false;
-				try
+				// Get the collection members from the 'new' collection
+				List newMembers = collection.getMemberResources ();
+							
+				Collections.sort (newMembers, new ContentHostingComparator (sortedBy, Boolean.valueOf (sortedAsc).booleanValue ()));
+				// loop thru the (possibly) new members and add to the list 
+				Iterator it = newMembers.iterator();
+				while(it.hasNext())
 				{
-					isCollection = props.getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION);
-				}
-				catch(EmptyException e)
-				{
-					// assume isCollection is false if property is not set
-				}
-				
-				if(isCollection)
-				{
-					ContentCollection subCollection = (ContentCollection) resource;
-					if (collection.getMemberResources().size() != 0)
-					{
-						// add all the items in the subfolder to newItems
-						newItems.addAll(getBrowseItems(itemId, expandedCollections, sortedBy, sortedAsc, folder, state));
-					}
-				}
-				else
-				{
-					String itemType = ((ContentResource)resource).getContentType();
-					String itemName = props.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
-					BrowseItem newItem = new BrowseItem(itemId, itemName, itemType);
-					newItem.setIsFolder(false);
+					Resource resource = (Resource) it.next();
+					ResourceProperties props = resource.getProperties();
 					
-					newItem.setContainer(collectionId);
+					String itemId = resource.getId();
 					
-					newItem.setCanDelete(canDelete);
-					newItem.setCanRevise(canRevise);
-					newItem.setCanRead(canRead);
-					newItem.setCanCopy(canRead);
-					newItem.setCanAddItem(canAddItem); // true means this user can add an item in the folder containing this item (used for "duplicate") 
-					
-					String cTime = "";
-					String creator = "";
-					String mTime = "";
-					String modifier = "";
+					boolean isCollection = false;
 					try
 					{
-						cTime = props.getTimeProperty(ResourceProperties.PROP_CREATION_DATE).toStringLocalShortDate();
-						creator = props.getUserProperty(ResourceProperties.PROP_CREATOR).getDisplayName();
-						mTime = props.getTimeProperty(ResourceProperties.PROP_MODIFIED_DATE).toStringLocalShortDate();
-						modifier = props.getUserProperty(ResourceProperties.PROP_MODIFIED_BY).getDisplayName();
+						isCollection = props.getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION);
 					}
 					catch(EmptyException e)
 					{
+						// assume isCollection is false if property is not set
 					}
-					newItem.setCreatedBy(creator);
-					newItem.setCreatedTime(cTime);
-					newItem.setModifiedBy(modifier);
-					newItem.setModifiedTime(mTime);
 					
-					String size = props.getPropertyFormatted(ResourceProperties.PROP_CONTENT_LENGTH);
-					newItem.setSize(size);
-					
-					String target = Validator.getResourceTarget(props);
-					newItem.setTarget(target);
-			
-					String newUrl = contentService.getUrl(itemId);
-					newItem.setUrl(newUrl);
-					
-					try
+					if(isCollection)
 					{
-						boolean copyrightAlert = props.getBooleanProperty(ResourceProperties.PROP_COPYRIGHT_ALERT);
-						newItem.setCopyrightAlert(copyrightAlert);
+						ContentCollection subCollection = (ContentCollection) resource;
+						if (collection.getMemberResources().size() != 0)
+						{
+							// add all the items in the subfolder to newItems
+							newItems.addAll(getBrowseItems(itemId, expandedCollections, sortedBy, sortedAsc, folder, state));
+						}
 					}
-					catch(EmptyException e)
-					{}
-					catch(TypeException e)
-					{}			
-					newItem.setDepth(depth + 1);
-					newItems.add(newItem);
+					else
+					{
+						String itemType = ((ContentResource)resource).getContentType();
+						String itemName = props.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+						BrowseItem newItem = new BrowseItem(itemId, itemName, itemType);
+						newItem.setIsFolder(false);
+						
+						newItem.setContainer(collectionId);
+						
+						newItem.setCanDelete(canDelete);
+						newItem.setCanRevise(canRevise);
+						newItem.setCanRead(canRead);
+						newItem.setCanCopy(canRead);
+						newItem.setCanAddItem(canAddItem); // true means this user can add an item in the folder containing this item (used for "duplicate") 
+						
+						String cTime = "";
+						String creator = "";
+						String mTime = "";
+						String modifier = "";
+						try
+						{
+							cTime = props.getTimeProperty(ResourceProperties.PROP_CREATION_DATE).toStringLocalShortDate();
+							creator = props.getUserProperty(ResourceProperties.PROP_CREATOR).getDisplayName();
+							mTime = props.getTimeProperty(ResourceProperties.PROP_MODIFIED_DATE).toStringLocalShortDate();
+							modifier = props.getUserProperty(ResourceProperties.PROP_MODIFIED_BY).getDisplayName();
+						}
+						catch(EmptyException e)
+						{
+						}
+						newItem.setCreatedBy(creator);
+						newItem.setCreatedTime(cTime);
+						newItem.setModifiedBy(modifier);
+						newItem.setModifiedTime(mTime);
+						
+						String size = props.getPropertyFormatted(ResourceProperties.PROP_CONTENT_LENGTH);
+						newItem.setSize(size);
+						
+						String target = Validator.getResourceTarget(props);
+						newItem.setTarget(target);
+				
+						String newUrl = contentService.getUrl(itemId);
+						newItem.setUrl(newUrl);
+						
+						try
+						{
+							boolean copyrightAlert = props.getBooleanProperty(ResourceProperties.PROP_COPYRIGHT_ALERT);
+							newItem.setCopyrightAlert(copyrightAlert);
+						}
+						catch(EmptyException e)
+						{}
+						catch(TypeException e)
+						{}			
+						newItem.setDepth(depth + 1);
+						newItems.add(newItem);
+					}
 				}
+				
 			}
-			
 			// return newItems;
 		}
 		catch (IdUnusedException e)
