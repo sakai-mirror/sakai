@@ -805,7 +805,7 @@ public class ThreadedDiscussionIIAction
 			if (channel!=null)
 			{			
 				allowNewTopic =channel.allowAddTopicMessage();
-				allowNewCategory = channel.allowAddMessage();
+				allowNewCategory = channel.allowAddTopicMessage();
 				allowViewContent = channel.allowGetMessages();
 			}			
 			else
