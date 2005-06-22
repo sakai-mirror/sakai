@@ -113,10 +113,10 @@ h5{font-size:100%;color:#084A87;font-weight:normal;margin:.5em 0;background-colo
 	border-width:1px;
 	border-color: #5A6D95 #90A1C6 #90A1C6 #5A6D95;
 	border-style: solid}
-.chefButtonRow input:active,.act input.active{border-width:1px;
+.chefButtonRow input:active,.act input.active{border-width:2px;
 	border-color: #444;
 	border-style: solid}
-.chefButtonRow input.active:hover, .act input.active:hover{border-width:1px;
+.chefButtonRow input.active:hover, .act input.active:hover{border-width:2px;
 	border-color: #5A6D95 #90A1C6 #90A1C6 #5A6D95;
 	border-style: solid}
 
