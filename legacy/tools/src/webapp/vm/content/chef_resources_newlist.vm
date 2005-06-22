@@ -1,5 +1,4 @@
-	## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/content/chef_resources_newlist.vm,v 1.12 2005/06/08 16:59:00 gsilver.umich.edu Exp $
-<!-- chef_resources_newlist.vm, use with org.chefproject.ContentListAction.java -->
+<!-- chef_resources_newlist.vm, version: $Revision:  $, use with org.sakaiproject.tool.content.ResourcesAction.java -->
 <script language="JavaScript" type="text/JavaScript">
 	<!--
 		function openCopyrightWindow(theURL,winName,winSettings) 
@@ -16,7 +15,8 @@
 			<div class="chefToolBarWrapForm">
 				#if(!$dropboxMode)
 					#set($itemsOnLine = 1)
-					<a href="#toolLink("ResourcesAction" "doShow_webdav")" title="$tlang.getString('dav.webdav')">$tlang.getString("dav.webdav")</a> #end 
+					<a href="#toolLink("ResourcesAction" "doShow_webdav")" title="$tlang.getString('dav.webdav')">$tlang.getString("dav.webdav")</a> 
+				#end 
 				#if("$!inMyWorkspace" == "false")
 					#if($itemsOnLine > 0)
 						|
@@ -255,223 +255,222 @@
 						#set ($margin="margin-left:2em")
 						#set ($marginAction="margin-left:4.7em")
 					#end
-				<tr>
-					######################  Item title and action links  ##############
-					<td headers="title" style="text-indent:$width">
-						#if ($member.isFolder())
-							#if ($member.isEmpty())
-								<span style="width:13px;"></span>
+					<tr>
+						######################  Item title and action links  ##############
+						<td headers="title" style="text-indent:$width">
+							#if ($member.isFolder())
+								#if ($member.isEmpty())
+									<span style="width:13px;"></span>
+								#else
+									#if (!$expandedCollections.containsKey($member.Id))
+										#if ($member.canRead())
+											<a href="#toolLink("ResourcesAction" "doExpand_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.open')">
+												##<img src = "#imageLink("sakai/expand.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.closed')" hspace="0" />
+											</a>
+										#else
+											##<img src = "#imageLink("sakai/expand.gif")" border="0" alt = "$tlang.getString('sh.closed')" hspace="0" />
+										#end
+									#else
+										<a href="#toolLink("ResourcesAction" "doCollapse_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.close')">
+											##<img src = "#imageLink("sakai/collapse.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.opened')" hspace="0" />
+										</a>
+									#end
+								#end
 							#else
-								#if (!$expandedCollections.containsKey($member.Id))
-									#if ($member.canRead())
-										<a href="#toolLink("ResourcesAction" "doExpand_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.open')">
-											##<img src = "#imageLink("sakai/expand.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.closed')" hspace="0" />
+								#if ($member.canRead())
+									#if ($member.hasCopyrightAlert())
+										## if there is a copyright alert, show the alert page first
+										<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false">
+										#else
+										<a href="${member.url}" target="${member.target}">
+									#end
+									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($member.type))" border= "0" alt ="" hspace="0" />
+									</a>
+								#else
+									 <img src = "#imageLink($contentTypeImageService.getContentTypeImage($member.type))" border="0" alt ="" hspace="0" />
+								#end
+							#end
+							#if ($member.isFolder())
+								#if ($member.canRead())
+									#if (!$expandedCollections.containsKey($member.Id))
+										<a href="#toolLink("ResourcesAction" "doExpand_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.open')">	
+											<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
 										</a>
 									#else
-										##<img src = "#imageLink("sakai/expand.gif")" border="0" alt = "$tlang.getString('sh.closed')" hspace="0" />
-									#end
+											<a href="#toolLink("ResourcesAction" "doCollapse_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.close')">
+											<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
+										</a>
+									#end	
+										<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=${validator.escapeUrl(${member.id})}" title="$tlang.getString('sh.go')">
+											$validator.escapeHtml(${member.name})
+										</a>
 								#else
-									<a href="#toolLink("ResourcesAction" "doCollapse_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.close')">
-										##<img src = "#imageLink("sakai/collapse.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.opened')" hspace="0" />
-									</a>
+									$validator.escapeHtml(${member.name})
 								#end
-							#end
-						#else
-							#if ($member.canRead())
-								#if ($member.hasCopyrightAlert())
-									## if there is a copyright alert, show the alert page first
-									<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false">
+								<div class="itemAction" style="margin-left:2.5em;">
+									#set ($itemsOnLine = 0)
+									####### deal with Pasting copied items  3
+									#if($copyFlag && $copyFlag.equals($TRUE) && $member.canAddItem())
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl($copiedItem)}&collectionId=${validator.escapeUrl(${member.id})}" title="$tlang.getString('list.paste1')">
+											$tlang.getString("list.paste1")
+										</a>
+									#end
+									####### deal with editing/viewing file/folder information
+									#if ($member.canRevise())
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doEdit")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.edit')">
+											$tlang.getString("list.edit")
+										</a>
+									#elseif ($member.canRead())
+									#if ($itemsOnLine > 0)
+										|
+									#end
+									#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.props')">
+											$tlang.getString("list.props")
+										</a>
+									#end
+									####### deal with deleting folder
+									#if ($member.canDelete())
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doDeleteconfirm")&from=list&selectedMembers=$validator.escapeUrl($member.id)" title="$tlang.getString('list.del')">
+											$tlang.getString("list.del")
+										</a>
+									#end								
+									####### deal with adding folder
+									#if($member.canAddFolder())
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doAdditem")&itemType=emptyFolder&collectionId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.folder')">
+											$tlang.getString("list.folder")
+										</a>
+									#end
+									####### deal with folder permissions
+									#if($member.canRevise() && "$!inMyWorkspace" == "false")
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doFolder_permissions")&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.fPerm')">
+											$tlang.getString("list.fPerm")
+										</a>
+									#end
+									####### deal with adding item
+									#if($member.canAddItem())
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doAdditem")&itemType=file&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.item')">
+											$tlang.getString("list.item")
+										</a>
+									#end
+								</div>
+							#else
+								#if ($member.canRead())
+									#if ($member.hasCopyrightAlert())
+										## if there is a copyright alert, show the alert page first
+										<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false;">
+											$validator.escapeHtml($member.name)
+										</a>
+										&#169;
 									#else
-									<a href="${member.url}" target="${member.target}">
-								#end
-								<img src = "#imageLink($contentTypeImageService.getContentTypeImage($member.type))" border= "0" alt ="" hspace="0" />
-								</a>
-							#else
-								 <img src = "#imageLink($contentTypeImageService.getContentTypeImage($member.type))" border="0" alt ="" hspace="0" />
-							#end
-						#end
-						#if ($member.isFolder())
-							#if ($member.canRead())
-								#if (!$expandedCollections.containsKey($member.Id))
-									<a href="#toolLink("ResourcesAction" "doExpand_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.open')">	
-										<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
-									</a>
+										<a href="$member.url" target="$member.target">
+											$validator.escapeHtml($member.name)
+										</a>
+									#end
 								#else
-										<a href="#toolLink("ResourcesAction" "doCollapse_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.close')">
-										<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
-									</a>
-								#end	
-									<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=${validator.escapeUrl(${member.id})}" title="$tlang.getString('sh.go')">
-										$validator.escapeHtml(${member.name})
-									</a>
-							#else
-								$validator.escapeHtml(${member.name})
+									$validator.escapeHtml($member.name)
+									#if ($member.hasCopyrightAlert())
+										&#169;
+									#end
+								#end
+								<div class="itemAction" 	style="margin-left:2em;">
+									#set ($itemsOnLine = 0)
+									####### deal with editing/viewing file/folder information
+									#if ($member.canRevise())
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doEdit")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.edit')">
+											$tlang.getString("list.edit")
+										</a>
+									#elseif ($member.canRead())
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.props')">
+											$tlang.getString("list.props")
+										</a>
+									#end
+									####### deal with copying item
+									#if ($paste_place_showing && $member.canRead())
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doCopyitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.item')">
+											$tlang.getString("list.copy")
+										</a>
+									#end
+									####### deal with deleting item
+									#if ($member.canDelete())
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doDeleteconfirm")&from=list&selectedMembers=$validator.escapeUrl($member.id)" title="$tlang.getString('list.del')">
+											$tlang.getString("list.del")
+										</a>
+									#end								
+		
+									####### deal with duplicating item
+									#if($member.canRead() && $member.canAddItem())
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
+										<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}" title="$tlang.getString('list.dup')">
+											$tlang.getString("list.dup")
+										</a>
+									#end
+								</div>
 							#end
-							<div class="itemAction" style="margin-left:2.5em;">
-								#set ($itemsOnLine = 0)
-								####### deal with Pasting copied items  3
-								#if($copyFlag && $copyFlag.equals($TRUE) && $member.canAddItem())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl($copiedItem)}&collectionId=${validator.escapeUrl(${member.id})}" title="$tlang.getString('list.paste1')">
-										$tlang.getString("list.paste1")
-									</a>
-								#end
-								####### deal with editing/viewing file/folder information
-								#if ($member.canRevise())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doEdit")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.edit')">
-										$tlang.getString("list.edit")
-									</a>
-								#elseif ($member.canRead())
-								#if ($itemsOnLine > 0)
-									|
-								#end
-								#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.props')">
-										$tlang.getString("list.props")
-									</a>
-								#end
-								####### deal with deleting folder
-								#if ($member.canDelete())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doDeleteconfirm")&from=list&selectedMembers=$validator.escapeUrl($member.id)" title="$tlang.getString('list.del')">
-										$tlang.getString("list.del")
-									</a>
-								#end								
-								####### deal with adding folder
-								#if($member.canAddFolder())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doAdditem")&itemType=emptyFolder&collectionId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.folder')">
-										$tlang.getString("list.folder")
-									</a>
-								#end
-								####### deal with folder permissions
-								#if($member.canRevise() && "$!inMyWorkspace" == "false")
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doFolder_permissions")&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.fPerm')">
-										$tlang.getString("list.fPerm")
-									</a>
-								#end
-								####### deal with adding item
-								#if($member.canAddItem())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doAdditem")&itemType=file&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.item')">
-										$tlang.getString("list.item")
-									</a>
-								#end
-							</div>
-						#else
-							#if ($member.canRead())
-								#if ($member.hasCopyrightAlert())
-									## if there is a copyright alert, show the alert page first
-									<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false;">
-										$validator.escapeHtml($member.name)
-									</a>
-									&#169;
-								#else
-									<a href="$member.url" target="$member.target">
-										$validator.escapeHtml($member.name)
-									</a>
-								#end
-							#else
-								$validator.escapeHtml($member.name)
-								#if ($member.hasCopyrightAlert())
-									&#169;
-								#end
+							#if($copyFlag && "${member.id}" == "$copiedItem")
+								<div class="inlineAlert">
+									$tlang.getString("list.copied")
+								</div>
 							#end
-							<div class="itemAction" 	style="margin-left:2em;">
-								#set ($itemsOnLine = 0)
-								####### deal with editing/viewing file/folder information
-								#if ($member.canRevise())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doEdit")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.edit')">
-										$tlang.getString("list.edit")
-									</a>
-								#elseif ($member.canRead())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.props')">
-										$tlang.getString("list.props")
-									</a>
-								#end
-								####### deal with copying item
-								#if ($paste_place_showing && $member.canRead())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doCopyitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.item')">
-										$tlang.getString("list.copy")
-									</a>
-								#end
-								####### deal with deleting item
-								#if ($member.canDelete())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doDeleteconfirm")&from=list&selectedMembers=$validator.escapeUrl($member.id)" title="$tlang.getString('list.del')">
-										$tlang.getString("list.del")
-									</a>
-								#end								
-	
-								####### deal with duplicating item
-								#if($member.canRead() && $member.canAddItem())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}" title="$tlang.getString('list.dup')">
-										$tlang.getString("list.dup")
-									</a>
-								#end
-							</div>
-						#end
-						#if($copyFlag && "${member.id}" == "$copiedItem")
-							<div class="inlineAlert">
-								$tlang.getString("list.copied")
-							</div>
-						#end
-					</td>
-					######################  Item Size  ##############
-					<td headers="size">
-						$member.size
-					</td>
-					######################  Item/folder creator  ##############
-					<td headers="creator">
-						$member.createdBy
-					</td>
-					######################  Item/folder modification date  ##############
-					<td headers="modified">
-						$member.ModifiedTime
-					</td>
-				</tr>
+						</td>
+						######################  Item Size  ##############
+						<td headers="size">
+							$member.size
+						</td>
+						######################  Item/folder creator  ##############
+						<td headers="creator">
+							$member.createdBy
+						</td>
+						######################  Item/folder modification date  ##############
+						<td headers="modified">
+							$member.ModifiedTime
+						</td>
+					</tr>
+				#end
 			#end
 		</table>
-		##what is this ending??? (gsilver)
-		#end
 	</form>						
 </div>
