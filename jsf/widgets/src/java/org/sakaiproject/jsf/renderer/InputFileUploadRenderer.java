@@ -222,6 +222,7 @@ public class InputFileUploadRenderer extends Renderer
         }
         else if ("size_limit_exceeded".equals(requestFilterStatus))
         {
+            // the user tried to upload too large a file
             return "The upload size limit of " + requestFilterUploadLimit + "MB has been exceeded.";
         }        
         else if (item != null && (item.getName() == null || "".equals(item.getName())))
