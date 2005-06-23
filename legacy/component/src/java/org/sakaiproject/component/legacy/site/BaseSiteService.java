@@ -724,6 +724,19 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// make this site a copy of other, but with new ids (not an exact copy)
 		((BaseSite) site).set((BaseSite) other, false);
 
+		// copy the realm (to get permissions settings)
+		try
+		{
+			Realm realm = RealmService.getRealm(other.getReference());
+			RealmEdit re = RealmService.addRealm(site.getReference(), realm);
+         re.removeUsers(); // just want permissions not users
+			RealmService.commitEdit(re);
+		}
+		catch(Exception e)
+		{
+			m_logger.warn(this + ".addSite(): error copying realm", e);
+		}
+
 		// clear the site's notification id in properties
 		site.getPropertiesEdit().removeProperty(ResourceProperties.PROP_SITE_EMAIL_NOTIFICATION_ID);
 
