@@ -1,6 +1,6 @@
 /*******************************************************************************
- * $URL$ 
- * $Id$
+ * $URL: https://source.sakaiproject.org/svn/trunk/sakai/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/InputFileUploadRenderer.java $ 
+ * $Id: InputFileUploadRenderer.java 189 2005-06-23 17:37:18Z janderse@umich.edu $
  * **********************************************************************************
  * 
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees
@@ -88,6 +88,7 @@ public class InputFileUploadRenderer extends Renderer
                 writeNullPassthroughAttributes, context, component);
         writer.endElement("input");
 
+        // comment
         // output hidden field that helps test that the filter is working right
         writer.startElement("input", null);
         writer.writeAttribute("type", "hidden", null);
@@ -171,8 +172,6 @@ public class InputFileUploadRenderer extends Renderer
     {
         ExternalContext external = context.getExternalContext();
         HttpServletRequest request = (HttpServletRequest) external.getRequest();
-        // TODO: Make this a tag attribute
-        boolean usingSakaiFilter = true;
 
         // check form structure
         UIForm form = getForm(component);
