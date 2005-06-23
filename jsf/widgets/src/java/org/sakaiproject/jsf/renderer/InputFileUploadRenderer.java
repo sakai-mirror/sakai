@@ -1,6 +1,6 @@
 /*******************************************************************************
- * $URL: https://source.sakaiproject.org/svn/trunk/sakai/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/InputFileUploadRenderer.java $ 
- * $Id: InputFileUploadRenderer.java 189 2005-06-23 17:37:18Z janderse@umich.edu $
+ * $URL$ 
+ * $Id$
  * **********************************************************************************
  * 
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees
@@ -88,7 +88,7 @@ public class InputFileUploadRenderer extends Renderer
                 writeNullPassthroughAttributes, context, component);
         writer.endElement("input");
 
-        // comment
+        // another comment
         // output hidden field that helps test that the filter is working right
         writer.startElement("input", null);
         writer.writeAttribute("type", "hidden", null);
