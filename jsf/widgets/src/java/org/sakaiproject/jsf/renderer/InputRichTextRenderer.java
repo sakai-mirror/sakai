@@ -73,6 +73,9 @@ public class InputRichTextRenderer extends Renderer
   private static final String TOOLBAR_SCRIPT_NONE;
   private static final String TOOLBAR_SCRIPT_SMALL;
   private static final String TOOLBAR_SCRIPT_MEDIUM;
+  
+  
+  
   private static final String TOOLBAR_SCRIPT_LARGE;
   private static final int DEFAULT_WIDTH_PX;
   private static final int DEFAULT_HEIGHT_PX;
