@@ -119,6 +119,7 @@ public class InputFileUploadRenderer extends Renderer
             return;
         }
 
+        // get the file item
         FileItem item = getFileItem(context, component);
         
         if (item.getName() == null || item.getName().length() == 0)
@@ -225,10 +226,8 @@ public class InputFileUploadRenderer extends Renderer
         }        
         else if (item != null && (item.getName() == null || "".equals(item.getName())))
         {
-            // TODO: What to do in this case?  the form was submitted without a file.  
-            return null;
-            //return "USER ERROR: No filename?";
-        }
+             return null;
+         }
         else if (item != null && item.getSize() == 0)
         {
             return "The filename '"+item.getName()+"' is invalid.  Please select a valid file.";
