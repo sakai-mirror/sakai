@@ -481,6 +481,11 @@ public class SiteAction extends PagedResourceActionII
   private static final String CLASSIC_ZIP_FILE_NAME="classicZipFileName" ;
   private static final String SESSION_CONTEXT_ID="sessionContextId";
   
+  	// page size for worksite setup tool
+  	private static final String STATE_PAGESIZE_SITESETUP = "state_pagesize_sitesetup";
+  	// page size for site info tool
+  	private static final String STATE_PAGESIZE_SITEINFO = "state_pagesize_siteinfo";
+  
 	/**
 	* Populate the state object, if needed.
 	*/
@@ -1418,12 +1423,6 @@ public class SiteAction extends PagedResourceActionII
 				/*  buildContextForTemplate chef_site-siteInfo-list.vm
 				* 
 				*/
-				if (state.getAttribute(SITEINFO_FIRST_USE) == null)
-				{
-					// when first entered Site Info, set the participant list size to 200 as default
-					state.setAttribute(STATE_PAGESIZE, new Integer(200));
-					state.setAttribute(SITEINFO_FIRST_USE, Boolean.FALSE);
-				}
 				try
 				{
 					site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
@@ -4193,6 +4192,27 @@ public class SiteAction extends PagedResourceActionII
 			state.setAttribute (SORTED_ASC, Boolean.TRUE.toString());
 		}
 		
+		if (((String) state.getAttribute(STATE_SITE_MODE)).equalsIgnoreCase(SITE_MODE_SITESETUP))
+		{
+			state.setAttribute(STATE_PAGESIZE_SITESETUP, state.getAttribute(STATE_PAGESIZE));
+		}
+		
+		if (state.getAttribute(SITEINFO_FIRST_USE) == null)
+		{	
+			// when first entered Site Info, set the participant list size to 200 as default
+			state.setAttribute(STATE_PAGESIZE, new Integer(200));
+			state.setAttribute(SITEINFO_FIRST_USE, Boolean.FALSE);
+		}
+		else
+		{
+			//restore the page size in site info tool
+			if (state.getAttribute(STATE_PAGESIZE_SITEINFO) != null)
+			{
+				state.setAttribute(STATE_PAGESIZE, state.getAttribute(STATE_PAGESIZE_SITEINFO));
+				state.removeAttribute(STATE_PAGESIZE_SITEINFO);
+			}
+		}
+		
 	} // doGet_site
 	
 	/**
@@ -5601,6 +5621,16 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		cleanState(state);
 		setupFormNamesAndConstants(state);
+		
+		state.setAttribute(STATE_PAGESIZE_SITEINFO, state.getAttribute(STATE_PAGESIZE));
+		
+		//restore the page size for Worksite setup tool
+		if (state.getAttribute(STATE_PAGESIZE_SITESETUP) != null)
+		{
+			state.setAttribute(STATE_PAGESIZE, state.getAttribute(STATE_PAGESIZE_SITESETUP));
+			state.removeAttribute(STATE_PAGESIZE_SITESETUP);
+		}
+		
 		state.setAttribute(STATE_TEMPLATE_INDEX, "0");
 
 	}	// doBack_to_list
@@ -6392,7 +6422,7 @@ public class SiteAction extends PagedResourceActionII
 		state.removeAttribute(STATE_SELECTED_USER_LIST);
 		state.removeAttribute(STATE_SITE_TYPE);
 		state.removeAttribute(STATE_SITE_INSTANCE);
-					 
+		
 		state.setAttribute(STATE_TEMPLATE_INDEX, "0");
 	
 	} // doBack_to_site_list
