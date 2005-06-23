@@ -5,9 +5,9 @@
 		<td class="title">
 ## include the home link if desired
 			#if($includeReset)
-				<a href="#toolLink("$action" "doReset")" title="$tlang.getString('tit.reset')"><img src="#imageLink("transparent.gif")" alt="$tlang.getString('tit.reset')" border="1"></a> $title
+				<a href="#toolLink("$action" "doReset")" title="$validator.escapeHtml($tlang.getString('tit.reset'))"><img src="#imageLink("transparent.gif")" alt="$tlang.getString('tit.reset')" border="1"></a> $validator.escapeHtml($title)
 			#else
-				$title
+				$validator.escapeHtml($title)
 			#end
 		</td>
 		<td class="action">
