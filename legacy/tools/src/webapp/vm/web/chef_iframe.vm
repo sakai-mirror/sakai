@@ -6,7 +6,7 @@
 #end
 	#if($menu) 
 		<div class="chefToolBarWrap">
-			<a href="#" title="$title" onclick="location = '#toolLink("$action" "doOptions")';return false;">
+			<a href="#" title="$validator.escapeHtml($title)" onclick="location = '#toolLink("$action" "doOptions")';return false;">
 			$tlang.getString("gen.options") </a>
 		</div>
 	#end
