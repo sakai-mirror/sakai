@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/util/RendererUtil.java,v 1.3 2005/05/10 03:32:09 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -42,16 +41,14 @@ import javax.faces.model.SelectItem;
 
 /**
  * <p>Place for common utilities for renderers </p>
- * <p>
- * </p>
- * <p>Copyright: Copyright (c) 2004 Sakai</p>
- * @author Ed Smiley esmiley@stanford.edu
- * @version $Id$
  */
 
 public class RendererUtil
 {
 
+  /** This class is meant for static use only */
+  private RendererUtil() {} 
+    
   /**
    * Sets component attribute value - if a ValueBinding exists for that
    * attribute, set through the binding; otherwise, set the value directly on the component.
@@ -180,29 +177,30 @@ public class RendererUtil
   }
 
   /**
-  * write HTML passthough attributes
-  * @param context
-  * @param component
-  * @param writer
-  * @throws IOException
+   * Write default HTML passthrough attributes
+   */
+  public static void writePassthroughs(FacesContext context, UIComponent component)
+  	throws IOException
+  {
+      String[] passthrus = {"ondblclick", "onclick", "onkeydown", "onkeypress",
+              "onkeyup", "onmousedown", "onmousemove", "onmouseout", "onmouseover",
+              "onmouseup"};
+      writePassthroughAttributes(passthrus, true, context, component);
+  }
+  /**
+  * write passthough attributes on the current element
   */
-  public void writePassthroughs(FacesContext context, UIComponent component)
+  public static void writePassthroughAttributes(String[] passthrus, boolean writeNullAttrs, FacesContext context, UIComponent component)
       throws IOException
   {
-    String[] passthrus = {"ondblclick", "onclick", "onkeydown", "onkeypress",
-      "onkeyup", "onmousedown", "onmousemove", "onmouseout", "onmouseover",
-      "onmouseup"};
-    HashMap map = new HashMap();
+    ResponseWriter writer = context.getResponseWriter();
     for (int i = 0; i < passthrus.length; i++)
     {
       String key = passthrus[i];
       String value = (String) getAttribute(context, component, key);
-      if (value != null && value != "")
-      {
-        map.put(key, value);
-      }
+      if (writeNullAttrs && value == null) value = "";
+      if (value != null) writer.writeAttribute(key, value, null);
     }
-    writeAttributes(map, context);
   }
 
 
@@ -229,7 +227,7 @@ public class RendererUtil
    * @param component the UIComponent
    * @throws IOException
    */
-  public void writeAttributes(Map attributeMap, FacesContext context)
+  public static void writeAttributes(Map attributeMap, FacesContext context)
       throws IOException
   {
     ResponseWriter writer = context.getResponseWriter();
@@ -249,7 +247,7 @@ public class RendererUtil
    * @param scriptPath the webapp-relative path
    * @throws IOException
    */
-  public void writeSmartExternalScripts(FacesContext context,
+  public static void writeSmartExternalScripts(FacesContext context,
       String gateKey, String gateValue, String contextBasePath,
       String[] scriptPaths) throws  IOException
   {
@@ -271,7 +269,7 @@ public class RendererUtil
    * @param scriptPath the webapp-relative path
    * @throws IOException
    */
-  public void writeSmartExternalScripts(ResponseWriter writer,
+  public static void writeSmartExternalScripts(ResponseWriter writer,
     String gateKey, String gateValue, String contextBasePath,
     String[] scriptPaths) throws IOException
   {

@@ -546,20 +546,304 @@
     <name>inputFileUpload</name>
     <tag-class>org.sakaiproject.jsf.tag.InputFileUploadTag</tag-class>
     <body-content>JSP</body-content>
-    <description>Widget that allows the user to upload a file.</description>
+    <description>
+    Widget that allows the user to upload a file.  The uploaded
+    file is available through the value of the component, through the FileItem
+    interface.  See the Apache commons-fileupload 1.0 API for details at
+    http://jakarta.apache.org/commons/fileupload/.  The recommended use of this 
+    widget is to use the valueChangeListener attribute to call a method that 
+    will process the uploaded file.  The uploaded file is NOT persisted to 
+    storage automatically; the application is responsible for that, not the 
+    widget.  
+    
+    The widget needs a filter configured in web.xml.  The Sakai
+    RequestFilter is recommended; however, a custom filter is permissable.
+    The widget is compatible with the MyFaces filter ("extensionsFilter") as an alternative.
+    A custom filter must expose the uploaded file though the commons-fileupload 1.0
+    FileItem interface, in one of two ways.  It must be made available 
+    either as a request attribute with the 
+    field name, and would be accessible as follows:
+    FileItem item = (FileItem) request.getAttribute(fieldName);
+    OR as a method on a request wrapper with the following signature:
+    public org.apache.commons.fileupload.FileItem getFileItem(String fieldName)
+     </description>
 
     <attribute>
       <name>value</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
+      <description>
+          The current value of this component.  If the "directory" attribute is not
+          used, the value of the component is the uploaded FileItem.  If the "directory"
+          attribute is used, the value of the component is the server-side absolute
+          path to the uploaded file.
+      </description>
     </attribute>
 
     <attribute>
-      <name>target</name>
+      <name>directory</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
+      <description>
+          If present, the directory to which to persist uploaded files.  Use of this 
+          attribute is discouraged.  If this attribute is used, a tool which contains
+          the inputFileUpload tag will not
+          be cluster-safe since different application servers probably do not share 
+          the same filesystem.  If a file already exists and another file of the same
+          name is uploaded, the existing file will be overwritten.
+      </description>
+    </attribute> 
+    
+    <attribute>
+      <name>valueChangeListener</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          This is the recommended way to access the uploaded file.  The valueChangeListener
+          will be called when a file is uploaded.MethodBinding representing a value change 
+          listener method that will be
+          notified when a new value has been set for this input component.  The
+          expression must evaluate to a public method that takes a
+          ValueChangeEvent parameter, with a return type of void.
+      </description>
     </attribute>
-  </tag>
+
+    <attribute>
+      <name>style</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          CSS style(s) to be applied to the underlying input tag when it is rendered.
+      </description>
+    </attribute>
+    <attribute>
+      <name>styleClass</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Space-separated list of CSS style class(es) to be applied when
+          the underlying input tag is rendered.  This value must be passed through
+          as the "class" attribute on generated markup.
+      </description>
+    </attribute>
+
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          The component identifier for this component.  This value must be
+          unique within the closest parent component that is a naming
+          container.
+      </description>
+   </attribute>
+
+    <attribute>
+      <name>binding</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+      </description>
+    </attribute>
+
+   <attribute>
+      <name>rendered</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Flag indicating whether or not this component should be rendered
+          (during Render Response Phase), or processed on any subsequent
+          form submit.
+      </description>
+    </attribute>
+    
+   <attribute>
+      <name>immediate</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Flag indicating that this component's value must be
+          converted and validated immediately (that is, during
+          Apply Request Values phase), rather than waiting
+          until Process Validations phase.
+      </description>
+   </attribute>
+   
+    <attribute>
+      <name>required</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Flag indicating that the user is required to provide a submitted
+          value for this input component.
+      </description>
+    </attribute>
+
+    <attribute>
+      <name>validator</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          MethodBinding representing a validator method that will be called
+          during Process Validations to perform correctness checks on the
+          value of this component.  The expression must evaluate to a public
+          method that takes FacesContext, UIComponent, and Object parameters,
+          with a return type of void.
+      </description>
+    </attribute>
+    
+    <attribute>
+      <name>accept</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Pass-through attribute.  Will be output as-is on the underlying input element.
+      </description>
+    </attribute>
+
+    <attribute>
+      <name>align</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Pass-through attribute.  Will be output as-is on the underlying input element.
+      </description>
+    </attribute>
+    
+    <attribute>
+      <name>accesskey</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Pass-through attribute.  Will be output as-is on the underlying input element.
+      </description>
+    </attribute>
+    
+    <attribute>
+      <name>maxlength</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Pass-through attribute.  Will be output as-is on the underlying input element.
+      </description>
+    </attribute>
+    
+    <attribute>
+      <name>size</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Pass-through attribute.  Will be output as-is on the underlying input element.
+      </description>
+    </attribute>
+    
+<!-- 
+    <attribute>
+      <name>dir</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Direction indication for text that does not inherit directionality.
+          Valid values are "LTR" (left-to-right) and "RTL" (right-to-left).
+      </description>
+    </attribute>
+-->
+    <attribute>
+      <name>disabled</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Pass-through attribute.  Will be output as-is on the underlying input element.
+      </description>
+    </attribute>
+<!-- 
+    <attribute>
+      <name>lang</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Code describing the language used in the generated markup
+          for this component.
+      </description>
+    </attribute>
+-->
+    <attribute>
+      <name>readonly</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Pass-through attribute.  Will be output as-is on the underlying input element.
+      </description>
+    </attribute>
+    <attribute>
+      <name>tabindex</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Pass-through attribute.  Will be output as-is on the underlying input element.
+      </description>
+    </attribute>
+<!-- 
+    <attribute>
+      <name>title</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+          Advisory title information about markup elements generated
+          for this component.
+      </description>
+    </attribute>
+-->
+	<example>
+    <![CDATA[
+    In myfile.jsf:
+    <f:view>
+      <h:form enctype="multipart/form-data">   
+         <sakaix:inputFileUpload valueChangeListener="#{examplebean.processFileUpload}" />
+         <h:commandButton value="Upload" type="submit" />
+      </h:form>
+    </f:view>
+    
+    In web.xml:
+    <filter>
+        <filter-name>sakai.request</filter-name>
+        <filter-class>org.sakaiproject.util.RequestFilter</filter-class>
+         <init-param>
+        	<param-name>upload.enabled</param-name>
+        	<param-value>true</param-value>
+        </init-param>
+    </filter>
+    
+    In ExampleBean.java:
+         public void processFileUpload(ValueChangeEvent event) throws AbortProcessingException
+         {
+             try
+             {
+                 FileItem item = (FileItem) event.getNewValue();
+	             String fieldName = item.getFieldName();
+	             String fileName = item.getName();
+	             long fileSize = item.getSize();
+	             System.out.println("processFileUpload(): item: " + item + " fieldname: " + fieldName + " filename: " + fileName + " length: " + fileSize);
+	        
+	             // Read the file as a stream (may be more memory-efficient)
+	             InputStream fileAsStream = item.getInputStream();
+ 
+	             // OR INSTEAD read the contents as a byte array (probably less memory-efficient)
+	             byte[] fileContents = item.get();
+	        
+	             // now process the file.  Do application-specific processing
+	             // such as parsing the file, storing it in the database,
+	             // or whatever needs to happen with the uploaded file.
+             }
+             catch (Exception ex)
+             {
+                 // handle exception
+             }
+         }
+    ]]>
+    </example>
+
+  </tag> 
 
   <tag>
     <name>pager</name>

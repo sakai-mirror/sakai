@@ -9,36 +9,58 @@
 <h2>inputFileUpload example</h2>
 <hr />
 
- <h:form id="uploadForm" enctype="multipart/form-data">
-   <%--
-        target represents location where import will be temporarily stored
-        check valueChangeListener for final destination
-   --%>
-   <h:outputText value="Upload: " />
-   <%-- todo: set up backing bean --%>
-   <sakaix:inputFileUpload target="/jsf/upload_tmp/myapplication"
-       valueChangeListener="#{examplebean.listenForUpload}" />
-   <h:commandButton value="Upload" type="submit"
-         style="act" />
+<h:form enctype="multipart/form-data">   
+   
+   <%-- <sakaix:inputFileUpload id="plainVanillaNoOptions" /><h:message for="plainVanillaNoOptions" styleClass="validationEmbedded" /> --%>
+   
+   <h:outputText value=" * " />
+   <sakaix:inputFileUpload id="itsRequired"
+       valueChangeListener="#{examplebean.processFileUpload}"
+       required="true"
+   />
+   <h:message for="itsRequired" styleClass="validationEmbedded" />
+   <br />   
+
+   <h:outputText value="Lots of options: " />
+   <sakaix:inputFileUpload id="everything"
+       valueChangeListener="#{examplebean.processFileUpload}"
+       accesskey="u"
+        maxlength="18"
+       size="20"
+       tabindex="5"
+       style="color: red"
+       styleClass="myCssClass"
+       directory="/teemp"
+       required="false"
+   />
+   <h:message for="everything" styleClass="validationEmbedded" />
+   <br />
+   
+   <h:commandButton value="Upload" type="submit" style="act" />
+<%--
+   <br />
+    <sakaix:pager totalItems="92" pageSize="20" textItem="students" renderPageSize="false" />   
+    <br />
+--%>
+</h:form>
+
+ <br />  
+    <h:outputText value="No form test: " />
+    <sakaix:inputFileUpload id="noform" /><h:message for="noform" styleClass="validationEmbedded" />
+
+ <h:form enctype="incorrect/mime-type">
+   <h:outputText value="Wrong enctype test: " />
+   <sakaix:inputFileUpload id="wrongFormEncType" /><h:message for="wrongFormEncType" styleClass="validationEmbedded" />
+ </h:form>
+ <br />
+ 
+ <h:form enctype="multipart/form-data">
+   <h:outputText value="Bad directory test: " />
+   <sakaix:inputFileUpload id="badDirectory" directory="/bad_directory/foobar/" /><h:message for="badDirectory" styleClass="validationEmbedded" />
+   <br />
  </h:form>
 
-<hr />
-<h3>inputFileUpload usage:</h3>
-<pre>
-<font color="#000000"> &lt;</font><font color="#800080">h:form</font><font color="#000000"> </font><font color="#800000">id</font><font color="#000000">=</font><font color="#0000ff">"uploadForm"</font><font color="#000000"> </font><font color="#800000">enctype</font><font color="#000000">=</font><font color="#0000ff">"multipart/form-data"</font><font color="#000000">&gt;
-     </font><font color="#008000">&lt;%--
-          target represents location where import will be temporarily stored
-          check valueChangeListener for final destination
-     --%&gt;</font><font color="#000000">
-   &lt;</font><font color="#800080">h:outputText</font><font color="#000000"> </font><font color="#800000">value</font><font color="#000000">=</font><font color="#0000ff">"Upload: "</font><font color="#000000"> /&gt;
-   &lt;</font><font color="#800080">sakaix:inputFileUpload</font><font color="#000000"> </font><font color="#800000">target</font><font color="#000000">=</font><font color="#0000ff">"/jsf/upload_tmp/myapplication"</font><font color="#000000">
-       </font><font color="#800000">valueChangeListener</font><font color="#000000">=</font><font color="#0000ff">"#{myHandler.myMethod}"</font><font color="#000000"> /&gt;
-   &lt;</font><font color="#800080">h:commandButton</font><font color="#000000"> </font><font color="#800000">value</font><font color="#000000">=</font><font color="#0000ff">"Upload"</font><font color="#000000"> </font><font color="#800000">type</font><font color="#000000">=</font><font color="#0000ff">"submit"</font><font color="#000000">
-         </font><font color="#800000">style</font><font color="#000000">=</font><font color="#0000ff">"act"</font><font color="#000000"> /&gt;
- &lt;</font><font color="#800080">/h:form</font><font color="#000000">&gt;
-</font>
-</pre>
-<hr />
+ <h:outputText value=" * Required" />
 
 </sakaix:view>
 </f:view>
