@@ -351,11 +351,9 @@
 						$role.Id
 					</td>
 					<td>
-						<div class="instruction">
 							#set($description = "")
 							#set($description = $role.Description)
 							$validator.escapeHtml($!description)
-						</div>
 					</td>
 				</tr>
 			#end
