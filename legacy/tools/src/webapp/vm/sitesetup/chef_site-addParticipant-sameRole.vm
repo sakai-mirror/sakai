@@ -5,7 +5,7 @@
 		<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
 		<div style="display:block;clear:both"></div>
 	#end
-	<h3 class="insColor insBak insBor">
+	<h3>
 		$tlang.getString("adddif.choose")
 	</h3>
 	<p class="instruction">
@@ -15,24 +15,28 @@
 		<h4 class="insColor insBak insBor">
 			$tlang.getString("addsame.roles")
 		</h4>
-		#foreach ($role in $roles)
-			<p class="checkbox indnt1">
-				<input type="radio" name="selectRole" id="selectRole_$role.Id" value="$role.Id"
-					#if($form_selectedRole == $role.Id)
-						checked="checked"
-					#end
-				/>
-				<label for="selectRole_$role.Id">
-					$role.Id
-				</label>	
-				<span class="instruction indnt2">
-					#set($description = "")
-					#set($description = $role.Description)
-					$!description
-				</span>
-			</p>
-		#end
-           	<h4 class="insColor insBak insBor">
+		<table border="0" class="listHier">
+			#foreach ($role in $roles)
+				<tr>
+					<td style="white-space:nowrap">
+							<input type="radio" name="selectRole" id="selectRole_$role.Id" value="$role.Id"
+							#if($form_selectedRole == $role.Id)
+								checked="checked"
+							#end
+						/>
+						<label for="selectRole_$role.Id">
+							$role.Id
+						</label>
+					</td>
+					<td>
+						#set($description = "")
+						#set($description = $role.Description)
+						$!description
+					</td>	
+				</tr>	
+			#end
+		</table>
+           	<h4>
 			$tlang.getString("addsame.participants")
 		</h4>	
 		<ul class="attachList indnt1">
