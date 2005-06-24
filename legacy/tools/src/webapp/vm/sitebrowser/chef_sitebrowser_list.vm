@@ -30,60 +30,58 @@
 	</div>
 	*#
 	<div class="chefToolBarWrapForm">
-	<a href="#" onclick="location='#toolLink("$action" "doShow_simple_search")';return false;" title ="Search">$tlang.getString("list.search")</a>
+		<a href="#" onclick="location='#toolLink("$action" "doShow_simple_search")';return false;" title ="Search">$tlang.getString("list.search")</a>
 	</div>
-	
 	<h3 class="insColor insBak insBor">$tlang.getString("list.results")</h3>
-		
-#if ($sites.size() > 0)
-
- 	<p>
-    <span class="leftNav">
-    	#if ("$!siteType" == "") #set($siteType="Any") #end
-
-    	#if ($termSelection)
-        $allMsgNumber $tlang.getString("list.sites") "$siteType" $tlang.getString("list.type2") "$!searchText" $tlang.getString("list.text") "$termSelection" $tlang.getString("list.aca")    	
-	#else
-        $allMsgNumber $tlang.getString("list.sites") "$siteType" $tlang.getString("list.type1") "$!searchText".
-		
-	#end
-    </span>
-    <span class="rightNav">
-        <span class="instruction">$tlang.getString("list.view") $topMsgPos - $btmMsgPos $tlang.getString("list.of") $allMsgNumber $tlang.getString("list.items")</span>
-        <br />
-        #if ($pagesize != 0)
-			#if ($goPPButton == "true")
-				<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
-				<input type="submit" name="eventSubmit_doList_prev" value="$tlang.getString("list.previous") $pagesize" />
+	#if ($sites.size() > 0)
+		<p>
+			<span class="leftNav">
+				#if ("$!siteType" == "") #set($siteType="Any") #end
+					#if ($termSelection)
+						$allMsgNumber $tlang.getString("list.sites") "$siteType" $tlang.getString("list.type2") "$!searchText" $tlang.getString("list.text") "$termSelection" $tlang.getString("list.aca")    	
+					#else
+						$allMsgNumber $tlang.getString("list.sites") "$siteType" $tlang.getString("list.type1") "$!searchText".
+					#end
+			</span>
+			<span class="rightNav">
+				<span class="instruction">$tlang.getString("list.view") $topMsgPos - $btmMsgPos $tlang.getString("list.of") $allMsgNumber $tlang.getString("list.items")</span>
+				#if ($pagesize != 0)
+					#if ($goPPButton == "true")
+						<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<input type="submit" name="eventSubmit_doList_prev" value="$tlang.getString("list.previous") $pagesize" />
+						</form>
+					#else
+						<input type="submit" name="eventSubmit_doList_prev" value="$tlang.getString("list.previous") $pagesize"  disabled="disabled" />
+					#end
+				#end
+			
+				<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
+					<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
+						<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+							<option value="5" #if($pagesize == 5) selected="selected" #end>$tlang.getString("list.show1")</option>
+							<option value="10" #if($pagesize == 10) selected="selected" #end>$tlang.getString("list.show2")</option>
+							<option value="20" #if($pagesize == 20) selected="selected" #end>$tlang.getString("list.show3")</option>
+							<option value="50" #if($pagesize == 50) selected="selected" #end>$tlang.getString("list.show4")</option>
+							<option value="100" #if($pagesize == 100) selected="selected" #end>$tlang.getString("list.show5")</option>
+							<option value="200" #if($pagesize == 200) selected="selected" #end>$tlang.getString("list.show6")</option>
+						</select>
 				</form>
-			#end
-		#end
-		
-		<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
-		<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
-		<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
-		<option value="5" #if($pagesize == 5) selected="selected" #end>$tlang.getString("list.show1")</option>
-		<option value="10" #if($pagesize == 10) selected="selected" #end>$tlang.getString("list.show2")</option>
-		<option value="20" #if($pagesize == 20) selected="selected" #end>$tlang.getString("list.show3")</option>
-		<option value="50" #if($pagesize == 50) selected="selected" #end>$tlang.getString("list.show4")</option>
-		<option value="100" #if($pagesize == 100) selected="selected" #end>$tlang.getString("list.show5")</option>
-		<option value="200" #if($pagesize == 200) selected="selected" #end>$tlang.getString("list.show6")</option>
-		</select>
-		</form>
-		
-		#if ($pagesize != 0)
-			#if ($goNPButton == "true")
-				<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
-				<input type="submit" name="eventSubmit_doList_next" value="$tlang.getString("list.next") $pagesize" />
-				</form>
-			#end
-		#end
-        <br />
-	</span>
-    </p>
+				
+				#if ($pagesize != 0)
+					#if ($goNPButton == "true")
+						<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+						<input type="submit" name="eventSubmit_doList_next" value="$tlang.getString("list.next") $pagesize" />
+						</form>
+					#else
+							<input type="submit" name="eventSubmit_doList_next" value="$tlang.getString("list.next") $pagesize" disabled="disabled" />
+					#end
+				#end
+				<br />
+			</span>
+		</p>
 
 	#set ($siteCount = 0)
-		<table summary ="List of Sites" class="listHier">
+		<table summary ="List of Sites" class="listHier" cellspacing="0" cellpadding="0">
 		
 			<tr>
 				<th scope="col" id="Title">$tlang.getString("list.work")</th>

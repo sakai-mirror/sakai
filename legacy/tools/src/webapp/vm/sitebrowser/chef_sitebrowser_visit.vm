@@ -13,14 +13,18 @@
 	<p class="nav">
 	#if ($prevSite)
 		<a href="#" onclick="location = '#toolLink("$action" "doNavigate_to_site")&newSiteId=$prevSite.Id';return false;">
-		<input type="button" value="$tlang.getString('vi.prev') $validator.escapeHtml($prevSite.Title)" class="button" />
-		</a>
+			<input type="button" value="&lt; $tlang.getString('list.previous')" title="$tlang.getString('vi.prev') $validator.escapeHtml($prevSite.Title)" class="button" />
+			</a>
+	#else
+		<input type="button" value="&lt; $tlang.getString('list.previous')" class="button" disabled="disabled" />	
 	#end
 	<input type="submit" name="eventSubmit_doBack" value="$tlang.getString("vi.ret")" />
 	#if ($nextSite)
 		<a href="#" onclick="location = '#toolLink("$action" "doNavigate_to_site")&newSiteId=$nextSite.Id';return false;">
-		<input type="button" value="$tlang.getString('vi.next') $validator.escapeHtml($nextSite.Title)" class="button" />
+			<input type="button" value="$tlang.getString('list.next') &gt;" title="$tlang.getString('vi.next') $validator.escapeHtml($nextSite.Title)"  class="button" />
 		</a>
+	#else	
+		<input type="button" value="$tlang.getString('list.next') &gt;" title="$tlang.getString('vi.next') $validator.escapeHtml($nextSite.Title)"  class="button" disabled="disabled" />
 	#end
 	</p>
 	</form>
@@ -137,14 +141,18 @@
 	<p class="nav">
 	#if ($prevSite)
 		<a href="#" onclick="location = '#toolLink("$action" "doNavigate_to_site")&newSiteId=$prevSite.Id';return false;">
-		<input type="button" value="$tlang.getString('vi.prev') $validator.escapeHtml($prevSite.Title)" class="button" />
+		<input type="button" value="&lt; $tlang.getString('list.previous')" title="$tlang.getString('vi.prev') $validator.escapeHtml($prevSite.Title)" class="button" />
 		</a>
+	#else
+		<input type="button" value="&lt; $tlang.getString('list.previous')" class="button" disabled="disabled" />
 	#end
 	<input type="submit" name="eventSubmit_doBack" value="$tlang.getString("vi.ret")" />
 	#if ($nextSite)
 		<a href="#" onclick="location = '#toolLink("$action" "doNavigate_to_site")&newSiteId=$nextSite.Id';return false;">
-		<input type="button" value="$tlang.getString('vi.next') $validator.escapeHtml($nextSite.Title)" class="button" />
+			<input type="button" value="$tlang.getString('list.next') &gt;" title="$tlang.getString('vi.next') $validator.escapeHtml($nextSite.Title)"  class="button" />
 		</a>
+	#else
+		<input type="button" value="$tlang.getString('list.next') &gt;" title="$tlang.getString('vi.next') $validator.escapeHtml($nextSite.Title)"  class="button" disabled="disabled" />	
 	#end
 	</p>
 	</form>
