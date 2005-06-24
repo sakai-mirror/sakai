@@ -423,7 +423,7 @@
 											|
 										#end
 										#set ($itemsOnLine = $itemsOnLine + 1)
-										<a href="#toolLink("ResourcesAction" "doCopyitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.item')">
+										<a href="#toolLink("ResourcesAction" "doCopyitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.copy')">
 											$tlang.getString("list.copy")
 										</a>
 									#end
