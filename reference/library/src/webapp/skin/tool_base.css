@@ -153,7 +153,8 @@ text-decoration:none
 	vertical-align:bottom;
     font-size:.8em; 
     text-align:left; 
-	line-height:2em 
+	line-height:2em;
+		 margin-top:1em
 } 
 /*use this listNav in conjunction with listView (see above). listNav is the block element 
  around the list navigator used to chunk up long lists; use with <div> tag.*/
@@ -162,16 +163,16 @@ text-decoration:none
     vertical-align:bottom;
 /*    font-size:.8em; */
     text-align:right; 
-    line-height:2em 
+    line-height:2em;
+	 margin-top:1em
 
 } 
 
 /*action links for list items, use with <a> tag*/
 .itemAction  { 
 	font-size:.9em; 
-/*	no margin left....*/
-/*	margin-left:2em */
 }
+
 /*make the currently sorted column header text bold, apply to <th> tag*/
 .currentSort {
     font-weight:bold !important;
