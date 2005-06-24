@@ -1,6 +1,6 @@
 /**********************************************************************************
 *
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/content/ResourcesAction.java,v 1.46 2005/06/11 12:41:43 jimeng.umich.edu Exp $
+* $Id$
 *
 ***********************************************************************************
 *
@@ -3855,6 +3855,8 @@ extends VelocityPortletPaneledAction
 			}
 			catch(Exception e)
 			{
+				String createdTime = properties.getProperty(ResourceProperties.PROP_CREATION_DATE);
+				item.setCreatedTime(createdTime);
 			}
 			try
 			{
@@ -3863,6 +3865,8 @@ extends VelocityPortletPaneledAction
 			}
 			catch(Exception e)
 			{
+				String createdBy = properties.getProperty(ResourceProperties.PROP_CREATOR);
+				item.setCreatedBy(createdBy);
 			}
 			try
 			{
@@ -3872,6 +3876,8 @@ extends VelocityPortletPaneledAction
 			}
 			catch(Exception e)
 			{
+				String modifiedTime = properties.getProperty(ResourceProperties.PROP_MODIFIED_DATE);
+				item.setModifiedTime(modifiedTime);
 			}
 			try
 			{
@@ -3880,6 +3886,8 @@ extends VelocityPortletPaneledAction
 			}
 			catch(Exception e)
 			{
+				String modifiedBy = properties.getProperty(ResourceProperties.PROP_MODIFIED_BY);
+				item.setModifiedBy(modifiedBy);
 			}
 			
 			String url = ContentHostingService.getUrl(id);
@@ -7524,18 +7532,43 @@ extends VelocityPortletPaneledAction
 			{
 				Time createdTime = cProperties.getTimeProperty(ResourceProperties.PROP_CREATION_DATE);
 				String createdTimeString = createdTime.toStringLocalShortDate();
+				folder.setCreatedTime(createdTimeString);
+			}
+			catch(Exception e)
+			{
+				String createdTimeString = cProperties.getProperty(ResourceProperties.PROP_CREATION_DATE);
+				folder.setCreatedTime(createdTimeString);
+			}
+			try
+			{
 				String createdBy = cProperties.getUserProperty(ResourceProperties.PROP_CREATOR).getDisplayName();
+				folder.setCreatedBy(createdBy);
+			}
+			catch(Exception e)
+			{
+				String createdBy = cProperties.getProperty(ResourceProperties.PROP_CREATOR);
+				folder.setCreatedBy(createdBy);
+			}
+			try
+			{
 				Time modifiedTime = cProperties.getTimeProperty(ResourceProperties.PROP_MODIFIED_DATE);
 				String modifiedTimeString = modifiedTime.toStringLocalShortDate();
-				String modifiedBy = cProperties.getUserProperty(ResourceProperties.PROP_MODIFIED_BY).getDisplayName();
-
-				folder.setCreatedBy(createdBy);
-				folder.setCreatedTime(createdTimeString);
-				folder.setModifiedBy(modifiedBy);
 				folder.setModifiedTime(modifiedTimeString);
 			}
-			catch(EmptyException e)
+			catch(Exception e)
 			{
+				String modifiedTimeString = cProperties.getProperty(ResourceProperties.PROP_MODIFIED_DATE);
+				folder.setModifiedTime(modifiedTimeString);
+			}
+			try
+			{
+				String modifiedBy = cProperties.getUserProperty(ResourceProperties.PROP_MODIFIED_BY).getDisplayName();
+				folder.setModifiedBy(modifiedBy);
+			}
+			catch(Exception e)
+			{
+				String modifiedBy = cProperties.getProperty(ResourceProperties.PROP_MODIFIED_BY);
+				folder.setModifiedBy(modifiedBy);
 			}
 			
 			String url = contentService.getUrl(collectionId);
@@ -7592,24 +7625,48 @@ extends VelocityPortletPaneledAction
 						newItem.setCanCopy(canRead);
 						newItem.setCanAddItem(canAddItem); // true means this user can add an item in the folder containing this item (used for "duplicate") 
 						
-						String cTime = "";
-						String creator = "";
-						String mTime = "";
-						String modifier = "";
 						try
 						{
-							cTime = props.getTimeProperty(ResourceProperties.PROP_CREATION_DATE).toStringLocalShortDate();
-							creator = props.getUserProperty(ResourceProperties.PROP_CREATOR).getDisplayName();
-							mTime = props.getTimeProperty(ResourceProperties.PROP_MODIFIED_DATE).toStringLocalShortDate();
-							modifier = props.getUserProperty(ResourceProperties.PROP_MODIFIED_BY).getDisplayName();
+							Time createdTime = props.getTimeProperty(ResourceProperties.PROP_CREATION_DATE);
+							String createdTimeString = createdTime.toStringLocalShortDate();
+							newItem.setCreatedTime(createdTimeString);
 						}
-						catch(EmptyException e)
+						catch(Exception e)
 						{
+							String createdTimeString = props.getProperty(ResourceProperties.PROP_CREATION_DATE);
+							newItem.setCreatedTime(createdTimeString);
 						}
-						newItem.setCreatedBy(creator);
-						newItem.setCreatedTime(cTime);
-						newItem.setModifiedBy(modifier);
-						newItem.setModifiedTime(mTime);
+						try
+						{
+							String createdBy = props.getUserProperty(ResourceProperties.PROP_CREATOR).getDisplayName();
+							newItem.setCreatedBy(createdBy);
+						}
+						catch(Exception e)
+						{
+							String createdBy = props.getProperty(ResourceProperties.PROP_CREATOR);
+							newItem.setCreatedBy(createdBy);
+						}
+						try
+						{
+							Time modifiedTime = props.getTimeProperty(ResourceProperties.PROP_MODIFIED_DATE);
+							String modifiedTimeString = modifiedTime.toStringLocalShortDate();
+							newItem.setModifiedTime(modifiedTimeString);
+						}
+						catch(Exception e)
+						{
+							String modifiedTimeString = props.getProperty(ResourceProperties.PROP_MODIFIED_DATE);
+							newItem.setModifiedTime(modifiedTimeString);
+						}
+						try
+						{
+							String modifiedBy = props.getUserProperty(ResourceProperties.PROP_MODIFIED_BY).getDisplayName();
+							newItem.setModifiedBy(modifiedBy);
+						}
+						catch(Exception e)
+						{
+							String modifiedBy = props.getProperty(ResourceProperties.PROP_MODIFIED_BY);
+							newItem.setModifiedBy(modifiedBy);
+						}
 						
 						String size = props.getPropertyFormatted(ResourceProperties.PROP_CONTENT_LENGTH);
 						newItem.setSize(size);
