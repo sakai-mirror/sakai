@@ -34,6 +34,8 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 import javax.servlet.http.HttpServletRequest;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 /**
  * <p>ViewContainer is an HTML renderer which renders the head and body needed for an HTML view.</p>
  *
@@ -71,7 +73,7 @@ public class ViewContainer extends Renderer
 			writer.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
 			writer.write("<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n");
 			writer.write("<head>\n");
-			String title = (String) component.getAttributes().get("title");
+			String title = (String) JSFUtils.getAttribute(context, component, "title");
 			if (title != null)
 			{
 				writer.write("<title>");

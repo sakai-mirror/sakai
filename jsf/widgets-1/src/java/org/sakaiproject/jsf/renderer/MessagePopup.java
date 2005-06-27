@@ -33,6 +33,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 /**
  * <p>MessagePopup is an HTML renderer for the Sakai "message_popup" tag in JSF.</p>
  *
@@ -61,7 +63,7 @@ public class MessagePopup extends Renderer
 	{
 	    ResponseWriter writer = context.getResponseWriter();
 
-		String txt = (String) component.getAttributes().get("value");
+		String txt = (String) JSFUtils.getAttribute(context, component, "value");
 		if (txt.equals("on"))
 		{
 		     writer.write("<p><a href=\"#\" onclick=\"return openWindow('popup.jsf?pid=/tunnel/sakai-broadcast/broadcast/jsf.tool','popup','width=300,height=300,scrollbars,resizable,location=1,status=0,directoiries=0')\">Pop it Up !</a></p>\n");

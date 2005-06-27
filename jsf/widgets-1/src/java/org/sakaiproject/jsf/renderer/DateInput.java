@@ -31,6 +31,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 /**
  * <p>DateInput is an HTML renderer for the Sakai DateInput UIComponent in JSF.</p>
  * <p>Dates are rendered as three fields (year, month, day) and a picker widget.</p>
@@ -226,7 +228,7 @@ public class DateInput extends Renderer
 	{
 		ResponseWriter writer = context.getResponseWriter();
 
-		String txt = (String) component.getAttributes().get("text");
+		String txt = (String) JSFUtils.getAttribute(context, component, "text");
 		if (txt != null)
 		{
 			writer.write(txt);

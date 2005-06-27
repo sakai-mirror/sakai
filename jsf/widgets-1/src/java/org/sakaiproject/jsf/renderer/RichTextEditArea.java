@@ -34,6 +34,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 public class RichTextEditArea extends Renderer
 {
     public boolean supportsComponentType(UIComponent component)
@@ -57,31 +59,31 @@ public class RichTextEditArea extends Renderer
 
          // pixel width of the HTMLArea
         int width = -1;
-        String widthIn = (String) component.getAttributes().get("width");
+        String widthIn = (String) JSFUtils.getAttribute(context, component, "width");
         if (widthIn != null && widthIn.length() > 0) width = Integer.parseInt(widthIn);
 
         // pixel height of the HTMLArea
         int height = -1;
-        String heightIn = (String) component.getAttributes().get("height");
+        String heightIn = (String) JSFUtils.getAttribute(context, component, "height");
         if (heightIn != null && heightIn.length() > 0) height = Integer.parseInt(heightIn);
 
         // character height of the textarea
         int columns = -1;
-        String columnsStr = (String) component.getAttributes().get("columns");
+        String columnsStr = (String) JSFUtils.getAttribute(context, component, "columns");
         if (columnsStr != null && columnsStr.length() > 0) columns = Integer.parseInt(columnsStr);
 
         // character width of the textarea
         int rows = -1;
-        String rowsStr = (String) component.getAttributes().get("rows");
+        String rowsStr = (String) JSFUtils.getAttribute(context, component, "rows");
         if (rowsStr != null && rowsStr.length() > 0) rows = Integer.parseInt(rowsStr);
 
         // Number of rows of buttons in the toolbar (0, 2, or 3 rows of buttons)
         int toolbarButtonRows = 2;
-        String toolbarButtonRowsStr = (String) component.getAttributes().get("toolbarButtonRows");
+        String toolbarButtonRowsStr = (String) JSFUtils.getAttribute(context, component, "toolbarButtonRows");
         if (toolbarButtonRowsStr != null && toolbarButtonRowsStr.length() > 0) toolbarButtonRows = Integer.parseInt(toolbarButtonRowsStr);
 
         // if true, 0 rows of buttons (no toolbar buttons).
-        String justArea = (String) component.getAttributes().get("justArea");
+        String justArea = (String) JSFUtils.getAttribute(context, component, "justArea");
         if (justArea != null && ("true".equals(justArea) || "yes".equals(justArea)))
         {
             toolbarButtonRows = 0;
@@ -90,7 +92,7 @@ public class RichTextEditArea extends Renderer
         // the URL to the directory of the HTMLArea JavaScript
         String javascriptLibrary = "/library/htmlarea";
         boolean javascriptLibrarySakaiLegacy = true;
-        String newJsLibUrl = (String) component.getAttributes().get("javascriptLibrary");
+        String newJsLibUrl = (String) JSFUtils.getAttribute(context, component, "javascriptLibrary");
         {
             if (newJsLibUrl != null && newJsLibUrl.length() > 0)
             {
@@ -102,7 +104,7 @@ public class RichTextEditArea extends Renderer
         // whether to calculate the width, height, and toolbarButtonRows
         // (instead of just taking the values given on the tag)
         boolean autoConfig = false;
-        String autoConfigStr = (String) component.getAttributes().get("autoConfig");
+        String autoConfigStr = (String) JSFUtils.getAttribute(context, component, "autoConfig");
         if (autoConfigStr != null && ("true".equals(autoConfigStr) || "yes".equals(autoConfigStr)))
         {
             autoConfig = true;

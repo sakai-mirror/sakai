@@ -32,6 +32,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 /**
  * <p>Comment is an HTML renderer for the Sakai GroupBox tag in JSF.</p>
  * <p>This does not render children, but can deal with children by surrounding them in a comment.</p>
@@ -50,7 +52,7 @@ public class GroupBox extends Renderer
 	{
 		ResponseWriter writer = context.getResponseWriter();
 		writer.write("<fieldset>");
-		String title = (String) component.getAttributes().get("title");
+		String title = (String) JSFUtils.getAttribute(context, component, "title");
 		if (title != null)
 		{
 			writer.write("<legend>" + title + "</legend>\n");

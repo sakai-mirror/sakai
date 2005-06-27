@@ -33,6 +33,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 /**
  * <p>Comment is an HTML renderer for the Sakai "comment" tag in JSF.</p>
  * <p>This does not render children, but can deal with children by surrounding them in a comment.</p>
@@ -71,7 +73,7 @@ public class Comment extends Renderer
 	{
 		ResponseWriter writer = context.getResponseWriter();
 
-		String txt = (String) component.getAttributes().get("text");
+		String txt = (String) JSFUtils.getAttribute(context, component, "text");
 		if (txt != null)
 		{
 			writer.write(txt);

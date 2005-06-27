@@ -35,6 +35,8 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.el.ValueBinding;
 import javax.faces.render.Renderer;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 /**
  * <p>Render a next/previous control for a pager attached to a dataTable.</p>
  * <p>Copyright: Copyright (c) 2004</p>
@@ -68,13 +70,13 @@ public class PagerButtonRenderer extends Renderer
       Map parameters = context.getExternalContext().getRequestParameterMap();
       String formId = calcFormId(context, component);
 
-      String dataTableId = (String) component.getAttributes().get("dataTableId");
+      String dataTableId = (String) JSFUtils.getAttribute(context, component, "dataTableId");
 
       String newNumItemsStr = (String) parameters.get(dataTableId+"_"+formId+"__pager_button_control_select");
       if (newNumItemsStr != null)
       {
           Integer newNumItems = new Integer(newNumItemsStr);
-          int oldNumItems = getInt(component, "numItems", 0);
+          int oldNumItems = getInt(context, component, "numItems", 0);
           if (newNumItems.intValue() != oldNumItems)
           {
               setAttributeValue(context, component, "numItems", newNumItems);
@@ -103,7 +105,7 @@ public class PagerButtonRenderer extends Renderer
    */
   private String calcFormId(FacesContext context, UIComponent component)
   {
-      String formId = (String) component.getAttributes().get("formId");
+      String formId = (String) JSFUtils.getAttribute(context, component, "formId");
       if (formId != null) return formId;
 
       // search for an enclosing form
@@ -129,10 +131,10 @@ protected void calcIndexes(FacesContext context, UIComponent component, int dire
 {
     // scrolling logic
     // scroll the displayed items in the given direction.
-    int firstItem = getInt(component, "firstItem", 0);
-    int lastItem = getInt(component, "lastItem", 0);
-    int numItems = getInt(component, "numItems", 0);
-    int totalItems = getInt(component, "totalItems", 0);
+    int firstItem = getInt(context, component, "firstItem", 0);
+    int lastItem = getInt(context, component, "lastItem", 0);
+    int numItems = getInt(context, component, "numItems", 0);
+    int totalItems = getInt(context, component, "totalItems", 0);
 
      int newFirstItem = firstItem + direction * numItems;
     if (newFirstItem + numItems > totalItems)
@@ -166,9 +168,9 @@ protected void calcIndexes(FacesContext context, UIComponent component, int dire
 /** Get an integer attribute value from the given component.
  * Convert to int if the value is a String.
  */
-private int getInt(UIComponent component, String name, int defaultValue)
+private int getInt(FacesContext context, UIComponent component, String name, int defaultValue)
 {
-    Object obj = component.getAttributes().get(name);
+    Object obj = JSFUtils.getAttribute(context, component, name);
     if (obj == null) return defaultValue;
 
     if (obj instanceof Number) return ((Number)obj).intValue();
@@ -181,9 +183,9 @@ private int getInt(UIComponent component, String name, int defaultValue)
 /** Get an boolean attribute value from the given component.
  * Convert to boolean if the value is a String.
  */
-private boolean getBoolean(UIComponent component, String name, boolean defaultValue)
+private boolean getBoolean(FacesContext context, UIComponent component, String name, boolean defaultValue)
 {
-    Object obj = component.getAttributes().get(name);
+    Object obj = JSFUtils.getAttribute(context, component, name);
     if (obj == null) return defaultValue;
 
     if (obj instanceof Boolean) return ((Boolean)obj).booleanValue();
@@ -244,17 +246,17 @@ public void encodeChildren(FacesContext context,
   {
     ResponseWriter writer = context.getResponseWriter();
     String formId = calcFormId(context, component);
-    int firstItem = getInt(component, "firstItem", 0);
-    int lastItem = getInt(component, "lastItem", 0);
-    int numItems = getInt(component, "numItems", 0);
-    int totalItems = getInt(component, "totalItems", 0);
+    int firstItem = getInt(context, component, "firstItem", 0);
+    int lastItem = getInt(context, component, "lastItem", 0);
+    int numItems = getInt(context, component, "numItems", 0);
+    int totalItems = getInt(context, component, "totalItems", 0);
 
-    String dataTableId = (String) component.getAttributes().get("dataTableId");
-    String prevText = (String) component.getAttributes().get("prevText");
-    String nextText = (String) component.getAttributes().get("nextText");
+    String dataTableId = (String) JSFUtils.getAttribute(context, component, "dataTableId");
+    String prevText = (String) JSFUtils.getAttribute(context, component, "prevText");
+    String nextText = (String) JSFUtils.getAttribute(context, component, "nextText");
 
-    boolean prevDisabled = getBoolean(component, "prevDisabled", false);
-    boolean nextDisabled = getBoolean(component, "nextDisabled", false);
+    boolean prevDisabled = getBoolean(context, component, "prevDisabled", false);
+    boolean nextDisabled = getBoolean(context, component, "nextDisabled", false);
 
     String prevDisabledAttr = "";
     String nextDisabledAttr = "";

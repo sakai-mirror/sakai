@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.jsf.util.JSFUtils;
 import org.sakaiproject.util.web.Web;
 
 /**
@@ -75,7 +76,7 @@ public class Courier extends Renderer
 		HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
 
 		// update time, in seconds
-		String updateTime = (String) component.getAttributes().get("refresh");
+		String updateTime = (String) JSFUtils.getAttribute(context, component, "refresh");
 		if (updateTime == null || updateTime.length() == 0)
 		{
 			updateTime = "10";

@@ -32,6 +32,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
 import org.sakaiproject.jsf.util.JSFDepends;
+import org.sakaiproject.jsf.util.JSFUtils;
 
 public class ToolbarItem extends JSFDepends.CommandLinkRenderer
 {
@@ -44,7 +45,7 @@ public class ToolbarItem extends JSFDepends.CommandLinkRenderer
 	{
 	    if (!component.isRendered()) return;
 	    
-		if (!isDisabled(component))
+		if (!isDisabled(context, component))
 		{
 		    // use default link rendering
 			super.encodeBegin(context, component);
@@ -61,7 +62,7 @@ public class ToolbarItem extends JSFDepends.CommandLinkRenderer
 	{
 	    if (!component.isRendered()) return;
 	    
-	    if (!isDisabled(component))
+	    if (!isDisabled(context, component))
 	    {
 	        // use default rendering
 	        super.encodeChildren(context, component);
@@ -85,7 +86,7 @@ public class ToolbarItem extends JSFDepends.CommandLinkRenderer
 	{
 	    if (!component.isRendered()) return;
 	    
-		if (!isDisabled(component))
+		if (!isDisabled(context, component))
 		{
 		    // use default link rendering
 			super.encodeEnd(context, component);
@@ -103,10 +104,10 @@ public class ToolbarItem extends JSFDepends.CommandLinkRenderer
 	 * @param component
 	 * @return true if the component has a boolean "disabled" attribute set, false if not
 	 */
-	protected boolean isDisabled(UIComponent component)
+	protected boolean isDisabled(FacesContext context, UIComponent component)
 	{
 		boolean disabled = false;
-		Object value = component.getAttributes().get("disabled");
+		Object value = JSFUtils.getAttribute(context, component, "disabled");
 		if (value != null)
 		{
 			if (value instanceof Boolean)

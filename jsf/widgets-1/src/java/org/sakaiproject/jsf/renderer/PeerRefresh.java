@@ -33,6 +33,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 /**
  * <p>PeerRefresh is an HTML renderer for the Sakai "peer_refresh" tag in JSF.</p>
  *
@@ -61,7 +63,7 @@ public class PeerRefresh extends Renderer
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException
 	{
 		ResponseWriter writer = context.getResponseWriter();
-		String txt = (String) component.getAttributes().get("value");
+		String txt = (String) JSFUtils.getAttribute(context, component, "value");
 		if ((txt != null) && (txt.length() > 0))
 		{
 			writer.write("<script type=\"text/javascript\" language=\"JavaScript\">\n");

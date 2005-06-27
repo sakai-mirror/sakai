@@ -32,6 +32,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 /**
  * <p>TitleBar is an HTML renderer for the Sakai TitleBar UIComponent in JSF.</p>
  * 
@@ -60,7 +62,7 @@ public class TitleBar extends Renderer
 		// TODO: here's where the reset goes...
 		// <a href="#toolLink("$action" "doReset")" title="Reset"><img src="#imageLink("toolhome.gif")" alt="Reset" border="0"></a>
 
-		String txt = (String) component.getAttributes().get("value");
+		String txt = (String) JSFUtils.getAttribute(context, component, "value");
 		if (txt != null)
 		{
 			writer.write(txt);
@@ -69,7 +71,7 @@ public class TitleBar extends Renderer
 
 		// TODO: here's where right hand icons go (i.e. float, dock...)
 		writer.write("<td class=\"action\" align=\"right\">");
-//		String helpDocId = (String) component.getAttributes().get("helpDocId");
+//		String helpDocId = (String) JSFUtils.getAttribute(context, component, "helpDocId");
 //		if(helpDocId != null && ServerConfigurationService.getBoolean("helpEnabled", true))
 //		{
 //			String sakai_HelpURL = "/tunnel/sakai-help-tool/help/jsf.tool?pid=/tunnel/sakai-help-tool/help/jsf.tool&helpDocId=";

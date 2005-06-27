@@ -31,6 +31,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 /**
  * <p>DateOutput is an HTML renderer for the Sakai DateOutput UIComponent in JSF.</p>
  * 
@@ -88,7 +90,7 @@ public class DateOutput extends Renderer
 	{
 		ResponseWriter writer = context.getResponseWriter();
 
-		String txt = (String) component.getAttributes().get("text");
+		String txt = (String) JSFUtils.getAttribute(context, component, "text");
 		if (txt != null)
 		{
 			writer.write(txt);
