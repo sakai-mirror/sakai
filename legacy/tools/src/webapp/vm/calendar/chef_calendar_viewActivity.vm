@@ -189,7 +189,7 @@
 			#if($event.Location && $event.Location !="")
 				<tr> 
 					 <th>$tlang.getString("new.location")</th>
-					 <td>>$validator.escapeHtml($event.Location)</td>
+					 <td>$validator.escapeHtml($event.Location)</td>
 				</tr>
 			#end
 			#set ($calObj = $CalendarService.getCalendar($event.CalendarReference))
