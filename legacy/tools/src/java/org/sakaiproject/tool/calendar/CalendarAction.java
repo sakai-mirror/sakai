@@ -1909,9 +1909,9 @@ extends VelocityPortletStateAction
 	private static boolean isOnWorkspaceTab()
 	{
 		// TODO: return to this question! -ggolden
-		return false;
+		// return false;
 		// we'll really answer the question - is the current request's site a user site?
-//		return SiteService.isUserSite(PortalService.getCurrentSiteId());
+		return SiteService.isUserSite(PortalService.getCurrentSiteId());
 	}
 	
 	
