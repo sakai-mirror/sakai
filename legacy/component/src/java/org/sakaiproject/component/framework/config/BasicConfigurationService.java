@@ -323,7 +323,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 	{
 		String rv = (String) properties.get("userHomeUrl");
 
-		// use the portal URL with the current user's myWorkspace, if not otherwise defined
+		// use the portal URL with the current user's My Workspace, if not otherwise defined
 		if (rv == null)
 		{
 			String user = UsageSessionService.getSessionUserId();

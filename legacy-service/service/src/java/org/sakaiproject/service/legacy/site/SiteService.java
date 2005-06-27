@@ -65,7 +65,7 @@ public interface SiteService
 	/** Name for the event of adding a site. */
 	public static final String SECURE_ADD_SITE = "site.add";
 
-	/** Name for the event of adding a user's myWorkspace site. */
+	/** Name for the event of adding a user's My Workspace site. */
 	public static final String SECURE_ADD_USER_SITE = "site.add.usersite";
 
 	/** Name for the event of removing a site. */

@@ -217,7 +217,7 @@ public class MergedList extends ArrayList
 	/**
 	 * Selects and loads channels from a list provided by the entryProvider
 	 * parameter.  The algorithm for loading channels is a bit complex, and
-	 * depends on whether or not the user is currently in their "MyWorkspace", etc.
+	 * depends on whether or not the user is currently in their "My Workspace", etc.
 	 * 
 	 * This function formerly filtered through a list of all sites.  It still
 	 * goes through the motions of filtering, and deciding how to flag the channels
@@ -302,7 +302,7 @@ public class MergedList extends ArrayList
 				if (thisIsTheUsersMyWorkspaceChannel)
 				{
 					// Don't merge the user's channel in with a
-					// group channel.  If we're on the "MyWorkspace"
+					// group channel.  If we're on the "My Workspace"
 					// tab, then it's okay to merge.
 					if (isOnWorkspaceTab)
 					{
@@ -316,7 +316,7 @@ public class MergedList extends ArrayList
 				else
 				{
 					//
-					// If we're the admin, and we're on our "MyWorkspace" tab, then only
+					// If we're the admin, and we're on our "My Workspace" tab, then only
 					// use our channel (handled above).  We'd be overloaded if we could
 					// see everyone's events.
 					//

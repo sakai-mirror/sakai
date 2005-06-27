@@ -316,7 +316,7 @@
 							#end
 							<td>
 								#if ($participant.isRemoveable())
-									## if in MyWorkspace site, cannot move the site user from it
+									## if in My Workspace site, cannot move the site user from it
 									#if (!$!isMyWorkspace || ($!isMyWorkspace && !$uniqname.equals($!siteUserId)))
 										<input type="checkbox" name="selectedUser" value="$uniqname" id="remove_$uniqname"
 											#foreach($participantSelected in $selectedParticipants)

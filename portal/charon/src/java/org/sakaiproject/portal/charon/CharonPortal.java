@@ -1332,11 +1332,11 @@ public class CharonPortal extends HttpServlet
 		// for skinning
 		String siteType = calcSiteType(siteId);
 
-		// is the current site the end user's myWorkspace?
+		// is the current site the end user's My Workspace?
 		boolean curMyWorkspace = ((siteId == null) || (SiteService.isUserSite(siteId) && (SiteService.getSiteUserId(siteId)
 				.equals(session.getUserId()))));
 
-		// if this is a myWorkspace, it gets its own tab and should not be considered in the other tab logic
+		// if this is a My Workspace, it gets its own tab and should not be considered in the other tab logic
 		if (curMyWorkspace) siteId = null;
 
 		// collect the user's sites

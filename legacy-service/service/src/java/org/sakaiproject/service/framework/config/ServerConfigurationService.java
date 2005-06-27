@@ -121,9 +121,9 @@ public interface ServerConfigurationService
 	String getLoggedOutUrl();
 
 	/**
-	 * Access the URL to the user's "home" (myWorkspace) in the service.
+	 * Access the URL to the user's "home" (My Workspace) in the service.
 	 * 
-	 * @return The URL to the user's "home" (myWorkspace) in the service.
+	 * @return The URL to the user's "home" (My Workspace) in the service.
 	 */
 	String getUserHomeUrl();
 

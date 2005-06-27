@@ -915,7 +915,7 @@ public class Reference
 					}
 				}
 
-				// special check for group-user : the grant's in the user's myWorkspace site
+				// special check for group-user : the grant's in the user's My Workspace site
 				String parts[] = split(getId(), Resource.SEPARATOR);
 				if ((parts.length > 3) && (parts[1].equals("group-user")))
 				{

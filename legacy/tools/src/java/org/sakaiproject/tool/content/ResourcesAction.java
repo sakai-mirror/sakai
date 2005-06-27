@@ -483,7 +483,7 @@ extends VelocityPortletPaneledAction
 
 		String template = null;
 
-		// place if notification is enabled and current site is not of MyWorkspace type
+		// place if notification is enabled and current site is not of My Workspace type
 		boolean isUserSite = SiteService.isUserSite(PortalService.getCurrentSiteId());
 		context.put("notification", new Boolean(!isUserSite && notificationEnabled(state)));
 

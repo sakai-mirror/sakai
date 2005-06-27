@@ -3498,7 +3498,7 @@ public class SiteAction extends PagedResourceActionII
 				}
 				catch (IdUnusedException e) 
 				{
-					Log.warn("chef", "Cannot find user " + UsageSessionService.getSessionUserId() + "'s myworkspace site.");
+					Log.warn("chef", "Cannot find user " + UsageSessionService.getSessionUserId() + "'s My Workspace site.");
 				}
 				
 				String view = (String) state.getAttribute(STATE_VIEW_SELECTED);
@@ -3648,7 +3648,7 @@ public class SiteAction extends PagedResourceActionII
 				}
 				catch (IdUnusedException e) 
 				{
-					Log.warn("chef", "Cannot find user " + UsageSessionService.getSessionUserId() + "'s myworkspace site.");
+					Log.warn("chef", "Cannot find user " + UsageSessionService.getSessionUserId() + "'s My Workspace site.");
 				}
 				
 				String view = (String) state.getAttribute(STATE_VIEW_SELECTED);

@@ -1289,7 +1289,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 			else if (getId().equals("!site.user"))
 			{
-				return "MyWorkspace Realm Template";
+				return "My Workspace Realm Template";
 			}
 
 			else if (getId().startsWith("!user.template"))
