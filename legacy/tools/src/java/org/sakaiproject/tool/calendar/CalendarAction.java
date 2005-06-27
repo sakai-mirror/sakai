@@ -6253,6 +6253,14 @@ extends VelocityPortletStateAction
 		}
 		
 		bar.add( new MenuEntry(rb.getString("java.new"), null, allow_new, MenuItem.CHECKED_NA, "doNew") );
+		
+		//
+		// Don't allow the user to customize the "My Workspace" tab.
+		//
+		if ( !isOnWorkspaceTab() )
+		{
+			bar.add( new MenuEntry(mergedCalendarPage.getButtonText(), null, allow_merge_calendars, MenuItem.CHECKED_NA, mergedCalendarPage.getButtonHandlerID()) );
+		}
 
 		// See if we are allowed to import items.
 		if ( allow_import )
@@ -6409,14 +6417,6 @@ extends VelocityPortletStateAction
 			dailyStartTime));
 			
 			bar_PDF.add(new MenuEntry(rb.getString("java.print"), "").setUrl(accessPointUrl));
-		}
-		
-		//
-		// Don't allow the user to customize the "My Workspace" tab.
-		//
-		if ( !isOnWorkspaceTab() )
-		{
-			bar.add( new MenuEntry(mergedCalendarPage.getButtonText(), null, allow_merge_calendars, MenuItem.CHECKED_NA, mergedCalendarPage.getButtonHandlerID()) );
 		}
 		
 		bar.add( new MenuEntry(customizeCalendarPage.getButtonText(), null, allow_modify_calendar_properties, MenuItem.CHECKED_NA, customizeCalendarPage.getButtonHandlerID()) );
