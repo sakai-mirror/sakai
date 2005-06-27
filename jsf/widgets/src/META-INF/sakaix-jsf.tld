@@ -397,7 +397,8 @@
       <description>
         If true, enable input for user to enter the time.  Default is true.
       </description>
-     <attribute>
+    </attribute>
+    <attribute>
        <name>showSecond</name>
        <required>false</required>
        <rtexprvalue>false</rtexprvalue>
@@ -406,7 +407,6 @@
          Default is false.
          If false, default to zero seconds.
        </description>
-     </attribute>
     </attribute>
     <attribute>
       <name>rendered</name>
