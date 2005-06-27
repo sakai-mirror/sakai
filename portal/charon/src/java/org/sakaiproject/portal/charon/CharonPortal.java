@@ -1470,7 +1470,7 @@ public class CharonPortal extends HttpServlet
 		{
 			String siteUrl = Web.serverUrl(req) + "/portal/" + prefix + "/"
 					+ Web.escapeUrl(SiteService.getUserSiteId(session.getUserId()));
-			out.println("						<li><a href=\"" + siteUrl + "\" target=\"_parent\">" + rb.getString("sit.mywor") + "</a></li>");
+			out.println("						<li><a href=\"" + siteUrl + "\" target=\"_parent\">" + Web.escapeHtml(rb.getString("sit.mywor")) + "</a></li>");
 		}
 
 		// first n tabs
@@ -1507,7 +1507,7 @@ public class CharonPortal extends HttpServlet
 			out.println("				<select ");
 			out.println("						onchange=\"if (this.options[this.selectedIndex].value != '')"
 					+ " { parent.location = this.options[this.selectedIndex].value; } else { this.selectedIndex = 0; }\">");
-			out.println("					<option value=\"\" selected=\"selected\">" + rb.getString("sit.more") + "</option>");
+			out.println("					<option value=\"\" selected=\"selected\">" + Web.escapeHtml(rb.getString("sit.more")) + "</option>");
 
 			for (Iterator i = moreSites.iterator(); i.hasNext();)
 			{
@@ -1524,7 +1524,7 @@ public class CharonPortal extends HttpServlet
 		{
 			String logoutUrl = Web.serverUrl(req) + "/portal/logout_gallery";
 			out.println("<td class=\"galleryLogin\">");
-			out.println("	<a href=\"" + logoutUrl + "\" target=\"_parent\">" + rb.getString("sit.log") + "</a>");
+			out.println("	<a href=\"" + logoutUrl + "\" target=\"_parent\">" + Web.escapeHtml(rb.getString("sit.log")) + "</a>");
 			out.println("</td>");
 		}
 
@@ -1705,7 +1705,7 @@ public class CharonPortal extends HttpServlet
 		out.println("    <link href=\"" + skinRepo + "/" + skin
 				+ "/portal.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />");
 
-		out.println("    <meta http-equiv=\"Content-Style-Type\" content=\"text/css\" />" + "    <title>" + title + "</title>"
+		out.println("    <meta http-equiv=\"Content-Style-Type\" content=\"text/css\" />" + "    <title>" + Web.escapeHtml(title) + "</title>"
 				+ "    <script type=\"text/javascript\" language=\"JavaScript\" src=\"" + getScriptPath()
 				+ "headscripts.js\"></script>" + "  </head>");
 
