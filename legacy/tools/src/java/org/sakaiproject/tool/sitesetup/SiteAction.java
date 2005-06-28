@@ -495,20 +495,6 @@ public class SiteAction extends PagedResourceActionII
 		
 		PortletConfig config = portlet.getPortletConfig();
 		
-		// all site types
-		String t = StringUtil.trimToNull(config.getInitParameter("siteTypes"));
-		if (state.getAttribute(STATE_SITE_TYPES) == null)
-		{
-			if (t != null)
-			{
-				state.setAttribute(STATE_SITE_TYPES, new ArrayList(Arrays.asList(t.split(","))));
-			}
-			else
-			{
-				state.setAttribute(STATE_SITE_TYPES, new Vector());
-			}
-		}
-		
 		// types of sites that can either be public or private
 		String changeableTypes = StringUtil.trimToNull(config.getInitParameter("publicChangeableSiteTypes"));
 		if (state.getAttribute(STATE_PUBLIC_CHANGEABLE_SITE_TYPES) == null)
@@ -781,7 +767,7 @@ public class SiteAction extends PagedResourceActionII
 		}
 		// Lists used in more than one template
 				
-		//used with My Worspace tool configuration
+		//used with My Workspace tool configuration
 		List currentTools = new Vector();
 		List currentPages = new Vector();
 
@@ -876,12 +862,15 @@ public class SiteAction extends PagedResourceActionII
 						remove=true;
 					}
 					//do not show this site type in views
-					sTypes.remove(new String(SITE_TYPE_GRADTOOLS_STUDENT));
+					//sTypes.remove(new String(SITE_TYPE_GRADTOOLS_STUDENT));
 					
 					for(int sTypeIndex = 0; sTypeIndex < sTypes.size(); sTypeIndex++)
 					{
 						String type = (String) sTypes.get(sTypeIndex);
-						views.put(type + " "+rb.getString("java.sites"), type);
+						if(!type.equals(SITE_TYPE_GRADTOOLS_STUDENT))
+						{
+							views.put(type + " "+rb.getString("java.sites"), type);
+						}
 					}
 					if (!remove)
 					{
@@ -963,7 +952,6 @@ public class SiteAction extends PagedResourceActionII
 				context.put("menu2", bar2);
 				
 				pagingInfoToContext(state, context);
-				
 				return (String)getContext(data).get("template") + TEMPLATE[0];
 			case 1: 
 				/*  buildContextForTemplate chef_site-type.vm
@@ -980,7 +968,7 @@ public class SiteAction extends PagedResourceActionII
 						//am I a grad student?
 						Boolean isGradStudent = new Boolean(isGradToolsCandidate(userId));
 						context.put("isGradStudent", isGradStudent);
-						
+					
 						//if I am a grad student, do I already have a Grad Tools site?
 						boolean noGradToolsSite = true;
 						if(isGradStudent.booleanValue())
@@ -1007,7 +995,6 @@ public class SiteAction extends PagedResourceActionII
 				}
 				context.put("siteTypes", state.getAttribute(STATE_SITE_TYPES));
 				context.put("typeSelected", siteInfo.site_type);
-				
 				List terms = CourseManagementService.getTerms();
 				if (terms != null && terms.size() >0)
 				{
@@ -6890,7 +6877,21 @@ public class SiteAction extends PagedResourceActionII
 				state.setAttribute(NO_SHOW_SEARCH_TYPE, noSearchSiteType);
 			}
 		}
-		
+		if (state.getAttribute(STATE_SITE_TYPES) == null)
+		{
+			PortletConfig config = portlet.getPortletConfig();
+			
+			// all site types
+			String t = StringUtil.trimToNull(config.getInitParameter("siteTypes"));
+			if (t != null)
+			{
+				state.setAttribute(STATE_SITE_TYPES, new ArrayList(Arrays.asList(t.split(","))));
+			}
+			else
+			{
+				state.setAttribute(STATE_SITE_TYPES, new Vector());
+			}
+		}
 	} // init
 	
 	public void doNavigate_to_site ( RunData data )
@@ -12453,7 +12454,7 @@ public class SiteAction extends PagedResourceActionII
 			{
 				try
 				{
-					tr = ToolManager.getTool(((Tool)toolRegistrationList.get(i)).getId());
+					tr = ToolManager.getTool(((MyTool)toolRegistrationList.get(i)).getId());
 					page = site.addPage();
 					page.setTitle(tr.getTitle());
 					page.setLayout(SitePage.LAYOUT_SINGLE_COL);
