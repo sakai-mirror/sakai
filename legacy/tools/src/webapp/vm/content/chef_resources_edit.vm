@@ -1,5 +1,4 @@
-## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/content/chef_resources_edit.vm,v 1.8 2005/06/10 16:18:13 zqian.umich.edu Exp $ 
-<!-- chef_resources_edit.vm, use with org.sakaiproject.tool.content.ResourcesAction.java -->
+<!-- chef_resources_edit.vm, version: $Revision:  $, use with org.sakaiproject.tool.content.ResourcesAction.java -->
 ##
 ############################################# macro prop_dateSelection 
 #macro(prop_dateSelectionWidget $propName $propValue)
@@ -64,6 +63,19 @@
 ############################################# end of macro prop_timeSelection 
 ##
 <script language="JavaScript" type="text/JavaScript">
+	<!--
+	function submitform(id)
+	{
+		var theForm = document.getElementById(id);
+		if(theForm && theForm.onsubmit)
+		{
+			theForm.onsubmit();
+		}
+		if(theForm && theForm.submit)
+		{
+			theForm.submit();
+		}
+	}
 	function openSampleCopyrightWindow() 
 	{ 
 	  window.open("$copyright_alert_url","SampleCopyrightAlert","scrollbars=no,menubar=no,height=400,width=700,resizable=no,toolbar=no,location=no,status=no");
@@ -133,7 +145,7 @@
 			#end
 		#end
 	</div>	
-	<form name="propertyForm" action="#toolForm("ResourcesAction")&special=upload" method="post" enctype="multipart/form-data">
+	<form name="propertyForm" id="propertyForm" action="#toolForm("ResourcesAction")&special=upload" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
 		<input type="hidden" name="stateName" value = "list" />
 		<input type="hidden" name="from" value="list" />
@@ -141,7 +153,7 @@
 		<input type="hidden" name="eventSubmit_doSavechanges" value="x" />
 		<input type="hidden" name="flow" id="flow" value="update" />
 		<input type="hidden" name="group" id="group" value="" />
-		<input type="hidden" name="ContentType" value="$item.type" />
+		<input type="hidden" name="ContentType" value="$item.MimeType" />
 		<p class="shorttext">
 			<span class="reqStar">*</span>
 			<label for="name">
@@ -159,12 +171,12 @@
 			#if ($item.isUrl())
 				<p class="shorttext">
 					<label for="Url">$tlang.getString("edit.replace2")</label>
-					<input type="text" name="Url" id="Url" size="60" value="$!item.contentString" />
+					<input type="text" name="Url" id="Url" size="60" value="$!{item.contentstring}" />
 				</p>
 			#elseif ($item.isPlaintext() || $item.isHtml())
 				<p class="shorttext">
 					<label for="intent">$tlang.getString("gen.content")</label>
-					<select name="intent" id="intent" onchange="javascript: document.getElementById('flow').value='intentChanged'; document.propertyForm.submit();">
+					<select name="intent" id="intent" onchange="javascript: document.getElementById('flow').value='intentChanged'; submitform('propertyForm');">
 						<option id="intent-revise" value="revise"#if("$intent" == "$REVISE") selected="selected"#end>Revise document contents below</option><br />
 						<option id="intent-replace" value="replace"#if("$intent" == "$REPLACE") selected="selected"#end>Replace with document from my computer</option>
 					</select>
@@ -173,13 +185,13 @@
 					#if ($item.isPlaintext()) 
 						<p class="shorttext"> 
 							<label for="content">&nbsp;</label>
-							<textarea name="content" id="content" rows="10" cols="40" wrap="virtual">$validator.escapeHtmlTextarea("$!item.contentString")</textarea>
+							<textarea name="content" id="content" rows="10" cols="40" wrap="virtual">$validator.escapeHtmlTextarea("$!{item.contentstring}")</textarea>
 						</p>
 					#elseif ($item.isHtml())
 						<p class="shorttext"> 
 							<label for="content">&nbsp;</label>
 							<table border="0"><tr><td>
-								<textarea name="content" id="content" rows="30" cols="80" wrap="virtual">$validator.escapeHtmlTextarea("$!item.contentString")</textarea>
+								<textarea name="content" id="content" rows="30" cols="80" wrap="virtual">$validator.escapeHtmlTextarea("$!{item.contentstring}")</textarea>
 								#chef_setupformattedtextarea("content")
 							</td></tr></table>
 						</p>
@@ -316,7 +328,7 @@
 						$tlang.getString("gen.type")
 					</th>
 					<td>
-						$item.type
+						$item.MimeType
 					</td>
 				</tr>
 				#*
@@ -354,7 +366,7 @@
 			#foreach($group in $metadataGroups)				  
 				#if ($group.isShowing())
 					<p class="discTria">
-						<a href="#" onclick="javascript: document.getElementById('flow').value='hideMetadata'; document.getElementById('group').value='$validator.escapeUrl($group.name)'; document.propertyForm.submit(); return false;" title="$tlang.getString("edit.hide") $group.name">
+						<a href="#" onclick="javascript: document.getElementById('flow').value='hideMetadata'; document.getElementById('group').value='$validator.escapeUrl($group.name)'; submitform('propertyForm'); return false;" title="$tlang.getString("edit.hide") $group.name">
 							<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") $group.name" border="0" width="15" height="15" align="top" />
 						</a>
 						$validator.escapeHtml($group.name)
@@ -423,7 +435,7 @@
 					
 				#else
 					<p class="discTria">
-						<a href="#" onclick="javascript: document.getElementById('flow').value='showMetadata'; document.getElementById('group').value='$validator.escapeUrl($group.name)'; document.propertyForm.submit(); return false;" title="$tlang.getString("edit.show") $group.name">	
+						<a href="#" onclick="javascript: document.getElementById('flow').value='showMetadata'; document.getElementById('group').value='$validator.escapeUrl($group.name)'; submitform('propertyForm'); return false;" title="$tlang.getString("edit.show") $group.name">	
 							<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("edit.show") $group.name" border="0" width="15" height="15" align="top" />
 						</a>
 						$validator.escapeHtml($group.name)

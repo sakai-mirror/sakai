@@ -335,13 +335,30 @@ extends VelocityPortletPaneledAction
 	private static final String STATE_PROPERTIES_COLLECTION_ID = "resources.properties_collection_id";
 	private static final String STATE_PROPERTIES_INTENT = "resources.properties_intent";
 
-	/************** the properties context *****************************************/
+	/************** the edit context *****************************************/
 
-	/** The properties id */
+	/** The edit id */
 	private static final String STATE_EDIT_ID = "resources.edit_id";
 	private static final String STATE_EDIT_ITEM = "resources.edit_item";
 	private static final String STATE_EDIT_COLLECTION_ID = "resources.edit_collection_id";
 	private static final String STATE_EDIT_INTENT = "resources.properties_intent";
+
+	/************** the create contexts *****************************************/
+
+	private static final String STATE_CREATE_TYPE = "resources.create_type";
+	private static final String STATE_CREATE_ITEMS = "resources.create_items";
+	private static final String STATE_CREATE_COLLECTION_ID = "resources.create_collection_id";
+	private static final String STATE_CREATE_INTENT = "resources.create_intent";
+	private static final String STATE_CREATE_NUMBER = "resources.create_number";
+	private static final String STATE_CREATE_ALERTS = "resources.create_alerts";
+	
+	private static final String TYPE_FOLDER = "folder";
+	private static final String TYPE_UPLOAD = "file";
+	private static final String TYPE_URL = "Url";
+	
+	private static final int CREATE_MAX_ITEMS = 10;
+
+	/************** the metadata extension of edit/create contexts *****************************************/
 
 	private static final String STATE_METADATA_GROUPS = "resources.metadata.types";
 	private static final String STATE_METADATA_GROUP = "resources.metadata.type";
@@ -398,6 +415,7 @@ extends VelocityPortletPaneledAction
 	private static final String MODE_LIST = "list";
 	private static final String MODE_EDIT = "edit";
 	private static final String MODE_DAV = "webdav";
+	private static final String MODE_CREATE = "create";
 
 	private static final String MODE_BROWSE = "show";
 	private static final String MODE_ADD_ITEM = "add";
@@ -416,16 +434,20 @@ extends VelocityPortletPaneledAction
 	private static final String MODE_SHOW_COPYRIGHT_ALERT = "showcopyrightalert";
 
 	/** vm files for each mode. */
-	private static final String TEMPLATE_LIST = "_newlist";
+	private static final String TEMPLATE_LIST = "_list";
 	private static final String TEMPLATE_EDIT = "_edit";
+	private static final String TEMPLATE_CREATE = "_create";
 	private static final String TEMPLATE_DAV = "_webdav";
+
+	private static final String TEMPLATE_MORE = "_more";
+	private static final String TEMPLATE_DELETE_CONFIRM = "_deleteConfirm";
+
+	// obsolete ?
 	private static final String TEMPLATE_ADD_FILE_BASIC = "_addFileBasic";
 	private static final String TEMPLATE_ADD_FOLDER = "_addFolderBasic";
 	private static final String TEMPLATE_ADD_DOCUMENT_PLAINTEXT = "_addTextDocument";//"_addSimpleText";
 	private static final String TEMPLATE_ADD_DOCUMENT_HTML = "_addHTMLDocument";
 	private static final String TEMPLATE_ADD_URL = "_addURLBasic";
-	private static final String TEMPLATE_DELETE_CONFIRM = "_deleteConfirm";
-	private static final String TEMPLATE_MORE = "_more";
 
 	// obsolete ?
 	private static final String TEMPLATE_BROWSE = "_show";
@@ -509,6 +531,16 @@ extends VelocityPortletPaneledAction
 			
 			// build the context for add item
 			template = buildListContext (portlet, context, data, state);
+		}
+		else if (mode.equals (MODE_CREATE))
+		{
+//			// enable the observer when inside the list view
+//			ContentObservingCourier o = (ContentObservingCourier) state.getAttribute(STATE_OBSERVER);
+//			o.setDeliveryId(clientWindowId(state, portlet.getID()));
+//			o.enable();	
+			
+			// build the context for add item
+			template = buildCreateContext (portlet, context, data, state);
 		}
 		else if (mode.equals (MODE_ADD_ITEM))
 		{
@@ -638,6 +670,9 @@ extends VelocityPortletPaneledAction
 		
 		// find the ContentTypeImage service
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
+		
+		context.put("TYPE_FOLDER", TYPE_FOLDER);
+		context.put("TYPE_UPLOAD", TYPE_UPLOAD);
 
 		// find the ContentHosting service
 		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
@@ -1905,6 +1940,539 @@ extends VelocityPortletPaneledAction
 
 
 	}	// doShow_webdav
+	
+	/**
+	 * initiate creation of one or more resource items (file uploads, html docs, text docs, or urls -- not folders)
+	 * default type is file upload
+	 */
+	public void doCreate(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+		
+		String itemType = params.getString("itemType");
+
+		List new_items = new Vector();
+		for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+		{
+			new_items.add(new CreateItem(itemType));
+		}
+		state.setAttribute(STATE_CREATE_ITEMS, new_items);
+		state.setAttribute(STATE_CREATE_NUMBER, new Integer(1));
+		state.setAttribute(STATE_CREATE_TYPE, itemType);
+		state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
+		
+		String collectionId = params.getString ("collectionId");
+		state.setAttribute(STATE_CREATE_COLLECTION_ID, collectionId);
+		
+		state.setAttribute (STATE_MODE, MODE_CREATE);
+		
+	}	// doCreate
+	
+	/**
+	 * initiate creation of one or more resource items (file uploads, html docs, text docs, or urls -- not folders)
+	 * default type is file upload
+	 */
+	public void doCreateitem(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+		
+		String itemType = params.getString("itemType");
+		String flow = params.getString("flow");
+		String mode = (String) state.getAttribute(STATE_MODE);
+		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		
+		if(flow == null || flow.equals("cancel"))
+		{
+			mode = MODE_LIST;
+		}
+		else if(flow.equals("updateNumber"))
+		{
+			captureMultipleValues(state, params, false);
+			
+			int number = params.getInt("numberOfItems");
+			Integer numberOfItems = new Integer(number);
+			state.setAttribute(STATE_CREATE_NUMBER, numberOfItems);
+			state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
+			state.removeAttribute(STATE_MESSAGE);
+		}
+		else if(flow.equals("create") && TYPE_FOLDER.equals(itemType))
+		{
+			
+			// Get the items
+			captureMultipleValues(state, params, true);
+			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			
+			if(alerts.isEmpty())
+			{
+				// Save the items
+				createFolders(state);
+				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+				
+				if(alerts.isEmpty())
+				{
+					mode = MODE_LIST;
+				}
+				else
+				{
+
+				}
+			}
+			else
+			{
+
+			}
+		}
+		else if(flow.equals("create") && TYPE_UPLOAD.equals(itemType))
+		{
+			captureMultipleValues(state, params, true);
+			// NOW SAVE THE ITEMS
+			createFiles(state, params);
+			
+			mode = MODE_LIST;		
+		}
+		else if(flow.equals("create") && MIME_TYPE_DOCUMENT_HTML.equals(itemType))
+		{
+			captureMultipleValues(state, params, true);
+			// NOW SAVE THE ITEMS
+			createFiles(state, params);
+			
+			mode = MODE_LIST;		
+		}
+		else if(flow.equals("create") && MIME_TYPE_DOCUMENT_PLAINTEXT.equals(itemType))
+		{
+			captureMultipleValues(state, params, true);
+			// NOW SAVE THE ITEMS
+			createFiles(state, params);
+			
+			mode = MODE_LIST;		
+		}
+		else if(flow.equals("create") && TYPE_URL.equals(itemType))
+		{
+			captureMultipleValues(state, params, true);
+			// NOW SAVE THE ITEMS
+			createUrls(state, params);
+			
+			mode = MODE_LIST;		
+		}
+		else if(flow.equals("create"))
+		{
+			captureMultipleValues(state, params, true);
+			// NOW SAVE THE ITEMS
+			
+			addAlert(state, "Invalid item type");
+			// mode = MODE_LIST;		
+		}
+		else if(flow.equals("showOptional"))
+		{
+			captureMultipleValues(state, params, false);
+			int twiggleNumber = params.getInt("twiggleNumber", 0);
+			String metadataGroup = params.getString("metadataGroup");
+			List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+			if(items != null && items.size() > twiggleNumber)
+			{
+				CreateItem item = (CreateItem) items.get(twiggleNumber);
+				if(item != null)
+				{
+					item.showMetadataGroup(metadataGroup);
+				}
+			}
+		}
+		else if(flow.equals("hideOptional"))
+		{
+			captureMultipleValues(state, params, false);
+			int twiggleNumber = params.getInt("twiggleNumber", 0);						
+			String metadataGroup = params.getString("metadataGroup");
+			List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+			if(items != null && items.size() > twiggleNumber)
+			{
+				CreateItem item = (CreateItem) items.get(twiggleNumber);
+				if(item != null)
+				{
+					item.hideMetadataGroup(metadataGroup);
+				}
+			}
+		}
+		alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		Iterator alertIt = alerts.iterator();
+		while(alertIt.hasNext())
+		{
+			String alert = (String) alertIt.next();
+			addAlert(state, alert);
+		}
+		alerts.clear();
+		
+		// remove?
+		state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		
+		state.setAttribute (STATE_MODE, mode);
+		
+	}	// doCreate
+	
+	/**
+	 * @param state
+	 */
+	protected void createFolders(SessionState state) 
+	{
+		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		List new_folders = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		int numberOfFolders = 1;
+		numberOfFolders = number.intValue();
+		
+		for(int i = 0; i < numberOfFolders; i++)
+		{
+			CreateItem item = (CreateItem) new_folders.get(i);
+			String newCollectionId = collectionId + Validator.escapeResourceName(item.getName()) + Resource.SEPARATOR;
+
+			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
+
+			try
+			{
+				resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());
+				resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
+				List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
+				saveMetadata(resourceProperties, metadataGroups, item);
+			
+				ContentCollection collection = ContentHostingService.addCollection (newCollectionId, resourceProperties);
+
+				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+				{
+					// deal with pubview in resource mode//%%%
+					// boolean pubviewset = getPubViewInheritance(ContentHostingService.getReference(collection.getId()));
+					if (!item.isPubviewset())
+					{
+						setPubView(ContentHostingService.getReference(collection.getId()), item.isPubview());
+					}
+				}		
+			}
+			catch (IdUsedException e)
+			{
+				alerts.add(rb.getString("resotitle") + " " + item.getName() + " " + rb.getString("used4"));
+			}
+			catch (IdInvalidException e)
+			{
+				alerts.add(rb.getString("title") + " " + e.getMessage ());
+			}
+			catch (PermissionException e)
+			{
+				alerts.add(rb.getString("notpermis5") + " " + item.getName());
+			}
+			catch (InconsistentException e)
+			{
+				alerts.add(RESOURCE_INVALID_TITLE_STRING);
+			}	// try-catch
+			
+		}
+		
+	}	// createFolders
+
+	/**
+	 * @param state
+	 * @param params TODO
+	 */
+	protected void createFiles(SessionState state, ParameterParser params) 
+	{
+		List new_files = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		int numberOfItems = 1;
+		numberOfItems = number.intValue();
+		
+		for(int i = 0; i < numberOfItems; i++)
+		{
+			CreateItem item = (CreateItem) new_files.get(i);
+			
+			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
+			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
+			resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
+
+			resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, item.getCopyrightInfo());
+			resourceProperties.addProperty(ResourceProperties.PROP_COPYRIGHT_CHOICE, item.getCopyrightStatus());
+			if (item.hasCopyrightAlert())
+			{
+				resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT_ALERT, Boolean.toString(item.hasCopyrightAlert()));
+			}
+			else
+			{
+				resourceProperties.removeProperty (ResourceProperties.PROP_COPYRIGHT_ALERT);
+			}
+			
+			resourceProperties.addProperty(ResourceProperties.PROP_IS_COLLECTION, Boolean.FALSE.toString());
+			if(item.isHtml())
+			{
+				resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+			}
+			List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
+			saveMetadata(resourceProperties, metadataGroups, item);
+			String filename = Validator.escapeResourceName(item.getFilename()).trim();
+			if("".equals(filename))
+			{
+				if(item.isHtml())
+				{
+					filename = item.getName() + ".html";
+				}
+				else if(item.isPlaintext())
+				{
+					filename = item.getName() + ".txt";
+				}
+				else
+				{
+					filename = item.getName();
+				}
+					
+				filename = Validator.escapeResourceName(filename);
+			}
+			int extensionIndex = filename.lastIndexOf (".");
+			String extension = "";
+			if (extensionIndex > 0)
+			{
+				extension = filename.substring (extensionIndex);
+				filename = filename.substring(0, extensionIndex);
+			}
+			int attemptNum = 0;
+			String attempt = "";
+			String newResourceId = collectionId + filename + attempt + extension;
+
+			boolean tryingToAddItem = true;
+			while(tryingToAddItem)
+			{
+				
+				try
+				{
+					ContentResource resource = ContentHostingService.addResource (newResourceId,
+																				item.getMimeType(),
+																				item.getContent(),
+																				resourceProperties, item.getNotification());
+					tryingToAddItem = false;
+					// ResourceProperties rp = resource.getProperties();
+					item.setAdded(true);
+					
+
+					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+					{
+						// deal with pubview when in resource mode//%%%
+						if (! item.isPubviewset())
+						{
+							setPubView(ContentHostingService.getReference(resource.getId()), item.isPubview());
+						}
+					}
+				}
+				catch (IdUsedException e)
+				{
+					boolean foundUnusedId = false;
+					for(int trial = 1;!foundUnusedId && trial < 100; trial++)
+					{
+						attemptNum++;
+						attempt = Integer.toString(attemptNum);
+					
+
+						// add extension if there was one
+						newResourceId = collectionId + filename + "-" + attempt + extension;
+						
+						try 
+						{
+							ContentHostingService.getResource(newResourceId);
+						}
+						catch (IdUnusedException ee)
+						{
+							foundUnusedId = true;
+						}
+						catch (PermissionException ee)
+						{
+							foundUnusedId = true;
+						}
+						catch (TypeException ee)
+						{
+							foundUnusedId = true;
+						}
+					}
+				}
+				catch(PermissionException e)
+				{
+				}
+				catch(IdInvalidException e)
+				{
+				}
+				catch(InconsistentException e)
+				{
+				}
+				catch(OverQuotaException e)
+				{
+				}
+			}
+				
+		}
+		
+	}	// createFiles
+	
+	/**
+	 * @param state
+	 * @param params TODO
+	 */
+	protected void createUrls(SessionState state, ParameterParser params) 
+	{
+		List new_urls = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		int numberOfItems = 1;
+		numberOfItems = number.intValue();
+		
+		for(int i = 0; i < numberOfItems; i++)
+		{
+			CreateItem item = (CreateItem) new_urls.get(i);
+			
+			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
+			String title = item.getName();
+			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, title);							
+			resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
+
+			resourceProperties.addProperty(ResourceProperties.PROP_IS_COLLECTION, Boolean.FALSE.toString());
+			List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
+			saveMetadata(resourceProperties, metadataGroups, item);
+
+			byte[] newUrl = item.getFilename().getBytes();
+			String baseId = Validator.escapeResourceName(title);
+			int attemptNum = 0;
+			String attemptStr = "";
+			String newResourceId = collectionId + baseId + attemptStr;
+		
+			boolean tryingToAddItem = true;
+
+			while(tryingToAddItem)
+			{
+				try
+				{
+	System.out.print("ContentHostingService.addResource(" + newResourceId + ", " + ResourceProperties.TYPE_URL + ", (" + newUrl + " bytes), " + resourceProperties + ", "  + item.getNotification() + ")");
+					
+					ContentResource resource = ContentHostingService.addResource (newResourceId,
+																				ResourceProperties.TYPE_URL,
+																				newUrl,
+																				resourceProperties, item.getNotification());
+					tryingToAddItem = false;
+					// ResourceProperties rp = resource.getProperties();
+					item.setAdded(true);
+					
+
+					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+					{
+						// deal with pubview when in resource mode//%%%
+						if (! item.isPubviewset())
+						{
+							setPubView(ContentHostingService.getReference(resource.getId()), item.isPubview());
+						}
+					}
+				}
+				catch (IdUsedException e)
+				{
+					boolean foundUnusedId = false;
+					for(int trial = 1;!foundUnusedId && trial < 100; trial++)
+					{
+						attemptNum++;
+						attemptStr = "-" + Integer.toString(attemptNum);
+					
+
+						// add attempt number if there was one
+						newResourceId = collectionId + baseId + attemptStr;
+						
+						try 
+						{
+							ContentHostingService.getResource(newResourceId);
+						}
+						catch (IdUnusedException ee)
+						{
+							foundUnusedId = true;
+						}
+						catch (PermissionException ee)
+						{
+							foundUnusedId = true;
+						}
+						catch (TypeException ee)
+						{
+							foundUnusedId = true;
+						}
+					}
+				}
+				catch(PermissionException e)
+				{
+				}
+				catch(IdInvalidException e)
+				{
+				}
+				catch(InconsistentException e)
+				{
+				}
+				catch(OverQuotaException e)
+				{
+				}
+			}
+				
+		}
+		
+	}	// createUrls
+	
+	/**
+	* Build the context for creating folders and items
+	*/
+	public String buildCreateContext (VelocityPortlet portlet,
+												Context context,
+												RunData data,
+												SessionState state)
+	{
+		context.put("out", System.out);
+		
+		context.put("tlang",rb);
+		// find the ContentTypeImage service
+		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
+		
+		context.put("TYPE_FOLDER", TYPE_FOLDER);
+		context.put("TYPE_UPLOAD", TYPE_UPLOAD);
+		context.put("TYPE_HTML", MIME_TYPE_DOCUMENT_HTML);
+		context.put("TYPE_TEXT", MIME_TYPE_DOCUMENT_PLAINTEXT);
+		context.put("TYPE_URL", TYPE_URL);
+		
+		List new_items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		context.put("new_items", new_items);
+		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+		context.put("numberOfItems", numberOfItems);
+		context.put("max_number", new Integer(CREATE_MAX_ITEMS));
+		String itemType = (String) state.getAttribute(STATE_CREATE_TYPE);
+		context.put("itemType", itemType);
+		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		context.put("collectionId", collectionId);
+		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
+		context.put("homeCollectionId", homeCollectionId);
+		List collectionPath = getCollectionPath(state, homeCollectionId, collectionId);	
+		context.put ("collectionPath", collectionPath);
+
+		if(homeCollectionId.equals(collectionId))
+		{
+			context.put("atHome", Boolean.TRUE.toString());
+		}
+			
+		// copyright
+		copyrightChoicesIntoContext(state, context);
+
+		// put schema for metadata into context
+		metadataGroupsIntoContext(state, context);
+
+		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+		{
+			context.put("dropboxMode", Boolean.FALSE);
+		}
+		else if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
+		{
+			// notshow the public option or notification when in dropbox mode
+			context.put("dropboxMode", Boolean.TRUE);
+		}
+		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
+		
+		String template = (String) getContext(data).get("template");
+		return template + TEMPLATE_CREATE;
+
+	}
 
 	/**
 	* show the resource properties
@@ -3804,7 +4372,6 @@ extends VelocityPortletPaneledAction
 
 			EditItem item = new EditItem(id, itemName, itemType);
 			
-			item.setIsFolder(isCollection);
 			if(content != null)
 			{
 				item.setContent(content);
@@ -3829,16 +4396,16 @@ extends VelocityPortletPaneledAction
 			boolean canDelete = ContentHostingService.allowRemoveResource(id);
 			boolean canRevise = ContentHostingService.allowUpdateResource(id);
 			boolean canCopy = ContentHostingService.allowGetCollection(id);
-			boolean isUrl = (ResourceProperties.TYPE_URL.equals(itemType));
+			// boolean isUrl = (ResourceProperties.TYPE_URL.equals(itemType));
 
 			item.setCanRead(canRead);
 			item.setCanRevise(canRevise);
 			item.setCanAddItem(canAddItem);
 			item.setCanAddFolder(canAddFolder);
 			item.setCanDelete(canDelete);
-			item.setIsUrl(isUrl);
+			// item.setIsUrl(isUrl);
 			
-			if(isUrl)
+			if(item.isUrl())
 			{
 				String url = new String(content);
 				item.setFilename(url);
@@ -4532,7 +5099,7 @@ extends VelocityPortletPaneledAction
 				{
 					item.setContent(bytes);
 					item.setContentHasChanged(true);
-					item.setType(contenttype);
+					item.setMimeType(contenttype);
 					item.setFilename(filename);									
 				}
 			}
@@ -4625,7 +5192,26 @@ extends VelocityPortletPaneledAction
 			}
 		}
 		
-		
+		int noti = NotificationService.NOTI_OPTIONAL;
+		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
+		{
+			// set noti to none if in dropbox mode
+			noti = NotificationService.NOTI_NONE;
+		}
+		else
+		{
+			// read the notification options
+			String notification = params.getString("notify");
+			if ("r".equals(notification))
+			{
+				noti = NotificationService.NOTI_REQUIRED;
+			}
+			else if ("n".equals(notification))
+			{
+				noti = NotificationService.NOTI_NONE;
+			}
+		}
+		item.setNotification(noti);
 
 		List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
 		if(metadataGroups != null && ! metadataGroups.isEmpty())
@@ -4711,6 +5297,303 @@ extends VelocityPortletPaneledAction
 	}	// captureValues
 	
 	/**
+	 * @param state
+	 * @param params
+	 * @param item
+	 */
+	protected void captureMultipleValues(SessionState state, ParameterParser params, boolean markMissing)
+	{
+		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		
+		for(int i = 0; i < numberOfItems.intValue(); i++)
+		{
+			CreateItem item = (CreateItem) items.get(i);
+			item.clearMissing();
+
+			String name = params.getString("name" + i);
+			if(name == null || name.trim().equals(""))
+			{
+				if(markMissing)
+				{
+					alerts.add(rb.getString("titlenotnull"));
+					item.setMissing("name");
+				}
+				item.setName("");
+				// addAlert(state, rb.getString("titlenotnull"));
+			}
+			else
+			{
+				item.setName(name);
+			}
+			
+			String description = params.getString("description" + i);
+			if(description == null || description.trim().equals(""))
+			{
+				item.setDescription("");
+			}
+			else
+			{
+				item.setDescription(description);
+			}
+			
+			item.setContentHasChanged(false);
+			
+			if(item.isFileUpload())
+			{
+				// check for file replacement
+				FileItem fileitem = null;
+				try
+				{
+					fileitem = params.getFileItem("fileName" + i);
+					
+				}
+				catch(Exception e)
+				{
+					// this is an error in Firefox, Mozilla and Netscape
+				}
+				if(fileitem == null)
+				{
+					// "The user submitted a file to upload but it was too big!"
+				}
+				else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
+				{
+					// "The user submitted the form, but didn't select a file to upload!"
+				}
+				else if (fileitem.getFileName().length() > 0)
+				{
+					String filename = fileitem.getFileName();
+					byte[] bytes = fileitem.get();
+					String contenttype = fileitem.getContentType();
+					
+					if(bytes.length > 0)
+					{
+						item.setContent(bytes);
+						item.setContentHasChanged(true);
+						item.setMimeType(contenttype);
+						item.setFilename(filename);									
+					}
+				}
+			}
+			else if(item.isPlaintext())
+			{
+				// check for input from editor (textarea)
+				String content = params.getString("content" + i);
+				if(content != null)
+				{
+					item.setContentHasChanged(true);
+					item.setContent(content);
+				}
+				item.setMimeType(MIME_TYPE_DOCUMENT_PLAINTEXT);
+			}
+			else if(item.isHtml())
+			{
+				// check for input from editor (textarea)
+				String content = params.getCleanString("content" + i);
+				StringBuffer alertMsg = new StringBuffer();
+				content = FormattedText.processHtmlDocument(content, alertMsg);
+				if (alertMsg.length() > 0)
+				{
+					alerts.add(alertMsg.toString());
+				}
+				if(content != null && !content.equals(""))
+				{
+					item.setContent(content);
+					item.setContentHasChanged(true);
+				}
+				item.setMimeType(MIME_TYPE_DOCUMENT_HTML);
+			}
+			else if(item.isUrl())
+			{
+				String url = params.getString("Url" + i);
+				if(url == null || url.equals(""))
+				{
+					item.setFilename("");
+				}
+				else
+				{
+					if(!url.equals(NULL_STRING))
+					{
+						// valid protocol?
+						try
+						{
+							URL u = new URL(url);
+							item.setFilename(url);
+						}
+						catch (MalformedURLException e1)
+						{
+							try
+							{
+								Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
+								Matcher matcher = pattern.matcher(url);
+								if(matcher.matches())
+								{
+									URL test = new URL("http://" + matcher.group(2));
+									item.setFilename(url);							}
+								else
+								{
+									// invalid url
+									addAlert(state, rb.getString("validurl"));
+								}
+							}
+							catch (MalformedURLException e2)
+							{
+								// invalid url
+								addAlert(state, rb.getString("validurl"));
+							}
+						}
+						
+					}
+				}
+			}
+			if(item.isFileUpload() || item.isHtml() || item.isPlaintext())
+			{
+				// check for copyright status
+				// check for copyright info
+				// check for copyright alert
+				
+				String copyrightStatus = StringUtil.trimToNull(params.getString ("copyright" + i));
+				String copyrightInfo = StringUtil.trimToNull(params.getCleanString ("newcopyright" + i));
+				String copyrightAlert = StringUtil.trimToNull(params.getString("copyrightAlert" + i));
+
+				if (copyrightStatus != null)
+				{
+					if (state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) != null && copyrightStatus.equals(state.getAttribute(COPYRIGHT_NEW_COPYRIGHT)))
+					{
+						if (copyrightInfo != null)
+						{
+							item.setCopyrightInfo( copyrightInfo );
+						}
+						else
+						{
+							addAlert(state, rb.getString("specifycp2"));
+						}
+					}
+					else if (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) != null && copyrightStatus.equals (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT)))
+					{
+						item.setCopyrightInfo((String) state.getAttribute (STATE_MY_COPYRIGHT));
+					}
+
+					item.setCopyrightStatus( copyrightStatus );
+				}
+				item.setCopyrightAlert(copyrightAlert != null);
+
+			}
+
+			boolean pubviewset = item.isPubviewset();
+			boolean pubview = false;
+			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+			{
+				if (!pubviewset)
+				{
+					pubview = params.getBoolean("pubview" + i);
+					item.setPubview(pubview);
+				}
+			}
+			
+			int noti = NotificationService.NOTI_OPTIONAL;
+			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
+			{
+				// set noti to none if in dropbox mode
+				noti = NotificationService.NOTI_NONE;
+			}
+			else
+			{
+				// read the notification options
+				String notification = params.getString("notify" + i);
+				if ("r".equals(notification))
+				{
+					noti = NotificationService.NOTI_REQUIRED;
+				}
+				else if ("n".equals(notification))
+				{
+					noti = NotificationService.NOTI_NONE;
+				}
+			}
+			item.setNotification(noti);
+			
+			List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
+			if(metadataGroups != null && ! metadataGroups.isEmpty())
+			{
+				Iterator groupIt = metadataGroups.iterator();
+				while(groupIt.hasNext())
+				{
+					MetadataGroup group = (MetadataGroup) groupIt.next();
+					if(item.isGroupShowing(group.getName()))
+					{
+						Iterator propIt = group.iterator();
+						while(propIt.hasNext())
+						{
+							ResourcesMetadata prop = (ResourcesMetadata) propIt.next();
+							String propname = prop.getFullname();
+							if(ResourcesMetadata.WIDGET_DATE.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(prop.getWidget()))
+							{
+								int year = 0;
+								int month = 0;
+								int day = 0;
+								int hour = 0;
+								int minute = 0;
+								int second = 0;
+								int millisecond = 0;
+								String ampm = "";
+								
+								if(prop.getWidget().equals(ResourcesMetadata.WIDGET_DATE) || 
+									prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
+								{
+									year = params.getInt(propname + "_" + i + "_year", year);
+									month = params.getInt(propname + "_" + i + "_month", month);
+									day = params.getInt(propname + "_" + i + "_day", day);
+								}
+								if(prop.getWidget().equals(ResourcesMetadata.WIDGET_TIME) || 
+									prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
+								{
+									hour = params.getInt(propname + "_" + i + "_hour", hour);
+									minute = params.getInt(propname + "_" + i + "_minute", minute);
+									second = params.getInt(propname + "_" + i + "_second", second);
+									millisecond = params.getInt(propname + "_" + i + "_millisecond", millisecond);
+									ampm = params.getString(propname + "_" + i + "_ampm").trim();
+
+									if("pm".equalsIgnoreCase(ampm))
+									{
+										if(hour < 12)
+										{
+											hour += 12;
+										}
+									}
+									else if(hour == 12)
+									{
+										hour = 0;
+									}
+								}
+								if(hour > 23)
+								{
+									hour = hour % 24;
+									day++;
+								}
+								
+								Time value = TimeService.newTimeLocal(year, month, day, hour, minute, second, millisecond);
+								item.setMetadataItem(propname,value);
+
+							}
+							else
+							{
+								String value = params.getString(propname + "_" + i);
+								if(value != null)
+								{
+									item.setMetadataItem(propname, value);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		state.setAttribute(STATE_CREATE_ALERTS, alerts);
+
+	}	// captureMultipleValues
+	
+	/**
 	* Modify the properties
 	*/
 	public void doSavechanges ( RunData data)
@@ -4728,26 +5611,6 @@ extends VelocityPortletPaneledAction
 		
 
 		captureValues(state, params);
-
-		int noti = NotificationService.NOTI_OPTIONAL;
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-		{
-			// set noti to none if in dropbox mode
-			noti = NotificationService.NOTI_NONE;
-		}
-		else
-		{
-			// read the notification options
-			String notification = params.getString("notify");
-			if ("r".equals(notification))
-			{
-				noti = NotificationService.NOTI_REQUIRED;
-			}
-			else if ("n".equals(notification))
-			{
-				noti = NotificationService.NOTI_NONE;
-			}
-		}
 
 		// read the quota fields
 		String setQuota = params.getString("setQuota");
@@ -4802,7 +5665,7 @@ extends VelocityPortletPaneledAction
 					}
 					else if(item.contentHasChanged())
 					{
-						redit.setContentType(item.getType());
+						redit.setContentType(item.getMimeType());
 						redit.setContent(item.getContent());
 					}
 					String copyright = StringUtil.trimToNull(params.getString ("copyright"));
@@ -4864,29 +5727,8 @@ extends VelocityPortletPaneledAction
 				}
 
 				List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
-				if(metadataGroups != null && !metadataGroups.isEmpty())
-				{
-					MetadataGroup group = null;
-					Iterator it = metadataGroups.iterator();
-					while(it.hasNext())
-					{
-						group = (MetadataGroup) it.next();
-						Iterator props = group.iterator();
-						while(props.hasNext())
-						{
-							ResourcesMetadata prop = (ResourcesMetadata) props.next();
-							if(ResourcesMetadata.WIDGET_DATETIME.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_DATE.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(prop.getWidget()))
-							{
-								pedit.addProperty(prop.getFullname(), ((Time)item.getMetadata().get(prop.getFullname())).toString());
-								
-							}
-							else
-							{
-								pedit.addProperty(prop.getFullname(), (String) item.getMetadata().get(prop.getFullname()));
-							}
-						}
-					}
-				}
+				
+				saveMetadata(pedit, metadataGroups, item);
 
 				// commit the change
 				if (cedit != null)
@@ -4904,7 +5746,7 @@ extends VelocityPortletPaneledAction
 				}
 				else
 				{
-					ContentHostingService.commitResource(redit, noti);
+					ContentHostingService.commitResource(redit, item.getNotification());
 					
 					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
 					{
@@ -4949,6 +5791,44 @@ extends VelocityPortletPaneledAction
 
 	}	// doSavechanges
 	
+	/**
+	 * @param pedit
+	 * @param metadataGroups
+	 * @param metadata
+	 */
+	private void saveMetadata(ResourcePropertiesEdit pedit, List metadataGroups, EditItem item) 
+	{
+		if(metadataGroups != null && !metadataGroups.isEmpty())
+		{
+			MetadataGroup group = null;
+			Iterator it = metadataGroups.iterator();
+			while(it.hasNext())
+			{
+				group = (MetadataGroup) it.next();
+				Iterator props = group.iterator();
+				while(props.hasNext())
+				{
+					ResourcesMetadata prop = (ResourcesMetadata) props.next();
+					
+					if(ResourcesMetadata.WIDGET_DATETIME.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_DATE.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(prop.getWidget()))
+					{
+						Time val = (Time)item.getMetadata().get(prop.getFullname());
+						if(val != null)
+						{
+							pedit.addProperty(prop.getFullname(), val.toString());							
+						}
+					}
+					else
+					{
+						String val = (String) item.getMetadata().get(prop.getFullname());
+						pedit.addProperty(prop.getFullname(), val);
+					}
+				}
+			}
+		}
+		
+	}
+
 	/**
 	 * @param data
 	 */
@@ -7435,7 +8315,7 @@ extends VelocityPortletPaneledAction
 			// get the collection
 			// try using existing resource first
 			ContentCollection collection = null;
-
+			
 			// get the collection
 			if (expandedCollections.containsKey(collectionId)) 
 			{
@@ -7517,7 +8397,6 @@ extends VelocityPortletPaneledAction
 			ResourceProperties cProperties = collection.getProperties();
 			String folderName = cProperties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 			BrowseItem folder = new BrowseItem(collectionId, folderName, "folder");
-			folder.setIsFolder(true);
 			
 			String containerId = contentService.getContainingCollectionId (collectionId);
 			folder.setContainer(containerId);
@@ -7615,7 +8494,6 @@ extends VelocityPortletPaneledAction
 						String itemType = ((ContentResource)resource).getContentType();
 						String itemName = props.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 						BrowseItem newItem = new BrowseItem(itemId, itemName, itemType);
-						newItem.setIsFolder(false);
 						
 						newItem.setContainer(collectionId);
 						
@@ -8324,7 +9202,6 @@ extends VelocityPortletPaneledAction
 		protected boolean m_canAddItem;
 		protected boolean m_canAddFolder;
 
-		protected boolean m_isFolder;
 		protected boolean m_isEmpty;
 		protected String m_createdBy;
 		protected String m_createdTime;
@@ -8353,7 +9230,6 @@ extends VelocityPortletPaneledAction
 			m_canRevise = false;
 			m_canDelete = false;
 			m_canCopy = false;
-			m_isFolder = false;
 			m_isEmpty = true;
 			m_isCopied = false;
 			m_createdBy = "";
@@ -8471,7 +9347,7 @@ extends VelocityPortletPaneledAction
 		 */
 		public boolean isFolder()
 		{
-			return m_isFolder;
+			return TYPE_FOLDER.equals(m_type);
 		}
 
 		/**
@@ -8480,14 +9356,6 @@ extends VelocityPortletPaneledAction
 		public String getType()
 		{
 			return m_type;
-		}
-
-		/**
-		 * @param isFolder
-		 */
-		public void setIsFolder(boolean isFolder)
-		{
-			m_isFolder = isFolder;
 		}
 
 		/**
@@ -8714,6 +9582,7 @@ extends VelocityPortletPaneledAction
 		protected boolean m_pubviewset;
 		protected String m_filename;
 		protected byte[] m_content;
+		protected String m_mimetype;
 		protected String m_description;
 		protected Map m_metadata;
 		protected boolean m_hasQuota;
@@ -8721,6 +9590,9 @@ extends VelocityPortletPaneledAction
 		protected String m_quota;
 		protected boolean m_isUrl;
 		protected boolean m_contentHasChanged;
+		protected int m_notification;
+		
+		protected Set m_metadataGroupsShowing;
 		
 		/**
 		 * @param id
@@ -8731,15 +9603,56 @@ extends VelocityPortletPaneledAction
 		{
 			super(id, name, type);
 			m_contentHasChanged = false;
-			
+			m_metadata = new Hashtable();
+			m_metadataGroupsShowing = new HashSet();
+			m_mimetype = type;
+			m_content = null;
+			m_notification = NotificationService.NOTI_OPTIONAL;
 		}
 		
+		/**
+		 * Show the indicated metadata group for the item 
+		 * @param group
+		 */
+		public void showMetadataGroup(String group)
+		{
+			m_metadataGroupsShowing.add(group);
+		}
+		
+		/**
+		 * Hide the indicated metadata group for the item
+		 * @param group
+		 */
+		public void hideMetadataGroup(String group)
+		{
+			m_metadataGroupsShowing.remove(group);
+			m_metadataGroupsShowing.remove(Validator.escapeUrl(group));
+		}
+		
+		/**
+		 * Query whether the indicated metadata group is showing for the item
+		 * @param group
+		 * @return true if the metadata group is showing, false otherwise
+		 */
+		public boolean isGroupShowing(String group)
+		{
+			return m_metadataGroupsShowing.contains(group) || m_metadataGroupsShowing.contains(Validator.escapeUrl(group));
+		}
+		
+		/**
+		 * @return
+		 */
+		public boolean isFileUpload() 
+		{
+			return !isFolder() && !isUrl() && !isHtml() && !isPlaintext();
+		}
+
 		/**
 		 * @param name
 		 */
 		public void setName(String name)
 		{
-			this.m_name = name;
+			m_name = name;
 		}
 		
 		/**
@@ -8747,7 +9660,23 @@ extends VelocityPortletPaneledAction
 		 */
 		public void setType(String type)
 		{
-			this.m_type = type;
+			m_type = type;
+		}
+		
+		/**
+		 * @param mimetype
+		 */
+		public void setMimeType(String mimetype)
+		{
+			m_mimetype = mimetype;
+		}
+		
+		/**
+		 * @return
+		 */
+		public String getMimeType()
+		{
+			return m_mimetype;
 		}
 		
 		/**
@@ -8760,7 +9689,7 @@ extends VelocityPortletPaneledAction
 		 * @param copyrightInfo The copyrightInfo to set.
 		 */
 		public void setCopyrightInfo(String copyrightInfo) {
-			this.m_copyrightInfo = copyrightInfo;
+			m_copyrightInfo = copyrightInfo;
 		}
 		/**
 		 * @return Returns the copyrightStatus.
@@ -8772,7 +9701,7 @@ extends VelocityPortletPaneledAction
 		 * @param copyrightStatus The copyrightStatus to set.
 		 */
 		public void setCopyrightStatus(String copyrightStatus) {
-			this.m_copyrightStatus = copyrightStatus;
+			m_copyrightStatus = copyrightStatus;
 		}
 		/**
 		 * @return Returns the description.
@@ -8784,7 +9713,7 @@ extends VelocityPortletPaneledAction
 		 * @param description The description to set.
 		 */
 		public void setDescription(String description) {
-			this.m_description = description;
+			m_description = description;
 		}
 		/**
 		 * @return Returns the filename.
@@ -8796,7 +9725,7 @@ extends VelocityPortletPaneledAction
 		 * @param filename The filename to set.
 		 */
 		public void setFilename(String filename) {
-			this.m_filename = filename;
+			m_filename = filename;
 		}
 		/**
 		 * @return Returns the metadata.
@@ -8808,7 +9737,7 @@ extends VelocityPortletPaneledAction
 		 * @param metadata The metadata to set.
 		 */
 		public void setMetadata(Map metadata) {
-			this.m_metadata = metadata;
+			m_metadata = metadata;
 		}
 		/**
 		 * @param name
@@ -8828,7 +9757,7 @@ extends VelocityPortletPaneledAction
 		 * @param pubview The pubview to set.
 		 */
 		public void setPubview(boolean pubview) {
-			this.m_pubview = pubview;
+			m_pubview = pubview;
 		}
 		/**
 		 * @return Returns the pubviewset.
@@ -8840,7 +9769,7 @@ extends VelocityPortletPaneledAction
 		 * @param pubviewset The pubviewset to set.
 		 */
 		public void setPubviewset(boolean pubviewset) {
-			this.m_pubviewset = pubviewset;
+			m_pubviewset = pubviewset;
 		}
 		/**
 		 * @return Returns the content.
@@ -8851,20 +9780,33 @@ extends VelocityPortletPaneledAction
 		/**
 		 * @return Returns the content as a String.
 		 */
-		public String getContentString() {
-			return new String( m_content );
+		public String getContentstring() 
+		{
+			String rv = "";
+			if(m_content != null && m_content.length > 0)
+			{
+				rv = new String( m_content );
+			}
+			return rv;
 		}
 		/**
 		 * @param content The content to set.
 		 */
 		public void setContent(byte[] content) {
-			this.m_content = content;
+			m_content = content;
 		}
 		/**
 		 * @param content The content to set.
 		 */
 		public void setContent(String content) {
-			this.m_content = content.getBytes();
+			try
+			{
+				m_content = content.getBytes("UTF-8");
+			}
+			catch(UnsupportedEncodingException e)
+			{
+				m_content = content.getBytes();
+			}
 		}
 		/**
 		 * @return Returns the canSetQuota.
@@ -8876,7 +9818,7 @@ extends VelocityPortletPaneledAction
 		 * @param canSetQuota The canSetQuota to set.
 		 */
 		public void setCanSetQuota(boolean canSetQuota) {
-			this.m_canSetQuota = canSetQuota;
+			m_canSetQuota = canSetQuota;
 		}
 		/**
 		 * @return Returns the hasQuota.
@@ -8888,7 +9830,7 @@ extends VelocityPortletPaneledAction
 		 * @param hasQuota The hasQuota to set.
 		 */
 		public void setHasQuota(boolean hasQuota) {
-			this.m_hasQuota = hasQuota;
+			m_hasQuota = hasQuota;
 		}
 		/**
 		 * @return Returns the quota.
@@ -8900,35 +9842,28 @@ extends VelocityPortletPaneledAction
 		 * @param quota The quota to set.
 		 */
 		public void setQuota(String quota) {
-			this.m_quota = quota;
+			m_quota = quota;
 		}
 		/**
 		 * @return true if content-type of item indicates it represents a URL, false otherwise
 		 */
 		public boolean isUrl()
 		{
-			return m_isUrl;
-		}
-		/**
-		 * @param isUrl True if item represents a stored URL, false otherwise.
-		 */
-		public void setIsUrl(boolean isUrl)
-		{
-			m_isUrl = isUrl;
+			return TYPE_URL.equals(m_type) || ResourceProperties.TYPE_URL.equals(m_mimetype);
 		}
 		/**
 		 * @return true if content-type of item is "text/text" (plain text), false otherwise
 		 */
 		public boolean isPlaintext()
 		{
-			return "text/text".equals(this.m_type) || "text/plain".equals(this.m_type);
+			return MIME_TYPE_DOCUMENT_PLAINTEXT.equals(m_mimetype) || MIME_TYPE_DOCUMENT_PLAINTEXT.equals(m_type);
 		}
 		/**
 		 * @return true if content-type of item is "text/html" (an html document), false otherwise
 		 */
 		public boolean isHtml()
 		{
-			return "text/html".equals(this.m_type);
+			return MIME_TYPE_DOCUMENT_HTML.equals(m_mimetype) || MIME_TYPE_DOCUMENT_HTML.equals(m_type);
 		}
 		
 		public boolean contentHasChanged()
@@ -8941,7 +9876,83 @@ extends VelocityPortletPaneledAction
 			m_contentHasChanged = changed;
 		}
 		
+		public void setNotification(int notification)
+		{
+			m_notification = notification;
+		}
+		
+		public int getNotification()
+		{
+			return m_notification;
+		}
+		
 	}	// inner class EditItem
+	
+	/**
+	 * Inner class encapsulates information about resources (folders and items) during creation process
+	 */
+	public class CreateItem 
+		extends EditItem
+	{
+		protected Set m_missingInformation;
+		protected boolean m_hasBeenAdded;
+		
+		/**
+		 * constructor supplies null values for id, name and type (for use before those values are known)
+		 */
+		public CreateItem()
+		{
+			super("", "", "");
+			m_missingInformation = new HashSet();
+			m_hasBeenAdded = false;
+
+		}
+		
+		/**
+		 * constructor supplies null values for id and name (for use before those values are known)
+		 * @param type the type of item being created
+		 */
+		public CreateItem(String type)
+		{
+			super("", "", type);
+			m_missingInformation = new HashSet();
+		}
+		
+		/**
+		 * @param id
+		 */
+		public void setId(String id)
+		{
+			m_id = id;
+		}
+		
+		public void setMissing(String propname)
+		{
+			m_missingInformation.add(propname);
+		}
+		
+		public boolean isMissing(String propname)
+		{
+			return m_missingInformation.contains(propname) || m_missingInformation.contains(Validator.escapeUrl(propname));
+		}
+		
+		public void clearMissing()
+		{
+			m_missingInformation.clear();
+		}
+		
+		public void setAdded(boolean added)
+		{
+			m_hasBeenAdded = added;
+		}
+		
+		public boolean hasBeenAdded()
+		{
+			return m_hasBeenAdded;
+		}
+
+	}	// class CreateItem
+	
 	
 	/**
 	 * Inner class encapsulates information about folders (and final item?) in a collection path (a.k.a. breadcrumb)
@@ -9134,6 +10145,6 @@ extends VelocityPortletPaneledAction
 
 /**********************************************************************************
 *
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/content/ResourcesAction.java,v 1.46 2005/06/11 12:41:43 jimeng.umich.edu Exp $
+* $Id$
 *
 **********************************************************************************/

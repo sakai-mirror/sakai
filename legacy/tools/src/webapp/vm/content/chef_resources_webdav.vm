@@ -1,5 +1,4 @@
-## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/content/chef_resources_webdav.vm,v 1.7 2005/06/08 15:19:32 gsilver.umich.edu Exp $
-<!-- chef_resources_webdav.vm, use with org.chefproject.ContentListAction.java -->
+<!-- chef_resources_webdav.vm, version: $Revision:  $, use with org.sakaiproject.tool.content.ResourcesAction.java -->
 <script language="JavaScript" type="text/JavaScript">
 <!--
 	function openCopyrightWindow(theURL,winName,winSettings) 

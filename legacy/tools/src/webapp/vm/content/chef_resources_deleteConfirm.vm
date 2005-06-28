@@ -1,4 +1,4 @@
-##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/content/chef_resources_deleteConfirm.vm,v 1.4 2005/06/03 15:50:41 jimeng.umich.edu Exp $ -->
+<!-- chef_resources_deleteConfirm.vm, version: $Revision:  $, use with org.sakaiproject.tool.content.ResourcesAction.java -->
 ## #paitence("delete") %%% currently disabled -ggolden
 <div class="portletBody">
 	<h3>
