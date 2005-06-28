@@ -21,7 +21,7 @@
 		<tool id = "sakai.mailbox" />
 		<tool id = "sakai.news" />
 		<tool id = "sakai.iframe" />
-		<tool id = "sakai.siteinfo" />
+		<tool id = "sakai.siteinfo" required = "true" />
 		<tool id = "sakai.contact.support" />
 
 	</category>
@@ -45,7 +45,7 @@
 		<tool id = "sakai.mailbox" />
 		<tool id = "sakai.news" />
 		<tool id = "sakai.iframe" />
-		<tool id = "sakai.siteinfo" />
+		<tool id = "sakai.siteinfo" required = "true" />
 		<tool id = "sakai.contact.support" />
         
 	</category>

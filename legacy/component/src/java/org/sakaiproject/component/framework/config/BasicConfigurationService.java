@@ -89,6 +89,9 @@ public class BasicConfigurationService implements ServerConfigurationService
 	/** loaded tool orders - map keyed by category of List of tool id strings. */
 	protected Map m_toolOrders = new HashMap();
 
+	/** required tools - map keyed by category of List of tool id strings. */
+	protected Map m_toolsRequired = new HashMap();
+
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Dependencies and their setter methods
 	 *********************************************************************************************************************************************************************************************************************************************************/
@@ -511,6 +514,23 @@ public class BasicConfigurationService implements ServerConfigurationService
 	/**
 	 * {@inheritDoc}
 	 */
+	public List getToolsRequired(String category)
+	{
+		if (category != null)
+		{
+			List order = (List) m_toolsRequired.get(category);
+			if (order != null)
+			{
+				return order;
+			}
+		}
+
+		return new Vector();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void registerResourceService(ResourceService service)
 	{
 		m_resourceServices.add(service);
@@ -665,6 +685,9 @@ public class BasicConfigurationService implements ServerConfigurationService
 					{
 						order = new Vector();
 						m_toolOrders.put(name, order);
+						
+						List required = new Vector();
+						m_toolsRequired.put(name, required);
 
 						// get the kids
 						NodeList nodes = rootElement.getChildNodes();
@@ -681,6 +704,12 @@ public class BasicConfigurationService implements ServerConfigurationService
 								if (id != null)
 								{
 									order.add(id);
+								}
+								
+								String req = StringUtil.trimToNull(element.getAttribute("required"));
+								if ((req != null) && (Boolean.TRUE.toString().equalsIgnoreCase(req)))
+								{
+									required.add(id);
 								}
 							}
 						}

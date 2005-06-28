@@ -200,6 +200,13 @@ public interface ServerConfigurationService
 	List getToolOrder(String category);
 
 	/**
+	 * Access the list of tool ids that are required for this category.
+	 * @param category The tool category.
+	 * @return A list of tool ids (String) that are required for this category, or an empty list if there are none for this category.
+	 */
+	List getToolsRequired(String category);
+
+	/**
 	 * Access the list of services which keep site related resources.
 	 * 
 	 * @return List (org.sakaiproject.service.legacy.resource.ResourceService) of services which keep site related resources.

@@ -1106,8 +1106,7 @@ public class SiteAction extends PagedResourceActionII
 						context.put("isProjectSite", Boolean.TRUE);
 					}
 				}
-				// TODO: there are no default tools! ServerConfigurationService.getDefaultToolIds(siteType)
-				context.put("defaultTools", new Vector());
+				context.put("defaultTools", ServerConfigurationService.getToolsRequired(siteType));
 
 				toolRegistrationSelectedList = (List) state.getAttribute(STATE_TOOL_REGISTRATION_SELECTED_LIST);
 				context.put (STATE_TOOL_REGISTRATION_SELECTED_LIST, toolRegistrationSelectedList); // String toolId's
@@ -1134,9 +1133,7 @@ public class SiteAction extends PagedResourceActionII
 				Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 				context.put("SiteTitle", site.getTitle());
 				String type = (String) state.getAttribute(STATE_SITE_TYPE);
-				
-				// TODO: there are no default tools! ServerConfigurationService.getDefaultToolIds(type)
-				context.put("defaultTools", new Vector());
+				context.put("defaultTools", ServerConfigurationService.getToolsRequired(type));
 				
 				boolean myworkspace_site = false;
 				//Put up tool lists filtered by category
