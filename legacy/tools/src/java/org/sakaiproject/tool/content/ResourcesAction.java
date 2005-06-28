@@ -1990,11 +1990,20 @@ extends VelocityPortletPaneledAction
 		else if(flow.equals("updateNumber"))
 		{
 			captureMultipleValues(state, params, false);
-			
 			int number = params.getInt("numberOfItems");
 			Integer numberOfItems = new Integer(number);
 			state.setAttribute(STATE_CREATE_NUMBER, numberOfItems);
+			
+			// clear display of error messages
 			state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
+			List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+			Iterator it = items.iterator();
+			while(it.hasNext())
+			{
+				CreateItem item = (CreateItem) it.next();
+				item.clearMissing();
+			}
+			state.setAttribute(STATE_CREATE_ITEMS, items);
 			state.removeAttribute(STATE_MESSAGE);
 		}
 		else if(flow.equals("create") && TYPE_FOLDER.equals(itemType))
@@ -2014,55 +2023,70 @@ extends VelocityPortletPaneledAction
 				{
 					mode = MODE_LIST;
 				}
-				else
-				{
-
-				}
-			}
-			else
-			{
-
 			}
 		}
 		else if(flow.equals("create") && TYPE_UPLOAD.equals(itemType))
 		{
 			captureMultipleValues(state, params, true);
-			// NOW SAVE THE ITEMS
-			createFiles(state, params);
-			
-			mode = MODE_LIST;		
+			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			if(alerts.isEmpty())
+			{
+				createFiles(state, params);
+				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+				if(alerts.isEmpty())
+				{
+					mode = MODE_LIST;
+				}
+			}
 		}
 		else if(flow.equals("create") && MIME_TYPE_DOCUMENT_HTML.equals(itemType))
 		{
 			captureMultipleValues(state, params, true);
-			// NOW SAVE THE ITEMS
-			createFiles(state, params);
-			
-			mode = MODE_LIST;		
+			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			if(alerts.isEmpty())
+			{
+				createFiles(state, params);
+				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+				if(alerts.isEmpty())
+				{
+					mode = MODE_LIST;
+				}
+			}
 		}
 		else if(flow.equals("create") && MIME_TYPE_DOCUMENT_PLAINTEXT.equals(itemType))
 		{
 			captureMultipleValues(state, params, true);
-			// NOW SAVE THE ITEMS
-			createFiles(state, params);
-			
-			mode = MODE_LIST;		
+			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			if(alerts.isEmpty())
+			{
+				createFiles(state, params);
+				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+				if(alerts.isEmpty())
+				{
+					mode = MODE_LIST;
+				}
+			}
 		}
 		else if(flow.equals("create") && TYPE_URL.equals(itemType))
 		{
 			captureMultipleValues(state, params, true);
-			// NOW SAVE THE ITEMS
-			createUrls(state, params);
-			
-			mode = MODE_LIST;		
+			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			if(alerts.isEmpty())
+			{
+				createUrls(state, params);
+				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+				if(alerts.isEmpty())
+				{
+					mode = MODE_LIST;
+				}
+			}
 		}
 		else if(flow.equals("create"))
 		{
 			captureMultipleValues(state, params, true);
-			// NOW SAVE THE ITEMS
-			
-			addAlert(state, "Invalid item type");
-			// mode = MODE_LIST;		
+			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			alerts.add("Invalid item type");
+			state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		}
 		else if(flow.equals("showOptional"))
 		{
@@ -2078,6 +2102,16 @@ extends VelocityPortletPaneledAction
 					item.showMetadataGroup(metadataGroup);
 				}
 			}
+			
+			// clear display of error messages
+			state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
+			Iterator it = items.iterator();
+			while(it.hasNext())
+			{
+				CreateItem item = (CreateItem) it.next();
+				item.clearMissing();
+			}
+			state.setAttribute(STATE_CREATE_ITEMS, items);
 		}
 		else if(flow.equals("hideOptional"))
 		{
@@ -2093,8 +2127,20 @@ extends VelocityPortletPaneledAction
 					item.hideMetadataGroup(metadataGroup);
 				}
 			}
+			
+			// clear display of error messages
+			state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
+			Iterator it = items.iterator();
+			while(it.hasNext())
+			{
+				CreateItem item = (CreateItem) it.next();
+				item.clearMissing();
+			}
+			state.setAttribute(STATE_CREATE_ITEMS, items);
 		}
+		
 		alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		
 		Iterator alertIt = alerts.iterator();
 		while(alertIt.hasNext())
 		{
@@ -2164,8 +2210,8 @@ extends VelocityPortletPaneledAction
 			{
 				alerts.add(RESOURCE_INVALID_TITLE_STRING);
 			}	// try-catch
-			
 		}
+		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}	// createFolders
 
@@ -2175,6 +2221,7 @@ extends VelocityPortletPaneledAction
 	 */
 	protected void createFiles(SessionState state, ParameterParser params) 
 	{
+		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		List new_files = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
 		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
@@ -2292,19 +2339,24 @@ extends VelocityPortletPaneledAction
 				}
 				catch(PermissionException e)
 				{
+					alerts.add(rb.getString("notpermis12"));
 				}
 				catch(IdInvalidException e)
 				{
+					alerts.add(rb.getString("title") + " " + e.getMessage ());
 				}
 				catch(InconsistentException e)
 				{
+					alerts.add(RESOURCE_INVALID_TITLE_STRING);
 				}
 				catch(OverQuotaException e)
 				{
+					alerts.add(rb.getString("overquota"));
 				}
 			}
 				
 		}
+		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}	// createFiles
 	
@@ -2314,6 +2366,7 @@ extends VelocityPortletPaneledAction
 	 */
 	protected void createUrls(SessionState state, ParameterParser params) 
 	{
+		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		List new_urls = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
 		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
@@ -2345,8 +2398,6 @@ extends VelocityPortletPaneledAction
 			{
 				try
 				{
-	System.out.print("ContentHostingService.addResource(" + newResourceId + ", " + ResourceProperties.TYPE_URL + ", (" + newUrl + " bytes), " + resourceProperties + ", "  + item.getNotification() + ")");
-					
 					ContentResource resource = ContentHostingService.addResource (newResourceId,
 																				ResourceProperties.TYPE_URL,
 																				newUrl,
@@ -2397,19 +2448,23 @@ extends VelocityPortletPaneledAction
 				}
 				catch(PermissionException e)
 				{
+					alerts.add(rb.getString("notpermis13"));
 				}
 				catch(IdInvalidException e)
 				{
+					alerts.add(rb.getString("title") + " " + e.getMessage ());
 				}
 				catch(InconsistentException e)
 				{
+					alerts.add(RESOURCE_INVALID_TITLE_STRING);
 				}
 				catch(OverQuotaException e)
 				{
+					alerts.add(rb.getString("overquota"));
 				}
 			}
-				
 		}
+		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}	// createUrls
 	
@@ -2421,8 +2476,6 @@ extends VelocityPortletPaneledAction
 												RunData data,
 												SessionState state)
 	{
-		context.put("out", System.out);
-		
 		context.put("tlang",rb);
 		// find the ContentTypeImage service
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
@@ -5352,14 +5405,27 @@ extends VelocityPortletPaneledAction
 				catch(Exception e)
 				{
 					// this is an error in Firefox, Mozilla and Netscape
+					// "The user didn't select a file to upload!"
+					if(item.getContent() == null || item.getContent().length <= 0)
+					{
+						alerts.add(rb.getString("choosefile") + " " + (i + 1) + ". ");
+						item.setMissing("fileName");
+					}
 				}
 				if(fileitem == null)
 				{
 					// "The user submitted a file to upload but it was too big!"
+					alerts.add(rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded2"));
+					item.setMissing("fileName");
 				}
 				else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
 				{
-					// "The user submitted the form, but didn't select a file to upload!"
+					if(item.getContent() == null || item.getContent().length <= 0)
+					{
+						// "The user submitted the form, but didn't select a file to upload!"
+						alerts.add(rb.getString("choosefile") + " " + (i + 1) + ". ");
+						item.setMissing("fileName");
+					}
 				}
 				else if (fileitem.getFileName().length() > 0)
 				{
@@ -5373,6 +5439,11 @@ extends VelocityPortletPaneledAction
 						item.setContentHasChanged(true);
 						item.setMimeType(contenttype);
 						item.setFilename(filename);									
+					}
+					else 
+					{
+						alerts.add(rb.getString("choosefile") + " " + (i + 1) + ". ");
+						item.setMissing("fileName");
 					}
 				}
 			}
@@ -5410,6 +5481,8 @@ extends VelocityPortletPaneledAction
 				if(url == null || url.equals(""))
 				{
 					item.setFilename("");
+					alerts.add(rb.getString("specifyurl"));
+					item.setMissing("Url");
 				}
 				else
 				{
@@ -5434,13 +5507,17 @@ extends VelocityPortletPaneledAction
 								else
 								{
 									// invalid url
-									addAlert(state, rb.getString("validurl"));
+									alerts.add(rb.getString("validurl"));
+									item.setMissing("Url");
+									// addAlert(state, rb.getString("validurl"));
 								}
 							}
 							catch (MalformedURLException e2)
 							{
 								// invalid url
-								addAlert(state, rb.getString("validurl"));
+								alerts.add(rb.getString("validurl"));
+								item.setMissing("Url");
+								// addAlert(state, rb.getString("validurl"));
 							}
 						}
 						
@@ -5467,7 +5544,8 @@ extends VelocityPortletPaneledAction
 						}
 						else
 						{
-							addAlert(state, rb.getString("specifycp2"));
+							alerts.add(rb.getString("specifycp2"));
+							// addAlert(state, rb.getString("specifycp2"));
 						}
 					}
 					else if (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) != null && copyrightStatus.equals (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT)))
@@ -5588,6 +5666,7 @@ extends VelocityPortletPaneledAction
 					}
 				}
 			}
+			
 		}
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 

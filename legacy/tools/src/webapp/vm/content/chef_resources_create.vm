@@ -263,43 +263,57 @@
 	
 			#if ($item.isFolder())
 			#elseif ($item.isUrl())
-				<p class="shorttext">
+				#if($!{item.isMissing("Url")})
+					<p class="shorttext validation">
+				#else
+					<p class="shorttext">
+						<span class="reqStar">*</span>
+				#end
 					<label for="Url$i">$tlang.getString("gen.url")</label>
 					<input type="text" name="Url$i" id="Url$i" size="60" value="$!validator.escapeHtml("$!item.filename")" />
 				</p>
 			#elseif ($item.isPlaintext()) 
-				<p class="shorttext"> 
+				#if($!{item.isMissing("content")})
+					<p class="shorttext validation">
+				#else
+					<p class="shorttext">
+				#end
 					<label for="content$i">&nbsp;</label>
 					<textarea name="content$i" id="content$i" rows="10" cols="40" wrap="virtual">$!validator.escapeHtmlTextarea($!{item.contentstring})</textarea>
 				</p>
 			#elseif ($item.isHtml())
-				<p class="shorttext"> 
+				#if($!{item.isMissing("content")})
+					<p class="shorttext validation">
+				#else
+					<p class="shorttext">
+				#end
 					<label for="content$i">&nbsp;</label>
 					<table border="0"><tr><td>
 						<textarea name="content$i" id="content$i" rows="30" cols="80" wrap="virtual">$validator.escapeHtmlTextarea("$!{item.contentstring}")</textarea>
 						#chef_setupformattedtextarea("content$i")
 					</td></tr></table>
 				</p>
-#*
-				<p class="shorttext"> 
-					<label for="content$i">xxx</label>
-					<table border="0"><tr><td>
-						<textarea name="content$i" id="content$i" rows="30" cols="80" wrap="virtual">$!validator.escapeHtmlFormattedTextarea($!{item.contentstring})</textarea>
-						##chef_setupformattedtextarea("content$i")
-						#chef_setuphtmldocumenttextarea("content$i")
-					</td></tr></table>
-				</p>
-*#
 			#else
-				<p class="shorttext">
-					#if("$!{item.Filename}" == "")
-						<label for="fileName$i">$tlang.getString("gen.choose") $tlang.getString("add.afile")</label>
+				#if("$!{item.Filename}" == "")
+					#if($!{item.isMissing("fileName")})
+						<p class="shorttext validation">
 					#else
-						<label for="fileName">$tlang.getString("rep.thisfile")</label>
-						$item.Filename<br />
+						<p class="shorttext">
 					#end
-					<input type="file" name="fileName$i" id="fileName$i"  class ="upload" />
-				</p>
+						<span class="reqStar">*</span>
+						<label for="fileName$i">$tlang.getString("gen.choose") $tlang.getString("add.afile")</label>
+						<input type="file" name="fileName$i" id="fileName$i"  class ="upload" />
+					</p>
+				#else
+					<p class="shorttext">
+						<label for="fileName">$tlang.getString("addi.upload")</label>
+						$item.Filename
+					</p>
+					<p class="shorttext">
+						<label for="fileName">$tlang.getString("rep.thisfile")</label>
+						<input type="file" name="fileName$i" id="fileName$i"  class ="upload" />
+					</p>
+				#end
 			#end
 			<p class="shorttext">
 				<label for="description$i">
