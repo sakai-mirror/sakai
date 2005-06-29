@@ -17,7 +17,7 @@
 		$!replyPath
 	</p>
 	<p class="instruction indnt0" style="text-indent:.3em">$tlang.getString("rep.reqite")</p>
-	<table class="itemSummary" cellspacing="0" cellpadding="0" summary="$tlang.getString("rep.mesyou")">
+	<table class="itemSummary" style="margin-left:.5em" cellspacing="0" cellpadding="0" summary="$tlang.getString("rep.mesyou")">
 		<tr>	
 			<th>
 				$tlang.getString("gen.fro")
