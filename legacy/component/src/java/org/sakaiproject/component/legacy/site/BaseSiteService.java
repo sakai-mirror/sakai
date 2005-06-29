@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.session.SessionBindingEvent;
+import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.exception.IdInvalidException;
@@ -48,7 +50,7 @@ import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
-import org.sakaiproject.service.framework.session.SessionStateBindingListener;
+
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.alias.cover.AliasService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
@@ -2659,7 +2661,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * SiteEdit implementation
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
-	public class BaseSiteEdit extends BaseSite implements SiteEdit, SessionStateBindingListener
+	public class BaseSiteEdit extends BaseSite implements SiteEdit, SessionBindingListener
 	{
 		/** The event code for this edit. */
 		protected String m_event = null;
@@ -3010,30 +3012,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/******************************************************************************************************************************************************************************************************************************************************
-		 * SessionStateBindingListener implementation
+		 * SessionBindingListener implementation
 		 *****************************************************************************************************************************************************************************************************************************************************/
 
-		/**
-		 * Accept notification that this object has been bound as a SessionState attribute.
-		 * 
-		 * @param sessionStateKey
-		 *        The id of the session state which holds the attribute.
-		 * @param attributeName
-		 *        The id of the attribute to which this object is now the value.
-		 */
-		public void valueBound(String sessionStateKey, String attributeName)
+		public void valueBound(SessionBindingEvent event)
 		{
 		}
 
-		/**
-		 * Accept notification that this object has been removed from a SessionState attribute.
-		 * 
-		 * @param sessionStateKey
-		 *        The id of the session state which held the attribute.
-		 * @param attributeName
-		 *        The id of the attribute to which this object was the value.
-		 */
-		public void valueUnbound(String sessionStateKey, String attributeName)
+		public void valueUnbound(SessionBindingEvent event)
 		{
 			if (m_logger.isDebugEnabled()) m_logger.debug(this + ".valueUnbound()");
 

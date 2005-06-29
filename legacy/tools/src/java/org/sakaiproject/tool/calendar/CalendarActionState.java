@@ -31,9 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.api.kernel.session.SessionBindingEvent;
+import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.cheftool.ControllerState;
 import org.sakaiproject.service.framework.log.cover.Logger;
-import org.sakaiproject.service.framework.session.SessionStateBindingListener;
+
 import org.sakaiproject.service.legacy.calendar.CalendarEventEdit;
 import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.site.SiteEdit;
@@ -45,7 +47,7 @@ import org.sakaiproject.util.CalendarUtil;
  */
 public class CalendarActionState
 	extends ControllerState
-	implements SessionStateBindingListener
+	implements SessionBindingListener
 {
 	private List wizardImportedEvents;
 
@@ -660,37 +662,27 @@ public class CalendarActionState
 
 	
 	/*******************************************************************************
-	* SessionStateBindingListener implementation
+	* SessionBindingListener implementation
 	*******************************************************************************/
 
-	/**
-	* Accept notification that this object has been bound as a SessionState attribute.
-	* @param sessionStateKey The id of the session state which holds the attribute.
-	* @param attributeName The id of the attribute to which this object is now the value.
-	*/
-	public void valueBound(String sessionStateKey, String attributeName)
+	public void valueBound(SessionBindingEvent event)
 	{
 	}
 
-	/**
-	* Accept notification that this object has been removed from a SessionState attribute.
-	* @param sessionStateKey The id of the session state which held the attribute.
-	* @param attributeName The id of the attribute to which this object was the value.
-	*/
-	public void valueUnbound(String sessionStateKey, String attributeName)
+	public void valueUnbound(SessionBindingEvent event)
 	{
 		if (Logger.isDebugEnabled())
 			Logger.debug(this +".valueUnbound()");
 
 		// pass it on to my edits
-		if ((m_editSite != null) && (m_editSite instanceof SessionStateBindingListener))
+		if ((m_editSite != null) && (m_editSite instanceof SessionBindingListener))
 		{
-			((SessionStateBindingListener) m_editSite).valueUnbound(sessionStateKey, attributeName);
+			((SessionBindingListener) m_editSite).valueUnbound(event);
 		}
 
-		if ((m_edit != null) && (m_edit instanceof SessionStateBindingListener))
+		if ((m_edit != null) && (m_edit instanceof SessionBindingListener))
 		{
-			((SessionStateBindingListener) m_edit).valueUnbound(sessionStateKey, attributeName);
+			((SessionBindingListener) m_edit).valueUnbound(event);
 		}
 
 	} // valueUnbound	

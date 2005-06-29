@@ -32,6 +32,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
+import org.sakaiproject.api.kernel.session.SessionBindingEvent;
+import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
@@ -40,7 +42,7 @@ import org.sakaiproject.service.framework.config.cover.ServerConfigurationServic
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
-import org.sakaiproject.service.framework.session.SessionStateBindingListener;
+
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
@@ -432,7 +434,7 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 	* Preferences implementation
 	*******************************************************************************/
 
-	public class BasePreferences implements PreferencesEdit, SessionStateBindingListener
+	public class BasePreferences implements PreferencesEdit, SessionBindingListener
 	{
 		/** The user id. */
 		protected String m_id = null;
@@ -860,24 +862,14 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 		} // closeEdit
 
 		/*******************************************************************************
-		* SessionStateBindingListener implementation
+		* SessionBindingListener implementation
 		*******************************************************************************/
 
-		/**
-		* Accept notification that this object has been bound as a SessionState attribute.
-		* @param sessionStateKey The id of the session state which holds the attribute.
-		* @param attributeName The id of the attribute to which this object is now the value.
-		*/
-		public void valueBound(String sessionStateKey, String attributeName)
+		public void valueBound(SessionBindingEvent event)
 		{
 		}
 
-		/**
-		* Accept notification that this object has been removed from a SessionState attribute.
-		* @param sessionStateKey The id of the session state which held the attribute.
-		* @param attributeName The id of the attribute to which this object was the value.
-		*/
-		public void valueUnbound(String sessionStateKey, String attributeName)
+		public void valueUnbound(SessionBindingEvent event)
 		{
 			if (m_logger.isDebugEnabled())
 				m_logger.debug(this +".valueUnbound()");

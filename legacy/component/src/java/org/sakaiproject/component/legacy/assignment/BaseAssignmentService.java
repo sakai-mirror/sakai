@@ -44,6 +44,8 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.sakaiproject.api.kernel.session.SessionBindingEvent;
+import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -56,7 +58,6 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
-import org.sakaiproject.service.framework.session.SessionStateBindingListener;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.assignment.Assignment;
@@ -3558,7 +3559,7 @@ public abstract class BaseAssignmentService
 	*/
 	public class BaseAssignmentEdit
 		extends BaseAssignment
-		implements AssignmentEdit, SessionStateBindingListener
+		implements AssignmentEdit, SessionBindingListener
 	{
 		/** The event code for this edit. */
 		protected String m_event = null;
@@ -3768,22 +3769,12 @@ public abstract class BaseAssignmentService
 		}	// closeEdit
 
 		/*******************************************************************************
-		* SessionStateBindingListener implementation
+		* SessionBindingListener implementation
 		*******************************************************************************/
 	
-		/**
-		* Accept notification that this object has been bound as a SessionState attribute.
-		* @param sessionStateKey The id of the session state which holds the attribute.
-		* @param attributeName The id of the attribute to which this object is now the value.
-		*/
-		public void valueBound(String sessionStateKey, String attributeName) {}
+		public void valueBound(SessionBindingEvent event) {}
 	
-		/**
-		* Accept notification that this object has been removed from a SessionState attribute.
-		* @param sessionStateKey The id of the session state which held the attribute.
-		* @param attributeName The id of the attribute to which this object was the value.
-		*/
-		public void valueUnbound(String sessionStateKey, String attributeName)
+		public void valueUnbound(SessionBindingEvent event)
 		{
 			if (m_logger.isDebugEnabled())
 				m_logger.debug(this + ".valueUnbound()");
@@ -4472,7 +4463,7 @@ public abstract class BaseAssignmentService
 	*/
 	public class BaseAssignmentContentEdit
 		extends BaseAssignmentContent
-		implements AttachmentContainer, AssignmentContentEdit, SessionStateBindingListener
+		implements AttachmentContainer, AssignmentContentEdit, SessionBindingListener
 	{
 		/** The event code for this edit. */
 		protected String m_event = null;
@@ -4765,22 +4756,12 @@ public abstract class BaseAssignmentService
 		}	// closeEdit
 
 		/*******************************************************************************
-		* SessionStateBindingListener implementation
+		* SessionBindingListener implementation
 		*******************************************************************************/
 	
-		/**
-		* Accept notification that this object has been bound as a SessionState attribute.
-		* @param sessionStateKey The id of the session state which holds the attribute.
-		* @param attributeName The id of the attribute to which this object is now the value.
-		*/
-		public void valueBound(String sessionStateKey, String attributeName) {}
+		public void valueBound(SessionBindingEvent event) {}
 	
-		/**
-		* Accept notification that this object has been removed from a SessionState attribute.
-		* @param sessionStateKey The id of the session state which held the attribute.
-		* @param attributeName The id of the attribute to which this object was the value.
-		*/
-		public void valueUnbound(String sessionStateKey, String attributeName)
+		public void valueUnbound(SessionBindingEvent event)
 		{
 			if (m_logger.isDebugEnabled())
 				m_logger.debug(this + ".valueUnbound()");
@@ -5557,7 +5538,7 @@ public abstract class BaseAssignmentService
 	*/
 	public class BaseAssignmentSubmissionEdit
 		extends BaseAssignmentSubmission
-		implements AssignmentSubmissionEdit, SessionStateBindingListener
+		implements AssignmentSubmissionEdit, SessionBindingListener
 	{
 		/** The event code for this edit. */
 		protected String m_event = null;
@@ -5900,22 +5881,12 @@ public abstract class BaseAssignmentService
 		}	// closeEdit
 
 		/*******************************************************************************
-		* SessionStateBindingListener implementation
+		* SessionBindingListener implementation
 		*******************************************************************************/
 	
-		/**
-		* Accept notification that this object has been bound as a SessionState attribute.
-		* @param sessionStateKey The id of the session state which holds the attribute.
-		* @param attributeName The id of the attribute to which this object is now the value.
-		*/
-		public void valueBound(String sessionStateKey, String attributeName) {}
+		public void valueBound(SessionBindingEvent event) {}
 	
-		/**
-		* Accept notification that this object has been removed from a SessionState attribute.
-		* @param sessionStateKey The id of the session state which held the attribute.
-		* @param attributeName The id of the attribute to which this object was the value.
-		*/
-		public void valueUnbound(String sessionStateKey, String attributeName)
+		public void valueUnbound(SessionBindingEvent event)
 		{
 			if (m_logger.isDebugEnabled())
 				m_logger.debug(this + ".valueUnbound()");
