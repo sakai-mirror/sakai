@@ -26,7 +26,8 @@
 package org.sakaiproject.util.courier;
 
 // imports
-import org.sakaiproject.service.framework.session.SessionStateBindingListener;
+import org.sakaiproject.api.kernel.session.SessionBindingEvent;
+import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.EventTrackingService;
 
@@ -38,7 +39,7 @@ import org.sakaiproject.service.legacy.event.EventTrackingService;
  * @author University of Michigan, Sakai Software Development Team
  * @version $Revision$
  */
-public class EventObservingCourier extends ObservingCourier implements SessionStateBindingListener
+public class EventObservingCourier extends ObservingCourier implements SessionBindingListener
 {
 	/** Constructor discovered injected EventTrackingService. */
 	protected EventTrackingService m_eventTrackingService = null;
@@ -118,30 +119,14 @@ public class EventObservingCourier extends ObservingCourier implements SessionSt
 	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
-	 * SessionStateBindingListener implementation
+	 * SessionBindingListener implementation
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
-	/**
-	 * Accept notification that this object has been bound as a SessionState attribute.
-	 * 
-	 * @param sessionStateKey
-	 *        The id of the session state which holds the attribute.
-	 * @param attributeName
-	 *        The id of the attribute to which this object is now the value.
-	 */
-	public void valueBound(String sessionStateKey, String attributeName)
+	public void valueBound(SessionBindingEvent event)
 	{
 	}
 
-	/**
-	 * Accept notification that this object has been removed from a SessionState attribute.
-	 * 
-	 * @param sessionStateKey
-	 *        The id of the session state which held the attribute.
-	 * @param attributeName
-	 *        The id of the attribute to which this object was the value.
-	 */
-	public void valueUnbound(String sessionStateKey, String attributeName)
+	public void valueUnbound(SessionBindingEvent event)
 	{
 		// stop observing the presence location
 		m_eventTrackingService.deleteObserver(this);
