@@ -381,6 +381,14 @@ function showNotif(item, button,formName)
 			document.showItem = eval('document.layers[item]');
 
 			document.showItem.style.visibility = "visible";
+	}
+	
+	for (var i=0;i<document.getElementsByTagName("input").length; i++) 
+	{
+		if (document.getElementsByTagName("input").item(i).className == "disableme")
+		{
+			document.getElementsByTagName("input").item(i).disabled = "disabled";
+		}
 	}		
 }
 
