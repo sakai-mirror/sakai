@@ -946,8 +946,14 @@ public class SessionComponent implements SessionManager
 		{
 			if (value instanceof SessionBindingListener)
 			{
-				SessionBindingEvent event = new MySessionBindingEvent(name, null, value);
+				SessionBindingEvent event = new MySessionBindingEvent(name, m_session, value);
 				((SessionBindingListener) value).valueBound(event);
+			}
+			
+			if (value instanceof HttpSessionBindingListener)
+			{
+				HttpSessionBindingEvent event = new HttpSessionBindingEvent(this, name, value);
+				((HttpSessionBindingListener) value).valueBound(event);
 			}
 		}
 
