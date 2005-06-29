@@ -307,7 +307,8 @@
 								#if ($!closeTime)
 									## there is close date. Can only submit before the close date
 									#if ($currentTime.before($!closeTime))
-										<input 
+										<input
+											class="disableme" 
 											type="submit" 
 											name="attach" 
 											id="attach"
@@ -322,7 +323,8 @@
 									#end
 								#else
 									## there is no close date. Still can submit after due date
-									<input 
+									<input
+										class="disableme" 
 										type="submit" 
 										name="attach" 
 										id="attach"
@@ -444,14 +446,16 @@
 								value="$!name"
 								onclick="document.addSubmissionForm.onsubmit();showNotif('submitnotif','post','addSubmissionForm'); document.addSubmissionForm.option.value='post'; document.addSubmissionForm.submit(); return false;"
 							/>
-							<input 
+							<input
+								class="disableme" 
 								type="submit" 
 								name="preview" 
 								id="preview" 
 								value="$tlang.getString("gen.pre")"
 								onclick="document.addSubmissionForm.onsubmit();showNotif('submitnotif','preview','addSubmissionForm');document.addSubmissionForm.option.value='preview'; document.addSubmissionForm.submit(); return false;"
 							/>
-							<input 
+							<input
+								class="disableme" 
 								type="submit" 
 								name="save" 
 								id="save" 
@@ -459,6 +463,7 @@
 								onclick="document.addSubmissionForm.onsubmit();showNotif('submitnotif','save','addSubmissionForm');document.addSubmissionForm.option.value='save'; document.addSubmissionForm.submit(); return false;"
 							/>
 							<input 
+								class="disableme"
 								type="submit" 
 								name="cancel" 
 								id="cancel" 

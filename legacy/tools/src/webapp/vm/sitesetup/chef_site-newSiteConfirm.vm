@@ -182,14 +182,16 @@
 				value="$!name"
 				onclick="showNotif('submitnotif','addSite','addSiteForm'); document.addSiteForm.option.value='finish'; document.addSiteForm.submit(); return false;"
 			/>
-			<input 
+			<input
+				class="disableme" 
 				type="submit" 
 				name="back" 
 				id="back" 
 				value="$tlang.getString('gen.back')"
 				onclick="document.addSiteForm.option.value='back'; document.addSiteForm.submit(); return false;"
 			/>
-			<input 
+			<input
+				class="disableme" 
 				type="submit" 
 				name="cancel" 
 				id="cancel" 

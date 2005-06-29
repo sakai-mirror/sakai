@@ -154,7 +154,8 @@
 					<input name="eventSubmit_doPost_submission" type="submit" value="$tlang.getString("gen.subm3")" disabled="disabled" />
 					<input name="eventSubmit_doCancel_show_submission" type="submit" value="$tlang.getString("gen.revi")" disabled="disabled" />
 			#else
-				<input 
+				<input
+					class="disableme" 
 					type="submit" 
 					name="save" 
 					id="save" 
@@ -174,7 +175,8 @@
 					value="$!name"
 					onclick="showNotif('submitnotif','post','addSubmissionForm'); document.addSubmissionForm.option.value='post'; document.addSubmissionForm.submit(); return false;"
 				/>
-				<input 
+				<input
+					class="disableme" 
 					type="submit" 
 					name="revise" 
 					id="revise" 
@@ -182,7 +184,8 @@
 					onclick="document.addSubmissionForm.option.value='revise';document.addSubmissionForm.submit(); return false;"
 				/>
 			#end
-			<input 
+			<input
+				class="disableme" 
 				type="submit" 
 				name="revise" 
 				id="revise" 

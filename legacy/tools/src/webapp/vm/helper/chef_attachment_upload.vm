@@ -32,7 +32,8 @@
 					value="$thelp.getString("gen.att2")"
 					onClick="showNotif('submitnotif','attach','attachmentForm');document.attachmentForm.option.value='attach'; document.attachmentForm.submit(); return false;"
 				/>
-				<input 
+				<input
+					class="disableme" 
 					type="button" 
 					name="Cancel" 
 					id="Cancel" 
