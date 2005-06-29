@@ -44,6 +44,7 @@ update SAKAI_SITE_TOOL set REGISTRATION='sakai.discussion' where REGISTRATION='s
 update SAKAI_SITE_TOOL set REGISTRATION='ctools.dissertation' where REGISTRATION='sakai.dissertation';
 update SAKAI_SITE_TOOL set REGISTRATION='ctools.dissertation.upload' where REGISTRATION='sakai.dissertation.upload';
 update SAKAI_SITE_TOOL set REGISTRATION='ctools.gradToolsHelp' where REGISTRATION='sakai.gradToolsHelp';
+update SAKAI_SITE_TOOL set REGISTRATION='ctools.aboutGradTools' where REGISTRATION='sakai.aboutGradTools';
 */
 
 -- optional: drop old skins, everyone re-starts as default
