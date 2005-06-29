@@ -10794,28 +10794,6 @@ public class SiteAction extends PagedResourceActionII
 				type = (String) state.getAttribute(STATE_DEFAULT_SITE_TYPE);
 			}
 		}
-		else
-		{
-			List types = (List) state.getAttribute(STATE_SITE_TYPES);
-			if (!types.contains(type))
-			{
-				// if type is not in the list
-				if (state.getAttribute(STATE_DEFAULT_SITE_TYPE) != null)
-				{
-					// set to default type
-					type = (String) state.getAttribute(STATE_DEFAULT_SITE_TYPE);
-				}
-			}
-		}
-		
-		if (type == null)
-		{
-			Log.warn("chef", this + ": - unknown STATE_SITE_TYPE");
-		}
-		else
-		{
-			state.setAttribute(STATE_SITE_TYPE, type);
-		}
 		
 		List toolRegList = new Vector();
 		if (type != null)
@@ -10836,7 +10814,38 @@ public class SiteAction extends PagedResourceActionII
 				toolRegList.add(newTool);
 			}
 		}
+		
+		if (toolRegList.size() == 0 && state.getAttribute(STATE_DEFAULT_SITE_TYPE) != null)
+		{
+			// use default site type and try getting tools again
+			type = (String) state.getAttribute(STATE_DEFAULT_SITE_TYPE);
+			
+			Set nCategories = new HashSet();
+			nCategories.add(type);
+			Set toolRegistrations = ToolManager.findTools(nCategories, null);
+			SortedIterator i = new SortedIterator(toolRegistrations.iterator(), new ToolComparator());
+			for (;i.hasNext();)
+			{
+				// form a new Tool
+				Tool tr = (Tool) i.next();
+				MyTool newTool = new MyTool();
+				newTool.title = tr.getTitle();
+				newTool.id = tr.getId();
+				newTool.description = tr.getDescription();
+				
+				toolRegList.add(newTool);
+			}
+		}
 		state.setAttribute(STATE_TOOL_REGISTRATION_LIST, toolRegList);
+		
+		if (type == null)
+		{
+			Log.warn("chef", this + ": - unknown STATE_SITE_TYPE");
+		}
+		else
+		{
+			state.setAttribute(STATE_SITE_TYPE, type);
+		}
 		
 		boolean check_home = false;
 		boolean hasNews = false;
