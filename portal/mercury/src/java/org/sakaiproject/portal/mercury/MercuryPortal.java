@@ -226,7 +226,7 @@ public class MercuryPortal extends HttpServlet
 		out.println("<img src=\"http://cvs.sakaiproject.org/images/mercsymb.gif\" width=\"94\" height=\"75\"><br />");
 
 		// login
-		out.println("<p><a href=\"" + Web.returnUrl(req,"/login") + "\">login</a></p>");
+		out.println("<p><a href=\"" + Web.returnUrl(req, "/login") + "\">login</a></p>");
 
 		// Show session information
 		out.println("<H2>Session</H2>");
@@ -235,8 +235,8 @@ public class MercuryPortal extends HttpServlet
 		// list the main tools
 		out.println("<H2>Tools</H2>");
 		out.println("<p>These are the tools registered with Sakai:</p>");
-		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th></tr>");
-		
+		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th><th>categories</th><th>keywords</th></tr>");
+
 		// sorted
 		TreeSet sorted = new TreeSet(tools);
 		for (Iterator i = sorted.iterator(); i.hasNext();)
@@ -244,14 +244,15 @@ public class MercuryPortal extends HttpServlet
 			Tool t = (Tool) i.next();
 			String toolUrl = Web.returnUrl(req, "/" + t.getId() + "/mercury");
 			out.println("<tr><td><a href=\"" + toolUrl + "\">" + t.getId() + "</a></td><td>" + t.getTitle() + "</td><td>"
-					+ t.getDescription() + "</td><td>" + printConfiguration(t.getRegisteredConfig()) + "</td></tr>");
+					+ t.getDescription() + "</td><td>" + printConfiguration(t.getRegisteredConfig()) + "</td><td>"
+					+ printCategories(t.getCategories()) + "</td><td>" + printKeywords(t.getKeywords()) + "</td></tr>");
 		}
 		out.println("</table>");
 
 		// list the helper tools
 		out.println("<H2>Helper Tools</H2>");
 		out.println("<p>These are the tools registered as helperswith Sakai. (Helper tools cannot be directly invoked): </p>");
-		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th></tr>");
+		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th><th>categories</th><th>keywords</th></tr>");
 
 		// sorted
 		sorted = new TreeSet(helperTools);
@@ -260,14 +261,15 @@ public class MercuryPortal extends HttpServlet
 			Tool t = (Tool) i.next();
 			String toolUrl = Web.returnUrl(req, "/" + t.getId() + "/mercury");
 			out.println("<tr><td>" + t.getId() + "</td><td>" + t.getTitle() + "</td><td>" + t.getDescription() + "</td><td>"
-					+ printConfiguration(t.getRegisteredConfig()) + "</td></tr>");
+					+ printConfiguration(t.getRegisteredConfig()) + printCategories(t.getCategories()) + "</td><td>"
+					+ printKeywords(t.getKeywords()) + "</td></tr>");
 		}
 		out.println("</table>");
 
 		// list the sample tools
 		out.println("<H2>Sample Tools</H2>");
 		out.println("<p>These are the tools registered with Sakai, categorized as <i>sakai.sample</i>:</p>");
-		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th></tr>");
+		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th><th>categories</th><th>keywords</th></tr>");
 
 		// sorted
 		sorted = new TreeSet(sampleTools);
@@ -276,14 +278,15 @@ public class MercuryPortal extends HttpServlet
 			Tool t = (Tool) i.next();
 			String toolUrl = Web.returnUrl(req, "/" + t.getId() + "/mercury");
 			out.println("<tr><td><a href=\"" + toolUrl + "\">" + t.getId() + "</a></td><td>" + t.getTitle() + "</td><td>"
-					+ t.getDescription() + "</td><td>" + printConfiguration(t.getRegisteredConfig()) + "</td></tr>");
+					+ t.getDescription() + "</td><td>" + printConfiguration(t.getRegisteredConfig())
+					+ printCategories(t.getCategories()) + "</td><td>" + printKeywords(t.getKeywords()) + "</td></tr>");
 		}
 		out.println("</table>");
 
 		// list the test tools
 		out.println("<H2>Test Tools</H2>");
 		out.println("<p>These are the tools registered with Sakai, categorized as <i>sakai.test</i>:</p>");
-		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th></tr>");
+		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th><th>categories</th><th>keywords</th></tr>");
 
 		// sorted
 		sorted = new TreeSet(testTools);
@@ -292,7 +295,8 @@ public class MercuryPortal extends HttpServlet
 			Tool t = (Tool) i.next();
 			String toolUrl = Web.returnUrl(req, "/" + t.getId() + "/mercury");
 			out.println("<tr><td><a href=\"" + toolUrl + "\">" + t.getId() + "</a></td><td>" + t.getTitle() + "</td><td>"
-					+ t.getDescription() + "</td><td>" + printConfiguration(t.getRegisteredConfig()) + "</td></tr>");
+					+ t.getDescription() + "</td><td>" + printConfiguration(t.getRegisteredConfig())
+					+ printCategories(t.getCategories()) + "</td><td>" + printKeywords(t.getKeywords()) + "</td></tr>");
 		}
 		out.println("</table>");
 
@@ -308,8 +312,8 @@ public class MercuryPortal extends HttpServlet
 		}
 		out.println("</table>");
 
-		//		out.println("<H2>Snoop</H2>");
-		//		snoop(out, true, getServletConfig(), req);
+		// out.println("<H2>Snoop</H2>");
+		// snoop(out, true, getServletConfig(), req);
 
 		// close the response
 		out.println("</body></html>");
@@ -466,16 +470,19 @@ public class MercuryPortal extends HttpServlet
 	}
 
 	/**
-	 * Forward to the tool - setup JavaScript/CSS etc that the tool will render 
-	 */	
-	protected void forwardTool(ActiveTool tool, HttpServletRequest req, HttpServletResponse res, Placement p, String toolContextPath, String toolPathInfo)
+	 * Forward to the tool - setup JavaScript/CSS etc that the tool will render
+	 */
+	protected void forwardTool(ActiveTool tool, HttpServletRequest req, HttpServletResponse res, Placement p,
+			String toolContextPath, String toolPathInfo)
 	{
 		String skin = ServerConfigurationService.getString("skin.default");
 		String skinRepo = ServerConfigurationService.getString("skin.repo");
 
 		// setup html information that the tool might need (skin, body on load, js includes, etc).
-		String headCssToolBase = "<link href=\"" + skinRepo + "/tool_base.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
-		String headCssToolSkin = "<link href=\"" + skinRepo + "/" + skin + "/tool.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
+		String headCssToolBase = "<link href=\"" + skinRepo
+				+ "/tool_base.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
+		String headCssToolSkin = "<link href=\"" + skinRepo + "/" + skin
+				+ "/tool.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
 		String headCss = headCssToolBase + headCssToolSkin;
 		String headJs = "<script type=\"text/javascript\" language=\"JavaScript\" src=\"/library/js/headscripts.js\"></script>\n";
 		String head = headCss + headJs;
@@ -567,6 +574,56 @@ public class MercuryPortal extends HttpServlet
 		return buf.toString();
 	}
 
+	/**
+	 * Format the tool's categories
+	 * 
+	 * @param categories
+	 *        The categories set.
+	 * @return The tool's categories, formatted for HTML display.
+	 */
+	protected String printCategories(Set categories)
+	{
+		StringBuffer buf = new StringBuffer();
+		boolean first = true;
+		for (Iterator i = categories.iterator(); i.hasNext();)
+		{
+			if (!first)
+			{
+				buf.append("<br />");
+			}
+			first = false;
+
+			buf.append((String) i.next());
+		}
+
+		return buf.toString();
+	}
+
+	/**
+	 * Format the tool's keywords
+	 * 
+	 * @param keywords
+	 *        The keywords set.
+	 * @return The tool's keywords, formatted for HTML display.
+	 */
+	protected String printKeywords(Set keywords)
+	{
+		StringBuffer buf = new StringBuffer();
+		boolean first = true;
+		for (Iterator i = keywords.iterator(); i.hasNext();)
+		{
+			if (!first)
+			{
+				buf.append("<br />");
+			}
+			first = false;
+
+			buf.append((String) i.next());
+		}
+
+		return buf.toString();
+	}
+
 	protected void snoop(PrintWriter out, boolean html, ServletConfig config, HttpServletRequest req)
 	{
 		Enumeration e = config.getInitParameterNames();
@@ -612,7 +669,7 @@ public class MercuryPortal extends HttpServlet
 		print(out, "Server port", req.getServerPort());
 		print(out, "Remote user", req.getRemoteUser());
 		print(out, "Remote address", req.getRemoteAddr());
-		//		print(out, "Remote host", req.getRemoteHost());
+		// print(out, "Remote host", req.getRemoteHost());
 		print(out, "Authorization scheme", req.getAuthType());
 
 		out.println("</pre>");
