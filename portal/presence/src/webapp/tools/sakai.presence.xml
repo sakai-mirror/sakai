@@ -9,6 +9,8 @@
 
 	<category name="sakai.portal" />
 
+	<configuration name="reset.button" value="false" />
+
 	</tool>
 
 </registration>

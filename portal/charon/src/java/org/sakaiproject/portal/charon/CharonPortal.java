@@ -92,6 +92,13 @@ public class CharonPortal extends HttpServlet
 
 	protected static final int ERROR_WORKSITE = 2;
 
+	/** Names of tool config/registration attributes that control the rendering of the tool's titlebar */
+    private static final String TOOLCONFIG_PORTAL_HANDLES_TITLEBAR = "portal.titlebar";
+    private static final String TOOLCONFIG_SHOW_RESET_BUTTON = "reset.button";
+    private static final String TOOLCONFIG_SHOW_HELP_BUTTON = "help.button";
+    private static final String TOOLCONFIG_HELP_DOCUMENT_ID = "help.id";
+    private static final String TOOLCONFIG_HELP_DOCUMENT_URL = "help.url";
+
 	/**
 	 * Shutdown the servlet.
 	 */
@@ -290,7 +297,13 @@ public class CharonPortal extends HttpServlet
 			doTool(req, res, session, parts[2], req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3), Web
 					.makePath(parts, 3, parts.length));
 		}
-
+		
+		else if ((parts.length >= 2) && (parts[1].equals("title")))
+		{
+			doTitle(req, res, session, parts[2], req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3), Web
+					.makePath(parts, 3, parts.length));
+		}
+		
 		// recognize a dispatch the 'page' option (tools on a page)
 		else if ((parts.length == 3) && (parts[1].equals("page")))
 		{
@@ -425,7 +438,178 @@ public class CharonPortal extends HttpServlet
 		}
 	}
 
-	protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath,
+	protected void doTitle(HttpServletRequest req, HttpServletResponse res, Session session, String placementId,
+			String toolContextPath, String toolPathInfo) throws IOException
+	{
+		// find the tool from some site
+		ToolConfiguration siteTool = SiteService.findTool(placementId);
+		if (siteTool == null)
+		{
+			doError(req, res, session, ERROR_WORKSITE);
+			return;
+		}
+
+		// find the tool registered for this
+		ActiveTool tool = ActiveToolManager.getActiveTool(siteTool.getTool().getId());
+		if (tool == null)
+		{
+			doError(req, res, session, ERROR_WORKSITE);
+			return;
+		}
+
+		// don't check permissions when just displaying the title...
+//		// permission check - visit the site (unless the tool is configured to bypass)
+//		if (tool.getAccessSecurity() == Tool.AccessSecurity.PORTAL)
+//		{
+//			Site site = null;
+//			try
+//			{
+//				site = SiteService.getSiteVisit(siteTool.getSiteId());
+//			}
+//			catch (IdUnusedException e)
+//			{
+//				doError(req, res, session, ERROR_WORKSITE);
+//				return;
+//			}
+//			catch (PermissionException e)
+//			{
+//				// if not logged in, give them a chance
+//				if (session.getUserId() == null)
+//				{
+//					doLogin(req, res, session, req.getPathInfo(), false);
+//				}
+//				else
+//				{
+//					doError(req, res, session, ERROR_WORKSITE);
+//				}
+//				return;
+//			}
+//		}
+
+		includeTitle(tool, req, res, siteTool, siteTool.getSkin(), toolContextPath, toolPathInfo);
+	}
+
+    /**
+     * Output the content of the title frame for a tool.
+     */
+    protected void includeTitle(ActiveTool tool, HttpServletRequest req, HttpServletResponse res, ToolConfiguration placement, String skin, String toolContextPath, String toolPathInfo)
+    	throws IOException
+    {
+ 		if (skin == null || skin.length() == 0) skin = ServerConfigurationService.getString("skin.default");
+		String skinRepo = ServerConfigurationService.getString("skin.repo");
+       
+        // the title to display in the title frame
+        String toolTitle = placement.getTitle();
+        		
+		// for the reset button
+		String resetActionUrl = toolContextPath+"?reset=true";
+		boolean resetToolNow = "true".equals(req.getParameter("reset"));
+		boolean showResetButton = !"false".equals(placement.getConfig().getProperty(TOOLCONFIG_SHOW_RESET_BUTTON));
+		
+		// for the help button
+		// get the help document ID from the tool config (tool registration usually).
+        // The help document ID defaults to the tool ID
+		boolean helpEnabledGlobally = ServerConfigurationService.getBoolean("helpEnabled", true);
+		boolean helpEnabledInTool = !"false".equals(placement.getConfig().getProperty(TOOLCONFIG_SHOW_HELP_BUTTON));
+		boolean showHelpButton = helpEnabledGlobally && helpEnabledInTool;
+
+	    String helpActionUrl = "";
+	    if (showHelpButton)
+	    {
+			String helpDocId = placement.getConfig().getProperty(TOOLCONFIG_HELP_DOCUMENT_ID);
+		    String helpDocUrl = placement.getConfig().getProperty(TOOLCONFIG_HELP_DOCUMENT_URL);
+		    if (helpDocUrl != null && helpDocUrl.length() > 0)
+		    {
+		        helpActionUrl = helpDocUrl;
+		    }
+		    else
+		    {
+			    if (helpDocId == null || helpDocId.length() == 0)
+			    {
+			        helpDocId = tool.getId();
+			    }
+			    helpActionUrl = ServerConfigurationService.getHelpUrl(helpDocId);
+		    }
+	    }
+		
+        PrintWriter out = res.getWriter();
+        
+		final String headHtml = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+			+ "<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n"
+			+ "  <head>\n"
+			+ "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n"
+			+ "    <link href=\""+skinRepo+"/tool_base.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n"
+			+ "    <link href=\""+skinRepo+"/"+skin+"/tool.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n"
+			+ "    <meta http-equiv=\"Content-Style-Type\" content=\"text/css\" />\n"
+			+ "    <title>"+toolTitle+"</title>\n"
+			+ "  </head>\n"
+			+ "  <body>\n";
+		final String tailHtml = "</body></html>\n";
+		
+		out.write(headHtml);
+		
+		out.write("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"toolTitle\" summary=\"layout\">\n");
+		out.write("<tr>\n");
+		out.write("\t<td class=\"title\">\n");
+		if (showResetButton)
+		{
+		    out.write("\t\t<a href=\""
+		            +resetActionUrl
+		            +"\" title=\"Reset\"><img src=\"/library/image/transparent.gif\" alt=\"Reset\" border=\"1\"></a>"
+            );
+		}
+		out.write(" "+toolTitle+"\n"+"\t</td>\n");
+		out.write("\t<td class=\"action\">\n");
+		if (showHelpButton)
+		{
+		    out.write("\t\t<a href=\"javascript:;\" onClick=\"window.open('"+helpActionUrl+"','Help','resizable=0,toolbar=no,scrollbars=yes, width=800,height=600')\"><img src=\"/library/image/transparent.gif\" alt=\"Help\" border=\"0\"></a>\n");	
+		}
+		out.write("\t</td>\n");
+		out.write("</tr>\n");
+		out.write("</table>\n");
+
+		if (resetToolNow)
+		{
+		    // cause main tool frame to be reset
+		    
+		    // clear the session data associated with the tool - should reset the tool
+		    Session s = SessionManager.getCurrentSession();
+		    ToolSession ts = s.getToolSession(placement.getId());
+		    ts.clearAttributes();
+		    
+		    // redirect the main tool frame back to the initial tool URL.
+			String mainFrameId = Web.escapeJavascript("Main" + placement.getId());
+			String mainFrameUrl = Web.returnUrl(req, "/tool/" + Web.escapeUrl(placement.getId())+"?panel=Main");
+
+			out.write("<script type=\"text/javascript\" language=\"JavaScript\">\n");
+			out.write("try\n");
+			out.write("{\n");
+			out.write("	if (parent." + mainFrameId + ".location.toString().length > 1)\n");
+			out.write("	{\n");
+			out.write("		parent." + mainFrameId + ".location = '"+mainFrameUrl+"';\n");
+			out.write("	}\n");
+			out.write("}\n");
+			out.write("catch (e1)\n");
+			out.write("{\n");
+			out.write("	try\n");
+			out.write("	{\n");
+			out.write("		if (parent.parent." + mainFrameId + ".location.toString().length > 1)\n");
+			out.write("		{\n");
+			out.write("			parent.parent." + mainFrameId + ".location = '"+mainFrameUrl+"';\n");
+			out.write("		}\n");
+			out.write("	}\n");
+			out.write("	catch (e2)\n");
+			out.write("	{\n");
+			out.write("	}\n");
+			out.write("}\n");
+			out.write("</script>\n");
+		}
+		
+		out.write(tailHtml);
+    }
+    
+
+    protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath,
 			boolean skipContainer) throws IOException
 	{
 		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
@@ -569,6 +753,12 @@ public class CharonPortal extends HttpServlet
 		if ((parts.length >= 2) && (parts[1].equals("tool")))
 		{
 			doTool(req, res, session, parts[2], req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3), Web
+					.makePath(parts, 3, parts.length));
+		}
+
+		else if ((parts.length >= 2) && (parts[1].equals("title")))
+		{
+			doTitle(req, res, session, parts[2], req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3), Web
 					.makePath(parts, 3, parts.length));
 		}
 
@@ -1562,7 +1752,14 @@ public class CharonPortal extends HttpServlet
 		// tool.include(req, res, siteTool, toolContextPath, toolPathInfo);
 
 		String toolUrl = Web.returnUrl(req, "/tool/" + Web.escapeUrl(placement.getId()));
-
+		String titleUrl = Web.returnUrl(req, "/title/" + Web.escapeUrl(placement.getId()));
+//		boolean portalHandlesTitleFrame = !"false".equals(placement.getConfig().getProperty(TOOLCONFIG_PORTAL_HANDLES_TITLEBAR));
+//		if (!portalHandlesTitleFrame)
+//		{
+//		    // let the tool output its own title frame
+//		    titleUrl = toolUrl + "?panel=Title";
+//		}
+		
 		// this is based on what varuna is currently putting out
 		out.println("<div class=\"portletTitleWrap\">");
 		out.println("<iframe");
@@ -1576,7 +1773,7 @@ public class CharonPortal extends HttpServlet
 		out.println("	marginwidth=\"0\"");
 		out.println("	marginheight=\"0\"");
 		out.println("	scrolling=\"no\"");
-		out.println("	src=\"" + toolUrl + "?panel=Title\">");
+		out.println("	src=\"" + titleUrl + "\">");
 		out.println("</iframe>");
 		out.println("</div>");
 
