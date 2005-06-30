@@ -6,5 +6,7 @@
                         description="Presentation tool.">
                 <category name="course" />
                 <category name="project" />
+ 
+               <configuration name="help.id" value="presentation_main" />
         </tool>
 </registration>
