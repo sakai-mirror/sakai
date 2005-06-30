@@ -104,7 +104,16 @@ public class PagerRenderer extends Renderer
 		String[] pageSizes = pageSizesStr.split(",");
 		String idSelect = clientId+"_pageSize";
 		
-		String textStatus = getString(context, component, "textStatus", "Viewing {0} to {1} of {2} {3}");
+		String textStatus;
+		if (totalItems > 0)
+		{
+		    textStatus = getString(context, component, "textStatus", "Viewing {0} to {1} of {2} {3}");
+		}
+		else
+		{
+		    textStatus = getString(context, component, "textStatusZeroItems", "Viewing 0 {3}");
+		}
+		
 		Object[] args = new Object[] {String.valueOf(firstItem+1), String.valueOf(lastItem), String.valueOf(totalItems), textItem};
 		textStatus = MessageFormat.format(textStatus, args);
 
