@@ -10,6 +10,8 @@
 		<configuration name="create-type" value="registered" />
 		<configuration name="create-login" value="true" />
 
+		<configuration name="reset.button" value="false" />
+
 	</tool>
 
 </registration>

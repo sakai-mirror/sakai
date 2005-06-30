@@ -489,61 +489,6 @@ public class SynopticMessageAction
 		return template + "-customize";
 
 	}   // buildOptionsPanelContext
-
-	
-	/** 
-	* Build the context for the Title panel.
-	* Overrides the standard layout to use the name of the channel.
-	* @return (optional) template name for this panel
-	*/
-	public String buildTitlePanelContext(VelocityPortlet portlet, 
-										Context context,
-										RunData rundata,
-										SessionState state)
-	{
-		context.put("tlang",rb);
-		// if not floating, or if floating and this is the floating window requesting,
-		// include the home icon.
-		String floatingWindow = rundata.getParameters().getString(STATE_FLOAT);
-		String floatingTool = (String) state.getAttribute(VelocityPortletPaneledAction.STATE_FLOAT);
-		if (	requireResetToolLink()
-			&&	(	(floatingTool == null)
-				||	(floatingWindow != null)))
-		{
-			context.put("includeReset", "true");
-		}
-
-		context.put(STATE_ACTION, state.getAttribute(STATE_ACTION));
-		try
-		{
-			Placement placement = ToolManager.getCurrentPlacement();
-			
-			// the panel bar only needs to be changed in the recent chat tool
-			if ((placement.getTool().getId()).equals("sakai.synoptic.chat"))
-			{
-				// provide "title" with the current channel's id
-				String defaultChannel = ChatService.channelReference(placement.getContext(), SiteService.MAIN_CONTAINER);
-				String sitePrefix = defaultChannel.substring(0, defaultChannel.lastIndexOf(SiteService.MAIN_CONTAINER));
-				String currentChannel = ((String) state.getAttribute(STATE_CHANNEL_REF)).substring(sitePrefix.length());				
-				if(!currentChannel.equals(SiteService.MAIN_CONTAINER))
-					//context.put("title", "Recent " + currentChannel + " Chat Room Messages");
-					context.put("title", (rb.getString("recent1") + " ".concat(currentChannel)).concat(" " + rb.getString("charoomes")));
-				else
-					context.put("title", rb.getString("recent2"));
-			}
-			else
-			{
-				context.put("title", placement.getTitle());
-			}
-		}
-		catch (Exception any)
-		{
-			context.put("title", portlet.getPortletConfig().getTitle());
-		}
-		
-		return "chef_Title";
-		
-	}   // buildTitlePanelContext
 	
 	
 	/**
@@ -709,17 +654,6 @@ public class SynopticMessageAction
 		enableObservers(state);
 
 	}   // doCancel
-
-	/**
-	* Say if the tool will require the "reset tool" button on the title bar.
-	* @return true to have the "reset tool" button, false if not.
-	* The default is to have it.
-	*/
-	protected boolean requireResetToolLink()
-	{
-		return false;
-
-	}	// requireResetToolLink
 
 	/** 
 	 * Improves performance by returning the appropriate MessageService

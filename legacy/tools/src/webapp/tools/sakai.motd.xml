@@ -13,6 +13,9 @@
 		<configuration name="show-subject" value="false" />
 		<configuration name="channel" value="/announcement/channel/!site/motd" />
 
+		<configuration name="reset.button" value="false" />
+		<configuration name="help.id" value="sakai.announcements" />
+
 	</tool>
 
 </registration>

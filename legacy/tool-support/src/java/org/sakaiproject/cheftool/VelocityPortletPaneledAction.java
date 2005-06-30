@@ -840,17 +840,6 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 	} // resetTool
 
 	/**
-	 * Say if the tool will require the "reset tool" button on the title bar.
-	 * 
-	 * @return true to have the "reset tool" button, false if not. The default is to have it.
-	 */
-	protected boolean requireResetToolLink()
-	{
-		return true;
-
-	} // requireResetToolLink
-
-	/**
 	 * Add some standard references to the vm context.
 	 * 
 	 * @param request
@@ -965,25 +954,6 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 
 	/** Tool session attribute name used to schedule a focus change. */
 	public static final String ATTR_FRAME_FOCUS = "sakai.vppa.frame.focus";
-
-	/**
-	 * Build the context for the Title panel. This builds the standard layout. Override to have a custom layout.
-	 * 
-	 * @return (optional) template name for this panel
-	 */
-	public String buildTitlePanelContext(VelocityPortlet portlet, Context context, RunData rundata, SessionState state)
-	{
-		String title = portlet.getPortletConfig().getTitle();
-
-		context.put("title", title);
-		context.put("tlang", rb);
-		if (requireResetToolLink())
-		{
-			context.put("includeReset", "true");
-		}
-
-		return "chef_Title";
-	}
 
 	/**
 	 * Schedule a refresh for a peer frame.

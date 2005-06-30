@@ -195,17 +195,6 @@ public class PresenceToolAction
 	}	// buildMainPanelContext
 
 	/**
-	* Say if the tool will require the "reset tool" button on the title bar.
-	* @return true to have the "reset tool" button, false if not.
-	* The default is to have it.
-	*/
-	protected boolean requireResetToolLink()
-	{
-		return false;
-
-	}	// requireResetToolLink
-
-	/**
 	* Switch to locations mode
 	*/
 	public void doLocations(RunData data, Context context)

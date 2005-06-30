@@ -10,6 +10,8 @@
 		
 		<category name="course" />
 		<category name="project" />
+		
+		<configuration name="help.id" value="sakai.assignment" />
 
 	</tool>
 

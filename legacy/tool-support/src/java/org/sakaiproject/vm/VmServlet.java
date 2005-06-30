@@ -102,12 +102,6 @@ public abstract class VmServlet extends ComponentServlet
 		// include some standard references
 		setVmReference("sakai_ActionURL", getActionURL(request), request);
 
-		boolean useHelp = ServerConfigurationService.getBoolean("helpEnabled", true);
-		if (useHelp)
-		{
-			setVmReference("sakai_HelpURL", getHelpURL(request), request);
-		}
-
 		// get the include (from the portal) for the HTML HEAD
 		if (getVmReference("sakai_head", request) == null)
 		{
@@ -202,27 +196,6 @@ public abstract class VmServlet extends ComponentServlet
 		return a;
 	}
 
-	/**
-	 * Compute the Help url for the current tool
-	 * 
-	 * @param req
-	 *        The current request.
-	 * @return The URL to help with the current tool specified for help context.
-	 */
-	protected String getHelpURL(HttpServletRequest req)
-	{
-		// check for a current tool, for help context
-		String helpContext = null;
-		Tool tool = ToolManager.getCurrentTool();
-		if (tool != null)
-		{
-			helpContext = tool.getId();
-		}
-
-		String rv = ServerConfigurationService.getHelpUrl(helpContext);
-
-		return rv;
-	}
 }
 
 /**************************************************************************************************************************************************************************************************************************************************************

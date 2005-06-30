@@ -1274,17 +1274,6 @@ public class ChatAction
 		state.removeAttribute(STATE_MODE);
 	}
 	
-	/**
-	* Say if the tool will require the "reset tool" button on the title bar.
-	* @return true to have the "reset tool" button, false if not.
-	* The default is to have it.
-	*/
-	protected boolean requireResetToolLink()
-	{
-		return false;
-
-	}	// requireResetToolLink
-
 	interface ChatFilter
 	{
 		Time getAfterDate();

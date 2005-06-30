@@ -8,6 +8,8 @@
 			description="View and modify your membership in sites you may join.">
 
 		<category name="myworkspace" />
+
+		<configuration name="reset.button" value="false" />
 	</tool>
 
 </registration>

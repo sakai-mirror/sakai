@@ -587,17 +587,6 @@ public class SiteBrowserAction
 	
 
 	/**
-	* Say if the tool will require the "reset tool" button on the title bar.
-	* @return true to have the "reset tool" button, false if not.
-	* The default is to have it.
-	*/
-	protected boolean requireResetToolLink()
-	{
-		return false;
-
-	}	// requireResetToolLink
-
-	/**
 	 * Return the url unchanged, unless it's a reference, then return the reference url
 	 */
 	private String convertReferenceUrl(String url)
