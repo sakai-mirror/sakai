@@ -136,3 +136,11 @@ update SAKAI_SITE set SKIN=null where skin='um.css';
 update SAKAI_SITE set SKIN=null where skin='sakai_core.css';
 update SAKAI_SITE set SKIN=null, ICON_URL='/ctlib/icon/umd.gif' where skin='umd.css';
 */
+
+-- GradTools specific conversions
+/*
+update sakai_site_tool_property set value='http://gradtools.umich.edu/about.html'
+	where dbms_lob.substr( value, 4000, 1 ) ='/content/public/GradToolsInfo.html';
+update sakai_site_tool_property set value='http://gradtools.umich.edu/help'
+	where dbms_lob.substr( value, 4000, 1 ) ='https://coursetools.ummu.umich.edu/disstools/help.nsf';
+*/
