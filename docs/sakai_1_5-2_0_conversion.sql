@@ -144,3 +144,16 @@ update sakai_site_tool_property set value='http://gradtools.umich.edu/about.html
 update sakai_site_tool_property set value='http://gradtools.umich.edu/help'
 	where dbms_lob.substr( value, 4000, 1 ) ='https://coursetools.ummu.umich.edu/disstools/help.nsf';
 */
+
+-- get rid of the old "contact support" help, if using the new portal supplied help
+/*
+delete from sakai_site_tool_property where tool_id in
+	(select tool_id from sakai_site_tool where page_id in
+		(select page_id from sakai_site_page where title='Help')
+	);
+delete from sakai_site_tool where page_id in
+	(select page_id from sakai_site_page where title='Help');
+delete from sakai_site_page_property where page_id in
+	(select page_id from sakai_site_page where title='Help');
+delete from sakai_site_page where title='Help';
+*/
