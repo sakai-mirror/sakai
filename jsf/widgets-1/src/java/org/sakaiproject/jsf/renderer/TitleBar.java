@@ -61,7 +61,7 @@ public class TitleBar extends Renderer
 
 		// TODO: here's where the reset goes...
 		// <a href="#toolLink("$action" "doReset")" title="Reset"><img src="#imageLink("toolhome.gif")" alt="Reset" border="0"></a>
-
+		
 		String txt = (String) JSFUtils.getAttribute(context, component, "value");
 		if (txt != null)
 		{
@@ -70,17 +70,18 @@ public class TitleBar extends Renderer
 		writer.write("</td>\n");
 
 		// TODO: here's where right hand icons go (i.e. float, dock...)
-		writer.write("<td class=\"action\" align=\"right\">");
-//		String helpDocId = (String) JSFUtils.getAttribute(context, component, "helpDocId");
-//		if(helpDocId != null && ServerConfigurationService.getBoolean("helpEnabled", true))
-//		{
-//			String sakai_HelpURL = "/tunnel/sakai-help-tool/help/jsf.tool?pid=/tunnel/sakai-help-tool/help/jsf.tool&helpDocId=";
-//			String linkToHelp = "<a href=\"javascript:;\" onClick=\"window.open('" + sakai_HelpURL;
-//			linkToHelp += helpDocId;
-//			linkToHelp += "','Help','resizable=1,toolbar=no,scrollbars=yes, width=800,height=600')\">";
-//			linkToHelp += "<img src=\"/tunnel/library/image/help.gif\" border=\"0\"></a>";
-//			writer.write(linkToHelp);
-//		}
+		writer.write("<td class=\"action\">");
+		String helpDocId = (String) JSFUtils.getAttribute(context, component, "helpDocId");
+
+		if((helpDocId != null && helpDocId.length() > 0))
+		{
+		    // TODO: Not hard-code help URL?
+			String sakai_HelpURL = "/portal/help/main?help=" + helpDocId;
+			String linkToHelp = "<a href=\"javascript:;\" onClick=\"window.open('" + sakai_HelpURL;
+			linkToHelp += "','Help','resizable=1,toolbar=no,scrollbars=yes, width=800,height=600')\">";
+			linkToHelp += "<img src=\"/library/image/transparent.gif\" border=\"0\"></a>";
+			writer.write(linkToHelp);
+		}
 		writer.write("</td>\n");
 		writer.write("</tr></table>\n");
 	}

@@ -62,6 +62,13 @@
     textStatus="There are {2} things this pager is managing.  You are looking at {0} to {1} right now."
     />
 
+<pre>
+    &lt;sakaix:pager totalItems="0" /&gt;
+</pre>
+    <sakaix:pager totalItems="0" />
+
+ <br />
+
 </h:form>
 </sakaix:view>
 </f:view>

@@ -26,17 +26,15 @@
 
 package example;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.PhaseId;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.event.ValueChangeListener;
 
 import org.apache.commons.fileupload.FileItem;
 

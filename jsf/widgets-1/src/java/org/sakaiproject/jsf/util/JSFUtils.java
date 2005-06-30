@@ -23,9 +23,14 @@
 
 package org.sakaiproject.jsf.util;
 
+import java.io.Serializable;
+
+import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.el.MethodBinding;
 import javax.faces.el.ValueBinding;
+import javax.faces.webapp.UIComponentTag;
 
 /**
  * <p>
@@ -113,6 +118,116 @@ public class JSFUtils
         Object o = getAttribute(context, component, name);
         if (o == null) o = defaultValue;
         return o;
+    }
+
+    /**
+     * Set a string value on a component - used by tags setProperties() method.
+     * Handles value bindings.
+     */
+    public static void setString(UIComponent component, String name, String value)
+    {
+        if (value == null)
+        {
+            return;
+        }
+        if (UIComponentTag.isValueReference(value))
+        {
+            setValueBinding(component, name, value);
+        }
+        else
+        {
+            component.getAttributes().put(name, value);
+        }
+    }
+
+    /**
+     * Set a value binding on a component - used by tags setProperties() method.
+     */
+    public static void setValueBinding(UIComponent component, String name, String value)
+    {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Application app = context.getApplication();
+        ValueBinding vb = app.createValueBinding(value);
+        component.setValueBinding(name, vb);
+    }
+
+    /**
+     * Set a method binding on a component
+     * 
+     * @param name
+     *            The attribute name to store the MethodBinding in
+     * @param value
+     *            The string name of the method binding
+     * @param paramTypes
+     *            An array of parameter types for the method
+     */
+    public static void setMethodBinding(UIComponent component, String name, String value,
+            Class[] paramTypes)
+    {
+        if (value == null)
+        {
+            return;
+        }
+        if (UIComponentTag.isValueReference(value))
+        {
+            FacesContext context = FacesContext.getCurrentInstance();
+            Application app = context.getApplication();
+            MethodBinding mb = app.createMethodBinding(value, paramTypes);
+            component.getAttributes().put(name, mb);
+        }
+    }
+
+    /**
+     * Set the action handler for the component.
+     */
+   public static void setAction(UIComponent component, String value)
+    {
+        if (value == null)
+        {
+            return;
+        }
+        if (UIComponentTag.isValueReference(value))
+        {
+            setMethodBinding(component, "action", value, new Class[] {});
+        }
+        else
+        {
+            FacesContext context = FacesContext.getCurrentInstance();
+            Application app = context.getApplication();
+            MethodBinding mb = new ActionMethodBinding(value);
+            component.getAttributes().put("action", mb);
+        }
+    }
+
+   /**
+    * A shortcut MethodBinding which just returns a single string result - useful
+    * when an action should just return a certain result, not call a method.
+    * 
+    */
+    private static class ActionMethodBinding extends MethodBinding implements
+            Serializable
+    {
+        private String result;
+
+        public ActionMethodBinding(String result)
+        {
+            this.result = result;
+        }
+
+        public Object invoke(FacesContext context, Object params[])
+        {
+            return result;
+        }
+
+        public String getExpressionString()
+        {
+            return result;
+        }
+
+        public Class getType(FacesContext context)
+        {
+            return String.class;
+        }
     }
 
 }
