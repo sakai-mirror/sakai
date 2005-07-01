@@ -69,7 +69,10 @@
 				## display only subject, course number and section
 				##and finally - the labels work, but having commas in the id does not validate. Can we concatenate or replace with underscore? Here is reqs on ids and labels: an id attribute value must begin with a letter (A-Z or a-z) and consist of the following characters: (A-Z), (a-z), (0-9), hyphens (-), underscores (_), colons (:), and periods (.).
 				#foreach($course in $termCourseList)
-					<input type="checkbox" name="providerCourseAdd" value="$course.Id" id="$course.Id" 
+					<input type="checkbox" name="providerCourseAdd" value="$course.Id" id="$course.Id"
+						#if ($!selectedProviderCourse.contains("$course.Id"))
+							checked="checked"
+						#end 
 						/>
 					<label for="$course.Id">
 						$validator.escapeHtml($course.Id)
@@ -79,7 +82,7 @@
 			<br />
 			## instructor could choose to go to the manual creation page
 				<p class="checkbox">
-					<input  type="checkbox" name="manualAdds" value="manual add" id="manual add" #if ($manualAdd) checked="checked" #end/>
+					<input  type="checkbox" name="manualAdds" value="manual add" id="manual add" #if ($!selectedManualCourse) checked="checked" #end/>
 				#if ($!providerCourseList.size() != 0 || $!requestedCourseList.size() != 0)
 					<label for = "manual add">$tlang.getString("nscourse.iwould1") </label><br />
 				#else

@@ -2513,6 +2513,10 @@ public class SiteAction extends PagedResourceActionII
 				{
 					context.put ("selectedProviderCourse", state.getAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN));
 				}
+				if(state.getAttribute(STATE_MANUAL_ADD_COURSE_NUMBER) != null)
+				{
+					context.put("selectedManualCourse", Boolean.TRUE);
+				}
 				context.put ("term", (Term) state.getAttribute(STATE_TERM_SELECTED));
 			}		
 			if (((String) state.getAttribute(STATE_SITE_MODE)).equalsIgnoreCase(SITE_MODE_SITESETUP))
@@ -7945,9 +7949,13 @@ public class SiteAction extends PagedResourceActionII
 				if (forward)
 				{
 					List providerChosenList = new Vector();
-					if (params.getStrings("providerCourseAdd") == null && params.getString("manualAdds") == null)
+					if (params.getStrings("providerCourseAdd") == null)
 					{
-						addAlert(state, rb.getString("java.manual")+" ");
+						state.removeAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN);
+						if (params.getString("manualAdds") == null)
+						{
+							addAlert(state, rb.getString("java.manual")+" ");
+						}
 					}
 					if (state.getAttribute(STATE_MESSAGE) == null)
 					{
