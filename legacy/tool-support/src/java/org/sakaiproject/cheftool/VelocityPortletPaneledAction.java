@@ -935,20 +935,6 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 		super.doGet(req, res);
 	}
 
-	/**
-	 * Build the context for the Layout panel. The layout is aggregated into the main portal pane page. This builds the standard layout. Override to have a custom layout.
-	 * 
-	 * @return (optional) template name for this panel
-	 */
-	public String buildLayoutPanelContext(VelocityPortlet portlet, Context context, RunData rundata, SessionState state)
-	{
-		context.put("title", portlet.getPortletConfig().getTitle());
-		context.put("pid", portlet.getID());
-		context.put("tlang", rb);
-
-		return "chef_Layout";
-	}
-
 	/** Tool session attribute name used to schedule a peer frame refresh. */
 	public static final String ATTR_FRAME_REFRESH = "sakai.vppa.frame.refresh";
 
