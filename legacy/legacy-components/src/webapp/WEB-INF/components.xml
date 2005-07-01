@@ -520,6 +520,8 @@
 				<!--<prop key="emailInIdAccountNotifyPassword">true</prop>-->
 				<!--<prop key="invalidEmailInIdAccountString">nowhere.org</prop>-->
 				<!--<prop key="emailInIdAccount.url"></prop>-->
+				<!-- emailInIdAccount login instruction account login instructions -->
+				<prop key="emailInIdAccountInstru">To log in, you must first get a guest account. A guest account is a special kind of account that is used to give non-Sakai University members access to the general Sakai University web environment. The Sakai University web environment includes many tools and services, one of which is Sakai. </prop>
 				
 				<prop key="titleEditableSiteType.count">1</prop>
 				<prop key="titleEditableSiteType.1">project</prop>
@@ -561,6 +563,14 @@
 				<prop key="powered.alt.count">1</prop>
 				<prop key="powered.alt.1">Powered by Sakai</prop>
 
+				<!-- send an email to the user when the user is added -->
+				<prop key="notifyNewUserEmail">true</prop>
+				
+				<!-- some fill-ins for the css/vm ui (Worksite Setup, Digest Service, Email notification, Worksite Setup, Contact Support, Portal) -->
+				<prop key="ui.institution">Sakai University</prop>
+				<prop key="ui.service">Sakai</prop>
+				<prop key="serverUrl">http://www.sakaiproject.org</prop>
+				
 			</props>
 		</property>
 

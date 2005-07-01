@@ -8847,7 +8847,7 @@ public class SiteAction extends PagedResourceActionII
 					}
 					catch (IdUnusedException e)
 					{
-						Log.warn("chef", this + " IdUnusedException: cannot find user " + userString);
+						// deal with missing user quietly without throwing a warning message
 					}
 				}
 			}
@@ -10034,25 +10034,18 @@ public class SiteAction extends PagedResourceActionII
 				noEmailInIdAccount.replaceAll("[ \t\r\n]","");
 				if(noEmailInIdAccount != null)
 				{
-					if (noEmailInIdAccount.indexOf(at) != -1)
+					//automaticially add emailInIdAccount account
+					Participant participant = new Participant();
+					try
+					{
+						User u = UserDirectoryService.getUser(noEmailInIdAccount);
+						participant.name = u.getDisplayName();
+						participant.uniqname = noEmailInIdAccount;
+						pList.add(participant);
+					}
+					catch (IdUnusedException e) 
 					{
 						addAlert(state, noEmailInIdAccount + " "+rb.getString("java.username")+" ");
-					}
-					else
-					{
-						//automaticially add emailInIdAccount account
-						Participant participant = new Participant();
-						try
-						{
-							User u = UserDirectoryService.getUser(noEmailInIdAccount);
-							participant.name = u.getDisplayName();
-							participant.uniqname = noEmailInIdAccount;
-							pList.add(participant);
-						}
-						catch (IdUnusedException e) 
-						{
-							addAlert(state, noEmailInIdAccount + " "+ rb.getString("java.username"));
-						}
 					}
 				}
 			}
@@ -10231,7 +10224,7 @@ public class SiteAction extends PagedResourceActionII
 								Log.debug("chef", this + ": cannot find user " + noEmailInIdAccount + ". ");
 							}
 							// send notification email
-							notifyAddedParticipant(false, emailId, userName, null, siteTitle);
+							notifyAddedParticipant(false, emailId, userName, siteTitle);
 						}
 					}
 					else
@@ -10288,6 +10281,12 @@ public class SiteAction extends PagedResourceActionII
 							pw = num.toString();
 							uEdit.setPassword(pw);
 							UserDirectoryService.commitEdit(uEdit);
+							
+							boolean notifyNewUserEmail = (ServerConfigurationService.getString("notifyNewUserEmail", Boolean.TRUE.toString())).equalsIgnoreCase(Boolean.TRUE.toString());
+							if (notifyNewUserEmail)
+							{
+								notifyNewUserEmail(emailInIdAccount, emailInIdAccount, pw, siteTitle);
+							}
 					
 						 }
 						 catch(IdInvalidException ee)
@@ -10328,17 +10327,9 @@ public class SiteAction extends PagedResourceActionII
 						
 						// send notification
 						if (notify)
-						{
-							String password = null;
-							if (ServerConfigurationService.getString("emailInIdAccountNotifyPassword") != null)
-							{
-								if (ServerConfigurationService.getString("emailInIdAccountNotifyPassword").equalsIgnoreCase(Boolean.TRUE.toString()))
-								{
-									password = pw;
-								}
-							}
+						{	
 							// send notification email
-							notifyAddedParticipant(true, emailInIdAccount, emailInIdAccount, password, siteTitle);
+							notifyAddedParticipant(true, emailInIdAccount, emailInIdAccount, siteTitle);
 						}
 					}
 					else
@@ -10397,9 +10388,56 @@ public class SiteAction extends PagedResourceActionII
 	}	// removeAddParticipantContext
 	
 	/**
+	 * Send an email to newly added user informing password
+	 * @param newEmailInIdAccount
+	 * @param emailId
+	 * @param userName
+	 * @param siteTitle
+	 */
+	private void notifyNewUserEmail(String userName, String newUserEmail, String newUserPassword, String siteTitle)
+	{
+		String emailInIdAccountName = ServerConfigurationService.getString("emailInIdAccountName", "");
+		String noEmailInIdAccountName = ServerConfigurationService.getString("noEmailInIdAccountName", "");
+		
+		String from = ServerConfigurationService.getString("setup.request", null);
+		if (from == null)
+		{
+			Log.warn("chef", this + " - no 'setup.request' in configuration");
+			from = "postmaster@".concat(ServerConfigurationService.getServerName());
+		}
+		String productionSiteName = ServerConfigurationService.getString("ui.service", "");
+		String productionSiteUrl = ServerConfigurationService.getString("serverUrl", "");
+		String universityName = ServerConfigurationService.getString("ui.institution", "");
+		
+		String to = newUserEmail;
+		String headerTo = newUserEmail;
+		String replyTo = newUserEmail;
+		String message_subject = productionSiteName + " "+rb.getString("java.newusernoti");
+		String content = "";
+		
+		if (from != null && newUserEmail !=null)
+		{
+			StringBuffer buf = new StringBuffer();
+			buf.setLength(0);
+			
+			// email body
+			buf.append(userName + ":\n\n");
+			
+			buf.append(rb.getString("java.addedto")+" " + productionSiteName + " ("+ productionSiteUrl + ") ");
+			buf.append(rb.getString("java.simpleby")+" ");
+         	buf.append(UserDirectoryService.getCurrentUser().getDisplayName() + ". \n\n");
+			buf.append(rb.getString("java.passwordis1")+" " + newUserPassword + ". ");
+			buf.append(rb.getString("java.passwordis2")+ "\n\n");
+			
+			content = buf.toString();
+			EmailService.send(from, to, message_subject, content, headerTo, replyTo, null);
+		}
+	}	// notifyNewUserEmail
+	
+	/**
 	 * send email notification to added participant
 	 */
-	private void notifyAddedParticipant(boolean newEmailInIdAccount, String emailId, String userName, String password, String siteTitle)
+	private void notifyAddedParticipant(boolean newEmailInIdAccount, String emailId, String userName, String siteTitle)
 	{
 		String emailInIdAccountName = ServerConfigurationService.getString("emailInIdAccountName", "");
 		String noEmailInIdAccountName = ServerConfigurationService.getString("noEmailInIdAccountName", "");
@@ -10426,37 +10464,27 @@ public class SiteAction extends PagedResourceActionII
 			// email body differs between newly added emailInIdAccount account and other users
 			buf.append(userName + ":\n\n");
 			buf.append(rb.getString("java.following")+" " + productionSiteName + " "+rb.getString("java.simplesite")+ "\n");
-         buf.append(siteTitle + "\n");
-         buf.append(rb.getString("java.simpleby")+" ");
-         buf.append(UserDirectoryService.getCurrentUser().getDisplayName() + ". \n\n");
+			buf.append(siteTitle + "\n");
+         	buf.append(rb.getString("java.simpleby")+" ");
+         	buf.append(UserDirectoryService.getCurrentUser().getDisplayName() + ". \n\n");
 			if (newEmailInIdAccount)
 			{
-				// for emailInIdAccount account
-				if (password != null)
-				{
-               buf.append(rb.getString("java.passwordis1")+" " + password + ". ");
-               buf.append(rb.getString("java.passwordis2" + "\n\n"));
-				}
-				buf.append(rb.getString("java.tologin1") + " " + universityName + " ");
-            buf.append(rb.getString("java.tologin2") +" " + universityName + rb.getString("java.tologin3")+" ");
-				buf.append(rb.getString("java.simplethe") + " " + universityName + " " + rb.getString("java.webincludes") +" ");
-            buf.append(productionSiteName + ". \n\n");
-            
+				buf.append(ServerConfigurationService.getString("emailInIdAccountInstru", "") + "\n");
+				
 				if (emailInIdAccountUrl != null)
 				{
 					buf.append(rb.getString("java.togeta1") +"\n" + emailInIdAccountUrl + "\n");
 					buf.append(rb.getString("java.togeta2")+"\n\n");
 				}
-				buf.append(rb.getString("java.once")+": \n");
-            buf.append(productionSiteName);
-				buf.append(rb.getString("java.loginhow1")+" " + productionSiteName + ":\n" + productionSiteUrl + "\n");
+				buf.append(rb.getString("java.once")+" " + productionSiteName + ": \n");
+				buf.append(rb.getString("java.loginhow1")+" " + productionSiteName + ": " + productionSiteUrl + "\n");
 				buf.append(rb.getString("java.loginhow2")+"\n");
 				buf.append(rb.getString("java.loginhow3")+"\n");
 			}
 			else
 			{
 				buf.append(rb.getString("java.tolog")+"\n");
-				buf.append(rb.getString("java.loginhow1")+" " + productionSiteName + ":\n" + productionSiteUrl + "\n");
+				buf.append(rb.getString("java.loginhow1")+" " + productionSiteName + ": " + productionSiteUrl + "\n");
 				buf.append(rb.getString("java.loginhow2")+"\n");
 				buf.append(rb.getString("java.loginhow3u")+"\n");
 			}
