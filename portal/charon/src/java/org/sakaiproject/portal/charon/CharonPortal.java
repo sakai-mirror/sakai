@@ -495,12 +495,18 @@ public class CharonPortal extends HttpServlet
     protected void includeTitle(ActiveTool tool, HttpServletRequest req, HttpServletResponse res, ToolConfiguration placement, String skin, String toolContextPath, String toolPathInfo)
     	throws IOException
     {
+		res.setContentType("text/html; charset=UTF-8");
+		res.addDateHeader("Expires", System.currentTimeMillis() - (1000L * 60L * 60L * 24L * 365L));
+		res.addDateHeader("Last-Modified", System.currentTimeMillis());
+		res.addHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0");
+		res.addHeader("Pragma", "no-cache");
+    	
  		if (skin == null || skin.length() == 0) skin = ServerConfigurationService.getString("skin.default");
 		String skinRepo = ServerConfigurationService.getString("skin.repo");
        
         // the title to display in the title frame
-        String toolTitle = placement.getTitle();
-        		
+        String toolTitle = Web.escapeHtml(placement.getTitle());
+        
 		// for the reset button
 		String resetActionUrl = toolContextPath+"?reset=true";
 		boolean resetToolNow = "true".equals(req.getParameter("reset"));
