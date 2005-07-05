@@ -1266,6 +1266,9 @@ extends VelocityPortletStateAction
 				sstate.setAttribute(CalendarAction.SSTATE_ATTRIBUTE_ADDFIELDS_CALENDARS_INIT, addfieldsCalendars);
 				sstate.setAttribute(CalendarAction.SSTATE_ATTRIBUTE_ADDFIELDS_CALENDARS, addfieldsCalendars);
 				
+				context.put("delFields", (List)sstate.getAttribute(CalendarAction.SSTATE_ATTRIBUTE_DELFIELDS));
+				sstate.removeAttribute(CalendarAction.SSTATE_ATTRIBUTE_DELFIELDS);
+			
 				sstate.setAttribute(CalendarAction.SSTATE_ATTRIBUTE_DELFIELDS_CONFIRM, "N");
 				state.setDelfieldAlertOff(true);
 			}
@@ -1424,6 +1427,7 @@ extends VelocityPortletStateAction
 			ParameterParser params = runData.getParameters();
 			String addFields = (String) sstate.getAttribute(CalendarAction.SSTATE_ATTRIBUTE_ADDFIELDS_CALENDARS);
 			String [] addFieldsCalendarList = null, newAddFieldsCalendarList = null;
+			List delFields = new Vector();
 			
 			int nextNewFieldsIndex = 0;
 			if (addFields != null)
@@ -1432,6 +1436,7 @@ extends VelocityPortletStateAction
 				
 				// The longest the new array can possibly be is the current size of the list.
 				newAddFieldsCalendarList = new String[addFieldsCalendarList.length];
+
 				
 				for (int i=0; i< addFieldsCalendarList.length; i++)
 				{
@@ -1446,7 +1451,10 @@ extends VelocityPortletStateAction
 						newAddFieldsCalendarList[nextNewFieldsIndex++] = addFieldsCalendarList[i];
 					}
 					else
+					{
 						sstate.setAttribute(CalendarAction.SSTATE_ATTRIBUTE_DELFIELDS_CONFIRM, "Y");
+						delFields.add(addFieldsCalendarList[i]);
+					}
 				}
 				addFields = arrayToString(newAddFieldsCalendarList, ADDFIELDS_DELIMITER);
 			}
@@ -1457,7 +1465,7 @@ extends VelocityPortletStateAction
 			enableObserver(sstate, true);
 
 			sstate.setAttribute(CalendarAction.SSTATE_ATTRIBUTE_ADDFIELDS_CALENDARS, addFields);
-			
+			sstate.setAttribute(CalendarAction.SSTATE_ATTRIBUTE_DELFIELDS, delFields);
 			
 			sstate.setAttribute(CalendarAction.SSTATE_ATTRIBUTE_ADDFIELDS_PAGE, CalendarAction.PAGE_ADDFIELDS);
 			
@@ -1477,6 +1485,14 @@ extends VelocityPortletStateAction
 			if (sstate.getAttribute(CalendarAction.SSTATE_ATTRIBUTE_DELFIELDS_CONFIRM).equals("Y") && state.getDelfieldAlertOff() )
 			{
 				String errorCode = rb.getString("java.alert.areyou");
+				List delFields = (List) sstate.getAttribute(SSTATE_ATTRIBUTE_DELFIELDS);
+				
+				errorCode = errorCode.concat((String)(delFields.get(0)));
+				for(int i=1; i<delFields.size(); i++)
+				{
+					errorCode = errorCode.concat(", " + (String)(delFields.get(i)));
+				}
+				errorCode = errorCode.concat(rb.getString("java.alert.ifyes"));
 				addAlert(sstate, errorCode);
 				state.setDelfieldAlertOff(false);
 			}
@@ -1851,6 +1867,7 @@ extends VelocityPortletStateAction
 	"addfieldsInit";
 	private final static String SSTATE_ATTRIBUTE_ADDFIELDS_CALENDARS =
 	"addfields";
+	private final static String SSTATE_ATTRIBUTE_DELFIELDS = "delFields";
 	
 	private final static String SSTATE_ATTRIBUTE_DELFIELDS_CONFIRM =
 	"delfieldsConfirm";
