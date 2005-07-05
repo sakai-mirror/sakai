@@ -31,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -69,6 +70,7 @@ import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
@@ -90,7 +92,11 @@ import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.SitePage;
+import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.site.SiteService.SelectionType;
+import org.sakaiproject.service.legacy.site.SiteService.SortType;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
@@ -208,6 +214,9 @@ extends VelocityPortletPaneledAction
 
 	/** The from state name */
 	private static final String STATE_FROM = "resources.from";
+	
+	/** The root of the navigation breadcrumbs for a folder, either the home or another site the user belongs to */
+	private static final String STATE_NAVIGATION_ROOT = "resources.navigation_root";
 
 	/************** the add file context *****************************************/
 	
@@ -680,7 +689,44 @@ extends VelocityPortletPaneledAction
 		
 		boolean inMyWorkspace = SiteService.isUserSite(PortalService.getCurrentSiteId());
 		context.put("inMyWorkspace", Boolean.toString(inMyWorkspace));
-
+			
+		/*
+		// user
+		String userId = UserDirectoryService.getCurrentUser().getId();
+		Set realms = RealmService.unlockRealms(userId, "content.read");
+		System.out.println(" ====> Number of realms: " + realms.size());
+		Iterator realmIt = realms.iterator();
+		while(realmIt.hasNext())
+		{
+			String realmId = (String) realmIt.next();
+			System.out.println(" ----> realmId: " + realmId);
+			try
+			{
+				Realm realm = RealmService.getRealm(realmId);
+				String ref = realm.getReference();
+				System.out.println("           ref: " + ref);
+				String collId = ContentHostingService.getSiteCollection(ref);
+				System.out.println("        collId: " + collId);
+				ContentCollection collection = ContentHostingService.getCollection(collId);
+				if(collection != null)
+				{
+					System.out.println("          xxxx: " + collection.getId());
+				}
+			}
+			catch(IdUnusedException e)
+			{
+				System.out.println("                IdUnusedException " + e.getMessage());
+			}
+			catch(PermissionException e)
+			{
+				System.out.println("                PermissionException " + e.getMessage());
+			}
+			catch(TypeException e)
+			{
+				System.out.println("                TypeException " + e.getMessage());
+			}
+		}
+		*/
 		boolean atHome = false;
 
 		boolean dropboxMode = ((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX);
@@ -693,10 +739,11 @@ extends VelocityPortletPaneledAction
 		{
 			context.put("dropboxMode", Boolean.FALSE);
 		}
-
+		
 		// make sure the channedId is set
 		String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
 		context.put ("collectionId", collectionId);
+		String navRoot = (String) state.getAttribute(STATE_NAVIGATION_ROOT);
 		String homeCollectionId = (String) state.getAttribute(STATE_HOME_COLLECTION_ID);
 		if (collectionId.equals(homeCollectionId))
 		{
@@ -722,20 +769,10 @@ extends VelocityPortletPaneledAction
 
 		context.put("atHome", Boolean.toString(atHome));
 
-		Vector collectionPath = new Vector ();
-		String currentCollectionId = collectionId;
 
-		while ((contentService.getContainingCollectionId (currentCollectionId).length ()>0) && (!currentCollectionId.equals (state.getAttribute (STATE_HOME_COLLECTION_ID))))
-		{
-			String containingId = contentService.getContainingCollectionId (currentCollectionId);
-			collectionPath.insertElementAt (containingId, 0);
-			currentCollectionId = containingId;
-		}
-
-		state.setAttribute (STATE_COLLECTION_PATH, collectionPath);
-		// context.put ("collectionPath", collectionPath);
 		
-		List cPath = getCollectionPath(state, (String) state.getAttribute (STATE_HOME_COLLECTION_ID), collectionId);
+		List cPath = getCollectionPath(state);
+		System.out.println("  buildListContext cPath.size == " + cPath.size());
 		context.put ("collectionPath", cPath);
 
 		String testCollection = collectionId + "test/";
@@ -768,20 +805,67 @@ extends VelocityPortletPaneledAction
 			
 			state.removeAttribute(STATE_PASTE_ALLOWED_FLAG);
 			
-			List members = getBrowseItems(collectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, state);
-			BrowseItem root = (BrowseItem) members.remove(0);
-
-			context.put ("collectionMembers", members);
-			context.put ("root", root);
+			List roots = new Vector();
+			List members = getBrowseItems(collectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, navRoot.equals(homeCollectionId), state);
+			if(members != null && members.size() > 0)
+			{
+				BrowseItem root = (BrowseItem) members.remove(0);
+				context.put("site", root);
+				root.addMembers(members);
+				roots.add(root);
+			}
+			
+			if(atHome)
+			{
+				List mySites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
+						null, null, null,
+						SortType.TITLE_ASC,
+						new PagingPosition(1,50));
+				System.out.println(" ====> Number of sites: " + mySites.size());
+				Iterator siteIt = mySites.iterator();
+				while(siteIt.hasNext())
+				{
+					Site site = (Site) siteIt.next();
+					System.out.println(" ----> " + site.getTitle() + " -- " + SiteService.isUserSite(site.getId()));
+					List pages = site.getPages();
+					Iterator pageIt = pages.iterator();
+					while(pageIt.hasNext())
+					{
+						SitePage page = (SitePage) pageIt.next();
+						List tools = page.getTools();
+						Iterator toolIt = tools.iterator();
+						while(toolIt.hasNext())
+						{
+							ToolConfiguration tool = (ToolConfiguration) toolIt.next();
+							if(tool == null || tool.getTool() == null)
+							{
+								// System.out.println("       tool: null");
+							}
+							else if("sakai.resources".equals(tool.getTool().getId()))
+							{
+								String collId = ContentHostingService.getSiteCollection(tool.getContext());
+								if(! collectionId.equals(collId))
+								{
+									System.out.println("       another collection: " + collId);
+									members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+									if(members != null && members.size() > 0)
+									{
+										BrowseItem root = (BrowseItem) members.remove(0);
+										root.addMembers(members);
+										roots.add(root);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			context.put ("roots", roots);
+			// context.put ("root", root);
+			
 			if(state.getAttribute(STATE_PASTE_ALLOWED_FLAG) != null)
 			{
 				context.put("paste_place_showing", state.getAttribute(STATE_PASTE_ALLOWED_FLAG));
-			}
-			
-			if(members.size() <= 0)
-			{
-				String noitemsmsg = rb.getString("sh.no") + (dropboxMode ? rb.getString("sh.drop") : rb.getString("sh.reso")) + rb.getString("sh.item");
-				context.put("noitemsmsg", noitemsmsg);
 			}
 		}
 		catch (IdUnusedException e)
@@ -1214,7 +1298,7 @@ extends VelocityPortletPaneledAction
 		
 		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
 		context.put("homeCollectionId", homeCollectionId);
-		List collectionPath = getCollectionPath(state, homeCollectionId, folderId);	
+		List collectionPath = getCollectionPath(state);	
 		context.put ("collectionPath", collectionPath);
 
 		context.put ("unqualified_fields", state.getAttribute (STATE_UNQUALIFIED_INPUT_FIELD));
@@ -1434,7 +1518,7 @@ extends VelocityPortletPaneledAction
 		context.put ("collectionId", collectionId);
 		String homeCollectionId = (String) (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
 		context.put("homeCollectionId", homeCollectionId);
-		List cPath = getCollectionPath(state, homeCollectionId, id);
+		List cPath = getCollectionPath(state);
 		context.put ("collectionPath", cPath);
 		
 		context.put ("from", (String) state.getAttribute (STATE_MORE_FROM));
@@ -1549,7 +1633,7 @@ extends VelocityPortletPaneledAction
 		context.put ("id", id);
 		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
 		context.put("homeCollectionId", homeCollectionId);
-		List collectionPath = getCollectionPath(state, homeCollectionId, collectionId);	
+		List collectionPath = getCollectionPath(state);	
 		context.put ("collectionPath", collectionPath);
 		
 		String intent = (String) state.getAttribute(STATE_PROPERTIES_INTENT);
@@ -1697,7 +1781,7 @@ extends VelocityPortletPaneledAction
 		context.put ("id", id);
 		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
 		context.put("homeCollectionId", homeCollectionId);
-		List collectionPath = getCollectionPath(state, homeCollectionId, id);	
+		List collectionPath = getCollectionPath(state);	
 		context.put ("collectionPath", collectionPath);
 
 		if(homeCollectionId.equals(id))
@@ -1895,7 +1979,9 @@ extends VelocityPortletPaneledAction
 
 		state.setAttribute (STATE_MODE, MODE_LIST);
 
-		String collectionId = data.getParameters ().getString ("collectionId");
+		String collectionId = data.getParameters().getString ("collectionId");
+		String navRoot = data.getParameters().getString("navRoot");
+		state.setAttribute(STATE_NAVIGATION_ROOT, navRoot);
 		
 		// the exception message
 		
@@ -2497,7 +2583,7 @@ extends VelocityPortletPaneledAction
 		context.put("collectionId", collectionId);
 		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
 		context.put("homeCollectionId", homeCollectionId);
-		List collectionPath = getCollectionPath(state, homeCollectionId, collectionId);	
+		List collectionPath = getCollectionPath(state);	
 		context.put ("collectionPath", collectionPath);
 
 		if(homeCollectionId.equals(collectionId))
@@ -7582,8 +7668,10 @@ extends VelocityPortletPaneledAction
 						/*SiteService.getSiteDisplay(PortalService.getCurrentSiteId()) */);
 			}
 		}
+		System.out.println("~~~~~~> initState home == " + home);
 		state.setAttribute (STATE_HOME_COLLECTION_ID, home);
 		state.setAttribute (STATE_COLLECTION_ID, home);
+		state.setAttribute (STATE_NAVIGATION_ROOT, home);
 		
 		// state.setAttribute (STATE_COLLECTION_ID, state.getAttribute (STATE_HOME_COLLECTION_ID));
 		
@@ -8217,25 +8305,63 @@ extends VelocityPortletPaneledAction
 	
 	}	// doCollapse_collection
 	
-	public List getCollectionPath(SessionState state, String homeCollectionId, String currentCollectionId)
+	/**
+	 * @param state
+	 * @param homeCollectionId
+	 * @param currentCollectionId
+	 * @return
+	 */
+	public List getCollectionPath(SessionState state)
 	{
-		LinkedList collectionPath = new LinkedList();
 		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
-		if(contentService != null && currentCollectionId != null && homeCollectionId != null)
+		// make sure the channedId is set
+		String currentCollectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
+		String homeCollectionId = (String) state.getAttribute(STATE_HOME_COLLECTION_ID);
+		String navRoot = (String) state.getAttribute(STATE_NAVIGATION_ROOT);
+		
+		LinkedList collectionPath = new LinkedList();
+		
+		Vector pathitems = new Vector();
+		while(currentCollectionId != null && ! currentCollectionId.equals(navRoot))
 		{
+System.out.println("   getCollectionPath, currentCollectionId == " + currentCollectionId);
+			pathitems.add(currentCollectionId);
+			currentCollectionId = contentService.getContainingCollectionId(currentCollectionId);
+		}
+		System.out.println("   getCollectionPath, navRoot == " + navRoot);
+		pathitems.add(navRoot);
+		if(!navRoot.equals(homeCollectionId))
+		{
+			System.out.println("   getCollectionPath, homeCollectionId == " + homeCollectionId);
+			pathitems.add(homeCollectionId);
+		}
+
+		Iterator items = pathitems.iterator();
+		while(items.hasNext())
+		{
+			String id = (String) items.next();
+			System.out.println("   getCollectionPath, id == " + id);
 			try
 			{
-				ResourceProperties props = contentService.getProperties(currentCollectionId);
+				ResourceProperties props = contentService.getProperties(id);
 				String name = props.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
-				PathItem item = new PathItem(currentCollectionId, name);
+				PathItem item = new PathItem(id, name);
 				
-				boolean canRead = contentService.allowGetCollection(currentCollectionId) || contentService.allowGetResource(currentCollectionId);
+				boolean canRead = contentService.allowGetCollection(id) || contentService.allowGetResource(id);
 				item.setCanRead(canRead);
 				
-				String url = contentService.getUrl(currentCollectionId);
+				String url = contentService.getUrl(id);
 				item.setUrl(url);
 				
-				item.setLast(true);
+				item.setLast(collectionPath.isEmpty());
+				if(id.equals(homeCollectionId))
+				{
+					item.setRoot(homeCollectionId);
+				}
+				else
+				{
+					item.setRoot(navRoot);
+				}
 				
 				try
 				{
@@ -8251,33 +8377,6 @@ extends VelocityPortletPaneledAction
 				
 				collectionPath.addFirst(item);
 					
-				String containingId = contentService.getContainingCollectionId (currentCollectionId);
-				while (currentCollectionId != null && containingId != null &&
-					 (!currentCollectionId.equals (homeCollectionId) && (containingId.length() > 0)))
-				{
-					props = contentService.getProperties(containingId);
-					name = props.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
-					item = new PathItem(containingId, name);
-
-					canRead = contentService.allowGetCollection(containingId);
-					item.setCanRead(canRead);
-					
-					url = contentService.getUrl(currentCollectionId);
-					item.setUrl(url);
-					
-					try
-					{
-						boolean isFolder = props.getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION);
-						item.setIsFolder(isFolder);
-					}
-					catch (Exception e)
-					{
-					}
-
-					collectionPath.addFirst(item);
-					currentCollectionId = containingId;
-					containingId = contentService.getContainingCollectionId (currentCollectionId);
-				}
 			}
 			catch (PermissionException e)
 			{
@@ -8290,6 +8389,7 @@ extends VelocityPortletPaneledAction
 				e.printStackTrace();
 			}
 		}
+		System.out.println("   getCollectionPath, collectionPath.size == " + collectionPath.size());
 		return collectionPath;
 	}
 	
@@ -8380,10 +8480,12 @@ extends VelocityPortletPaneledAction
 	 * @param expandedCollections - Hash of collection resources
 	 * @param sortedBy  - pass through to ContentHostingComparator
 	 * @param sortedAsc - pass through to ContentHostingComparator
+	 * @param parent - The folder containing this item
+	 * @param isLocal - true if navigation root and home collection id of site are the same, false otherwise
 	 * @param state - The session state
 	 * @return a List of BrowseItem objects
 	 */
-	public List getBrowseItems(String collectionId, HashMap expandedCollections, String sortedBy, String sortedAsc, BrowseItem parent, SessionState state)
+	public List getBrowseItems(String collectionId, HashMap expandedCollections, String sortedBy, String sortedAsc, BrowseItem parent, boolean isLocal, SessionState state)
 	{		
 		List newItems = new LinkedList();
 		try
@@ -8476,6 +8578,14 @@ extends VelocityPortletPaneledAction
 			ResourceProperties cProperties = collection.getProperties();
 			String folderName = cProperties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 			BrowseItem folder = new BrowseItem(collectionId, folderName, "folder");
+			if(parent == null)
+			{
+				folder.setRoot(collectionId);
+			}
+			else
+			{
+				folder.setRoot(parent.getRoot());
+			}
 			
 			String containerId = contentService.getContainingCollectionId (collectionId);
 			folder.setContainer(containerId);
@@ -8566,7 +8676,7 @@ extends VelocityPortletPaneledAction
 					if(isCollection)
 					{
 						// add all the items in the subfolder to newItems
-						newItems.addAll(getBrowseItems(itemId, expandedCollections, sortedBy, sortedAsc, folder, state));
+						newItems.addAll(getBrowseItems(itemId, expandedCollections, sortedBy, sortedAsc, folder, isLocal, state));
 					}
 					else
 					{
@@ -8653,7 +8763,8 @@ extends VelocityPortletPaneledAction
 		}
 		catch (IdUnusedException e)
 		{
-			addAlert(state,"IdUnusedException.");
+			// addAlert(state,"IdUnusedException.");
+			// this condition indicates a site that does not have a resources collection (mercury?)
 		}
 		catch (TypeException e)
 		{
@@ -9281,6 +9392,7 @@ extends VelocityPortletPaneledAction
 		protected boolean m_canAddItem;
 		protected boolean m_canAddFolder;
 
+		protected List m_members;
 		protected boolean m_isEmpty;
 		protected String m_createdBy;
 		protected String m_createdTime;
@@ -9289,9 +9401,12 @@ extends VelocityPortletPaneledAction
 		protected String m_size;
 		protected String m_target;
 		protected String m_container;
+		protected String m_root;
 		protected int m_depth;
 		protected boolean m_copyrightAlert;
 		protected String m_url;
+		protected boolean m_isLocal;
+		
 				
 		/**
 		 * @param id
@@ -9305,6 +9420,7 @@ extends VelocityPortletPaneledAction
 			m_type = type;
 			
 			// set defaults
+			m_members = new LinkedList();
 			m_canRead = false;
 			m_canRevise = false;
 			m_canDelete = false;
@@ -9320,9 +9436,51 @@ extends VelocityPortletPaneledAction
 			m_copyrightAlert = false;
 			m_url = "";
 			m_target = "";
+			m_root = "";
 			
 			m_canAddItem = false;
 			m_canAddFolder = false;
+		}
+		
+		/**
+		 * @param root
+		 */
+		public void setRoot(String root)
+		{
+			m_root = root;
+		}
+		
+		/**
+		 * @return
+		 */
+		public String getRoot()
+		{
+			return m_root;
+		}
+		
+		/**
+		 * @return
+		 */
+		public List getMembers()
+		{
+			List rv = new LinkedList();
+			if(m_members != null)
+			{
+				rv.addAll(m_members);
+			}
+			return rv;
+		}
+		
+		/**
+		 * @param members
+		 */
+		public void addMembers(Collection members)
+		{
+			if(m_members == null)
+			{
+				m_members = new LinkedList();
+			}
+			m_members.addAll(members);
 		}
 		
 		/**
@@ -9645,6 +9803,16 @@ extends VelocityPortletPaneledAction
 			m_container = container;
 		}
 
+		public void setIsLocal(boolean isLocal)
+		{
+			m_isLocal = isLocal;
+		}
+		
+		public boolean isLocal()
+		{
+			return m_isLocal;
+		}
+		
 	}	// inner class BrowseItem
 	
 	
@@ -10044,6 +10212,8 @@ extends VelocityPortletPaneledAction
 		protected boolean m_canRead;
 		protected boolean m_isFolder;
 		protected boolean m_isLast;
+		protected String m_root;
+		protected boolean m_isLocal;
 		
 		public PathItem(String id, String name)
 		{
@@ -10053,6 +10223,7 @@ extends VelocityPortletPaneledAction
 			m_isFolder = false;
 			m_isLast = false;
 			m_url = "";
+			m_isLocal = true;
 		}
 		
 		/**
@@ -10151,6 +10322,32 @@ extends VelocityPortletPaneledAction
 			m_url = url;
 		}
 
+		/**
+		 * @param root
+		 */
+		public void setRoot(String root)
+		{
+			m_root = root;
+		}
+		
+		/**
+		 * @return
+		 */
+		public String getRoot()
+		{
+			return m_root;
+		}
+		
+		public void setIsLocal(boolean isLocal)
+		{
+			m_isLocal = isLocal;
+		}
+		
+		public boolean isLocal()
+		{
+			return m_isLocal;
+		}
+		
 	}	// inner class PathItem
 	
 	/**
