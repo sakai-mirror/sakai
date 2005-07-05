@@ -4115,7 +4115,7 @@ extends PagedResourceActionII
 							}
 							catch (IdUnusedException ee)
 							{
-								addAlert(state, rb.getString("cannotfin6"));
+								//no action needed for this condition
 							}
 							catch (PermissionException ee)
 							{
