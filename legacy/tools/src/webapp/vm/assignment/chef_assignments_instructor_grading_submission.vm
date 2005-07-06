@@ -151,17 +151,19 @@
 			<h4>$tlang.getString("gen.gra")</h4>
 				## if there is a text
 				#if ($submissionType!=2)
-					<p class="instruction">
+					<h5>
 						$tlang.getString("gradingsub.belisthe")
-					</p>
+					</h5>
 					<table border="0"><tr><td>
 					<textarea name="$name_feedback_text" id="$name_feedback_text" rows="15" wrap="virtual" cols="80">$cheffeedbackhelper.escapeAssignmentFeedbackTextarea("$!value_feedback_text")</textarea>		
 					#chef_setupformattedtextarea($name_feedback_text)
 					</td></tr></table>
-					#set ($previousFeedbackText =  $submissionProperties.getProperty($submissionProperties.getNamePropSubmissionPreviousFeedbackText()))
-					#if ($!previousFeedbackText.length() != 0 )
-						<br />$tlang.getString("gradingsub.prefeetex")
-						<br /><p>$cheffeedbackhelper.escapeAssignmentFeedback($previousFeedbackText)</p>
+					## for returned submission, show the instructor comment as well
+					#if ($!prevFeedbackText)
+						<h5>$tlang.getString("gradingsub.prefeetex")</h5>
+						<p>
+							$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackText))
+						</p>
 					#end
 				#end
 				## if there is a attachment
@@ -197,22 +199,21 @@
 									#end
 								</ul>
 							#end									
-						<p class="instruction">
+						<h5>
 							#if ($submissionType==2)
 								$tlang.getString("gradingsub.usethebel2")
 							#else
 								$tlang.getString("gradingsub.usethebel1")
 							#end
-						</p>
+						</h5>
 						<table border="0"><tr><td>
 						<textarea name="$name_feedback_comment" id="$name_feedback_comment" rows="15" wrap="virtual" cols="80">#if($!value_feedback_comment)$validator.escapeHtmlFormattedTextarea($!value_feedback_comment)#end</textarea>
 						#chef_setupformattedtextarea($name_feedback_comment)
 						</td></tr></table>
-						#set ($previousFeedbackComment =  $submissionProperties.getProperty($submissionProperties.getNamePropSubmissionPreviousFeedbackComment()))
-						#if ($!previousFeedbackComment.length() != 0 )
-							<br />$tlang.getString("gradingsub.prefee") 
-							<br />$previousFeedbackComment
-						<h4>$tlang.getString("gen.attfprgra")</h4>
+						## for returned (not resubmitted ) submission, show the instructor feedback
+						#if ($!prevFeedbackComment)
+							<h5>$tlang.getString("gradingsub.prefee")</h5>
+							<p>$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</p>
 						#end
 						#set ($size = 0)
 							#set ($size = 0)
@@ -224,16 +225,16 @@
 								#end
 							#end
 							#if ($size == 0)
-							<h4>
+							<h5>
 							#if ($withGrade)
 								$tlang.getString("gen.atttoret")
 							#else
 								$tlang.getString("gen.atttoret2")
 							#end
-							</h4>
+							</h5>
 								<p class="instruition">$tlang.getString("gen.noatt")</p>
 							#else
-								<h4>$tlang.getString("gen.atttoret")</h4>
+								<h5>$tlang.getString("gen.atttoret")</h5>
 								<ul class="attachList">
 									#foreach ($attachment in $gradingAttachments) 
 										#set ($props = false)

@@ -515,6 +515,7 @@ extends PagedResourceActionII
 		context.put("withGrade", state.getAttribute(WITH_GRADES));
 		
 		String mode = (String)state.getAttribute (STATE_MODE);
+
 		if (mode.equals (MODE_STUDENT_LIST_ASSIGNMENTS))
 		{
 //			// enable the observer when comming to the student assignment list view
@@ -730,7 +731,21 @@ extends PagedResourceActionII
 		{
 			Assignment currentAssignment = AssignmentService.getAssignment(currentAssignmentReference);
 			context.put ("assignment", currentAssignment);
-			context.put ("submission", AssignmentService.getSubmission (currentAssignment.getReference (), user));
+			AssignmentSubmission s = AssignmentService.getSubmission (currentAssignment.getReference (), user);
+			if (s != null)
+			{
+				context.put ("submission", s);
+				ResourceProperties p = s.getProperties();
+				if (p.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_TEXT) != null)
+				{
+					context.put("prevFeedbackText", p.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_TEXT));
+				}
+				
+				if (p.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_COMMENT) != null)
+				{
+					context.put("prevFeedbackComment", p.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_COMMENT));
+				}
+			}
 		}
 		catch (IdUnusedException e)
 		{
@@ -1246,7 +1261,21 @@ extends PagedResourceActionII
 		// assignment submission
 		try
 		{
-			context.put ("submission", AssignmentService.getSubmission ((String) state.getAttribute (GRADE_SUBMISSION_SUBMISSION_ID)));
+			AssignmentSubmission s = AssignmentService.getSubmission ((String) state.getAttribute (GRADE_SUBMISSION_SUBMISSION_ID));
+			if (s != null)
+			{
+				context.put ("submission", s);
+				ResourceProperties p = s.getProperties();
+				if (p.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_TEXT) != null)
+				{
+					context.put("prevFeedbackText", p.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_TEXT));
+				}
+				
+				if (p.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_COMMENT) != null)
+				{
+					context.put("prevFeedbackComment", p.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_COMMENT));
+				}
+			}
 		}
 		catch (IdUnusedException e )
 		{
@@ -2185,8 +2214,9 @@ extends PagedResourceActionII
 					sEdit.setHonorPledgeFlag (Boolean.FALSE.booleanValue ());
 				}
 		
-				sEdit.setFeedbackComment ((String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT));
-				sEdit.setFeedbackText ((String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_TEXT));
+				String feedbackString = UserDirectoryService.getCurrentUser().getDisplayName() + " " + TimeService.newTime().toStringLocalFull() + ":\n";
+				sEdit.setFeedbackComment (feedbackString + (String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT));
+				sEdit.setFeedbackText (feedbackString + (String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_TEXT));
 
 				ReferenceVector v = (ReferenceVector) state.getAttribute(GRADE_SUBMISSION_FEEDBACK_ATTACHMENT);
 				if (v!=null)
@@ -2501,8 +2531,16 @@ extends PagedResourceActionII
 								sEdit.setGrade("");
 								sEdit.setGradeReleased(false);
 							}
-							sPropertiesEdit.addProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_TEXT, sEdit.getFeedbackText ());
-							sPropertiesEdit.addProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_COMMENT, sEdit.getFeedbackComment ());
+							
+							// keep the history of assignment feed back text
+							String feedbackTextHistory = sPropertiesEdit.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_TEXT) != null?sPropertiesEdit.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_TEXT):"";
+							feedbackTextHistory = sEdit.getFeedbackText() + "\n" + feedbackTextHistory;
+							sPropertiesEdit.addProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_TEXT, feedbackTextHistory);
+							
+							// keep the history of assignment feed back comment
+							String feedbackCommentHistory = sPropertiesEdit.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_COMMENT) != null?sPropertiesEdit.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_COMMENT):"";
+							feedbackCommentHistory = sEdit.getFeedbackComment() + "\n" + feedbackCommentHistory;
+							sPropertiesEdit.addProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_COMMENT, feedbackCommentHistory);
 							
 							// reset the previous grading context
 							sEdit.setFeedbackText("");
@@ -6596,6 +6634,26 @@ extends PagedResourceActionII
 		return buf.toString();
 		
 	}	// fixAssignmentFeedback
+	
+	/**
+	* Apply the fix to pre 1.1.05 assignments submissions feedback.
+	*/
+	public static String showPrevFeedback(String value)
+	{
+		if (value == null || value.length() == 0) return value;
+		
+		StringBuffer buf = new StringBuffer(value);
+		int pos = -1;
+		
+		// <br/> -> \n
+		while ((pos = buf.indexOf("\n")) != -1)
+		{
+			buf.replace(pos, pos+"\n".length(), "<br />");
+		}
+		
+		return buf.toString();
+		
+	}	//showPrevFeedback
 	
 	private boolean alertGlobalNavigation(SessionState state)
 	{

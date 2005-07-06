@@ -7,7 +7,8 @@
 	#else
 		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 		#if ($!submission)
-			#if ($!allowAddAssignment)
+			## get the properies
+		#if ($!allowAddAssignment)
 				<h3>$tlang.getString("viewexampleassign")</h3>
 			#else
 				<h3>$tlang.getString("viewassign")</h3>
@@ -151,9 +152,9 @@
 					</tr>
 				#end
 			</table>
-		<h4>
+		<h5>
 			$tlang.getString("gen.assinf")
-		</h4>
+		</h5>
 		
 		#if ($!assignment.getContent().getInstructions().length()>0)
 			<p>$validator.escapeHtmlFormattedText($!assignment.getContent().getInstructions())</p>
@@ -169,9 +170,9 @@
 			#end
 		#end
 		#if ($size > 0)
-			<h4>
+			<h5>
 				$tlang.getString("gen.addres2")
-			</h4>	
+			</h5>	
 				<ul class="attachList">
 					#foreach ($attachment in $assignment.getContent().getAttachments()) 
 						#set ($props = false)
@@ -193,17 +194,14 @@
 				</ul>
 				##end	 
 		#end
-
+		<h4>$tlang.getString("gen.subm")</h4>
 		#if (!$submission.getSubmitted() || $submission.getReturned())
 			## if a draft submission or the submission has been returned and has not yet submitted
-			<h4>$tlang.getString("gen.subm")</h4>
 			## 1- text only; 2-attachment only; 3-text and attachment
 			#set ( $submissionType = $assignment.getContent().getTypeOfSubmission())
 			#if (($submissionType==1) || ($submissionType==3))
 				#if ($!deleted.equalsIgnoreCase("true"))
-					<div>
-						$tlang.getString("gen.yousub")
-					</div>
+					<h5>$tlang.getString("gen.yousub")</h5>
 					##if the assignment has been deleted, disable the action button
 					$validator.escapeHtmlFormattedText($!value_submission_text)
 				#else
@@ -211,9 +209,7 @@
 						## for draft submission
 						#if ($!closeTime && $currentTime.after($closeTime))
 							##disable input for submitted and not returned submission or when later than assignment close date
-							<div>
-								$tlang.getString("gen.yousub")
-							</div>
+							<h5>$tlang.getString("gen.yousub")</h5>
 							$validator.escapeHtmlFormattedText($!value_submission_text)
 						#else
 						#if ($submissionType==1)
@@ -229,16 +225,19 @@
 					#end
 				#elseif ($submission.getReturned())
 						#if ($submission.TimeReturned.after($submission.TimeSubmitted))
-							## for returned submission and not yet resubmitted, show the instructor comment as well
-							#if (!$submission.FeedbackText.equals($!value_submission_text))
-								<h4>
-									$tlang.getString("gen.notsta")
-								</h4>
+							## for returned submission, show the instructor commented text as well
+							#if ($!prevFeedbackText)
+								<h5>$tlang.getString("gradingsub.prefeetex")</h5>
 								<p>
-									$cheffeedbackhelper.escapeAssignmentFeedback($submission.FeedbackText)
-								</p>	
-								$tlang.getString("stuviewsubm.entbelo")
+									$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackText))
+								</p>
 							#end
+							<h5>$tlang.getString("feedbacktext")</h5><br />
+							<p>
+								$cheffeedbackhelper.escapeAssignmentFeedback($submission.FeedbackText)
+							</p>
+							<br />	
+							<h5>$tlang.getString("stuviewsubm.entbelo")</h5>
 							<table border="0"><tr><td>
 							<textarea cols="80" rows="15" wrap="virtual" name="$name_submission_text" id="$name_submission_text" #if(!$allowSubmit)disabled="disabled"#end >#if($!value_submission_text)$validator.escapeHtmlFormattedTextarea($!value_submission_text)#end</textarea>
 							#chef_setupformattedtextarea($name_submission_text)
@@ -255,18 +254,18 @@
 			#end
 			#if (($submissionType==2) || ($submissionType==3)) 
 				#if ($submissionType==2)
-					<h4>
+					<h5>
 						#if (($submission.getSubmitted() && !$submission.getReturned()) || ($submission.Returned && $submission.TimeReturned.before($submission.TimeSubmitted)) || ($!closeTime && $currentTime.after($closeTime)))
 							## for submitted not yet returned submission; or returned by resubmitted submission; or after close date
 							$tlang.getString("stuviewsubm.youatt")
 						#else
 							$tlang.getString("stuviewsubm.theassall2")
 						#end
-					</h4>
+					</h5>
 				#end	
-				<h4>
+				<h5>
 					$tlang.getString("gen.att")
-				</h4>	
+				</h5>	
 					#set ($size = 0)
 					#set ($props = false)
 					#foreach ($attachment in $attachments) 
@@ -343,20 +342,24 @@
 				#end
 
 				#if ($submission.getReturned() && $submission.TimeReturned.after($submission.TimeSubmitted))
-					## for returned (not resubmitted ) submission, show the instructor feedback
-					<h4>
+					<h5>
 						$tlang.getString("gen.addinst")
-					</h4>
+					</h5>
 					#if (($!submission.FeedbackComment) && ($submission.FeedbackComment.length()>0))
 						<p>$validator.escapeHtmlFormattedText($submission.FeedbackComment)</p>
 					#else
 					#end
+					## for returned (not resubmitted ) submission, show the instructor feedback
+					#if ($!prevFeedbackComment)
+						<h5>$tlang.getString("gradingsub.prefee")</h5>
+						<p>$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</p>
+					#end					
 					#set ($size = 0)
 					#set ($props = false)
 					#set ($feedbackAttachments = $submission.FeedbackAttachments)
-						<h4>
+						<h5>
 							$tlang.getString("gen.addres4")
-						</h4>	
+						</h5>	
 						#set ($size = 0)
 						#set ($props = false)
 						#foreach ($attachment in $feedbackAttachments) 
@@ -484,7 +487,6 @@
 				<span id="submitnotif" style="visibility:hidden">$tlang.getString("gen.proces")</span>
 			</div>
 		#else
-			<h4>$tlang.getString("gen.subm")</h4>
 				#if ($submission.getGradeReleased() && $!submission.FeedbackText && ($submission.FeedbackText.length()>0))
 					#set ($text = $submission.FeedbackText)
 					#if ($!text)
@@ -496,8 +498,15 @@
 						#elseif ($!submission.submittedText && ($submission.SubmittedText.length()>0))
 							#set ($text = $submission.SubmittedText)
 							#if ($!text)
-								<p>$cheffeedbackhelper.escapeAssignmentFeedback($text)</p	>
+								<p>$cheffeedbackhelper.escapeAssignmentFeedback($text)</p>
 							#end
+					#end
+					## for returned submission, show the instructor comment as well
+					#if ($!prevFeedbackText)
+						<h5>$tlang.getString("gradingsub.prefeetex")</h5>
+						<p>
+							$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackText))
+						</p>
 					#end
 					#set ($submittedAttachments = $submission.SubmittedAttachments)
 					#set ($size = 0)
@@ -510,7 +519,7 @@
 					#end
 					#if ($size == 0)
 					#else
-						<h4>$tlang.getString("gen.stuatt")</h4>
+						<h5>$tlang.getString("gen.stuatt")</h5>
 						<ul class="attachList">
 							#foreach ($attachment in $submittedAttachments) 
 								#set ($props = false)
@@ -533,12 +542,17 @@
 					#end	
 					#if ($withGrade && $submission.getGraded() && $submission.getGradeReleased())
 						#if ($submission.getGradeReleased() &&($!submission.FeedbackComment) && ($submission.FeedbackComment.length()>0))
-							<h4>
+							<h5>
 								$tlang.getString("gen.addinst")
-							</h4>
+							</h5>
 							<p>$validator.escapeHtmlFormattedText($submission.FeedbackComment)</p>
 						#else
 						#end
+						## for returned submission, show the instructor feedback
+						#if ($!prevFeedbackComment)
+							<h5>$tlang.getString("gradingsub.prefee")</h5>
+							<p>$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</p>
+						#end	
 						#set ($size = 0)
 						#set ($props = false)
 						#set ($feedbackAttachments = $submission.FeedbackAttachments)
@@ -553,7 +567,7 @@
 							#if ($size == 0)
 								##$tlang.getString("gen.noatt")
 							#else
-								<h4>$tlang.getString("gen.addres4")</h4>
+								<h5>$tlang.getString("gen.addres4")</h5>
 								<ul class="attachList">
 									#foreach ($attachment in $feedbackAttachments) 
 										#set ($props = false)
