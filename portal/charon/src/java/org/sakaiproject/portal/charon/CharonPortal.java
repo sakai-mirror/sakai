@@ -140,7 +140,7 @@ public class CharonPortal extends HttpServlet
 		// error and we cannot use the error site...
 
 		// form a context sensitive title
-		String title = ServerConfigurationService.getServerName() + " : Portal";
+		String title = ServerConfigurationService.getString("ui.service") + " : Portal";
 
 		// start the response
 		PrintWriter out = startResponse(res, title, null);
@@ -223,7 +223,7 @@ public class CharonPortal extends HttpServlet
 		session.setAttribute(ATTR_SITE_PAGE + siteId, page.getId());
 
 		// form a context sensitive title
-		String title = ServerConfigurationService.getServerName() + " : " + site.getTitle() + " : " + page.getTitle();
+		String title = ServerConfigurationService.getString("ui.service") + " : " + site.getTitle() + " : " + page.getTitle();
 
 		// start the response
 		PrintWriter out = startResponse(res, title, site.getSkin());
@@ -711,7 +711,7 @@ public class CharonPortal extends HttpServlet
 		}
 
 		// form a context sensitive title
-		String title = ServerConfigurationService.getServerName() + " : " + site.getTitle() + " : " + page.getTitle();
+		String title = ServerConfigurationService.getString("ui.service") + " : " + site.getTitle() + " : " + page.getTitle();
 
 		// start the response
 		PrintWriter out = startResponse(res, title, page.getSkin());
@@ -925,7 +925,7 @@ public class CharonPortal extends HttpServlet
 		session.setAttribute(ATTR_SITE_PAGE + siteId, page.getId());
 
 		// form a context sensitive title
-		String title = ServerConfigurationService.getServerName() + " : " + site.getTitle() + " : " + page.getTitle();
+		String title = ServerConfigurationService.getString("ui.service") + " : " + site.getTitle() + " : " + page.getTitle();
 
 		// start the response
 		PrintWriter out = startResponse(res, title, site.getSkin());
@@ -1106,7 +1106,7 @@ public class CharonPortal extends HttpServlet
 		session.setAttribute(ATTR_SITE_PAGE + siteId, page.getId());
 
 		// form a context sensitive title
-		String title = ServerConfigurationService.getServerName() + " : " + site.getTitle() + " : " + page.getTitle();
+		String title = ServerConfigurationService.getString("ui.service") + " : " + site.getTitle() + " : " + page.getTitle();
 
 		// start the response
 		PrintWriter out = startResponse(res, title, site.getSkin());
@@ -1727,7 +1727,6 @@ public class CharonPortal extends HttpServlet
 		out.println("		</tr>");
 		out.println("	</table>");
 		out.println("<div class=\"divColor\" id=\"tabBottom\"><br /></div></div>");
-		// Glenn -> needed to close things when not in gallery, and logged in (gsilver)
 		if (addLogout)
 		{
 		}
