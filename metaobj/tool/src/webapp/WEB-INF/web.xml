@@ -9,8 +9,8 @@
       </param-value>
    </context-param>
    
-   <display-name>sakai-sad</display-name>
-    <description>Sakai SAD</description>
+   <display-name>sakai-metaobj</display-name>
+    <description>Sakai Meta Object</description>
 
     <filter>
         <filter-name>sakai.request</filter-name>
@@ -23,7 +23,7 @@
     
     <filter-mapping>
         <filter-name>sakai.request</filter-name>
-        <servlet-name>sakai.sad</servlet-name>
+        <servlet-name>sakai.metaobj</servlet-name>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
@@ -45,7 +45,7 @@
    </servlet>
 
    <servlet>
-      <servlet-name>sakai.sad</servlet-name>
+      <servlet-name>sakai.metaobj</servlet-name>
       <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
       <init-param>
             <param-name>default</param-name>

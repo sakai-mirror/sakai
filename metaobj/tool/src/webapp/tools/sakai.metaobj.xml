@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="sakai.metaobj" title="SAD" description="Sakai Meta Object Tool">
+	<tool id="sakai.metaobj" title="Meta Object" description="Sakai Meta Object Tool">
        <configuration name="test" value="reg-value" />
 
        <category name="sakai.main" />
