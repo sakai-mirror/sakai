@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+
+<taglib>
+
+	<tlib-version>1.0</tlib-version>
+
+	<jsp-version>1.2</jsp-version>
+
+	<short-name>osp</short-name>
+
+	<uri>http://www.theospi.org</uri>
+
+	<description>osp tag library</description>
+
+	<tag>
+
+		<name>form</name>
+		<tag-class>org.sakaiproject.metaobj.shared.control.tag.FormTag</tag-class>
+		<body-content>JSP</body-content>
+
+		<description>
+			puts various form hidden input fields for sakai
+		</description>
+	</tag>
+
+	<tag>
+
+		<name>renderPresentation</name>
+		<tag-class>org.sakaiproject.metaobj.presentation.control.RenderPresentationTag</tag-class>
+		<body-content>JSP</body-content>
+
+		<description>
+			Renders a presentation by transforming xsl
+		</description>
+
+		<attribute>
+			<name>template</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>doc</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+	</tag>
+<!-- 
+   <tag>
+
+		<name>glossary</name>
+		<tag-class>org.sakaiproject.metaobj.help.control.GlossaryTag</tag-class>
+		<body-content>JSP</body-content>
+
+		<description>
+			Matches keywords in the body to those in the glossary.
+         Places links around the keywords to the glossary entries.
+         The glossary entry text is also avaible via a hover.
+         Linking or hovering can be turned on/off using the link and hover attributes.
+         Linking is on by default, hover is off be default.
+         Hovering requires the follow two lines be placed in the jsp:
+         By default all occurances of the word are linked, this can be overridden
+         using the firstOnly attribute.  If set to true then only the first
+         occurance will be linked to the glossary.
+
+         &lt;script language="JavaScript" src="../js/eport.js"&gt;&lt;/script&gt;
+         &lt;div id="tooltip" style="position:absolute;visibility:hidden;border:1px solid black;font-size:10px;layer-background-color:lightyellow;background-color:lightyellow;padding:1px"&gt;&lt;/div&gt;
+
+		</description>
+
+		<attribute>
+			<name>hover</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+      <attribute>
+         <name>link</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+
+      <attribute>
+         <name>firstOnly</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+
+	</tag>
+	-->
+  <tag>
+    <name>url</name>
+    <tag-class>org.sakaiproject.metaobj.shared.control.tag.SakaiUrlTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+	Prints or exposes a URL with optional query parameters
+        (via the c:param tag).
+    </description>
+    <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>value</name>
+        <required>true</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>context</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>includeParams</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>includeQuestion</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>param</name>
+    <tag-class>org.apache.taglibs.standard.tag.el.core.ParamTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+	Adds a parameter to a containing 'import' tag's URL.
+    </description>
+    <attribute>
+        <name>name</name>
+        <required>true</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>value</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+  </tag>
+
+	
+  <tag>
+    <name>authZMap</name>
+    <tag-class>org.sakaiproject.metaobj.security.control.tag.AuthZMapTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+	exposes a map of the current user's authzs
+    </description>
+    <attribute>
+        <name>qualifier</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>prefix</name>
+        <required>true</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>useSite</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+  </tag>
+
+   <tag>
+      <name>dateSelect</name>
+      <tag-class>org.sakaiproject.metaobj.shared.control.tag.DateSelectTag</tag-class>
+      <body-content>JSP</body-content>
+      <description>The standard way to setup a date selection widget.
+      Creates a drop-down date selection, as well as a pop-up date selection
+      </description>
+      <attribute>
+          <name>yearSelectId</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+         <description>The name and id attribute of the year selection dropdown list (html SELECT tag)</description>
+      </attribute>
+      <attribute>
+          <name>monthSelectId</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+         <description>The name and id attribute of the month selection dropdown list (html SELECT tag)</description>
+      </attribute>
+      <attribute>
+          <name>daySelectId</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+         <description>The name and id attribute of the day selection dropdown list (html SELECT tag)</description>
+      </attribute>
+      <attribute>
+          <name>earliestYear</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+         <description>The earliest year to display in the year dropdown (2002 for example)</description>
+      </attribute>
+      <attribute>
+          <name>latestYear</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+         <description>The latest year to display in the year dropdown (2005 for examlple)</description>
+      </attribute>
+      <attribute>
+          <name>selectedDate</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+         <description>The date selected</description>
+      </attribute>
+   </tag>
+   <tag>
+      <name>dateSelectPopup</name>
+      <tag-class>org.sakaiproject.metaobj.shared.control.tag.DateSelectPopupTag</tag-class>
+      <description>The standard way to instantiate a popup calendar widget that allows the user to select a date</description>
+      <body-content>JSP</body-content>
+      <attribute>
+          <name>yearSelectId</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+         <description>The name and id attribute of the year selection dropdown list (html SELECT tag)</description>
+      </attribute>
+      <attribute>
+          <name>monthSelectId</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+         <description>The name and id attribute of the month selection dropdown list (html SELECT tag)</description>
+      </attribute>
+      <attribute>
+          <name>daySelectId</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+         <description>The name and id attribute of the day selection dropdown list (html SELECT tag)</description>
+      </attribute>
+   </tag>
+
+  <tag>
+    <description>
+        Maps key to localized message and performs parametric replacement
+    </description>
+    <name>message</name>
+    <tag-class>org.sakaiproject.metaobj.shared.control.tag.Message</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+        <description>
+Message key to be looked up.
+        </description>
+        <name>key</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <description>
+Localization context in whose resource
+bundle the message key is looked up.
+        </description>
+        <name>bundle</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <description>
+Name of the exported scoped variable
+which stores the localized message.
+        </description>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <description>
+Scope of var.
+        </description>
+        <name>scope</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+    <attribute>
+        <description>
+Default value if key is not found
+        </description>
+        <name>text</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+    </attribute>
+  </tag>
+
+   <tag>
+     <name>listScroll</name>
+     <tag-class>org.sakaiproject.metaobj.shared.control.tag.ListScrollTag</tag-class>
+     <body-content>JSP</body-content>
+     <description>
+    Puts the "next" and "prev" buttons on a list page
+     </description>
+     <attribute>
+         <name>listScroll</name>
+         <required>false</required>
+         <rtexprvalue>false</rtexprvalue>
+     </attribute>
+      <attribute>
+          <name>listUrl</name>
+          <required>true</required>
+          <rtexprvalue>false</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>className</name>
+          <required>false</required>
+          <rtexprvalue>false</rtexprvalue>
+      </attribute>
+   </tag>
+
+</taglib>
