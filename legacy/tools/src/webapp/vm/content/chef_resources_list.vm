@@ -15,15 +15,13 @@
 			<div class="chefToolBarWrapForm">
 				#if(!$dropboxMode)
 					#set($itemsOnLine = 1)
-					<a href="#toolLink("ResourcesAction" "doShow_webdav")" title="$tlang.getString('dav.webdav')">$tlang.getString("dav.webdav")</a> 
+					<a href="#toolLink("ResourcesAction" "doShow_webdav")" title="$tlang.getString('dav.webdav')">$tlang.getString("dav.webdav").trim()</a> 
 				#end 
 				#if("$!inMyWorkspace" == "false")
 					#if($itemsOnLine > 0)
 						|
 					#end
-					<a href="#toolLink("ResourcesAction" "doPermissions")&collectionId=$validator.escapeUrl(${site.id})" title="$tlang.getString('list.sPerm')">
-						$tlang.getString("list.sPerm")
-					</a>
+					<a href="#toolLink("ResourcesAction" "doPermissions")&collectionId=$validator.escapeUrl(${site.id})" title="$tlang.getString('list.sPerm')">$tlang.getString("list.sPerm").trim()</a>
 				#end
 			</div>
 		#end
@@ -42,6 +40,7 @@
 				$tlang.getString("gen.location")
 				<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
 				#foreach ($item in $collectionPath)
+					<!-- $item.name -->
 					#if($item.isLast())
 						#if ($dropboxMode && $velocityCount == 1)
 							$siteTitle $tlang.getString("gen.drop")
@@ -99,32 +98,6 @@
 				<th id="actions">
 					$tlang.getString("gen.actions")
 				</th>
-				<th id="size">
-					<a href="#toolLink("ResourcesAction" "doSort")&criteria=size&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.sortsize')"> 
-						$tlang.getString("gen.size")
-						#if ($currentSortedBy.equals($resourceProperties.NamePropContentLength)) 
-							#if ($currentSortAsc.equals("true")) 
-								<img src = "#imageLink("sakai/sortascending.gif")" border="0" title ="$tlang.getString('sh.sortsizeas')" alt ="$tlang.getString('sh.sortsizeas')" /> 
-							#else 
-								<img src = "#imageLink("sakai/sortdescending.gif")" border="0" title ="$tlang.getString('sh.sortsizedesc')" alt ="$tlang.getString('sh.sortsizedesc')" /> 
-							#end 
-						#end
-					</a>
-				</th>
-				#if (!($dropboxMode && $collectionId==$homeCollection))
-					<th id="creator">
-						<a href="#toolLink("ResourcesAction" "doSort")&criteria=created%20by&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.sortcrea')">  
-							$tlang.getString("gen.created1")
-							#if ($currentSortedBy.equals($resourceProperties.NamePropCreator)) 
-								#if ($currentSortAsc.equals("true")) 
-									<img src = "#imageLink("sakai/sortascending.gif")" border="0" title ="$tlang.getString('sh.sortcreaas')" alt ="$tlang.getString('sh.sortcreaas')" /> 
-								#else 
-									<img src = "#imageLink("sakai/sortdescending.gif")" border="0" title ="$tlang.getString('sh.sortcreadesc')" alt ="$tlang.getString('sh.sortcreadesc')" /> 
-								#end 
-							#end 
-						</a>
-					</th>
-				#end
 				<th id="modified">
 					<a href="#toolLink("ResourcesAction" "doSort")&criteria=last%20modified&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.sortdate')"> 
 						$tlang.getString("gen.last1")
@@ -144,6 +117,7 @@
 			</tr>
 			#foreach($root in $roots)
 				############################### Show top level folder #################
+				<!-- $root.name -->
 				<tr>
 					<td headers="title">
 						#if ($root.isFolder())
@@ -166,9 +140,9 @@
 							#end
 						#end					
 						#if($root.isLocal())
-							#if ($dropboxMode && $collectionPath.size() == 1)
+							#if ($dropboxMode && $collectionPath.size() <= 1)
 								$siteTitle $tlang.getString("gen.drop")
-							#elseif($collectionPath.size() == 1)
+							#elseif($collectionPath.size() <= 1)
 								$siteTitle $tlang.getString("gen.reso")
 							#elseif($root)
 								$validator.escapeHtml("$root.name")
@@ -205,9 +179,7 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl($copiedItem)}&collectionId=${validator.escapeUrl(${root.id})}" title="$tlang.getString('list.paste1')">
-										$tlang.getString("list.paste1")
-									</a>
+									<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl($copiedItem)}&collectionId=${validator.escapeUrl(${root.id})}" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 								#end
 								####### deal with editing/viewing file/folder information
 								#if ($atHome && !$atHome == $TRUE)
@@ -216,17 +188,13 @@
 											|
 										#end
 										#set ($itemsOnLine = $itemsOnLine + 1)
-										<a href="#toolLink("ResourcesAction" "doEdit")&from=list&id=$validator.escapeUrl($root.id)&collectionId=$validator.escapeUrl($root.container)" title="$tlang.getString('list.edit')">
-											$tlang.getString("list.edit")
-										</a>
+										<a href="#toolLink("ResourcesAction" "doEdit")&from=list&id=$validator.escapeUrl($root.id)&collectionId=$validator.escapeUrl($root.container)" title="$tlang.getString('list.edit')">$tlang.getString("list.edit").trim()</a>
 									#elseif ($root.canRead())
 										#if ($itemsOnLine > 0)
 											|
 										#end
 										#set ($itemsOnLine = $itemsOnLine + 1)
-										<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($root.id)&collectionId=$validator.escapeUrl($root.container)" title="$tlang.getString('list.props')">
-											$tlang.getString("list.props")
-										</a>
+										<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($root.id)&collectionId=$validator.escapeUrl($root.container)" title="$tlang.getString('list.props')">$tlang.getString("list.props").trim()</a>
 									#end
 								#end
 								####### deal with adding folder
@@ -235,9 +203,7 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${root.id})" title ="$tlang.getString('list.folder')">
-										$tlang.getString("list.folder")
-									</a>
+									<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${root.id})" title ="$tlang.getString('list.folder')">$tlang.getString("list.folder").trim()</a>
 								#end
 								####### deal with adding item
 								#if($root.canAddItem())
@@ -245,9 +211,7 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})" title ="$tlang.getString('list.item')">
-										$tlang.getString("list.item")
-									</a>
+									<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})" title ="$tlang.getString('list.item')">$tlang.getString("list.item").trim()</a>
 								#end
 								####### deal with site/folder permissions
 								#if($root.canRevise() && "$!inMyWorkspace" == "false")
@@ -256,9 +220,7 @@
 											|
 										#end
 										#set ($itemsOnLine = $itemsOnLine + 1)
-										<a href="#toolLink("ResourcesAction" "doFolder_permissions")&collectionId=$validator.escapeUrl(${root.id})" title="$tlang.getString('list.fPerm')">
-											$tlang.getString("list.fPerm")
-										</a>
+										<a href="#toolLink("ResourcesAction" "doFolder_permissions")&collectionId=$validator.escapeUrl(${root.id})" title="$tlang.getString('list.fPerm')">$tlang.getString("list.fPerm").trim()</a>
 									#end
 								#end
 							</div>
@@ -282,6 +244,7 @@
 					######################  Display individual items/folders  ##############
 					#set ($unit ="em")
 					#foreach ($member in $collectionMembers)
+						<!-- $member.name -->
 						#set ($width = "$!{member.depth}$unit")
 						#set ($widthSp = (${member.depth} + 1) )
 						#set ($widthSpDo = "$widthSp$unit")
@@ -374,9 +337,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl($copiedItem)}&collectionId=${validator.escapeUrl(${member.id})}" title="$tlang.getString('list.paste1')">
-												$tlang.getString("list.paste1")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl($copiedItem)}&collectionId=${validator.escapeUrl(${member.id})}" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 										#end
 										####### deal with viewing file/folder information
 										#if ($member.canRead())
@@ -384,9 +345,7 @@
 											|
 										#end
 										#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.props')">
-												$tlang.getString("list.props")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.props')">$tlang.getString("list.props").trim()</a>
 										#end
 										####### deal with editing file/folder information
 										#if ($member.canRevise())
@@ -394,9 +353,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doEdit")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.edit')">
-												$tlang.getString("list.edit")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doEdit")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.edit')">$tlang.getString("list.edit").trim()</a>
 										#end
 										####### deal with deleting folder
 										#if ($member.canDelete())
@@ -404,9 +361,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doDeleteconfirm")&from=list&selectedMembers=$validator.escapeUrl($member.id)" title="$tlang.getString('list.del')">
-												$tlang.getString("list.del")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doDeleteconfirm")&from=list&selectedMembers=$validator.escapeUrl($member.id)" title="$tlang.getString('list.del')">$tlang.getString("list.del").trim()</a>
 										#end								
 										####### deal with adding folder
 										#if($member.canAddFolder())
@@ -414,9 +369,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.folder')">
-												$tlang.getString("list.folder")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.folder')">$tlang.getString("list.folder").trim()</a>
 										#end
 										####### deal with folder permissions
 										#if($member.canRevise() && "$!inMyWorkspace" == "false")
@@ -424,9 +377,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doFolder_permissions")&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.fPerm')">
-												$tlang.getString("list.fPerm")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doFolder_permissions")&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.fPerm')">$tlang.getString("list.fPerm").trim()</a>
 										#end
 										####### deal with adding item
 										#if($member.canAddItem())
@@ -434,9 +385,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.item')">
-												$tlang.getString("list.item")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.item')">$tlang.getString("list.item").trim()</a>
 										#end
 									#else
 										#set ($itemsOnLine = 0)
@@ -446,17 +395,13 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doEdit")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.edit')">
-												$tlang.getString("list.edit")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doEdit")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.edit')">$tlang.getString("list.edit").trim()</a>
 										#elseif ($member.canRead())
 											#if ($itemsOnLine > 0)
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.props')">
-												$tlang.getString("list.props")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.props')">$tlang.getString("list.props").trim()</a>
 										#end
 										####### deal with copying item
 										#if ($paste_place_showing && $member.canRead())
@@ -464,9 +409,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doCopyitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.copy')">
-												$tlang.getString("list.copy")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doCopyitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.copy')">$tlang.getString("list.copy").trim()</a>
 										#end
 										####### deal with deleting item
 										#if ($member.canDelete())
@@ -474,9 +417,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doDeleteconfirm")&from=list&selectedMembers=$validator.escapeUrl($member.id)" title="$tlang.getString('list.del')">
-												$tlang.getString("list.del")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doDeleteconfirm")&from=list&selectedMembers=$validator.escapeUrl($member.id)" title="$tlang.getString('list.del')">$tlang.getString("list.del").trim()</a>
 										#end								
 			
 										####### deal with duplicating item
@@ -485,9 +426,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}" title="$tlang.getString('list.dup')">
-												$tlang.getString("list.dup")
-											</a>
+											<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
 										#end
 									#end
 								</div>
@@ -496,14 +435,6 @@
 										$tlang.getString("list.copied")
 									</div>
 								#end
-							</td>
-							######################  Item Size  ##############
-							<td headers="size">
-								$member.size
-							</td>
-							######################  Item/folder creator  ##############
-							<td headers="creator">
-								$member.createdBy
 							</td>
 							######################  Item/folder modification date  ##############
 							<td headers="modified">

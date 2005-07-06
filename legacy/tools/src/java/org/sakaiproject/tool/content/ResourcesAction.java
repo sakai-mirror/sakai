@@ -694,36 +694,28 @@ extends VelocityPortletPaneledAction
 		// user
 		String userId = UserDirectoryService.getCurrentUser().getId();
 		Set realms = RealmService.unlockRealms(userId, "content.read");
-		System.out.println(" ====> Number of realms: " + realms.size());
 		Iterator realmIt = realms.iterator();
 		while(realmIt.hasNext())
 		{
 			String realmId = (String) realmIt.next();
-			System.out.println(" ----> realmId: " + realmId);
 			try
 			{
 				Realm realm = RealmService.getRealm(realmId);
 				String ref = realm.getReference();
-				System.out.println("           ref: " + ref);
 				String collId = ContentHostingService.getSiteCollection(ref);
-				System.out.println("        collId: " + collId);
 				ContentCollection collection = ContentHostingService.getCollection(collId);
 				if(collection != null)
 				{
-					System.out.println("          xxxx: " + collection.getId());
 				}
 			}
 			catch(IdUnusedException e)
 			{
-				System.out.println("                IdUnusedException " + e.getMessage());
 			}
 			catch(PermissionException e)
 			{
-				System.out.println("                PermissionException " + e.getMessage());
 			}
 			catch(TypeException e)
 			{
-				System.out.println("                TypeException " + e.getMessage());
 			}
 		}
 		*/
@@ -745,6 +737,8 @@ extends VelocityPortletPaneledAction
 		context.put ("collectionId", collectionId);
 		String navRoot = (String) state.getAttribute(STATE_NAVIGATION_ROOT);
 		String homeCollectionId = (String) state.getAttribute(STATE_HOME_COLLECTION_ID);
+		
+		String siteTitle = (String) state.getAttribute (STATE_SITE_TITLE);
 		if (collectionId.equals(homeCollectionId))
 		{
 			atHome = true;
@@ -761,7 +755,6 @@ extends VelocityPortletPaneledAction
 			catch (TypeException e) {}
 			catch (PermissionException e) {}
 		}
-		
 		if(atHome && SiteService.allowUpdateSite(PortalService.getCurrentSiteId()))
 		{
 			buildListMenu(portlet, context, data, state);
@@ -772,7 +765,6 @@ extends VelocityPortletPaneledAction
 
 		
 		List cPath = getCollectionPath(state);
-		System.out.println("  buildListContext cPath.size == " + cPath.size());
 		context.put ("collectionPath", cPath);
 
 		String testCollection = collectionId + "test/";
@@ -810,6 +802,14 @@ extends VelocityPortletPaneledAction
 			if(members != null && members.size() > 0)
 			{
 				BrowseItem root = (BrowseItem) members.remove(0);
+				if(atHome && dropboxMode)
+				{
+					root.setName(siteTitle + " " + rb.getString("gen.drop"));
+				}
+				else if(atHome)
+				{
+					root.setName(siteTitle + " " + rb.getString("gen.reso"));
+				}
 				context.put("site", root);
 				root.addMembers(members);
 				roots.add(root);
@@ -817,16 +817,21 @@ extends VelocityPortletPaneledAction
 			
 			if(atHome)
 			{
+				// get all of user's sites
 				List mySites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
 						null, null, null,
 						SortType.TITLE_ASC,
 						new PagingPosition(1,50));
-				System.out.println(" ====> Number of sites: " + mySites.size());
+				
+				// add user's MyWorkspace to beginning of list
+				String userId = UserDirectoryService.getCurrentUser().getId();
+				String workspaceId = SiteService.getUserSiteId(userId);
+				mySites.add(0, SiteService.getSite(workspaceId));
+				// find resources tools and add their root folders to the list of user's roots
 				Iterator siteIt = mySites.iterator();
 				while(siteIt.hasNext())
 				{
 					Site site = (Site) siteIt.next();
-					System.out.println(" ----> " + site.getTitle() + " -- " + SiteService.isUserSite(site.getId()));
 					List pages = site.getPages();
 					Iterator pageIt = pages.iterator();
 					while(pageIt.hasNext())
@@ -839,19 +844,34 @@ extends VelocityPortletPaneledAction
 							ToolConfiguration tool = (ToolConfiguration) toolIt.next();
 							if(tool == null || tool.getTool() == null)
 							{
-								// System.out.println("       tool: null");
+								//
+							}
+							else if("sakai.dropbox".equals(tool.getTool().getId()))
+							{
+								String collId = Dropbox.getCollection(tool.getContext());
+								if(! collectionId.equals(collId))
+								{
+									members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+									if(members != null && members.size() > 0)
+									{
+										BrowseItem root = (BrowseItem) members.remove(0);
+										root.addMembers(members);
+										root.setName(site.getTitle() + " " + rb.getString("gen.drop"));
+										roots.add(root);
+									}
+								}
 							}
 							else if("sakai.resources".equals(tool.getTool().getId()))
 							{
 								String collId = ContentHostingService.getSiteCollection(tool.getContext());
 								if(! collectionId.equals(collId))
 								{
-									System.out.println("       another collection: " + collId);
 									members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
 									if(members != null && members.size() > 0)
 									{
 										BrowseItem root = (BrowseItem) members.remove(0);
 										root.addMembers(members);
+										root.setName(site.getTitle() + " " + rb.getString("gen.reso"));
 										roots.add(root);
 									}
 								}
@@ -7668,7 +7688,6 @@ extends VelocityPortletPaneledAction
 						/*SiteService.getSiteDisplay(PortalService.getCurrentSiteId()) */);
 			}
 		}
-		System.out.println("~~~~~~> initState home == " + home);
 		state.setAttribute (STATE_HOME_COLLECTION_ID, home);
 		state.setAttribute (STATE_COLLECTION_ID, home);
 		state.setAttribute (STATE_NAVIGATION_ROOT, home);
@@ -8324,15 +8343,12 @@ extends VelocityPortletPaneledAction
 		Vector pathitems = new Vector();
 		while(currentCollectionId != null && ! currentCollectionId.equals(navRoot))
 		{
-System.out.println("   getCollectionPath, currentCollectionId == " + currentCollectionId);
 			pathitems.add(currentCollectionId);
 			currentCollectionId = contentService.getContainingCollectionId(currentCollectionId);
 		}
-		System.out.println("   getCollectionPath, navRoot == " + navRoot);
 		pathitems.add(navRoot);
 		if(!navRoot.equals(homeCollectionId))
 		{
-			System.out.println("   getCollectionPath, homeCollectionId == " + homeCollectionId);
 			pathitems.add(homeCollectionId);
 		}
 
@@ -8340,7 +8356,6 @@ System.out.println("   getCollectionPath, currentCollectionId == " + currentColl
 		while(items.hasNext())
 		{
 			String id = (String) items.next();
-			System.out.println("   getCollectionPath, id == " + id);
 			try
 			{
 				ResourceProperties props = contentService.getProperties(id);
@@ -8389,7 +8404,6 @@ System.out.println("   getCollectionPath, currentCollectionId == " + currentColl
 				e.printStackTrace();
 			}
 		}
-		System.out.println("   getCollectionPath, collectionPath.size == " + collectionPath.size());
 		return collectionPath;
 	}
 	
@@ -8574,9 +8588,15 @@ System.out.println("   getCollectionPath, currentCollectionId == " + currentColl
 			{
 				state.setAttribute(STATE_PASTE_ALLOWED_FLAG, Boolean.TRUE.toString());
 			}
+			
+			String homeCollectionId = (String) state.getAttribute(STATE_HOME_COLLECTION_ID);
 
 			ResourceProperties cProperties = collection.getProperties();
 			String folderName = cProperties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+			if(collectionId.equals(homeCollectionId))
+			{
+				folderName = (String) state.getAttribute(STATE_HOME_COLLECTION_DISPLAY_NAME);
+			}
 			BrowseItem folder = new BrowseItem(collectionId, folderName, "folder");
 			if(parent == null)
 			{
@@ -9443,6 +9463,14 @@ System.out.println("   getCollectionPath, currentCollectionId == " + currentColl
 		}
 		
 		/**
+		 * @param name
+		 */
+		public void setName(String name)
+		{
+			m_name = name;
+		}
+		
+		/**
 		 * @param root
 		 */
 		public void setRoot(String root)
@@ -9894,14 +9922,6 @@ System.out.println("   getCollectionPath, currentCollectionId == " + currentColl
 			return !isFolder() && !isUrl() && !isHtml() && !isPlaintext();
 		}
 
-		/**
-		 * @param name
-		 */
-		public void setName(String name)
-		{
-			m_name = name;
-		}
-		
 		/**
 		 * @param type
 		 */
