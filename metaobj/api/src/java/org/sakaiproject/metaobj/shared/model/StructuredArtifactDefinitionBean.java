@@ -1,0 +1,389 @@
+/*
+ * The Open Source Portfolio Initiative Software is Licensed under the Educational Community License Version 1.0:
+ *
+ * This Educational Community License (the "License") applies to any original work of authorship
+ * (the "Original Work") whose owner (the "Licensor") has placed the following notice immediately
+ * following the copyright notice for the Original Work:
+ *
+ * Copyright (c) 2004 Trustees of Indiana University and r-smart Corporation
+ *
+ * This Original Work, including software, source code, documents, or other related items, is being
+ * provided by the copyright holder(s) subject to the terms of the Educational Community License.
+ * By obtaining, using and/or copying this Original Work, you agree that you have read, understand,
+ * and will comply with the following terms and conditions of the Educational Community License:
+ *
+ * Permission to use, copy, modify, merge, publish, distribute, and sublicense this Original Work and
+ * its documentation, with or without modification, for any purpose, and without fee or royalty to the
+ * copyright holder(s) is hereby granted, provided that you include the following on ALL copies of the
+ * Original Work or portions thereof, including modifications or derivatives, that you make:
+ *
+ * - The full text of the Educational Community License in a location viewable to users of the
+ * redistributed or derivative work.
+ *
+ * - Any pre-existing intellectual property disclaimers, notices, or terms and conditions.
+ *
+ * - Notice of any changes or modifications to the Original Work, including the date the changes were made.
+ *
+ * - Any modifications of the Original Work must be distributed in such a manner as to avoid any confusion
+ *  with the Original Work of the copyright holders.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * The name and trademarks of copyright holder(s) may NOT be used in advertising or publicity pertaining
+ * to the Original or Derivative Works without specific, written prior permission. Title to copyright
+ * in the Original Work and any associated documentation will at all times remain with the copyright holders.
+ *
+ * $Header: /opt/CVS/osp2.x/HomesService/src/java/org/theospi/metaobj/shared/model/StructuredArtifactDefinitionBean.java,v 1.4 2005/07/01 16:43:59 chmaurer Exp $
+ * $Revision: 1.4 $
+ * $Date: 2005/07/01 16:43:59 $
+ */
+
+
+package org.sakaiproject.metaobj.shared.model;
+
+import java.text.MessageFormat;
+import java.util.Date;
+
+/**
+ * @author chmaurer
+ */
+public class StructuredArtifactDefinitionBean implements Comparable {
+   
+   public static final int STATE_UNPUBLISHED = 0;
+   public static final int STATE_WAITING_APPROVAL = 1;
+   public static final int STATE_PUBLISHED = 2;
+
+   private Id id;
+   private String documentRoot;
+   private Agent owner;
+   private Date created = new Date();
+   private Date modified = new Date();
+
+   /**
+    * system only SAD's are not available to users to populate via a web form, they are for internal system use only
+    */
+   private boolean systemOnly = false;
+   private String description;
+   private boolean modifiable = true;
+   private Id xslConversionFileId;
+   private String schemaFileName;
+   private String xslFileName;
+   private byte[] schema;
+   private String siteId;
+   private String externalType;
+   private String instruction;
+
+   /**
+    * should be one of the following states
+    *
+    * unpublished -> active
+    */
+   private int siteState;
+
+   /**
+    * should be one of the following states
+    *
+    * unpublished -> waiting for approval-> active
+    */
+   private int globalState;
+
+   /**
+    * used during edit process to store whether or not xsl transform is necessary
+    */
+   private boolean requiresXslFile = false;
+
+   /**
+    * file id of schema file - used when add/editing artifact homes
+    */
+   private Id schemaFile;
+
+   /**
+    * used in publishing web form to set action (publish to site, global, approve, etc)
+    */
+   private String action;
+
+   private static final MessageFormat format =
+         new MessageFormat("<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL={0}/member/viewArtifact.osp?artifactId={1}&artifactType={2}\">");
+
+
+   /**
+    * @return Returns the action.
+    */
+   public String getAction() {
+      return action;
+   }
+   /**
+    * @param action The action to set.
+    */
+   public void setAction(String action) {
+      this.action = action;
+   }
+   /**
+    * @return Returns the created.
+    */
+   public Date getCreated() {
+      return created;
+   }
+   /**
+    * @param created The created to set.
+    */
+   public void setCreated(Date created) {
+      this.created = created;
+   }
+   /**
+    * @return Returns the description.
+    */
+   public String getDescription() {
+      return description;
+   }
+   /**
+    * @param description The description to set.
+    */
+   public void setDescription(String description) {
+      this.description = description;
+   }
+   /**
+    * @return Returns the documentRoot.
+    */
+   public String getDocumentRoot() {
+      return documentRoot;
+   }
+   /**
+    * @param documentRoot The documentRoot to set.
+    */
+   public void setDocumentRoot(String documentRoot) {
+      this.documentRoot = documentRoot;
+   }
+   /**
+    * @return Returns the globalState.
+    */
+   public int getGlobalState() {
+      return globalState;
+   }
+   /**
+    * @param globalState The globalState to set.
+    */
+   public void setGlobalState(int globalState) {
+      this.globalState = globalState;
+   }
+   /**
+    * @return Returns the id.
+    */
+   public Id getId() {
+      return id;
+   }
+   /**
+    * @param id The id to set.
+    */
+   public void setId(Id id) {
+      this.id = id;
+   }
+   /**
+    * @return Returns the modifiable.
+    */
+   public boolean isModifiable() {
+      return modifiable;
+   }
+   /**
+    * @param modifiable The modifiable to set.
+    */
+   public void setModifiable(boolean modifiable) {
+      this.modifiable = modifiable;
+   }
+   /**
+    * @return Returns the modified.
+    */
+   public Date getModified() {
+      return modified;
+   }
+   /**
+    * @param modified The modified to set.
+    */
+   public void setModified(Date modified) {
+      this.modified = modified;
+   }
+   /**
+    * @return Returns the owner.
+    */
+   public Agent getOwner() {
+      return owner;
+   }
+   /**
+    * @param owner The owner to set.
+    */
+   public void setOwner(Agent owner) {
+      this.owner = owner;
+   }
+   /**
+    * @return Returns the requiresXslFile.
+    */
+   public boolean getRequiresXslFile() {
+      return requiresXslFile;
+   }
+   /**
+    * @param requiresXslFile The requiresXslFile to set.
+    */
+   public void setRequiresXslFile(boolean requiresXslFile) {
+      this.requiresXslFile = requiresXslFile;
+   }
+   /**
+    * @return Returns the schemaFile.
+    */
+   public Id getSchemaFile() {
+      return schemaFile;
+   }
+   /**
+    * @param schemaFile The schemaFile to set.
+    */
+   public void setSchemaFile(Id schemaFile) {
+      this.schemaFile = schemaFile;
+   }
+   /**
+    * @return Returns the schemaFileName.
+    */
+   public String getSchemaFileName() {
+      return schemaFileName;
+   }
+   /**
+    * @param schemaFileName The schemaFileName to set.
+    */
+   public void setSchemaFileName(String schemaFileName) {
+      this.schemaFileName = schemaFileName;
+   }
+   /**
+    * @return Returns the siteState.
+    */
+   public int getSiteState() {
+      return siteState;
+   }
+   /**
+    * @param siteState The siteState to set.
+    */
+   public void setSiteState(int siteState) {
+      this.siteState = siteState;
+   }
+   /**
+    * @return Returns the systemOnly.
+    */
+   public boolean isSystemOnly() {
+      return systemOnly;
+   }
+   /**
+    * @param systemOnly The systemOnly to set.
+    */
+   public void setSystemOnly(boolean systemOnly) {
+      this.systemOnly = systemOnly;
+   }
+   /**
+    * @return Returns the xslConversionFileId.
+    */
+   public Id getXslConversionFileId() {
+      return xslConversionFileId;
+   }
+   /**
+    * @param xslConversionFileId The xslConversionFileId to set.
+    */
+   public void setXslConversionFileId(Id xslConversionFileId) {
+      this.xslConversionFileId = xslConversionFileId;
+   }
+   /**
+    * @return Returns the xslFileName.
+    */
+   public String getXslFileName() {
+      return xslFileName;
+   }
+   /**
+    * @param xslFileName The xslFileName to set.
+    */
+   public void setXslFileName(String xslFileName) {
+      this.xslFileName = xslFileName;
+   }
+
+   public String getSiteId() {
+      return siteId;
+   }
+
+   public void setSiteId(String siteId) {
+      this.siteId = siteId;
+   }
+
+   public byte[] getSchema() {
+      return schema;
+   }
+
+   public void setSchema(byte[] schema) {
+      this.schema = schema;
+   }
+
+   public String getExternalType() {
+      return externalType;
+   }
+
+   public void setExternalType(String externalType) {
+      this.externalType = externalType;
+   }
+
+   public String getInstruction() {
+      return instruction;
+   }
+
+   public void setInstruction(String instruction) {
+      this.instruction = instruction;
+   }
+
+   /**
+    * @return Returns the type.
+    */
+   public Type getType() {
+      Type type = new Type();
+      if (getId() != null) type.setId(getId());
+      if (getDescription() != null) type.setDescription(getDescription());
+      type.setSystemOnly(isSystemOnly());
+      return type;
+   }
+   
+   /**
+    * This method doesn't do any authz, it simply checks the state
+    * @return true, if sad can be published to site.
+    */
+   public boolean getCanPublish(){
+      return (siteState == STATE_UNPUBLISHED  && globalState != STATE_PUBLISHED);
+   }
+
+   public boolean getCanGlobalPublish(){
+      return (globalState == STATE_UNPUBLISHED);
+   }
+
+   /**
+    * This method doesn't do any authz, it simply checks the state
+    * @return true, if sad can be suggested for global publish
+    */
+   public boolean getCanSuggestGlobalPublish(){
+      return (globalState == STATE_UNPUBLISHED);
+   }
+
+   /**
+    * This method doesn't do any authz, it simply checks the state
+    * @return true, if sad can be published globally
+    */
+   public boolean getCanApproveGlobalPublish(){
+      return (globalState == STATE_WAITING_APPROVAL);
+   }
+   
+   public boolean isGlobal(){
+      //TODO fix this stubbed out method
+      return false;
+   }
+
+   public int compareTo(Object o) {
+      StructuredArtifactDefinitionBean that =
+            (StructuredArtifactDefinitionBean) o;
+      return this.getType().getDescription().toLowerCase().compareTo(
+            that.getType().getDescription().toLowerCase());
+   }
+
+}
