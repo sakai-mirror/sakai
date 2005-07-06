@@ -13,7 +13,7 @@
 // @author University of Michigan, CHEF Software Development Team
 // @version $Revision: 1.1 $
 // 
-function appendMessage(uname, uid, pdate, ptime, msg)
+function appendMessage(uname, uid, removeable, pdate, ptime, msg)
 {
 	var undefined;
 	var position = 100000, docheight = 0, frameheight = 300;	  
@@ -148,6 +148,10 @@ function appendMessage(uname, uid, pdate, ptime, msg)
 		}
 	}
 	window.scrollTo(0, position);
+	if (removeable == "true")
+	{
+		window.location.reload(false);
+	}
 
 }	// appendMessage
 
