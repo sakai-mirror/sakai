@@ -143,8 +143,13 @@ public class ChatDelivery
 		else
 		{
 			String msgbody = Web.escapeJsQuoted(Web.escapeHtmlFormattedText(msg.getBody()));
+			
+			boolean removeable = false;
+			if (channel.allowRemoveMessage(msg)) removeable = true;
+			
 			retval = "try { " + m_elementId + ".appendMessage('" + sender.getDisplayName()
 					+ "', '" + sender.getId()
+					+ "', '" + new Boolean(removeable)
 					+ "', '" + msg.getHeader().getDate().toStringLocalDate()
 					+ "', '" + msg.getHeader().getDate().toStringLocalTime()
 					+ "', '" + msgbody
