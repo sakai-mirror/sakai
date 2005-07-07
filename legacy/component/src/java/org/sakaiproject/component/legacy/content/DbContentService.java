@@ -32,10 +32,13 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
+import org.sakaiproject.api.common.uuid.UuidManager;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.content.ContentCollection;
@@ -200,6 +203,100 @@ public class DbContentService
 		}
 	}
 
+
+	
+	/*******************************************************************************
+	* UUID Support
+	*******************************************************************************/
+
+	
+	/**
+	 * For a given id, return its UUID (creating it if it does not already exist)
+	 */
+	
+	public String getUuid(String id) {
+
+		String uuid = null;
+
+		try
+		{
+			String sql = "select UUID from CONTENT_RESOURCE where RESOURCE_ID=?";
+			Object[] fields = new Object[1];
+			fields[0] = id;
+			
+			List result=m_sqlService.dbRead(sql, fields, null);
+
+			if (result!=null) {
+				Iterator iter=result.iterator();
+				if (iter.hasNext()) {
+					uuid=(String)iter.next();
+				}
+			}
+			
+			if (uuid!=null) {
+				return uuid;
+			}
+
+			//UUID not found, so create one and store it
+			
+			UuidManager uuidManager=(UuidManager)ComponentManager.get(UuidManager.class);
+			uuid=uuidManager.createUuid();
+			
+			// get a connection for the updates
+			final Connection connection = m_sqlService.borrowConnection();
+			boolean wasCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
+
+			sql = "update CONTENT_RESOURCE set UUID = ? where RESOURCE_ID = ?";
+			fields = new Object[2];
+			fields[0] = uuid;
+			fields[1] = id;
+			m_sqlService.dbWrite(connection, sql, fields);
+			
+			connection.commit();
+			connection.setAutoCommit(wasCommit);
+			m_sqlService.returnConnection(connection);
+		}
+		catch (Throwable t)
+		{
+			m_logger.error(this + ".getUuid: failed: " + t);		
+		}
+		
+		return uuid;
+	}
+	
+	/**
+	 * For a given UUID, attempt to lookup and return the corresponding id (URI)
+	 */
+	
+	public String resolveUuid(String uuid) {
+
+		String id=null;
+		
+		try
+		{
+			String sql = "select RESOURCE_ID from CONTENT_RESOURCE where UUID=?";
+			Object[] fields = new Object[1];
+			fields[0] = uuid;
+			
+			List result=m_sqlService.dbRead(sql, fields, null);
+
+			if (result!=null) {
+				Iterator iter=result.iterator();
+				if (iter.hasNext()) {
+					id=(String)iter.next();
+				}
+			}
+		}
+		catch (Throwable t)
+		{
+			m_logger.error(this + ".resolveUuid: failed: " + t);		
+		}
+		return id;
+	}
+	
+	
+	
 	/*******************************************************************************
 	* BaseContentService extensions
 	*******************************************************************************/

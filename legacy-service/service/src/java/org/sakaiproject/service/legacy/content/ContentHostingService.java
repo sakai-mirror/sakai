@@ -102,6 +102,19 @@ public interface ContentHostingService
 
 	/** Name of the event when removing a resource. */
 	public static final String EVENT_RESOURCE_REMOVE = "content.delete";
+	
+	
+	/**
+	 * For a given id, return its UUID (creating it if it does not already exist)
+	 */
+	
+	public String getUuid(String id);
+	
+	/**
+	 * For a given UUID, attempt to lookup and return the corresponding id (URI)
+	 */
+	
+	public String resolveUuid(String uuid);
 
 	/**
 	* check permissions for addCollection().

@@ -116,6 +116,7 @@ INSERT INTO CONTENT_COLLECTION VALUES ('/group-user/',
 CREATE TABLE CONTENT_RESOURCE
 (
     RESOURCE_ID VARCHAR2 (256) NOT NULL,
+        UUID VARCHAR2 (36),
 	IN_COLLECTION VARCHAR2 (256),
 	FILE_PATH VARCHAR2 (128),
     XML LONG
@@ -132,6 +133,10 @@ CREATE INDEX CONTENT_IN_RESOURCE_INDEX ON CONTENT_RESOURCE
 	IN_COLLECTION
 );
 
+CREATE INDEX CONTENT_UUID_RESOURCE_INDEX ON CONTENT_RESOURCE
+(
+	UUID
+);
 -----------------------------------------------------------------------------
 -- CONTENT_RESOURCE_BODY_BINARY
 -----------------------------------------------------------------------------
