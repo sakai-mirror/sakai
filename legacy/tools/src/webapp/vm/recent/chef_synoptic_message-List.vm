@@ -33,7 +33,7 @@
 			
 			#if ($toolId=="sakai.synoptic.discussion")
 				#if ($!item.Header.Subject)
-					<p style="margin:1em 0 .4em 0">$item.Header.Subject</p>
+					<p style="margin:1em 0 .4em 0">$validator.escapeHtml($item.Header.Subject)</p>
 					#if ($showBody)
 						#set ($text=$item.Body)
 					#end
@@ -42,7 +42,7 @@
 				#end
 			#else
 				#if ($showSubject)
-					#set ($text=$item.Header.Subject)
+					#set ($text=$validator.escapeHtml($item.Header.Subject))
 				#else
 					#set ($text=$item.Body)
 				#end

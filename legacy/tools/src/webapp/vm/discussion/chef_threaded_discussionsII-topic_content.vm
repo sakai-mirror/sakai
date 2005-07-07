@@ -25,7 +25,7 @@
 				#if ($topic.DiscussionHeader.Draft)
 					<span class="alert">$tlang.getString("gen.dra") </span>
 				#end
-				 <span style="font-weight:bold"> $topic.DiscussionHeader.Subject</span>
+				 <span style="font-weight:bold"> $validator.escapeHtml($topic.DiscussionHeader.Subject)</span>
 				#set($replyNumber = $topic.NumberOfReplies)
 				#if ($replyNumber>0)
 					#if ($replyNumber==1) 
@@ -56,7 +56,7 @@
 					#if ($message.DiscussionHeader.Draft)
 						<span class="alert">$tlang.getString("gen.dra") </span>
 					#end
-					<span style="font-weight:bold">$message.DiscussionHeader.Subject</span>
+					<span style="font-weight:bold">$validator.escapeHtml($message.DiscussionHeader.Subject)</span>
 					#set($replyNumber = $message.NumberOfReplies)
 					#if ($replyNumber>0)
 						#if ($replyNumber==1) 
