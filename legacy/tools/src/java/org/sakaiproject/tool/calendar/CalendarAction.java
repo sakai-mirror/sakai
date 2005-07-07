@@ -162,7 +162,7 @@ extends VelocityPortletStateAction
 	protected final static String STATE_INITED = "calendar.state.inited";
 	
 	/** for sorting in list view */
-	private static final String STATE_DATE_SORT_ASC = "dateSortedAsc";
+	private static final String STATE_DATE_SORT_DSC = "dateSortedDsc";
 
 	/**
 	 * Used by callback to convert channel references to channels.
@@ -5930,12 +5930,12 @@ extends VelocityPortletStateAction
 		CalendarActionState state = (CalendarActionState)getState(context, data, CalendarActionState.class);
 		String peid = ((JetspeedRunData)data).getJs_peid();
 		SessionState sstate = ((JetspeedRunData)data).getPortletSessionState(peid);
-		
-		boolean dateAsc = sstate.getAttribute(STATE_DATE_SORT_ASC) != null;
-		if (dateAsc)
-			sstate.removeAttribute(STATE_DATE_SORT_ASC);
+
+		boolean dateDsc = sstate.getAttribute(STATE_DATE_SORT_DSC) != null;
+		if (dateDsc)
+			sstate.removeAttribute(STATE_DATE_SORT_DSC);
 		else
-			sstate.setAttribute(STATE_DATE_SORT_ASC, "");
+			sstate.setAttribute(STATE_DATE_SORT_DSC, "");
 		
 	}   // doSort_by_date_toggle
 	
@@ -6102,10 +6102,10 @@ extends VelocityPortletStateAction
 					isOnWorkspaceTab()),
 				fullTimeRange);
 		
-		boolean dateAsc = sstate.getAttribute(STATE_DATE_SORT_ASC) != null;
-		context.put("currentDateSortAsc", new Boolean(dateAsc));
+		boolean dateDsc = sstate.getAttribute(STATE_DATE_SORT_DSC) != null;
+		context.put("currentDateSortAsc", new Boolean(!dateDsc));
 		
-		if (dateAsc)
+		if (!dateDsc)
 		{
 			for (yearInt = CalendarFilter.LIST_VIEW_STARTING_YEAR;
 				yearInt <= CalendarFilter.LIST_VIEW_ENDING_YEAR;
