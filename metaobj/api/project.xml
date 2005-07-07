@@ -86,12 +86,6 @@
     </dependency>
        
     <dependency>
-      <groupId>commons-transaction</groupId>
-      <artifactId>commons-transaction</artifactId>
-      <version>1.1b2</version>
-    </dependency>
-    
-    <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>1.6</version>

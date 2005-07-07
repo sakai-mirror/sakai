@@ -438,6 +438,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    protected void transform(StructuredArtifactDefinition sad, StructuredArtifact artifact) throws IOException, TransformerException, JDOMException {
+      /* todo transform
       logger.debug("transforming artifact " + artifact.getId().getValue() + " owned by " + artifact.getOwner().getDisplayName());
       JDOMResult result = new JDOMResult();
       SAXBuilder builder = new SAXBuilder();
@@ -448,6 +449,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       transformer.transform(new JDOMSource(rootElement), result);
 
       artifact.setBaseElement((Element) result.getResult().get(0));
+      */
    }
 
    public AuthenticationManager getAuthManager(){

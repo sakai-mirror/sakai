@@ -45,27 +45,17 @@
 
 package org.sakaiproject.metaobj.shared.mgt.home;
 
-import org.sakaiproject.metaobj.repository.RepositoryManager;
-import org.sakaiproject.metaobj.repository.RepositoryNode;
-import org.sakaiproject.metaobj.repository.intf.StreamStore;
-import org.sakaiproject.metaobj.repository.intf.NodeMetadataService;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
-import org.sakaiproject.metaobj.shared.model.Type;
+import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.utils.BeanFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 
+import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Date;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.io.ByteArrayInputStream;
 
 
 /**
@@ -285,6 +275,7 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
       this.schema = schema;
    }
 
+   /**  todo implement conversion file stuff
    public RepositoryNode getXslConversionFileNode() {
       return (RepositoryNode) getRepositoryManager().getNode(getXslConversionFileId());
    }
@@ -292,6 +283,7 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
    public InputStream getXslConversionFileStream(){
       return getXslConversionFileNode().getStream();
    }
+   **/
 
    /**
     * @return Returns the type.
@@ -319,13 +311,6 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
    }
 
    /**
-    * @return Returns the repositoryManager.
-    */
-   public RepositoryManager getRepositoryManager() {
-      return (RepositoryManager) BeanFactory.getInstance().getBean("repositoryManager");
-   }
-
-   /**
     * @return Returns the idManager.
     */
    public IdManager getIdManager() {
@@ -336,6 +321,7 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
       return (PresentableObjectHome) BeanFactory.getInstance().getBean("repositoryHelper");
    }
 
+   /**
    public StreamStore getStreamStore() {
       return (StreamStore)BeanFactory.getInstance().getBean(
          StreamStore.class.getName(), StreamStore.class);
@@ -345,6 +331,7 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
       return (NodeMetadataService)BeanFactory.getInstance().getBean(
          NodeMetadataService.class.getName(), NodeMetadataService.class);
    }
+    **/
 
    public String getDescription() {
       return description;

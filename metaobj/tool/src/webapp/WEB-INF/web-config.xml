@@ -30,7 +30,6 @@
 		<property name="exceptionMappings">
 			<props>
 				<prop key="org.sakaiproject.metaobj.security.AuthorizationFailedException">authzFailed</prop>
-				<prop key="org.sakaiproject.metaobj.repository.control.FilePickerException">filePickerError</prop>
 			</props>
 		</property>
 	</bean>

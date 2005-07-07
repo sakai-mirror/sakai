@@ -43,33 +43,32 @@
  */
 package org.sakaiproject.metaobj.shared.mgt.home;
 
-import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.sakaiproject.metaobj.repository.intf.NodeMetadataService;
-import org.sakaiproject.metaobj.repository.intf.StreamStore;
-import org.sakaiproject.metaobj.repository.model.NodeMetadata;
-import org.sakaiproject.metaobj.repository.RepositoryNode;
+import org.jdom.output.XMLOutputter;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StreamableObjectHome;
-import org.sakaiproject.metaobj.shared.model.*;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.PersistenceException;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
+import org.sakaiproject.metaobj.utils.BeanFactory;
+import org.sakaiproject.metaobj.utils.Config;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.intf.WorksiteAware;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.metaobj.utils.Config;
-import org.sakaiproject.metaobj.utils.BeanFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -90,8 +89,6 @@ public class StructuredArtifactHome extends XmlElementHome
    private PresentableObjectHome repositoryHelper;
    private IdManager idManager;
    private String siteId;
-   private NodeMetadataService nodeMetadataService;
-   private StreamStore streamStore;
 
    private static final MessageFormat format =
    new MessageFormat("<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL={0}/member/viewArtifact.osp?artifactId={1}&artifactType={2}&pid={3}\">");
@@ -107,6 +104,7 @@ public class StructuredArtifactHome extends XmlElementHome
    }
 
    protected Artifact updateArtifact(Artifact object) throws PersistenceException {
+      /** todo
       NodeMetadata node = getNodeMetadataService().getNode(object.getId());
       node.setName(object.getDisplayName());
       getNodeMetadataService().store(node);
@@ -115,11 +113,13 @@ public class StructuredArtifactHome extends XmlElementHome
       node.setSize(size);
 
       getNodeMetadataService().store(node);
+               */
 
       return object;
    }
 
    public Artifact load(Id id) throws PersistenceException {
+      /** todo
       NodeMetadata node = getNodeMetadataService().getNode(id);
       SAXBuilder builder = new SAXBuilder();
 
@@ -139,19 +139,20 @@ public class StructuredArtifactHome extends XmlElementHome
       } catch (Exception e) {
          throw new SchemaInvalidException(e);
       }
+       */
+      return null;
    }
 
 
    public void remove(Artifact object) throws PersistenceException {
+      /**
       getStreamStore().delete(getNodeMetadata(object.getId()));
       getNodeMetadataService().delete(object.getId());
-   }
-
-   protected NodeMetadata getNodeMetadata(Id nodeId) {
-      return getNodeMetadataService().getNode(nodeId);
+       */
    }
 
    public Artifact cloneArtifact(Artifact copy, String newName) throws PersistenceException {
+      /** todo
       NodeMetadata oldMetadata = getNodeMetadataService().getNode(copy.getId());
       String origName = oldMetadata.getName();
       oldMetadata.setName(newName);
@@ -160,9 +161,12 @@ public class StructuredArtifactHome extends XmlElementHome
       getStreamStore().copyStreams(getNodeMetadataService().getNode(copy.getId()), newMetadata);
 
       return new LightweightArtifact(this, newMetadata);
+       */
+      return null;
    }
 
    protected Artifact addArtifact(Artifact object) throws PersistenceException {
+      /**
       NodeMetadata node = getNodeMetadataService().createNode(
          object.getDisplayName(), this.getType());
 
@@ -170,6 +174,8 @@ public class StructuredArtifactHome extends XmlElementHome
       node.setSize(size);
       getNodeMetadataService().store(node);
       return new LightweightArtifact(this, node);
+       */
+      return null;
    }
 
    /**
@@ -318,21 +324,5 @@ public class StructuredArtifactHome extends XmlElementHome
    protected WorksiteManager getWorksiteManager() {
       return (WorksiteManager) BeanFactory.getInstance().getBean(WorksiteManager.class.getName());
    }
-
-   public NodeMetadataService getNodeMetadataService() {
-      return nodeMetadataService;
-   }
-
-   public void setNodeMetadataService(NodeMetadataService nodeMetadataService) {
-      this.nodeMetadataService = nodeMetadataService;
-   }
-
-   public StreamStore getStreamStore() {
-      return streamStore;
-   }
-
-   public void setStreamStore(StreamStore streamStore) {
-      this.streamStore = streamStore;
-   }
-
+ 
 }

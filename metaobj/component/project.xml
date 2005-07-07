@@ -100,12 +100,6 @@
     </dependency>
        
     <dependency>
-      <groupId>commons-transaction</groupId>
-      <artifactId>commons-transaction</artifactId>
-      <version>1.1b2</version>
-    </dependency>
-    
-    <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>1.6</version>
@@ -171,18 +165,6 @@
       <version>2.3</version>
     </dependency>
     
-    <dependency>
-      <groupId>slide</groupId>
-      <artifactId>slide-kernel</artifactId>
-      <version>2.2pre1</version>
-    </dependency>  
-    
-    <dependency>
-      <groupId>slide</groupId>
-      <artifactId>jakarta-slide-wck</artifactId>
-      <version>1.0</version>
-    </dependency>  
-      
     <dependency>
       <groupId>springframework</groupId>
       <artifactId>spring</artifactId>

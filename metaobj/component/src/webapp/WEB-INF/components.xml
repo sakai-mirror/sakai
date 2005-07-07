@@ -59,25 +59,11 @@
 
    <bean id="authzManager" class="org.sakaiproject.metaobj.security.impl.AuthzShim" />
    
-   <bean id="fileArtifactFinder" class="org.sakaiproject.metaobj.repository.mgt.impl.FileArtifactFinderImpl">
-      <property name="homeFactory"><ref bean="homeFactory" /></property>
-      <property name="sessionFactory"><ref bean="sessionFactory"/></property>
-   </bean>
-
-   <bean id="artifactFinder" class="org.sakaiproject.metaobj.repository.mgt.impl.ArtifactFinderImpl">
-      <property name="homeFactory"><ref bean="homeFactory" /></property>
-      <property name="sessionFactory"><ref bean="sessionFactory"/></property>
-   </bean>
-
    <bean id="artifactFinderManager" class="org.sakaiproject.metaobj.shared.mgt.ArtifactFinderManager">
       <property name="finders">
          <map>
-            <entry key="fileArtifact"><ref bean="fileArtifactFinder"/></entry>
          </map>
       </property>
-      <!-- default finder, if can't find a finder in the finder list this one is used -->
-      <property name="artifactFinder"><ref bean="artifactFinder"/></property>
-
    </bean>
 
      <bean id="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"
@@ -175,40 +161,5 @@
       </property>
 
    </bean>
-
-    <!--bean id="autoProxyCreator"
-        class="org.sakaiproject.metaobj.utils.aop.AdvisorBeanNameAutoProxyCreator">
-      <property name="interceptorNames">
-        <list>
-          <idref local="matchNameTxInterceptor"/>
-        </list>
-      </property>
-      <property name="beanNames">
-        <list>
-           <value>structuredArtifactDefinitionManager</value>
-          <value>authManager</value>
-          <value>authzManager</value>
-          <value>agentManager</value>
-           <value>imageXmlHome</value>
-           <value>unknownFileTypeXmlHome</value>
-           <value>folderXmlHome</value>
-          <value>fileArtifactHome</value>
-          <value>homeFactory</value>
-          <value>org.sakaiproject.metaobj.repository.intf.NodeTreeService</value>
-          <value>org.sakaiproject.metaobj.repository.intf.NodeMetadataService</value>
-          <value>org.sakaiproject.metaobj.repository.intf.StreamStore</value>
-          <value>wck</value>
-          <value>lockManager</value>
-          <value>repositoryManager</value>
-          <value>quotaDao</value>
-          <value>idManager</value>
-          <value>fileArtifactFinder</value>
-          <value>artifactFinder</value>
-          <value>artifactFinderManager</value>
-          <value>org.sakaiproject.metaobj.shared.mgt.PortalParamManager</value>
-          <value>org.sakaiproject.metaobj.worksite.mgt.WorksiteManager</value>
-        </list>
-      </property>
-    </bean-->
 
 </beans>
