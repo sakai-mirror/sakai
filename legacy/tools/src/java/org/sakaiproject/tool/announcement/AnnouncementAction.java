@@ -3291,16 +3291,17 @@ extends PagedResourceActionII
 				{
 					boolean s1 = true;
 					boolean s2 = true;
-					int m = seperatorMatrix(menu_new, menu_delete, menu_revise);
+					//int m = seperatorMatrix(menu_new, menu_delete, menu_revise);
+					int m = seperatorMatrix(menu_new, menu_revise, menu_delete);
 					if (m == 10) s2 = false; //10
 					if (m == 1) s1 = false; //01
 					if (m == 0) s1 = s2 = false; //00
 					
 					bar.add(new MenuEntry(rb.getString("gen.new"),null, menu_new,	MenuItem.CHECKED_NA,"doNewannouncement"));
 					if (s1) bar.add(new MenuDivider());
-					bar.add(new MenuEntry(rb.getString("gen.delete"),null, menu_delete,MenuItem.CHECKED_NA,"doDeleteannouncement"));
-					if (s2) bar.add(new MenuDivider());
 					bar.add(new MenuEntry(rb.getString("gen.revise"),null,menu_revise,MenuItem.CHECKED_NA,"doReviseannouncementfrommenu"));
+					if (s2) bar.add(new MenuDivider());
+					bar.add(new MenuEntry(rb.getString("gen.delete2"),null, menu_delete,MenuItem.CHECKED_NA,"doDeleteannouncement"));
 					buttonRequiringCheckboxesPresent=true ;
 				}
 				else
