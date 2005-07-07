@@ -84,6 +84,18 @@
 			theForm.submit();
 		}
 	}
+	function seedValue(obj_seed, id)
+	{
+		var theElement = document.getElementById(id);
+		if(theElement && obj_seed && obj_seed.value)
+		{
+			var nonWhitespaceCharacter = /\S/;			
+			if(theElement.value.search(nonWhitespaceCharacter) < 0)
+			{
+				theElement.value = obj_seed.value;
+			}
+		}
+	}
 	function openSampleCopyrightWindow() 
 	{ 
 	  window.open("$copyright_alert_url","SampleCopyrightAlert","scrollbars=no,menubar=no,height=400,width=700,resizable=no,toolbar=no,location=no,status=no");
@@ -270,7 +282,7 @@
 						<span class="reqStar">*</span>
 				#end
 					<label for="Url$i">$tlang.getString("gen.url")</label>
-					<input type="text" name="Url$i" id="Url$i" size="60" value="$!validator.escapeHtml("$!item.filename")" />
+					<input type="text" name="Url$i" id="Url$i" size="60" value="$!validator.escapeHtml("$!item.filename")" onchange="javascript:seedValue(this, 'name$i')" />
 				</p>
 			#elseif ($item.isPlaintext()) 
 				#if($!{item.isMissing("content")})
@@ -302,7 +314,7 @@
 					#end
 						<span class="reqStar">*</span>
 						<label for="fileName$i">$tlang.getString("gen.choose") $tlang.getString("add.afile")</label>
-						<input type="file" name="fileName$i" id="fileName$i"  class ="upload" />
+						<input type="file" name="fileName$i" id="fileName$i"  class ="upload" onchange="javascript:seedValue(this, 'name$i')" />
 					</p>
 				#else
 					<p class="shorttext">
