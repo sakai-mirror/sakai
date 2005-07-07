@@ -84,12 +84,6 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 	/** The panel name of the main panel - append the tool's id. */
 	protected static final String LAYOUT_MAIN = "Main";
 
-	/** The panel name of the layout panel. */
-	protected static final String LAYOUT_PANEL = "Layout";
-
-	/** The panel name of the main panel. */
-	protected static final String LAYOUT_TITLE = "Title";
-
 	protected class MyLogger
 	{
 		public void warn(String channel, String msg)
@@ -332,10 +326,10 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 			/*
 			 * TODO: float support from before... // special case for floating and the Main panel: if (LAYOUT_MAIN.equals(panel)) { if (handleFloat(portlet, context, rundata, state)) return; }
 			 */
-			// panel parameter is missing when the main portlet is called upon - use layout
-			if (panel == null)
+			if (panel == null || "".equals(panel) || "null".equals(panel))
 			{
-				panel = LAYOUT_PANEL;
+				// default to main panel
+				panel = LAYOUT_MAIN;
 			}
 
 			context.put("panel", panel);
