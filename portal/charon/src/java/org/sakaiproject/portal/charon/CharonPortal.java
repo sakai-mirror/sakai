@@ -93,7 +93,6 @@ public class CharonPortal extends HttpServlet
 	protected static final int ERROR_WORKSITE = 2;
 
 	/** Names of tool config/registration attributes that control the rendering of the tool's titlebar */
-    private static final String TOOLCONFIG_PORTAL_HANDLES_TITLEBAR = "portal.titlebar";
     private static final String TOOLCONFIG_SHOW_RESET_BUTTON = "reset.button";
     private static final String TOOLCONFIG_SHOW_HELP_BUTTON = "help.button";
     private static final String TOOLCONFIG_HELP_DOCUMENT_ID = "help.id";
@@ -1807,6 +1806,7 @@ public class CharonPortal extends HttpServlet
 
 		String toolUrl = Web.returnUrl(req, "/tool/" + Web.escapeUrl(placement.getId()));
 		String titleUrl = Web.returnUrl(req, "/title/" + Web.escapeUrl(placement.getId()));
+		String titleString = Web.escapeHtml(placement.getTitle());
 //		boolean portalHandlesTitleFrame = !"false".equals(placement.getConfig().getProperty(TOOLCONFIG_PORTAL_HANDLES_TITLEBAR));
 //		if (!portalHandlesTitleFrame)
 //		{
@@ -1819,7 +1819,7 @@ public class CharonPortal extends HttpServlet
 		out.println("<iframe");
 		out.println("	name=\"" + Web.escapeJavascript("Title" + placement.getId()) + "\"");
 		out.println("	id=\"" + Web.escapeJavascript("Title" + placement.getId()) + "\"");
-		out.println("	title=\"Current Tool Title\"");
+		out.println("	title=\""+titleString+"\"");
 		out.println("	class =\"portletTitleIframe\"");
 		out.println("	height=\"22\"");
 		out.println("	width=\"99%\"");
@@ -1835,8 +1835,7 @@ public class CharonPortal extends HttpServlet
 		out.println("<iframe");
 		out.println("	name=\"" + Web.escapeJavascript("Main" + placement.getId()) + "\"");
 		out.println("	id=\"" + Web.escapeJavascript("Main" + placement.getId()) + "\"");
-		// TODO: actual title here?
-		out.println("	title=\"Current Tool Content\"");
+		out.println("	title=\""+titleString+"\" Content");
 		out.println("	class =\"portletMainIframe\"");
 		out.println("	height=\"50\"");
 		out.println("	width=\"100%\"");
