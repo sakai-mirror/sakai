@@ -141,8 +141,8 @@ public class BaseElementType {
       }
 
       for (Iterator i = enums.iterator(); i.hasNext();) {
-         Element enum = (Element) i.next();
-         String value = enum.getAttributeValue("value");
+         Element enumer = (Element) i.next();
+         String value = enumer.getAttributeValue("value");
          temp.add(getActualNormalizedValue(value));
       }
 

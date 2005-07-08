@@ -122,10 +122,10 @@ public class HttpServletHelper {
          }
       }
 
-      Enumeration enum = request.getSession().getAttributeNames();
+      Enumeration enumer = request.getSession().getAttributeNames();
 
-      while (enum.hasMoreElements()) {
-         String key = (String)enum.nextElement();
+      while (enumer.hasMoreElements()) {
+         String key = (String)enumer.nextElement();
 
          if (map.get(key) == null) {
             request.getSession().removeAttribute(key);
@@ -135,10 +135,10 @@ public class HttpServletHelper {
 
    public Map createSessionMap(HttpServletRequest request) {
       Map parameters = new HashMap();
-      Enumeration enum = request.getSession().getAttributeNames();
+      Enumeration enumer = request.getSession().getAttributeNames();
 
-      while (enum.hasMoreElements()) {
-         String key = (String) enum.nextElement();
+      while (enumer.hasMoreElements()) {
+         String key = (String) enumer.nextElement();
          parameters.put(key, request.getSession().getAttribute(key));
       }
 
@@ -157,10 +157,10 @@ public class HttpServletHelper {
          }
       }
 
-      Enumeration enum = request.getAttributeNames();
+      Enumeration enumer = request.getAttributeNames();
 
-      while (enum.hasMoreElements()) {
-         String key = (String)enum.nextElement();
+      while (enumer.hasMoreElements()) {
+         String key = (String)enumer.nextElement();
 
          if (map.get(key) == null) {
             request.removeAttribute(key);
@@ -170,17 +170,17 @@ public class HttpServletHelper {
 
    public Map createRequestMap(HttpServletRequest request) {
       Map parameters = new HashMap();
-      Enumeration enum = request.getAttributeNames();
+      Enumeration enumer = request.getAttributeNames();
 
-      while (enum.hasMoreElements()) {
-         String key = (String) enum.nextElement();
+      while (enumer.hasMoreElements()) {
+         String key = (String) enumer.nextElement();
          parameters.put(key, request.getAttribute(key));
       }
 
-      enum = request.getParameterNames();
+      enumer = request.getParameterNames();
 
-      while (enum.hasMoreElements()) {
-         String key = (String) enum.nextElement();
+      while (enumer.hasMoreElements()) {
+         String key = (String) enumer.nextElement();
          if (request.getParameterValues(key).length > 1) {
             parameters.put(key, request.getParameterValues(key));
          } else {
