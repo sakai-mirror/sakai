@@ -6,18 +6,18 @@
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
- * 
+ *
  * Licensed under the Educational Community License Version 1.0 (the "License");
  * By obtaining, using and/or copying this Original Work, you agree that you have read,
  * understand, and will comply with the terms and conditions of the Educational Community License.
  * You may obtain a copy of the License at:
- * 
+ *
  *      http://cvs.sakaiproject.org/licenses/license_1_0.html
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
  * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  **********************************************************************************/
@@ -67,7 +67,7 @@ import org.sakaiproject.util.web.Web;
  * <p>
  * Charon is the Sakai Site based portal.
  * </p>
- * 
+ *
  * @author University of Michigan, Sakai Software Development Team
  * @version $Revision$
  */
@@ -259,7 +259,7 @@ public class CharonPortal extends HttpServlet
 
 	/**
 	 * Respond to navigation / access requests.
-	 * 
+	 *
 	 * @param req
 	 *        The servlet request.
 	 * @param res
@@ -297,13 +297,13 @@ public class CharonPortal extends HttpServlet
 			doTool(req, res, session, parts[2], req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3), Web
 					.makePath(parts, 3, parts.length));
 		}
-		
+
 		else if ((parts.length >= 2) && (parts[1].equals("title")))
 		{
 			doTitle(req, res, session, parts[2], req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3), Web
 					.makePath(parts, 3, parts.length));
 		}
-		
+
 		// recognize a dispatch the 'page' option (tools on a page)
 		else if ((parts.length == 3) && (parts[1].equals("page")))
 		{
@@ -503,15 +503,15 @@ public class CharonPortal extends HttpServlet
     	
  		if (skin == null || skin.length() == 0) skin = ServerConfigurationService.getString("skin.default");
 		String skinRepo = ServerConfigurationService.getString("skin.repo");
-       
+
         // the title to display in the title frame
-        String toolTitle = Web.escapeHtml(placement.getTitle());
+		String toolTitle = Web.escapeHtml(placement.getTitle());
         
 		// for the reset button
 		String resetActionUrl = toolContextPath+"?reset=true";
 		boolean resetToolNow = "true".equals(req.getParameter("reset"));
 		boolean showResetButton = !"false".equals(placement.getConfig().getProperty(TOOLCONFIG_SHOW_RESET_BUTTON));
-		
+
 		// for the help button
 		// get the help document ID from the tool config (tool registration usually).
         // The help document ID defaults to the tool ID
@@ -537,9 +537,9 @@ public class CharonPortal extends HttpServlet
 			    helpActionUrl = ServerConfigurationService.getHelpUrl(helpDocId);
 		    }
 	    }
-		
+
         PrintWriter out = res.getWriter();
-        
+
 		final String headHtml = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
 			+ "<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n"
 			+ "  <head>\n"
@@ -551,9 +551,9 @@ public class CharonPortal extends HttpServlet
 			+ "  </head>\n"
 			+ "  <body>\n";
 		final String tailHtml = "</body></html>\n";
-		
+
 		out.write(headHtml);
-		
+
 		out.write("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"toolTitle\" summary=\"layout\">\n");
 		out.write("<tr>\n");
 		out.write("\t<td class=\"title\">\n");
@@ -564,11 +564,11 @@ public class CharonPortal extends HttpServlet
 		            +"\" title=\"Reset\"><img src=\"/library/image/transparent.gif\" alt=\"Reset\" border=\"1\"></a>"
             );
 		}
-		out.write(" "+toolTitle+"\n"+"\t</td>\n");
+		out.write("<h2>"+toolTitle+"\n"+"\t</h2></td>\n");
 		out.write("\t<td class=\"action\">\n");
 		if (showHelpButton)
 		{
-		    out.write("\t\t<a href=\"javascript:;\" onClick=\"window.open('"+helpActionUrl+"','Help','resizable=0,toolbar=no,scrollbars=yes, width=800,height=600')\"><img src=\"/library/image/transparent.gif\" alt=\"Help\" border=\"0\"></a>\n");	
+		    out.write("\t\t<a href=\"javascript:;\" onclick=\"window.open('"+helpActionUrl+"','Help','resizable=0,toolbar=no,scrollbars=yes, width=800,height=600')\" onkeypress=\"window.open('"+helpActionUrl+"','Help','resizable=0,toolbar=no,scrollbars=yes, width=800,height=600')\"><img src=\"/library/image/transparent.gif\" alt=\"Help\" border=\"0\"></a>\n");
 		}
 		out.write("\t</td>\n");
 		out.write("</tr>\n");
@@ -577,12 +577,12 @@ public class CharonPortal extends HttpServlet
 		if (resetToolNow)
 		{
 		    // cause main tool frame to be reset
-		    
+
 		    // clear the session data associated with the tool - should reset the tool
 		    Session s = SessionManager.getCurrentSession();
 		    ToolSession ts = s.getToolSession(placement.getId());
 		    ts.clearAttributes();
-		    
+
 		    // redirect the main tool frame back to the initial tool URL.
 			String mainFrameId = Web.escapeJavascript("Main" + placement.getId());
 			String mainFrameUrl = Web.returnUrl(req, "/tool/" + Web.escapeUrl(placement.getId())+"?panel=Main");
@@ -610,10 +610,10 @@ public class CharonPortal extends HttpServlet
 			out.write("}\n");
 			out.write("</script>\n");
 		}
-		
+
 		out.write(tailHtml);
     }
-    
+
 
     protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath,
 			boolean skipContainer) throws IOException
@@ -729,7 +729,7 @@ public class CharonPortal extends HttpServlet
 
 	/**
 	 * Respond to data posting requests.
-	 * 
+	 *
 	 * @param req
 	 *        The servlet request.
 	 * @param res
@@ -1134,7 +1134,7 @@ public class CharonPortal extends HttpServlet
 
 	/**
 	 * Access the Servlet's information display.
-	 * 
+	 *
 	 * @return servlet information.
 	 */
 	public String getServletInfo()
@@ -1173,13 +1173,13 @@ public class CharonPortal extends HttpServlet
 		{
 			for (int i = 0; i < poweredByUrl.length; i++)
 			{
-				out.println("		<a href=\"" + poweredByUrl[i] + "\" target=\"_blank\">" + "<img border=\"0\" src=\""
+				out.println("	<span class=\"skip\">Opens in a new window</span>	<a href=\"" + poweredByUrl[i] + "\" target=\"_blank\">" + "<img border=\"0\" src=\""
 						+ poweredByImage[i] + "\" alt=\"" + poweredByAltText[i] + "\" /></a>");
 			}
 		}
 		else
 		{
-			out.println("		<a href=\"http://sakaiproject.org\" target=\"_blank\">"
+			out.println("		<span class=\"skip\">Opens in a new window</span>	<a href=\"http://sakaiproject.org\" target=\"_blank\">"
 					+ "<img border=\"0\" src=\"/library/image/sakai_powered.gif\" alt=\"Powered by Sakai\" /></a>");
 		}
 		out.println("<br />");
@@ -1219,10 +1219,15 @@ public class CharonPortal extends HttpServlet
 			siteNavUrl = Web.returnUrl(req, "/nav_login_gallery/" + Web.escapeUrl(siteId));
 		}
 
+// gsilver - jump to links
+		out.println("<a href=\"#content\"  class=\"skip\" title=\"jump to content\" accesskey=\"c\">jump to content</a>");
+		out.println("<a href=\"#toolmenu\"  class=\"skip\" title=\"jump to tools list\" accesskey=\"l\">jump to tools list</a>");
+		out.println("<a href=\"#sitetabs\" class=\"skip\" title=\"jump to worksite list\" accesskey=\"w\">jump to worksite list</a>");
+
 		out.println("<iframe");
 		out.println("	name=\"sitenav\"");
 		out.println("	id=\"sitenav\"");
-		out.println("	title=\"Site Navigation Frame\"");
+		out.println("	title=\"Worksites\"");
 		out.println("	class=\"sitenav-min\"");
 		out.println("	height=\"30\"");
 		out.println("	width=\"100%\"");
@@ -1434,31 +1439,55 @@ public class CharonPortal extends HttpServlet
 			out.println("	<img src=\"" + iconUrl + "\" border=\"0\" />");
 		}
 		out.println("	</div>");
+
+// gsilver - target of "jump to tools" link, header
+
+		out.println("	<a id=\"toolmenu\" class=\"skip\" name=\"toolmenu\"></a>");
+		out.println("	<h1 class=\"skip\">Tools begin here</h1>");
+
 		out.println("	<div id=\"leftnavlozenge\">");
 		out.println("		<ul>");
 
 		// order the pages based on their tools and the tool order for the site type
 		List pages = site.getOrderedPages();
 
-		for (Iterator i = pages.iterator(); i.hasNext();)
-		{
-			SitePage p = (SitePage) i.next();
-			if (p.getId().equals(page.getId()))
+// gsilver - counter for tool accesskey attributes of <a>
+
+			int count =0;
+
+			for (Iterator i = pages.iterator(); i.hasNext();)
 			{
-				// show as current
-				out.println("			<li><a class=\"selected\" href=\"#\">" + Web.escapeHtml(p.getTitle()) + "</a></li>");
+				SitePage p = (SitePage) i.next();
+				if (p.getId().equals(page.getId()))
+				{
+					// show as current
+					out.println("			<li><a class=\"selected\" href=\"#\">" +  Web.escapeHtml(p.getTitle()) + "</a></li>");
+				}
+				else
+				{
+					// show as option
+					if (count==0)
+					{
+						out.println("			<li><a accesskey=\"" + "0" + "\" href=\"" + pageUrl + Web.escapeUrl(p.getId()) + "\">" + Web.escapeHtml(p.getTitle())
+							+ "</a></li>");
+					}
+					else
+					{
+						out.println("			<li><a accesskey=\"" + count + "\" href=\"" + pageUrl + Web.escapeUrl(p.getId()) + "\">" + Web.escapeHtml(p.getTitle())
+							+ "</a></li>");
+					}
+
+				}
+				count++;
 			}
-			else
-			{
-				// show as option
-				out.println("			<li><a href=\"" + pageUrl + Web.escapeUrl(p.getId()) + "\">" + Web.escapeHtml(p.getTitle())
-						+ "</a></li>");
-			}
-		}
 
 		String helpUrl = ServerConfigurationService.getHelpUrl(null);
 		out.println("			<li>");
-		out.println("				<a href=\"javascript:;\" " + "onclick=\"window.open('" + helpUrl + "'"
+
+//gsilver Help gets its own accesskey - h
+
+		out.println("				<a  accesskey=\"h\" href=\"javascript:;\" " +  "onclick=\"window.open('" + helpUrl + "'"
+				+ ",'Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\" onkeypress=\"window.open('" + helpUrl + "'"
 				+ ",'Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\">Help</a>");
 		out.println("			</li>");
 
@@ -1472,7 +1501,7 @@ public class CharonPortal extends HttpServlet
 			out.println("	<iframe ");
 			out.println("		name=\"presence\"");
 			out.println("		id=\"presence\"");
-			out.println("		title=\"presence\"");
+			out.println("		title=\"Users Present in Site\"");
 			out.println("		frameborder=\"0\"");
 			out.println("		marginwidth=\"0\"");
 			out.println("		marginheight=\"0\"");
@@ -1482,6 +1511,12 @@ public class CharonPortal extends HttpServlet
 			out.println("	</iframe>");
 		}
 		out.println("</div>");
+
+// gsilver - target of "jump to content" link and header for content
+
+		out.println("	<h1 class=\"skip\">Content  begins here</h1>");
+		out.println("	<a id=\"content\" class=\"skip\" name=\"content\"></a>");
+
 	}
 
 	protected void includeSiteNav(PrintWriter out, HttpServletRequest req, Session session, String siteId)
@@ -1506,10 +1541,17 @@ public class CharonPortal extends HttpServlet
 			siteNavClass = "sitenav-log";
 		}
 
+//gsilver - jump to links
+
+		out.println("<a href=\"#content\"  class=\"skip\" title=\"jump to content\" accesskey=\"c\">jump to content</a>");
+		out.println("<a href=\"#toolmenu\" class=\"skip\"  title=\"jump to tools list\" accesskey=\"l\">jump to tools list</a>");
+		out.println("<a href=\"#sitetabs\" class=\"skip\" title=\"jump to worksite list\" accesskey=\"w\">jump to worksite list</a>");
+
+
 		out.println("<iframe");
 		out.println("	name=\"sitenav\"");
 		out.println("	id=\"sitenav\"");
-		out.println("	title=\"Site Navigation\"");
+		out.println("	title=\"Worksites\"");
 		out.println("	class=\"" + siteNavClass + "\"");
 		out.println("	height=\"" + height + "\"");
 		out.println("	width=\"100%\"");
@@ -1655,7 +1697,14 @@ public class CharonPortal extends HttpServlet
 		out.println("	<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">");
 		out.println("		<tr>");
 		out.println("			<td class=\"tabCell\">");
-		out.println("				<ul id=\"tabNavigation\">");
+
+// gsilver - target for "jump to tabs" link and header
+
+		out.println("				<a id=\"sitetabs\" class=\"skip\" name=\"sitetabs\"></a>");
+		out.println("				<h1 class=\"skip\">Worsites begin here</h1>");
+
+
+	out.println("				<ul id=\"tabNavigation\">");
 
 		// myWorkspace
 		if (curMyWorkspace)
@@ -1764,13 +1813,13 @@ public class CharonPortal extends HttpServlet
 //		    // let the tool output its own title frame
 //		    titleUrl = toolUrl + "?panel=Title";
 //		}
-		
+
 		// this is based on what varuna is currently putting out
 		out.println("<div class=\"portletTitleWrap\">");
 		out.println("<iframe");
 		out.println("	name=\"" + Web.escapeJavascript("Title" + placement.getId()) + "\"");
 		out.println("	id=\"" + Web.escapeJavascript("Title" + placement.getId()) + "\"");
-		out.println("	title=\"Title Bar\"");
+		out.println("	title=\"Current Tool Title\"");
 		out.println("	class =\"portletTitleIframe\"");
 		out.println("	height=\"22\"");
 		out.println("	width=\"99%\"");
@@ -1787,7 +1836,7 @@ public class CharonPortal extends HttpServlet
 		out.println("	name=\"" + Web.escapeJavascript("Main" + placement.getId()) + "\"");
 		out.println("	id=\"" + Web.escapeJavascript("Main" + placement.getId()) + "\"");
 		// TODO: actual title here?
-		out.println("	title=\"Main\"");
+		out.println("	title=\"Current Tool Content\"");
 		out.println("	class =\"portletMainIframe\"");
 		out.println("	height=\"50\"");
 		out.println("	width=\"100%\"");
@@ -1811,7 +1860,7 @@ public class CharonPortal extends HttpServlet
 
 	/**
 	 * Initialize the servlet.
-	 * 
+	 *
 	 * @param config
 	 *        The servlet config.
 	 * @throws ServletException
@@ -1825,7 +1874,7 @@ public class CharonPortal extends HttpServlet
 
 	/**
 	 * TODO: I'm not sure why this has to be different from doLogin...
-	 * 
+	 *
 	 * @param req
 	 * @param res
 	 * @param session
@@ -1840,7 +1889,7 @@ public class CharonPortal extends HttpServlet
 
 	/**
 	 * Output some session information
-	 * 
+	 *
 	 * @param out
 	 *        The print writer
 	 * @param html
@@ -1948,7 +1997,7 @@ public class CharonPortal extends HttpServlet
 
 	/**
 	 * Find the site in the list that has this id - return the position.
-	 * 
+	 *
 	 * @param value
 	 *        The site id to find.
 	 * @param siteList

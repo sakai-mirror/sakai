@@ -29,6 +29,7 @@ font: normal bold 12px Arial, sans-serif;
 color: #5A6D95;
 text-transform: uppercase;
 }
+.toolTitle td.title h2{font: normal bold 12px Arial, sans-serif;margin:0;padding:0;display:inline}
 .toolTitle td.title a {background:url(images/reload.gif) top left no-repeat;}
 .toolTitle td.title a:hover{background:url(images/reload_h.gif) top left no-repeat;}
 

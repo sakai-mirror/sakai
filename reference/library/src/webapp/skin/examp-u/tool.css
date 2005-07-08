@@ -32,7 +32,7 @@ background-repeat:no-repeat;
 height:16px;
 border-bottom:3px solid #BBD6B6;
 }
-
+.toolTitle td.title h2{font: normal bold 12px Verdana, sans-serif;margin:0;padding:0;display:inline}
 .toolTitle td.action{
 background-image:url(images/topright-p-title.gif);
 background-position:top right;
