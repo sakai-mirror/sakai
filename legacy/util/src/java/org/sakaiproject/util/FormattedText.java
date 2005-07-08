@@ -166,6 +166,20 @@ public class FormattedText
 		String val = strFromBrowser;
 		if (val == null || val.length() == 0) return val;
 		
+		// work around a browser bug
+		//
+		// sometimes when the user deletes _everything_ from a textarea, we get 
+		// a single "<br>" back from the browser.  This should be treated as the
+		// empty string "", since the user has really entered nothing.
+		// See http://bugs.sakaiproject.org/jira/browse/SAK-1159
+		val = val.trim();
+		if ("<br />".equals(val) || "<br>".equals(val) || "<br/>".equals(val))
+		{
+			val = "";
+			return val;
+		}
+
+		
 		if (replaceWhitespaceTags)
 		{
 			// normalize all variants of the "<br>" HTML tag to be "<br />\n"

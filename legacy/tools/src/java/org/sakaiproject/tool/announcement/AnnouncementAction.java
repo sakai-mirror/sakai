@@ -3803,13 +3803,7 @@ extends PagedResourceActionII
 		StringBuffer alertMsg = new StringBuffer();
 		try
 		{
-			String text = strFromBrowser.trim();
-			if ("<br />".equals(text) || "<br>".equals(text) || "<br/>".equals(text))
-			{
-				text = "";
-				return text;
-			}
-			text = FormattedText.processFormattedText(text, alertMsg);
+			String text = FormattedText.processFormattedText(strFromBrowser, alertMsg);
 			if (alertMsg.length() > 0) addAlert(state, alertMsg.toString());
 			return text;
 		}
