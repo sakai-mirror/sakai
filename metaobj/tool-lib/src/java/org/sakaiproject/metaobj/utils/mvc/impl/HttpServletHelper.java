@@ -85,10 +85,10 @@ public class HttpServletHelper {
          }
       }
 
-      Enumeration enum = request.getSession().getServletContext().getAttributeNames();
+      Enumeration enumer = request.getSession().getServletContext().getAttributeNames();
 
-      while (enum.hasMoreElements()) {
-         String key = (String)enum.nextElement();
+      while (enumer.hasMoreElements()) {
+         String key = (String)enumer.nextElement();
 
          if (map.get(key) == null) {
             request.getSession().getServletContext().removeAttribute(key);
@@ -99,10 +99,10 @@ public class HttpServletHelper {
 
    public Map createApplicationMap(HttpServletRequest request) {
       Map parameters = new HashMap();
-      //Enumeration enum = request.getSession().getServletContext().getAttributeNames();
+      //Enumeration enumer = request.getSession().getServletContext().getAttributeNames();
 
-      //while (enum.hasMoreElements()) {
-      //   String key = (String) enum.nextElement();
+      //while (enumer.hasMoreElements()) {
+      //   String key = (String) enumer.nextElement();
       //   parameters.put(key, request.getSession().getServletContext().getAttribute(key));
       //}
 
