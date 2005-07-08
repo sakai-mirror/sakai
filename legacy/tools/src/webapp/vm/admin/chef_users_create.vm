@@ -17,7 +17,7 @@
 		{
 			evt.preventDefault();
 		}
-		alert($tlang.getString("usecre.pass");
+		alert("$tlang.getString("usecre.pass")");
 		document.getElementById("pw").value = "";
 		document.getElementById("pw0").value = "";
 		document.getElementById("pw").focus();

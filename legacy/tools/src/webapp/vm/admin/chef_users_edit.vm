@@ -17,7 +17,7 @@
 		{
 			evt.preventDefault();
 		}
-		alert("Passwords Must Match");
+		alert("$tlang.getString("useedi.pass")");
 		document.getElementById("pw").value = "";
 		document.getElementById("pw0").value = "";
 		document.getElementById("pw").focus();
