@@ -5,7 +5,7 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
-<%@ taglib prefix="spring" uri="/spring" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div class ="chefPortletContent">
 

@@ -1,5 +1,5 @@
 <%@ taglib prefix='c' uri='http://java.sun.com/jstl/core' %>
-<%@ taglib prefix='osp' uri='/osp' %>
+<%@ taglib prefix='osp' uri='http://www.theospi.org' %>
 
 
 <H2>

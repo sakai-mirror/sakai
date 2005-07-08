@@ -1,5 +1,5 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
-<%@ taglib prefix="spring" uri="/spring" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <osp:authZMap prefix="osp.sad." var="can" qualifier="${authZqualifier}"/>
 <!-- GUID=<c:out value="${newFormId}" /> -->

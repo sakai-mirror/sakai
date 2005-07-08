@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <pomVersion>3</pomVersion>
-  <id>sakai-metaobj-tool</id>
+  <id>sakai-metaobj-tool-lib</id>
   <groupId>sakaiproject</groupId>
   <name>Sakai Meta Object Tool</name>
   <currentVersion>2.0.0</currentVersion>
@@ -12,7 +12,7 @@
   <inceptionYear>2004</inceptionYear>
 
   <properties>
-    <deploy.type>war</deploy.type>
+    <deploy.type>jar</deploy.type>
   </properties>
 
   <dependencies>
@@ -57,15 +57,6 @@
       <version>${pom.currentVersion}</version>
     </dependency>
 
-     <dependency>
-        <groupId>sakaiproject</groupId>
-        <artifactId>sakai-metaobj-tool-lib</artifactId>
-        <version>${pom.currentVersion}</version>
-        <properties>
-           <war.bundle>true</war.bundle>
-        </properties>
-      </dependency>
-        
 	<dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-session</artifactId>
@@ -281,6 +272,13 @@
   				<include>**/*.hbm.xml</include>
   			</includes>
   		</resource>
+      <resource>
+         <directory>${basedir}/src</directory>
+         <includes>
+            <include>META-INF/*.tld</include>
+            <include>META-INF/*.xml</include>
+         </includes>
+      </resource>
   	</resources>
   	<unitTest>
   		<includes>
