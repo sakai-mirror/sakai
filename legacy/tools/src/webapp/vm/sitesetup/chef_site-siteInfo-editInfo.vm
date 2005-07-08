@@ -67,16 +67,22 @@ function LimitText(fieldObj,maxChars)
 				<label for="skin">
 					$tlang.getString("sitediinf.app")
 				</label>
-				<select name="skin" id="skin">
-					<option value="">$tlang.getString("sitediinf.app.none")</option>
-					#foreach ($s in $skins)
-						#if ($s.Url == $selectedIcon)
-							<option value="$s.Url" selected="selected">$s.Name</option>
-						#else
-							<option value="$s.Url">$s.Name</option>
+				#if($!disableCourseSelection)
+					<select name="skin" id="skin">
+						<option value="">$tlang.getString("sitediinf.app.none")</option>
+					</select>
+				#else
+					<select name="skin" id="skin">
+						<option value="">$tlang.getString("sitediinf.app.none")</option>
+						#foreach ($s in $skins)
+							#if ($s.Url == $selectedIcon)
+								<option value="$s.Url" selected="selected">$s.Name</option>
+							#else
+								<option value="$s.Url">$s.Name</option>
+							#end
 						#end
-					#end
-				</select>
+					</select>
+				#end
 				<div class="labelindnt"
 					<span class="instruction">
 						$tlang.getString("sitediinf.sit")

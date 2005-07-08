@@ -1732,6 +1732,12 @@ public class SiteAction extends PagedResourceActionII
 				context.put("form_site_contact_name", state.getAttribute(FORM_SITEINFO_CONTACT_NAME));
 				context.put("form_site_contact_email", state.getAttribute(FORM_SITEINFO_CONTACT_EMAIL));
 
+				//Display of appearance icon/url list with course site based on 
+				// "disable.course.site.skin.selection" value set with sakai.properties file.
+			  if ((ServerConfigurationService.getString("disable.course.site.skin.selection")).equals("true")){
+			    context.put("disableCourseSelection", Boolean.TRUE);
+			  }
+			  
 				return (String)getContext(data).get("template") + TEMPLATE[13];	
 			case 14:
 				/*  buildContextForTemplate chef_site-siteInfo-editInfoConfirm.vm
@@ -2639,7 +2645,6 @@ public class SiteAction extends PagedResourceActionII
 			{
 				context.put("default_size_selected", state.getAttribute(STATE_SITE_SIZE_DEFAULT_SELECT));
 			}
-
 			return (String)getContext(data).get("template") + TEMPLATE[38];	
 		case 39:
 			/*  
@@ -12289,6 +12294,14 @@ public class SiteAction extends PagedResourceActionII
 				return Boolean.TRUE;
 			else
 				return Boolean.FALSE;
+		}
+		
+		public Boolean disableCourseSelection()
+		{
+		  if ((ServerConfigurationService.getString("disable.course.site.skin.selection")).equals("true"))
+		    return Boolean.TRUE;
+		  else
+		    return Boolean.FALSE;
 		}
 		
 		List m_providerCourseList = null;
