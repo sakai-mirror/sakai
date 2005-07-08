@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/PeerRefresh.java,v 1.1 2005/06/04 23:35:25 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -93,7 +92,6 @@ public class PeerRefresh extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/PeerRefresh.java,v 1.1 2005/06/04 23:35:25 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

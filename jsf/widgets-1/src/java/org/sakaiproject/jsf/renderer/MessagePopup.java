@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/MessagePopup.java,v 1.3 2005/05/10 03:01:28 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -35,12 +34,7 @@ import javax.faces.render.Renderer;
 
 import org.sakaiproject.jsf.util.JSFUtils;
 
-/**
- * <p>MessagePopup is an HTML renderer for the Sakai "message_popup" tag in JSF.</p>
- *
- * @author Stanford University, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class MessagePopup extends Renderer
 {
 	public boolean supportsComponentType(UIComponent component)
@@ -78,7 +72,6 @@ public class MessagePopup extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/MessagePopup.java,v 1.3 2005/05/10 03:01:28 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

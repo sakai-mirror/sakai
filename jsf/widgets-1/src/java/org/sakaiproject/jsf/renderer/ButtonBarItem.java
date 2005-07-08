@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/ButtonBarItem.java,v 1.3 2005/05/31 16:59:46 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -37,7 +36,6 @@ public class ButtonBarItem extends JSFDepends.ButtonRenderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/ButtonBarItem.java,v 1.3 2005/05/31 16:59:46 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

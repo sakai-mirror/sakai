@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/ViewContainer.java,v 1.9 2005/05/31 22:16:44 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -36,12 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.sakaiproject.jsf.util.JSFUtils;
 
-/**
- * <p>ViewContainer is an HTML renderer which renders the head and body needed for an HTML view.</p>
- *
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class ViewContainer extends Renderer
 {
 	public boolean supportsComponentType(UIComponent component)
@@ -129,7 +123,6 @@ public class ViewContainer extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/ViewContainer.java,v 1.9 2005/05/31 22:16:44 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

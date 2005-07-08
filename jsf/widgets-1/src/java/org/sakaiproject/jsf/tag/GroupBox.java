@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/GroupBox.java,v 1.1 2005/03/31 04:16:55 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -27,48 +26,39 @@ package org.sakaiproject.jsf.tag;
 import javax.faces.component.UIComponent;
 import javax.faces.webapp.UIComponentTag;
 
-/**
- * <p>GroupBox is a custom Sakai tag for JSF, to place a GroupBox in the response.</p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+import org.sakaiproject.jsf.util.JSFUtils;
+
 public class GroupBox extends UIComponentTag
 {
 	private String title = null;
 
 	public String getComponentType()
 	{
-		return "SakaiGroupBox";
+		return "org.sakaiproject.GroupBox";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiGroupBox";
-	}
-
-	public String getTitle()
-	{
-		return title;
+		return "org.sakaiproject.GroupBox";
 	}
 
 	protected void setProperties(UIComponent component)
 	{
 		super.setProperties(component);
 
-		if (getTitle() != null)
-		{
-			if (isValueReference(getTitle()))
-			{
-				component.setValueBinding("title", getFacesContext().getApplication().createValueBinding(getTitle()));
-			}
-			else
-			{
-				component.getAttributes().put("title", getTitle());
-			}
-		}
+		JSFUtils.setString(component, "title", title);
+	}
+	
+	public void release()
+	{
+		super.release();
+		title = null;
 	}
 
+	public String getTitle()
+	{
+		return title;
+	}
 	public void setTitle(String string)
 	{
 		title = string;
@@ -76,7 +66,6 @@ public class GroupBox extends UIComponentTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/GroupBox.java,v 1.1 2005/03/31 04:16:55 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/ViewContent.java,v 1.3 2005/05/31 22:17:16 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -32,12 +31,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
-/**
- * <p>ViewContent is ...</p>
- *
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class ViewContent extends Renderer
 {
 	public boolean supportsComponentType(UIComponent component)
@@ -65,7 +59,6 @@ public class ViewContent extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/ViewContent.java,v 1.3 2005/05/31 22:17:16 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/component/TitleBar.java,v 1.1 2005/03/31 04:16:56 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -26,26 +25,16 @@ package org.sakaiproject.jsf.component;
 
 import javax.faces.component.UIOutput;
 
-/**
- * <p>TitleBar is the component to use in a title bar panel of a tool to show the title text.</p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
 public class TitleBar extends UIOutput
 {
-	/**
-	 * 
-	 */
 	public TitleBar()
 	{
 		super();
-		this.setRendererType("SakaiTitleBar");
+		this.setRendererType("org.sakaiproject.TitleBar");
 	}
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/component/TitleBar.java,v 1.1 2005/03/31 04:16:56 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

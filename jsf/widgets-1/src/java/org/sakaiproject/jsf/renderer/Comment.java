@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/Comment.java,v 1.3 2005/05/10 03:01:28 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -35,13 +34,7 @@ import javax.faces.render.Renderer;
 
 import org.sakaiproject.jsf.util.JSFUtils;
 
-/**
- * <p>Comment is an HTML renderer for the Sakai "comment" tag in JSF.</p>
- * <p>This does not render children, but can deal with children by surrounding them in a comment.</p>
- *
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class Comment extends Renderer
 {
 	public boolean supportsComponentType(UIComponent component)
@@ -84,7 +77,6 @@ public class Comment extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/Comment.java,v 1.3 2005/05/10 03:01:28 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/InstructionMessage.java,v 1.4 2005/05/31 20:31:29 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -35,12 +34,7 @@ import javax.faces.render.Renderer;
 
 import org.sakaiproject.jsf.util.JSFUtils;
 
-/**
- * <p>InstructionMessage is an HTML renderer for the Sakai "instruction_message" tag in JSF.</p>
- *
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class InstructionMessage extends Renderer
 {
 	public boolean supportsComponentType(UIComponent component)
@@ -75,7 +69,6 @@ public class InstructionMessage extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/InstructionMessage.java,v 1.4 2005/05/31 20:31:29 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

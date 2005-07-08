@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/ViewContainer.java,v 1.2 2005/05/10 03:11:04 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -29,74 +28,49 @@ package org.sakaiproject.jsf.tag;
 import javax.faces.component.UIComponent;
 import javax.faces.webapp.UIComponentTag;
 
-/**
- * <p>ViewContainer is ...</p>
- *
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+import org.sakaiproject.jsf.util.JSFUtils;
+
 public class ViewContainer extends UIComponentTag
 {
-	private String m_title = null;
-	private String m_rendered = null;
+	private String title = null;
 
 	public String getComponentType()
 	{
-		return "SakaiViewContainer";
+		return "org.sakaiproject.ViewContainer";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiViewContainer";
+		return "org.sakaiproject.ViewContainer";
 	}
 
-	public String getTitle()
-	{
-		return m_title;
-	}
-
-	public String getRendered()
-	{
-		return m_rendered;
-	}
 
 	protected void setProperties(UIComponent component)
 	{
 		super.setProperties(component);
 
-		if (getTitle() != null)
-		{
-			if (isValueReference(getTitle()))
-			{
-				component.setValueBinding("title", getFacesContext().getApplication().createValueBinding(getTitle()));
-			}
-			else
-			{
-				component.getAttributes().put("title", getTitle());
-			}
-		}
+		JSFUtils.setString(component, "title", title);
+	}
+	
+	public void release()
+	{
+		super.release();
+		
+		title = null;
+	}
 
-		if (getRendered() != null)
-		{
-			if (isValueReference(getRendered()))
-			{
-				component.setValueBinding("rendered", getFacesContext().getApplication().createValueBinding(getRendered()));
-			}
-			else
-			{
-				component.getAttributes().put("rendered", getRendered());
-			}
-		}
+	public String getTitle()
+	{
+		return title;
 	}
 
 	public void setTitle(String string)
 	{
-		m_title = string;
+		title = string;
 	}
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/ViewContainer.java,v 1.2 2005/05/10 03:11:04 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

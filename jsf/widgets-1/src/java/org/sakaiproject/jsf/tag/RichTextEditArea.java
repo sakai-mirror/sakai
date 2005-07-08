@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/RichTextEditArea.java,v 1.2 2005/05/10 03:11:04 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -30,6 +29,8 @@ import javax.faces.webapp.UIComponentTag;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 
+import org.sakaiproject.jsf.util.JSFUtils;
+
 public class RichTextEditArea extends UIComponentTag
 {
     private String value;
@@ -44,12 +45,12 @@ public class RichTextEditArea extends UIComponentTag
 
     public String getComponentType()
     {
-        return "SakaiRichTextEditArea";
+        return "org.sakaiproject.RichTextEditArea";
     }
 
     public String getRendererType()
     {
-        return "SakaiRichTextEditArea";
+        return "org.sakaiproject.RichTextEditArea";
     }
 
     // getters and setters for component properties
@@ -76,38 +77,34 @@ public class RichTextEditArea extends UIComponentTag
     protected void setProperties(UIComponent component)
     {
         super.setProperties(component);
-        setString(component, "value", value);
-        setString(component, "width", width);
-        setString(component, "height", height);
-        setString(component, "toolbarButtonRows", toolbarButtonRows);
-        setString(component, "javascriptLibrary", javascriptLibrary);
-        setString(component, "autoConfig", autoConfig);
-        setString(component, "columns", columns);
-        setString(component, "rows", rows);
-        setString(component, "justArea", justArea);
+        JSFUtils.setString(component, "value", value);
+        JSFUtils.setString(component, "width", width);
+        JSFUtils.setString(component, "height", height);
+        JSFUtils.setString(component, "toolbarButtonRows", toolbarButtonRows);
+        JSFUtils.setString(component, "javascriptLibrary", javascriptLibrary);
+        JSFUtils.setString(component, "autoConfig", autoConfig);
+        JSFUtils.setString(component, "columns", columns);
+        JSFUtils.setString(component, "rows", rows);
+        JSFUtils.setString(component, "justArea", justArea);
     }
 
     public void release()
     {
         super.release();
-    }
-
-    public static void setString(UIComponent component, String attributeName,
-            String attributeValue)
-    {
-        if (attributeValue == null) return;
-        if (UIComponentTag.isValueReference(attributeValue)) setValueBinding(
-                component, attributeName, attributeValue);
-        else
-            component.getAttributes().put(attributeName, attributeValue);
-    }
-
-    public static void setValueBinding(UIComponent component,
-            String attributeName, String attributeValue)
-    {
-        FacesContext context = FacesContext.getCurrentInstance();
-        Application app = context.getApplication();
-        ValueBinding vb = app.createValueBinding(attributeValue);
-        component.setValueBinding(attributeName, vb);
+        
+        value = null;
+        width = null;
+        height = null;
+        toolbarButtonRows = null;
+        javascriptLibrary = null;
+        autoConfig = null;
+        columns = null;
+        rows = null;
+        justArea = null;      
     }
 }
+
+/**********************************************************************************
+* $URL$
+* $Id$
+**********************************************************************************/

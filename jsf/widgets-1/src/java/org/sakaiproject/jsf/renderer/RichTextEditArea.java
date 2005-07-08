@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/RichTextEditArea.java,v 1.4 2005/05/28 03:04:30 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -347,3 +346,11 @@ public class RichTextEditArea extends Renderer
         comp.setSubmittedValue(newValue);
     }
 }
+
+/**
+ * <p>ButtonBar is an HTML renderer for the Sakai button bar tag in JSF.</p>
+ * <p>This does not render children, but can deal with children by surrounding them in a comment.</p>
+ *
+ * @author University of Michigan, Sakai Software Development Team
+ * @version $Revision$
+ */

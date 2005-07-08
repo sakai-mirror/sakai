@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/PagerButtonTag.java,v 1.2 2005/05/10 03:11:04 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -27,6 +26,8 @@ package org.sakaiproject.jsf.tag;
 
 import javax.faces.component.UIComponent;
 import javax.faces.webapp.UIComponentTag;
+
+import org.sakaiproject.jsf.util.JSFUtils;
 
 /**
  * This tag creates paging controls that allow for next X, previous X,
@@ -79,8 +80,6 @@ public class PagerButtonTag
   private String nextDisabled;
   private String totalItems;
 
-  private TagUtil util;
-
   public String getComponentType()
   {
     return ("javax.faces.Output");
@@ -88,7 +87,7 @@ public class PagerButtonTag
 
   public String getRendererType()
   {
-    return "PagerButton";
+    return "org.sakaiproject.PagerButton";
   }
 
   protected void setProperties(UIComponent component)
@@ -102,18 +101,18 @@ public class PagerButtonTag
       nextDisabled = "false";
     component.getAttributes().put("dataTableId", dataTableId);
     component.getAttributes().put("formId", formId);
-    TagUtil.setString(component, "name", "value");
-	TagUtil.setString(component, "firstItem", firstItem);
-	TagUtil.setString(component, "lastItem", lastItem);
-	TagUtil.setString(component, "prevText", prevText);
-	TagUtil.setString(component, "nextText", nextText);
-	TagUtil.setString(component, "numItems", numItems);
-	TagUtil.setString(component, "totalItems", totalItems);
+    JSFUtils.setString(component, "name", "value");
+	JSFUtils.setString(component, "firstItem", firstItem);
+	JSFUtils.setString(component, "lastItem", lastItem);
+	JSFUtils.setString(component, "prevText", prevText);
+	JSFUtils.setString(component, "nextText", nextText);
+	JSFUtils.setString(component, "numItems", numItems);
+	JSFUtils.setString(component, "totalItems", totalItems);
     // we explicitly disable prev/next at end ranges
     if ("1".equals(firstItem)) prevDisabled = "true";
     if (("" + totalItems).equals(lastItem)) nextDisabled = "true";
-	TagUtil.setString(component, "prevDisabled", prevDisabled);
-	TagUtil.setString(component, "nextDisabled", nextDisabled);
+	JSFUtils.setString(component, "prevDisabled", prevDisabled);
+	JSFUtils.setString(component, "nextDisabled", nextDisabled);
 
   }
 
@@ -303,7 +302,6 @@ public class PagerButtonTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/PagerButtonTag.java,v 1.2 2005/05/10 03:11:04 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -1,5 +1,7 @@
 /**********************************************************************************
-*
+* $URL$
+* $Id$
+***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -24,51 +26,48 @@ package org.sakaiproject.jsf.tag;
 import javax.faces.component.UIComponent;
 import javax.faces.webapp.UIComponentTag;
 
-/**
- * <p>MessagePopup is a custom Sakai tag for JSF, to generate a message popup window.</p>
- * 
- * @author Stanford University, Sakai Software Development Team
- * @version $Revision$
- */
+import org.sakaiproject.jsf.util.JSFUtils;
+
 public class MessagePopup extends UIComponentTag
 {
 	private String value = null;
 
 	public String getComponentType()
 	{
-		return "SakaiMessagePopup";
+		return "org.sakaiproject.MessagePopup";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiMessagePopup";
+		return "org.sakaiproject.MessagePopup";
+	}
+
+
+	protected void setProperties(UIComponent component)
+	{
+		super.setProperties(component);
+
+		JSFUtils.setString(component, "value", value);
+	}
+	
+	public void release()
+	{
+		value = null;
 	}
 
 	public String getValue()
 	{
 		return value;
 	}
-
-	protected void setProperties(UIComponent component)
-	{
-		super.setProperties(component);
-
-		if (getValue() != null)
-		{
-      		if (isValueReference(getValue()))
-			{
-				component.setValueBinding("value", getFacesContext().getApplication().createValueBinding(getValue()));
-			}  
-			else
-			{
-				component.getAttributes().put("value", getValue());
-			}
-		}
-	}
-
 	public void setValue(String string)
 	{
 		value = string;
 	}
 }
+
+/**********************************************************************************
+* $URL$
+* $Id$
+**********************************************************************************/
+
 

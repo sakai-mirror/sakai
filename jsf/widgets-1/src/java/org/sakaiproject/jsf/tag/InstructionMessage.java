@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/InstructionMessage.java,v 1.1 2005/03/31 04:16:55 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -27,48 +26,40 @@ package org.sakaiproject.jsf.tag;
 import javax.faces.component.UIComponent;
 import javax.faces.webapp.UIComponentTag;
 
-/**
- * <p>InstructionMessage is a custom Sakai tag for JSF, to place an instruction message.</p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+import org.sakaiproject.jsf.util.JSFUtils;
+
 public class InstructionMessage extends UIComponentTag
 {
 	private String value = null;
 
 	public String getComponentType()
 	{
-		return "SakaiInstructionMessage";
+		return "org.sakaiproject.InstructionMessage";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiInstructionMessage";
+		return "org.sakaiproject.InstructionMessage";
+	}
+
+
+	protected void setProperties(UIComponent component)
+	{
+		super.setProperties(component);
+
+		JSFUtils.setString(component, "value", value);
+	}
+	
+	public void release()
+	{
+		super.release();
+		value = null;
 	}
 
 	public String getValue()
 	{
 		return value;
 	}
-
-	protected void setProperties(UIComponent component)
-	{
-		super.setProperties(component);
-
-		if (getValue() != null)
-		{
-			if (isValueReference(getValue()))
-			{
-				component.setValueBinding("value", getFacesContext().getApplication().createValueBinding(getValue()));
-			}
-			else
-			{
-				component.getAttributes().put("value", getValue());
-			}
-		}
-	}
-
 	public void setValue(String string)
 	{
 		value = string;
@@ -76,7 +67,6 @@ public class InstructionMessage extends UIComponentTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/InstructionMessage.java,v 1.1 2005/03/31 04:16:55 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

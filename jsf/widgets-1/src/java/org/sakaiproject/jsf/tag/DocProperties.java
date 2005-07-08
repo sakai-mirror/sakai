@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/DocProperties.java,v 1.2 2005/05/31 16:59:46 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -30,12 +29,11 @@ public class DocProperties extends JSFDepends.PanelGridTag
 {
 	public String getComponentType()
 	{
-		return "SakaiDocProperties";
+		return "org.sakaiproject.DocProperties";
 	}
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/DocProperties.java,v 1.2 2005/05/31 16:59:46 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/Courier.java,v 1.1 2005/05/31 20:21:39 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -27,48 +26,39 @@ package org.sakaiproject.jsf.tag;
 import javax.faces.component.UIComponent;
 import javax.faces.webapp.UIComponentTag;
 
-/**
- * <p>Courier tag to place the Sakai Courier in the rendered view.</p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+import org.sakaiproject.jsf.util.JSFUtils;
+
 public class Courier extends UIComponentTag
 {
 	private String refresh = null;
 
 	public String getComponentType()
 	{
-		return "SakaiCourier";
+		return "org.sakaiproject.Courier";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiCourier";
-	}
-
-	public String getRefresh()
-	{
-		return refresh;
+		return "org.sakaiproject.Courier";
 	}
 
 	protected void setProperties(UIComponent component)
 	{
 		super.setProperties(component);
 
-		if (getRefresh() != null)
-		{
-			if (isValueReference(getRefresh()))
-			{
-				component.setValueBinding("refresh", getFacesContext().getApplication().createValueBinding(getRefresh()));
-			}
-			else
-			{
-				component.getAttributes().put("refresh", getRefresh());
-			}
-		}
+		JSFUtils.setString(component, "refresh", refresh);
+	}
+	
+	public void release()
+	{
+		super.release();
+		refresh = null;
 	}
 
+	public String getRefresh()
+	{
+		return refresh;
+	}
 	public void setRefresh(String string)
 	{
 		refresh = string;
@@ -76,7 +66,6 @@ public class Courier extends UIComponentTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/Courier.java,v 1.1 2005/05/31 20:21:39 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

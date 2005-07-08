@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/ButtonBar.java,v 1.4 2005/05/31 20:31:29 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -31,13 +30,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
-/**
- * <p>ButtonBar is an HTML renderer for the Sakai button bar tag in JSF.</p>
- * <p>This does not render children, but can deal with children by surrounding them in a comment.</p>
- *
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class ButtonBar extends Renderer
 {
 	public boolean supportsComponentType(UIComponent component)
@@ -61,7 +54,6 @@ public class ButtonBar extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/ButtonBar.java,v 1.4 2005/05/31 20:31:29 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

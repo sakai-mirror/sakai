@@ -1,8 +1,6 @@
-
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/ViewContent.java,v 1.2 2005/05/10 03:11:04 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -28,27 +26,20 @@ package org.sakaiproject.jsf.tag;
 
 import javax.faces.webapp.UIComponentTag;
 
-/**
- * <p>ViewContent is ...</p>
- *
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
 public class ViewContent extends UIComponentTag
 {
 	public String getComponentType()
 	{
-		return "SakaiViewContent";
+		return "org.sakaiproject.ViewContent";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiViewContent";
+		return "org.sakaiproject.ViewContent";
 	}
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/ViewContent.java,v 1.2 2005/05/10 03:11:04 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

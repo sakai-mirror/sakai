@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/DateInput.java,v 1.2 2005/05/31 16:59:46 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -33,12 +32,12 @@ public class DateInput extends JSFDepends.InputTextTag
 {
 	public String getComponentType()
 	{
-		return "SakaiDateInput";
+		return "org.sakaiproject.DateInput";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiDateInput";
+		return "org.sakaiproject.DateInput";
 	}
 
 	protected void setProperties(UIComponent component)
@@ -48,7 +47,6 @@ public class DateInput extends JSFDepends.InputTextTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/DateInput.java,v 1.2 2005/05/31 16:59:46 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/GroupBox.java,v 1.2 2005/05/10 01:52:13 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -34,13 +33,7 @@ import javax.faces.render.Renderer;
 
 import org.sakaiproject.jsf.util.JSFUtils;
 
-/**
- * <p>Comment is an HTML renderer for the Sakai GroupBox tag in JSF.</p>
- * <p>This does not render children, but can deal with children by surrounding them in a comment.</p>
- *
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class GroupBox extends Renderer
 {
 	public boolean supportsComponentType(UIComponent component)
@@ -73,7 +66,6 @@ public class GroupBox extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/GroupBox.java,v 1.2 2005/05/10 01:52:13 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/PeerRefresh.java,v 1.1 2005/06/04 23:35:24 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -27,48 +26,39 @@ package org.sakaiproject.jsf.tag;
 import javax.faces.component.UIComponent;
 import javax.faces.webapp.UIComponentTag;
 
-/**
- * <p>PeerRefresh is a custom Sakai tag for JSF, to cause a peer html element to refresh.</p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+import org.sakaiproject.jsf.util.JSFUtils;
+
 public class PeerRefresh extends UIComponentTag
 {
 	private String value = null;
 
 	public String getComponentType()
 	{
-		return "SakaiPeerRefresh";
+		return "org.sakaiproject.PeerRefresh";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiPeerRefresh";
-	}
-
-	public String getValue()
-	{
-		return value;
+		return "org.sakaiproject.PeerRefresh";
 	}
 
 	protected void setProperties(UIComponent component)
 	{
 		super.setProperties(component);
 
-		if (getValue() != null)
-		{
-			if (isValueReference(getValue()))
-			{
-				component.setValueBinding("value", getFacesContext().getApplication().createValueBinding(getValue()));
-			}
-			else
-			{
-				component.getAttributes().put("value", getValue());
-			}
-		}
+		JSFUtils.setString(component, "value", value);
+	}
+	
+	public void release()
+	{
+		super.release();
+		value = null;
 	}
 
+	public String getValue()
+	{
+		return value;
+	}
 	public void setValue(String string)
 	{
 		value = string;
@@ -76,7 +66,6 @@ public class PeerRefresh extends UIComponentTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/PeerRefresh.java,v 1.1 2005/06/04 23:35:24 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

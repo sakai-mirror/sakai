@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/Toolbar.java,v 1.1 2005/03/31 04:16:55 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -26,27 +25,20 @@ package org.sakaiproject.jsf.tag;
 
 import javax.faces.webapp.UIComponentTag;
 
-/**
- * <p>Toolbar is a custom Sakai tag for JSF, to place a toolbar in the response.</p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
 public class Toolbar extends UIComponentTag
 {
 	public String getComponentType()
 	{
-		return "SakaiToolbar";
+		return "org.sakaiproject.Toolbar";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiToolbar";
+		return "org.sakaiproject.Toolbar";
 	}
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/Toolbar.java,v 1.1 2005/03/31 04:16:55 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

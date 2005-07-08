@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/DocSection.java,v 1.1 2005/03/31 04:16:55 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -26,27 +25,20 @@ package org.sakaiproject.jsf.tag;
 
 import javax.faces.webapp.UIComponentTag;
 
-/**
- * <p>InstructionMessage is a custom Sakai tag for JSF, to place an instruction message.</p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
 public class DocSection extends UIComponentTag
 {
 	public String getComponentType()
 	{
-		return "SakaiDocSection";
+		return "org.sakaiproject.DocSection";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiDocSection";
+		return "org.sakaiproject.DocSection";
 	}
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/DocSection.java,v 1.1 2005/03/31 04:16:55 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

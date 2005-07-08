@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/TitleBar.java,v 1.4 2005/05/28 03:04:30 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -34,12 +33,7 @@ import javax.faces.render.Renderer;
 
 import org.sakaiproject.jsf.util.JSFUtils;
 
-/**
- * <p>TitleBar is an HTML renderer for the Sakai TitleBar UIComponent in JSF.</p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class TitleBar extends Renderer
 {
 	public boolean supportsComponentType(UIComponent component)
@@ -88,7 +82,6 @@ public class TitleBar extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/TitleBar.java,v 1.4 2005/05/28 03:04:30 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

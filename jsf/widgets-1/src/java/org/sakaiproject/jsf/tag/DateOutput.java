@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/DateOutput.java,v 1.3 2005/05/31 16:59:46 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -34,12 +33,12 @@ public class DateOutput extends JSFDepends.OutputTextTag
 {
 	public String getComponentType()
 	{
-		return "SakaiDateOutput";
+		return "org.sakaiproject.DateOutput";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiDateOutput";
+		return "org.sakaiproject.DateOutput";
 	}
 
 	protected void setProperties(UIComponent component)
@@ -49,7 +48,6 @@ public class DateOutput extends JSFDepends.OutputTextTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/DateOutput.java,v 1.3 2005/05/31 16:59:46 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

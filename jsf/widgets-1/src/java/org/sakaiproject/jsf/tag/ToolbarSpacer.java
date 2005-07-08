@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/ToolbarSpacer.java,v 1.1 2005/03/31 04:16:55 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -26,27 +25,20 @@ package org.sakaiproject.jsf.tag;
 
 import javax.faces.webapp.UIComponentTag;
 
-/**
- * <p>ToolbarItem is a custom Sakai tag for JSF, to place a toolbar item within a toolbar in the response.</p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
 public class ToolbarSpacer extends UIComponentTag
 {
 	public String getComponentType()
 	{
-		return "SakaiToolbarSpacer";
+		return "org.sakaiproject.ToolbarSpacer";
 	}
 
 	public String getRendererType()
 	{
-		return "SakaiToolbarSpacer";
+		return "org.sakaiproject.ToolbarSpacer";
 	}
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/ToolbarSpacer.java,v 1.1 2005/03/31 04:16:55 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

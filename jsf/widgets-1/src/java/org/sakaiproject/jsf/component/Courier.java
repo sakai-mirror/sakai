@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/component/Courier.java,v 1.1 2005/05/31 20:21:39 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -40,12 +39,11 @@ public class Courier extends UIOutput
 	public Courier()
 	{
 		super();
-		this.setRendererType("SakaiCourier");
+		this.setRendererType("org.sakaiproject.Courier");
 	}
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/component/Courier.java,v 1.1 2005/05/31 20:21:39 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

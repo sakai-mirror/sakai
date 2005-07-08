@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/Messages.java,v 1.2 2005/05/31 16:59:46 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -29,16 +28,13 @@ import org.sakaiproject.jsf.util.JSFDepends;
 
 public class Messages extends JSFDepends.MessagesTag
 {
-	private String value = null;
-
 	public String getComponentType()
 	{
-		return "SakaiMessages";
+		return "org.sakaiproject.Messages";
 	}
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/tag/Messages.java,v 1.2 2005/05/31 16:59:46 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

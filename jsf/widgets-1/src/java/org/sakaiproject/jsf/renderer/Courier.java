@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/Courier.java,v 1.1 2005/05/31 20:21:39 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -39,12 +38,7 @@ import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.jsf.util.JSFUtils;
 import org.sakaiproject.util.web.Web;
 
-/**
- * <p>Courier renderer to place the Sakai Courier in the rendered view.</p>
- *
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class Courier extends Renderer
 {
 	public boolean supportsComponentType(UIComponent component)
@@ -94,7 +88,6 @@ public class Courier extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/renderer/Courier.java,v 1.1 2005/05/31 20:21:39 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

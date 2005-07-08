@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/component/PanelEdit.java,v 1.1 2005/03/31 04:16:56 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -26,17 +25,8 @@ package org.sakaiproject.jsf.component;
 
 import javax.faces.component.html.HtmlPanelGrid;
 
-/**
- * <p>PanelEdit is ...</p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
 public class PanelEdit extends HtmlPanelGrid
 {
-	/**
-	 * 
-	 */
 	public PanelEdit()
 	{
 		super();
@@ -49,7 +39,6 @@ public class PanelEdit extends HtmlPanelGrid
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-1/src/java/org/sakaiproject/jsf/component/PanelEdit.java,v 1.1 2005/03/31 04:16:56 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/
