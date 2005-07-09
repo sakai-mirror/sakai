@@ -267,14 +267,15 @@
 				#end
 			</p>	
 		#end
-		#if($setQuota)
+		<!-- item.canSetQuota() == $item.canSetQuota() -->
+		#if($item.canSetQuota())
 			<p class="shorttext">
 				<label for="hasQuota">
 					$tlang.getString("gen.quota") ($tlang.getString("gen.kb")):
 				</label>	
 				<input type="hidden" name="setQuota" value="true" />
-				<input type="checkbox" name="hasQuota" id="hasQuota" value="true" #if ($hasQuota) checked="checked" #end />
-				<input type="text" size="10" name="quota" id="quota" value="$!quota" />
+				<input type="checkbox" name="hasQuota" id="hasQuota" value="true"#if($item.hasQuota()) checked="checked" #end />
+				<input type="text" size="10" name="quota" id="quota" value="$!item.quota" />
 			</p>	
 		#end
 		<table class="itemSummary" border="0" style="clear:both;margin:left:.5em">
