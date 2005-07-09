@@ -2,13 +2,13 @@ body{width:100%;padding:0px;font-family:Verdana,Geneva,Arial,Helvetica,sans-seri
 /*GROUP 1 - top navigation*/
 /*iframe sizes for different states*/
 .sitenav-log{height:5em} /*user not logged in*/
-.sitenav-max{height:6.3em}  /*user logged in*/
+.sitenav-max{height:120px}  /*user logged in*/
 .sitenav-min{height:2.3em}  /*no logos or banners*/
 /*container for the #tabNavigation ul*/
 .tabHolder{width:100%;height:1.3em;padding:1px 0 0 3px;margin:0;background:#58894D}
 .tabHolder table{margin-bottom:0;}
 .tabHolder table td{margin:0;padding:0}
-.tabHolder table td.tabCell{padding:0;width:auto}
+.tabHolder table td.tabCell{padding:0;width:auto;}
 .tabHolder table td.selectCell{text-align:left;padding:0 0 0 .3em;}
 .tabHolder table td.selectCell select{display:inline;font-size:.7em;margin:0 0 0 3px;padding:0}
 .tabHolder table td.galleryLogin{font-size:.8em;padding-left:2em}
@@ -26,7 +26,10 @@ margin:0 0 0px 3px;
 padding:4px 0 4px 0;
 width:100%;
 height:1.2em;
-vertical-align:bottom
+vertical-align:bottom;
+float:left;
+
+
 }
 /*displays a bar on bottom of tabs - following a declarations are to be used when the template file allows displaying the tool links horizontally under the tabs*/
 #tabBottom{
@@ -36,7 +39,8 @@ font-size:2px;
 text-align:right;
 padding:3px;
 margin:0;
-clear:both
+clear:both;
+margin-left:-3px
 }
 #tabBottom a,#tabBottom a:link,#tabBottom a:visited{color:#fff;white-space:nowrap;text-decoration:none}
 #tabBottom  a:hover{color:#fff;text-decoration:underline;white-space:nowrap}
@@ -190,5 +194,8 @@ html>body #leftnavlozenge li a{width:auto;border-width:1px 0 1px 1px;border-colo
 #footerInfo img{margin-top:.5em;margin-bottom:.5em}
 .skip  { 
 	position:absolute; top:-999px;
-	left:-999px; height:0;width:0 
+	left:-999px; height:0;width:0;
+	display:inline
+	
 }
+h1{border:1px solid red}
