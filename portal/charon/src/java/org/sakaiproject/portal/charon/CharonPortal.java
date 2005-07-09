@@ -1835,7 +1835,7 @@ public class CharonPortal extends HttpServlet
 		out.println("<iframe");
 		out.println("	name=\"" + Web.escapeJavascript("Main" + placement.getId()) + "\"");
 		out.println("	id=\"" + Web.escapeJavascript("Main" + placement.getId()) + "\"");
-		out.println("	title=\""+titleString+"\" Content");
+		out.println("	title=\""+titleString+" Content\"");
 		out.println("	class =\"portletMainIframe\"");
 		out.println("	height=\"50\"");
 		out.println("	width=\"100%\"");
