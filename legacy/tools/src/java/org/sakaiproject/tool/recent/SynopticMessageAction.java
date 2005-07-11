@@ -313,7 +313,18 @@ public class SynopticMessageAction
 			String channelRef = (String) state.getAttribute(STATE_CHANNEL_REF);
 			Time afterDate = (Time) state.getAttribute(STATE_AFTER_DATE);
 			int items = ((Integer) state.getAttribute(STATE_ITEMS)).intValue();
-			List messages = service.getMessages(channelRef, afterDate, items, false, false, false);
+			
+			List messages = new Vector();
+			String serviceName = (String) state.getAttribute(STATE_SERVICE_NAME);
+			if (serviceName != null && serviceName.equals(DiscussionService.SERVICE_NAME))
+			{
+				// showing the draft messages of discussion
+				messages = service.getMessages(channelRef, afterDate, items, false, true, false);
+			}
+			else
+			{
+				messages = service.getMessages(channelRef, afterDate, items, false, false, false);
+			}
 			context.put("messages", messages);
 		}
 		catch (PermissionException e)
