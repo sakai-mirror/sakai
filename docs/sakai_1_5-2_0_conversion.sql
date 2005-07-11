@@ -40,6 +40,9 @@ update SAKAI_SITE_TOOL set REGISTRATION='sakai.siteinfo' where REGISTRATION='sak
 update SAKAI_SITE_TOOL set REGISTRATION='sakai.sitesetup' where REGISTRATION='sakai.sitesetupgeneric';
 update SAKAI_SITE_TOOL set REGISTRATION='sakai.discussion' where REGISTRATION='sakai.threadeddiscussion';
 
+-- unless you want all the assignment tools to loose grading capability, run this one, too
+update SAKAI_SITE_TOOL set REGISTRATION='sakai.assignment.grades' where REGISTRATION='sakai.assignment';
+
 /*
 update SAKAI_SITE_TOOL set REGISTRATION='ctools.dissertation' where REGISTRATION='sakai.dissertation';
 update SAKAI_SITE_TOOL set REGISTRATION='ctools.dissertation.upload' where REGISTRATION='sakai.dissertation.upload';
