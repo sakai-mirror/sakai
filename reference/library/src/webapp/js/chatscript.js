@@ -148,10 +148,7 @@ function appendMessage(uname, uid, removeable, pdate, ptime, msg)
 		}
 	}
 	window.scrollTo(0, position);
-	if (removeable == "true")
-	{
-		window.location.reload(false);
-	}
+	window.location.reload(false);
 
 }	// appendMessage
 
