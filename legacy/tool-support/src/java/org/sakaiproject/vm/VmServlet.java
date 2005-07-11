@@ -31,9 +31,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.api.kernel.tool.Tool;
-import org.sakaiproject.api.kernel.tool.cover.ToolManager;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.util.web.Web;
 
 /**
