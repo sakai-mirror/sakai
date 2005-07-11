@@ -164,11 +164,11 @@ public class IFrameAction
 			return buildOptionsPanelContext(portlet, context, rundata, state);
 		}
 
-		// if we have a source url, use it
-		String sourceUrl = StringUtil.trimToNull((String) state.getAttribute(SOURCE));
+		// if we have a source url, use it - htripath changed SOURCE attribute to 'source-config' for SAK1480 fix
+		String sourceUrl = StringUtil.trimToNull((String) state.getAttribute("source-config"));
 		if (sourceUrl != null)
 		{
-			context.put(SOURCE,(String) state.getAttribute(SOURCE));
+			context.put(SOURCE,(String) state.getAttribute("source-config"));
 			context.put(HEIGHT, state.getAttribute(HEIGHT));
 			context.put("tlang",rb);
 		}
