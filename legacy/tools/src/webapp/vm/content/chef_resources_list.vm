@@ -407,7 +407,11 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doCopyitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.copy')">$tlang.getString("list.copy").trim()</a>
+											#if($member.id == $copiedItem)
+												$tlang.getString("list.copy").trim()
+											#else
+												<a href="#toolLink("ResourcesAction" "doCopyitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.copy')">$tlang.getString("list.copy").trim()</a>
+											#end
 										#end
 										####### deal with deleting item
 										#if ($member.canDelete())
