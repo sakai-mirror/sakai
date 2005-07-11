@@ -124,11 +124,7 @@
 			#end
 		</div>	
 		<p class="act">
-			#if ( $newAnn =="true")
 				<input type="submit" class="active" name="eventSubmit_doPost" value="$tlang.getString("revise.add")" />
-			#else
-				<input type="submit" class="active" name="eventSubmit_doPost" value="$tlang.getString("revise.savechanges")" />
-			#end
 				<input type="submit" name="eventSubmit_doRevisepreview" value="$tlang.getString("revise.preview")" />
 				<input type="submit" name="eventSubmit_doSavedraft" value="$tlang.getString("revise.savedraft")" />
 				<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("gen.cancel")" />     
