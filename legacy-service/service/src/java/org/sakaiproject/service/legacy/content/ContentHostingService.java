@@ -179,6 +179,22 @@ public interface ContentHostingService
 		throws IdUnusedException, TypeException, PermissionException;
 
 	/**
+	* Count the number of (recursive) children for a given id.
+	* examples: With a nested collection structure exactly like this: /a /a/b /a/b/1 /a/b/2 
+	*   getCollectionSize(/a) returns 3 (due to these three children: /a/b /a/b/1 /a/b/2)
+	*   getCollectionSize(/a/b) returns 2 (due to these two children: /a/b/1 /a/b/2)
+	*   getCollectionSize(/a/b/1) returns 0 (nothing falls below this collection)
+	* @param id The id of the collection.
+	* @exception IdUnusedException if the id does not exist.
+	* @exception TypeException if the resource exists but is not a collection.
+	* @exception PermissionException if the user does not have permissions to see this collection (or read through containing collections).
+	* @return The number of internal members
+	*/
+	public int getCollectionSize(String id)
+		throws IdUnusedException, TypeException, PermissionException;
+
+	
+	/**
 	* Access a List of all the ContentResource objects in this path (and below)
 	* which the current user has access.
 	* @param id A collection id.

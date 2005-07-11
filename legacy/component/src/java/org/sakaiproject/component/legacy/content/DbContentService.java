@@ -37,7 +37,10 @@ import java.util.List;
 import java.util.Stack;
 
 import org.sakaiproject.api.common.uuid.UuidManager;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
@@ -204,6 +207,41 @@ public class DbContentService
 	}
 
 
+	/**
+	 * 
+	 */
+	private int countQuery(String sql, String param) throws IdUnusedException {
+		
+		Object[] fields = new Object[1];
+		fields[0] = param;
+		
+		List list=m_sqlService.dbRead(sql, fields, null);
+
+		if (list!=null) {
+			Iterator iter=list.iterator();
+			if (iter.hasNext()) {
+				return ((Integer)iter.next()).intValue();
+			} 
+		} 
+		throw new IdUnusedException(param);
+	}
+	
+	public int getCollectionSize(String id)
+		throws IdUnusedException, TypeException, PermissionException {
+
+		String wildcard;
+		
+		if (id.endsWith("/")) {
+			wildcard=id+"%";
+		} else {
+			wildcard=id+"/%";
+		}
+
+		int fileCount=countQuery("select count(IN_COLLECTION) from CONTENT_RESOURCE where IN_COLLECTION like ?",wildcard)-1;
+		int folderCount=countQuery("select count(IN_COLLECTION) from CONTENT_COLLECTION where IN_COLLECTION like ?",wildcard)-1;;
+		
+		return fileCount+folderCount;
+	}
 	
 	/*******************************************************************************
 	* UUID Support
