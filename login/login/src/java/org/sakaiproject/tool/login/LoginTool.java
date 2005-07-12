@@ -244,7 +244,7 @@ public class LoginTool extends HttpServlet
 				+ "								</tr>"
 				+ "								<tr>"
 				+ "									<td colspan=\"2\" align=\"right\">"
-				+ "										<input name=\"submit\" type=\"submit\" id=\"submit\" value=\"Log in\" style=\"float:right\" />"
+				+ "										<input name=\"submit\" type=\"submit\" id=\"submit\" value=\"Login\" style=\"float:right\" />"
 				+ "                                        MSG"
 				+ "									</td>"
 				+ "								</tr>"
