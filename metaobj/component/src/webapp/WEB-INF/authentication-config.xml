@@ -3,7 +3,7 @@
 
 <!--
   - Application context loaded by ContextLoaderListener if NOT using container adapters
-  - $Id: authentication-config.xml,v 1.1 2005/06/29 18:36:41 chmaurer Exp $
+  - $Id$
   -->
 
 <beans default-lazy-init="true" >

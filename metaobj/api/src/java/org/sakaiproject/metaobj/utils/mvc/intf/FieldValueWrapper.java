@@ -38,8 +38,8 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp2.x/HomesService/src/java/org/theospi/utils/mvc/intf/FieldValueWrapper.java,v 1.3 2005/06/30 17:34:18 chmaurer Exp $
- * $Revision: 1.3 $
- * $Date: 2005/06/30 17:34:18 $
+ * $Revision$
+ * $Date$
  */
 package org.sakaiproject.metaobj.utils.mvc.intf;
 

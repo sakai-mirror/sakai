@@ -38,8 +38,8 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp2.x/homesComponent/src/java/org/theospi/metaobj/shared/mgt/factories/DbXmlHomeFactoryImpl.java,v 1.2 2005/06/30 02:44:23 jellis Exp $
- * $Revision: 1.2 $
- * $Date: 2005/06/30 02:44:23 $
+ * $Revision$
+ * $Date$
  */
 package org.sakaiproject.metaobj.shared.mgt.factories;
 

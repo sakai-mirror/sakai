@@ -38,8 +38,8 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp2.x/HomesService/src/java/org/theospi/metaobj/shared/mgt/WritableObjectHome.java,v 1.1 2005/06/28 13:09:17 chmaurer Exp $
- * $Revision: 1.1 $
- * $Date: 2005/06/28 13:09:17 $
+ * $Revision$
+ * $Date$
  */
 package org.sakaiproject.metaobj.shared.mgt;
 

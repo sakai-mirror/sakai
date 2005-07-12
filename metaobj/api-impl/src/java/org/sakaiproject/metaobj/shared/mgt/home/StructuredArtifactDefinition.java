@@ -38,8 +38,8 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp2.x/homesComponent/src/java/org/theospi/metaobj/shared/mgt/home/StructuredArtifactDefinition.java,v 1.3 2005/06/30 17:06:48 jellis Exp $
- * $Revision: 1.3 $
- * $Date: 2005/06/30 17:06:48 $
+ * $Revision$
+ * $Date$
  */
 
 

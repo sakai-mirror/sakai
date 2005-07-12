@@ -38,8 +38,8 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp2.x/homesComponent/src/java/org/theospi/metaobj/shared/mgt/home/XmlElementHome.java,v 1.2 2005/07/06 18:50:30 jellis Exp $
- * $Revision: 1.2 $
- * $Date: 2005/07/06 18:50:30 $
+ * $Revision$
+ * $Date$
  */
 package org.sakaiproject.metaobj.shared.mgt.home;
 

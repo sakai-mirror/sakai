@@ -38,13 +38,13 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp2.x/homesComponent/src/java/org/theospi/metaobj/shared/model/impl/HibernateStructuredArtifact.java,v 1.1 2005/06/29 18:36:41 chmaurer Exp $
- * $Revision: 1.1 $
- * $Date: 2005/06/29 18:36:41 $
+ * $Revision$
+ * $Date$
  */
 /*
  * $Header: /opt/CVS/osp2.x/homesComponent/src/java/org/theospi/metaobj/shared/model/impl/HibernateStructuredArtifact.java,v 1.1 2005/06/29 18:36:41 chmaurer Exp $
- * $Revision: 1.1 $
- * $Date: 2005/06/29 18:36:41 $
+ * $Revision$
+ * $Date$
  */
 package org.sakaiproject.metaobj.shared.model.impl;
 

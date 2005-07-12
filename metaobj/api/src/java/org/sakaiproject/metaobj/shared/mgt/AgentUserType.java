@@ -1,7 +1,7 @@
 /*
  * $Header: /opt/CVS/osp2.x/HomesService/src/java/org/theospi/metaobj/shared/mgt/AgentUserType.java,v 1.3 2005/06/30 02:44:42 jellis Exp $
- * $Revision: 1.3 $
- * $Date: 2005/06/30 02:44:42 $
+ * $Revision$
+ * $Date$
  */
 package org.sakaiproject.metaobj.shared.mgt;
 

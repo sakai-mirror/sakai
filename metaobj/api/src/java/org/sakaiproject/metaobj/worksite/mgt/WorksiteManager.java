@@ -38,8 +38,8 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp2.x/HomesService/src/java/org/theospi/metaobj/worksite/mgt/WorksiteManager.java,v 1.3 2005/07/05 20:17:28 jellis Exp $
- * $Revision: 1.3 $
- * $Date: 2005/07/05 20:17:28 $
+ * $Revision$
+ * $Date$
  */
 package org.sakaiproject.metaobj.worksite.mgt;
 
