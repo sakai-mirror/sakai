@@ -139,6 +139,9 @@
                 <dependency>
                         <groupId>sakaiproject</groupId>
                         <artifactId>sakai-util-xml</artifactId>
+      			<properties>
+        			<war.bundle>true</war.bundle>
+      			</properties>
                         <version>${pom.currentVersion}</version>
                 </dependency>
 
