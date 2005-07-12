@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="sections-api/src/java"/>
+	<classpathentry kind="src" path="sections-comp-shared/src/java"/>
 	<classpathentry kind="src" path="sections-app/src/java"/>
-	<classpathentry kind="src" path="sections-comp/src/java"/>
+	<classpathentry kind="src" path="sections-app/src/test"/>
+	<classpathentry kind="src" path="sections-app/src/bundle"/>
+	<classpathentry kind="src" path="sections-app/src/hibernate"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry sourcepath="JAVA_DIR/spring-framework-1.1.5/src" kind="var" path="MAVEN_REPO/springframework/jars/spring-1.1.5.jar"/>
+	<classpathentry sourcepath="JAVA_DIR/spring-framework-1.1.5/mock" kind="var" path="MAVEN_REPO/springframework/jars/spring-mock-1.1.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
