@@ -441,7 +441,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 			AnnouncementChannel nChannel = null;
 			try
 			{
-				nChannel = (AnnouncementChannelEdit) getChannel(nChannelRef);
+				nChannel = (AnnouncementChannel) getChannel(nChannelRef);
 			}
 			catch (IdUnusedException e)
 			{
@@ -451,7 +451,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 					
 					try
 					{
-						nChannel = (AnnouncementChannelEdit) getChannel(nChannelRef);
+						nChannel = (AnnouncementChannel) getChannel(nChannelRef);
 					}
 					catch (Exception eee)
 					{
