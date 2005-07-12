@@ -1,6 +1,13 @@
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URLEncoder;
+
+import org.sakaiproject.util.xml.Xml;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -17,35 +24,114 @@ import org.sakaiproject.javax.PagingPosition;
  */
 public class SakaiSite {
 
-    public String[] getSites(String id, String search, int first, int last) 
+    private Session establishSession(String id)
 	throws AxisFault 
     {
-	System.out.println("SakaiSites.getSites() session id="+id);
+	System.out.println("SakaiSites session id="+id);
+
+	// Establish Session
         Session s = SessionManager.getSession(id);
-      	ArrayList list=new ArrayList();
+
         if (s == null)
         {
 		System.out.println("Throwing axis fault");
 		throw new AxisFault("Session "+id+" is not active");
         }
-        else
+	System.out.println("User ID="+s.getUserId());
+	SessionManager.setCurrentSession(s);
+	return s;
+    }
+
+    private Site getUserSite(Session session)
+    {
+	String siteId = SiteService.getUserSiteId(session.getUserId());
+	Site site = null;
+        try
         {
- 		List siteList = SiteService.getSites(
-			org.sakaiproject.service.legacy.site.SiteService.SelectionType.NON_USER,
-                        null, search, null,
-                        org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC,
-                        new PagingPosition(first, last));
-
-        	for(int i=0;i<siteList.size();i++) {
-			Site theSite = (Site) siteList.get(i);
-			list.add(theSite.getTitle());
-		}
+        	site = SiteService.getSiteVisit(siteId);
         }
+        catch (Exception e)
+        {
+                site = null;
+        }
+	return site;
+    }
 
-        String[] results=new String[list.size()];
-        for(int i=0;i<list.size();i++) {
-            results[i]=(String) list.get(i);
+    private List getSiteList(String search, int first, int last)
+    {
+	System.out.println("Search="+search+" first="+first+" last="+last);
+
+ 	List siteList = SiteService.getSites(
+		org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
+                null, search, null,
+                org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC,
+                new PagingPosition(first, last));
+
+	return siteList;
+    }
+
+    public String[] getSites(String id, String search, int first, int last) 
+	throws AxisFault 
+    {
+	Session s = establishSession(id);
+ 	List siteList = getSiteList(search,first,last);
+
+        String[] results=new String[siteList.size()];
+	Site theSite = null;
+       	for(int i=0;i<siteList.size();i++) {
+               if ( i == -1 ) {
+                        theSite = getUserSite(s);
+                } else {
+                        theSite = (Site) siteList.get(i);
+                }
+		String theSiteId = theSite.getId();
+		if ( theSite == null ) continue;
+
+		try {
+		   theSiteId = URLEncoder.encode(theSite.getId(),"UTF-8");
+		} 
+		catch (Exception e) 
+		{ }
+
+		String retVal = theSiteId+":"+theSite.getTitle();
+		System.out.println("retVal = " + retVal);
+                results[i] = retVal;
         }
         return results;
+    }
+
+    public String getSitesDom(String id, String search, int first, int last) 
+	throws AxisFault 
+    {
+	Session s = establishSession(id);
+ 	List siteList = getSiteList(search,first,last);
+
+	Document dom = Xml.createDocument();
+	Node allSites = dom.createElement("sites");
+	dom.appendChild(allSites);
+
+	Site theSite;
+       	for(int i=-1;i<siteList.size();i++) {
+		if ( i == -1 ) {
+			theSite = getUserSite(s);
+		} else {
+			theSite = (Site) siteList.get(i);
+		}
+		if ( theSite == null ) continue;
+		
+	        Node siteNode = dom.createElement("site");
+		allSites.appendChild(siteNode);
+
+		Node titleNode = dom.createElement("title");
+		siteNode.appendChild(titleNode);
+		titleNode.appendChild(dom.createTextNode(theSite.getTitle()));
+
+		Node idNode  = dom.createElement("id");
+		siteNode.appendChild(idNode);
+		idNode.appendChild(dom.createTextNode(theSite.getId()));
+        }
+
+	String retVal = Xml.writeDocumentToString(dom);
+        return retVal;
     }
 }
