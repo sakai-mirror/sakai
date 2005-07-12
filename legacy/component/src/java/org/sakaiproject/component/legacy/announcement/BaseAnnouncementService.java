@@ -438,71 +438,87 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 			oChannel = (AnnouncementChannel) getChannel(oChannelRef);
 			// the "to" message channel
 			String nChannelRef = channelReference(toContext, SiteService.MAIN_CONTAINER);
-			AnnouncementChannelEdit nChannel = null;
+			AnnouncementChannel nChannel = null;
 			try
 			{
-				nChannel = (AnnouncementChannelEdit) editChannel(nChannelRef);
+				nChannel = (AnnouncementChannelEdit) getChannel(nChannelRef);
 			}
 			catch (IdUnusedException e)
 			{
-				AnnouncementChannelEdit edit = (AnnouncementChannelEdit) addChannel(nChannelRef);
-				commitChannel(edit);
-				nChannel = edit;
+				try
+				{
+					commitChannel(addChannel(nChannelRef));
+					
+					try
+					{
+						nChannel = (AnnouncementChannelEdit) getChannel(nChannelRef);
+					}
+					catch (Exception eee)
+					{
+						// ignore
+					}
+				}
+				catch (Exception ee)
+				{
+					// ignore
+				}
 			}
 			
-			// pass the DOM to get new message ids, record the mapping from old to new, and adjust attachments
-			List oMessageList = oChannel.getMessages(null, true);
-			AnnouncementMessage oMessage = null;
-			AnnouncementMessageHeader oMessageHeader = null;
-			AnnouncementMessageEdit nMessage = null;
-			for (int i = 0; i < oMessageList.size(); i++)
+			if (nChannel != null)
 			{
-				// the "from" message
-				oMessage = (AnnouncementMessage) oMessageList.get(i);
-				String oMessageId = oMessage.getId();
-				
-				boolean toBeImported = true;
-				if (resourceIds != null && resourceIds.size() > 0)
+				// pass the DOM to get new message ids, record the mapping from old to new, and adjust attachments
+				List oMessageList = oChannel.getMessages(null, true);
+				AnnouncementMessage oMessage = null;
+				AnnouncementMessageHeader oMessageHeader = null;
+				AnnouncementMessageEdit nMessage = null;
+				for (int i = 0; i < oMessageList.size(); i++)
 				{
-					// if there is a list for import assignments, only import those assignments and relative submissions
-					toBeImported = false;
-					for (int m=0; m<resourceIds.size() && !toBeImported; m++)
+					// the "from" message
+					oMessage = (AnnouncementMessage) oMessageList.get(i);
+					String oMessageId = oMessage.getId();
+					
+					boolean toBeImported = true;
+					if (resourceIds != null && resourceIds.size() > 0)
 					{
-						if (((String)resourceIds.get(m)).equals(oMessageId))
+						// if there is a list for import assignments, only import those assignments and relative submissions
+						toBeImported = false;
+						for (int m=0; m<resourceIds.size() && !toBeImported; m++)
 						{
-							toBeImported = true;
+							if (((String)resourceIds.get(m)).equals(oMessageId))
+							{
+								toBeImported = true;
+							}
 						}
+					}
+					
+					if (toBeImported)
+					{
+						oMessageHeader = (AnnouncementMessageHeaderEdit) oMessage.getHeader();
+						ResourceProperties oProperties = oMessage.getProperties();
+						
+						// the "to" message
+						nMessage = (AnnouncementMessageEdit) nChannel.addMessage();
+						nMessage.setBody(oMessage.getBody());
+						// message header
+						AnnouncementMessageHeaderEdit nMessageHeader = (AnnouncementMessageHeaderEdit) nMessage.getHeaderEdit();
+						nMessageHeader.setDate(oMessageHeader.getDate());
+						// when importing, always mark the announcement message as draft
+						nMessageHeader.setDraft(true);
+						nMessageHeader.setFrom(oMessageHeader.getFrom());
+						nMessageHeader.setSubject(oMessageHeader.getSubject());
+						//attachment
+						nMessageHeader.replaceAttachments(oMessageHeader.getAttachments());
+						//properties
+						ResourcePropertiesEdit p = nMessage.getPropertiesEdit();
+						p.clear();
+						p.addAll(oProperties);
+						
+						// complete the edit
+						nChannel.commitMessage(nMessage);
 					}
 				}
 				
-				if (toBeImported)
-				{
-					oMessageHeader = (AnnouncementMessageHeaderEdit) oMessage.getHeader();
-					ResourceProperties oProperties = oMessage.getProperties();
-					
-					// the "to" message
-					nMessage = (AnnouncementMessageEdit) nChannel.addMessage();
-					nMessage.setBody(oMessage.getBody());
-					// message header
-					AnnouncementMessageHeaderEdit nMessageHeader = (AnnouncementMessageHeaderEdit) nMessage.getHeaderEdit();
-					nMessageHeader.setDate(oMessageHeader.getDate());
-					// when importing, always mark the announcement message as draft
-					nMessageHeader.setDraft(true);
-					nMessageHeader.setFrom(oMessageHeader.getFrom());
-					nMessageHeader.setSubject(oMessageHeader.getSubject());
-					//attachment
-					nMessageHeader.replaceAttachments(oMessageHeader.getAttachments());
-					//properties
-					ResourcePropertiesEdit p = nMessage.getPropertiesEdit();
-					p.clear();
-					p.addAll(oProperties);
-					
-					// complete the edit
-					nChannel.commitMessage(nMessage);
-				}
-			}									
-			//complete the edit
-			m_storage.commitChannel(nChannel);
+			}	// if
 		}
 		catch (IdUnusedException e)
 		{
@@ -551,7 +567,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 			super(el);
 
 		} // BaseAnnouncementChannelEdit
-
+ 
 		/**
 		* Return a specific announcement channel message, as specified by message name.
 		* @param messageId The id of the message to get.

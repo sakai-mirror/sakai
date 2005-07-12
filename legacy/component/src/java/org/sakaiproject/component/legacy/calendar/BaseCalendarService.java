@@ -1117,9 +1117,7 @@ public abstract class BaseCalendarService
 			{
 				try
 				{
-					CalendarEdit edit = addCalendar(nCalendarRef);
-					commitCalendar(edit);
-					nCalendar = edit;
+					nCalendar = addCalendar(nCalendarRef);
 				}
 				catch (IdUsedException ee){}
 				catch (IdInvalidException ee){}
@@ -1194,6 +1192,7 @@ public abstract class BaseCalendarService
 				}
 				// commit new calendar
 				m_storage.commitCalendar(nCalendar);
+				((BaseCalendarEdit) nCalendar).closeEdit();
 			}	// if
 		}
 		catch (IdUnusedException e)

@@ -483,64 +483,77 @@ public abstract class BaseDiscussionService
 			oChannel = getDiscussionChannel(oChannelRef);
 			
 			// the "to" DiscussionMessage channel
-			DiscussionChannelEdit nChannel = null;
+			DiscussionChannel nChannel = null;
 			String nChannelRef = channelReference(toContext, SiteService.MAIN_CONTAINER);
 			try
 			{
-				nChannel = (DiscussionChannelEdit) editChannel(nChannelRef);
+				nChannel = (DiscussionChannel) getChannel(nChannelRef);
 			}
 			catch (IdUnusedException e)
 			{
-				DiscussionChannelEdit edit = addDiscussionChannel(nChannelRef);
-				commitChannel(edit);
-				nChannel = edit;
-			}
-			
-			// categories
-			List oCategories = oChannel.getCategories(true);
-			
-			for (Iterator it = oCategories.iterator(); it.hasNext(); )
-			{
-				String category = (String) it.next();
-				
-				nChannel.addCategory(category);
-				
-				// only importing topic messages and mark them as draft 
-				Iterator oMessageList = oChannel.getTopics(category);
-				DiscussionMessage oMessage = null;
-				DiscussionMessageHeader oMessageHeader = null;
-				DiscussionMessageEdit nMessage = null;
-				for (; oMessageList.hasNext();)
+				try
 				{
-					// the "from" message
-					oMessage = (DiscussionMessage) oMessageList.next();
-					oMessageHeader = oMessage.getDiscussionHeader();
-					ResourceProperties oProperties = oMessage.getProperties();
+					commitChannel(addDiscussionChannel(nChannelRef));
 					
-					// the "to" message
-					nMessage = (DiscussionMessageEdit) nChannel.addMessage();
-					nMessage.setBody(oMessage.getBody());
-					DiscussionMessageHeaderEdit nMessageHeader = nMessage.getDiscussionHeaderEdit();
-					nMessageHeader.setDate(oMessageHeader.getDate());
-					nMessageHeader.setDraft(true);
-					nMessageHeader.setFrom(oMessageHeader.getFrom());
-					nMessageHeader.setSubject(oMessageHeader.getSubject());
-					nMessageHeader.setCategory(category);
-					
-					// attachment
-					nMessageHeader.replaceAttachments(oMessageHeader.getAttachments());
-					//properties
-					ResourcePropertiesEdit p = nMessage.getPropertiesEdit();
-					p.clear();
-					p.addAll(oProperties);
-					
-					nChannel.commitMessage(nMessage, NotificationService.NOTI_NONE);
+					try
+					{
+						nChannel = (DiscussionChannel) getChannel(nChannelRef);
+					}
+					catch (IdUnusedException eee)
+					{
+						// ignore
+					}
+				}
+				catch (Exception ee)
+				{
+					// ignore
 				}
 			}
 			
-			//complete the edit
-			m_storage.commitChannel(nChannel);
-			
+			if (nChannel != null)
+			{
+				// categories
+				List oCategories = oChannel.getCategories(true);
+				
+				for (Iterator it = oCategories.iterator(); it.hasNext(); )
+				{
+					String category = (String) it.next();
+					
+					nChannel.addCategory(category);
+					
+					// only importing topic messages and mark them as draft 
+					Iterator oMessageList = oChannel.getTopics(category);
+					DiscussionMessage oMessage = null;
+					DiscussionMessageHeader oMessageHeader = null;
+					DiscussionMessageEdit nMessage = null;
+					for (; oMessageList.hasNext();)
+					{
+						// the "from" message
+						oMessage = (DiscussionMessage) oMessageList.next();
+						oMessageHeader = oMessage.getDiscussionHeader();
+						ResourceProperties oProperties = oMessage.getProperties();
+						
+						// the "to" message
+						nMessage = (DiscussionMessageEdit) nChannel.addMessage();
+						nMessage.setBody(oMessage.getBody());
+						DiscussionMessageHeaderEdit nMessageHeader = nMessage.getDiscussionHeaderEdit();
+						nMessageHeader.setDate(oMessageHeader.getDate());
+						nMessageHeader.setDraft(true);
+						nMessageHeader.setFrom(oMessageHeader.getFrom());
+						nMessageHeader.setSubject(oMessageHeader.getSubject());
+						nMessageHeader.setCategory(category);
+						
+						// attachment
+						nMessageHeader.replaceAttachments(oMessageHeader.getAttachments());
+						//properties
+						ResourcePropertiesEdit p = nMessage.getPropertiesEdit();
+						p.clear();
+						p.addAll(oProperties);
+						
+						nChannel.commitMessage(nMessage, NotificationService.NOTI_NONE);
+					}	// for
+				}	// for
+			}	// if 
 		}
 		catch (IdUnusedException e)
 		{

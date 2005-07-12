@@ -2958,7 +2958,6 @@ public abstract class BaseAssignmentService
 			
 			if (toBeImported)
 			{
-				String oAssignmentReference = oAssignment.getReference();
 				AssignmentEdit nAssignment = null;
 				AssignmentContentEdit nContent = null;
 				
@@ -3001,6 +3000,7 @@ public abstract class BaseAssignmentService
 							nContent.replaceAttachments(oContent.getAttachments());
 							//complete the edit
 							m_contentStorage.commit(nContent);
+							((BaseAssignmentContentEdit) nContent).closeEdit();
 						}
 					}
 					catch (Exception e)
@@ -3031,6 +3031,7 @@ public abstract class BaseAssignmentService
 							p.addAll(oAssignment.getProperties());
 							//complete the edit
 							m_assignmentStorage.commit(nAssignment);
+							((BaseAssignmentEdit) nAssignment).closeEdit();
 						}
 						catch (Exception ee)
 						{
