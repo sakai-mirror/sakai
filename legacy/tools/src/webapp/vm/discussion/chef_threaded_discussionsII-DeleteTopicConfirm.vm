@@ -42,6 +42,7 @@
 					<th>$tlang.getString("gen.dat")</th>
 				</tr>
 				## J - need to know the thread dept of each message to indent appropriately (gsilver)
+				## suiyy - please use "$message.ReplyToDepth" to get the indention depth
 				<tr>
 					<td>
 						#if ($message.Header.draft)
