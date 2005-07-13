@@ -20,6 +20,7 @@
 			</tr>
 			#foreach ($delete_item in $delete_messages)
 			## J - need top know the thread dept of each message to indent appropriately (gsilver)
+			## suiyy - please use "$delete_item.ReplyToDepth" to get the indention depth
 				<tr>
 					<td>
 						#if ($delete_item.Header.draft)
