@@ -130,7 +130,6 @@
 					</p>
 					<p class="shorttext">
 						<label for="additional" class="block">
-							<span class="reqStar">*</span>
 							$tlang.getString("man.spec")
 						</label>
 						<textarea id="additional"   name="additional" rows="4" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($form_additional)</textarea>
