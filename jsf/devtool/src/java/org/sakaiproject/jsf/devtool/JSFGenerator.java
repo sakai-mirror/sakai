@@ -122,7 +122,7 @@ public class JSFGenerator
 		
 		
 		String[] templates = {"Tag", "Component", "Renderer", "faces-config_component", "faces-config_renderer", "tld"};
-		String[] outputpostfixes = {"Tag.java", "Component.java", "Renderer.java", "faces-config_component.xml", "faces-config_renderer.xml", "sakaix_jsf.tld"}; 
+		String[] outputpostfixes = {"Tag.java", "Component.java", "Renderer.java", "faces-config_component.xml", "faces-config_renderer.xml", "sakai_jsf.tld"}; 
 		String[] outputprefixes = {"tag/", "component/", "renderer/", "", "", ""};
 		boolean[] outputconcat = {false, false, false, true, true, true};
 		

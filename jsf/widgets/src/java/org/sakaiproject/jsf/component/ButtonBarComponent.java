@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/component/ButtonBarComponent.java,v 1.2 2005/05/10 03:20:17 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -26,13 +25,10 @@ package org.sakaiproject.jsf.component;
 
 import javax.faces.component.UIComponentBase;
 
-/**
- */
+
 public class ButtonBarComponent extends UIComponentBase
 {
-  /**
-   *
-   */
+  
   public ButtonBarComponent()
   {
     super();
@@ -49,7 +45,6 @@ public class ButtonBarComponent extends UIComponentBase
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/component/ButtonBarComponent.java,v 1.2 2005/05/10 03:20:17 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

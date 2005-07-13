@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/DocSectionTitleRenderer.java,v 1.3 2005/05/10 03:05:08 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -32,8 +31,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
-/**
- */
+
 public class DocSectionTitleRenderer extends Renderer
 {
 	public boolean supportsComponentType(UIComponent component)
@@ -61,7 +59,6 @@ public class DocSectionTitleRenderer extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/DocSectionTitleRenderer.java,v 1.3 2005/05/10 03:05:08 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

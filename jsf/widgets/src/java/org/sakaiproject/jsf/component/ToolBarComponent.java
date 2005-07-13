@@ -1,7 +1,6 @@
 /***********************************************************************************
- *
- * $Header: $
- *
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -26,13 +25,10 @@ package org.sakaiproject.jsf.component;
 
 import javax.faces.component.UIComponentBase;
 
-/**
- */
+
 public class ToolBarComponent extends UIComponentBase
 {
-  /**
-   *
-   */
+  
   public ToolBarComponent()
   {
     super();
@@ -49,7 +45,6 @@ public class ToolBarComponent extends UIComponentBase
 }
 
 /**********************************************************************************
-*
- * $Header: $
- *
+* $URL$
+* $Id$
 **********************************************************************************/

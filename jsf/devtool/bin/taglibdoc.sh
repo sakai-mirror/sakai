@@ -10,10 +10,9 @@
 #  JSF_HOME=$DEPLOY_HOME/jsf/jsf-1_1
 #  MYFACES_HOME=$DEPLOY_HOME/myfaces-1.0.9
 #  STD_TLDS=$JSF_HOME/lib/jsf_core.tld $JSF_HOME$/lib/html_basic.tld
-#  OLD_TLDS=./../../widgets-1/src/META-INF/sakai_jsf.tld
 
 TLD_DIR=./../../widgets/src/META-INF
-NEW_TLDS=$TLD_DIR/sakaix-jsf.tld
+NEW_TLDS=$TLD_DIR/sakai-jsf.tld
 PREVDIR=.
 
 DEST=../target/taglibdoc

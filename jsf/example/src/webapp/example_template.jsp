@@ -1,6 +1,6 @@
 <%-- $Id: example_template.jsp,v 1.5 2005/05/28 20:16:18 ggolden.umich.edu Exp $ --%>
 <f:view>
-<sakaix:view title="xxx tag - Sakai 2.0 JSF example">
+<sakai:view title="xxx tag - Sakai 2.0 JSF example">
 <h:commandLink action="index"><h:outputText value="Back to examples index" /></h:commandLink>
 <f:verbatim><a href="<%=request.getRequestURI()%>.source">View page source</a></f:verbatim>
 
@@ -16,9 +16,9 @@ followed by pure html usage documentation.
 <hr />
 <h2>xxx example</h2>
 <hr />
-<sakaix:script path="/sakai-jsf-resource/xxx/xxx.js"/>
+<sakai:script path="/sakai-jsf-resource/xxx/xxx.js"/>
 <h:form id="xxxForm">
-  <sakaix:xxx value="" size="10" id="myxxxId"/>
+  <sakai:xxx value="" size="10" id="myxxxId"/>
   <h:commandButton type="submit" id="myButtonId" value="Submit"/>
 <hr />
 <h3>xxx usage:</h3>
@@ -28,6 +28,6 @@ HTML USAGE GOES HERE
 </pre>
 <hr />
 </h:form>
-</sakaix:view>
+</sakai:view>
 </f:view>
 

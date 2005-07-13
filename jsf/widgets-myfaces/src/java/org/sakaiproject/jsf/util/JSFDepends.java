@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-myfaces/src/java/org/sakaiproject/jsf/util/JSFDepends.java,v 1.3 2005/05/10 16:34:17 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -52,8 +51,7 @@ public class JSFDepends
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets-myfaces/src/java/org/sakaiproject/jsf/util/JSFDepends.java,v 1.3 2005/05/10 16:34:17 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/
 

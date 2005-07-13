@@ -5,10 +5,9 @@ REM TLDs and the old (Sakai 1.5) TLD at the same time.
 REM SET JSF_HOME=c:\dev\jsf\jsf-1_1
 REM SET MYFACES_HOME=c:\dev\myfaces-1.0.9
 REM SET STD_TLDS=%JSF_HOME%\lib\jsf_core.tld %JSF_HOME%\lib\html_basic.tld
-REM SET OLD_TLDS=%CD%\..\..\widgets-1\src\META-INF\sakai_jsf.tld
 
 SET TLD_DIR=%CD%\..\..\widgets\src\META-INF
-SET NEW_TLDS=%TLD_DIR%\sakaix-jsf.tld
+SET NEW_TLDS=%TLD_DIR%\sakai-jsf.tld
 SET PREVDIR=%CD%
 
 SET DEST=%CD%\..\target\taglibdoc

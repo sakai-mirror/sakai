@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/component/ViewComponent.java,v 1.1 2005/04/28 16:32:24 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -28,9 +27,7 @@ import javax.faces.component.UIOutput;
 
 public class ViewComponent extends UIOutput
 {
-	/**
-	 * 
-	 */
+	
 	public ViewComponent()
 	{
 		super();
@@ -39,7 +36,6 @@ public class ViewComponent extends UIOutput
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/component/ViewComponent.java,v 1.1 2005/04/28 16:32:24 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

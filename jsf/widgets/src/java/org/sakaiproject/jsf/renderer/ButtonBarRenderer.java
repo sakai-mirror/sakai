@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/ButtonBarRenderer.java,v 1.4 2005/05/31 20:31:29 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -59,7 +58,6 @@ public class ButtonBarRenderer extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/ButtonBarRenderer.java,v 1.4 2005/05/31 20:31:29 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

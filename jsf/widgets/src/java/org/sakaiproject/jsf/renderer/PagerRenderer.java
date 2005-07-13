@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/PagerRenderer.java,v 1.2 2005/04/28 18:13:42 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -380,7 +379,6 @@ public class PagerRenderer extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/PagerRenderer.java,v 1.2 2005/04/28 18:13:42 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

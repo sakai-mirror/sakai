@@ -59,7 +59,6 @@ public class ToolBarRenderer extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/ToolBarRenderer.java,v 1.2 2005/05/10 03:05:08 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -63,7 +63,7 @@ public class ViewRenderer extends Renderer
 			if (headInclude == null || headInclude.length() == 0)
 			{
 				// include default stylesheet
-				headInclude = "<link href=\"/sakai-jsf-resource/css/sakaix.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
+				headInclude = "<link href=\"/sakai-jsf-resource/css/sakai.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
 			}
 
 			writer.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
@@ -128,7 +128,6 @@ public class ViewRenderer extends Renderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/ViewRenderer.java,v 1.14 2005/05/31 20:31:29 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

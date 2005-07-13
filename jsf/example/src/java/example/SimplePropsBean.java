@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/example/src/java/example/SimplePropsBean.java,v 1.9 2005/05/10 17:15:26 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -212,7 +211,6 @@ public class SimplePropsBean implements Serializable
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/example/src/java/example/SimplePropsBean.java,v 1.9 2005/05/10 17:15:26 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

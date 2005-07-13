@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/example/src/java/example/PagerBean.java,v 1.4 2005/05/10 03:36:58 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -106,7 +105,6 @@ public class PagerBean
 
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/example/src/java/example/PagerBean.java,v 1.4 2005/05/10 03:36:58 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

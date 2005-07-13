@@ -234,7 +234,6 @@ public class Clock extends Applet implements Runnable {
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/example/src/java/example/Clock.java,v 1.3 2005/05/04 21:19:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

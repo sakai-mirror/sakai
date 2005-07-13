@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/tag/DocSectionTag.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -26,8 +25,7 @@ package org.sakaiproject.jsf.tag;
 
 import javax.faces.webapp.UIComponentTag;
 
-/**
- */
+
 public class DocSectionTag extends UIComponentTag
 {
 	public String getComponentType()
@@ -42,7 +40,6 @@ public class DocSectionTag extends UIComponentTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/tag/DocSectionTag.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

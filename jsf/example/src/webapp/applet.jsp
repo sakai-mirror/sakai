@@ -1,6 +1,6 @@
 <%-- $Id: applet.jsp,v 1.8 2005/05/04 23:35:57 esmiley.stanford.edu Exp $ --%>
 <f:view>
-<sakaix:view title="applet tag - Sakai 2.0 JSF example">
+<sakai:view title="applet tag - Sakai 2.0 JSF example">
 <h:commandLink action="index"><h:outputText value="Back to examples index" /></h:commandLink>
 <f:verbatim><a href="<%=request.getRequestURI()%>.source">View page source</a></f:verbatim>
 
@@ -8,7 +8,7 @@
 <hr />
 <h2>applet example</h2>
 <hr />
-<sakaix:applet
+<sakai:applet
   javaClass = "Clock.class"
   codebase="/example"
   width = "400"
@@ -19,7 +19,7 @@
 <h3>applet usage:</h3>
 
 <pre>
- <font color="#000000">&lt;</font><font color="#800080">sakaix:applet</font><font color="#000000">
+ <font color="#000000">&lt;</font><font color="#800080">sakai:applet</font><font color="#000000">
   </font><font color="#800000">code</font><font color="#000000"> = </font><font color="#0000ff">"CapturePlaybackApplet.class"</font><font color="#000000">
   </font><font color="#800000">archive</font><font color="#000000"> = </font><font color="#0000ff">"CapturePlayback.jar"</font><font color="#000000">
   </font><font color="#800000">width</font><font color="#000000"> = </font><font color="#0000ff">"400"</font><font color="#000000">
@@ -34,7 +34,7 @@
 </font>
 </pre>
 <hr />
-</sakaix:view>
+</sakai:view>
 </f:view>
 
 

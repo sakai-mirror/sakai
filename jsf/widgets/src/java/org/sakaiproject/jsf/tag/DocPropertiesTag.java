@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/tag/DocPropertiesTag.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -26,8 +25,7 @@ package org.sakaiproject.jsf.tag;
 
 import org.sakaiproject.jsf.util.JSFDepends;
 
-/**
- */
+
 public class DocPropertiesTag extends JSFDepends.PanelGridTag
 {
 	public String getComponentType()
@@ -37,7 +35,6 @@ public class DocPropertiesTag extends JSFDepends.PanelGridTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/tag/DocPropertiesTag.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

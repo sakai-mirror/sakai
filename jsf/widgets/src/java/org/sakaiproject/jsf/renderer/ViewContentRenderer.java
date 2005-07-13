@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/ViewContentRenderer.java,v 1.2 2005/05/31 20:31:29 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -27,43 +26,22 @@ package org.sakaiproject.jsf.renderer;
 import java.io.IOException;
 
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
 public class ViewContentRenderer extends Renderer
 {
-	public boolean supportsComponentType(UIComponent component)
-	{
-		return (component instanceof UIOutput);
-	}
 
 	public void encodeBegin(FacesContext context, UIComponent component) throws IOException
 	{
-		if (!component.isRendered()) return;
-
-		ResponseWriter writer = context.getResponseWriter();
-//		writer.write("<div class=\"chefPortletContent\">");
 	}
 
-	/**
-	 * @param context FacesContext for the request we are processing
-	 * @param component UIComponent to be rendered
-	 * @exception IOException if an input/output error occurs while rendering
-	 * @exception NullPointerException if <code>context</code> or <code>component</code> is null
-	 */
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException
 	{
-		if (!component.isRendered()) return;
-
-		ResponseWriter writer = context.getResponseWriter();
-//		writer.write("</div>");
 	}
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/ViewContentRenderer.java,v 1.2 2005/05/31 20:31:29 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

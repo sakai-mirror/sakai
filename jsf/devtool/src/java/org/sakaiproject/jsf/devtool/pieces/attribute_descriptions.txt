@@ -1,5 +1,5 @@
 # A list of attribute descriptions, used to populate the tag library definition file
-# (sakaix_jsf.tld)
+# (sakai_jsf.tld)
 
 accept
 				Pass-through attribute. Will be output as-is on the

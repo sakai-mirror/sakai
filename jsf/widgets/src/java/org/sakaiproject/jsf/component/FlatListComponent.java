@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/component/FlatListComponent.java,v 1.2 2005/05/31 20:31:30 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -38,7 +37,6 @@ public class FlatListComponent extends HtmlDataTable
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/component/FlatListComponent.java,v 1.2 2005/05/31 20:31:30 gsilver.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/tag/InstructionMessageTag.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -29,8 +28,7 @@ import javax.faces.webapp.UIComponentTag;
 
 import org.sakaiproject.jsf.util.TagUtil;
 
-/**
- */
+
 public class InstructionMessageTag extends UIComponentTag
 {
 	private String value = null;
@@ -63,7 +61,6 @@ public class InstructionMessageTag extends UIComponentTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/tag/InstructionMessageTag.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/component/DocPropertiesComponent.java,v 1.3 2005/05/10 03:20:17 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -28,13 +27,10 @@ package org.sakaiproject.jsf.component;
 
 import javax.faces.component.html.HtmlPanelGrid;
 
-/**
- */
+
 public class DocPropertiesComponent extends HtmlPanelGrid
 {
-	/**
-	 *
-	 */
+	
 	public DocPropertiesComponent()
 	{
 		super();
@@ -48,7 +44,6 @@ public class DocPropertiesComponent extends HtmlPanelGrid
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/component/DocPropertiesComponent.java,v 1.3 2005/05/10 03:20:17 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

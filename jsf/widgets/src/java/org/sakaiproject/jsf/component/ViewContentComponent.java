@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/component/ViewContentComponent.java,v 1.1 2005/05/11 18:02:38 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -36,7 +35,6 @@ public class ViewContentComponent extends UIOutput
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/component/ViewContentComponent.java,v 1.1 2005/05/11 18:02:38 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/resource/src/webapp/inputRichText/sakai-htmlarea.js,v 1.3 2005/05/28 20:16:18 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 * Formatted text editing widget within Sakai.
 *
 * This Sakai-specific JavaScript does setup for HTMLArea JavaScript library.
@@ -445,7 +444,6 @@ function _sakaiReturnFocusBack()
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/resource/src/webapp/inputRichText/sakai-htmlarea.js,v 1.3 2005/05/28 20:16:18 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

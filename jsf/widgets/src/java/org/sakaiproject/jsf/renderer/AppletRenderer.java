@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/AppletRenderer.java,v 1.4 2005/05/10 03:05:08 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -107,7 +106,7 @@ public class AppletRenderer
     /**
     * Accept a comma separated list of name value pairs.
     * @todo quotations to escape out "," and "=".
-    * Usage: <sakaix:applet ... paramList="param1=value1,param2=value2,..."...
+    * Usage: <sakai:applet ... paramList="param1=value1,param2=value2,..."...
     * @param paramList
     * @return
     */

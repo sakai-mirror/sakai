@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/tag/PanelEditTag.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -39,7 +38,6 @@ public class PanelEditTag extends JSFDepends.PanelGridTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/tag/PanelEditTag.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

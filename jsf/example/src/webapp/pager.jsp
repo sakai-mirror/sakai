@@ -1,6 +1,6 @@
 <%-- $Id: pager.jsp,v 1.4 2005/05/04 21:20:40 janderse.umich.edu Exp $ --%>
 <f:view>
-<sakaix:view title="pager tag - Sakai 2.0 JSF example">
+<sakai:view title="pager tag - Sakai 2.0 JSF example">
 <h:commandLink action="index"><h:outputText value="Back to examples index" /></h:commandLink>
 <f:verbatim><a href="<%=request.getRequestURI()%>.source">View page source</a></f:verbatim>
 
@@ -11,15 +11,15 @@
 
 <h:form id="theForm">
 <pre>
-    &lt;sakaix:pager totalItems="92" pageSize="20" textItem="students" renderPageSize="false" /&gt;
+    &lt;sakai:pager totalItems="92" pageSize="20" textItem="students" renderPageSize="false" /&gt;
 </pre>
-    <sakaix:pager totalItems="92" pageSize="20" textItem="students" renderPageSize="false" />
+    <sakai:pager totalItems="92" pageSize="20" textItem="students" renderPageSize="false" />
 
  <br />
 
 <pre>
 
-    &lt;sakaix:pager 
+    &lt;sakai:pager 
         totalItems="#{pagerBean.totalItems}" 
         firstItem="#{pagerBean.firstItem}" 
         pageSize="#{pagerBean.pageSize}"
@@ -34,7 +34,7 @@
 	&lt;/h:dataTable&gt;
 </pre>
 
-    <sakaix:pager 
+    <sakai:pager 
         totalItems="#{pagerBean.totalItems}" 
         firstItem="#{pagerBean.firstItem}" 
         pageSize="#{pagerBean.pageSize}"
@@ -51,24 +51,24 @@
  <br />
 	
 <pre>
-    &lt;sakaix:pager totalItems="101" firstItem="49" pageSize="3" pageSizes="3,5,7,11" 
+    &lt;sakai:pager totalItems="101" firstItem="49" pageSize="3" pageSizes="3,5,7,11" 
     renderFirst="false" renderLast="false" 
     textPrev="Previous page" textNext="Next page" immediate="true" 
     textStatus="There are {2} things this pager is managing.  You're looking at {0} to {1} right now." /&gt;
 </pre>
-    <sakaix:pager totalItems="101" firstItem="49" pageSize="3" pageSizes="3,5,7,11" 
+    <sakai:pager totalItems="101" firstItem="49" pageSize="3" pageSizes="3,5,7,11" 
     renderFirst="false" renderLast="false" 
     textPrev="Previous page" textNext="Next page" immediate="true" 
     textStatus="There are {2} things this pager is managing.  You are looking at {0} to {1} right now."
     />
 
 <pre>
-    &lt;sakaix:pager totalItems="0" /&gt;
+    &lt;sakai:pager totalItems="0" /&gt;
 </pre>
-    <sakaix:pager totalItems="0" />
+    <sakai:pager totalItems="0" />
 
  <br />
 
 </h:form>
-</sakaix:view>
+</sakai:view>
 </f:view>

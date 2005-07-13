@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/ToolBarItemRenderer.java,v 1.2 2005/05/10 03:05:08 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -34,13 +33,7 @@ import javax.faces.context.ResponseWriter;
 import org.sakaiproject.jsf.util.JSFDepends;
 import org.sakaiproject.jsf.util.RendererUtil;
 
-/**
- * <p>ToolBarItemRenderer is an HTML renderer for the ...</p>
- * <p>Extends the default renderer to render disabled buttons in a custom way.</p>
- *
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class ToolBarItemRenderer extends JSFDepends.CommandLinkRenderer
 {
   public boolean supportsComponentType(UIComponent component)
@@ -136,7 +129,6 @@ public class ToolBarItemRenderer extends JSFDepends.CommandLinkRenderer
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/renderer/ToolBarItemRenderer.java,v 1.2 2005/05/10 03:05:08 esmiley.stanford.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

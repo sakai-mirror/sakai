@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/example/src/java/example/ViewSourceServlet.java,v 1.1 2005/05/04 21:20:40 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -75,7 +74,6 @@ public class ViewSourceServlet extends HttpServlet
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/example/src/java/example/ViewSourceServlet.java,v 1.1 2005/05/04 21:20:40 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/

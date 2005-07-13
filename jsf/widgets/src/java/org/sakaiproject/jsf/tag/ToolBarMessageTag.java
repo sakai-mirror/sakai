@@ -1,7 +1,6 @@
 /***********************************************************************************
- *
- * $Header: $
- *
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -29,8 +28,7 @@ import javax.faces.webapp.UIComponentTag;
 
 import org.sakaiproject.jsf.util.TagUtil;
 
-/**
- */
+
 public class ToolBarMessageTag extends UIComponentTag
 {
   private String value = null;
@@ -63,7 +61,6 @@ public class ToolBarMessageTag extends UIComponentTag
 }
 
 /**********************************************************************************
-*
- * $Header: $
- *
+* $URL$
+* $Id$
 **********************************************************************************/

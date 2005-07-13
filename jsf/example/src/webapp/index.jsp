@@ -1,6 +1,6 @@
 <%-- $Id: index.jsp,v 1.17 2005/05/12 14:29:52 janderse.umich.edu Exp $ --%>
 <f:view>
-<sakaix:view title="Tag Usage Demos">
+<sakai:view title="Tag Usage Demos">
 <h:commandLink action="index"><h:outputText value="Back to examples index" /></h:commandLink>
 <f:verbatim><a href="<%=request.getRequestURI()%>.source">View page source</a></f:verbatim>
 
@@ -47,5 +47,5 @@
 <f:verbatim><br /></f:verbatim>
 <h:outputText value="*If this tag is broken, its an immediate and definite bug." />
 
-</sakaix:view>
+</sakai:view>
 </f:view>

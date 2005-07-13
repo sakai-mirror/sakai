@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/tag/MessagesTag.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -26,12 +25,7 @@ package org.sakaiproject.jsf.tag;
 
 import org.sakaiproject.jsf.util.JSFDepends;
 
-/**
- * <p>Messages ... </p>
- * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
- */
+
 public class MessagesTag extends JSFDepends.MessagesTag
 {
 	private String value = null;
@@ -43,7 +37,6 @@ public class MessagesTag extends JSFDepends.MessagesTag
 }
 
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/jsf/widgets/src/java/org/sakaiproject/jsf/tag/MessagesTag.java,v 1.1 2005/04/27 14:30:05 janderse.umich.edu Exp $
-*
+* $URL$
+* $Id$
 **********************************************************************************/
