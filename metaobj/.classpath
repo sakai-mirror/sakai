@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="api-impl/src/java"/>
 	<classpathentry kind="src" path="api/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="tool/src/java"/>
-	<classpathentry excluding="**/.DS_Store" kind="src" path="widgets-1/src/java"/>
+	<classpathentry excluding="**/.DS_Store" kind="src" path="widgets/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="devtool/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="example/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="widgets/src/java"/>

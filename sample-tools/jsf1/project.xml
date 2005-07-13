@@ -126,35 +126,17 @@
 
 	end Sun RI dependencies -->
 
-		<!-- for myFaces (myfaces-jsf-api, myfaces-jsf-components, myfaces-jsf-impl)
+		<!-- for myFaces 
 			and dependencies (commons-digester, commons-beanutils)
 			Note: must have listener for myFaces in web.xml -->
 		<dependency>
 			<groupId>myfaces</groupId>
-			<artifactId>myfaces-jsf-api</artifactId>
-			<version>1.0.7-beta</version>
+			<artifactId>myfaces</artifactId>
+			<version>1.0.9</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
-		
-		<dependency>
-			<groupId>myfaces</groupId>
-			<artifactId>myfaces-jsf-components</artifactId>
-			<version>1.0.7-beta</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		
-		<dependency>
-			<groupId>myfaces</groupId>
-			<artifactId>myfaces-jsf-impl</artifactId>
-			<version>1.0.7-beta</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>		
 
 		<dependency>
 			<groupId>commons-digester</groupId>
