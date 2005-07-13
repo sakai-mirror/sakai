@@ -22,7 +22,7 @@
 				#end
 			</tr>
 			#foreach($toolId in $selectedTools)
-				#if ($toolId == "sakai.schedule" || $toolId == "sakai.announcements" || $toolId == "sakai.resources" || $toolId == "sakai.discussion" || $toolId == "sakai.assignment")
+				#if ($toolId == "sakai.schedule" || $toolId == "sakai.announcements" || $toolId == "sakai.resources" || $toolId == "sakai.discussion" || $toolId == "sakai.assignment" || $toolId == "sakai.assignment.grades")
 					<tr>
 						<td>
 							#set($toolTitle = "")
