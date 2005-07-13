@@ -101,7 +101,7 @@ public class AuthZMapTag extends TagSupport {
    }
 
    protected AuthorizationFacade getAuthzFacade() {
-      return (AuthorizationFacade)ComponentManager.getInstance().get("authzManager");
+      return (AuthorizationFacade)ComponentManager.getInstance().get("org.sakaiproject.metaobj.security.AuthorizationFacade");
    }
 
    public String getPrefix() {

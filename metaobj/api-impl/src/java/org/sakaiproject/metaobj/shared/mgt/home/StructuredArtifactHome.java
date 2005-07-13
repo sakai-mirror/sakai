@@ -102,7 +102,7 @@ public class StructuredArtifactHome extends XmlElementHome
          return updateArtifact(object);
       }
    }
-
+ 
    protected Artifact updateArtifact(Artifact object) throws PersistenceException {
       /** todo
       NodeMetadata node = getNodeMetadataService().getNode(object.getId());
@@ -315,10 +315,6 @@ public class StructuredArtifactHome extends XmlElementHome
 
    public boolean isSystemOnly() {
       return false;
-   }
-
-   protected Config getConfig(){
-      return (Config) BeanFactory.getInstance().getBean("ospConfig");
    }
 
    protected WorksiteManager getWorksiteManager() {
