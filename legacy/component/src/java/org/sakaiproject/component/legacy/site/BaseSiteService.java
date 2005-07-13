@@ -731,7 +731,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			Realm realm = RealmService.getRealm(other.getReference());
 			RealmEdit re = RealmService.addRealm(site.getReference(), realm);
-         re.removeUsers(); // just want permissions not users
+
+			// clear the users from the copied realm, adding in the current user as a maintainer
+			re.removeUsers();
+			re.addUserRole(UserDirectoryService.getCurrentUser().getId(), re.getMaintainRole(), true, false);
+
 			RealmService.commitEdit(re);
 		}
 		catch(Exception e)
