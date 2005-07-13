@@ -5397,7 +5397,7 @@ public class SiteAction extends PagedResourceActionII
 			for (int i = 0; i < nbr_sections; i++)
 			{
 				String course = (String) notifySites.get(i);
-				buf.append(rb.getString("java.course2")+" " + course);
+				buf.append(rb.getString("java.course2")+" " + course + "\n");
 			}
 			String content = buf.toString();
 			EmailService.send(from, to, message_subject, content, headerTo, replyTo, null);
