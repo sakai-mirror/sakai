@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="active-tool/src/java"/>
+	<classpathentry excluding="**/.DS_Store" kind="src" path="db/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="active-tool-component/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="component/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="components-loader/src/java"/>
@@ -21,5 +22,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/concurrent/jars/concurrent-1.3.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-fileupload/jars/commons-fileupload-1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
