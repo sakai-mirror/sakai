@@ -11,5 +11,7 @@
 	<classpathentry sourcepath="JAVA_DIR/spring-framework-1.1.5/mock" kind="var" path="MAVEN_REPO/springframework/jars/spring-mock-1.1.5.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/myfaces/jars/myfaces-1.0.9rc3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
