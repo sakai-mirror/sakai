@@ -1873,47 +1873,79 @@ public class PrintFileGenerator
 		StringBuffer contentType,
 		ServletContext servletContext,
 		OutputStream os)
+		throws PermissionException
 	{
 		// Get the user name.
 		String userName = (String) parameters.get(USER_NAME_PARAMETER_NAME);
 
 		// Get the list of calendars.
 		List calendarReferenceList = getCalendarListFromParameters(parameters);
-
-		// Get the type of schedule (daily, weekly, etc.)
-		int scheduleType = getScheduleTypeFromParameterList(parameters);
-
-		// Now get the time range.
-		TimeRange timeRange = getTimeRangeFromParameters(parameters);
-
-		Document document = new DocumentImpl();
-
-		generateXMLDocument(
-			scheduleType,
-			document,
-			timeRange,
-			getDailyStartTimeFromParameters(parameters),
-			calendarReferenceList,
-			userName);
-
-		// Start Debug Code
-
-		//dumpGeneratedXML(servletContext, document);
-		// Leaving this call in, but commented out until PDF generation is
-		// more mature. -- brettm 6/18/2003
-
-		// End Debug Code		
-
-		generatePDF(
-			document,
-			getXSLFileNameForScheduleType(scheduleType, servletContext),
-			os);
-
-		// Return the content type so that it can be set in the response.
-		if (contentType != null)
+		
+		// check if there is any calendar to which the user has acces
+		Iterator it = calendarReferenceList.iterator();
+		int permissionCount = calendarReferenceList.size();
+		while (it.hasNext())
 		{
-			contentType.setLength(0);
-			contentType.append(PDF_MIME_TYPE);
+			String calendarReference = (String) it.next();
+			try
+			{
+				CalendarService.getCalendar(calendarReference);
+			}
+
+			catch (IdUnusedException e)
+			{
+				continue;
+			}
+
+			catch (PermissionException e)
+			{
+				permissionCount--;
+				continue;
+			}
+		}
+		// if no permission to any of the calendars, throw exception and do nothing
+		// the expection will be caught by AccessServlet.doPrintingRequest()
+		if (permissionCount == 0)
+		{
+			throw new PermissionException("", "", "");
+		}
+		else
+		{
+			// Get the type of schedule (daily, weekly, etc.)
+			int scheduleType = getScheduleTypeFromParameterList(parameters);
+	
+			// Now get the time range.
+			TimeRange timeRange = getTimeRangeFromParameters(parameters);
+	
+			Document document = new DocumentImpl();
+	
+			generateXMLDocument(
+				scheduleType,
+				document,
+				timeRange,
+				getDailyStartTimeFromParameters(parameters),
+				calendarReferenceList,
+				userName);
+	
+			// Start Debug Code
+	
+			//dumpGeneratedXML(servletContext, document);
+			// Leaving this call in, but commented out until PDF generation is
+			// more mature. -- brettm 6/18/2003
+	
+			// End Debug Code		
+	
+			generatePDF(
+				document,
+				getXSLFileNameForScheduleType(scheduleType, servletContext),
+				os);
+	
+			// Return the content type so that it can be set in the response.
+			if (contentType != null)
+			{
+				contentType.setLength(0);
+				contentType.append(PDF_MIME_TYPE);
+			}
 		}
 	}
 

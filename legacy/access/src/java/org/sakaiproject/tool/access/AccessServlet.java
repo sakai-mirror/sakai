@@ -104,7 +104,9 @@ public class AccessServlet
 	protected boolean m_ready = false;
 	
 	/** copyright path -- MUST have same value as ResourcesAction.COPYRIGHT_PATH */
-	public static final String COPYRIGHT_PATH = Resource.SEPARATOR + "copyright";	
+	public static final String COPYRIGHT_PATH = Resource.SEPARATOR + "copyright";
+	
+	private static final String MIME_TYPE_DOCUMENT_PLAINTEXT= "text/plain";
 
 	/** init thread - so we don't wait in the actual init() call */
 	public class AccessServletInit
@@ -805,47 +807,86 @@ public class AccessServlet
 			ByteArrayOutputStream outByteStream=new ByteArrayOutputStream();
 			StringBuffer contentType = new StringBuffer();
 
-			PrintFileGenerator.printSchedule(
+			try
+			{
+				PrintFileGenerator.printSchedule(
 				info.m_options,
 				contentType,
 				getServletContext(),
 				outByteStream);
+				
+				// Set the mime type for a PDF
+				res.addHeader("Content-Disposition", "inline; filename=\"schedule.pdf\"");
+				res.setContentType(contentType.toString());
+				res.setContentLength(outByteStream.size());
 
-			// Set the mime type for a PDF
-			res.addHeader("Content-Disposition", "inline; filename=\"schedule.pdf\"");
-			res.setContentType(contentType.toString());
-			res.setContentLength(outByteStream.size());
-
-			if (outByteStream.size() > 0)
-			{
-				// Increase the buffer size for more speed.
-				res.setBufferSize(outByteStream.size());
-			}
-
-			OutputStream out = null;
-			try
-			{
-				out = res.getOutputStream();
 				if (outByteStream.size() > 0)
 				{
-					outByteStream.writeTo(out);
+					// Increase the buffer size for more speed.
+					res.setBufferSize(outByteStream.size());
 				}
-				out.flush();
-				out.close();
-			}
-			catch (Throwable ignore)
-			{
-			}
-			finally
-			{
-				if (out != null)
+
+				OutputStream out = null;
+				try
 				{
-					try
+					out = res.getOutputStream();
+					if (outByteStream.size() > 0)
 					{
-						out.close();
+						outByteStream.writeTo(out);
 					}
-					catch (Throwable ignore)
+					out.flush();
+					out.close();
+				}
+				catch (Throwable ignore)
+				{
+				}
+				finally
+				{
+					if (out != null)
 					{
+						try
+						{
+							out.close();
+						}
+						catch (Throwable ignore)
+						{
+						}
+					}
+				}
+			}
+			catch (PermissionException e)
+			{
+				String msg = "You have no permissions to access the calendar(s).";
+
+				// read the entire content into memory and send it from there
+				byte[] content = msg.getBytes();
+
+				res.setContentType(MIME_TYPE_DOCUMENT_PLAINTEXT);
+				res.addHeader("Content-Disposition", "inline;");
+				res.setContentLength(msg.length());
+
+				OutputStream out = null;
+				try
+				{
+					out = res.getOutputStream();
+					out.write(content);
+					out.flush();
+					out.close();
+				}
+				catch (Throwable ignore)
+				{
+				}
+				finally
+				{
+					if (out != null)
+					{
+						try
+						{
+							out.close();
+						}
+						catch (Throwable ignore)
+						{
+						}
 					}
 				}
 			}
