@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="app/src/java"/>
+	<classpathentry kind="src" path="tool-lib/src/java"/>
+	<classpathentry kind="src" path="tool-lib/src/META-INF"/>
 	<classpathentry kind="src" path="api-impl/src/java"/>
 	<classpathentry kind="src" path="api/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="tool/src/java"/>
