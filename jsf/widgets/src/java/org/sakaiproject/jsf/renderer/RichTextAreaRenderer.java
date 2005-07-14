@@ -224,8 +224,8 @@ public class RichTextAreaRenderer extends Renderer
 	             * clientId +"_textarea\',config);" + "\">" + value + "
 	             * </textarea>\n");
 	             */
-	            writer.write("config.toolbar = [[\'fontname\', \'space\',\'fontsize\', \'space\',\'formatblock\', \'space\',\'bold\', \'italic\', \'underline\',\'separator\',\'strikethrough\', \'subscript\', \'superscript\', \'separator\', \'copy\', \'cut\', \'paste\', \'space\', \'undo\', \'redo\'],");
-	            writer.write("[\'separator\', \'justifyleft\', \'justifycenter\', \'justifyright\', \'justifyfull\', \'separator\',\'outdent\', \'indent\',\'separator\',\'forecolor\', \'hilitecolor\', \'textindicator\', \'separator\',\'inserthorizontalrule\', \'createlink\', \'insertimage\', \'inserttable\', \'htmlmode\', \'separator\',\'popupeditor\', \'separator\', \'showhelp\', \'about\' ],");
+	        	writer.write("config.toolbar = [[\'fontname\', \'space\',\'fontsize\', \'space\',\'forecolor\', \'space\',\'bold\', \'italic\', \'underline\',\'separator\',\'strikethrough\', \'subscript\', \'superscript\', \'separator\',");
+	            writer.write("\'justifyleft\', \'justifycenter\', \'justifyright\', \'justifyfull\', \'separator\'],[\'orderedlist\', \'unorderedlist\',\'outdent\', \'indent\',\'htmlmode\', \'separator\', \'showhelp\', \'about\' ],");
 	            writer.write("];\n");
 	        }
 	        else if (toolbarButtonRows == 3)
