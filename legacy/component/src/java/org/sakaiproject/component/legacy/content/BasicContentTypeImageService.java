@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/content/BasicContentTypeImageService.java,v 1.2 2005/05/28 03:04:33 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -360,8 +359,5 @@ public class BasicContentTypeImageService implements ContentTypeImageService
 
 } // BasicContentTypeImage
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/content/BasicContentTypeImageService.java,v 1.2 2005/05/28 03:04:33 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

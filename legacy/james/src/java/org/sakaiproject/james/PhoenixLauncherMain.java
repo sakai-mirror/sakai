@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/james/src/java/org/sakaiproject/james/PhoenixLauncherMain.java,v 1.1 2005/05/29 00:30:25 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -302,8 +301,5 @@ public final class PhoenixLauncherMain
 	}
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/james/src/java/org/sakaiproject/james/PhoenixLauncherMain.java,v 1.1 2005/05/29 00:30:25 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

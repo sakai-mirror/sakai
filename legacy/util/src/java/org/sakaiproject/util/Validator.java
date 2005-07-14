@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/Validator.java,v 1.4 2005/06/06 15:31:31 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -818,8 +817,5 @@ public class Validator
 
 }	// Validator
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/Validator.java,v 1.4 2005/06/06 15:31:31 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

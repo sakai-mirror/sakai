@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/authentication-component/src/java/org/sakaiproject/component/common/authentication/LegacyAuthnComponent.java,v 1.2 2005/05/05 11:22:09 csev.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -138,6 +137,5 @@ public class LegacyAuthnComponent implements AuthenticationManager
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/legacy/authentication-component/src/java/org/sakaiproject/component/common/authentication/LegacyAuthnComponent.java,v 1.2 2005/05/05 11:22:09 csev.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

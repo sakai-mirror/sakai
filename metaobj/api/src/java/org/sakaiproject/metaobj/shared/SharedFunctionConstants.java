@@ -1,5 +1,5 @@
 /*
- * $Header: /opt/CVS/osp2.x/HomesService/src/java/org/theospi/metaobj/shared/SharedFunctionConstants.java,v 1.3 2005/06/30 17:34:18 chmaurer Exp $
+ * $URL$
  * $Revision$
  * $Date$
  */

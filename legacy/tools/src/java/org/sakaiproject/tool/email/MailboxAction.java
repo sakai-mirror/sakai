@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/email/MailboxAction.java,v 1.6 2005/06/04 02:39:20 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -1220,8 +1219,5 @@ extends PagedResourceActionII
 
 }   // MailboxAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/email/MailboxAction.java,v 1.6 2005/06/04 02:39:20 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

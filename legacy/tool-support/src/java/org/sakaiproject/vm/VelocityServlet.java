@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/vm/VelocityServlet.java,v 1.2 2005/04/14 02:17:51 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -196,8 +195,5 @@ public class VelocityServlet
 
 } // class VelocityServlet
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/vm/VelocityServlet.java,v 1.2 2005/04/14 02:17:51 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

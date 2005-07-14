@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/uuid-component/src/java/org/sakaiproject/component/common/uuid/UuidManagerCommonsImpl.java,v 1.1 2005/05/11 15:42:51 lance.indiana.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -63,8 +62,5 @@ public class UuidManagerCommonsImpl implements UuidManager
   }
 }
 
-/**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/uuid-component/src/java/org/sakaiproject/component/common/uuid/UuidManagerCommonsImpl.java,v 1.1 2005/05/11 15:42:51 lance.indiana.edu Exp $
- *
- **********************************************************************************/
+
+

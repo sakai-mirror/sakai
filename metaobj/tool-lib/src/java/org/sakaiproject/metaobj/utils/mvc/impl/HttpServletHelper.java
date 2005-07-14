@@ -37,7 +37,7 @@
  * to the Original or Derivative Works without specific, written prior permission. Title to copyright
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
- * $Header: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/utils/mvc/impl/HttpServletHelper.java,v 1.2 2005/07/01 13:12:55 jellis Exp $
+ * $URL: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/utils/mvc/impl/HttpServletHelper.java,v 1.2 2005/07/01 13:12:55 jellis Exp $
  * $Revision: 1.2 $
  * $Date: 2005/07/01 13:12:55 $
  */

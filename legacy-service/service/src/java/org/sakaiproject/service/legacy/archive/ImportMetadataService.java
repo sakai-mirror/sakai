@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/archive/ImportMetadataService.java,v 1.2 2005/06/06 22:03:57 lance.indiana.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -56,8 +55,4 @@ public interface ImportMetadataService
    */
   public boolean hasMaintainRole(String username,  Document siteDoc);
 }
-/**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/archive/ImportMetadataService.java,v 1.2 2005/06/06 22:03:57 lance.indiana.edu Exp $
- *
- ***********************************************************************************/
+

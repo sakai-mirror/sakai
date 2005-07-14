@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/site/DbSiteService.java,v 1.4 2005/05/12 01:38:24 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -1755,8 +1754,5 @@ public class DbSiteService
 
 }	// DbSiteService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/site/DbSiteService.java,v 1.4 2005/05/12 01:38:24 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

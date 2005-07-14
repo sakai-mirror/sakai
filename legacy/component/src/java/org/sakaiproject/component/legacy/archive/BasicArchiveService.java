@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/archive/BasicArchiveService.java,v 1.9 2005/06/04 17:48:48 zqian.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -1282,8 +1281,5 @@ public class BasicArchiveService
 
 }	// BasicArchiveService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/archive/BasicArchiveService.java,v 1.9 2005/06/04 17:48:48 zqian.umich.edu Exp $
-*
-**********************************************************************************/
+
+

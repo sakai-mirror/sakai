@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/site/ResourceVector.java,v 1.2 2005/04/21 03:24:04 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -121,6 +120,5 @@ public class ResourceVector extends Vector
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/site/ResourceVector.java,v 1.2 2005/04/21 03:24:04 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

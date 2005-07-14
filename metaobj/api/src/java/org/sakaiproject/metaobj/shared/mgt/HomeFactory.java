@@ -37,7 +37,7 @@
  * to the Original or Derivative Works without specific, written prior permission. Title to copyright
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
- * $Header: /opt/CVS/osp2.x/HomesService/src/java/org/theospi/metaobj/shared/mgt/HomeFactory.java,v 1.1 2005/06/28 13:09:17 chmaurer Exp $
+ * $URL$
  * $Revision$
  * $Date$
  */

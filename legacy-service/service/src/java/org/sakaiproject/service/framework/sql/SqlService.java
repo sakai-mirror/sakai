@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/framework/sql/SqlService.java,v 1.2 2005/05/19 18:42:50 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -239,8 +238,5 @@ public interface SqlService
 	void ddl(ClassLoader loader, String resource);
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/framework/sql/SqlService.java,v 1.2 2005/05/19 18:42:50 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

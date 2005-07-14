@@ -1,5 +1,6 @@
 /**********************************************************************************
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/sitesetup/SiteAction.java,v 1.36 2005/06/13 18:09:35 zqian.umich.edu Exp $
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -12639,6 +12640,5 @@ public class SiteAction extends PagedResourceActionII
 
 }	// SiteAction
 
-/**********************************************************************************
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/sitesetup/SiteAction.java,v 1.36 2005/06/13 18:09:35 zqian.umich.edu Exp $
-**********************************************************************************/
+
+

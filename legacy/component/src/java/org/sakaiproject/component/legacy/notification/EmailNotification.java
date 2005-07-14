@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/notification/EmailNotification.java,v 1.5 2005/06/06 18:46:45 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -499,8 +498,5 @@ public class EmailNotification
 
 }   // EmailNotification
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/notification/EmailNotification.java,v 1.5 2005/06/06 18:46:45 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

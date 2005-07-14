@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/common-composite-component-data/src/java/org/sakaiproject/component/common/superstructure/NodeImpl.java,v 1.1 2005/05/11 15:41:14 lance.indiana.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -288,8 +287,5 @@ public class NodeImpl extends TypeablePersistableImpl implements Node,
 
 }
 
-/**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/common-composite-component-data/src/java/org/sakaiproject/component/common/superstructure/NodeImpl.java,v 1.1 2005/05/11 15:41:14 lance.indiana.edu Exp $
- *
- **********************************************************************************/
+
+

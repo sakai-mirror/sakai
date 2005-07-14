@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/preference/DbPreferencesService.java,v 1.1 2005/04/06 02:42:37 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -177,8 +176,5 @@ public class DbPreferencesService
 
 }   // DbPreferencesService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/preference/DbPreferencesService.java,v 1.1 2005/04/06 02:42:37 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

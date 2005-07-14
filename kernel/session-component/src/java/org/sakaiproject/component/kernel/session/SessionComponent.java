@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/kernel/session-component/src/java/org/sakaiproject/component/kernel/session/SessionComponent.java,v 1.20 2005/05/30 03:39:09 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -1147,6 +1146,5 @@ public class SessionComponent implements SessionManager
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/kernel/session-component/src/java/org/sakaiproject/component/kernel/session/SessionComponent.java,v 1.20 2005/05/30 03:39:09 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

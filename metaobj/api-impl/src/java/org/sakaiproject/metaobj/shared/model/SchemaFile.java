@@ -1,5 +1,5 @@
 /*
- * $Header: /opt/CVS/osp2.x/homesComponent/src/java/org/theospi/metaobj/shared/model/SchemaFile.java,v 1.1 2005/06/29 18:36:41 chmaurer Exp $
+ * $URL$
  * $Revision$
  * $Date$
  */

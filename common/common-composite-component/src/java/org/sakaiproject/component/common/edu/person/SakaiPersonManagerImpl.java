@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/common-composite-component/src/java/org/sakaiproject/component/common/edu/person/SakaiPersonManagerImpl.java,v 1.5 2005/05/13 18:56:30 lance.indiana.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -518,8 +517,5 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
 
 }
 
-/**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/common-composite-component/src/java/org/sakaiproject/component/common/edu/person/SakaiPersonManagerImpl.java,v 1.5 2005/05/13 18:56:30 lance.indiana.edu Exp $
- *
- **********************************************************************************/
+
+

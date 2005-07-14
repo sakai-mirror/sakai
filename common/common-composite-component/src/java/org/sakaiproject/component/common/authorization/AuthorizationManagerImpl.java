@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/common-composite-component/src/java/org/sakaiproject/component/common/authorization/AuthorizationManagerImpl.java,v 1.2 2005/05/13 17:22:17 lance.indiana.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -484,8 +483,5 @@ public class AuthorizationManagerImpl extends HibernateDaoSupport implements
 
 }
 
-/**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/common-composite-component/src/java/org/sakaiproject/component/common/authorization/AuthorizationManagerImpl.java,v 1.2 2005/05/13 17:22:17 lance.indiana.edu Exp $
- *
- **********************************************************************************/
+
+

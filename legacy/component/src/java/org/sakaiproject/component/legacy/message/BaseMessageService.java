@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/message/BaseMessageService.java,v 1.2 2005/04/24 00:09:45 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -3105,8 +3104,5 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 } // MessageService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/message/BaseMessageService.java,v 1.2 2005/04/24 00:09:45 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

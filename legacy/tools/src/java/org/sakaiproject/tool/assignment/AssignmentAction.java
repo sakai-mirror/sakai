@@ -1,7 +1,6 @@
-/**************************************************************************"********
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/assignment/AssignmentAction.java,v 1.16 2005/06/07 15:27:50 zqian.umich.edu Exp $
-*
+/**********************************************************************************
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -6721,8 +6720,5 @@ extends PagedResourceActionII
 	}	//	doRead_add_submission_form
 }	// class AssignmentAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/assignment/AssignmentAction.java,v 1.16 2005/06/07 15:27:50 zqian.umich.edu Exp $
-*
-* *********************************************************************************/
+
+

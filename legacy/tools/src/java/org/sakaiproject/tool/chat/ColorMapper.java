@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/chat/ColorMapper.java,v 1.1 2005/04/14 20:22:11 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -137,8 +136,5 @@ public class ColorMapper
 	
 }	// ColorMapper
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/chat/ColorMapper.java,v 1.1 2005/04/14 20:22:11 ggolden.umich.edu Exp $
-*
-***********************************************************************************/
+
+

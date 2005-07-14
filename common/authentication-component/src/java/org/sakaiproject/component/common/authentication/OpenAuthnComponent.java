@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/authentication-component/src/java/org/sakaiproject/component/common/authentication/OpenAuthnComponent.java,v 1.2 2005/04/08 01:53:52 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -119,6 +118,5 @@ public class OpenAuthnComponent implements AuthenticationManager
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/common/authentication-component/src/java/org/sakaiproject/component/common/authentication/OpenAuthnComponent.java,v 1.2 2005/04/08 01:53:52 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

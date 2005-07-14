@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/test/comp-test-components2/src/java/org/sakaiproject/component/test/components/Component5.java,v 1.3 2005/03/07 04:16:35 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -90,6 +89,5 @@ public class Component5 implements Api5
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/test/comp-test-components2/src/java/org/sakaiproject/component/test/components/Component5.java,v 1.3 2005/03/07 04:16:35 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

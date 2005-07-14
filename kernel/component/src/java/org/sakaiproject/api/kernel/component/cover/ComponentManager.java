@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/kernel/component/src/java/org/sakaiproject/api/kernel/component/cover/ComponentManager.java,v 1.7 2005/03/07 03:15:26 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -105,6 +104,5 @@ public class ComponentManager
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/kernel/component/src/java/org/sakaiproject/api/kernel/component/cover/ComponentManager.java,v 1.7 2005/03/07 03:15:26 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

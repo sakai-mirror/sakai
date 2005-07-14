@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/realm/SeriesIterator.java,v 1.1 2005/04/06 02:42:37 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -85,8 +84,5 @@ public class SeriesIterator
 
 }	// SeriesIterator
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/realm/SeriesIterator.java,v 1.1 2005/04/06 02:42:37 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

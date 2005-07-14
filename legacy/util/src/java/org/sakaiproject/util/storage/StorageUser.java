@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/storage/StorageUser.java,v 1.1 2005/04/12 03:11:39 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -161,8 +160,5 @@ public interface StorageUser
 
 }   // StorageUser
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/storage/StorageUser.java,v 1.1 2005/04/12 03:11:39 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

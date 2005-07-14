@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/sitebrowser/SiteBrowserAction.java,v 1.6 2005/05/23 18:42:09 suiyy.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -604,8 +603,5 @@ public class SiteBrowserAction
 
 }	// SiteBrowserAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/sitebrowser/SiteBrowserAction.java,v 1.6 2005/05/23 18:42:09 suiyy.umich.edu Exp $
-*
-**********************************************************************************/
+
+

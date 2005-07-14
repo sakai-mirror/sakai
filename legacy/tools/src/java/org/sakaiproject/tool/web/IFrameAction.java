@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/web/IFrameAction.java,v 1.9 2005/06/06 20:29:08 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -433,8 +432,5 @@ public class IFrameAction
 
 }	// IFrameAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/web/IFrameAction.java,v 1.9 2005/06/06 20:29:08 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/chat/BaseChatService.java,v 1.1 2005/04/13 23:33:37 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -578,8 +577,5 @@ public abstract class BaseChatService
 
 }	// BaseChatService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/chat/BaseChatService.java,v 1.1 2005/04/13 23:33:37 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

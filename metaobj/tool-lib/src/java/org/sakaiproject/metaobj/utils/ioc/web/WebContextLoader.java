@@ -1,5 +1,5 @@
 /*
- * $Header: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/utils/ioc/web/WebContextLoader.java,v 1.2 2005/06/29 18:21:26 jellis Exp $
+ * $URL: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/utils/ioc/web/WebContextLoader.java,v 1.2 2005/06/29 18:21:26 jellis Exp $
  * $Revision: 1.2 $
  * $Date: 2005/06/29 18:21:26 $
  */

@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/news/BasicNewsService.java,v 1.1 2005/04/13 03:16:51 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -891,6 +890,5 @@ public class BasicNewsService implements NewsService
 
 } // BasicNewsService
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/news/BasicNewsService.java,v 1.1 2005/04/13 03:16:51 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

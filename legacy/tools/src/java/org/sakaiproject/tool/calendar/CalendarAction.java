@@ -1,10 +1,9 @@
 /**********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
- * $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/calendar/CalendarAction.java,v 1.12 2005/06/14 20:08:47 suiyy.umich.edu Exp $
- *
- ***********************************************************************************
- * *
-* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+ * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 * 
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -6994,8 +6993,5 @@ extends VelocityPortletStateAction
 
 }   // CalendarAction
 
-/**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/calendar/CalendarAction.java,v 1.12 2005/06/14 20:08:47 suiyy.umich.edu Exp $
- *
- **********************************************************************************/
+
+

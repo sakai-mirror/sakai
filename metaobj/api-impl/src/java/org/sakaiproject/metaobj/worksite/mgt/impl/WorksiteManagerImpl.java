@@ -37,7 +37,7 @@
  * to the Original or Derivative Works without specific, written prior permission. Title to copyright
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
- * $Header: /opt/CVS/osp2.x/homesComponent/src/java/org/theospi/metaobj/worksite/mgt/impl/WorksiteManagerImpl.java,v 1.3 2005/07/05 20:15:18 jellis Exp $
+ * $URL$
  * $Revision$
  * $Date$
  */

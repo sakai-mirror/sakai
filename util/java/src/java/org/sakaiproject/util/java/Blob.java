@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/util/java/src/java/org/sakaiproject/util/java/Blob.java,v 1.2 2005/05/12 16:38:03 lance.indiana.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -2245,8 +2244,5 @@ class BlobNode implements Cloneable, Serializable {
 
 } // end BlobNode
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/util/java/src/java/org/sakaiproject/util/java/Blob.java,v 1.2 2005/05/12 16:38:03 lance.indiana.edu Exp $
-*
-**********************************************************************************/
+
+

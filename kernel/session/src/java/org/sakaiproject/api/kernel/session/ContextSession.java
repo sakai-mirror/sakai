@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/kernel/session/src/java/org/sakaiproject/api/kernel/session/ContextSession.java,v 1.1 2005/03/28 04:10:03 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -151,6 +150,5 @@ public interface ContextSession
 	void setAttribute(String name, Object value);
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/kernel/session/src/java/org/sakaiproject/api/kernel/session/ContextSession.java,v 1.1 2005/03/28 04:10:03 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

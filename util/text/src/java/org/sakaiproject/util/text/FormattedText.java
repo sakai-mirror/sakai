@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/util/text/src/java/org/sakaiproject/util/text/FormattedText.java,v 1.1 2005/05/12 01:39:07 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -1199,8 +1198,5 @@ private static final char[] M_htmlCharacterEntityReferencesUnicode =
 
 }	// class FormattedText
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/util/text/src/java/org/sakaiproject/util/text/FormattedText.java,v 1.1 2005/05/12 01:39:07 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

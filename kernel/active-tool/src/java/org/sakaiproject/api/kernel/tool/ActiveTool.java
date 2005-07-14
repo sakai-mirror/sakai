@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/kernel/active-tool/src/java/org/sakaiproject/api/kernel/tool/ActiveTool.java,v 1.9 2005/04/18 14:23:33 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -84,6 +83,5 @@ public interface ActiveTool extends Tool
 	void help(HttpServletRequest req, HttpServletResponse res, String toolContext, String toolPath);
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/kernel/active-tool/src/java/org/sakaiproject/api/kernel/tool/ActiveTool.java,v 1.9 2005/04/18 14:23:33 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

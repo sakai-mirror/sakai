@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/ContentHostingComparator.java,v 1.1 2005/04/13 19:20:46 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -114,8 +113,5 @@ public class ContentHostingComparator
 	
 }	// ClassResourcesComparator
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/ContentHostingComparator.java,v 1.1 2005/04/13 19:20:46 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

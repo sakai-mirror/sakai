@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/authentication/src/java/org/sakaiproject/api/common/authentication/AuthenticationException.java,v 1.3 2005/05/12 16:36:40 lance.indiana.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -50,6 +49,5 @@ public class AuthenticationException extends Exception
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/common/authentication/src/java/org/sakaiproject/api/common/authentication/AuthenticationException.java,v 1.3 2005/05/12 16:36:40 lance.indiana.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

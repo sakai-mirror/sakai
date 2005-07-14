@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/calendar/ExclusionRecurrenceRule.java,v 1.1 2005/04/13 23:33:36 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -209,8 +208,5 @@ public class ExclusionRecurrenceRule
 
 }	// ExclusionRecurrenceRule
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/calendar/ExclusionRecurrenceRule.java,v 1.1 2005/04/13 23:33:36 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

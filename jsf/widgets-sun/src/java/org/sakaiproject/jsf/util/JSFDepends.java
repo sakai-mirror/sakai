@@ -1,7 +1,7 @@
-/***********************************************************************************
+/**********************************************************************************
  * $URL$
-* $Id$
- ***********************************************************************************
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -46,8 +46,6 @@ public class JSFDepends
 	  public static class CommandLinkRenderer extends com.sun.faces.renderkit.html_basic.CommandLinkRenderer {}
 }
 
-/**********************************************************************************
-* $URL$
-* $Id$
-**********************************************************************************/
+
+
 

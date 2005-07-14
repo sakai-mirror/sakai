@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/adaptor/src/java/org/sakaiproject/component/adaptor/UsageSessionServiceAdaptor.java,v 1.8 2005/06/02 04:41:46 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -1294,6 +1293,5 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/legacy/adaptor/src/java/org/sakaiproject/component/adaptor/UsageSessionServiceAdaptor.java,v 1.8 2005/06/02 04:41:46 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

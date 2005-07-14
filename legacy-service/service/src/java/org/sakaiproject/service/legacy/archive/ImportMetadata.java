@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/archive/ImportMetadata.java,v 1.1 2005/06/03 22:58:11 lance.indiana.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -91,8 +90,4 @@ public interface ImportMetadata
    */
   public void setSakaiTool(String sakaiTool);
 }
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/archive/ImportMetadata.java,v 1.1 2005/06/03 22:58:11 lance.indiana.edu Exp $
-*
-***********************************************************************************/
+

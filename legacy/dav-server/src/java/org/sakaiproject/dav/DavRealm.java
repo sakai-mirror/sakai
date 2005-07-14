@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/dav-server/src/java/org/sakaiproject/dav/DavRealm.java,v 1.1 2005/05/29 02:18:17 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -144,8 +143,5 @@ public final class DavRealm extends RealmBase
 	}
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/dav-server/src/java/org/sakaiproject/dav/DavRealm.java,v 1.1 2005/05/29 02:18:17 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

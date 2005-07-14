@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/kernel/session/src/java/org/sakaiproject/api/kernel/session/ToolSession.java,v 1.3 2005/03/28 04:09:05 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -150,6 +149,5 @@ public interface ToolSession
 	void setAttribute(String name, Object value);
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/kernel/session/src/java/org/sakaiproject/api/kernel/session/ToolSession.java,v 1.3 2005/03/28 04:09:05 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

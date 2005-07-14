@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/adaptor/src/java/org/sakaiproject/component/adaptor/IdServiceAdaptor.java,v 1.1 2005/04/06 03:05:11 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -95,6 +94,5 @@ public class IdServiceAdaptor implements IdService
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/legacy/adaptor/src/java/org/sakaiproject/component/adaptor/IdServiceAdaptor.java,v 1.1 2005/04/06 03:05:11 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

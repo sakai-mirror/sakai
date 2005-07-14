@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/kernel/component/src/java/org/sakaiproject/api/kernel/component/ComponentManager.java,v 1.6 2005/03/07 03:15:26 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -88,8 +87,5 @@ public interface ComponentManager
 	void close();
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/kernel/component/src/java/org/sakaiproject/api/kernel/component/ComponentManager.java,v 1.6 2005/03/07 03:15:26 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

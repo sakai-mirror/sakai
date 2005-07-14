@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/dav-common/src/java/org/sakaiproject/dav/DavPrincipal.java,v 1.1 2005/05/29 02:18:18 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -80,8 +79,5 @@ public class DavPrincipal implements Principal
 	}
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/dav-common/src/java/org/sakaiproject/dav/DavPrincipal.java,v 1.1 2005/05/29 02:18:18 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

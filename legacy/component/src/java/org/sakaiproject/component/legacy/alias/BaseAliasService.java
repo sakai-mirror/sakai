@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/alias/BaseAliasService.java,v 1.3 2005/05/12 01:38:24 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -1415,8 +1414,5 @@ public abstract class BaseAliasService
 
 }   // BaseAliasService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/alias/BaseAliasService.java,v 1.3 2005/05/12 01:38:24 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

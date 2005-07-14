@@ -37,7 +37,7 @@
  * to the Original or Derivative Works without specific, written prior permission. Title to copyright
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
- * $Header: /opt/CVS/osp2.x/homesComponent/src/java/org/theospi/utils/xml/SchemaFactory.java,v 1.1 2005/06/29 18:36:41 chmaurer Exp $
+ * $URL$
  * $Revision$
  * $Date$
  */

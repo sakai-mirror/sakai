@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/high-util/courier/src/java/org/sakaiproject/util/courier/EventObservingCourier.java,v 1.2 2005/05/12 23:49:00 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -133,6 +132,5 @@ public class EventObservingCourier extends ObservingCourier implements SessionBi
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/high-util/courier/src/java/org/sakaiproject/util/courier/EventObservingCourier.java,v 1.2 2005/05/12 23:49:00 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

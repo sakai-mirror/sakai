@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/cheftool/ToolServlet.java,v 1.3 2005/06/03 14:20:49 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -510,8 +509,5 @@ public abstract class ToolServlet extends VmServlet
 
 } // class ToolServlet
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/cheftool/ToolServlet.java,v 1.3 2005/06/03 14:20:49 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

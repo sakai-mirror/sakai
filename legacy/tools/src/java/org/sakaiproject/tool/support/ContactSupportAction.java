@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/support/ContactSupportAction.java,v 1.2 2005/04/18 14:23:18 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -459,8 +458,5 @@ public class ContactSupportAction extends VelocityPortletPaneledAction
 	
 }   // ContactSupportAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/support/ContactSupportAction.java,v 1.2 2005/04/18 14:23:18 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

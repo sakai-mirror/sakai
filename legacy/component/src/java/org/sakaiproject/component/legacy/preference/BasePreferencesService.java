@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/preference/BasePreferencesService.java,v 1.2 2005/04/25 03:23:19 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -1127,8 +1126,5 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 
 } // BasePreferencesService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/preference/BasePreferencesService.java,v 1.2 2005/04/25 03:23:19 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

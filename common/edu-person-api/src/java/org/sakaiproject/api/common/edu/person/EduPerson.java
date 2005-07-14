@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/edu-person-api/src/java/org/sakaiproject/api/common/edu/person/EduPerson.java,v 1.1 2005/05/10 21:23:24 lance.indiana.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -174,8 +173,5 @@ public interface EduPerson extends InetOrgPerson
   public void setPrincipalName(String principalName);
 }
 
-/**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/edu-person-api/src/java/org/sakaiproject/api/common/edu/person/EduPerson.java,v 1.1 2005/05/10 21:23:24 lance.indiana.edu Exp $
- *
- **********************************************************************************/
+
+

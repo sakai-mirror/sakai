@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/kernel/id-component/src/java/org/sakaiproject/component/kernel/id/UuidV4IdComponent.java,v 1.4 2005/03/11 02:10:55 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -84,6 +83,5 @@ public class UuidV4IdComponent implements IdManager
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/kernel/id-component/src/java/org/sakaiproject/component/kernel/id/UuidV4IdComponent.java,v 1.4 2005/03/11 02:10:55 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

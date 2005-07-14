@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/framework/email/BasicEmailService.java,v 1.3 2005/05/14 23:54:50 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -331,8 +330,5 @@ public class BasicEmailService implements EmailService
 	}
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/framework/email/BasicEmailService.java,v 1.3 2005/05/14 23:54:50 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

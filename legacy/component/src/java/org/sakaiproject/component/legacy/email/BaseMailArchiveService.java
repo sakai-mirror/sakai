@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/email/BaseMailArchiveService.java,v 1.1 2005/04/13 23:33:38 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -871,8 +870,5 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 
 } // BaseMailArchiveService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/email/BaseMailArchiveService.java,v 1.1 2005/04/13 23:33:38 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

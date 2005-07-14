@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/admin/MemoryAction.java,v 1.1 2005/04/13 19:20:44 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -106,8 +105,5 @@ public class MemoryAction
 
 }	// MemoryAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/admin/MemoryAction.java,v 1.1 2005/04/13 19:20:44 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

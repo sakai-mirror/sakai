@@ -37,7 +37,7 @@
  * to the Original or Derivative Works without specific, written prior permission. Title to copyright
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
- * $Header: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/metaobj/security/mgt/impl/AddPermissionTool.java,v 1.1 2005/06/28 13:31:53 chmaurer Exp $
+ * $URL: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/metaobj/security/mgt/impl/AddPermissionTool.java,v 1.1 2005/06/28 13:31:53 chmaurer Exp $
  * $Revision: 1.1 $
  * $Date: 2005/06/28 13:31:53 $
  */

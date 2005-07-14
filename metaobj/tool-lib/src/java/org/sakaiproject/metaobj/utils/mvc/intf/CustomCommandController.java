@@ -3,7 +3,7 @@ package org.sakaiproject.metaobj.utils.mvc.intf;
 import java.util.Map;
 
 /*
- * $Header: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/utils/mvc/intf/CustomCommandController.java,v 1.1 2005/06/28 13:31:53 chmaurer Exp $
+ * $URL: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/utils/mvc/intf/CustomCommandController.java,v 1.1 2005/06/28 13:31:53 chmaurer Exp $
  * $Revision: 1.1 $
  * $Date: 2005/06/28 13:31:53 $
  */

@@ -43,7 +43,7 @@ import java.io.InputStream;
  * to the Original or Derivative Works without specific, written prior permission. Title to copyright
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
- * $Header
+ * $URL
  * $Revision
  * $Date
  */

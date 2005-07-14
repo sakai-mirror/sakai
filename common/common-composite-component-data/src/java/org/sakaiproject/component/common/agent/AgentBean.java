@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/common-composite-component-data/src/java/org/sakaiproject/component/common/agent/AgentBean.java,v 1.2 2005/05/13 20:10:19 lance.indiana.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -178,8 +177,5 @@ public class AgentBean extends NodeAwareTypeablePersistableImpl implements
   }
 }
 
-/**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/common-composite-component-data/src/java/org/sakaiproject/component/common/agent/AgentBean.java,v 1.2 2005/05/13 20:10:19 lance.indiana.edu Exp $
- *
- **********************************************************************************/
+
+

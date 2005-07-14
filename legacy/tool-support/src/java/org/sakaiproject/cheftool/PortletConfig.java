@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/cheftool/PortletConfig.java,v 1.3 2005/04/18 14:23:18 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -260,8 +259,5 @@ public class PortletConfig implements Map
 	}
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/cheftool/PortletConfig.java,v 1.3 2005/04/18 14:23:18 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

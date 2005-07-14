@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/cheftool/NewPagedResourceAction.java,v 1.3 2005/05/12 23:48:49 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -713,8 +712,5 @@ public abstract class NewPagedResourceAction
 
 }   // PagedResourceAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/cheftool/NewPagedResourceAction.java,v 1.3 2005/05/12 23:48:49 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

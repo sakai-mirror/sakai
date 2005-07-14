@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/kernel/tool-component/src/java/org/sakaiproject/component/kernel/tool/ToolComponent.java,v 1.6 2005/05/26 20:19:27 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -334,6 +333,5 @@ public class ToolComponent implements ToolManager
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/kernel/tool-component/src/java/org/sakaiproject/component/kernel/tool/ToolComponent.java,v 1.6 2005/05/26 20:19:27 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

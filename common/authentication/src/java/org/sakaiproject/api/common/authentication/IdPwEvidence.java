@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/authentication/src/java/org/sakaiproject/api/common/authentication/IdPwEvidence.java,v 1.1 2005/04/06 19:59:01 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -49,6 +48,5 @@ public interface IdPwEvidence extends Evidence
 	String getPassword();
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/common/authentication/src/java/org/sakaiproject/api/common/authentication/IdPwEvidence.java,v 1.1 2005/04/06 19:59:01 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

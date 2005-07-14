@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/announcement/AnnouncementAction.java,v 1.9 2005/06/02 18:38:02 suiyy.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -3984,8 +3983,5 @@ extends PagedResourceActionII
 	
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/announcement/AnnouncementAction.java,v 1.9 2005/06/02 18:38:02 suiyy.umich.edu Exp $
-*
-***********************************************************************************/
+
+

@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/cheftool/VelocityPortletPaneledAction.java,v 1.16 2005/05/19 01:10:02 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -983,6 +982,5 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 
 } // class VelocityPortletPaneledAction
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/cheftool/VelocityPortletPaneledAction.java,v 1.16 2005/05/19 01:10:02 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

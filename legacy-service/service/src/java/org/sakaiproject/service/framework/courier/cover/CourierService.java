@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/framework/courier/cover/CourierService.java,v 1.2 2005/05/12 23:48:06 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -103,8 +102,5 @@ public class CourierService
 	}
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/framework/courier/cover/CourierService.java,v 1.2 2005/05/12 23:48:06 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

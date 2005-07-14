@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/framework/config/cover/ServerConfigurationService.java,v 1.3 2005/05/24 00:15:54 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -264,8 +263,5 @@ public class ServerConfigurationService
 	}
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/framework/config/cover/ServerConfigurationService.java,v 1.3 2005/05/24 00:15:54 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

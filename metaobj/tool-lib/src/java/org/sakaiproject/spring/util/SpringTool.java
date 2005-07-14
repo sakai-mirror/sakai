@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /opt/CVS/osp2.x/HomesTool/src/java/org/sakaiproject/spring/util/SpringTool.java,v 1.3 2005/06/28 22:35:21 chmaurer Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -329,5 +328,5 @@ public class SpringTool extends HttpServlet
 
 
 /**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /opt/CVS/osp2.x/HomesTool/src/java/org/sakaiproject/spring/util/SpringTool.java,v 1.3 2005/06/28 22:35:21 chmaurer Exp $
+ * $URL: /opt/CVS/osp2.x/HomesTool/src/java/org/sakaiproject/spring/util/SpringTool.java,v 1.3 2005/06/28 22:35:21 chmaurer Exp $
  *************************************************************************************************************************************************************************************************************************************************************/

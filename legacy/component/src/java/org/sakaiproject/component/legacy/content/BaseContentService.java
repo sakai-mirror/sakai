@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/content/BaseContentService.java,v 1.10 2005/06/05 23:19:50 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -4490,8 +4489,5 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 } // BaseContentService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/content/BaseContentService.java,v 1.10 2005/06/05 23:19:50 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/resource/BaseResourceProperties.java,v 1.3 2005/05/12 01:38:29 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -779,6 +778,5 @@ public class BaseResourceProperties implements ResourceProperties
 
 } // BaseResourceProperties
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/resource/BaseResourceProperties.java,v 1.3 2005/05/12 01:38:29 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

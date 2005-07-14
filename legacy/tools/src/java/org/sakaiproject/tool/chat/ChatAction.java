@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/chat/ChatAction.java,v 1.13 2005/06/06 02:19:26 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -1476,8 +1475,5 @@ public class ChatAction
 
 }   // class ChatAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/chat/ChatAction.java,v 1.13 2005/06/06 02:19:26 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

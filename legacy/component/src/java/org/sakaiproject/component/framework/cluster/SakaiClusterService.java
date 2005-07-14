@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/framework/cluster/SakaiClusterService.java,v 1.1 2005/04/05 20:19:24 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -500,8 +499,5 @@ public class SakaiClusterService implements ClusterService
 	}
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/framework/cluster/SakaiClusterService.java,v 1.1 2005/04/05 20:19:24 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

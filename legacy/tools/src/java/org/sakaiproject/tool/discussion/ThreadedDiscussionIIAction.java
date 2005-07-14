@@ -1,7 +1,6 @@
-/*********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/discussion/ThreadedDiscussionIIAction.java,v 1.17 2005/06/15 14:28:48 zqian.umich.edu Exp $
-*
+/**********************************************************************************
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -3962,8 +3961,5 @@ public class ThreadedDiscussionIIAction
 	
 }	// ThreadedDiscussionIIAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/discussion/ThreadedDiscussionIIAction.java,v 1.17 2005/06/15 14:28:48 zqian.umich.edu Exp $
-*
-**********************************************************************************/
+
+

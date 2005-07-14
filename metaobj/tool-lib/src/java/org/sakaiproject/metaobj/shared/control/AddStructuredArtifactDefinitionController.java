@@ -37,7 +37,7 @@
  * to the Original or Derivative Works without specific, written prior permission. Title to copyright
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
- * $Header: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/metaobj/shared/control/AddStructuredArtifactDefinitionController.java,v 1.5 2005/07/05 20:17:50 jellis Exp $
+ * $URL: /opt/CVS/osp2.x/HomesTool/src/java/org/theospi/metaobj/shared/control/AddStructuredArtifactDefinitionController.java,v 1.5 2005/07/05 20:17:50 jellis Exp $
  * $Revision: 1.5 $
  * $Date: 2005/07/05 20:17:50 $
  */

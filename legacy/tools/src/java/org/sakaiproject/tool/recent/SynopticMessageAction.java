@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/recent/SynopticMessageAction.java,v 1.7 2005/05/20 17:25:30 suiyy.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -739,8 +738,5 @@ public class SynopticMessageAction
 
 }   // SynopticMessageAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/recent/SynopticMessageAction.java,v 1.7 2005/05/20 17:25:30 suiyy.umich.edu Exp $
-*
-**********************************************************************************/
+
+

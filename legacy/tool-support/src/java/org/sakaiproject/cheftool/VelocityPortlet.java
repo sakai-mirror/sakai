@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/cheftool/VelocityPortlet.java,v 1.1 2005/04/12 03:11:38 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -56,8 +55,5 @@ public class VelocityPortlet
 	{
 	}
 }
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tool-support/src/java/org/sakaiproject/cheftool/VelocityPortlet.java,v 1.1 2005/04/12 03:11:38 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

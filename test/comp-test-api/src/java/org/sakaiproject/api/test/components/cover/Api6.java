@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/test/comp-test-api/src/java/org/sakaiproject/api/test/components/cover/Api6.java,v 1.1 2005/05/17 02:29:52 csev.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -68,8 +67,5 @@ public class Api6
 
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/test/comp-test-api/src/java/org/sakaiproject/api/test/components/cover/Api6.java,v 1.1 2005/05/17 02:29:52 csev.umich.edu Exp $
-*
-**********************************************************************************/
+
+

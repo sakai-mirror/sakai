@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/admin/PresenceToolAction.java,v 1.3 2005/05/13 03:00:57 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -272,8 +271,5 @@ public class PresenceToolAction
 
 }	// PresenceToolAction
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/admin/PresenceToolAction.java,v 1.3 2005/05/13 03:00:57 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

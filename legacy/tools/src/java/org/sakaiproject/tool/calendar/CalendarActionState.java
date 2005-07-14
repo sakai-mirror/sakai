@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/calendar/CalendarActionState.java,v 1.1 2005/04/14 20:22:09 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -690,8 +689,5 @@ public class CalendarActionState
 
 }	// class CalendarActionState
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/calendar/CalendarActionState.java,v 1.1 2005/04/14 20:22:09 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

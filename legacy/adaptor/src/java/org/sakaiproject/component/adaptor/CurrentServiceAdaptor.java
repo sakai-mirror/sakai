@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/adaptor/src/java/org/sakaiproject/component/adaptor/CurrentServiceAdaptor.java,v 1.1 2005/04/04 20:26:06 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -117,6 +116,5 @@ public class CurrentServiceAdaptor implements CurrentService
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/legacy/adaptor/src/java/org/sakaiproject/component/adaptor/CurrentServiceAdaptor.java,v 1.1 2005/04/04 20:26:06 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

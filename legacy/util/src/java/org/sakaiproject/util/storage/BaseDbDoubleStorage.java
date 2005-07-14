@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/storage/BaseDbDoubleStorage.java,v 1.2 2005/05/12 01:38:24 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -1459,8 +1458,5 @@ public class BaseDbDoubleStorage
 	}	
 }   // BaseDbDoubleStorage
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/storage/BaseDbDoubleStorage.java,v 1.2 2005/05/12 01:38:24 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

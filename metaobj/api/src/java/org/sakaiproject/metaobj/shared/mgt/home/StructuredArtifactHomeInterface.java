@@ -1,8 +1,8 @@
 /**********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
- * $Header: /opt/CVS/osp2.x/HomesService/src/java/org/theospi/metaobj/shared/mgt/home/StructuredArtifactHomeInterface.java,v 1.3 2005/06/30 17:34:18 chmaurer Exp $
- *
- ***********************************************************************************
  * Copyright (c) 2005 the r-smart group, inc.
  **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.home;

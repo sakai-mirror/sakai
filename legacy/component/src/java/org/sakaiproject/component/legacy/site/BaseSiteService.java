@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/site/BaseSiteService.java,v 1.18 2005/05/25 03:52:26 zqian.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -4539,6 +4538,5 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/site/BaseSiteService.java,v 1.18 2005/05/25 03:52:26 zqian.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

@@ -37,7 +37,7 @@
  * to the Original or Derivative Works without specific, written prior permission. Title to copyright
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
- * $Header: /opt/CVS/osp2.x/HomesService/src/java/org/theospi/metaobj/shared/model/Agent.java,v 1.2 2005/06/29 18:38:46 chmaurer Exp $
+ * $URL$
  * $Revision$
  * $Date$
  */

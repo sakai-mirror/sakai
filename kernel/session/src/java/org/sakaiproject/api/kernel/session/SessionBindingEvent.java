@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/kernel/session/src/java/org/sakaiproject/api/kernel/session/SessionBindingEvent.java,v 1.2 2005/03/07 03:15:29 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -60,6 +59,5 @@ public interface SessionBindingEvent
 	Object getValue();
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/kernel/session/src/java/org/sakaiproject/api/kernel/session/SessionBindingEvent.java,v 1.2 2005/03/07 03:15:29 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

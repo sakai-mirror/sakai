@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/CalendarUtil.java,v 1.1 2005/04/14 02:17:52 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -334,8 +333,5 @@ public class CalendarUtil
 
 }   // CalendarUtil
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/CalendarUtil.java,v 1.1 2005/04/14 02:17:52 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

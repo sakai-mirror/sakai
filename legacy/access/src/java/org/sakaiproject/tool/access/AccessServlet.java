@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/access/src/java/org/sakaiproject/tool/access/AccessServlet.java,v 1.6 2005/06/10 10:16:35 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -1112,8 +1111,5 @@ public class AccessServlet
 
 }   // AccessServlet
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/access/src/java/org/sakaiproject/tool/access/AccessServlet.java,v 1.6 2005/06/10 10:16:35 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

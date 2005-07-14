@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/event/BaseEventTrackingService.java,v 1.2 2005/05/18 15:44:32 lance.indiana.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -495,8 +494,5 @@ public abstract class BaseEventTrackingService
 
 }	// BaseEventTrackingService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/event/BaseEventTrackingService.java,v 1.2 2005/05/18 15:44:32 lance.indiana.edu Exp $
-*
-**********************************************************************************/
+
+

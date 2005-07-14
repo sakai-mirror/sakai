@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/kernel/active-tool/src/java/org/sakaiproject/api/kernel/tool/ActiveToolManager.java,v 1.1 2005/03/10 03:49:40 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -73,6 +72,5 @@ public interface ActiveToolManager extends ToolManager
 	ActiveTool getActiveTool(String id);
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/kernel/active-tool/src/java/org/sakaiproject/api/kernel/tool/ActiveToolManager.java,v 1.1 2005/03/10 03:49:40 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

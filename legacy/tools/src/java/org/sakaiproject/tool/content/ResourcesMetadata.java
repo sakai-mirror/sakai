@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/content/ResourcesMetadata.java,v 1.3 2005/05/17 20:41:11 jimeng.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -870,8 +869,5 @@ public class ResourcesMetadata
 
 }	// ResourcesMetadata
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/tools/src/java/org/sakaiproject/tool/content/ResourcesMetadata.java,v 1.3 2005/05/17 20:41:11 jimeng.umich.edu Exp $
-*
-**********************************************************************************/
+
+

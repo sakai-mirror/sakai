@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/time/Time.java,v 1.1 2005/05/12 15:45:34 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -161,8 +160,5 @@ public interface Time extends Cloneable, Comparable
 	TimeBreakdown breakdownLocal();
 }
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/time/Time.java,v 1.1 2005/05/12 15:45:34 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

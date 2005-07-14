@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/event/BasicEventTracking.java,v 1.1 2005/04/05 19:21:13 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -70,8 +69,5 @@ public class BasicEventTracking
 
 }	// BasicEventTracking
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/event/BasicEventTracking.java,v 1.1 2005/04/05 19:21:13 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

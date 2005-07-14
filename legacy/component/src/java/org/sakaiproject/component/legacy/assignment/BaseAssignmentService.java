@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/assignment/BaseAssignmentService.java,v 1.6 2005/06/03 20:18:09 zqian.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -6823,8 +6822,5 @@ public abstract class BaseAssignmentService
 
 } // BaseAssignmentService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/assignment/BaseAssignmentService.java,v 1.6 2005/06/03 20:18:09 zqian.umich.edu Exp $
-*
-**********************************************************************************/
+
+

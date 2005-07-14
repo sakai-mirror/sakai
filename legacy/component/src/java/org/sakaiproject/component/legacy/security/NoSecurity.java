@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/security/NoSecurity.java,v 1.1 2005/04/06 02:42:38 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -201,8 +200,5 @@ public class NoSecurity
 		
 }	// NoSecurity
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/security/NoSecurity.java,v 1.1 2005/04/06 02:42:38 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

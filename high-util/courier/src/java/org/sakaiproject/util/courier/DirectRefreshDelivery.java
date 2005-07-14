@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/high-util/courier/src/java/org/sakaiproject/util/courier/DirectRefreshDelivery.java,v 1.2 2005/05/12 18:53:52 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -70,6 +69,5 @@ public class DirectRefreshDelivery extends BaseDelivery
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/high-util/courier/src/java/org/sakaiproject/util/courier/DirectRefreshDelivery.java,v 1.2 2005/05/12 18:53:52 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/discussion/DiscussionChannel.java,v 1.2 2005/06/15 14:15:41 zqian.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -190,8 +189,5 @@ public interface DiscussionChannel
 
 }	// DiscussionChannel
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy-service/service/src/java/org/sakaiproject/service/legacy/discussion/DiscussionChannel.java,v 1.2 2005/06/15 14:15:41 zqian.umich.edu Exp $
-*
-**********************************************************************************/
+
+

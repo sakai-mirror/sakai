@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/legacy/adaptor/src/java/org/sakaiproject/component/adaptor/ComponentManagerAdaptor.java,v 1.1 2005/04/04 13:33:56 ggolden.umich.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -193,6 +192,5 @@ public class ComponentManagerAdaptor implements org.sakaiproject.service.framewo
 	}
 }
 
-/**************************************************************************************************************************************************************************************************************************************************************
- * $Header: /cvs/sakai2/legacy/adaptor/src/java/org/sakaiproject/component/adaptor/ComponentManagerAdaptor.java,v 1.1 2005/04/04 13:33:56 ggolden.umich.edu Exp $
- *************************************************************************************************************************************************************************************************************************************************************/
+
+

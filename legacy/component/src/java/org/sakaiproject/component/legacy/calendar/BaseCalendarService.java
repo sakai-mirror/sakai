@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/calendar/BaseCalendarService.java,v 1.3 2005/05/12 01:38:27 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -3480,8 +3479,5 @@ public abstract class BaseCalendarService
 
 } // BaseCalendarService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/calendar/BaseCalendarService.java,v 1.3 2005/05/12 01:38:27 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

@@ -37,7 +37,7 @@
  * to the Original or Derivative Works without specific, written prior permission. Title to copyright
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
- * $Header: /opt/CVS/osp2.x/homesComponent/src/java/org/theospi/metaobj/shared/mgt/impl/PortalParamManagerImpl.java,v 1.2 2005/06/30 20:36:54 jellis Exp $
+ * $URL$
  * $Revision$
  * $Date$
  */

@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/SortedIterator.java,v 1.1 2005/04/14 20:22:10 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -98,8 +97,5 @@ public class SortedIterator
 
 }	// SortedIterator
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/util/src/java/org/sakaiproject/util/SortedIterator.java,v 1.1 2005/04/14 20:22:10 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

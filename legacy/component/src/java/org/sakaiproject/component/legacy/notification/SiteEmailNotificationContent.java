@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/notification/SiteEmailNotificationContent.java,v 1.2 2005/05/12 01:38:27 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -283,8 +282,5 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 
 } // SiteEmailNotificationContent
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/notification/SiteEmailNotificationContent.java,v 1.2 2005/05/12 01:38:27 ggolden.umich.edu Exp $
-*
-**********************************************************************************/
+
+

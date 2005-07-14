@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/discussion/BaseDiscussionService.java,v 1.6 2005/06/15 14:25:00 zqian.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -1632,8 +1631,5 @@ public abstract class BaseDiscussionService
 
 }	// BaseDiscussionService
 
-/**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/component/src/java/org/sakaiproject/component/legacy/discussion/BaseDiscussionService.java,v 1.6 2005/06/15 14:25:00 zqian.umich.edu Exp $
-*
-**********************************************************************************/
+
+

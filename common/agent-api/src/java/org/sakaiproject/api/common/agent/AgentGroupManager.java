@@ -1,8 +1,7 @@
 /**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/agent-api/src/java/org/sakaiproject/api/common/agent/AgentGroupManager.java,v 1.4 2005/05/13 21:50:25 lance.indiana.edu Exp $
- *
- ***********************************************************************************
+ * $URL$
+ * $Id$
+ **********************************************************************************
  *
  * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
@@ -253,8 +252,5 @@ public interface AgentGroupManager extends DefaultContainer, UuidTypeResolvable
 
 }
 
-/**********************************************************************************
- *
- * $Header: /cvs/sakai2/common/agent-api/src/java/org/sakaiproject/api/common/agent/AgentGroupManager.java,v 1.4 2005/05/13 21:50:25 lance.indiana.edu Exp $
- *
- **********************************************************************************/
+
+
