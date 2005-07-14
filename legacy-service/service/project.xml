@@ -33,6 +33,18 @@
 			<version>${pom.currentVersion}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-id</artifactId>
+			<version>${pom.currentVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>2.1.8</version>
+		</dependency>
+
 		<!-- for email -->
 		<dependency>
 			<groupId>javamail</groupId>

@@ -32,11 +32,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import org.sakaiproject.api.common.uuid.UuidManager;
+import org.sakaiproject.api.kernel.id.IdManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
@@ -48,6 +49,7 @@ import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.ContentResourceEdit;
+import org.sakaiproject.service.legacy.content.LockManager;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
@@ -93,6 +95,17 @@ public class DbContentService
 	* Constructors, Dependencies and their setter methods
 	*******************************************************************************/
 
+    /** Dependency: LockManager */
+    LockManager m_lockManager;
+
+    /** 
+     * Dependency: LockManager 
+     * @param service The LockManager 
+     */
+    public void setLockManager(LockManager lockManager) {
+        m_lockManager=lockManager;
+    }
+    
 	/** Dependency: SqlService */
 	protected SqlService m_sqlService = null;
 
@@ -258,26 +271,13 @@ public class DbContentService
 
 		try
 		{
-			String sql = "select UUID from CONTENT_RESOURCE where RESOURCE_ID=?";
-			Object[] fields = new Object[1];
-			fields[0] = id;
-			
-			List result=m_sqlService.dbRead(sql, fields, null);
-
-			if (result!=null) {
-				Iterator iter=result.iterator();
-				if (iter.hasNext()) {
-					uuid=(String)iter.next();
-				}
-			}
-			
-			if (uuid!=null) {
-				return uuid;
-			}
+		    uuid=findUuid(id);
+            
+            if (uuid!=null) return uuid;
 
 			//UUID not found, so create one and store it
 			
-			UuidManager uuidManager=(UuidManager)ComponentManager.get(UuidManager.class);
+			IdManager uuidManager=(IdManager)ComponentManager.get(IdManager.class);
 			uuid=uuidManager.createUuid();
 			
 			// get a connection for the updates
@@ -285,8 +285,8 @@ public class DbContentService
 			boolean wasCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
 
-			sql = "update CONTENT_RESOURCE set UUID = ? where RESOURCE_ID = ?";
-			fields = new Object[2];
+			String sql = "update CONTENT_RESOURCE set UUID = ? where RESOURCE_ID = ?";
+			Object[] fields = new Object[2];
 			fields[0] = uuid;
 			fields[1] = id;
 			m_sqlService.dbWrite(connection, sql, fields);
@@ -302,7 +302,29 @@ public class DbContentService
 		
 		return uuid;
 	}
-	
+
+    /**
+     * private utility method to search for UUID for given id 
+     */
+    
+    private String findUuid(String id) {
+        String sql = "select UUID from CONTENT_RESOURCE where RESOURCE_ID=?";
+        Object[] fields = new Object[1];
+        fields[0] = id;
+        
+        String uuid=null;
+        List result=m_sqlService.dbRead(sql, fields, null);
+
+        if (result!=null) {
+            Iterator iter=result.iterator();
+            if (iter.hasNext()) {
+                uuid=(String)iter.next();
+            }
+        }
+        
+        return uuid;
+    }
+    
 	/**
 	 * For a given UUID, attempt to lookup and return the corresponding id (URI)
 	 */
@@ -1015,6 +1037,39 @@ public class DbContentService
 	public class Counter
 	{
 		public int value = 0;
+	}
+
+
+	public Collection getLocks(String id) {
+	    return m_lockManager.getLocks(id);
+	}
+
+	public void lockObject(String id, String lockId, String subject, boolean system) {
+        m_logger.warn("lockObject has been called on: "+id);
+        try {
+            m_lockManager.lockObject(id,lockId,subject,system);
+        } catch (Exception e) {
+            m_logger.warn("lockObject failed: "+e);
+            e.printStackTrace();
+            return;
+        }
+        m_logger.warn("lockObject succeeded");
+	}
+
+	public void removeLock(String id, String lockId) {
+        m_lockManager.removeLock(id,lockId);
+	}
+
+	public boolean isLocked(String id) {
+        return m_lockManager.isLocked(id);
+	}
+
+	public boolean containsLockedNode(String id) {
+	    throw new RuntimeException("containsLockedNode has not been implemented");
+	}
+
+	public void removeAllLocks(String id) {
+        m_lockManager.removeAllLocks(id);
 	}
 
 }	// DbCachedContentService

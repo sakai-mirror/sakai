@@ -636,6 +636,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	*/
 	protected void unlock(String lock, String id) throws PermissionException
 	{
+        
 		lock = convertLockIfDropbox(lock, id);
 
 		// make a reference from the resource id, if specified
@@ -644,7 +645,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		{
 			ref = getReference(id);
 		}
-
+        
 		if (!SecurityService.unlock(lock, ref))
 		{
 			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, ref);
@@ -1755,8 +1756,16 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			return;
 		}
 
+        String id=edit.getId();
+        String uuid=this.getUuid(id);
+        
+        if (uuid!=null && this.isLocked(uuid)) { 
+            //TODO: WebDAV locks need to be more sophisticated than this
+            throw new PermissionException(UsageSessionService.getSessionUserId(), "remove", edit.getReference());
+        }
+        
 		// check security (throws if not permitted)
-		unlock(EVENT_RESOURCE_REMOVE, edit.getId());
+		unlock(EVENT_RESOURCE_REMOVE, id);
 
 		// complete the edit
 		m_storage.removeResource(edit);
@@ -2077,7 +2086,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	* @exception OverQuotaException if this would result in being over quota (the edit is then cancled).
 	*/
 	public void commitResource(ContentResourceEdit edit, int priority) throws OverQuotaException
-	{
+	{        
+        
 		// check for closed edit
 		if (!edit.isActiveEdit())
 		{

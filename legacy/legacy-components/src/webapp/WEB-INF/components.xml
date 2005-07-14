@@ -110,6 +110,7 @@
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="notificationService"><ref bean="org.sakaiproject.service.legacy.notification.NotificationService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+		<property name="lockManager"><ref bean="org.sakaiproject.component.legacy.content.LockManager"/></property>
  		<property name="collectionTableName"><value>CONTENT_COLLECTION</value></property>
  		<property name="resourceTableName"><value>CONTENT_RESOURCE</value></property>
  		<property name="resourceBodyTableName"><value>CONTENT_RESOURCE_BODY_BINARY</value></property>
@@ -118,6 +119,9 @@
 		<property name="bodyVolumes"><null/></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
  		<property name="siteQuota"><value>1048576</value></property>
+ 		
+ 		
+ 		
 	</bean>
 
 	<bean id="org.sakaiproject.service.legacy.content.ContentTypeImageService"
@@ -640,5 +644,44 @@
 		<property name="provider"><ref bean="org.sakaiproject.service.legacy.user.UserDirectoryProvider"/></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
 	</bean>
+
+	 <bean id="lockManagerSessionFactory" 
+		 parent="org.sakaiproject.springframework.orm.hibernate.SessionFactoryBase"> 
+		 <property name="mappingResources"> 
+			 <list> 
+				 <value>org/sakaiproject/service/legacy/content/LockManager.hbm.xml</value> 
+			 </list> 
+		 </property> 
+	</bean> 
+	
+	<bean id="lockTransactionManager"
+		class="org.springframework.orm.hibernate.HibernateTransactionManager">
+		<property name="sessionFactory">
+		<ref	 bean="lockManagerSessionFactory" />
+		</property>
+	</bean>
+	 
+	 <bean id="org.sakaiproject.component.legacy.content.LockManagerTarget" 
+		 class="org.sakaiproject.component.legacy.content.LockManagerImpl" 
+		 singleton="true"> 
+		 <property name="sessionFactory"><ref bean="lockManagerSessionFactory"/></property> 
+	 </bean> 
+	
+	 <bean id="org.sakaiproject.component.legacy.content.LockManager" 
+		 class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" 
+		 singleton="true">
+		 <property name="transactionManager">
+			 <ref bean="lockTransactionManager"/> 
+		 </property>
+		 <property name="target"> 
+			 <ref bean="org.sakaiproject.component.legacy.content.LockManagerTarget"/> 
+		 </property> 
+		 <property name="transactionAttributes"> 
+			 <props> 
+				 <prop key="*">PROPAGATION_REQUIRED</prop> 
+			 </props>
+		 </property> 
+	 </bean> 
+
 
 </beans>

@@ -26,6 +26,7 @@
 package org.sakaiproject.service.legacy.content;
 
 // imports
+import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
@@ -627,6 +628,72 @@ public interface ContentHostingService
 	 * @return A log of status messages from the archive.
 	 */
 	String archiveResources(ReferenceVector resources, Document doc, Stack stack, String archivePath);
+	
+
+    /**
+     * Gets all locks set on the resource with this local resource id.
+     * @param id
+     * @return
+     */
+     Collection getLocks(String id);
+
+    /**
+     *
+     * Locks an object (resource or collection) with specified local resource id.
+     *
+     * Initially, the WebDAV concepts of expiration, exclusive vs shared, and inheritable are not supported;
+     * instead, all locks are exclusive. Programmatically created locks may be designated as "system" locks,
+     * in which case, users may not remove them via WebDAV lock management tools.
+     *
+     * Since only exclusive locks are permitted, a user can only lock a resource if it is not already locked;
+     * however, multiple system locks can be put in place, because system locks imply that no user is permitted
+     * to change the resource.
+     *
+     *
+     * @param id
+     * @param lockId
+     * @param subject - the reason for this lock e.g. "being graded"
+     * @param system - when true, it is not possible for a user to remove this lock
+     *
+     */
+     public void lockObject(String id, String lockId, String subject, boolean system /* Date expiration , boolean exclusive, boolean inheritable*/);
+
+
+    /**
+     * Removes lock with given Id from object (resource or collection) specified by this local resource id.
+     * Note that other locks could exist, so it does not necessarily fully unlock the object.
+     *
+     * @param id
+     * @param lockId
+     */
+     public void removeLock(String id, String lockId);
+
+    /**
+     *
+     * Convenience method to determine whether any locks exist for the Resource or Collection with the given
+     * local resource id
+     *
+     * @param id
+     * @return true when there are one or more locks on the given id
+     */
+     public boolean isLocked(String id);
+
+    /**
+     *
+     * Returns true if this Collection or any of its contents has a lock.
+     * It is likely much more efficient than recursively iterating
+     * through all of the contained resources.
+     *
+     * @param id
+     * @return
+     */
+     public boolean containsLockedNode(String id);
+
+    /**
+     * Convenience method that permanently removes any lock associated with id
+     * @param id
+     */
+     public void removeAllLocks(String id);
 
 }	// ContentHostingService
 

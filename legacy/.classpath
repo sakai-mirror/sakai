@@ -35,5 +35,9 @@
 	<classpathentry kind="var" path="MAVEN_REPO/tomcat/jars/jmx-tomcat.5.5.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/tomcat/jars/naming-resources-5.5.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/tomcat/jars/catalina-optional-5.5.9.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-orm-1.1.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-dao-1.1.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-core-1.1.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
