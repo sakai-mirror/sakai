@@ -2374,8 +2374,7 @@ public abstract class BaseAssignmentService
 				byte[] buf = new byte[1024];
 				int len;
 				
-				// Create the ZIP file
-				String outFilename = "outfile.zip";				
+				// Create the ZIP file				
 				String submittersName = "";
 				int count = 1;
 				while (submissions.hasNext())
@@ -2387,14 +2386,16 @@ public abstract class BaseAssignmentService
 					if (s.getSubmitted())
 					{
 						User[] submitters = s.getSubmitters();
+						String submittersString = "";
 						for (int i = 0; i < submitters.length; i++)
 						{
 							if (i>0)
 							{
-								submittersName = submittersName.concat("; ");
+								submittersString = submittersString.concat("; ");
 							}
-							submittersName = submittersName.concat(submitters[i].getSortName());
+							submittersString = submittersString.concat(submitters[i].getSortName());
 						}
+						submittersName = submittersName.concat(submittersString);
 						submittedText= s.getSubmittedText();
 
 						boolean added = false;
@@ -2408,7 +2409,7 @@ public abstract class BaseAssignmentService
 								if (ac.getTypeOfSubmission() != Assignment.ATTACHMENT_ONLY_ASSIGNMENT_SUBMISSION)
 								{
 									//create the text file only when a text submission is allowed
-									ZipEntry textEntry = new ZipEntry(submittersName + "submissionText");
+									ZipEntry textEntry = new ZipEntry(submittersName + submittersString + "_submissionText.txt");
 									in = (new Blob(FormattedText.convertFormattedTextToPlaintext(submittedText).getBytes())).inputStream();
 									out.putNextEntry(textEntry);
 									
