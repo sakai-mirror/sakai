@@ -37,13 +37,18 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ActiveTool;
+import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.util.web.Web;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 
 
 public class SpringTool extends HttpServlet
 {
    /** Our log (commons). */
    private static Log M_log = LogFactory.getLog(SpringTool.class);
+
+   private static final String HELPER_EXT = ".helper";
 
    /** The file extension to get to JSF. */
    protected static final String JSF_EXT = ".osp";
@@ -121,6 +126,11 @@ public class SpringTool extends HttpServlet
 
       // build up the target that will be dispatched to
       String target = req.getPathInfo();
+
+      // see if we have a helper request
+      if (sendToHelper(req, res, target)) {
+         return;
+      }
 
       // see if we have a resource request - i.e. a path with an extension, and one that is not the JSF_EXT
       if (isResourceRequest(target))
@@ -221,6 +231,39 @@ public class SpringTool extends HttpServlet
       req.removeAttribute(URL_EXT);
    }
 
+   protected boolean sendToHelper(HttpServletRequest req, HttpServletResponse res, String target) {
+      String path = req.getPathInfo();
+      if (path == null) path = "/";
+
+      // 0 parts means the path was just "/", otherwise parts[0] = "", parts[1] = item id, parts[2] if present is "edit"...
+      String[] parts = path.split("/");
+
+      if (parts.length < 2) {
+         return false;
+      }
+
+      if (!parts[1].endsWith(HELPER_EXT)) {
+         return false;
+      }
+
+      ToolSession toolSession = SessionManager.getCurrentToolSession();
+
+      // calc helper id
+      int posEnd = parts[1].lastIndexOf(".");
+
+      String helperId = target.substring(1, posEnd + 1);
+      ActiveTool helperTool = ActiveToolManager.getActiveTool(helperId);
+
+      toolSession.setAttribute(helperTool.getId() + Tool.HELPER_DONE_URL,
+            req.getContextPath() + req.getServletPath() + computeDefaultTarget());
+
+      String context = req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 2);
+      String toolPath = Web.makePath(parts, 2, parts.length);
+      helperTool.help(req, res, context, toolPath);
+
+      return true; // was handled as helper call
+   }
+
    /**
     * Respond to requests.
     * 
@@ -283,6 +326,24 @@ public class SpringTool extends HttpServlet
       }
 
       M_log.info("init: default: " + m_default + " path: " + m_path);
+   }
+
+   protected boolean isHelperRequest(String path) {
+      // we need some path
+      if ((path == null) || (path.length() == 0)) return false;
+
+      // we need a last dot
+      int pos = path.lastIndexOf(".");
+      if (pos == -1) return false;
+
+      // we need that last dot to be the end of the path, not burried in the path somewhere (i.e. no more slashes after the last dot)
+      String ext = path.substring(pos);
+      if (ext.indexOf("/") != -1) return false;
+
+      // we need the ext to not be the JSF_EXT
+      if (ext.equals(HELPER_EXT)) return true;
+
+      return false;
    }
 
    /**

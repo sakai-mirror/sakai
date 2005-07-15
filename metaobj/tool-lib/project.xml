@@ -45,12 +45,18 @@
 		</properties>
     </dependency>
     
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
-      <version>${pom.currentVersion}</version>
-    </dependency>
-    
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-active-tool</artifactId>
+       <version>${pom.currentVersion}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-tool</artifactId>
+       <version>${pom.currentVersion}</version>
+     </dependency>
+
 	<dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
