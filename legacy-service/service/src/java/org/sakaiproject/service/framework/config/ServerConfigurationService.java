@@ -106,13 +106,6 @@ public interface ServerConfigurationService
 	String getGatewaySiteId();
 
 	/**
-	 * Access the URL to use as a redirect when the user needs to login.
-	 * 
-	 * @return The URL to use as a redirect when the user needs to login.
-	 */
-	String getLoginUrl();
-
-	/**
 	 * Access the URL to use as a redirect when the user has logged out.
 	 * 
 	 * @return The URL to use as a redirect when the user has logged out.

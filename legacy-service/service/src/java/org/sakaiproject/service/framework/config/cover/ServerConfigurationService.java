@@ -136,15 +136,6 @@ public class ServerConfigurationService
 		return service.getGatewaySiteId();
 	}
 
-	public static java.lang.String getLoginUrl()
-	{
-		org.sakaiproject.service.framework.config.ServerConfigurationService service = getInstance();
-		if (service == null)
-			return null;
-
-		return service.getLoginUrl();
-	}
-
 	public static java.lang.String getLoggedOutUrl()
 	{
 		org.sakaiproject.service.framework.config.ServerConfigurationService service = getInstance();

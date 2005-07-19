@@ -102,6 +102,12 @@ public class ComponentManager
 	{
 		getInstance().close();
 	}
+
+	public static java.util.Properties getConfig()
+	{
+		return getInstance().getConfig();
+	}
+
 }
 
 

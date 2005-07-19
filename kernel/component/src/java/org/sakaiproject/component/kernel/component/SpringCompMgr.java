@@ -24,8 +24,12 @@
 package org.sakaiproject.component.kernel.component;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -37,7 +41,6 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 
 /**
  * <p>
@@ -64,6 +67,9 @@ public class SpringCompMgr implements ComponentManager
 	/** A count of the # of child AC's that call us parent. */
 	protected int m_childCount = 0;
 
+	/** A set of properties used when configuring components. */
+	protected Properties m_config = null;
+
 	/**
 	 * Initialize.
 	 * 
@@ -81,7 +87,7 @@ public class SpringCompMgr implements ComponentManager
 	/**
 	 * Initialize the component manager.
 	 */
-public void init()
+	public void init()
 	{
 		if (m_ac != null) return;
 
@@ -92,26 +98,26 @@ public void init()
 		loadComponents();
 
 		// find a path to sakai files on the app server - if not set, set it
-		String path = System.getProperty("sakai.home");
-		if (path == null)
+		String sakaiHomePath = System.getProperty("sakai.home");
+		if (sakaiHomePath == null)
 		{
 			String catalina = getCatalina();
 			if (catalina != null)
 			{
-				path = catalina + "/sakai/";
+				sakaiHomePath = catalina + "/sakai/";
 			}
 		}
 
 		// strange case...
-		if (path == null)
+		if (sakaiHomePath == null)
 		{
-			path = "/usr/local/sakai/";
+			sakaiHomePath = "/usr/local/sakai/";
 		}
-		if (!path.endsWith("/")) path = path + "/";
+		if (!sakaiHomePath.endsWith("/")) sakaiHomePath = sakaiHomePath + "/";
 
 		// make sure it's set properly
-		System.setProperty("sakai.home", path);
-		
+		System.setProperty("sakai.home", sakaiHomePath);
+
 		// check for the security home
 		String securityPath = System.getProperty("sakai.security");
 		if (securityPath != null)
@@ -121,20 +127,16 @@ public void init()
 			System.setProperty("sakai.security", securityPath);
 		}
 
-		// post process the definitions from components with override property settings
-		// - these get injected into the beans
-		// - we run sakai.properties first, then local.properties, so that values defined in local.properties can override those in sakai.properties.
+		// Collect values from all the properties files: the later ones loaded override settings from prior.
+		m_config = new Properties();
+
+		// start with the distributed defaults from the classpath
 		try
 		{
-			File f = new File(path + "sakai.properties");
-			if (f.exists())
+			ClassPathResource rsrc = new ClassPathResource("org/sakaiproject/config/sakai.properties");
+			if (rsrc.exists())
 			{
-				PropertyOverrideConfigurer pushProcessor = new PropertyOverrideConfigurer();
-				pushProcessor.setLocation(new FileSystemResource(f));
-				pushProcessor.setIgnoreInvalidKeys(true);
-				pushProcessor.postProcessBeanFactory(m_ac.getBeanFactory());
-
-				promotePropertiesToSystem(pushProcessor);
+				m_config.load(rsrc.getInputStream());
 			}
 		}
 		catch (Throwable t)
@@ -142,17 +144,14 @@ public void init()
 			M_log.warn(t.toString());
 		}
 
+		// TODO: deprecated placeholder.properties from sakai.home - remove in a later version of Sakai -ggolden
 		try
 		{
-			File f = new File(path + "local.properties");
+			File f = new File(sakaiHomePath + "placeholder.properties");
 			if (f.exists())
 			{
-				PropertyOverrideConfigurer pushProcessor = new PropertyOverrideConfigurer();
-				pushProcessor.setLocation(new FileSystemResource(f));
-				pushProcessor.setIgnoreInvalidKeys(true);
-				pushProcessor.postProcessBeanFactory(m_ac.getBeanFactory());
-
-				promotePropertiesToSystem(pushProcessor);
+				m_config.load(new FileInputStream(f));
+				M_log.warn("Deprecated use of placeholder.properties.  This file will not be read in future versions of Sakai.  Merge its content with the sakai.properties file.");
 			}
 		}
 		catch (Throwable t)
@@ -160,17 +159,41 @@ public void init()
 			M_log.warn(t.toString());
 		}
 
+		// next layer in the sakai.propeties file from the sakai.home
+		try
+		{
+			File f = new File(sakaiHomePath + "sakai.properties");
+			if (f.exists())
+			{
+				m_config.load(new FileInputStream(f));
+			}
+		}
+		catch (Throwable t)
+		{
+			M_log.warn(t.toString());
+		}
+
+		// add then the local.properties from sakai.home
+		try
+		{
+			File f = new File(sakaiHomePath + "local.properties");
+			if (f.exists())
+			{
+				m_config.load(new FileInputStream(f));
+			}
+		}
+		catch (Throwable t)
+		{
+			M_log.warn(t.toString());
+		}
+
+		// add last the security.properties
 		try
 		{
 			File f = new File(securityPath + "security.properties");
 			if (f.exists())
 			{
-				PropertyOverrideConfigurer pushProcessor = new PropertyOverrideConfigurer();
-				pushProcessor.setLocation(new FileSystemResource(f));
-				pushProcessor.setIgnoreInvalidKeys(true);
-				pushProcessor.postProcessBeanFactory(m_ac.getBeanFactory());
-				
-				promotePropertiesToSystem(pushProcessor);
+				m_config.load(new FileInputStream(f));
 			}
 		}
 		catch (Throwable t)
@@ -178,40 +201,47 @@ public void init()
 			M_log.warn(t.toString());
 		}
 
-		// post process the definitions from components (now overridden with our property files) to satisfy any placeholder values
-		// - only one file is run, so it must be a complet set of values
-		// - if the placeholder.properties file exists in the sakai.home, we run that,
-		// otherwise we use the file we distribute in the class path.
-		boolean done = false;
-		try
-		{
-			File f = new File(path + "placeholder.properties");
-			if (f.exists())
-			{
-				PropertyPlaceholderConfigurer pullProcessor = new PropertyPlaceholderConfigurer();
-				pullProcessor.setLocation(new FileSystemResource(f));
-				pullProcessor.postProcessBeanFactory(m_ac.getBeanFactory());
-				done = true;
-			}
-		}
-		catch (Throwable t)
-		{
-			M_log.warn(t.toString());
-		}
-
-		if (!done)
+		// auto-set the server id if missing
+		if (!m_config.containsKey("serverId"))
 		{
 			try
 			{
-				PropertyPlaceholderConfigurer pullProcessor = new PropertyPlaceholderConfigurer();
-				pullProcessor.setLocation(new ClassPathResource("org/sakaiproject/config/placeholder.properties"));
-				pullProcessor.postProcessBeanFactory(m_ac.getBeanFactory());
+				String id = InetAddress.getLocalHost().getHostName();
+				m_config.put("serverId", id);
 			}
-			catch (Throwable t)
+			catch (UnknownHostException e)
 			{
-				M_log.warn(t.toString());
 			}
 		}
+
+		// post process the definitions from components with overrides from these properties
+		// - these get injected into the beans
+		try
+		{
+			PropertyOverrideConfigurer pushProcessor = new PropertyOverrideConfigurer();
+			pushProcessor.setProperties(m_config);
+			pushProcessor.setIgnoreInvalidKeys(true);
+			pushProcessor.postProcessBeanFactory(m_ac.getBeanFactory());
+		}
+		catch (Throwable t)
+		{
+			M_log.warn(t.toString());
+		}
+
+		// post process the definitions from components (now overridden with our property overrides) to satisfy any placeholder values
+		try
+		{
+			PropertyPlaceholderConfigurer pullProcessor = new PropertyPlaceholderConfigurer();
+			pullProcessor.setProperties(m_config);
+			pullProcessor.postProcessBeanFactory(m_ac.getBeanFactory());
+		}
+		catch (Throwable t)
+		{
+			M_log.warn(t.toString());
+		}
+
+		// set some system properties from the configuration values
+		promotePropertiesToSystem(m_config);
 
 		try
 		{
@@ -223,6 +253,7 @@ public void init()
 			M_log.warn(t.toString());
 		}
 	}
+
 	/**
 	 * Access the ApplicationContext
 	 * 
@@ -457,23 +488,30 @@ public void init()
 
 	/**
 	 * If the properties has any of the values we need to set as sakai system properties, set them.
-	 * @param props The property override configurer with some override settings.
+	 * 
+	 * @param props
+	 *        The property override configurer with some override settings.
 	 */
-	protected void promotePropertiesToSystem(PropertyOverrideConfigurer props)
+	protected void promotePropertiesToSystem(Properties props)
 	{
-		String serverId = props.getValue("serverId");
+		String serverId = props.getProperty("serverId");
 		if (serverId != null)
 		{
 			System.setProperty("sakai.serverId", serverId);
 		}
-		
-		String uploadMax = props.getValue("content.upload.max");
+
+		String uploadMax = props.getProperty("content.upload.max");
 		if (uploadMax != null)
 		{
 			System.setProperty("sakai.content.upload.max", uploadMax);
 		}
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public Properties getConfig()
+	{
+		return m_config;
+	}
 }
-
-
-

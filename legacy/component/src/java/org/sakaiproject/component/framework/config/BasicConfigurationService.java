@@ -33,10 +33,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
@@ -67,11 +67,8 @@ public class BasicConfigurationService implements ServerConfigurationService
 	/** This is computed, joining the configured serverId and the set instanceId. */
 	protected String serverIdInstance = null;
 
-	/** Properties as loaded. */
-	protected Properties loadProps = new Properties();
-
 	/** The map of values from the loaded properties - not synchronized at access. */
-	protected Map properties = new HashMap();
+	protected Map m_properties = new HashMap();
 
 	/** Full path to registration files. */
 	protected String registrationPath = null;
@@ -110,17 +107,6 @@ public class BasicConfigurationService implements ServerConfigurationService
 	}
 
 	/**
-	 * Configuration: set generic properties.
-	 * 
-	 * @param props
-	 *        the set of generic properties.
-	 */
-	public void setProperties(Properties props)
-	{
-		loadProps = props;
-	}
-
-	/**
 	 * Configuration: set the file path for registration files.
 	 * 
 	 * @param string
@@ -151,34 +137,8 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	public void init()
 	{
-		// load the extra properties, sakai then local then security
-		try
-		{
-			loadProps.load(new FileInputStream(getSakaiHomePath() + "sakai.properties"));
-		}
-		catch (Exception e)
-		{
-		}
-
-		try
-		{
-			loadProps.load(new FileInputStream(getSakaiHomePath() + "local.properties"));
-		}
-		catch (Exception e)
-		{
-		}
-
-		try
-		{
-			loadProps.load(new FileInputStream(System.getProperty("sakai.security") + "security.properties"));
-		}
-		catch (Exception e)
-		{
-		}
-
-		// Properties are based on Hashtable and are Synchronized in their get() method. We don't want that!
-		properties.putAll(loadProps);
-		loadProps = null;
+		// load the properties, from the configuration manager's set of properties that were used to configure the components
+		m_properties.putAll(ComponentManager.getConfig());
 
 		try
 		{
@@ -245,7 +205,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	public String getServerId()
 	{
-		return (String) properties.get("serverId");
+		return (String) m_properties.get("serverId");
 	}
 
 	/**
@@ -273,7 +233,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 		String rv = (String) CurrentService.getInThread(RequestFilter.CURRENT_SERVER_URL);
 		if (rv == null)
 		{
-			rv = (String) properties.get("serverUrl");
+			rv = (String) m_properties.get("serverUrl");
 		}
 
 		return rv;
@@ -285,7 +245,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	public String getServerName()
 	{
-		return (String) properties.get("serverName");
+		return (String) m_properties.get("serverName");
 	}
 
 	/**
@@ -293,7 +253,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	public String getAccessUrl()
 	{
-		return getServerUrl() + (String) properties.get("accessPath");
+		return getServerUrl() + (String) m_properties.get("accessPath");
 	}
 
 	/**
@@ -301,7 +261,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	public String getHelpUrl(String helpContext)
 	{
-		String rv = getPortalUrl() + (String) properties.get("helpPath") + "/main";
+		String rv = getPortalUrl() + (String) m_properties.get("helpPath") + "/main";
 		if (helpContext != null)
 		{
 			rv += "?help=" + helpContext;
@@ -315,7 +275,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	public String getPortalUrl()
 	{
-		return getServerUrl() + (String) properties.get("portalPath");
+		return getServerUrl() + (String) m_properties.get("portalPath");
 	}
 
 	/**
@@ -323,7 +283,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	public String getUserHomeUrl()
 	{
-		String rv = (String) properties.get("userHomeUrl");
+		String rv = (String) m_properties.get("userHomeUrl");
 
 		// use the portal URL with the current user's My Workspace, if not otherwise defined
 		if (rv == null)
@@ -352,7 +312,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	public String getGatewaySiteId()
 	{
-		String rv = (String) properties.get("gatewaySiteId");
+		String rv = (String) m_properties.get("gatewaySiteId");
 
 		if (rv == null)
 		{
@@ -365,27 +325,9 @@ public class BasicConfigurationService implements ServerConfigurationService
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getLoginUrl()
-	{
-		String rv = (String) properties.get("loginUrl");
-		if (rv != null)
-		{
-			// if not a full URL, add the server to the front
-			if (rv.startsWith("/"))
-			{
-				rv = getServerUrl() + rv;
-			}
-		}
-
-		return rv;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public String getLoggedOutUrl()
 	{
-		String rv = (String) properties.get("loggedOutUrl");
+		String rv = (String) m_properties.get("loggedOutUrl");
 		if (rv != null)
 		{
 			// if not a full URL, add the server to the front
@@ -432,7 +374,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	public String getString(String name, String dflt)
 	{
-		String rv = StringUtil.trimToNull((String) properties.get(name));
+		String rv = StringUtil.trimToNull((String) m_properties.get(name));
 		if (rv == null) rv = dflt;
 
 		return rv;
@@ -718,6 +660,3 @@ public class BasicConfigurationService implements ServerConfigurationService
 		}
 	}
 }
-
-
-

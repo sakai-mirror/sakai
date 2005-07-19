@@ -483,19 +483,6 @@ public class AccessServlet
 		String context = req.getContextPath() + req.getServletPath() + "/login";
 		tool.help(req, res, context, "/login");
 
-		//		// some state for login
-//		SessionState state = UsageSessionService.getSessionState(LoginServlet.class.getName());
-//
-//		// store the url to return to after login in the session for redirect
-//		state.setAttribute(LoginServlet.REDIRECT, ServerConfigurationService.getAccessUrl() + Validator.escapeUrl(path));
-//
-//		// redirect to our login place
-//		try
-//		{
-//			res.sendRedirect(ServerConfigurationService.getLoginUrl());
-//		}
-//		catch (IOException ignore) {}
-
 	}	// respondRedirectToLogin
 
 	/**
