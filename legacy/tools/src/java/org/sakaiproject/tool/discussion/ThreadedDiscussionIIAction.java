@@ -3273,6 +3273,10 @@ public class ThreadedDiscussionIIAction
 			try
 			{
 				setMessageExpanded(state, channel.getDiscussionMessage(messageId), true, channel);
+				showMessage(data, messageId);
+				String peid = ((JetspeedRunData) data).getJs_peid();
+				schedulePeerFrameRefresh(VelocityPortletPaneledAction.mainPanelUpdateId(peid)+ "." + TOOLBAR_PANEL);
+				schedulePeerFrameRefresh(VelocityPortletPaneledAction.mainPanelUpdateId(peid)+ "." + CONTROL_PANEL);
 			}
 			catch (IdUnusedException e)
 			{
