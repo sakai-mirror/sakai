@@ -108,7 +108,10 @@ public class RequestFilter implements Filter
 	/** Config parameter to control whether the request filter parses file uploads. Default is true. If false, the tool will need to provide its own upload filter that executes BEFORE the Sakai request filter. */
 	public static final String CONFIG_UPLOAD_ENABLED = "upload.enabled";
 
-	/** Config parameter to control the maximum allowed upload size (in bytes) from the browser. If defined on the filter, overrides the system property. Default is 1 MB (1048576 bytes). This is an aggregate limit on the sum of all files included in a single request. */
+	/**
+	 * Config parameter to control the maximum allowed upload size (in bytes) from the browser. If defined on the filter, overrides the system property. Default is 1 MB (1048576 bytes). This is an aggregate limit on the sum of all files included in a
+	 * single request.
+	 */
 	public static final String CONFIG_UPLOAD_MAX = "upload.max";
 
 	/** System property to control the maximum allowed upload size (in MEGABYTES) from the browser. Default is 1 (one megabyte). This is an aggregate limit on the sum of all files included in a single request. */
@@ -123,7 +126,7 @@ public class RequestFilter implements Filter
 	 */
 	public static final String CONFIG_UPLOAD_DIR = "upload.dir";
 
-	/** Config parameter to control tool placement URL en/de-coding. */
+	/** Config parameter to set the servlet context for context based session (overriding the servlet's context name). */
 	public static final String CONFIG_CONTEXT = "context";
 
 	/** sakaiHttpSession setting for don't do anything. */
@@ -597,7 +600,7 @@ public class RequestFilter implements Filter
 
 		if (filterConfig.getInitParameter(CONFIG_CONTEXT) != null)
 		{
-			m_contextId = filterConfig.getInitParameter(CONFIG_TOOL_PLACEMENT);
+			m_contextId = filterConfig.getInitParameter(CONFIG_CONTEXT);
 		}
 		else
 		{
@@ -991,6 +994,3 @@ public class RequestFilter implements Filter
 		return url.toString();
 	}
 }
-
-
-
