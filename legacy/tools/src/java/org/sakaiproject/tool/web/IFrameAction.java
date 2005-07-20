@@ -232,18 +232,7 @@ public class IFrameAction
 		context.put(HEIGHT, state.getAttribute(HEIGHT));
 		context.put(TITLE, state.getAttribute(TITLE));
 		context.put(SPECIAL, state.getAttribute(SPECIAL));
-		
-		//SAK-1480-if source url exist then set the radio button value to "" string for display
-    if (state.getAttribute("source-config") == null
-        || ((String) state.getAttribute("source-config")).trim().equals(""))
-    {
-      context.put(SOURCE_TYPE, state.getAttribute(SOURCE_TYPE));      
-    }
-    else
-    {
-      context.put(SOURCE_TYPE, "");
-    }
-    
+    context.put(SOURCE_TYPE, state.getAttribute(SOURCE_TYPE));      
     context.put("tlang", rb);
     context.put(Menu.CONTEXT_ACTION, "IFrameAction");
 
@@ -272,31 +261,24 @@ public class IFrameAction
 			state.setAttribute(SOURCE_TYPE, source_type);
 		}
 		
-		//SAK-1480 - user selction radio button
-		//TODO - assign property for radio button to avoid this if /else loop
-		//if source_type value exists then set 'SOURCE' and 'source-config' attributes to empty string		
-		if (source_type == null || source_type.trim().equals("")){
-			// mark for update w/o a test against state's current value - state may be showing
-			// a special source value (worksite, site, workspace).
-			String source = data.getParameters().getString(SOURCE);
-	
-			// if it's missing the transport, add http://
-			source = source.trim();
-			if ((source.length() > 0) && (!source.startsWith("/")) && (source.indexOf("://") == -1))
-			{
-				source = "http://" + source;
-			}
-	
-			// update configed source
-			state.setAttribute("source-config", source);
-	
-			// update the working source
-			source = sourceUrl(source_type, source, state, (JetspeedRunData) data);
-			state.setAttribute(SOURCE, source);
-		} else{
-		  state.setAttribute("source-config", "");
-		  state.setAttribute(SOURCE, "");
+		// mark for update w/o a test against state's current value - state may be showing
+		// a special source value (worksite, site, workspace).
+		String source = data.getParameters().getString(SOURCE);
+
+		// if it's missing the transport, add http://
+		source = source.trim();
+		if ((source.length() > 0) && (!source.startsWith("/")) && (source.indexOf("://") == -1))
+		{
+			source = "http://" + source;
 		}
+
+		// update configed source
+		state.setAttribute("source-config", source);
+
+		// update the working source
+		source = sourceUrl(source_type, source, state, (JetspeedRunData) data);
+		state.setAttribute(SOURCE, source);
+		
 		// height
 		String height = data.getParameters().getString(HEIGHT);
 		if (!height.equals(state.getAttribute(HEIGHT)))
