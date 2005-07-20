@@ -681,14 +681,16 @@ extends PagedResourceActionII
 		AnnouncementActionState state = (AnnouncementActionState)getState( portlet, rundata, AnnouncementActionState.class );
 		
 		//load the saved option data
-//		Placement placement = ToolManager.getCurrentPlacement();			
-//		AnnouncementActionState.DisplayOptions disOptions = state.getDisplayOptions();
-//		disOptions.loadProperties(placement.getPlacementConfig());
-		
+		Placement placement = ToolManager.getCurrentPlacement();			
+		if (placement !=null){
+		  AnnouncementActionState.DisplayOptions disOptions = state.getDisplayOptions();
+		  disOptions.loadProperties(placement.getPlacementConfig());
+		  context.put(VELOCITY_DISPLAY_OPTIONS, disOptions);	
+		}else{
 		// Put our display options in the context so
-		// that we can modify our list display accordingly
-//		context.put(VELOCITY_DISPLAY_OPTIONS, disOptions);		
-		context.put(VELOCITY_DISPLAY_OPTIONS, state.getDisplayOptions());
+		// that we can modify our list display accordingly	
+		  context.put(VELOCITY_DISPLAY_OPTIONS, state.getDisplayOptions());
+		}
 
 		// if we are in edit permissions...
 		String helperMode = (String) sstate.getAttribute(PermissionsAction.STATE_MODE);
