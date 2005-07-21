@@ -284,7 +284,7 @@ public class DbContentService
 			boolean wasCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
 
-			String sql = "update CONTENT_RESOURCE set UUID = ? where RESOURCE_ID = ?";
+			String sql = "update CONTENT_RESOURCE set RESOURCE_UUID = ? where RESOURCE_ID = ?";
 			Object[] fields = new Object[2];
 			fields[0] = uuid;
 			fields[1] = id;
@@ -307,7 +307,7 @@ public class DbContentService
      */
     
     private String findUuid(String id) {
-        String sql = "select UUID from CONTENT_RESOURCE where RESOURCE_ID=?";
+        String sql = "select RESOURCE_UUID from CONTENT_RESOURCE where RESOURCE_ID=?";
         Object[] fields = new Object[1];
         fields[0] = id;
         
@@ -334,7 +334,7 @@ public class DbContentService
 		
 		try
 		{
-			String sql = "select RESOURCE_ID from CONTENT_RESOURCE where UUID=?";
+			String sql = "select RESOURCE_ID from CONTENT_RESOURCE where RESOURCE_UUID=?";
 			Object[] fields = new Object[1];
 			fields[0] = uuid;
 			
