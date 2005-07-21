@@ -505,6 +505,20 @@ public class SpringCompMgr implements ComponentManager
 		{
 			System.setProperty("sakai.content.upload.max", uploadMax);
 		}
+
+		if (props.getProperty("force.url.secure") != null)
+		{
+			try
+			{
+				// make sure it is an int
+				int port = Integer.parseInt(props.getProperty("force.url.secure"));
+				System.setProperty("sakai.force.url.secure", props.getProperty("force.url.secure"));
+			}
+			catch (Throwable e)
+			{
+				M_log.warn("force.url.secure set to a non numeric value: " + props.getProperty("force.url.secure"));
+			}
+		}
 	}
 
 	/**
