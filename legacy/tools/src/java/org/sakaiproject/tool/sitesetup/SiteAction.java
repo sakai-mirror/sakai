@@ -463,8 +463,6 @@ public class SiteAction extends PagedResourceActionII
 	public static final String SITE_DUPLICATED = "site_duplicated";
 	public static final String SITE_DUPLICATED_NAME = "site_duplicated_named";
 	
-	public static final String SITEINFO_FIRST_USE = "siteinfo_first_user";
-	
 	// used for site creation wizard title
 	public static final String SITE_CREATE_TOTAL_STEPS = "site_create_total_steps";
 	public static final String SITE_CREATE_CURRENT_STEP = "site_create_current_step";
@@ -4175,6 +4173,7 @@ public class SiteAction extends PagedResourceActionII
 			return;
 		}
 		List chosenList = new ArrayList(Arrays.asList(params.getStrings ("selectedMembers"))); // Site id's of checked sites
+		String siteId = "";
 		if(!chosenList.isEmpty())
 		{
 			if(chosenList.size() != 1)
@@ -4184,7 +4183,8 @@ public class SiteAction extends PagedResourceActionII
 				return;
 			}
 			
-			getReviseSite(state, (String) chosenList.get(0));
+			siteId = (String) chosenList.get(0);
+			getReviseSite(state, siteId);
 			
 			state.setAttribute(SORTED_BY, SORTED_BY_PARTICIPANT_NAME);
 			state.setAttribute (SORTED_ASC, Boolean.TRUE.toString());
@@ -4195,20 +4195,20 @@ public class SiteAction extends PagedResourceActionII
 			state.setAttribute(STATE_PAGESIZE_SITESETUP, state.getAttribute(STATE_PAGESIZE));
 		}
 		
-		if (state.getAttribute(SITEINFO_FIRST_USE) == null)
+		Hashtable h = (Hashtable) state.getAttribute(STATE_PAGESIZE_SITEINFO);
+		if (!h.containsKey(siteId))
 		{	
 			// when first entered Site Info, set the participant list size to 200 as default
 			state.setAttribute(STATE_PAGESIZE, new Integer(200));
-			state.setAttribute(SITEINFO_FIRST_USE, Boolean.FALSE);
+			
+			// update
+			h.put(siteId, new Integer(200));
+			state.setAttribute(STATE_PAGESIZE_SITEINFO, h);
 		}
 		else
 		{
 			//restore the page size in site info tool
-			if (state.getAttribute(STATE_PAGESIZE_SITEINFO) != null)
-			{
-				state.setAttribute(STATE_PAGESIZE, state.getAttribute(STATE_PAGESIZE_SITEINFO));
-				state.removeAttribute(STATE_PAGESIZE_SITEINFO);
-			}
+			state.setAttribute(STATE_PAGESIZE, h.get(siteId));
 		}
 		
 	} // doGet_site
@@ -5617,10 +5617,13 @@ public class SiteAction extends PagedResourceActionII
 	public void doBack_to_list ( RunData data )
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		cleanState(state);
-		setupFormNamesAndConstants(state);
 		
-		state.setAttribute(STATE_PAGESIZE_SITEINFO, state.getAttribute(STATE_PAGESIZE));
+		if (state.getAttribute(STATE_SITE_INSTANCE) != null)
+		{
+			Hashtable h = (Hashtable) state.getAttribute(STATE_PAGESIZE_SITEINFO);
+			h.put(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId(), state.getAttribute(STATE_PAGESIZE));
+			state.setAttribute(STATE_PAGESIZE_SITEINFO, h);
+		}
 		
 		//restore the page size for Worksite setup tool
 		if (state.getAttribute(STATE_PAGESIZE_SITESETUP) != null)
@@ -5628,6 +5631,9 @@ public class SiteAction extends PagedResourceActionII
 			state.setAttribute(STATE_PAGESIZE, state.getAttribute(STATE_PAGESIZE_SITESETUP));
 			state.removeAttribute(STATE_PAGESIZE_SITESETUP);
 		}
+		
+		cleanState(state);
+		setupFormNamesAndConstants(state);
 		
 		state.setAttribute(STATE_TEMPLATE_INDEX, "0");
 
@@ -6859,13 +6865,29 @@ public class SiteAction extends PagedResourceActionII
 		ParameterParser params = data.getParameters ();
 		state.setAttribute(STATE_ACTION, "SiteAction");
 		setupFormNamesAndConstants(state);
+		
+		if (state.getAttribute(STATE_PAGESIZE_SITEINFO) == null)
+		{
+			state.setAttribute(STATE_PAGESIZE_SITEINFO, new Hashtable());
+		}
+		
 		if (((String) state.getAttribute(STATE_SITE_MODE)).equalsIgnoreCase(SITE_MODE_SITESETUP))
 		{
 			state.setAttribute(STATE_TEMPLATE_INDEX, "0");
 		}
 		else if (((String) state.getAttribute(STATE_SITE_MODE)).equalsIgnoreCase(SITE_MODE_SITEINFO))
 		{
-			getReviseSite(state, PortalService.getCurrentSiteId());
+			
+			String siteId = PortalService.getCurrentSiteId();
+			getReviseSite(state, siteId);
+			Hashtable h = (Hashtable) state.getAttribute(STATE_PAGESIZE_SITEINFO);
+			if (!h.containsKey(siteId))
+			{	
+				// update
+				h.put(siteId, new Integer(200));
+				state.setAttribute(STATE_PAGESIZE_SITEINFO, h);
+				state.setAttribute(STATE_PAGESIZE, new Integer(200));
+			}
 		}
 		else if  (((String) state.getAttribute(STATE_SITE_MODE)).equalsIgnoreCase(SITE_MODE_SITEMANAGE))
 		{
