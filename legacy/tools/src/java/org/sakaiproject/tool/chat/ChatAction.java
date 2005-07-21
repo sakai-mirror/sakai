@@ -258,7 +258,27 @@ public class ChatAction
 				state.setAttribute(STATE_CHAT_PRESENCE_OBSERVER, observer);
 			}
 		}
+		// repopulate state object and title bar when default chat room changes
+		else
+		{	
+			PortletConfig config = portlet.getPortletConfig();
+			// read the channel from configuration, or, if not specified, use the default for the page
+			String channel = StringUtil.trimToNull(config.getInitParameter(PARAM_CHANNEL));
+			if (channel == null)
+			{
+				channel = ChatService.channelReference(ToolManager.getCurrentPlacement().getContext(), SiteService.MAIN_CONTAINER);
+			}
+			state.setAttribute(STATE_CHANNEL_REF, channel);
+		    String channelName =rundata.getParameters().getString(FORM_CHANNEL);
+		    //update the tool config
+			Placement placement = ToolManager.getCurrentPlacement();
+			placement.setTitle(rb.getString("chatroom") + " \" " + channelName + " \" ");
 
+			// deliver an update to the title panel (to show the new title)
+			String peid = ((JetspeedRunData)rundata).getJs_peid();
+			String titleId = titlePanelUpdateId(peid);
+			schedulePeerFrameRefresh(titleId);
+		}
 		// make sure the observer is in sync with state
 		updateObservationOfChannel(state, portlet.getID());
 
