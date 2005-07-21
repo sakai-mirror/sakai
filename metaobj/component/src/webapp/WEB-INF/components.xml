@@ -85,9 +85,6 @@
       </property>
    </bean>
 
-   <bean id="beanFactory" class="org.sakaiproject.metaobj.utils.BeanFactory">
-   </bean>
-
    <bean id="fieldValueWrapperFactory" class="org.sakaiproject.metaobj.shared.mgt.factories.FieldValueWrapperFactoryImpl" >
       <property name="wrappedClassNamesMap">
          <props>

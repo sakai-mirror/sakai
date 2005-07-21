@@ -60,7 +60,7 @@ import org.jdom.output.XMLOutputter;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.WritableObjectHome;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-import org.sakaiproject.metaobj.utils.BeanFactory;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -111,7 +111,7 @@ public class HibernateStructuredArtifact extends StructuredArtifact implements U
       if (rs.wasNull()) return null;
 
       //TODO figure out how to inject this
-      HomeFactory homeFactory = (HomeFactory) BeanFactory.getInstance().getBean("xmlHomeFactory");
+      HomeFactory homeFactory = (HomeFactory) ComponentManager.getInstance().get("xmlHomeFactory");
       WritableObjectHome home = (WritableObjectHome) homeFactory.getHome("agent");
 
       StructuredArtifact artifact = (StructuredArtifact) home.createInstance();

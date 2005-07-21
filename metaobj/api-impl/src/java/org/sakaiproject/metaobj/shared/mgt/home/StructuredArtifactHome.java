@@ -53,11 +53,11 @@ import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-import org.sakaiproject.metaobj.utils.BeanFactory;
 import org.sakaiproject.metaobj.utils.Config;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.intf.WorksiteAware;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -318,7 +318,7 @@ public class StructuredArtifactHome extends XmlElementHome
    }
 
    protected WorksiteManager getWorksiteManager() {
-      return (WorksiteManager) BeanFactory.getInstance().getBean(WorksiteManager.class.getName());
+      return (WorksiteManager) ComponentManager.getInstance().get(WorksiteManager.class.getName());
    }
  
 }

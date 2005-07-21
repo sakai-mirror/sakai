@@ -69,15 +69,12 @@ import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactDefinition;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.*;
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.metaobj.utils.BeanFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import java.io.IOException;
 import java.io.ByteArrayInputStream;
 import java.util.*;
@@ -453,7 +450,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public AuthenticationManager getAuthManager(){
-      return (AuthenticationManager) BeanFactory.getInstance().getBean("authManager");
+      return (AuthenticationManager) ComponentManager.getInstance().get("authManager");
    }
 
    public ArtifactFinderManager getArtifactFinderManager() {

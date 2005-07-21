@@ -48,9 +48,9 @@ package org.sakaiproject.metaobj.shared.mgt.home;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.model.*;
-import org.sakaiproject.metaobj.utils.BeanFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -314,11 +314,11 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
     * @return Returns the idManager.
     */
    public IdManager getIdManager() {
-      return (IdManager) BeanFactory.getInstance().getBean("idManager");
+      return (IdManager) ComponentManager.getInstance().get("idManager");
    }
 
    public PresentableObjectHome getRepositoryHelper() {
-      return (PresentableObjectHome) BeanFactory.getInstance().getBean("repositoryHelper");
+      return (PresentableObjectHome) ComponentManager.getInstance().get("repositoryHelper");
    }
 
    /**

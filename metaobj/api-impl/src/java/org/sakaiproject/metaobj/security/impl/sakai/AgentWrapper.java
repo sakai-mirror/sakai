@@ -57,7 +57,7 @@ import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.metaobj.utils.BeanFactory;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -139,7 +139,7 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
    }
 
    public org.sakaiproject.metaobj.shared.mgt.AgentManager getAgentManager() {
-      return (org.sakaiproject.metaobj.shared.mgt.AgentManager)BeanFactory.getInstance().getBean("agentManager");
+      return (org.sakaiproject.metaobj.shared.mgt.AgentManager)ComponentManager.getInstance().get("agentManager");
    }
 
    public SecurityBase getSecurityBase() {
