@@ -1,4 +1,4 @@
--- This is the Oracle Sakai 1.5 -> 2.0 conversion script
+-- This is the MySql Sakai 1.5 -> 2.0 conversion script
 
 -- new tables will be established by running auto-ddl.  If this is not desired, you must manually
 -- create the tables for any new Sakai feature
@@ -10,26 +10,20 @@ alter table CHEF_NOTIFICATION rename to SAKAI_NOTIFICATION;
 alter table CHEF_PREFERENCES rename to SAKAI_PREFERENCES;
 alter table CHEF_PRESENCE rename to SAKAI_PRESENCE;
 alter table CHEF_SESSION rename to SAKAI_SESSION;
-alter table SYLLABUS_DATA_T rename to SAKAI_SYLLABUS_DATA;
-alter table SYLLABUS_T rename to SAKAI_SYLLABUS_ITEM;
 
--- sequences were renamed
-rename CHEF_EVENT_SEQ to SAKAI_EVENT_SEQ;
-
--- and removed
-DROP SEQUENCE CHEF_ID_SEQ;
+DROP TABLE if exists CHEF_ID_SEQ;
 
 --fields were expanded
-alter table ANNOUNCEMENT_MESSAGE modify MESSAGE_ID VARCHAR2(36);
-alter table CALENDAR_EVENT modify EVENT_ID VARCHAR2(36);
-alter table CHAT_MESSAGE modify MESSAGE_ID VARCHAR2(36);
-alter table DISCUSSION_MESSAGE modify MESSAGE_ID VARCHAR2(36);
-alter table DISCUSSION_MESSAGE modify REPLY VARCHAR2(36);
-alter table MAILARCHIVE_MESSAGE modify MESSAGE_ID VARCHAR2(36);
-alter table SAKAI_EVENT modify SESSION_ID VARCHAR2(36);
-alter table SAKAI_PRESENCE modify SESSION_ID VARCHAR2(36);
-alter table SAKAI_SESSION modify SESSION_ID VARCHAR2(36);
-alter table SAKAI_LOCKS modify USAGE_SESSION_ID VARCHAR2(36);
+alter table ANNOUNCEMENT_MESSAGE modify MESSAGE_ID VARCHAR(36);
+ALTER TABLE CALENDAR_EVENT modify EVENT_ID VARCHAR(36) NOT NULL DEFAULT '';
+alter table CHAT_MESSAGE modify MESSAGE_ID VARCHAR(36);
+alter table DISCUSSION_MESSAGE modify MESSAGE_ID VARCHAR(36);
+alter table DISCUSSION_MESSAGE modify REPLY VARCHAR(36);
+alter table MAILARCHIVE_MESSAGE modify MESSAGE_ID VARCHAR(36);
+alter table SAKAI_EVENT modify SESSION_ID VARCHAR(36);
+alter table SAKAI_PRESENCE modify SESSION_ID VARCHAR(36);
+alter table SAKAI_SESSION modify SESSION_ID VARCHAR(36);
+alter table SAKAI_LOCKS modify USAGE_SESSION_ID VARCHAR(36);
 
 -- tool ids were changed
 update SAKAI_SITE_TOOL
@@ -40,24 +34,14 @@ update SAKAI_SITE_TOOL set REGISTRATION='sakai.siteinfo' where REGISTRATION='sak
 update SAKAI_SITE_TOOL set REGISTRATION='sakai.sitesetup' where REGISTRATION='sakai.sitesetupgeneric';
 update SAKAI_SITE_TOOL set REGISTRATION='sakai.discussion' where REGISTRATION='sakai.threadeddiscussion';
 
--- unless you want all the assignment tools to loose grading capability, run this one, too
-update SAKAI_SITE_TOOL set REGISTRATION='sakai.assignment.grades' where REGISTRATION='sakai.assignment';
-
-/*
-update SAKAI_SITE_TOOL set REGISTRATION='ctools.dissertation' where REGISTRATION='sakai.dissertation';
-update SAKAI_SITE_TOOL set REGISTRATION='ctools.dissertation.upload' where REGISTRATION='sakai.dissertation.upload';
-update SAKAI_SITE_TOOL set REGISTRATION='ctools.gradToolsHelp' where REGISTRATION='sakai.gradToolsHelp';
-update SAKAI_SITE_TOOL set REGISTRATION='ctools.aboutGradTools' where REGISTRATION='sakai.aboutGradTools';
-*/
+-- change the old site types
+update SAKAI_SITE set TYPE='project' where TYPE='CTNG-project';
+update SAKAI_SITE set TYPE='course' where TYPE='CTNG-course';
 
 -- optional: drop old skins, everyone re-starts as default
 /*
 update SAKAI_SITE set SKIN=null;
 */
-
--- change the old site types
-update sakai_site set type='project' where type='CTNG-project';
-update sakai_site set type='course' where type='CTNG-course';
 
 -- optional: drop all user myWorkspaces, so they get new ones (with new stuff)
 /*
@@ -161,10 +145,8 @@ delete from sakai_site_page_property where page_id in
 delete from sakai_site_page where title='Help';
 */
 
--- All of the following has been tested only under MySql, but is recommended
-
 -- add some additional keys
-/*
+
 ALTER TABLE `ANNOUNCEMENT_MESSAGE`
 ADD  KEY `ANNOUNCEMENT_MESSAGE_CDD` (`CHANNEL_ID`,`MESSAGE_DATE`,`DRAFT`);
 
@@ -178,22 +160,18 @@ ADD  KEY `DISC_MSG_CDD` (`CHANNEL_ID`,`MESSAGE_DATE`,`DRAFT`);
 
 ALTER TABLE `MAILARCHIVE_MESSAGE`
 ADD  KEY `MAILARC_MSG_CDD` (`CHANNEL_ID`,`MESSAGE_DATE`,`DRAFT`);
-*/
 
 -- add gradebook permissions
-/*
+
 INSERT INTO SAKAI_REALM_FUNCTION VALUES (DEFAULT,'gradebook.access');
 INSERT INTO SAKAI_REALM_FUNCTION VALUES (DEFAULT,'gradebook.maintain');
-*/
 
 -- add admin role
 
-/*
 INSERT INTO `SAKAI_REALM_ROLE` VALUES (DEFAULT,'admin');
-*/
 
 -- add the mercury and !admin sites and associated realms
-/*
+
 INSERT INTO SAKAI_REALM VALUES (DEFAULT,'/site/mercury','',NULL,'admin','admin',CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
 
 INSERT INTO SAKAI_REALM VALUES (DEFAULT,'/site/!admin','',(select ROLE_KEY FROM SAKAI_REALM_ROLE WHERE ROLE_NAME='admin'),'admin','admin',CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
@@ -474,7 +452,3 @@ INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where RE
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '/site/!admin'),
 	(select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'admin'),
 	(select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'site.upd'));
-
-*/
-
-
