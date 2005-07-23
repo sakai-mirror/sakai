@@ -15,4 +15,9 @@ public interface FilePickerHelper {
     **/
    public static final String FILE_PICKER_ATTACHMENTS = "sakaiproject.filepicker.attachments";
 
+   /** Name of the attribute used in the tool session to tell the
+    * consumer if this resulted in a cancel.  This will be "true" or non-existent
+    **/
+   public static final String FILE_PICKER_CANCEL = "sakaiproject.filepicker.cancel";
+
 }

@@ -38,6 +38,9 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
             toolSession.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS,
                   new ReferenceVector(attachments));
          }
+         else {
+            toolSession.setAttribute(FilePickerHelper.FILE_PICKER_CANCEL, "true");
+         }
 
          // clean up
          sstate.removeAttribute(AttachmentAction.STATE_MODE);
@@ -86,6 +89,7 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
       ReferenceVector attachments =
             (ReferenceVector) toolSession.getAttribute(
                   FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+      toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
 
       if (attachments != null) {
          sstate.setAttribute(AttachmentAction.STATE_ATTACHMENTS, new ReferenceVector(attachments));
