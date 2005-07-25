@@ -28,11 +28,13 @@ package org.sakaiproject.tool.content;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -369,6 +371,7 @@ extends VelocityPortletPaneledAction
 	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
 	private static final String STATE_STRUCTOBJ_TYPE = "resources.create_structured_object_type";
 	private static final String STATE_STRUCTOBJ_HOMES = "resources.create_structured_object_home";
+	private static final String STATE_STRUCTOBJ_PROPERTIES = "resources.create_structured_object_properties";
 	
 	private static final String TYPE_FOLDER = "folder";
 	private static final String TYPE_UPLOAD = "file";
@@ -2078,10 +2081,9 @@ extends VelocityPortletPaneledAction
 		state.setAttribute(STATE_CREATE_TYPE, itemType);
 		state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
 		state.setAttribute(STATE_CREATE_MISSING_ITEM, new HashSet());
-		if(TYPE_FORM.equals(itemType))
-		{
-			setupStructuredObjects(state);
-		}
+		state.removeAttribute(STATE_STRUCTOBJ_TYPE);
+		state.removeAttribute(STATE_STRUCTOBJ_PROPERTIES);
+		state.removeAttribute(STATE_STRUCTOBJ_HOMES);
 		
 		String collectionId = params.getString ("collectionId");
 		state.setAttribute(STATE_CREATE_COLLECTION_ID, collectionId);
@@ -2502,19 +2504,12 @@ extends VelocityPortletPaneledAction
 		
 		HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");	
 		
-		Map homes1 = factory.getHomes(StructuredArtifactHomeInterface.class);
-		System.out.println(" ~~~~~~> number of homes: " + homes1.size());
-		Map homes2 = factory.getHomes(ReadableObjectHome.class);
-		System.out.println(" ~~~~~~> number of homes: " + homes2.size());
-		
 		Map homes = factory.getHomes();
-		System.out.println(" ~~~~~~> number of homes: " + homes.size());
 		List listOfHomes = new Vector();
 		Iterator it = homes.keySet().iterator();
 		while(it.hasNext())
 		{
 			String key = (String) it.next();
-			System.out.print(" ~~~~~~> getting a home: " + key);
 			listOfHomes.add(homes.get(key));
 		}
 		state.setAttribute(STATE_STRUCTOBJ_HOMES, listOfHomes);
@@ -2526,26 +2521,62 @@ extends VelocityPortletPaneledAction
 		if(formtype == null || formtype.equals(""))
 		{
 			formtype = "";
-			System.out.println(" ~~~~~~> formtype was null ");
 			state.setAttribute(STATE_STRUCTOBJ_TYPE, formtype);
 		}
 		else if(listOfHomes.isEmpty())
 		{
 			// hmmm
-			System.out.println(" ~~~~~~> listOfHomes.isEmpty");
 		}
 		else
 		{
-			System.out.println(" ~~~~~~> formtype was NOT null");
 			home = (StructuredArtifactHomeInterface) factory.getHome(formtype);
-			System.out.println(" ~~~~~~> home == " + home);
 		}
 		
 		if(home != null)
 		{
 			schema = new SchemaBean(home.getRootNode(), home.getSchema(), formtype, home.getType().getDescription());
-			System.out.println(" ~~~~~~> schema == " + schema);
+			String namespace = schema.getSchemaName();
+			List fields = schema.getFields();
+			for(Iterator fieldIt = fields.iterator(); fieldIt.hasNext(); )
+			{
+				SchemaBean field = (SchemaBean) fieldIt.next();
+				// String namespace = field.getFieldNamePathReadOnly();
+				String localname = field.getFieldName();
+				String description = field.getDescription();
+				Map annotations = field.getAnnotations();
+				String label = (String) annotations.get("label");
+				if(label == null || label.trim().equals(""))
+				{
+					label = description;
+				}
+				Class datatype = field.getSchema().getObjectType();
+				String typename = datatype.getName();
+				String widget = ResourcesMetadata.WIDGET_STRING;
+				if(typename.equals(String.class.getName()))
+				{
+					widget = ResourcesMetadata.WIDGET_TEXTAREA;
+				}
+				else if(typename.equals(Date.class.getName()))
+				{
+					widget = ResourcesMetadata.WIDGET_DATETIME;
+				}
+				else if(typename.equals(Boolean.class.getName()))
+				{
+					widget = ResourcesMetadata.WIDGET_BOOLEAN;
+				}
+				else if(typename.equals(URI.class.getName()))
+				{
+					widget = ResourcesMetadata.WIDGET_ANYURI;
+				}
+				else if(typename.equals(Integer.class.getName()))
+				{
+					widget = ResourcesMetadata.WIDGET_INTEGER;
+				}
+				properties.add(new ResourcesMetadata(namespace, localname, label, description, typename, widget));
+				
+			}
 		}
+		state.setAttribute(STATE_STRUCTOBJ_PROPERTIES, properties);
 		
 		/*
 		*/
@@ -2718,12 +2749,25 @@ extends VelocityPortletPaneledAction
 		if(TYPE_FORM.equals(itemType))
 		{
 			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
-			System.out.println(" ~~~~~~> formtype == " + formtype);
 			context.put("formtype", formtype);
 			setupStructuredObjects(state);
 			
 			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
 			context.put("homes", listOfHomes);
+			List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
+			context.put("properties", properties);
+
+			context.put("STRING", ResourcesMetadata.WIDGET_STRING);
+			context.put("TEXTAREA", ResourcesMetadata.WIDGET_TEXTAREA);
+			context.put("BOOLEAN", ResourcesMetadata.WIDGET_BOOLEAN);
+			context.put("INTEGER", ResourcesMetadata.WIDGET_INTEGER);
+			context.put("DOUBLE", ResourcesMetadata.WIDGET_DOUBLE);
+			context.put("DATE", ResourcesMetadata.WIDGET_DATE);
+			context.put("TIME", ResourcesMetadata.WIDGET_TIME);
+			context.put("DATETIME", ResourcesMetadata.WIDGET_DATETIME);
+			context.put("ANYURI", ResourcesMetadata.WIDGET_ANYURI);
+			
+			context.put("today", TimeService.newTime());
 		}
 		Set missing = (Set) state.removeAttribute(STATE_CREATE_MISSING_ITEM);
 		context.put("missing", missing);

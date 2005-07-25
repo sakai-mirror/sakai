@@ -326,6 +326,74 @@
 							#end
 						</select>
 					</p>
+					#foreach($tag in $properties)
+						<p class="shorttext">
+							#if("$!tag.widget" == "$!STRING")
+			 					<label for ="$validator.escapeJavascript("$!{tag.fullname}_$i")">
+									$tag.label
+								</label>
+	
+								<input type="text" size="40"
+									name="$!{tag.fullname}_$i" 
+									id="$validator.escapeJavascript("$!{tag.fullname}_$i")" 
+									value="$!item.metadata.get("$tag.fullname")" 
+								/>
+							#elseif("$!tag.widget" == "$!TEXTAREA")
+								<label for ="$validator.escapeJavascript("$!{tag.fullname}_$i")">
+									$tag.label
+								</label>
+	
+								<textarea rows="4" cols="30" 
+									name="$!{tag.fullname}_$i" 
+									id="$validator.escapeJavascript("$!{tag.fullname}_$i")" >$validator.escapeHtmlTextarea($item.metadata.get("$tag.fullname"))</textarea>
+	
+							#elseif("$!tag.widget" == "$!DATE")
+	
+								<label for ="$validator.escapeJavascript("$!{tag.fullname}_$i")">
+									$tag.label
+								</label>
+								<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_$i")" value="" />
+								#if($!item.metadata.get("$tag.fullname"))
+									#set($theValue = $!item.metadata.get("$tag.fullname"))
+								#else
+									#set($theValue = $today)
+								#end 
+	
+								#prop_dateSelectionWidget("${tag.fullname}_$i" $theValue)
+							#elseif("$!tag.widget" == "$!DATETIME")
+	
+								<label for ="$validator.escapeJavascript("$!{tag.fullname}_$i")">
+									$tag.label
+								</label>
+								<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_$i")" value="" />
+								#if($!item.metadata.get("$tag.fullname"))
+									#set($theValue = $!item.metadata.get("$tag.fullname"))
+								#else
+									#set($theValue = $today)
+								#end 
+								#prop_dateSelectionWidget("$!{tag.fullname}_$i" $theValue)
+								#prop_timeSelectionWidget("$!{tag.fullname}_$i" $theValue)
+							#elseif("$!tag.widget" == "$!TIME")
+	
+								<label for ="$validator.escapeJavascript("$!{tag.fullname}_$i")">
+									$tag.label
+								</label>
+								<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_$i")" value="" />
+								#if($!item.metadata.get("$tag.fullname"))
+									#set($theValue = $!item.metadata.get("$tag.fullname"))
+								#else
+									#set($theValue = $today)
+								#end 
+								#prop_timeSelectionWidget("$!{tag.fullname}_$i" $theValue)
+	
+							#else
+								$tag.fullname<br />
+								$tag.widget<br />
+								$!item.metadata.get("$tag.fullname")<br />
+							#end
+						</p>
+					#end
+					
 				#end
 			#else
 				<!-- item.type == $item.type -->
