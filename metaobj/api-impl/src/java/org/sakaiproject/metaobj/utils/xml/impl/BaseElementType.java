@@ -46,10 +46,8 @@ package org.sakaiproject.metaobj.utils.xml.impl;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.sakaiproject.metaobj.utils.xml.NormalizationException;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
-import org.sakaiproject.metaobj.utils.xml.ValidationError;
+import org.sakaiproject.metaobj.utils.xml.*;
+import org.sakaiproject.metaobj.utils.xml.ElementType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,7 +61,7 @@ import java.util.regex.Pattern;
  * Time: 5:07:44 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BaseElementType {
+public class BaseElementType implements ElementType {
 
    protected static final int WHITE_SPACE_TYPE_NONE = 0;
    protected static final int WHITE_SPACE_TYPE_PRESERVE = 1;

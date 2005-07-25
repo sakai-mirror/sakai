@@ -5,7 +5,7 @@
 <hibernate-mapping package="org.sakaiproject.metaobj.shared.model">
 
    <class name="StructuredArtifactDefinitionBean" table="osp_structured_artifact_def">
-      <id name="id" length="32" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
          <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
       </id>      
       <property name="description" type="string" column="description"/>

@@ -45,10 +45,8 @@ package org.sakaiproject.metaobj.utils.xml.impl;
 
 import org.jdom.Attribute;
 import org.jdom.Element;
-import org.sakaiproject.metaobj.utils.xml.NormalizationException;
-import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
-import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
-import org.sakaiproject.metaobj.utils.xml.ValidationError;
+import org.sakaiproject.metaobj.utils.xml.*;
+import org.sakaiproject.metaobj.utils.xml.ElementType;
 
 import java.util.List;
 
@@ -130,7 +128,7 @@ public class SimpleSchemaNodeImpl extends SchemaNodeImpl {
       return type.maxLength;
    }
 
-   public BaseElementType getType() {
+   public ElementType getType() {
       return type;
    }
 

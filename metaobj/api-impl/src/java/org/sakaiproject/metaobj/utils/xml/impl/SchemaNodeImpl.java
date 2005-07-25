@@ -47,11 +47,7 @@ import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.sakaiproject.metaobj.utils.xml.NormalizationException;
-import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
+import org.sakaiproject.metaobj.utils.xml.*;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -443,6 +439,10 @@ public class SchemaNodeImpl implements SchemaNode {
 
    public Element getSchemaElement() {
       return schemaElement;
+   }
+
+   public ElementType getType() {
+      return null;
    }
 
    public GlobalMaps getGlobalMaps() {

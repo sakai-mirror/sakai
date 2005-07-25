@@ -137,4 +137,6 @@ public interface SchemaNode extends Serializable {
    
    public Element getSchemaElement();
 
+   public ElementType getType();
+
 }

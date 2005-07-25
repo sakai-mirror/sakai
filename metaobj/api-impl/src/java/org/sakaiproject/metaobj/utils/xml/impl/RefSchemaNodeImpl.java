@@ -44,10 +44,8 @@
 package org.sakaiproject.metaobj.utils.xml.impl;
 
 import org.jdom.Element;
-import org.sakaiproject.metaobj.utils.xml.NormalizationException;
-import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
+import org.sakaiproject.metaobj.utils.xml.*;
+import org.sakaiproject.metaobj.utils.xml.ElementType;
 
 import java.util.List;
 import java.util.Map;
@@ -109,7 +107,7 @@ public class RefSchemaNodeImpl extends SchemaNodeImpl {
       return getActualNode().getChildren();
    }
 
-   public BaseElementType getType() {
+   public ElementType getType() {
       if (getActualNode() instanceof SimpleSchemaNodeImpl) {
          return ((SimpleSchemaNodeImpl)getActualNode()).getType();
       }
