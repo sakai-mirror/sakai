@@ -2213,10 +2213,26 @@ extends PagedResourceActionII
 					sEdit.setHonorPledgeFlag (Boolean.FALSE.booleanValue ());
 				}
 		
-				String feedbackString = UserDirectoryService.getCurrentUser().getDisplayName() + " " + TimeService.newTime().toStringLocalFull() + ":\n";
-				sEdit.setFeedbackComment (feedbackString + (String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT));
-				sEdit.setFeedbackText (feedbackString + (String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_TEXT));
-
+				// store the feedback from instructor
+				String feedbackUserString = UserDirectoryService.getCurrentUser().getDisplayName() + " " + TimeService.newTime().toStringLocalFull() + ":";
+				
+				// the instructor comment
+				String feedbackCommentString = (String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT);
+				sEdit.setFeedbackComment (feedbackUserString + "\n" + feedbackCommentString);
+				
+				// the instructor inline feedback
+				String feedbackTextString = (String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_TEXT);
+				StringBuffer text = new StringBuffer();
+				int index = feedbackTextString.indexOf(COMMENT_OPEN);
+				while (index != -1)
+				{
+					text.append(feedbackTextString.substring(0, index)).append(COMMENT_OPEN).append(feedbackUserString);
+					feedbackTextString = feedbackTextString.substring(index + COMMENT_OPEN.length());
+					index = feedbackTextString.indexOf(COMMENT_OPEN);
+				}
+				text.append(feedbackTextString);
+				sEdit.setFeedbackText (text.toString());
+				
 				ReferenceVector v = (ReferenceVector) state.getAttribute(GRADE_SUBMISSION_FEEDBACK_ATTACHMENT);
 				if (v!=null)
 				{
@@ -6567,12 +6583,12 @@ extends PagedResourceActionII
 		
 		while ((pos = buf.indexOf("{{")) != -1)
 		{
-			buf.replace(pos, pos+"{{".length(), "<ins>");
+			buf.replace(pos, pos+"{{".length(), "<span class=\"alert comment\">(<span class=\"skip\">Comments by </span>");
 		}	
 		
 		while ((pos = buf.indexOf("}}")) != -1)
 		{
-			buf.replace(pos, pos+"}}".length(), "</ins>");
+			buf.replace(pos, pos+"}}".length(), ")</span>");
 		}
 		
 		return FormattedText.escapeHtmlFormattedText(buf.toString());
