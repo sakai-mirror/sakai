@@ -5158,6 +5158,10 @@ public class SiteAction extends PagedResourceActionII
 	*/
 	private void sendSiteRequest(SessionState state, String request, int requestListSize, List subjects, List courses, List sections)
 	{
+
+		boolean sendEmailToRequestee = false;
+		StringBuffer buf = new StringBuffer();
+		
 		// get the request email from configuration
 		String requestEmail = ServerConfigurationService.getString("setup.request", null);
 		if (requestEmail == null)
@@ -5206,57 +5210,65 @@ public class SiteAction extends PagedResourceActionII
 				additional = (String)state.getAttribute(FORM_ADDITIONAL);
 			}
 			
-			//To site quest account - the instructor of record's
-			boolean sendEmailToRequestee = false;
-			StringBuffer buf = new StringBuffer();
-			String requestId = (String) state.getAttribute(STATE_SITE_QUEST_UNIQNAME);
-			if (requestId != null)
+			boolean isFutureTerm = false;
+			if (state.getAttribute(STATE_FUTURE_TERM_SELECTED) != null && ((Boolean) state.getAttribute(STATE_FUTURE_TERM_SELECTED)).booleanValue())
 			{
-				try
+				isFutureTerm = true;
+			}
+			
+			// there is no offical instructor for future term sites
+			if (!isFutureTerm)
+			{
+				//To site quest account - the instructor of record's
+				String requestId = (String) state.getAttribute(STATE_SITE_QUEST_UNIQNAME);
+				if (requestId != null)
 				{
-					User instructor = UserDirectoryService.getUser(requestId);
-					from = requestEmail;
-					to = instructor.getEmail();
-					headerTo = instructor.getEmail();
-					replyTo = requestEmail;
-					if (termExist)
+					try
 					{
-						message_subject = rb.getString("java.official")+" " + term.getTerm() + " " + term.getYear();
+						User instructor = UserDirectoryService.getUser(requestId);
+						from = requestEmail;
+						to = instructor.getEmail();
+						headerTo = instructor.getEmail();
+						replyTo = requestEmail;
+						if (termExist)
+						{
+							message_subject = rb.getString("java.official")+" " + term.getTerm() + " " + term.getYear();
+						}
+						else
+						{
+							message_subject = rb.getString("java.official")+" ";
+						}
+						buf.append(rb.getString("java.hello")+" \n\n");
+						buf.append(rb.getString("java.receiv")+" " + sessionUserName + ", ");
+						buf.append(rb.getString("java.who")+"\n");
+						if (termExist)
+						{
+							buf.append(term.getTerm() + " " + term.getYear() + "\n");
+						
+						}
+						for (int i = 0; i < requestListSize; i++)
+						{
+							buf.append(rb.getString("java.subject")+"\t" + subjects.get(i) + "\n");
+							buf.append(rb.getString("java.course")+"\t" + courses.get(i) + "\n");
+							buf.append(rb.getString("java.section")+"\t" + sections.get(i) + "\n\n");	
+						}
+						buf.append("\n"+rb.getString("java.according")+" " + sessionUserName + " "+rb.getString("java.record")+"\n");
+						buf.append(rb.getString("java.canyou")+" "  + sessionUserName + " "+ rb.getString("java.assoc")+"\n");
+						buf.append(rb.getString("java.respond")+" " + sessionUserName + rb.getString("java.appoint")+"\n\n");
+						buf.append(rb.getString("java.thanks")+"\n");
+						buf.append(productionSiteName + " "+rb.getString("java.support"));
+						content = buf.toString();	
+						
+						// send the email
+						EmailService.send(from, to, message_subject, content, headerTo, replyTo, null);
+						
+						// email has been sent successfully
+						sendEmailToRequestee = true;
 					}
-					else
+					catch (IdUnusedException ee)
 					{
-						message_subject = rb.getString("java.official")+" ";
-					}
-					buf.append(rb.getString("java.hello")+" \n\n");
-					buf.append(rb.getString("java.receiv")+" " + sessionUserName + ", ");
-					buf.append(rb.getString("java.who")+"\n");
-					if (termExist)
-					{
-						buf.append(term.getTerm() + " " + term.getYear() + "\n");
-					
-					}
-					for (int i = 0; i < requestListSize; i++)
-					{
-						buf.append(rb.getString("java.subject")+"\t" + subjects.get(i) + "\n");
-						buf.append(rb.getString("java.course")+"\t" + courses.get(i) + "\n");
-						buf.append(rb.getString("java.section")+"\t" + sections.get(i) + "\n\n");	
-					}
-					buf.append("\n"+rb.getString("java.according")+" " + sessionUserName + " "+rb.getString("java.record")+"\n");
-					buf.append(rb.getString("java.canyou")+" "  + sessionUserName + " "+ rb.getString("java.assoc")+"\n");
-					buf.append(rb.getString("java.respond")+" " + sessionUserName + rb.getString("java.appoint")+"\n\n");
-					buf.append(rb.getString("java.thanks")+"\n");
-					buf.append(productionSiteName + " "+rb.getString("java.support"));
-					content = buf.toString();	
-					
-					// send the email
-					EmailService.send(from, to, message_subject, content, headerTo, replyTo, null);
-					
-					// email has been sent successfully
-					sendEmailToRequestee = true;
+					}	// try
 				}
-				catch (IdUnusedException ee)
-				{
-				}	// try
 			}
 		
 			//To Support
@@ -5309,13 +5321,16 @@ public class SiteAction extends PagedResourceActionII
 			buf.append(rb.getString("java.siteid")+"\t" +  id + "\n");
 			buf.append(rb.getString("java.siteinstr")+"\n"  + additional + "\n\n");
 			
-			if (sendEmailToRequestee)
+			if (!isFutureTerm)
 			{
-				buf.append(rb.getString("java.authoriz")+" " + noEmailInIdAccountName + " "+rb.getString("java.asreq"));
-			}
-			else
-			{
-				buf.append(rb.getString("java.thesiteemail")+" " + noEmailInIdAccountName + " "+rb.getString("java.asreq"));
+				if (sendEmailToRequestee)
+				{
+					buf.append(rb.getString("java.authoriz")+" " + noEmailInIdAccountName + " "+rb.getString("java.asreq"));
+				}
+				else
+				{
+					buf.append(rb.getString("java.thesiteemail")+" " + noEmailInIdAccountName + " "+rb.getString("java.asreq"));
+				}
 			}
 			content = buf.toString();
 			EmailService.send(from, to, message_subject, content, headerTo, replyTo, null);
