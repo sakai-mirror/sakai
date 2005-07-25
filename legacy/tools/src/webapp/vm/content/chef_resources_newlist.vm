@@ -167,7 +167,7 @@
 						<div class="itemAction">
 							#set ($itemsOnLine = 0)
 							####### deal with Pasting copied items - 1
-							#if($copyFlag && $copyFlag.equals($TRUE) && $root.canAddItem())
+							#if($copyFlag && $copyFlag.equals($TRUE))
 								#if ($itemsOnLine > 0)
 									|
 								#end
@@ -196,24 +196,14 @@
 									</a>
 								#end
 							#end
-							####### deal with adding folder - 1
-							#if($root.canAddFolder())
-								#if ($itemsOnLine > 0)
-									|
-								#end
-								#set ($itemsOnLine = $itemsOnLine + 1)
-								<a href="#toolLink("ResourcesAction" "doAdditem")&itemType=emptyFolder&collectionId=$validator.escapeUrl(${root.id})" title ="$tlang.getString('list.folder')">
-									$tlang.getString("list.folder")
-								</a>
-							#end
-							####### deal with adding item - 1
+							####### deal with adding item 
 							#if($root.canAddItem())
 								#if ($itemsOnLine > 0)
 									|
 								#end
 								#set ($itemsOnLine = $itemsOnLine + 1)
-								<a href="#toolLink("ResourcesAction" "doAdditem")&itemType=file&collectionId=$validator.escapeUrl(${root.id})" title ="$tlang.getString('list.item')">
-									$tlang.getString("list.item")
+								<a href="#toolLink("ResourcesAction" "doAdditem")&itemType=folder&collectionId=$validator.escapeUrl(${root.id})" title ="$tlang.getString('list.folder')">
+									$tlang.getString("list.add")
 								</a>
 							#end
 							####### deal with site/folder permissions - 1
@@ -329,10 +319,10 @@
 											$tlang.getString("list.edit")
 										</a>
 									#elseif ($member.canRead())
-									#if ($itemsOnLine > 0)
-										|
-									#end
-									#set ($itemsOnLine = $itemsOnLine + 1)
+										#if ($itemsOnLine > 0)
+											|
+										#end
+										#set ($itemsOnLine = $itemsOnLine + 1)
 										<a href="#toolLink("ResourcesAction" "doMore")&from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)" title="$tlang.getString('list.props')">
 											$tlang.getString("list.props")
 										</a>
@@ -347,14 +337,14 @@
 											$tlang.getString("list.del")
 										</a>
 									#end								
-									####### deal with adding folder
-									#if($member.canAddFolder())
+									####### deal with adding item
+									#if($member.canAddItem())
 										#if ($itemsOnLine > 0)
 											|
 										#end
 										#set ($itemsOnLine = $itemsOnLine + 1)
 										<a href="#toolLink("ResourcesAction" "doAdditem")&itemType=emptyFolder&collectionId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('list.folder')">
-											$tlang.getString("list.folder")
+											$tlang.getString("list.add")
 										</a>
 									#end
 									####### deal with folder permissions
@@ -365,16 +355,6 @@
 										#set ($itemsOnLine = $itemsOnLine + 1)
 										<a href="#toolLink("ResourcesAction" "doFolder_permissions")&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.fPerm')">
 											$tlang.getString("list.fPerm")
-										</a>
-									#end
-									####### deal with adding item
-									#if($member.canAddItem())
-										#if ($itemsOnLine > 0)
-											|
-										#end
-										#set ($itemsOnLine = $itemsOnLine + 1)
-										<a href="#toolLink("ResourcesAction" "doAdditem")&itemType=file&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.item')">
-											$tlang.getString("list.item")
 										</a>
 									#end
 								</div>

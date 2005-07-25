@@ -51,6 +51,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -71,6 +72,12 @@ import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.javax.PagingPosition;
+import org.sakaiproject.metaobj.shared.control.SchemaBean;
+import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
@@ -359,10 +366,14 @@ extends VelocityPortletPaneledAction
 	private static final String STATE_CREATE_INTENT = "resources.create_intent";
 	private static final String STATE_CREATE_NUMBER = "resources.create_number";
 	private static final String STATE_CREATE_ALERTS = "resources.create_alerts";
+	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
+	private static final String STATE_STRUCTOBJ_TYPE = "resources.create_structured_object_type";
+	private static final String STATE_STRUCTOBJ_HOMES = "resources.create_structured_object_home";
 	
 	private static final String TYPE_FOLDER = "folder";
 	private static final String TYPE_UPLOAD = "file";
 	private static final String TYPE_URL = "Url";
+	private static final String TYPE_FORM = "StructuredArtifact";
 	
 	private static final int CREATE_MAX_ITEMS = 10;
 
@@ -2066,6 +2077,11 @@ extends VelocityPortletPaneledAction
 		state.setAttribute(STATE_CREATE_NUMBER, new Integer(1));
 		state.setAttribute(STATE_CREATE_TYPE, itemType);
 		state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
+		state.setAttribute(STATE_CREATE_MISSING_ITEM, new HashSet());
+		if(TYPE_FORM.equals(itemType))
+		{
+			setupStructuredObjects(state);
+		}
 		
 		String collectionId = params.getString ("collectionId");
 		state.setAttribute(STATE_CREATE_COLLECTION_ID, collectionId);
@@ -2087,6 +2103,7 @@ extends VelocityPortletPaneledAction
 		String flow = params.getString("flow");
 		String mode = (String) state.getAttribute(STATE_MODE);
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		Set missing = new HashSet();
 		
 		if(flow == null || flow.equals("cancel"))
 		{
@@ -2193,6 +2210,18 @@ extends VelocityPortletPaneledAction
 			alerts.add("Invalid item type");
 			state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		}
+		else if(flow.equals("updateDocType"))
+		{
+			// captureMultipleValues(state, params, false);
+			String formtype = params.getString("formtype");
+			if(formtype == null || formtype.equals(""))
+			{
+				alerts.add("Must select a form type");
+				missing.add("formtype");
+			}
+			state.setAttribute(STATE_STRUCTOBJ_TYPE, formtype);
+			setupStructuredObjects(state);
+		}
 		else if(flow.equals("showOptional"))
 		{
 			captureMultipleValues(state, params, false);
@@ -2253,13 +2282,14 @@ extends VelocityPortletPaneledAction
 			addAlert(state, alert);
 		}
 		alerts.clear();
+		state.setAttribute(STATE_CREATE_MISSING_ITEM, missing);
 		
 		// remove?
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 		state.setAttribute (STATE_MODE, mode);
 		
-	}	// doCreate
+	}	// doCreateitem
 	
 	/**
 	 * @param state
@@ -2465,6 +2495,63 @@ extends VelocityPortletPaneledAction
 		
 	}	// createFiles
 	
+	
+	public void setupStructuredObjects(SessionState state)
+	{
+		String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+		
+		HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");	
+		
+		Map homes1 = factory.getHomes(StructuredArtifactHomeInterface.class);
+		System.out.println(" ~~~~~~> number of homes: " + homes1.size());
+		Map homes2 = factory.getHomes(ReadableObjectHome.class);
+		System.out.println(" ~~~~~~> number of homes: " + homes2.size());
+		
+		Map homes = factory.getHomes();
+		System.out.println(" ~~~~~~> number of homes: " + homes.size());
+		List listOfHomes = new Vector();
+		Iterator it = homes.keySet().iterator();
+		while(it.hasNext())
+		{
+			String key = (String) it.next();
+			System.out.print(" ~~~~~~> getting a home: " + key);
+			listOfHomes.add(homes.get(key));
+		}
+		state.setAttribute(STATE_STRUCTOBJ_HOMES, listOfHomes);
+		
+		StructuredArtifactHomeInterface home = null;
+		SchemaBean schema = null;
+		List properties = new Vector();
+		
+		if(formtype == null || formtype.equals(""))
+		{
+			formtype = "";
+			System.out.println(" ~~~~~~> formtype was null ");
+			state.setAttribute(STATE_STRUCTOBJ_TYPE, formtype);
+		}
+		else if(listOfHomes.isEmpty())
+		{
+			// hmmm
+			System.out.println(" ~~~~~~> listOfHomes.isEmpty");
+		}
+		else
+		{
+			System.out.println(" ~~~~~~> formtype was NOT null");
+			home = (StructuredArtifactHomeInterface) factory.getHome(formtype);
+			System.out.println(" ~~~~~~> home == " + home);
+		}
+		
+		if(home != null)
+		{
+			schema = new SchemaBean(home.getRootNode(), home.getSchema(), formtype, home.getType().getDescription());
+			System.out.println(" ~~~~~~> schema == " + schema);
+		}
+		
+		/*
+		*/
+
+	}
+	
 	/**
 	 * @param state
 	 * @param params TODO
@@ -2590,6 +2677,7 @@ extends VelocityPortletPaneledAction
 		context.put("TYPE_HTML", MIME_TYPE_DOCUMENT_HTML);
 		context.put("TYPE_TEXT", MIME_TYPE_DOCUMENT_PLAINTEXT);
 		context.put("TYPE_URL", TYPE_URL);
+		context.put("TYPE_FORM", TYPE_FORM);
 		
 		List new_items = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		context.put("new_items", new_items);
@@ -2626,6 +2714,19 @@ extends VelocityPortletPaneledAction
 			context.put("dropboxMode", Boolean.TRUE);
 		}
 		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
+		
+		if(TYPE_FORM.equals(itemType))
+		{
+			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			System.out.println(" ~~~~~~> formtype == " + formtype);
+			context.put("formtype", formtype);
+			setupStructuredObjects(state);
+			
+			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+			context.put("homes", listOfHomes);
+		}
+		Set missing = (Set) state.removeAttribute(STATE_CREATE_MISSING_ITEM);
+		context.put("missing", missing);
 		
 		String template = (String) getContext(data).get("template");
 		return template + TEMPLATE_CREATE;
@@ -9857,6 +9958,7 @@ extends VelocityPortletPaneledAction
 	{
 		protected String m_copyrightStatus;
 		protected String m_copyrightInfo;
+		protected String m_formtype;
 		// protected boolean m_copyrightAlert;
 		protected boolean m_pubview;
 		protected boolean m_pubviewset;
@@ -9890,6 +9992,7 @@ extends VelocityPortletPaneledAction
 			m_notification = NotificationService.NOTI_OPTIONAL;
 			m_hasQuota = false;
 			m_canSetQuota = false;
+			m_formtype = "";
 		}
 		
 		/**
@@ -9926,7 +10029,7 @@ extends VelocityPortletPaneledAction
 		 */
 		public boolean isFileUpload() 
 		{
-			return !isFolder() && !isUrl() && !isHtml() && !isPlaintext();
+			return !isFolder() && !isUrl() && !isHtml() && !isPlaintext() && !isStructuredArtifact();
 		}
 
 		/**
@@ -9951,6 +10054,22 @@ extends VelocityPortletPaneledAction
 		public String getMimeType()
 		{
 			return m_mimetype;
+		}
+		
+		/**
+		 * @param formtype
+		 */
+		public void setFormtype(String formtype)
+		{
+			m_formtype = formtype;
+		}
+		
+		/**
+		 * @return
+		 */
+		public String getFormtype()
+		{
+			return m_formtype;
 		}
 		
 		/**
@@ -10124,6 +10243,13 @@ extends VelocityPortletPaneledAction
 		public boolean isUrl()
 		{
 			return TYPE_URL.equals(m_type) || ResourceProperties.TYPE_URL.equals(m_mimetype);
+		}
+		/**
+		 * @return true if content-type of item indicates it represents a URL, false otherwise
+		 */
+		public boolean isStructuredArtifact()
+		{
+			return TYPE_FORM.equals(m_type);
 		}
 		/**
 		 * @return true if content-type of item is "text/text" (plain text), false otherwise

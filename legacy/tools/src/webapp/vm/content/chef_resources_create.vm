@@ -138,6 +138,7 @@
 </script>
 
 <div class="portletBody">
+	######################## ================ Title, Instructions, Breadcrumb ================ ########################
 	#if("$itemType" == "$TYPE_FOLDER")
 		<h3>
 			$tlang.getString("addf.addfolder")
@@ -161,9 +162,6 @@
 			$tlang.getString("gen.instr2") <span class="reqStarInline">*</span>  
 		</p>
 	#end
-	
-	
-	
 	<div class ="chefBreadCrumb">
 		$tlang.getString("gen.location")
 		<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
@@ -180,22 +178,22 @@
 			#end
 		#end
 	</div>
-	
-	#if("$itemType" != "$TYPE_FOLDER")
-		<form name="addItemForm" id="addItemForm" method="post" action="#toolForm("ResourcesAction")" >
-			<input type="hidden" name="sakai_action" value="doCreate" />
-			<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
-			<p class="shorttext">
-				<label for="itemType">$tlang.getString("addi.change")</label>
-				<select id="itemType"  name="itemType" onchange="javascript:submitform('addItemForm');">
-					<option value="$TYPE_UPLOAD" id="$validator.escapeJavascript("$TYPE_UPLOAD")"#if("$itemType" == "$TYPE_UPLOAD") selected="selected"#end>$tlang.getString("addi.upload")</option>
-					<option value="$TYPE_URL" id="$validator.escapeJavascript("$TYPE_URL")"#if("$itemType" == "$TYPE_URL") selected="selected"#end>$tlang.getString("addi.url")</option>
-					<option value="$TYPE_HTML" id="$validator.escapeJavascript("$TYPE_HTML")"#if("$itemType" == "$TYPE_HTML") selected="selected"#end>$tlang.getString("addi.txthtml")</option>
-					<option value="$TYPE_TEXT" id="$validator.escapeJavascript("$TYPE_TEXT")"#if("$itemType" == "$TYPE_TEXT") selected="selected"#end>$tlang.getString("addi.txttxt")</option>
-				</select>
-			</p>
-		</form>
-	#end
+	######################## ================ Change Item Type, Number of Items ================ ########################
+	<form name="addItemForm" id="addItemForm" method="post" action="#toolForm("ResourcesAction")" >
+		<input type="hidden" name="sakai_action" value="doCreate" />
+		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+		<p class="shorttext">
+			<label for="itemType">$tlang.getString("addi.change")</label>
+			<select id="itemType"  name="itemType" onchange="javascript:submitform('addItemForm');">
+				<option value="$TYPE_FOLDER" id="$validator.escapeJavascript("$TYPE_FOLDER")"#if("$itemType" == "$TYPE_FOLDER") selected="selected"#end>$tlang.getString("addi.folder")</option>
+				<option value="$TYPE_UPLOAD" id="$validator.escapeJavascript("$TYPE_UPLOAD")"#if("$itemType" == "$TYPE_UPLOAD") selected="selected"#end>$tlang.getString("addi.upload")</option>
+				<option value="$TYPE_URL" id="$validator.escapeJavascript("$TYPE_URL")"#if("$itemType" == "$TYPE_URL") selected="selected"#end>$tlang.getString("addi.url")</option>
+				<option value="$TYPE_HTML" id="$validator.escapeJavascript("$TYPE_HTML")"#if("$itemType" == "$TYPE_HTML") selected="selected"#end>$tlang.getString("addi.txthtml")</option>
+				<option value="$TYPE_TEXT" id="$validator.escapeJavascript("$TYPE_TEXT")"#if("$itemType" == "$TYPE_TEXT") selected="selected"#end>$tlang.getString("addi.txttxt")</option>
+				<option value="$TYPE_FORM" id="$validator.escapeJavascript("$TYPE_FORM")"#if("$itemType" == "$TYPE_FORM") selected="selected"#end>$tlang.getString("addi.meta")</option>
+			</select>
+		</p>
+	</form>
 	#if("$itemType" == "$TYPE_UPLOAD")
 		<form name="createForm" id="createForm" action="#toolForm("ResourcesAction")&special=upload" method="post" enctype="multipart/form-data">
 	#else
@@ -209,7 +207,7 @@
 		<input type="hidden" name="metadataGroup" id="metadataGroup" value="*" />
 		#if("$itemType" == "$TYPE_UPLOAD")
 			<p class="shorttext">
-				<label for="numberOfItems">$tlang.getString("add.select")</label>
+				<label for="numberOfItems">$tlang.getString("add.numfiles")</label>
 				<select name="numberOfItems" id="numberOfItems" onchange="javascript:document.getElementById('flow').value='updateNumber';submitform('createForm');">
 					#foreach ($i in [1 .. $max_number])
 						#if ("$i" == "$numberOfItems")
@@ -223,8 +221,8 @@
 			<br />
 		#elseif("$itemType" == "$TYPE_FOLDER")
 			<p class="shorttext">
-				<label for="numberOfItems">$tlang.getString("addf.number")</label>
-				<select name="numberOfItems" id="select" onchange="javascript:document.getElementById('flow').value='updateNumber';submitform('createForm');">
+				<label for="numberOfItems">$tlang.getString("add.numfldrs")</label>
+				<select name="numberOfItems" id="numberOfItems" onchange="javascript:document.getElementById('flow').value='updateNumber';submitform('createForm');">
 					#foreach ($i in [1 .. $max_number])
 						#if ("$i" == "$numberOfItems")
 							<option value="$i" selected="selected">$i</option>
@@ -240,6 +238,7 @@
 		#end
 		#foreach($n in [1 .. $numberOfItems])
 			#set($i = $n - 1)
+			######################## ================ Title Bar for Item ================ ########################
 			<h4>
 				#if("$itemType" == "$TYPE_UPLOAD")
 					$tlang.getString("addi.upload")
@@ -251,6 +250,8 @@
 					$tlang.getString("addi.txttxt")
 				#elseif("$itemType" == "$TYPE_FOLDER")
 					$tlang.getString("gen.folder1")
+				#elseif("$itemType" == "$TYPE_FORM")
+					$tlang.getString("addi.meta")
 				#end
 				#if($numberOfItems > 1)
 					 ($n of $numberOfItems)
@@ -258,22 +259,21 @@
 			</h4>
 
 			#set($item = $new_items.get($i))
-	
-			<!-- $item -->
-			#if($!{item.isMissing("name")})
-				<p class="shorttext validation">
-			#else
-				<p class="shorttext">
+			######################## ================ Content of Item ================ ########################
+			#if("$itemType" == "$TYPE_FORM")
 			#end
-				<span class="reqStar">*</span>
-				<label for="name$i">
-					$tlang.getString("gen.title") 
-				</label>
-				<input type="text" size="40" id="name$i" name="name$i" value="$validator.escapeHtml("$!item.name")" />
-			</p>	
-	
-	
 			#if ($item.isFolder())
+				#if($!{item.isMissing("name")})
+					<p class="shorttext validation">
+				#else
+					<p class="shorttext">
+				#end
+					<span class="reqStar">*</span>
+					<label for="name$i">
+						$tlang.getString("gen.title") 
+					</label>
+					<input type="text" size="40" id="name$i" name="name$i" value="$validator.escapeHtml("$!item.name")" />
+				</p>	
 			#elseif ($item.isUrl())
 				#if($!{item.isMissing("Url")})
 					<p class="shorttext validation">
@@ -285,6 +285,7 @@
 					<input type="text" name="Url$i" id="Url$i" size="60" value="$!validator.escapeHtml("$!item.filename")" onchange="javascript:seedValue(this, 'name$i')" />
 				</p>
 			#elseif ($item.isPlaintext()) 
+				<!-- item.isPlaintext -->
 				#if($!{item.isMissing("content")})
 					<p class="shorttext validation">
 				#else
@@ -294,6 +295,7 @@
 					<textarea name="content$i" id="content$i" rows="10" cols="40" wrap="virtual">$!validator.escapeHtmlTextarea($!{item.contentstring})</textarea>
 				</p>
 			#elseif ($item.isHtml())
+				<!-- item.isHtml -->
 				#if($!{item.isMissing("content")})
 					<p class="shorttext validation">
 				#else
@@ -305,7 +307,28 @@
 						#chef_setupformattedtextarea("content$i")
 					</td></tr></table>
 				</p>
+			#elseif($item.isStructuredArtifact())
+				#if($homes.isEmpty())
+					<p class="shorttext validation">
+						$tlang.getString("add.noforms")
+					</p>
+				#else
+					#if($missing.contains("formtype"))
+						<p class="shorttext validation">
+					#else
+						<p class="shorttext">
+					#end
+						<label for="formtype">$tlang.getString("add.formtype")</label>
+						<select id="formtype" name="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('createForm');">
+							<option value=""#if("$!formtype" == "") selected="selected"#end></option>
+							#foreach($home in $homes)
+								<option value="$home.id"#if("$!home.id" == "$!formtype")) selected="selected"#end>$home.documentRoot</option>
+							#end
+						</select>
+					</p>
+				#end
 			#else
+				<!-- item.type == $item.type -->
 				#if("$!{item.Filename}" == "")
 					#if($!{item.isMissing("fileName")})
 						<p class="shorttext validation">
@@ -326,6 +349,24 @@
 						<input type="file" name="fileName$i" id="fileName$i"  class ="upload" />
 					</p>
 				#end
+			#end
+
+			######################## ================ Properties of Item ================ ########################
+			<p class="discTria">
+				$tlang.getString("add.props")
+			</p>
+			#if(! $item.isFolder())
+				#if($!{item.isMissing("name")})
+					<p class="shorttext validation">
+				#else
+					<p class="shorttext">
+				#end
+					<span class="reqStar">*</span>
+					<label for="name$i">
+						$tlang.getString("gen.title") 
+					</label>
+					<input type="text" size="40" id="name$i" name="name$i" value="$validator.escapeHtml("$!item.name")" />
+				</p>	
 			#end
 			<p class="shorttext">
 				<label for="description$i">
@@ -410,8 +451,7 @@
 				#end
 			#end
 			
-		
-			############################################# this is the section to edit metadata  
+			######################## ================ Optional Properties of Item ================ ########################
 			#if($metadataGroups)
 				#foreach($group in $metadataGroups)				  
 					#if ($item.isGroupShowing($validator.escapeUrl($group.name)))
@@ -503,6 +543,8 @@
 	
 		#end
 		################# end of foreach $i in 0 .. $numberOfItems
+
+		######################## ================ Add Button, Cancel Button ================ ########################
 		<p class="act">
 			<input type="button" class="active" name="eventSubmit_doSavechanges" onclick="javascript:document.getElementById('flow').value='create'; submitform('createForm');" value="$tlang.getString("gen.add")" />
 			<input type="button" name="cancel" onclick="javascript:document.getElementById('flow').value='cancel';document.forms.createForm.submit();" value="$tlang.getString("gen.cancel")" />
