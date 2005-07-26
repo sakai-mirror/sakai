@@ -22,7 +22,7 @@
 					type="text" 
 					name="$formfield_channel_title" 
 					id="$formfield_channel_title" 
-					value="$!current_channel_title"
+					value="$validator.escapeHtml($!current_channel_title)"
 					size="50" />
 				$tlang.getString("cus.sugleg")
 			</p>
