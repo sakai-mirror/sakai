@@ -34,9 +34,9 @@
 				#if ($oldTool == "sakai.mailbox")
 					$!oldToolTitle: $!emailId@$serverName
 				#elseif ($oldTool.indexOf("sakai.news") != -1)
-					$!newsTitles.get($oldTool) (News Tool)
+					$validator.escapeHtml($!newsTitles.get($oldTool)) (News Tool)
 				#elseif ($oldTool.indexOf("sakai.iframe") != -1)
-					$!wcTitles.get($oldTool) (Web Content Tool)
+					$validator.escapeHtml($!wcTitles.get($oldTool)) (Web Content Tool)
 				#else
 					$!oldToolTitle
 				#end
@@ -74,9 +74,9 @@
 			#if ($newTool == "sakai.mailbox")
 				$!newToolTitle: $!emailId@$serverName
 			#elseif ($newTool.indexOf("sakai.news") != -1)
-				$!newsTitles.get($newTool) (News Tool)
+				$validator.escapeHtml($!newsTitles.get($newTool)) (News Tool)
 			#elseif ($newTool.indexOf("sakai.iframe") != -1)
-				$!wcTitles.get($newTool) (Web Content Tool)
+				$validator.escapeHtml($!wcTitles.get($newTool)) (Web Content Tool)
 			#else
 				$!newToolTitle
 			#end

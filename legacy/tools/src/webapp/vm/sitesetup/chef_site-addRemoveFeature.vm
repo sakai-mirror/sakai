@@ -74,19 +74,19 @@
 						#if ($toolId.indexOf("sakai.news") != -1)
 							## show title for News tool
 							#if ($toolRegistrationSelectedList.contains($toolId))
-								<label for="$toolId">$newsTitles.get($toolId)</label>
+								<label for="$toolId">$validator.escapeHtml($newsTitles.get($toolId))</label>
 							#else
-								<label for="$toolId">$tool.getTitle()</label>
+								<label for="$toolId">$validator.escapeHtml($tool.getTitle())</label>
 							#end
 						#elseif ($toolId.indexOf("sakai.iframe") != -1)
 							## show url for Web Content tool
 							#if ($toolRegistrationSelectedList.contains($toolId))
-								<label for="$toolId">$wcTitles.get($toolId)</label>
+								<label for="$toolId">$validator.escapeHtml($wcTitles.get($toolId))</label>
 							#else
-								<label for="$toolId">$tool.getTitle()</label>
+								<label for="$toolId">$validator.escapeHtml($tool.getTitle())</label>
 							#end
 						#else
-							<label for="$toolId" >$tool.getTitle()</label>
+							<label for="$toolId" >$validator.escapeHtml($tool.getTitle())</label>
 						#end
 					</td>
 					<td>

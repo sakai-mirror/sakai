@@ -75,7 +75,7 @@
 								<label for="${name}${Newscount}-NewsT">
 									$tlang.getString("enw.title")
 								</label>
-								<input type="text" id="${name}${Newscount}-NewsT" name="$name" value="$!newsTitles.get($toolId)" size="15" maxlength="32"  /><span class="inlinstruction"> $tlang.getString("enw.suggest")</span>
+								<input type="text" id="${name}${Newscount}-NewsT" name="$name" value="$validator.escapeHtml($!newsTitles.get($toolId))" size="15" maxlength="32"  /><span class="inlinstruction"> $tlang.getString("enw.suggest")</span>
 							</p>
 							<p class="shorttext">
 								## commenting - as not really required - if empty a default is used (gsilver)
@@ -85,7 +85,7 @@
 								<label for ="${name}${Newscount}-NewsU">
 									$tlang.getString("enw.url")
 								</label>
-								<input type="text" id="${name}${Newscount}-NewsU"  name="$name" value="$!newsUrls.get($toolId)" size="50" />
+								<input type="text" id="${name}${Newscount}-NewsU"  name="$name" value="$validator.escapeHtml($!newsUrls.get($toolId))" size="50" />
 							</p>
 						#end
 					#end
@@ -117,7 +117,7 @@
 								<label for="${name}${WCcount}-WCT">
 									$tlang.getString("enw.title")
 								</label>
-								<input type="text" id="${name}${WCcount}-WCT" name="$name" value="$!wcTitles.get($toolId)" size="15" maxlength="32" /> <span class="inlinstruction">$tlang.getString("enw.suggest")</span><br />
+								<input type="text" id="${name}${WCcount}-WCT" name="$name" value="$validator.escapeHtml($!wcTitles.get($toolId))" size="15" maxlength="32" /> <span class="inlinstruction">$tlang.getString("enw.suggest")</span><br />
 							</p>
 							<p class="shorttext">
 								#set($name = "urlfor")
@@ -125,7 +125,7 @@
 								<label for="${name}${WCcount}-WCU">
 								$tlang.getString("enw.url")
 								</label>
-								<input type="text"  id="${name}${WCcount}-WCU" name="$name" value="$!wcUrls.get($toolId)" size="50" />
+								<input type="text"  id="${name}${WCcount}-WCU" name="$name" value="$validator.escapeHtml($!wcUrls.get($toolId))" size="50" />
 							</p>
 						#end
 					#end
