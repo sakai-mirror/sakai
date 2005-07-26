@@ -465,32 +465,44 @@
 							</label>	
 							<textarea name="newcopyright$i" id="newcopyright$i" rows="2" cols="40" wrap="virtual" >$validator.escapeHtmlTextarea("$!item.copyrightInfo")</textarea>
 						</p>	
-						<p class="shorttext">
-							<label for="copyrightAlert$i">
-								$tlang.getString("edit.calert")
-							</label>
-							<input type="checkbox" name="copyrightAlert$i" id ="copyrightAlert$i" value="true" #if($item.hasCopyrightAlert())checked="checked"#end style="border:none" />
-							$tlang.getString("edit.display1")
-							<a href="#" onclick="javascript:openSampleCopyrightWindow();">$tlang.getString("edit.display2")</a>
-							$tlang.getString("edit.display3")
-						</p>	
+						<table border="0">
+							<tr>
+								<td style="width:180px;padding-left:1em;vertical-align:top">
+									<label for="copyrightAlert$i">
+										$tlang.getString("edit.calert")
+									</label>
+								</td>
+								<td style="vertical-align:top">
+									<input type="checkbox" name="copyrightAlert$i" id ="copyrightAlert$i" value="true" #if($item.hasCopyrightAlert())checked="checked"#end style="border:none" />
+									$tlang.getString("edit.display1")
+									<a href="#" onclick="javascript:openSampleCopyrightWindow();">$tlang.getString("edit.display2")</a>
+									$tlang.getString("edit.display3")
+								</td>
+							</tr>
+						</table>
 					#end
 				#end
 			#end
 		
 			#if (!$dropboxMode)
 				## not show the public view in dropbox
-				<p class="shorttext">
-					<label for="pubview$i">
-						$tlang.getString("edit.access1")
-					</label>	
-					#if ($item.isPubviewset())
-						$tlang.getString("gen.setyes")
-					#else
-						<input type="checkbox" name="pubview$i" id="pubview$i" value="true" #if($item.isPubview()) checked="checked"#end  style="border:none" />
-						$tlang.getString("edit.access2")
-					#end
-				</p>	
+						<table border="0">
+							<tr>
+								<td style="width:180px;padding-left:1em;vertical-align:top">
+									<label for="pubview$i">
+										$tlang.getString("edit.access1")
+									</label>	
+								</td>
+								<td style="vertical-align:top">
+									#if ($item.isPubviewset())
+										$tlang.getString("gen.setyes")
+									#else
+										<input type="checkbox" name="pubview$i" id="pubview$i" value="true" #if($item.isPubview()) checked="checked"#end  style="border:none" />
+										$tlang.getString("edit.access2")
+									#end
+								</td>
+						</tr>
+					</table>
 			#end
 			#if($setQuota)
 				<p class="shorttext">
