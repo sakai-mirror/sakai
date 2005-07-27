@@ -54,7 +54,7 @@ public interface CourseOffering
 	/**
 	 * Get the title of a course offering as it might appear in a course catalog.
 	 * 
-	 * @return the tile of the course offering.
+	 * @return the title of the course offering.
 	 */
 	public String getTitle();
 
@@ -63,7 +63,7 @@ public interface CourseOffering
 	 * 
 	 * @param title
 	 */
-	public void setTile(String title);
+	public void setTitle(String title);
 
 	/**
 	 * Get the description of this course offering.

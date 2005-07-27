@@ -70,14 +70,14 @@ public interface ParticipationRecord
 	 * 
 	 * @return enrollment status type.
 	 */
-	public String getParticipationStatus();
+	public ParticipationStatusType getParticipationStatusType();
 
 	/**
 	 * Set the participation status for the participant.
 	 * 
 	 * @param type
 	 */
-	public void setParticipationStatus(String status);
+	public void setParticipationStatusType(String status);
 
 	/**
 	 * Get a course section uuid reference. This provides reference to the section.

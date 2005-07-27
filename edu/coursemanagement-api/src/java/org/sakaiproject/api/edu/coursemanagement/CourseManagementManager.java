@@ -281,4 +281,13 @@ public interface CourseManagementManager
 	 * @author Mark Norton
 	 */
 	public List getSubSectionsByType(String courseSectionUuid, CourseSectionType type);
+
+	/**
+	 * Return a list of CourseSet object in which a given canonical course is associated with
+	 * 
+	 * @param canonicalCourseUuid
+	 * @return a list of CourseSet
+	 * @author Mark Norton
+	 */
+        public List getCourseSet(String canonicalCourseUuid);
 }

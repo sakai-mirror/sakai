@@ -58,7 +58,7 @@ public interface CourseSection
 	/**
 	 * Get the title of a course section.
 	 * 
-	 * @return the tile of the canonical course.
+	 * @return the title of the course section
 	 */
 	public String getTitle();
 
@@ -67,7 +67,7 @@ public interface CourseSection
 	 * 
 	 * @param title
 	 */
-	public void setTile(String title);
+	public void setTitle(String title);
 
 	/**
 	 * Get the description of this course section.
@@ -165,7 +165,8 @@ public interface CourseSection
 	 * 
 	 * @return course section schedule
 	 */
-	// public Schedule getSchedule ();
+	public Schedule getSchedule ();
+
 	/**
 	 * Get the list of participation for the instructors of this course. While most sections will have only one instructor, provisions are made for multiple instructors.
 	 * 
@@ -334,4 +335,20 @@ public interface CourseSection
 	 * @param allowSelfRegistration
 	 */
 	public void setAllowSelfRegistration(boolean allowSelfRegistration);
+
+
+        /**
+         * Get the location of a course section.
+         *
+         * @return the location of the course section.
+         */
+        public String getLocation();
+
+         /**
+          * Set the location of this course section.
+          *
+          * @param location
+          */
+        public void setLocation(String location);
+
 }

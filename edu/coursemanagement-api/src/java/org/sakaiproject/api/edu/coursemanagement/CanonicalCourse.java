@@ -53,7 +53,7 @@ public interface CanonicalCourse
 	/**
 	 * Get the title of a canonical course as it might appear in a course catalog.
 	 * 
-	 * @return the tile of the canonical course.
+	 * @return the title of the canonical course.
 	 */
 	public String getTitle();
 
@@ -62,7 +62,7 @@ public interface CanonicalCourse
 	 * 
 	 * @param title
 	 */
-	public void setTile(String title);
+	public void setTitle(String title);
 
 	/**
 	 * Get the description of this canonical course.
@@ -100,18 +100,18 @@ public interface CanonicalCourse
 	public String getUuid();
 
 	/**
-	 * Get the course type of this canonical course. Typically, this type will indicate if ths canonical course is available, discontinued, etc.
+	 * Get the course status of this canonical course. Typically, this type will indicate if ths canonical course is available, discontinued, etc.
 	 * 
 	 * @return
 	 */
-	public CanonicalCourseType getCanonicalType();
+	public CanonicalCourseStatusType getCanonicalStatusType();
 
 	/**
-	 * Set the course type of this canonical course.
+	 * Set the course status of this canonical course.
 	 * 
-	 * @param type
+	 * @param status
 	 */
-	public void setCanonicalType(CanonicalCourseType type);
+	public void setCanonicalStatusType(CanonicalCourseStatusType status);
 
 	/**
 	 * Get the default credits for this course. While there are no requirements on what this field contains, a numerical quantity is likely expected.

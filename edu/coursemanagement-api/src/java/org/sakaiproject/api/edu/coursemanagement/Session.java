@@ -49,7 +49,7 @@ public interface Session
 	public String getTitle();
 
 	/**
-	 * Set the tile of this term/session.
+	 * Set the title of this term/session.
 	 * 
 	 * @param title
 	 */

@@ -78,7 +78,7 @@ public interface EnrollmentRecord
 	 * 
 	 * @param type
 	 */
-	public void setStatusType(EnrollmentStatusType type);
+	public void setStatusType(EnrollmentStatusType status);
 
 	/**
 	 * Get the credits that can be earned by this student. The actual number of credits may be a funtion of the entrollment type.
@@ -107,4 +107,18 @@ public interface EnrollmentRecord
 	 * @param courseSectionUuid
 	 */
 	public void setCourseReference(String courseSectionUuid);
+
+	/**
+	 * Get a course offering uuid reference. This provides reference to the section that the student is enrolled in.
+	 * 
+	 * @return course offering uuid.
+	 */
+	public String getCourseOffering();
+
+	/**
+	 * Set the course offering uuid.
+	 * 
+	 * @param courseOfferingUuid
+	 */
+	public void setCourseOffering(String courseOfferingUuid);
 }
