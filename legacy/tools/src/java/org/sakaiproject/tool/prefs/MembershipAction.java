@@ -237,7 +237,7 @@ public class MembershipAction extends PagedResourceActionII
 			}
 			catch (InUseException e)
 			{
-				Log.warn("chef", this +".doJoin(): " + e);
+				addAlert(state,rb.getString("mb.sitebeing"));
 			}
 		}
 
