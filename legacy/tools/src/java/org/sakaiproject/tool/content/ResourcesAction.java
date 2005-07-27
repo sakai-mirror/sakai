@@ -80,6 +80,7 @@ import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
@@ -116,6 +117,11 @@ import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.StringUtil;
+import org.sakaiproject.util.xml.Xml;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
 * <p>ResourceAction is a ContentHosting application</p>
@@ -369,6 +375,7 @@ extends VelocityPortletPaneledAction
 	private static final String STATE_CREATE_NUMBER = "resources.create_number";
 	private static final String STATE_CREATE_ALERTS = "resources.create_alerts";
 	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
+	private static final String STATE_STRUCTOBJ_ROOTNAME = "resources.create_structured_object_root";
 	private static final String STATE_STRUCTOBJ_TYPE = "resources.create_structured_object_type";
 	private static final String STATE_STRUCTOBJ_HOMES = "resources.create_structured_object_home";
 	private static final String STATE_STRUCTOBJ_PROPERTIES = "resources.create_structured_object_properties";
@@ -2205,6 +2212,20 @@ extends VelocityPortletPaneledAction
 				}
 			}
 		}
+		else if(flow.equals("create") && TYPE_FORM.equals(itemType))
+		{
+			captureMultipleValues(state, params, true);
+			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			if(alerts.isEmpty())
+			{
+				createStructuredArtifact(state);
+				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+				if(alerts.isEmpty())
+				{
+					mode = MODE_LIST;
+				}
+			}
+		}
 		else if(flow.equals("create"))
 		{
 			captureMultipleValues(state, params, true);
@@ -2293,6 +2314,80 @@ extends VelocityPortletPaneledAction
 		
 	}	// doCreateitem
 	
+	/**
+	 * @param state
+	 */
+	private void createStructuredArtifact(SessionState state) 
+	{
+		String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+		String docRoot = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
+		// List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+		List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
+		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		Iterator itemIt = items.iterator();
+		while(itemIt.hasNext())
+		{
+			EditItem item = (EditItem) itemIt.next();
+			Document doc = Xml.createDocument();
+			Element root = doc.createElement(docRoot);
+			doc.appendChild(root);
+			int count = 0;
+			
+			Iterator propIt = properties.iterator();
+			while(propIt.hasNext())
+			{
+				ResourcesMetadata prop = (ResourcesMetadata) propIt.next();
+				String propname = prop.getLocalname();
+				List values = item.getList(propname);
+				Iterator valueIt = values.iterator();
+				while(valueIt.hasNext())
+				{
+					try
+					{
+						Object value = valueIt.next();
+						if(value == null)
+						{
+							
+						}
+						else
+						{
+							Element el = doc.createElement(propname);
+							root.appendChild(el);
+							if(value instanceof String)
+							{
+								// root.setAttribute(propname, (String) value);
+								el.setNodeValue((String) value);
+							}
+							else
+							{
+								// root.setAttribute(propname, value.toString());
+								el.setNodeValue(value.toString());
+							}
+							count++;
+						}
+					}
+					catch(Throwable e)
+					{			
+
+					}
+				}
+			}
+			if(count > 0)
+			{
+				try
+				{
+					String sss = Xml.writeDocumentToString(doc);			
+					
+				}
+				catch(Throwable e)
+				{			
+	
+				}
+			}
+		}			
+		
+	}
+
 	/**
 	 * @param state
 	 */
@@ -2515,7 +2610,7 @@ extends VelocityPortletPaneledAction
 		state.setAttribute(STATE_STRUCTOBJ_HOMES, listOfHomes);
 		
 		StructuredArtifactHomeInterface home = null;
-		SchemaBean schema = null;
+		SchemaBean rootSchema = null;
 		List properties = new Vector();
 		
 		if(formtype == null || formtype.equals(""))
@@ -2534,53 +2629,126 @@ extends VelocityPortletPaneledAction
 		
 		if(home != null)
 		{
-			schema = new SchemaBean(home.getRootNode(), home.getSchema(), formtype, home.getType().getDescription());
-			String namespace = schema.getSchemaName();
-			List fields = schema.getFields();
-			for(Iterator fieldIt = fields.iterator(); fieldIt.hasNext(); )
-			{
-				SchemaBean field = (SchemaBean) fieldIt.next();
-				// String namespace = field.getFieldNamePathReadOnly();
-				String localname = field.getFieldName();
-				String description = field.getDescription();
-				Map annotations = field.getAnnotations();
-				String label = (String) annotations.get("label");
-				if(label == null || label.trim().equals(""))
-				{
-					label = description;
-				}
-				Class datatype = field.getSchema().getObjectType();
-				String typename = datatype.getName();
-				String widget = ResourcesMetadata.WIDGET_STRING;
-				if(typename.equals(String.class.getName()))
-				{
-					widget = ResourcesMetadata.WIDGET_TEXTAREA;
-				}
-				else if(typename.equals(Date.class.getName()))
-				{
-					widget = ResourcesMetadata.WIDGET_DATETIME;
-				}
-				else if(typename.equals(Boolean.class.getName()))
-				{
-					widget = ResourcesMetadata.WIDGET_BOOLEAN;
-				}
-				else if(typename.equals(URI.class.getName()))
-				{
-					widget = ResourcesMetadata.WIDGET_ANYURI;
-				}
-				else if(typename.equals(Integer.class.getName()))
-				{
-					widget = ResourcesMetadata.WIDGET_INTEGER;
-				}
-				properties.add(new ResourcesMetadata(namespace, localname, label, description, typename, widget));
-				
-			}
+			rootSchema = new SchemaBean(home.getRootNode(), home.getSchema(), formtype, home.getType().getDescription());
+			String namespace = rootSchema.getSchemaName() + ".";
+			List fields = rootSchema.getFields();
+			properties = createPropertiesList(namespace, fields);
+			String docRoot = rootSchema.getFieldName();
+			state.setAttribute(STATE_STRUCTOBJ_ROOTNAME, docRoot);
 		}
 		state.setAttribute(STATE_STRUCTOBJ_PROPERTIES, properties);
 		
 		/*
 		*/
 
+	}
+	
+	
+	protected List createPropertiesList(String namespace, List fields)
+	{
+		List properties = new Vector();
+		List nested = new Vector();
+		for(Iterator fieldIt = fields.iterator(); fieldIt.hasNext(); )
+		{
+			SchemaBean field = (SchemaBean) fieldIt.next();
+			// String namespace = field.getFieldNamePathReadOnly();
+			SchemaNode node = field.getSchema();
+			Map annotations = field.getAnnotations();
+			
+			String localname = field.getFieldName();
+			String description = field.getDescription();
+			String label = (String) annotations.get("label");
+			if(label == null || label.trim().equals(""))
+			{
+				label = description;
+			}
+			
+			Class javaclass = node.getObjectType();
+			String typename = javaclass.getName();
+			String widget = ResourcesMetadata.WIDGET_STRING;
+			int length =  0;
+			List enumerals = null;
+			
+			if(field.getFields().size() > 0)
+			{
+				widget = ResourcesMetadata.WIDGET_NESTED;
+				nested.addAll(createPropertiesList(namespace, field.getFields()));
+			}
+			else if(node.hasEnumerations())
+			{
+				enumerals = node.getEnumeration();
+				typename = String.class.getName();
+				widget = ResourcesMetadata.WIDGET_ENUM;
+			}
+			else if(typename.equals(String.class.getName()))
+			{
+				length = node.getType().getMaxLength();
+				if(length > 100 || length < 0)
+				{
+					widget = ResourcesMetadata.WIDGET_TEXTAREA;
+				}
+				else if(length > 50)
+				{
+					length = 50;
+				}
+				else if(length < 2)
+				{
+					length = 2;
+				}
+				
+			}
+			else if(typename.equals(Date.class.getName()))
+			{
+				widget = ResourcesMetadata.WIDGET_DATE;
+			}
+			else if(typename.equals(Boolean.class.getName()))
+			{
+				widget = ResourcesMetadata.WIDGET_BOOLEAN;
+			}
+			else if(typename.equals(URI.class.getName()))
+			{
+				widget = ResourcesMetadata.WIDGET_ANYURI;
+			}
+			else if(typename.equals(Integer.class.getName()))
+			{
+				widget = ResourcesMetadata.WIDGET_INTEGER;
+			}
+			else if(typename.equals(Double.class.getName()))
+			{
+				widget = ResourcesMetadata.WIDGET_DOUBLE;
+			}
+			int minCard = node.getMinOccurs();
+			int maxCard = node.getMaxOccurs();
+			if(maxCard < 1)
+			{
+				maxCard = Integer.MAX_VALUE;
+			}
+			if(minCard < 0)
+			{
+				minCard = 0;
+			}
+			minCard = java.lang.Math.max(0,minCard);
+			maxCard = java.lang.Math.max(1,maxCard);
+			int currentCount = java.lang.Math.min(java.lang.Math.max(1,minCard),maxCard);
+			
+			ResourcesMetadata prop = new ResourcesMetadata(namespace, localname, label, description, typename, widget);
+			prop.setMinCardinality(minCard);
+			prop.setMaxCardinality(maxCard);
+			prop.setCurrentCount(currentCount);
+			if(enumerals != null)
+			{
+				prop.setEnumeration(enumerals);
+			}
+			if(length > 0)
+			{
+				prop.setLength(length);
+			}
+			prop.setNested(nested);
+			
+			properties.add(prop);
+		}
+		return properties;
+		
 	}
 	
 	/**
@@ -2766,6 +2934,8 @@ extends VelocityPortletPaneledAction
 			context.put("TIME", ResourcesMetadata.WIDGET_TIME);
 			context.put("DATETIME", ResourcesMetadata.WIDGET_DATETIME);
 			context.put("ANYURI", ResourcesMetadata.WIDGET_ANYURI);
+			context.put("ENUM", ResourcesMetadata.WIDGET_ENUM);
+			context.put("NESTED", ResourcesMetadata.WIDGET_NESTED);
 			
 			context.put("today", TimeService.newTime());
 		}
@@ -5786,6 +5956,86 @@ extends VelocityPortletPaneledAction
 						
 					}
 				}
+			}
+			else if(item.isStructuredArtifact())
+			{
+				String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+				List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
+				
+				String formtype_check = params.getString("formtype");
+				
+				if(formtype_check == null || formtype_check.equals(""))
+				{
+					alerts.add("Must select a form type");
+					item.setMissing("formtype");
+				}
+				else if(formtype_check.equals(formtype))
+				{
+					Iterator it = properties.iterator();
+					while(it.hasNext())
+					{
+						ResourcesMetadata prop = (ResourcesMetadata) it.next();
+						int count = prop.getCurrentCount();
+						for(int j = 0; j < count; j++)
+						{
+							if(ResourcesMetadata.WIDGET_DATE.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(prop.getWidget()))
+							{
+								String propname = prop.getFullname() + "_" + j;
+								int year = 0;
+								int month = 0;
+								int day = 0;
+								int hour = 0;
+								int minute = 0;
+								int second = 0;
+								int millisecond = 0;
+								String ampm = "";
+								
+								if(prop.getWidget().equals(ResourcesMetadata.WIDGET_DATE) || 
+									prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
+								{
+									year = params.getInt(propname + "_" + i + "_year", year);
+									month = params.getInt(propname + "_" + i + "_month", month);
+									day = params.getInt(propname + "_" + i + "_day", day);
+								}
+								if(prop.getWidget().equals(ResourcesMetadata.WIDGET_TIME) || 
+									prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
+								{
+									hour = params.getInt(propname + "_" + i + "_hour", hour);
+									minute = params.getInt(propname + "_" + i + "_minute", minute);
+									second = params.getInt(propname + "_" + i + "_second", second);
+									millisecond = params.getInt(propname + "_" + i + "_millisecond", millisecond);
+									ampm = params.getString(propname + "_" + i + "_ampm").trim();
+
+									if("pm".equalsIgnoreCase(ampm))
+									{
+										if(hour < 12)
+										{
+											hour += 12;
+										}
+									}
+									else if(hour == 12)
+									{
+										hour = 0;
+									}
+								}
+								if(hour > 23)
+								{
+									hour = hour % 24;
+									day++;
+								}
+								
+								Time value = TimeService.newTimeLocal(year, month, day, hour, minute, second, millisecond);
+								item.setValue(prop.getLocalname(), j, value);
+							}
+							else
+							{
+								String value = params.getString(prop.getFullname() + "_" + j + "_" + i);
+								item.setValue(prop.getLocalname(), j, value);
+							}
+						}
+					}
+				}
+
 			}
 			if(item.isFileUpload() || item.isHtml() || item.isPlaintext())
 			{
@@ -10002,7 +10252,6 @@ extends VelocityPortletPaneledAction
 	{
 		protected String m_copyrightStatus;
 		protected String m_copyrightInfo;
-		protected String m_formtype;
 		// protected boolean m_copyrightAlert;
 		protected boolean m_pubview;
 		protected boolean m_pubviewset;
@@ -10017,7 +10266,11 @@ extends VelocityPortletPaneledAction
 		protected boolean m_isUrl;
 		protected boolean m_contentHasChanged;
 		protected int m_notification;
-		
+
+		protected String m_formtype;
+		protected String m_formid;
+		protected Map m_structuredArtifact;
+
 		protected Set m_metadataGroupsShowing;
 		
 		/**
@@ -10030,6 +10283,7 @@ extends VelocityPortletPaneledAction
 			super(id, name, type);
 			m_contentHasChanged = false;
 			m_metadata = new Hashtable();
+			m_structuredArtifact = new Hashtable();
 			m_metadataGroupsShowing = new HashSet();
 			m_mimetype = type;
 			m_content = null;
@@ -10037,6 +10291,7 @@ extends VelocityPortletPaneledAction
 			m_hasQuota = false;
 			m_canSetQuota = false;
 			m_formtype = "";
+			m_formid = "";
 		}
 		
 		/**
@@ -10330,6 +10585,137 @@ extends VelocityPortletPaneledAction
 			return m_notification;
 		}
 		
+		/**
+		 * @return Returns the artifact.
+		 */
+		public Map getStructuredArtifact() 
+		{
+			return m_structuredArtifact;
+		}
+		/**
+		 * @param artifact The artifact to set.
+		 */
+		public void setStructuredArtifact(Map artifact) 
+		{
+			this.m_structuredArtifact = artifact;
+		}
+		/**
+		 * @param name
+		 * @param value
+		 */
+		public void setValue(String name, Object value)
+		{
+			setValue(name, 0, value);
+		}
+		/**
+		 * @param name
+		 * @param index
+		 * @param value
+		 */
+		public void setValue(String name, int index, Object value)
+		{
+			List list = getList(name);
+			try
+			{
+				list.set(index, value);
+			}
+			catch(ArrayIndexOutOfBoundsException e)
+			{
+				list.add(value);
+			}
+			m_structuredArtifact.put(name, list);
+		}
+		/**
+		 * Access a value of a structured artifact field of type String.
+		 * @param name	The name of the field to access.
+		 * @return the value, or null if the named field is null or not a String.
+		 */
+		public String getString(String name)
+		{
+			if(m_structuredArtifact == null)
+			{
+				m_structuredArtifact = new Hashtable();
+			}
+			Object value = m_structuredArtifact.get(name);
+			String rv = "";
+			if(value == null)
+			{
+				// do nothing
+			}
+			else if(value instanceof String)
+			{
+				rv = (String) value;
+			}
+			else
+			{
+				rv = value.toString();
+			}
+			return rv;
+		}
+
+		public Object getValue(String name, int index)
+		{
+			List list = getList(name);
+			Object rv = null;
+			try
+			{
+				rv = list.get(index);
+			}
+			catch(ArrayIndexOutOfBoundsException e)
+			{
+				// return null
+			}
+			return rv;
+		}
+		
+		public Object getValue(String name)
+		{
+			return getValue(name, 0);
+		}
+
+		public List getList(String name)
+		{
+			if(m_structuredArtifact == null)
+			{
+				m_structuredArtifact = new Hashtable();
+			}
+			Object value = m_structuredArtifact.get(name);
+			List rv = new Vector();
+			if(value == null)
+			{
+				m_structuredArtifact.put(name, rv);
+			}
+			else if(value instanceof Collection)
+			{
+				rv.addAll((Collection)value);
+			}
+			else
+			{
+				rv.add(value);
+			}
+			return rv;
+			
+		}
+		
+		/**
+		 * @param element
+		 */
+		/*
+		public void importStructuredArtifact(Element element)
+		{
+			
+		}
+		*/
+		/**
+		 * @return
+		 */
+		/*
+		public Element exportStructuredArtifact(List properties)
+		{
+			return null;
+		}
+		*/
+	
 	}	// inner class EditItem
 	
 	/**

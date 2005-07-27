@@ -142,6 +142,15 @@
 		
 		<dependency>
 			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util-xml</artifactId>
+			<version>${pom.currentVersion}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-component</artifactId>
 			<version>${pom.currentVersion}</version>
 		</dependency>

@@ -1,4 +1,4 @@
-<!-- chef_resources_create.vm, version: $Revision:  $, use with org.sakaiproject.tool.content.ResourcesAction.java -->
+<!-- chef_resources_create.vm, version: $Id:  $, use with org.sakaiproject.tool.content.ResourcesAction.java -->
 ##
 ############################################# macro prop_dateSelection 
 #macro(prop_dateSelectionWidget $propName $propValue)
@@ -190,7 +190,8 @@
 				<option value="$TYPE_URL" id="$validator.escapeJavascript("$TYPE_URL")"#if("$itemType" == "$TYPE_URL") selected="selected"#end>$tlang.getString("addi.url")</option>
 				<option value="$TYPE_HTML" id="$validator.escapeJavascript("$TYPE_HTML")"#if("$itemType" == "$TYPE_HTML") selected="selected"#end>$tlang.getString("addi.txthtml")</option>
 				<option value="$TYPE_TEXT" id="$validator.escapeJavascript("$TYPE_TEXT")"#if("$itemType" == "$TYPE_TEXT") selected="selected"#end>$tlang.getString("addi.txttxt")</option>
-				<option value="$TYPE_FORM" id="$validator.escapeJavascript("$TYPE_FORM")"#if("$itemType" == "$TYPE_FORM") selected="selected"#end>$tlang.getString("addi.meta")</option>
+				## Commenting out the following line is meant to effectively hide the Structured Artifact work til it's functional
+				## <option value="$TYPE_FORM" id="$validator.escapeJavascript("$TYPE_FORM")"#if("$itemType" == "$TYPE_FORM") selected="selected"#end>$tlang.getString("addi.meta")</option>
 			</select>
 		</p>
 	</form>
@@ -328,75 +329,82 @@
 					</p>
 					#foreach($tag in $properties)
 						<p class="shorttext">
-							#if("$!tag.widget" == "$!STRING")
-			 					<label for ="$validator.escapeJavascript("$!{tag.fullname}_$i")">
-									$tag.label
-								</label>
-	
-								<input type="text" size="40"
-									name="$!{tag.fullname}_$i" 
-									id="$validator.escapeJavascript("$!{tag.fullname}_$i")" 
-									value="$!item.metadata.get("$tag.fullname")" 
-								/>
-							#elseif("$!tag.widget" == "$!TEXTAREA")
-								<label for ="$validator.escapeJavascript("$!{tag.fullname}_$i")">
-									$tag.label
-								</label>
-	
-								<textarea rows="4" cols="30" 
-									name="$!{tag.fullname}_$i" 
-									id="$validator.escapeJavascript("$!{tag.fullname}_$i")" >$validator.escapeHtmlTextarea($item.metadata.get("$tag.fullname"))</textarea>
-	
-							#elseif("$!tag.widget" == "$!DATE")
-	
-								<label for ="$validator.escapeJavascript("$!{tag.fullname}_$i")">
-									$tag.label
-								</label>
-								<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_$i")" value="" />
-								#if($!item.metadata.get("$tag.fullname"))
-									#set($theValue = $!item.metadata.get("$tag.fullname"))
+							#set($count = $!{tag.count} - 1)
+	 						<label for ="$validator.escapeJavascript("$!{tag.fullname}_$!{count}_$i")">
+								$tag.label
+								#if($tag.canAddInstances())
+									<input type="button" name="add" value="+" />
+								#end
+							</label>
+							#foreach($j in [0..$count])
+								#if("$!tag.widget" == "$!STRING")
+									<input type="text" size="$!{tag.length}"
+										name="$!{tag.fullname}_${j}_$i" 
+										id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$i")" 
+										value="$!item.getValue($!{tag.localname}, $j)" 
+									/>
+								#elseif("$!tag.widget" == "$!TEXTAREA")
+									<textarea rows="4" cols="60" 
+										name="$!{tag.fullname}_${j}_$i" 
+										id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$i")" >$validator.escapeHtmlTextarea($!item.getValue($!{tag.localname}, $j)))</textarea>
+								#elseif("$!tag.widget" == "$!NESTED")
+									<table>
+										<tr><td>
+											<a href="#">Add values</a>
+										</td></tr>
+										<tr><td>
+											name="$!{tag.fullname}_${j}_$i" <br />
+										</td></tr>
+										<tr><td>
+											id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$i")"<br />
+										</td></tr>
+										<tr><td>
+											"$!item.getValue($!{tag.localname}, $j)"
+										</td></tr>
+									</table>
+								#elseif("$!tag.widget" == "$!DATE")
+									<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$i")" value="" />
+									#if($!item.getValue($!{tag.localname}, $j))
+										#set($theValue = $!item.getValue($!{tag.localname}, $j))
+									#else
+										#set($theValue = $today)
+									#end 
+									#prop_dateSelectionWidget("${tag.fullname}_${j}_$i" $theValue)
+								#elseif("$!tag.widget" == "$!DATETIME")
+									<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$i")" value="" />
+									#if($!item.getValue($!{tag.localname}, $j))
+										#set($theValue = $!item.getValue($!{tag.localname}, $j))
+									#else
+										#set($theValue = $today)
+									#end 
+									#prop_dateSelectionWidget("$!{tag.fullname}_${j}_$i" $theValue)
+									#prop_timeSelectionWidget("$!{tag.fullname}_${j}_$i" $theValue)
+								#elseif("$!tag.widget" == "$!TIME")
+									<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$i")" value="" />
+									#if($!item.getValue($!{tag.localname}, $j))
+										#set($theValue = $!item.getValue($!{tag.localname}, $j))
+									#else
+										#set($theValue = $today)
+									#end 
+									#prop_timeSelectionWidget("$!{tag.fullname}_${j}_$i" $theValue)
+								#elseif("$!tag.widget" == "$!ENUM")
+									<select name="$!{tag.fullname}_${j}_$i" 
+										id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$i")">
+										#foreach($enum in $tag.enumeration)
+											<option value="$enum"#if("$!item.getValue($!{tag.localname}, $j)" == "$enum") selected="selected"#end>$enum</option>
+										#end
+									</select>
 								#else
-									#set($theValue = $today)
-								#end 
-	
-								#prop_dateSelectionWidget("${tag.fullname}_$i" $theValue)
-							#elseif("$!tag.widget" == "$!DATETIME")
-	
-								<label for ="$validator.escapeJavascript("$!{tag.fullname}_$i")">
-									$tag.label
-								</label>
-								<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_$i")" value="" />
-								#if($!item.metadata.get("$tag.fullname"))
-									#set($theValue = $!item.metadata.get("$tag.fullname"))
-								#else
-									#set($theValue = $today)
-								#end 
-								#prop_dateSelectionWidget("$!{tag.fullname}_$i" $theValue)
-								#prop_timeSelectionWidget("$!{tag.fullname}_$i" $theValue)
-							#elseif("$!tag.widget" == "$!TIME")
-	
-								<label for ="$validator.escapeJavascript("$!{tag.fullname}_$i")">
-									$tag.label
-								</label>
-								<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_$i")" value="" />
-								#if($!item.metadata.get("$tag.fullname"))
-									#set($theValue = $!item.metadata.get("$tag.fullname"))
-								#else
-									#set($theValue = $today)
-								#end 
-								#prop_timeSelectionWidget("$!{tag.fullname}_$i" $theValue)
-	
-							#else
-								$tag.fullname<br />
-								$tag.widget<br />
-								$!item.metadata.get("$tag.fullname")<br />
+									$tag.fullname<br />
+									$tag.widget<br />
+									"$!item.getValue("$!{tag.localname}", $j)"<br />
+								#end
+								<br />
 							#end
 						</p>
 					#end
-					
 				#end
 			#else
-				<!-- item.type == $item.type -->
 				#if("$!{item.Filename}" == "")
 					#if($!{item.isMissing("fileName")})
 						<p class="shorttext validation">

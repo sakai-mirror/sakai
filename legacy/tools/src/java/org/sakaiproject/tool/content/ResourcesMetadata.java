@@ -47,6 +47,8 @@ public class ResourcesMetadata
 	public static final String WIDGET_TIME = "time";
 	public static final String WIDGET_DATETIME = "datetime";
 	public static final String WIDGET_ANYURI = "anyURI";
+	public static final String WIDGET_ENUM = "enumeration";
+	public static final String WIDGET_NESTED = "nested";
 	
 	public static final String XSD_STRING = "string";
 	public static final String XSD_BOOLEAN = "boolean";	
@@ -637,6 +639,14 @@ public class ResourcesMetadata
 	 */
 	protected String m_widget;
 	
+	protected int m_minCardinality;
+	protected int m_maxCardinality;
+	protected int m_currentCount;
+	protected List m_currentValues;
+	protected int m_length;
+	protected List m_enumeration;
+	protected List m_nested;
+	
 	/**
 	 * Constructor.
 	 * @param 	name		The string representation of the URI for the metadata property
@@ -654,6 +664,13 @@ public class ResourcesMetadata
 		m_namespace = namespace;
 		m_localname = localname;
 		m_widget = widget;
+		m_minCardinality = 1;
+		m_maxCardinality = 1;
+		m_currentCount = 1;
+		m_enumeration = null;
+		m_currentValues = new Vector();
+		m_nested = new Vector();
+		
 	}
 	
 	/**
@@ -867,6 +884,163 @@ public class ResourcesMetadata
 		return abbrev;
 	}
 
+	/**
+	 * @return Returns the currentCount.
+	 */
+	public int getCurrentCount() 
+	{
+		return m_currentCount;
+	}
+	/**
+	 * @return Returns the currentCount.
+	 */
+	public Integer getCount() 
+	{
+		return new Integer(m_currentCount);
+	}
+	
+	public List getValues()
+	{
+		return m_currentValues;
+	}
+	public Object getValue(int index)
+	{
+		Object rv = null;
+		try
+		{
+			rv = m_currentValues.get(index);
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+			// return null
+		}
+		return rv;
+	}
+	public Object getValue()
+	{
+		return getValue(0);
+	}
+	public void setValue(int index, Object value)
+	{
+		try
+		{
+			m_currentValues.set(index, value);
+		}
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+			m_currentValues.add(value);
+		}
+	}
+	/**
+	 * @param currentCount The currentCount to set.
+	 */
+	public void setCurrentCount(int currentCount) 
+	{
+		m_currentCount = currentCount;
+	}
+	/**
+	 * @return Returns the maxCardinality.
+	 */
+	public int getMaxCardinality() 
+	{
+		return m_maxCardinality;
+	}
+	/**
+	 * @param maxCardinality The maxCardinality to set.
+	 */
+	public void setMaxCardinality(int maxCardinality) 
+	{
+		m_maxCardinality = maxCardinality;
+	}
+	/**
+	 * @return Returns the minCardinality.
+	 */
+	public int getMinCardinality() 
+	{
+		return m_minCardinality;
+	}
+	/**
+	 * @param minCardinality The minCardinality to set.
+	 */
+	public void setMinCardinality(int minCardinality) 
+	{
+		m_minCardinality = minCardinality;
+	}
+	/**
+	 * increments the currentCount if it is less than maxCardinality.
+	 */
+	public void incrementCount() 
+	{
+		if(m_currentCount < m_maxCardinality)
+		{
+			m_currentCount++;
+		}
+	}
+	/**
+	 * @return true if additional instances of the field can be added, false otherwise.
+	 */
+	public boolean canAddInstances()
+	{
+		return m_currentCount < m_maxCardinality;
+	}
+	
+	/**
+	 * Access the desired size of a text input field.
+	 * @return Returns the length, which represents the size of a text input field.
+	 */
+	public int getLength() 
+	{
+		return m_length;
+	}
+	
+	/**
+	 * Set the the size of a text input field.
+	 * @param length The length to set. 
+	 */
+	public void setLength(int length) 
+	{
+		m_length = length;
+	}
+	
+	/**
+	 * @return Returns the enumeration.
+	 */
+	public List getEnumeration() 
+	{
+		List rv;
+		if(m_enumeration == null)
+		{
+			rv = new Vector();
+		}
+		else
+		{
+			rv = new Vector(m_enumeration);
+		}
+		return rv;
+	}
+	/**
+	 * @param enumeration The enumeration to set.
+	 */
+	public void setEnumeration(List enumeration) 
+	{
+		m_enumeration = new Vector(enumeration);
+	}
+	
+	/**
+	 * @return Returns the nested.
+	 */
+	public List getNested() 
+	{
+		return m_nested;
+	}
+	/**
+	 * @param nested The nested to set.
+	 */
+	public void setNested(List nested) 
+	{
+		this.m_nested = nested;
+	}
+	
 }	// ResourcesMetadata
 
 
