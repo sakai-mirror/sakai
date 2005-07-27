@@ -43,10 +43,9 @@
  */
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
-
 import java.util.Map;
+
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
 
 public class ArtifactFinderManager {
    private Map finders = null;

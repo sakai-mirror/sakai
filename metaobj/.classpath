@@ -26,17 +26,10 @@
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/OKI/jars/OkiOSID-2.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/taglibs/jars/standard-1.1.2.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-component-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-util-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-tool-support-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-service-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-provider-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-component-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-bundle-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-authentication-component-2.0.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-codec/jars/commons-codec-1.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-digester/jars/commons-digester-1.6.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/legacy-service"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

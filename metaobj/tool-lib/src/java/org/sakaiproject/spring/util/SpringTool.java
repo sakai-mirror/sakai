@@ -36,11 +36,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
+import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.util.web.Web;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 
 
 public class SpringTool extends HttpServlet
