@@ -351,4 +351,18 @@ public interface CourseSection
           */
         public void setLocation(String location);
 
+        /**
+         * Get the meeting time of a course section.
+         *
+         * @return the meeting time of the course section.
+         */
+        public String getMeetingTime();
+
+         /**
+          * Set the meeting time of this course section.
+          *
+          * @param meeting time
+          */
+        public void setMeetingTime(String meetingTime);
+
 }
