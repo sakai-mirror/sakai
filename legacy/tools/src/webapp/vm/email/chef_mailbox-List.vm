@@ -12,7 +12,7 @@
 			</a>
 			#if (($!search) && (!$search.equals("")))
 				<a href="#" title="Search" onclick="location = '#toolLink("$action" "doSearch_clear")';return false;">
-					<input type="button" value="Clear Search" />
+					<span class="act"><input type="button" value="Clear Search" /></span>
 				</a>
 			#end
 		</form>
