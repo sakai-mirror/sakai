@@ -4,7 +4,7 @@
   <pomVersion>3</pomVersion>
   <name>Sakai Course Management API</name>
   <groupId>sakaiproject</groupId>
-  <id>sakai-edu-coursemanagement-api</id>
+  <id>sakai2-edu-coursemanagement-api</id>
   <currentVersion>2.0.0</currentVersion>
   <organization>
     <name>Sakai Project</name>
