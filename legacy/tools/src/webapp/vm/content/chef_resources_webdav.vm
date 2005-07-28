@@ -1,4 +1,5 @@
-<!-- chef_resources_webdav.vm, version: $Revision:  $, use with org.sakaiproject.tool.content.ResourcesAction.java -->
+## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/content/chef_resources_webdav.vm,v 1.7 2005/06/08 15:19:32 gsilver.umich.edu Exp $
+<!-- chef_resources_webdav.vm, use with org.chefproject.ContentListAction.java -->
 <script language="JavaScript" type="text/JavaScript">
 <!--
 	function openCopyrightWindow(theURL,winName,winSettings) 
@@ -23,6 +24,7 @@
 		<li><a href="#site">$tlang.getString("dav.hd2")</a></li><br />
 		<li><a href="#win">$tlang.getString("dav.hd3")</a></li><br />
 		<li><a href="#osx">$tlang.getString("dav.hd4")</a></li><br />
+ <li><a href="#osxx">$tlang.getString("dav.hd5")</a></li><br />
 	</ul>
 
 	<a name="desc"></a>
@@ -72,6 +74,7 @@
 	<a name="osx"></a>
 	<h4>$tlang.getString("dav.hd4")</h4>
 	<p>$tlang.getString("dav.graf40")</p>
+      <p>$tlang.getString("dav.graf41")</p>
 	<ol>
 		<li>$tlang.getString("dav.osx1")<br />
 			<a href="http://www.webdav.org/goliath/#download" target="_blank"><code>http://www.webdav.org/goliath/#download</code></a>
@@ -92,6 +95,25 @@
 		<li>$tlang.getString("dav.osx8")</li>
 		<li>$tlang.getString("dav.osx9")</li>
 	</ol>
+
+<a name="osxx"></a>
+	<h4>$tlang.getString("dav.hd5")</h4>
+	<p>$tlang.getString("dav.graf50")</p>
+	<ol>
+		<li>$tlang.getString("dav.osxx1")</li>
+		<li>$tlang.getString("dav.osxx2")<br />
+		#if("$!inMyWorkspace" == "true")
+			<code>${server_url}${dav_user}$user_id</code>
+		#else
+			<code>${server_url}${dav_group}$site_id</code>
+		#end
+		</li>
+		<li>$tlang.getString("dav.osxx3")</li>
+		<li>$tlang.getString("dav.osxx4")</li>
+		<li>$tlang.getString("dav.osxx5")</li>
+		<li>$tlang.getString("dav.osxx6")</li>
+	</ol>
+
 	
 	<div style="margin:2em .3em .3em .3em;text-align:left">
 		<a href="#toolLink("ResourcesAction" "doCancel")" style="background-color:#DDDCD7;border:1px solid #4A5573;color:#4A5573;padding:1px 3px 1px 3px;text-decoration:none">$tlang.getString("dav.cancel")</a>
