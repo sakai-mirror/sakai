@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <pomVersion>3</pomVersion>
+  <name>Sakai Course Management API</name>
+  <groupId>sakaiproject</groupId>
+  <id>sakai2-edu-coursemanagement-component</id>
+  <currentVersion>2.0.0</currentVersion>
+  <organization>
+    <name>Sakai Project</name>
+    <url>http://sakaiproject.org/</url>
+  </organization>
+  <inceptionYear>2004</inceptionYear>
+
+  <properties>
+    <!-- deploy as a jar -->
+    <deploy.type>jar</deploy.type>
+    <!-- deploy to "shared", "common" or "server" -->
+    <deploy.target>shared</deploy.target>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-scheduler-api</artifactId>
+      <version>${pom.currentVersion}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai2-edu-coursemanagement-api</artifactId>
+      <version>${pom.currentVersion}</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+
+    <!-- java source -->
+    <sourceDirectory>src/java</sourceDirectory>
+    <resources>
+       <resource>
+         <directory>${basedir}/src/hibernate</directory>
+         <includes>
+           <include>**/*.hbm.xml</include>
+           <include>**/hibernate.cfg.xml</include>
+         </includes>
+       </resource>
+    </resources>
+ 
+  </build>
+
+</project>
