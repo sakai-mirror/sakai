@@ -256,7 +256,7 @@
 							<form action="#toolForm($action)" method="post" style="display:inline;margin:0">
 								<input type="hidden" name="topicId" value="$!topic.getId()" />
 								<p class="act" >
-									#if ($!style == "thread")
+									#if ($currentMessage.ReplyToDepth != 0 && $!style == "thread")
 										<input type="submit" name="eventSubmit_doSet_reply_msg" value="$tlang.getString("control.repmsg")" />
 									#end
 									<input type="submit" name="eventSubmit_doSet_reply_topic" value="$tlang.getString("control.reptop")" />
