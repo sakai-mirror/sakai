@@ -123,9 +123,9 @@
 					<option value="$site.getId()" #if ($siteSelected)selected="selected"#end>$site.getTitle()</option>
 				#end
 			</select>
-			<span class="instruction indnt2">
+			<p class="instruction">
 				$tlang.getString("feat.note")
-			</span>
+			</p>
 		#end
 		<input type="hidden" name="back" value="2" />
 		<input type="hidden" name="template-index" value="3"/>
