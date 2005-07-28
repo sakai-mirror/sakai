@@ -832,68 +832,26 @@ extends VelocityPortletPaneledAction
 			
 			if(atHome)
 			{
-				// get all of user's sites
-				List mySites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
-						null, null, null,
-						SortType.TITLE_ASC,
-						new PagingPosition(1,50));
-				
-				// add user's MyWorkspace to beginning of list
-				String userId = UserDirectoryService.getCurrentUser().getId();
-				String workspaceId = SiteService.getUserSiteId(userId);
-				mySites.add(0, SiteService.getSite(workspaceId));
-				// find resources tools and add their root folders to the list of user's roots
-				Iterator siteIt = mySites.iterator();
+				Map othersites = getContentCollections();
+				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
 				{
-					Site site = (Site) siteIt.next();
-					List pages = site.getPages();
-					Iterator pageIt = pages.iterator();
-					while(pageIt.hasNext())
+					String collId = (String) siteIt.next();
+					if(! collectionId.equals(collId))
 					{
-						SitePage page = (SitePage) pageIt.next();
-						List tools = page.getTools();
-						Iterator toolIt = tools.iterator();
-						while(toolIt.hasNext())
+						String displayName = (String) othersites.get(collId);
+	
+						members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+						if(members != null && members.size() > 0)
 						{
-							ToolConfiguration tool = (ToolConfiguration) toolIt.next();
-							if(tool == null || tool.getTool() == null)
-							{
-								//
-							}
-							else if("sakai.dropbox".equals(tool.getTool().getId()))
-							{
-								String collId = Dropbox.getCollection(tool.getContext());
-								if(! collectionId.equals(collId))
-								{
-									members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
-									if(members != null && members.size() > 0)
-									{
-										BrowseItem root = (BrowseItem) members.remove(0);
-										root.addMembers(members);
-										root.setName(site.getTitle() + " " + rb.getString("gen.drop"));
-										roots.add(root);
-									}
-								}
-							}
-							else if("sakai.resources".equals(tool.getTool().getId()))
-							{
-								String collId = ContentHostingService.getSiteCollection(tool.getContext());
-								if(! collectionId.equals(collId))
-								{
-									members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
-									if(members != null && members.size() > 0)
-									{
-										BrowseItem root = (BrowseItem) members.remove(0);
-										root.addMembers(members);
-										root.setName(site.getTitle() + " " + rb.getString("gen.reso"));
-										roots.add(root);
-									}
-								}
-							}
+							BrowseItem root = (BrowseItem) members.remove(0);
+							root.addMembers(members);
+							root.setName(displayName);
+							roots.add(root);
 						}
 					}
 				}
+
 			}
 			context.put ("roots", roots);
 			// context.put ("root", root);
@@ -944,6 +902,66 @@ extends VelocityPortletPaneledAction
 		return template + TEMPLATE_LIST;
 		
 	}	// buildListContext
+
+	/**
+	 * @return
+	 */
+	private Map getContentCollections() 
+	{
+		Map collections = new Hashtable();
+		// get all of user's sites
+		List mySites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
+				null, null, null,
+				SortType.TITLE_ASC,
+				new PagingPosition(1,50));
+		
+		// add user's MyWorkspace to beginning of list
+		String userId = UserDirectoryService.getCurrentUser().getId();
+		String workspaceId = SiteService.getUserSiteId(userId);
+		try
+		{
+			mySites.add(0, SiteService.getSite(workspaceId));
+		}
+		catch(Exception ignore) {}
+		
+		// find resources tools and add their root folders to the list of user's roots
+		Iterator siteIt = mySites.iterator();
+		while(siteIt.hasNext())
+		{
+			Site site = (Site) siteIt.next();
+			List pages = site.getPages();
+			Iterator pageIt = pages.iterator();
+			while(pageIt.hasNext())
+			{
+				SitePage page = (SitePage) pageIt.next();
+				List tools = page.getTools();
+				Iterator toolIt = tools.iterator();
+				while(toolIt.hasNext())
+				{
+					ToolConfiguration tool = (ToolConfiguration) toolIt.next();
+					String collId = null;
+					String displayName = null;
+					if(tool == null || tool.getTool() == null)
+					{
+						//
+					}
+					else if("sakai.dropbox".equals(tool.getTool().getId()))
+					{
+						collId = Dropbox.getCollection(tool.getContext());
+						displayName = site.getTitle() + " " + rb.getString("gen.drop");
+						collections.put(collId, displayName);
+					}
+					else if("sakai.resources".equals(tool.getTool().getId()))
+					{
+						collId = ContentHostingService.getSiteCollection(tool.getContext());
+						displayName = site.getTitle() + " " + rb.getString("gen.reso");
+						collections.put(collId, displayName);
+					}
+				}
+			}
+		}
+		return collections;
+	}
 
 	/**
 	* Expand all the collection resources and put in EXPANDED_COLLECTIONS attribute.
@@ -9755,7 +9773,7 @@ extends VelocityPortletPaneledAction
 			dc.add(ResourcesMetadata.PROPERTY_DC_CREATED);
 			dc.add(ResourcesMetadata.PROPERTY_DC_ISSUED);
 			// dc.add(ResourcesMetadata.PROPERTY_DC_MODIFIED);
-			dc.add(ResourcesMetadata.PROPERTY_DC_TABLEOFCONTENTS);
+			// dc.add(ResourcesMetadata.PROPERTY_DC_TABLEOFCONTENTS);
 			dc.add(ResourcesMetadata.PROPERTY_DC_ABSTRACT);
 			dc.add(ResourcesMetadata.PROPERTY_DC_CONTRIBUTOR);
 			// dc.add(ResourcesMetadata.PROPERTY_DC_TYPE);
@@ -9763,7 +9781,7 @@ extends VelocityPortletPaneledAction
 			// dc.add(ResourcesMetadata.PROPERTY_DC_IDENTIFIER);
 			// dc.add(ResourcesMetadata.PROPERTY_DC_SOURCE);
 			// dc.add(ResourcesMetadata.PROPERTY_DC_LANGUAGE);
-			dc.add(ResourcesMetadata.PROPERTY_DC_COVERAGE);
+			// dc.add(ResourcesMetadata.PROPERTY_DC_COVERAGE);
 			// dc.add(ResourcesMetadata.PROPERTY_DC_RIGHTS);
 			dc.add(ResourcesMetadata.PROPERTY_DC_AUDIENCE);
 			dc.add(ResourcesMetadata.PROPERTY_DC_EDULEVEL);
