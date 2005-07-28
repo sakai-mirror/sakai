@@ -24,6 +24,7 @@
 package org.sakaiproject.api.edu.coursemanagement;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * A CourseSection is a physical instance of a course offering that has a schedule, location, roster, etc. A CourseSection represents an actual class with an assigned instructor(s) and enrolled students.
@@ -48,6 +49,8 @@ import java.util.List;
  * <li>A flag to indicate created locally [Boolean, true if created locally]
  * <li>A flag to indicate this as a holding section [Boolean, true if a holding section]
  * <li>A flag to indicate students may self-register for this section [Boolean, true if self-registration is allowed]
+ * <li>A Location [String]
+ * <li>Meeting Time [String] 
  * </ul>
  * 
  * @author Mark Norton
@@ -344,11 +347,11 @@ public interface CourseSection
          */
         public String getLocation();
 
-         /**
-          * Set the location of this course section.
-          *
-          * @param location
-          */
+        /**
+         * Set the location of this course section.
+         *
+         * @param location
+         */
         public void setLocation(String location);
 
         /**
@@ -358,11 +361,64 @@ public interface CourseSection
          */
         public String getMeetingTime();
 
-         /**
-          * Set the meeting time of this course section.
-          *
-          * @param meeting time
-          */
+        /**
+         * Set the meeting time of this course section.
+         *
+         * @param meeting time
+         */
         public void setMeetingTime(String meetingTime);
+
+        /**
+         * Get the uuid of the Agent who has created this course section.
+         * @return uuid of the Agent
+         */
+    	public String getCreatedBy();
+
+    	/**
+    	 * Set the uuid of the Agent who has created this course section.
+    	 *
+    	 *	@param uuid of the Agent
+    	 */
+    	public void setCreatedBy(String createdBy);
+
+        /**
+         * Get the date when this course section is created.
+         * @return creation date
+         */
+    	public Date getCreatedDate();
+
+    	/**
+    	 * Set the creation date.
+    	 *
+    	 *	@param creation date
+    	 */
+    	public void setCreatedDate(Date createdDate);
+
+        /**
+         * Get the uuid of the Agent who has last modified this course section.
+         * @return uuid of the Agent
+         */
+    	public String getLastModifiedBy();
+
+    	/**
+    	 * Set the uuid of the Agent who has last modified this course section.
+    	 *
+    	 *	@param uuid of the Agent
+    	 */
+    	public void setLastModifiedBy(String lastModifiedBy);
+
+        /**
+         * Get the date when this course section is last modified.
+         * @return last modified date
+         */
+    	public Date getLastModifiedDate();
+
+    	/**
+    	 * Set the last modified date.
+    	 *
+    	 *	@param last modified date
+    	 */
+    	public void setLastModifiedDate(Date lastModifiedDate);
+    	
 
 }

@@ -23,6 +23,7 @@
 
 package org.sakaiproject.api.edu.coursemanagement;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,6 +45,10 @@ import java.util.List;
  * <li>A default list of other people associated with this course. [List of ParticipationRecords]
  * <li>The canonical course that this offering represents. [CanonicalCourse Id]
  * <li>A list of course sections derived from this offering. [List of CourseSection Ids]
+ * <li>Uuid of Agent who created this record [String]
+ * <li>Date & Time whne this record is created [Date]   
+ * <li>Uuid of Agent who last modified this record [String]
+ * <li>Date & Time whne this record is last modified [Date]   
  * </ul>
  * 
  * @author Mark Norton
@@ -296,4 +301,58 @@ public interface CourseOffering
 	 * @param sectionUuid
 	 */
 	public void removeSection(String sectionUuid);
+	
+    /**
+     * Get the uuid of the Agent who has created this course offering.
+     * @return uuid of the Agent
+     */
+	public String getCreatedBy();
+
+	/**
+	 * Set the uuid of the Agent who has created this course offering.
+	 *
+	 *	@param uuid of the Agent
+	 */
+	public void setCreatedBy(String createdBy);
+
+    /**
+     * Get the date when this course offering is created.
+     * @return creation date
+     */
+	public Date getCreatedDate();
+
+	/**
+	 * Set the creation date.
+	 *
+	 *	@param creation date
+	 */
+	public void setCreatedDate(Date createdDate);
+
+    /**
+     * Get the uuid of the Agent who has last modified this course offering.
+     * @return uuid of the Agent
+     */
+	public String getLastModifiedBy();
+
+	/**
+	 * Set the uuid of the Agent who has last modified this course offering.
+	 *
+	 *	@param uuid of the Agent
+	 */
+	public void setLastModifiedBy(String lastModifiedBy);
+
+    /**
+     * Get the date when this course offering is last modified.
+     * @return last modified date
+     */
+	public Date getLastModifiedDate();
+
+	/**
+	 * Set the last modified date.
+	 *
+	 *	@param last modified date
+	 */
+	public void setLastModifiedDate(Date lastModifiedDate);
+	
+	
 }
