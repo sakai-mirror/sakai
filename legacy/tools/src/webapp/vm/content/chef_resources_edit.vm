@@ -241,15 +241,21 @@
 						</label>	
 						<textarea name="newcopyright" id="newcopyright" rows="2" cols="40" wrap="virtual" >$validator.escapeHtmlTextarea("$!item.copyrightInfo")</textarea>
 					</p>	
-					<p class="shorttext">
-						<label for="copyrightAlert">
-							$tlang.getString("edit.calert")
-						</label>
-						<input type="checkbox" name="copyrightAlert" id ="copyrightAlert" value="true" #if($item.hasCopyrightAlert())checked="checked"#end style="border:none" />
-						$tlang.getString("edit.display1")
-						<a href="#" onclick="javascript:openSampleCopyrightWindow();">$tlang.getString("edit.display2")</a>
-						$tlang.getString("edit.display3")
-					</p>	
+					<table border="0">
+						<tr>
+							<td style="width:180px;padding-left:1em;vertical-align:top">
+								<label for="copyrightAlert">
+									$tlang.getString("edit.calert")
+								</label>
+							</td>
+							<td style="vertical-align:top">
+								<input type="checkbox" name="copyrightAlert" id ="copyrightAlert" value="true" #if($item.hasCopyrightAlert())checked="checked"#end style="border:none" />
+								$tlang.getString("edit.display1")
+								<a href="#" onclick="javascript:openSampleCopyrightWindow();">$tlang.getString("edit.display2")</a>
+								$tlang.getString("edit.display3")
+							</td>
+						</tr>
+					</table>
 				#end
 			#end
 		#end
