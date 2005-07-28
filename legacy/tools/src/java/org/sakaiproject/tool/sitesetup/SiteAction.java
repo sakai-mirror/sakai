@@ -372,7 +372,7 @@ public class SiteAction extends PagedResourceActionII
 	/** The copyright character */
 	private static final String COPYRIGHT_SYMBOL = "copyright (c)";
 
-	/* The null/empty string */
+	/** The null/empty string */
 	private static final String NULL_STRING = "";
 	
 	/** The alert message shown when a site has been completed */
@@ -10925,6 +10925,7 @@ public class SiteAction extends PagedResourceActionII
 			}
 		}
 		state.setAttribute(STATE_TOOL_REGISTRATION_LIST, toolRegList);
+		state.setAttribute(STATE_SITE_TYPE, type);
 		
 		if (type == null)
 		{
@@ -12504,118 +12505,81 @@ public class SiteAction extends PagedResourceActionII
 	}// doFinish_grad_tools
 	
 	/**
-	* addGradToolsFeatures adds features to a new Grad Tools site
+	* addGradToolsFeatures adds features to a new Grad Tools student site
 	*
 	*/
 	private void addGradToolsFeatures(SessionState state)
 	{
-		//try adding a new site
-		SiteEdit site = null;
+		SiteEdit edit = null;
+		Site template = null;
+		
+		//get a unique id
 		String id = IdService.getUniqueId();
 		
-		if(SiteService.allowAddSite(id))
+		//get the Grad Tools student site template
+		try
 		{
+			template = SiteService.getSite(SiteService.SITE_GTS_TEMPLATE);
+		}
+		catch (Exception e)
+		{
+			if(Log.isWarnEnabled())
+				Log.warn("chef", this + ".addGradToolsFeatures template " + e);
+		}
+		if(template != null)
+		{
+			//create a new site based on the template
 			try
 			{
-				site = SiteService.addSite(id);
+				edit = SiteService.addSite(id, template);
 			}
 			catch(Exception e)
 			{
 				if(Log.isWarnEnabled())
-				{
-					Log.warn("chef", this + ".addGradToolsFeatures addSite(" + id + ") " + e);
-				}
+					Log.warn("chef", this + ".addGradToolsFeatures add/edit site " + e);
 			}
-		}
-		if(site==null)
-		{
-			addAlert(state, rb.getString("java.unableconf"));
-			return;
-		}
-		
-		SiteInfo siteInfo = (SiteInfo)state.getAttribute(STATE_SITE_INFO);
-		
-		// set site properties
-		site.setTitle(siteInfo.title);
-		site.setPublished(true);
-		site.setType(SITE_TYPE_GRADTOOLS_STUDENT);
-		ResourcePropertiesEdit siteRp = site.getPropertiesEdit();
-		site.setShortDescription(siteInfo.short_description);
-		site.setPubView(false);
-		
-		// Grad Tools site has a preset menu of tools, so just do it all here and now
-		Properties rp = null;
-		ResourcePropertiesEdit rpe = null;
-		Tool tr = null;
-		SitePageEdit page = null;
-		ToolConfiguration tool = null;
-		
-		// %%% this should go in an configuration file
-		// add tools
-		List toolRegistrationList = (List) state.getAttribute(STATE_TOOL_REGISTRATION_LIST);
-		if (toolRegistrationList != null && toolRegistrationList.size() > 0)
-		{
-			for (int i=0; i < toolRegistrationList.size(); i++)
+			
+			//set the tab, etc.
+			if(edit != null)
 			{
+				SiteInfo siteInfo = (SiteInfo)state.getAttribute(STATE_SITE_INFO);
+				edit.setShortDescription(siteInfo.short_description);
+				edit.setTitle(siteInfo.title);
+				edit.setPublished(true);
+				edit.setPubView(false);
+				edit.setType(SITE_TYPE_GRADTOOLS_STUDENT);
+				//ResourcePropertiesEdit rpe = edit.getPropertiesEdit();
 				try
 				{
-					tr = ToolManager.getTool(((MyTool)toolRegistrationList.get(i)).getId());
-					page = site.addPage();
-					page.setTitle(tr.getTitle());
-					page.setLayout(SitePage.LAYOUT_SINGLE_COL);
-					tool = page.addTool();
-					tool.setTool(tr);
-					tool.setLayoutHints("0,0");
+					SiteService.commitEdit(edit);
 				}
 				catch(Exception e)
 				{
-					Log.warn("chef", this + e.toString());
+					SiteService.cancelEdit(edit);
+					if(Log.isWarnEnabled())
+						Log.warn("chef", this + ".addGradToolsFeartures commitEdit " + e);
 				}
-			}
-		}
-		
-		try
-		{
-			//now that the site exists, we can set the email alias when an Email Archive tool has been selected
-			//set the GradToolsStudent site alias as: gradtools-uniqname@servername
-			String alias = "gradtools-" +  UsageSessionService.getSessionUserId();
-			String channelReference = MailArchiveService.channelReference(id, SiteService.MAIN_CONTAINER);
-			try
-			{
-				AliasService.setAlias(alias, channelReference);
-			}
-			catch (IdUsedException ee) 
-			{
-				addAlert(state, rb.getString("java.alias")+" " + alias + " "+rb.getString("java.exists"));
-			}
-			catch (IdInvalidException ee) 
-			{
-				addAlert(state, rb.getString("java.alias")+" " + alias + " "+rb.getString("java.isinval"));
-			}
-			catch (PermissionException ee) 
-			{
-				Log.warn("chef", UsageSessionService.getSessionUserId() + " do not have permission to add alias. ");
-			}
-			
-			try
-			{
-				SiteService.commitEdit(site);
-			}
-			catch(Exception e)
-			{
-				SiteService.cancelEdit(site);
 				
-				if(Log.isWarnEnabled())
+				//now that the site and realm exist, we can set the email alias
+				//set the GradToolsStudent site alias as: gradtools-uniqname@servername
+				String alias = "gradtools-" +  UsageSessionService.getSessionUserId();
+				String channelReference = MailArchiveService.channelReference(id, SiteService.MAIN_CONTAINER);
+				try
 				{
-					Log.warn("chef", this + ".addGradToolsFeatures commitEdit " + e);
+					AliasService.setAlias(alias, channelReference);
 				}
-			}
-		}
-		catch(Exception e)
-		{
-			if(Log.isWarnEnabled())
-			{
-				Log.warn("chef", this + ".addGradToolsFeatures " + e);
+				catch (IdUsedException ee) 
+				{
+					addAlert(state, rb.getString("java.alias")+" " + alias + " "+rb.getString("java.exists"));
+				}
+				catch (IdInvalidException ee) 
+				{
+					addAlert(state, rb.getString("java.alias")+" " + alias + " "+rb.getString("java.isinval"));
+				}
+				catch (PermissionException ee) 
+				{
+					Log.warn("chef", UsageSessionService.getSessionUserId() + " does not have permission to add alias. ");
+				}
 			}
 		}
 

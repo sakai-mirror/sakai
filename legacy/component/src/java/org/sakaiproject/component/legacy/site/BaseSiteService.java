@@ -34,6 +34,9 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.tool.Tool;
@@ -82,6 +85,7 @@ import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.SitePageEdit;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.service.legacy.site.SiteService.SortType;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
@@ -394,6 +398,58 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		return site;
 
 	} // getDefinedSite
+	
+	/**
+	 * Special check against the Dissertation service, which might not be here...
+	 * @return
+	 */
+	protected boolean isGradToolsCandidate(String userId)
+	{
+		Object service = ComponentManager.get("org.sakaiproject.api.app.dissertation.DissertationService");
+		if (service == null) return false;
+
+		// the method signature
+		Class[] signature = new Class[1];
+		signature[0] = String.class;
+
+		// the method name
+		String methodName = "isCandidate";
+
+		// find a method of this class with this name and signature
+		try
+		{
+			Method method = service.getClass().getMethod(methodName, signature);
+
+			// the parameters
+			Object[] args = new Object[1];
+			args[0] = userId;
+
+			// make the call
+			Boolean rv = (Boolean) method.invoke(service, args);
+			return rv.booleanValue();
+		}
+		catch (Throwable t) 
+		{
+		}
+		
+		return false;
+		
+	}//isGradToolsCandidate
+	
+	protected boolean hasGradToolsSite(String userId)
+	{
+		//does this user have a Grad Tools site?
+		boolean has = false;
+		
+		int n = countSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.UPDATE,
+						SiteService.SITE_TYPE_GRADTOOLS_STUDENT, null, null);
+
+		if(n > 0)
+			has = true;
+		
+		return has;
+			
+	}//hasGradToolsSite
 
 	/**
 	 * Access a site object. If thie site is a user site, and it's not defined yet, create it if possible.
