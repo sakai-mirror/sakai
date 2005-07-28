@@ -33,6 +33,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -4304,15 +4306,18 @@ public class SiteAction extends PagedResourceActionII
 					
 					// future term? roster information is not available yet?
 					int weeks = 0;
+					Calendar c = (Calendar) Calendar.getInstance().clone();
 					try
 					{
 						weeks = Integer.parseInt(ServerConfigurationService.getString("roster.available.weeks.before.term.start", "0"));
+						c.add(Calendar.DATE, weeks*7);
 					}
 					catch (Exception ignore)
 					{
 					}
+					
 					if ((courses == null || courses != null && courses.size() == 0)
-						&& System.currentTimeMillis() + weeks*7*24*60*60*1000 < t.getStartTime().getTime())
+						&& c.getTimeInMillis() < t.getStartTime().getTime())
 					{
 						//if a future term is selected
 						state.setAttribute(STATE_FUTURE_TERM_SELECTED, Boolean.TRUE);							
