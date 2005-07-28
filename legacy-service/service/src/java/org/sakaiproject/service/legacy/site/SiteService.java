@@ -84,8 +84,14 @@ public interface SiteService
 
 	/** The name of a special site that is a template for user sites. */
 	public static final String USER_SITE_TEMPLATE = "!user";
-
-	/** The name of a special site that is used if the requestd site is not available. */
+	
+	/** The name of a special site that is a template for Grad Tools student sites. */
+	public static final String SITE_GTS_TEMPLATE = "!gtstudent";
+	
+	/** The name of the type for a Grad Tools student site. */
+	public static final String SITE_TYPE_GRADTOOLS_STUDENT = "GradToolsStudent";
+	
+	/** The name of a special site that is used if the requested site is not available. */
 	public static final String SITE_ERROR = "!error";
 	
 	/** The name of a special site that is used if the requested url is not understood. */
@@ -301,7 +307,7 @@ public interface SiteService
 	* @exception PermissionException if the current user does not have permission to add a site.
 	*/
 	public SiteEdit addSite(String id, Site other) throws IdInvalidException, IdUsedException, PermissionException;
-
+	
 	/**
 	* check permissions for removeSite().
 	* @param id The site id.

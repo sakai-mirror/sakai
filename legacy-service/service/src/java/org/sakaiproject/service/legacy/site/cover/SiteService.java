@@ -23,6 +23,8 @@
 
 package org.sakaiproject.service.legacy.site.cover;
 
+import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 
 /**
@@ -63,6 +65,8 @@ public class SiteService
 	public static java.lang.String SECURE_VIEW_ROSTER = org.sakaiproject.service.legacy.site.SiteService.SECURE_VIEW_ROSTER;
 	public static java.lang.String MAIN_CONTAINER = org.sakaiproject.service.legacy.site.SiteService.MAIN_CONTAINER;
 	public static java.lang.String SITE_TEMPLATE = org.sakaiproject.service.legacy.site.SiteService.SITE_TEMPLATE;
+	public static java.lang.String SITE_GTS_TEMPLATE = org.sakaiproject.service.legacy.site.SiteService.SITE_GTS_TEMPLATE;
+	public static java.lang.String SITE_TYPE_GRADTOOLS_STUDENT = org.sakaiproject.service.legacy.site.SiteService.SITE_TYPE_GRADTOOLS_STUDENT;
 	public static java.lang.String USER_SITE_TEMPLATE = org.sakaiproject.service.legacy.site.SiteService.USER_SITE_TEMPLATE;
 	public static java.lang.String SITE_ERROR = org.sakaiproject.service.legacy.site.SiteService.SITE_ERROR;
 	public static java.lang.String URL_ERROR = org.sakaiproject.service.legacy.site.SiteService.URL_ERROR;
@@ -156,7 +160,7 @@ public class SiteService
 
 		return service.addSite(param0, param1);
 	}
-
+	
 	public static boolean allowRemoveSite(java.lang.String param0)
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
