@@ -49,12 +49,12 @@ public interface CourseManagementManager
 	 * @param description
 	 * @param courseNumber
 	 * @param canonicalCourseUuid
-	 * @param type
+	 * @param status
 	 * @return a new canonical course.
 	 * @author Mark Norton
 	 */
 	public CanonicalCourse createCanonicalCourse(String title, String description, String courseNumber, String canonicalCourseUuid,
-			CanonicalCourseType type);
+			CanonicalCourseStatusType status);
 
 	/**
 	 * Course offerings must always be derived from a Canonical Course.
@@ -236,21 +236,21 @@ public interface CourseManagementManager
 	/**
 	 * Return a list of all canonical courses filtered by type.
 	 * 
-	 * @param type
+	 * @param status
 	 * @return a list of canoncial courses.
 	 * @author Mark Norton
 	 */
-	public List getCanonicalCoursesByType(CanonicalCourseType type);
+	public List getCanonicalCoursesByType(CanonicalCourseStatusType status);
 
 	/**
 	 * Return a list of canonical courses derived from the one given filtered by type.
 	 * 
 	 * @param canonicalCourseUuid
-	 * @param type
+	 * @param status
 	 * @return a list of canonical courses
 	 * @author Mark Norton
 	 */
-	public List getCanonicalCoursesByType(String canonicalCourseUuid, CanonicalCourseType type);
+	public List getCanonicalCoursesByType(String canonicalCourseUuid, CanonicalCourseStatusType status);
 
 	/**
 	 * Return a list of course offerings derived from the canonical course given filtered by type.

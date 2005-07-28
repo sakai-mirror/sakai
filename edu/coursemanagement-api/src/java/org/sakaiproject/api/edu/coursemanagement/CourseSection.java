@@ -51,6 +51,10 @@ import java.util.Date;
  * <li>A flag to indicate students may self-register for this section [Boolean, true if self-registration is allowed]
  * <li>A Location [String]
  * <li>Meeting Time [String] 
+ * <li>Uuid of Agent who created this record [String]
+ * <li>Date & Time whne this record is created [Date]
+ * <li>Uuid of Agent who last modified this record [String]
+ * <li>Date & Time whne this record is last modified [Date]
  * </ul>
  * 
  * @author Mark Norton
@@ -168,7 +172,7 @@ public interface CourseSection
 	 * 
 	 * @return course section schedule
 	 */
-	public Schedule getSchedule ();
+	//public Schedule getSchedule ();
 
 	/**
 	 * Get the list of participation for the instructors of this course. While most sections will have only one instructor, provisions are made for multiple instructors.

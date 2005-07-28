@@ -28,8 +28,6 @@ package org.sakaiproject.api.edu.coursemanagement;
 import java.util.Date;
 import java.util.List;
 
-import org.sakaiproject.api.edu.coursemanagement.CanonicalCourseType;
-
 /**
  * A Canonical Course is a general course that exists across terms.  It is an abstract 
  * course.  One way of thinking about canonical courses is that they are the set of all 
