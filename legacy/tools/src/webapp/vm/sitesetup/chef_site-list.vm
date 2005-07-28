@@ -48,14 +48,14 @@
 					<span class="instruction" style="margin-bottom:.3em">$tlang.getString("list.viewing") $topMsgPos - $btmMsgPos $tlang.getString("import.of") $allMsgNumber $tlang.getString("list.items")</span>
 					#if ($pagesize != 0)
 						#if ($goPPButton == "true")
-							<form name="nextpageForm" style="display:inline;white-space:nowrap" method="post" action="#toolForm("$action")">
+							<form name="nextpageForm" style="display:inline;" method="post" action="#toolForm("$action")">
 							<input type="submit" name="eventSubmit_doList_prev" title="$tlang.getString('list.previous') $pagesize $tlang.getString('list.items')" value="<" />
 							</form>
 						#else
 							<input type="submit" disabled="disabled" name="eventSubmit_doList_prev" value="<" />
 						#end
 					#end
-					<form name="pagesizeForm" style="display:inline;white-space:nowrap" method="post" action="#toolForm("$action")">
+					<form name="pagesizeForm" style="display:inline;" method="post" action="#toolForm("$action")">
 						<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
 						<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
 							#foreach ($i in $!pagesizes)
@@ -65,7 +65,7 @@
 					</form>
 					#if ($pagesize != 0)
 						#if ($goNPButton == "true")
-							<form name="nextpageForm" style="display:inline;white-space:nowrap" method="post" action="#toolForm("$action")">
+							<form name="nextpageForm" style="display:inline;" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_next" title="$tlang.getString('list.next') $pagesize $tlang.getString('list.items')" value=">" />
 							</form>
 						#else
