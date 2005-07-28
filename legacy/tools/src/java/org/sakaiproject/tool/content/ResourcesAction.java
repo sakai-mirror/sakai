@@ -2310,7 +2310,6 @@ extends VelocityPortletPaneledAction
 		}
 		
 		alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
-		
 		Iterator alertIt = alerts.iterator();
 		while(alertIt.hasNext())
 		{
@@ -2322,7 +2321,7 @@ extends VelocityPortletPaneledAction
 		
 		// remove?
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
-		
+
 		state.setAttribute (STATE_MODE, mode);
 		
 	}	// doCreateitem
@@ -2437,7 +2436,7 @@ extends VelocityPortletPaneledAction
 					{
 						setPubView(ContentHostingService.getReference(collection.getId()), item.isPubview());
 					}
-				}		
+				}
 			}
 			catch (IdUsedException e)
 			{
@@ -2456,6 +2455,30 @@ extends VelocityPortletPaneledAction
 				alerts.add(RESOURCE_INVALID_TITLE_STRING);
 			}	// try-catch
 		}
+		
+		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
+		if(!currentMap.containsKey(collectionId))
+		{
+			try
+			{
+				currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
+				state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+
+				// add this folder id into the set to be event-observed
+				addObservingPattern(collectionId, state);
+			}
+			catch (IdUnusedException ignore)
+			{
+			}
+			catch (TypeException ignore)
+			{
+			}
+			catch (PermissionException ignore)
+			{
+			} 
+		}
+		state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+		
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}	// createFolders
@@ -2599,6 +2622,28 @@ extends VelocityPortletPaneledAction
 					alerts.add(rb.getString("overquota"));
 				}
 			}
+			HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
+			if(!currentMap.containsKey(collectionId))
+			{
+				try
+				{
+					currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
+					state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+	
+					// add this folder id into the set to be event-observed
+					addObservingPattern(collectionId, state);
+				}
+				catch (IdUnusedException ignore)
+				{
+				}
+				catch (TypeException ignore)
+				{
+				}
+				catch (PermissionException ignore)
+				{
+				} 
+			}
+			state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
 				
 		}
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
@@ -2868,6 +2913,30 @@ extends VelocityPortletPaneledAction
 				}
 			}
 		}
+		
+		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
+		if(!currentMap.containsKey(collectionId))
+		{
+			try
+			{
+				currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
+				state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+
+				// add this folder id into the set to be event-observed
+				addObservingPattern(collectionId, state);
+			}
+			catch (IdUnusedException ignore)
+			{
+			}
+			catch (TypeException ignore)
+			{
+			}
+			catch (PermissionException ignore)
+			{
+			} 
+		}
+		state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}	// createUrls
