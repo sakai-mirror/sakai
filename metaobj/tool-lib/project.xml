@@ -36,15 +36,6 @@
       <version>${pom.currentVersion}</version>
     </dependency>
     
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-util</artifactId>
-      <version>${pom.currentVersion}</version>
-      <properties>
-			<war.bundle>true</war.bundle>
-		</properties>
-    </dependency>
-    
      <dependency>
        <groupId>sakaiproject</groupId>
        <artifactId>sakai-active-tool</artifactId>

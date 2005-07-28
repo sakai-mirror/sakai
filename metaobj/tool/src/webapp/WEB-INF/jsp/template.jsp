@@ -32,7 +32,7 @@
 
   <script language="javascript">
    function resetHeight() {
-      setMainFrameHeight('<%= org.sakaiproject.util.Validator.escapeJavascript(panelId)%>');
+      setMainFrameHeight('<%= org.sakaiproject.util.web.Web.escapeJavascript(panelId)%>');
    }
 
    function loaded() {
