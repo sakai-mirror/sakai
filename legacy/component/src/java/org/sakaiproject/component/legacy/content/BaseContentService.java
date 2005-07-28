@@ -626,6 +626,20 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		return SecurityService.unlock(lock, ref);
 
 	} // unlockCheck
+    
+    /**
+     * Throws a PermissionException if the resource with the given Id is explicitly locked
+     * @param id
+     * @throws PermissionException
+     */
+    protected void checkExplicitLock(String id) throws PermissionException {
+        String uuid=this.getUuid(id);
+        
+        if (uuid!=null && this.isLocked(uuid)) { 
+            //TODO: WebDAV locks need to be more sophisticated than this
+            throw new PermissionException(UsageSessionService.getSessionUserId(), "remove", id);
+        }
+    }
 
 	/**
 	* Check security permission.
@@ -1093,7 +1107,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	*/
 	public boolean allowUpdateCollection(String id)
 	{
-		return unlockCheck(EVENT_RESOURCE_WRITE, id);
+        if (isLocked(getUuid(id))) { return false;}
+        return unlockCheck(EVENT_RESOURCE_WRITE, id);
 
 	} // allowUpdateCollection
 
@@ -1112,6 +1127,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		throws IdUnusedException, TypeException, PermissionException, InUseException
 	{
 		String ref = getReference(id);
+
+        if (isLocked(getUuid(id))) { throw new PermissionException(UsageSessionService.getSessionUserId(), id, ref);}
 
 		// check security (throws if not permitted)
 		unlock(EVENT_RESOURCE_WRITE, id);
@@ -1411,6 +1428,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		}
 
 		// check security
+        checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_ADD, id);
 
 		// make sure the containing collection exists
@@ -1588,6 +1606,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		String ref = getReference(id);
 
 		// check security (throws if not permitted)
+        checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_WRITE, id);
 
 		// check for existance
@@ -1756,14 +1775,9 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		}
 
         String id=edit.getId();
-        String uuid=this.getUuid(id);
-        
-        if (uuid!=null && this.isLocked(uuid)) { 
-            //TODO: WebDAV locks need to be more sophisticated than this
-            throw new PermissionException(UsageSessionService.getSessionUserId(), "remove", edit.getReference());
-        }
-        
+
 		// check security (throws if not permitted)
+        checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_REMOVE, id);
 
 		// complete the edit
@@ -2261,6 +2275,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public ResourceProperties addProperty(String id, String name, String value)
 		throws PermissionException, IdUnusedException, TypeException, InUseException
 	{
+        checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_WRITE, id);
 
 		boolean collectionHint = id.endsWith(Resource.SEPARATOR);
@@ -2326,6 +2341,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public ResourceProperties removeProperty(String id, String name)
 		throws PermissionException, IdUnusedException, TypeException, InUseException
 	{
+        checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_WRITE, id);
 
 		boolean collectionHint = id.endsWith(Resource.SEPARATOR);
