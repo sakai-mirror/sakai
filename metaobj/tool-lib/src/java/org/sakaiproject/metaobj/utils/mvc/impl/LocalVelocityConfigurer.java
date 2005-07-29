@@ -33,6 +33,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
+import org.sakaiproject.metaobj.utils.mvc.intf.VelocityEngineFactory;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -46,7 +47,7 @@ import java.util.Properties;
  * Time: 4:21:23 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LocalVelocityConfigurer implements InitializingBean, ApplicationContextAware {
+public class LocalVelocityConfigurer implements InitializingBean, ApplicationContextAware, VelocityEngineFactory {
 
    protected final transient Log logger = LogFactory.getLog(getClass());
 

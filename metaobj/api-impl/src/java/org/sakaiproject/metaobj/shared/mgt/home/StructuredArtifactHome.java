@@ -146,7 +146,7 @@ public class StructuredArtifactHome extends XmlElementHome
 
    protected Artifact addArtifact(Artifact object) throws PersistenceException {
       /**
-      NodeMetadata node = getNodeMetadataService().createNode(
+      NodeMetadata node = getNodeMetadataService().getNode(
          object.getDisplayName(), this.getType());
 
       long size = getStreamStore().store(node, RepositoryNode.TECH_MD_TYPE, getInfoStream(object));
