@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+                            "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                            "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<!-- DO NOT EDIT: This is a generated file that is synchronized -->
+<!-- by MyEclipse Hibernate tool integration.                   -->
+<!-- Created Fri Jul 29 11:25:54 EDT 2005                         -->
+<hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
+
+    <class name="CmCanonicalcourseT" table="CM_CANONICALCOURSE_T">
+        <id name="canonicalcourseid" column="CANONICALCOURSEID" type="java.lang.Long">
+            <generator class="native"/>
+        </id>
+ 
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
+        <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="true" />
+        <property name="coursenumber" column="COURSENUMBER" type="java.lang.String"  not-null="true" />
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
+        <property name="defaultcredits" column="DEFAULTCREDITS" type="java.lang.String"  not-null="true" />
+        <property name="parentid" column="PARENTID" type="java.lang.String"  not-null="true" />
+        <property name="topics" column="TOPICS" type="java.lang.String"  not-null="true" />
+        <property name="createdby" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createddate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastmodifiedby" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastmodifieddate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+ 
+        <many-to-one name="cmCanonicalcoursetypeT" column="CANONICALCOURSETYPEID" class="CmCanonicalcoursetypeT"  not-null="true" />
+ 
+        <set name="cmCoursesetmapTSet" inverse="true">
+            <key column="CANONICALCOURSEID"/>
+            <one-to-many class="CmCoursesetmapT"/>
+        </set>
+ 
+        <set name="cmEquivalentcoursesTSet" inverse="true">
+            <key column="CANONICALCOURSEID"/>
+            <one-to-many class="CmEquivalentcoursesT"/>
+        </set>
+ 
+        <set name="cmEquivalentcoursesT1Set" inverse="true">
+            <key column="PRIMARYCOURSEID"/>
+            <one-to-many class="CmEquivalentcoursesT"/>
+        </set>
+ 
+        <set name="cmPrerequisiteTSet" inverse="true">
+            <key column="CANONICALCOURSEID"/>
+            <one-to-many class="CmPrerequisiteT"/>
+        </set>
+    </class>
+    
+</hibernate-mapping>
