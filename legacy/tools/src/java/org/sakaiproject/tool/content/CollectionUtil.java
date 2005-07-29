@@ -70,18 +70,18 @@ public class CollectionUtil
       try
       {
         List list = new ArrayList(2);
-        list.add(result.getString("cc.collection_id"));
+        list.add(result.getString("collection_id"));
 
         // test for dropbox vs. resource
-        String toolType = result.getString("sstool.registration");
+        String toolType = result.getString("registration");
         if ("sakai.dropbox".equals(toolType))
         {
-          list.add(result.getString("ss.title") + " "
+          list.add(result.getString("title") + " "
               + rb.getString("gen.drop"));
         }
         else
         {
-          list.add(result.getString("ss.title") + " "
+          list.add(result.getString("title") + " "
               + rb.getString("gen.reso"));
         }
 
