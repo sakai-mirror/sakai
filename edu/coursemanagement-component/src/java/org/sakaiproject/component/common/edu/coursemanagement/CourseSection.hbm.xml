@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+                            "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                            "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<!-- DO NOT EDIT: This is a generated file that is synchronized -->
+<!-- by MyEclipse Hibernate tool integration.                   -->
+<!-- Created Thu Jul 28 22:49:10 EDT 2005                         -->
+<hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
+
+    <class name="CmCoursesectionT" table="CM_COURSESECTION_T">
+        <id name="coursesectionid" column="COURSESECTIONID" type="java.lang.Long">
+            <generator class="native"/>
+        </id>
+ 
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
+        <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="true" />
+        <property name="sectionnumber" column="SECTIONNUMBER" type="java.lang.String"  not-null="true" />
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
+        <property name="maximumstudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  not-null="true" />
+        <property name="enrollmentstatustypeid" column="ENROLLMENTSTATUSTYPEID" type="java.lang.Long"  not-null="true" />
+        <property name="courseofferinguuid" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
+        <property name="scheduleuuid" column="SCHEDULEUUID" type="java.lang.String"  not-null="true" />
+        <property name="createdlocally" column="CREATEDLOCALLY" type="java.lang.Byte"  not-null="true" />
+        <property name="holdingsection" column="HOLDINGSECTION" type="java.lang.Byte"  not-null="true" />
+        <property name="allowselfregistration" column="ALLOWSELFREGISTRATION" type="java.lang.Byte"  not-null="true" />
+        <property name="createdby" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createddate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastmodifiedby" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastmodifieddate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+ 
+        <many-to-one name="cmCoursesectionstatustypeT" column="COURSESECTIONSTATUSTYPEID" class="CmCoursesectionstatustypeT"  not-null="true" />
+ 
+        <many-to-one name="cmCoursesectiontypeT" column="COURSESECTIONTYPEID" class="CmCoursesectiontypeT"  not-null="true" />
+ 
+        <many-to-one name="cmSessionT" column="SESSIONID" class="CmSessionT"  not-null="true" />
+    </class>
+    
+</hibernate-mapping>

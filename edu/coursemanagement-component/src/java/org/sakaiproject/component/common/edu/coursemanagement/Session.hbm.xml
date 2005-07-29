@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+                            "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                            "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<!-- DO NOT EDIT: This is a generated file that is synchronized -->
+<!-- by MyEclipse Hibernate tool integration.                   -->
+<!-- Created Thu Jul 28 22:43:41 EDT 2005                         -->
+<hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
+
+    <class name="CmSessionT" table="CM_SESSION_T">
+        <id name="sessionid" column="SESSIONID" type="java.lang.Long">
+            <generator class="native"/>
+        </id>
+ 
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
+        <property name="abbreviation" column="ABBREVIATION" type="java.lang.String"  not-null="true" />
+        <property name="year" column="YEAR" type="java.lang.String"  not-null="true" />
+        <property name="iscurrent" column="ISCURRENT" type="java.lang.Byte"  not-null="true" />
+        <property name="sessionuuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
+ 
+        <many-to-one name="cmSessiontypeT" column="SESSIONTYPEID" class="CmSessiontypeT"  not-null="true" />
+ 
+        <set name="cmCourseofferingTSet" inverse="true">
+            <key column="SESSION"/>
+            <one-to-many class="CmCourseofferingT"/>
+        </set>
+ 
+        <set name="cmCoursesectionTSet" inverse="true">
+            <key column="SESSIONID"/>
+            <one-to-many class="CmCoursesectionT"/>
+        </set>
+    </class>
+    
+</hibernate-mapping>

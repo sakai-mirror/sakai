@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+                            "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                            "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<!-- DO NOT EDIT: This is a generated file that is synchronized -->
+<!-- by MyEclipse Hibernate tool integration.                   -->
+<!-- Created Thu Jul 28 22:52:50 EDT 2005                         -->
+<hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
+
+    <class name="CmParticipationrecordT" table="CM_PARTICIPATIONRECORD_T">
+        <id name="participationrecordid" column="PARTICIPATIONRECORDID" type="java.lang.Long">
+            <generator class="native"/>
+        </id>
+ 
+        <property name="agent" column="AGENT" type="java.lang.String"  not-null="true" />
+        <property name="role" column="ROLE" type="java.lang.String"  not-null="true" />
+        <property name="participationstatus" column="PARTICIPATIONSTATUS" type="java.lang.String"  not-null="true" />
+        <property name="coursesectionuuid" column="COURSESECTIONUUID" type="java.lang.String"  not-null="true" />
+        <property name="createdby" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createddate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastmodifiedby" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastmodifieddate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+    </class>
+    
+</hibernate-mapping>

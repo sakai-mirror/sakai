@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+                            "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                            "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<!-- DO NOT EDIT: This is a generated file that is synchronized -->
+<!-- by MyEclipse Hibernate tool integration.                   -->
+<!-- Created Thu Jul 28 22:47:37 EDT 2005                         -->
+<hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
+
+    <class name="CmCourseofferingT" table="CM_COURSEOFFERING_T">
+        <id name="courseofferingid" column="COURSEOFFERINGID" type="java.lang.Long">
+            <generator class="native"/>
+        </id>
+ 
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
+        <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="true" />
+        <property name="offeringnumber" column="OFFERINGNUMBER" type="java.lang.String"  not-null="true" />
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
+        <property name="iscrosslisted" column="ISCROSSLISTED" type="java.lang.Byte"  not-null="true" />
+        <property name="isprimary" column="ISPRIMARY" type="java.lang.Byte"  not-null="true" />
+        <property name="maximumstudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  not-null="true" />
+        <property name="canonicalcourseuuid" column="CANONICALCOURSEUUID" type="java.lang.String"  not-null="true" />
+        <property name="createdby" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createddate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastmodifiedby" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastmodifieddate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+ 
+        <many-to-one name="cmCourseofferingstatustypeT" column="COURSEOFFERINGSTATUSTYPEID" class="CmCourseofferingstatustypeT"  not-null="true" />
+ 
+        <many-to-one name="cmCourseofferingtypeT" column="COURSEOFFERINGTYPEID" class="CmCourseofferingtypeT"  not-null="true" />
+ 
+        <many-to-one name="cmEnrollmenttypeT" column="ENROLLMENTTYPEID" class="CmEnrollmenttypeT"  not-null="true" />
+ 
+        <many-to-one name="cmSessionT" column="SESSION" class="CmSessionT"  not-null="true" />
+ 
+        <set name="cmEnrollmentrecordTSet" inverse="true">
+            <key column="COURSEOFFERINGID"/>
+            <one-to-many class="CmEnrollmentrecordT"/>
+        </set>
+    </class>
+    
+</hibernate-mapping>

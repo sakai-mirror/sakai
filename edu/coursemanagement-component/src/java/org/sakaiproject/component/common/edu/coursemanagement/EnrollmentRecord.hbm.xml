@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+                            "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                            "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<!-- DO NOT EDIT: This is a generated file that is synchronized -->
+<!-- by MyEclipse Hibernate tool integration.                   -->
+<!-- Created Thu Jul 28 22:50:43 EDT 2005                         -->
+<hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
+
+    <class name="CmEnrollmentrecordT" table="CM_ENROLLMENTRECORD_T">
+        <id name="enrollmentrecordid" column="ENROLLMENTRECORDID" type="java.lang.Long">
+            <generator class="native"/>
+        </id>
+ 
+        <property name="agent" column="AGENT" type="java.lang.String"  not-null="true" />
+        <property name="role" column="ROLE" type="java.lang.String"  not-null="true" />
+        <property name="credits" column="CREDITS" type="java.lang.String"  not-null="true" />
+        <property name="coursesectionuuid" column="COURSESECTIONUUID" type="java.lang.String"  not-null="true" />
+        <property name="createdby" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createddate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastmodifiedby" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastmodifieddate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+ 
+        <many-to-one name="cmCourseofferingT" column="COURSEOFFERINGID" class="CmCourseofferingT"  not-null="true" />
+ 
+        <many-to-one name="cmEnrollmentstatustypeT" column="ENROLLMENTSTATUSTYPEID" class="CmEnrollmentstatustypeT"  not-null="true" />
+    </class>
+    
+</hibernate-mapping>
