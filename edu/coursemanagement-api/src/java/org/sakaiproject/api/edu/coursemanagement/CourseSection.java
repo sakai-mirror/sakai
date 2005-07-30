@@ -61,6 +61,7 @@ import java.util.Date;
  */
 public interface CourseSection
 {
+	public Long getCourseSectionId();
 
 	/**
 	 * Get the title of a course section.
@@ -424,5 +425,4 @@ public interface CourseSection
     	 */
     	public void setLastModifiedDate(Date lastModifiedDate);
     	
-
 }

@@ -49,6 +49,8 @@ import java.util.Date;
  */
 public interface EnrollmentRecord {
 
+	public Long getEnrollmentRecordId();
+
 	/**
 	 * Get the agent uuid of the student enrolled.
 	 * 
@@ -174,5 +176,6 @@ public interface EnrollmentRecord {
 	 *	@param last modified date
 	 */
 	public void setLastModifiedDate(Date lastModifiedDate);
+
 	
 }

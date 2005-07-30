@@ -1,84 +1,186 @@
 package org.sakaiproject.component.common.edu.coursemanagement;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import org.sakaiproject.api.edu.coursemanagement.CanonicalCourseStatusType;
 
-public class CanonicalCourseStatusTypeImpl implements CanonicalCourseStatusType {
+public class CanonicalCourseStatusTypeImpl implements CanonicalCourseStatusType, Serializable {
 
-	public String getAuthority() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** The cached hash code value for this instance.  Settting to 0 triggers re-calculation. */
+    private int hashValue = 0;
+
+    /** The composite primary key value. */
+    private Long canonicalCourseStatusTypeId;
+
+    /** The value of the simple authority property. */
+    private String authority;
+
+    /** The value of the simple domain property. */
+    private String domain;
+
+    /** The value of the simple keyword property. */
+    private String keyword;
+
+    /** The value of the simple displayname property. */
+    private String displayName;
+
+    /** The value of the simple description property. */
+    private String description;
+
+    /** The value of the simple uuid property. */
+    private String uuid;
+
+    /** The value of the simple status property. */
+    private Integer status;
+
+    /** The value of the simple lastmodifiedby property. */
+    private String lastModifiedBy;
+
+    /** The value of the simple lastmodifieddate property. */
+    private Date lastModifiedDate;
+
+    /** The value of the simple createdby property. */
+    private String createdBy;
+
+    /** The value of the simple createddate property. */
+    private Date createdDate;
+
+    public Long getCanonicalCourseStatusTypeId() {
+    	return this.canonicalCourseStatusTypeId;
 	}
 
-	public void setAuthority(String arg0) {
-		// TODO Auto-generated method stub
+	public void setCanonicalCourseStatusTypeId(Long canonicalCourseStatusTypeId) {
+		this.canonicalCourseStatusTypeId = canonicalCourseStatusTypeId;
+	}
+    
+	public String getAuthority() {
+		return authority;
+	}
 
+	public void setAuthority(String authority) {
+		this.authority = authority;
 	}
 
 	public String getDomain() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.domain;
 	}
 
-	public void setDomain(String arg0) {
-		// TODO Auto-generated method stub
+	public void setDomain(String domain) {
+		this.domain = domain;
 
 	}
 
 	public String getKeyword() {
-		// TODO Auto-generated method stub
-		return null;
+		return keyword;
 	}
 
-	public void setKeyword(String arg0) {
-		// TODO Auto-generated method stub
-
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 
 	public String getDisplayName() {
-		// TODO Auto-generated method stub
-		return null;
+		return displayName;
 	}
 
-	public void setDisplayName(String arg0) {
-		// TODO Auto-generated method stub
-
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return description;
 	}
-
-	public void setDescription(String arg0) {
-		// TODO Auto-generated method stub
-
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getUuid() {
-		// TODO Auto-generated method stub
-		return null;
+		return uuid;
+	}
+	
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
-	public String getLastModifiedBy() {
-		// TODO Auto-generated method stub
-		return null;
+	public Integer getStatus() {
+		return this.status;
 	}
 
-	public Date getLastModifiedDate() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public String getCreatedBy() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public Date getCreatedDate() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.createdDate;
 	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+
+	public void setLastModifiedBy(String lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
+
+	   /**
+     * Implementation of the equals comparison on the basis of equality of the primary key values.
+     * @param rhs
+     * @return boolean
+     */
+    public boolean equals(Object rhs)
+    {
+        if (rhs == null)
+            return false;
+        if (! (rhs instanceof CanonicalCourseStatusType))
+            return false;
+        CanonicalCourseStatusType that = (CanonicalCourseStatusType) rhs;
+        if (this.getCanonicalCourseStatusTypeId() == null || that.getCanonicalCourseStatusTypeId() == null)
+            return false;
+        return (this.getCanonicalCourseStatusTypeId().equals(that.getCanonicalCourseStatusTypeId()));
+    }
+
+    /**
+     * Implementation of the hashCode method conforming to the Bloch pattern with
+     * the exception of array properties (these are very unlikely primary key types).
+     * @return int
+     */
+    public int hashCode()
+    {
+        if (this.hashValue == 0)
+        {
+            int result = 17;
+            int canonicalcoursetypeidValue = this.getCanonicalCourseStatusTypeId() == null ? 0 : this.getCanonicalCourseStatusTypeId().hashCode();
+            result = result * 37 + canonicalcoursetypeidValue;
+            this.hashValue = result;
+        }
+        return this.hashValue;
+    }
 
 }

@@ -35,6 +35,8 @@ import org.sakaiproject.api.common.type.Type;
  *
  */
 public interface CanonicalCourseStatusType extends Type {
+
+	Long getCanonicalCourseStatusTypeId();
 /*
  * Keywords:
 org.sakaiproject.coursemgmt.canonical.unknown

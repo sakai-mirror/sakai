@@ -49,6 +49,8 @@ import java.util.List;
  *
  */
 public interface CourseSet {
+	
+	public Long getCourseSetId();
 
 	/**
 	 * Get the title of this course set.
@@ -144,5 +146,6 @@ public interface CourseSet {
 	 *	@param last modified date
 	 */
 	public void setLastModifiedDate(Date lastModifiedDate);
+
 	
 }

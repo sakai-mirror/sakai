@@ -1,8 +1,14 @@
 package org.sakaiproject.component.common.edu.coursemanagement;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import org.sakaiproject.api.edu.coursemanagement.CourseOffering;
 import org.sakaiproject.api.edu.coursemanagement.CourseSection;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionType;
@@ -11,261 +17,478 @@ import org.sakaiproject.api.edu.coursemanagement.EnrollmentStatusType;
 import org.sakaiproject.api.edu.coursemanagement.ParticipationRecord;
 import org.sakaiproject.api.edu.coursemanagement.Session;
 
-public class CourseSectionImpl implements CourseSection {
+public class CourseSectionImpl implements CourseSection, Serializable  {
 
-	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+ 
+	/** The cached hash code value for this instance.  Settting to 0 triggers re-calculation. */
+    private int hashValue = 0;
+    
+    /** The composite primary key value. */
+    private Long courseSectionId;
+
+	/** The value of the simple title property. */
+    private String title;
+
+    /** The value of the simple description property. */
+    private String description;
+
+    /** The value of the simple sectionnumber property. */
+    private String sectionNumber;
+
+    /** The value of the simple uuid property. */
+    private String uuid;
+
+    /** The value of the simple maximumstudents property. */
+    private Long maximumStudents;
+    
+    /** The value of the cmSessionT association. */
+    private Session session;
+
+    /** The value of the simple createdby property. */
+    private String createdBy;
+
+    /** The value of the simple createddate property. */
+    private Date createdDate;
+
+    /** The value of the simple lastmodifiedby property. */
+    private String lastModifiedBy;
+
+    /** The value of the simple lastmodifieddate property. */
+    private Date lastModifiedDate;
+
+	private CourseSectionType courseSectionType;
+
+	private CourseSectionStatusType courseSectionStatus;
+
+	private Set participationSet;
+
+	private List participationList;
+	
+	private List defaultLeaderList;
+	
+	private List otherPeopleList;
+
+	private List enrollmentList;
+
+	private Set enrollmentSet;
+
+	private EnrollmentStatusType enrollmentStatus;
+
+	private String courseOfferingUuid;
+
+	private String scheduleUuid;
+
+	private List sectionEventUuidList;
+	
+	private Set sectionEventUuidSet;
+
+	private Boolean isCreatedLocally;
+
+	private Boolean isHoldingSection;
+
+	private String location;
+
+	private String meetingTime;
+
+	private Boolean isAllowSelfRegistration;
+
+	public CourseSectionImpl(String uuid){
+		
+	}
+	
+	 /**
+     * Return the simple primary key value that identifies this object.
+     * @return java.lang.Long
+     */
+    public Long getCourseSectionId()
+    {
+        return courseSectionId;
+    }
+
+    /**
+     * Set the simple primary key value that identifies this object.
+     * @param coursesectionid
+     */
+    public void setCourseSectionid(Long courseSectionId)
+    {
+        this.hashValue = 0;
+        this.courseSectionId = courseSectionId;
+    }
+
+    public String getTitle() {
+		return title;
 	}
 
 	public void setTitle(String title) {
-		// TODO Auto-generated method stub
-
+		this.title = title;
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return description;
 	}
 
 	public void setDescription(String description) {
-		// TODO Auto-generated method stub
-
+		this.description = description;
 	}
 
 	public String getSectionNumber() {
-		// TODO Auto-generated method stub
-		return null;
+		return sectionNumber;
 	}
 
 	public void setSectionNumber(String sectionNumber) {
-		// TODO Auto-generated method stub
-
+		this.sectionNumber = sectionNumber;
 	}
 
 	public String getUuid() {
-		// TODO Auto-generated method stub
-		return null;
+		return uuid;
+	}
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public int getMaximumStudents() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getMaximumStudentsLong().intValue();
 	}
 
 	public void setMaximumStudents(int maxStudents) {
-		// TODO Auto-generated method stub
+		setMaximumStudentsLong(new Long(maxStudents));
+	}
+	
+	public Long getMaximumStudentsLong() {
+		return maximumStudents;
+	}
 
+	public void setMaximumStudentsLong(Long maxStudents) {
+		this.maximumStudents = maxStudents;
 	}
 
 	public Session getSession() {
-		// TODO Auto-generated method stub
-		return null;
+		return session;
 	}
 
-	public void setSession(Session term) {
-		// TODO Auto-generated method stub
-
+	public void setSession(Session session) {
+		this.session = session;
 	}
 
 	public CourseSectionType getSectionType() {
-		// TODO Auto-generated method stub
-		return null;
+		return courseSectionType;
 	}
 
 	public void setSectionType(CourseSectionType type) {
-		// TODO Auto-generated method stub
-
+		this.courseSectionType = type;
 	}
 
 	public CourseSectionStatusType getSectionStatus() {
-		// TODO Auto-generated method stub
-		return null;
+		return courseSectionStatus;
 	}
 
-	public void setSectionStatusType(CourseSectionStatusType type) {
-		// TODO Auto-generated method stub
+	public void setSectionStatusType(CourseSectionStatusType status) {
+		this.courseSectionStatus = status;
+	}
 
+	public Set getParticipationSet() {
+		return participationSet;
+	}
+
+	public void setParticipationSet(Set participationSet) {
+		participationList = new ArrayList();
+		defaultLeaderList = new ArrayList();
+		otherPeopleList = new ArrayList();
+		if (this.participationSet == null)
+			this.participationSet = new HashSet();
+		this.participationSet = participationSet;
+		Iterator i= participationSet.iterator();
+		while (i.hasNext()){
+			ParticipationRecord p = (ParticipationRecord)i.next();
+			participationList.add(p);
+			if (p.getRole().equals(CourseOffering.LEADER))
+				defaultLeaderList.add(p);
+			else
+				otherPeopleList.add(p);
+		}
+	}
+
+	public Set getParticipationList() {
+		return participationSet;
 	}
 
 	public List getLeaders() {
-		// TODO Auto-generated method stub
-		return null;
+		return defaultLeaderList;
 	}
 
 	public void addLeader(ParticipationRecord participationRecord) {
-		// TODO Auto-generated method stub
-
+		if (this.participationSet == null)
+			this.participationSet = new HashSet();
+		participationSet.add(participationRecord);
+		if (this.participationList == null)
+			this.participationList = new ArrayList();
+		participationList.add(participationRecord);
+		if (this.participationList == null)
+			this.participationList = new ArrayList();
+		defaultLeaderList.add(participationRecord);
 	}
 
 	public void removeLeader(String agentUuid) {
-		// TODO Auto-generated method stub
-
+		Iterator i= participationSet.iterator();
+		while (i.hasNext()){
+			ParticipationRecord participation = (ParticipationRecord) i.next();
+			if (participation.getAgent().equals(agentUuid)){
+				participationSet.remove(participation);
+				participationList.remove(participation);				
+				defaultLeaderList.remove(participation);				
+			}
+		}
 	}
 
 	public List getEnrollmentRecords() {
-		// TODO Auto-generated method stub
-		return null;
+		return enrollmentList;
 	}
 
-	public void addEnrollmentRecord(EnrollmentRecord record) {
-		// TODO Auto-generated method stub
-
+	public void addEnrollmentRecord(EnrollmentRecord enrollmentRecord) {
+		if (this.enrollmentSet == null)
+			this.enrollmentSet = new HashSet();
+		enrollmentSet.add(enrollmentRecord);
+		if (this.enrollmentList == null)
+			this.enrollmentList = new ArrayList();
+		enrollmentList.add(enrollmentRecord);
 	}
 
-	public void removeEnrollmentRecord(EnrollmentRecord record) {
-		// TODO Auto-generated method stub
-
+	public void removeEnrollmentRecord(EnrollmentRecord enrollmentRecord) {
+		Iterator i= enrollmentSet.iterator();
+		while (i.hasNext()){
+			EnrollmentRecord enrollment = (EnrollmentRecord) i.next();
+			if (enrollment.equals(enrollmentRecord)){
+				enrollmentSet.remove(enrollment);
+				enrollmentList.remove(enrollment);				
+			}
+		}
 	}
 
+	public void removeEnrollmentRecord(String agentUuid) {
+		Iterator i= enrollmentSet.iterator();
+		while (i.hasNext()){
+			EnrollmentRecord enrollment = (EnrollmentRecord) i.next();
+			if (enrollment.getAgent().equals(agentUuid)){
+				enrollmentSet.remove(enrollment);
+				enrollmentList.remove(enrollment);				
+			}
+		}
+	}
+	
 	public EnrollmentStatusType getEnrollmentStatus() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.enrollmentStatus;
 	}
 
 	public void setEnrollmentStatus(EnrollmentStatusType status) {
-		// TODO Auto-generated method stub
-
+		this.enrollmentStatus = status;
 	}
 
 	public List getOtherPeople() {
-		// TODO Auto-generated method stub
-		return null;
+		return otherPeopleList;
 	}
 
 	public void addOtherPerson(ParticipationRecord participant) {
-		// TODO Auto-generated method stub
-
+		if (this.participationSet == null)
+			this.participationSet = new HashSet();
+		participationSet.add(participant);
+		if (this.participationList == null)
+			this.participationList = new ArrayList();
+		participationList.add(participant);
+		if (this.participationList == null)
+			this.participationList = new ArrayList();
+		otherPeopleList.add(participant);
 	}
 
 	public void removeOtherPerson(String agentUuid) {
-		// TODO Auto-generated method stub
-
+		Iterator i= participationSet.iterator();
+		while (i.hasNext()){
+			ParticipationRecord participation = (ParticipationRecord) i.next();
+			if (participation.getAgent().equals(agentUuid)){
+				participationSet.remove(participation);
+				participationList.remove(participation);				
+				otherPeopleList.remove(participation);				
+			}
+		}
 	}
 
 	public String getCourseOffering() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.courseOfferingUuid;
 	}
 
 	public void setCourseOffering(String courseOfferingUuid) {
-		// TODO Auto-generated method stub
-
+		this.courseOfferingUuid = courseOfferingUuid;
 	}
 
 	public String getSchedule() {
-		// TODO Auto-generated method stub
-		return null;
+		return scheduleUuid;
 	}
 
 	public void setSchedule(String scheduleUuid) {
-		// TODO Auto-generated method stub
-
+		this.scheduleUuid = scheduleUuid;
 	}
 
 	public List getSectionEvents() {
-		// TODO Auto-generated method stub
-		return null;
+		return sectionEventUuidList;
+	}
+	public Set getSectionEventSet() {
+		return sectionEventUuidSet;
+	}
+	
+	public void setSectionEventSet(Set set) {
+		this.sectionEventUuidSet = set;
+		sectionEventUuidList = new ArrayList();
+		Iterator i= set.iterator();
+		while (i.hasNext()){
+			String e = (String)i.next();
+			sectionEventUuidList.add(e);
+		}
 	}
 
 	public void addSectionEvent(String eventUuid) {
-		// TODO Auto-generated method stub
-
+		if (sectionEventUuidList == null)
+			sectionEventUuidList = new ArrayList();
+		sectionEventUuidList.add(eventUuid);
 	}
 
 	public void removeSectionEvent(String eventUuid) {
-		// TODO Auto-generated method stub
-
+		if (sectionEventUuidList != null)
+    		sectionEventUuidList.remove(eventUuid);
 	}
 
 	public boolean getCreatedLocally() {
-		// TODO Auto-generated method stub
-		return false;
+		return getIsCreatedLocally().booleanValue();
 	}
 
 	public void setCreatedLocally(boolean createdLocally) {
-		// TODO Auto-generated method stub
+		this.isCreatedLocally = new Boolean(createdLocally);
+	}
 
+	public Boolean getIsCreatedLocally() {
+		return isCreatedLocally;
+	}
+
+	public void setCreatedLocally(Boolean createdLocally) {
+		this.isCreatedLocally = createdLocally;
 	}
 
 	public boolean getHoldingSection() {
-		// TODO Auto-generated method stub
-		return false;
+		return getIsHoldingSection().booleanValue();
 	}
 
 	public void setHoldingSection(boolean holdingSection) {
-		// TODO Auto-generated method stub
-
+		this.isHoldingSection = new Boolean(holdingSection);
 	}
 
+	public Boolean getIsHoldingSection() {
+		return isHoldingSection;
+	}
+
+	public void setHoldingSection(Boolean holdingSection) {
+		this.isHoldingSection = holdingSection;
+	}
+	
 	public boolean getAllowSelfRegistration() {
-		// TODO Auto-generated method stub
-		return false;
+		return getIsAllowSelfRegistration().booleanValue();
 	}
 
 	public void setAllowSelfRegistration(boolean allowSelfRegistration) {
-		// TODO Auto-generated method stub
+		this.isAllowSelfRegistration = new Boolean(allowSelfRegistration);
+	}
 
+	public Boolean getIsAllowSelfRegistration() {
+		return isAllowSelfRegistration;
+	}
+
+	public void setAllowSelfRegistration(Boolean allowSelfRegistration) {
+		this.isAllowSelfRegistration = allowSelfRegistration;
 	}
 
 	public String getLocation() {
 		// TODO Auto-generated method stub
-		return null;
+		return location;
 	}
 
 	public void setLocation(String location) {
-		// TODO Auto-generated method stub
-
+		this.location = location;
 	}
 
 	public String getMeetingTime() {
 		// TODO Auto-generated method stub
-		return null;
+		return meetingTime;
 	}
 
 	public void setMeetingTime(String meetingTime) {
-		// TODO Auto-generated method stub
-
+		this.meetingTime = meetingTime;
 	}
 
 	public String getCreatedBy() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.createdBy;
 	}
 
 	public void setCreatedBy(String createdBy) {
-		// TODO Auto-generated method stub
-
+		this.createdBy = createdBy;
 	}
 
 	public Date getCreatedDate() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.createdDate;
 	}
 
 	public void setCreatedDate(Date createdDate) {
-		// TODO Auto-generated method stub
-
+		this.createdDate = createdDate;
 	}
 
 	public String getLastModifiedBy() {
-		// TODO Auto-generated method stub
-		return null;
+		return lastModifiedBy;
 	}
 
 	public void setLastModifiedBy(String lastModifiedBy) {
-		// TODO Auto-generated method stub
-
+		this.lastModifiedBy = lastModifiedBy;
 	}
 
 	public Date getLastModifiedDate() {
-		// TODO Auto-generated method stub
-		return null;
+		return lastModifiedDate;
 	}
 
 	public void setLastModifiedDate(Date lastModifiedDate) {
-		// TODO Auto-generated method stub
-
+		this.lastModifiedDate = lastModifiedDate;
 	}
+
+	   /**
+     * Implementation of the equals comparison on the basis of equality of the primary key values.
+     * @param rhs
+     * @return boolean
+     */
+    public boolean equals(Object rhs)
+    {
+        if (rhs == null)
+            return false;
+        if (! (rhs instanceof CourseSection))
+            return false;
+        CourseSection that = (CourseSection) rhs;
+        if (this.getCourseSectionId() == null || that.getCourseSectionId() == null)
+            return false;
+        return (this.getCourseSectionId().equals(that.getCourseSectionId()));
+    }
+
+    /**
+     * Implementation of the hashCode method conforming to the Bloch pattern with
+     * the exception of array properties (these are very unlikely primary key types).
+     * @return int
+     */
+    public int hashCode()
+    {
+        if (this.hashValue == 0)
+        {
+            int result = 17;
+            int coursesectionidValue = this.getCourseSectionId() == null ? 0 : this.getCourseSectionId().hashCode();
+            result = result * 37 + coursesectionidValue;
+            this.hashValue = result;
+        }
+        return this.hashValue;
+    }
 
 }

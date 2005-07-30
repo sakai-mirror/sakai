@@ -1,80 +1,168 @@
 package org.sakaiproject.component.common.edu.coursemanagement;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.sakaiproject.api.edu.coursemanagement.CourseSet;
 
-public class CourseSetImpl implements CourseSet {
+public class CourseSetImpl implements CourseSet, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+ 
+	/** The cached hash code value for this instance.  Settting to 0 triggers re-calculation. */
+    private int hashValue = 0;
+
+	private Long courseSetId;
+	private String title;
+	private String uuid;
+	private Set canonicalCourseUuidSet;
+	private ArrayList canonicalCourseUuidList;
+	
+	/** The value of the simple createdby property. */
+    private String createdBy;
+
+    /** The value of the simple createddate property. */
+    private Date createdDate;
+
+    /** The value of the simple lastmodifiedby property. */
+    private java.lang.String lastModifiedBy;
+
+    /** The value of the simple lastmodifieddate property. */
+    private java.util.Date lastModifiedDate;
+
+    /**
+     * Return the simple primary key value that identifies this object.
+     * @return java.lang.Long
+     */
+    public Long getCourseSetId()
+    {
+        return this.courseSetId;
+    }
+
+    /**
+     * Set the simple primary key value that identifies this object.
+     * @param coursesetid
+     */
+    public void setCourseSetId(Long courseSetId)
+    {
+        this.courseSetId = courseSetId;
+    }
+
 
 	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return title;
 	}
 
 	public void setTitle(String title) {
-		// TODO Auto-generated method stub
-
+		this.title = title;
 	}
 
 	public String getUuid() {
-		// TODO Auto-generated method stub
-		return null;
+		return uuid;
 	}
-
+	
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+	
 	public List getCanonicalCourses() {
-		// TODO Auto-generated method stub
-		return null;
+		return canonicalCourseUuidList;
+	}
+	public Set getCanonicalCourseSet() {
+		return canonicalCourseUuidSet;
+	}
+	
+	public void setCanonicalCourseSet(Set set) {
+		this.canonicalCourseUuidSet = set;
+		canonicalCourseUuidList = new ArrayList();
+		Iterator i= set.iterator();
+		while (i.hasNext()){
+			String e = (String)i.next();
+			canonicalCourseUuidList.add(e);
+		}
 	}
 
 	public void addCanonicalCourse(String canonicalCourseUuid) {
-		// TODO Auto-generated method stub
-
+		if (canonicalCourseUuidList == null)
+			canonicalCourseUuidList = new ArrayList();
+		canonicalCourseUuidList.add(canonicalCourseUuid);
 	}
 
 	public void removeCanonicalCourse(String canonicalCourseUuid) {
-		// TODO Auto-generated method stub
-
+		if (canonicalCourseUuidList != null)
+    		canonicalCourseUuidList.remove(canonicalCourseUuid);
 	}
-
+	
 	public String getCreatedBy() {
-		// TODO Auto-generated method stub
-		return null;
+		return createdBy;
 	}
 
 	public void setCreatedBy(String createdBy) {
-		// TODO Auto-generated method stub
-
+		this.createdBy = createdBy;
 	}
 
 	public Date getCreatedDate() {
-		// TODO Auto-generated method stub
-		return null;
+		return createdDate;
 	}
 
 	public void setCreatedDate(Date createdDate) {
-		// TODO Auto-generated method stub
-
+		this.createdDate = createdDate;
 	}
 
 	public String getLastModifiedBy() {
-		// TODO Auto-generated method stub
-		return null;
+		return lastModifiedBy;
 	}
 
 	public void setLastModifiedBy(String lastModifiedBy) {
-		// TODO Auto-generated method stub
-
+		this.lastModifiedBy = lastModifiedBy;
 	}
 
 	public Date getLastModifiedDate() {
-		// TODO Auto-generated method stub
-		return null;
+		return lastModifiedDate;
 	}
 
 	public void setLastModifiedDate(Date lastModifiedDate) {
-		// TODO Auto-generated method stub
-
+		this.lastModifiedDate = lastModifiedDate;
 	}
+    /**
+     * Implementation of the equals comparison on the basis of equality of the primary key values.
+     * @param rhs
+     * @return boolean
+     */
+    public boolean equals(Object rhs)
+    {
+        if (rhs == null)
+            return false;
+        if (! (rhs instanceof CourseSet))
+            return false;
+        CourseSet that = (CourseSet) rhs;
+        if (this.getCourseSetId() == null || that.getCourseSetId() == null)
+            return false;
+        return (this.getCourseSetId().equals(that.getCourseSetId()));
+    }
+
+    /**
+     * Implementation of the hashCode method conforming to the Bloch pattern with
+     * the exception of array properties (these are very unlikely primary key types).
+     * @return int
+     */
+    public int hashCode()
+    {
+        if (this.hashValue == 0)
+        {
+            int result = 17;
+            int courseSetIdValue = this.getCourseSetId() == null ? 0 : this.getCourseSetId().hashCode();
+            result = result * 37 + courseSetIdValue;
+            this.hashValue = result;
+        }
+        return this.hashValue;
+    }
 
 }

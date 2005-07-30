@@ -46,6 +46,8 @@ import java.util.Date;
  */
 public interface ParticipationRecord {
 
+	public Long getParticipationRecordId();
+
 	/**
 	 * Get the agent uuid of the participant.
 	 * 

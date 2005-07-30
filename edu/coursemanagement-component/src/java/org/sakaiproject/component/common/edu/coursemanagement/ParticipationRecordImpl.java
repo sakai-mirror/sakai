@@ -1,90 +1,148 @@
 package org.sakaiproject.component.common.edu.coursemanagement;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.sakaiproject.api.edu.coursemanagement.ParticipationRecord;
 import org.sakaiproject.api.edu.coursemanagement.ParticipationStatusType;
 
-public class ParticipationRecordImpl implements ParticipationRecord {
+public class ParticipationRecordImpl implements ParticipationRecord, Serializable  {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+ 
+	/** The cached hash code value for this instance.  Settting to 0 triggers re-calculation. */
+    private int hashValue = 0;
+
+    /** The composite primary key value. */
+    private Long participationRecordId;
+
+	private String agentUuid;
+	private String role;
+	private ParticipationStatusType status;
+	private String courseSectionUuid;
+	private String createdBy;
+	private Date createdDate;
+	private String lastModifiedBy;
+	private Date lastModifiedDate;
+
+    /**
+     * Return the simple primary key value that identifies this object.
+     * @return java.lang.Long
+     */
+    public Long getParticipationRecordId()
+    {
+        return participationRecordId;
+    }
+
+    /**
+     * Set the simple primary key value that identifies this object.
+     * @param participationRecordId
+     */
+    public void setParticipationRecordId(Long participationRecordId)
+    {
+        this.hashValue = 0;
+        this.participationRecordId = participationRecordId;
+    }
 
 	public String getAgent() {
-		// TODO Auto-generated method stub
-		return null;
+		return agentUuid;
 	}
 
 	public void setAgent(String agentUuid) {
-		// TODO Auto-generated method stub
-
+		this.agentUuid = agentUuid;
 	}
 
 	public String getRole() {
-		// TODO Auto-generated method stub
-		return null;
+		return role;
 	}
 
 	public void setRole(String role) {
-		// TODO Auto-generated method stub
-
+		this.role = role;
 	}
 
 	public ParticipationStatusType getParticipationStatusType() {
-		// TODO Auto-generated method stub
-		return null;
+		return status;
 	}
 
 	public void setParticipationStatusType(ParticipationStatusType status) {
-		// TODO Auto-generated method stub
-
+		this.status = status;
 	}
 
 	public String getCourseReference() {
-		// TODO Auto-generated method stub
-		return null;
+		return courseSectionUuid;
 	}
 
 	public void setCourseReference(String courseSectionUuid) {
-		// TODO Auto-generated method stub
-
+		this.courseSectionUuid = courseSectionUuid;
 	}
 
 	public String getCreatedBy() {
-		// TODO Auto-generated method stub
-		return null;
+		return createdBy;
 	}
 
 	public void setCreatedBy(String createdBy) {
-		// TODO Auto-generated method stub
-
+		this.createdBy = createdBy;
 	}
 
 	public Date getCreatedDate() {
-		// TODO Auto-generated method stub
-		return null;
+		return createdDate;
 	}
 
 	public void setCreatedDate(Date createdDate) {
-		// TODO Auto-generated method stub
-
+		this.createdDate = createdDate;
 	}
 
 	public String getLastModifiedBy() {
-		// TODO Auto-generated method stub
-		return null;
+		return lastModifiedBy;
 	}
 
 	public void setLastModifiedBy(String lastModifiedBy) {
-		// TODO Auto-generated method stub
-
+		this.lastModifiedBy = lastModifiedBy;
 	}
 
 	public Date getLastModifiedDate() {
-		// TODO Auto-generated method stub
-		return null;
+		return lastModifiedDate;
 	}
 
 	public void setLastModifiedDate(Date lastModifiedDate) {
-		// TODO Auto-generated method stub
-
+		this.lastModifiedDate = lastModifiedDate;
 	}
+
+	   /**
+     * Implementation of the equals comparison on the basis of equality of the primary key values.
+     * @param rhs
+     * @return boolean
+     */
+    public boolean equals(Object rhs)
+    {
+        if (rhs == null)
+            return false;
+        if (! (rhs instanceof ParticipationRecord))
+            return false;
+        ParticipationRecord that = (ParticipationRecord) rhs;
+        if (this.getParticipationRecordId() == null || that.getParticipationRecordId() == null)
+            return false;
+        return (this.getParticipationRecordId().equals(that.getParticipationRecordId()));
+    }
+
+    /**
+     * Implementation of the hashCode method conforming to the Bloch pattern with
+     * the exception of array properties (these are very unlikely primary key types).
+     * @return int
+     */
+    public int hashCode()
+    {
+        if (this.hashValue == 0)
+        {
+            int result = 17;
+            int participationRecordIdValue = this.getParticipationRecordId() == null ? 0 : this.getParticipationRecordId().hashCode();
+            result = result * 37 + participationRecordIdValue;
+            this.hashValue = result;
+        }
+        return this.hashValue;
+    }
 
 }

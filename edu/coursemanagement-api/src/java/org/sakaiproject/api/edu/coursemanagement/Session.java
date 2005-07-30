@@ -48,6 +48,8 @@ import java.util.Date;
  */
 public interface Session {
 
+	public Long getSessionId();
+
 	/**
 	 * Get the title of this term/session.
 	 * 
@@ -235,6 +237,5 @@ public interface Session {
 	 *
 	 *	@param last modified date
 	 */
-	public void setLastModifiedDate(Date lastModifiedDate);
-	
+	public void setLastModifiedDate(Date lastModifiedDate);	
 }

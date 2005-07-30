@@ -55,6 +55,9 @@ import java.util.List;
  */
 public interface CourseOffering
 {
+	String LEADER = "LEADER";
+
+	public Long getCourseOfferingId();
 
 	/**
 	 * Get the title of a course offering as it might appear in a course catalog.
@@ -96,7 +99,7 @@ public interface CourseOffering
 	 * 
 	 * @param courseNumber
 	 */
-	public String setOfferingNumber(String offeringNumber);
+	public void setOfferingNumber(String offeringNumber);
 
 	/**
 	 * Get the unique id of this course offering.
@@ -124,7 +127,9 @@ public interface CourseOffering
 	 * 
 	 * @return true if cross listed.
 	 */
-	public Boolean isCrossListed();
+	public boolean isCrossListed();
+	
+	public void setIsCrossListed(boolean isCrossListed);
 
 	/**
 	 * Get a list of equivalent course offering uuids. This is one way to represent cross listing in a set of courses.
@@ -237,7 +242,22 @@ public interface CourseOffering
 	 * 
 	 * @return aggregated list of enrollment records.
 	 */
-	public List getAggregatedEnrollment();
+	public List getEnrollmentRecords();
+
+	/**
+	 * Add an enrollment record for a student enrolled in this offering.
+	 * 
+	 * @param student
+	 *        enrollment record
+	 */
+	public void addEnrollmentRecord(EnrollmentRecord record);
+
+	/**
+	 * Remove the enrollment record of a student for this offering.
+	 * 
+	 * @param record
+	 */
+	public void removeEnrollmentRecord(EnrollmentRecord record);
 
 	/**
 	 * Get the entrollment type for this course. Since a course offering enrollment is always an aggregate, this will always return an EnrollmentType of aggregate.
@@ -353,6 +373,7 @@ public interface CourseOffering
 	 *	@param last modified date
 	 */
 	public void setLastModifiedDate(Date lastModifiedDate);
+
 	
 	
 }

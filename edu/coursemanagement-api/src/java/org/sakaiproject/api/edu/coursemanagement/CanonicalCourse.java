@@ -65,6 +65,8 @@ import java.util.List;
  */
 public interface CanonicalCourse {
 	
+	public Long getCanonicalCourseId();
+	
 	/**
 	 * Get the title of a canonical course as it might appear in a course catalog.
 	 * 
@@ -302,5 +304,6 @@ public interface CanonicalCourse {
 	 *	@param last modified date
 	 */
 	public void setLastModifiedDate(Date lastModifiedDate);
+
 	
 }
