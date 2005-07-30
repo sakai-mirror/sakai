@@ -8,27 +8,23 @@
 <!-- Created Thu Jul 28 22:45:54 EDT 2005                         -->
 <hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
 
-    <class name="CmCanonicalcoursetypeT" table="CM_CANONICALCOURSETYPE_T">
-        <id name="canonicalcoursetypeid" column="CANONICALCOURSETYPEID" type="java.lang.Long">
+    <class name="CanonicalCourseStatusTypeImpl" table="CM_CANONICALCOURSETYPE_T">
+        <id name="canonicalCourseStatusTypeId" column="CANONICALCOURSETYPEID" type="java.lang.Long">
             <generator class="native"/>
         </id>
  
-        <property name="authority" column="AUTHORITY" type="java.lang.String" />
-        <property name="domain" column="DOMAIN" type="java.lang.String" />
-        <property name="keyword" column="KEYWORD" type="java.lang.String" />
-        <property name="displayname" column="DISPLAYNAME" type="java.lang.String" />
+        <property name="authority" column="AUTHORITY" type="java.lang.String" not-null="true" />
+        <property name="domain" column="DOMAIN" type="java.lang.String" not-null="true" />
+        <property name="keyword" column="KEYWORD" type="java.lang.String"  not-null="true"/>
+        <property name="displayName" column="DISPLAYNAME" type="java.lang.String" />
         <property name="description" column="DESCRIPTION" type="java.lang.String" />
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="status" column="STATUS" type="java.lang.Byte"  not-null="true" />
-        <property name="lastmodifiedby" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
-        <property name="lastmodifieddate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
-        <property name="createdby" column="CREATEDBY" type="java.lang.String"  not-null="true" />
-        <property name="createddate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
  
-        <set name="cmCanonicalcourseTSet" inverse="true">
-            <key column="CANONICALCOURSETYPEID"/>
-            <one-to-many class="CmCanonicalcourseT"/>
-        </set>
-    </class>
+     </class>
     
 </hibernate-mapping>

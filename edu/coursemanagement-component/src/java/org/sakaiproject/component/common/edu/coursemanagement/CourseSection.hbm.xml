@@ -8,32 +8,32 @@
 <!-- Created Thu Jul 28 22:49:10 EDT 2005                         -->
 <hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
 
-    <class name="CmCoursesectionT" table="CM_COURSESECTION_T">
-        <id name="coursesectionid" column="COURSESECTIONID" type="java.lang.Long">
+    <class name="CourseSectionImpl" table="CM_COURSESECTION_T">
+        <id name="courseSectionId" column="COURSESECTIONID" type="java.lang.Long">
             <generator class="native"/>
         </id>
  
-        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
-        <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="true" />
+        <property name="title" column="TITLE" type="java.lang.String" />
+        <property name="description" column="DESCRIPTION" type="java.lang.String" />
         <property name="sectionnumber" column="SECTIONNUMBER" type="java.lang.String"  not-null="true" />
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
-        <property name="maximumstudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  not-null="true" />
-        <property name="enrollmentstatustypeid" column="ENROLLMENTSTATUSTYPEID" type="java.lang.Long"  not-null="true" />
-        <property name="courseofferinguuid" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
-        <property name="scheduleuuid" column="SCHEDULEUUID" type="java.lang.String"  not-null="true" />
-        <property name="createdlocally" column="CREATEDLOCALLY" type="java.lang.Byte"  not-null="true" />
-        <property name="holdingsection" column="HOLDINGSECTION" type="java.lang.Byte"  not-null="true" />
-        <property name="allowselfregistration" column="ALLOWSELFREGISTRATION" type="java.lang.Byte"  not-null="true" />
-        <property name="createdby" column="CREATEDBY" type="java.lang.String"  not-null="true" />
-        <property name="createddate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
-        <property name="lastmodifiedby" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
-        <property name="lastmodifieddate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  />
+        <property name="enrollmentStatusTypeId" column="ENROLLMENTSTATUSTYPEID" type="java.lang.Long" not-null="true" />
+        <property name="courseOfferingUuid" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
+        <property name="scheduleUuid" column="SCHEDULEUUID" type="java.lang.String"  />
+        <property name="createdLocally" column="CREATEDLOCALLY" type="java.lang.Byte" />
+        <property name="holdingSection" column="HOLDINGSECTION" type="java.lang.Byte" />
+        <property name="allowSelfRegistration" column="ALLOWSELFREGISTRATION" type="java.lang.Byte" />
+        <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
  
-        <many-to-one name="cmCoursesectionstatustypeT" column="COURSESECTIONSTATUSTYPEID" class="CmCoursesectionstatustypeT"  not-null="true" />
+        <many-to-one name="coursesectionStatusType" column="COURSESECTIONSTATUSTYPEID" class="CourseSectionStatusTypeImpl" />
  
-        <many-to-one name="cmCoursesectiontypeT" column="COURSESECTIONTYPEID" class="CmCoursesectiontypeT"  not-null="true" />
+        <many-to-one name="coursesectionType" column="COURSESECTIONTYPEID" class="CourseSectionTypeImpl" />
  
-        <many-to-one name="cmSessionT" column="SESSIONID" class="CmSessionT"  not-null="true" />
+        <many-to-one name="session" column="SESSIONID" class="SessionImpl" />
     </class>
     
 </hibernate-mapping>

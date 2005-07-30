@@ -5,26 +5,27 @@
 
 <!-- DO NOT EDIT: This is a generated file that is synchronized -->
 <!-- by MyEclipse Hibernate tool integration.                   -->
-<!-- Created Thu Jul 28 22:50:43 EDT 2005                         -->
+<!-- Created Thu Jul 28 22:49:43 EDT 2005                         -->
 <hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
 
-    <class name="EnrollmentRecordImpl" table="CM_ENROLLMENTRECORD_T">
-        <id name="enrollmentRecordId" column="ENROLLMENTRECORDID" type="java.lang.Long">
+    <class name="CourseSetImpl" table="CM_COURSESET_T">
+        <id name="courseSetId" column="COURSESETID" type="java.lang.Long">
             <generator class="native"/>
         </id>
- 
-        <property name="agent" column="AGENT" type="java.lang.String"  not-null="true" />
-        <property name="role" column="ROLE" type="java.lang.String"  />
-        <property name="credits" column="CREDITS" type="java.lang.String"  />
-        <property name="courseSectionUuid" column="COURSESECTIONUUID" type="java.lang.String"  not-null="true" />
+
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="false" />
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
         <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
- 
-        <many-to-one name="courseOffering" column="COURSEOFFERINGID" class="CourseOfferingImpl" />
- 
-        <many-to-one name="enrollmentStatusType" column="ENROLLMENTSTATUSTYPEID" class="EnrollmentStatusTypeImpl" />
+  
+     	<set name="canonicalCourseSet" table="CM_CANONICALCOURSE_T" cascade="all"
+           inverse="true">
+      		<key column="CANONICALCOURSEID"/>
+      		<one-to-many class="CanonicalCourseImpl"/>
+    	</set>
+
     </class>
     
 </hibernate-mapping>

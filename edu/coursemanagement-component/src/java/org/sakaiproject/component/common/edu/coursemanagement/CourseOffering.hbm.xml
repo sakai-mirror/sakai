@@ -8,35 +8,34 @@
 <!-- Created Thu Jul 28 22:47:37 EDT 2005                         -->
 <hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
 
-    <class name="CmCourseofferingT" table="CM_COURSEOFFERING_T">
-        <id name="courseofferingid" column="COURSEOFFERINGID" type="java.lang.Long">
+    <class name="CourseOfferingImpl" table="CM_COURSEOFFERING_T">
+        <id name="courseOfferingId" column="COURSEOFFERINGID" type="java.lang.Long">
             <generator class="native"/>
         </id>
  
-        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
-        <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="true" />
-        <property name="offeringnumber" column="OFFERINGNUMBER" type="java.lang.String"  not-null="true" />
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="false" />
+        <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="false" />
+        <property name="offeringNumber" column="OFFERINGNUMBER" type="java.lang.String"  not-null="true" />
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
-        <property name="iscrosslisted" column="ISCROSSLISTED" type="java.lang.Byte"  not-null="true" />
-        <property name="isprimary" column="ISPRIMARY" type="java.lang.Byte"  not-null="true" />
-        <property name="maximumstudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  not-null="true" />
-        <property name="canonicalcourseuuid" column="CANONICALCOURSEUUID" type="java.lang.String"  not-null="true" />
-        <property name="createdby" column="CREATEDBY" type="java.lang.String"  not-null="true" />
-        <property name="createddate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
-        <property name="lastmodifiedby" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
-        <property name="lastmodifieddate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="isCrossListed" column="ISCROSSLISTED" type="java.lang.Integer"  not-null="false" />
+        <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  not-null="false" />
+        <property name="canonicalCourseUuid" column="CANONICALCOURSEUUID" type="java.lang.String"  not-null="true" />
+        <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
  
-        <many-to-one name="cmCourseofferingstatustypeT" column="COURSEOFFERINGSTATUSTYPEID" class="CmCourseofferingstatustypeT"  not-null="true" />
+        <many-to-one name="courseOfferingStatusType" column="COURSEOFFERINGSTATUSTYPEID" class="CourseOfferingStatusTypeImpl"  />
  
-        <many-to-one name="cmCourseofferingtypeT" column="COURSEOFFERINGTYPEID" class="CmCourseofferingtypeT"  not-null="true" />
+        <many-to-one name="courseOfferingType" column="COURSEOFFERINGTYPEID" class="CourseOfferingTypeImpl" />
  
-        <many-to-one name="cmEnrollmenttypeT" column="ENROLLMENTTYPEID" class="CmEnrollmenttypeT"  not-null="true" />
+        <many-to-one name="enrollmentType" column="ENROLLMENTTYPEID" class="EnrollmentTypeImpl" />
  
-        <many-to-one name="cmSessionT" column="SESSION" class="CmSessionT"  not-null="true" />
+        <many-to-one name="session" column="SESSION"  class="SessionImpl" />
  
-        <set name="cmEnrollmentrecordTSet" inverse="true">
+        <set name="enrollmentRecordSet" cascade="all" inverse="true">
             <key column="COURSEOFFERINGID"/>
-            <one-to-many class="CmEnrollmentrecordT"/>
+            <one-to-many class="EnrollmentRecordImpl"/>
         </set>
     </class>
     

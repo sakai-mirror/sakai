@@ -8,17 +8,16 @@
 <!-- Created Thu Jul 28 22:52:18 EDT 2005                         -->
 <hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
 
-    <class name="CmEquivalentcoursesT" table="CM_EQUIVALENTCOURSES_T">
-        <id name="equivalentid" column="EQUIVALENTID" type="java.lang.Long">
+    <class name="EquivalentCourses" table="CM_EQUIVALENTCOURSES_T">
+        <id name="equivalentId" column="EQUIVALENTID" type="java.lang.Long">
             <generator class="native"/>
         </id>
+     <set name="canonicalCourseSet" table="CM_CANONICALCOURSE_T" cascade="all"
+      inverse="true">
+      <key column="CANONICALCOURSEID"/>
+      <one-to-many name="canonicalCourse" column="CANONICALCOURSEID" class="CanonicalCourseImpl"  />
+    </set>
  
-        <property name="canonicalcoursenumber" column="CANONICALCOURSENUMBER" type="java.lang.String"  not-null="true" />
-        <property name="primarycoursenumber" column="PRIMARYCOURSENUMBER" type="java.lang.String"  not-null="true" />
- 
-        <many-to-one name="cmCanonicalcourseT" column="CANONICALCOURSEID" class="CmCanonicalcourseT"  not-null="true" />
- 
-        <many-to-one name="cmCanonicalcourseT1" column="PRIMARYCOURSEID" class="CmCanonicalcourseT"  not-null="true" />
-    </class>
+     </class>
     
 </hibernate-mapping>

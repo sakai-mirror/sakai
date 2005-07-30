@@ -8,44 +8,35 @@
 <!-- Created Fri Jul 29 11:25:54 EDT 2005                         -->
 <hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
 
-    <class name="CmCanonicalcourseT" table="CM_CANONICALCOURSE_T">
-        <id name="canonicalcourseid" column="CANONICALCOURSEID" type="java.lang.Long">
+    <class name="CanonicalCourseImpl" table="CM_CANONICALCOURSE_T">
+        <id name="canonicalCourseId" column="CANONICALCOURSEID" type="java.lang.Long">
             <generator class="native"/>
         </id>
  
-        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
-        <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="true" />
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="false" />
+        <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="false" />
         <property name="coursenumber" column="COURSENUMBER" type="java.lang.String"  not-null="true" />
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
-        <property name="defaultcredits" column="DEFAULTCREDITS" type="java.lang.String"  not-null="true" />
-        <property name="parentid" column="PARENTID" type="java.lang.String"  not-null="true" />
-        <property name="topics" column="TOPICS" type="java.lang.String"  not-null="true" />
-        <property name="createdby" column="CREATEDBY" type="java.lang.String"  not-null="true" />
-        <property name="createddate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
-        <property name="lastmodifiedby" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
-        <property name="lastmodifieddate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="defaultCredits" column="DEFAULTCREDITS" type="java.lang.String"  not-null="false" />
+        <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
+        <property name="topics" column="TOPICS" type="java.lang.String"  not-null="false" />
+        <property name="prerequisite" column="PREREQUISITE" type="java.lang.String"  not-null="false" />
+        <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
  
-        <many-to-one name="cmCanonicalcoursetypeT" column="CANONICALCOURSETYPEID" class="CmCanonicalcoursetypeT"  not-null="true" />
+        <many-to-one name="canonicalCourseStatusType" column="CANONICALCOURSESTATUSTYPEID" class="CanonicalCourseStatusTypeImpl"  not-null="true" />
  
-        <set name="cmCoursesetmapTSet" inverse="true">
+        <set name="courseSetSet"  cascade="all" inverse="true">
             <key column="CANONICALCOURSEID"/>
-            <one-to-many class="CmCoursesetmapT"/>
+            <one-to-many class="CourseSetImpl"/>
         </set>
  
-        <set name="cmEquivalentcoursesTSet" inverse="true">
+        <set name="equivalentCourseSet" cascade="all" inverse="true">
             <key column="CANONICALCOURSEID"/>
-            <one-to-many class="CmEquivalentcoursesT"/>
+            <one-to-many class="CanonicalCourseImpl"/>
         </set>
- 
-        <set name="cmEquivalentcoursesT1Set" inverse="true">
-            <key column="PRIMARYCOURSEID"/>
-            <one-to-many class="CmEquivalentcoursesT"/>
-        </set>
- 
-        <set name="cmPrerequisiteTSet" inverse="true">
-            <key column="CANONICALCOURSEID"/>
-            <one-to-many class="CmPrerequisiteT"/>
-        </set>
-    </class>
+     </class>
     
 </hibernate-mapping>
