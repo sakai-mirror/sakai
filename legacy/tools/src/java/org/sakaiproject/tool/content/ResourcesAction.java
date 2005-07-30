@@ -832,7 +832,8 @@ extends VelocityPortletPaneledAction
 			
 			if(atHome)
 			{
-				Map othersites = getContentCollections();
+				Map othersites = CollectionUtil.getCollectionMap();
+				// getContentCollections();
 				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
 				{
