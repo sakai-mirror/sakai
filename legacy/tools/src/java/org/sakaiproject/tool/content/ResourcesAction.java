@@ -25,7 +25,6 @@
 // package
 package org.sakaiproject.tool.content;
 
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -35,7 +34,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -61,9 +59,7 @@ import org.sakaiproject.cheftool.RunData;
 import org.sakaiproject.cheftool.VelocityPortlet;
 import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
 import org.sakaiproject.cheftool.menu.Menu;
-import org.sakaiproject.cheftool.menu.MenuDivider;
 import org.sakaiproject.cheftool.menu.MenuEntry;
-import org.sakaiproject.cheftool.menu.MenuItem;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -134,8 +130,9 @@ extends VelocityPortletPaneledAction
 	private static final String FILE_UPLOAD_MAX_SIZE = "file_upload_max_size";
 	
 	/** portlet configuration parameter values**/
-	private static final String RESOURCES_MODE_RESOURCES = "resources";
-	private static final String RESOURCES_MODE_DROPBOX = "dropbox";
+	public static final String RESOURCES_MODE_RESOURCES = "resources";
+	public static final String RESOURCES_MODE_DROPBOX = "dropbox";
+	public static final String RESOURCES_MODE_HELPER = "helper";
 	
 	/** opened collection list */
 	private static final String EXPANDED_COLLECTIONS = "expanded_collections";
@@ -173,8 +170,8 @@ extends VelocityPortletPaneledAction
 	/** The content hosting service in the State. */
 	private static final String STATE_CONTENT_SERVICE = "resources.content_service";
 
-	/** The resources or dropbox mode. */
-	private static final String STATE_RESOURCES_MODE = "resources.resources_mode";
+	/** The resources, helper or dropbox mode. */
+	public static final String STATE_RESOURCES_MODE = "resources.resources_mode";
 
 	/** The content type image lookup service in the State. */
 	private static final String STATE_CONTENT_TYPE_IMAGE_SERVICE = "resources.content_type_image_service";
@@ -227,111 +224,6 @@ extends VelocityPortletPaneledAction
 	/** The root of the navigation breadcrumbs for a folder, either the home or another site the user belongs to */
 	private static final String STATE_NAVIGATION_ROOT = "resources.navigation_root";
 
-	/************** the add file context *****************************************/
-	
-	/** The add file number */
-	private static final String STATE_ADD_FILE_NUMBER = "resources.add_file_number";
-
-	/** The add file full name, including the OS specific path info */
-	private static final String STATE_ADD_FILE_OS_NAME = "resources.add_file_os_name";
-
-	/** The add file title */
-	private static final String STATE_ADD_FILE_TITLE = "resources.add_file_title";
-
-	/** The id of the folder to which the file is to be added */
-	private static final String STATE_ADD_FILE_COLLECTION_ID = "resources.add_file_collection";
-
-	/** The add file content: vector of byte[] */
-	private static final String STATE_ADD_FILE_CONTENT = "resources.add_file_content";
-
-	/** The add file content type */
-	private static final String STATE_ADD_FILE_CONTENT_TYPE = "resources.add_file_content_type";
-
-	/** The add file copyright */
-	private static final String STATE_ADD_FILE_COPYRIGHT = "resources.add_file_copyright";
-
-	/** The add file new copyright */
-	private static final String STATE_ADD_FILE_NEW_COPYRIGHT = "resources.add_file_new_copyright";
-	
-	/** Show a copyright alert or not when opening the file */
-	private static final String STATE_ADD_FILE_COPYRIGHT_ALERT = "resources.add_file_copyright_alert";
-
-	/** The add file description */
-	private static final String STATE_ADD_FILE_DESCRIPTION = "resources.add_file_description";
-	
-	/** The add file pubview */
-	private static final String STATE_ADD_FILE_PUBVIEW = "resources.add_file_pubview";
-	
-
-	/************** the add folder context *****************************************/
-
-	/** The add folder number */
-	private static final String STATE_ADD_FOLDER_NUMBER = "resources.add_folder_number";
-
-	/** The add folder title */
-	private static final String STATE_ADD_FOLDER_TITLE = "resources.add_folder_title";
-
-	/** The folder to which the folder is to be added */
-	private static final String STATE_ADD_FOLDER_COLLECTION_ID = "resources.add_folder_collection";
-
-	/** The add folder description */
-	private static final String STATE_ADD_FOLDER_DESCRIPTION = "resources.add_folder_description";
-
-	/** The add folder copyright */
-	private static final String STATE_ADD_FOLDER_COPYRIGHT = "resources.add_folder_copyright";
-	
-	/** The add folder pubview */
-	private static final String STATE_ADD_FOLDER_PUBVIEW = "resources.add_folder_pubview";
-
-	/************** the add document context *****************************************/
-
-	/** The add document content */
-	private static final String STATE_ADD_DOCUMENT_CONTENT = "resources.add_document_content";
-
-	/** The add document copyright */
-	private static final String STATE_ADD_DOCUMENT_COPYRIGHT = "resources.add_document_copyright";
-	
-	/** The add document copyright alert */
-	private static final String STATE_ADD_DOCUMENT_COPYRIGHT_ALERT = "resources.add_document_copyright_alert";
-
-	/** The add document description */
-	private static final String STATE_ADD_DOCUMENT_DESCRIPTION = "resources.add_document_description";
-
-	/** The add document new copyright */
-	private static final String STATE_ADD_DOCUMENT_NEW_COPYRIGHT = "resources.add_document_new_copyright";
-
-	/** The add document title*/
-	private static final String STATE_ADD_DOCUMENT_TITLE = "resources.add_document_title";
-	
-	/** The add document pubview */
-	private static final String STATE_ADD_DOCUMENT_PUBVIEW = "resources.add_document_pubview";
-
-	/************** the add URL context *****************************************/
-
-	/** The add URL number */
-	private static final String STATE_ADD_URL_NUMBER = "resources.add_url_number";
-
-	/** The add URL copyright*/
-	private static final String STATE_ADD_URL_COPYRIGHT = "resources.add_url_copyright";
-	
-	/** The add URL copyright alert*/
-	private static final String STATE_ADD_URL_COPYRIGHT_ALERT = "resources.add_url_copyright_alert";
-
-	/** The add URL description */
-	private static final String STATE_ADD_URL_DESCRIPTION = "resources.add_url_description";
-
-	/** The add URL new copyright */
-	private static final String STATE_ADD_URL_NEW_COPYRIGHT = "resources.add_url_new_copyright";
-
-	/** The add URL title */
-	private static final String STATE_ADD_URL_TITLE = "resources.add_url_title";
-
-	/** The add URL URL */
-	private static final String STATE_ADD_URL_URL = "resources.add_url_url";
-
-	/** The add url pubview */
-	private static final String STATE_ADD_URL_PUBVIEW = "resources.add_url_pubview";
-	
 	/************** the more context *****************************************/
 
 	/** The more id */
@@ -391,6 +283,12 @@ extends VelocityPortletPaneledAction
 	
 	private static final String INTENT_REVISE_FILE = "revise";
 	private static final String INTENT_REPLACE_FILE = "replace";
+	
+	/************** the helper context *****************************************/
+
+	/** The name of the state attribute containing a list of new items to be attached */
+	private static final String STATE_HELPER_NEW_ITEMS = "resources.helper_new_items";
+	
 
 	/************** the delete context *****************************************/
 
@@ -440,45 +338,30 @@ extends VelocityPortletPaneledAction
 	private static final String MODE_EDIT = "edit";
 	private static final String MODE_DAV = "webdav";
 	private static final String MODE_CREATE = "create";
-
-	private static final String MODE_BROWSE = "show";
-	private static final String MODE_ADD_ITEM = "add";
-	private static final String MODE_ADD_FILE_BASIC = "addFileBasic";
-	private static final String MODE_ADD_FILE_OPTIONS = "addFileOptions";
-	private static final String MODE_ADD_FOLDER = "addFolder";
-	private static final String MODE_ADD_URL = "addURL";
-	private static final String MODE_ADD_DOCUMENT_PLAINTEXT = "addSimpleText";
-	private static final String MODE_ADD_DOCUMENT_HTML = "addHTMLDocument";
-	private static final String MODE_DElETE_CONFIRM = "deleteConfirm";
+	public  static final String MODE_HELPER = "helper";
+	private static final String MODE_DELETE_CONFIRM = "deleteConfirm";
 	private static final String MODE_MORE = "more";
 	private static final String MODE_PROPERTIES = "properties";
 	private static final String MODE_REPLACE = "replace";
-	private static final String MODE_REVISE_DOCUMENT = "reviseSimpleText";
-	private static final String MODE_DELETE_CONFIRM = "deleteConfirm";
 	private static final String MODE_SHOW_COPYRIGHT_ALERT = "showcopyrightalert";
 
+	/** modes for attachment helper */
+	public static final String MODE_ATTACHMENT_SELECT = "resources.attachment_select";
+	public static final String MODE_ATTACHMENT_CREATE = "resources.attachment_create";
+	public static final String MODE_ATTACHMENT_CONFIRM = "resources.attachment_confirm";
+	public static final String MODE_ATTACHMENT_DONE = "resources.attachment_done";
+	
 	/** vm files for each mode. */
-	private static final String TEMPLATE_LIST = "_list";
-	private static final String TEMPLATE_EDIT = "_edit";
-	private static final String TEMPLATE_CREATE = "_create";
-	private static final String TEMPLATE_DAV = "_webdav";
+	private static final String TEMPLATE_LIST = "content/chef_resources_list";
+	private static final String TEMPLATE_EDIT = "content/chef_resources_edit";
+	private static final String TEMPLATE_CREATE = "content/chef_resources_create";
+	private static final String TEMPLATE_DAV = "content/chef_resources_webdav";
+	private static final String TEMPLATE_SELECT = "content/chef_resources_select";
 
-	private static final String TEMPLATE_MORE = "_more";
-	private static final String TEMPLATE_DELETE_CONFIRM = "_deleteConfirm";
-
-	// obsolete ?
-	private static final String TEMPLATE_ADD_FILE_BASIC = "_addFileBasic";
-	private static final String TEMPLATE_ADD_FOLDER = "_addFolderBasic";
-	private static final String TEMPLATE_ADD_DOCUMENT_PLAINTEXT = "_addTextDocument";//"_addSimpleText";
-	private static final String TEMPLATE_ADD_DOCUMENT_HTML = "_addHTMLDocument";
-	private static final String TEMPLATE_ADD_URL = "_addURLBasic";
-
-	// obsolete ?
-	private static final String TEMPLATE_BROWSE = "_show";
-	private static final String TEMPLATE_ADD_ITEM = "_addItem";
-	private static final String TEMPLATE_ADD_FILE_OPTIONS = "_addFileOptions";
-	private static final String TEMPLATE_PROPERTIES = "_properties";
-	private static final String TEMPLATE_REPLACE = "_replace";
+	private static final String TEMPLATE_MORE = "content/chef_resources_more";
+	private static final String TEMPLATE_DELETE_CONFIRM = "content/chef_resources_deleteConfirm";
+	private static final String TEMPLATE_PROPERTIES = "content/chef_resources_properties";
+	// private static final String TEMPLATE_REPLACE = "_replace";
 	
 	/** the site title */
 	private static final String STATE_SITE_TITLE = "site_title";
@@ -497,7 +380,7 @@ extends VelocityPortletPaneledAction
 	private static final String COPYRIGHT_SELF_COPYRIGHT = rb.getString("cpright2");
 	private static final String COPYRIGHT_NEW_COPYRIGHT = rb.getString("cpright3");
 	private static final String COPYRIGHT_ALERT_URL = ServerConfigurationService.getAccessUrl() + COPYRIGHT_PATH;
-	
+
 	/**
 	* Build the context for normal display
 	*/
@@ -536,17 +419,7 @@ extends VelocityPortletPaneledAction
 		// get the mode
 		String mode = (String) state.getAttribute (STATE_MODE);
 
-		if (mode.equals (MODE_BROWSE))
-		{
-//			// enable the observer when inside the list view
-//			ContentObservingCourier o = (ContentObservingCourier) state.getAttribute(STATE_OBSERVER);
-//			o.setDeliveryId(clientWindowId(state, portlet.getID()));
-//			o.enable();	
-			
-			// build the context for the browse show
-			template = buildBrowseContext (portlet, context, data, state);
-		}
-		else if (mode.equals (MODE_LIST))
+		if (mode.equals (MODE_LIST))
 		{
 //			// enable the observer when inside the list view
 //			ContentObservingCourier o = (ContentObservingCourier) state.getAttribute(STATE_OBSERVER);
@@ -555,6 +428,16 @@ extends VelocityPortletPaneledAction
 			
 			// build the context for add item
 			template = buildListContext (portlet, context, data, state);
+		}
+		else if (mode.equals (MODE_HELPER))
+		{
+//			// enable the observer when inside the list view
+//			ContentObservingCourier o = (ContentObservingCourier) state.getAttribute(STATE_OBSERVER);
+//			o.setDeliveryId(clientWindowId(state, portlet.getID()));
+//			o.enable();	
+			
+			// build the context for add item
+			template = buildHelperContext (portlet, context, data, state);
 		}
 		else if (mode.equals (MODE_CREATE))
 		{
@@ -565,54 +448,6 @@ extends VelocityPortletPaneledAction
 			
 			// build the context for add item
 			template = buildCreateContext (portlet, context, data, state);
-		}
-		else if (mode.equals (MODE_ADD_ITEM))
-		{
-//			// disable the observer when not inside the list view
-//			((ContentObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
-			
-			// build the context for add item
-			template = buildAddItemContext (portlet, context, data, state);
-		}
-		else if (mode.equals (MODE_ADD_FILE_BASIC))
-		{
-//			// disable the observer when not inside the list view
-//			((ContentObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
-			
-			// build the context for the basic step of adding file
-			template = buildAddFileBasicContext (portlet, context, data, state);
-		}
-		else if (mode.equals (MODE_ADD_FILE_OPTIONS))
-		{
-//			// disable the observer when not inside the list view
-//			((ContentObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
-			
-			// build the context for the advanced step of adding file
-			template = buildAddFileOptionsContext (portlet, context, data, state);
-		}
-		else if (mode.equals (MODE_ADD_FOLDER))
-		{
-//			// disable the observer when not inside the list view
-//			((ContentObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
-			
-			// build the context for the basic step of adding folder
-			template = buildAddFolderContext (portlet, context, data, state);
-		}
-		else if (mode.equals (MODE_ADD_DOCUMENT_PLAINTEXT))
-		{
-//			// disable the observer when not inside the list view
-//			((ContentObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
-			
-			// build the context for the basic step of adding document
-			template = buildAddDocumentPlaintextContext (portlet, context, data, state);
-		}
-		else if (mode.equals (MODE_ADD_DOCUMENT_HTML))
-		{
-//			// disable the observer when not inside the list view
-//			((ContentObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
-			
-			// build the context for the basic step of adding document
-			template = buildAddDocumentHtmlContext (portlet, context, data, state);
 		}
 		else if (mode.equals (MODE_DELETE_CONFIRM))
 		{
@@ -645,22 +480,6 @@ extends VelocityPortletPaneledAction
 			
 			// build the context to display the property list
 			template = buildEditContext (portlet, context, data, state);
-		}
-		else if (mode.equals (MODE_REPLACE))
-		{
-//			// disable the observer when not inside the list view
-//			((ContentObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
-			
-			// build the context to display the file replacing interface
-			template = buildReplaceContext (portlet, context, data, state);
-		}
-		else if (mode.equals (MODE_ADD_URL))
-		{
-//			// disable the observer when not inside the list view
-//			((ContentObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
-			
-			// build the context of adding Urls
-			template = buildAddUrlContext (portlet, context, data, state);
 		}
 		else if (mode.equals (MODE_OPTIONS))
 		{
@@ -705,35 +524,6 @@ extends VelocityPortletPaneledAction
 		boolean inMyWorkspace = SiteService.isUserSite(PortalService.getCurrentSiteId());
 		context.put("inMyWorkspace", Boolean.toString(inMyWorkspace));
 			
-		/*
-		// user
-		String userId = UserDirectoryService.getCurrentUser().getId();
-		Set realms = RealmService.unlockRealms(userId, "content.read");
-		Iterator realmIt = realms.iterator();
-		while(realmIt.hasNext())
-		{
-			String realmId = (String) realmIt.next();
-			try
-			{
-				Realm realm = RealmService.getRealm(realmId);
-				String ref = realm.getReference();
-				String collId = ContentHostingService.getSiteCollection(ref);
-				ContentCollection collection = ContentHostingService.getCollection(collId);
-				if(collection != null)
-				{
-				}
-			}
-			catch(IdUnusedException e)
-			{
-			}
-			catch(PermissionException e)
-			{
-			}
-			catch(TypeException e)
-			{
-			}
-		}
-		*/
 		boolean atHome = false;
 
 		boolean dropboxMode = ((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX);
@@ -898,16 +688,230 @@ extends VelocityPortletPaneledAction
 		justDelivered(state);
 
 		// pick the "show" template based on the standard template name
-		String template = (String) getContext(data).get("template");
+		// String template = (String) getContext(data).get("template");
 	
-		return template + TEMPLATE_LIST;
+		return TEMPLATE_LIST;
 		
 	}	// buildListContext
 
 	/**
+	* Build the context for the helper view
+	*/
+	public static String buildHelperContext (	VelocityPortlet portlet,
+										Context context,
+										RunData data,
+										SessionState state)
+	{
+		System.out.println(" ----> buildHelperContext " + data.getParameters().getPath());
+		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+		
+		String template = null;
+		if(MODE_ATTACHMENT_SELECT.equals(helper_mode))
+		{
+			template = buildSelectAttachmentContext(portlet, context, data, state);
+		}
+		else if(MODE_ATTACHMENT_CREATE.equals(helper_mode))
+		{
+			template = buildCreateContext(portlet, context, data, state);
+		}
+		else if(MODE_ATTACHMENT_CONFIRM.equals(helper_mode))
+		{
+			template = buildSelectAttachmentContext(portlet, context, data, state);
+		}
+		else if(MODE_ATTACHMENT_DONE.equals(helper_mode))
+		{
+			template = buildSelectAttachmentContext(portlet, context, data, state);
+		}
+		else
+		{
+			
+		}
+		return template;
+	}
+	
+	/**
+	* Build the context for the helper view
+	*/
+	public static String buildSelectAttachmentContext (	VelocityPortlet portlet,
+										Context context,
+										RunData data,
+										SessionState state)
+	{
+		System.out.println(" ----> buildSelectAttachmentContext " + data.getParameters().getPath());
+		context.put("tlang",rb);
+		
+		initStateAttributes(state, portlet);
+		
+		state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
+		
+		
+		
+		List new_items = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+		if(new_items == null)
+		{
+			new_items = new Vector();
+			state.setAttribute(STATE_HELPER_NEW_ITEMS, new_items);
+		}
+		context.put("attached", new_items);
+		
+		// find the ContentTypeImage service
+		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
+		
+		context.put("TYPE_FOLDER", TYPE_FOLDER);
+
+		// find the ContentHosting service
+		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
+		// context.put ("service", contentService);
+		
+		boolean inMyWorkspace = SiteService.isUserSite(PortalService.getCurrentSiteId());
+		// context.put("inMyWorkspace", Boolean.toString(inMyWorkspace));
+			
+		boolean atHome = false;
+
+		boolean dropboxMode = ((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX);
+		
+		// make sure the channedId is set
+		String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
+		context.put ("collectionId", collectionId);
+		String navRoot = (String) state.getAttribute(STATE_NAVIGATION_ROOT);
+		String homeCollectionId = (String) state.getAttribute(STATE_HOME_COLLECTION_ID);
+		
+		String siteTitle = (String) state.getAttribute (STATE_SITE_TITLE);
+		if (collectionId.equals(homeCollectionId))
+		{
+			atHome = true;
+			//context.put ("collectionDisplayName", state.getAttribute (STATE_HOME_COLLECTION_DISPLAY_NAME));
+		}
+		else
+		{
+			/*
+			// should be not PermissionException thrown at this time, when the user can successfully navigate to this collection
+			try
+			{
+				context.put("collectionDisplayName", contentService.getCollection(collectionId).getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME));
+			}
+			catch (IdUnusedException e){}
+			catch (TypeException e) {}
+			catch (PermissionException e) {}
+			*/
+		}
+
+		List cPath = getCollectionPath(state);
+		context.put ("collectionPath", cPath);
+
+		String testCollection = collectionId + "test/";
+		String testResource = collectionId + "test";
+
+		// set the sort values
+		String sortedBy = (String) state.getAttribute (STATE_SORT_BY);
+		String sortedAsc = (String) state.getAttribute (STATE_SORT_ASC);
+		context.put ("currentSortedBy", sortedBy);
+		context.put ("currentSortAsc", sortedAsc);
+		context.put("TRUE", Boolean.TRUE.toString());
+		
+		try
+		{
+			contentService.checkCollection (collectionId);
+			// context.put ("collectionFlag", Boolean.TRUE.toString());
+
+			context.put("expandallflag", state.getAttribute(STATE_EXPAND_ALL_FLAG));
+
+			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+			ContentCollection coll = contentService.getCollection(collectionId);
+			expandedCollections.put(collectionId, coll);
+			
+			state.removeAttribute(STATE_PASTE_ALLOWED_FLAG);
+			
+			List roots = new Vector();
+			List members = getBrowseItems(collectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, navRoot.equals(homeCollectionId), state);
+			if(members != null && members.size() > 0)
+			{
+				BrowseItem root = (BrowseItem) members.remove(0);
+				if(atHome && dropboxMode)
+				{
+					root.setName(siteTitle + " " + rb.getString("gen.drop"));
+				}
+				else if(atHome)
+				{
+					root.setName(siteTitle + " " + rb.getString("gen.reso"));
+				}
+				context.put("site", root);
+				root.addMembers(members);
+				roots.add(root);
+			}
+			
+			if(atHome)
+			{
+				Map othersites = getContentCollections();
+				Iterator siteIt = othersites.keySet().iterator();
+				while(siteIt.hasNext())
+				{
+					String collId = (String) siteIt.next();
+					if(! collectionId.equals(collId))
+					{
+						String displayName = (String) othersites.get(collId);
+	
+						members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+						if(members != null && members.size() > 0)
+						{
+							BrowseItem root = (BrowseItem) members.remove(0);
+							root.addMembers(members);
+							root.setName(displayName);
+							roots.add(root);
+						}
+					}
+				}
+
+			}
+			context.put ("roots", roots);
+			// context.put ("root", root);
+			context.put("expandedCollections", expandedCollections);
+			state.setAttribute(EXPANDED_COLLECTIONS, expandedCollections);
+		}
+		catch (IdUnusedException e)
+		{
+			addAlert(state, rb.getString("cannotfind"));
+			context.put ("collectionFlag", Boolean.FALSE.toString());
+		}
+		catch(TypeException e)
+		{
+			// Log.error("chef", this + "TypeException.");
+			context.put ("collectionFlag", Boolean.FALSE.toString());
+		}
+		catch(PermissionException e)
+		{
+			addAlert(state, rb.getString("notpermis1"));
+			context.put ("collectionFlag", Boolean.FALSE.toString());
+		}
+		
+		context.put("homeCollection", (String) state.getAttribute (STATE_HOME_COLLECTION_ID));
+		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
+		context.put ("resourceProperties", contentService.newResourceProperties ());
+
+		try
+		{
+			// TODO: why 'site' here?
+			Site site = SiteService.getSite(PortalService.getCurrentSiteId());
+			context.put("siteTitle", site.getTitle());
+		}
+		catch (IdUnusedException e)
+		{
+			// Log.error("chef", this + e.toString());
+		}
+		
+		// inform the observing courier that we just updated the page...
+		// if there are pending requests to do so they can be cleared
+		// justDelivered(state);
+
+		// pick the "show" template based on the helper's template name
+		return TEMPLATE_SELECT;
+		
+	}	// buildHelperContext
+
+	/**
 	 * @return
 	 */
-	private Map getContentCollections() 
+	private static Map getContentCollections() 
 	{
 		Map collections = new Hashtable();
 		// get all of user's sites
@@ -981,199 +985,6 @@ extends VelocityPortletPaneledAction
 
 
 	/**
-	* Build the context for the normal view
-	*/
-	public String buildBrowseContext (	VelocityPortlet portlet,
-										Context context,
-										RunData data,
-										SessionState state)
-	{
-		context.put("tlang",rb);
-		context.put("expandedCollections", state.getAttribute(EXPANDED_COLLECTIONS));
-		
-		// find the ContentTypeImage service
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-
-		// find the ContentHosting service
-		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
-		context.put ("service", contentService);
-
-		boolean atHome = false;
-
-		// make sure the channedId is set
-		String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
-		String homeCollectionId = (String) state.getAttribute(STATE_HOME_COLLECTION_ID);
-		if (collectionId.equals(homeCollectionId))
-		{
-			atHome = true;
-			context.put ("collectionDisplayName", state.getAttribute (STATE_HOME_COLLECTION_DISPLAY_NAME));
-		}
-		else
-		{
-			// should be not PermissionException thrown at this time, when the user can successfully navigate to this collection
-			try
-			{
-				context.put("collectionDisplayName", contentService.getCollection(collectionId).getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME));
-			}
-			catch (IdUnusedException e){}
-			catch (TypeException e) {}
-			catch (PermissionException e) {}
-		}
-
-			
-		// current browse collection id
-		//String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
-		context.put ("collectionId", collectionId);
-
-		Vector collectionPath = new Vector ();
-		String currentCollectionId = collectionId;
-
-		while ((contentService.getContainingCollectionId (currentCollectionId).length ()>0) && (!currentCollectionId.equals (state.getAttribute (STATE_HOME_COLLECTION_ID))))
-		{
-			String containingId = contentService.getContainingCollectionId (currentCollectionId);
-			collectionPath.insertElementAt (containingId, 0);
-			currentCollectionId = containingId;
-		}
-
-		state.setAttribute (STATE_COLLECTION_PATH, collectionPath);
-		context.put ("collectionPath", collectionPath);
-
-		String testCollection = collectionId + "test/";
-		String testResource = collectionId + "test";
-
-		// set the sort values
-		String sortedBy = (String) state.getAttribute (STATE_SORT_BY);
-		String sortedAsc = (String) state.getAttribute (STATE_SORT_ASC);
-		context.put ("currentSortedBy", sortedBy);
-		context.put ("currentSortAsc", sortedAsc);
-
-		boolean allowAdd = (((contentService.allowAddCollection (testCollection))||(contentService.allowAddResource (testResource)))
-							&& ((contentService.allowGetProperties (testCollection))||(contentService.allowGetProperties (testResource))));
-		boolean allowReplace = (contentService.allowGetProperties (testResource) && (contentService.allowUpdateResource (testResource)));
-		boolean allowRevise = (contentService.allowGetProperties (testResource) && (contentService.allowUpdateResource (testResource)) && (contentService.allowAddProperty (testResource)));
-		boolean allowGetProperties = contentService.allowGetProperties (testResource);
-		boolean allowRemove = false;
-		
-		// does the folder contain any item?
-		boolean emptyFolder = true;
-		try
-		{
-			contentService.checkCollection (collectionId);
-			context.put ("collectionFlag", Boolean.TRUE.toString());
-
-			String cutFlag = (String) state.getAttribute (STATE_CUT_FLAG);
-			String copyFlag = (String) state.getAttribute (STATE_COPY_FLAG);
-			context.put ("cutFlag", cutFlag);
-			context.put ("copyFlag", copyFlag);
-			if (cutFlag.equals (Boolean.TRUE.toString()))
-			{
-				context.put ("cutItems", state.getAttribute (STATE_CUT_IDS));
-			}
-			if (copyFlag.equals (Boolean.TRUE.toString()))
-			{
-				context.put ("copiedItems", state.getAttribute (STATE_COPIED_IDS));
-			}
-
-			context.put ("selectallflag", state.getAttribute (STATE_SELECT_ALL_FLAG));
-			context.put("expandallflag", state.getAttribute(STATE_EXPAND_ALL_FLAG));
-
-			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
-			
-			List members = getShowMembers(collectionId, expandedCollections, sortedBy, sortedAsc, state);
-			context.put ("collectionMembers", members);
-			if (members.size()>0)
-			{
-				emptyFolder = false;
-			}
-			// iterate through the shown resource members and decide on the allowRemove value
-			for (int i = 0; (!allowRemove && i<members.size()); i++)	
-			{
-				Resource resource = (Resource) members.get(i);
-				boolean isCollection = false;
-				try {
-					isCollection = resource.getProperties().getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION);
-				} catch (EmptyException e1) {
-					// log as a warning. Treat as a resource.
-					if(Log.isWarnEnabled())
-					{
-						Log.warn("chef", this + "EmptyException for:"+resource.getId() + " "+ e1);
-					}     
-				}
-				String id = resource.getId();
-
-				if (isCollection)
-				{
-					if (ContentHostingService.allowRemoveCollection(id))
-					{
-						allowRemove = true;
-					}
-				}
-				else
-				{
-					if (ContentHostingService.allowRemoveResource(id))
-					{
-						allowRemove = true;
-					}
-				}
-			}
-			
-			buildMenu (portlet, context, data, state, allowAdd, allowRemove, allowReplace, allowRevise, emptyFolder, atHome);
-		}
-		catch (IdUnusedException e)
-		{
-			addAlert(state, rb.getString("cannotfind"));
-			context.put ("collectionFlag", Boolean.FALSE.toString());
-			buildMenu (portlet, context, data, state, allowAdd, allowRemove, allowReplace, allowRevise, emptyFolder, atHome);
-		}
-		catch(TypeException e)
-		{
-			Log.error("chef", this + "TypeException.");
-			context.put ("collectionFlag", Boolean.FALSE.toString());
-			buildMenu (portlet, context, data, state, false, false, false, false, emptyFolder, atHome);
-		}
-		catch(PermissionException e)
-		{
-			addAlert(state, rb.getString("notpermis1"));
-			context.put ("collectionFlag", Boolean.FALSE.toString());
-			buildMenu (portlet, context, data, state, false, false, false, false, emptyFolder, atHome);
-		}
-		
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			context.put("dropboxMode", Boolean.FALSE);
-		}
-		else if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-		{
-			// notshow the public option or notification when in dropbox mode
-			context.put("dropboxMode", Boolean.TRUE);
-		}
-		context.put("homeCollection", (String) state.getAttribute (STATE_HOME_COLLECTION_ID));
-		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
-		context.put ("resourceProperties", contentService.newResourceProperties ());
-
-		try
-		{
-			// TODO: why 'site' here?
-			Site site = SiteService.getSite(PortalService.getCurrentSiteId());
-			context.put("siteTitle", site.getTitle());
-		}
-		catch (IdUnusedException e)
-		{
-			// Log.error("chef", this + e.toString());
-		}
-		
-		// inform the observing courier that we just updated the page...
-		// if there are pending requests to do so they can be cleared
-		justDelivered(state);
-
-		// pick the "show" template based on the standard template name
-		String template = (String) getContext(data).get("template");
-	
-		return template + TEMPLATE_BROWSE;
-		
-	}	// buildBrowseContext
-
-	/**
 	* Build the context for add display
 	*/
 	public String buildWebdavContext (	VelocityPortlet portlet,
@@ -1195,308 +1006,9 @@ extends VelocityPortletPaneledAction
 		context.put ("dav_group", "/dav/group/");
 		context.put ("dav_user", "/dav/user/");
 
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_DAV;
+		return TEMPLATE_DAV;
 
 	}	// buildWebdavContext
-
-	/**
-	* Build the context for add display
-	*/
-	public String buildAddItemContext (	VelocityPortlet portlet,
-										Context context,
-										RunData data,
-										SessionState state)
-	{
-		context.put("tlang",rb);
-		context.put ("collectionId", (String)state.getAttribute (STATE_COLLECTION_ID) );
-
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_ADD_ITEM;
-
-	}	// buildAddItemContext
-
-	/**
-	* Build the context for basic add file display
-	*/
-	public String buildAddFileBasicContext (	VelocityPortlet portlet,
-											Context context,
-											RunData data,
-											SessionState state)
-	{
-		context.put("tlang",rb);
-		// find the ContentTypeImage service
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-		// get the file number for multiple file upload
-		Integer fileNumberInteger = (Integer) state.getAttribute (STATE_ADD_FILE_NUMBER);
-		context.put ("currentFileNumber", fileNumberInteger);
-		
-		// look for a failed upload, which leaves the /special/upload in the URL %%%
-		if (StringUtil.trimToNull(data.getParameters().getString("special")) != null)
-		{
-			if (fileNumberInteger.intValue() > 1)
-			{
-				addAlert(state, rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded1"));
-			}
-			else
-			{
-				addAlert(state, rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded2"));
-			}
-		}
-
-		context.put ("osNames", state.getAttribute (STATE_ADD_FILE_OS_NAME));
-		context.put ("titles", state.getAttribute (STATE_ADD_FILE_TITLE));
-		
-		//copyright
-		copyrightChoicesIntoContext(state, context);
-		context.put("copyrights", state.getAttribute (STATE_ADD_FILE_COPYRIGHT));
-		context.put("newcopyrights", state.getAttribute (STATE_ADD_FILE_NEW_COPYRIGHT));
-		context.put("copyrightAlerts", state.getAttribute(STATE_ADD_FILE_COPYRIGHT_ALERT));
-		
-		// moved from optional add file properties page
-		context.put ("descriptions", state.getAttribute (STATE_ADD_FILE_DESCRIPTION));
-		String currentCollectionId = (String)state.getAttribute (STATE_ADD_FILE_COLLECTION_ID);
-		context.put ("collectionId", currentCollectionId );
-
-		// find the ContentHosting service
-		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
-		Vector collectionPath = new Vector ();
-		while ((contentService.getContainingCollectionId (currentCollectionId).length ()>0) && (!currentCollectionId.equals (state.getAttribute (STATE_HOME_COLLECTION_ID))))
-		{
-			String containingId = contentService.getContainingCollectionId (currentCollectionId);
-			collectionPath.insertElementAt (containingId, 0);
-			currentCollectionId = containingId;
-		}
-		context.put ("collectionPath", collectionPath);
-		context.put ("unqualified_fields", state.getAttribute (STATE_UNQUALIFIED_INPUT_FIELD));
-		context.put ("service", state.getAttribute (STATE_CONTENT_SERVICE));
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-		
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			context.put("dropboxMode", Boolean.FALSE);
-			
-			// find out about pubview inheritance from parent folder
-			String collectionReference = ContentHostingService.getReference(currentCollectionId);
-			boolean pubviewset = getPubViewInheritance(collectionReference) || getPubView(collectionReference);
-			context.put("pubviewset", new Boolean(pubviewset));
-			if (!pubviewset)
-			{
-				// if the pub view is not inherited, we need to read the user input
-				context.put ("pubviews", state.getAttribute(STATE_ADD_FILE_PUBVIEW));
-			}
-		}
-		else if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-		{
-			// notshow the public option or notification when in dropbox mode
-			context.put("dropboxMode", Boolean.TRUE);
-		}
-		context.put("homeCollection", (String) state.getAttribute (STATE_HOME_COLLECTION_ID));
-		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
-		context.put ("resourceProperties", ContentHostingService.newResourceProperties ());
-		
-		context.put("maxUploadSize", state.getAttribute(FILE_UPLOAD_MAX_SIZE));
-		
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_ADD_FILE_BASIC;
-
-	}	// buildAddFileBasicContext
-
-	/**
-	* Build the context for adding file optional metadata display
-	*/
-	public String buildAddFileOptionsContext (	VelocityPortlet portlet,
-												Context context,
-												RunData data,
-												SessionState state)
-	{
-		context.put("tlang",rb);
-		// get the file number for multiple file upload
-		Integer fileNumberInteger = (Integer) state.getAttribute (STATE_ADD_FILE_NUMBER);
-		context.put ("fileNumber", fileNumberInteger);
-		context.put ("osNames", state.getAttribute (STATE_ADD_FILE_OS_NAME));
-		context.put ("titles", state.getAttribute (STATE_ADD_FILE_TITLE));
-		context.put ("descriptions", state.getAttribute (STATE_ADD_FILE_DESCRIPTION));
-		context.put ("copyrights", state.getAttribute (STATE_ADD_FILE_COPYRIGHT));
-		context.put ("newcopyrights", state.getAttribute (STATE_ADD_FILE_NEW_COPYRIGHT));
-		context.put ("collectionId", state.getAttribute (STATE_COLLECTION_ID));
-
-		context.put ("unqualified_fields", state.getAttribute (STATE_UNQUALIFIED_INPUT_FIELD));
-
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-		context.put ("service", state.getAttribute (STATE_CONTENT_SERVICE));
-
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_ADD_FILE_OPTIONS;
-
-	}	// buildAddFileOptionsContext
-
-	/**
-	* Build the context for basic add folder display
-	*/
-	public String buildAddFolderContext (	VelocityPortlet portlet,
-										Context context,
-										RunData data,
-										SessionState state)
-	{
-		context.put("tlang",rb);
-		// find the ContentTypeImage service
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-		Integer folderNumberInteger = (Integer) state.getAttribute (STATE_ADD_FOLDER_NUMBER);
-		context.put ("currentFolderNumber", folderNumberInteger);
-				
-		context.put ("titles", state.getAttribute (STATE_ADD_FOLDER_TITLE));
-		context.put ("descriptions", state.getAttribute (STATE_ADD_FOLDER_DESCRIPTION));
-		String folderId = (String)state.getAttribute (STATE_ADD_FOLDER_COLLECTION_ID);
-		context.put ("folderId", folderId);
-		
-		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
-		context.put("homeCollectionId", homeCollectionId);
-		List collectionPath = getCollectionPath(state);	
-		context.put ("collectionPath", collectionPath);
-
-		context.put ("unqualified_fields", state.getAttribute (STATE_UNQUALIFIED_INPUT_FIELD));
-
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-		context.put ("service", state.getAttribute (STATE_CONTENT_SERVICE));
-
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			context.put("dropboxMode", Boolean.FALSE);
-			
-			// find out about pubview inheritance from parent folder
-			String collectionReference = ContentHostingService.getReference(folderId);
-			boolean pubviewset = getPubViewInheritance(collectionReference) || getPubView(collectionReference);
-			context.put("pubviewset", new Boolean(pubviewset));
-			if (!pubviewset)
-			{
-				// if not inherited pub view, we need to read user input
-				context.put ("pubviews", state.getAttribute(STATE_ADD_FOLDER_PUBVIEW));
-			}
-		}
-		else if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-		{
-			// not show the public option or notification when in dropbox mode
-			context.put("dropboxMode", Boolean.TRUE);
-		}
-		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
-		context.put ("resourceProperties", ContentHostingService.newResourceProperties ());
-		
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_ADD_FOLDER;
-
-	}	// buildAddFolderContext
-
-	public String buildAddDocumentPlaintextContext (	VelocityPortlet portlet,
-			Context context,
-			RunData data,
-			SessionState state)
-	{
-		context.put("tlang",rb);
-		// find the ContentTypeImage service
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-		buildAddDocumentContext(portlet, context, data, state);
-		
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_ADD_DOCUMENT_PLAINTEXT;
-	}
-	
-	
-	public String buildAddDocumentHtmlContext (	VelocityPortlet portlet,
-			Context context,
-			RunData data,
-			SessionState state)
-	{
-		context.put("tlang",rb);
-		buildAddDocumentContext(portlet, context, data, state);
-		
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_ADD_DOCUMENT_HTML;
-	}
-	
-	/**
-	* Build the context for adding document display
-	*/
-	private void buildAddDocumentContext (	VelocityPortlet portlet,
-											Context context,
-											RunData data,
-											SessionState state)
-	{
-		context.put("tlang",rb);
-		// find the ContentTypeImage service
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-		String currentCollectionId = (String)state.getAttribute (STATE_ADD_FILE_COLLECTION_ID);
-		context.put ("collectionId", currentCollectionId );
-		// find the ContentHosting service
-		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
-		Vector collectionPath = new Vector ();
-		while ((contentService.getContainingCollectionId (currentCollectionId).length ()>0) && (!currentCollectionId.equals (state.getAttribute (STATE_HOME_COLLECTION_ID))))
-		{
-			String containingId = contentService.getContainingCollectionId (currentCollectionId);
-			collectionPath.insertElementAt (containingId, 0);
-			currentCollectionId = containingId;
-		}
-		context.put ("collectionPath", collectionPath);
-		context.put ("title", state.getAttribute (STATE_ADD_DOCUMENT_TITLE));
-		context.put ("description", state.getAttribute (STATE_ADD_DOCUMENT_DESCRIPTION));
-		context.put ("content", state.getAttribute (STATE_ADD_DOCUMENT_CONTENT));
-		
-		// copyright
-		copyrightChoicesIntoContext(state, context);
-		String copyright = StringUtil.trimToNull((String) state.getAttribute (STATE_ADD_DOCUMENT_COPYRIGHT));
-		if (copyright == null && state.getAttribute(DEFAULT_COPYRIGHT) != null)
-		{
-			copyright = (String) state.getAttribute(DEFAULT_COPYRIGHT);
-			state.setAttribute (STATE_ADD_DOCUMENT_COPYRIGHT, copyright);
-		}
-		context.put ("copyrightChoice", copyright);
-		String copyrightAlert = StringUtil.trimToNull((String) state.getAttribute (STATE_ADD_DOCUMENT_COPYRIGHT_ALERT));
-		if (copyrightAlert == null)
-		{
-			state.setAttribute (STATE_ADD_DOCUMENT_COPYRIGHT_ALERT, state.getAttribute(DEFAULT_COPYRIGHT_ALERT));
-			copyrightAlert = (String) state.getAttribute(DEFAULT_COPYRIGHT_ALERT);
-		}
-		if (copyrightAlert != null)
-		{
-			context.put ("copyrightAlert", copyrightAlert);
-		}
-		
-		if (state.getAttribute (STATE_ADD_DOCUMENT_NEW_COPYRIGHT) != null)
-		{
-			context.put ("newcopyright", state.getAttribute (STATE_ADD_DOCUMENT_NEW_COPYRIGHT));
-		}
-
-		context.put ("unqualified_fields", ((Vector) state.getAttribute (STATE_UNQUALIFIED_INPUT_FIELD)).get (1));
-
-		// find the ContentTypeImage service
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-		context.put ("service", state.getAttribute (STATE_CONTENT_SERVICE));
-
-		// not show the public option when in dropbox mode
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			context.put("dropboxMode", Boolean.FALSE);
-			
-			// find out about pubview inheritance from parent folder
-			String collectionReference = ContentHostingService.getReference(currentCollectionId);
-			boolean pubviewset = getPubViewInheritance(collectionReference) || getPubView(collectionReference);
-			context.put("pubviewset", new Boolean(pubviewset));
-			if (!pubviewset)
-			{
-				// if not inherited pub view, we need to read user input
-				context.put ("pubview", state.getAttribute(STATE_ADD_DOCUMENT_PUBVIEW));
-			}
-		}
-		else if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-		{
-			// not show the public option or notification when in dropbox mode
-			context.put("dropboxMode", Boolean.TRUE);
-		}
-		context.put("homeCollection", (String) state.getAttribute (STATE_HOME_COLLECTION_ID));
-		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
-		context.put ("resourceProperties", ContentHostingService.newResourceProperties ());
-		
-	}	// buildAddDocumentContext
 
 	/**
 	* Build the context for delete confirmation page
@@ -1546,8 +1058,8 @@ extends VelocityPortletPaneledAction
 		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
 		context.put ("resourceProperties", ContentHostingService.newResourceProperties ());
 
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_DELETE_CONFIRM;
+		// String template = (String) getContext(data).get("template");
+		return TEMPLATE_DELETE_CONFIRM;
 
 	}	// buildDeleteConfirmContext
 
@@ -1661,8 +1173,8 @@ extends VelocityPortletPaneledAction
 
 		metadataGroupsIntoContext(state, context);
 		
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_MORE;
+		// String template = (String) getContext(data).get("template");
+		return TEMPLATE_MORE;
 
 	}	// buildMoreContext
 
@@ -1809,8 +1321,8 @@ extends VelocityPortletPaneledAction
 		}
 		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
 		
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_PROPERTIES;
+		// String template = (String) getContext(data).get("template");
+		return TEMPLATE_PROPERTIES;
 
 	}	// buildPropertiesContext
 
@@ -1875,150 +1387,18 @@ extends VelocityPortletPaneledAction
 		}
 		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
 		
-		String template = (String) getContext(data).get("template");
+		// String template = (String) getContext(data).get("template");
 
-		return template + TEMPLATE_EDIT;
+		return TEMPLATE_EDIT;
 
 	}	// buildEditContext
 
 	/**
-	* Build the context to replace a file
-	*/
-	public String buildReplaceContext (	VelocityPortlet portlet,
-	Context context,
-	RunData data,
-	SessionState state)
-	{
-		context.put("tlang",rb);
-		int replaceItemNum = ((Vector) state.getAttribute (STATE_REPLACE_ID)).size ()-1;
-		// look for a failed upload, which leaves the /special/upload in the URL %%%
-		if (StringUtil.trimToNull(data.getParameters().getString("special")) != null)
-		{
-			if (replaceItemNum > 1)
-			{
-				addAlert(state, rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded1"));
-			}
-			else
-			{
-				addAlert(state, rb.getString("size") + " "  + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded2"));
-			}
-		}
-
-		context.put ("collectionId", (String)state.getAttribute (STATE_COLLECTION_ID) );
-		context.put ("collectionPath", state.getAttribute (STATE_COLLECTION_PATH));
-		context.put ("replaceItems", state.getAttribute (STATE_REPLACE_ID));
-		context.put ("replaceNumber", new Integer (replaceItemNum));
-		context.put ("osNames", state.getAttribute (STATE_REPLACE_OS_NAME));
-		context.put ("titles", state.getAttribute (STATE_REPLACE_TITLE));
-		context.put ("unqualified_fields", state.getAttribute (STATE_UNQUALIFIED_INPUT_FIELD));
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-
-		// find the ContentHosting service
-		org.sakaiproject.service.legacy.content.ContentHostingService service = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
-		context.put ("service", service);
-
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			context.put("dropboxMode", Boolean.FALSE);
-		}
-		else if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-		{
-			// notshow the public option or notification when in dropbox mode
-			context.put("dropboxMode", Boolean.TRUE);
-		}
-		context.put("homeCollection", (String) state.getAttribute (STATE_HOME_COLLECTION_ID));
-		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
-		context.put ("resourceProperties", ContentHostingService.newResourceProperties ());
-		
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_REPLACE;
-
-	}	// buildReplaceContext
-
-	/**
-	* Build the context for adding Urls
-	*/
-	public String buildAddUrlContext (VelocityPortlet portlet,
-												Context context,
-												RunData data,
-												SessionState state)
-	{
-		context.put("tlang",rb);
-		// find the ContentTypeImage service
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-		Integer UrlNumberInteger = (Integer)state.getAttribute (STATE_ADD_URL_NUMBER);
-		context.put ("currentUrlNumber", UrlNumberInteger);
-		
-		context.put ("urls", state.getAttribute (STATE_ADD_URL_URL));
-		context.put ("titles", state.getAttribute (STATE_ADD_URL_TITLE));
-		context.put ("descriptions", state.getAttribute (STATE_ADD_URL_DESCRIPTION));
-		
-		/*
-		copyrightChoicesIntoContext(state, context);
-		context.put("copyrights", state.getAttribute (STATE_ADD_URL_COPYRIGHT));
-		context.put("newcopyrights", state.getAttribute (STATE_ADD_URL_NEW_COPYRIGHT));
-		context.put("copyrightAlerts", state.getAttribute(STATE_ADD_URL_COPYRIGHT_ALERT));
-		*/
-		
-		context.put ("unqualified_fields", state.getAttribute (STATE_UNQUALIFIED_INPUT_FIELD));
-
-		// revise the document document
-		String currentCollectionId = (String)state.getAttribute (STATE_ADD_FILE_COLLECTION_ID);
-		context.put ("collectionId", currentCollectionId);
-				
-		// find the ContentHosting service
-		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
-		Vector collectionPath = new Vector ();
-		while ((contentService.getContainingCollectionId (currentCollectionId).length ()>0) && (!currentCollectionId.equals (state.getAttribute (STATE_HOME_COLLECTION_ID))))
-		{
-			String containingId = contentService.getContainingCollectionId (currentCollectionId);
-			collectionPath.insertElementAt (containingId, 0);
-			currentCollectionId = containingId;
-		}
-		context.put ("collectionPath", collectionPath);
-
-		// default copyright
-		String mycopyright = (String) state.getAttribute (STATE_MY_COPYRIGHT);
-
-		context.put ("service", state.getAttribute (STATE_CONTENT_SERVICE));
-
-		// find the ContentTypeImage service
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
-	
-		// not show the public option when in dropbox mode
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			context.put("dropboxMode", Boolean.FALSE);
-			
-			// find out about pubview inheritance from parent folder
-			String collectionReference = ContentHostingService.getReference(currentCollectionId);
-			boolean pubviewset = getPubViewInheritance(collectionReference) || getPubView(collectionReference);
-			context.put("pubviewset", new Boolean(pubviewset));
-			if (!pubviewset)
-			{
-				// if not inherited pub view, we need to read user input
-				context.put ("pubviews", state.getAttribute(STATE_ADD_URL_PUBVIEW));
-			}
-		}
-		else if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-		{
-			// not show the public option or notification when in dropbox mode
-			context.put("dropboxMode", Boolean.TRUE);
-		}
-		context.put("homeCollection", (String) state.getAttribute (STATE_HOME_COLLECTION_ID));
-		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
-		context.put ("resourceProperties", ContentHostingService.newResourceProperties ());
-
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_ADD_URL;
-
-	}	// buildAddUrlContext
-
-	/**
 	* Navigate in the resource hireachy
 	*/
-	public void doNavigate ( RunData data )
+	public static void doNavigate ( RunData data )
 	{
+		System.out.println(" ----> doNavigate " + data.getParameters().getPath());
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		if (state.getAttribute (STATE_SELECT_ALL_FLAG)!=null && state.getAttribute (STATE_SELECT_ALL_FLAG).equals (Boolean.TRUE.toString()))
@@ -2030,8 +1410,6 @@ extends VelocityPortletPaneledAction
 		{
 			state.setAttribute (STATE_EXPAND_ALL_FLAG, Boolean.FALSE.toString());
 		}
-
-		state.setAttribute (STATE_MODE, MODE_LIST);
 
 		String collectionId = data.getParameters().getString ("collectionId");
 		String navRoot = data.getParameters().getString("navRoot");
@@ -2067,6 +1445,16 @@ extends VelocityPortletPaneledAction
 			state.setAttribute(EXPANDED_COLLECTIONS, new HashMap());
 		}
 
+		String mode = (String) state.getAttribute(STATE_MODE);
+		if(MODE_HELPER.equals(mode))
+		{
+			state.setAttribute (STATE_MODE, MODE_LIST);
+		}
+		else
+		{
+			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		}
+
 	}	// doNavigate
 
 	/**
@@ -2078,14 +1466,13 @@ extends VelocityPortletPaneledAction
 
 		state.setAttribute (STATE_MODE, MODE_DAV);
 
-
 	}	// doShow_webdav
 	
 	/**
 	 * initiate creation of one or more resource items (file uploads, html docs, text docs, or urls -- not folders)
 	 * default type is file upload
 	 */
-	public void doCreate(RunData data)
+	public static void doCreate(RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -2108,8 +1495,16 @@ extends VelocityPortletPaneledAction
 		
 		String collectionId = params.getString ("collectionId");
 		state.setAttribute(STATE_CREATE_COLLECTION_ID, collectionId);
-		
-		state.setAttribute (STATE_MODE, MODE_CREATE);
+
+		String mode = (String) state.getAttribute(STATE_MODE);
+		if(MODE_HELPER.equals(mode))
+		{
+			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_CREATE);
+		}
+		else
+		{
+			state.setAttribute (STATE_MODE, MODE_CREATE);
+		} 
 		
 	}	// doCreate
 	
@@ -2117,7 +1512,7 @@ extends VelocityPortletPaneledAction
 	 * initiate creation of one or more resource items (file uploads, html docs, text docs, or urls -- not folders)
 	 * default type is file upload
 	 */
-	public void doCreateitem(RunData data)
+	public static void doCreateitem(RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -2125,12 +1520,20 @@ extends VelocityPortletPaneledAction
 		String itemType = params.getString("itemType");
 		String flow = params.getString("flow");
 		String mode = (String) state.getAttribute(STATE_MODE);
+		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		Set missing = new HashSet();
 		
 		if(flow == null || flow.equals("cancel"))
 		{
-			mode = MODE_LIST;
+			if(MODE_HELPER.equals(mode))
+			{
+				helper_mode = MODE_ATTACHMENT_SELECT;
+			}
+			else
+			{
+				mode = MODE_LIST;
+			}
 		}
 		else if(flow.equals("updateNumber"))
 		{
@@ -2153,7 +1556,6 @@ extends VelocityPortletPaneledAction
 		}
 		else if(flow.equals("create") && TYPE_FOLDER.equals(itemType))
 		{
-			
 			// Get the items
 			captureMultipleValues(state, params, true);
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
@@ -2166,7 +1568,14 @@ extends VelocityPortletPaneledAction
 				
 				if(alerts.isEmpty())
 				{
-					mode = MODE_LIST;
+					if(MODE_HELPER.equals(mode))
+					{
+						helper_mode = MODE_ATTACHMENT_SELECT;
+					}
+					else
+					{
+						mode = MODE_LIST;
+					}
 				}
 			}
 		}
@@ -2180,7 +1589,14 @@ extends VelocityPortletPaneledAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
-					mode = MODE_LIST;
+					if(MODE_HELPER.equals(mode))
+					{
+						helper_mode = MODE_ATTACHMENT_SELECT;
+					}
+					else
+					{
+						mode = MODE_LIST;
+					}
 				}
 			}
 		}
@@ -2194,7 +1610,14 @@ extends VelocityPortletPaneledAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
-					mode = MODE_LIST;
+					if(MODE_HELPER.equals(mode))
+					{
+						helper_mode = MODE_ATTACHMENT_SELECT;
+					}
+					else
+					{
+						mode = MODE_LIST;
+					}
 				}
 			}
 		}
@@ -2208,7 +1631,14 @@ extends VelocityPortletPaneledAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
-					mode = MODE_LIST;
+					if(MODE_HELPER.equals(mode))
+					{
+						helper_mode = MODE_ATTACHMENT_SELECT;
+					}
+					else
+					{
+						mode = MODE_LIST;
+					}
 				}
 			}
 		}
@@ -2222,7 +1652,14 @@ extends VelocityPortletPaneledAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
-					mode = MODE_LIST;
+					if(MODE_HELPER.equals(mode))
+					{
+						helper_mode = MODE_ATTACHMENT_SELECT;
+					}
+					else
+					{
+						mode = MODE_LIST;
+					}
 				}
 			}
 		}
@@ -2236,7 +1673,14 @@ extends VelocityPortletPaneledAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
-					mode = MODE_LIST;
+					if(MODE_HELPER.equals(mode))
+					{
+						helper_mode = MODE_ATTACHMENT_SELECT;
+					}
+					else
+					{
+						mode = MODE_LIST;
+					}
 				}
 			}
 		}
@@ -2323,14 +1767,21 @@ extends VelocityPortletPaneledAction
 		// remove?
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 
-		state.setAttribute (STATE_MODE, mode);
-		
+		if(MODE_HELPER.equals(mode))
+		{
+			state.setAttribute(STATE_RESOURCES_MODE, helper_mode);
+		}
+		else
+		{
+			state.setAttribute (STATE_MODE, mode);
+		}
+				
 	}	// doCreateitem
 	
 	/**
 	 * @param state
 	 */
-	private void createStructuredArtifact(SessionState state) 
+	private static void createStructuredArtifact(SessionState state) 
 	{
 		String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
 		String docRoot = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
@@ -2404,7 +1855,7 @@ extends VelocityPortletPaneledAction
 	/**
 	 * @param state
 	 */
-	protected void createFolders(SessionState state) 
+	protected static void createFolders(SessionState state) 
 	{
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		List new_folders = (List) state.getAttribute(STATE_CREATE_ITEMS);
@@ -2488,7 +1939,7 @@ extends VelocityPortletPaneledAction
 	 * @param state
 	 * @param params TODO
 	 */
-	protected void createFiles(SessionState state, ParameterParser params) 
+	protected static void createFiles(SessionState state, ParameterParser params) 
 	{
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		List new_files = (List) state.getAttribute(STATE_CREATE_ITEMS);
@@ -2652,7 +2103,7 @@ extends VelocityPortletPaneledAction
 	}	// createFiles
 	
 	
-	public void setupStructuredObjects(SessionState state)
+	public static void setupStructuredObjects(SessionState state)
 	{
 		String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
 		
@@ -2702,8 +2153,18 @@ extends VelocityPortletPaneledAction
 
 	}
 	
+	public static void doAttachitem(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+		
+		// %%%%%
+
+		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+
+	}
 	
-	protected List createPropertiesList(String namespace, List fields)
+	protected static List createPropertiesList(String namespace, List fields)
 	{
 		List properties = new Vector();
 		List nested = new Vector();
@@ -2814,7 +2275,7 @@ extends VelocityPortletPaneledAction
 	 * @param state
 	 * @param params TODO
 	 */
-	protected void createUrls(SessionState state, ParameterParser params) 
+	protected static void createUrls(SessionState state, ParameterParser params) 
 	{
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		List new_urls = (List) state.getAttribute(STATE_CREATE_ITEMS);
@@ -2945,7 +2406,7 @@ extends VelocityPortletPaneledAction
 	/**
 	* Build the context for creating folders and items
 	*/
-	public String buildCreateContext (VelocityPortlet portlet,
+	public static String buildCreateContext (VelocityPortlet portlet,
 												Context context,
 												RunData data,
 												SessionState state)
@@ -3025,8 +2486,10 @@ extends VelocityPortletPaneledAction
 		Set missing = (Set) state.removeAttribute(STATE_CREATE_MISSING_ITEM);
 		context.put("missing", missing);
 		
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_CREATE;
+		String mode = (String) state.getAttribute(STATE_MODE);
+		
+		// String template = (String) getContext(data).get("template");
+		return TEMPLATE_CREATE;
 
 	}
 
@@ -3143,1147 +2606,6 @@ extends VelocityPortletPaneledAction
 		}	// if-else
 
 	}	// doMore
-
-	/**
-	* set the state name to be "add"
-	*/
-	public void doNewitem ( RunData data )
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		state.setAttribute (STATE_MODE, MODE_ADD_ITEM);
-
-		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
-
-	}	// doNewitem
-
-	/**
-	* doAdditem called for the specific type of object to be added
-	*/
-	public void doAdditem ( RunData data)
-	{
-		addItem(data, data.getParameters ());
-	}
-	
-	/**
-	 * to handle add various item type request
-	 */
-	protected void addItem ( RunData data, ParameterParser params)
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-
-		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
-
-		String mycopyright =(String) state.getAttribute (STATE_MY_COPYRIGHT);
-
-		String collectionId = params.getString ("collectionId");
-		state.setAttribute(STATE_ADD_FILE_COLLECTION_ID, collectionId);
-		
-		try
-		{
-			ContentHostingService.checkCollection ((String) state.getAttribute (STATE_HOME_COLLECTION_ID));
-		}
-		catch (IdUnusedException e )
-		{
-			try
-			{
-				ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-				String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
-				String displayName = (String) state.getAttribute (STATE_HOME_COLLECTION_DISPLAY_NAME);
-				if ((displayName == null) || (displayName.length() == 0)) displayName = homeCollectionId;
-				resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, displayName);
-
-				ContentCollection collection = ContentHostingService.addCollection (homeCollectionId, resourceProperties);				
-			}
-			catch (IdUsedException ee)
-			{
-				addAlert(state, rb.getString("idused"));
-			}
-			catch (IdInvalidException ee)
-			{
-				addAlert(state, rb.getString("title") + " " + ee.getMessage ());
-			}
-			catch (PermissionException ee)
-			{
-				addAlert(state, rb.getString("notpermis4"));
-			}
-			catch (InconsistentException ee)
-			{
-				addAlert(state, RESOURCE_INVALID_TITLE_STRING);
-			}
-		}
-		catch (TypeException e )
-		{
-			addAlert(state, rb.getString("typeex"));
-		}
-		catch (PermissionException e )
-		{
-			addAlert(state, rb.getString("permisex"));
-		}
-		
-		String itemType = params.getString ("itemType");
-
-
-		if (state.getAttribute(STATE_MESSAGE) == null && itemType != null)
-		{
-			if ("file".equalsIgnoreCase(itemType))
-			{
-				int newFileNumber = 1;
-				String s = params.getString ("fileNumber");
-				if (s != null)
-				{
-					newFileNumber = (new Integer(s)).intValue();
-					state.setAttribute (STATE_ADD_FILE_NUMBER, new Integer (newFileNumber));
-					
-					// save the already inputed infos
-					int oldFileNumber = 1;
-					s = params.getString ("fileNumber");
-					if (s != null)
-					{
-						oldFileNumber = (new Integer(s)).intValue();
-					}
-
-					Vector osNames = (Vector) state.getAttribute(STATE_ADD_FILE_OS_NAME);
-					Vector titles = emptyVector (MULTI_ADD_NUMBER + 1);
-					Vector contents = (Vector) state.getAttribute(STATE_ADD_FILE_CONTENT);
-					Vector types =(Vector) state.getAttribute(STATE_ADD_FILE_CONTENT_TYPE);
-					Vector copyrights = emptyVector (MULTI_ADD_NUMBER + 1);
-					// moved from the set properties page
-					Vector newcopyrights = emptyVector (MULTI_ADD_NUMBER + 1);
-					Vector descriptions = emptyVector (MULTI_ADD_NUMBER + 1);
-					Vector pubviews = emptyVector (MULTI_ADD_NUMBER + 1);
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						pubviews = (Vector) state.getAttribute(STATE_ADD_FILE_PUBVIEW);
-					}
-					// count the user specified input file number
-					for (int i=1; i <= (newFileNumber<oldFileNumber?newFileNumber:oldFileNumber); i++)
-					{
-						FileItem fi = params.getFileItem ("filename" + i);
-						// get the file name
-						String title = params.getString ("title"+i);
-						if (title!=null)
-						{
-							titles.set (i, title.trim());
-						}
-
-						String copyright = params.getString ("copyright" + i);
-						if (copyright!=null)
-						{
-							copyrights.set (i, copyright);
-						}
-						else if (state.getAttribute(DEFAULT_COPYRIGHT) != null)
-						{
-							copyrights.set(i, state.getAttribute(DEFAULT_COPYRIGHT));
-						}
-
-						String newcopyright = params.getCleanString (NEW_COPYRIGHT + i);
-			
-						if (newcopyright!=null)
-						{
-							newcopyrights.set (i, newcopyright);
-						}
-
-						// clean the input
-						String description = params.getCleanString ("description" + i);
-						if (description!=null)
-						{
-							descriptions.set (i, description);
-						}
-
-						if (fi!=null)
-						{
-							// there is a upload file
-							// Note: we call get() from the FileItem to get a pointer to the actual bytes of the file,
-							// without making a copy of these.
-							contents.set (i, fi.get ());
-							osNames.set (i, fi.getFileName ());
-							types.set (i, fi.getContentType ());
-						}
-
-						// the user did not fill in the optional field for the file name
-						// use the original file name instead
-						if (title == null || title.length ()==0)
-						{
-							// get the add file name
-							title = Validator.getFileName ((String) osNames.get (i));
-						}
-						titles.set (i, title);
-						
-						if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-						{
-							// get pubview information
-							boolean pubview = (new Boolean(params.getString("pubview" + i))).booleanValue();
- 							pubviews.set(i, new Boolean(pubview));
-						}
-						
-					}	// for
-
-					// reset infos more than new file number
-					for (int j=(newFileNumber<oldFileNumber?newFileNumber+1:oldFileNumber+1); j <= (newFileNumber>oldFileNumber?newFileNumber:oldFileNumber); j++)
-					{
-						osNames.set(j, "");
-						contents.set(j, "");
-						types.set(j, "");
-					}
-					// update the state attribute
-					state.setAttribute (STATE_ADD_FILE_CONTENT, contents);
-					state.setAttribute (STATE_ADD_FILE_CONTENT_TYPE, types);
-					state.setAttribute (STATE_ADD_FILE_OS_NAME, osNames);
-					state.setAttribute (STATE_ADD_FILE_TITLE, titles);
-					state.setAttribute (STATE_ADD_FILE_COPYRIGHT, copyrights);
-					state.setAttribute (STATE_ADD_FILE_NEW_COPYRIGHT, newcopyrights);
-					state.setAttribute (STATE_ADD_FILE_DESCRIPTION, descriptions);
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						state.setAttribute (STATE_ADD_FILE_PUBVIEW, pubviews);
-					}
-				}
-				else
-				{
-					initAddFileContext (state);
-				}
-				state.setAttribute (STATE_MODE, MODE_ADD_FILE_BASIC);
-			}
-			else if ("emptyFolder".equalsIgnoreCase(itemType))
-			{
-				int newFolderNumber = 1;
-				String s = params.getString ("folderNumber");
-				if (s != null)
-				{
-					newFolderNumber = (new Integer(s)).intValue();
-					state.setAttribute (STATE_ADD_FOLDER_NUMBER, new Integer (newFolderNumber));
-					state.setAttribute (STATE_ADD_FOLDER_COLLECTION_ID, collectionId);
-					
-					int oldFolderNumber = Integer.valueOf (params.getString ("folderNumber")).intValue ();
-
-					Vector titles = emptyVector(MULTI_ADD_NUMBER + 1);
-					Vector descriptions = emptyVector(MULTI_ADD_NUMBER + 1);
-					Vector pubviews = emptyVector(MULTI_ADD_NUMBER + 1);
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						pubviews = (Vector) state.getAttribute(STATE_ADD_FOLDER_PUBVIEW);
-					}
-
-					for (int i=1; i <= (newFolderNumber<oldFolderNumber?newFolderNumber:oldFolderNumber); i++ )
-					{
-						// set titles
-						String title = params.getString ("name" + i);
-						if (title != null)
-						{
-							titles.add (i, title.trim());
-						}
-						//set descriptions
-						descriptions.add (i, params.getCleanString ("description" + i));
-						
-						if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-						{
-							// get pubview information
-							boolean pubview = (new Boolean(params.getString("pubview" + i))).booleanValue();
-							pubviews.set(i, new Boolean(pubview));
-						}
-					}	// for
-
-					state.setAttribute (STATE_ADD_FOLDER_TITLE, titles);
-					state.setAttribute (STATE_ADD_FOLDER_DESCRIPTION, descriptions);	
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						state.setAttribute (STATE_ADD_FOLDER_PUBVIEW, pubviews);
-					}
-					
-				}
-				else
-				{
-
-					state.setAttribute (STATE_ADD_FOLDER_COLLECTION_ID, collectionId);
-					initAddFolderContext (state);
-				}
-				state.setAttribute (STATE_MODE, MODE_ADD_FOLDER);
-
-			}	// add folder
-			else if (params.getString ("itemType").equals ("plaintextdocument"))
-			{
-				initAddDocumentContext (state);
-				// get parent hosted item ID
-				state.setAttribute (STATE_MODE, MODE_ADD_DOCUMENT_PLAINTEXT);
-
-			}	// add plaintext document
-			else if ("htmldocument".equalsIgnoreCase(itemType))
-			{
-				initAddDocumentContext (state);
-				// get parent hosted item ID
-				state.setAttribute (STATE_MODE, MODE_ADD_DOCUMENT_HTML);
-
-			}	// add html document
-			else if ("Url".equalsIgnoreCase (itemType))
-			{
-				int newUrlNumber = 1;
-				String s = params.getString ("urlNumber");
-				if (s != null)
-				{
-					newUrlNumber = (new Integer(s)).intValue();
-					state.setAttribute (STATE_ADD_URL_NUMBER, new Integer (newUrlNumber));
-					
-					// save the already inputed infos
-					int oldUrlNumber = 1;
-					s = params.getString ("UrlNumber");
-					if (s != null)
-					{
-						oldUrlNumber = (new Integer(s)).intValue();
-					}
-
-					// initialize the add url context
-					Vector urls = emptyVector(MULTI_ADD_NUMBER + 1);
-					Vector titles = emptyVector(MULTI_ADD_NUMBER + 1);
-					Vector descriptions = emptyVector(MULTI_ADD_NUMBER + 1);
-					Vector copyrights = emptyVector(MULTI_ADD_NUMBER + 1);
-					Vector newcopyrights = emptyVector(MULTI_ADD_NUMBER + 1);
-					Vector unqualified_fields = emptyVector (MULTI_ADD_NUMBER + 1);
-					Vector pubviews = emptyVector(MULTI_ADD_NUMBER + 1);
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						pubviews = (Vector) state.getAttribute(STATE_ADD_URL_PUBVIEW);
-					}
-					
-					for (int i=1; i <= (newUrlNumber<oldUrlNumber?newUrlNumber:oldUrlNumber); i++ )
-					{
-						// the URL web address
-						String url = params.getString ("Url" + i);
-						if (url != null)
-						{
-							urls.set (i, url.trim());
-						}
-
-						// the URL title
-						String title = params.getString ("title" + i);
-						if (title != null)
-						{
-							titles.set (i, title.trim());
-						}
-
-						// the URL description
-						descriptions.set (i, params.getCleanString ("description" + i));
-
-						// the URL copyright
-						String copyright = params.getString ("copyright" + i);
-						if (copyright!=null)
-						{
-							copyrights.set (i, copyright);
-						}
-						else if (state.getAttribute(DEFAULT_COPYRIGHT) != null)
-						{
-							copyrights.set(i, state.getAttribute(DEFAULT_COPYRIGHT));
-						}
-
-						// the URL new copyright
-						newcopyrights.set (i, params.getCleanString (NEW_COPYRIGHT + i));
-						
-						if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-						{
-							// get pubview information
-							boolean pubview = (new Boolean(params.getString("pubview" + i))).booleanValue();
-							pubviews.set(i, new Boolean(pubview));
-						}
-						
-					}	// for
-
-					state.setAttribute (STATE_ADD_URL_URL, urls);
-					state.setAttribute (STATE_ADD_URL_TITLE, titles);
-					state.setAttribute (STATE_ADD_URL_DESCRIPTION, descriptions);
-					state.setAttribute (STATE_ADD_URL_COPYRIGHT, copyrights);
-					state.setAttribute (STATE_ADD_URL_NEW_COPYRIGHT, newcopyrights);
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						state.setAttribute (STATE_ADD_URL_PUBVIEW, pubviews);
-					}
-				}
-				else
-				{
-					initAddURLContext (state);
-				}
-
-				state.setAttribute (STATE_MODE, MODE_ADD_URL);
-			}
-		}
-
-	}	// doAdditem
-
-	/**
-	* Add file without seting the properties
-	*/
-	public void doAdd_file_basic ( RunData data)
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		ParameterParser params = data.getParameters ();
-		
-		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
-
-		String option = params.getString("option");
-		if (option.equalsIgnoreCase("change"))
-		{
-			// change add file number
-			addItem(data, params);
-		}
-		else if (option.equalsIgnoreCase("cancel"))
-		{
-			// cancel
-			doCancel(data);
-		}
-		else
-		{
-			// add file(s)
-			int fileNumber = Integer.valueOf (params.getString ("fileNumber")).intValue ();
-			
-			int noti = NotificationService.NOTI_OPTIONAL;
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-			{
-				// set noti to none if in dropbox mode
-				noti = NotificationService.NOTI_NONE;
-			}
-			else
-			{
-				// read the notification options
-				String notification = params.getString("notify");
-				if ("r".equals(notification))
-				{
-					noti = NotificationService.NOTI_REQUIRED;
-				}
-				else if ("n".equals(notification))
-				{
-					noti = NotificationService.NOTI_NONE;
-				}
-			}
-
-			String collectionId = params.getString("collectionId"); // (String) state.getAttribute (STATE_COLLECTION_ID);
-			state.setAttribute(STATE_ADD_FILE_COLLECTION_ID, collectionId);
-
-			// default copyright
-			String mycopyright = (String) state.getAttribute (STATE_MY_COPYRIGHT);
-
-			// add file context
-			Vector osNames = (Vector) state.getAttribute(STATE_ADD_FILE_OS_NAME);
-			Vector titles = emptyVector (MULTI_ADD_NUMBER + 1);
-			Vector contents = (Vector) state.getAttribute(STATE_ADD_FILE_CONTENT);
-			Vector types =(Vector) state.getAttribute(STATE_ADD_FILE_CONTENT_TYPE);
-			Vector copyrights = emptyVector (MULTI_ADD_NUMBER + 1);
-			Vector copyrightAlerts = emptyVector (MULTI_ADD_NUMBER + 1);
-			Vector pubviews = emptyVector (MULTI_ADD_NUMBER + 1);
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-			{
-				pubviews = (Vector) state.getAttribute(STATE_ADD_FILE_PUBVIEW);
-			}
-
-			// moved from the set properties page
-			Vector newcopyrights = emptyVector (MULTI_ADD_NUMBER + 1);
-			Vector descriptions = emptyVector (MULTI_ADD_NUMBER + 1);
-
-			// the error input fields
-			Vector unqualified_fields = emptyVector (MULTI_ADD_NUMBER + 1);
-
-			// count the user specified input file number
-			int realFileNumber = 0;
-			for (int i=1; i <= fileNumber; i++)
-			{
-				// unqualified field names
-				String u_fields = "";
-
-				FileItem fi = params.getFileItem ("filename" + i);
-				byte[] b = null;
-
-				HttpServletRequest req = data.getRequest();
-
-				if (!req.getContentType().startsWith("multipart"))
-				{
-					addAlert(state, rb.getString("alert.notmultipartsubmit"));
-				}
-				else if ("size_limit_exceeded".equals(req.getAttribute("upload.status")))
-				{
-					if (fileNumber > 1)
-					{
-						addAlert(state, rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded1"));
-					}
-					else
-					{
-						addAlert(state, rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded2"));
-					}
-				}
-				else if ("exception".equals(req.getAttribute("upload.status")))
-				{
-				   addAlert(state, rb.getString("alert.uploadstatusexception") + req.getAttribute("upload.exception") );
-				}
-				else if ((fi.getFileName() == null || fi.getFileName().length() == 0) && StringUtil.trimToNull((String) osNames.get(i)) == null)
-				{
-					//if there is a input(file name, new copyright, or description), but no upload file, generate error message
-					
-					if (((String)titles.get(i)).length ()!=0 
-						|| ((String)newcopyrights.get(i)).length()!=0 
-						|| ((String)descriptions.get(i)).length()!=0)
-					{
-						addAlert(state, rb.getString("choosefile") + " " + i + ". ");
-					}
-				}
-				else if (fi != null)
-				{
-					b = fi.get();
-					if (b.length <= 1 && StringUtil.trimToNull((String) osNames.get(i)) == null)
-					{
-						addAlert(state, rb.getString("alert.notvalidfile") +fi.getFileName() + " " + rb.getString("invalid"));
-					}
-				}
-
-				// get the file name
-				String title = StringUtil.trimToNull(params.getString ("title"+i));
-				if (title!=null)
-				{
-					titles.set (i, title.trim());
-				}
-
-				// set the copyright
-				String copyright = StringUtil.trimToNull(params.getString ("copyright" + i));
-				if (copyright!=null)
-				{
-					copyrights.set (i, copyright);
-				}
-
-				String newcopyright = StringUtil.trimToNull(params.getCleanString (NEW_COPYRIGHT + i));
-				if (newcopyright!=null)
-				{
-					newcopyrights.set (i, newcopyright);
-				}
-
-				if (params.getString("copyrightAlert" + i) != null)
-				{
-					copyrightAlerts.set(i, Boolean.TRUE.toString());
-				}
-				else
-				{
-					copyrightAlerts.set(i, null);
-				}
-				
-				String description = StringUtil.trimToNull(params.getCleanString ("description" + i));
-				if (description!=null)
-				{
-					descriptions.set (i, description);
-				}
-
-				if (fi!=null)
-				{
-					if (b!= null && b.length != 0)
-					{
-						//there is a upload file
-						// Note: we call get() from the FileItem to get a pointer to the actual bytes of the file,
-						// without making a copy of these.
-						contents.set (i, b);
-						osNames.set (i, fi.getFileName ());
-						String contentType = fi.getContentType ();
-						types.set (i, contentType);
-					}
-				}
-				
-				//the user did not fill in the optional field for the file name
-				// use the original file name instead
-				if (title == null && StringUtil.trimToNull((String) osNames.get (i)) != null)
-				{
-					// get the add file name
-					title = Validator.getFileName (StringUtil.trimToNull((String) osNames.get (i)));
-				}
-
-				if (title != null)
-				{
-					realFileNumber = realFileNumber + 1;
-					titles.set (i, title);
-				}
-				
-				/*
-				String pubviewString = "";
-				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-				{
-					pubviewString = params.getString("pubview" + i);
-					if (pubviewString != null)
-					{
-						pubviews.set(i, new Boolean(pubviewString)); 
-					}
-				}
-				*/
-		
-				boolean pubview = false;
-				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-				{
-					pubview = params.getBoolean("pubview" + i);
-					pubviews.set(i, new Boolean(pubview));
-				}
-
-				if (copyright != null && state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) != null && copyright.equals(state.getAttribute(COPYRIGHT_NEW_COPYRIGHT)) && newcopyright == null)
-				{
-					addAlert(state, rb.getString("specifycp") + " " + i + ". ");
-				}
-				unqualified_fields.add (i, u_fields);
-			}	// for
-
-			//update the state attribute
-			state.setAttribute (STATE_ADD_FILE_CONTENT, contents);
-			state.setAttribute (STATE_ADD_FILE_CONTENT_TYPE, types);
-			state.setAttribute (STATE_ADD_FILE_OS_NAME, osNames);
-			state.setAttribute (STATE_ADD_FILE_TITLE, titles);
-			state.setAttribute (STATE_ADD_FILE_COPYRIGHT, copyrights);
-			state.setAttribute (STATE_ADD_FILE_NEW_COPYRIGHT, newcopyrights);
-			state.setAttribute (STATE_ADD_FILE_DESCRIPTION, descriptions);
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-			{
-				state.setAttribute (STATE_ADD_FILE_PUBVIEW, pubviews);
-			}			
-			
-			if (realFileNumber == 0)
-			{
-				addAlert(state, rb.getString("specifyfile"));
-			}
-
-			int repeatedNames_index =  repeatedName (titles, fileNumber);
-			if (repeatedNames_index >0)
-			{
-				String n = (String) titles.get (repeatedNames_index);
-				if (n.length ()>0)
-				{
-					addAlert(state,rb.getString("notaddfile") + " " + n + ". ");
-					unqualified_fields.set (repeatedNames_index, (String) unqualified_fields.get (repeatedNames_index) + ResourceProperties.PROP_DISPLAY_NAME);
-				}
-			}
-			else
-			{
-				repeatedNames_index = foundInResource (titles, fileNumber, collectionId, false);
-
-				if (repeatedNames_index>0)
-				{
-					String n = (String) titles.get (repeatedNames_index);
-					if (n.length ()>0)
-					{
-						addAlert(state, rb.getString("title") + " " + n + " " + rb.getString("ofitem") + "  " + repeatedNames_index + " " + rb.getString("used"));
-						unqualified_fields.set (repeatedNames_index, (String) unqualified_fields.get (repeatedNames_index)  + ResourceProperties.PROP_DISPLAY_NAME);
-					}
-				}
-				else
-				{
-					if (state.getAttribute(STATE_MESSAGE) == null)
-					{
-						// the vector to hold the index of those file been successfully added to resource
-						Vector addedFileIndex = new Vector();
-
-						String currentName = NULL_STRING;
-						for (int i=1; i <= fileNumber; i++)
-						{
-							if (((String) titles.get(i)).length()>0)
-							{
-								// add the file on the basic step
-								// check to see if the osName has a file extension
-								String name = Validator.getFileName((String) osNames.get(i));
-								String newResourceId = collectionId + Validator.escapeResourceName(name);					
-								ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-								resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, (String) titles.get (i));							
-
-								String copyrightChoice = StringUtil.trimToNull((String) copyrights.get (i));
-								if (copyrightChoice != null && state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) != null && copyrightChoice.equals (state.getAttribute(COPYRIGHT_NEW_COPYRIGHT)) && StringUtil.trimToNull((String) newcopyrights.get (i)) != null)
-								{
-									resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, (String) newcopyrights.get (i));
-								}
-								else if (copyrightChoice != null && state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) != null && copyrightChoice.equals (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT)))
-								{
-									resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, mycopyright);
-								}
-								resourceProperties.addProperty(ResourceProperties.PROP_COPYRIGHT_CHOICE, copyrightChoice);
-								if ((String) copyrightAlerts.get(i) != null)
-								{
-									resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT_ALERT, (String) copyrightAlerts.get(i));
-								}
-								resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, (String) descriptions.get (i));
-
-								// manipulating the file until it's acceptable("Escaping" it).
-								// So, if it has a bad character, change it. If it's not unique, add something to make it unique.  etc.
-
-								boolean needAdd = true;
-								while (needAdd)
-								{
-									try
-									{
-										ContentResource resource = ContentHostingService.addResource (newResourceId,
-																										(String) types.get (i),
-																										(byte[]) contents.get (i),
-																										resourceProperties, noti);
-										needAdd = false;
-										addedFileIndex.add(new Integer(i));
-	
-										if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-										{
-											// deal with pubview when in resource mode//%%%
-											boolean pubviewset = getPubViewInheritance(ContentHostingService.getReference(resource.getId()));
-											if (!pubviewset)
-											{
-												setPubView(ContentHostingService.getReference(resource.getId()), ((Boolean) pubviews.get(i)).booleanValue());
-											}
-										}
-									}
-									catch (IdUsedException e)
-									{
-										//manipulate the resource id until it is unique
-										int foundTimes = 1;
-										boolean found = true;
-										// add a security guard so that looping times is never over 100
-										while (found && foundTimes < 100)
-										{
-											int numIndex = newResourceId.lastIndexOf ((new Integer(foundTimes-1)).toString ());
-											int extensionIndex = newResourceId.lastIndexOf (".");
-											String extension = "";
-											if ((extensionIndex > 0) && (extensionIndex > newResourceId.lastIndexOf ("/")))
-											{
-												extension = newResourceId.substring (extensionIndex);
-												newResourceId = newResourceId.substring(0, extensionIndex);
-											}
-											
-											// make the id unique, for example, /file.doc, /file1.doc /file2.doc, /file3.doc
-											if (numIndex == -1)		// for example, /file.doc
-											{
-												// no repeatance number yet in resource id
-												newResourceId = newResourceId + foundTimes;
-											}
-											else
-											{
-												if (newResourceId.length() == numIndex + (new Integer(foundTimes)).toString().length())
-												{
-													// there is repeatance number in the resource id, for example, /file2.doc
-													newResourceId = newResourceId.substring (0, numIndex) + foundTimes;
-												}
-												else
-												{
-													newResourceId = newResourceId + foundTimes;
-												}
-											}
-		
-											// add extension if there was one
-											newResourceId = newResourceId + extension;
-											
-											try 
-											{
-												ContentHostingService.getResource(newResourceId);
-												foundTimes++;
-											}
-											catch (IdUnusedException ee)
-											{
-												found = false;
-											}
-											catch (PermissionException ee)
-											{
-												// ignore
-												found = false;
-											}
-											catch (TypeException ee)
-											{
-												// ignore
-												found = false;
-											}
-										}
-									}
-									catch (IdInvalidException e)
-									{
-										addAlert(state, rb.getString("invalid1"));
-										needAdd = false;
-									}
-									catch (PermissionException e)
-									{
-										addAlert(state,rb.getString("notpermis4"));
-										needAdd = false;
-									}
-									catch (OverQuotaException e)
-									{
-										addAlert(state,rb.getString("overquota"));
-										needAdd = false;
-									}
-									catch (InconsistentException e)
-									{
-										addAlert(state, rb.getString("invalid1"));
-										needAdd = false;
-									}   // try-catch
-								}	// while
-							}
-						}	// for
-
-						// if there is at least one file failed to be uploaded
-						if (state.getAttribute(STATE_MESSAGE) != null)
-						{
-							// clear added file infos from the state attribute 
-							for (int k=0; k<addedFileIndex.size(); k++)
-							{
-								int tempIndex = ((Integer) addedFileIndex.get(k)).intValue();
-								contents.removeElementAt(tempIndex);							
-								types.removeElementAt(tempIndex);							
-								osNames.removeElementAt(tempIndex);							
-								titles.removeElementAt(tempIndex);							
-								copyrights.removeElementAt(tempIndex);		
-								newcopyrights.removeElementAt(tempIndex);							
-								descriptions.removeElementAt(tempIndex);
-								if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-								{
-									pubviews.removeElementAt(tempIndex);
-								}
-								unqualified_fields.removeElementAt(tempIndex);
-							}	// for
-
-							// reset the file number
-							fileNumber = fileNumber-addedFileIndex.size();
-						}	// if - there is at least one file failed to be uploaded
-					}	// if	- state.getAttribute(STATE_MESSAGE) == null
-				}   // if-else	- repeatedNames
-			}   // if-else	- repeatedNames
-
-			if (state.getAttribute(STATE_MESSAGE) == null)
-			{
-				// no error in adding the file
-				state.setAttribute (STATE_MODE, MODE_LIST);
-				initAddFileContext (state);
-				state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, emptyVector (MULTI_ADD_NUMBER + 1));
-				
-				HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
-				String id = params.getString("collectionId");
-				if(!currentMap.containsKey(id))
-				{
-					try
-					{
-						currentMap.put (id,ContentHostingService.getCollection (id));
-						state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
-		
-						// add this folder id into the set to be event-observed
-						addObservingPattern(id, state);
-					}
-					catch (IdUnusedException ignore)
-					{
-					}
-					catch (TypeException ignore)
-					{
-					}
-					catch (PermissionException ignore)
-					{
-					} 
-		
-				}
-			}
-			else
-			{
-				state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, unqualified_fields);
-			}	// if-else: error message equals null?
-		}
-
-	}   // doAdd_file_basic
-
-	/**
-	* Set add file properties
-	*/
-	public void doSet_file_properties ( RunData data)
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-
-		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
-
-		//get the ParameterParser from RunData
-		ParameterParser params = data.getParameters ();
-		String collectionId = (String) state.getAttribute (STATE_ADD_FILE_COLLECTION_ID);
-
-		// default copyright
-		String mycopyright = (String) state.getAttribute (STATE_MY_COPYRIGHT);
-
-		int fileNumber = Integer.valueOf (params.getString ("fileNumber")).intValue ();
-		state.setAttribute (STATE_ADD_FILE_NUMBER, new Integer (fileNumber));
-
-		// the add file contet
-		Vector osNames = (Vector) state.getAttribute (STATE_ADD_FILE_OS_NAME);
-		Vector titles = emptyVector (MULTI_ADD_NUMBER + 1);
-		Vector contents = (Vector) state.getAttribute(STATE_ADD_FILE_CONTENT);
-		Vector types = (Vector) state.getAttribute(STATE_ADD_FILE_CONTENT_TYPE);
-		Vector copyrights = emptyVector (MULTI_ADD_NUMBER + 1);
-		
-		// the error input fields
-		Vector unqualified_fields = emptyVector (MULTI_ADD_NUMBER + 1);
-
-		for (int i=1; i <= fileNumber; i++)
-		{
-			// unqualified field names
-			String u_fields = "";
-
-			FileItem fi = params.getFileItem ("filename" + i);
-
-
-			if ((fi==null)&&(((String)osNames.get (i)).length ()==0))
-			{
-				// there is no upload file
-				addAlert(state, rb.getString("choosefile") + " " + i + ". ");
-				titles.set (i, NULL_STRING);
-				u_fields = ResourceProperties.PROP_DISPLAY_NAME;
-			}
-			else
-			{
-				if (fi!=null)
-				{
-					// there is a upload file
-					// Note: we use the FileItem's get() call to get a pointer to the actual bytes of the file
-					// without making a copy of them.
-					contents.set (i, fi.get ());
-					osNames.set (i, fi.getFileName ());
-					types.set (i, fi.getContentType ());
-				}
-
-				// get the file name
-				String name = (params.getString ("title"+i)).trim();
-
-				// the user did not fill in the optional field for the file name
-				// use the original file name instead
-				if (name.length ()==0)
-				{
-					// get the add file name
-					name = Validator.getFileName ((String) osNames.get (i));
-				}
-				titles.set (i, name);
-
-				copyrights.set (i, state.getAttribute (STATE_MY_COPYRIGHT));
-			}	// if-else --- is file specified?
-			unqualified_fields.add (i, u_fields);
-		}	// for
-		state.setAttribute (STATE_ADD_FILE_CONTENT, contents);
-		state.setAttribute (STATE_ADD_FILE_CONTENT_TYPE, types);
-		state.setAttribute (STATE_ADD_FILE_OS_NAME, osNames);
-		state.setAttribute (STATE_ADD_FILE_TITLE, titles);
-		state.setAttribute (STATE_ADD_FILE_COPYRIGHT, copyrights);
-
-		int repeatedNames_index =  repeatedName (titles, fileNumber);
-		if (repeatedNames_index>0)
-		{
-			String n = (String) titles.get (repeatedNames_index);
-			if (n.length ()>0)
-			{
-				addAlert(state, rb.getString("notaddfile") + " " + n + ". ");
-				unqualified_fields.set (repeatedNames_index, (String) unqualified_fields.get (repeatedNames_index) + n);
-			}
-		}
-
-		if (state.getAttribute(STATE_MESSAGE) == null)
-		{
-			// no error in retrieving the file data: title, inputstream, filenumber, etc
-			state.setAttribute (STATE_MODE, MODE_ADD_FILE_OPTIONS);
-			state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, emptyVector (MULTI_ADD_NUMBER + 1));
-		}
-		else
-		{
-			state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, unqualified_fields);
-		}	// if-else: error message equals null?
-
-	}   // doSet_file_properties
-	
-	/**
-	* Add folder
-	*/
-	public void doAddfolder ( RunData data)
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		ParameterParser params = data.getParameters ();
-		
-		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
-
-		String option = params.getString("option");
-		if (option.equalsIgnoreCase("change"))
-		{
-			// change the folder number
-			addItem(data, params);
-		}
-		else if (option.equalsIgnoreCase("cancel"))
-		{
-			// cancel
-			doCancel(data);
-		}
-		else
-		{		
-			// add folder
-			String mycopyright = (String) state.getAttribute (STATE_MY_COPYRIGHT);
-			
-			// get the parent collection id
-			String collectionId = params.getString ("collectionId");
-
-			state.setAttribute (STATE_ADD_FOLDER_COLLECTION_ID, collectionId);
-
-			int folderNumber = Integer.valueOf (params.getString ("folderNumber")).intValue ();
-
-			state.setAttribute (STATE_ADD_FOLDER_NUMBER, new Integer (folderNumber));
-
-			Vector titles = emptyVector(MULTI_ADD_NUMBER + 1);
-			Vector descriptions = emptyVector(MULTI_ADD_NUMBER + 1);
-			Vector pubviews = emptyVector(MULTI_ADD_NUMBER + 1);
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-			{
-				pubviews = (Vector) state.getAttribute(STATE_ADD_FOLDER_PUBVIEW);
-			}
-			Vector unqualified_fields = emptyVector (MULTI_ADD_NUMBER + 1);
-
-			for (int i=1; i<= folderNumber; i++ )
-			{
-				// unqualified field names
-				String u_fields = "";
-
-				String name = (params.getString ("name" + i)).trim();
-				String description = params.getCleanString ("description" + i);
-
-
-				// is folder name specified?
-				if (name.length ()==0)
-				{
-					addAlert(state, rb.getString("specifyfd") + " " + i +". ");
-					u_fields = ResourceProperties.PROP_DISPLAY_NAME;
-				}
-				// set titles
-				titles.add (i, name);
-
-				//set descriptions
-				descriptions.add (i, description);
-				
-				/*
-				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-				{
-					String pubviewString = params.getString("pubview" + i);
-					if (pubviewString != null)
-					{
-						pubviews.set(i, new Boolean(pubviewString)); 
-					}
-				}
-				*/
-				
-				boolean pubview = false;
-				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-				{
-					pubview = params.getBoolean("pubview" + i);
-					pubviews.set(i, new Boolean(pubview));
-				}
-
-				// set the unqualified field
-				unqualified_fields.add (i, u_fields);
-			}	// for
-
-			state.setAttribute (STATE_ADD_FOLDER_TITLE, titles);
-			state.setAttribute (STATE_ADD_FOLDER_DESCRIPTION, descriptions);
-
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-			{
-				state.setAttribute (STATE_ADD_FOLDER_PUBVIEW, pubviews);
-			}
-
-			int  repeatedNames_index =  repeatedName (titles, folderNumber);
-			if (repeatedNames_index > 0)
-			{
-				String n = (String) titles.get (repeatedNames_index);
-				if (n.length ()>0)
-				{
-					addAlert(state, rb.getString("notaddfolder") + " " + n + ". ");
-					unqualified_fields.set (repeatedNames_index, (String) unqualified_fields.get (repeatedNames_index) + n);
-				}
-			}
-			else
-			{
-				repeatedNames_index = foundInResource (titles, folderNumber, collectionId, true);
-
-				if (repeatedNames_index>0)
-				{
-					String n = (String) titles.get (repeatedNames_index);
-					addAlert(state," " + rb.getString("title") + " " + n + " " + rb.getString("offolder") + " " + repeatedNames_index + " " + rb.getString("used"));
-					unqualified_fields.set (repeatedNames_index, (String) unqualified_fields.get (repeatedNames_index)  + n);
-				}
-				else
-				{
-					if (state.getAttribute(STATE_MESSAGE) == null)
-					{
-						// Vector titles = (Vector)state.getAttribute (STATE_ADD_FOLDER_TITLE);
-						// Vector descriptions = (Vector)state.getAttribute (STATE_ADD_FOLDER_DESCRIPTION);
-						for (int i=1; i <= folderNumber; i++)
-						{
-							// new folder resource id
-							String newCollectionId = collectionId + Validator.escapeResourceName((String)((Vector)state.getAttribute (STATE_ADD_FOLDER_TITLE)).get (i)) + Resource.SEPARATOR;
-
-							ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-
-							try
-							{
-								resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, (String)titles.get (i));
-								resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, (String)descriptions.get (i));
-							
-								ContentCollection collection = ContentHostingService.addCollection (newCollectionId, resourceProperties);
-
-								state.setAttribute (STATE_ADD_FOLDER_NUMBER, new Integer (((Integer) state.getAttribute (STATE_ADD_FOLDER_NUMBER)).intValue ()-1));
-
-								if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-								{
-									// deal with pubview in resource mode//%%%
-									boolean pubviewset = getPubViewInheritance(ContentHostingService.getReference(collection.getId()));
-									if (!pubviewset)
-									{
-										setPubView(ContentHostingService.getReference(collection.getId()), ((Boolean) pubviews.get(i)).booleanValue());
-									}
-								}		
-							}
-							catch (IdUsedException e)
-							{
-								addAlert(state, rb.getString("title") + " " + ((Vector) state.getAttribute (STATE_ADD_FOLDER_TITLE)).get (i) +  " " + rb.getString("used1"));
-							}
-							catch (IdInvalidException e)
-							{
-								addAlert(state, rb.getString("title") + " " + e.getMessage ());
-							}
-							catch (PermissionException e)
-							{
-								addAlert(state, rb.getString("notpermis5") + " " + ((Vector) state.getAttribute (STATE_ADD_FOLDER_TITLE)).get (i) + ". ");
-							}
-							catch (InconsistentException e)
-							{
-								addAlert(state, RESOURCE_INVALID_TITLE_STRING);
-							}	// try-catch
-						}	// for
-					}	// if
-				}	// if-else
-			}	// if-else
-
-			if (state.getAttribute(STATE_MESSAGE) != null)
-			{
-				// add folder not sucessful
-				state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, unqualified_fields);
-			}
-			else
-			{
-				// add folder sucessful
-				state.setAttribute (STATE_MODE, MODE_LIST);
-				initAddFolderContext (state);
-				state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, emptyVector (MULTI_ADD_NUMBER + 1));
-				
-				HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
-				String id = params.getString("collectionId");
-				if(!currentMap.containsKey(id))
-				{
-					try
-					{
-						currentMap.put (id,ContentHostingService.getCollection (id));
-						state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
-		
-						// add this folder id into the set to be event-observed
-						addObservingPattern(id, state);
-					}
-					catch (IdUnusedException ignore)
-					{
-					}
-					catch (TypeException ignore)
-					{
-					}
-					catch (PermissionException ignore)
-					{
-					} 
-				}
-			}	// if-else
-		}	// if-else
-		
-	}	// doAddfolder
 
 	/**
 	* doDelete to delete the selected collection or resource items
@@ -4405,35 +2727,6 @@ extends VelocityPortletPaneledAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		String currentMode = (String) state.getAttribute (STATE_MODE);
-		if (currentMode.equals (MODE_ADD_FILE_BASIC))
-		{
-			initAddFileContext (state);
-		}
-		else if (currentMode.equals (MODE_ADD_FOLDER))
-		{
-			initAddFolderContext (state);
-		}
-		else if (currentMode.equals (MODE_ADD_DOCUMENT_PLAINTEXT))
-		{
-			initAddDocumentContext (state);
-		}
-		else if (currentMode.equals (MODE_ADD_DOCUMENT_HTML))
-		{
-			initAddDocumentContext (state);
-		}
-		else if  (currentMode.equals (MODE_ADD_URL))
-		{
-			initAddURLContext (state);
-		}
-		else if  (currentMode.equals (MODE_REPLACE))
-		{
-			initReplaceContext (state);
-		}
-		else if  (currentMode.equals (MODE_PROPERTIES))
-		{
-			initPropertiesContext (state);
-		}
-
 		/*
 		String collectionId = data.getParameters ().getString ("collectionId");
 		if (collectionId != null)
@@ -4443,7 +2736,22 @@ extends VelocityPortletPaneledAction
 		*/
 		
 		String from = data.getParameters ().getString ("from");
-		if (from != null)
+		String mode = (String) state.getAttribute(STATE_MODE);
+		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+		
+		if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_SELECT.equals(helper_mode))
+		{
+			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+		}
+		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_CREATE.equals(helper_mode))
+		{
+			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		}
+		else if(MODE_HELPER.equals(mode))
+		{
+			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		}
+		else if (from != null)
 		{
 			state.setAttribute (STATE_MODE, from);
 		}
@@ -4869,7 +3177,7 @@ extends VelocityPortletPaneledAction
 	/**
 	* Edit the editable collection/resource properties
 	*/
-	public void doEdit ( RunData data )
+	public static void doEdit ( RunData data )
 	{
 		ParameterParser params = data.getParameters ();
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
@@ -5870,7 +4178,7 @@ extends VelocityPortletPaneledAction
 	 * @param params
 	 * @param item
 	 */
-	protected void captureMultipleValues(SessionState state, ParameterParser params, boolean markMissing)
+	protected static void captureMultipleValues(SessionState state, ParameterParser params, boolean markMissing)
 	{
 		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
 		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
@@ -6464,7 +4772,7 @@ extends VelocityPortletPaneledAction
 	 * @param metadataGroups
 	 * @param metadata
 	 */
-	private void saveMetadata(ResourcePropertiesEdit pedit, List metadataGroups, EditItem item) 
+	private static void saveMetadata(ResourcePropertiesEdit pedit, List metadataGroups, EditItem item) 
 	{
 		if(metadataGroups != null && !metadataGroups.isEmpty())
 		{
@@ -6512,7 +4820,7 @@ extends VelocityPortletPaneledAction
 	/**
 	 * @param data
 	 */
-	public void doHide_metadata(RunData data)
+	public static void doHide_metadata(RunData data)
 	{
 		ParameterParser params = data.getParameters ();
 		String name = params.getString("group");
@@ -6566,806 +4874,11 @@ extends VelocityPortletPaneledAction
 	}	// doShow_metadata
 
 	/**
-	* doReplacefile replace the selected file with a new file
-	*/
-	public void doReplacefile ( RunData data)
-	{
-		ParameterParser params = data.getParameters ();
-		String option = params.getString("option");
-		if (option.equalsIgnoreCase("cancel"))
-		{
-			// cancel
-			doCancel(data);
-		}
-		else if (option.equalsIgnoreCase("replace"))
-		{
-			//replace file
-			SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-			
-			int noti = NotificationService.NOTI_OPTIONAL;
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-			{
-				// set noti to none if in dropbox mode
-				noti = NotificationService.NOTI_NONE;
-			}
-			else
-			{
-				// read the notification options
-				String notification = params.getString("notify");
-				if ("r".equals(notification))
-				{
-					noti = NotificationService.NOTI_REQUIRED;
-				}
-				else if ("n".equals(notification))
-				{
-					noti = NotificationService.NOTI_NONE;
-				}
-			}
-	
-			// get parent folder id and folder name
-			String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
-	
-			// get the list of items to be replaced
-			Vector replaceItems = (Vector) state.getAttribute (STATE_REPLACE_ID);
-	
-			int r_size = replaceItems.size ()-1;
-	
-			Vector unqualified_fields = (Vector) emptyVector (r_size).clone ();
-	
-			Vector osNames = (Vector) state.getAttribute (STATE_REPLACE_OS_NAME);
-			Vector titles = (Vector) state.getAttribute (STATE_REPLACE_TITLE);
-			Vector contents = (Vector) state.getAttribute (STATE_REPLACE_CONTENT);
-			Vector types = (Vector) state.getAttribute (STATE_REPLACE_CONTENT_TYPE);
-	
-			for (int i=1; i <= r_size; i++)
-			{
-				String currentReplaceItem = (String) replaceItems.get (i);
-				
-				if (currentReplaceItem.length ()!=0)
-				{
-					String u_fields = "";
-					
-					FileItem fi = params.getFileItem ("fileName" + i);
-	
-					if ((fi==null)&&(((String)osNames.get (i)).length ()==0))
-					{
-						// no new file specified to replace the old one
-						addAlert(state, rb.getString("specifyrepla"));
-						u_fields = u_fields + ResourceProperties.PROP_DISPLAY_NAME;
-					}
-					else
-					{
-						if (fi!=null)
-						{
-							// there is a upload file
-							contents.set (i, fi.get ());
-	
-							osNames.set (i, fi.getFileName ());
-	
-							types.set (i, fi.getContentType ());
-	
-						}
-	
-						String title = (params.getString ("title" + i)).trim();
-						if (title.length ()==0)
-						{
-							// if the title field is empty, use the OS name of the mew file
-							title = Validator.getFileName ((String) osNames.get (i));
-						}
-						titles.set (i, title);
-	
-					}	// if-else
-					unqualified_fields.add (i, u_fields);
-				}
-			}	// for
-	
-			state.setAttribute (STATE_REPLACE_CONTENT, contents);
-	
-			state.setAttribute (STATE_REPLACE_CONTENT_TYPE, types);
-	
-			state.setAttribute (STATE_REPLACE_OS_NAME, osNames);
-	
-			state.setAttribute (STATE_REPLACE_TITLE, titles);
-	
-			int repeatedNames_index =  repeatedName (titles, r_size);
-			if (repeatedNames_index >0)
-			{
-				String n = (String) titles.get (repeatedNames_index);
-				if (n.length ()>0)
-				{
-					addAlert(state, rb.getString("notaddfile2") + " " + n + ". ");
-					unqualified_fields.set (repeatedNames_index, (String) unqualified_fields.get (repeatedNames_index) + n);
-				}
-			}
-			else
-			{			
-				repeatedNames_index = foundInResource (titles, r_size, collectionId, false);
-				if (repeatedNames_index>0)
-				{
-					try
-					{
-						String n = (String) titles.get (repeatedNames_index);
-						String s = ContentHostingService.getProperties((String)replaceItems.get(repeatedNames_index)).getProperty(ResourceProperties.PROP_DISPLAY_NAME);
-	
-						// repeated title is in the resource but not to itself
-						if (n.length ()>0 && (!s.equalsIgnoreCase (n)))
-						{
-							addAlert(state," " + rb.getString("title") + " " + n + " " + rb.getString("ofrepfile") + repeatedNames_index + " " + rb.getString("used"));
-							unqualified_fields.set (repeatedNames_index, (String) unqualified_fields.get (repeatedNames_index)  + n);
-						}	// if
-					}
-					catch (PermissionException e)
-					{
-						addAlert(state, rb.getString("notview"));
-					}
-					catch (IdUnusedException e)
-					{
-						addAlert(state, rb.getString("cannotfind2"));
-					}
-				}	// if
-			}	// if-else
-			
-			if (state.getAttribute(STATE_MESSAGE) == null)
-			{
-				for (int i=1; i<=r_size; i++)
-				{
-					String currentReplaceItem = (String) replaceItems.get (i);
-					if (((String)replaceItems.get (i)).length ()!=0)
-					{
-						String displayName = NULL_STRING;
-						try
-						{
-							// get an edit
-							ContentResourceEdit edit = ContentHostingService.editResource(currentReplaceItem);
-							
-							// update
-							edit.setContentType((String) ((Vector)state.getAttribute (STATE_REPLACE_CONTENT_TYPE)).get (i));
-							edit.setContent((byte[]) ((Vector)state.getAttribute (STATE_REPLACE_CONTENT)).get (i));
-							edit.getPropertiesEdit().addProperty (
-									ResourceProperties.PROP_DISPLAY_NAME,
-									(String) ((Vector)state.getAttribute (STATE_REPLACE_TITLE)).get (i));
-							ContentHostingService.commitResource(edit, noti);
-						}
-						catch (InUseException e)
-						{
-							addAlert(state, rb.getString("someone") + " " + displayName + ". ");
-						}
-						catch (PermissionException e)
-						{
-							addAlert(state, rb.getString("notpermis11") + " " + displayName + ". ");
-						}
-						catch (OverQuotaException e)
-						{
-							addAlert(state, rb.getString("changing1") + " " + displayName + " " + rb.getString("changing2"));
-						}
-						catch (IdUnusedException e)
-						{
-							addAlert(state,RESOURCE_NOT_EXIST_STRING);
-						}
-						catch (TypeException e)
-						{
-							addAlert(state, rb.getString("replacereso") + " "  + displayName + " " + rb.getString("typeerror"));
-						}	// try-catch
-					}	// if
-				}	// for
-			}	// if
-	
-			if (state.getAttribute(STATE_MESSAGE) != null)
-			{
-				// replace file not sucessful
-				state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, unqualified_fields);
-			}
-			else
-			{
-				// replace file sucessful
-				state.setAttribute (STATE_MODE, MODE_LIST);
-				if (((String) state.getAttribute (STATE_SELECT_ALL_FLAG)).equals (Boolean.TRUE.toString()))
-				{
-					state.setAttribute (STATE_SELECT_ALL_FLAG, Boolean.FALSE.toString());
-				}
-	
-				initReplaceContext (state);
-				state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, emptyVector (MULTI_ADD_NUMBER + 1));
-	
-			}	// if-else
-		}
-
-	}	// doReplacefile
-
-	public void doAdddocumentplaintext(RunData data)
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		ParameterParser params = data.getParameters ();
-		
-		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
-
-		String content = params.getCleanString ("content");
-		state.setAttribute (STATE_ADD_DOCUMENT_CONTENT, content);
-
-		doAdddocument(data, MIME_TYPE_DOCUMENT_PLAINTEXT, content);
-	}
-	
-	public void doAdddocumenthtml(RunData data)
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		ParameterParser params = data.getParameters ();
-		
-		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
-
-		String content = params.getCleanString ("content");
-		
-		content = processHtmlDocumentFromBrowser(state, content);
-				
-		state.setAttribute (STATE_ADD_DOCUMENT_CONTENT, content);
-
-		doAdddocument(data, MIME_TYPE_DOCUMENT_HTML, content);
-	}	
-	
-	/**
-	* Add document file
-	*/
-	private void doAdddocument ( RunData data, String contentType, String content)
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-
-		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
-
-		String mycopyright = (String) state.getAttribute (STATE_MY_COPYRIGHT);
-
-		//get the ParameterParser from RunData
-		ParameterParser params = data.getParameters ();
-
-		int noti = NotificationService.NOTI_OPTIONAL;
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-		{
-			// set noti to none if in dropbox mode
-			noti = NotificationService.NOTI_NONE;
-		}
-		else
-		{
-			// read the notification options
-			String notification = params.getString("notify");
-			if ("r".equals(notification))
-			{
-				noti = NotificationService.NOTI_REQUIRED;
-			}
-			else if ("n".equals(notification))
-			{
-				noti = NotificationService.NOTI_NONE;
-			}
-		}
-
-		String collectionId = NULL_STRING;
-		InputStream inputStream = null;
-		
-		String copyright = StringUtil.trimToNull(params.getString ("copyright"));
-		if (copyright != null)
-		{
-			state.setAttribute (STATE_ADD_DOCUMENT_COPYRIGHT, copyright);
-		}
-		
-		String newcopyright = StringUtil.trimToNull(params.getCleanString (NEW_COPYRIGHT));
-		if (newcopyright != null)
-		{
-			state.setAttribute (STATE_ADD_DOCUMENT_NEW_COPYRIGHT, newcopyright);
-		}
-		
-		String copyrightAlert = StringUtil.trimToNull(params.getString("copyrightAlert"));
-		if (copyrightAlert != null)
-		{
-			state.setAttribute(STATE_ADD_DOCUMENT_COPYRIGHT_ALERT, copyrightAlert);
-		}
-		
-		/*
-		String pubviewString = "";
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			pubviewString = params.getString("pubview");
-			if (pubviewString != null)
-			{
-				state.setAttribute(STATE_ADD_DOCUMENT_PUBVIEW, new Boolean(pubviewString));
-			}
-		}
-		*/
-		
-		boolean pubview = false;
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			pubview = params.getBoolean("pubview");
-			state.setAttribute(STATE_ADD_DOCUMENT_PUBVIEW, new Boolean(pubview));
-		}
-
-		// get parent folder id and folder name
-		collectionId = params.getString ("collectionId");
-
-		// get the add file title
-		String title = (params.getString ("title")).trim();
-		state.setAttribute (STATE_ADD_DOCUMENT_TITLE, title);
-
-		// get the add file description
-		String description = params.getCleanString ("description");
-		state.setAttribute (STATE_ADD_DOCUMENT_DESCRIPTION, description);
-
-		// the unqualify fields
-		String u_fields = "";
-		if (title.equals (NULL_STRING))
-		{
-			// the document file display name has not been specified
-			addAlert(state, rb.getString("specifytitle"));
-			u_fields = u_fields + ResourceProperties.PROP_DISPLAY_NAME;
-		}
-		if (content.equals (NULL_STRING))
-		{
-			addAlert(state, rb.getString("specifyfile2"));
-			u_fields = u_fields + "content";
-		}
-		if (copyright!=null && state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) != null && copyright.equals (state.getAttribute(COPYRIGHT_NEW_COPYRIGHT)) && newcopyright == null)
-		{
-			// there is no input for the new copyright
-			addAlert(state, rb.getString("specifycp2"));
-			u_fields = u_fields + ResourceProperties.PROP_COPYRIGHT;
-		}
-		if (state.getAttribute(STATE_MESSAGE) == null)
-		{
-			// add the document file
-
-			// new resource id
-			String newResourceId = collectionId + Validator.escapeResourceName(title);
-
-			Vector titles = new Vector ();
-			titles.add (0, "");
-			titles.add (1, title);
-
-			// test whether the title has ready exist
-			int repeatedNames_index = foundInResource (titles, 1, collectionId, false);
-
-			if (repeatedNames_index!=0)
-			{
-				u_fields = u_fields + " " + title;
-				addAlert(state," " + rb.getString("title")+ " " + title + " " + rb.getString("used3"));
-			}
-			else
-			{
-				ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-				resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, title);
-				resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
-				resourceProperties.addProperty (ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
-				
-				// copyright
-				if (copyright != null && state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) != null && copyright.equals (state.getAttribute(COPYRIGHT_NEW_COPYRIGHT)) && newcopyright != null)
-				{
-					resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, newcopyright);
-				}
-				else if (copyright != null && state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) != null && copyright.equals (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT)))
-				{
-					resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, mycopyright);
-				}
-				if (copyright != null)
-				{
-					resourceProperties.addProperty(ResourceProperties.PROP_COPYRIGHT_CHOICE, copyright);
-				}
-				if (copyrightAlert != null)
-				{
-					resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT_ALERT, copyrightAlert);
-				}
-				
-				try
-				{
-					byte[] contentBytes;
-					try
-					{
-						contentBytes = content.getBytes("UTF-8");
-					}
-					catch (UnsupportedEncodingException e)
-					{
-						contentBytes = content.getBytes();
-						e.printStackTrace();
-					}
-					ContentResource resource = ContentHostingService.addResource (newResourceId, contentType, contentBytes, resourceProperties, noti);
-
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						// deal with pubview in resource mode //%%%
-						boolean pubviewset = getPubViewInheritance(ContentHostingService.getReference(resource.getId()));
-						if (!pubviewset)
-						{
-							setPubView(ContentHostingService.getReference(resource.getId()), pubview);
-						}
-					}
-				}
-				catch (IdUsedException e)
-				{
-					addAlert(state, rb.getString("resotitle") + " " + title + " " + rb.getString("used4"));
-				}
-				catch (IdInvalidException e)
-				{
-					addAlert(state, rb.getString("title") + " " + title + " " + rb.getString("invalid"));
-				}
-				catch (PermissionException e)
-				{
-					addAlert(state, rb.getString("nopermis12"));
-				}
-				catch (OverQuotaException e)
-				{
-					addAlert(state, rb.getString("overquota"));
-				}
-				catch (InconsistentException e)
-				{
-					addAlert(state, RESOURCE_INVALID_TITLE_STRING);
-				}	// try-catch
-			}
-
-		}	// if-else
-
-		if (state.getAttribute(STATE_MESSAGE) != null)
-		{
-			// add document file not sucessful
-
-			// set the unqualified fields
-			Vector v = (Vector) emptyVector (1).clone ();
-			v.set (1, u_fields);
-			state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, v);
-		}
-		else
-		{
-			// add document file sucessful
-			state.setAttribute (STATE_MODE, MODE_LIST);
-			initAddDocumentContext (state);
-
-			// clear the unqualified fields
-			state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, (Vector) emptyVector (1).clone ());
-
-			// make sure the user can view contents of enclosing folder
-			HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
-			String id = params.getString("collectionId");
-			if(!currentMap.containsKey(id))
-			{
-				try
-				{
-					currentMap.put (id,ContentHostingService.getCollection (id));
-					state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
-		
-					// add this folder id into the set to be event-observed
-					addObservingPattern(id, state);
-				}
-				catch (IdUnusedException ignore)
-				{
-				}
-				catch (TypeException ignore)
-				{
-				}
-				catch (PermissionException ignore)
-				{
-				} 
-			}
-		}	// if-else
-		
-	}	// doAdddocument
-
-	/**
-	* Add Url
-	*/
-	public void doAddurl ( RunData data )
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		ParameterParser params = data.getParameters ();
-		
-		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
-
-		// get the submit option
-		String option = params.getString("option");
-		if (option.equalsIgnoreCase("change"))
-		{
-			// change url number
-			addItem(data, params);
-		}
-		else if (option.equalsIgnoreCase("cancel"))
-		{
-			// cancel
-			doCancel(data);
-		}
-		else
-		{
-			// add url(s)
-			String mycopyright = (String) state.getAttribute (STATE_MY_COPYRIGHT);
-			int noti = NotificationService.NOTI_OPTIONAL;
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-			{
-				// set noti to none if in dropbox mode
-				noti = NotificationService.NOTI_NONE;
-			}
-			else
-			{
-				// read the notification options
-				String notification = params.getString("notify");
-				if ("r".equals(notification))
-				{
-					noti = NotificationService.NOTI_REQUIRED;
-				}
-				else if ("n".equals(notification))
-				{
-					noti = NotificationService.NOTI_NONE;
-				}
-			}
-
-			// get the parent collection id
-			String collectionId = params.getString ("collectionId");
-
-			// state.setAttribute (STATE_COLLECTION_ID, collectionId);
-			
-
-			int UrlNumber = Integer.valueOf (params.getString ("urlNumber")).intValue ();
-
-			state.setAttribute (STATE_ADD_URL_NUMBER, new Integer (UrlNumber));
-
-			// initialize the add url context
-			Vector urls = emptyVector(MULTI_ADD_NUMBER + 1);
-			Vector titles = emptyVector(MULTI_ADD_NUMBER + 1);
-			Vector descriptions = emptyVector(MULTI_ADD_NUMBER + 1);
-			Vector copyrights = emptyVector(MULTI_ADD_NUMBER + 1);
-			Vector copyrightAlerts = emptyVector(MULTI_ADD_NUMBER + 1);
-			Vector newcopyrights = emptyVector(MULTI_ADD_NUMBER + 1);
-			Vector unqualified_fields = emptyVector (MULTI_ADD_NUMBER + 1);
-			Vector pubviews = emptyVector (MULTI_ADD_NUMBER + 1);
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-			{
-				pubviews = (Vector) state.getAttribute(STATE_ADD_URL_PUBVIEW);
-			}
-
-
-			boolean sameURLName = false;
-			for (int i=1; i<= UrlNumber; i++ )
-			{
-				// the unqualified field names
-				String u_fields = "";
-
-				// the URL web address
-				String url = (params.getString ("Url" + i)).trim();
-				if (url.equals (NULL_STRING))
-				{
-					// the url field is null
-					addAlert(state, rb.getString("specifyurl"));
-
-					u_fields = u_fields + "URLcontent";
-				}
-				else if (url.indexOf ("://") == -1)
-				{
-					// if it's missing the transport, add http://
-					url = "http://" + url;
-				}
-
-				// valid protocol?
-				try
-				{
-					URL u = new URL(url);
-				}
-				catch (MalformedURLException e1)
-				{
-					try
-					{
-						Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
-						Matcher matcher = pattern.matcher(url);
-						if(matcher.matches())
-						{
-							URL test = new URL("http://" + matcher.group(2));
-						}
-						else
-						{
-							// invalid url
-							addAlert(state, rb.getString("validurl"));
-						}
-					}
-					catch (MalformedURLException e2)
-					{
-						// invalid url
-						addAlert(state, rb.getString("validurl"));
-					}
-				}
-				urls.set (i, url);
-
-				// the URL title
-				String title = (params.getString ("title" + i)).trim();
-				if (title.equals (NULL_STRING))
-				{
-					// the name field is null, get the url substring as the title, www.google.com for http://www.google.com for example.
-					title = url;
-				}
-				titles.set (i, title);
-
-				// the URL description
-				String description = params.getCleanString ("description" + i);
-				descriptions.set (i, description);
-
-				//set the copyright
-				String copyright = StringUtil.trimToNull(params.getString ("copyright" + i));
-				if (copyright!=null)
-				{
-					copyrights.set (i, copyright);
-				}
-
-				String newcopyright = StringUtil.trimToNull(params.getCleanString (NEW_COPYRIGHT + i));
-				if (newcopyright!=null)
-				{
-					newcopyrights.set (i, newcopyright);
-				}
-
-				if (params.getString("copyrightAlert" + i) != null)
-				{
-					copyrightAlerts.set(i, Boolean.TRUE.toString());
-				}
-				else
-				{
-					copyrightAlerts.set(i, null);
-				}
-
-				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-				{
-					boolean pubview = false;
-					pubview = params.getBoolean("pubview" + i);
-					pubviews.set(i, new Boolean(pubview));
-					/*
-					// set pubview
-					String pubviewString = params.getString("pubview" + i);
-					if (pubviewString != null)
-					{
-						pubviews.set(i, new Boolean(pubviewString)); 
-					}
-					*/
-				}
-
-				if (copyright != null && state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) != null && copyright.equals(state.getAttribute(COPYRIGHT_NEW_COPYRIGHT)) && newcopyright == null)
-				{
-					addAlert(state, rb.getString("specifycp3") + " " + i + ". ");
-				}
-				
-				unqualified_fields.set (i, u_fields);
-			}	// for
-
-			state.setAttribute (STATE_ADD_URL_URL, urls);
-			state.setAttribute (STATE_ADD_URL_TITLE, titles);
-			state.setAttribute (STATE_ADD_URL_DESCRIPTION, descriptions);
-			state.setAttribute (STATE_ADD_URL_COPYRIGHT, copyrights);
-			state.setAttribute (STATE_ADD_URL_COPYRIGHT_ALERT, copyrightAlerts);
-			state.setAttribute (STATE_ADD_URL_NEW_COPYRIGHT, newcopyrights);
-
-			if (state.getAttribute(STATE_MESSAGE) == null)
-			{
-				int  repeatedNames_index =  repeatedName (titles, UrlNumber);
-				if (repeatedNames_index > 0)
-				{
-					String n = (String) titles.get (repeatedNames_index);
-					if (n.length ()>0)
-					{
-						addAlert(state, rb.getString("notaddurl") + " " + n + ". ");
-						unqualified_fields.set (repeatedNames_index, (String) unqualified_fields.get (repeatedNames_index) + n);
-					}
-				}
-				else
-				{
-					repeatedNames_index = foundInResource (titles, UrlNumber, collectionId, false);
-
-					if (repeatedNames_index>0)
-					{
-						String n = (String) titles.get (repeatedNames_index);
-						addAlert(state, " " + rb.getString("title") + " " + n + " " + rb.getString("ofurl") + repeatedNames_index + " " + rb.getString("used"));
-						unqualified_fields.set (repeatedNames_index, (String) unqualified_fields.get (repeatedNames_index)  + n);
-					}
-					else
-					{
-						for (int i=1; i<=UrlNumber; i++)
-						{
-
-							// new Url resource id
-							String currentTitle = (String) ((Vector) state.getAttribute (STATE_ADD_URL_TITLE)).get (i);
-							String newResourceId = collectionId + Validator.escapeResourceName (currentTitle);
-
-							ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-							resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, currentTitle);
-							resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, (String) ((Vector) state.getAttribute (STATE_ADD_URL_DESCRIPTION)).get (i));
-							
-							// copyrights
-							String copyrightChoice = StringUtil.trimToNull((String) copyrights.get (i));
-							if (copyrightChoice != null && state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) != null && copyrightChoice.equals (state.getAttribute(COPYRIGHT_NEW_COPYRIGHT)) && StringUtil.trimToNull((String) newcopyrights.get (i)) != null)
-							{
-								resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, (String) newcopyrights.get (i));
-							}
-							else if (copyrightChoice != null && state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) != null && copyrightChoice.equals (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT)))
-							{
-								resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, mycopyright);
-							}
-							resourceProperties.addProperty(ResourceProperties.PROP_COPYRIGHT_CHOICE, (String) copyrights.get(i));
-							if ((String) copyrightAlerts.get(i) != null)
-							{
-								resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT_ALERT, (String) copyrightAlerts.get(i));
-							}
-
-							try
-							{
-								ContentResource resource = ContentHostingService.addResource (newResourceId, ResourceProperties.TYPE_URL, ((String) ((Vector) state.getAttribute (STATE_ADD_URL_URL)).get (i)).getBytes (), resourceProperties, noti);
-
-								if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-								{
-									// deal with pubview in resource mode//%%%
-									boolean pubviewset = getPubViewInheritance(ContentHostingService.getReference(resource.getId()));
-									if (!pubviewset)
-									{
-										setPubView(ContentHostingService.getReference(resource.getId()), ((Boolean) pubviews.get(i)).booleanValue());
-									}
-								}
-							}
-							catch (IdUsedException e)
-							{
-								addAlert(state, rb.getString("titleurl") + " " + currentTitle + " " + rb.getString("used4"));
-							}
-							catch (IdInvalidException e)
-							{
-								addAlert(state, rb.getString("titleurl") + " " + e.getMessage ());
-							}
-							catch (PermissionException e)
-							{
-								addAlert(state, rb.getString("notpermis13") + currentTitle + ". ");
-							}
-							catch (OverQuotaException e)
-							{
-								addAlert(state, rb.getString("overquota"));
-							}
-							catch (InconsistentException e)
-							{
-								addAlert(state, RESOURCE_INVALID_TITLE_STRING);
-							}	// try-catch
-						}	// for
-					}	// if-else
-				}	// if-else
-			}	// if
-
-			if (state.getAttribute(STATE_MESSAGE) != null)
-			{
-				// add url not sucessful
-				state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, unqualified_fields);
-			}
-			else
-			{
-				// add url sucessful
-				state.setAttribute (STATE_MODE, MODE_LIST);
-				initAddURLContext (state);
-				state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, emptyVector (MULTI_ADD_NUMBER + 1));
-				
-				HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
-				String id = params.getString("collectionId");
-				if(!currentMap.containsKey(id))
-				{
-					try
-					{
-						currentMap.put (id,ContentHostingService.getCollection (id));
-						state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
-		
-						// add this folder id into the set to be event-observed
-						addObservingPattern(id, state);
-					}
-					catch (IdUnusedException ignore)
-					{
-					}
-					catch (TypeException ignore)
-					{
-					}
-					catch (PermissionException ignore)
-					{
-					} 
-				}
-			}	// if-else
-		}	// if-else
-
-	}	// doAddurl
-
-	/**
 	* Sort based on the given property
 	*/
-	public void doSort ( RunData data)
+	public static void doSort ( RunData data)
 	{
+		System.out.println(" ----> doSort " + data.getParameters().getPath());
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		//get the ParameterParser from RunData
@@ -7534,100 +5047,6 @@ extends VelocityPortletPaneledAction
 
 	}	// doDeleteconfirm
 
-	/**
-	* set the state name to be "replace" if any item has been selected for replacing
-	*/
-	public void doPrereplace ( RunData data)
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-
-		// replace items
-		Vector replaceItemsVector = new Vector ();
-		replaceItemsVector.add (0, "");
-		Vector titles = new Vector ();
-		titles.add(0, "");
-
-		String[] replaceItems = data.getParameters ().getStrings ("selectedMembers");
-		if (replaceItems == null)
-		{
-			// from revise
-			String id = (String) state.getAttribute (STATE_PROPERTIES_ID);
-
-			if (id==null)
-			{
-				// there is no resource selected, show the alert message to the user
-				addAlert(state, rb.getString("choosefile4"));
-				state.setAttribute (STATE_MODE, MODE_LIST);
-			}
-			else
-			{
-				replaceItemsVector.add ((String) id);
-			}
-			
-			// save properties changes
-			doModifyproperties(data);
-		}
-		else
-		{
-			for (int i=0; i <replaceItems.length; i++)
-			{
-				replaceItemsVector.add (replaceItems[i]);
-			}
-		}
-
-		boolean qualify = true;
-					
-		if (replaceItemsVector.size () > MULTI_ADD_NUMBER )
-		{
-			addAlert(state, rb.getString("notreplace") + " " + MULTI_ADD_NUMBER + " " + rb.getString("itemsone"));
-		}
-		else
-		{
-			for (int i=1; i < replaceItemsVector.size (); i++)
-			{
-				String displayName = NULL_STRING;
-				String id = (String) replaceItemsVector.get (i);
-
-				try
-				{
-					ResourceProperties p = ContentHostingService.getProperties (id);
-					displayName = p.getPropertyFormatted (ResourceProperties.PROP_DISPLAY_NAME);	
-					// prepopulate the title field with the original display name
-					titles.add(i, displayName);
-					
-					if (qualify)
-					{
-						// any item which cannot be replaced?
-						qualify = replaceable(p);
-					}
-				}
-				catch (IdUnusedException e)
-				{
-					addAlert(state,RESOURCE_NOT_EXIST_STRING);
-				}
-				catch (PermissionException e)
-				{
-					addAlert(state, rb.getString("notpermis2") + " " + id);
-				}
-			}	// for
-		}	// if-else
-
-		if (!qualify)
-		{
-			addAlert(state, rb.getString("notreplace1"));
-		}
-		
-		if (state.getAttribute(STATE_MESSAGE) == null)
-		{
-			if (replaceItemsVector.size () > 0)
-			{
-				state.setAttribute (STATE_REPLACE_ID, replaceItemsVector);
-			}
-			state.setAttribute (STATE_REPLACE_TITLE, titles);
-			state.setAttribute (STATE_MODE, MODE_REPLACE);
-		}	// if-else
-
-	}	// doPrereplace
 
 	/**
 	* set the state name to be "cut" if any item has been selected for cutting
@@ -7799,34 +5218,11 @@ extends VelocityPortletPaneledAction
 	}	// doCopy
 
 	/**
-	* select all the item
-	*/
-	public void doSelectall ( RunData data)
-	{
-		// get the state object
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-
-		state.setAttribute (STATE_SELECT_ALL_FLAG,  Boolean.TRUE.toString());
-
-	}	// doSelectall
-
-	/**
-	* Unselect all the item
-	*/
-	public void doUnselectall ( RunData data)
-	{
-		// get the state object
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-
-		state.setAttribute (STATE_SELECT_ALL_FLAG, Boolean.FALSE.toString());
-
-	}	// doSelectall
-	
-	/**
 	* Expand all the collection resources and put in EXPANDED_COLLECTIONS attribute.
 	*/
-	public void doExpandall ( RunData data)
+	static public void doExpandall ( RunData data)
 	{
+		System.out.println(" ----> doExpandall " + data.getParameters().getPath());
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters();
@@ -7859,8 +5255,9 @@ extends VelocityPortletPaneledAction
 	/**
 	* Unexpand all the collection resources
 	*/
-	public void doUnexpandall ( RunData data)
+	public static void doUnexpandall ( RunData data)
 	{
+		System.out.println(" ----> doUnexpandall " + data.getParameters().getPath());
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
@@ -7876,7 +5273,7 @@ extends VelocityPortletPaneledAction
 	* @return an iterator on the DiscussionMessages that are in the response threads
 	* to the specified iteration of messages, in depth first order (may be empty).
 	*/
-	protected Iterator threadIterator(Iterator topLevel)
+	protected static Iterator threadIterator(Iterator topLevel)
 	{
 		// start the depth iteration stack with the topics of the channel
 		final Stack stack = new Stack();
@@ -7996,95 +5393,6 @@ extends VelocityPortletPaneledAction
 	/**
 	* Build the menu.
 	*/
-	private void buildMenu (	VelocityPortlet portlet,
-									Context context,
-									RunData data,
-									SessionState state,
-									boolean allowAdd,
-									boolean allowRemove,
-									boolean allowReplace,
-									boolean allowRevise,
-									boolean emptyFolder,
-									boolean atHome)
-	{
-		context.put("tlang",rb);
-		String copyFlag = ((String)state.getAttribute (STATE_COPY_FLAG));
-		String cutFlag = ((String)state.getAttribute (STATE_CUT_FLAG));
-		String formName = "showForm";
-
-		// build a test menu
-		Menu bar = new Menu (portlet, data, "ResourcesAction");
-// this item can be added to the menu for testing of the new list context, which will replace the show context soon
-//		bar.add(new MenuEntry("List", null, true, MenuItem.CHECKED_NA, "doList", formName));
-		bar.add ( new MenuEntry (rb.getString("new"), null, allowAdd, MenuItem.CHECKED_NA, "doNewitem", formName) );
-		bar.add ( new MenuEntry (rb.getString("delete"), null, (!emptyFolder && allowRemove), MenuItem.CHECKED_NA, "doDeleteconfirm", formName) );
-		bar.add ( new MenuEntry (rb.getString("cut"), null, ((allowAdd)&&(!emptyFolder)), MenuItem.CHECKED_NA, "doCut", formName) );
-		bar.add ( new MenuEntry (rb.getString("copy"), null, ((allowAdd)&&(!emptyFolder)), MenuItem.CHECKED_NA, "doCopy", formName) );
-		if (copyFlag != null && copyFlag.equals (Boolean.TRUE.toString()) || cutFlag != null && cutFlag.equals (Boolean.TRUE.toString()))
-		{
-			// has cut or copy
-			bar.add ( new MenuEntry (rb.getString("paste"), null, allowAdd, MenuItem.CHECKED_NA, "doHandlepaste", formName) );
-			bar.add ( new MenuEntry (rb.getString("pastesh"), null, allowAdd, MenuItem.CHECKED_NA, "doHandlepasteshortcut", formName) );
-		}
-		else
-		{
-			//no cut nor copy yet
-			bar.add ( new MenuEntry (rb.getString("paste"), null, false, MenuItem.CHECKED_NA, "doHandlepaste", formName) );
-			bar.add ( new MenuEntry (rb.getString("pastesh"), null, false, MenuItem.CHECKED_NA, "doHandlepasteshortcut", formName) );
-		}
-		bar.add ( new MenuEntry (rb.getString("replace"), null, ((allowReplace)&&(!emptyFolder)), MenuItem.CHECKED_NA, "doPrereplace", formName) );
-		bar.add ( new MenuEntry (rb.getString("revise"), null, ((allowRevise)&&(!emptyFolder)), MenuItem.CHECKED_NA, "doProperties", formName));
-
-		if (state.getAttribute (STATE_SELECT_ALL_FLAG).equals (Boolean.FALSE.toString()))
-		{
-			bar.add ( new MenuEntry (rb.getString("selectall"), null, !emptyFolder, MenuItem.CHECKED_NA, "doSelectall"));
-		}
-		else
-		{
-			bar.add ( new MenuEntry (rb.getString("unselectall"), null, !emptyFolder, MenuItem.CHECKED_NA, "doUnselectall"));
-		}
-		
-		if (state.getAttribute (STATE_EXPAND_ALL_FLAG).equals (Boolean.FALSE.toString()))
-		{
-			bar.add ( new MenuEntry (rb.getString("expandall"), null, !emptyFolder, MenuItem.CHECKED_NA, "doExpandall", formName));
-		}
-		else
-		{
-			bar.add ( new MenuEntry (rb.getString("collapseall"), null, !emptyFolder, MenuItem.CHECKED_NA, "doUnexpandall", formName));
-		}
-
-		// not for dropbox
-		if (!RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_RESOURCES_MODE)))
-		{
-			// add permissions & options, if allowed
-			if (SiteService.allowUpdateSite(PortalService.getCurrentSiteId()))
-			{
-				bar.add( new MenuDivider());
-
-				// add options if allowed
-				// addOptionsMenu(bar, (JetspeedRunData) data);
-
-				// when at the home collection, offer the permissions for the tool
-				if (atHome)
-				{
-					bar.add( new MenuEntry(rb.getString("permissions"), "doPermissions") );
-				}
-				// otherwise, offer the permissions for the current folder
-				else
-				{
-					bar.add( new MenuEntry(rb.getString("fpermissions"), "doFolder_permissions") );
-				}
-			}
-		}
-
-		context.put (Menu.CONTEXT_MENU, bar);
-		context.put (Menu.CONTEXT_ACTION, state.getAttribute(STATE_ACTION));
-        
-	}	// buildMenu
-
-	/**
-	* Build the menu.
-	*/
 	private void buildListMenu (	VelocityPortlet portlet,
 									Context context,
 									RunData data,
@@ -8108,7 +5416,18 @@ extends VelocityPortletPaneledAction
 	protected void initState(SessionState state, VelocityPortlet portlet, JetspeedRunData data)
 	{
 		super.initState(state, portlet, data);
+		
+		initStateAttributes(state, portlet);
+		
+		initCopyContext (state);
 
+		initCutContext (state);
+
+		
+	}	// initState
+	
+	public static void initStateAttributes(SessionState state, VelocityPortlet portlet)
+	{
 		if (state.getAttribute (STATE_INITIALIZED) != null) return;
 
 		if (state.getAttribute(FILE_UPLOAD_MAX_SIZE) == null)
@@ -8122,8 +5441,12 @@ extends VelocityPortletPaneledAction
 		TimeBreakdown timeBreakdown = (TimeService.newTime()).breakdownLocal ();
 		String mycopyright = COPYRIGHT_SYMBOL + " " + timeBreakdown.getYear () +", " + UserDirectoryService.getCurrentUser().getDisplayName () + ". All Rights Reserved. ";
 		state.setAttribute (STATE_MY_COPYRIGHT, mycopyright);
-
-		state.setAttribute (STATE_MODE, MODE_LIST);
+		
+		if(state.getAttribute(STATE_MODE) == null)
+		{
+			state.setAttribute (STATE_MODE, MODE_LIST);
+			state.setAttribute (STATE_FROM, NULL_STRING);
+		}
 		state.setAttribute (STATE_SORT_BY, ResourceProperties.PROP_DISPLAY_NAME);
 
 		state.setAttribute (STATE_SORT_ASC, Boolean.TRUE.toString());
@@ -8132,14 +5455,20 @@ extends VelocityPortletPaneledAction
 		
 		state.setAttribute (STATE_EXPAND_ALL_FLAG, Boolean.FALSE.toString());
 
-		state.setAttribute (STATE_FROM, NULL_STRING);
-
 		state.setAttribute (STATE_COLLECTION_PATH, new Vector ());
 		
-		// get resources mode from tool registry
-		String resources_mode = portlet.getPortletConfig().getInitParameter("resources_mode");
-		state.setAttribute(STATE_RESOURCES_MODE, resources_mode);
-
+		String resources_mode = null;
+		if(state.getAttribute(STATE_RESOURCES_MODE) == null)
+		{
+			// get resources mode from tool registry
+			resources_mode = portlet.getPortletConfig().getInitParameter("resources_mode");
+			state.setAttribute(STATE_RESOURCES_MODE, resources_mode);
+		}
+		else
+		{
+			resources_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+		}
+		
 		// set the home collection to the parameter, if present, or the default if not
 		String home = StringUtil.trimToNull(portlet.getPortletConfig().getInitParameter("home"));
 		state.setAttribute (STATE_HOME_COLLECTION_DISPLAY_NAME, home);
@@ -8259,50 +5588,17 @@ extends VelocityPortletPaneledAction
 		{
 			state.setAttribute(STATE_EDIT_INTENT, INTENT_REVISE_FILE); 
 		}
-		
-		initCopyContext (state);
 
-		initCutContext (state);
-
-		initAddFileContext (state);
-
-		initAddFolderContext (state);
-
-		initAddDocumentContext (state);
-
-		initAddURLContext (state);
-
-		initReplaceContext (state);
-		
 		// get resources mode from tool registry
 		String optional_properties = portlet.getPortletConfig().getInitParameter("optional_properties");
 		if(optional_properties != null && "true".equalsIgnoreCase(optional_properties))
 		{
 			initMetadataContext(state);
 		}
-		
-//		// setup the observer to notify our MONITOR_PANEL panel(inside the Main panel)
-//		if (state.getAttribute(STATE_OBSERVER) == null)
-//		{			
-//			// the delivery location for this tool
-//			String deliveryId = clientWindowId(state, portlet.getID());
-//
-//			// the html element to update on delivery
-//			String elementId = mainPanelUpdateId(portlet.getID());
-//
-//			// we want the resources in this collection, but not those
-//			// below, except if folders are expanded... -ggolden %%%
-//			HashSet patterns = new HashSet();
-//			patterns.add(ContentHostingService.getReference((String) state.getAttribute (STATE_COLLECTION_ID)));
-//
-//			ContentObservingCourier o = new ContentObservingCourier(deliveryId, elementId, patterns);
-//			o.enable();
-//			state.setAttribute(STATE_OBSERVER, o);
-//		}
-		
+
 		state.setAttribute (STATE_INITIALIZED, Boolean.TRUE.toString());
-		
-	}	// initState
+
+	}
 	
 	/**
 	* Setup our observer to be watching for change events for the collection
@@ -8321,7 +5617,7 @@ extends VelocityPortletPaneledAction
 	 *@param pattern The pattern value to be added
 	 *@param state The state object
 	 */
-	private void addObservingPattern(String pattern, SessionState state)
+	private static void addObservingPattern(String pattern, SessionState state)
 	{
 //		// get the observer and add the pattern
 //		ContentObservingCourier o = (ContentObservingCourier) state.getAttribute(STATE_OBSERVER);
@@ -8337,7 +5633,7 @@ extends VelocityPortletPaneledAction
 	 *@param pattern The pattern value to be removed
 	 *@param state The state object
 	 */
-	private void removeObservingPattern(String pattern, SessionState state)
+	private static void removeObservingPattern(String pattern, SessionState state)
 	{
 //		// get the observer and remove the pattern
 //		ContentObservingCourier o = (ContentObservingCourier) state.getAttribute(STATE_OBSERVER);
@@ -8371,232 +5667,6 @@ extends VelocityPortletPaneledAction
 
 	}	// initCutContent
 
-	/**
-	* initialize the add file context
-	*/
-	private void initAddFileContext (SessionState state)
-	{
-		state.setAttribute (STATE_ADD_FILE_NUMBER, new Integer (1));
-	
-		Vector emptyVector = emptyVector (MULTI_ADD_NUMBER + 1);
-		state.setAttribute (STATE_ADD_FILE_OS_NAME, emptyVector.clone());
-		state.setAttribute (STATE_ADD_FILE_TITLE, emptyVector.clone());
-		state.setAttribute (STATE_ADD_FILE_COPYRIGHT, emptyVector.clone());
-		// default copyright choice
-		Vector copyrightVector = (Vector) emptyVector.clone();
-		int i = 0;
-		if (state.getAttribute(DEFAULT_COPYRIGHT) != null)
-		{
-			for (i = 0; i<copyrightVector.size();i++)
-			{
-				copyrightVector.set(i, state.getAttribute(DEFAULT_COPYRIGHT));
-			}
-		}
-		state.setAttribute(STATE_ADD_FILE_COPYRIGHT, copyrightVector);
-		//default copyright alert choice
-		Vector copyrightAlertVector = (Vector) emptyVector.clone();
-		if (state.getAttribute(DEFAULT_COPYRIGHT_ALERT) != null)
-		{
-			for (i = 0; i<copyrightVector.size();i++)
-			{
-				copyrightAlertVector.set(i, state.getAttribute(DEFAULT_COPYRIGHT_ALERT));
-			}
-		}
-		state.setAttribute(STATE_ADD_FILE_COPYRIGHT_ALERT, copyrightAlertVector);
-		state.setAttribute (STATE_ADD_FILE_CONTENT_TYPE, emptyVector.clone());
-		state.setAttribute (STATE_ADD_FILE_NEW_COPYRIGHT, emptyVector.clone());
-		state.setAttribute (STATE_ADD_FILE_DESCRIPTION, emptyVector.clone());
-		
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			// init add file pubview with false as default
-			String collectionReference = ContentHostingService.getReference((String) state.getAttribute(STATE_COLLECTION_ID));
-			boolean pubviewset = getPubViewInheritance(collectionReference) || getPubView(collectionReference);
-
-			Vector pubViewVector = new Vector();
-			for (i=0; i<MULTI_ADD_NUMBER+1; i++)
-			{
-				if (pubviewset)
-				{
-					pubViewVector.add (i, new Boolean(true));
-				}
-				else
-				{
-					pubViewVector.add (i, new Boolean(false));
-				}
-			}
-			state.setAttribute (STATE_ADD_FILE_PUBVIEW, pubViewVector);
-		}
-		
-		state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, emptyVector.clone());
-		
-		Vector emptyByteVector = new Vector ();
-		for (i=0; i<MULTI_ADD_NUMBER+1; i++)
-		{
-			emptyByteVector.add (i, new byte[1]);
-		}
-		state.setAttribute (STATE_ADD_FILE_CONTENT, emptyByteVector);
-
-	}	// initAddFileContext
-
-	/**
-	* initial the add folder context
-	*/
-	private void initAddFolderContext (SessionState state)
-	{
-		state.setAttribute (STATE_ADD_FOLDER_NUMBER, new Integer (1));
-		
-		Vector emptyVector = emptyVector (MULTI_ADD_NUMBER + 1);
-		state.setAttribute (STATE_ADD_FOLDER_TITLE, emptyVector.clone());
-		state.setAttribute (STATE_ADD_FOLDER_COPYRIGHT, emptyVector.clone());
-		state.setAttribute (STATE_ADD_FOLDER_DESCRIPTION, emptyVector.clone());
-		
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			// init add folder pubview with false as default
-			String collectionReference = ContentHostingService.getReference((String) state.getAttribute(STATE_COLLECTION_ID));
-			boolean pubviewset = getPubViewInheritance(collectionReference) || getPubView(collectionReference);
-			Vector pubViewVector = new Vector();
-			for (int i=0; i<MULTI_ADD_NUMBER+1; i++)
-			{
-				if (pubviewset)
-				{
-					pubViewVector.add (i, new Boolean(true));
-				}
-				else
-				{
-					pubViewVector.add (i, new Boolean(false));
-				}
-			}
-			state.setAttribute (STATE_ADD_FOLDER_PUBVIEW, pubViewVector);
-		}
-		
-		state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, emptyVector.clone());
-
-	}	// initAddFolderContext
-
-	/**
-	* initialize the add document file context
-	*/
-	private void initAddDocumentContext (SessionState state)
-	{
-		state.setAttribute (STATE_ADD_DOCUMENT_CONTENT, NULL_STRING);
-		state.setAttribute (STATE_ADD_DOCUMENT_TITLE, NULL_STRING);
-		state.setAttribute (STATE_ADD_DOCUMENT_COPYRIGHT, NULL_STRING);
-		state.setAttribute (STATE_ADD_DOCUMENT_NEW_COPYRIGHT, NULL_STRING);
-		state.setAttribute (STATE_ADD_DOCUMENT_DESCRIPTION, NULL_STRING);
-		
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			// init add document pubview with false as default
-			String collectionReference = ContentHostingService.getReference((String) state.getAttribute(STATE_COLLECTION_ID));
-			boolean pubviewset = getPubViewInheritance(collectionReference) || getPubView(collectionReference);
-			if (pubviewset)
-			{
-				state.setAttribute (STATE_ADD_DOCUMENT_PUBVIEW, new Boolean(true));
-			}
-			else
-			{
-				state.setAttribute (STATE_ADD_DOCUMENT_PUBVIEW, new Boolean(false));
-			}
-		}
-
-		Vector emptyVector = emptyVector (MULTI_ADD_NUMBER + 1);
-		state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, emptyVector);
-
-	}	// initAddDocumentContext
-
-	/**
-	*	initialize the add URL context
-	*/
-	private void initAddURLContext (SessionState state)
-	{
-		state.setAttribute (STATE_ADD_URL_NUMBER, new Integer (1));
-				
-		Vector v = emptyVector (MULTI_ADD_NUMBER + 1);
-		state.setAttribute (STATE_ADD_URL_TITLE, v.clone());
-		//default copyright choice
-		Vector copyrightVector = (Vector) v.clone();
-		int i = 0;
-		if (state.getAttribute(DEFAULT_COPYRIGHT) != null)
-		{
-			for (i = 0; i<copyrightVector.size();i++)
-			{
-				copyrightVector.set(i, state.getAttribute(DEFAULT_COPYRIGHT));
-			}
-		}
-		state.setAttribute(STATE_ADD_URL_COPYRIGHT, copyrightVector);
-		//default copyright alert choice
-		Vector copyrightAlertVector = (Vector) v.clone();
-		if (state.getAttribute(DEFAULT_COPYRIGHT_ALERT) != null)
-		{
-			for (i = 0; i<copyrightVector.size();i++)
-			{
-				copyrightAlertVector.set(i, state.getAttribute(DEFAULT_COPYRIGHT_ALERT));
-			}
-		}
-		state.setAttribute(STATE_ADD_URL_COPYRIGHT_ALERT, copyrightAlertVector);
-		state.setAttribute (STATE_ADD_URL_URL, v.clone());
-		state.setAttribute (STATE_ADD_URL_NEW_COPYRIGHT, v.clone());
-		state.setAttribute (STATE_ADD_URL_DESCRIPTION, v.clone());
-		
-		// TODO: we are getting null pointer on the "if" line below - lets try to catch it
-		if (state == null)
-		{
-			Log.warn("chef", "ResourcesAction initAddURLContext state null");
-		}
-		if (state.getAttribute(STATE_RESOURCES_MODE) == null)
-		{
-			String home = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
-			Log.warn("chef", "ResourcesAction initAddURLContext state STATE_RESOURCES_MODE missing: home:" + home);	
-		}
-		// TODO:
-
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			// init add URL pubview with false as default
-			String collectionReference = ContentHostingService.getReference((String) state.getAttribute(STATE_COLLECTION_ID));
-			boolean pubviewset = getPubViewInheritance(collectionReference) || getPubView(collectionReference);
-			Vector pubViewVector = new Vector();
-			for (i=0; i<MULTI_ADD_NUMBER+1; i++)
-			{
-				if (pubviewset)
-				{
-					pubViewVector.add (i, new Boolean(true));
-				}
-				else
-				{
-					pubViewVector.add (i, new Boolean(false));
-				}
-			}
-			state.setAttribute (STATE_ADD_URL_PUBVIEW, pubViewVector);
-		}
-		
-		state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, v.clone());
-
-	}	// initAddURLContext
-
-	/**
-	* initialize replace context
-	*/
-	private void initReplaceContext (SessionState state)
-	{
-		Vector v = emptyVector (MULTI_ADD_NUMBER + 1);
-		state.setAttribute (STATE_REPLACE_ID, v.clone());
-		state.setAttribute (STATE_REPLACE_OS_NAME, v.clone());
-		state.setAttribute (STATE_REPLACE_TITLE, v.clone());
-		state.setAttribute (STATE_REPLACE_CONTENT_TYPE, v.clone());
-		state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, v.clone());
-		
-		Vector emptyByteVector = new Vector ();
-		for (int i=0; i<MULTI_ADD_NUMBER + 1; i++)
-		{
-			emptyByteVector.add (i, new byte[1]);
-		}
-		state.setAttribute (STATE_REPLACE_CONTENT, emptyByteVector);
-
-	}	// initReplaceContext
-	
 	/**
 	* initialize properties context
 	*/
@@ -8755,8 +5825,9 @@ extends VelocityPortletPaneledAction
 	 * @throws TypeException
 	 * @throws IdUnusedException
 	*/
-	public void doExpand_collection(RunData data) throws IdUnusedException, TypeException, PermissionException
-	{		
+	public static void doExpand_collection(RunData data) throws IdUnusedException, TypeException, PermissionException
+	{
+		System.out.println(" ----> doExpand_collection " + data.getParameters().getPath());
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
 		
@@ -8775,7 +5846,7 @@ extends VelocityPortletPaneledAction
 	/**
 	* Remove the collection id from the expanded collection list
 	*/
-	public void doCollapse_collection(RunData data)
+	static public void doCollapse_collection(RunData data)
 	{		
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
@@ -8813,7 +5884,7 @@ extends VelocityPortletPaneledAction
 	 * @param currentCollectionId
 	 * @return
 	 */
-	public List getCollectionPath(SessionState state)
+	public static List getCollectionPath(SessionState state)
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
 		// make sure the channedId is set
@@ -8891,87 +5962,6 @@ extends VelocityPortletPaneledAction
 	}
 	
 	/**
-	 * Get the members under this folder that should be seen.
-	 * @param collectionId - String version of 
-	 * @param expandedCollections - Hash of collection resources
-	 * @param sortedBy  - pass through to ContentHostingComparator
-	 * @param sortedAsc - pass through to ContentHostingComparator
-	 * @param state - The session state
-	 */
-	public List getShowMembers(String collectionId, HashMap expandedCollections, String sortedBy, String sortedAsc, SessionState state)
-	{		
-		try
-		{
-			// get the collection
-		    // try using existing resource first
-		    
-			ContentCollection collection = null;
-
-			// get the collection
-			if (expandedCollections.containsKey(collectionId)) {
-			    collection = (ContentCollection) expandedCollections.get(collectionId);
-			}
-			else {
-			    collection = ContentHostingService.getCollection(collectionId);
-			}	
-			
-			// Get the collection members from the 'new' collection
-			List newMembers = collection.getMemberResources ();
-			Collections.sort (newMembers, new ContentHostingComparator (sortedBy, Boolean.valueOf (sortedAsc).booleanValue ()));
-
-			// loop thru the (possibly) new members and add to the list 
-			int size = newMembers.size();
-			Hashtable moreMembers = new Hashtable();
-			for (int i = 0; i< size; i++)
-			{
-		//		String nextId = ((Resource)newMembers.get(i)).getId();
-			    Resource resource = (Resource) newMembers.get(i);
-			    boolean isCollection = resource.getProperties().getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION);
-				
-			    // If this is a collection, and it is already in the list of expanded collections 
-			    // then return a vector of it's members.
-				if (isCollection)
-				{
-				    ContentCollection subCollection = (ContentCollection) resource;
-				    // need to see if it should be expanded
-					if (expandedCollections.containsKey (subCollection.getId()))
-					{
-						if (collection.getMemberResources().size()!=0)
-						{
-							moreMembers.put(new Integer(i), getShowMembers(subCollection.getId(), expandedCollections, sortedBy, sortedAsc, state));
-						}
-					}
-				}
-			}
-			
-			Enumeration keys = moreMembers.keys();
-			while (keys.hasMoreElements())
-			{
-				Integer index = (Integer) keys.nextElement();
-				newMembers.addAll(index.intValue()+1, (Vector) moreMembers.get(index));
-			}
-			return newMembers;
-		}
-		catch (IdUnusedException e)
-		{
-			addAlert(state,"IdUnusedException.");
-		}
-		catch (TypeException e)
-		{
-			addAlert(state, "TypeException.");
-		}
-		catch (PermissionException e)
-		{
-			addAlert(state, "PermissionException");
-		} catch (EmptyException e) 
-		{
-           addAlert(state, "EmptyException");
-        }
-		return new Vector();
-	
-	}	// getShowMembers
-
-	/**
 	 * Get the items in this folder that should be seen.
 	 * @param collectionId - String version of 
 	 * @param expandedCollections - Hash of collection resources
@@ -8982,7 +5972,7 @@ extends VelocityPortletPaneledAction
 	 * @param state - The session state
 	 * @return a List of BrowseItem objects
 	 */
-	public List getBrowseItems(String collectionId, HashMap expandedCollections, String sortedBy, String sortedAsc, BrowseItem parent, boolean isLocal, SessionState state)
+	public static List getBrowseItems(String collectionId, HashMap expandedCollections, String sortedBy, String sortedAsc, BrowseItem parent, boolean isLocal, SessionState state)
 	{		
 		List newItems = new LinkedList();
 		try
@@ -9591,7 +6581,7 @@ extends VelocityPortletPaneledAction
 	 * 
 	 * put copyright info into context
 	 */
-	private void copyrightChoicesIntoContext(SessionState state, Context context)
+	private static void copyrightChoicesIntoContext(SessionState state, Context context)
 	{
 
 		//copyright
@@ -9615,7 +6605,7 @@ extends VelocityPortletPaneledAction
 
 	// TODO: move these to content hosting API
 	
-	private void metadataGroupsIntoContext(SessionState state, Context context)
+	private static void metadataGroupsIntoContext(SessionState state, Context context)
 	{
 
 		context.put("STRING", ResourcesMetadata.WIDGET_STRING);
@@ -9644,7 +6634,7 @@ extends VelocityPortletPaneledAction
 	* @param pubview The public view setting.
 	* @throws InUseException if the ream is not availabe for modification.
 	*/
-	protected void setPubView(String ref, boolean pubview)
+	protected static void setPubView(String ref, boolean pubview)
 	{
 		// edit the realm
 		RealmEdit edit = null;
@@ -9768,7 +6758,7 @@ extends VelocityPortletPaneledAction
 	* @param ref The resource reference
 	* @return true if this resource supports public view, false if not.
 	*/
-	protected boolean getPubView(String ref)
+	protected static boolean getPubView(String ref)
 	{
 		// get the realm
 		try
@@ -9799,7 +6789,7 @@ extends VelocityPortletPaneledAction
 	* @param ref The resource reference
 	* @return true if this resource inherits public view, false if not.
 	*/
-	protected boolean getPubViewInheritance(String ref)
+	protected static boolean getPubViewInheritance(String ref)
 	{
 		// make a reference, and get the relevant realm ids
 		Reference r = new Reference(ref);
@@ -9821,7 +6811,7 @@ extends VelocityPortletPaneledAction
 	/**
 	 * initialize the metadata context
 	 */
-	private void initMetadataContext(SessionState state)
+	private static void initMetadataContext(SessionState state)
 	{
 		// define MetadataSets map
 		List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
@@ -9881,7 +6871,7 @@ extends VelocityPortletPaneledAction
 	/**
 	 * Internal class that encapsulates all information about a resource that is needed in the browse mode
 	 */
-	public class BrowseItem
+	public static class BrowseItem
 	{
 		// attributes of all resources
 		protected String m_name;
@@ -9909,6 +6899,7 @@ extends VelocityPortletPaneledAction
 		protected boolean m_copyrightAlert;
 		protected String m_url;
 		protected boolean m_isLocal;
+		protected boolean m_isAttached;
 		
 				
 		/**
@@ -9930,6 +6921,7 @@ extends VelocityPortletPaneledAction
 			m_canCopy = false;
 			m_isEmpty = true;
 			m_isCopied = false;
+			m_isAttached = false;
 			m_createdBy = "";
 			m_modifiedBy = "";
 			// m_createdTime = TimeService.newTime().toStringLocalDate();
@@ -10324,13 +7316,27 @@ extends VelocityPortletPaneledAction
 			return m_isLocal;
 		}
 		
+		/**
+		 * @return Returns the isAttached.
+		 */
+		public boolean isAttached() 
+		{
+			return m_isAttached;
+		}
+		/**
+		 * @param isAttached The isAttached to set.
+		 */
+		public void setAttached(boolean isAttached) 
+		{
+			this.m_isAttached = isAttached;
+		}
 	}	// inner class BrowseItem
 	
 	
 	/**
 	 * Inner class encapsulates information about resources (folders and items) for editing
 	 */
-	public class EditItem
+	public static class EditItem
 		extends BrowseItem
 	{
 		protected String m_copyrightStatus;
@@ -10804,7 +7810,7 @@ extends VelocityPortletPaneledAction
 	/**
 	 * Inner class encapsulates information about resources (folders and items) during creation process
 	 */
-	public class CreateItem 
+	public static class CreateItem 
 		extends EditItem
 	{
 		protected Set m_missingInformation;
@@ -10870,7 +7876,7 @@ extends VelocityPortletPaneledAction
 	/**
 	 * Inner class encapsulates information about folders (and final item?) in a collection path (a.k.a. breadcrumb)
 	 */
-	public class PathItem
+	public static class PathItem
 	{
 		protected String m_url;
 		protected String m_name;
@@ -11021,7 +8027,7 @@ extends VelocityPortletPaneledAction
 	 * inner class encapsulates information about groups of metadata tags (such as DC, LOM, etc.)
 	 * 
 	 */
-	public class MetadataGroup
+	public static class MetadataGroup
 		extends Vector
 	{
 		protected String m_name;
@@ -11084,6 +8090,3 @@ extends VelocityPortletPaneledAction
 	}
 
 }	// ResourcesAction
-
-
-
