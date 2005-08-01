@@ -56,7 +56,7 @@ public class CollectionUtil
       + "and sstool.site_id = ss.site_id "
       + "and ssuser.user_id = ? "
       + "and ("
-      + "cc.collection_id = concat(concat('/group/', ?),'/') or "
+      + "cc.collection_id = concat(concat('/group/', ss.site_id),'/') or "
       + "cc.collection_id = concat(concat('/user/', ?),'/') or "
       + "cc.collection_id = concat(concat('/attachment/', ?),'/') or "
       + "cc.collection_id = concat(concat('/group-user/', ?),'/') or "
@@ -99,8 +99,7 @@ public class CollectionUtil
   {
     // create SqlReader
     String userId = UsageSessionService.getSessionUserId().trim();
-    Object[] fields = new Object[] { userId, userId, userId, userId, userId,
-        userId };
+    Object[] fields = new Object[] { userId, userId, userId, userId, userId};
     List collectionList = SqlService.dbRead(sql, fields, sr);
     Map collectionMap = new HashMap();
     for (Iterator i = collectionList.iterator(); i.hasNext();)
