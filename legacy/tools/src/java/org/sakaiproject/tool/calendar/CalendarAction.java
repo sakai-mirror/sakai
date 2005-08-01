@@ -75,6 +75,7 @@ import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.TimeRange;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.tool.content.ResourcesAction;
 import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.CalendarUtil;
@@ -2013,27 +2014,28 @@ extends VelocityPortletStateAction
 		
 		String template = (String)getContext(runData).get("template");
 		
-		// if we are in edit attachments...
-		String mode = (String) sstate.getAttribute(AttachmentAction.STATE_MODE);
+		// String mode = (String) sstate.getAttribute(AttachmentAction.STATE_MODE);
+		String mode = (String) sstate.getAttribute(ResourcesAction.STATE_RESOURCES_MODE);
 		if (mode != null)
 		{
 			// if the mode is not done, defer to the AttachmentAction
-			if (!mode.equals(AttachmentAction.MODE_DONE))
+			if (!mode.equals(ResourcesAction.MODE_ATTACHMENT_DONE))
 			{
-				template = AttachmentAction.buildHelperContext(portlet, context, runData, sstate);
+				template = ResourcesAction.buildSelectAttachmentContext(portlet, context, runData, sstate);
+				// template = AttachmentAction.buildHelperContext(portlet, context, runData, sstate);
 				return template;
 			}
 			
 			// when done, get the new attachments, (if null, there was no change)
-			ReferenceVector attachments = (ReferenceVector) sstate.getAttribute(AttachmentAction.STATE_ATTACHMENTS);
+			ReferenceVector attachments = (ReferenceVector) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
 			if (attachments != null)
 			{
 				state.setAttachments(attachments);
 			}
 			
 			// clean up
-			sstate.removeAttribute(AttachmentAction.STATE_MODE);
-			sstate.removeAttribute(AttachmentAction.STATE_ATTACHMENTS);
+			sstate.removeAttribute(ResourcesAction.STATE_MODE);
+			sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
 		}
 		
 		String stateName = state.getState();
@@ -3641,8 +3643,12 @@ extends VelocityPortletStateAction
 		
 		// **************** changed for the new attachment editor **************************
 		
+		sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
+		sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+		sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(false));
+		
 		// setup... we'll use the attachment action's mode
-		sstate.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
+		// sstate.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 		String activitytitle = rundata.getParameters().getString("activitytitle");
 		String stateFromText = rb.getString("java.schedule");
 		if (activitytitle != null && activitytitle.length() > 0)
@@ -3654,7 +3660,7 @@ extends VelocityPortletStateAction
 		// put a copy of the attachments into the state
 		
 		ReferenceVector attachments = State.getAttachments();
-		sstate.setAttribute(AttachmentAction.STATE_ATTACHMENTS, attachments.clone());
+		sstate.setAttribute(ResourcesAction.STATE_ATTACHMENTS, attachments.clone());
 		// whether there is already an attachment //%%%zqian
 		if (attachments.size() > 0)
 		{

@@ -10,7 +10,8 @@
 		<configuration name="resources_mode" value="resources" />
 		<configuration name="home" value="" />
 		<configuration name="optional_properties" value="true" />
-
+		<configuration name="user_sees_all_their_sites" value="false" />
+		
 		<category name="course" />
 		<category name="project" />
 		<category name="myworkspace" />

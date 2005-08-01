@@ -90,6 +90,7 @@ import org.sakaiproject.service.legacy.realm.Role;
 import org.sakaiproject.service.legacy.realm.RoleEdit;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
@@ -103,6 +104,7 @@ import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.ContentHostingComparator;
 import org.sakaiproject.util.FileItem;
@@ -172,6 +174,9 @@ extends VelocityPortletPaneledAction
 
 	/** The resources, helper or dropbox mode. */
 	public static final String STATE_RESOURCES_MODE = "resources.resources_mode";
+	
+	/** The name of a state attribute indicating whether the resources too/helper shows all sites the user has access to */
+	public static final String STATE_SHOW_ALL_SITES = "resources.show_all_sites";
 
 	/** The content type image lookup service in the State. */
 	private static final String STATE_CONTENT_TYPE_IMAGE_SERVICE = "resources.content_type_image_service";
@@ -380,6 +385,8 @@ extends VelocityPortletPaneledAction
 	private static final String COPYRIGHT_SELF_COPYRIGHT = rb.getString("cpright2");
 	private static final String COPYRIGHT_NEW_COPYRIGHT = rb.getString("cpright3");
 	private static final String COPYRIGHT_ALERT_URL = ServerConfigurationService.getAccessUrl() + COPYRIGHT_PATH;
+
+	public static final String STATE_ATTACHMENTS = "resources.attachements";
 
 	/**
 	* Build the context for normal display
@@ -620,10 +627,17 @@ extends VelocityPortletPaneledAction
 				roots.add(root);
 			}
 			
-			if(atHome)
+			boolean show_all_sites = false;
+			// In helper mode, calling tool should set attribute STATE_SHOW_ALL_SITES
+			String user_sees_all_their_sites = (String) state.getAttribute(STATE_SHOW_ALL_SITES);
+			if(user_sees_all_their_sites != null && user_sees_all_their_sites.equalsIgnoreCase(Boolean.toString(true)))
+			{
+				show_all_sites = true;
+			}
+
+			if(atHome && show_all_sites)
 			{
 				Map othersites = CollectionUtil.getCollectionMap();
-				// getContentCollections();
 				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
 				{
@@ -702,7 +716,6 @@ extends VelocityPortletPaneledAction
 										RunData data,
 										SessionState state)
 	{
-		System.out.println(" ----> buildHelperContext " + data.getParameters().getPath());
 		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
 		
 		String template = null;
@@ -737,7 +750,6 @@ extends VelocityPortletPaneledAction
 										RunData data,
 										SessionState state)
 	{
-		System.out.println(" ----> buildSelectAttachmentContext " + data.getParameters().getPath());
 		context.put("tlang",rb);
 		
 		initStateAttributes(state, portlet);
@@ -753,6 +765,7 @@ extends VelocityPortletPaneledAction
 			state.setAttribute(STATE_HELPER_NEW_ITEMS, new_items);
 		}
 		context.put("attached", new_items);
+		context.put("last", new Integer(new_items.size() - 1));
 		
 		// find the ContentTypeImage service
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
@@ -840,9 +853,17 @@ extends VelocityPortletPaneledAction
 				roots.add(root);
 			}
 			
-			if(atHome)
+			boolean show_all_sites = false;
+			// In helper mode, calling tool should set attribute STATE_SHOW_ALL_SITES
+			String user_sees_all_their_sites = (String) state.getAttribute(STATE_SHOW_ALL_SITES);
+			if(user_sees_all_their_sites != null && user_sees_all_their_sites.equalsIgnoreCase(Boolean.toString(true)))
 			{
-				Map othersites = getContentCollections();
+				show_all_sites = true;
+			}
+
+			if(atHome && show_all_sites)
+			{
+				Map othersites = CollectionUtil.getCollectionMap();
 				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
 				{
@@ -907,66 +928,6 @@ extends VelocityPortletPaneledAction
 		return TEMPLATE_SELECT;
 		
 	}	// buildHelperContext
-
-	/**
-	 * @return
-	 */
-	private static Map getContentCollections() 
-	{
-		Map collections = new Hashtable();
-		// get all of user's sites
-		List mySites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
-				null, null, null,
-				SortType.TITLE_ASC,
-				new PagingPosition(1,50));
-		
-		// add user's MyWorkspace to beginning of list
-		String userId = UserDirectoryService.getCurrentUser().getId();
-		String workspaceId = SiteService.getUserSiteId(userId);
-		try
-		{
-			mySites.add(0, SiteService.getSite(workspaceId));
-		}
-		catch(Exception ignore) {}
-		
-		// find resources tools and add their root folders to the list of user's roots
-		Iterator siteIt = mySites.iterator();
-		while(siteIt.hasNext())
-		{
-			Site site = (Site) siteIt.next();
-			List pages = site.getPages();
-			Iterator pageIt = pages.iterator();
-			while(pageIt.hasNext())
-			{
-				SitePage page = (SitePage) pageIt.next();
-				List tools = page.getTools();
-				Iterator toolIt = tools.iterator();
-				while(toolIt.hasNext())
-				{
-					ToolConfiguration tool = (ToolConfiguration) toolIt.next();
-					String collId = null;
-					String displayName = null;
-					if(tool == null || tool.getTool() == null)
-					{
-						//
-					}
-					else if("sakai.dropbox".equals(tool.getTool().getId()))
-					{
-						collId = Dropbox.getCollection(tool.getContext());
-						displayName = site.getTitle() + " " + rb.getString("gen.drop");
-						collections.put(collId, displayName);
-					}
-					else if("sakai.resources".equals(tool.getTool().getId()))
-					{
-						collId = ContentHostingService.getSiteCollection(tool.getContext());
-						displayName = site.getTitle() + " " + rb.getString("gen.reso");
-						collections.put(collId, displayName);
-					}
-				}
-			}
-		}
-		return collections;
-	}
 
 	/**
 	* Expand all the collection resources and put in EXPANDED_COLLECTIONS attribute.
@@ -1398,7 +1359,6 @@ extends VelocityPortletPaneledAction
 	*/
 	public static void doNavigate ( RunData data )
 	{
-		System.out.println(" ----> doNavigate " + data.getParameters().getPath());
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		if (state.getAttribute (STATE_SELECT_ALL_FLAG)!=null && state.getAttribute (STATE_SELECT_ALL_FLAG).equals (Boolean.TRUE.toString()))
@@ -1474,6 +1434,7 @@ extends VelocityPortletPaneledAction
 	 */
 	public static void doCreate(RunData data)
 	{
+
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		
@@ -2026,6 +1987,11 @@ extends VelocityPortletPaneledAction
 							setPubView(ContentHostingService.getReference(resource.getId()), item.isPubview());
 						}
 					}
+					String mode = (String) state.getAttribute(STATE_MODE);
+					if(MODE_HELPER.equals(mode))
+					{
+						attachItem(newResourceId, state);
+					}
 				}
 				catch (IdUsedException e)
 				{
@@ -2158,10 +2124,73 @@ extends VelocityPortletPaneledAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		
-		// %%%%%
+		String itemId = params.getString("itemId");
+		attachItem(itemId, state);
 
 		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
 
+	}
+	
+	public static void doAddattachments(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+		
+		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+		
+		// add to the attachments vector
+		ReferenceVector attachments = (ReferenceVector) state.getAttribute(STATE_ATTACHMENTS);
+		
+		Iterator it = attached.iterator();
+		while(it.hasNext())
+		{
+			AttachItem item = (AttachItem) it.next();
+			
+			try
+			{
+				Reference ref = new Reference(ContentHostingService.getReference(item.getId()));
+				attachments.add(ref);
+			}
+			catch(Exception e)
+			{
+				
+			}
+		}
+		state.setAttribute(STATE_ATTACHMENTS, attachments);
+
+		// if there is at least one attachment
+		if (attachments.size() > 0)
+		{
+			state.setAttribute(AttachmentAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
+		}
+		
+		// end up in main mode
+		state.setAttribute(STATE_MODE, AttachmentAction.MODE_MAIN);
+		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+
+	}
+	
+	public static void attachItem(String itemId, SessionState state)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
+		try
+		{
+			ResourceProperties props = contentService.getProperties(itemId);
+			String displayName = props.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
+			String containerId = contentService.getContainingCollectionId (itemId);
+			String accessUrl = contentService.getUrl(itemId);
+	
+			AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
+	
+			List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+			if(attached == null)
+			{
+				attached = new Vector();
+			}
+			attached.add(item);
+			state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
+		}
+		catch(Exception ignore) {}
 	}
 	
 	protected static List createPropertiesList(String namespace, List fields)
@@ -2326,6 +2355,12 @@ extends VelocityPortletPaneledAction
 							setPubView(ContentHostingService.getReference(resource.getId()), item.isPubview());
 						}
 					}
+					String mode = (String) state.getAttribute(STATE_MODE);
+					if(MODE_HELPER.equals(mode))
+					{
+						attachItem(newResourceId, state);
+					}
+					
 				}
 				catch (IdUsedException e)
 				{
@@ -2906,7 +2941,7 @@ extends VelocityPortletPaneledAction
 		}	// cut
 
 		// handling copy and paste
-		if (((String) state.getAttribute (STATE_COPY_FLAG)).equals (Boolean.TRUE.toString()))
+		if (Boolean.toString(true).equalsIgnoreCase((String) state.getAttribute (STATE_COPY_FLAG)))
 		{
 			for (int i = 0; i < pasteCopiedItems.size (); i++)
 			{
@@ -3022,7 +3057,7 @@ extends VelocityPortletPaneledAction
 			}
 			
 			// reset the copy flag
-			if (((String)state.getAttribute (STATE_COPY_FLAG)).equals (Boolean.TRUE.toString()))
+			if (Boolean.toString(true).equalsIgnoreCase((String)state.getAttribute (STATE_COPY_FLAG)))
 			{
 				state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
 			}
@@ -4878,7 +4913,6 @@ extends VelocityPortletPaneledAction
 	*/
 	public static void doSort ( RunData data)
 	{
-		System.out.println(" ----> doSort " + data.getParameters().getPath());
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		//get the ParameterParser from RunData
@@ -5222,7 +5256,6 @@ extends VelocityPortletPaneledAction
 	*/
 	static public void doExpandall ( RunData data)
 	{
-		System.out.println(" ----> doExpandall " + data.getParameters().getPath());
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters();
@@ -5257,7 +5290,6 @@ extends VelocityPortletPaneledAction
 	*/
 	public static void doUnexpandall ( RunData data)
 	{
-		System.out.println(" ----> doUnexpandall " + data.getParameters().getPath());
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
@@ -5417,13 +5449,15 @@ extends VelocityPortletPaneledAction
 	{
 		super.initState(state, portlet, data);
 		
+		if(state.getAttribute(STATE_INITIALIZED) == null)
+		{
+			initCopyContext(state); 
+		}
+		
+		
+		
 		initStateAttributes(state, portlet);
-		
-		initCopyContext (state);
-
-		initCutContext (state);
-
-		
+				
 	}	// initState
 	
 	public static void initStateAttributes(SessionState state, VelocityPortlet portlet)
@@ -5457,16 +5491,29 @@ extends VelocityPortletPaneledAction
 
 		state.setAttribute (STATE_COLLECTION_PATH, new Vector ());
 		
-		String resources_mode = null;
-		if(state.getAttribute(STATE_RESOURCES_MODE) == null)
+		// In helper mode, calling tool should set attribute STATE_RESOURCES_MODE
+		String resources_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+		if(resources_mode == null)
 		{
 			// get resources mode from tool registry
 			resources_mode = portlet.getPortletConfig().getInitParameter("resources_mode");
 			state.setAttribute(STATE_RESOURCES_MODE, resources_mode);
 		}
-		else
+		
+		// In helper mode, calling tool should set attribute STATE_SHOW_ALL_SITES
+		String user_sees_all_their_sites = (String) state.getAttribute(STATE_SHOW_ALL_SITES);
+		if(user_sees_all_their_sites == null)
 		{
-			resources_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+			// get resources mode from tool registry
+			user_sees_all_their_sites = portlet.getPortletConfig().getInitParameter("user_sees_all_their_sites");
+			if(user_sees_all_their_sites != null && user_sees_all_their_sites.equalsIgnoreCase(Boolean.toString(true)))
+			{
+				state.setAttribute(STATE_SHOW_ALL_SITES, Boolean.toString(true));
+			}
+			else
+			{
+				state.setAttribute(STATE_SHOW_ALL_SITES, Boolean.toString(false));
+			}
 		}
 		
 		// set the home collection to the parameter, if present, or the default if not
@@ -5827,7 +5874,6 @@ extends VelocityPortletPaneledAction
 	*/
 	public static void doExpand_collection(RunData data) throws IdUnusedException, TypeException, PermissionException
 	{
-		System.out.println(" ----> doExpand_collection " + data.getParameters().getPath());
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
 		
@@ -5847,7 +5893,7 @@ extends VelocityPortletPaneledAction
 	* Remove the collection id from the expanded collection list
 	*/
 	static public void doCollapse_collection(RunData data)
-	{		
+	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
 		
@@ -6088,7 +6134,7 @@ extends VelocityPortletPaneledAction
 			folder.setCanAddItem(canAddItem);
 			folder.setCanAddFolder(canAddFolder);
 			folder.setCanDelete(canDelete);
-
+			
 			try
 			{
 				Time createdTime = cProperties.getTimeProperty(ResourceProperties.PROP_CREATION_DATE);
@@ -6135,9 +6181,10 @@ extends VelocityPortletPaneledAction
 			String url = contentService.getUrl(collectionId);
 			folder.setUrl(url);
 
+			//int collection_size = contentService.getCollectionSize(collectionId);
+			//folder.setIsEmpty(collection_size > 0);
 			
-			// folder.setIsEmpty(newMembers.size() == 0);
-			folder.setIsEmpty(false);			
+			folder.setIsEmpty(false);
 			folder.setDepth(depth);
 			newItems.add(folder);
 			
@@ -8089,4 +8136,85 @@ extends VelocityPortletPaneledAction
 
 	}
 
+	public static class AttachItem
+	{
+		protected String m_id;
+		protected String m_displayName;
+		protected String m_accessUrl;
+		protected String m_collectionId;
+
+		/**
+		 * @param id
+		 * @param displayName
+		 * @param collectionId
+		 * @param accessUrl
+		 */
+		public AttachItem(String id, String displayName, String collectionId, String accessUrl)
+		{
+			m_id = id;
+			m_displayName = displayName;
+			m_collectionId = collectionId;
+			m_accessUrl = accessUrl;
+			
+		}
+		
+		/**
+		 * @return Returns the accessUrl.
+		 */
+		public String getAccessUrl() 
+		{
+			return m_accessUrl;
+		}
+		/**
+		 * @param accessUrl The accessUrl to set.
+		 */
+		public void setAccessUrl(String accessUrl) 
+		{
+			m_accessUrl = accessUrl;
+		}
+		/**
+		 * @return Returns the collectionId.
+		 */
+		public String getCollectionId() 
+		{
+			return m_collectionId;
+		}
+		/**
+		 * @param collectionId The collectionId to set.
+		 */
+		public void setCollectionId(String collectionId) 
+		{
+			m_collectionId = collectionId;
+		}
+		/**
+		 * @return Returns the id.
+		 */
+		public String getId() 
+		{
+			return m_id;
+		}
+		/**
+		 * @param id The id to set.
+		 */
+		public void setId(String id) 
+		{
+			m_id = id;
+		}
+		/**
+		 * @return Returns the name.
+		 */
+		public String getDisplayName() 
+		{
+			return m_displayName;
+		}
+		/**
+		 * @param name The name to set.
+		 */
+		public void setDisplayName(String name) 
+		{
+			m_displayName = name;
+		}
+		
+	}
+	
 }	// ResourcesAction

@@ -78,6 +78,7 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.tool.content.ResourcesAction;
 import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.Filter;
@@ -710,27 +711,29 @@ extends PagedResourceActionII
 
 		String template = (String) getContext(rundata).get("template");
 
-		// if we are in edit attachments...
-		String mode = (String) sstate.getAttribute(AttachmentAction.STATE_MODE);
+		// String mode = (String) sstate.getAttribute(AttachmentAction.STATE_MODE);
+		String mode = (String) sstate.getAttribute(ResourcesAction.STATE_RESOURCES_MODE);
 		if (mode != null)
 		{
 			// if the mode is not done, defer to the AttachmentAction
-			if (!mode.equals(AttachmentAction.MODE_DONE))
+			if (!mode.equals(ResourcesAction.MODE_ATTACHMENT_DONE))
 			{
-				template = AttachmentAction.buildHelperContext(portlet, context, rundata, sstate);
+				template = ResourcesAction.buildHelperContext(portlet, context, rundata, sstate);
+				// template = AttachmentAction.buildHelperContext(portlet, context, runData, sstate);
 				return template;
 			}
 		}
+		
 		// when done, take the new set of attachments, (if null, there was no change)
-		ReferenceVector attachments = (ReferenceVector) sstate.getAttribute(AttachmentAction.STATE_ATTACHMENTS);
+		ReferenceVector attachments = (ReferenceVector) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
 		if (attachments != null)
 		{
 			state.setAttachments(attachments);
 		}
 
 		// clean up
-		sstate.removeAttribute(AttachmentAction.STATE_MODE);
-		sstate.removeAttribute(AttachmentAction.STATE_ATTACHMENTS);
+		sstate.removeAttribute(ResourcesAction.STATE_MODE);
+		sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
 
 		// get the current channel ID from state object or prolet initial parameter
 		String channelId = state.getChannelId();
@@ -2662,9 +2665,10 @@ extends PagedResourceActionII
 				((JetspeedRunData) data).getJs_peid());
 
 		// setup... we'll use the attachment action's mode
-		state.setAttribute(
-			AttachmentAction.STATE_MODE,
-			AttachmentAction.MODE_MAIN);
+		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
+		state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+		state.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
+//		state.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 		
 		String subject = data.getParameters().getString("subject");
 		String stateFromText = rb.getString("java.theann");//"the announcement";
@@ -2691,7 +2695,7 @@ extends PagedResourceActionII
 			state.setAttribute(AttachmentAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.FALSE);
 		}
 		state.setAttribute(
-			AttachmentAction.STATE_ATTACHMENTS,
+			ResourcesAction.STATE_ATTACHMENTS,
 			attachments.clone());
 
 		// read in the input of subject and body
