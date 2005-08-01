@@ -1779,7 +1779,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// check security (throws if not permitted)
         checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_REMOVE, id);
-
+		
+		//htripath -store the metadata information into a delete table
+		// assumed uuid is not null as checkExplicitLock(id) throws exception when null
+		String uuid=this.getUuid(id);
+		String userId = UsageSessionService.getSessionUserId().trim();
+	  addResourceToDeleteTable(edit,uuid,userId) ;
+      
 		// complete the edit
 		m_storage.removeResource(edit);
 
@@ -1811,6 +1817,61 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 	} // removeResource
 
+	//htripath -start
+	/** Store the resource in a separate delete table */
+  public void addResourceToDeleteTable(ContentResourceEdit edit, String uuid,String userId)
+      throws PermissionException
+  {
+    ContentResource newResource = addDeleteResource(edit.getId(), edit
+        .getContentType(), edit.getContent(), edit.getProperties(), uuid, userId,
+        NotificationService.NOTI_OPTIONAL);
+  }
+
+  public ContentResource addDeleteResource(String id, String type,
+      byte[] content, ResourceProperties properties, String uuid, String userId,int priority)
+      throws PermissionException
+  {
+    id = (String) ((Hashtable) fixTypeAndId(id, type)).get("id");
+    // resource must also NOT end with a separator characters (fix it)
+    if (id.endsWith(Resource.SEPARATOR))
+    {
+      id = id.substring(0, id.length() - 1);
+    }
+    // check security-unlock to add record
+    unlock(EVENT_RESOURCE_ADD, id);
+
+    // reserve the resource in storage - it will fail if the id is in use
+    BaseResourceEdit edit = (BaseResourceEdit) m_storage.putDeleteResource(id,
+        uuid,userId);
+    // add live properties-do we need this? - done to have uniformity with main table
+    if (edit != null)
+    {
+      addLiveResourceProperties(edit);
+    }
+    // track event - do we need this? no harm to keep track
+    edit.setEvent(EVENT_RESOURCE_ADD);
+
+    edit.setContentType(type);
+    edit.setContent(content);
+    addProperties(edit.getPropertiesEdit(), properties);
+
+    // complete the edit - update xml which contains properties xml and store the file content
+    m_storage.commitDeleteResource(edit, uuid);
+
+    // track it
+    EventTrackingService.post(EventTrackingService.newEvent(
+        ((BaseResourceEdit) edit).getEvent(), edit.getReference(), true,
+        priority));
+
+    // close the edit object
+    ((BaseResourceEdit) edit).closeEdit();
+
+    return edit;
+
+  } // addDeleteResource
+
+  //htripath-end
+	
 	/**
 	* check permissions for rename().
 	* Note: for just this collection, not the members on down.
@@ -4464,6 +4525,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 */
 		public InputStream streamResourceBody(ContentResource resource)  throws ServerOverloadException;
 
+		//htripath-storing into shadow table before deleting the resource
+		public void commitDeleteResource(ContentResourceEdit edit,String uuid);
+		public ContentResourceEdit putDeleteResource(String resourceId,String uuid,String userId);
+		
 	} // Storage
 
 	/*******************************************************************************

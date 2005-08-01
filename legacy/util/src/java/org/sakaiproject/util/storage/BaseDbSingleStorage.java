@@ -40,6 +40,8 @@ import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.resource.Edit;
 import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.util.Filter;
 import org.sakaiproject.util.Validator;
@@ -527,6 +529,147 @@ public class BaseDbSingleStorage
 
 	}   // putResource
 
+	//htripath-start
+	/** store the record in content_resource_delete table along with resource_uuid and date */
+  public Edit putDeleteResource(String id, String uuid, String userId,Object[] others)
+  {
+    Resource entry = m_user.newResource(null, id, others);
+
+    // form the XML and SQL for the insert
+    Document doc = Xml.createDocument();
+    entry.toXml(doc, new Stack());
+    String xml = Xml.writeDocumentToString(doc);
+    String statement = "insert into "
+        + m_resourceTableName
+        + insertDeleteFields(m_resourceTableIdField,
+            m_resourceTableOtherFields, "RESOURCE_UUID", "DELETE_DATE", "DELETE_USERID","XML")
+        + " values ( ?, " + valuesParams(m_resourceTableOtherFields)
+        + " ? ,? ,? ,?)";
+
+    Object[] flds = m_user.storageFields(entry);
+    if (flds == null) flds = new Object[0];
+    Object[] fields = new Object[flds.length + 5];
+    System.arraycopy(flds, 0, fields, 1, flds.length);
+    fields[0] = caseId(entry.getId());
+    //uuid added here
+    fields[fields.length - 4] = uuid;
+    //date added here
+    fields[fields.length - 3] = TimeService.newTime();//.toStringLocalDate(); 
+    
+    //userId added here
+    fields[fields.length - 2] = userId;
+    fields[fields.length - 1] = xml;
+
+    // process the insert
+    boolean ok = m_sql.dbWrite(statement, fields);
+
+    // if this failed, assume a key conflict (i.e. id in use)
+    if (!ok) return null;
+
+    // now get a lock on the record for edit
+    Edit edit = editResource(id);
+    if (edit == null)
+    {
+      Log.warn("chef", this + ".putResourceDelete(): didn't get a lock!");
+      return null;
+    }
+
+    return edit;
+  } // putResourceDelete
+
+  /** Construct the SQL statement */
+  protected String insertDeleteFields(String before, String[] fields,
+      String uuid, String date,String userId, String after)
+  {
+    StringBuffer buf = new StringBuffer();
+    buf.append(" (");
+    buf.append(before);
+    buf.append(",");
+    if (fields != null)
+    {
+      for (int i = 0; i < fields.length; i++)
+      {
+        buf.append(fields[i] + ",");
+      }
+    }
+    buf.append(uuid);
+    buf.append(",");
+    buf.append(date);
+    buf.append(",");
+    buf.append(userId);
+    buf.append(",");
+    buf.append(after);
+    buf.append(")");
+
+    return buf.toString();
+
+  } // insertFieldsDelete
+
+  /** update XML attribute on properties and remove locks */
+  public void commitDeleteResource(Edit edit, String uuid)
+  {
+    // form the SQL statement and the var w/ the XML
+    Document doc = Xml.createDocument();
+    edit.toXml(doc, new Stack());
+    String xml = Xml.writeDocumentToString(doc);
+    Object[] flds = m_user.storageFields(edit);
+    if (flds == null) flds = new Object[0];
+    Object[] fields = new Object[flds.length + 2];
+    System.arraycopy(flds, 0, fields, 0, flds.length);
+    fields[fields.length - 2] = xml;
+    fields[fields.length - 1] = uuid;//caseId(edit.getId());
+
+    String statement = "update " + m_resourceTableName + " set "
+        + updateSet(m_resourceTableOtherFields) + " XML = ?"
+        + " where ( RESOURCE_UUID = ? )";
+
+    if (m_locksAreInDb)
+    {
+      // use this connection that is stored with the lock
+      Connection lock = (Connection) m_locks.get(edit.getReference());
+      if (lock == null)
+      {
+        Log.warn("chef", this + ".commitResource(): edit not in locks");
+        return;
+      }
+      // update, commit, release the lock's connection
+      m_sql.dbUpdateCommit(statement, fields, null, lock);
+      // remove the lock
+      m_locks.remove(edit.getReference());
+    }
+
+    else
+      if (m_locksAreInTable)
+      {
+        // process the update
+        m_sql.dbWrite(statement, fields);
+
+        // remove the lock
+        statement = "delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
+
+        // collect the fields
+        Object lockFields[] = new Object[2];
+        lockFields[0] = m_resourceTableName;
+        lockFields[1] = internalRecordId(caseId(edit.getId()));
+        boolean ok = m_sql.dbWrite(statement, lockFields);
+        if (!ok)
+        {
+          Logger.warn(this + ".commit: missing lock for table: "
+              + lockFields[0] + " key: " + lockFields[1]);
+        }
+      }
+      else
+      {
+        // just process the update
+        m_sql.dbWrite(statement, fields);
+
+        // remove the lock
+        m_locks.remove(edit.getReference());
+      }
+
+  } // commitResourceDelete	
+	//htripath-end
+	
 	/**
 	* Get a lock on the Resource with this id, or null if a lock cannot be gotten.
 	* @param id The user id.

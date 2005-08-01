@@ -42,6 +42,7 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
+import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.content.ContentCollection;
@@ -49,6 +50,8 @@ import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.ContentResourceEdit;
 import org.sakaiproject.service.legacy.content.LockManager;
+import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
@@ -90,6 +93,12 @@ public class DbContentService
 	/** The extra field(s) to write to the database - resources - when we are doing bodys the db. */
 	protected static final String[] RESOURCE_FIELDS = { "IN_COLLECTION" };
 
+	//htripath -start
+	/** Table name for resources delete. */
+	protected String m_resourceDeleteTableName = "CONTENT_RESOURCE_DELETE";
+	/** Table name for resources delete. */
+	protected String m_resourceBodyDeleteTableName = "CONTENT_RESOURCE_BODY_BINARY_DELETE";
+	//htripath-end
 	/*******************************************************************************
 	* Constructors, Dependencies and their setter methods
 	*******************************************************************************/
@@ -178,7 +187,17 @@ public class DbContentService
 	{
 		m_autoDdl = new Boolean(value).booleanValue();
 	}
-
+	
+	//htripath-start
+	public void setResourceDeleteTableName(String name)
+	{
+		m_resourceDeleteTableName = name;
+	}
+	public void setResourceBodyDeleteTableName(String name)
+	{
+		m_resourceBodyDeleteTableName = name;
+	}	
+	//htripath-end
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -383,6 +402,9 @@ public class DbContentService
 		/** A storage for resources. */
 		protected BaseDbSingleStorage m_resourceStore = null;
 
+		/** htripath- Storage for resources delete */
+		protected BaseDbSingleStorage m_resourceDeleteStore = null;		
+		
 		/**
 		* Construct.
 		* @param collectionUser The StorageUser class to call back for creation of collection objects.
@@ -398,6 +420,10 @@ public class DbContentService
 			m_resourceStore = new BaseDbSingleStorage(
 					m_resourceTableName, "RESOURCE_ID", (bodyInFile ? RESOURCE_FIELDS_FILE : RESOURCE_FIELDS), m_locksInDb, "resource", resourceUser, m_sqlService);	
 
+			//htripath-build the resource for store of deleted record-single level store
+			m_resourceDeleteStore = new BaseDbSingleStorage(
+			    m_resourceDeleteTableName, "RESOURCE_ID", (bodyInFile ? RESOURCE_FIELDS_FILE : RESOURCE_FIELDS), m_locksInDb, "resource", resourceUser, m_sqlService);				
+			
 		}	// DbStorage
 
 		/**
@@ -407,7 +433,7 @@ public class DbContentService
 		{
 			m_collectionStore.open();
 			m_resourceStore.open();
-
+			m_resourceDeleteStore.open();
 		}	// open
 
 		/**
@@ -416,8 +442,8 @@ public class DbContentService
 		public void close()
 		{
 			m_collectionStore.close();
-			m_resourceStore.close();
-
+			m_resourceStore.close();	
+			m_resourceDeleteStore.close();
 		}	// open
 
 		/** Collections **/
@@ -539,6 +565,89 @@ public class DbContentService
 			}
 		}
 
+		//htripath - start
+		/** Add resource to content_resouce_delete table for user deleted resources */
+    public ContentResourceEdit putDeleteResource(String id, String uuid,String userId)
+    {
+      return (ContentResourceEdit) m_resourceDeleteStore.putDeleteResource(id,
+          uuid,userId,null);
+    }
+
+    /** update xml  and store the body of file 
+     * TODO storing of body content is not used now.*/
+    public void commitDeleteResource(ContentResourceEdit edit, String uuid)
+    {
+      // keep the body out of the XML
+      byte[] body = ((BaseResourceEdit) edit).m_body;
+      ((BaseResourceEdit) edit).m_body = null;
+
+      //update properties in xml and delete locks
+      m_resourceDeleteStore.commitDeleteResource(edit, uuid);
+
+      //store Body/content
+//      if (body != null)
+//      {
+//        if (m_bodyPath != null)
+//        {
+//          File file = new File(externalResourceDeleteFileName(edit));
+//
+//          // delete the old
+//          if (file.exists())
+//          {
+//            file.delete();
+//          }
+//          // add the new
+//          try
+//          {
+//            // make sure all directories are there
+//            File container = file.getParentFile();
+//            if (container != null)
+//            {
+//              container.mkdirs();
+//            }
+//
+//            // write the file
+//            FileOutputStream out = new FileOutputStream(file);
+//            out.write(body);
+//            out.close();
+//          }
+//          catch (Throwable t)
+//          {
+//            m_logger.warn(this + ": failed to write resource: " + edit.getId()
+//                + " : " + t);
+//          }
+//        }
+//        else
+//        {
+//          // delete the old
+//          String statement = "delete from " + m_resourceBodyDeleteTableName
+//              + " where resource_uuid = ? ";
+//
+//          Object[] fields = new Object[1];
+//          fields[0] = uuid;
+//
+//          m_sqlService.dbWrite(statement, fields);
+//
+//          // add the new
+//          Object[] flds = new Object[2];
+//          flds[0] = edit.getId();
+//          flds[1] = uuid;
+//
+//          statement = "insert into " + m_resourceBodyDeleteTableName
+//              + " (RESOURCE_ID,RESOURCE_UUID,BODY)" + " values (? ,?, ? )";
+//
+//          m_sqlService.dbWriteBinary(statement, flds, body, 0, body.length);
+//        }
+//      }
+    }
+
+//    protected String externalResourceDeleteFileName(ContentResource resource)
+//    {
+//      return m_bodyPath + "/delete/" + ((BaseResourceEdit) resource).m_filePath;
+//    }
+		
+		//htripath -end
+		
 		public void cancelResource(ContentResourceEdit edit)
 		{
 			// clear the memory image of the body
