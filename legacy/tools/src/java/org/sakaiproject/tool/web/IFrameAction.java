@@ -162,11 +162,7 @@ public class IFrameAction
 		{
 			return buildOptionsPanelContext(portlet, context, rundata, state);
 		}
-		//htripath
-		Placement placement = ToolManager.getCurrentPlacement();
-		String dbUrl=(String)placement.getPlacementConfig().getProperty(SOURCE);
-		String dbHeight=(String)placement.getPlacementConfig().getProperty(HEIGHT);
-		//htripath		
+		
 		// if we have a source url, use it 
 		String sourceUrl = StringUtil.trimToNull((String) state.getAttribute(SOURCE));
 		if (sourceUrl != null)
@@ -175,15 +171,6 @@ public class IFrameAction
 			context.put(HEIGHT, state.getAttribute(HEIGHT));
 			context.put("tlang",rb);
 		}
-		//htripath
-		else if (dbUrl !=null)
-		{
-			context.put(SOURCE,dbUrl);
-			context.put(HEIGHT, dbHeight);
-			context.put("tlang",rb);
-		}
-		//htripath
-		
 
 		// otherwise provide the site's description text
 		else
@@ -246,17 +233,7 @@ public class IFrameAction
 		context.put(HEIGHT, state.getAttribute(HEIGHT));
 		context.put(TITLE, state.getAttribute(TITLE));
 		context.put(SPECIAL, state.getAttribute(SPECIAL));
-		//htripath
-    if (state.getAttribute("source-config") == null)
-    {
-      context.put(SOURCE_TYPE, state.getAttribute(SOURCE_TYPE));      
-    }
-    else
-    {
-      context.put(SOURCE_TYPE, "");
-    }
-    //htripath : also commented below line
-    //context.put(SOURCE_TYPE, state.getAttribute(SOURCE_TYPE));      
+    context.put(SOURCE_TYPE, state.getAttribute(SOURCE_TYPE));      
     context.put("tlang", rb);
     context.put(Menu.CONTEXT_ACTION, "IFrameAction");
 
@@ -284,49 +261,24 @@ public class IFrameAction
 			// update the source in state
 			state.setAttribute(SOURCE_TYPE, source_type);
 		}
-		//htripath
-		if (source_type == null || source_type.trim().equals("")){
-			// mark for update w/o a test against state's current value - state may be showing
-			// a special source value (worksite, site, workspace).
-			String source = data.getParameters().getString(SOURCE);
-	
-			// if it's missing the transport, add http://
-			source = source.trim();
-			if ((source.length() > 0) && (!source.startsWith("/")) && (source.indexOf("://") == -1))
-			{
-				source = "http://" + source;
-			}
-	
-			// update configed source
-			state.setAttribute("source-config", source);
-	
-			// update the working source
-			source = sourceUrl(source_type, source, state, (JetspeedRunData) data);
-			state.setAttribute(SOURCE, source);
-		} else{
-//		  state.setAttribute("source-config", null);
-//		  state.setAttribute(SOURCE, null);
-		}
 		
-		//htripath-also commented below lines
-//		
-//		// mark for update w/o a test against state's current value - state may be showing
-//		// a special source value (worksite, site, workspace).
-//		String source = data.getParameters().getString(SOURCE);
-//
-//		// if it's missing the transport, add http://
-//		source = source.trim();
-//		if ((source.length() > 0) && (!source.startsWith("/")) && (source.indexOf("://") == -1))
-//		{
-//			source = "http://" + source;
-//		}
-//
-//		// update configed source
-//		state.setAttribute("source-config", source);
-//
-//		// update the working source
-//		source = sourceUrl(source_type, source, state, (JetspeedRunData) data);
-//		state.setAttribute(SOURCE, source);
+		// mark for update w/o a test against state's current value - state may be showing
+		// a special source value (worksite, site, workspace).
+		String source = data.getParameters().getString(SOURCE);
+
+		// if it's missing the transport, add http://
+		source = source.trim();
+		if ((source.length() > 0) && (!source.startsWith("/")) && (source.indexOf("://") == -1))
+		{
+			source = "http://" + source;
+		}
+
+		// update configed source
+		state.setAttribute("source-config", source);
+
+		// update the working source
+		source = sourceUrl(source_type, source, state, (JetspeedRunData) data);
+		state.setAttribute(SOURCE, source);
 		
 		// height
 		String height = data.getParameters().getString(HEIGHT);
