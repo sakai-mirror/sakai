@@ -28,7 +28,7 @@
  
         <set name="courseSetionSet" cascade="all" inverse="true">
             <key column="SESSIONID"/>
-            <one-to-many class="CourseSctionImpl" />
+            <one-to-many class="CourseSectionImpl" />
         </set>
     </class>
     
