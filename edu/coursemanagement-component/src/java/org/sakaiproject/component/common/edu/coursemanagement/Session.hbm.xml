@@ -16,7 +16,7 @@
         <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
         <property name="abbreviation" column="ABBREVIATION" type="java.lang.String"  not-null="true" />
         <property name="year" column="YEAR" type="java.lang.String"  not-null="true" />
-        <property name="isCurrent" column="ISCURRENT" type="java.lang.Byte"  not-null="true" />
+        <property name="isCurrent" column="ISCURRENT" type="java.lang.Integer"  not-null="true" />
         <property name="sessionUuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
  
         <many-to-one name="sessionType" column="SESSIONTYPEID" class="CmSessiontypeT"  not-null="true" />
