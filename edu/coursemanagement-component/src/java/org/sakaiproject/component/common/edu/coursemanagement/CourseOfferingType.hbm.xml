@@ -19,7 +19,7 @@
         <property name="displayName" column="DISPLAYNAME" type="java.lang.String" />
         <property name="description" column="DESCRIPTION" type="java.lang.String" />
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
-        <property name="status" column="STATUS" type="java.lang.Byte"  not-null="true" />
+        <property name="status" column="STATUS" type="java.lang.Integer"  not-null="true" />
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
         <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />

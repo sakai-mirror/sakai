@@ -15,15 +15,15 @@
  
         <property name="title" column="TITLE" type="java.lang.String" />
         <property name="description" column="DESCRIPTION" type="java.lang.String" />
-        <property name="sectionnumber" column="SECTIONNUMBER" type="java.lang.String"  not-null="true" />
+        <property name="sectionNumber" column="SECTIONNUMBER" type="java.lang.String"  not-null="true" />
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  />
         <property name="enrollmentStatusTypeId" column="ENROLLMENTSTATUSTYPEID" type="java.lang.Long" not-null="true" />
         <property name="courseOfferingUuid" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
         <property name="scheduleUuid" column="SCHEDULEUUID" type="java.lang.String"  />
-        <property name="createdLocally" column="CREATEDLOCALLY" type="java.lang.Byte" />
-        <property name="holdingSection" column="HOLDINGSECTION" type="java.lang.Byte" />
-        <property name="allowSelfRegistration" column="ALLOWSELFREGISTRATION" type="java.lang.Byte" />
+        <property name="createdLocally" column="CREATEDLOCALLY" type="java.lang.Integer" />
+        <property name="holdingSection" column="HOLDINGSECTION" type="java.lang.Integer" />
+        <property name="allowSelfRegistration" column="ALLOWSELFREGISTRATION" type="java.lang.Integer" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />

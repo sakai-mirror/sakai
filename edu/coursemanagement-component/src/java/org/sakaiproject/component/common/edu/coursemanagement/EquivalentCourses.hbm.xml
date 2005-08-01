@@ -13,11 +13,11 @@
             <generator class="native"/>
         </id>
      <set name="canonicalCourseSet" table="CM_CANONICALCOURSE_T" cascade="all"
-      inverse="true">
-      <key column="CANONICALCOURSEID"/>
-      <one-to-many name="canonicalCourse" column="CANONICALCOURSEID" class="CanonicalCourseImpl"  />
-    </set>
+       inverse="true">
+       <key column="CANONICALCOURSEID"/>
+       <one-to-many name="canonicalCourse" column="CANONICALCOURSEID" class="CanonicalCourseImpl"  />
+     </set>
  
-     </class>
+    </class>
     
 </hibernate-mapping>

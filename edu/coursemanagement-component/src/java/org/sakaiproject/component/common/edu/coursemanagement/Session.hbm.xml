@@ -19,7 +19,7 @@
         <property name="isCurrent" column="ISCURRENT" type="java.lang.Integer"  not-null="true" />
         <property name="sessionUuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
  
-        <many-to-one name="sessionType" column="SESSIONTYPEID" class="CmSessiontypeT"  not-null="true" />
+        <many-to-one name="sessionType" column="SESSIONTYPEID" class="SessionTypeImpl"  not-null="true" />
  
         <set name="courseOfferingSet"  cascade="all" inverse="true">
             <key column="COURSEOFFERINGID"/>
