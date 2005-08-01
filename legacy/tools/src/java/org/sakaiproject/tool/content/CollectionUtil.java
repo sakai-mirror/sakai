@@ -28,6 +28,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -101,7 +102,7 @@ public class CollectionUtil
     String userId = UsageSessionService.getSessionUserId().trim();
     Object[] fields = new Object[] { userId, userId, userId, userId, userId};
     List collectionList = SqlService.dbRead(sql, fields, sr);
-    Map collectionMap = new HashMap();
+    Map collectionMap = new LinkedHashMap(collectionList.size());
     for (Iterator i = collectionList.iterator(); i.hasNext();)
     {
       List arrayList = (List) i.next();
