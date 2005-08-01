@@ -289,11 +289,20 @@ extends VelocityPortletPaneledAction
 	private static final String INTENT_REVISE_FILE = "revise";
 	private static final String INTENT_REPLACE_FILE = "replace";
 	
-	/************** the helper context *****************************************/
+	/************** the helper context (file-picker) *****************************************/
+	
+	/** State attribute for the Vector of References, one for each attachment.
+	Using tools can pre-populate, and can read the results from here. */
+	public static final String STATE_ATTACHMENTS = "resources.attachments";
+
+	/** State attribute for where there is at least one attachment before invoking attachment tool */
+	public static final String STATE_HAS_ATTACHMENT_BEFORE = "resources.has_attachment_before";
+
+	/** The part of the message after "Attachments for:", set by the client tool. */
+	public static final String STATE_FROM_TEXT = "attachment.from_text";
 
 	/** The name of the state attribute containing a list of new items to be attached */
 	private static final String STATE_HELPER_NEW_ITEMS = "resources.helper_new_items";
-	
 
 	/************** the delete context *****************************************/
 
@@ -386,7 +395,6 @@ extends VelocityPortletPaneledAction
 	private static final String COPYRIGHT_NEW_COPYRIGHT = rb.getString("cpright3");
 	private static final String COPYRIGHT_ALERT_URL = ServerConfigurationService.getAccessUrl() + COPYRIGHT_PATH;
 
-	public static final String STATE_ATTACHMENTS = "resources.attachements";
 
 	/**
 	* Build the context for normal display
@@ -716,6 +724,12 @@ extends VelocityPortletPaneledAction
 										RunData data,
 										SessionState state)
 	{
+		if(state.getAttribute(STATE_INITIALIZED) == null)
+		{
+			initStateAttributes(state, portlet);
+			state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
+		}
+		
 		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
 		
 		String template = null;
@@ -2140,6 +2154,10 @@ extends VelocityPortletPaneledAction
 		
 		// add to the attachments vector
 		ReferenceVector attachments = (ReferenceVector) state.getAttribute(STATE_ATTACHMENTS);
+		if(attachments == null)
+		{
+			attachments = new ReferenceVector();
+		}
 		
 		Iterator it = attached.iterator();
 		while(it.hasNext())
@@ -2153,9 +2171,9 @@ extends VelocityPortletPaneledAction
 			}
 			catch(Exception e)
 			{
-				
 			}
 		}
+		cleanupState(state);
 		state.setAttribute(STATE_ATTACHMENTS, attachments);
 
 		// if there is at least one attachment
@@ -2165,7 +2183,6 @@ extends VelocityPortletPaneledAction
 		}
 		
 		// end up in main mode
-		state.setAttribute(STATE_MODE, AttachmentAction.MODE_MAIN);
 		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
 
 	}
@@ -2757,7 +2774,7 @@ extends VelocityPortletPaneledAction
 	/**
 	* doCancel to return to the previous state
 	*/
-	public void doCancel ( RunData data)
+	public static void doCancel ( RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
@@ -2776,6 +2793,8 @@ extends VelocityPortletPaneledAction
 		
 		if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_SELECT.equals(helper_mode))
 		{
+			cleanupState(state);
+			// state.removeAttribute(STATE_ATTACHMENTS);
 			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
 		}
 		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_CREATE.equals(helper_mode))
@@ -5460,6 +5479,48 @@ extends VelocityPortletPaneledAction
 				
 	}	// initState
 	
+	/**
+	* Remove the state variables used internally, on the way out.
+	*/
+	static private void cleanupState(SessionState state)
+	{
+		state.removeAttribute(STATE_FROM_TEXT);
+		state.removeAttribute(STATE_HAS_ATTACHMENT_BEFORE);
+		
+		state.removeAttribute(COPYRIGHT_FAIRUSE_URL);
+		state.removeAttribute(COPYRIGHT_NEW_COPYRIGHT);
+		state.removeAttribute(COPYRIGHT_SELF_COPYRIGHT);
+		state.removeAttribute(COPYRIGHT_TYPES);
+		state.removeAttribute(DEFAULT_COPYRIGHT_ALERT);
+		state.removeAttribute(DEFAULT_COPYRIGHT);
+		state.removeAttribute(EXPANDED_COLLECTIONS);
+		state.removeAttribute(FILE_UPLOAD_MAX_SIZE);
+		state.removeAttribute(NEW_COPYRIGHT_INPUT);
+		state.removeAttribute(STATE_COLLECTION_ID);
+		state.removeAttribute(STATE_COLLECTION_PATH);
+		state.removeAttribute(STATE_CONTENT_SERVICE);
+		state.removeAttribute(STATE_CONTENT_TYPE_IMAGE_SERVICE);
+		state.removeAttribute(STATE_EDIT_INTENT);
+		state.removeAttribute(STATE_EXPAND_ALL_FLAG);
+		state.removeAttribute(STATE_HELPER_NEW_ITEMS);
+		state.removeAttribute(STATE_HOME_COLLECTION_DISPLAY_NAME);
+		state.removeAttribute(STATE_HOME_COLLECTION_ID);
+		state.removeAttribute(STATE_MY_COPYRIGHT);
+		state.removeAttribute(STATE_NAVIGATION_ROOT);
+		state.removeAttribute(STATE_PASTE_ALLOWED_FLAG);
+		state.removeAttribute(STATE_PROPERTIES_INTENT);
+		state.removeAttribute(STATE_SELECT_ALL_FLAG);
+		state.removeAttribute(STATE_SHOW_ALL_SITES);
+		state.removeAttribute(STATE_SITE_TITLE);
+		state.removeAttribute(STATE_SORT_ASC);
+		state.removeAttribute(STATE_SORT_BY);
+		
+		state.removeAttribute(STATE_INITIALIZED);
+		state.removeAttribute(VelocityPortletPaneledAction.STATE_HELPER);
+
+	}	// cleanupState
+
+	
 	public static void initStateAttributes(SessionState state, VelocityPortlet portlet)
 	{
 		if (state.getAttribute (STATE_INITIALIZED) != null) return;
@@ -5644,7 +5705,7 @@ extends VelocityPortletPaneledAction
 		}
 
 		state.setAttribute (STATE_INITIALIZED, Boolean.TRUE.toString());
-
+		
 	}
 	
 	/**

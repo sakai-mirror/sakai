@@ -734,6 +734,7 @@ extends PagedResourceActionII
 		// clean up
 		sstate.removeAttribute(ResourcesAction.STATE_MODE);
 		sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
+		sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
 
 		// get the current channel ID from state object or prolet initial parameter
 		String channelId = state.getChannelId();
@@ -2664,7 +2665,7 @@ extends PagedResourceActionII
 			((JetspeedRunData) data).getPortletSessionState(
 				((JetspeedRunData) data).getJs_peid());
 
-		// setup... we'll use the attachment action's mode
+		// setup... we'll use the ResourcesAction's mode
 		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
 		state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
 		state.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
@@ -2688,11 +2689,11 @@ extends PagedResourceActionII
 		// whether there is alread an attachment //%%%zqian
 		if (attachments.size() > 0)
 		{
-			state.setAttribute(AttachmentAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
+			state.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
 		}
 		else
 		{
-			state.setAttribute(AttachmentAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.FALSE);
+			state.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.FALSE);
 		}
 		state.setAttribute(
 			ResourcesAction.STATE_ATTACHMENTS,

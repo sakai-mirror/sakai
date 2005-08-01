@@ -40,7 +40,7 @@
 						<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
 					</td>
 					<td  style="vertical-align:top">
-						<a href="#" onclick="">$tlang.getString("att.remove")</a>
+						##<a href="#" onclick="">$tlang.getString("att.remove")</a>
 					</td>					
 				#end
 			</tr>
@@ -56,7 +56,7 @@
 							<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
 						</td>
 						<td  style="vertical-align:top">
-							<a href="#" onclick="">$tlang.getString("att.remove")</a>
+							##<a href="#" onclick="">$tlang.getString("att.remove")</a>
 						</td>					
 					</tr>
 				#end

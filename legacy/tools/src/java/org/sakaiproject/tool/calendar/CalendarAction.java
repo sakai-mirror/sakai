@@ -2018,7 +2018,7 @@ extends VelocityPortletStateAction
 		String mode = (String) sstate.getAttribute(ResourcesAction.STATE_RESOURCES_MODE);
 		if (mode != null)
 		{
-			// if the mode is not done, defer to the AttachmentAction
+			// if the mode is not done, defer to the ResourcesAction
 			if (!mode.equals(ResourcesAction.MODE_ATTACHMENT_DONE))
 			{
 				template = ResourcesAction.buildSelectAttachmentContext(portlet, context, runData, sstate);
@@ -2035,6 +2035,7 @@ extends VelocityPortletStateAction
 			
 			// clean up
 			sstate.removeAttribute(ResourcesAction.STATE_MODE);
+			sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
 			sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
 		}
 		
@@ -3643,32 +3644,32 @@ extends VelocityPortletStateAction
 		
 		// **************** changed for the new attachment editor **************************
 		
+		// setup... we'll use ResourcesAction's mode
+		// sstate.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 		sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
 		sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
-		sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(false));
+		sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
 		
-		// setup... we'll use the attachment action's mode
-		// sstate.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 		String activitytitle = rundata.getParameters().getString("activitytitle");
 		String stateFromText = rb.getString("java.schedule");
 		if (activitytitle != null && activitytitle.length() > 0)
 		{
 			stateFromText = rb.getString("java.sched") + '"' + activitytitle + '"';
 		}
-		sstate.setAttribute(AttachmentAction.STATE_FROM_TEXT, stateFromText);
+		sstate.setAttribute(ResourcesAction.STATE_FROM_TEXT, stateFromText);
 		
 		// put a copy of the attachments into the state
 		
 		ReferenceVector attachments = State.getAttachments();
-		sstate.setAttribute(ResourcesAction.STATE_ATTACHMENTS, attachments.clone());
+		sstate.setAttribute(ResourcesAction.STATE_ATTACHMENTS, new ReferenceVector(attachments));
 		// whether there is already an attachment //%%%zqian
 		if (attachments.size() > 0)
 		{
-			sstate.setAttribute(AttachmentAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
+			sstate.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
 		}
 		else
 		{
-			sstate.setAttribute(AttachmentAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.FALSE);
+			sstate.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.FALSE);
 		}
 
 		String hour = "";
