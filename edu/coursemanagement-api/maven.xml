@@ -3,11 +3,6 @@
 <project default="sakai"
         xmlns:j="jelly:core">
 
-        <goal name="javadoc">
-                <j:set var="goal" value="javadoc" />
-                <attainGoal name="multiproject:goal" />
-        </goal>
-
         <goal name="sakai">
                 <attainGoal name="jar:install" />
         </goal>
