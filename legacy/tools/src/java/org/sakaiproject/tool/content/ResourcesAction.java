@@ -649,20 +649,22 @@ extends VelocityPortletPaneledAction
 				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
 				{
-					String collId = (String) siteIt.next();
-					if(! collectionId.equals(collId))
-					{
-						String displayName = (String) othersites.get(collId);
-	
-						members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
-						if(members != null && members.size() > 0)
-						{
-							BrowseItem root = (BrowseItem) members.remove(0);
-							root.addMembers(members);
-							root.setName(displayName);
-							roots.add(root);
-						}
-					}
+				  // String collId = (String) siteIt.next();
+                  String displayName = (String) siteIt.next();
+                  String collId = (String) othersites.get(displayName);
+                  if(! collectionId.equals(collId))
+                  {
+                      //String displayName = (String) othersites.get(collId);
+                        
+                      members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+                      if(members != null && members.size() > 0)
+                      {
+                          BrowseItem root = (BrowseItem) members.remove(0);
+                          root.addMembers(members);
+                          root.setName(displayName);
+                          roots.add(root);
+                      }
+                  }
 				}
 
 			}

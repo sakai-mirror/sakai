@@ -102,11 +102,12 @@ public class CollectionUtil
     String userId = UsageSessionService.getSessionUserId().trim();
     Object[] fields = new Object[] { userId, userId, userId, userId, userId};
     List collectionList = SqlService.dbRead(sql, fields, sr);
+           
     Map collectionMap = new LinkedHashMap(collectionList.size());
     for (Iterator i = collectionList.iterator(); i.hasNext();)
     {
       List arrayList = (List) i.next();
-      collectionMap.put(arrayList.get(0), arrayList.get(1));
+      collectionMap.put(arrayList.get(1), arrayList.get(0)); // title, collection_id
     }
     return collectionMap;
   }
