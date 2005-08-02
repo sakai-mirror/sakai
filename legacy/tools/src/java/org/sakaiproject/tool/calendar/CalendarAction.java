@@ -2021,7 +2021,7 @@ extends VelocityPortletStateAction
 			// if the mode is not done, defer to the ResourcesAction
 			if (!mode.equals(ResourcesAction.MODE_ATTACHMENT_DONE))
 			{
-				template = ResourcesAction.buildSelectAttachmentContext(portlet, context, runData, sstate);
+				template = ResourcesAction.buildHelperContext(portlet, context, runData, sstate);
 				// template = AttachmentAction.buildHelperContext(portlet, context, runData, sstate);
 				return template;
 			}

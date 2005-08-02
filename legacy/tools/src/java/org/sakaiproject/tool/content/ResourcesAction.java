@@ -728,6 +728,34 @@ extends VelocityPortletPaneledAction
 		{
 			initStateAttributes(state, portlet);
 			state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
+			
+			ReferenceVector attachments = (ReferenceVector) state.getAttribute(STATE_ATTACHMENTS);
+			if(attachments == null)
+			{
+				attachments = new ReferenceVector();
+			}
+			
+			List attached = new Vector();
+			
+			Iterator it = attachments.iterator();
+			while(it.hasNext())
+			{
+				try
+				{
+					Reference ref = (Reference) it.next();
+					String itemId = ref.getId();
+					ResourceProperties properties = ref.getProperties();
+					String displayName = properties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+					String containerId = ref.getContainer();
+					String accessUrl = ref.getUrl();
+					
+					AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
+					attached.add(item);
+				}
+				catch(Exception ignore) {}
+			}
+			state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
+			
 		}
 		
 		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
@@ -740,18 +768,6 @@ extends VelocityPortletPaneledAction
 		else if(MODE_ATTACHMENT_CREATE.equals(helper_mode))
 		{
 			template = buildCreateContext(portlet, context, data, state);
-		}
-		else if(MODE_ATTACHMENT_CONFIRM.equals(helper_mode))
-		{
-			template = buildSelectAttachmentContext(portlet, context, data, state);
-		}
-		else if(MODE_ATTACHMENT_DONE.equals(helper_mode))
-		{
-			template = buildSelectAttachmentContext(portlet, context, data, state);
-		}
-		else
-		{
-			
 		}
 		return template;
 	}
@@ -1448,7 +1464,6 @@ extends VelocityPortletPaneledAction
 	 */
 	public static void doCreate(RunData data)
 	{
-
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		
@@ -2145,6 +2160,40 @@ extends VelocityPortletPaneledAction
 
 	}
 	
+	public static void doRemoveitem(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+		
+		String itemId = params.getString("itemId");
+		
+		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+		if(attached == null)
+		{
+			attached = new Vector();
+		}
+		AttachItem item = null;
+		boolean found = false;
+		
+		Iterator it = attached.iterator();
+		while(!found && it.hasNext())
+		{
+			item = (AttachItem) it.next();
+			if(item.getId().equals(itemId))
+			{
+				found = true;
+			}
+		}
+
+		if(found && item != null)
+		{
+			attached.remove(item);
+		}
+
+		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+
+	}
+	
 	public static void doAddattachments(RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
@@ -2153,11 +2202,7 @@ extends VelocityPortletPaneledAction
 		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
 		
 		// add to the attachments vector
-		ReferenceVector attachments = (ReferenceVector) state.getAttribute(STATE_ATTACHMENTS);
-		if(attachments == null)
-		{
-			attachments = new ReferenceVector();
-		}
+		ReferenceVector attachments = new ReferenceVector();
 		
 		Iterator it = attached.iterator();
 		while(it.hasNext())
@@ -2184,30 +2229,45 @@ extends VelocityPortletPaneledAction
 		
 		// end up in main mode
 		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
-
+		
 	}
 	
 	public static void attachItem(String itemId, SessionState state)
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
-		try
+		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+		if(attached == null)
 		{
-			ResourceProperties props = contentService.getProperties(itemId);
-			String displayName = props.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
-			String containerId = contentService.getContainingCollectionId (itemId);
-			String accessUrl = contentService.getUrl(itemId);
-	
-			AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
-	
-			List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
-			if(attached == null)
-			{
-				attached = new Vector();
-			}
-			attached.add(item);
-			state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
+			attached = new Vector();
 		}
-		catch(Exception ignore) {}
+		
+		boolean found = false;
+		Iterator it = attached.iterator();
+		while(!found && it.hasNext())
+		{
+			AttachItem item = (AttachItem) it.next();
+			if(item.getId().equals(itemId))
+			{
+				found = true;
+			}
+		}
+		
+		if(!found)
+		{
+			try
+			{
+				ResourceProperties props = contentService.getProperties(itemId);
+				String displayName = props.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
+				String containerId = contentService.getContainingCollectionId (itemId);
+				String accessUrl = contentService.getUrl(itemId);
+		
+				AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
+		
+				attached.add(item);
+			}
+			catch(Exception ignore) {}
+		}
+		state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
 	}
 	
 	protected static List createPropertiesList(String namespace, List fields)
@@ -6432,7 +6492,7 @@ extends VelocityPortletPaneledAction
 	/**
 	* Paste the previously copied item(s)
 	*/
-	public void doPasteitem ( RunData data)
+	public static void doPasteitem ( RunData data)
 	{
 		ParameterParser params = data.getParameters ();
 
@@ -6495,6 +6555,12 @@ extends VelocityPortletPaneledAction
 				{
 					// paste the copied resource to the new collection
 					ContentResource newResource = ContentHostingService.addResource (id, resource.getContentType (), resource.getContent (), resourceProperties, NotificationService.NOTI_NONE);
+					
+					String mode = (String) state.getAttribute(STATE_MODE);
+					if(MODE_HELPER.equals(mode))
+					{
+						attachItem(id, state);
+					}
 				}
 				catch (InconsistentException e)
 				{
