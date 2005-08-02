@@ -7,11 +7,11 @@ import org.sakaiproject.cheftool.RunData;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.tool.content.ResourcesAction;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,9 +30,9 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
                                    HttpServletRequest req, HttpServletResponse res) {
       SessionState sstate = getState(req);
 
-      if (AttachmentAction.MODE_DONE.equals(sstate.getAttribute(AttachmentAction.STATE_MODE))) {
+      if (ResourcesAction.MODE_ATTACHMENT_DONE.equals(sstate.getAttribute(ResourcesAction.STATE_RESOURCES_MODE))) {
          ToolSession toolSession = SessionManager.getCurrentToolSession();
-         ReferenceVector attachments = (ReferenceVector) sstate.getAttribute(AttachmentAction.STATE_ATTACHMENTS);
+         ReferenceVector attachments = (ReferenceVector) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
 
          if (attachments != null) {
             toolSession.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS,
@@ -43,8 +43,9 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
          }
 
          // clean up
-         sstate.removeAttribute(AttachmentAction.STATE_MODE);
-         sstate.removeAttribute(AttachmentAction.STATE_ATTACHMENTS);
+         sstate.removeAttribute(ResourcesAction.STATE_MODE);
+         sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+         sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
 
          Tool tool = ToolManager.getCurrentTool();
 
@@ -73,15 +74,18 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
       SessionState sstate)
    {
       // if we are in edit attachments...
-      String mode = (String) sstate.getAttribute(AttachmentAction.STATE_MODE);
+      String mode = (String) sstate.getAttribute(ResourcesAction.STATE_MODE);
 
       if (mode == null) {
          initPicker(portlet, context, rundata, sstate);
-         sstate.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
-         mode = AttachmentAction.MODE_MAIN;
+         sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
+         sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+         sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
+
+         mode = ResourcesAction.MODE_HELPER;
       }
 
-      return AttachmentAction.buildHelperContext(portlet, context, rundata, sstate);
+      return ResourcesAction.buildHelperContext(portlet, context, rundata, sstate);
    }
 
    protected void initPicker(VelocityPortlet portlet, Context context, RunData rundata, SessionState sstate) {
@@ -92,7 +96,7 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
       toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
 
       if (attachments != null) {
-         sstate.setAttribute(AttachmentAction.STATE_ATTACHMENTS, new ReferenceVector(attachments));
+         sstate.setAttribute(ResourcesAction.STATE_ATTACHMENTS, new ReferenceVector(attachments));
       }
    }
 
