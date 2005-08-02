@@ -50,6 +50,8 @@ import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.coursemanagement.cover.CourseManagementService;
+import org.sakaiproject.service.legacy.realm.Realm;
+import org.sakaiproject.service.legacy.realm.Role;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteEdit;
@@ -912,6 +914,58 @@ public class SitesAction
 		// update
 		if (site != null)
 		{
+			if (joinable)
+			{
+				// check if there is a qualifed role in the role field
+				if ((joinerRole == null) || (joinerRole.equals("")))
+				{
+					addAlert(state,  rb.getString("sitact.sperol"));
+					return false;
+				}
+				Vector roles = new Vector();
+				Vector roleIds = new Vector();
+				Realm realm = null;
+				try 
+				{
+					realm = RealmService.getRealm(site.getReference());
+					roles.addAll(realm.getRoles());
+				} 
+				catch (IdUnusedException e) 
+				{
+					// use the type's template, if defined
+					String realmTemplate = "!site.template";
+					if (type != null)
+					{
+						realmTemplate = realmTemplate + "." + type;
+					}
+					try
+					{
+						Realm r = RealmService.getRealm(realmTemplate);
+						roles.addAll(r.getRoles());
+					}
+					catch (IdUnusedException err)
+					{
+						try
+						{
+							Realm rr = RealmService.getRealm("!site.template");
+							roles.addAll(rr.getRoles());
+						}
+						catch (IdUnusedException ee){}
+					}
+				}
+				
+				for (int i=0; i<roles.size(); i++)
+				{
+					roleIds.add(((Role) roles.elementAt(i)).getId()); 
+				}
+				
+				if (!roleIds.contains(joinerRole))
+				{
+					addAlert(state,  rb.getString("sitact.sperol"));
+					return false;
+				}
+			}
+			
 			site.setTitle(title);
 			site.setShortDescription(shortDescription);
 			site.setDescription(description);
