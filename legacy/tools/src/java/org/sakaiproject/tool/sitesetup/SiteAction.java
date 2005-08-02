@@ -7866,7 +7866,7 @@ public class SiteAction extends PagedResourceActionII
 				{
 					if (state.getAttribute(SITE_DUPLICATED) == null)
 					{
-						if (params.getString("title") == null)
+						if (StringUtil.trimToNull(params.getString("title")) == null)
 						{
 							addAlert(state, rb.getString("java.dupli")+" ");
 						}
