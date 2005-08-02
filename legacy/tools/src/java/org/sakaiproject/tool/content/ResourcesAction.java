@@ -2854,7 +2854,7 @@ extends VelocityPortletPaneledAction
 		if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_SELECT.equals(helper_mode))
 		{
 			cleanupState(state);
-			// state.removeAttribute(STATE_ATTACHMENTS);
+			state.removeAttribute(STATE_ATTACHMENTS);
 			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
 		}
 		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_CREATE.equals(helper_mode))
@@ -5499,7 +5499,6 @@ extends VelocityPortletPaneledAction
 			};  // Iterator
 
 	}   // threadIterator
-
 	
 	/**
 	* Build the menu.
@@ -6618,7 +6617,7 @@ extends VelocityPortletPaneledAction
 				state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
 			}
 		}
-
+		
 	}	// doPasteitem
 
 	/**

@@ -23,46 +23,27 @@
 		<input type="hidden" name="source" value="0" />
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
 		<input type="hidden" name="from" value="list" />
-		<table>
-			<tr class="shorttext">
-				<td style="width:180px;padding-left:1em;vertical-align:top">
-					<label for="copyrightAlert">
-						$tlang.getString("att.items")
-					</label>
-				</td>
-				#if($attached.isEmpty())
-					<td colspan="2" style="vertical-align:top">
-						Select or add an item below
-					</td>
-				#else
-					#set($att_item = $attached.get(0))
-					<td  style="vertical-align:top">
-						<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
-					</td>
-					<td  style="vertical-align:top">
-						<a href="#toolLink("ResourcesAction" "doRemoveitem")&itemId=$validator.escapeUrl($att_item.id)" title="$tlang.getString('att.remove')">$tlang.getString("att.remove")</a>
-					</td>					
-				#end
-			</tr>
-			#if($attached.size() > 1)
-				#foreach($i in [1..$last])
-					#set($att_item = $attached.get($i))
-					<tr class="shorttext">
-						<td style="width:180px;padding-left:1em;vertical-align:top">
-							<label for="copyrightAlert">
-							</label>
-						</td>
-						<td  style="vertical-align:top">
-							<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
-						</td>
-						<td  style="vertical-align:top">
-							<a href=""#toolLink("ResourcesAction" "doRemoveitem")&itemId=$validator.escapeUrl($att_item.id)" title="$tlang.getString('att.remove')">$tlang.getString("att.remove")</a>
-						</td>					
-					</tr>
-				#end
+		<p class="shorttext">
+			<label for="">
+				$tlang.getString("att.items")
+			</label>
+			#if($attached.isEmpty())
+				$tlang.getString("att.empty")
+			#else
+				<table>
+					#foreach($att_item in $attached)
+						<tr>
+							<td style="vertical-align:top">
+								<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
+							</td>
+							<td  style="vertical-align:top">
+								<a href="#toolLink("ResourcesAction" "doRemoveitem")&itemId=$validator.escapeUrl($att_item.id)" title="$tlang.getString('att.remove')">$tlang.getString("att.remove")</a>
+							</td>
+						</tr>
+					#end
+				</table>
 			#end
-		</table>
-		
+		</p>
 		######################  Page Title / Breadcrumbs  ##############
 		<h3>
 			<span class ="chefBreadCrumb">
@@ -292,14 +273,6 @@
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
 											<a href="#toolLink("ResourcesAction" "doAttachitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('att.select')">$tlang.getString("att.select").trim()</a>
-										#end
-										####### deal with duplicating item
-										#if($member.canRead() && $member.canAddItem())
-											#if ($itemsOnLine > 0)
-												|
-											#end
-											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
 										#end
 									#end
 								</div>
