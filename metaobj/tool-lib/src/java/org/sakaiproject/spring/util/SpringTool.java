@@ -76,13 +76,13 @@ public class SpringTool extends HttpServlet
     * 
     * @return The servlet info path target computed for the case of empty actual path.
     */
-   protected String computeDefaultTarget()
+   protected String computeDefaultTarget(boolean lastVisited)
    {
       // setup for the default view as configured
       String target = "/" + m_default;
 
       // if we are doing lastVisit and there's a last-visited view, for this tool placement / user, use that
-      if (m_defaultToLastView)
+      if (lastVisited)
       {
          ToolSession session = SessionManager.getCurrentToolSession();
          String last = (String) session.getAttribute(LAST_VIEW_VISITED);
@@ -93,6 +93,11 @@ public class SpringTool extends HttpServlet
       }
 
       return target;
+   }
+
+   protected String computeDefaultTarget()
+   {
+      return computeDefaultTarget(m_defaultToLastView);
    }
 
    /**
@@ -185,10 +190,7 @@ public class SpringTool extends HttpServlet
          target = newTarget;
 
          // store this
-         if (m_defaultToLastView)
-         {
-            session.setAttribute(LAST_VIEW_VISITED, target);
-         }
+         session.setAttribute(LAST_VIEW_VISITED, target);
       }
 
       // add the configured folder root and extension (if missing)
@@ -253,7 +255,7 @@ public class SpringTool extends HttpServlet
       ActiveTool helperTool = ActiveToolManager.getActiveTool(helperId);
 
       toolSession.setAttribute(helperTool.getId() + Tool.HELPER_DONE_URL,
-            req.getContextPath() + req.getServletPath() + computeDefaultTarget());
+            req.getContextPath() + req.getServletPath() + computeDefaultTarget(true));
 
       String context = req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 2);
       String toolPath = Web.makePath(parts, 2, parts.length);
