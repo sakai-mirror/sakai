@@ -10712,6 +10712,23 @@ public class SiteAction extends PagedResourceActionII
 			tab.append(fields[4]); //Catalog number
 			tab.append(" ");
 			tab.append(fields[5]); //Section
+		
+			//append term information into the tab in order to differenciate same course taught in different terms
+			if (state.getAttribute(STATE_TERM_SELECTED) != null)
+			{
+				tab.append(" ");
+				Term t = (Term) state.getAttribute(STATE_TERM_SELECTED);
+				if (StringUtil.trimToNull(t.getListAbbreviation()) != null)
+				{
+					// use term abbreviation, if any
+					tab.append(t.getListAbbreviation());
+				}
+				else
+				{
+					// use term id
+					tab.append(t.getId());
+				}
+			}
 		}
 		catch (Exception e)
 		{
