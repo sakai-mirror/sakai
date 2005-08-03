@@ -3648,7 +3648,7 @@ extends VelocityPortletStateAction
 		// sstate.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 		sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
 		sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
-		sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
+		sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(false));
 		
 		String activitytitle = rundata.getParameters().getString("activitytitle");
 		String stateFromText = rb.getString("java.schedule");

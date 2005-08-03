@@ -2668,8 +2668,7 @@ extends PagedResourceActionII
 		// setup... we'll use the ResourcesAction's mode
 		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
 		state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
-		state.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
-//		state.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
+		state.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(false));
 		
 		String subject = data.getParameters().getString("subject");
 		String stateFromText = rb.getString("java.theann");//"the announcement";
