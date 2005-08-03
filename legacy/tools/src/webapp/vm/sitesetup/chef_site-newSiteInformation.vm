@@ -77,8 +77,8 @@
 			<label for="description" class="block">
 				$tlang.getString("sinfo.descr")
 			</label>
-			<textarea style="display:block" name="description" id="description" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($form_description)</textarea><br />
-			<p class="instruction">
+			<textarea style="display:block;margin-bottom:0" name="description" id="description" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($form_description)</textarea>
+			<p class="instruction" style="margin-top:-1em;padding-left:1em">
 				$tlang.getString("sinfo.display")
 			</p>
 		</p>	
@@ -86,8 +86,8 @@
 			<label for="short_description" class="block"> 
 				$tlang.getString("sinfo.short")
 			</label>
-			<textarea style="display:block" name="short_description" id="short_description" rows="2" cols="45" onkeyup="LimitText(this,80)" wrap="hard">$validator.escapeHtmlTextarea($form_short_description)</textarea>
-			<p class="instruction">
+			<textarea style="display:block;margin-bottom:0" name="short_description" id="short_description" rows="2" cols="45" onkeyup="LimitText(this,80)" wrap="hard">$validator.escapeHtmlTextarea($form_short_description)</textarea>
+			<p class="instruction" style="margin-top:-1em;padding-left:1em">
 				$tlang.getString("sinfo.display2")
 			</p>
 		</p>

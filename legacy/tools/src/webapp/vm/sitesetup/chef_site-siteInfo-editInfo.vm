@@ -48,7 +48,7 @@ function LimitText(fieldObj,maxChars)
 				$tlang.getString("sitediinf.des")
 			</label>
 			<textarea style="display:block;" id="description" name="description" rows="5" cols="40" tabindex="1" wrap="virtual">$validator.escapeHtmlTextarea($!description)</textarea>
-				<p class="instruction" style="margin-top:0;">
+				<p class="instruction" style="margin-top:-1em;padding-left:1em">
 					$tlang.getString("sitediinf.dis")
 				</p>
 		</p>
@@ -56,8 +56,8 @@ function LimitText(fieldObj,maxChars)
 			<label for="short_description" class="block">
 				$tlang.getString("sitediinf.shodes")
 			</label>
-			<textarea style="display:block;" name="short_description" id="short_description" tabindex="2" rows="2" cols="45" onkeyup="LimitText(this,80)">$validator.escapeHtmlTextarea($!short_description)</textarea>
-			<p class="instruction" style="margin-top:0;">
+			<textarea style="display:block;margin-bottom:0" name="short_description" id="short_description" tabindex="2" rows="2" cols="45" onkeyup="LimitText(this,80)">$validator.escapeHtmlTextarea($!short_description)</textarea>
+			<p class="instruction" style="margin-top:-1em;padding-left:1em">
 				$tlang.getString("sitediinf.dis2")
 			</span>
 		</p>	
