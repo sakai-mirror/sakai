@@ -87,11 +87,10 @@
 						$tlang.getString("gen.mes")
 					</label>	
 				</div>
-				##what is this table doing here? (gsilver)
-				##<table border="0" style="margin:.3em 1em"><tr><td>
+				<table border="0" style="margin:.3em 1em"><tr><td>
 				<textarea name="body" id="body" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea("$!newtopicbody")</textarea>
 				#chef_setupformattedtextarea("body")
-				##</td></tr></table>
+				</td></tr></table>
 				<h4>
 					$tlang.getString("gen.att")
 				</h4> 
