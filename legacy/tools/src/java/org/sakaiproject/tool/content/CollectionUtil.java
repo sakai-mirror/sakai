@@ -26,7 +26,6 @@ package org.sakaiproject.tool.content;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.cover.SqlService;
+import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 
 public class CollectionUtil
 {
@@ -71,22 +71,22 @@ public class CollectionUtil
       try
       {
         List list = new ArrayList(2);
-        list.add(result.getString("collection_id"));
-
-        // test for dropbox vs. resource
-        String toolType = result.getString("registration");
-        if ("sakai.dropbox".equals(toolType))
-        {
+                
+        String registration = result.getString("registration");
+        String context = result.getString("site_id");
+        
+        if ("sakai.dropbox".equals(registration)){
+          list.add(Dropbox.getCollection(context));
           list.add(result.getString("title") + " "
               + rb.getString("gen.drop"));
         }
-        else
-        {
+        else{
+          list.add(ContentHostingService.getSiteCollection(context));
           list.add(result.getString("title") + " "
               + rb.getString("gen.reso"));
-        }
-
+        }                
         return list;
+        
       }
       catch (Throwable t)
       {
