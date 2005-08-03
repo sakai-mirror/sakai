@@ -1,0 +1,87 @@
+THESE SCRIPTS ARE NOT READY FOR PRIME-TIME YET, LOOK AT THEM AT YOUR OWN RISK.
+
+IF YOU USE THESE SCRIPTS, PLEASE CHANGE THE SERVER YOU ARE RUNNING
+THEM AGAINST.  They are configured to run against the University of Michigan's
+load testing cluster, which IS NOT FOR PUBLIC USE.
+
+These scripts are for loadtesting Sakai using the Apache JMeter
+loadtesting engine.
+
+
+
+Files:
+
+sakai_gateway.jmx - Simple script.  
+   Repeatedly load the Sakai gateway ("Welcome") page.  Good for monitoring.
+   Can be used again sakai 1.0, 1.5, and 2.0 equally well.
+
+sakai2_browse_all_tools.jmx - For each user, pick a random site (to which they have
+   access).  Browse all of the tools in that site.  Equivalent to logging in,
+   navigating to a tool site, and clicking on each left-hand page (tool) in
+   sequence, then logging out.
+
+sakai2_browse_course_homepages.jmx - For each user, visit the home pages
+   of each of the sites to which they have access.  This is equivalent to
+   logging in, clicking on each of the site tabs, and logging out.
+
+sakai2_download_iframes_example.jmx - Shows the script explicitly handling
+   IFRAMEs - downloads each iframe individually.  For each user, visit the home pages
+   of each of the sites to which they have access.  This is equivalent to
+   logging in, clicking on each of the site tabs, and logging out.
+
+sakai1_browse_all_tools.jmx - For testing against Sakai 1.0 (and 1.5?).
+   For each user, pick a random site (to which they have
+   access).  Browse all of the tools in that site.  Equivalent to logging in,
+   navigating to a tool site, and clicking on each left-hand page (tool) in
+   sequence, then logging out.
+
+
+fake_usernames.txt
+fake_passwords.txt - newline-seperated list of Sakai usernames and passwords
+   which the scripts will use.  One username/password combination will be used
+   for each iteration of the script.
+
+install_ssl_cert.bat - Install the University of Michigan's 
+
+jmeter.properties - Example JMeter configuration to use when loadtesting Sakai.
+
+install_ssl_cert.bat - Example of installing an SSL certificate to loadtest
+   against an SSL-enabled server.
+
+umwebCA.pem - Example SSL certificate for University of Michigan.
+
+
+
+Notes on how to use these scripts:
+
+* In the root node (Test Plan) of each script there is a "scriptdir" variable.
+Change this variable value to be the full path to the jmeter script directory 
+(the directory this README.txt is in).
+
+* The "Enterprise Login once only" node is optional.  It allows for the 
+script to authenticate somehow against the webserver once per thread.
+The example shows University of Michigan's single-sign-on system.  You can 
+disable the node if you only need to test Sakai's login, and not some
+seperate external login.
+
+
+
+General JMeter tips:
+
+* JMeter is leaking a LOT of memory when running these scripts.  Run
+them with 20+ threads, repeatedly, and you'll see.  So far I can only reclaim
+this memory by restarting JMeter!!
+
+* Don't turn on "Functional Test" mode under the root "Test Plan" node!
+ Not only does it make JMeter write out huge logs, it accelerates
+JMeter's memory consumption and memory leaks unacceptably.
+
+* Don't turn on "Redirect automatically" on HTTP request sampling nodes.
+"Follow redirects" is good, but "Redirect automatically" doesn't 
+always work properly.  For example, it mysteriously breaks CTools 
+Cosign login.  It probably gobbles cookies.
+
+* In order for JMeter to download IFRAMEs automatically, you must
+change jmeter.properties to use the RegexpHTMLParser instead of the 
+default parser.  You can comment the default parser and uncomment
+the RegexpHTMLParser.  See the example jmeter.properties.
