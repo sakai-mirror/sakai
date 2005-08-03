@@ -80,7 +80,7 @@
 							frameborder="0"
 							marginwidth="0"
 							marginheight="0"
-							scrolling="no"
+							scrolling="auto"
 							align="right"
 							src="#contentCourierLink("$panel-control")"
 							onload="updateMainFrameHeight('$mainFrameId');"
