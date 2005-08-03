@@ -459,7 +459,13 @@ public class SiteAction extends PagedResourceActionII
 	
 	private final static String STATE_ICONS = "icons";
 	
+	//site template used to create a UM Grad Tools student site
+	public static final String SITE_GTS_TEMPLATE = "!gtstudent";
+	
+	//the type used to identify a UM Grad Tools student site
 	public static final String SITE_TYPE_GRADTOOLS_STUDENT = "GradToolsStudent";
+	
+	//list of UM Grad Tools site types for editing
 	public static final String GRADTOOLS_SITE_TYPES = "gradtools_site_types";
 	
 	public static final String SITE_DUPLICATED = "site_duplicated";
@@ -966,20 +972,14 @@ public class SiteAction extends PagedResourceActionII
 						//the Grad Tools site option is only presented to UM grad students
 						String userId = StringUtil.trimToZero(UsageSessionService.getSessionUserId());
 						
-						//am I a grad student?
+						//am I a UM grad student?
 						Boolean isGradStudent = new Boolean(isGradToolsCandidate(userId));
 						context.put("isGradStudent", isGradStudent);
 					
-						//if I am a grad student, do I already have a Grad Tools site?
+						//if I am a UM grad student, do I already have a Grad Tools site?
 						boolean noGradToolsSite = true;
-						if(isGradStudent.booleanValue())
-						{
-							List allSites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.UPDATE,
-											SITE_TYPE_GRADTOOLS_STUDENT, null, null, SortType.NONE, null);
-
-							if(allSites.size()!= 0)
-								noGradToolsSite = false;
-						}
+						if(hasGradToolsStudentSite(userId))
+							noGradToolsSite = false;
 						context.put("noGradToolsSite", new Boolean(noGradToolsSite));
 					}
 					catch(Exception e)
@@ -12536,7 +12536,7 @@ public class SiteAction extends PagedResourceActionII
 		//get the Grad Tools student site template
 		try
 		{
-			template = SiteService.getSite(SiteService.SITE_GTS_TEMPLATE);
+			template = SiteService.getSite(SITE_GTS_TEMPLATE);
 		}
 		catch (Exception e)
 		{
@@ -12660,6 +12660,30 @@ public class SiteAction extends PagedResourceActionII
 		
 		return false;
 	}
+	/**
+	 * User has a Grad Tools student site
+	 * @return
+	 */
+	protected boolean hasGradToolsStudentSite(String userId)
+	{
+		boolean has = false;
+		int n = 0;
+		try
+		{
+			n = SiteService.countSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.UPDATE,
+					SITE_TYPE_GRADTOOLS_STUDENT, null, null);
+			if(n > 0)
+				has = true;
+		}
+		catch(Exception e)
+		{
+			if(Log.isWarnEnabled())
+				Log.warn("chef", this + ".hasGradToolsStudentSite "  + e);
+		}
+	
+		return has;
+			
+	}//hasGradToolsStudentSite
 
 }	// SiteAction
 
