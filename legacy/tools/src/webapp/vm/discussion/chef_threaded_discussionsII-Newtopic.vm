@@ -83,7 +83,6 @@
 					<p class="checkbox"><input type="radio" name="style" value="star" id="styleStar" /><label for="styleStar">$tlang.getString("newtop.allrep2")</label></p>
 				#end
 				<div style="font-weight:bold">
-					<span class="reqStar">*</span>
 					<label for="body">
 						$tlang.getString("gen.mes")
 					</label>	
