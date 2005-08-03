@@ -924,12 +924,6 @@ public class ThreadedDiscussionIIAction
 	{
 		context.put("tlang",rb);
 		
-		if (state.getAttribute(DELETE_WARNING) != null)
-		{
-			addAlert(state, (String) state.getAttribute(DELETE_WARNING));
-			state.removeAttribute(DELETE_WARNING);
-		}
-		
 		String search = (String) state.getAttribute(STATE_SEARCH);
 		if (search == null || search.equals(""))
 		{
@@ -1205,6 +1199,12 @@ public class ThreadedDiscussionIIAction
 		state.setAttribute(STATE_LIST_PANNEL_UPDATED, "false");
 		
 		context.put("visitedMessages", state.getAttribute(VISITED_MESSAGES));
+		
+		if (state.getAttribute(DELETE_WARNING) != null)
+		{
+			addAlert(state, (String) state.getAttribute(DELETE_WARNING));
+			state.removeAttribute(DELETE_WARNING);
+		}
 		
 		return null;
 
