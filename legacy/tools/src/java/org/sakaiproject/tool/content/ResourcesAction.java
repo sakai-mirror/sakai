@@ -746,8 +746,10 @@ extends VelocityPortletPaneledAction
 					String displayName = properties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 					String containerId = ref.getContainer();
 					String accessUrl = ref.getUrl();
+					String contentType = properties.getProperty(ResourceProperties.PROP_CONTENT_TYPE);
 					
 					AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
+					item.setContentType(contentType);
 					attached.add(item);
 				}
 				catch(Exception ignore) {}
@@ -2258,9 +2260,10 @@ extends VelocityPortletPaneledAction
 				String displayName = props.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
 				String containerId = contentService.getContainingCollectionId (itemId);
 				String accessUrl = contentService.getUrl(itemId);
+				String contentType = props.getProperty(ResourceProperties.PROP_CONTENT_TYPE);
 		
 				AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
-		
+				item.setContentType(contentType);
 				attached.add(item);
 			}
 			catch(Exception ignore) {}
@@ -8274,6 +8277,7 @@ extends VelocityPortletPaneledAction
 		protected String m_displayName;
 		protected String m_accessUrl;
 		protected String m_collectionId;
+		protected String m_contentType;
 
 		/**
 		 * @param id
@@ -8347,6 +8351,23 @@ extends VelocityPortletPaneledAction
 			m_displayName = name;
 		}
 		
+		/**
+		 * @return Returns the contentType.
+		 */
+		public String getContentType() 
+		{
+			return m_contentType;
+		}
+		
+		/**
+		 * @param contentType
+		 */
+		public void setContentType(String contentType) 
+		{
+			this.m_contentType = contentType;
+			
+		}
+
 	}
 	
 }	// ResourcesAction

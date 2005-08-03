@@ -30,10 +30,11 @@
 			#if($attached.isEmpty())
 				$tlang.getString("att.empty")
 			#else
-				<table>
+				<table cellspacing="0" border="0">
 					#foreach($att_item in $attached)
 						<tr>
 							<td style="vertical-align:top">
+								<img src="#imageLink($contentTypeImageService.getContentTypeImage($att_item.contentType))" border= "0" alt ="" hspace="0" />
 								<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
 							</td>
 							<td  style="vertical-align:top">
