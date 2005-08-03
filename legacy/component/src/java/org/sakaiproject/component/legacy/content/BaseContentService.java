@@ -1858,11 +1858,6 @@ public abstract class BaseContentService implements ContentHostingService, Cache
     // complete the edit - update xml which contains properties xml and store the file content
     m_storage.commitDeleteResource(edit, uuid);
 
-    // track it
-    EventTrackingService.post(EventTrackingService.newEvent(
-        ((BaseResourceEdit) edit).getEvent(), edit.getReference(), true,
-        priority));
-
     // close the edit object
     ((BaseResourceEdit) edit).closeEdit();
 
