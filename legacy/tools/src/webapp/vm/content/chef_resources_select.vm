@@ -24,7 +24,7 @@
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
 		<input type="hidden" name="from" value="list" />
 		<p class="shorttext">
-			<label for="">
+			<label for="xxx">
 				$tlang.getString("att.items")
 			</label>
 			#if($attached.isEmpty())
@@ -273,6 +273,14 @@
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
 											<a href="#toolLink("ResourcesAction" "doAttachitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('att.select')">$tlang.getString("att.select").trim()</a>
+										#end
+										####### deal with duplicating item
+										#if($member.canRead() && $member.canAddItem())
+											#if ($itemsOnLine > 0)
+												|
+											#end
+											#set ($itemsOnLine = $itemsOnLine + 1)
+											<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
 										#end
 									#end
 								</div>

@@ -25,6 +25,7 @@
 // package
 package org.sakaiproject.tool.content;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -6598,7 +6599,15 @@ extends VelocityPortletPaneledAction
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
 			// delete sucessful
-			state.setAttribute (STATE_MODE, MODE_LIST);
+			String mode = (String) state.getAttribute(STATE_MODE);
+			if(MODE_HELPER.equals(mode))
+			{
+				state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+			}
+			else
+			{
+				state.setAttribute (STATE_MODE, MODE_LIST);
+			} 
 			
 			// try to expand the collection
 			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
@@ -6619,7 +6628,7 @@ extends VelocityPortletPaneledAction
 				state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
 			}
 		}
-		
+	
 	}	// doPasteitem
 
 	/**
@@ -7046,7 +7055,7 @@ extends VelocityPortletPaneledAction
 	/**
 	 * Internal class that encapsulates all information about a resource that is needed in the browse mode
 	 */
-	public static class BrowseItem
+	public static class BrowseItem implements Serializable
 	{
 		// attributes of all resources
 		protected String m_name;
