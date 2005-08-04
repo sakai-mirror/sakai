@@ -23,8 +23,6 @@
 
 package org.sakaiproject.service.legacy.site.cover;
 
-import org.sakaiproject.exception.IdInvalidException;
-import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 
 /**

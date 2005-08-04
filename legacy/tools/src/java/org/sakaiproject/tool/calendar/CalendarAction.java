@@ -76,7 +76,6 @@ import org.sakaiproject.service.legacy.time.TimeRange;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.tool.content.ResourcesAction;
-import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.CalendarUtil;
 import org.sakaiproject.util.FileItem;

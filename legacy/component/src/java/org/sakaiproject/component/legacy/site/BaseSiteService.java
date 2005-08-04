@@ -34,9 +34,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.tool.Tool;
@@ -52,7 +49,6 @@ import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
-
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.alias.cover.AliasService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
@@ -85,7 +81,6 @@ import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.SitePageEdit;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.legacy.site.SiteService.SortType;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
