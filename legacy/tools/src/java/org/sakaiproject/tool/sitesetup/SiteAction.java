@@ -8554,7 +8554,7 @@ public class SiteAction extends PagedResourceActionII
 				String rId = StringUtil.trimToNull(params.getString("role" + userId));
 				if (rId == null)
 				{
-					addAlert(state, rb.getString("rolefor")+" " + userId + ". ");
+					addAlert(state, rb.getString("java.rolefor")+" " + userId + ". ");
 					pSelectedRoles.remove(userId);
 				}
 				else
