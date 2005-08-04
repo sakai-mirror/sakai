@@ -17,20 +17,50 @@
 	</h3>
 	<div class="instruction">
 		$tlang.getString("att.instr")
+		#if($attached.isEmpty())
+		#else
+			$tlang.getString("dav.win5b")
+		#end	
 	</div>
 
 	<form name="attachForm" action="#toolForm("ResourcesAction")" method="post">
 		<input type="hidden" name="source" value="0" />
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
 		<input type="hidden" name="from" value="list" />
-		<p class="shorttext">
+		#if($attached.isEmpty())
+		#else
+			<table class="listHier" cellspacing="0" cellpadding="0">
+				<tr>
+					<th>
+						$tlang.getString("att.items")
+					</th>
+					<th>
+							Remove?
+					</th>
+				</tr>	
+					#foreach($att_item in $attached)
+						<tr>
+							<td style="vertical-align:top">
+								<img src="#imageLink($contentTypeImageService.getContentTypeImage($att_item.contentType))" border= "0" alt ="" hspace="0" />
+								<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
+							</td>
+							<td  style="vertical-align:top">
+								<a href="#toolLink("ResourcesAction" "doRemoveitem")&itemId=$validator.escapeUrl($att_item.id)" title="$tlang.getString('att.remove')">$tlang.getString("att.remove")</a>
+							</td>
+						</tr>
+					#end
+			</table>
+		<hr class="itemSeparator"  />	
+		#end	
+		
+#*		<p class="shorttext">
 			<label for="xxx">
 				$tlang.getString("att.items")
 			</label>
 			#if($attached.isEmpty())
 				$tlang.getString("att.empty")
 			#else
-				<table cellspacing="0" border="0">
+				<table cellspacing="0" border="1">
 					#foreach($att_item in $attached)
 						<tr>
 							<td style="vertical-align:top">
@@ -45,6 +75,7 @@
 				</table>
 			#end
 		</p>
+*#	
 		######################  Page Title / Breadcrumbs  ##############
 		<h3>
 			<span class ="chefBreadCrumb">
@@ -148,7 +179,7 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${root.id})" title ="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
+									<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${root.id})" title ="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
 								#end
 							</div>
 						#end
@@ -263,7 +294,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
+											<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
 										#end
 									#else
 										#set ($itemsOnLine = 0)
@@ -297,10 +328,10 @@
 			#end ## foreach $root in $roots
 		</table>
 		
-		<p class="act labelindnt" >
+		<p class="act" >
 			<input type="submit" name="eventSubmit_doAddattachments" 
-				value="$tlang.getString("att.attach")" #if($attached.isEmpty())disabled="disabled"#end style="margin-left:1em" />
-			<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("att.cancel")" style="margin-left:1em" />
+				value="$tlang.getString("att.finish")" #if($attached.isEmpty())disabled="disabled" #else class="active" #end />
+			<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("att.cancel")"  />
 		</p>
 	</form>						
 </div>
