@@ -437,7 +437,7 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 		this.parentId = parentUuid;
 	}
 
-	public Set getAllChildSections() {
+	public Set getAllSubSections() {
 		return allChildren;
 	}
 
@@ -452,8 +452,7 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 		  allChildren.remove(sectionUuid);		
 	}
 
-	public Set getChildSectionsByType(CourseSectionType type) {
+	public Set getSubSectionsByType(CourseSectionType type) {
  		return null;
 	}
-
 }
