@@ -117,8 +117,8 @@ public class SpringTool extends HttpServlet
     *        The servlet request.
     * @param res
     *        The servlet response.
-    * @throws ServletException.
-    * @throws IOException.
+    * @throws ServletException
+    * @throws IOException
     */
    protected void dispatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
    {
@@ -254,8 +254,10 @@ public class SpringTool extends HttpServlet
       String helperId = target.substring(1, posEnd + 1);
       ActiveTool helperTool = ActiveToolManager.getActiveTool(helperId);
 
-      toolSession.setAttribute(helperTool.getId() + Tool.HELPER_DONE_URL,
-            req.getContextPath() + req.getServletPath() + computeDefaultTarget(true));
+      if (toolSession.getAttribute(helperTool.getId() + Tool.HELPER_DONE_URL) == null) {
+         toolSession.setAttribute(helperTool.getId() + Tool.HELPER_DONE_URL,
+               req.getContextPath() + req.getServletPath() + computeDefaultTarget(true));
+      }
 
       String context = req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 2);
       String toolPath = Web.makePath(parts, 2, parts.length);
@@ -271,8 +273,8 @@ public class SpringTool extends HttpServlet
     *        The servlet request.
     * @param res
     *        The servlet response.
-    * @throws ServletException.
-    * @throws IOException.
+    * @throws ServletException
+    * @throws IOException
     */
    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
    {
@@ -286,8 +288,8 @@ public class SpringTool extends HttpServlet
     *        The servlet request.
     * @param res
     *        The servlet response.
-    * @throws ServletException.
-    * @throws IOException.
+    * @throws ServletException
+    * @throws IOException
     */
    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
    {
@@ -326,24 +328,6 @@ public class SpringTool extends HttpServlet
       }
 
       M_log.info("init: default: " + m_default + " path: " + m_path);
-   }
-
-   protected boolean isHelperRequest(String path) {
-      // we need some path
-      if ((path == null) || (path.length() == 0)) return false;
-
-      // we need a last dot
-      int pos = path.lastIndexOf(".");
-      if (pos == -1) return false;
-
-      // we need that last dot to be the end of the path, not burried in the path somewhere (i.e. no more slashes after the last dot)
-      String ext = path.substring(pos);
-      if (ext.indexOf("/") != -1) return false;
-
-      // we need the ext to not be the JSF_EXT
-      if (ext.equals(HELPER_EXT)) return true;
-
-      return false;
    }
 
    /**

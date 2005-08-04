@@ -51,6 +51,8 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
 
          String url = (String) SessionManager.getCurrentToolSession().getAttribute(
                tool.getId() + Tool.HELPER_DONE_URL);
+         
+         SessionManager.getCurrentToolSession().removeAttribute(tool.getId() + Tool.HELPER_DONE_URL);
 
          try {
             res.sendRedirect(url);
