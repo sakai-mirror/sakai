@@ -34,6 +34,8 @@ public class ParticipationRecordImpl implements ParticipationRecord, Serializabl
 
 	private Boolean isOtherPeople;
 
+	private String uuid;
+
     /**
      * Return the simple primary key value that identifies this object.
      * @return java.lang.Long
@@ -176,8 +178,11 @@ public class ParticipationRecordImpl implements ParticipationRecord, Serializabl
 	}
 
 	public String getUuid() {
-		// TODO Auto-generated method stub
-		return null;
+		return uuid;
+	}
+	
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 }
