@@ -381,7 +381,7 @@ public interface CourseSection extends Persistable
 	 * 
 	 * @return Set of course section uuids.
 	 */
-	public Set getAllChildSections();
+	public Set getAllSubSections();
 
 	/**
 	 * Add a course section uuid to represent this offering.
@@ -402,5 +402,5 @@ public interface CourseSection extends Persistable
 	 * 
 	 * @return Set of course section uuids.
 	 */
-	public Set getChildSectionsByType(CourseSectionType type);	
+	public Set getSubSectionsByType(CourseSectionType type);	
 }
