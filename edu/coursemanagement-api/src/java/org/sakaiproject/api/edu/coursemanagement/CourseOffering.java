@@ -23,8 +23,9 @@
 
 package org.sakaiproject.api.edu.coursemanagement;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Set;
+
+import org.sakaiproject.api.common.manager.Persistable;
 
 /**
  * A Course Offering can occur in a specific term and have a grade type, status type, etc. A course offering is a canonical course associated with a specific term. It may be concrete where the canonical is abstract. The roster associated with a course
@@ -33,41 +34,34 @@ import java.util.List;
  * <li>A title [String]
  * <li>A description (subject) [String]
  * <li>An offering number [String]
- * <li>A unique identifier [Id Object]
  * <li>A session reference [Session Id Object]
- * <li>A Sakai SuperStructure node reference [Node]
  * <li>Maximum number of students allowed [Integer]
  * <li>An offering type [Type Object]
  * <li>An offering status type [Enumerated Property]
- * <li>A list of people designated as the default leaders. [List of ParticipationObjects]
- * <li>An aggregated list of enrolled students. [List of EnrollmentRecords]
+ * <li>A set of people designated as the default leaders. [Set of ParticipationObjects]
+ * <li>A set of other people associated with this course. [Set of ParticipationRecords]
+ * <li>A set of all enrolled students [Set of EnrollmentRecords]
+ * <li>An aggregated set of enrolled students by course section type. [Set of EnrollmentRecords]
  * <li>An enrollment type [Enumerated Property]
- * <li>A default list of other people associated with this course. [List of ParticipationRecords]
  * <li>The canonical course that this offering represents. [CanonicalCourse Id]
- * <li>A list of course sections derived from this offering. [List of CourseSection Ids]
- * <li>Uuid of Agent who created this record [String]
- * <li>Date & Time whne this record is created [Date]   
- * <li>Uuid of Agent who last modified this record [String]
- * <li>Date & Time whne this record is last modified [Date]   
+ * <li>A set of course sections derived from this offering. [Set of CourseSection Ids]
  * </ul>
  * 
  * @author Mark Norton
  */
-public interface CourseOffering
+public interface CourseOffering extends Persistable
 {
-	String LEADER = "LEADER";
-
-	public Long getCourseOfferingId();
-
 	/**
-	 * Get the title of a course offering as it might appear in a course catalog.
+	 * Get the title of a course offering as it might 
+	 * appear in a course catalog.
 	 * 
 	 * @return the title of the course offering.
 	 */
 	public String getTitle();
 
 	/**
-	 * Set the title of a course offering as it might appear in a course catalog.
+	 * Set the title of a course offering as it might 
+	 * appear in a course catalog.
 	 * 
 	 * @param title
 	 */
@@ -88,25 +82,20 @@ public interface CourseOffering
 	public void setDescription(String description);
 
 	/**
-	 * Get the course number. There are no restrictions on how this number is formatted.
+	 * Get the course number. There are no restrictions on 
+	 * how this number is formatted.
 	 * 
-	 * @return Course number
+	 * @return offeringNnumber
 	 */
 	public String getOfferingNumber();
 
 	/**
-	 * Set the course number. There are no restirctions on how this number is foramtted.
+	 * Set the offering number. There are no restirctions on 
+	 * how this number is formatted.
 	 * 
-	 * @param courseNumber
+	 * @param offeringNumber
 	 */
 	public void setOfferingNumber(String offeringNumber);
-
-	/**
-	 * Get the unique id of this course offering.
-	 * 
-	 * @return canonical course uuid
-	 */
-	public String getUuid();
 
 	/**
 	 * Get the term of this course offering.
@@ -123,51 +112,65 @@ public interface CourseOffering
 	public void setSession(Session term);
 
 	/**
-	 * Return true if this course offering is cross listed. A course is cross listed if the list of equivalent courses is non-empty.
+	 * Return true if this course offering is cross listed. 
+	 * A course is cross listed if the set of equivalent 
+	 * courses is non-empty.
 	 * 
 	 * @return true if cross listed.
 	 */
-	public boolean isCrossListed();
+	public Boolean isCrossListed();
 	
-	public void setIsCrossListed(boolean isCrossListed);
-
+    
 	/**
-	 * Get a list of equivalent course offering uuids. This is one way to represent cross listing in a set of courses.
+	 * Set cross listing flag.
 	 * 
-	 * @return List of canonical course uuids.
+	 * @param isCrossListed
 	 */
-	public List getEquivalents();
+	public void setIsCrossListed(Boolean isCrossListed);
 
 	/**
-	 * Add the course offering given by its uuid to the list of equivalent courses.
+	 * Get a set of equivalent course offering uuids. This is 
+	 * one way to represent cross seting in a set of courses.
+	 * 
+	 * @return Set of canonical course uuids.
+	 */
+	public Set getEquivalents();
+
+	/**
+	 * Add the course offering given by its uuid to the set of 
+	 * equivalent courses.
 	 * 
 	 * @param courseOfferingUuid
 	 */
 	public void addEquivalent(String courseOfferingUuid);
 
 	/**
-	 * Remove the course offering given by its uuid from the list of equivalent courses.
+	 * Remove the course offering given by its uuid from the set 
+	 * of equivalent courses.
 	 * 
 	 * @param courseOfferingUuid
 	 */
 	public void removeEquivalent(String courseOfferingUuid);
 
 	/**
-	 * Get the maxiumum number of students permitted to enroll in this course offering.
+	 * Get the maxiumum number of students permitted to enroll 
+	 * in this course offering.
 	 * 
 	 * @return maxiumum number of students allowed
 	 */
-	public int getMaximumStudents();
+	public Integer getMaximumStudents();
 
 	/**
-	 * Set the maximum number of students permitted to entroll in this course offering.
+	 * Set the maximum number of students permitted to entroll 
+	 * in this course offering.
 	 * 
 	 * @param maxStudents
 	 */
-	public void setMaximumStudents(int maxStudents);
+	public void setMaximumStudents(Integer maxStudents);
 
 	/**
-	 * Get the course offering type. This type indicates what kind of offering is being made.
+	 * Get the course offering type. This type indicates what 
+	 * kind of offering is being made.
 	 * 
 	 * @return course offering type.
 	 */
@@ -181,25 +184,26 @@ public interface CourseOffering
 	public void setOfferingType(CourseOfferingType type);
 
 	/**
-	 * Get the course ofering status. The course offering status might be open, closed, wait-listed, etc.
+	 * Get the course ofering status. The course offering status 
+	 * might be open, closed, wait-seted, etc.
 	 * 
-	 * @return
+	 * @return status
 	 */
 	public CourseOfferingStatusType getOfferingStatus();
 
 	/**
 	 * Set the course offering status type.
 	 * 
-	 * @param type
+	 * @param status
 	 */
-	public void setOfferingStatusType(CourseOfferingStatusType type);
+	public void setOfferingStatus(CourseOfferingStatusType status);
 
 	/**
-	 * Get the list of course sections that represent this offering.
+	 * Get the set of course sections that represent this offering.
 	 * 
-	 * @return List of course sections
+	 * @return Set of course sections
 	 */
-	public List getCourseSections();
+	public Set getCourseSections();
 
 	/**
 	 * Add a course section that represents this offering.
@@ -209,83 +213,96 @@ public interface CourseOffering
 	public void addCourseSection(String sectionUuid);
 
 	/**
-	 * Remove a course section from this offering list.
+	 * Remove a course section from this offering set.
 	 * 
 	 * @param sectionUuid
 	 */
 	public void removeCourseSection(String sectionUuid);
 
 	/**
-	 * Get the list of participation for the instructors of this course. While most sections will have only one instructor, provisions are made for multiple instructors.
+	 * Get the set of participation for the instructors of 
+	 * a given course section type (e.g. lecture, lab, 
+	 * seminar) in this course. While most sections will 
+	 * have only one instructor, provisions are made for 
+	 * multiple instructors.
 	 * 
-	 * @return List of agent uuids for instructors.
+	 * @return defaultLeaderSet
 	 */
-	public List getDefaultLeaders();
-
+	public Set getDefaultLeaders();
+	
 	/**
 	 * Add a participation record as an instructor of this section.
 	 * 
-	 * @param agentUuid
-	 */
+	 * @param participationRecord
+	 */	
 	public void addDefaultLeader(ParticipationRecord participationRecord);
 
 	/**
-	 * Remove a leader given an agent uuid. The participation record containing this uuid will be removed.
+	 * Remove a leader given an agent uuid. The participation 
+	 * record containing this uuid will be removed.
 	 * 
 	 * @param agentUuid
 	 */
 	public void removeDefaultLeader(String agentUuid);
 
 	/**
-	 * Get an aggregated list of all students enrolled in this course. This is a list of Enrollment records drawn from sections under this offering. Aggregated enrollment is a simple way to find all people enrolled in any section based on this course
+	 * Get a set of other people associated with this course offering. 
+	 * This set might include teaching assistance, lab supervisors, 
+	 * translators, etc. The set elements are participation uuids.
+	 * 
+	 * @return otherPeopleSet
+	 */
+	public Set getOtherPeople();
+
+	/**
+	 * Add a person to the other set.
+	 * 
+	 * @param participantRecord
+	 */
+	public void addOtherPerson(ParticipationRecord participantRecord);
+
+	/**
+	 * Remove a person from the other set given an agent uuid. 
+	 * The participation record associated with this uuid will 
+	 * be removed from the set of other people.
+	 * 
+	 * @param participantUuid
+	 */
+	public void removeOtherPerson(String participantUuid);
+
+	/**
+	 * Get an aggregated set of all students enrolled of a 
+	 * given course section type (e.g. lecture, lab, seminar) 
+	 * in this course. This is a set of Enrollment records 
+	 * drawn from sections under this offering. Aggregated 
+	 * enrollment is a simple way to find all people enrolled 
+	 * in any section based on this course
 	 * offering.
 	 * 
-	 * @return aggregated list of enrollment records.
-	 */
-	public List getEnrollmentRecords();
+	 * @return Set of enrollment records.
+	 */	
+	public Set getAllEnrollments();
 
 	/**
-	 * Add an enrollment record for a student enrolled in this offering.
+	 * Get an aggregated set of all students enrolled in this 
+	 * course. This is a set of Enrollment records drawn from 
+	 * sections under this offering. Aggregated enrollment is 
+	 * a simple way to find all people enrolled in any section 
+	 * based on this course offering.
 	 * 
-	 * @param student
-	 *        enrollment record
+	 * @return aggregated set of enrollment records.
 	 */
-	public void addEnrollmentRecord(EnrollmentRecord record);
+	public Set getAggregatedEnrollments(CourseSectionType type);
+
 
 	/**
-	 * Remove the enrollment record of a student for this offering.
-	 * 
-	 * @param record
-	 */
-	public void removeEnrollmentRecord(EnrollmentRecord record);
-
-	/**
-	 * Get the entrollment type for this course. Since a course offering enrollment is always an aggregate, this will always return an EnrollmentType of aggregate.
+	 * Get the entrollment type for this course. Since a course 
+	 * offering enrollment is always an aggregate, this will 
+	 * always return an EnrollmentType of aggregate.
 	 * 
 	 * @return entrollment type.
 	 */
 	public EnrollmentType getEnrollmentType();
-
-	/**
-	 * Get a list of other people associated with this course offering. This list might include teaching assistance, lab supervisors, translators, etc. The list elements are participation uuids.
-	 * 
-	 * @return
-	 */
-	public List getOtherPeople();
-
-	/**
-	 * Add a person to the other list.
-	 * 
-	 * @param agentUuid
-	 */
-	public void addOtherPerson(ParticipationRecord participant);
-
-	/**
-	 * Remove a person from the other list given an agent uuid. The participation record associated with this uuid will be removed from the list of other people.
-	 * 
-	 * @param agentUuid
-	 */
-	public void removeOtherPerson(String agentUuid);
 
 	/**
 	 * Get the uuid of the canonical course that this offering represents.
@@ -302,11 +319,13 @@ public interface CourseOffering
 	public void setCanonicalCourse(String canonicalCourseUuid);
 
 	/**
-	 * Get a list of uuids of sections derived from this course offering. Each of these sections is a real class with a location, teacher, students, etc.
+	 * Get a set of uuids of sections derived from this course offering. 
+	 * Each of these sections is a real class with a location, teacher, 
+	 * students, etc.
 	 * 
-	 * @return List of course section uuids.
+	 * @return Set of course section uuids.
 	 */
-	public List getSections();
+	public Set getSections();
 
 	/**
 	 * Add a course section uuid to represent this offering.
@@ -322,58 +341,13 @@ public interface CourseOffering
 	 */
 	public void removeSection(String sectionUuid);
 	
-    /**
-     * Get the uuid of the Agent who has created this course offering.
-     * @return uuid of the Agent
-     */
-	public String getCreatedBy();
-
 	/**
-	 * Set the uuid of the Agent who has created this course offering.
-	 *
-	 *	@param uuid of the Agent
+	 * Get a set of uuids of sections of a given course section type, 
+	 * derived from this course offering. Each of these sections is 
+	 * a real class with a location, teacher, students, etc.
+	 * 
+	 * @return Set of course section uuids.
 	 */
-	public void setCreatedBy(String createdBy);
-
-    /**
-     * Get the date when this course offering is created.
-     * @return creation date
-     */
-	public Date getCreatedDate();
-
-	/**
-	 * Set the creation date.
-	 *
-	 *	@param creation date
-	 */
-	public void setCreatedDate(Date createdDate);
-
-    /**
-     * Get the uuid of the Agent who has last modified this course offering.
-     * @return uuid of the Agent
-     */
-	public String getLastModifiedBy();
-
-	/**
-	 * Set the uuid of the Agent who has last modified this course offering.
-	 *
-	 *	@param uuid of the Agent
-	 */
-	public void setLastModifiedBy(String lastModifiedBy);
-
-    /**
-     * Get the date when this course offering is last modified.
-     * @return last modified date
-     */
-	public Date getLastModifiedDate();
-
-	/**
-	 * Set the last modified date.
-	 *
-	 *	@param last modified date
-	 */
-	public void setLastModifiedDate(Date lastModifiedDate);
-
-	
-	
+	public Set getSectionsByType(CourseSectionType type);
+		
 }

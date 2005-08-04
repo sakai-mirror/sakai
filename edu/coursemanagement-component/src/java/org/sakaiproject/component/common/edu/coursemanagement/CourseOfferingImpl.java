@@ -1,7 +1,6 @@
 package org.sakaiproject.component.common.edu.coursemanagement;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,8 +10,7 @@ import java.util.Set;
 import org.sakaiproject.api.edu.coursemanagement.CourseOffering;
 import org.sakaiproject.api.edu.coursemanagement.CourseOfferingStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseOfferingType;
-import org.sakaiproject.api.edu.coursemanagement.CourseSection;
-import org.sakaiproject.api.edu.coursemanagement.EnrollmentRecord;
+import org.sakaiproject.api.edu.coursemanagement.CourseSectionType;
 import org.sakaiproject.api.edu.coursemanagement.EnrollmentType;
 import org.sakaiproject.api.edu.coursemanagement.ParticipationRecord;
 import org.sakaiproject.api.edu.coursemanagement.Session;
@@ -58,7 +56,7 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
     private Boolean isCrossListed;
 
     /** The value of the simple maximumstudents property. */
-    private Long maximumStudents;
+    private Integer maximumStudents;
 
     /** The value of the simple canonicalcourseuuid property. */
     private String canonicalCourseUuid;
@@ -77,19 +75,19 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 
 	private Set courseSectionSet;
 
-	private List courseSectionList;
-
 	private Set participationSet;
 
-	private List participationList;
-	
 	private List defaultLeaderList;
 	
 	private List otherPeopleList;
 
-	private List enrollmentList;
+	private Set equivalentOfferingSet;
 
-	private Set enrollmentSet;
+	private Set defaultLeaderSet;
+
+	private Set otherPeopleSet;
+
+	private Set sectionSet;
 
 	public Long getCourseOfferingId() {
 		return this.courseOfferingId;
@@ -138,49 +136,44 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 		this.session = session;
 	}
 
-	public boolean isCrossListed() {
-		return getIsCrossListed().booleanValue();
+	public Boolean isCrossListed() {
+		return getIsCrossListed();
 	}
 	
-	public void setIsCrossListed(boolean isCrossListed) {
-		this.isCrossListed = new Boolean(isCrossListed);
+	public void setIsCrossListed(Boolean isCrossListed) {
+		this.isCrossListed = isCrossListed;
 	}
 
 	public Boolean getIsCrossListed() {
 		return isCrossListed;
 	}
-	public void setIsCrossListed(Boolean isCrossListed) {
-		this.isCrossListed = isCrossListed;
-	}
 
-	public List getEquivalents() {
-		// TODO Auto-generated method stub
-		return null;
+	public Set getEquivalents() {
+		return equivalentOfferingSet;
 	}
 
 	public void addEquivalent(String courseOfferingUuid) {
-		// TODO Auto-generated method stub
-
+		if (equivalentOfferingSet == null)
+			equivalentOfferingSet = new HashSet();
+		equivalentOfferingSet.add(courseOfferingUuid);
 	}
 
 	public void removeEquivalent(String courseOfferingUuid) {
-		// TODO Auto-generated method stub
-
+		Iterator i = equivalentOfferingSet.iterator();
+		while (i.hasNext()){
+			String uuid = (String) i.next();
+			if (uuid.equals(courseOfferingUuid)){
+				equivalentOfferingSet.remove(courseOfferingUuid);
+				break;
+			}
+		}
 	}
 
-	public int getMaximumStudents() {
-		return getMaximumStudentsLong().intValue();
-	}
-
-	public void setMaximumStudents(int maxStudents) {
-		setMaximumStudentsLong(new Long(maxStudents));
-	}
-	
-	public Long getMaximumStudentsLong() {
+	public Integer getMaximumStudents() {
 		return maximumStudents;
 	}
 
-	public void setMaximumStudentsLong(Long maxStudents) {
+	public void setMaximumStudents(Integer maxStudents) {
 		this.maximumStudents = maxStudents;
 	}
 
@@ -196,45 +189,30 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 		return courseOfferingStatusType;
 	}
 
-	public void setOfferingStatusType(CourseOfferingStatusType status) {
+	public void setOfferingStatus(CourseOfferingStatusType status) {
 		this.courseOfferingStatusType = status;
 	}
 
-	public Set getCourseSectionSet() {
-		return courseSectionSet;
+	public Set getSections() {
+		return sectionSet;
 	}
 
-	public void setCourseSectionSet(Set courseSectionSet) {
-		courseSectionList = new ArrayList();
-		if (this.courseSectionSet == null)
-			this.courseSectionSet = new HashSet();
-		this.courseSectionSet = courseSectionSet;
-		Iterator i= courseSectionSet.iterator();
-		while (i.hasNext()){
-			courseSectionList.add(i.next());
-		}
+	public void setSections(Set sectionSet) {
+		this.sectionSet =  sectionSet;
 	}
 
-	public List getCourseSections() {
-		return courseSectionList;
+	public void addSection(String sectionUuid) {
+		if (this.sectionSet == null)
+			this.sectionSet = new HashSet();
+		sectionSet.add(sectionUuid);
 	}
 
-	public void addCourseSection(String sectionUuid) {
-		if (this.courseSectionSet == null)
-			this.courseSectionSet = new HashSet();
-		courseSectionSet.add(sectionUuid);
-		if (this.courseSectionList == null)
-			this.courseSectionList = new ArrayList();
-		courseSectionList.add(sectionUuid);
-	}
-
-	public void removeCourseSection(String sectionUuid) {
-		Iterator i= courseSectionSet.iterator();
+	public void removeSection(String sectionUuid) {
+		Iterator i= sectionSet.iterator();
 		while (i.hasNext()){
 			String s = (String) i.next();
 			if (s.equals(sectionUuid)){
-				courseSectionSet.remove(sectionUuid);
-				courseSectionList.remove(sectionUuid);				
+				sectionSet.remove(sectionUuid);
 			}
 		}
 	}
@@ -244,134 +222,64 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	}
 
 	public void setParticipationSet(Set participationSet) {
-		participationList = new ArrayList();
-		defaultLeaderList = new ArrayList();
-		otherPeopleList = new ArrayList();
-		if (this.participationSet == null)
-			this.participationSet = new HashSet();
+		defaultLeaderSet = new HashSet();
+		otherPeopleSet = new HashSet();
+		this.participationSet = new HashSet();
 		this.participationSet = participationSet;
 		Iterator i= participationSet.iterator();
 		while (i.hasNext()){
 			ParticipationRecord p = (ParticipationRecord)i.next();
-			participationList.add(p);
-			if (p.getRole().equals(CourseOffering.LEADER))
+			participationSet.add(p);
+			if (p.getIsLeader().booleanValue())
 				defaultLeaderList.add(p);
-			else
+			if (p.getIsOtherPeople().booleanValue())
 				otherPeopleList.add(p);
 		}
 	}
 
-	public Set getParticipationList() {
-		return participationSet;
-	}
-
-	public List getDefaultLeaders() {
-		return defaultLeaderList;
+	public Set getDefaultLeaders() {
+		return defaultLeaderSet;
 	}
 
 	public void addDefaultLeader(ParticipationRecord participationRecord) {
 		if (this.participationSet == null)
 			this.participationSet = new HashSet();
+		if (this.defaultLeaderSet == null)
+			this.defaultLeaderSet = new HashSet();
 		participationSet.add(participationRecord);
-		if (this.participationList == null)
-			this.participationList = new ArrayList();
-		participationList.add(participationRecord);
-		if (this.participationList == null)
-			this.participationList = new ArrayList();
-		defaultLeaderList.add(participationRecord);
+		defaultLeaderSet.add(participationRecord);
 	}
 
 	public void removeDefaultLeader(String agentUuid) {
-		Iterator i= participationSet.iterator();
-		while (i.hasNext()){
-			ParticipationRecord participation = (ParticipationRecord) i.next();
-			if (participation.getAgent().equals(agentUuid)){
-				participationSet.remove(participation);
-				participationList.remove(participation);				
-				defaultLeaderList.remove(participation);				
-			}
-		}
+		if (this.participationSet != null)
+			participationSet.remove(agentUuid);
+		if (this.defaultLeaderSet != null)
+			defaultLeaderSet.remove(agentUuid);				
 	}
 
-	public Set getEnrollmentSet() {
-		return participationSet;
-	}
-
-	public void setEnrollmentSet(Set enrollmentSet) {
-		enrollmentList = new ArrayList();
-		if (this.enrollmentSet == null)
-			this.enrollmentSet = new HashSet();
-		this.enrollmentSet = enrollmentSet;
-		Iterator i= enrollmentSet.iterator();
-		while (i.hasNext()){
-			enrollmentList.add(i.next());
-		}
-	}
-	public List getEnrollmentRecords() {
-		return enrollmentList;
-	}
-
-	public void addEnrollmentRecord(EnrollmentRecord enrollmentRecord) {
-		if (this.enrollmentSet == null)
-			this.enrollmentSet = new HashSet();
-		enrollmentSet.add(enrollmentRecord);
-		if (this.enrollmentList == null)
-			this.enrollmentList = new ArrayList();
-		enrollmentList.add(enrollmentRecord);
-	}
-
-	public void removeEnrollmentRecord(String agentUuid) {
-		Iterator i= enrollmentSet.iterator();
-		while (i.hasNext()){
-			EnrollmentRecord enrollment = (EnrollmentRecord) i.next();
-			if (enrollment.getAgent().equals(agentUuid)){
-				enrollmentSet.remove(enrollment);
-				enrollmentList.remove(enrollment);				
-			}
-		}
-	}
-	
-	public void removeEnrollmentRecord(EnrollmentRecord enrollmentRecord) {
-		Iterator i= enrollmentSet.iterator();
-		while (i.hasNext()){
-			EnrollmentRecord enrollment = (EnrollmentRecord) i.next();
-			if (enrollment.equals(enrollmentRecord)){
-				enrollmentSet.remove(enrollment);
-				enrollmentList.remove(enrollment);				
-			}
-		}
-	}
 
 	public EnrollmentType getEnrollmentType() {
 		return enrollmentType;
 	}
 
-	public List getOtherPeople() {
-		return otherPeopleList;
+	public Set getOtherPeople() {
+		return otherPeopleSet;
 	}
 
 	public void addOtherPerson(ParticipationRecord participant) {
 		if (this.participationSet == null)
 			this.participationSet = new HashSet();
 		participationSet.add(participant);
-		if (this.participationList == null)
-			this.participationList = new ArrayList();
-		participationList.add(participant);
-		if (this.participationList == null)
-			this.participationList = new ArrayList();
-		otherPeopleList.add(participant);
+		if (this.otherPeopleSet == null)
+			this.otherPeopleSet = new HashSet();
+		otherPeopleSet.add(participant);
 	}
 
 	public void removeOtherPerson(String agentUuid) {
-		Iterator i= participationSet.iterator();
-		while (i.hasNext()){
-			ParticipationRecord participation = (ParticipationRecord) i.next();
-			if (participation.getAgent().equals(agentUuid)){
-				participationSet.remove(participation);
-				participationList.remove(participation);				
-				otherPeopleList.remove(participation);				
-			}
-		}
+		if (this.participationSet != null)
+			participationSet.remove(agentUuid);
+		if (this.otherPeopleSet != null)
+			otherPeopleList.remove(agentUuid);				
 	}
 
 	public String getCanonicalCourse() {
@@ -380,21 +288,6 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 
 	public void setCanonicalCourse(String canonicalCourseUuid) {
 		this.canonicalCourseUuid = canonicalCourseUuid;
-	}
-
-	public List getSections() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void addSection(String sectionUuid) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void removeSection(String sectionUuid) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public String getCreatedBy() {
@@ -440,7 +333,7 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
             return false;
         if (! (rhs instanceof CourseOffering))
             return false;
-        CourseOffering that = (CourseOffering) rhs;
+        CourseOfferingImpl that = (CourseOfferingImpl) rhs;
         if (this.getCourseOfferingId() == null || that.getCourseOfferingId() == null)
             return false;
         return (this.getCourseOfferingId().equals(that.getCourseOfferingId()));
@@ -462,5 +355,44 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
         }
         return this.hashValue;
     }
+
+	public Set getAllEnrollments() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Set getAggregatedEnrollments(CourseSectionType type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Set getSectionsByType(CourseSectionType type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Set getCourseSections() {
+		return courseSectionSet;
+	}
+
+	public void setCourseSections(Set courseSectionSet) {
+		this.courseSectionSet = courseSectionSet;
+	}
+
+	public void addCourseSection(String sectionUuid) {
+		if (this.courseSectionSet == null)
+			this.courseSectionSet = new HashSet();
+		courseSectionSet.add(sectionUuid);
+	}
+
+	public void removeCourseSection(String sectionUuid) {
+		Iterator i= courseSectionSet.iterator();
+		while (i.hasNext()){
+			String s = (String) i.next();
+			if (s.equals(sectionUuid)){
+				courseSectionSet.remove(sectionUuid);
+			}
+		}
+	}
 
 }

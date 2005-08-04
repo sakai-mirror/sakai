@@ -26,7 +26,7 @@
  */
 package org.sakaiproject.api.edu.coursemanagement;
 
-import java.util.Date;
+import org.sakaiproject.api.common.manager.Persistable;
 
 /**
  * 	A ParticipationRecord describes the participation of a person in a course, 
@@ -36,17 +36,11 @@ import java.util.Date;
  *	<li>A role.  This role might not correspond to an authorization role.  [String]
  *	<li>A participation status.  [ParticipationStatusType]
  *	<li>A course reference. [CourseSection Id]
- *      <li>Uuid of Agent who created this record [String]
- *      <li>Date & Time whne this record is created [Date]
- *      <li>Uuid of Agent who last modified this record [String]
- *      <li>Date & Time whne this record is last modified [Date]
  *	</ul>
  * @author Mark Norton
  *
  */
-public interface ParticipationRecord {
-
-	public Long getParticipationRecordId();
+public interface ParticipationRecord extends Persistable{
 
 	/**
 	 * Get the agent uuid of the participant.
@@ -81,14 +75,14 @@ public interface ParticipationRecord {
 	 * 
 	 * @return enrollment status type.
 	 */
-	public ParticipationStatusType getParticipationStatusType ();
+	public ParticipationStatusType getParticipationStatus();
 	
 	/**
 	 * Set the participation status for the participant.
 	 * 
 	 * @param type
 	 */
-	public void setParticipationStatusType (ParticipationStatusType status);
+	public void setParticipationStatus(ParticipationStatusType status);
 	
 	/**
 	 * Get a course section uuid reference.  This provides
@@ -105,56 +99,46 @@ public interface ParticipationRecord {
 	 */
 	public void setCourseReference (String courseSectionUuid);
 
-       /**
-        * Get the uuid of the Agent who has created this record.
-        * @return uuid of the Agent
-        */
-	public String getCreatedBy();
+	/**
+	 * Return true if the agent is a leader in the course section
+	 * 
+	 * @return true if agent is leader
+	 */
+	public Boolean getIsLeader();
+	  
+	/**
+	 * Set is leader flag.
+	 * 
+	 * @param isLeader
+	 */
+	public void setIsLeader(Boolean isLeader);
 
 	/**
-	 * Set the uuid of the Agent who has created this record.
-	 *
-	 *	@param uuid of the Agent
+	 * Return true if the agent is the other in the course section
+	 * 
+	 * @return true if agent is other
 	 */
-	public void setCreatedBy(String createdBy);
-
-       /**
-        * Get the date when this record is created.
-        * @return creation date
-        */
-	public Date getCreatedDate();
+	public Boolean getIsOtherPeople();
+	    
+	/**
+	 * Set is other flag.
+	 * 
+	 * @param isOther
+	 */
+	public void setIsOtherPeople(Boolean isOtherPeople);
 
 	/**
-	 * Set the creation date.
-	 *
-	 *	@param creation date
+	 * Get the course offering uuid that this record belongs to.
+	 * 
+	 * @return course offering uuid.
 	 */
-	public void setCreatedDate(Date createdDate);
-
-       /**
-        * Get the uuid of the Agent who has last modified this record.
-        * @return uuid of the Agent
-        */
-	public String getLastModifiedBy();
+	public String getCourseOffering();
 
 	/**
-	 * Set the uuid of the Agent who has last modified this record.
-	 *
-	 *	@param uuid of the Agent
+	 * Set the course offering uuid id that this record belongs to.
+	 * 
+	 * @param courseOfferingUuid
 	 */
-	public void setLastModifiedBy(String lastModifiedBy);
+	public void setCourseOffering(String courseOfferingUuid);
 
-       /**
-        * Get the date when this record is last modified.
-        * @return last modified date
-        */
-	public Date getLastModifiedDate();
-
-	/**
-	 * Set the last modified date.
-	 *
-	 *	@param last modified date
-	 */
-	public void setLastModifiedDate(Date lastModifiedDate);
-	
 }

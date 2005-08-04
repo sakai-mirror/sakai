@@ -6,4 +6,5 @@
         <goal name="sakai">
                 <attainGoal name="jar:install" />
         </goal>
+
 </project>

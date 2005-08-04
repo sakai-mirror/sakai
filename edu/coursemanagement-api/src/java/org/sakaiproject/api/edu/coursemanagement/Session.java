@@ -28,7 +28,7 @@
  */
 package org.sakaiproject.api.edu.coursemanagement;
 
-import java.util.Date;
+import org.sakaiproject.api.common.manager.Persistable;
 
 /**
  *	A Term is a unit of time in which a course offering exists.  It can include 
@@ -46,9 +46,7 @@ import java.util.Date;
  * @author Mark Norton
  *
  */
-public interface Session {
-
-	public Long getSessionId();
+public interface Session extends Persistable{
 
 	/**
 	 * Get the title of this term/session.
@@ -101,14 +99,7 @@ public interface Session {
 	 * @return true if this is the current session.
 	 */
 	public boolean isCurrent();
-	
-	/**
-	 * Get the uuid of this session.
-	 * 
-	 * @return
-	 */
-	public String getUuid();
-	
+		
 	/**
 	 * Get the term type of this session.  The session type might be
 	 * spring, summer, etc. or first_quarter, second_quarter, etc.
@@ -187,55 +178,4 @@ public interface Session {
 	 */
 	//public void setGradeEnd(Schedule end);
 	
-	   /**
-     * Get the uuid of the Agent who has created this record.
-     * @return uuid of the Agent
-     */
-	public String getCreatedBy();
-
-	/**
-	 * Set the uuid of the Agent who has created this record.
-	 *
-	 *	@param uuid of the Agent
-	 */
-	public void setCreatedBy(String createdBy);
-
-    /**
-     * Get the date when this record is created.
-     * @return creation date
-     */
-	public Date getCreatedDate();
-
-	/**
-	 * Set the creation date.
-	 *
-	 *	@param creation date
-	 */
-	public void setCreatedDate(Date createdDate);
-
-    /**
-     * Get the uuid of the Agent who has last modified this record.
-     * @return uuid of the Agent
-     */
-	public String getLastModifiedBy();
-
-	/**
-	 * Set the uuid of the Agent who has last modified this record.
-	 *
-	 *	@param uuid of the Agent
-	 */
-	public void setLastModifiedBy(String lastModifiedBy);
-
-    /**
-     * Get the date when this record is last modified.
-     * @return last modified date
-     */
-	public Date getLastModifiedDate();
-
-	/**
-	 * Set the last modified date.
-	 *
-	 *	@param last modified date
-	 */
-	public void setLastModifiedDate(Date lastModifiedDate);	
 }

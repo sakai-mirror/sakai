@@ -25,8 +25,10 @@
  *
  */
 package org.sakaiproject.api.edu.coursemanagement;
-import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import org.sakaiproject.api.common.manager.Persistable;
 
 /**
  * A Canonical Course is a general course that exists across terms.  It is an abstract 
@@ -45,28 +47,21 @@ import java.util.List;
  *	<li>A title  [String]
  *	<li>A catalog description [String]
  *	<li>A course number [String]
- *	<li>A unique identifier  [Id Object]
  *	<li>A canonical course status [Enumerated Property]
  *	<li>Default credits [String]
  *	<li>A Sakai SuperStructure node reference [Node]
  *	<li>A list of topics [List of Strings]
- *	<li>A list of equivalent canonical courses. [List of Canonical Course Id Objects]
- *	<li>A list of prerequisites [List of Strings]
+ *	<li>A set of equivalent canonical courses. [Set of Canonical Course Id Objects]
+ *	<li>A set of prerequisites [Set of Strings]
  *	<li>A parent CanonicalCourse object.  [CanonicalCourse Id]
- *	<li>A list of CanonicalCourse children.  [List of CanonicalCourse Ids]
- *	<li>A list of course offerings based on this canonical course.  [List of Course Offering Ids]
- *      <li>Uuid of Agent who created this record [String]
- *      <li>Date & Time whne this record is created [Date]   
- *      <li>Uuid of Agent who last modified this record [String]
- *      <li>Date & Time whne this record is last modified [Date]   
+ *	<li>A set of CanonicalCourse children.  [Set of CanonicalCourse Ids]
+ *	<li>A set of course offerings based on this canonical course.  [Set of Course Offering Ids]
  * </ul>
  *  * @author Mark Norton
  *
  */
-public interface CanonicalCourse {
-	
-	public Long getCanonicalCourseId();
-	
+public interface CanonicalCourse extends Persistable{
+		
 	/**
 	 * Get the title of a canonical course as it might appear in a course catalog.
 	 * 
@@ -111,25 +106,18 @@ public interface CanonicalCourse {
 	public void setCourseNumber (String courseNumber);
 	
 	/**
-	 * Get the unique id of this canonical course.
-	 *  
-	 * @return canonical course uuid
-	 */
-	public String getUuid();
-	
-	/**
 	 * Get the course type of this canonical course.  Typically,
 	 * this type will indicate if ths canonical course is available,
 	 * discontinued, etc.
 	 * @return
 	 */
-	public CanonicalCourseStatusType getCanonicalStatusType();
+	public CanonicalCourseStatusType getCanonicalStatus();
 	
 	/**
 	 * Set the course type of this canonical course.
 	 * @param type
 	 */
-	public void setCanonicalStatusType(CanonicalCourseStatusType type);
+	public void setCanonicalStatus(CanonicalCourseStatusType type);
 	
 	/**
 	 * Get the default credits for this course.  While there are no
@@ -171,12 +159,12 @@ public interface CanonicalCourse {
 	public void removeTopic (String topic);
 	
 	/**
-	 * Get a list of equivalent canonical courses uuids.  This is one way to
+	 * Get a set of equivalent canonical courses uuids.  This is one way to
 	 * represent cross listing in a set of courses.
 	 * 
-	 * @return List of canonical course uuids.
+	 * @return Set of canonical course uuids.
 	 */
-	public List getEquivalents ();
+	public Set getEquivalents ();
 	
 	/**
 	 * Add the canonical course given by its uuid to the list of equivalent
@@ -195,11 +183,11 @@ public interface CanonicalCourse {
 	public void removeEquivalent (String canonicalCourseUuid);
 	
 	/**
-	 * Get the list of prerequisites.
+	 * Get the set of prerequisites.
 	 * 
-	 * @return List of prerequiste strings.
+	 * @return Set of prerequiste strings.
 	 */
-	public List getPrerequisites ();
+	public Set getPrerequisites ();
 	
 	/**
 	 * Add a prerequisite string to the list of prerequisites.
@@ -232,11 +220,11 @@ public interface CanonicalCourse {
 	public void setParentId (String parentUuid);
 	
 	/**
-	 * Get a list of course offering uuids derived from this canonical course.
+	 * Get a set of course offering uuids derived from this canonical course.
 	 * 
-	 * @return List of course offering uuids.
+	 * @return Set of course offering uuids.
 	 */
-	public List getOfferings();
+	public Set getOfferings();
 	
 	/**
 	 * Add a course offering uuid as derived from this canonical course.
@@ -252,58 +240,5 @@ public interface CanonicalCourse {
 	 * @param offeringUuid
 	 */
 	public void removeOffering (String offeringUuid);
-	
-        /**
-         * Get the uuid of the Agent who has created this canonical course.
-         * @return uuid of the Agent
-         */
-	public String getCreatedBy();
-
-	/**
-	 * Set the uuid of the Agent who has created this canonical course.
-	 *
-	 *	@param uuid of the Agent
-	 */
-	public void setCreatedBy(String createdBy);
-
-        /**
-         * Get the date when this canonical course is created.
-         * @return creation date
-         */
-	public Date getCreatedDate();
-
-	/**
-	 * Set the creation date
-	 *
-	 *	@param creation date
-	 */
-	public void setCreatedDate(Date createdDate);
-
-        /**
-         * Get the uuid of the Agent who has last modified this canonical course.
-         * @return uuid of the Agent
-         */
-	public String getLastModifiedBy();
-
-	/**
-	 * Set the uuid of the Agent who has last modified this canonical course.
-	 *
-	 *	@param uuid of the Agent
-	 */
-	public void setLastModifiedBy(String lastModifiedBy);
-
-        /**
-         * Get the date when this canonical course is last modified.
-         * @return last modified date
-         */
-	public Date getLastModifiedDate();
-
-	/**
-	 * Set the last modified date.
-	 *
-	 *	@param last modified date
-	 */
-	public void setLastModifiedDate(Date lastModifiedDate);
-
 	
 }

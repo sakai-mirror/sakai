@@ -2,12 +2,6 @@ package org.sakaiproject.component.common.edu.coursemanagement;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
-
-import org.sakaiproject.api.edu.coursemanagement.CanonicalCourseStatusType;
-import org.sakaiproject.api.edu.coursemanagement.CourseOfferingType;
-import org.sakaiproject.api.edu.coursemanagement.CourseSectionStatusType;
-import org.sakaiproject.api.edu.coursemanagement.CourseSectionType;
 import org.sakaiproject.api.edu.coursemanagement.EnrollmentType;
 
 public class EnrollmentTypeImpl implements EnrollmentType, Serializable {

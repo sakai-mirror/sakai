@@ -3,8 +3,7 @@ package org.sakaiproject.component.common.edu.coursemanagement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.sakaiproject.api.edu.coursemanagement.CourseSet;
@@ -72,32 +71,23 @@ public class CourseSetImpl implements CourseSet, Serializable {
 		this.uuid = uuid;
 	}
 	
-	public List getCanonicalCourses() {
-		return canonicalCourseUuidList;
-	}
-	public Set getCanonicalCourseSet() {
+	public Set getCanonicalCourses() {
 		return canonicalCourseUuidSet;
 	}
 	
 	public void setCanonicalCourseSet(Set set) {
 		this.canonicalCourseUuidSet = set;
-		canonicalCourseUuidList = new ArrayList();
-		Iterator i= set.iterator();
-		while (i.hasNext()){
-			String e = (String)i.next();
-			canonicalCourseUuidList.add(e);
-		}
 	}
 
 	public void addCanonicalCourse(String canonicalCourseUuid) {
-		if (canonicalCourseUuidList == null)
-			canonicalCourseUuidList = new ArrayList();
-		canonicalCourseUuidList.add(canonicalCourseUuid);
+		if (canonicalCourseUuidSet == null)
+			canonicalCourseUuidSet = new HashSet();
+		canonicalCourseUuidSet.add(canonicalCourseUuid);
 	}
 
 	public void removeCanonicalCourse(String canonicalCourseUuid) {
 		if (canonicalCourseUuidList != null)
-    		canonicalCourseUuidList.remove(canonicalCourseUuid);
+    		canonicalCourseUuidSet.remove(canonicalCourseUuid);
 	}
 	
 	public String getCreatedBy() {
@@ -140,9 +130,9 @@ public class CourseSetImpl implements CourseSet, Serializable {
     {
         if (rhs == null)
             return false;
-        if (! (rhs instanceof CourseSet))
+        if (! (rhs instanceof CourseSetImpl))
             return false;
-        CourseSet that = (CourseSet) rhs;
+        CourseSetImpl that = (CourseSetImpl) rhs;
         if (this.getCourseSetId() == null || that.getCourseSetId() == null)
             return false;
         return (this.getCourseSetId().equals(that.getCourseSetId()));

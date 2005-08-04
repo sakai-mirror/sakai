@@ -145,9 +145,9 @@ public class SessionImpl implements Session, Serializable {
     {
         if (rhs == null)
             return false;
-        if (! (rhs instanceof Session))
+        if (! (rhs instanceof SessionImpl))
             return false;
-        Session that = (Session) rhs;
+        SessionImpl that = (SessionImpl) rhs;
         if (this.getSessionId() == null || that.getSessionId() == null)
             return false;
         return (this.getSessionId().equals(that.getSessionId()));

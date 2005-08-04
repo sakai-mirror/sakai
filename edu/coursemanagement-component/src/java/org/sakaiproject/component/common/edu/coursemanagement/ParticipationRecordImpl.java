@@ -28,6 +28,12 @@ public class ParticipationRecordImpl implements ParticipationRecord, Serializabl
 	private String lastModifiedBy;
 	private Date lastModifiedDate;
 
+	private String courseOfferingUuid;
+
+	private Boolean isLeader;
+
+	private Boolean isOtherPeople;
+
     /**
      * Return the simple primary key value that identifies this object.
      * @return java.lang.Long
@@ -63,11 +69,11 @@ public class ParticipationRecordImpl implements ParticipationRecord, Serializabl
 		this.role = role;
 	}
 
-	public ParticipationStatusType getParticipationStatusType() {
+	public ParticipationStatusType getParticipationStatus() {
 		return status;
 	}
 
-	public void setParticipationStatusType(ParticipationStatusType status) {
+	public void setParticipationStatus(ParticipationStatusType status) {
 		this.status = status;
 	}
 
@@ -77,6 +83,14 @@ public class ParticipationRecordImpl implements ParticipationRecord, Serializabl
 
 	public void setCourseReference(String courseSectionUuid) {
 		this.courseSectionUuid = courseSectionUuid;
+	}
+
+	public String getCourseOffering() {
+		return this.courseOfferingUuid;
+	}
+
+	public void setCourseOffering(String courseOfferingUuid) {
+		this.courseOfferingUuid = courseOfferingUuid;
 	}
 
 	public String getCreatedBy() {
@@ -120,9 +134,9 @@ public class ParticipationRecordImpl implements ParticipationRecord, Serializabl
     {
         if (rhs == null)
             return false;
-        if (! (rhs instanceof ParticipationRecord))
+        if (! (rhs instanceof ParticipationRecordImpl))
             return false;
-        ParticipationRecord that = (ParticipationRecord) rhs;
+        ParticipationRecordImpl that = (ParticipationRecordImpl) rhs;
         if (this.getParticipationRecordId() == null || that.getParticipationRecordId() == null)
             return false;
         return (this.getParticipationRecordId().equals(that.getParticipationRecordId()));
@@ -144,5 +158,26 @@ public class ParticipationRecordImpl implements ParticipationRecord, Serializabl
         }
         return this.hashValue;
     }
+
+	public Boolean getIsLeader() {
+		return isLeader;
+	}
+
+	public void setIsLeader(Boolean isLeader) {
+		this.isLeader = isLeader;
+	}
+
+	public Boolean getIsOtherPeople() {
+		return isOtherPeople;
+	}
+
+	public void setIsOtherPeople(Boolean isOtherPeople) {
+		this.isOtherPeople = isOtherPeople;
+	}
+
+	public String getUuid() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -64,11 +64,11 @@ public class EnrollmentRecordImpl implements EnrollmentRecord, Serializable  {
 		this.role = role;
 	}
 
-	public EnrollmentStatusType getStatusType() {
+	public EnrollmentStatusType getStatus() {
 		return status;
 	}
 
-	public void setStatusType(EnrollmentStatusType status) {
+	public void setStatus(EnrollmentStatusType status) {
 		this.status = status;
 	}
 
@@ -129,9 +129,9 @@ public class EnrollmentRecordImpl implements EnrollmentRecord, Serializable  {
     {
         if (rhs == null)
             return false;
-        if (! (rhs instanceof EnrollmentRecord))
+        if (! (rhs instanceof EnrollmentRecordImpl))
             return false;
-        EnrollmentRecord that = (EnrollmentRecord) rhs;
+        EnrollmentRecordImpl that = (EnrollmentRecordImpl) rhs;
         if (this.getEnrollmentRecordId() == null || that.getEnrollmentRecordId() == null)
             return false;
         return (this.getEnrollmentRecordId().equals(that.getEnrollmentRecordId()));

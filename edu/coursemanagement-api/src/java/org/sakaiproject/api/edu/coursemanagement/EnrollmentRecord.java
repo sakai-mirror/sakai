@@ -28,9 +28,6 @@
  */
 package org.sakaiproject.api.edu.coursemanagement;
 
-import java.util.Date;
-
-
 /**
  *	An EnrollmentRecord describes the participation of a person in a course, their role, and their status in the course.
  *	<ul>
@@ -39,17 +36,11 @@ import java.util.Date;
  *	<li>A student enrollment status.  [EnrollmentStatusType]
  *	<li>Credits  [String] 
  *	<li>A course reference  [CourseSection Id]  
- *      <li>Uuid of Agent who created this record [String]
- *      <li>Date & Time whne this record is created [Date]
- *      <li>Uuid of Agent who last modified this record [String]
- *      <li>Date & Time whne this record is last modified [Date]
  *	</ul>
  * @author Mark Norton
  *
  */
 public interface EnrollmentRecord {
-
-	public Long getEnrollmentRecordId();
 
 	/**
 	 * Get the agent uuid of the student enrolled.
@@ -85,14 +76,14 @@ public interface EnrollmentRecord {
 	 * 
 	 * @return enrollment status type.
 	 */
-	public EnrollmentStatusType getStatusType ();
+	public EnrollmentStatusType getStatus();
 	
 	/**
 	 * Set the enrollment status type for this student.
 	 * 
 	 * @param type
 	 */
-	public void setStatusType (EnrollmentStatusType type);
+	public void setStatus(EnrollmentStatusType type);
 	
 	/**
 	 * Get the credits that can be earned by this student.  The
@@ -124,58 +115,5 @@ public interface EnrollmentRecord {
 	 * @param courseSectionUuid
 	 */
 	public void setCourseReference (String courseSectionUuid);
-	
-	/**
-         * Get the uuid of the Agent who has created this record.
-         * @return uuid of the Agent
-        */
-	public String getCreatedBy();
-
-	/**
-	 * Set the uuid of the Agent who has created this record.
-	 *
-	 *	@param uuid of the Agent
-	 */
-	public void setCreatedBy(String createdBy);
-
-       /**
-        * Get the date when this record is created.
-        * @return creation date
-        */
-	public Date getCreatedDate();
-
-	/**
-	 * Set the creation date.
-	 *
-	 *	@param creation date
-	 */
-	public void setCreatedDate(Date createdDate);
-
-       /**
-        * Get the uuid of the Agent who has last modified this record.
-        * @return uuid of the Agent
-        */
-	public String getLastModifiedBy();
-
-	/**
-	 * Set the uuid of the Agent who has last modified this record.
-	 *
-	 *	@param uuid of the Agent
-	 */
-	public void setLastModifiedBy(String lastModifiedBy);
-
-       /**
-        * Get the date when this record is last modified.
-        * @return last modified date
-        */
-	public Date getLastModifiedDate();
-
-	/**
-	 * Set the last modified date.
-	 *
-	 *	@param last modified date
-	 */
-	public void setLastModifiedDate(Date lastModifiedDate);
-
-	
+		
 }

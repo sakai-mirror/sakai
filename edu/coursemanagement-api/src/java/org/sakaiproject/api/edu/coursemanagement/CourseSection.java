@@ -23,8 +23,9 @@
 
 package org.sakaiproject.api.edu.coursemanagement;
 
-import java.util.List;
-import java.util.Date;
+import java.util.Set;
+
+import org.sakaiproject.api.common.manager.Persistable;
 
 /**
  * A CourseSection is a physical instance of a course offering that has a schedule, location, roster, etc. A CourseSection represents an actual class with an assigned instructor(s) and enrolled students.
@@ -38,31 +39,27 @@ import java.util.Date;
  * <li>A course section status [Enumerated Property]
  * <li>A session reference [Session Id Object]
  * <li>A Sakai SuperStructure node reference [Node]
- * <li>A list of SakaiSuperStructure nodes to define a cross-listing set. [List of Nodes]
+ * <li>A set of SakaiSuperStructure nodes to define a cross-seting set. [Set of Nodes]
  * <li>Schedule of meeting dates/times and locations. [Schedule Id Object]
- * <li>A list of people designated as leaders. [List of ParticipationRecords]
- * <li>A list of enrolled students, each with their own enrollment record. [List of Enrollment Record Objects]
+ * <li>A set of people designated as leaders. [Set of ParticipationRecords]
+ * <li>A set of enrolled students, each with their own enrollment record. [Set of Enrollment Record Objects]
  * <li>A student enrollment status [Enumerated Property]
- * <li>A list of other people associated with this section. [List of ParticipationRecords]
+ * <li>A set of other people associated with this section. [Set of ParticipationRecords]
  * <li>The course offering that this section is derived from. [CourseOffering Id]
- * <li>A list of section events [List of Event Ids]
+ * <li>A set of section events [Set of Event Ids]
  * <li>A flag to indicate created locally [Boolean, true if created locally]
  * <li>A flag to indicate this as a holding section [Boolean, true if a holding section]
  * <li>A flag to indicate students may self-register for this section [Boolean, true if self-registration is allowed]
  * <li>A Location [String]
  * <li>Meeting Time [String] 
- * <li>Uuid of Agent who created this record [String]
- * <li>Date & Time whne this record is created [Date]
- * <li>Uuid of Agent who last modified this record [String]
- * <li>Date & Time whne this record is last modified [Date]
+ * <li>A parent Course Section object.  [CourseSection Uuid]
+ * <li>A set of child course sections derived from this course section. [Set of CourseSection Ids]
  * </ul>
  * 
  * @author Mark Norton
  */
-public interface CourseSection
+public interface CourseSection extends Persistable
 {
-	public Long getCourseSectionId();
-
 	/**
 	 * Get the title of a course section.
 	 * 
@@ -104,13 +101,6 @@ public interface CourseSection
 	 * @param sectionNumber
 	 */
 	public void setSectionNumber(String sectionNumber);
-
-	/**
-	 * Get the course section uuid.
-	 * 
-	 * @return course section uuid.
-	 */
-	public String getUuid();
 
 	/**
 	 * Get the maxiumum number of students permitted to enroll in this course section.
@@ -155,7 +145,7 @@ public interface CourseSection
 	public void setSectionType(CourseSectionType type);
 
 	/**
-	 * Get the course section status type. This type could be open, closed, or wait-listed.
+	 * Get the course section status type. This type could be open, closed, or wait-seted.
 	 * 
 	 * @return course ection status type.
 	 */
@@ -166,7 +156,7 @@ public interface CourseSection
 	 * 
 	 * @param type
 	 */
-	public void setSectionStatusType(CourseSectionStatusType type);
+	public void setSectionStatus(CourseSectionStatusType type);
 
 	/**
 	 * Get the schedule for this course section. The schedule specified when the course meets, how often, what time, etc.
@@ -176,11 +166,11 @@ public interface CourseSection
 	//public Schedule getSchedule ();
 
 	/**
-	 * Get the list of participation for the instructors of this course. While most sections will have only one instructor, provisions are made for multiple instructors.
+	 * Get the set of participation for the instructors of this course. While most sections will have only one instructor, provisions are made for multiple instructors.
 	 * 
-	 * @return List of agent uuids for instructors.
+	 * @return Set of agent uuids for instructors.
 	 */
-	public List getLeaders();
+	public Set getLeaders();
 
 	/**
 	 * Add a participation record as an instructor of this section.
@@ -197,11 +187,11 @@ public interface CourseSection
 	public void removeLeader(String agentUuid);
 
 	/**
-	 * Get the list of enrollment records for students enrolled in this section. Note that this list contains actual record, not uuids as is typical elsewhere.
+	 * Get the set of enrollment records for students enrolled in this section. Note that this set contains actual record, not uuids as is typical elsewhere.
 	 * 
-	 * @return List of student enrollment records.
+	 * @return Set of student enrollment records.
 	 */
-	public List getEnrollmentRecords();
+	public Set getEnrollmentRecords();
 
 	/**
 	 * Add an enrollment record for a student enrolled in this section.
@@ -233,21 +223,21 @@ public interface CourseSection
 	public void setEnrollmentStatus(EnrollmentStatusType status);
 
 	/**
-	 * Get a list of other people associated with this course offering. This list might include teaching assistance, lab supervisors, translators, etc. The list elements are participation uuids.
+	 * Get a set of other people associated with this course offering. This set might include teaching assistance, lab supervisors, translators, etc. The set elements are participation uuids.
 	 * 
 	 * @return
 	 */
-	public List getOtherPeople();
+	public Set getOtherPeople();
 
 	/**
-	 * Add a person to the other list.
+	 * Add a person to the other set.
 	 * 
 	 * @param agentUuid
 	 */
 	public void addOtherPerson(ParticipationRecord participant);
 
 	/**
-	 * Remove a person from the other list given an agent uuid. The participation record associated with this uuid will be removed from the list of other people.
+	 * Remove a person from the other set given an agent uuid. The participation record associated with this uuid will be removed from the set of other people.
 	 * 
 	 * @param agentUuid
 	 */
@@ -282,11 +272,11 @@ public interface CourseSection
 	public void setSchedule(String scheduleUuid);
 
 	/**
-	 * Get the list of event associated with this course section. Event objects are TBD at this time.
+	 * Get the set of event associated with this course section. Event objects are TBD at this time.
 	 * 
 	 * @return
 	 */
-	public List getSectionEvents();
+	public Set getSectionEvents();
 
 	/**
 	 * Add an event given it's uuid.
@@ -307,122 +297,110 @@ public interface CourseSection
 	 * 
 	 * @return
 	 */
-	public boolean getCreatedLocally();
+	public Boolean getCreatedLocally();
 
 	/**
 	 * Set the created locally flag.
 	 * 
 	 * @param createdLocally
 	 */
-	public void setCreatedLocally(boolean createdLocally);
+	public void setCreatedLocally(Boolean createdLocally);
 
 	/**
 	 * Check to see if this is a holding section. True if this section is being used to hold students that will be re-assigned later.
 	 * 
 	 * @return
 	 */
-	public boolean getHoldingSection();
+	public Boolean getHoldingSection();
 
 	/**
 	 * Set the holding section flag.
 	 * 
 	 * @param holdingSection
 	 */
-	public void setHoldingSection(boolean holdingSection);
+	public void setHoldingSection(Boolean holdingSection);
 
 	/**
 	 * Check to see if self-registration is allowed for this section. If true, then students may enroll or register themselves.
 	 * 
 	 * @return
 	 */
-	public boolean getAllowSelfRegistration();
+	public Boolean getAllowSelfRegistration();
 
 	/**
 	 * Set the self registration flag.
 	 * 
 	 * @param allowSelfRegistration
 	 */
-	public void setAllowSelfRegistration(boolean allowSelfRegistration);
+	public void setAllowSelfRegistration(Boolean allowSelfRegistration);
 
 
-        /**
-         * Get the location of a course section.
-         *
-         * @return the location of the course section.
-         */
-        public String getLocation();
+	/**
+	 * Get the location of a course section.
+	 *
+	 * @return the location of the course section.
+	 */
+	public String getLocation();
 
-        /**
-         * Set the location of this course section.
-         *
-         * @param location
-         */
-        public void setLocation(String location);
+	/**
+	 * Set the location of this course section.
+	 *
+	 * @param location
+	 */
+	public void setLocation(String location);
 
-        /**
-         * Get the meeting time of a course section.
-         *
-         * @return the meeting time of the course section.
-         */
-        public String getMeetingTime();
+	/**
+	 * Get the meeting time of a course section.
+	 *
+	 * @return the meeting time of the course section.
+	 */
+	public String getMeetingTime();
 
-        /**
-         * Set the meeting time of this course section.
-         *
-         * @param meeting time
-         */
-        public void setMeetingTime(String meetingTime);
+	/**
+	 * Set the meeting time of this course section.
+	 *
+	 * @param meeting time
+	 */
+	public void setMeetingTime(String meetingTime);
+   	
+	/**
+	 * Get the parent uuid of a course section.
+	 *
+	 * @return the parent uuid of the course section.
+	 */
+	public String getParentId();
+	/**
+	 * Set the parentId of this course section.
+	 *
+	 * @param parent uuid
+	 */
+	public void setParentId(String parentUuid);
+	
+	/**
+	 * Get a set of uuids of child sections derived from this course section. Each of these sections is a real class with a location, teacher, students, etc.
+	 * 
+	 * @return Set of course section uuids.
+	 */
+	public Set getAllChildSections();
 
-        /**
-         * Get the uuid of the Agent who has created this course section.
-         * @return uuid of the Agent
-         */
-    	public String getCreatedBy();
+	/**
+	 * Add a course section uuid to represent this offering.
+	 * 
+	 * @param sectionUuid
+	 */
+	public void addSection(String sectionUuid);
 
-    	/**
-    	 * Set the uuid of the Agent who has created this course section.
-    	 *
-    	 *	@param uuid of the Agent
-    	 */
-    	public void setCreatedBy(String createdBy);
-
-        /**
-         * Get the date when this course section is created.
-         * @return creation date
-         */
-    	public Date getCreatedDate();
-
-    	/**
-    	 * Set the creation date.
-    	 *
-    	 *	@param creation date
-    	 */
-    	public void setCreatedDate(Date createdDate);
-
-        /**
-         * Get the uuid of the Agent who has last modified this course section.
-         * @return uuid of the Agent
-         */
-    	public String getLastModifiedBy();
-
-    	/**
-    	 * Set the uuid of the Agent who has last modified this course section.
-    	 *
-    	 *	@param uuid of the Agent
-    	 */
-    	public void setLastModifiedBy(String lastModifiedBy);
-
-        /**
-         * Get the date when this course section is last modified.
-         * @return last modified date
-         */
-    	public Date getLastModifiedDate();
-
-    	/**
-    	 * Set the last modified date.
-    	 *
-    	 *	@param last modified date
-    	 */
-    	public void setLastModifiedDate(Date lastModifiedDate);
-    	
+	/**
+	 * Remove a course section uuid that reprsents this course offering.
+	 * 
+	 * @param sectionUuid
+	 */
+	public void removeSection(String sectionUuid);
+		
+	/**
+	 * Get a set of uuids of child sections of a given type, derived from this course section. Each of these sections is a real class with a location, teacher, students, etc.
+	 * 
+	 * @return Set of course section uuids.
+	 */
+	public Set getChildSectionsByType(CourseSectionType type);	
 }

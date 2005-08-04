@@ -28,8 +28,9 @@
  */
 package org.sakaiproject.api.edu.coursemanagement;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Set;
+
+import org.sakaiproject.api.common.manager.Persistable;
 
 /**
  *	A CourseSet is a set of canonical courses that can be used to describe majors, departments 
@@ -39,19 +40,13 @@ import java.util.List;
  *	<ul>
  *	<li>A title  [String]
  *	<li>A unique identifier  [Id Object]
- *	<li>A list of CanonicalCourse objects associated with this group.  [List of Canonical Course Id Objects]
- *      <li>Uuid of Agent who created this record [String]
- *      <li>Date & Time whne this record is created [Date]
- *      <li>Uuid of Agent who last modified this record [String]
- *      <li>Date & Time whne this record is last modified [Date]
+ *	<li>A set of CanonicalCourse objects associated with this group.  [List of Canonical Course Id Objects]
  *	</ul>
  * @author Mark Norton
  *
  */
-public interface CourseSet {
+public interface CourseSet extends Persistable{
 	
-	public Long getCourseSetId();
-
 	/**
 	 * Get the title of this course set.
 	 * 
@@ -65,21 +60,14 @@ public interface CourseSet {
 	 * @param title
 	 */
 	public void setTitle (String title);
-	
+		
 	/**
-	 * Get the uuid of this course set.
-	 * 
-	 * @return course group uuid.
-	 */
-	public String getUuid();
-	
-	/**
-	 * Get a list of canonical course uuids that are 
+	 * Get a set of canonical course uuids that are 
 	 * contained in this set.
 	 * 
-	 * @return List of canonical course uuids.
+	 * @return set of canonical course uuids.
 	 */
-	public List getCanonicalCourses();
+	public Set getCanonicalCourses();
 	
 	/**
 	 * Add a canonical course uuid to this set.
@@ -94,58 +82,5 @@ public interface CourseSet {
 	 * @param canonicalCourseUuid
 	 */
 	public void removeCanonicalCourse (String canonicalCourseUuid);
-	
-        /**
-         * Get the uuid of the Agent who has created this record.
-         * @return uuid of the Agent
-         */
-	public String getCreatedBy();
-
-	/**
-	 * Set the uuid of the Agent who has created this record.
-	 *
-	 *	@param uuid of the Agent
-	 */
-	public void setCreatedBy(String createdBy);
-
-       /**
-        * Get the date when this record is created.
-        * @return creation date
-        */
-	public Date getCreatedDate();
-
-	/**
-	 * Set the creation date.
-	 *
-	 *	@param creation date
-	 */
-	public void setCreatedDate(Date createdDate);
-
-        /**
-         * Get the uuid of the Agent who has last modified this record.
-         * @return uuid of the Agent
-        */
-	public String getLastModifiedBy();
-
-	/**
-	 * Set the uuid of the Agent who has last modified this record.
-	 *
-	 *	@param uuid of the Agent
-	 */
-	public void setLastModifiedBy(String lastModifiedBy);
-
-       /**
-        * Get the date when this record is last modified.
-        * @return last modified date
-        */
-	public Date getLastModifiedDate();
-
-	/**
-	 * Set the last modified date.
-	 *
-	 *	@param last modified date
-	 */
-	public void setLastModifiedDate(Date lastModifiedDate);
-
-	
+		
 }
