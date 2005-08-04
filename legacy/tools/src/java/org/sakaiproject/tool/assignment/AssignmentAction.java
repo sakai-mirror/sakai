@@ -200,9 +200,6 @@ extends PagedResourceActionII
 	/** the assignment object been viewing **/
 	private static final String VIEW_SUBMISSION_ASSIGNMENT_REFERENCE = "Assignment.view_submission_assignment_reference";
 	
-	/** the assignment object submission attachment **/
-	private static final String VIEW_SUBMISSION_ATTACHMENT = "Assignment.view_submission_attachment";
-	
 	/** the submission text to the assignment **/
 	private static final String VIEW_SUBMISSION_TEXT = "Assignment.view_submission_text";
 	
@@ -249,9 +246,6 @@ extends PagedResourceActionII
 	
 	/********************* instructor's delete assignment ids ******************************/
 	private static final String DELETE_ASSIGNMENT_IDS = "delete_assignment_ids";
-	
-	/********************* instructor's duplicate assignment ids ******************************/
-	private static final String DUPLICATE_ASSIGNMENT_IDS = "duplicate_assignment_ids";
 	
 	/********************* flags controls the grade assignment page layout ********************/
 	private static final String GRADE_ASSIGNMENT_EXPAND_FLAG = "grade_assignment_expand_flag";
@@ -351,9 +345,6 @@ extends PagedResourceActionII
 	/** The instructor view of preview grading a submission	 */
 	private static final String MODE_INSTRUCTOR_PREVIEW_GRADE_SUBMISSION = "Assignment.mode_instructor_preview_grade_submission";
 	
-	/** The instructor view of view grading a submission	 */
-	private static final String MODE_INSTRUCTOR_VIEW_GRADE_SUBMISSION = "Assignment.mode_instructor_view_grade_submission";
-	
 	/** The instructor preview of one assignment	 */
 	private static final String MODE_INSTRUCTOR_PREVIEW_ASSIGNMENT = "Assignment.mode_instructor_preview_assignments";
 	
@@ -396,9 +387,6 @@ extends PagedResourceActionII
 	
 	/** The instructor preview to edit assignment */
 	private static final String TEMPLATE_INSTRUCTOR_PREVIEW_GRADE_SUBMISSION = "_instructor_preview_grading_submission";
-	
-	/** The instructor view to edit assignment */
-	private static final String TEMPLATE_INSTRUCTOR_VIEW_GRADE_SUBMISSION = "_instructor_view_grading_submission";
 	
 	/** The instructor view to grade the assignment */
 	private static final String TEMPLATE_INSTRUCTOR_GRADE_ASSIGNMENT = "_instructor_list_submissions";
@@ -676,14 +664,17 @@ extends PagedResourceActionII
 	{		
 		state.setAttribute(STATE_SELECTED_VIEW, rb.getString("stuvie"));
 		context.put("tlang",rb);
-		// get the user information
-		User u = (User) state.getAttribute (STATE_USER);
 		// get the assignment specific to the class and person
 		String sortedBy = (String) state.getAttribute (SORTED_BY);
 		String sortedAsc = (String) state.getAttribute (SORTED_ASC);
 		
 		// get those opened and posted assignments
-		Iterator assignments = prepPage(state).iterator();
+		List l = prepPage(state);
+		Iterator assignments = null;
+		if (l != null)
+		{
+			assignments = l.iterator();
+		}
 		
 		context.put ("assignments", assignments);
 		context.put ("sortedBy", sortedBy);
@@ -827,6 +818,7 @@ extends PagedResourceActionII
 		try
 		{
 			AssignmentSubmission s = AssignmentService.getSubmission ((String) state.getAttribute (VIEW_GRADE_SUBMISSION_ID));
+			context.put ("assignment", s.getAssignment());
 			context.put ("submission", s);
 		}
 		catch (IdUnusedException e)
@@ -1274,6 +1266,11 @@ extends PagedResourceActionII
 				{
 					context.put("prevFeedbackComment", p.getProperty(ResourceProperties.PROP_SUBMISSION_PREVIOUS_FEEDBACK_COMMENT));
 				}
+				
+				if (p.getProperty(GRADE_SUBMISSION_ALLOW_RESUBMIT) != null)
+				{
+					context.put ("value_allowResubmit", p.getProperty(GRADE_SUBMISSION_ALLOW_RESUBMIT));
+				}
 			}
 		}
 		catch (IdUnusedException e )
@@ -1304,7 +1301,10 @@ extends PagedResourceActionII
 		context.put ("value_feedback_comment", state.getAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT));
 		context.put ("value_feedback_text", state.getAttribute (GRADE_SUBMISSION_FEEDBACK_TEXT));
 		context.put ("value_feedback_attachment", state.getAttribute (ATTACHMENTS));
-		context.put ("value_allowResubmit", state.getAttribute(GRADE_SUBMISSION_ALLOW_RESUBMIT));
+		if (state.getAttribute(GRADE_SUBMISSION_ALLOW_RESUBMIT) != null)
+		{
+			context.put ("value_allowResubmit", state.getAttribute(GRADE_SUBMISSION_ALLOW_RESUBMIT));
+		}	
 		
 		// format to show one decimal place in grade
 		context.put ("value_grade", displayGrade(state, (String) state.getAttribute (GRADE_SUBMISSION_GRADE)));
@@ -2064,18 +2064,18 @@ extends PagedResourceActionII
 	 **/
 	public void doRelease_grade_submission (RunData data, Context context)
 	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		if (data.getParameters().getString("allowResubmit") != null 
-			|| state.getAttribute(GRADE_SUBMISSION_ALLOW_RESUBMIT) != null && ((Boolean)state.getAttribute(GRADE_SUBMISSION_ALLOW_RESUBMIT)).booleanValue())
-		{
-			grade_submission_option(data, "return");
-		}
-		else
-		{
-			grade_submission_option(data, "release");
-		}
+		grade_submission_option(data, "release");
 		
 	}	// doRelease_grade_submission
+	
+	/**
+	 * Action is to return submission with or without grade
+	 **/
+	public void doReturn_grade_submission (RunData data, Context context)
+	{
+		grade_submission_option(data, "return");
+		
+	}	// doReturn_grade_submission
 	
 	/**
 	 * Common grading routine plus specific operation to differenciate cases when saving, releasing or returning grade.
@@ -2208,17 +2208,31 @@ extends PagedResourceActionII
 				}
 				else if (gradeOption.equals("return"))
 				{
+					if (StringUtil.trimToNull(grade) != null)
+					{
+						sEdit.setGradeReleased (true);
+						sEdit.setGraded(true);
+					}
 					sEdit.setReturned (true);
 					sEdit.setTimeReturned(TimeService.newTime());
 					sEdit.setHonorPledgeFlag (Boolean.FALSE.booleanValue ());
+					
+					if (state.getAttribute(GRADE_SUBMISSION_ALLOW_RESUBMIT) != null && ((Boolean)state.getAttribute(GRADE_SUBMISSION_ALLOW_RESUBMIT)).booleanValue())
+					{
+						sEdit.getPropertiesEdit().addProperty(GRADE_SUBMISSION_ALLOW_RESUBMIT, Boolean.TRUE.toString());
+						state.removeAttribute(GRADE_SUBMISSION_ALLOW_RESUBMIT);
+					}
 				}
 		
 				// store the feedback from instructor
 				String feedbackUserString = UserDirectoryService.getCurrentUser().getDisplayName() + " " + TimeService.newTime().toStringLocalFull() + ":";
 				
 				// the instructor comment
-				String feedbackCommentString = (String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT);
-				sEdit.setFeedbackComment (feedbackUserString + "\n" + feedbackCommentString);
+				String feedbackCommentString = StringUtil.trimToNull((String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT));
+				if (feedbackCommentString != null)
+				{
+					sEdit.setFeedbackComment (feedbackUserString + "\n" + feedbackCommentString);
+				}
 				
 				// the instructor inline feedback
 				String feedbackTextString = (String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_TEXT);
@@ -2561,6 +2575,8 @@ extends PagedResourceActionII
 							sEdit.setFeedbackText("");
 							sEdit.setFeedbackComment("");
 							sEdit.clearFeedbackAttachments();
+
+							sPropertiesEdit.removeProperty(GRADE_SUBMISSION_ALLOW_RESUBMIT);
 						}
 						//sEdit.addSubmitter (u);
 						sEdit.setAssignment (a);
@@ -2760,8 +2776,7 @@ extends PagedResourceActionII
 		{
 			closeHour = 0;
 		} 
-		Time closeTime = TimeService.newTimeLocal(closeYear, closeMonth, closeDay, closeHour, closeMin, 0, 0);
-
+		
 		// SECTION MOD
 		String sections_string = "";
 		String mode = (String)state.getAttribute(STATE_MODE);

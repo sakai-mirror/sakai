@@ -220,14 +220,12 @@
 								$tlang.getString("gradingsub.usethebel1")
 							#end
 						</h5>
-						<table border="0"><tr><td>
 						<textarea name="$name_feedback_comment" id="$name_feedback_comment" rows="15" wrap="virtual" cols="80">#if($!value_feedback_comment)$validator.escapeHtmlFormattedTextarea($!value_feedback_comment)#end</textarea>
 						#chef_setupformattedtextarea($name_feedback_comment)
-						</td></tr></table>
 						## for returned (not resubmitted ) submission, show the instructor feedback
 						#if ($!prevFeedbackComment)
 							<h5>$tlang.getString("gradingsub.prefee")</h5>
-							<p>$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</p>
+							$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))<br/>
 						#end
 						<h5>
 							#if ($withGrade)
@@ -235,7 +233,7 @@
 							#else
 								$tlang.getString("gen.atttoret2")
 							#end
-							</h5>
+						</h5>
 						#set ($size = 0)
 							#set ($size = 0)
 							#set ($props = false)
@@ -319,16 +317,16 @@
 									<input name="$name_grade" type="checkbox" value="graded" />$tlang.getString("gen.gra3")
 								#end
 							#end
-							#set ($previousGrades =  $submissionProperties.getProperty($submissionProperties.getNamePropSubmissionScaledPreviousGrades()))
+							#set ($previousGrades =  $submission.Properties.getProperty($submission.Properties.getNamePropSubmissionScaledPreviousGrades()))
 							#if ($!previousGrades.length() != 0 )
-								<br />$tlang.getString("gradingsub.pregra") $previousGrades
+								<p />$tlang.getString("gradingsub.pregra") $previousGrades
 							#end
 						#end
 			<p class="checkbox">			
 				<input type="checkbox" name="allowResubmit"  id="allowResubmit" #if($!value_allowResubmit) checked="checked" #end /><label for="allowResubmit">$tlang.getString("allowResubmit")</label>
 			</p>	
 			<p class="act">
-				<input name="eventSubmit_doRelease_grade_submission" class="active"  type="submit" value="$tlang.getString("gen.retu")" />
+				<input name="eventSubmit_doReturn_grade_submission" class="active"  type="submit" value="$tlang.getString("gen.retu")" />
 				<input name="eventSubmit_doSave_grade_submission" type="submit" value="$tlang.getString("gen.sav")" />
 				<input name="eventSubmit_doPreview_grade_submission" type="submit" value="$tlang.getString("gen.pre")" />
 				<input name="eventSubmit_doCancel_grade_submission" type="submit" value="$tlang.getString("gen.can")" />

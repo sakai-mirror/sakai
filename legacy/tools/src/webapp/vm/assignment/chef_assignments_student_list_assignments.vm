@@ -189,9 +189,12 @@
 								<td headers="title">
 									#if ($!allowAddAssignment)
 										#if ($!submission)
-											<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
-												$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)
-											</a>
+											#if ($!submission.returned && $submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true"))
+												<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
+											#else
+												<a href="#toolLink("AssignmentAction" "doView_grade")&submissionId=$submission.Reference">
+											#end
+											$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)</a>
 										#else
 											$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)
 											#if ($!allowSubmit)
@@ -201,10 +204,17 @@
 												</a>
 											#end
 										#end
-									#else
-										<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
-											$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)
-										</a>
+									#elseif($!allowSubmit)
+										#if ($!submission)
+											#if ($!submission.returned && $submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true"))
+												<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
+											#else
+												<a href="#toolLink("AssignmentAction" "doView_grade")&submissionId=$submission.Reference">
+											#end
+										#else
+											<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
+										#end
+										$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)</a>
 									#end
 									#set ($deleted = false)
 									#set ($deleted = $assignment.getProperties().getProperty($assignment.getProperties().getNamePropAssignmentDeleted()))
@@ -259,9 +269,16 @@
 								</td>
 								#if ($withGrade)
 									<td headers="grade">
-										#if ($submission.getGraded() && $submission.getGradeReleased())
-											##show grade when released
-											<a href="#" onclick="location='#toolLink("AssignmentAction" "doView_grade")&submissionId=$submission.Reference'; return false;">
+										#if ($!submission && $submission.getGraded() && $submission.getGradeReleased())
+											#if ($!submission.returned) 
+												#if ($submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true"))
+													<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
+												#else
+													<a href="#toolLink("AssignmentAction" "doView_grade")&submissionId=$submission.Reference">
+												#end
+											#else
+												<a href="#toolLink("AssignmentAction" "doView_grade")&submissionId=$submission.Reference">
+											#end
 												$submission.getGradeDisplay()
 											</a>
 										#end
@@ -296,4 +313,3 @@
 			#end
 		</form>	
 	</div>
- 

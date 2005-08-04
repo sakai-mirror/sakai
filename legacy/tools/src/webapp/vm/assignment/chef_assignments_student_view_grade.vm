@@ -106,9 +106,9 @@
 					#if ($!props)
 						<li>
 							#if ($props.getBooleanProperty($props.NamePropIsCollection))
-								<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString("gen.foleatt")" />
+								<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString("gen.folatt")" />
 							#else
-								<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.fileatt")" />
+								<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 							#end
 							<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
 							#if (!$props.getBooleanProperty($props.NamePropIsCollection))
@@ -123,8 +123,14 @@
 				$tlang.getString("stuviewgrad.inscom")
 			</h4>
 			#if ($!submission.FeedbackText && ($submission.FeedbackText.length()>0))
-				<p class="instruction">$tlang.getString("gen.orisub")</p>
+				<p class="instruction">$tlang.getString("gen.orisub2")</p>
 				<p>$cheffeedbackhelper.escapeAssignmentFeedback($submission.FeedbackText)</p>
+			#else
+				#set ($text = $submission.getSubmittedText())
+				#if ($!text && $text.length() > 0)
+					<p class="instruction">$tlang.getString("gen.orisub")</p>
+					<p>$submission.getSubmittedText()</p>
+				#end
 			 #end
 			#set ($submittedAttachments = $submission.SubmittedAttachments)
 			#set ($size = 0)
@@ -136,11 +142,9 @@
 				#end
 			#end
 			#if ($size == 0)
-				$tlang.getString("gen.noatt")
+				##$tlang.getString("gen.noatt")
 			#else
-				<h4>
-					$tlang.getString("gen.stuatt")
-				</h4>	
+				<p class="instruction">$tlang.getString("gen.stuatt")</p>
 					<ul class="attachList">
 					#foreach ($attachment in $submittedAttachments) 
 						#set ($props = false)
@@ -148,9 +152,9 @@
 						#if ($!props)
 							<li>
 								#if ($props.getBooleanProperty($props.NamePropIsCollection))
-									<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString("gen.foleatt")" />
+									<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString("gen.folatt")" />
 								#else
-									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.fileatt")" />
+									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 								#end
 								<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
 								#if (!$props.getBooleanProperty($props.NamePropIsCollection))
@@ -180,7 +184,7 @@
 				#end
 				#if ($size == 0)
 				#else
-					<h4>$tlang.getString("gen.addres3")</h4>
+					<p class="instruction">$tlang.getString("gen.addinst")</p>
 					<ul class="attachList">
 						#foreach ($attachment in $feedbackAttachments) 
 							#set ($props = false)
@@ -188,9 +192,9 @@
 							#if ($!props)
 								<li>
 									#if ($props.getBooleanProperty($props.NamePropIsCollection))
-										<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString("gen.foleatt")" />
+										<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString("gen.folatt")" />
 									#else
-										<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.fileatt")" />
+										<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
 									#end
 									<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
 									#if (!$props.getBooleanProperty($props.NamePropIsCollection))

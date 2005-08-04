@@ -275,6 +275,7 @@
 						#end
 					#end
 					#if ($size == 0)
+						$tlang.getString("gen.noatt")
 					#else
 						<ul class="attachList">
 							#foreach ($attachment in $attachments) 
@@ -340,26 +341,20 @@
 						#end
 					</p>
 				#end
-
 				#if ($submission.getReturned() && $submission.TimeReturned.after($submission.TimeSubmitted))
-					<h5>
-						$tlang.getString("gen.addinst")
-					</h5>
-					#if (($!submission.FeedbackComment) && ($submission.FeedbackComment.length()>0))
+					#if (($!submission.FeedbackComment) && ($submission.FeedbackComment.trim().length()>0))
+						<h5>$tlang.getString("gen.addinst")</h5>
 						<p>$validator.escapeHtmlFormattedText($submission.FeedbackComment)</p>
 					#else
 					#end
 					## for returned (not resubmitted ) submission, show the instructor feedback
-					#if ($!prevFeedbackComment)
+					#if ($!prevFeedbackComment && $!prevFeedbackComment.trim().length() > 0)
 						<h5>$tlang.getString("gradingsub.prefee")</h5>
 						<p>$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</p>
 					#end					
 					#set ($size = 0)
 					#set ($props = false)
-					#set ($feedbackAttachments = $submission.FeedbackAttachments)
-						<h5>
-							$tlang.getString("gen.addres4")
-						</h5>	
+					#set ($feedbackAttachments = $submission.FeedbackAttachments)	
 						#set ($size = 0)
 						#set ($props = false)
 						#foreach ($attachment in $feedbackAttachments) 
@@ -369,7 +364,9 @@
 							#end
 						#end
 						#if ($size == 0)
+							##$tlang.getString("gen.noatt")
 						#else
+							<h5>$tlang.getString("gen.addinst")</h5>
 							<ul class="attachList">
 								#foreach ($attachment in $feedbackAttachments) 
 									#set ($props = false)
@@ -390,6 +387,17 @@
 								#end
 							</ul>
 						#end
+				#end
+				#if ($withGrade)
+					#set ($previousGrades =  $!submission.Properties.getProperty($!submission.Properties.getNamePropSubmissionScaledPreviousGrades()))
+					#if ($!previousGrades.length() != 0 )
+					<br />$tlang.getString("gradingsub.pregra") $previousGrades
+					#else
+						#set ($previousGrades =  $!submission.Properties.getProperty($!submission.Properties.getNamePropSubmissionPreviousGrades()))
+						#if ($!previousGrades.length() != 0 )
+							<br />$tlang.getString("gradingsub.pregra") $previousGrades
+						#end
+					#end
 				#end
 				#if ($!assignment.getContent().HonorPledge!=1)
 					<p class="checkbox">
@@ -518,6 +526,7 @@
 						#end
 					#end
 					#if ($size == 0)
+						$tlang.getString("gen.noatt")
 					#else
 						<h5>$tlang.getString("gen.stuatt")</h5>
 						<ul class="attachList">
@@ -541,15 +550,13 @@
 						</ul>
 					#end	
 					#if ($withGrade && $submission.getGraded() && $submission.getGradeReleased())
-						#if ($submission.getGradeReleased() &&($!submission.FeedbackComment) && ($submission.FeedbackComment.length()>0))
-							<h5>
-								$tlang.getString("gen.addinst")
-							</h5>
+						#if ($submission.getGradeReleased() &&($!submission.FeedbackComment) && ($submission.FeedbackComment.trim().length()>0))
+							<h5>$tlang.getString("gen.addinst")</h5>
 							<p>$validator.escapeHtmlFormattedText($submission.FeedbackComment)</p>
 						#else
 						#end
 						## for returned submission, show the instructor feedback
-						#if ($!prevFeedbackComment)
+						#if ($!prevFeedbackComment && $!prevFeedbackComment.trim().length() > 0)
 							<h5>$tlang.getString("gradingsub.prefee")</h5>
 							<p>$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</p>
 						#end	
@@ -567,7 +574,7 @@
 							#if ($size == 0)
 								##$tlang.getString("gen.noatt")
 							#else
-								<h5>$tlang.getString("gen.addres4")</h5>
+								<h5>$tlang.getString("gen.addinst")</h5>
 								<ul class="attachList">
 									#foreach ($attachment in $feedbackAttachments) 
 										#set ($props = false)
@@ -588,6 +595,17 @@
 									#end
 								</ul>
 							#end
+					#end
+					#if ($withGrade)
+						#set ($previousGrades =  $!submission.Properties.getProperty($!submission.Properties.getNamePropSubmissionScaledPreviousGrades()))
+						#if ($!previousGrades.length() != 0 )
+							<br />$tlang.getString("gradingsub.pregra") $previousGrades
+						#else
+							#set ($previousGrades =  $!submission.Properties.getProperty($!submission.Properties.getNamePropSubmissionPreviousGrades()))
+							#if ($!previousGrades.length() != 0 )
+								<br />$tlang.getString("gradingsub.pregra") $previousGrades
+							#end
+						#end
 					#end
 			<p class="act">
 				<input 
