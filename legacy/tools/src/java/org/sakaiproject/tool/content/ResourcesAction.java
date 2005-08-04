@@ -109,6 +109,7 @@ import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
 * <p>ResourceAction is a ContentHosting application</p>
@@ -659,7 +660,7 @@ extends VelocityPortletPaneledAction
                           roots.add(root);
                       }
                   }
-				}
+			}
 
 			}
 			context.put ("roots", roots);
@@ -1776,12 +1777,17 @@ extends VelocityPortletPaneledAction
 		// List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
 		List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
 		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
-		Iterator itemIt = items.iterator();
-		while(itemIt.hasNext())
+
+		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		int numberOfItems = number.intValue();
+		
+		for(int i = 0; i < numberOfItems; i++)
 		{
-			EditItem item = (EditItem) itemIt.next();
+			EditItem item = (EditItem) items.get(i);
 			Document doc = Xml.createDocument();
-			Element root = doc.createElement(docRoot);
+			Node root = doc.createElement(docRoot);
 			doc.appendChild(root);
 			int count = 0;
 			
@@ -1799,21 +1805,19 @@ extends VelocityPortletPaneledAction
 						Object value = valueIt.next();
 						if(value == null)
 						{
-							
+							// do nothing
 						}
 						else
 						{
-							Element el = doc.createElement(propname);
-							root.appendChild(el);
+							Node propnode = doc.createElement(propname);
+							root.appendChild(propnode);
 							if(value instanceof String)
 							{
-								// root.setAttribute(propname, (String) value);
-								el.setNodeValue((String) value);
+								propnode.appendChild(doc.createTextNode((String)value));
 							}
 							else
 							{
-								// root.setAttribute(propname, value.toString());
-								el.setNodeValue(value.toString());
+								propnode.appendChild(doc.createTextNode(value.toString()));
 							}
 							count++;
 						}
@@ -1828,15 +1832,129 @@ extends VelocityPortletPaneledAction
 			{
 				try
 				{
-					String sss = Xml.writeDocumentToString(doc);			
+					String content = Xml.writeDocumentToString(doc);			
+					System.out.println("\n==========================\n" + content + "\n==========================\n");
+					ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
+					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
+					resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
+					resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+					List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
+					saveMetadata(resourceProperties, metadataGroups, item);
+					String filename = Validator.escapeResourceName(item.getName()).trim();
+					String extension = ".xml";
+					int attemptNum = 0;
+					String attempt = "";
+					String newResourceId = collectionId + filename + attempt + extension;
+
+					boolean tryingToAddItem = true;
+					while(tryingToAddItem)
+					{
+						
+						try
+						{
+							ContentResource resource = ContentHostingService.addResource (newResourceId,
+																						"text/xml",
+																						content.getBytes(),
+																						resourceProperties, item.getNotification());
+							tryingToAddItem = false;
+							// ResourceProperties rp = resource.getProperties();
+							// item.setAdded(true);
+							
+
+							if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+							{
+								// deal with pubview when in resource mode//%%%
+								if (! item.isPubviewset())
+								{
+									setPubView(ContentHostingService.getReference(resource.getId()), item.isPubview());
+								}
+							}
+							
+							HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
+							if(!currentMap.containsKey(collectionId))
+							{
+								try
+								{
+									currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
+									state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
 					
+									// add this folder id into the set to be event-observed
+									addObservingPattern(collectionId, state);
+								}
+								catch (IdUnusedException ignore)
+								{
+								}
+								catch (TypeException ignore)
+								{
+								}
+								catch (PermissionException ignore)
+								{
+								} 
+							}
+							state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+							
+							String mode = (String) state.getAttribute(STATE_MODE);
+							if(MODE_HELPER.equals(mode))
+							{
+								attachItem(newResourceId, state);
+							}
+						}
+						catch (IdUsedException e)
+						{
+							boolean foundUnusedId = false;
+							for(int trial = 1;!foundUnusedId && trial < 100; trial++)
+							{
+								attemptNum++;
+								attempt = Integer.toString(attemptNum);
+							
+
+								// add extension if there was one
+								newResourceId = collectionId + filename + "-" + attempt + extension;
+								
+								try 
+								{
+									ContentHostingService.getResource(newResourceId);
+								}
+								catch (IdUnusedException ee)
+								{
+									foundUnusedId = true;
+								}
+								catch (PermissionException ee)
+								{
+									foundUnusedId = true;
+								}
+								catch (TypeException ee)
+								{
+									foundUnusedId = true;
+								}
+							}
+						}
+						catch(PermissionException e)
+						{
+							alerts.add(rb.getString("notpermis12"));
+						}
+						catch(IdInvalidException e)
+						{
+							alerts.add(rb.getString("title") + " " + e.getMessage ());
+						}
+						catch(InconsistentException e)
+						{
+							alerts.add(RESOURCE_INVALID_TITLE_STRING);
+						}
+						catch(OverQuotaException e)
+						{
+							alerts.add(rb.getString("overquota"));
+						}
+					}
 				}
 				catch(Throwable e)
 				{			
 	
 				}
-			}
-		}			
+			}			
+				
+		}
+		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}
 
