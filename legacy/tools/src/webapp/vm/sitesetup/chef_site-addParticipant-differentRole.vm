@@ -40,7 +40,7 @@
 						<label for="$uniqname">$uniqname</label>
 					</td>
 					<td>
-						<span class="reqStar">*</span>
+						<span class="reqStarInline">*</span>
 						<select name="role$uniqname" id="$uniqname">
 							<option value="">$tlang.getString("adddif.please")</option>
 							#foreach($role in $roles)
