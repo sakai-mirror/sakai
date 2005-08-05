@@ -4,6 +4,18 @@
         xmlns:j="jelly:core">
 
         <goal name="sakai">
+                <attainGoal name="clean:clean" />
+                <attainGoal name="include_hibernate_map" />
                 <attainGoal name="jar:install" />
+        </goal>
+
+        <goal name="include_hibernate_map">
+                <!-- this include any *.hbm.xml, *.properties, *.xml which lives among the code -->
+                <copy todir="target/classes" includeemptydirs="false"
+                        verbose="false">
+                        <fileset dir="src/java">
+                                <exclude name="**/*.java" />
+                        </fileset>
+                </copy>
         </goal>
 </project>

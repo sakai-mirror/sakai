@@ -10,7 +10,7 @@
         <property name="hibernate.connection.url">jdbc:oracle:thin:@acompdb2.stanford.edu:1521:acompdb2</property>
         <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
 
-        <mapping resource="org/sakaiproject/api/edu/coursemanagement/CanonicalCourse.hbm.xml" />
+        <mapping resource="org/sakaiproject/component/common/edu/coursemanagement/CanonicalCourse.hbm.xml" />
 
     </session-factory>
 </hibernate-configuration>

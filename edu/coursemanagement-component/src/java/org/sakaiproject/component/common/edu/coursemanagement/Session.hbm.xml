@@ -17,19 +17,10 @@
         <property name="abbreviation" column="ABBREVIATION" type="java.lang.String"  not-null="true" />
         <property name="year" column="YEAR" type="java.lang.String"  not-null="true" />
         <property name="isCurrent" column="ISCURRENT" type="java.lang.Integer"  not-null="true" />
-        <property name="sessionUuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
+        <property name="uuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
  
         <many-to-one name="sessionType" column="SESSIONTYPEID" class="SessionTypeImpl"  not-null="true" />
  
-        <set name="courseOfferingSet"  cascade="all" inverse="true">
-            <key column="COURSEOFFERINGID"/>
-            <one-to-many class="CourseOfferingImpl" />
-        </set>
- 
-        <set name="courseSetionSet" cascade="all" inverse="true">
-            <key column="SESSIONID"/>
-            <one-to-many class="CourseSectionImpl" />
-        </set>
     </class>
     
 </hibernate-mapping>
