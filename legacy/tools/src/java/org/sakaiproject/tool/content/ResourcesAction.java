@@ -97,6 +97,7 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
+import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
@@ -640,29 +641,45 @@ extends VelocityPortletPaneledAction
 
 			if(atHome && show_all_sites)
 			{
+				// add user's personal workspace
+				User user = UserDirectoryService.getCurrentUser();
+				String userId = user.getId();
+				String userName = user.getDisplayName();
+				String wsId = SiteService.getUserSiteId(userId);
+				String wsCollectionId = ContentHostingService.getSiteCollection(wsId);
+				if(! collectionId.equals(wsCollectionId))
+				{
+	                	members = getBrowseItems(wsCollectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+	                	if(members != null && members.size() > 0)
+				    {
+				        BrowseItem root = (BrowseItem) members.remove(0);
+				        root.addMembers(members);
+				        root.setName(userName + " Workspace " + rb.getString("gen.reso"));
+				        roots.add(root);
+				    }
+				}
+				
+                	// add all other sites user has access to
 				Map othersites = CollectionUtil.getCollectionMap();
 				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
 				{
-				  // String collId = (String) siteIt.next();
-                  String displayName = (String) siteIt.next();
-                  String collId = (String) othersites.get(displayName);
-                  if(! collectionId.equals(collId))
-                  {
-                      //String displayName = (String) othersites.get(collId);
-                        
-                      members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
-                      if(members != null && members.size() > 0)
-                      {
-                          BrowseItem root = (BrowseItem) members.remove(0);
-                          root.addMembers(members);
-                          root.setName(displayName);
-                          roots.add(root);
-                      }
+	                  String displayName = (String) siteIt.next();
+	                  String collId = (String) othersites.get(displayName);
+	                  if(! collectionId.equals(collId) && ! wsCollectionId.equals(collId))
+	                  {
+	                      members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+	                      if(members != null && members.size() > 0)
+	                      {
+	                          BrowseItem root = (BrowseItem) members.remove(0);
+	                          root.addMembers(members);
+	                          root.setName(displayName);
+	                          roots.add(root);
+	                      }
+	                  }
                   }
 			}
-
-			}
+			
 			context.put ("roots", roots);
 			// context.put ("root", root);
 			
