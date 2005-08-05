@@ -116,10 +116,11 @@ public interface CourseManagementManager
 	 * @param abbreviation
 	 * @param year
 	 * @param type
+         * @param uuid
 	 * @return a new session.
 	 * @author Mark Norton
 	 */
-	public Session createSession(String title, String abbreviation, String year, SessionType type);
+	public Session createSession(String title, String abbreviation, String year, SessionType type, String uuid);
 
 	/**
 	 * Create a new enrollment record.
