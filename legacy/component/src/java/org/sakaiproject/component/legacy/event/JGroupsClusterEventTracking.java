@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jgroups.Address;
 import org.jgroups.blocks.NotificationBus;
 import org.jgroups.blocks.NotificationBus.Consumer;
+import org.sakaiproject.jgroups.EventImpl;
 import org.sakaiproject.service.framework.session.UsageSession;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.event.Event;
@@ -47,6 +48,8 @@ import org.sakaiproject.service.legacy.user.User;
  */
 public class JGroupsClusterEventTracking extends BaseEventTrackingService
 {
+  private String props;
+  
   private static final Log LOG = LogFactory
       .getLog(JGroupsClusterEventTracking.class);
   private static final Log DECLOG = LogFactory
@@ -66,7 +69,7 @@ public class JGroupsClusterEventTracking extends BaseEventTrackingService
   {
     super.init();
 
-    LOG.debug("init()");
+    LOG.debug("initit()");
 
     if (eventConsumer == null)
       throw new IllegalStateException("eventConsumer == null");
@@ -74,7 +77,14 @@ public class JGroupsClusterEventTracking extends BaseEventTrackingService
     try
     {
       // Create the bus and connect to the specified channel name
-      bus = new NotificationBus(channelName);
+      if ("default".equals(props) || props == null){
+        bus = new NotificationBus(channelName);  
+      }
+      else{
+        bus = new NotificationBus(channelName, props);
+      }
+      
+      
       // register the consumer (the event handler)
       bus.setConsumer(eventConsumer);
       // start the bus
@@ -115,6 +125,7 @@ public class JGroupsClusterEventTracking extends BaseEventTrackingService
       throw new IllegalArgumentException("Illegal event argument!");
 
     // send the message to all members
+    //notifyObservers(event, true);
     bus.sendNotification((Serializable) event);
   }
 
@@ -247,6 +258,24 @@ public class JGroupsClusterEventTracking extends BaseEventTrackingService
       postEvent(event);
     }
   }
+    
+  /**
+   * get properties for JGroups protocol stack
+   * @return
+   */
+  public String getProps()
+  {
+    return props;
+  }
+
+  /**
+   * set custom JGroups protocol stack
+   * @param props
+   */
+  public void setProps(String props)
+  {
+    this.props = props;
+  }
 
   public class DefaultEventConsumer implements Consumer
   {
@@ -266,7 +295,7 @@ public class JGroupsClusterEventTracking extends BaseEventTrackingService
       {
         if (notification instanceof Event)
         {
-          notifyObservers((Event) notification, true);
+          notifyObservers((Event) notification, false);
         }
         else
         {

@@ -455,7 +455,7 @@ public class NotificationCache
 		String key = event.getResource();
 
 		// if this resource is not in my pattern of resources, we can ignore it
-		if (!key.startsWith(m_resourcePattern)) return;
+		if (key != null && !key.startsWith(m_resourcePattern)) return;
 
 		// if we are holding event processing
 		if (m_holdEventProcessing)

@@ -226,16 +226,17 @@
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
 	</bean>
 
-  <!-- Alternate EventTrackingService implementation (no database required) -->
-  <!-- 
-  <bean id="org.sakaiproject.service.legacy.event.EventTrackingService"
-    class="org.sakaiproject.component.legacy.event.JGroupsClusterEventTracking"
-    init-method="init" destroy-method="destroy">
-    <property name="logger">
-      <ref bean="org.sakaiproject.service.framework.log.Logger" />
-    </property>
-  </bean>
-  -->
+    <!-- Alternate EventTrackingService implementation (no database required) -->  
+    <!--
+    <bean id="org.sakaiproject.service.legacy.event.EventTrackingService"
+    	class="org.sakaiproject.component.legacy.event.JGroupsClusterEventTracking"
+	    init-method="init" destroy-method="destroy" singleton="true">
+    	<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+	    <property name="props">
+    	  <value>default</value>
+	    </property>
+	</bean>
+	-->
 
   <bean
   	id="org.sakaiproject.service.legacy.archive.ImportMetadataService"

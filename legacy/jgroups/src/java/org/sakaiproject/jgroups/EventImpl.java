@@ -21,7 +21,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.component.legacy.event;
+package org.sakaiproject.jgroups;
 
 import java.io.Serializable;
 
@@ -161,7 +161,7 @@ public class EventImpl implements Event, Serializable
   /**
    * @param sessionId The sessionId to set.
    */
-  void setSessionId(String sessionId)
+  public void setSessionId(String sessionId)
   {
     this.sessionId = sessionId;
   }
@@ -169,7 +169,7 @@ public class EventImpl implements Event, Serializable
   /**
    * @param userId The userId to set.
    */
-  void setUserId(String userId)
+  public void setUserId(String userId)
   {
     this.userId = userId;
   }

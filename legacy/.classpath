@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="access/src/java"/>
+	<classpathentry excluding="**/.DS_Store" kind="src" path="jgroups/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="dav/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="dav-common/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="dav-server/src/java"/>
@@ -29,7 +30,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/commons-fileupload/jars/commons-fileupload-1.0.jar"/>
 	<classpathentry kind="src" path="/legacy-service"/>
 	<classpathentry kind="src" path="/high-util"/>
-	<classpathentry kind="var" path="MAVEN_REPO/jgroups/jars/jgroups-2.2.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jgroups/jars/jgroups-2.2.8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/james-phoenix/jars/james-2.1.3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/tomcat/jars/catalina-5.5.9.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/tomcat/jars/jmx-tomcat.5.5.9.jar"/>
