@@ -65,15 +65,11 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 			String year, SessionType type, String uuid) {
             SessionImpl s = new SessionImpl();
             s.setTitle(title);
+            s.setAbbreviation(abbreviation);
             s.setYear(year);
             s.setSessionType(null);
             s.setUuid(uuid);
-            try{
-                //getHibernateTemplate().save(s);
-            }
-            catch (Exception e){
-                System.out.println(e.getMessage());
-            }
+            getHibernateTemplate().save(s);
             return s;
 	}
 

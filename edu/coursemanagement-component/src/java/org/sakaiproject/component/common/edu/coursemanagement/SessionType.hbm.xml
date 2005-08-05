@@ -10,7 +10,9 @@
 
     <class name="SessionTypeImpl" table="CM_SESSIONTYPE_T">
         <id name="sessionTypeId" column="SESSIONTYPEID" type="java.lang.Long">
-            <generator class="native"/>
+            <generator class="native">
+              <param name="sequence">CM_SESSIONTYPE_ID_S</param>
+            </generator>
         </id>
  
         <property name="authority" column="AUTHORITY" type="java.lang.String" not-null="true" />

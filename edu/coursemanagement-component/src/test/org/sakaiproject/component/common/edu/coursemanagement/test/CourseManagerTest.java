@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.sakaiproject.component.common.edu.coursemanagement.SessionImpl;
 
 import junit.framework.Assert;
 
@@ -50,9 +51,12 @@ public class CourseManagerTest extends CourseManagementTestBase {
     */
 
     public void testCreateSession() throws Exception {
-        courseManagementManager.createSession("Fall 2005","1052","2005",
+        System.out.println("***heloo");
+        SessionImpl s = (SessionImpl)courseManagementManager.createSession("Fall 2005","1052","2005",
 	    null, "1052-uuid");
         setComplete();
+        System.out.println("***session ="+s);
+        System.out.println("***sessionId = "+s.getSessionId());
     }
 
 }

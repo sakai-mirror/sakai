@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="CourseManagement" default="schemaexport" basedir=".">
+  <target name="schemaexport" >
+	<taskdef name="schemaexport"
+	         classname="net.sf.hibernate.tool.hbm2ddl.SchemaExportTask">
+	  <classpath>
+		<fileset dir="../../../../tomcat/shared/lib">
+		  <include name="*.jar"/>
+		</fileset>
+		<pathelement location="target/classes"/>
+	  </classpath>
+	</taskdef>
+<!--
+        <copy file="hibernate.properties"
+          tofile="target/classes/hibernate.properties"
+          overwrite="true"
+          verbose="true" 
+        />
+-->
+	<schemaexport     quiet="no"
+		  	  text="yes"
+		  	  drop="no"
+		  	  delimiter=";"
+		  	  output="schema-export.sql">
+
+	  <fileset dir="src/java/org/sakaiproject/component/common/edu/coursemanagement">
+		<include name="Session.hbm.xml" />
+		<include name="SessionType.hbm.xml" />
+	  </fileset>  	        
+	</schemaexport>
+  </target>
+
+</project>
+
+
+
