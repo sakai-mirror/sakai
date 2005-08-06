@@ -24,6 +24,7 @@
 package org.sakaiproject.api.edu.coursemanagement;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * The Course Management Manager provides the following capabilities:
@@ -117,10 +118,15 @@ public interface CourseManagementManager
 	 * @param year
 	 * @param type
          * @param uuid
+         * @param isCurrent
+         * @param createdBy
+         * @param createdDate
+         * @param lastModifiedBy
+         * @param lastModifiedDate
 	 * @return a new session.
 	 * @author Mark Norton
 	 */
-	public Session createSession(String title, String abbreviation, String year, SessionType type, String uuid);
+	public Session createSession(String title, String abbreviation, String year, SessionType type, String uuid, Boolean isCurrent, String createdBy, Date createdDate, String lastModifiedBy, Date lastModifiedDate);
 
 	/**
 	 * Create a new enrollment record.
