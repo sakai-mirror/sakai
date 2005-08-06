@@ -747,17 +747,24 @@ public class RequestFilter implements Filter
 	protected Session assureSession(HttpServletRequest req, HttpServletResponse res)
 	{
 		Session s = null;
+		String sessionId = null;
 
 		// automatic, i.e. not from user activite, request?
 		boolean auto = req.getParameter(PARAM_AUTO) != null;
 
+		sessionId = req.getParameter(ATTR_SESSION);
+
 		// find our session id from our cookie
 		Cookie c = findCookie(req, SESSION_COOKIE);
 
-		if (c != null)
+		if (sessionId == null && c != null)
 		{
 			// get our session id
-			String sessionId = c.getValue();
+			sessionId = c.getValue();
+		}
+
+		if ( sessionId != null ) 
+		{
 			final int dotPosition = sessionId.indexOf(DOT);
 			if (dotPosition > -1)
 			{ // need to parse the string
@@ -784,7 +791,7 @@ public class RequestFilter implements Filter
 			if ((principal != null) && (principal.getName() != null))
 			{
 				// set our session id to the remote user id
-				String sessionId = principal.getName();
+				sessionId = principal.getName();
 
 				// find the session
 				s = SessionManager.getSession(sessionId);
@@ -835,7 +842,7 @@ public class RequestFilter implements Filter
 		if ((s != null) && ((c == null) || (!c.getValue().equals(s.getId()))))
 		{
 			// compute the sessionId
-			String sessionId = null;
+			sessionId = null;
 			final String serverId = System.getProperty(SAKAI_SERVERID);
 			if (serverId == null || serverId.length() < 1)
 			{
