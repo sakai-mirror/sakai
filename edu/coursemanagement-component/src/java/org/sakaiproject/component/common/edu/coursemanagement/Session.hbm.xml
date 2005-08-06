@@ -19,10 +19,7 @@
         <property name="abbreviation" column="ABBREVIATION" type="java.lang.String"  not-null="true" />
         <property name="year" column="YEAR" type="java.lang.String"  not-null="true" />
         <property name="isCurrent" column="ISCURRENT" type="java.lang.Boolean"  not-null="true" />
-        <property name="uuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
-<!--
-        <many-to-one name="sessionType" column="SESSIONTYPEID" class="SessionTypeImpl"  not-null="false" />
--->
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="sessionTypeUuid" column="SESSIONTYPEUUID" type="java.lang.String"  not-null="false" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />

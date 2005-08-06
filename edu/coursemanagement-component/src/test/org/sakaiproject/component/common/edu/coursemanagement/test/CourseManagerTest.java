@@ -53,14 +53,12 @@ public class CourseManagerTest extends CourseManagementTestBase {
     */
 
     public void testCreateSession() throws Exception {
-        System.out.println("***heloo");
         SessionTypeImpl type = new SessionTypeImpl();
-        type.setUuid("*uuid_essionType_uuid");
+        type.setUuid("*uuid_sessionType_uuid");
         Date currentDate = new Date();
         SessionImpl s = (SessionImpl)courseManagementManager.createSession("Fall 2005","1052","2005",
-	    type, "*uuid_1052", Boolean.TRUE, "site", currentDate, "site", currentDate);
+	    type, "*uuid_"+currentDate.getTime(), Boolean.TRUE, "site", currentDate, "site", currentDate);
         setComplete();
-        System.out.println("***session ="+s);
         System.out.println("***sessionId = "+s.getSessionId());
     }
 
