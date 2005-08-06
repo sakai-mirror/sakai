@@ -81,7 +81,6 @@
 							<img src = "#imageLink("sakai/expand.gif")" border="0" title="$tlang.getString('expandall')" alt="$tlang.getString('expandall')" hspace="0" />
 						</a>								 
 					#end
-##					<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="%%%" />
 					<a href="#toolLink("ResourcesAction" "doSort")&criteria=title&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.sorttit')"> 
 						$tlang.getString("gen.title1")
 						#if ($currentSortedBy.equals($resourceProperties.NamePropDisplayName)) 

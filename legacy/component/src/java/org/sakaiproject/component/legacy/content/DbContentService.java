@@ -243,13 +243,23 @@ public class DbContentService
 		Object[] fields = new Object[1];
 		fields[0] = param;
 		
-		List list=m_sqlService.dbRead(sql, fields, null);
+		List list = m_sqlService.dbRead(sql, fields, null);
 
-		if (list!=null) {
+		if (list != null) {
+			int rv = 0;
 			Iterator iter=list.iterator();
-			if (iter.hasNext()) {
-				return ((Integer)iter.next()).intValue();
+			if (iter.hasNext()) 
+			{
+				try
+				{
+					Object val = iter.next();
+					rv = Integer.parseInt((String) val);
+				}
+				catch(Exception ignore) 
+				{
+				}
 			} 
+			return rv;
 		} 
 		throw new IdUnusedException(param);
 	}
@@ -264,11 +274,10 @@ public class DbContentService
 		} else {
 			wildcard=id+"/%";
 		}
-
-		int fileCount=countQuery("select count(IN_COLLECTION) from CONTENT_RESOURCE where IN_COLLECTION like ?",wildcard)-1;
-		int folderCount=countQuery("select count(IN_COLLECTION) from CONTENT_COLLECTION where IN_COLLECTION like ?",wildcard)-1;;
 		
-		return fileCount+folderCount;
+		int fileCount=countQuery("select count(IN_COLLECTION) from CONTENT_RESOURCE where IN_COLLECTION like ?",wildcard);
+		int folderCount=countQuery("select count(IN_COLLECTION) from CONTENT_COLLECTION where IN_COLLECTION like ?",wildcard);;
+		return fileCount + folderCount;
 	}
 	
 	/*******************************************************************************

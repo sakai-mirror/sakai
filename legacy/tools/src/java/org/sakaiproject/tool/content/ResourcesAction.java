@@ -1850,7 +1850,6 @@ extends VelocityPortletPaneledAction
 				try
 				{
 					String content = Xml.writeDocumentToString(doc);			
-					System.out.println("\n==========================\n" + content + "\n==========================\n");
 					ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
 					resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
@@ -6434,11 +6433,15 @@ extends VelocityPortletPaneledAction
 			
 			String url = contentService.getUrl(collectionId);
 			folder.setUrl(url);
-
-			//int collection_size = contentService.getCollectionSize(collectionId);
-			//folder.setIsEmpty(collection_size > 0);
-			
-			folder.setIsEmpty(false);
+			try
+			{
+				int collection_size = contentService.getCollectionSize(collectionId);
+				folder.setIsEmpty(collection_size < 1);
+			}
+			catch(Throwable e)
+			{
+				folder.setIsEmpty(true);
+			}
 			folder.setDepth(depth);
 			newItems.add(folder);
 			
