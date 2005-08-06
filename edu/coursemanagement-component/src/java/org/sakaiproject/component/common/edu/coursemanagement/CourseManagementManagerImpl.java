@@ -1,5 +1,6 @@
 package org.sakaiproject.component.common.edu.coursemanagement;
 import java.util.List;
+import java.util.Date;
 
 import org.sakaiproject.api.edu.coursemanagement.CanonicalCourse;
 import org.sakaiproject.api.edu.coursemanagement.CanonicalCourseStatusType;
@@ -62,13 +63,13 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 	}
 
 	public Session createSession(String title, String abbreviation,
-			String year, SessionType type, String uuid) {
-            SessionImpl s = new SessionImpl();
-            s.setTitle(title);
-            s.setAbbreviation(abbreviation);
-            s.setYear(year);
-            s.setSessionType(null);
-            s.setUuid(uuid);
+			String year, SessionType type, String uuid,
+                        Boolean isCurrent, String createdBy, Date createdDate, 
+                        String lastModifiedBy, Date lastModifiedDate) {
+            SessionImpl s = new SessionImpl(title, abbreviation, 
+                        year, type, uuid,
+                        isCurrent, createdBy, createdDate,
+                        lastModifiedBy, lastModifiedDate);
             getHibernateTemplate().save(s);
             return s;
 	}

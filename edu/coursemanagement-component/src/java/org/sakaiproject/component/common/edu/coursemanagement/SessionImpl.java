@@ -26,12 +26,32 @@ public class SessionImpl implements Session, Serializable {
 	private Boolean isCurrent;
 	private String uuid;
 	private SessionType sessionType;
+        private String sessionTypeUuid;
 	private String createdBy;
 	private Date createdDate;
 	private String lastModifiedBy;
 	private Date lastModifiedDate;
 
-	/**
+    public SessionImpl() {}
+
+    public SessionImpl(String title, String abbreviation,
+		       String year, SessionType type, String uuid,
+		       Boolean isCurrent, String createdBy, Date createdDate,
+		       String lastModifiedBy, Date lastModifiedDate){
+	this.setTitle(title);
+	this.setAbbreviation(abbreviation);
+	this.setYear(year);
+        if (sessionType != null)
+          this.setSessionTypeUuid(sessionType.getUuid());
+	this.setUuid(uuid);
+	this.setIsCurrent(isCurrent);
+	this.setCreatedBy(createdBy);
+	this.setCreatedDate(createdDate);
+	this.setLastModifiedBy(lastModifiedBy);
+	this.setLastModifiedDate(lastModifiedDate);
+    }
+
+    /**
      * Return the simple primary key value that identifies this object.
      * @return java.lang.Long
      */
@@ -103,6 +123,16 @@ public class SessionImpl implements Session, Serializable {
 
 	public void setSessionType(SessionType type) {
 		this.sessionType = type;
+                this.sessionTypeUuid = type.getUuid(); 
+	}
+
+	public String getSessionTypeUuid() {
+		return sessionTypeUuid;
+	}
+
+	public void setSessionTypeUuid(String sessionTypeUuid) {
+		this.sessionTypeUuid = sessionTypeUuid;
+                // need to set sessiontype
 	}
 
 	public String getCreatedBy() {

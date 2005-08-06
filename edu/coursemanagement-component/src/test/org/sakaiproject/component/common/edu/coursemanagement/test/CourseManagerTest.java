@@ -29,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.sakaiproject.component.common.edu.coursemanagement.SessionImpl;
+import org.sakaiproject.component.common.edu.coursemanagement.SessionTypeImpl;
+
 
 import junit.framework.Assert;
 
@@ -45,15 +47,18 @@ public class CourseManagerTest extends CourseManagementTestBase {
     /**
     public void testCreateCanonicalCourse() throws Exception {
         courseManagementManager.createCanonicalCourse("title","description","1052-math-101-01",
-	    "math-101-01-uuid", null);
+	    "*uuid_math-101-01", null);
         setComplete();
     }
     */
 
     public void testCreateSession() throws Exception {
         System.out.println("***heloo");
+        SessionTypeImpl type = new SessionTypeImpl();
+        type.setUuid("*uuid_essionType_uuid");
+        Date currentDate = new Date();
         SessionImpl s = (SessionImpl)courseManagementManager.createSession("Fall 2005","1052","2005",
-	    null, "1052-uuid");
+	    type, "*uuid_1052", Boolean.TRUE, "site", currentDate, "site", currentDate);
         setComplete();
         System.out.println("***session ="+s);
         System.out.println("***sessionId = "+s.getSessionId());
