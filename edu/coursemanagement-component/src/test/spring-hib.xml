@@ -19,6 +19,14 @@
     <property name="mappingResources">
       <list>
         <value>org/sakaiproject/component/common/edu/coursemanagement/CanonicalCourseStatusType.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/CourseOfferingStatusType.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/CourseOfferingType.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/CourseSectionStatusType.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/CourseSectionType.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/CourseSetType.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/EnrollmentStatusType.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/EnrollmentType.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/ParticipationStatusType.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/Session.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/SessionType.hbm.xml</value>
       </list>

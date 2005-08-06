@@ -8,9 +8,11 @@
 <!-- Created Thu Jul 28 22:51:10 EDT 2005                         -->
 <hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
 
-    <class name="EnrollmentStatusTypeImpl" table="CM_ENROLLMENTSTATUSTYPE_T">
-        <id name="enrollmentStatusTypeId" column="ENROLLMENTSTATUSTYPEID" type="java.lang.Long">
-            <generator class="native"/>
+    <class name="EnrollmentStatusTypeImpl" table="CM_ENROLLMENTSTATUS_T">
+        <id name="enrollmentStatusTypeId" column="ENROLLMENTSTATUSID" type="java.lang.Long">
+            <generator class="native">
+              <param name="sequence">CM_ENROLLMENTSTATUS_ID_S</param>
+            </generator>
         </id>
  
         <property name="authority" column="AUTHORITY" type="java.lang.String" not-null="true" />

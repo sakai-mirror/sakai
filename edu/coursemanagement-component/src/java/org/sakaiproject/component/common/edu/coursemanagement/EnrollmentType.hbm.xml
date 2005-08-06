@@ -10,7 +10,9 @@
 
     <class name="EnrollmentTypeImpl" table="CM_ENROLLMENTTYPE_T">
         <id name="enrollmentTypeId" column="ENROLLMENTTYPEID" type="java.lang.Long">
-            <generator class="native"/>
+            <generator class="native">
+              <param name="sequence">CM_ENROLLMENTTYPE_ID_S</param>
+            </generator>
         </id>
  
         <property name="authority" column="AUTHORITY" type="java.lang.String" not-null="true" />

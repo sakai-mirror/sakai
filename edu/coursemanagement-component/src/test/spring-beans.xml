@@ -18,6 +18,46 @@
     <property name="uuid"><value>daisy-flemming-123</value></property>
   </bean>
 
+  <bean id="org_sakaiproject_api_edu_coursemanagement_CourseOfferingStatusType"
+    class="org.sakaiproject.component.common.edu.coursemanagement.CourseOfferingStatusTypeImpl">
+    <property name="uuid"><value>daisy-flemming-123</value></property>
+  </bean>
+
+  <bean id="org_sakaiproject_api_edu_coursemanagement_CourseOfferingType"
+    class="org.sakaiproject.component.common.edu.coursemanagement.CourseOfferingTypeImpl">
+    <property name="uuid"><value>daisy-flemming-123</value></property>
+  </bean>
+
+  <bean id="org_sakaiproject_api_edu_coursemanagement_CourseSectionStatusType"
+    class="org.sakaiproject.component.common.edu.coursemanagement.CourseSectionStatusTypeImpl">
+    <property name="uuid"><value>daisy-flemming-123</value></property>
+  </bean>
+
+  <bean id="org_sakaiproject_api_edu_coursemanagement_CourseSectionType"
+    class="org.sakaiproject.component.common.edu.coursemanagement.CourseSectionTypeImpl">
+    <property name="uuid"><value>daisy-flemming-123</value></property>
+  </bean>
+
+  <bean id="org_sakaiproject_api_edu_coursemanagement_CourseSetType"
+    class="org.sakaiproject.component.common.edu.coursemanagement.CourseSetTypeImpl">
+    <property name="uuid"><value>daisy-flemming-123</value></property>
+  </bean>
+
+  <bean id="org_sakaiproject_api_edu_coursemanagement_EnrollmentStatusType"
+    class="org.sakaiproject.component.common.edu.coursemanagement.EnrollmentStatusTypeImpl">
+    <property name="uuid"><value>daisy-flemming-123</value></property>
+  </bean>
+
+  <bean id="org_sakaiproject_api_edu_coursemanagement_EnrollmentType"
+    class="org.sakaiproject.component.common.edu.coursemanagement.EnrollmentTypeImpl">
+    <property name="uuid"><value>daisy-flemming-123</value></property>
+  </bean>
+
+  <bean id="org_sakaiproject_api_edu_coursemanagement_ParticipationStatusType"
+    class="org.sakaiproject.component.common.edu.coursemanagement.ParticipationStatusTypeImpl">
+    <property name="uuid"><value>daisy-flemming-123</value></property>
+  </bean>
+
   <bean id="org_sakaiproject_api_edu_coursemanagement_Session"
     class="org.sakaiproject.component.common.edu.coursemanagement.SessionImpl">
     <property name="uuid"><value>daisy-flemming-123</value></property>

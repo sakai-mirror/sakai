@@ -10,7 +10,9 @@
 
     <class name="CourseSetTypeImpl" table="CM_COURSESETTYPE_T">
         <id name="courseSetTypeId" column="COURSESETTYPEID" type="java.lang.Long">
-            <generator class="native"/>
+            <generator class="native">
+              <param name="sequence">CM_COURSESETTYPE_ID_S</param>
+            </generator>
         </id>
  
         <property name="authority" column="AUTHORITY" type="java.lang.String" not-null="true" />
