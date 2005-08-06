@@ -8,49 +8,83 @@ insert into CM_SESSIONTYPE_T ("SESSIONTYPEID", "AUTHORITY", "DOMAIN", "KEYWORD",
     "DISPLAYNAME", "DESCRIPTION", "UUID", 
     "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
     VALUES (CM_SESSIONTYPE_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'term.spring' ,
-    'Unknown', NULL, '*uuid_session_2',
+    'Spring', NULL, '*uuid_session_2',
     1, 'site', SYSDATE , 'site' ,SYSDATE);
 insert into CM_SESSIONTYPE_T ("SESSIONTYPEID", "AUTHORITY", "DOMAIN", "KEYWORD",
     "DISPLAYNAME", "DESCRIPTION", "UUID", 
     "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
     VALUES (CM_SESSIONTYPE_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'term.summer' ,
-    'Unknown', NULL, '*uuid_session_3',
+    'Summer', NULL, '*uuid_session_3',
     1, 'site', SYSDATE , 'site' ,SYSDATE);
 insert into CM_SESSIONTYPE_T ("SESSIONTYPEID", "AUTHORITY", "DOMAIN", "KEYWORD",
     "DISPLAYNAME", "DESCRIPTION", "UUID", 
     "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
     VALUES (CM_SESSIONTYPE_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'term.fall' ,
-    'Unknown', NULL, '*uuid_session_4',
+    'Fall', NULL, '*uuid_session_4',
     1, 'site', SYSDATE , 'site' ,SYSDATE);
 insert into CM_SESSIONTYPE_T ("SESSIONTYPEID", "AUTHORITY", "DOMAIN", "KEYWORD",
     "DISPLAYNAME", "DESCRIPTION", "UUID", 
     "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
     VALUES (CM_SESSIONTYPE_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'term.winter' ,
-    'Unknown', NULL, '*uuid_session_5',
+    'Winter', NULL, '*uuid_session_5',
     1, 'site', SYSDATE , 'site' ,SYSDATE);
 insert into CM_SESSIONTYPE_T ("SESSIONTYPEID", "AUTHORITY", "DOMAIN", "KEYWORD",
     "DISPLAYNAME", "DESCRIPTION", "UUID", 
     "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
     VALUES (CM_SESSIONTYPE_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'term.first_quarter' ,
-    'Unknown', NULL, '*uuid_session_6',
+    'First Quarter', NULL, '*uuid_session_6',
     1, 'site', SYSDATE , 'site' ,SYSDATE);
 insert into CM_SESSIONTYPE_T ("SESSIONTYPEID", "AUTHORITY", "DOMAIN", "KEYWORD",
     "DISPLAYNAME", "DESCRIPTION", "UUID", 
     "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
     VALUES (CM_SESSIONTYPE_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'term.second_quarter' ,
-    'Unknown', NULL, '*uuid_session_7',
+    'Second Quarter', NULL, '*uuid_session_7',
     1, 'site', SYSDATE , 'site' ,SYSDATE);
 insert into CM_SESSIONTYPE_T ("SESSIONTYPEID", "AUTHORITY", "DOMAIN", "KEYWORD",
     "DISPLAYNAME", "DESCRIPTION", "UUID", 
     "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
     VALUES (CM_SESSIONTYPE_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'term.third_quarter' ,
-    'Unknown', NULL, '*uuid_session_8',
+    'Third Quarter', NULL, '*uuid_session_8',
     1, 'site', SYSDATE , 'site' ,SYSDATE);
 insert into CM_SESSIONTYPE_T ("SESSIONTYPEID", "AUTHORITY", "DOMAIN", "KEYWORD",
     "DISPLAYNAME", "DESCRIPTION", "UUID", 
     "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
     VALUES (CM_SESSIONTYPE_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'term.forth_quarter' ,
-    'Unknown', NULL, '*uuid_session_9',
+    'Forth Quarter', NULL, '*uuid_session_9',
     1, 'site', SYSDATE , 'site' ,SYSDATE);
+
+
+insert into CM_CANONICALCOURSESTATUS_T ("CANONICALCOURSESTATUSID", "AUTHORITY", "DOMAIN", "KEYWORD",
+    "DISPLAYNAME", "DESCRIPTION", "UUID", 
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
+    VALUES (CM_CANONICALCOURSESTATUS_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'canonical.unknown' ,
+    'Unknown', NULL, '*uuid_canonical_1',
+    1, 'site', SYSDATE , 'site' ,SYSDATE);
+insert into CM_CANONICALCOURSESTATUS_T ("CANONICALCOURSESTATUSID", "AUTHORITY", "DOMAIN", "KEYWORD",
+    "DISPLAYNAME", "DESCRIPTION", "UUID", 
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
+    VALUES (CM_CANONICALCOURSESTATUS_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'canonical.active' ,
+    'Active', NULL, '*uuid_canonical_2',
+    1, 'site', SYSDATE , 'site' ,SYSDATE);
+insert into CM_CANONICALCOURSESTATUS_T ("CANONICALCOURSESTATUSID", "AUTHORITY", "DOMAIN", "KEYWORD",
+    "DISPLAYNAME", "DESCRIPTION", "UUID", 
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
+    VALUES (CM_CANONICALCOURSESTATUS_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'canonical.discontinued' ,
+    'Discontinued', NULL, '*uuid_canonical_3',
+    1, 'site', SYSDATE , 'site' ,SYSDATE);
+insert into CM_CANONICALCOURSESTATUS_T ("CANONICALCOURSESTATUSID", "AUTHORITY", "DOMAIN", "KEYWORD",
+    "DISPLAYNAME", "DESCRIPTION", "UUID", 
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
+    VALUES (CM_CANONICALCOURSESTATUS_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'canonical.proposed' ,
+    'Proposed', NULL, '*uuid_canonical_4',
+    1, 'site', SYSDATE , 'site' ,SYSDATE);
+insert into CM_CANONICALCOURSESTATUS_T ("CANONICALCOURSESTATUSID", "AUTHORITY", "DOMAIN", "KEYWORD",
+    "DISPLAYNAME", "DESCRIPTION", "UUID", 
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
+    VALUES (CM_CANONICALCOURSESTATUS_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'canonical.unlisted' ,
+    'Unlisted', NULL, '*uuid_canonical_5',
+    1, 'site', SYSDATE , 'site' ,SYSDATE);
+
+
 
 commit;

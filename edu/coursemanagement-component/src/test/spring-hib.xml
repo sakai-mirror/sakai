@@ -18,6 +18,7 @@
     <property name="dataSource"><ref bean="courseManagementDataSource"/></property>
     <property name="mappingResources">
       <list>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/CanonicalCourseStatusType.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/Session.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/SessionType.hbm.xml</value>
       </list>
