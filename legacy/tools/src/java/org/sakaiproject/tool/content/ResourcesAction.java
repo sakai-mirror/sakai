@@ -198,6 +198,9 @@ extends VelocityPortletPaneledAction
 	/** The collection id path */
 	private static final String STATE_COLLECTION_PATH = "resources.collection_path";
 
+	/** The name of the state attribute containing BrowseItems for all content collections the user has access to */
+	private static final String STATE_COLLECTION_ROOTS = "resources.collection_rootie_tooties";
+
 	/** The sort by */
 	private static final String STATE_SORT_BY = "resources.sort_by";
 
@@ -216,8 +219,11 @@ extends VelocityPortletPaneledAction
 	/** The select all flag */
 	private static final String STATE_SELECT_ALL_FLAG = "resources.select_all_flag";
 
-	/** The expand all flag */
+	/** The name of the state attribute indicating whether the hierarchical list is expanded */
 	private static final String STATE_EXPAND_ALL_FLAG = "resources.expand_all_flag";
+
+	/** The name of the state attribute indicatinge whether the hierarchical list need to be expanded */
+	private static final String STATE_NEED_TO_EXPAND_ALL = "resources.need_to_expand_all";
 
 	/** The from state name */
 	private static final String STATE_FROM = "resources.from";
@@ -390,7 +396,6 @@ extends VelocityPortletPaneledAction
 	private static final String COPYRIGHT_SELF_COPYRIGHT = rb.getString("cpright2");
 	private static final String COPYRIGHT_NEW_COPYRIGHT = rb.getString("cpright3");
 	private static final String COPYRIGHT_ALERT_URL = ServerConfigurationService.getAccessUrl() + COPYRIGHT_PATH;
-
 
 	/**
 	* Build the context for normal display
@@ -605,8 +610,6 @@ extends VelocityPortletPaneledAction
 				context.put ("copiedItem", state.getAttribute (STATE_COPIED_ID));
 			}
 
-			context.put("expandallflag", state.getAttribute(STATE_EXPAND_ALL_FLAG));
-
 			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
 			ContentCollection coll = contentService.getCollection(collectionId);
 			expandedCollections.put(collectionId, coll);
@@ -681,6 +684,7 @@ extends VelocityPortletPaneledAction
 			}
 			
 			context.put ("roots", roots);
+			state.setAttribute(STATE_COLLECTION_ROOTS, roots);
 			// context.put ("root", root);
 			
 			if(state.getAttribute(STATE_PASTE_ALLOWED_FLAG) != null)
@@ -719,6 +723,9 @@ extends VelocityPortletPaneledAction
 			// Log.error("chef", this + e.toString());
 		}
 		
+		context.put("expandallflag", state.getAttribute(STATE_EXPAND_ALL_FLAG));
+		state.removeAttribute(STATE_NEED_TO_EXPAND_ALL);
+
 		// inform the observing courier that we just updated the page...
 		// if there are pending requests to do so they can be cleared
 		justDelivered(state);
@@ -873,8 +880,6 @@ extends VelocityPortletPaneledAction
 			contentService.checkCollection (collectionId);
 			// context.put ("collectionFlag", Boolean.TRUE.toString());
 
-			context.put("expandallflag", state.getAttribute(STATE_EXPAND_ALL_FLAG));
-
 			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
 			ContentCollection coll = contentService.getCollection(collectionId);
 			expandedCollections.put(collectionId, coll);
@@ -965,7 +970,10 @@ extends VelocityPortletPaneledAction
 		{
 			// Log.error("chef", this + e.toString());
 		}
-		
+
+		context.put("expandallflag", state.getAttribute(STATE_EXPAND_ALL_FLAG));
+		state.removeAttribute(STATE_NEED_TO_EXPAND_ALL);
+
 		// inform the observing courier that we just updated the page...
 		// if there are pending requests to do so they can be cleared
 		// justDelivered(state);
@@ -5464,37 +5472,17 @@ extends VelocityPortletPaneledAction
 	}	// doCopy
 
 	/**
-	* Expand all the collection resources and put in EXPANDED_COLLECTIONS attribute.
+	* Expand all the collection resources.
 	*/
 	static public void doExpandall ( RunData data)
 	{
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		ParameterParser params = data.getParameters();
 		
-		HashMap expandedCollectionResources = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
-		String currentCollectionId = params.getString("collectionId");
+		// expansion actually occurs in getBrowseItems method.
+		state.setAttribute(STATE_EXPAND_ALL_FLAG,  Boolean.TRUE.toString());
+		state.setAttribute(STATE_NEED_TO_EXPAND_ALL, Boolean.TRUE.toString());
 		
-		try
-		{
-			ContentCollection currentCollection = ContentHostingService.getCollection(currentCollectionId);
-
-			Iterator allCollectionIterator = threadIterator(currentCollection.getMemberResources().iterator());
-//			Iterator allCollectionIterator = threadIterator(currentCollection.getMembers().iterator());
-			while (allCollectionIterator.hasNext ())
-			{
-				// String newId = (String) allCollectionIterator.next ();
-			    Resource collection = (Resource) allCollectionIterator.next();
-				if (!expandedCollectionResources.containsKey(collection.getId()))
-				{
-					expandedCollectionResources.put (collection.getId(),collection);
-				}
-			}
-		}
-		catch (Exception ignore){}
-		
-		state.setAttribute(EXPANDED_COLLECTIONS, expandedCollectionResources);
-		state.setAttribute (STATE_EXPAND_ALL_FLAG,  Boolean.TRUE.toString());
 	}	// doExpandall
 
 	/**
@@ -5506,132 +5494,9 @@ extends VelocityPortletPaneledAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		state.setAttribute(EXPANDED_COLLECTIONS, new HashMap());
-		state.setAttribute (STATE_EXPAND_ALL_FLAG, Boolean.FALSE.toString());
+		state.setAttribute(STATE_EXPAND_ALL_FLAG, Boolean.FALSE.toString());
 
 	}	// doUnexpandall
-	
-	/**
-	* Return an iterator on the resource collection objects
-	* to the specified iteration of messages.  They will be returned in depth first order.
-	* @param topLevel The iterator of messages to which those returned are some depth of response.
-	* @return an iterator on the DiscussionMessages that are in the response threads
-	* to the specified iteration of messages, in depth first order (may be empty).
-	*/
-	protected static Iterator threadIterator(Iterator topLevel)
-	{
-		// start the depth iteration stack with the topics of the channel
-		final Stack stack = new Stack();
-
-		Vector v = new Vector();
-
-		while (topLevel.hasNext ())
-		{
-		    Resource r = (Resource) topLevel.next();
-			try
-			{
-				if (r.getProperties().getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION))		
-				{
-				    v.add(r);
-				}
-			}
-			catch (Exception ignore){}
-		}
-		stack.push(v.iterator ());
-
-		return new
-			Iterator()
-			{
-				// if we found one in hasNext(), store it here till the next()
-				private Object m_next = null;
-
-				// the depth stack of iterators
-				private Stack m_stack = stack;
-
-				// messages already returned
-				private Set m_alreadyReturned = new HashSet();
-
-				public Object next()
-				{
-					// make sure hasNext has been called
-					hasNext();
-
-					if (m_next == null) throw new NoSuchElementException();
-
-					// consume the next
-					Object rv = m_next;
-					m_next = null;
-
-					// keep track of what we have already returned to avoid looping
-					m_alreadyReturned.add(rv);
-
-					return rv;
-
-				}   // next
-
-				public boolean hasNext()
-				{										
-					// if known next not yet used, we have next
-					if (m_next != null) return true;
-
-					// clear off completed iterators from the stack
-					while ((!m_stack.empty())
-							&&  (!((Iterator)m_stack.peek()).hasNext()))
-					{
-						m_stack.pop();
-					}
-
-					// if the stack is now empty, we have no next
-					if (m_stack.empty())
-					{
-						return false;
-					}
-
-					// setup the next from the stack
-					m_next = ((Iterator)m_stack.peek()).next();
-
-					// if this next has replies, push an iterator of them in the stack
-					// ... but don't do it if we've alread returned this message, else we might get a loop!
-					if (!m_alreadyReturned.contains(m_next))
-					{
-						try
-						{
-							List members = ((ContentCollection) m_next).getMemberResources();
-							Vector vNew = new Vector();
-							if ((members!=null) && (members.size ()!=0))
-							{
-								for (int j=0; j<members.size(); j++)
-								{
-									try
-									{						  
-									    Resource resource = (Resource) members.get(j);
-									    boolean isCollection = resource.getProperties().getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION);							    
-				//						ResourceProperties p = ContentHostingService.getProperties(((Resource)members.get(j)).getId());
-										if (isCollection)
-										{
-										    vNew.add(resource);
-	//										vNew.add(((Resource)members.get(j)).getId());
-										}
-									}
-	//								catch (PermissionException ignore){}
-									catch (EmptyException ignore){}
-	//								catch (IdUnusedException ignore){}
-									catch (TypeException ignore){}
-								}
-								m_stack.push(vNew.iterator ());
-							}
-						}
-						catch (Exception ignore){}
-					}
-
-					return true;
-
-				}   // hasNext
-
-				public void remove() {throw new UnsupportedOperationException();}
-
-			};  // Iterator
-
-	}   // threadIterator
 	
 	/**
 	* Build the menu.
@@ -6272,7 +6137,9 @@ extends VelocityPortletPaneledAction
 	 * @return a List of BrowseItem objects
 	 */
 	public static List getBrowseItems(String collectionId, HashMap expandedCollections, String sortedBy, String sortedAsc, BrowseItem parent, boolean isLocal, SessionState state)
-	{		
+	{
+		boolean need_to_expand_all = Boolean.TRUE.toString().equals((String)state.getAttribute(STATE_NEED_TO_EXPAND_ALL));
+		
 		List newItems = new LinkedList();
 		try
 		{
@@ -6291,6 +6158,11 @@ extends VelocityPortletPaneledAction
 			else 
 			{
 				collection = ContentHostingService.getCollection(collectionId);
+				if(need_to_expand_all)
+				{
+					expandedCollections.put(collectionId, collection);
+					state.setAttribute(EXPANDED_COLLECTIONS, expandedCollections);
+				}
 			}
 				
 			String dummyId = collectionId.trim();
@@ -6445,7 +6317,7 @@ extends VelocityPortletPaneledAction
 			folder.setDepth(depth);
 			newItems.add(folder);
 			
-			if(expandedCollections.containsKey (collectionId))
+			if(need_to_expand_all || expandedCollections.containsKey (collectionId))
 			{
 				// Get the collection members from the 'new' collection
 				List newMembers = collection.getMemberResources ();
