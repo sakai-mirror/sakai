@@ -1,7 +1,7 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/sitesetup/chef_site-newSiteCourse.vm,v 1.3 2005/05/25 17:42:01 gsilver.umich.edu Exp $ -->
 <div class="portletBody">
 	#if (!$!siteEdit)
-		<h3 class="insColor insBak insBor">$tlang.getString("nscourse.creating")</h3>
+		<h3>$tlang.getString("nscourse.creating")</h3>
 		<p class="step">
 			$tlang.getString("nscourse.choose")
 		</p>
@@ -12,19 +12,21 @@
 	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<p class="instruction">
 		#if (!$!siteEdit)
-			$tlang.getString("nscourse.select") <span class ="reqStarInline">*</span> $tlang.getString("nscourse.means") $tlang.getString("nscourse.req")
+		$tlang.getString("nscourse.select")
 		#else
 			$tlang.getString("nscourse.add") $!siteTitle:
 		#end
 	</p>
 	<form name = "addCourseForm" method="post" action="#toolForm($action)">
+		<h4>		
 			$tlang.getString("nscourse.cinfo")
+		</h4>	
 
 			#if (!$siteEdit)
-				<div>
+				<h5>
 					$tlang.getString("nscourse.acad")
 					$term.Id
-				</div>
+				</h5>
 			#else
 				$tlang.getString("nscourse.already")
 				<ul>
@@ -69,6 +71,7 @@
 				## display only subject, course number and section
 				##and finally - the labels work, but having commas in the id does not validate. Can we concatenate or replace with underscore? Here is reqs on ids and labels: an id attribute value must begin with a letter (A-Z or a-z) and consist of the following characters: (A-Z), (a-z), (0-9), hyphens (-), underscores (_), colons (:), and periods (.).
 				#foreach($course in $termCourseList)
+					<p class="checkbox">
 					<input type="checkbox" name="providerCourseAdd" value="$course.Id" id="$course.Id"
 						#if ($!selectedProviderCourse.contains("$course.Id"))
 							checked="checked"
@@ -76,10 +79,9 @@
 						/>
 					<label for="$course.Id">
 						$validator.escapeHtml($course.Id)
-						$validator.escapeHtml($course.Crosslist)</label><br />
+						$validator.escapeHtml($course.Crosslist)</label></p>
 				#end
 			#end
-			<br />
 			## instructor could choose to go to the manual creation page
 				<p class="checkbox">
 					<input  type="checkbox" name="manualAdds" value="manual add" id="manual add" #if ($!selectedManualCourse) checked="checked" #end/>
