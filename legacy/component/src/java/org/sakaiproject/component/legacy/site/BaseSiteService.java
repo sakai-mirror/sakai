@@ -2136,7 +2136,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			m_skin = other.m_skin;
 			m_type = other.m_type;
 			m_pubView = other.m_pubView;
-			m_createdUserId = other.m_createdUserId;
+			if (exact)
+			{
+				m_createdUserId = other.m_createdUserId;
+			}
+			else
+			{
+				m_createdUserId = UserDirectoryService.getCurrentUser().getId();
+			}
 			m_lastModifiedUserId = other.m_lastModifiedUserId;
 			if (other.m_createdTime != null) m_createdTime = (Time) other.m_createdTime.clone();
 			if (other.m_lastModifiedTime != null) m_lastModifiedTime = (Time) other.m_lastModifiedTime.clone();
