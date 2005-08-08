@@ -88,13 +88,7 @@
       <version>2.1.8</version>
     </dependency>
 
-    <dependency>
-      <groupId>oracle</groupId>
-      <artifactId>oracle</artifactId>
-      <jar>ojdbc14.jar</jar>
-    </dependency>
-
-    <dependency>
+     <dependency>
       <groupId>jta</groupId>
       <artifactId>jta</artifactId>
       <version>h2.1.8</version>
