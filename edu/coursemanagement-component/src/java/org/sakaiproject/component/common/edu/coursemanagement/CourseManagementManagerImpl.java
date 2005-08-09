@@ -26,8 +26,8 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 	
 	public static CourseManagementManagerImpl getInstance(){
 		if (instance == null);
-		  instance = new CourseManagementManagerImpl();
-    return instance;
+		instance = new CourseManagementManagerImpl();
+		return instance;
 	}
 	public CanonicalCourse createCanonicalCourse(String title,
 			String description, String courseNumber,
@@ -48,7 +48,7 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 		getHibernateTemplate().save(c);
 		return c;
 	}
-
+	
 	public CanonicalCourse saveCanonicalCourse(CanonicalCourse c){
 		getHibernateTemplate().saveOrUpdate(c);
 		return c;		
@@ -93,7 +93,7 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 		getHibernateTemplate().save(s);
 		return s;
 	}
-
+	
 	public EnrollmentRecord createEnrollmentRecord(String agentUuid,
 			String role, String status, String courseSectionUuid) {
 		// TODO Auto-generated method stub
@@ -222,7 +222,7 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 		else
 			return null;
 	}
-
+	
 	public CanonicalCourse getCanonicalCourseByUuid(String uuid) {
 		String query = "select c from CanonicalCourseImpl c where c.uuid=?";
 		System.out.println("****query="+query);
