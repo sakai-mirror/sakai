@@ -25,6 +25,8 @@
 		  	  output="schema-export.sql">
 
 	  <fileset dir="src/java/org/sakaiproject/component/common/edu/coursemanagement">
+		<include name="CanonicalCourse.hbm.xml" />
+		<include name="CourseSet.hbm.xml" />
 		<include name="CanonicalCourseStatusType.hbm.xml" />
 		<include name="CourseOfferingStatusType.hbm.xml" />
 		<include name="CourseOfferingType.hbm.xml" />
