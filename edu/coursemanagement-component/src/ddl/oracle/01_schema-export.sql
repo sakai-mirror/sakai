@@ -21,9 +21,9 @@ drop sequence CM_ENROLLMENTSTATUS_ID_S;
 drop sequence CM_ENROLLMENTTYPE_ID_S;
 drop sequence CM_SESSION_ID_S;
 drop sequence CM_COURSESETTYPE_ID_S;
-drop sequence CM_SESSIONTYPE_ID_S;
-drop sequence CM_PARTICIPATIONSTATUS_ID_S;
 drop sequence CM_COURSESECTIONSTATUS_ID_S;
+drop sequence CM_PARTICIPATIONSTATUS_ID_S;
+drop sequence CM_SESSIONTYPE_ID_S;
 create table CM_ENROLLMENTSTATUS_T (
    ENROLLMENTSTATUSID number(19,0) not null,
    AUTHORITY varchar2(255) not null,
@@ -163,6 +163,8 @@ create table CM_SESSION_T (
 );
 create table CM_EQUIVALENTCOURSES_T (
    EQUIVALENTID number(19,0) not null,
+   TITLE varchar2(255),
+   UUID varchar2(255) not null,
    primary key (EQUIVALENTID)
 );
 create table CM_ENROLLMENTTYPE_T (
@@ -218,7 +220,6 @@ create table CM_COURSESET_T (
    CREATEDDATE date not null,
    LASTMODIFIEDBY varchar2(255) not null,
    LASTMODIFIEDDATE date not null,
-   CANONICALCOURSEUUID number(19,0),
    primary key (COURSESETID)
 );
 create sequence CM_COURSESECTIONTYPE_ID_S;
@@ -230,6 +231,6 @@ create sequence CM_ENROLLMENTSTATUS_ID_S;
 create sequence CM_ENROLLMENTTYPE_ID_S;
 create sequence CM_SESSION_ID_S;
 create sequence CM_COURSESETTYPE_ID_S;
-create sequence CM_SESSIONTYPE_ID_S;
-create sequence CM_PARTICIPATIONSTATUS_ID_S;
 create sequence CM_COURSESECTIONSTATUS_ID_S;
+create sequence CM_PARTICIPATIONSTATUS_ID_S;
+create sequence CM_SESSIONTYPE_ID_S;

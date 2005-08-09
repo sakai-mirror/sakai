@@ -45,6 +45,11 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 		getHibernateTemplate().save(c);
 		return c;
 	}
+
+	public CanonicalCourse saveCanonicalCourse(CanonicalCourse c){
+		getHibernateTemplate().saveOrUpdate(c);
+		return c;		
+	}
 	
 	public CourseOffering createCourseOffering(String title,
 			String description, String offeringNumber,
@@ -85,7 +90,7 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 		getHibernateTemplate().save(s);
 		return s;
 	}
-	
+
 	public EnrollmentRecord createEnrollmentRecord(String agentUuid,
 			String role, String status, String courseSectionUuid) {
 		// TODO Auto-generated method stub
@@ -215,5 +220,19 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 			return null;
 	}
 
+	public EquivalentCoursesImpl saveEquivalentCourses(EquivalentCoursesImpl e){
+		getHibernateTemplate().saveOrUpdate(e);
+		return e;		
+	}
+	public CanonicalCourseImpl getCanonicalCourseByUuid(String uuid) {
+		String query = "select c from CanonicalCourseImpl c where c.uuid=?";
+		List list = getHibernateTemplate().find(query,
+				new Object[] {uuid},
+				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
+		if (list.size()>0)
+			return (CanonicalCourseImpl)list.get(0);
+		else
+			return null;
+	}
 	
 }

@@ -50,13 +50,45 @@ public class CourseManagerTest extends CourseManagementTestBase {
 		Date currentDate = new Date();
 		CanonicalCourseStatusTypeImpl type = (CanonicalCourseStatusTypeImpl)courseManagementManager.
 		getCanonicalCourseStatusTypeByKeyword("canonical.active");
+    //1. create math101
 		CanonicalCourseImpl c = (CanonicalCourseImpl) courseManagementManager.createCanonicalCourse(
 				"title","description","1052-math-101-01",
 				"*uuid_"+currentDate.getTime(), type);
 		setComplete();
 		System.out.println("***canonical course Id = "+c.getCanonicalCourseId());
-	}
+    System.out.println("**** done 1: create math101");
+
+    //2. add topics to math101
+		c.addTopic("optimization");
+		c.addTopic("normal distribution");
+		c.addPrerequisite("math-10");
+		courseManagementManager.saveCanonicalCourse(c);
+		setComplete();
+	  System.out.println("**** done 2: add topic");
 	
+	  //3. create stat101
+		CanonicalCourseImpl stat101 = createCanonicalCourse("title2","1052-stat-101-01");
+	  System.out.println("**** done 3: create ata101");
+
+	   //4. make them equivalent
+		c.addEquivalent(stat101.getUuid());
+		courseManagementManager.saveCanonicalCourse(c);
+		setComplete();		
+	  System.out.println("**** done 4: make equivalent");
+	}
+
+	private CanonicalCourseImpl createCanonicalCourse(String title, String courseNumber){
+		Date currentDate = new Date();
+		CanonicalCourseStatusTypeImpl type = (CanonicalCourseStatusTypeImpl)courseManagementManager.
+		getCanonicalCourseStatusTypeByKeyword("canonical.active");
+		CanonicalCourseImpl c = (CanonicalCourseImpl) courseManagementManager.createCanonicalCourse(
+				title,"description",courseNumber,
+				"*uuid_"+currentDate.getTime(), type);
+		setComplete();		
+		System.out.println("***canonical course Id = "+c.getCanonicalCourseId());
+    return c;
+	}
+
 	public void testCreateSession() throws Exception {
 		Date currentDate = new Date();
 		SessionTypeImpl type = (SessionTypeImpl)courseManagementManager.getSessionTypeByKeyword(

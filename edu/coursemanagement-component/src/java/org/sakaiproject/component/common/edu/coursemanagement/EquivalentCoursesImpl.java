@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.sakaiproject.api.edu.coursemanagement.CanonicalCourseStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSet;
 
 public class EquivalentCoursesImpl implements Serializable {
@@ -34,7 +35,15 @@ public class EquivalentCoursesImpl implements Serializable {
 	
 	/** The value of the simple lastmodifieddate property. */
 	private java.util.Date lastModifiedDate;
+
+	public EquivalentCoursesImpl() {}
 	
+	public EquivalentCoursesImpl(String title, String uuid, Set set){
+		this.setTitle(title);
+		this.setUuid(uuid);
+		this.setCanonicalCourseSet(set);
+	}
+
 	/**
 	 * Return the simple primary key value that identifies this object.
 	 * @return java.lang.Long

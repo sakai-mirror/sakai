@@ -12,11 +12,13 @@
         <id name="equivalentId" column="EQUIVALENTID" type="java.lang.Long">
             <generator class="native"/>
         </id>
-     <set name="canonicalCourseSet" table="CM_CANONICALCOURSE_T" cascade="all"
-       inverse="true">
-       <key column="CANONICALCOURSEUUID"/>
-       <one-to-many class="CanonicalCourseImpl"  />
-     </set>
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="false" />
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
+        <set name="canonicalCourseSet" table="CM_CANONICALCOURSE_T" cascade="all"
+           inverse="true">
+           <key column="CANONICALCOURSEUUID"/>
+           <one-to-many class="CanonicalCourseImpl"  />
+        </set>
  
     </class>
     

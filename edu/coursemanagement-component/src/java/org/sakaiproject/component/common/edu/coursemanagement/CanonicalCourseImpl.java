@@ -69,6 +69,8 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	private Set courseOfferingSet;
 
 	private String canonicalCourseStatusUuid;
+
+	private EquivalentCoursesImpl equivalentCourses;
 	
 	public CanonicalCourseImpl() {}
 	
@@ -188,43 +190,82 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	}
 	
 	public void addTopic(String topic) {
+		if (topicsString == null)
+			topicsString = topic;
+		else
+			topicsString = topicsString + "|" + topic;
 		if (topicList == null)
 			topicList = new ArrayList();
 		topicList.add(topic);
 	}
 	
 	public void removeTopic(String topic) {
+		topicsString = "";
 		for (int i=0;i<topicList.size();i++){
 			String t = (String) topicList.get(i);
-			if (t.equals(topic)){
+			if (t.equals(topic))
 				topicList.remove(i);
-				break;
+			else{
+				if (("").equals(topicsString))
+					topicsString = t;
+				else
+				  topicsString = topicsString + "|" + t;
 			}
 		}
 	}
 	
 	public Set getEquivalents() {
-		return equivalentCourseSet;
+		return equivalentCourses.getCanonicalCourseSet();
 	}
 	
-	public void setEquivalents(Set equivalentCourseSet){
-		this.equivalentCourseSet = equivalentCourseSet;
+	public EquivalentCoursesImpl getEquivalentCourses() {
+		return equivalentCourses;
+	}
+	
+	public void setEquivalentCourses(EquivalentCoursesImpl equivalentCourses){
+		this.equivalentCourses = equivalentCourses;
 	}
 	
 	public void addEquivalent(String canonicalCourseUuid) {
-		if (equivalentCourseSet == null)
-			equivalentCourseSet = new HashSet();
-		equivalentCourseSet.add(canonicalCourseUuid);
+    HashSet set;
+		if (equivalentCourses == null){
+	    Date currentDate = new Date();
+			set = new HashSet();
+			set.add(uuid);
+			equivalentCourses = new EquivalentCoursesImpl(
+					"equivalent-title", "*uuid"+currentDate.getTime(),set);
+		}
+		else{
+			set = (HashSet) equivalentCourses.getCanonicalCourseSet();
+		}
+		set.add(canonicalCourseUuid);
+
+		CourseManagementManagerImpl cm = CourseManagementManagerImpl.getInstance();
+		Iterator i = set.iterator();
+		while (i.hasNext()){
+			String c_uuid = (String)i.next();
+			System.out.println("**** c_uuid"+c_uuid);
+			CanonicalCourseImpl course = cm.getCanonicalCourseByUuid(c_uuid);
+      if (course !=null)
+			  course.setEquivalentCourses(equivalentCourses);
+		}
+		this.setEquivalentCourses(equivalentCourses);
+		//cm.saveEquivalentCourses(equivalentCourses);
 	}
 	
 	public void removeEquivalent(String canonicalCourseUuid) {
-		Iterator i = equivalentCourseSet.iterator();
+		Set set = equivalentCourses.getCanonicalCourseSet();
+		Iterator i = set.iterator();
 		while (i.hasNext()){
-			String uuid = (String) i.next();
-			if (uuid.equals(canonicalCourseUuid)){
-				equivalentCourseSet.remove(canonicalCourseUuid);
+			String equivalentUuid = (String) i.next();
+			if (equivalentUuid.equals(canonicalCourseUuid)){
+				set.remove(canonicalCourseUuid);
 				break;
 			}
+		}
+		if ((set.size()==1)
+				&& (((String)set.iterator().next()).equals(uuid))){
+			removeEquivalent(uuid);
 		}
 	}
 	
@@ -256,18 +297,27 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	}
 	
 	public void addPrerequisite(String prerequisite) {
+		if (prerequisiteString == null)
+			prerequisiteString = prerequisite;
+		else
+			prerequisiteString = prerequisiteString + "|" + prerequisite;
 		if (prerequisiteSet == null)
 			prerequisiteSet = new HashSet();
 		prerequisiteSet.add(prerequisite);
 	}
 	
 	public void removePrerequisite(String prerequisite) {
+		prerequisiteString ="";
 		Iterator i = prerequisiteSet.iterator();
 		while (i.hasNext()){
 			String p = (String) i.next();
-			if (p.equals(prerequisite)){
+			if (p.equals(prerequisite))
 				prerequisiteSet.remove(prerequisite);
-				break;
+			else{
+				if (("").equals(prerequisiteString))
+					prerequisiteString = p;
+				else
+					prerequisiteString = prerequisiteString + "|" + p;
 			}
 		}
 	}
