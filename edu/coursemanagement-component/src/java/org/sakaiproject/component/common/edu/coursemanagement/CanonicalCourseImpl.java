@@ -24,8 +24,8 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	/** The value of the CanonicalCourseStatusType association. */
 	private CanonicalCourseStatusType canonicalCourseStatus;
 	
-	/** The value of the equivalentCoursesSet one-to-many association. */
-	private Set equivalentCourseSet;
+	/** The uuid of the equivalentCourses */
+	private List equivalentList;
 	
 	/** The value of the preRequisites. */
 	private String prerequisiteString;
@@ -70,8 +70,8 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 
 	private String canonicalCourseStatusUuid;
 
-	private EquivalentCoursesImpl equivalentCourses;
-	
+	private String equivalentString;
+
 	public CanonicalCourseImpl() {}
 	
 	public CanonicalCourseImpl(String title, String description,
@@ -178,14 +178,16 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	public void setTopicsString(String topicsString)
 	{
 		this.topicsString = topicsString;
-		String[] topicsArray = topicsString.split("|");
-		for (int i=0;i<topicsArray.length;i++){
-			String t = topicsArray[i];
-			addTopic(t);
-		}
+		topicList = getTopics();
 	}
 	
 	public List getTopics() {
+		topicList = new ArrayList();
+		String[] topicsArray = topicsString.split("|");
+		for (int i=0;i<topicsArray.length;i++){
+			String t = topicsArray[i];
+			topicList.add(t);
+		}
 		return topicList;
 	}
 	
@@ -213,47 +215,65 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 			}
 		}
 	}
-	
-	public Set getEquivalents() {
-		return equivalentCourses.getCanonicalCourseSet();
-	}
-	
-	public EquivalentCoursesImpl getEquivalentCourses() {
-		return equivalentCourses;
-	}
-	
-	public void setEquivalentCourses(EquivalentCoursesImpl equivalentCourses){
-		this.equivalentCourses = equivalentCourses;
-	}
-	
-	public void addEquivalent(String canonicalCourseUuid) {
-    HashSet set;
-		if (equivalentCourses == null){
-	    Date currentDate = new Date();
-			equivalentCourses = new EquivalentCoursesImpl(
-					"equivalent-title", "*uuid"+currentDate.getTime(),new HashSet());
-		}
-		equivalentCourses.addCanonicalCourse(uuid);
-	}
-	
-	public void removeEquivalent(String canonicalCourseUuid) {
-		Set set = equivalentCourses.getCanonicalCourseSet();
-		Iterator i = set.iterator();
-		while (i.hasNext()){
-			String equivalentUuid = (String) i.next();
-			if (equivalentUuid.equals(canonicalCourseUuid)){
-				set.remove(canonicalCourseUuid);
-				break;
-			}
-		}
-		if ((set.size()==1)
-				&& (((String)set.iterator().next()).equals(uuid))){
-			removeEquivalent(uuid);
-		}
+
+	/**
+	 * Return the value of the TOPICS column.
+	 * @return String
+	 */
+	public String getEquivalentString()
+	{
+		return equivalentString;
 	}
 	
 	/**
-	 * Return the value of the TOPICS column.
+	 * Set the value of the Equivalent column.
+	 * @param Equivalent
+	 */
+	public void setEquivalentString(String equivalentString)
+	{
+		this.equivalentString = equivalentString;
+		equivalentList = getEquivalents();
+	}
+	
+	public List getEquivalents() {
+		equivalentList = new ArrayList();		
+		if (equivalentString!=null){
+			String[] equivalentArray = equivalentString.split("|");
+			for (int i=0;i<equivalentArray.length;i++){
+				String t = equivalentArray[i];
+				equivalentList.add(t);
+			}
+		}		
+		return equivalentList;
+	}
+	
+	public void addEquivalent(String equivalent) {
+		if (equivalentString == null)
+			equivalentString = equivalent;
+		else
+			equivalentString = equivalentString + "|" + equivalent;
+		if (equivalentList == null)
+			equivalentList = new ArrayList();
+		equivalentList.add(equivalent);
+	}
+	
+	public void removeEquivalent(String equivalent) {
+		equivalentString = "";
+		for (int i=0;i<equivalentList.size();i++){
+			String t = (String) equivalentList.get(i);
+			if (t.equals(equivalent))
+				equivalentList.remove(i);
+			else{
+				if (("").equals(equivalentString))
+					equivalentString = t;
+				else
+				  equivalentString = equivalentString + "|" + t;
+			}
+		}
+	}
+
+	/**
+	 * Return the value of the Equivalent column.
 	 * @return String
 	 */
 	public String getPrerequisiteString()
@@ -262,20 +282,22 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	}
 	
 	/**
-	 * Set the value of the TOPICS column.
-	 * @param topics
+	 * Set the value of the Equivalent column.
+	 * @param Equivalent
 	 */
 	public void setPrerequisiteString(String prerequisiteString)
 	{
 		this.prerequisiteString = prerequisiteString;
-		String[] pArray = prerequisiteString.split("|");
-		for (int i=0;i<pArray.length;i++){
-			String p = pArray[i];
-			addPrerequisite(p);
-		}
+		prerequisiteSet = getPrerequisites();
 	}
 	
 	public Set getPrerequisites() {
+		prerequisiteSet = new HashSet();
+		String[] pArray = prerequisiteString.split("|");
+		for (int i=0;i<pArray.length;i++){
+			String p = pArray[i];
+			prerequisiteSet.add(p);
+		}
 		return prerequisiteSet;
 	}
 	

@@ -1,6 +1,9 @@
 package org.sakaiproject.component.common.edu.coursemanagement;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Date;
+import java.util.Set;
+
 import net.sf.hibernate.Hibernate;
 
 import org.sakaiproject.api.edu.coursemanagement.CanonicalCourse;
@@ -12,6 +15,7 @@ import org.sakaiproject.api.edu.coursemanagement.CourseSection;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSet;
 import org.sakaiproject.api.edu.coursemanagement.EnrollmentRecord;
+import org.sakaiproject.api.edu.coursemanagement.EquivalentCourses;
 import org.sakaiproject.api.edu.coursemanagement.ParticipationRecord;
 import org.sakaiproject.api.edu.coursemanagement.Session;
 import org.sakaiproject.api.edu.coursemanagement.SessionType;
@@ -220,11 +224,7 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 			return null;
 	}
 
-	public EquivalentCoursesImpl saveEquivalentCourses(EquivalentCoursesImpl e){
-		getHibernateTemplate().saveOrUpdate(e);
-		return e;		
-	}
-	public CanonicalCourseImpl getCanonicalCourseByUuid(String uuid) {
+	public CanonicalCourse getCanonicalCourseByUuid(String uuid) {
 		String query = "select c from CanonicalCourseImpl c where c.uuid=?";
 		System.out.println("****query="+query);
 		List list = getHibernateTemplate().find(query,
@@ -232,7 +232,7 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
 		System.out.println("****list"+list);		
 		if (list!=null && list.size()>0)
-			return (CanonicalCourseImpl)list.get(0);
+			return (CanonicalCourse)list.get(0);
 		else
 			return null;
 	}

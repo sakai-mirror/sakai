@@ -14,26 +14,27 @@
         </id>
  
         <property name="title" column="TITLE" type="java.lang.String"  not-null="false" />
-        <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="false" />
+        <property name="description">
+          <column name="DESCRIPTION" sql-type="varchar(4000)" not-null="false" />
+        </property>  
         <property name="courseNumber" column="COURSENUMBER" type="java.lang.String"  not-null="true" />
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="defaultCredits" column="DEFAULTCREDITS" type="java.lang.String"  not-null="false" />
         <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
-        <property name="topicsString" column="TOPICS" type="java.lang.String"  not-null="false" />
-        <property name="prerequisiteString" column="PREREQUISITE" type="java.lang.String"  not-null="false" />
+        <property name="topicsString"> 
+          <column name="TOPICS" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
+        <property name="prerequisiteString"> 
+          <column name="PREREQUISITE" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
+        <property name="equivalentString"> 
+          <column name="EQUIVALENTS" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
         <property name="canonicalCourseStatusUuid" column="CANONICALCOURSESTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
         <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
-        <one-to-one name="equivalentCourses" class="EquivalentCoursesImpl" property-ref="uuid" />
- 
-<!--  
-        <set name="courseSetSet"  table="CM_COURSESET_T" cascade="all" inverse="true">
-            <key column="CANONICALCOURSEUUID"/>
-            <one-to-many class="CourseSetImpl"/>
-        </set>
---> 
     </class>
     
 </hibernate-mapping>
