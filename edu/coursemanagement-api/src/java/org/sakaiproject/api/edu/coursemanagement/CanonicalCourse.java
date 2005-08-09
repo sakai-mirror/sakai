@@ -111,13 +111,13 @@ public interface CanonicalCourse extends Persistable{
 	 * discontinued, etc.
 	 * @return
 	 */
-	public CanonicalCourseStatusType getCanonicalStatus();
+	public CanonicalCourseStatusType getCanonicalCourseStatus();
 	
 	/**
 	 * Set the course type of this canonical course.
 	 * @param type
 	 */
-	public void setCanonicalStatus(CanonicalCourseStatusType type);
+	public void setCanonicalCourseStatus(CanonicalCourseStatusType type);
 	
 	/**
 	 * Get the default credits for this course.  While there are no
