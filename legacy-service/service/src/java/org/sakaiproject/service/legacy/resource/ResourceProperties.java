@@ -167,6 +167,9 @@ public interface ResourceProperties
 	/** The encoding of the resource - UTF-8 or ISO-8559-1 for example */
 	public static final String PROP_CONTENT_ENCODING = "encoding";	
 
+	/** Property for "object type" of a structured artifact */
+	public static final String PROP_STRUCTOBJ_TYPE = "SAKAI:structobj_type";
+	
 	/**
 	* Access an iterator on the names of the defined properties (Strings).
 	* @return An iterator on the names of the defined properties (Strings) (may be empty).
@@ -390,6 +393,12 @@ public interface ResourceProperties
  	* @return The static String of PROP_ASSIGNMENT_DELETED
  	*/
  	public String getNamePropAssignmentDeleted();
+	
+	/**
+ 	* Get the static String of PROP_STRUCTOBJ_TYPE
+ 	* @return The static String of PROP_STRUCTOBJ_TYPE
+ 	*/
+ 	public String getNamePropStructObjType();
 	
 	/**
 	 * Get the static String of TYPE_URL

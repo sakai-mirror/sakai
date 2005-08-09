@@ -111,6 +111,8 @@ import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
 * <p>ResourceAction is a ContentHosting application</p>
@@ -222,7 +224,7 @@ extends VelocityPortletPaneledAction
 	/** The name of the state attribute indicating whether the hierarchical list is expanded */
 	private static final String STATE_EXPAND_ALL_FLAG = "resources.expand_all_flag";
 
-	/** The name of the state attribute indicatinge whether the hierarchical list need to be expanded */
+	/** The name of the state attribute indicating whether the hierarchical list needs to be expanded */
 	private static final String STATE_NEED_TO_EXPAND_ALL = "resources.need_to_expand_all";
 
 	/** The from state name */
@@ -273,11 +275,15 @@ extends VelocityPortletPaneledAction
 	private static final String STATE_STRUCTOBJ_TYPE = "resources.create_structured_object_type";
 	private static final String STATE_STRUCTOBJ_HOMES = "resources.create_structured_object_home";
 	private static final String STATE_STRUCTOBJ_PROPERTIES = "resources.create_structured_object_properties";
+
+	private static final String MIME_TYPE_DOCUMENT_PLAINTEXT = "text/plain";
+	private static final String MIME_TYPE_DOCUMENT_HTML = "text/html";
+	public static final String MIME_TYPE_STRUCTOBJ = "application/x-osp";
 	
 	private static final String TYPE_FOLDER = "folder";
 	private static final String TYPE_UPLOAD = "file";
 	private static final String TYPE_URL = "Url";
-	private static final String TYPE_FORM = "StructuredArtifact";
+	private static final String TYPE_FORM = MIME_TYPE_STRUCTOBJ;
 	
 	private static final int CREATE_MAX_ITEMS = 10;
 
@@ -381,9 +387,6 @@ extends VelocityPortletPaneledAction
 	
 	/** the site title */
 	private static final String STATE_SITE_TITLE = "site_title";
-	
-	private static final String MIME_TYPE_DOCUMENT_PLAINTEXT = "text/plain";
-	private static final String MIME_TYPE_DOCUMENT_HTML = "text/html";
 	
 	/** copyright related info */
 	private static final String COPYRIGHT_TYPES = "copyright_types";
@@ -1384,6 +1387,35 @@ extends VelocityPortletPaneledAction
 		EditItem item = (EditItem)state.getAttribute(STATE_EDIT_ITEM);
 
 		context.put("item", item);
+		
+		if(item.isStructuredArtifact())
+		{
+			System.out.println(" ----> putting formtype in context: " + item.getFormtype());
+			context.put("formtype", item.getFormtype());
+			state.setAttribute(STATE_STRUCTOBJ_TYPE, item.getFormtype());
+			setupStructuredObjects(state);
+			
+			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+			context.put("homes", listOfHomes);
+			List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
+			System.out.println(" ----> putting properties in context: " + properties.size());
+			context.put("properties", properties);
+
+			context.put("STRING", ResourcesMetadata.WIDGET_STRING);
+			context.put("TEXTAREA", ResourcesMetadata.WIDGET_TEXTAREA);
+			context.put("BOOLEAN", ResourcesMetadata.WIDGET_BOOLEAN);
+			context.put("INTEGER", ResourcesMetadata.WIDGET_INTEGER);
+			context.put("DOUBLE", ResourcesMetadata.WIDGET_DOUBLE);
+			context.put("DATE", ResourcesMetadata.WIDGET_DATE);
+			context.put("TIME", ResourcesMetadata.WIDGET_TIME);
+			context.put("DATETIME", ResourcesMetadata.WIDGET_DATETIME);
+			context.put("ANYURI", ResourcesMetadata.WIDGET_ANYURI);
+			context.put("ENUM", ResourcesMetadata.WIDGET_ENUM);
+			context.put("NESTED", ResourcesMetadata.WIDGET_NESTED);
+			
+			context.put("today", TimeService.newTime());
+
+		}
 
 		// copyright
 		copyrightChoicesIntoContext(state, context);
@@ -1862,6 +1894,8 @@ extends VelocityPortletPaneledAction
 					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
 					resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
 					resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+					System.out.println(" ++++++++-----> setting RP formtype: " + formtype);
+					resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, formtype);
 					List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
 					saveMetadata(resourceProperties, metadataGroups, item);
 					String filename = Validator.escapeResourceName(item.getName()).trim();
@@ -1877,7 +1911,7 @@ extends VelocityPortletPaneledAction
 						try
 						{
 							ContentResource resource = ContentHostingService.addResource (newResourceId,
-																						"text/xml",
+																						MIME_TYPE_STRUCTOBJ,
 																						content.getBytes(),
 																						resourceProperties, item.getNotification());
 							tryingToAddItem = false;
@@ -2279,13 +2313,25 @@ extends VelocityPortletPaneledAction
 			List fields = rootSchema.getFields();
 			properties = createPropertiesList(namespace, fields);
 			String docRoot = rootSchema.getFieldName();
+			
 			state.setAttribute(STATE_STRUCTOBJ_ROOTNAME, docRoot);
+			
+			if(state.getAttribute(STATE_CREATE_ITEMS) != null)
+			{
+				List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+				Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+				
+				for(int i = 0; i < numberOfItems.intValue(); i++)
+				{
+					((EditItem) items.get(i)).setRootname(docRoot);
+					((EditItem) items.get(i)).setFormtype(formtype);
+				}
+				
+				state.setAttribute(STATE_CREATE_ITEMS, items);
+			}
 		}
 		state.setAttribute(STATE_STRUCTOBJ_PROPERTIES, properties);
 		
-		/*
-		*/
-
 	}
 	
 	public static void doAttachitem(RunData data)
@@ -2411,6 +2457,12 @@ extends VelocityPortletPaneledAction
 		state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
 	}
 	
+	/**
+	 * Access an ordered list of ResourcesMetadata objects that describe the fields defined by a list of SchemaBean objects.
+	 * @param namespace
+	 * @param fields The list of SchemaBeans
+	 * @return An ordered list of ResourcesMetadata objects corresponding to the fields.
+	 */
 	protected static List createPropertiesList(String namespace, List fields)
 	{
 		List properties = new Vector();
@@ -2714,6 +2766,7 @@ extends VelocityPortletPaneledAction
 		if(TYPE_FORM.equals(itemType))
 		{
 			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			System.out.println(" ----> putting formtype in context: " + formtype);
 			context.put("formtype", formtype);
 			setupStructuredObjects(state);
 			
@@ -3528,6 +3581,12 @@ extends VelocityPortletPaneledAction
 			{
 				String url = new String(content);
 				item.setFilename(url);
+			}
+			else if(item.isStructuredArtifact())
+			{
+				
+				String formtype = properties.getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+				item.importStructuredArtifact(new String(content), formtype);
 			}
 			
 			String description = properties.getProperty(ResourceProperties.PROP_DESCRIPTION);
@@ -4617,6 +4676,8 @@ extends VelocityPortletPaneledAction
 				}
 				else if(formtype_check.equals(formtype))
 				{
+					System.out.println(" ====> captureMultipleValues   setting formtype: " + formtype);
+					item.setFormtype(formtype);
 					Iterator it = properties.iterator();
 					while(it.hasNext())
 					{
@@ -4681,6 +4742,7 @@ extends VelocityPortletPaneledAction
 						}
 					}
 				}
+				item.setMimeType(MIME_TYPE_STRUCTOBJ);
 
 			}
 			if(item.isFileUpload() || item.isHtml() || item.isPlaintext())
@@ -7547,7 +7609,7 @@ extends VelocityPortletPaneledAction
 		protected int m_notification;
 
 		protected String m_formtype;
-		protected String m_formid;
+		protected String m_rootname;
 		protected Map m_structuredArtifact;
 
 		protected Set m_metadataGroupsShowing;
@@ -7570,7 +7632,7 @@ extends VelocityPortletPaneledAction
 			m_hasQuota = false;
 			m_canSetQuota = false;
 			m_formtype = "";
-			m_formid = "";
+			m_rootname = "";
 		}
 		
 		/**
@@ -7952,6 +8014,11 @@ extends VelocityPortletPaneledAction
 			return getValue(name, 0);
 		}
 
+		/**
+		 * Access a list of values associated with a named property of a structured artifact.
+		 * @param name The name of the property.
+		 * @return The list of values associated with that name, or an empty list if the property is not defined.
+		 */
 		public List getList(String name)
 		{
 			if(m_structuredArtifact == null)
@@ -7977,14 +8044,155 @@ extends VelocityPortletPaneledAction
 		}
 		
 		/**
+		 * @param content A string containing an XML document describing a Structured Artifact.
+		 */
+		public void importStructuredArtifact(String content, String formtype)
+		{
+			System.out.println(" ======> importStructuredArtifact trying to get factory");
+			HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");	
+			System.out.println(" ======> importStructuredArtifact factory: " + factory);
+			StructuredArtifactHomeInterface home = null;
+			System.out.println(" ======> importStructuredArtifact getting home for formtype " + formtype);
+			try
+			{
+				home = (StructuredArtifactHomeInterface) factory.getHome(formtype);
+				System.out.println(" ======> importStructuredArtifact home == " + home);
+			}
+			catch(Exception e)
+			{
+				System.out.println(" ======> importStructuredArtifact exception == " + e.getMessage());
+			}
+			SchemaBean rootSchema = null;
+			if(home != null)
+			{
+				System.out.println(" -------> found home");
+				rootSchema = new SchemaBean(home.getRootNode(), home.getSchema(), m_formtype, home.getType().getDescription());
+			}
+			else
+			{
+				System.out.println(" -------> DID NOT find home");
+			}
+			
+			Document doc = Xml.readDocumentFromString(content);
+			Element root = doc.getDocumentElement();
+			System.out.println(" ~~~~~~> importStructuredArtifact " + root.getNodeName());
+			m_formtype = formtype;
+
+			List properties = null;
+			if(rootSchema != null)
+			{
+				System.out.println(" -------> found rootSchema");
+				
+				String namespace = rootSchema.getSchemaName() + ".";
+				List fields = rootSchema.getFields();
+				properties = createPropertiesList(namespace, fields);
+			}
+			else
+			{
+				System.out.println(" -------> DID NOT FIND rootSchema");
+			}
+			
+			if(properties != null)
+			{
+				System.out.println(" -------> created properties");
+				
+				Iterator propIt = properties.iterator();
+				while(propIt.hasNext())
+				{
+					ResourcesMetadata property = (ResourcesMetadata) propIt.next();
+					String tagname = property.getLocalname();
+					NodeList nodes = doc.getElementsByTagName(tagname);
+					if(nodes != null)
+					{
+						for(int i = 0; i < nodes.getLength(); i++)
+						{
+							Node n = nodes.item(i);
+							if(n != null && n.getNodeType() == Node.ELEMENT_NODE)
+							{
+								Element element = (Element) n;
+								int k = 0;
+								Node child = element.getFirstChild();
+								while(child != null)
+								{
+									if(child.getNodeType() == Node.TEXT_NODE)
+									{
+										Text value = (Text) child;
+										setValue(tagname, k, value.getData());
+										System.out.println(" =====> setValue(" + tagname + ", " + k + ", " + value.getData() + ")");
+										k++;
+									}
+									child = child.getNextSibling();
+								}
+							}
+							
+						}
+					}
+					
+					
+				}
+			}
+			else
+			{
+				System.out.println(" -------> DID NOT create properties");
+			}
+			/*
+			Node child = root.getFirstChild();
+			int num = 0;
+			while(child != null)
+			{
+				System.out.println(" ----------> node   num: " + num);
+				importStructuredArtifact(child);
+				child = child.getNextSibling();
+				num++;
+			}
+				
+			
+			NodeList nodes = root.getChildNodes();	
+			*/ 
+		}
+		
+		/**
 		 * @param element
 		 */
-		/*
-		public void importStructuredArtifact(Element element)
+		public void importStructuredArtifact(Node node)
 		{
+			String name = node.getNodeName();
+			String value = node.getNodeValue();
+			short type = node.getNodeType();
+			System.out.println(" ----------> node  name: " + name);
+			if(type == Node.TEXT_NODE)
+			{
+				Text tnode = (Text) node;
+				value = tnode.getData();
+				System.out.println("                         TEXT NODE");
+			}
+			else if(type == Node.ELEMENT_NODE)
+			{
+				Element enode = (Element) node;
+				value = enode.getTagName();
+				System.out.println("                         ELEMENT NODE");
+				if(node.hasChildNodes())
+				{
+					System.out.println(" ====================> processing children ");
+					Node child = enode.getFirstChild();
+					int num = 0;
+					while(child != null)
+					{
+						System.out.println(" ----------> node   num: " + num);
+						importStructuredArtifact(child);
+						child = child.getNextSibling();
+						num++;
+					}
+					System.out.println(" ====================> done processing children ");
+				}
+			
+			}
+
+			System.out.println("                  value: " + value);
+			System.out.println("                   type: " + type);
 			
 		}
-		*/
+		
 		/**
 		 * @return
 		 */
@@ -7995,6 +8203,21 @@ extends VelocityPortletPaneledAction
 		}
 		*/
 	
+		/**
+		 * @return Returns the name of the root of a structured artifact definition.
+		 */
+		public String getRootname() 
+		{
+			return m_rootname;
+		}
+		/**
+		 * @param rootname The name to be assigned for the root of a structured artifact.
+		 */
+		public void setRootname(String rootname) 
+		{
+			m_rootname = rootname;
+		}
+		
 	}	// inner class EditItem
 	
 	/**
