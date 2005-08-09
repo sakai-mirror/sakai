@@ -48,21 +48,15 @@ public class CollectionUtil
    * Using two arg version of concat to be compatible w/all db. 
    * MySql supports n arguments while Oracle, HSQLDB suport only 2 arg version
    */
-  private static final String sql = "select ss.site_id, ss.title, cc.collection_id, sstool.registration "
+  private static final String sql = "select ss.site_id, ss.title, sstool.registration "
       + "from sakai_site_tool sstool, sakai_site_user ssuser, "
-      + "sakai_site ss, content_collection cc "
+      + "sakai_site ss "
       + "where (sstool.registration = 'sakai.resources' "
       + "or sstool.registration = 'sakai.dropbox') "
       + "and sstool.site_id = ssuser.site_id "
       + "and sstool.site_id = ss.site_id "
-      + "and ssuser.user_id = ? "
-      + "and ("
-      + "cc.collection_id = concat(concat('/group/', ss.site_id),'/') or "
-      + "cc.collection_id = concat(concat('/user/', ?),'/') or "
-      + "cc.collection_id = concat(concat('/attachment/', ?),'/') or "
-      + "cc.collection_id = concat(concat('/group-user/', ?),'/') or "
-      + "cc.collection_id = concat(concat('/public/', ?),'/')"
-      + ") order by ss.title";
+      + "and ssuser.user_id = ? "      
+      + "order by ss.title";
 
   private static final SqlReader sr = new SqlReader()
   {
@@ -100,7 +94,7 @@ public class CollectionUtil
   {
     // create SqlReader
     String userId = UsageSessionService.getSessionUserId().trim();
-    Object[] fields = new Object[] { userId, userId, userId, userId, userId};
+    Object[] fields = new Object[] { userId};
     List collectionList = SqlService.dbRead(sql, fields, sr);
            
     Map collectionMap = new LinkedHashMap(collectionList.size());
