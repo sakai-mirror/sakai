@@ -28,11 +28,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.sakaiproject.component.common.edu.coursemanagement.CourseManagementManagerImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.SessionImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.SessionTypeImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.CanonicalCourseImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.CanonicalCourseStatusTypeImpl;
-
 
 import junit.framework.Assert;
 
@@ -51,18 +52,18 @@ public class CourseManagerTest extends CourseManagementTestBase {
 		CanonicalCourseStatusTypeImpl type = (CanonicalCourseStatusTypeImpl)courseManagementManager.
 		getCanonicalCourseStatusTypeByKeyword("canonical.active");
     //1. create math101
-		CanonicalCourseImpl c = (CanonicalCourseImpl) courseManagementManager.createCanonicalCourse(
+		CanonicalCourseImpl math101 = (CanonicalCourseImpl) courseManagementManager.createCanonicalCourse(
 				"title","description","1052-math-101-01",
 				"*uuid_"+currentDate.getTime(), type);
 		setComplete();
-		System.out.println("***canonical course Id = "+c.getCanonicalCourseId());
+		System.out.println("***canonical course Id = "+math101.getCanonicalCourseId());
     System.out.println("**** done 1: create math101");
 
     //2. add topics to math101
-		c.addTopic("optimization");
-		c.addTopic("normal distribution");
-		c.addPrerequisite("math-10");
-		courseManagementManager.saveCanonicalCourse(c);
+		math101.addTopic("optimization");
+		math101.addTopic("normal distribution");
+		math101.addPrerequisite("math-10");
+		courseManagementManager.saveCanonicalCourse(math101);
 		setComplete();
 	  System.out.println("**** done 2: add topic");
 	
@@ -71,8 +72,8 @@ public class CourseManagerTest extends CourseManagementTestBase {
 	  System.out.println("**** done 3: create ata101");
 
 	   //4. make them equivalent
-		c.addEquivalent(stat101.getUuid());
-		courseManagementManager.saveCanonicalCourse(c);
+		math101.addEquivalent(stat101.getUuid());
+		stat101.addEquivalent(math101.getUuid());
 		setComplete();		
 	  System.out.println("**** done 4: make equivalent");
 	}
