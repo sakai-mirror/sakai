@@ -292,5 +292,9 @@ public interface CourseManagementManager
 	 * @return a list of CourseSet
 	 * @author Mark Norton
 	 */
-        public List getCourseSet(String canonicalCourseUuid);
+  public List getCourseSet(String canonicalCourseUuid);
+  public CanonicalCourseStatusType getCanonicalCourseStatusType(String canonicalCourseUuid);
+  public SessionType getSessionType(String canonicalCourseUuid);
+        
+        
 }
