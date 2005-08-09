@@ -1390,7 +1390,6 @@ extends VelocityPortletPaneledAction
 		
 		if(item.isStructuredArtifact())
 		{
-			System.out.println(" ----> putting formtype in context: " + item.getFormtype());
 			context.put("formtype", item.getFormtype());
 			state.setAttribute(STATE_STRUCTOBJ_TYPE, item.getFormtype());
 			setupStructuredObjects(state);
@@ -1398,7 +1397,6 @@ extends VelocityPortletPaneledAction
 			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
 			context.put("homes", listOfHomes);
 			List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
-			System.out.println(" ----> putting properties in context: " + properties.size());
 			context.put("properties", properties);
 
 			context.put("STRING", ResourcesMetadata.WIDGET_STRING);
@@ -1894,7 +1892,6 @@ extends VelocityPortletPaneledAction
 					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
 					resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
 					resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
-					System.out.println(" ++++++++-----> setting RP formtype: " + formtype);
 					resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, formtype);
 					List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
 					saveMetadata(resourceProperties, metadataGroups, item);
@@ -2766,7 +2763,6 @@ extends VelocityPortletPaneledAction
 		if(TYPE_FORM.equals(itemType))
 		{
 			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
-			System.out.println(" ----> putting formtype in context: " + formtype);
 			context.put("formtype", formtype);
 			setupStructuredObjects(state);
 			
@@ -4676,7 +4672,6 @@ extends VelocityPortletPaneledAction
 				}
 				else if(formtype_check.equals(formtype))
 				{
-					System.out.println(" ====> captureMultipleValues   setting formtype: " + formtype);
 					item.setFormtype(formtype);
 					Iterator it = properties.iterator();
 					while(it.hasNext())
@@ -8048,40 +8043,31 @@ extends VelocityPortletPaneledAction
 		 */
 		public void importStructuredArtifact(String content, String formtype)
 		{
-			System.out.println(" ======> importStructuredArtifact trying to get factory");
-			HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");	
-			System.out.println(" ======> importStructuredArtifact factory: " + factory);
+			HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");
 			StructuredArtifactHomeInterface home = null;
-			System.out.println(" ======> importStructuredArtifact getting home for formtype " + formtype);
 			try
 			{
 				home = (StructuredArtifactHomeInterface) factory.getHome(formtype);
-				System.out.println(" ======> importStructuredArtifact home == " + home);
 			}
 			catch(Exception e)
 			{
-				System.out.println(" ======> importStructuredArtifact exception == " + e.getMessage());
 			}
 			SchemaBean rootSchema = null;
 			if(home != null)
 			{
-				System.out.println(" -------> found home");
 				rootSchema = new SchemaBean(home.getRootNode(), home.getSchema(), m_formtype, home.getType().getDescription());
 			}
 			else
 			{
-				System.out.println(" -------> DID NOT find home");
 			}
 			
 			Document doc = Xml.readDocumentFromString(content);
 			Element root = doc.getDocumentElement();
-			System.out.println(" ~~~~~~> importStructuredArtifact " + root.getNodeName());
 			m_formtype = formtype;
 
 			List properties = null;
 			if(rootSchema != null)
 			{
-				System.out.println(" -------> found rootSchema");
 				
 				String namespace = rootSchema.getSchemaName() + ".";
 				List fields = rootSchema.getFields();
@@ -8089,12 +8075,10 @@ extends VelocityPortletPaneledAction
 			}
 			else
 			{
-				System.out.println(" -------> DID NOT FIND rootSchema");
 			}
 			
 			if(properties != null)
 			{
-				System.out.println(" -------> created properties");
 				
 				Iterator propIt = properties.iterator();
 				while(propIt.hasNext())
@@ -8118,7 +8102,6 @@ extends VelocityPortletPaneledAction
 									{
 										Text value = (Text) child;
 										setValue(tagname, k, value.getData());
-										System.out.println(" =====> setValue(" + tagname + ", " + k + ", " + value.getData() + ")");
 										k++;
 									}
 									child = child.getNextSibling();
@@ -8133,14 +8116,12 @@ extends VelocityPortletPaneledAction
 			}
 			else
 			{
-				System.out.println(" -------> DID NOT create properties");
 			}
 			/*
 			Node child = root.getFirstChild();
 			int num = 0;
 			while(child != null)
 			{
-				System.out.println(" ----------> node   num: " + num);
 				importStructuredArtifact(child);
 				child = child.getNextSibling();
 				num++;
@@ -8159,37 +8140,28 @@ extends VelocityPortletPaneledAction
 			String name = node.getNodeName();
 			String value = node.getNodeValue();
 			short type = node.getNodeType();
-			System.out.println(" ----------> node  name: " + name);
 			if(type == Node.TEXT_NODE)
 			{
 				Text tnode = (Text) node;
 				value = tnode.getData();
-				System.out.println("                         TEXT NODE");
 			}
 			else if(type == Node.ELEMENT_NODE)
 			{
 				Element enode = (Element) node;
 				value = enode.getTagName();
-				System.out.println("                         ELEMENT NODE");
 				if(node.hasChildNodes())
 				{
-					System.out.println(" ====================> processing children ");
 					Node child = enode.getFirstChild();
 					int num = 0;
 					while(child != null)
 					{
-						System.out.println(" ----------> node   num: " + num);
 						importStructuredArtifact(child);
 						child = child.getNextSibling();
 						num++;
 					}
-					System.out.println(" ====================> done processing children ");
 				}
 			
 			}
-
-			System.out.println("                  value: " + value);
-			System.out.println("                   type: " + type);
 			
 		}
 		
