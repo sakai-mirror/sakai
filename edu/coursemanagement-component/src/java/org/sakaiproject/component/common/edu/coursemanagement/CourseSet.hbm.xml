@@ -22,8 +22,8 @@
   
      	<set name="canonicalCourseSet" table="CM_CANONICALCOURSE_T" cascade="all"
            inverse="true">
-      		<key column="CANONICALCOURSEID"/>
-      		<one-to-many class="CanonicalCourseImpl"/>
+      		<key column="CANONICALCOURSEUUID" />
+      		<one-to-many  class="CanonicalCourseImpl" />
     	</set>
 
     </class>
