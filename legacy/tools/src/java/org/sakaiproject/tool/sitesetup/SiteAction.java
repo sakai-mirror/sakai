@@ -294,8 +294,8 @@ public class SiteAction extends PagedResourceActionII
 	
 	private final static String STATE_NEWS_TITLES = "newstitles";
 	private final static String STATE_NEWS_URLS = "newsurls";
-	private final static String NEWS_DEFAULT_TITLE = "Sakai News";
-	private final static String NEWS_DEFAULT_URL = "http://www.sakaiproject.org/cms/index2.php?option=com_rss&amp;feed=RSS2.0&amp;no_html=1";
+	private final static String NEWS_DEFAULT_TITLE = ServerConfigurationService.getString("news.title");
+	private final static String NEWS_DEFAULT_URL = ServerConfigurationService.getString("news.feedURL");
 	private final static String STATE_WEB_CONTENT_TITLES = "webcontenttitles";
 	private final static String STATE_WEB_CONTENT_URLS = "wcUrls";
 	private final static String WEB_CONTENT_DEFAULT_TITLE = "Web Content";
