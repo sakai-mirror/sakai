@@ -71,7 +71,7 @@
 				$tlang.getString("sitegen.siteinfolist.sitecont")
 			</th>
 			<td>
-				$validator.escapeHtml($!contactName), <a href="mailto:$!contactEmail">$!contactEmail</a>
+				$validator.escapeHtml($!contactName) #if($!contactEmail && !$contactEmail.equals("")), <a href="mailto:$!contactEmail">$!contactEmail</a>#end
 			</td>
 		</tr>
 		<tr> 
@@ -152,7 +152,8 @@
 					#end
 						<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
 							<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
-							<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+							<label for="selectPageSize" class="skip">Select page size</label>
+							<select id="selectPageSize" name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
 								#foreach ($i in $!pagesizes)
 									<option value="$i" #if($pagesize == $i) selected="selected" #end>$tlang.getString("sitegen.siteinfolist.show") $i $tlang.getString("sitegen.siteinfolist.itemspage")</option>
 								#end
@@ -283,7 +284,8 @@
 							#set($uRole = "")
 							#set($uRole = $participant.getRole())
 							#if ($allowUpdate)
-								<select name="role$uniqname">
+								<label class="skip" for="role$uniqname">Select role for $uniqname</label>
+								<select id="role$uniqname" name="role$uniqname">
 									#foreach($r in $roles)
 										<option value ="$r.Id"
 											#if($r.Id == $uRole)
@@ -303,7 +305,8 @@
 								<td>
 									#set($grant = $realm.getUserGrant($uniqname))
 									#set($grantActive = $!grant.isActive())
-									<select name="activeGrant$uniqname">
+									<label class="skip" for="activeGrant$uniqname">Select status for $uniqname</label>
+									<select id="activeGrant$uniqname" name="activeGrant$uniqname">
 										#if ($!grant.isActive())
 											<option value="true" selected="selected" >$tlang.getString("sitegen.siteinfolist.active")</option>
 											<option value="false">$tlang.getString("sitegen.siteinfolist.inactive")</option>
@@ -318,6 +321,7 @@
 								#if ($participant.isRemoveable())
 									## if in My Workspace site, cannot move the site user from it
 									#if (!$!isMyWorkspace || ($!isMyWorkspace && !$uniqname.equals($!siteUserId)))
+									<label class="skip" for="remove_$uniqname">Remove $uniqname</label>
 										<input type="checkbox" name="selectedUser" value="$uniqname" id="remove_$uniqname"
 											#foreach($participantSelected in $selectedParticipants)
 												#if($participantSelected.getUniqname() == $uniqname)

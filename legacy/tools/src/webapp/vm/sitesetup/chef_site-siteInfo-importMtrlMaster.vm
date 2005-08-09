@@ -7,7 +7,7 @@
 		<div style="display:block;clear:both"></div>
 	#end
 	<h3>
-	Import Materials from a File
+		Import Materials from a File
 	</h3>
 	<p class="step">
 	Choose a file to import
@@ -16,9 +16,9 @@
 		
 	</p>
 	<form name="featuresForm" action="#toolForm("$action")" method="post" enctype="multipart/form-data">
-			<P>
+			<p>
 			File: <input type="file" name="file" id="file" class="upload" />
-			<P>					
+			</p>					
 				
 		<input type="hidden" name="template-index" value="45" />
 		<p class="act">

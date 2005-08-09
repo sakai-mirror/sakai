@@ -84,11 +84,11 @@
 			#end
 			## instructor could choose to go to the manual creation page
 				<p class="checkbox">
-					<input  type="checkbox" name="manualAdds" value="manual add" id="manual add" #if ($!selectedManualCourse) checked="checked" #end/>
+					<input  type="checkbox" name="manualAdds" value="manual add" id="manual_add" #if ($!selectedManualCourse) checked="checked" #end/>
 				#if ($!providerCourseList.size() != 0 || $!requestedCourseList.size() != 0)
-					<label for = "manual add">$tlang.getString("nscourse.iwould1") </label><br />
+					<label for = "manual_add">$tlang.getString("nscourse.iwould1") </label>
 				#else
-					<label for = "manual add">$tlang.getString("nscourse.iwould2") </label><br />
+					<label for = "manual_add">$tlang.getString("nscourse.iwould2") </label>
 				#end
 				</p>
 

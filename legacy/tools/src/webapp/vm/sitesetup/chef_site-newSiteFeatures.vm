@@ -101,13 +101,13 @@
 				$tlang.getString("feat.reuse")
 			</h4>
 			<p class="checkbox">
-				<input type="radio" id="import_no" name="import" value="FALSE" #if(!$import)checked="checked"#end onClick="document.featuresForm.importSites.disabled=true;" />
+				<input type="radio" id="import_no" name="import" value="FALSE" #if(!$import)checked="checked"#end onclick="document.featuresForm.importSites.disabled=true;" />
 				<label for="import_no">
 					$tlang.getString("feat.thanks")
 				</label>
 			</p>
 			<p class="checkbox">
-				<input type="radio" id="import_yes" name="import" value="TRUE" #if($import)checked="checked"#end onClick="document.featuresForm.importSites.disabled=false;" />
+				<input type="radio" id="import_yes" name="import" value="TRUE" #if($import)checked="checked"#end onclick="document.featuresForm.importSites.disabled=false;" />
 				<label for="import_yes">
 					$tlang.getString("feat.yesfrom")
 				</label>
@@ -128,7 +128,7 @@
 			</p>
 		#end
 		<input type="hidden" name="back" value="2" />
-		<input type="hidden" name="template-index" value="3"/>
+		<input type="hidden" name="template-index" value="3" />
 		<p class="act">
 			<input type="submit" name="Continue" 
 					value="$tlang.getString('gen.continue')"

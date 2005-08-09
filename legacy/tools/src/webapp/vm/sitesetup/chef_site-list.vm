@@ -4,11 +4,11 @@
 	#if($menu)#toolbar($menu)#end
 	#if ($alertMessage)<br /><div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<div style="clear:both;margin:1em 0">
-		<span class="leftNav">
+		<div class="leftNav">
 			<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("SiteAction")" style="display:inline">
 				<input type="hidden" name="eventSubmit_doView_sites" value="view" />
-				$tlang.getString("list.view")
-				<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+				<label for="view">$tlang.getString("list.view")</label>
+				<select id="view" name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
 					#foreach($view in $views.keys())
 						<option value ="$views.get($view)"
 						#if($views.get($view) == $viewSelected) selected="selected" #end
@@ -16,12 +16,13 @@
 					#end
 				</select>
 			</form>
-		</span>
-		<span class="rightNav">
+		</div>
+		<div class="rightNav">
 			#if ($!superUser || (!$!superUser && $viewSelected != $tlang.getString("java.my")))
 				## hide search form when in normal user login and in my workspace sites view
 				<form name="searchForm" class="toolbarForm" action="#toolForm("SiteAction")" method="post" style="display:inline">
 					<input type="hidden" name="eventSubmit_doSite_search" value="null" />
+					<label for="$form_search" class="skip">Search</label>
 					<input size="20" value="$!searchString" name="$form_search" id="$form_search" type="text" class="searchField" style="background-color:#fff;width:10em;color:#000" />
 					<a href="#" title="$tlang.getString('list.search')" onclick="location = '#toolLink($action "doSite_search")'+buildQueryString('searchForm');return false;">
 						$tlang.getString("list.search")
@@ -33,17 +34,17 @@
 					#end
 				</form>
 			#end
-		</span>
+		</div>
 	</div>	
 	<div style="clear:both;margin:1em 0">
 		#if ($sites.size() > 0)
 			#if ($!superUser || (!$!superUser && $viewSelected != $tlang.getString("java.my")))
-				<span class="leftNav">
+				<div class="leftNav">
 					#if (($!searchString) && (!$searchString.equals("")))
 						#if($!allMsgNumber == "1") $tlang.getString("list.onesite")#else $allMsgNumber $tlang.getString("list.sites")#end $tlang.getString("list.found") "$!searchString" $tlang.getString("list.inthe") "$!viewSelected".
 						#end
-				</span>
-				<span class="rightNav">
+				</div>
+				<div class="rightNav">
 				
 					<span class="instruction" style="margin-bottom:.3em">$tlang.getString("list.viewing") $topMsgPos - $btmMsgPos $tlang.getString("import.of") $allMsgNumber $tlang.getString("list.items")</span>
 					#if ($pagesize != 0)
@@ -57,7 +58,8 @@
 					#end
 					<form name="pagesizeForm" style="display:inline;" method="post" action="#toolForm("$action")">
 						<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
-						<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+							<label for="selectPageSize" class="skip">Choose page size</label>
+						<select name="selectPageSize" id="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
 							#foreach ($i in $!pagesizes)
 								<option value="$i" #if($pagesize == $i) selected="selected" #end>$tlang.getString("list.show") $i $tlang.getString("list.itemsper")</option>
 							#end
@@ -72,7 +74,7 @@
 							<input type="submit" disabled="disabled" name="eventSubmit_doList_next" value=">" />
 						#end
 					#end
-				</span>
+				</div>
 			#end
 		</div>	
 	#end
@@ -160,12 +162,15 @@
 					</th>
 				</tr>
 				#if($sites && $sites.size() != 0)
+					#set ($siteCount=0)
 					#foreach ($site in $sites)
+					#set ($siteCount=$siteCount + 1)
 						#set ($properties = $site.getProperties())
 						<tr>
 							<td headers="checkbox">
 								#if ($service.allowUpdateSite($site.Id))
-									<input type="checkbox" name="selectedMembers" value="$validator.escapeHtml($site.getId())" />
+									<input type="checkbox" name="selectedMembers" value="$validator.escapeHtml($site.getId())" id="site$siteCount" />
+									<label class="skip" for="site$siteCount">Select $validator.escapeHtml($site.getTitle())</label>
 								#end
 							</td>
 							<td headers="title">
@@ -178,7 +183,7 @@
 								#set($type = $site.getType())
 								$!type
 							</td>
-							<td headers="owner">
+							<td headers="createdBy">
 								#if ($site.CreatedBy)
 									$site.CreatedBy.Id
 								#end
@@ -192,14 +197,14 @@
 									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 								#end
 							</td>
-							<td headers="status">
+							<td headers="published">
 								#if($site.isPublished())
 									$tlang.getString("list.publi")
 								#else
 									$tlang.getString("list.unpub")
 								#end
 							</td>
-							<td headers="creationdate">
+							<td headers="createdOn">
 								#set($createdTime="")
 								#set($createdTime = $!site.getCreatedTime())
 								$!createdTime.toStringLocalFull()

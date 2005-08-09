@@ -13,12 +13,13 @@
 			#else
 				$tlang.getString("sitegen.sitedel.you")
 			#end
-			#foreach($site in $removals)
-				<div class="indnt3">
-					<input type="hidden" name="selectedMembers" value="$site.getId()">
-						$validator.escapeHtml($site.getTitle()) <br />
-				</div>
-			#end
+			<ul>
+				#foreach($site in $removals)
+					<li>	<input type="hidden" name="selectedMembers" value="$site.getId()" />
+							$validator.escapeHtml($site.getTitle()) <br />
+					</li>
+				#end
+			</ul>
 			$tlang.getString("sitegen.sitedel.deleting1")
 		</div>
 	#end

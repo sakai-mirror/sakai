@@ -17,7 +17,7 @@
 </script>
 <div class ="portletBody">
 	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitetype.alert") $validator.escapeHtml($alertMessage)</div>#end
-	<h3 class ="insBor insBak insCol">
+	<h3>
 		$tlang.getString("sitetype.crenewsit")
 	</h3>
 	<p class="instruction">
@@ -40,7 +40,7 @@
 							<div class="indnt3">
 								<p class="shorttext">
 									<span class ="reqStar"> *</span>
-									<label for="">
+									<label for="selectTerm">
 										$tlang.getString("sitetype.acater")
 									</label>	
 									<select name="selectTerm" id="selectTerm" onchange="javascript:selectCourseType();">

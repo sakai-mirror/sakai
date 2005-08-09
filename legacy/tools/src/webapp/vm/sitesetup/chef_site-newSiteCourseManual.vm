@@ -36,14 +36,14 @@
 					$term.Id
 				</p>
 				#if ($!selectedProviderCourse)
-					<p>
+					<div>
 						$tlang.getString("man.sofar") #if($!siteEdit) $tlang.getString("man.toaddto") #else $tlang.getString("java.for") #end $tlang.getString("man.this") <br />
 						<ul>
 							#foreach ($item in $!selectedProviderCourse)
 								<li>$item </li>
 							#end
 						</ul>
-					</p>	
+					</div>	
 				#end
 				<p>
 					#if (!$!isFutureTerm)
@@ -123,19 +123,19 @@
 						<label for="uniqname">		
 						   $tlang.getString("man.authoriz")
 						</label>
-						<input type="text" name="uniqname"  size="40" value="$!value_uniqname" />
-						<p class="labelindnt instruction">
+						<input type="text" name="uniqname"  id="uniqname"   size="40" value="$!value_uniqname" />
+						<br /><span class="labelindnt instruction">
 						   $tlang.getString("man.email")
-						</p>
+						</span>
 					</p>
 					<p class="shorttext">
 						<label for="additional" class="block">
 							$tlang.getString("man.spec")
 						</label>
 						<textarea id="additional"   name="additional" rows="4" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($form_additional)</textarea>
-						<p class="instruction labelindnt">
+						<br /><span  class="instruction labelindnt">
 							$tlang.getString("man.please")
-						</p>
+						</span>
 					</p>	
 				#end
 			#set ($count = $count + 1)

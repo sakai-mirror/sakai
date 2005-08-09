@@ -17,18 +17,18 @@
 				$!noEmailInIdAccountLabel
 			</label>
 			<textarea style="display:block" id="noEmailInIdAccount" name="noEmailInIdAccount"  cols="30" rows="4" wrap="virtual">$!validator.escapeHtmlTextarea($!noEmailInIdAccountValue)</textarea>
-			<p class="instruction" style="margin-top:0;">
+			<span class="instruction" style="padding:0;margin:0">
 				$tlang.getString("add.multiple")
-			</p>
+			</span>
 		</p>
 		<p class="longtext">
 			<label for="emailInIdAccount" class="block">
 				$!emailInIdAccountLabel
 			</label>
 			<textarea style="display:block" id="emailInIdAccount" name="emailInIdAccount"  cols="30" rows="4" wrap="virtual">$!validator.escapeHtmlTextarea($!emailInIdAccountValue)</textarea>
-			<p class="instruction" style="margin-top:0;">
+			<span class="instruction" style="padding:0;margin:0">
 				$tlang.getString("add.multiple2")
-			</p>
+			</span>
 		</p>
 		
 		<h4>
