@@ -243,7 +243,7 @@
 					</p>	
 					<table border="0">
 						<tr>
-							<td class="shorttext" style="width:180px;padding-left:1em;vertical-align:top">
+							<td class="shorttext" style="padding-left:.7em;vertical-align:top">
 								<label for="copyrightAlert">
 									$tlang.getString("edit.calert")
 								</label>
@@ -285,38 +285,38 @@
 				<input type="text" size="10" name="quota" id="quota" value="$!item.quota" />
 			</p>	
 		#end
-		<table class="itemSummary" border="0" style="clear:both;margin:left:.5em">
+		<table class="itemSummary" border="0" style="clear:both;margin:left:.7em">
 			#if (!($dropboxMode && $collectionId==$homeCollectionId))
 				<tr> 
-					<th> 
-						$tlang.getString("gen.created")
-					</th>
+					<td style="width:180px;padding-left:.7em"> 
+						<label>$tlang.getString("gen.created")</label>
+					</td>
 					<td>
 						$validator.escapeHtml("$item.createdBy")
 					</td>
 				</tr>
 			#end
 			<tr> 
-				<th> 
-					$tlang.getString("gen.creatime")
-				</th>
+				<td style="width:180px;padding-left:.7em"> 
+					<label>$tlang.getString("gen.creatime")</label>
+				</td>
 				<td>
 					$validator.escapeHtml("$item.createdTime")
 				</td>
 			</tr>
 			<tr> 
-				<th> 
-					$tlang.getString("gen.last")
-				</th>
+				<td style="width:180px;padding-left:.7em"> 
+					<label>$tlang.getString("gen.last")</label>
+				</td>
 				<td>
 					$validator.escapeHtml("$item.modifiedTime")
 				</td>
 			</tr>
 			#if (!($dropboxMode && $atHome))
 				<tr>
-					<th> 
-						$tlang.getString("gen.lastby")
-					</th>
+					<td style="width:180px;padding-left:.7em"> 
+						<label>$tlang.getString("gen.lastby")</label>
+					</td>
 					<td>
 						$validator.escapeHtml("$item.modifiedBy")
 					</td>
@@ -324,17 +324,17 @@
 			#end
 			#if (! $item.isFolder())
 				<tr> 
-					<th> 
-						$tlang.getString("gen.stored")
-					</th>
+					<td style="width:180px;padding-left:.7em"> 
+						<label>$tlang.getString("gen.stored")</label>
+					</td>
 					<td>
 						$item.url
 					</td>
 				</tr>
 				<tr> 
-					<th> 
-						$tlang.getString("gen.type")
-					</th>
+					<td style="width:180px;padding-left:.7em"> 
+						<label>$tlang.getString("gen.type")</label>
+					</td>
 					<td>
 						$item.MimeType
 					</td>
