@@ -159,12 +159,12 @@ public interface CanonicalCourse extends Persistable{
 	public void removeTopic (String topic);
 	
 	/**
-	 * Get a set of equivalent canonical courses uuids.  This is one way to
+	 * Get a list of equivalent canonical courses uuids.  This is one way to
 	 * represent cross listing in a set of courses.
 	 * 
-	 * @return Set of canonical course uuids.
+	 * @return List of canonical course uuids.
 	 */
-	public Set getEquivalents ();
+	public List getEquivalents ();
 	
 	/**
 	 * Add the canonical course given by its uuid to the list of equivalent

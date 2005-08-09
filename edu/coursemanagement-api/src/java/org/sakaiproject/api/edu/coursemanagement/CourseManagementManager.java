@@ -296,6 +296,8 @@ public interface CourseManagementManager
   public CanonicalCourseStatusType getCanonicalCourseStatusTypeByUuid(String canonicalCourseUuid);
   public CanonicalCourseStatusType getCanonicalCourseStatusTypeByKeyword(String keyword);
   public SessionType getSessionTypeByKeyword(String keyword);
+  public CanonicalCourse getCanonicalCourseByUuid(String canonicalCourseUuid);
 	public CanonicalCourse saveCanonicalCourse(CanonicalCourse c);        
+	//public EquivalentCourses saveEquivalentCourses(EquivalentCourses e);        
         
 }
