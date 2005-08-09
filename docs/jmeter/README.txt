@@ -24,16 +24,26 @@ sakai2_browse_course_homepages.jmx - For each user, visit the home pages
    of each of the sites to which they have access.  This is equivalent to
    logging in, clicking on each of the site tabs, and logging out.
 
-sakai2_download_iframes_example.jmx - Shows the script explicitly handling
-   IFRAMEs - downloads each iframe individually.  For each user, visit the home pages
-   of each of the sites to which they have access.  This is equivalent to
-   logging in, clicking on each of the site tabs, and logging out.
+sakai2_download_from_resource_tool.jmx - For each user, visit the first site
+   to which they have access, go to the Resources tool, and download a file.
+   The file to download is randomly selected.
+
+sakai2_upload_to_resource_tool.jmx - For each user, visit the first site to
+   which they have access, go to the Resources tool, and upload a file.
 
 sakai1_browse_all_tools.jmx - For testing against Sakai 1.0 (and 1.5?).
    For each user, pick a random site (to which they have
    access).  Browse all of the tools in that site.  Equivalent to logging in,
    navigating to a tool site, and clicking on each left-hand page (tool) in
    sequence, then logging out.
+
+sakai2_devtest_download_iframes.jmx - Shows the script explicitly handling
+   IFRAMEs - downloads each iframe individually.  For each user, visit the home pages
+   of each of the sites to which they have access.  This is equivalent to
+   logging in, clicking on each of the site tabs, and logging out.
+
+sakai2_devtest_HTTPSampler2_for_SSL.jmx - Try to use JMeter's SSL support
+   by using the HTTPSampler2.  Note - this doesn't work - there are JMeter bugs.
 
 
 fake_usernames.txt
@@ -69,15 +79,21 @@ seperate external login.
 
 General JMeter gotchas:
 
+* In general, don't try to use JMeter against an SSL-enabled (HTTPS) server.
+Sun's SSL implementation has a
+bug which leaves open sockets, quickly using up all available sockets.  
+The JMeter mailing list recommended another
+solution of using "HTTP Request HTTPClient" when creating the script, rather
+than the default "HTTP Request", but that doesn't work - cookie handling 
+and other things break when using "HTTP Request HTTPClient" (which isHTTPSampler2).
+Try running sakai2_devtest_HTTPSampler2_for_SSL.jmx to see the failure.
+
 * Don't try to run a large load of JMeter against SSL.  If you do,
 JMeter may gradually increase its memory usage until it uses all available 
 memory.  Apparently its a bug in Sun's SSL implementation where SSL sockets
 aren't closed properly.  You can see if this is happening by running the 
 shell command "netstat -n".  If you see a lot of connections in the "TIME_WAIT"
-state, you've got the bug!  The JMeter mailing list recommended another
-solution of using "HTTP Request HTTPClient" when creating the script, rather
-than the default "HTTP Request", but we're not sure if that works yet.
-Observed on WinXP.
+state, you've got the bug!  
 
 * Don't turn on "Functional Test" mode under the root "Test Plan" node!
  Not only does it make JMeter write out huge logs, it accelerates
@@ -108,6 +124,11 @@ try JMeter's remote testing capabilities.  This allows multiple JMeter load-gene
 to be controlled through one JMeter GUI.
 See:  
 http://jakarta.apache.org/jmeter/usermanual/remote-test.html
+
+* JMeter remote testing requires _all_ load-generating slaves, and the master as well,
+to be on the same subnet.  This makes it difficult to use JMeter's remote testing.
+The JMeter mailing list recommended this HOWTO guide for JMeter remote testing:
+http://cvs.apache.org/viewcvs.cgi/*checkout*/jakarta-jmeter/xdocs/usermanual/jmeter_distributed_testing_step_by_step.pdf
 
 * You may need to increase JMeter's memory allocation.   Affects all platforms.
 To increase the memory available to JMeter, its startup script (jmeter.bat
