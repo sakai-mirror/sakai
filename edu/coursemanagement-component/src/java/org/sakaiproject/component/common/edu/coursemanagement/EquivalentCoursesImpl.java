@@ -69,7 +69,7 @@ public class EquivalentCoursesImpl implements Serializable {
 		this.uuid = uuid;
 	}
 	
-	public Set getCanonicalCourses() {
+	public Set getCanonicalCourseSet() {
 		return canonicalCourseUuidSet;
 	}
 	

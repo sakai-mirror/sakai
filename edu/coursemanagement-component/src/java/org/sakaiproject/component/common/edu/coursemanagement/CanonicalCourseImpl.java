@@ -129,6 +129,17 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	public void setCanonicalCourseStatus(CanonicalCourseStatusType status) {
 		this.canonicalCourseStatus = status;
 	}
+
+	public String getCanonicalCourseStatusUuid() {
+		return canonicalCourseStatus.getUuid();
+	}
+	
+	public void setCanonicalCourseStatusUuid(String statusUuid) {
+		this.canonicalCourseStatusUuid = statusUuid;
+		CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+		this.canonicalCourseStatus = manager.getCanonicalCourseStatusTypeByUuid(statusUuid);
+	}
+
 	
 	public String getCanonicalCourseStatusUuId() {
 		if (canonicalCourseStatus!=null)

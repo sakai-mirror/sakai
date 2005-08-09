@@ -2,12 +2,21 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-<!--
   <bean id="org_sakaiproject_api_edu_coursemanagement_CanonicalCourse"
     class="org.sakaiproject.component.common.edu.coursemanagement.CanonicalCourseImpl">
     <property name="uuid"><value>daisy-flemming-123</value></property>
   </bean>
--->
+  
+  <bean id="org_sakaiproject_api_edu_coursemanagement_CourseSet"
+    class="org.sakaiproject.component.common.edu.coursemanagement.CourseSetImpl">
+    <property name="uuid"><value>daisy-flemming-123</value></property>
+  </bean>
+  
+  <bean id="org_sakaiproject_api_edu_coursemanagement_EquivalentCourses"
+    class="org.sakaiproject.component.common.edu.coursemanagement.EquivalentCoursesImpl">
+    <property name="uuid"><value>daisy-flemming-123</value></property>
+  </bean>
+  
   <bean id="org_sakaiproject_api_edu_coursemanagement_CourseManagementManager"
     class="org.sakaiproject.component.common.edu.coursemanagement.CourseManagementManagerImpl">
       <property name="sessionFactory"><ref bean="courseManagementSessionFactory"/></property>

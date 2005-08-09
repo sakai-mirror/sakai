@@ -71,6 +71,10 @@ public class CourseSetImpl implements CourseSet, Serializable {
 	}
 	
 	public Set getCanonicalCourses() {
+		return  getCanonicalCourseSet();
+	}
+	
+	public Set getCanonicalCourseSet() {
 		return canonicalCourseUuidSet;
 	}
 	

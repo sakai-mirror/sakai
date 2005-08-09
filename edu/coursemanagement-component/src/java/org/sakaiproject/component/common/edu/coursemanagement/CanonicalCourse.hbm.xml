@@ -19,20 +19,21 @@
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="defaultCredits" column="DEFAULTCREDITS" type="java.lang.String"  not-null="false" />
         <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
-        <property name="topics" column="TOPICS" type="java.lang.String"  not-null="false" />
-        <property name="prerequisite" column="PREREQUISITE" type="java.lang.String"  not-null="false" />
+        <property name="topicsString" column="TOPICS" type="java.lang.String"  not-null="false" />
+        <property name="prerequisiteString" column="PREREQUISITE" type="java.lang.String"  not-null="false" />
         <property name="canonicalCourseStatusUuid" column="CANONICALCOURSESTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
         <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
- 
+
+<!--  
         <set name="courseSetSet"  table="CM_COURSESET_T" cascade="all" inverse="true">
             <key column="CANONICALCOURSEUUID"/>
             <one-to-many class="CourseSetImpl"/>
         </set>
- 
-        <set name="equivalentCourseSet" table="CM_EQUIVALENTCOURSES_T" cascade="all" inverse="true">
+--> 
+        <set name="equivalents" table="CM_EQUIVALENTCOURSES_T" cascade="all" inverse="true">
             <key column="CANONICALCOURSEUUID"/>
             <one-to-many class="CanonicalCourseImpl"/>
         </set>

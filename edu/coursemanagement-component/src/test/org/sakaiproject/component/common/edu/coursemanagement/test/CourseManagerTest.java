@@ -49,7 +49,7 @@ public class CourseManagerTest extends CourseManagementTestBase {
 	public void testCreateCanonicalCourse() throws Exception {
 		Date currentDate = new Date();
 		CanonicalCourseStatusTypeImpl type = (CanonicalCourseStatusTypeImpl)courseManagementManager.
-		getCanonicalCourseStatusType("canonical.active");
+		getCanonicalCourseStatusTypeByKeyword("canonical.active");
 		CanonicalCourseImpl c = (CanonicalCourseImpl) courseManagementManager.createCanonicalCourse(
 				"title","description","1052-math-101-01",
 				"*uuid_"+currentDate.getTime(), type);
@@ -59,7 +59,7 @@ public class CourseManagerTest extends CourseManagementTestBase {
 	
 	public void testCreateSession() throws Exception {
 		Date currentDate = new Date();
-		SessionTypeImpl type = (SessionTypeImpl)courseManagementManager.getSessionType(
+		SessionTypeImpl type = (SessionTypeImpl)courseManagementManager.getSessionTypeByKeyword(
 		"term.spring");
 		SessionImpl s = (SessionImpl)courseManagementManager.createSession(
 				"Fall 2005","1052","2005", type, 
