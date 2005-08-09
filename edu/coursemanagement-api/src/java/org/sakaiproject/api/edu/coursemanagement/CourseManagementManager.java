@@ -293,8 +293,9 @@ public interface CourseManagementManager
 	 * @author Mark Norton
 	 */
   public List getCourseSet(String canonicalCourseUuid);
-  public CanonicalCourseStatusType getCanonicalCourseStatusType(String canonicalCourseUuid);
-  public SessionType getSessionType(String canonicalCourseUuid);
+  public CanonicalCourseStatusType getCanonicalCourseStatusTypeByUuid(String canonicalCourseUuid);
+  public CanonicalCourseStatusType getCanonicalCourseStatusTypeByKeyword(String keyword);
+  public SessionType getSessionTypeByKeyword(String keyword);
         
         
 }
