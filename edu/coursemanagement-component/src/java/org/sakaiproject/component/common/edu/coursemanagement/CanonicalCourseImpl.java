@@ -230,27 +230,10 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
     HashSet set;
 		if (equivalentCourses == null){
 	    Date currentDate = new Date();
-			set = new HashSet();
-			set.add(uuid);
 			equivalentCourses = new EquivalentCoursesImpl(
-					"equivalent-title", "*uuid"+currentDate.getTime(),set);
+					"equivalent-title", "*uuid"+currentDate.getTime(),new HashSet());
 		}
-		else{
-			set = (HashSet) equivalentCourses.getCanonicalCourseSet();
-		}
-		set.add(canonicalCourseUuid);
-
-		CourseManagementManagerImpl cm = CourseManagementManagerImpl.getInstance();
-		Iterator i = set.iterator();
-		while (i.hasNext()){
-			String c_uuid = (String)i.next();
-			System.out.println("**** c_uuid"+c_uuid);
-			CanonicalCourseImpl course = cm.getCanonicalCourseByUuid(c_uuid);
-      if (course !=null)
-			  course.setEquivalentCourses(equivalentCourses);
-		}
-		this.setEquivalentCourses(equivalentCourses);
-		//cm.saveEquivalentCourses(equivalentCourses);
+		equivalentCourses.addCanonicalCourse(uuid);
 	}
 	
 	public void removeEquivalent(String canonicalCourseUuid) {

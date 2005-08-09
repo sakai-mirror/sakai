@@ -226,10 +226,12 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 	}
 	public CanonicalCourseImpl getCanonicalCourseByUuid(String uuid) {
 		String query = "select c from CanonicalCourseImpl c where c.uuid=?";
+		System.out.println("****query="+query);
 		List list = getHibernateTemplate().find(query,
 				new Object[] {uuid},
 				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
-		if (list.size()>0)
+		System.out.println("****list"+list);		
+		if (list!=null && list.size()>0)
 			return (CanonicalCourseImpl)list.get(0);
 		else
 			return null;
