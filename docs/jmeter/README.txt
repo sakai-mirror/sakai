@@ -106,6 +106,8 @@ on the same machine, or on different machines.  Each JMeter instance can run ~30
 on WinXP, you may be able to do more on other operating systems.  You can also
 try JMeter's remote testing capabilities.  This allows multiple JMeter load-generating servers
 to be controlled through one JMeter GUI.
+See:  
+http://jakarta.apache.org/jmeter/usermanual/remote-test.html
 
 * You may need to increase JMeter's memory allocation.   Affects all platforms.
 To increase the memory available to JMeter, its startup script (jmeter.bat
