@@ -15,7 +15,6 @@ import org.sakaiproject.api.edu.coursemanagement.CourseSection;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSet;
 import org.sakaiproject.api.edu.coursemanagement.EnrollmentRecord;
-import org.sakaiproject.api.edu.coursemanagement.EquivalentCourses;
 import org.sakaiproject.api.edu.coursemanagement.ParticipationRecord;
 import org.sakaiproject.api.edu.coursemanagement.Session;
 import org.sakaiproject.api.edu.coursemanagement.SessionType;
