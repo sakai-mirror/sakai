@@ -126,6 +126,7 @@ extends VelocityPortletStateAction
 	
 	private static final String STATE_SET_FREQUENCY = "setFrequency";
 	private static final String FREQUENCY_SELECT = "frequencySelect";
+	private static final String TEMP_FREQ_SELECT = "tempFrequencySelect";
 	private static final String DEFAULT_FREQ = "once";
 	private static final String FREQ_ONCE = "once";
 	
@@ -2178,22 +2179,38 @@ extends VelocityPortletStateAction
 		String peid = ((JetspeedRunData)runData).getJs_peid();
 		SessionState sstate = ((JetspeedRunData)runData).getPortletSessionState(peid);
 		
+		// under 3 conditions, we get into this page
+		// 1st, brand new event, no freq or rule set up, coming from revise page
+		// 2nd, exisitng event, coming from revise page
+		// 3rd, new event, stay in this page after changing frequency by calling js function onchange()
+		// 4th, existing event, stay in this page after changing frequency by calling js function onchange()
+		
+		// sstate attribute TEMP_FREQ_SELECT is one of the flags
+		// if this attribute is not null, means changeFrequency() is called thru onchange().
+		// Then rule is another flag, if rule is null, means new event
+		// Combination of these 2 flags should cover all the conditions
+	
+		RecurrenceRule rule = (RecurrenceRule) sstate.getAttribute(CalendarAction.SSTATE__RECURRING_RULE);
+
 		// defaultly set frequency to be once
 		// if there is a saved state frequency attribute, replace the default one
 		String freq = CalendarAction.DEFAULT_FREQ;
 		
-		if (sstate.getAttribute(FREQUENCY_SELECT) != null)
+		if (sstate.getAttribute(TEMP_FREQ_SELECT) != null)
 		{
-			freq = (String)(sstate.getAttribute(FREQUENCY_SELECT));
-			RecurrenceRule rule = (RecurrenceRule) sstate.getAttribute(CalendarAction.SSTATE__RECURRING_RULE);
-			// for a brand new event, there is no saved recurring rule
+			freq = (String)sstate.getAttribute(TEMP_FREQ_SELECT);
+			if (rule != null)
+				context.put("rule", rule);
+			sstate.removeAttribute(TEMP_FREQ_SELECT);
+		}
+		else
+		{
 			if (rule != null)
 			{
-				context.put("freq", rule.getFrequencyDescription());
+				freq = rule.getFrequencyDescription();
 				context.put("rule", rule);
-			} // if rule is not null
-		} // if there is a state save frequency setting
-		
+			}
+		}
 		context.put("freq", freq);
 		context.put("tlang",rb);
 		// get the data the user just input in the preview new/revise page
@@ -6683,7 +6700,12 @@ extends VelocityPortletStateAction
 		String peid = ((JetspeedRunData)rundata).getJs_peid();
 		SessionState sstate = ((JetspeedRunData)rundata).getPortletSessionState(peid);
 		
-		sstate.setAttribute(FREQUENCY_SELECT, freqSelect);		
+		sstate.setAttribute(FREQUENCY_SELECT, freqSelect);
+		
+		//TEMP_FREQ_SELECT only works for the onchange javascript function when user changes the frequency selection
+		// and will be discarded when buildFrequecyContext has caught its value
+		sstate.setAttribute(TEMP_FREQ_SELECT, freqSelect);
+		
 		state.setState(STATE_SET_FREQUENCY);
 		
 	}   // doChangefrequency
