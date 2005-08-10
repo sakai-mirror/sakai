@@ -5256,7 +5256,7 @@ extends VelocityPortletPaneledAction
 		}	//if-else
 		else
 		{
-			if(item.isFolder())
+			//if(item.isFolder())
 			{
 				
 			}
