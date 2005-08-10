@@ -1849,7 +1849,6 @@ extends VelocityPortletPaneledAction
 			Node root = doc.createElement(docRoot);
 			doc.appendChild(root);
 			int count = 0;
-			
 			Iterator propIt = properties.iterator();
 			while(propIt.hasNext())
 			{
@@ -1891,7 +1890,7 @@ extends VelocityPortletPaneledAction
 			{
 				try
 				{
-					String content = Xml.writeDocumentToString(doc);			
+					String content = Xml.writeDocumentToString(doc);
 					ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
 					resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
@@ -2011,7 +2010,7 @@ extends VelocityPortletPaneledAction
 	
 				}
 			}			
-				
+			
 		}
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
@@ -4294,6 +4293,11 @@ extends VelocityPortletPaneledAction
 	protected void captureValues(SessionState state, ParameterParser params)
 	{
 		EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
+		List alerts = (List) state.getAttribute(STATE_CREATE_ALERTS);
+		if(alerts == null)
+		{
+			alerts = new Vector();
+		}
 		String intent = params.getString("intent");
 
 		String oldintent = (String) state.getAttribute(STATE_EDIT_INTENT);
@@ -4338,10 +4342,17 @@ extends VelocityPortletPaneledAction
 			if(fileitem == null)
 			{
 				// "The user submitted a file to upload but it was too big!"
+				alerts.add(rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded2"));
+				//item.setMissing("fileName");
 			}
 			else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
 			{
-			   // "The user submitted the form, but didn't select a file to upload!"
+				if(item.getContent() == null || item.getContent().length <= 0)
+				{
+					// "The user submitted the form, but didn't select a file to upload!"
+					alerts.add(rb.getString("choosefile") + ". ");
+					//item.setMissing("fileName");
+				}
 			}
 			else if (fileitem.getFileName().length() > 0)
 			{
@@ -4644,7 +4655,7 @@ extends VelocityPortletPaneledAction
 			}
 		}
 		state.setAttribute(STATE_EDIT_ITEM, item);
-
+		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 
 	}	// captureValues
 	
@@ -5068,10 +5079,8 @@ extends VelocityPortletPaneledAction
 			doCancel(data);
 			return;
 		}
-		
-
 		captureValues(state, params);
-		
+
 
 		if(flow.equals("showMetadata"))
 		{
@@ -5093,7 +5102,6 @@ extends VelocityPortletPaneledAction
 		{
 			EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
 			boolean intent_has_changed = false;
-
 			// populate the property list
 			try
 			{
@@ -5183,7 +5191,7 @@ extends VelocityPortletPaneledAction
 						pedit.removeProperty(ResourceProperties.PROP_COLLECTION_BODY_QUOTA);
 					}
 				}
-
+				
 				List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
 				
 				saveMetadata(pedit, metadataGroups, item);
@@ -5246,6 +5254,13 @@ extends VelocityPortletPaneledAction
 			// clear state variables
 			initPropertiesContext(state);
 		}	//if-else
+		else
+		{
+			if(item.isFolder())
+			{
+				
+			}
+		}
 
 	}	// doSavechanges
 	
@@ -8227,9 +8242,6 @@ extends VelocityPortletPaneledAction
 			{
 				rootSchema = new SchemaBean(home.getRootNode(), home.getSchema(), m_formtype, home.getType().getDescription());
 			}
-			else
-			{
-			}
 			
 			Document doc = Xml.readDocumentFromString(content);
 			Element root = doc.getDocumentElement();
@@ -8238,18 +8250,13 @@ extends VelocityPortletPaneledAction
 			List properties = null;
 			if(rootSchema != null)
 			{
-				
 				String namespace = rootSchema.getSchemaName() + ".";
 				List fields = rootSchema.getFields();
 				properties = createPropertiesList(namespace, fields);
 			}
-			else
-			{
-			}
 			
 			if(properties != null)
 			{
-				
 				Iterator propIt = properties.iterator();
 				while(propIt.hasNext())
 				{
@@ -8271,7 +8278,23 @@ extends VelocityPortletPaneledAction
 									if(child.getNodeType() == Node.TEXT_NODE)
 									{
 										Text value = (Text) child;
-										setValue(tagname, k, value.getData());
+										if(ResourcesMetadata.WIDGET_DATE.equals(property.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(property.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(property.getWidget()))
+										{
+											Time time = TimeService.newTime();
+											try
+											{
+												time = TimeService.newTimeGmt(value.getData());
+											}
+											catch(Exception ignore)
+											{
+												// use "now" as default in that case
+											}
+											setValue(tagname, k, time);
+										}
+										else
+										{
+											setValue(tagname, k, value.getData());
+										}
 										k++;
 									}
 									child = child.getNextSibling();
