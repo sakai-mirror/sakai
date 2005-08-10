@@ -36,11 +36,6 @@
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="Argument.value">/portal/logout</property>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="Argument.name">logoutUrl</property>
 </testelement>
-<testelement class="org.apache.jmeter.config.Argument" name="filetoupload">
-<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="Argument.metadata">=</property>
-<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="Argument.value">sakai2_upload_to_resource_tool.jmx</property>
-<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="Argument.name">filetoupload</property>
-</testelement>
 </collection>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="TestElement.name">User Defined Variables</property>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.BooleanProperty" name="TestElement.enabled">true</property>
@@ -60,7 +55,7 @@
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="ThreadGroup.delay"/>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="ThreadGroup.duration"/>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.BooleanProperty" name="TestElement.enabled">true</property>
-<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="ThreadGroup.num_threads">1</property>
+<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="ThreadGroup.num_threads">15</property>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.BooleanProperty" name="ThreadGroup.scheduler">false</property>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="TestElement.gui_class">org.apache.jmeter.threads.gui.ThreadGroupGui</property>
 <testelement class="org.apache.jmeter.control.LoopController" name="ThreadGroup.main_controller">
@@ -74,7 +69,7 @@
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="TestElement.name">Thread Group</property>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.LongProperty" name="ThreadGroup.end_time">1077151703000</property>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="ThreadGroup.on_sample_error">stopthread</property>
-<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="ThreadGroup.ramp_time">60</property>
+<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="ThreadGroup.ramp_time">30</property>
 </testelement>
 <node>
 <testelement class="org.apache.jmeter.control.OnceOnlyController">
@@ -974,13 +969,15 @@
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="user">user</property>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="pw">pw</property>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="randomnumber">randomnumber</property>
+<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="filetoupload">filetoupload</property>
 </collection>
-<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="TestElement.name">set Sakai username and password</property>
+<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="TestElement.name">set variables</property>
 <collection class="java.util.ArrayList" propType="org.apache.jmeter.testelement.property.CollectionProperty" name="UserParameters.thread_values">
-<collection class="java.util.ArrayList" propType="org.apache.jmeter.testelement.property.CollectionProperty" name="-388503966">
+<collection class="java.util.ArrayList" propType="org.apache.jmeter.testelement.property.CollectionProperty" name="1783940413">
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="jmeter">jmeter</property>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="jmeterpassword">jmeterpassword</property>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="${__Random(1,10000000,unusedvariable)}">${__Random(1,10000000,unusedvariable)}</property>
+<property xml:space="preserve" propType="org.apache.jmeter.testelement.property.StringProperty" name="${_StringFromFile(${scriptdir}/test_upload_list.txt)}">${_StringFromFile(${scriptdir}/test_upload_list.txt)}</property>
 </collection>
 </collection>
 <property xml:space="preserve" propType="org.apache.jmeter.testelement.property.BooleanProperty" name="TestElement.enabled">true</property>

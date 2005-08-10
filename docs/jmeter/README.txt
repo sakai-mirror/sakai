@@ -29,7 +29,9 @@ sakai2_download_from_resource_tool.jmx - For each user, visit the first site
    The file to download is randomly selected.
 
 sakai2_upload_to_resource_tool.jmx - For each user, visit the first site to
-   which they have access, go to the Resources tool, and upload a file.
+   which they have access, go to the Resources tool, and upload a file.  The
+   file to upload is selected from the list of files in "test_upload_list.txt".
+   See test_upload/README.txt for more details.
 
 sakai1_browse_all_tools.jmx - For testing against Sakai 1.0 (and 1.5?).
    For each user, pick a random site (to which they have
@@ -61,7 +63,9 @@ install_ssl_cert.bat - Example of installing an SSL certificate to loadtest
 
 umwebCA.pem - Example SSL certificate for University of Michigan.
 
-
+test_upload_list.txt - Used by sakai2_upload_to_resource_tool.jmx.  A list of
+files to use in the upload test.  Paths are relative to the current directory.
+See test_upload/README.txt for details.
 
 Notes on how to use these scripts:
 
