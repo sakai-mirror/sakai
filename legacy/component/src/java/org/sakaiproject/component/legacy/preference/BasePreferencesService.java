@@ -525,6 +525,10 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 						{
 							key = NotificationService.PREFS_TYPE + MailArchiveService.SERVICE_NAME;
 						}
+						else if (key.endsWith("SyllabusService"))
+						{
+							key = NotificationService.PREFS_TYPE + "org.sakaiproject.api.app.syllabus.SyllabusService";
+						}
 					}
 
 					BaseResourcePropertiesEdit props = null;
@@ -622,6 +626,10 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 					else if (key.endsWith("MailArchiveService"))
 					{
 						key = NotificationService.PREFS_TYPE + "org.chefproject.service.generic.GenericMailArchiveService";
+					}
+					else if (key.endsWith("SyllabusService"))
+					{
+						key = NotificationService.PREFS_TYPE + "org.sakaiproject.api.app.syllabus.SyllabusService";
 					}
 				}
 
