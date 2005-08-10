@@ -585,8 +585,6 @@ extends VelocityPortletPaneledAction
 		}
 
 		context.put("atHome", Boolean.toString(atHome));
-
-
 		
 		List cPath = getCollectionPath(state);
 		context.put ("collectionPath", cPath);
@@ -6300,13 +6298,16 @@ extends VelocityPortletPaneledAction
 		
 		LinkedList collectionPath = new LinkedList();
 		
+		String previousCollectionId = "";
 		Vector pathitems = new Vector();
-		while(currentCollectionId != null && ! currentCollectionId.equals(navRoot))
+		while(currentCollectionId != null && ! currentCollectionId.equals(navRoot) && ! currentCollectionId.equals(previousCollectionId))
 		{
 			pathitems.add(currentCollectionId);
+			previousCollectionId = currentCollectionId;
 			currentCollectionId = contentService.getContainingCollectionId(currentCollectionId);
 		}
 		pathitems.add(navRoot);
+
 		if(!navRoot.equals(homeCollectionId))
 		{
 			pathitems.add(homeCollectionId);
