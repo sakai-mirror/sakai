@@ -981,21 +981,43 @@ public class RequestFilter implements Filter
 
 	/**
 	 * Compute the URL that would return to this server based on the current request.
+	 * Note: this method is a duplicate of one in the util/Web.java
 	 * 
 	 * @param req
 	 *        The request.
 	 * @return The URL back to this server based on the current request.
 	 */
-	protected String serverUrl(HttpServletRequest req)
+	public static String serverUrl(HttpServletRequest req)
 	{
+		String transport = null;
+		int port = 0;
+		boolean secure = false;
+
+		// if force.url.secure is set (to a https port number), use https and this port
+		String forceSecure = System.getProperty("sakai.force.url.secure");
+		if (forceSecure != null)
+		{
+			transport = "https";
+			port = Integer.parseInt(forceSecure);
+			secure = true;
+		}
+		
+		// otherwise use the request scheme and port
+		else
+		{
+			transport = req.getScheme();
+			port = req.getServerPort();
+			secure = req.isSecure();
+		}
+
 		StringBuffer url = new StringBuffer();
-		url.append(req.getScheme());
+		url.append(transport);
 		url.append("://");
 		url.append(req.getServerName());
-		if (((req.getServerPort() != 80) && (!req.isSecure())) || ((req.getServerPort() != 443) && (req.isSecure())))
+		if (((port != 80) && (!secure)) || ((port != 443) && secure))
 		{
 			url.append(":");
-			url.append(req.getServerPort());
+			url.append(port);
 		}
 
 		return url.toString();

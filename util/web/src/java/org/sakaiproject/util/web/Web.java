@@ -368,6 +368,7 @@ public class Web
 
 	/**
 	 * Compute the URL that would return to this server based on the current request.
+	 * Note: this method is duplicated in the kernel/request RequestFilter.java
 	 * 
 	 * @param req
 	 *        The request.
