@@ -173,8 +173,11 @@ extends VelocityPortletPaneledAction
 	/** The resources, helper or dropbox mode. */
 	public static final String STATE_RESOURCES_MODE = "resources.resources_mode";
 	
-	/** The name of a state attribute indicating whether the resources too/helper shows all sites the user has access to */
-	public static final String STATE_SHOW_ALL_SITES = "resources.show_all_sites";
+	/** The name of a state attribute indicating whether the resources tool/helper is allowed to show all sites the user has access to */
+	public static final String STATE_SHOW_ALL_SITES = "resources.allow_user_to_see_all_sites";
+
+	/** The name of a state attribute indicating whether the wants to see other sites if that is enabled */
+	public static final String STATE_SHOW_OTHER_SITES = "resources.user_chooses_to_see_other_sites";
 
 	/** The content type image lookup service in the State. */
 	private static final String STATE_CONTENT_TYPE_IMAGE_SERVICE = "resources.content_type_image_service";
@@ -617,7 +620,7 @@ extends VelocityPortletPaneledAction
 			
 			state.removeAttribute(STATE_PASTE_ALLOWED_FLAG);
 			
-			List roots = new Vector();
+			List this_site = new Vector();
 			List members = getBrowseItems(collectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, navRoot.equals(homeCollectionId), state);
 			if(members != null && members.size() > 0)
 			{
@@ -632,15 +635,20 @@ extends VelocityPortletPaneledAction
 				}
 				context.put("site", root);
 				root.addMembers(members);
-				roots.add(root);
+				this_site.add(root);
 			}
+			context.put ("this_site", this_site);
 			
 			boolean show_all_sites = false;
+			List other_sites = new Vector();
 			// In helper mode, calling tool should set attribute STATE_SHOW_ALL_SITES
-			String user_sees_all_their_sites = (String) state.getAttribute(STATE_SHOW_ALL_SITES);
-			if(user_sees_all_their_sites != null && user_sees_all_their_sites.equalsIgnoreCase(Boolean.toString(true)))
+			String allowed_to_see_other_sites = (String) state.getAttribute(STATE_SHOW_ALL_SITES);
+			String show_other_sites = (String) state.getAttribute(STATE_SHOW_OTHER_SITES);
+			context.put("show_other_sites", show_other_sites);
+			if(Boolean.TRUE.toString().equalsIgnoreCase(allowed_to_see_other_sites))
 			{
-				show_all_sites = true;
+				context.put("allowed_to_see_other_sites", Boolean.TRUE.toString());
+				show_all_sites = Boolean.TRUE.toString().equalsIgnoreCase(show_other_sites);
 			}
 
 			if(atHome && show_all_sites)
@@ -659,7 +667,7 @@ extends VelocityPortletPaneledAction
 				        BrowseItem root = (BrowseItem) members.remove(0);
 				        root.addMembers(members);
 				        root.setName(userName + " Workspace " + rb.getString("gen.reso"));
-				        roots.add(root);
+				        other_sites.add(root);
 				    }
 				}
 				
@@ -678,14 +686,14 @@ extends VelocityPortletPaneledAction
 	                          BrowseItem root = (BrowseItem) members.remove(0);
 	                          root.addMembers(members);
 	                          root.setName(displayName);
-	                          roots.add(root);
+	                          other_sites.add(root);
 	                      }
 	                  }
                   }
 			}
 			
-			context.put ("roots", roots);
-			state.setAttribute(STATE_COLLECTION_ROOTS, roots);
+			context.put ("other_sites", other_sites);
+			state.setAttribute(STATE_COLLECTION_ROOTS, this_site);
 			// context.put ("root", root);
 			
 			if(state.getAttribute(STATE_PASTE_ALLOWED_FLAG) != null)
@@ -5311,6 +5319,27 @@ extends VelocityPortletPaneledAction
 		state.setAttribute(STATE_EDIT_INTENT, intent);
 		
 	}	// doToggle_intent
+	
+	/**
+	 * @param data
+	 */
+	public static void doHideOtherSites(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		
+		state.setAttribute(STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
+	}
+
+	
+	/**
+	 * @param data
+	 */
+	public static void doShowOtherSites(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		
+		state.setAttribute(STATE_SHOW_OTHER_SITES, Boolean.TRUE.toString());
+	}
 
 	/**
 	 * @param data
@@ -5864,15 +5893,16 @@ extends VelocityPortletPaneledAction
 		{
 			// get resources mode from tool registry
 			user_sees_all_their_sites = portlet.getPortletConfig().getInitParameter("user_sees_all_their_sites");
-			if(user_sees_all_their_sites != null && user_sees_all_their_sites.equalsIgnoreCase(Boolean.toString(true)))
+			if(Boolean.TRUE.toString().equalsIgnoreCase(user_sees_all_their_sites))
 			{
-				state.setAttribute(STATE_SHOW_ALL_SITES, Boolean.toString(true));
+				state.setAttribute(STATE_SHOW_ALL_SITES, Boolean.TRUE.toString());
 			}
 			else
 			{
-				state.setAttribute(STATE_SHOW_ALL_SITES, Boolean.toString(false));
+				state.setAttribute(STATE_SHOW_ALL_SITES, Boolean.FALSE.toString());
 			}
 		}
+		state.setAttribute(STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
 		
 		// set the home collection to the parameter, if present, or the default if not
 		String home = StringUtil.trimToNull(portlet.getPortletConfig().getInitParameter("home"));
