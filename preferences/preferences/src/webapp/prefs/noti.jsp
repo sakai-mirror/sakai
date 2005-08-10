@@ -49,6 +49,12 @@
     			<f:selectItem itemValue="2" itemLabel="Send me one email per day summarizing all low priority resource notifications"/><br>
     			<f:selectItem itemValue="1" itemLabel="Do not send me low priority resource notifications"/>
   			</h:selectOneRadio>
+  			<br>
+  			<h4>Syllabus</h4>
+				<h:selectOneRadio value="#{UserPrefsTool.selectedSyllItem}" layout="pageDirection">
+    			<f:selectItem itemValue="2" itemLabel="Send me each notification separately"/><br>
+    			<f:selectItem itemValue="1" itemLabel="Do not send me low priority Syllabus items"/>
+  			</h:selectOneRadio>  			
   				
 				<br><br>
 				<h:commandButton id="submit" style="active;" value="Update Preferences" action="#{UserPrefsTool.processActionNotiSave}"></h:commandButton>

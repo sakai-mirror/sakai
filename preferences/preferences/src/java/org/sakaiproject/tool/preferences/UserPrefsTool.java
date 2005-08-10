@@ -888,6 +888,7 @@ public class UserPrefsTool
   private String selectedAnnItem = "";
   private String selectedMailItem = "";
   private String selectedRsrcItem = "";
+  private String selectedSyllItem = ""; //syllabus notification
   protected boolean notiUpdated=false ;
   ///////////////////////////////////		GETTER AND SETTER		///////////////////////////////////
   //TODO chec for any preprocessor for handling request for first time. This can simplify getter() methods as below	
@@ -1005,6 +1006,38 @@ public class UserPrefsTool
     this.selectedRsrcItem = selectedRsrcItem;
   }
 
+  //syllabus
+  public String getSelectedSyllItem()
+  {
+    LOG.debug("getSelectedSyllItem()");
+
+    if (!hasValue(this.selectedSyllItem))
+    {
+      Preferences prefs = (PreferencesEdit) m_preferencesService
+          .getPreferences(getUserId());
+      String a = buildTypePrefsContext("org.sakaiproject.api.app.syllabus.SyllabusService",
+          "syll", selectedSyllItem, prefs);
+      if (hasValue(a))
+      {
+        selectedSyllItem = a; //load from saved data
+      }
+      else
+      {
+        selectedSyllItem = "2"; //default setting
+      }
+    }
+    return selectedSyllItem;
+  }
+  public void setSelectedSyllItem(String selectedSyllItem)
+  {
+    if (LOG.isDebugEnabled())
+    {
+      LOG.debug("setSelectedRsrcItem(String " + selectedRsrcItem + ")");
+    }
+
+    this.selectedSyllItem = selectedSyllItem;
+  }
+  
   /**
    * @return Returns the notiUpdated.
    */
@@ -1042,6 +1075,9 @@ public class UserPrefsTool
           getSelectedMailItem());
       readTypePrefs(ContentHostingService.SERVICE_NAME, "rsrc", m_edit,
           getSelectedRsrcItem());
+      //save syllabus 
+      readTypePrefs("org.sakaiproject.api.app.syllabus.SyllabusService", "syll", m_edit,
+          getSelectedSyllItem());
       // update the edit and release it
       m_preferencesService.commit(m_edit);
     }
@@ -1087,6 +1123,7 @@ public class UserPrefsTool
     selectedAnnItem = "";
     selectedMailItem = "";
     selectedRsrcItem = "";
+    selectedSyllItem = "";
     notiUpdated=false;
     Preferences prefs = (PreferencesEdit) m_preferencesService
         .getPreferences(getUserId());
@@ -1119,6 +1156,17 @@ public class UserPrefsTool
     else
     {
       selectedRsrcItem = "3"; //default setting
+    }
+    //syllabus
+    String s = buildTypePrefsContext("org.sakaiproject.api.app.syllabus.SyllabusService",
+        "syll", selectedSyllItem, prefs);
+    if (hasValue(s))
+    {
+      selectedSyllItem = s; //load from saved data
+    }
+    else
+    {
+      selectedSyllItem = "2"; //default setting
     }
   }
 
