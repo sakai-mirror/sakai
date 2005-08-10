@@ -427,43 +427,38 @@
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
 	</bean>
 
-	 <bean id="lockManagerSessionFactory" 
-		 parent="org.sakaiproject.springframework.orm.hibernate.SessionFactoryBase"> 
-		 <property name="mappingResources"> 
-			 <list> 
-				 <value>org/sakaiproject/service/legacy/content/LockManager.hbm.xml</value> 
-			 </list> 
-		 </property> 
-	</bean> 
-	
-	<bean id="lockTransactionManager"
-		class="org.springframework.orm.hibernate.HibernateTransactionManager">
-		<property name="sessionFactory">
-		<ref	 bean="lockManagerSessionFactory" />
+   <bean id="lockManagerHibernateMappings"
+      class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
+      <property name="mappingResources">
+         <list>
+            <value>org/sakaiproject/service/legacy/content/LockManager.hbm.xml</value>
+         </list>
 		</property>
-	</bean>
-	 
-	 <bean id="org.sakaiproject.component.legacy.content.LockManagerTarget" 
-		 class="org.sakaiproject.component.legacy.content.LockManagerImpl" 
-		 singleton="true"> 
-		 <property name="sessionFactory"><ref bean="lockManagerSessionFactory"/></property> 
-	 </bean> 
-	
-	 <bean id="org.sakaiproject.component.legacy.content.LockManager" 
-		 class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" 
+   </bean>
+
+	 <bean id="org.sakaiproject.component.legacy.content.LockManagerTarget"
+		 class="org.sakaiproject.component.legacy.content.LockManagerImpl"
 		 singleton="true">
-		 <property name="transactionManager">
-			 <ref bean="lockTransactionManager"/> 
+       <property name="sessionFactory">
+          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
+       </property>
+	 </bean>
+
+	 <bean id="org.sakaiproject.component.legacy.content.LockManager"
+		 class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		 singleton="true">
+       <property name="transactionManager">
+          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
+       </property>
+		 <property name="target">
+			 <ref bean="org.sakaiproject.component.legacy.content.LockManagerTarget"/>
 		 </property>
-		 <property name="target"> 
-			 <ref bean="org.sakaiproject.component.legacy.content.LockManagerTarget"/> 
-		 </property> 
-		 <property name="transactionAttributes"> 
-			 <props> 
-				 <prop key="*">PROPAGATION_REQUIRED</prop> 
+		 <property name="transactionAttributes">
+			 <props>
+				 <prop key="*">PROPAGATION_REQUIRED</prop>
 			 </props>
-		 </property> 
-	 </bean> 
+		 </property>
+	 </bean>
 
 
 </beans>
