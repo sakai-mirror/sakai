@@ -1836,7 +1836,11 @@ extends VelocityPortletPaneledAction
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
 		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
-		int numberOfItems = number.intValue();
+		int numberOfItems = 1;
+		if(number != null)
+		{
+			numberOfItems = number.intValue();
+		}
 		
 		for(int i = 0; i < numberOfItems; i++)
 		{
@@ -2008,6 +2012,84 @@ extends VelocityPortletPaneledAction
 				}
 			}			
 				
+		}
+		state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		
+	}
+
+	/**
+	 * @param state
+	 */
+	private static void modifyStructuredArtifact(SessionState state, ContentResourceEdit resource, ResourcePropertiesEdit resourceProperties) 
+	{
+		EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
+		
+		List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
+
+		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		Document doc = Xml.createDocument();
+		Node root = doc.createElement(item.getRootname());
+		doc.appendChild(root);
+		int count = 0;
+		
+		Iterator propIt = properties.iterator();
+		while(propIt.hasNext())
+		{
+			ResourcesMetadata prop = (ResourcesMetadata) propIt.next();
+			String propname = prop.getLocalname();
+			List values = item.getList(propname);
+			Iterator valueIt = values.iterator();
+			while(valueIt.hasNext())
+			{
+				try
+				{
+					Object value = valueIt.next();
+					if(value == null)
+					{
+						// do nothing
+					}
+					else
+					{
+						Node propnode = doc.createElement(propname);
+						root.appendChild(propnode);
+						if(value instanceof String)
+						{
+							propnode.appendChild(doc.createTextNode((String)value));
+						}
+						else
+						{
+							propnode.appendChild(doc.createTextNode(value.toString()));
+						}
+						count++;
+					}
+				}
+				catch(Throwable e)
+				{			
+
+				}
+			}
+		}
+		if(count > 0)
+		{
+			String content = Xml.writeDocumentToString(doc);
+			resource.setContentLength(content.length());
+			resource.setContent(content.getBytes());
+			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());
+			resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
+			resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+			resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, item.getFormtype());
+			List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
+			saveMetadata(resourceProperties, metadataGroups, item);
+
+			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+			{
+				// deal with pubview when in resource mode//%%%
+				if (! item.isPubviewset())
+				{
+					setPubView(ContentHostingService.getReference(resource.getId()), item.isPubview());
+				}
+			}
 		}
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
@@ -4334,6 +4416,89 @@ extends VelocityPortletPaneledAction
 				}
 			}
 		}
+		else if(item.isStructuredArtifact())
+		{
+			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			String rootname = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
+			List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
+			
+			String formtype_check = params.getString("formtype");
+			
+			if(formtype_check == null || formtype_check.equals(""))
+			{
+				//alerts.add("Must select a form type");
+				// item.setMissing("formtype");
+			}
+			else if(formtype_check.equals(formtype))
+			{
+				item.setFormtype(formtype);
+				item.setRootname(rootname);
+				Iterator it = properties.iterator();
+				while(it.hasNext())
+				{
+					ResourcesMetadata prop = (ResourcesMetadata) it.next();
+					int count = prop.getCurrentCount();
+					for(int j = 0; j < count; j++)
+					{
+						if(ResourcesMetadata.WIDGET_DATE.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(prop.getWidget()))
+						{
+							String propname = prop.getFullname() + "_" + j;
+							int year = 0;
+							int month = 0;
+							int day = 0;
+							int hour = 0;
+							int minute = 0;
+							int second = 0;
+							int millisecond = 0;
+							String ampm = "";
+							
+							if(prop.getWidget().equals(ResourcesMetadata.WIDGET_DATE) || 
+								prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
+							{
+								year = params.getInt(propname  + "_year", year);
+								month = params.getInt(propname  + "_month", month);
+								day = params.getInt(propname  + "_day", day);
+							}
+							if(prop.getWidget().equals(ResourcesMetadata.WIDGET_TIME) || 
+								prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
+							{
+								hour = params.getInt(propname  + "_hour", hour);
+								minute = params.getInt(propname  + "_minute", minute);
+								second = params.getInt(propname  + "_second", second);
+								millisecond = params.getInt(propname  + "_millisecond", millisecond);
+								ampm = params.getString(propname + "_ampm").trim();
+
+								if("pm".equalsIgnoreCase(ampm))
+								{
+									if(hour < 12)
+									{
+										hour += 12;
+									}
+								}
+								else if(hour == 12)
+								{
+									hour = 0;
+								}
+							}
+							if(hour > 23)
+							{
+								hour = hour % 24;
+								day++;
+							}
+							
+							Time value = TimeService.newTimeLocal(year, month, day, hour, minute, second, millisecond);
+							item.setValue(prop.getLocalname(), j, value);
+						}
+						else
+						{
+							String value = params.getString(prop.getFullname() + "_" + j);
+							item.setValue(prop.getLocalname(), j, value);
+						}
+					}
+				}
+			}
+			// item.setMimeType(MIME_TYPE_STRUCTOBJ);			
+		}
 		else
 		{
 			// check for copyright status
@@ -4952,6 +5117,11 @@ extends VelocityPortletPaneledAction
 					if(item.isUrl())
 					{
 						redit.setContent(item.getFilename().getBytes());						
+					}
+					else if(item.isStructuredArtifact())
+					{
+						modifyStructuredArtifact(state, redit, pedit);
+						
 					}
 					else if(item.contentHasChanged())
 					{

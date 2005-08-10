@@ -1,4 +1,5 @@
-<!-- chef_resources_create.vm, version: $Id:  $, use with org.sakaiproject.tool.content.ResourcesAction.java -->
+## version: $Id:  $
+<!-- chef_resources_create.vm, use with org.sakaiproject.tool.content.ResourcesAction.java -->
 ##
 ############################################# macro prop_dateSelection 
 #macro(prop_dateSelectionWidget $propName $propValue)
