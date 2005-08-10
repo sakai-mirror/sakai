@@ -5235,7 +5235,7 @@ public class SiteAction extends PagedResourceActionII
 						replyTo = requestEmail;
 						if (termExist)
 						{
-							message_subject = rb.getString("java.official")+" " + term.getTerm() + " " + term.getYear();
+							message_subject = rb.getString("java.sitereqfrom")+" " + sessionUserName;
 						}
 						else
 						{
