@@ -132,13 +132,13 @@ public interface ParticipationRecord extends Persistable{
 	 * 
 	 * @return course offering uuid.
 	 */
-	public String getCourseOffering();
+	public String getCourseOfferingUuid();
 
 	/**
 	 * Set the course offering uuid id that this record belongs to.
 	 * 
 	 * @param courseOfferingUuid
 	 */
-	public void setCourseOffering(String courseOfferingUuid);
+	public void setCourseOfferingUuid(String courseOfferingUuid);
 
 }
