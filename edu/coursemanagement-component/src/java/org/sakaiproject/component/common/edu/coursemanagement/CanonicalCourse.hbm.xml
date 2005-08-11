@@ -33,12 +33,11 @@
         </property>          
 
         <!-- Structural -->
-<!--
-        <set name="courseOfferingSet" cascade="all" inverse="true">
+        <set name="offerings" cascade="all" inverse="true">
             <key column="CANONICALCOURSEID"/>
             <one-to-many class="CourseOfferingImpl"/>
         </set>
--->
+
         <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
 
         <!-- Persistence -->

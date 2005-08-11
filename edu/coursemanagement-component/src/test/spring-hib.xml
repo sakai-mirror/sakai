@@ -20,9 +20,7 @@
       <list>
         <value>org/sakaiproject/component/common/edu/coursemanagement/CourseSet.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/CanonicalCourse.hbm.xml</value>
-<!--        <value>org/sakaiproject/component/common/edu/coursemanagement/CourseOffering.hbm.xml</value>
-
--->
+        <value>org/sakaiproject/component/common/edu/coursemanagement/CourseOffering.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/CourseSection.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/CanonicalCourseStatusType.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/CourseOfferingStatusType.hbm.xml</value>

@@ -26,7 +26,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	private CanonicalCourseStatusType canonicalCourseStatus;
 	
 	/** The uuid of the equivalentCourses */
-	private List equivalentList;
+	private Set equivalentSet;
 	
 	/** The value of the preRequisites. */
 	private String prerequisiteString;
@@ -275,49 +275,54 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	public void setEquivalentString(String equivalentString)
 	{
 		this.equivalentString = equivalentString;
-		equivalentList = getEquivalents();
+		equivalentSet = getEquivalents();
 	}
-	
-	public List getEquivalents() {
-		equivalentList = new ArrayList();		
-		if (equivalentString!=null){
-			String[] equivalentArray = equivalentString.split("|");
-			for (int i=0;i<equivalentArray.length;i++){
-				String t = equivalentArray[i];
-				equivalentList.add(t);
-			}
-		}		
-		return equivalentList;
+
+    public Set getEquivalents() {
+        equivalentSet = new HashSet();
+        if (equivalentString!=null){
+            String[] equivalentArray = equivalentString.split("|");
+            for (int i=0;i<equivalentArray.length;i++){
+                String t = equivalentArray[i];
+                equivalentSet.add(t);
+            }
+        }
+        return equivalentSet;
+    }
+
+    public void addEquivalent(String equivalent) {
+        if (equivalentString == null)
+            equivalentString = equivalent;
+        else
+            equivalentString = equivalentString + "|" + equivalent;
+        if (equivalentSet == null)
+            equivalentSet = new HashSet();
+        equivalentSet.add(equivalent);
+    }
+
+    public void removeEquivalent(String equivalent) {
+        equivalentString = "";
+        Iterator i = equivalentSet.iterator();
+        while (i.hasNext()){
+            String t = (String) i.next();
+	if (t.equals(equivalent))
+	    equivalentSet.remove(t);
+	else{
+	    if (("").equals(equivalentString))
+		equivalentString = t;
+	    else
+		equivalentString = equivalentString + "|" + t;
 	}
-	
-	public void addEquivalent(String equivalent) {
-		if (equivalentString == null)
-			equivalentString = equivalent;
-		else
-			equivalentString = equivalentString + "|" + equivalent;
-		if (equivalentList == null)
-			equivalentList = new ArrayList();
-		equivalentList.add(equivalent);
-	}
-	
-	public void removeEquivalent(String equivalent) {
-		equivalentString = "";
-		for (int i=0;i<equivalentList.size();i++){
-			String t = (String) equivalentList.get(i);
-			if (t.equals(equivalent))
-				equivalentList.remove(i);
-			else{
-				if (("").equals(equivalentString))
-					equivalentString = t;
-				else
-				  equivalentString = equivalentString + "|" + t;
-			}
-		}
-	}
+    }
+    }
 
 	/* ***************** Structural Methods ***************** */	
 	public Set getOfferings() {
 		return courseOfferingSet;
+	}
+
+	public void setOfferings(Set offerings) {
+		this.courseOfferingSet = offerings;
 	}
 	
 	public void addOffering(String offeringUuid) {

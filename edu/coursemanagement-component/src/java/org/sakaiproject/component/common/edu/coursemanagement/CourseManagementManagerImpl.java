@@ -13,6 +13,7 @@ import org.sakaiproject.api.edu.coursemanagement.CourseSection;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionType;
 import org.sakaiproject.api.edu.coursemanagement.EnrollmentStatusType;
+import org.sakaiproject.api.edu.coursemanagement.EnrollmentType;
 import org.sakaiproject.api.edu.coursemanagement.ParticipationStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSet;
 import org.sakaiproject.api.edu.coursemanagement.EnrollmentRecord;
@@ -299,6 +300,17 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
 		if (list.size()>0)
 			return (EnrollmentStatusType)list.get(0);
+		else
+			return null;
+	}
+
+	public EnrollmentType getEnrollmentTypeByUuid(String uuid) {
+		String query = "select t from EnrollmentTypeImpl t where t.uuid=?";
+		List list = getHibernateTemplate().find(query,
+				new Object[] {uuid},
+				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
+		if (list.size()>0)
+			return (EnrollmentType)list.get(0);
 		else
 			return null;
 	}

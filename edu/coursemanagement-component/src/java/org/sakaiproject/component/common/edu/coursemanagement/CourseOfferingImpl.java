@@ -36,6 +36,7 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	
 	/** The value of the cmEnrollmenttypeT association. */
 	private EnrollmentType enrollmentType;
+	private String enrollmentTypeUuid;
 	
 	/** The value of the cmSessionT association. */
 	private Session session;
@@ -60,6 +61,7 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	
 	/** The value of the simple canonicalcourseuuid property. */
 	private String canonicalCourseUuid;
+    private Long canonicalCourseId;
 	
 	/** The value of the simple createdby property. */
 	private String createdBy;
@@ -81,7 +83,8 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	
 	private List otherPeopleList;
 	
-	private Set equivalentOfferingSet;
+	private Set equivalentSet;
+        private String equivalentString;
 	
 	private Set defaultLeaderSet;
 	
@@ -144,8 +147,11 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 		this.session = session;
 	}
 
-    public void setSessionUuid(Session session) {
-	this.session = session;
+    public String getSessionUuid() {
+	if (session!=null)
+            return session.getUuid();
+	else
+            return null;
     }
 
     public void setSessionUuid(String uuid) {
@@ -153,7 +159,6 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
 	this.session = manager.getSessionByUuid(uuid);
     }
-
 
 	public Integer getMaximumStudents() {
 		return maximumStudents;
@@ -200,27 +205,63 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 		return isCrossListed;
 	}
 	
-	public Set getEquivalents() {
-		return equivalentOfferingSet;
+    /**
+     * Return the value of the TOPICS column.
+     * @return String
+     */
+    public String getEquivalentString()
+    {
+	return equivalentString;
+    }
+
+    /**
+     * Set the value of the Equivalent column.
+     * @param Equivalent
+     */
+    public void setEquivalentString(String equivalentString)
+    {
+	this.equivalentString = equivalentString;
+	equivalentSet = getEquivalents();
+    }
+
+    public Set getEquivalents() {
+	equivalentSet = new HashSet();
+	if (equivalentString!=null){
+	    String[] equivalentArray = equivalentString.split("|");
+	    for (int i=0;i<equivalentArray.length;i++){
+		String t = equivalentArray[i];
+		equivalentSet.add(t);
+	    }
 	}
-	
-	public void addEquivalent(String courseOfferingUuid) {
-		if (equivalentOfferingSet == null)
-			equivalentOfferingSet = new HashSet();
-		equivalentOfferingSet.add(courseOfferingUuid);
+	return equivalentSet;
+    }
+
+    public void addEquivalent(String equivalent) {
+	if (equivalentString == null)
+	    equivalentString = equivalent;
+	else
+	    equivalentString = equivalentString + "|" + equivalent;
+	if (equivalentSet == null)
+	    equivalentSet = new HashSet();
+	equivalentSet.add(equivalent);
+    }
+
+    public void removeEquivalent(String equivalent) {
+	equivalentString = "";
+        Iterator i = equivalentSet.iterator();
+	while (i.hasNext()){
+	    String t = (String) i.next();
+	    if (t.equals(equivalent))
+		equivalentSet.remove(t);
+	    else{
+		if (("").equals(equivalentString))
+		    equivalentString = t;
+		else
+		    equivalentString = equivalentString + "|" + t;
+	    }
 	}
-	
-	public void removeEquivalent(String courseOfferingUuid) {
-		Iterator i = equivalentOfferingSet.iterator();
-		while (i.hasNext()){
-			String uuid = (String) i.next();
-			if (uuid.equals(courseOfferingUuid)){
-				equivalentOfferingSet.remove(courseOfferingUuid);
-				break;
-			}
-		}
-	}
-		
+    }
+
 	/* ***************** Typing Methods ***************** */
 	public CourseOfferingType getOfferingType() {
 		return courseOfferingType;
@@ -272,6 +313,14 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	
 	public void setCanonicalCourse(String uuid) {
 		this.canonicalCourseUuid = uuid;
+	}
+
+	public Long getCanonicalCourseId() {
+		return canonicalCourseId;
+	}
+	
+	public void setCanonicalCourseId(Long id) {
+		this.canonicalCourseId = id;
 	}
 
 	public Set getCourseSections() {
@@ -377,6 +426,20 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	public EnrollmentType getEnrollmentType() {
 		return enrollmentType;
 	}
+
+    public void setEnrollmentTypeUuid(String uuid) {
+	this.enrollmentTypeUuid = uuid;
+	CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+	this.enrollmentType = manager.getEnrollmentTypeByUuid(uuid);
+    }
+
+
+    public String getEnrollmentTypeUuid() {
+	if (enrollmentType!=null)
+	    return enrollmentType.getUuid();
+	else
+	    return null;
+    }
 	
 	/* ***************** Persistence Methods ***************** */	
 	public String getUuid() {

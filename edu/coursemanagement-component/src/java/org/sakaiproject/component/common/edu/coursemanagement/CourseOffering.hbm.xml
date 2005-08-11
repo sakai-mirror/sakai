@@ -40,23 +40,20 @@
         <property name="courseOfferingStatusUuid" column="COURSEOFFERINGSTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
 
         <!-- Structural -->
-        <set name="courseSectionSet" cascade="all" inverse="true">
+        <set name="courseSections" cascade="all" inverse="true">
             <key column="COURSEOFFERINGID"/>
             <one-to-many class="CourseSectionImpl"/>
         </set>
-        <property name="canonicalCourseUuid" column="CANONICALCOURSEUUID" type="java.lang.String"  not-null="true" />
+        <property name="canonicalCourse" column="CANONICALCOURSEUUID" type="java.lang.String"  not-null="true" />
         <property name="canonicalCourseId" column="CANONICALCOURSEID" type="java.lang.Integer"  not-null="true" />
 
         <!-- Grouping -->
-        <set name="participationRecordSet" cascade="all" inverse="true">
+        <set name="participationSet" cascade="all" inverse="true">
             <key column="COURSEOFFERINGID"/>
             <one-to-many class="ParticipationRecordImpl"/>
         </set>
-        <set name="enrollmentRecordSet" cascade="all" inverse="true">
-            <key column="COURSEOFFERINGID"/>
-            <one-to-many class="EnrollmentRecordImpl"/>
-        </set>        
-        <property name="enrollemntTypeUuid" column="ENROLLMENTTYPEUUID" type="java.lang.String"  not-null="true" />
+
+        <property name="enrollmentTypeUuid" column="ENROLLMENTTYPEUUID" type="java.lang.String"  not-null="true" />
                
         <!-- Persistence --> 
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
