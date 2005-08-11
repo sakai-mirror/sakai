@@ -22,7 +22,7 @@
         <property name="schedule"> 
           <column name="SCHEDULE" sql-type="varchar(4000)"  not-null="false" />
         </property>  
-        <property name="sectionEventString"> 
+        <property name="sectionEventsString"> 
           <column name="SECTIONEVENTS" sql-type="varchar(4000)"  not-null="false" />
         </property>  
         <property name="location"> 
@@ -38,18 +38,18 @@
         <property name="holdingSection" column="HOLDINGSECTION" type="java.lang.Boolean" />
 
         <!-- Grouping -->
-        <set name="participationRecordSet" cascade="all" inverse="true">
+        <set name="participationSet" cascade="all" inverse="true">
             <key column="COURSESECTIONID"/>
             <one-to-many class="ParticipationRecordImpl"/>
         </set>
-        <set name="enrollmentRecordSet" cascade="all" inverse="true">
+        <set name="enrollmentRecords" cascade="all" inverse="true">
             <key column="COURSESECTIONID"/>
             <one-to-many class="EnrollmentRecordImpl"/>
         </set>        
-        <property name="enrollmentStatusTypeId" column="ENROLLMENTSTATUSTYPEID" type="java.lang.Long" not-null="true" />
+        <property name="enrollmentStatusUuid" column="ENROLLMENTSTATUSTYPEUUID" type="java.lang.String" not-null="true" />
 
         <!-- Structural -->
-        <property name="courseOfferingUuid" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
+        <property name="courseOffering" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
         <property name="courseOfferingId" column="COURSEOFFERINGID" type="java.lang.Integer"  not-null="true" />
         <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
         <set name="subSectionSet" cascade="all" inverse="true">

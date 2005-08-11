@@ -99,6 +99,10 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 
 	private String courseOfferingTypeUuid;
 
+        private String sessionUuid;
+
+        public CourseOfferingImpl(){}
+
 	public Long getCourseOfferingId() {
 		return this.courseOfferingId;
 	}
@@ -139,6 +143,17 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	public void setSession(Session session) {
 		this.session = session;
 	}
+
+    public void setSessionUuid(Session session) {
+	this.session = session;
+    }
+
+    public void setSessionUuid(String uuid) {
+	this.sessionUuid = uuid;
+	CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+	this.session = manager.getSessionByUuid(uuid);
+    }
+
 
 	public Integer getMaximumStudents() {
 		return maximumStudents;

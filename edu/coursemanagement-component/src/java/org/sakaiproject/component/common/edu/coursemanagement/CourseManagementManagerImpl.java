@@ -201,6 +201,17 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 		else
 			return null;
 	}
+
+	public Session getSessionByUuid(String uuid) {
+		String query = "select t from SessionImpl t where t.uuid=?";
+		List list = getHibernateTemplate().find(query,
+				new Object[] {uuid},
+				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
+		if (list.size()>0)
+			return (Session)list.get(0);
+		else
+			return null;
+	}
 	
 	public CanonicalCourseStatusType getCanonicalCourseStatusByKeyword(String keyword) {
 		String query = "select t from CanonicalCourseStatusTypeImpl t where t.keyword=?";

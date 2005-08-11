@@ -68,12 +68,14 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	private Set enrollmentSet;
 	
 	private EnrollmentStatusType enrollmentStatus;
+
+	private String enrollmentStatusUuid;
 	
 	private String courseOfferingUuid;
+
+	private Long courseOfferingId;
 	
 	private String scheduleUuid;
-	
-	private Set sectionEventUuidSet;
 	
 	private String location;
 	
@@ -100,6 +102,9 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	private String courseSectionTypeUuid;
 
 	private String courseSectionStatusUuid;
+
+        private String sessionUuid;
+
 	
 	public CourseSectionImpl(){
 		
@@ -118,7 +123,7 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	 * Set the simple primary key value that identifies this object.
 	 * @param coursesectionid
 	 */
-	public void setCourseSectionid(Long courseSectionId)
+	public void setCourseSectionId(Long courseSectionId)
 	{
 		this.hashValue = 0;
 		this.courseSectionId = courseSectionId;
@@ -173,6 +178,19 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 		this.session = session;
 	}
 
+        public void setSessionUuid(String uuid) {
+	  this.sessionUuid = uuid;
+	  CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+	  this.session = manager.getSessionByUuid(uuid);
+        }
+
+        public String getSessionUuid() {
+	  if (session!=null)
+	    return session.getUuid();
+	  else
+	    return null;
+        }
+
 	public String getSchedule() {
 		return schedule;
 	}
@@ -182,9 +200,14 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	}
 
 	/**
-	 * Set the value of the TOPICS column.
+	 * Set the value of the SECTIONEVENTS column.
 	 * @param topics
 	 */
+	public String getSectionEventsString()
+	{
+		return sectionEventsString;
+	}
+
 	public void setSectionEventsString(String sectionEventsString)
 	{
 		this.sectionEventsString = sectionEventsString;
@@ -339,6 +362,10 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 		return enrollmentSet;
 	}
 	
+    public void setEnrollmentRecords(Set enrollmentSet){
+	this.enrollmentSet = enrollmentSet;
+    }
+
 	public void addEnrollmentRecord(EnrollmentRecord enrollmentRecord) {
 		if (this.enrollmentSet == null)
 			this.enrollmentSet = new HashSet();
@@ -373,6 +400,19 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	public void setEnrollmentStatus(EnrollmentStatusType status) {
 		this.enrollmentStatus = status;
 	}
+
+    public void setEnrollmentStatusUuid(String statusUuid) {
+	this.enrollmentStatusUuid = statusUuid;
+	CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+	this.enrollmentStatus = manager.getEnrollmentStatusByUuid(statusUuid);
+    }
+
+    public String getEnrollmentStatusUuid() {
+	if (enrollmentStatus!=null)
+            return enrollmentStatus.getUuid();
+	else
+            return null;
+    }
 	
 	public Set getOtherPeople() {
 		return otherPeopleSet;
@@ -406,6 +446,14 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	public void setCourseOffering(String courseOfferingUuid) {
 		this.courseOfferingUuid = courseOfferingUuid;
 	}
+
+	public Long getCourseOfferingId() {
+		return this.courseOfferingId;
+	}
+	
+	public void setCourseOfferingId(Long courseOfferingId) {
+		this.courseOfferingId = courseOfferingId;
+	}
 		
 	public String getParentId() {
 		return parentUuid;
@@ -417,6 +465,14 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 
 	public Set getAllSubSections() {
 		return allChildren;
+	}
+	
+	public Set getSubSectionSet() {
+		return getAllSubSections();
+	}
+	
+	public void setSubSectionSet(Set subSectionSet) {
+		this.allChildren = subSectionSet;
 	}
 	
 	public void addSection(String sectionUuid) {
