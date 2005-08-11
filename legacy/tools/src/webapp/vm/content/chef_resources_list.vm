@@ -385,6 +385,7 @@
 			#end ## foreach $root in $this_site
 		
 			############################################# Begin "Other sites" section
+			#if ("$!atHome" == "$!TRUE")
 			#if($allowed_to_see_other_sites)
 				#if("$!show_other_sites" == "true")
 					<tr>
@@ -679,6 +680,7 @@
 						</td>
 					</tr>
 				#end
+			#end
 			#end
 			############################################# end of "Other sites" section 
 		

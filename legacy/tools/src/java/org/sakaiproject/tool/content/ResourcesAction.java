@@ -260,6 +260,7 @@ extends VelocityPortletPaneledAction
 	/************** the edit context *****************************************/
 
 	/** The edit id */
+	private static final String STATE_EDIT_ALERTS = "resources.edit_alerts";
 	private static final String STATE_EDIT_ID = "resources.edit_id";
 	private static final String STATE_EDIT_ITEM = "resources.edit_item";
 	private static final String STATE_EDIT_COLLECTION_ID = "resources.edit_collection_id";
@@ -3832,6 +3833,8 @@ extends VelocityPortletPaneledAction
 		{
 			// got resource and sucessfully populated item with values
 			state.setAttribute (STATE_MODE, MODE_EDIT);
+			state.setAttribute(STATE_EDIT_ALERTS, new HashSet());
+			
 		}
 		
 	}	// doEdit
@@ -4299,20 +4302,21 @@ extends VelocityPortletPaneledAction
 	protected void captureValues(SessionState state, ParameterParser params)
 	{
 		EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
-		List alerts = (List) state.getAttribute(STATE_CREATE_ALERTS);
+		Set alerts = (Set) state.getAttribute(STATE_EDIT_ALERTS);
 		if(alerts == null)
 		{
-			alerts = new Vector();
+			alerts = new HashSet();
 		}
 		String intent = params.getString("intent");
 
 		String oldintent = (String) state.getAttribute(STATE_EDIT_INTENT);
 		boolean intent_has_changed = (item.isHtml() || item.isPlaintext()) && !intent.equals(oldintent);
 		
-		String name = params.getString("name");
-		if(name == null)
+		String name = params.getString("name").trim();
+		if(name == null || "".equals(name))
 		{
-			addAlert(state, rb.getString("titlenotnull"));
+			alerts.add(rb.getString("titlenotnull"));
+			// addAlert(state, rb.getString("titlenotnull"));
 		}
 		else
 		{
@@ -4405,13 +4409,15 @@ extends VelocityPortletPaneledAction
 							else
 							{
 								// invalid url
-								addAlert(state, rb.getString("validurl"));
+								alerts.add(rb.getString("validurl"));
+								// addAlert(state, rb.getString("validurl"));
 							}
 						}
 						catch (MalformedURLException e2)
 						{
 							// invalid url
-							addAlert(state, rb.getString("validurl"));
+							alerts.add(rb.getString("validurl"));
+							// addAlert(state, rb.getString("validurl"));
 						}
 					}
 					
@@ -4443,7 +4449,7 @@ extends VelocityPortletPaneledAction
 			
 			if(formtype_check == null || formtype_check.equals(""))
 			{
-				//alerts.add("Must select a form type");
+				alerts.add(rb.getString("edit.chooseform"));
 				// item.setMissing("formtype");
 			}
 			else if(formtype_check.equals(formtype))
@@ -4536,7 +4542,8 @@ extends VelocityPortletPaneledAction
 					}
 					else
 					{
-						addAlert(state, rb.getString("specifycp2"));
+						alerts.add(rb.getString("specifycp2"));
+						// addAlert(state, rb.getString("specifycp2"));
 					}
 				}
 				else if (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) != null && copyrightStatus.equals (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT)))
@@ -4661,7 +4668,7 @@ extends VelocityPortletPaneledAction
 			}
 		}
 		state.setAttribute(STATE_EDIT_ITEM, item);
-		state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		state.setAttribute(STATE_EDIT_ALERTS, alerts);
 
 	}	// captureValues
 	
@@ -5087,7 +5094,6 @@ extends VelocityPortletPaneledAction
 		}
 		captureValues(state, params);
 
-
 		if(flow.equals("showMetadata"))
 		{
 			doShow_metadata(data);
@@ -5104,7 +5110,8 @@ extends VelocityPortletPaneledAction
 			return;
 		}
 		
-		if (state.getAttribute(STATE_MESSAGE) == null)
+		Set alerts = (Set) state.getAttribute(STATE_EDIT_ALERTS);
+		if(alerts.isEmpty())
 		{
 			EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
 			boolean intent_has_changed = false;
@@ -5155,7 +5162,8 @@ extends VelocityPortletPaneledAction
 							}
 							else
 							{
-								addAlert(state, rb.getString("specifycp2"));
+								alerts.add(rb.getString("specifycp2"));
+								// addAlert(state, rb.getString("specifycp2"));
 							}
 						}
 						else if (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) != null && copyright.equals (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT)))
@@ -5200,7 +5208,9 @@ extends VelocityPortletPaneledAction
 				
 				List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
 				
+				state.setAttribute(STATE_EDIT_ALERTS, alerts);
 				saveMetadata(pedit, metadataGroups, item);
+				alerts = (Set) state.getAttribute(STATE_EDIT_ALERTS);
 
 				// commit the change
 				if (cedit != null)
@@ -5233,27 +5243,32 @@ extends VelocityPortletPaneledAction
 			}
 			catch (TypeException e)
 			{
-				addAlert(state," " + rb.getString("typeex") + " "  + item.getId());
+				alerts.add(rb.getString("typeex") + " "  + item.getId());
+				// addAlert(state," " + rb.getString("typeex") + " "  + item.getId());
 			}
 			catch (IdUnusedException e)
 			{
-				addAlert(state,RESOURCE_NOT_EXIST_STRING);
+				alerts.add(RESOURCE_NOT_EXIST_STRING);
+				// addAlert(state,RESOURCE_NOT_EXIST_STRING);
 			}
 			catch (PermissionException e)
 			{
-				addAlert(state, rb.getString("notpermis10") + " " + item.getId() + ". " );
+				alerts.add(rb.getString("notpermis10") + " " + item.getId());
+				// addAlert(state, rb.getString("notpermis10") + " " + item.getId() + ". " );
 			}
 			catch (InUseException e)
 			{
-				addAlert(state, rb.getString("someone") + " " + item.getId() + ". ");
+				alerts.add(rb.getString("someone") + " " + item.getId());
+				// addAlert(state, rb.getString("someone") + " " + item.getId() + ". ");
 			}
 			catch (OverQuotaException e)
 			{
-				addAlert(state, rb.getString("changing1") + " " + item.getId() + " " + rb.getString("changing2"));
+				alerts.add(rb.getString("changing1") + " " + item.getId() + " " + rb.getString("changing2"));
+				// addAlert(state, rb.getString("changing1") + " " + item.getId() + " " + rb.getString("changing2"));
 			}
 		}	// if - else
 
-		if (state.getAttribute(STATE_MESSAGE) == null)
+		if(alerts.isEmpty())
 		{
 			// modify properties sucessful
 			state.setAttribute (STATE_MODE, MODE_LIST);
@@ -5262,10 +5277,15 @@ extends VelocityPortletPaneledAction
 		}	//if-else
 		else
 		{
-			//if(item.isFolder())
+			Iterator alertIt = alerts.iterator();
+			while(alertIt.hasNext())
 			{
-				
+				String alert = (String) alertIt.next();
+				addAlert(state, alert);
 			}
+			alerts.clear();
+			state.setAttribute(STATE_EDIT_ALERTS, alerts);
+			// state.setAttribute(STATE_CREATE_MISSING_ITEM, missing);
 		}
 
 	}	// doSavechanges

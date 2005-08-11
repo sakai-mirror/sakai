@@ -200,8 +200,11 @@
 					#end
 				#else
 					<p class="shorttext">
+						<label for="fileName">$tlang.getString("addi.upload")</label>
+						$validator.escapeHtml("$!item.filename")
+					</p>
+					<p class="shorttext">
 						<label for="fileName">$tlang.getString("rep.thisfile")</label>
-						<!-- $validator.escapeHtml("$!item.filename") -->
 						<input type="file" name="fileName" id="fileName" class="upload" />
 					</p>
 				#end
