@@ -47,13 +47,13 @@ import org.springframework.test.AbstractTransactionalSpringContextTests;
 public abstract class CourseManagementTestBase extends AbstractTransactionalSpringContextTests {
 	private static Log log = LogFactory.getLog(CourseManagementTestBase.class);
 
-    //protected CanonicalCourse canonicalCourse;
+    protected CanonicalCourse canonicalCourse;
     protected Session session;
     protected SessionType sessionType;
     protected CourseManagementManager courseManagementManager;
 
     protected void onSetUpInTransaction() throws Exception {
-        //canonicalCourse = (CanonicalCourse)applicationContext.getBean("org_sakaiproject_api_edu_coursemanagement_CanonicalCourse");
+        canonicalCourse = (CanonicalCourse)applicationContext.getBean("org_sakaiproject_api_edu_coursemanagement_CanonicalCourse");
         session = (Session)applicationContext.getBean("org_sakaiproject_api_edu_coursemanagement_Session");
         sessionType = (SessionType)applicationContext.getBean("org_sakaiproject_api_edu_coursemanagement_SessionType");
         courseManagementManager = (CourseManagementManager)applicationContext.getBean("org_sakaiproject_api_edu_coursemanagement_CourseManagementManager");

@@ -222,7 +222,7 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	}
 
 	
-	public String getCourseOfferingTypeUuId() {
+	public String getCourseOfferingTypeUuid() {
 		if (courseOfferingType!=null)
 		 return courseOfferingType.getUuid();
 		else
@@ -243,8 +243,7 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 		this.courseOfferingStatus = manager.getCourseOfferingStatusByUuid(uuid);
 	}
 
-	
-	public String getCourseOfferingStatusUuId() {
+	public String getCourseOfferingStatusUuid() {
 		if (courseOfferingStatus!=null)
 		 return courseOfferingStatus.getUuid();
 		else

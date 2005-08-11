@@ -22,13 +22,15 @@ public class ParticipationRecordImpl implements ParticipationRecord, Serializabl
 	private String agentUuid;
 	private String role;
 	private ParticipationStatusType status;
+        private String statusUuid;
+	private Long courseSectionId;
 	private String courseSectionUuid;
+	private Long courseOfferingId;
+	private String courseOfferingUuid;
 	private String createdBy;
 	private Date createdDate;
 	private String lastModifiedBy;
 	private Date lastModifiedDate;
-	
-	private String courseOfferingUuid;
 	
 	private Boolean isLeader;
 	
@@ -78,21 +80,66 @@ public class ParticipationRecordImpl implements ParticipationRecord, Serializabl
 	public void setParticipationStatus(ParticipationStatusType status) {
 		this.status = status;
 	}
+
+        public void setStatusUuid(String statusUuid) {
+	  this.statusUuid = statusUuid;
+	  CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+	  this.status = manager.getParticipationStatusByUuid(statusUuid);
+        }
+
+        public String getStatusUuid() {
+	  if (status!=null)
+            return status.getUuid();
+	  else
+            return null;
+        }
 	
 	public String getCourseReference() {
-		return courseSectionUuid;
+		return getCourseSectionUuid();
 	}
 	
 	public void setCourseReference(String courseSectionUuid) {
+		setCourseSectionUuid(courseSectionUuid);
+	}
+	
+	public String getCourseSectionUuid() {
+		return this.courseSectionUuid;
+	}
+	
+	public void setCourseSectionUuid(String courseSectionUuid) {
 		this.courseSectionUuid = courseSectionUuid;
 	}
 	
-	public String getCourseOffering() {
+	public Long getCourseSectionId() {
+		return this.courseSectionId;
+	}
+	
+	public void setCourseSectionId(Long courseSectionId) {
+		this.courseSectionId = courseSectionId;
+	}
+
+	public String getCourseOfferingUuid() {
 		return this.courseOfferingUuid;
 	}
 	
-	public void setCourseOffering(String courseOfferingUuid) {
+	public void setCourseOfferingUuid(String courseOfferingUuid) {
 		this.courseOfferingUuid = courseOfferingUuid;
+	}
+	
+	public Long getCourseOfferingId() {
+		return this.courseOfferingId;
+	}
+	
+	public void setCourseOfferingId(Long courseOfferingId) {
+		this.courseOfferingId = courseOfferingId;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+	
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 	public String getCreatedBy() {
@@ -175,14 +222,6 @@ public class ParticipationRecordImpl implements ParticipationRecord, Serializabl
 	
 	public void setIsOtherPeople(Boolean isOtherPeople) {
 		this.isOtherPeople = isOtherPeople;
-	}
-	
-	public String getUuid() {
-		return uuid;
-	}
-	
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
 	}
 	
 }

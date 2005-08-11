@@ -24,8 +24,9 @@
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
         <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" /> 
+
+        <property name="statusUuid" column="ENROLLMENTSTATUSTYPEUUID" type="java.lang.String"  not-null="true" /> 
  
-        <many-to-one name="enrollmentStatusType" column="ENROLLMENTSTATUSTYPEID" class="EnrollmentStatusTypeImpl" />
     </class>
     
 </hibernate-mapping>

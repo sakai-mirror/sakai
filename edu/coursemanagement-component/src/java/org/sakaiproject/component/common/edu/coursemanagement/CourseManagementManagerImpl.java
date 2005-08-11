@@ -12,6 +12,8 @@ import org.sakaiproject.api.edu.coursemanagement.CourseOfferingType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSection;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionType;
+import org.sakaiproject.api.edu.coursemanagement.EnrollmentStatusType;
+import org.sakaiproject.api.edu.coursemanagement.ParticipationStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSet;
 import org.sakaiproject.api.edu.coursemanagement.EnrollmentRecord;
 import org.sakaiproject.api.edu.coursemanagement.ParticipationRecord;
@@ -279,4 +281,25 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 			return null;
 	}
 
+	public EnrollmentStatusType getEnrollmentStatusByUuid(String uuid) {
+		String query = "select t from EnrollmentStatusTypeImpl t where t.uuid=?";
+		List list = getHibernateTemplate().find(query,
+				new Object[] {uuid},
+				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
+		if (list.size()>0)
+			return (EnrollmentStatusType)list.get(0);
+		else
+			return null;
+	}
+
+	public ParticipationStatusType getParticipationStatusByUuid(String uuid) {
+		String query = "select t from ParticipationStatusTypeImpl t where t.uuid=?";
+		List list = getHibernateTemplate().find(query,
+				new Object[] {uuid},
+				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
+		if (list.size()>0)
+			return (ParticipationStatusType)list.get(0);
+		else
+			return null;
+	}	
 }

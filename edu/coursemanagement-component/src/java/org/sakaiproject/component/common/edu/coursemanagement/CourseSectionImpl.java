@@ -91,7 +91,7 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 
 	private String schedule;
 
-	private String parentUuId;
+	private String parentUuid;
 
 	private String sectionEventsString;
 
@@ -260,7 +260,7 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	}
 
 	
-	public String getCourseSectionTypeUuId() {
+	public String getCourseSectionTypeUuid() {
 		if (courseSectionType!=null)
 		 return courseSectionType.getUuid();
 		else
@@ -281,7 +281,7 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 		this.courseSectionStatus = manager.getCourseSectionStatusByUuid(uuid);
 	}
 
-	public String getCourseSectionStatusUuId() {
+	public String getCourseSectionStatusUuid() {
 		if (courseSectionStatus!=null)
 		 return courseSectionStatus.getUuid();
 		else
@@ -408,11 +408,11 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	}
 		
 	public String getParentId() {
-		return parentUuId;
+		return parentUuid;
 	}
 	
 	public void setParentId(String parentUuid) {
-		this.parentUuId = parentUuid;
+		this.parentUuid = parentUuid;
 	}
 
 	public Set getAllSubSections() {

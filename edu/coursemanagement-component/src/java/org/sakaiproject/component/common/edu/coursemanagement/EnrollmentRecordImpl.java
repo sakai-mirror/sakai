@@ -22,8 +22,13 @@ public class EnrollmentRecordImpl implements EnrollmentRecord, Serializable  {
 	private String agentUuid;
 	private String role;
 	private EnrollmentStatusType status;
+        private String statusUuid;
 	private String credits;
+	private Long courseSectionId;
 	private String courseSectionUuid;
+	private Long courseOfferingId;
+	private String courseOfferingUuid;
+        private String uuid;
 	private String createdBy;
 	private Date createdDate;
 	private String lastModifiedBy;
@@ -71,6 +76,19 @@ public class EnrollmentRecordImpl implements EnrollmentRecord, Serializable  {
 	public void setStatus(EnrollmentStatusType status) {
 		this.status = status;
 	}
+
+        public void setStatusUuid(String statusUuid) {
+	  this.statusUuid = statusUuid;
+	  CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+	  this.status = manager.getEnrollmentStatusByUuid(statusUuid);
+        }
+
+        public String getStatusUuid() {
+	  if (status!=null)
+	    return status.getUuid();
+          else
+	    return null;
+        }
 	
 	public String getCredits() {
 		return credits;
@@ -81,12 +99,53 @@ public class EnrollmentRecordImpl implements EnrollmentRecord, Serializable  {
 	}
 	
 	public String getCourseReference() {
-		return courseSectionUuid;
+		return getCourseSectionUuid();
 	}
 	
 	public void setCourseReference(String courseSectionUuid) {
+		setCourseSectionUuid(courseSectionUuid);
+	}
+
+	public String getCourseSectionUuid() {
+		return courseSectionUuid;
+	}
+	
+	public void setCourseSectionUuid(String courseSectionUuid) {
 		this.courseSectionUuid = courseSectionUuid;
 	}
+	
+	public Long getCourseSectionId() {
+		return courseSectionId;
+	}
+	
+	public void setCourseSectionId(Long courseSectionId) {
+		this.courseSectionId = courseSectionId;
+	}
+	
+	public String getCourseOfferingUuid() {
+		return courseOfferingUuid;
+	}
+	
+	public void setCourseOfferingUuid(String courseOfferingUuid) {
+		this.courseOfferingUuid = courseOfferingUuid;
+	}
+	
+	public Long getCourseOfferingId() {
+		return courseOfferingId;
+	}
+	
+	public void setCourseOfferingId(Long courseOfferingId) {
+		this.courseOfferingId = courseOfferingId;
+	}
+
+    public String getUuid() {
+	return uuid;
+    }
+
+    public void setUuid(String uuid) {
+	this.uuid = uuid;
+    }
+
 	
 	public String getCreatedBy() {
 		return createdBy;
