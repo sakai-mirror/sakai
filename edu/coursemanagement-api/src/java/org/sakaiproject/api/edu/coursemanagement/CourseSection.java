@@ -258,20 +258,6 @@ public interface CourseSection extends Persistable
 	public void setCourseOffering(String courseOfferingUuid);
 
 	/**
-	 * Get the uuid of the schedule associated with this course section. See schedule service for more details.
-	 * 
-	 * @return schedule uuid.
-	 */
-	public String getSchedule();
-
-	/**
-	 * Set the uuid of the schedule associated wtih this course section See schedule service for more details.
-	 * 
-	 * @param scheduleUuid
-	 */
-	public void setSchedule(String scheduleUuid);
-
-	/**
 	 * Get the set of event associated with this course section. Event objects are TBD at this time.
 	 * 
 	 * @return
@@ -283,28 +269,14 @@ public interface CourseSection extends Persistable
 	 * 
 	 * @param eventUuid
 	 */
-	public void addSectionEvent(String eventUuid);
+	public void addSectionEvent(String event);
 
 	/**
 	 * Remove an event given it's uuid.
 	 * 
 	 * @param eventUuid
 	 */
-	public void removeSectionEvent(String eventUuid);
-
-	/**
-	 * Check to see if this section was created locally. True if local, false if this section represents one in a registrar system.
-	 * 
-	 * @return
-	 */
-	public Boolean getCreatedLocally();
-
-	/**
-	 * Set the created locally flag.
-	 * 
-	 * @param createdLocally
-	 */
-	public void setCreatedLocally(Boolean createdLocally);
+	public void removeSectionEvent(String event);
 
 	/**
 	 * Check to see if this is a holding section. True if this section is being used to hold students that will be re-assigned later.
@@ -362,7 +334,34 @@ public interface CourseSection extends Persistable
 	 * @param meeting time
 	 */
 	public void setMeetingTime(String meetingTime);
-   	
+
+	/**
+	 * Get the schedule of a course section.
+	 *
+	 * @return the schedule of the course section.
+	 */
+	public String getSchedule();
+
+	/**
+	 * Set the schedule of this course section.
+	 *
+	 * @param schedule
+	 */
+	public void setSchedule(String schedule);
+
+	/**
+	 * Set the schedule of this course section.
+	 *
+	 * @param schedule
+	 */
+	public void setScheduleEvent(String scheduleEvent);
+	/**
+	 * Get the schedule of a course section.
+	 *
+	 * @return the schedule of the course section.
+	 */
+	public String getScheduleEvent();
+
 	/**
 	 * Get the parent uuid of a course section.
 	 *

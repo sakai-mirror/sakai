@@ -45,6 +45,9 @@ import org.sakaiproject.api.common.manager.Persistable;
  * <li>An enrollment type [Enumerated Property]
  * <li>The canonical course that this offering represents. [CanonicalCourse Id]
  * <li>A set of course sections derived from this offering. [Set of CourseSection Ids]
+ * <li>A default Location [String]
+ * <li>A default Meeting Time [String] 
+ * <li>A default Schedule [String] 
  * </ul>
  * 
  * @author Mark Norton
@@ -319,29 +322,6 @@ public interface CourseOffering extends Persistable
 	public void setCanonicalCourse(String canonicalCourseUuid);
 
 	/**
-	 * Get a set of uuids of sections derived from this course offering. 
-	 * Each of these sections is a real class with a location, teacher, 
-	 * students, etc.
-	 * 
-	 * @return Set of course section uuids.
-	 */
-	public Set getSections();
-
-	/**
-	 * Add a course section uuid to represent this offering.
-	 * 
-	 * @param sectionUuid
-	 */
-	public void addSection(String sectionUuid);
-
-	/**
-	 * Remove a course section uuid that reprsents this course offering.
-	 * 
-	 * @param sectionUuid
-	 */
-	public void removeSection(String sectionUuid);
-	
-	/**
 	 * Get a set of uuids of sections of a given course section type, 
 	 * derived from this course offering. Each of these sections is 
 	 * a real class with a location, teacher, students, etc.
@@ -349,5 +329,47 @@ public interface CourseOffering extends Persistable
 	 * @return Set of course section uuids.
 	 */
 	public Set getSectionsByType(CourseSectionType type);
-		
+
+	/**
+	 * Get the location of a course section.
+	 *
+	 * @return the default location of the course section.
+	 */
+	public String getDefaultLocation();
+
+	/**
+	 * Set the default location of this course section.
+	 *
+	 * @param location
+	 */
+	public void setDefaultLocation(String location);
+
+	/**
+	 * Get the default meeting time of a course section.
+	 *
+	 * @return the meeting time of the course section.
+	 */
+	public String getDefaultMeetingTime();
+
+	/**
+	 * Set the default meeting time of this course section.
+	 *
+	 * @param meeting time
+	 */
+	public void setDefaultMeetingTime(String meetingTime);
+   	
+	/**
+	 * Get the default schedule of a course section.
+	 *
+	 * @return the schedule of the course section.
+	 */
+	public String getDefaultSchedule();
+
+	/**
+	 * Set the default schedule of this course section.
+	 *
+	 * @param schedule
+	 */
+	public void setDefaultSchedule(String schedule);
+
 }

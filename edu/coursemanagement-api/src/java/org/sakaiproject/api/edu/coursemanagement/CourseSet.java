@@ -82,5 +82,18 @@ public interface CourseSet extends Persistable{
 	 * @param canonicalCourseUuid
 	 */
 	public void removeCanonicalCourse (String canonicalCourseUuid);
-		
+
+	/**
+	 * This allows CourseSet to be rooted in the sakai structure
+	 * @return uuid
+	 */
+	public String getContext();
+	
+	/**
+	 * Set the context of this course set.
+	 * 
+	 * @param uuid
+	 */
+	public void setContext(String uuid);
+	
 }

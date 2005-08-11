@@ -293,11 +293,11 @@ public interface CourseManagementManager
 	 * @author Mark Norton
 	 */
   public List getCourseSet(String canonicalCourseUuid);
-  public CanonicalCourseStatusType getCanonicalCourseStatusTypeByUuid(String canonicalCourseUuid);
-  public CanonicalCourseStatusType getCanonicalCourseStatusTypeByKeyword(String keyword);
-  public SessionType getSessionTypeByKeyword(String keyword);
-  public CanonicalCourse getCanonicalCourseByUuid(String canonicalCourseUuid);
-	public CanonicalCourse saveCanonicalCourse(CanonicalCourse c);        
-	//public EquivalentCourses saveEquivalentCourses(EquivalentCourses e);        
+    //public CanonicalCourseStatusType getCanonicalCourseStatusByUuid(String canonicalCourseUuid);
+    //public CanonicalCourseStatusType getCanonicalCourseStatusByKeyword(String keyword);
+    //public SessionType getSessionTypeByKeyword(String keyword);
+    //public CanonicalCourse getCanonicalCourseByUuid(String canonicalCourseUuid);
+    //public CanonicalCourse saveCanonicalCourse(CanonicalCourse c);        
+  //public EquivalentCourses saveEquivalentCourses(EquivalentCourses e);        
         
 }
