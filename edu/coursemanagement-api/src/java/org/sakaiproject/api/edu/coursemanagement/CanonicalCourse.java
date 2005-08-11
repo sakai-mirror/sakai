@@ -164,7 +164,7 @@ public interface CanonicalCourse extends Persistable{
 	 * 
 	 * @return List of canonical course uuids.
 	 */
-	public List getEquivalents ();
+	public Set getEquivalents ();
 	
 	/**
 	 * Add the canonical course given by its uuid to the list of equivalent
