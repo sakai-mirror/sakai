@@ -1,6 +1,7 @@
 package org.sakaiproject.component.common.edu.coursemanagement;
 
 import java.io.Serializable;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -45,9 +46,6 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	/** The value of the simple defaultCredits property. */
 	private String defaultCredits;
 	
-	/** The value of the simple parentId property. */
-	private String parentId;
-	
 	private String topicsString;
 	
 	private List topicList;
@@ -72,6 +70,8 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 
 	private String equivalentString;
 
+	private String parentUuId;
+
 	public CanonicalCourseImpl() {}
 	
 	public CanonicalCourseImpl(String title, String description,
@@ -91,7 +91,8 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	public void setCanonicalCourseId(Long canonicalCourseId) {
 		this.canonicalCourseId = canonicalCourseId;
 	}
-	
+
+	/* ***************** Metadata Methods ***************** */
 	public String getTitle() {
 		return title;
 	}
@@ -116,43 +117,6 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 		this.courseNumber = courseNumber;
 	}
 	
-	public String getUuid() {
-		return uuid;
-	}
-	
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-	
-	public CanonicalCourseStatusType getCanonicalCourseStatus() {
-		return canonicalCourseStatus;
-	}
-	
-	public void setCanonicalCourseStatus(CanonicalCourseStatusType status) {
-		this.canonicalCourseStatus = status;
-	}
-
-	public String getCanonicalCourseStatusUuid() {
-		return canonicalCourseStatus.getUuid();
-	}
-	
-	public void setCanonicalCourseStatusUuid(String statusUuid) {
-		this.canonicalCourseStatusUuid = statusUuid;
-		CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
-		this.canonicalCourseStatus = manager.getCanonicalCourseStatusTypeByUuid(statusUuid);
-	}
-
-	
-	public String getCanonicalCourseStatusUuId() {
-		if (canonicalCourseStatus!=null)
-		 return canonicalCourseStatus.getUuid();
-		else
-		 return null;
-	}
-	
-	public void setCanonicalCourseStatusId(String statusUuid) {
-		this.canonicalCourseStatusUuid = statusUuid;
-	}
 	
 	public String getDefaultCredits() {
 		return this.defaultCredits;
@@ -168,7 +132,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	 */
 	public String getTopicsString()
 	{
-		return this.topicsString;
+		return topicsString;
 	}
 	
 	/**
@@ -203,71 +167,16 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 	
 	public void removeTopic(String topic) {
 		topicsString = "";
-		for (int i=0;i<topicList.size();i++){
-			String t = (String) topicList.get(i);
+		Iterator i = topicList.iterator();
+		while (i.hasNext()){
+			String t = (String) i.next();
 			if (t.equals(topic))
-				topicList.remove(i);
+				topicList.remove(t);
 			else{
 				if (("").equals(topicsString))
 					topicsString = t;
 				else
 				  topicsString = topicsString + "|" + t;
-			}
-		}
-	}
-
-	/**
-	 * Return the value of the TOPICS column.
-	 * @return String
-	 */
-	public String getEquivalentString()
-	{
-		return equivalentString;
-	}
-	
-	/**
-	 * Set the value of the Equivalent column.
-	 * @param Equivalent
-	 */
-	public void setEquivalentString(String equivalentString)
-	{
-		this.equivalentString = equivalentString;
-		equivalentList = getEquivalents();
-	}
-	
-	public List getEquivalents() {
-		equivalentList = new ArrayList();		
-		if (equivalentString!=null){
-			String[] equivalentArray = equivalentString.split("|");
-			for (int i=0;i<equivalentArray.length;i++){
-				String t = equivalentArray[i];
-				equivalentList.add(t);
-			}
-		}		
-		return equivalentList;
-	}
-	
-	public void addEquivalent(String equivalent) {
-		if (equivalentString == null)
-			equivalentString = equivalent;
-		else
-			equivalentString = equivalentString + "|" + equivalent;
-		if (equivalentList == null)
-			equivalentList = new ArrayList();
-		equivalentList.add(equivalent);
-	}
-	
-	public void removeEquivalent(String equivalent) {
-		equivalentString = "";
-		for (int i=0;i<equivalentList.size();i++){
-			String t = (String) equivalentList.get(i);
-			if (t.equals(equivalent))
-				equivalentList.remove(i);
-			else{
-				if (("").equals(equivalentString))
-					equivalentString = t;
-				else
-				  equivalentString = equivalentString + "|" + t;
 			}
 		}
 	}
@@ -327,14 +236,87 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 		}
 	}
 	
-	public String getParentId() {
-		return parentId;
+	/* ***************** Typing Methods ***************** */
+	public CanonicalCourseStatusType getCanonicalCourseStatus() {
+		return canonicalCourseStatus;
 	}
 	
-	public void setParentId(String parentUuid) {
-		this.parentId = parentUuid;
+	public void setCanonicalCourseStatus(CanonicalCourseStatusType status) {
+		this.canonicalCourseStatus = status;
+	}
+
+	public void setCanonicalCourseStatusUuid(String statusUuid) {
+		this.canonicalCourseStatusUuid = statusUuid;
+		CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+		this.canonicalCourseStatus = manager.getCanonicalCourseStatusByUuid(statusUuid);
+	}
+
+	
+	public String getCanonicalCourseStatusUuId() {
+		if (canonicalCourseStatus!=null)
+		 return canonicalCourseStatus.getUuid();
+		else
+		 return null;
 	}
 	
+	/* ***************** Cross Listing Methods ***************** */
+	/**
+	 * Return the value of the TOPICS column.
+	 * @return String
+	 */
+	public String getEquivalentString()
+	{
+		return equivalentString;
+	}
+	
+	/**
+	 * Set the value of the Equivalent column.
+	 * @param Equivalent
+	 */
+	public void setEquivalentString(String equivalentString)
+	{
+		this.equivalentString = equivalentString;
+		equivalentList = getEquivalents();
+	}
+	
+	public List getEquivalents() {
+		equivalentList = new ArrayList();		
+		if (equivalentString!=null){
+			String[] equivalentArray = equivalentString.split("|");
+			for (int i=0;i<equivalentArray.length;i++){
+				String t = equivalentArray[i];
+				equivalentList.add(t);
+			}
+		}		
+		return equivalentList;
+	}
+	
+	public void addEquivalent(String equivalent) {
+		if (equivalentString == null)
+			equivalentString = equivalent;
+		else
+			equivalentString = equivalentString + "|" + equivalent;
+		if (equivalentList == null)
+			equivalentList = new ArrayList();
+		equivalentList.add(equivalent);
+	}
+	
+	public void removeEquivalent(String equivalent) {
+		equivalentString = "";
+		for (int i=0;i<equivalentList.size();i++){
+			String t = (String) equivalentList.get(i);
+			if (t.equals(equivalent))
+				equivalentList.remove(i);
+			else{
+				if (("").equals(equivalentString))
+					equivalentString = t;
+				else
+				  equivalentString = equivalentString + "|" + t;
+			}
+		}
+	}
+
+	/* ***************** Structural Methods ***************** */	
 	public Set getOfferings() {
 		return courseOfferingSet;
 	}
@@ -354,6 +336,23 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 				break;
 			}
 		}
+	}
+
+	public String getParentId() {
+		return parentUuId;
+	}
+	
+	public void setParentId(String parentUuid) {
+		this.parentUuId = parentUuid;
+	}
+
+	/* ***************** Persistence Methods ***************** */	
+	public String getUuid() {
+		return uuid;
+	}
+	
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 	public String getCreatedBy() {

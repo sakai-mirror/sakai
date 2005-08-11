@@ -1,9 +1,11 @@
 package org.sakaiproject.component.common.edu.coursemanagement;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.api.edu.coursemanagement.CourseSection;
@@ -83,15 +85,23 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	
 	private HashSet otherPeopleSet;
 	
-	private String parentId;
-	
 	private Set allChildren;
 	
-	private Boolean createdLocally;
-	
 	private Boolean holdingSection;
+
+	private String schedule;
+
+	private String parentUuId;
+
+	private String sectionEventsString;
+
+	private Set sectionEventSet;
+
+	private String courseSectionTypeUuid;
+
+	private String courseSectionStatusUuid;
 	
-	public CourseSectionImpl(String uuid){
+	public CourseSectionImpl(){
 		
 	}
 	
@@ -113,7 +123,8 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 		this.hashValue = 0;
 		this.courseSectionId = courseSectionId;
 	}
-	
+
+	/* ***************** Metadata Methods ***************** */	
 	public String getTitle() {
 		return title;
 	}
@@ -136,13 +147,6 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	
 	public void setSectionNumber(String sectionNumber) {
 		this.sectionNumber = sectionNumber;
-	}
-	
-	public String getUuid() {
-		return uuid;
-	}
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
 	}
 	
 	public int getMaximumStudents() {
@@ -168,7 +172,79 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	public void setSession(Session session) {
 		this.session = session;
 	}
+
+	public String getSchedule() {
+		return schedule;
+	}
 	
+	public void setSchedule(String schedule) {
+		this.schedule = schedule;
+	}
+
+	/**
+	 * Set the value of the TOPICS column.
+	 * @param topics
+	 */
+	public void setSectionEventsString(String sectionEventsString)
+	{
+		this.sectionEventsString = sectionEventsString;
+		sectionEventSet = getSectionEvents();
+	}
+	
+	public Set getSectionEvents() {
+		sectionEventSet = new HashSet();
+		String[] sectionEventsArray = sectionEventsString.split("|");
+		for (int i=0;i<sectionEventsArray.length;i++){
+			String t = sectionEventsArray[i];
+			sectionEventSet.add(t);
+		}
+		return sectionEventSet;
+	}
+	
+	public void addSectionEvent(String sectionEvent) {
+		if (sectionEventsString == null)
+			sectionEventsString = sectionEvent;
+		else
+			sectionEventsString = sectionEventsString + "|" + sectionEvent;
+		if (sectionEventSet == null)
+			sectionEventSet = new HashSet();
+		sectionEventSet.add(sectionEvent);
+	}
+	
+	public void removeSectionEvent(String sectionEvent) {
+		sectionEventsString = "";
+		Iterator i = sectionEventSet.iterator();
+		while (i.hasNext()){
+			String t = (String) i.next();
+			if (t.equals(sectionEvent))
+				sectionEventSet.remove(t);
+			else{
+				if (("").equals(sectionEventsString))
+					sectionEventsString = t;
+				else
+				  sectionEventsString = sectionEventsString + "|" + t;
+			}
+		}
+	}
+
+	public String getLocation() {
+		return location;
+	}
+	
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	
+	public String getMeetingTime() {
+		// TODO Auto-generated method stub
+		return meetingTime;
+	}
+	
+	public void setMeetingTime(String meetingTime) {
+		this.meetingTime = meetingTime;
+	}
+	
+	/* ***************** Typing Methods ***************** */
 	public CourseSectionType getSectionType() {
 		return courseSectionType;
 	}
@@ -176,7 +252,21 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	public void setSectionType(CourseSectionType type) {
 		this.courseSectionType = type;
 	}
+
+	public void setCourseSectionTypeUuid(String uuid) {
+		this.courseSectionTypeUuid = uuid;
+		CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+		this.courseSectionType = manager.getCourseSectionTypeByUuid(uuid);
+	}
+
 	
+	public String getCourseSectionTypeUuId() {
+		if (courseSectionType!=null)
+		 return courseSectionType.getUuid();
+		else
+		 return null;
+	}
+
 	public CourseSectionStatusType getSectionStatus() {
 		return courseSectionStatus;
 	}
@@ -185,6 +275,28 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 		this.courseSectionStatus = status;
 	}
 	
+	public void setCourseSectionStatusUuid(String uuid) {
+		this.courseSectionStatusUuid = uuid;
+		CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+		this.courseSectionStatus = manager.getCourseSectionStatusByUuid(uuid);
+	}
+
+	public String getCourseSectionStatusUuId() {
+		if (courseSectionStatus!=null)
+		 return courseSectionStatus.getUuid();
+		else
+		 return null;
+	}
+	
+	public Boolean getHoldingSection() {
+		return holdingSection;
+	}
+	
+	public void setHoldingSection(Boolean holdingSection) {
+		this.holdingSection = holdingSection;
+	}	
+	
+	/* ***************** Grouping Methods ***************** */
 	public Set getParticipationSet() {
 		return participationSet;
 	}
@@ -286,6 +398,7 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 		}
 	}
 	
+	/* ***************** Structural Methods ***************** */
 	public String getCourseOffering() {
 		return this.courseOfferingUuid;
 	}
@@ -293,51 +406,35 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	public void setCourseOffering(String courseOfferingUuid) {
 		this.courseOfferingUuid = courseOfferingUuid;
 	}
-	
-	public String getSchedule() {
-		return scheduleUuid;
+		
+	public String getParentId() {
+		return parentUuId;
 	}
 	
-	public void setSchedule(String scheduleUuid) {
-		this.scheduleUuid = scheduleUuid;
+	public void setParentId(String parentUuid) {
+		this.parentUuId = parentUuid;
+	}
+
+	public Set getAllSubSections() {
+		return allChildren;
 	}
 	
-	public Set getSectionEvents() {
-		return sectionEventUuidSet;
+	public void addSection(String sectionUuid) {
+		if (allChildren == null)
+			allChildren = new HashSet();
+		allChildren.add(sectionUuid);
 	}
 	
-	public void setSectionEvents(Set set) {
-		this.sectionEventUuidSet = set;
+	public void removeSection(String sectionUuid) {
+		if (allChildren != null)
+			allChildren.remove(sectionUuid);		
 	}
 	
-	public void addSectionEvent(String eventUuid) {
-		if (sectionEventUuidSet == null)
-			sectionEventUuidSet = new HashSet();
-		sectionEventUuidSet.add(eventUuid);
+	public Set getSubSectionsByType(CourseSectionType type) {
+		return null;
 	}
 	
-	public void removeSectionEvent(String eventUuid) {
-		if (sectionEventUuidSet != null)
-			sectionEventUuidSet.remove(eventUuid);
-	}
-	
-	public Boolean getCreatedLocally() {
-		return createdLocally;
-	}
-	
-	public void setCreatedLocally(Boolean createdLocally) {
-		this.createdLocally = createdLocally;
-	}
-	
-	
-	public Boolean getHoldingSection() {
-		return holdingSection;
-	}
-	
-	public void setHoldingSection(Boolean holdingSection) {
-		this.holdingSection = holdingSection;
-	}
-	
+	/* ***************** Other Methods ***************** */	
 	public Boolean getAllowSelfRegistration() {
 		return isAllowSelfRegistration;
 	}
@@ -345,22 +442,14 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 	public void setAllowSelfRegistration(Boolean allowSelfRegistration) {
 		this.isAllowSelfRegistration = allowSelfRegistration;
 	}
-	
-	public String getLocation() {
-		return location;
+		
+
+	/* ***************** Persistence Methods ***************** */	
+	public String getUuid() {
+		return uuid;
 	}
-	
-	public void setLocation(String location) {
-		this.location = location;
-	}
-	
-	public String getMeetingTime() {
-		// TODO Auto-generated method stub
-		return meetingTime;
-	}
-	
-	public void setMeetingTime(String meetingTime) {
-		this.meetingTime = meetingTime;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 	public String getCreatedBy() {
@@ -428,31 +517,15 @@ public class CourseSectionImpl implements CourseSection, Serializable  {
 		}
 		return this.hashValue;
 	}
-	
-	public String getParentId() {
-		return parentId;
+
+	public void setScheduleEvent(String scheduleEvent) {
+		// TODO Auto-generated method stub
+		
 	}
-	
-	public void setParentId(String parentUuid) {
-		this.parentId = parentUuid;
-	}
-	
-	public Set getAllSubSections() {
-		return allChildren;
-	}
-	
-	public void addSection(String sectionUuid) {
-		if (allChildren == null)
-			allChildren = new HashSet();
-		allChildren.add(sectionUuid);
-	}
-	
-	public void removeSection(String sectionUuid) {
-		if (allChildren != null)
-			allChildren.remove(sectionUuid);		
-	}
-	
-	public Set getSubSectionsByType(CourseSectionType type) {
+
+	public String getScheduleEvent() {
+		// TODO Auto-generated method stub
 		return null;
 	}
+	
 }

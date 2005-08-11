@@ -157,5 +157,12 @@ public class CourseSetImpl implements CourseSet, Serializable {
 		}
 		return this.hashValue;
 	}
+
+	public String getContext() {
+		return null;
+	}
+
+	public void setContext(String uuid) {
+	}
 	
 }

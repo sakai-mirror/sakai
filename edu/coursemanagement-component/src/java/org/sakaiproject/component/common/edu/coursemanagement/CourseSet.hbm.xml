@@ -14,6 +14,7 @@
         </id>
 
         <property name="title" column="TITLE" type="java.lang.String"  not-null="false" />
+        <property name="context" column="CONTEXT" type="java.lang.String"  not-null="false" />
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
@@ -22,7 +23,7 @@
   
      	<set name="canonicalCourseSet" table="CM_CANONICALCOURSE_T" cascade="all"
            inverse="true">
-      		<key column="CANONICALCOURSEUUID" />
+      		<key column="CANONICALCOURSEID" />
       		<one-to-many  class="CanonicalCourseImpl" />
     	</set>
 

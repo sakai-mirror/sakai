@@ -13,27 +13,59 @@
             <generator class="native"/>
         </id>
  
+        <!-- Meta data --> 
         <property name="title" column="TITLE" type="java.lang.String" />
         <property name="description" column="DESCRIPTION" type="java.lang.String" />
         <property name="sectionNumber" column="SECTIONNUMBER" type="java.lang.String"  not-null="true" />
-        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  />
+        <property name="sessionUuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
+        <property name="schedule"> 
+          <column name="SCHEDULE" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
+        <property name="sectionEventString"> 
+          <column name="SECTIONEVENTS" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
+        <property name="location"> 
+          <column name="LOCATION" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
+        <property name="meetingTime"> 
+          <column name="MEETINGTIME" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
+
+        <!-- Typing -->
+        <property name="courseSectionTypeUuid" column="COURSESECTIONTYPEUUID" type="java.lang.String"  not-null="true" />
+        <property name="courseSectionStatusUuid" column="COURSESECTIONSTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
+        <property name="holdingSection" column="HOLDINGSECTION" type="java.lang.Boolean" />
+
+        <!-- Grouping -->
+        <set name="participationRecordSet" cascade="all" inverse="true">
+            <key column="COURSESECTIONID"/>
+            <one-to-many class="ParticipationRecordImpl"/>
+        </set>
+        <set name="enrollmentRecordSet" cascade="all" inverse="true">
+            <key column="COURSESECTIONID"/>
+            <one-to-many class="EnrollmentRecordImpl"/>
+        </set>        
         <property name="enrollmentStatusTypeId" column="ENROLLMENTSTATUSTYPEID" type="java.lang.Long" not-null="true" />
+
+        <!-- Structural -->
         <property name="courseOfferingUuid" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
-        <property name="scheduleUuid" column="SCHEDULEUUID" type="java.lang.String"  />
-        <property name="createdLocally" column="CREATEDLOCALLY" type="java.lang.Integer" />
-        <property name="holdingSection" column="HOLDINGSECTION" type="java.lang.Integer" />
-        <property name="allowSelfRegistration" column="ALLOWSELFREGISTRATION" type="java.lang.Integer" />
+        <property name="courseOfferingId" column="COURSEOFFERINGID" type="java.lang.Integer"  not-null="true" />
+        <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
+        <set name="subSectionSet" cascade="all" inverse="true">
+            <key column="COURSESECTIONID"/>
+            <one-to-many class="CourseSectionImpl"/>
+        </set>
+        
+        <!-- Persistence --> 
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
         <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
- 
-        <many-to-one name="coursesectionStatusType" column="COURSESECTIONSTATUSTYPEID" class="CourseSectionStatusTypeImpl" />
- 
-        <many-to-one name="coursesectionType" column="COURSESECTIONTYPEID" class="CourseSectionTypeImpl" />
- 
-        <many-to-one name="session" column="SESSIONID" class="SessionImpl" />
+
+        <!-- Others -->
+        <property name="allowSelfRegistration" column="ALLOWSELFREGISTRATION" type="java.lang.Boolean" />
     </class>
     
 </hibernate-mapping>

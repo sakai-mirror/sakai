@@ -18,8 +18,10 @@
     <property name="dataSource"><ref bean="courseManagementDataSource"/></property>
     <property name="mappingResources">
       <list>
-        <value>org/sakaiproject/component/common/edu/coursemanagement/CanonicalCourse.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/CourseSet.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/CanonicalCourse.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/CourseOffering.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/CourseSection.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/CanonicalCourseStatusType.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/CourseOfferingStatusType.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/CourseOfferingType.hbm.xml</value>
@@ -31,6 +33,8 @@
         <value>org/sakaiproject/component/common/edu/coursemanagement/ParticipationStatusType.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/Session.hbm.xml</value>
         <value>org/sakaiproject/component/common/edu/coursemanagement/SessionType.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/ParticipationRecordType.hbm.xml</value>
+        <value>org/sakaiproject/component/common/edu/coursemanagement/EnrollmentRecord.hbm.xml</value>
       </list>
     </property>
     

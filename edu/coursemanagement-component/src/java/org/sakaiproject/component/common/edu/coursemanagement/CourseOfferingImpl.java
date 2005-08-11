@@ -87,8 +87,18 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	
 	private Set otherPeopleSet;
 	
-	private Set sectionSet;
-	
+	private String defaultLocation;
+
+	private String defaultMeetingTime;
+
+	private String defaultSchedule;
+
+	private CourseOfferingStatusType courseOfferingStatus;
+
+	private String courseOfferingStatusUuid;
+
+	private String courseOfferingTypeUuid;
+
 	public Long getCourseOfferingId() {
 		return this.courseOfferingId;
 	}
@@ -97,6 +107,7 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 		this.courseOfferingId = courseOfferingId;
 	}
 	
+	/* ***************** Metadata Methods ***************** */
 	public String getTitle() {
 		return title;
 	}
@@ -112,20 +123,13 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public String getOfferingNumber() {
 		return offeringNumber;
 	}
 	
 	public void setOfferingNumber(String offeringNumber) {
 		this.offeringNumber = offeringNumber;
-	}
-	
-	public String getUuid() {
-		return uuid;
-	}
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
 	}
 	
 	public Session getSession() {
@@ -135,7 +139,40 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 	public void setSession(Session session) {
 		this.session = session;
 	}
+
+	public Integer getMaximumStudents() {
+		return maximumStudents;
+	}
 	
+	public void setMaximumStudents(Integer maxStudents) {
+		this.maximumStudents = maxStudents;
+	}
+
+	public String getDefaultLocation() {
+		return defaultLocation;
+	}
+	
+	public void setDefaultLocation(String location) {
+		this.defaultLocation = location;
+	}
+	
+	public String getDefaultMeetingTime() {
+		return defaultMeetingTime;
+	}
+	
+	public void setDefaultMeetingTime(String meetingTime) {
+		this.defaultMeetingTime = meetingTime;
+	}
+	
+	public String getDefaultSchedule() {
+		return defaultSchedule;
+	}
+	
+	public void setDefaultSchedule(String schedule) {
+		this.defaultSchedule = schedule;
+	}
+
+	/* ***************** Cross Listing Methods ***************** */
 	public Boolean isCrossListed() {
 		return getIsCrossListed();
 	}
@@ -168,15 +205,8 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 			}
 		}
 	}
-	
-	public Integer getMaximumStudents() {
-		return maximumStudents;
-	}
-	
-	public void setMaximumStudents(Integer maxStudents) {
-		this.maximumStudents = maxStudents;
-	}
-	
+		
+	/* ***************** Typing Methods ***************** */
 	public CourseOfferingType getOfferingType() {
 		return courseOfferingType;
 	}
@@ -185,38 +215,81 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 		this.courseOfferingType = type;
 	}
 	
+	public void setCourseOfferingTypeUuid(String uuid) {
+		this.courseOfferingTypeUuid = uuid;
+		CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+		this.courseOfferingType = manager.getCourseOfferingTypeByUuid(uuid);
+	}
+
+	
+	public String getCourseOfferingTypeUuId() {
+		if (courseOfferingType!=null)
+		 return courseOfferingType.getUuid();
+		else
+		 return null;
+	}
+	
 	public CourseOfferingStatusType getOfferingStatus() {
-		return courseOfferingStatusType;
+		return courseOfferingStatus;
 	}
 	
 	public void setOfferingStatus(CourseOfferingStatusType status) {
-		this.courseOfferingStatusType = status;
+		this.courseOfferingStatus = status;
+	}
+
+	public void setCourseOfferingStatusUuid(String uuid) {
+		this.courseOfferingStatusUuid = uuid;
+		CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
+		this.courseOfferingStatus = manager.getCourseOfferingStatusByUuid(uuid);
+	}
+
+	
+	public String getCourseOfferingStatusUuId() {
+		if (courseOfferingStatus!=null)
+		 return courseOfferingStatus.getUuid();
+		else
+		 return null;
 	}
 	
-	public Set getSections() {
-		return sectionSet;
+	/* ***************** Structural Methods ***************** */
+	public String getCanonicalCourse() {
+		return canonicalCourseUuid;
 	}
 	
-	public void setSections(Set sectionSet) {
-		this.sectionSet =  sectionSet;
+	public void setCanonicalCourse(String uuid) {
+		this.canonicalCourseUuid = uuid;
+	}
+
+	public Set getCourseSections() {
+		return courseSectionSet;
 	}
 	
-	public void addSection(String sectionUuid) {
-		if (this.sectionSet == null)
-			this.sectionSet = new HashSet();
-		sectionSet.add(sectionUuid);
+	public void setCourseSections(Set courseSectionSet) {
+		this.courseSectionSet = courseSectionSet;
 	}
 	
-	public void removeSection(String sectionUuid) {
-		Iterator i= sectionSet.iterator();
+	public void addCourseSection(String sectionUuid) {
+		if (this.courseSectionSet == null)
+			this.courseSectionSet = new HashSet();
+		courseSectionSet.add(sectionUuid);
+	}
+	
+	public void removeCourseSection(String sectionUuid) {
+		Iterator i= courseSectionSet.iterator();
 		while (i.hasNext()){
 			String s = (String) i.next();
 			if (s.equals(sectionUuid)){
-				sectionSet.remove(sectionUuid);
+				courseSectionSet.remove(sectionUuid);
 			}
 		}
 	}
-	
+
+	public Set getSectionsByType(CourseSectionType type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+		
+	/* ***************** Grouping Methods ***************** */	
 	public Set getParticipationSet() {
 		return participationSet;
 	}
@@ -256,12 +329,7 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 		if (this.defaultLeaderSet != null)
 			defaultLeaderSet.remove(agentUuid);				
 	}
-	
-	
-	public EnrollmentType getEnrollmentType() {
-		return enrollmentType;
-	}
-	
+			
 	public Set getOtherPeople() {
 		return otherPeopleSet;
 	}
@@ -281,13 +349,27 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 		if (this.otherPeopleSet != null)
 			otherPeopleList.remove(agentUuid);				
 	}
-	
-	public String getCanonicalCourse() {
-		return canonicalCourseUuid;
+
+	public Set getAllEnrollments() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
-	public void setCanonicalCourse(String canonicalCourseUuid) {
-		this.canonicalCourseUuid = canonicalCourseUuid;
+	public Set getAggregatedEnrollments(CourseSectionType type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public EnrollmentType getEnrollmentType() {
+		return enrollmentType;
+	}
+	
+	/* ***************** Persistence Methods ***************** */	
+	public String getUuid() {
+		return uuid;
+	}
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 	public String getCreatedBy() {
@@ -354,45 +436,6 @@ public class CourseOfferingImpl implements CourseOffering, Serializable  {
 			this.hashValue = result;
 		}
 		return this.hashValue;
-	}
-	
-	public Set getAllEnrollments() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public Set getAggregatedEnrollments(CourseSectionType type) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public Set getSectionsByType(CourseSectionType type) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public Set getCourseSections() {
-		return courseSectionSet;
-	}
-	
-	public void setCourseSections(Set courseSectionSet) {
-		this.courseSectionSet = courseSectionSet;
-	}
-	
-	public void addCourseSection(String sectionUuid) {
-		if (this.courseSectionSet == null)
-			this.courseSectionSet = new HashSet();
-		courseSectionSet.add(sectionUuid);
-	}
-	
-	public void removeCourseSection(String sectionUuid) {
-		Iterator i= courseSectionSet.iterator();
-		while (i.hasNext()){
-			String s = (String) i.next();
-			if (s.equals(sectionUuid)){
-				courseSectionSet.remove(sectionUuid);
-			}
-		}
 	}
 	
 }

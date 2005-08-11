@@ -49,8 +49,9 @@ public class CourseManagerTest extends CourseManagementTestBase {
 	}
 	public void testCreateCanonicalCourse() throws Exception {
 		Date currentDate = new Date();
-		CanonicalCourseStatusTypeImpl type = (CanonicalCourseStatusTypeImpl)courseManagementManager.
-		getCanonicalCourseStatusTypeByKeyword("canonical.active");
+		CanonicalCourseStatusTypeImpl type = (CanonicalCourseStatusTypeImpl)
+                    ((CourseManagementManagerImpl) courseManagementManager).
+                     getCanonicalCourseStatusByKeyword("canonical.active");
     //1. create math101
 		CanonicalCourseImpl math101 = (CanonicalCourseImpl) courseManagementManager.createCanonicalCourse(
 				"title","description","1052-math-101-01",
@@ -63,7 +64,7 @@ public class CourseManagerTest extends CourseManagementTestBase {
 		math101.addTopic("optimization");
 		math101.addTopic("normal distribution");
 		math101.addPrerequisite("math-10");
-		courseManagementManager.saveCanonicalCourse(math101);
+		((CourseManagementManagerImpl) courseManagementManager).saveCanonicalCourse(math101);
 		setComplete();
 	  System.out.println("**** done 2: add topic");
 	
@@ -80,9 +81,10 @@ public class CourseManagerTest extends CourseManagementTestBase {
 
 	private CanonicalCourseImpl createCanonicalCourse(String title, String courseNumber){
 		Date currentDate = new Date();
-		CanonicalCourseStatusTypeImpl type = (CanonicalCourseStatusTypeImpl)courseManagementManager.
-		getCanonicalCourseStatusTypeByKeyword("canonical.active");
-		CanonicalCourseImpl c = (CanonicalCourseImpl) courseManagementManager.createCanonicalCourse(
+		CanonicalCourseStatusTypeImpl type = (CanonicalCourseStatusTypeImpl)((CourseManagementManagerImpl) courseManagementManager).
+		getCanonicalCourseStatusByKeyword("canonical.active");
+		CanonicalCourseImpl c = (CanonicalCourseImpl) ((CourseManagementManagerImpl) courseManagementManager)
+                                .createCanonicalCourse(
 				title,"description",courseNumber,
 				"*uuid_"+currentDate.getTime(), type);
 		setComplete();		
@@ -92,11 +94,11 @@ public class CourseManagerTest extends CourseManagementTestBase {
 
 	public void testCreateSession() throws Exception {
 		Date currentDate = new Date();
-		SessionTypeImpl type = (SessionTypeImpl)courseManagementManager.getSessionTypeByKeyword(
+		SessionTypeImpl type = (SessionTypeImpl)((CourseManagementManagerImpl) courseManagementManager).getSessionTypeByKeyword(
 		"term.spring");
-		SessionImpl s = (SessionImpl)courseManagementManager.createSession(
-				"Fall 2005","1052","2005", type, 
-				"*uuid_"+currentDate.getTime(), Boolean.TRUE);
+		SessionImpl s = (SessionImpl)((CourseManagementManagerImpl) courseManagementManager)
+                                   .createSession("Fall 2005","1052","2005", type, 
+				    "*uuid_"+currentDate.getTime(), Boolean.TRUE);
 		setComplete();
 		System.out.println("***sessionId = "+s.getSessionId());
 	}

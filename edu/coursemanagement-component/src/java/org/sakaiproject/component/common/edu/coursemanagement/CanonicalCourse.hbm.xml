@@ -1,36 +1,46 @@
 <?xml version="1.0" encoding='UTF-8'?>
 <!DOCTYPE hibernate-mapping PUBLIC
-                            "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-                            "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+  "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
 
-<!-- DO NOT EDIT: This is a generated file that is synchronized -->
-<!-- by MyEclipse Hibernate tool integration.                   -->
-<!-- Created Fri Jul 29 11:25:54 EDT 2005                         -->
 <hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
 
     <class name="CanonicalCourseImpl" table="CM_CANONICALCOURSE_T">
         <id name="canonicalCourseId" column="CANONICALCOURSEID" type="java.lang.Long">
             <generator class="native"/>
         </id>
- 
+
+        <!--  Meta data -->
         <property name="title" column="TITLE" type="java.lang.String"  not-null="false" />
         <property name="description">
           <column name="DESCRIPTION" sql-type="varchar(4000)" not-null="false" />
         </property>  
         <property name="courseNumber" column="COURSENUMBER" type="java.lang.String"  not-null="true" />
-        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="defaultCredits" column="DEFAULTCREDITS" type="java.lang.String"  not-null="false" />
-        <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
         <property name="topicsString"> 
           <column name="TOPICS" sql-type="varchar(4000)"  not-null="false" />
         </property>  
         <property name="prerequisiteString"> 
           <column name="PREREQUISITE" sql-type="varchar(4000)"  not-null="false" />
         </property>  
+
+        <!-- Typing -->
+        <property name="canonicalCourseStatusUuid" column="CANONICALCOURSESTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
+
+        <!-- Cross Listing -->
         <property name="equivalentString"> 
           <column name="EQUIVALENTS" sql-type="varchar(4000)"  not-null="false" />
-        </property>  
-        <property name="canonicalCourseStatusUuid" column="CANONICALCOURSESTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
+        </property>          
+
+        <!-- Structural -->
+        <set name="courseOfferingSet" cascade="all" inverse="true">
+            <key column="CANONICALCOURSEID"/>
+            <one-to-many class="CourseOfferingImpl"/>
+        </set>
+        <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
+
+        <!-- Persistence -->
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />

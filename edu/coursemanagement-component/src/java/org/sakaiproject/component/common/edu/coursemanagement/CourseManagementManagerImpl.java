@@ -1,17 +1,16 @@
 package org.sakaiproject.component.common.edu.coursemanagement;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Date;
-import java.util.Set;
-
 import net.sf.hibernate.Hibernate;
 
 import org.sakaiproject.api.edu.coursemanagement.CanonicalCourse;
 import org.sakaiproject.api.edu.coursemanagement.CanonicalCourseStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseManagementManager;
 import org.sakaiproject.api.edu.coursemanagement.CourseOffering;
+import org.sakaiproject.api.edu.coursemanagement.CourseOfferingStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseOfferingType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSection;
+import org.sakaiproject.api.edu.coursemanagement.CourseSectionStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSet;
 import org.sakaiproject.api.edu.coursemanagement.EnrollmentRecord;
@@ -201,7 +200,7 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 			return null;
 	}
 	
-	public CanonicalCourseStatusType getCanonicalCourseStatusTypeByKeyword(String keyword) {
+	public CanonicalCourseStatusType getCanonicalCourseStatusByKeyword(String keyword) {
 		String query = "select t from CanonicalCourseStatusTypeImpl t where t.keyword=?";
 		List list = getHibernateTemplate().find(query,
 				new Object[] {keyword},
@@ -212,10 +211,10 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 			return null;
 	}
 	
-	public CanonicalCourseStatusType getCanonicalCourseStatusTypeByUuid(String statusUuid) {
+	public CanonicalCourseStatusType getCanonicalCourseStatusByUuid(String uuid) {
 		String query = "select t from CanonicalCourseStatusTypeImpl t where t.uuid=?";
 		List list = getHibernateTemplate().find(query,
-				new Object[] {statusUuid},
+				new Object[] {uuid},
 				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
 		if (list.size()>0)
 			return (CanonicalCourseStatusType)list.get(0);
@@ -235,5 +234,49 @@ public class CourseManagementManagerImpl extends HibernateDaoSupport implements 
 		else
 			return null;
 	}
+
+	public CourseOfferingStatusType getCourseOfferingStatusByUuid(String uuid) {
+		String query = "select t from CourseOfferingStatusTypeImpl t where t.uuid=?";
+		List list = getHibernateTemplate().find(query,
+				new Object[] {uuid},
+				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
+		if (list.size()>0)
+			return (CourseOfferingStatusType)list.get(0);
+		else
+			return null;
+	}
 	
+	public CourseOfferingType getCourseOfferingTypeByUuid(String uuid) {
+		String query = "select t from CourseOfferingTypeImpl t where t.uuid=?";
+		List list = getHibernateTemplate().find(query,
+				new Object[] {uuid},
+				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
+		if (list.size()>0)
+			return (CourseOfferingType)list.get(0);
+		else
+			return null;
+	}
+
+	public CourseSectionStatusType getCourseSectionStatusByUuid(String uuid) {
+		String query = "select t from CourseSectionStatusTypeImpl t where t.uuid=?";
+		List list = getHibernateTemplate().find(query,
+				new Object[] {uuid},
+				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
+		if (list.size()>0)
+			return (CourseSectionStatusType)list.get(0);
+		else
+			return null;
+	}
+	
+	public CourseSectionType getCourseSectionTypeByUuid(String uuid) {
+		String query = "select t from CourseSectionTypeImpl t where t.uuid=?";
+		List list = getHibernateTemplate().find(query,
+				new Object[] {uuid},
+				new net.sf.hibernate.type.Type[] {Hibernate.STRING});
+		if (list.size()>0)
+			return (CourseSectionType)list.get(0);
+		else
+			return null;
+	}
+
 }

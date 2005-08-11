@@ -12,31 +12,59 @@
         <id name="courseOfferingId" column="COURSEOFFERINGID" type="java.lang.Long">
             <generator class="native"/>
         </id>
- 
+
+        <!-- Meta data --> 
         <property name="title" column="TITLE" type="java.lang.String"  not-null="false" />
         <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="false" />
         <property name="offeringNumber" column="OFFERINGNUMBER" type="java.lang.String"  not-null="true" />
-        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
-        <property name="isCrossListed" column="ISCROSSLISTED" type="java.lang.Integer"  not-null="false" />
+        <property name="sessionUuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
         <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  not-null="false" />
+        <property name="defaultLocation"> 
+          <column name="DEFAULTLOCATION" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
+        <property name="defaultMeetingTime"> 
+          <column name="DEFAULTMEETINGTIME" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
+        <property name="defaultSchedule"> 
+          <column name="DEFAULTSCHEDULE" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
+
+        <!-- Cross Listing -->
+        <property name="isCrossListed" column="ISCROSSLISTED" type="java.lang.Boolean"  not-null="false" />
+        <property name="equivalentString"> 
+          <column name="EQUIVALENTS" sql-type="varchar(4000)"  not-null="false" />
+        </property>  
+
+        <!-- Typing -->
+        <property name="courseOfferingTypeUuid" column="COURSEOFFERINGTYPEUUID" type="java.lang.String"  not-null="true" />
+        <property name="courseOfferingStatusUuid" column="COURSEOFFERINGSTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
+
+        <!-- Structural -->
+        <set name="courseSectionSet" cascade="all" inverse="true">
+            <key column="COURSEOFFERINGID"/>
+            <one-to-many class="CourseSectionImpl"/>
+        </set>
         <property name="canonicalCourseUuid" column="CANONICALCOURSEUUID" type="java.lang.String"  not-null="true" />
+        <property name="canonicalCourseId" column="CANONICALCOURSEID" type="java.lang.Integer"  not-null="true" />
+
+        <!-- Grouping -->
+        <set name="participationRecordSet" cascade="all" inverse="true">
+            <key column="COURSEOFFERINGID"/>
+            <one-to-many class="ParticipationRecordImpl"/>
+        </set>
+        <set name="enrollmentRecordSet" cascade="all" inverse="true">
+            <key column="COURSEOFFERINGID"/>
+            <one-to-many class="EnrollmentRecordImpl"/>
+        </set>        
+        <property name="enrollemntTypeUuid" column="ENROLLMENTTYPEUUID" type="java.lang.String"  not-null="true" />
+               
+        <!-- Persistence --> 
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
         <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
- 
-        <many-to-one name="courseOfferingStatusType" column="COURSEOFFERINGSTATUSTYPEID" class="CourseOfferingStatusTypeImpl"  />
- 
-        <many-to-one name="courseOfferingType" column="COURSEOFFERINGTYPEID" class="CourseOfferingTypeImpl" />
- 
-        <many-to-one name="enrollmentType" column="ENROLLMENTTYPEID" class="EnrollmentTypeImpl" />
- 
-        <many-to-one name="session" column="SESSION"  class="SessionImpl" />
- 
-        <set name="enrollmentRecordSet" cascade="all" inverse="true">
-            <key column="COURSEOFFERINGID"/>
-            <one-to-many class="EnrollmentRecordImpl"/>
-        </set>
-    </class>
+  
+     </class>
     
 </hibernate-mapping>
