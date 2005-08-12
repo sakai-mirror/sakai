@@ -201,6 +201,7 @@ public class SiteAction extends PagedResourceActionII
 		"-siteInfo-importMtrlMaster", //45 -- htripath for import material from a file
     "-siteInfo-importMtrlCopy", //46
     "-siteInfo-importMtrlCopyConfirm",
+    "-siteInfo-importMtrlCopyConfirmMsg", //48
 	};
 
 	/** Used to check if there is a site instance in state */
@@ -2800,7 +2801,13 @@ public class SiteAction extends PagedResourceActionII
       context.put("finalZipSites", state.getAttribute(FINAL_ZIP_IMPORT_SITES));
 
       return (String)getContext(data).get("template") + TEMPLATE[47];
-      
+
+    case 48:
+      /*  buildContextForTemplate chef_siteInfo-importMtrlCopyConfirm.vm
+      * 
+      */      
+      context.put("finalZipSites", state.getAttribute(FINAL_ZIP_IMPORT_SITES));
+      return (String)getContext(data).get("template") + TEMPLATE[48];
     }
     // should never be reached
     return (String)getContext(data).get("template") + TEMPLATE[0];
@@ -3264,7 +3271,6 @@ public class SiteAction extends PagedResourceActionII
       String id = ((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId();
       String folder = contextString.toString() + "/source/";
       ArchiveService.merge(folder, id, null);
-
       zip.close();
     }
     catch (IOException ioe)
@@ -3275,7 +3281,17 @@ public class SiteAction extends PagedResourceActionII
 
     //delete the directory
     dir.deleteOnExit();
-
+    state.setAttribute(STATE_TEMPLATE_INDEX, "48");
+    
+    //state.setAttribute(STATE_TEMPLATE_INDEX, "28");
+  } // doCopy_MtrlSite
+  
+  public void doSaveMtrlSiteMsg(RunData data)
+  {
+    SessionState state =
+    ((JetspeedRunData) data).getPortletSessionState(
+    ((JetspeedRunData) data).getJs_peid());
+    
     //remove attributes
     state.removeAttribute(ALL_ZIP_IMPORT_SITES);
     state.removeAttribute(FINAL_ZIP_IMPORT_SITES);
@@ -3285,9 +3301,8 @@ public class SiteAction extends PagedResourceActionII
 
     state.setAttribute(STATE_TEMPLATE_INDEX, "12");
     
-    //state.setAttribute(STATE_TEMPLATE_INDEX, "28");
-  } // doCopy_MtrlSite
-
+  }
+  //htripath-end
 	
 	/** 
 	* Handle the site search request.
