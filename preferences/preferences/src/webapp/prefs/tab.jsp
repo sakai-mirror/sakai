@@ -16,7 +16,7 @@
  		    <sakai:tool_bar_item value="Customize Tabs" />
    	  	</sakai:tool_bar>
 
-				<br>
+				<br />
 				
 
 				<h:panelGroup rendered="#{UserPrefsTool.tabUpdated}">
@@ -46,15 +46,15 @@
 				 	
 				 	<td>
 				 	  Move selected
-				 	  <br>
+				 	  <br />
 				 	  <h:commandButton id="add" value=">" action="#{UserPrefsTool.processActionAdd}"></h:commandButton>
-		              <br>
+		              <br />
 		              <h:commandButton id="remove" value="<" action="#{UserPrefsTool.processActionRemove}"></h:commandButton>
-		         	  <br>
+		         	  <br />
 		         	  Move all
-		         	  <br>
+		         	  <br />
 		         	  <h:commandButton id="addAll" value=">>" action="#{UserPrefsTool.processActionAddAll}"></h:commandButton>
-		              <br>
+		              <br />
 		              <h:commandButton id="removeAll" value="<<" action="#{UserPrefsTool.processActionRemoveAll}"></h:commandButton>
 				 	</td>
 				 	
@@ -66,18 +66,19 @@
 				 	
 				 	<td>
 				 	  <h:commandLink action="#{UserPrefsTool.processActionMoveUp}"> <h:graphicImage value="prefs/Up-Arrow.gif"/> </h:commandLink>
-		              <br>
+		              <br />
 		              <h:commandLink action="#{UserPrefsTool.processActionMoveDown}"> <h:graphicImage value="prefs/Down-Arrow.gif"/> </h:commandLink>
 				 	</td>    			  
     			  </tr>
 				</table>
-			    <br><br>
-			    <div>
+			    <br /><br />
+			    <div class="act">
 			    <h:commandButton id="submit" style="active;" value="Update Preferences" action="#{UserPrefsTool.processActionSave}"></h:commandButton>
 				 <h:commandButton id="cancel" style="active;" value="Cancel" action="#{UserPrefsTool.processActionCancel}"></h:commandButton>
 			    </div>
 
 		 </h:form>
+		 </div>
 		 <sakai:peer_refresh value="#{UserPrefsTool.refreshElement}" />
 	</sakai:view_content>
 	</sakai:view_container>
