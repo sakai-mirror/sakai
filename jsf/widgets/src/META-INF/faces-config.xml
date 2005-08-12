@@ -129,6 +129,11 @@
     <component-class>org.sakaiproject.jsf.component.ViewTitleComponent</component-class>
   </component>
 
+  <component>
+    <component-type>org.sakaiproject.jsf.FlowState</component-type>
+    <component-class>org.sakaiproject.jsf.component.FlowState</component-class>
+  </component>
+
 
   <!-- =================== Renderers ============== -->
 

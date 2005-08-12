@@ -23,6 +23,14 @@
 
 package org.sakaiproject.jsf.util;
 
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
+import javax.faces.webapp.UIComponentTag;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * This source file collects the dependencies of the Sakai tag library
  * on the JSF implementation into one place.
@@ -33,6 +41,8 @@ package org.sakaiproject.jsf.util;
  */
 public class JSFDepends
 {
+    private static final Log logger = LogFactory.getLog(JSFDepends.class);
+
 	  /** Sun JSF RI dependent classes */
 	  public static class CommandButtonTag extends com.sun.faces.taglib.html_basic.CommandButtonTag {}
 	  public static class InputTextTag extends com.sun.faces.taglib.html_basic.InputTextTag {}
@@ -44,6 +54,7 @@ public class JSFDepends
 
 	  public static class ButtonRenderer extends com.sun.faces.renderkit.html_basic.ButtonRenderer {}
 	  public static class CommandLinkRenderer extends com.sun.faces.renderkit.html_basic.CommandLinkRenderer {}
+
 }
 
 
