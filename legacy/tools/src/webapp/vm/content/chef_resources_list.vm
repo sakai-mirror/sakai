@@ -39,7 +39,7 @@
 		<h3>
 			<span class ="chefBreadCrumb">
 				$tlang.getString("gen.location")
-				<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
+				<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0"  alt="folder" />
 				#foreach ($item in $collectionPath)
 					#if($item.isLast())
 						#if ($dropboxMode && $velocityCount == 1)
@@ -76,11 +76,11 @@
 				<th id="title">
 					#if ($expandallflag && "$expandallflag" == "$TRUE")
 						<a href="#toolLink("ResourcesAction" "doUnexpandall")&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('collapseall')">
-							<img src = "#imageLink("sakai/collapse.gif")" border="0" title="$tlang.getString('collapseall')" alt="$tlang.getString('collapseall')" hspace="0" />
+							<img src = "#imageLink("sakai/collapse-expand.gif")" border="0" title="$tlang.getString('collapseall')" alt="$tlang.getString('collapseall')" hspace="0" />
 						</a>								 
 					#else
 						<a href="#toolLink("ResourcesAction" "doExpandall")&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('expandall')">
-							<img src = "#imageLink("sakai/expand.gif")" border="0" title="$tlang.getString('expandall')" alt="$tlang.getString('expandall')" hspace="0" />
+							<img src = "#imageLink("sakai/expand-collapse.gif")" border="0" title="$tlang.getString('expandall')" alt="$tlang.getString('expandall')" hspace="0" />
 						</a>								 
 					#end
 					<a href="#toolLink("ResourcesAction" "doSort")&criteria=title&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.sorttit')"> 
@@ -120,7 +120,7 @@
 					<td headers="title">
 						#if ($root.isFolder())
 							#if ($root.isEmpty())
-								<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+								<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 								$validator.escapeHtml(${root.name})
 							#elseif ($root.canRead())
 								#if (!$expandedCollections.containsKey($root.Id))
@@ -136,7 +136,7 @@
 									$validator.escapeHtml(${root.name})
 								</a>
 							#else
-								<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+								<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 								$validator.escapeHtml(${root.name})
 							#end
 						#end	
@@ -223,7 +223,7 @@
 							<td headers="title" style="text-indent:$width">
 								#if ($member.isFolder())
 									#if ($member.isEmpty())
-										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 										$validator.escapeHtml(${member.name})
 									#elseif ($member.canRead())
 										#if (!$expandedCollections.containsKey($member.Id))
@@ -239,7 +239,7 @@
 											$validator.escapeHtml(${member.name})
 										</a>
 									#else
-										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 										$validator.escapeHtml(${member.name})
 									#end
 								#else
@@ -390,12 +390,12 @@
 				#if("$!show_other_sites" == "true")
 					<tr>
 						<td colspan="3">
-						<p class="discTria">
+						<h4 style="margin: .5em -.5em;font-size:1em">
 							<a href="#toolLink("ResourcesAction" "doHideOtherSites")" title= "$tlang.getString('list.hide')">
-								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString('list.hide')" border="0" width="15" height="15" align="top" />
+								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString('list.hide')" border="0" align="top" />
 							</a>
 							$validator.escapeHtml("$tlang.getString('list.hide')")
-						</p>
+						</h4>
 						</td>
 					</tr>
 					#foreach($root in $other_sites)
@@ -404,7 +404,7 @@
 							<td headers="title">
 								#if ($root.isFolder())
 									#if ($root.isEmpty())
-										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+										<img src = "#imageLink("sakai/dir_closed.gif")" border="0"  alt="folder" />
 										$validator.escapeHtml(${root.name})
 									#elseif ($root.canRead())
 										#if (!$expandedCollections.containsKey($root.Id))
@@ -420,7 +420,7 @@
 											$validator.escapeHtml(${root.name})
 										</a>
 									#else
-										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 										$validator.escapeHtml(${root.name})
 									#end
 								#end	
@@ -507,7 +507,7 @@
 									<td headers="title" style="text-indent:$width">
 										#if ($member.isFolder())
 											#if ($member.isEmpty())
-												<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+												<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 												$validator.escapeHtml(${member.name})
 											#elseif ($member.canRead())
 												#if (!$expandedCollections.containsKey($member.Id))
@@ -523,7 +523,7 @@
 													$validator.escapeHtml(${member.name})
 												</a>
 											#else
-												<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+												<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 												$validator.escapeHtml(${member.name})
 											#end
 										#else
@@ -671,12 +671,12 @@
 				#else
 					<tr>
 						<td colspan="3">
-						<p class="discTria">
+						<h4 style="margin: .5em -.5em;font-size:1em">
 							<a href="#toolLink("ResourcesAction" "doShowOtherSites")" title= "$tlang.getString('list.show')">
-								<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString('list.show')" border="0" width="15" height="15" align="top" />
+								<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString('list.show')" border="0" align="top" alt="show"/>
 							</a>
 							$validator.escapeHtml("$tlang.getString('list.show')")
-						</p>
+						</h4>
 						</td>
 					</tr>
 				#end
