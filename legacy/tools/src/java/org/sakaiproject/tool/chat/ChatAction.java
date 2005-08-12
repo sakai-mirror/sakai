@@ -272,7 +272,7 @@ public class ChatAction
 		    String channelName =rundata.getParameters().getString(FORM_CHANNEL);
 		    //update the tool config
 			Placement placement = ToolManager.getCurrentPlacement();
-			placement.setTitle(rb.getString("chatroom") + "\" " + channelName + "\"");
+			placement.setTitle(rb.getString("chatroom") + "\"" + channelName + "\"");
 
 			// deliver an update to the title panel (to show the new title)
 			String peid = ((JetspeedRunData)rundata).getJs_peid();
