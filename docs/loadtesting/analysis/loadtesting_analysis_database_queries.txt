@@ -1,43 +1,113 @@
 
 **** WORKING ORACLE QUERIES ****
 
+Breakdown (counts) of events for a time period:
+SET PAGESIZE 30000
+SPOOL c:\dev\analysis\event_breakdown.txt
+SELECT event AS event_name, COUNT(*) AS event_count
+FROM chef_event_archive
+WHERE
+event_date >= '01-JAN-05' AND event_date < '01-FEB-05'
+AND NOT (event='content.read' AND ref LIKE '/content/public/%')
+GROUP BY event
+ORDER BY event_count DESC;
+SPOOL OFF
+
+All events per hour:
+SET PAGESIZE 30000
+SPOOL c:\dev\analysis\allevents_per_hour.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_time, event AS event_name, COUNT(*) AS event_count 
+FROM chef_event_archive
+WHERE
+event_date >= '01-JAN-05' AND event_date < '01-FEB-05'
+AND NOT (event='content.read' AND ref LIKE '/content/public/%')
+GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24'), event
+ORDER BY event_time, event;
+SPOOL OFF
+
+All events per day:
+SET PAGESIZE 30000
+SPOOL c:\dev\analysis\allevents_per_day.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD') AS event_time, event AS event_name, COUNT(*) AS event_count 
+FROM chef_event_archive
+WHERE
+event_date >= '01-JAN-05' AND event_date < '01-MAY-05'
+AND NOT (event='content.read' AND ref LIKE '/content/public/%')
+GROUP BY TO_CHAR(event_date,'YYYY-MM-DD'), event
+ORDER BY event_time, event;
+SPOOL OFF
+
+Login events per minute:
+SET PAGESIZE 30000
+SPOOL c:\dev\analysis\logins_per_minute.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24:MI')||':00' AS event_time, COUNT(*) AS event_count 
+FROM chef_event_archive
+WHERE event='user.login' 
+AND event_date >= '18-JAN-05' AND event_date <= '21-JAN-05'
+GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24:MI') 
+ORDER BY event_time;
+SPOOL OFF
+
+
 Login events per hour:
 SET PAGESIZE 30000
-SPOOL c:\dev\logins_per_hour.txt
-SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS login_hour, COUNT(*) AS event_count 
+SPOOL c:\dev\analysis\logins_per_hour.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_time, COUNT(*) AS event_count 
 FROM chef_event_archive
 WHERE event='user.login' 
 AND event_date >= '01-JAN-05' AND event_date <= '31-JAN-05'
 GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24') 
-ORDER BY login_hour;
+ORDER BY event_time;
 SPOOL OFF
 
 Login events per day:
 SET PAGESIZE 30000
-SPOOL c:\dev\logins_per_day.txt
-SELECT TO_CHAR(event_date,'YYYY-MM-DD') AS login_day, COUNT(*) AS event_count 
+SPOOL c:\dev\analysis\logins_per_day.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD') AS event_time, COUNT(*) AS event_count 
 FROM chef_event_archive
 WHERE event='user.login' 
 AND event_date >= '01-JAN-05' AND event_date <= '01-MAY-05'
 GROUP BY TO_CHAR(event_date,'YYYY-MM-DD') 
-ORDER BY login_day;
+ORDER BY event_time;
+SPOOL OFF
+
+Logout events per hour:
+SET PAGESIZE 30000
+SPOOL c:\dev\analysis\logouts_per_hour.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_time, COUNT(*) AS event_count 
+FROM chef_event_archive
+WHERE event='user.login' 
+AND event_date >= '01-JAN-05' AND event_date <= '31-JAN-05'
+GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24') 
+ORDER BY event_time;
+SPOOL OFF
+
+Logout events per day:
+SET PAGESIZE 30000
+SPOOL c:\dev\analysis\logouts_per_day.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD') AS event_time, COUNT(*) AS event_count 
+FROM chef_event_archive
+WHERE event='user.login' 
+AND event_date >= '01-JAN-05' AND event_date <= '01-MAY-05'
+GROUP BY TO_CHAR(event_date,'YYYY-MM-DD') 
+ORDER BY event_time;
 SPOOL OFF
 
 uploads and downloads (content.XXXX) per hour:
 SET PAGESIZE 30000
-SPOOL c:\dev\content_per_hour.txt
-SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_hour, event AS event_name, COUNT(*) AS event_count 
+SPOOL c:\dev\analysis\content_per_hour.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_time, event AS event_name, COUNT(*) AS event_count 
 FROM chef_event_archive
 WHERE 
 event_date >= '01-JAN-05' AND event_date <= '01-FEB-05'
 AND (event='content.read' OR event='content.new' OR event='content.revise' or event='content.delete')
 GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24'), event
-ORDER BY event_hour, event_name;
+ORDER BY event_time, event_name;
 SPOOL OFF
 
 uploads and downloads (content.XXXX) per day:
 SET PAGESIZE 30000
-SPOOL c:\dev\content_per_day.txt
+SPOOL c:\dev\analysis\content_per_day.txt
 SELECT TO_CHAR(event_date,'YYYY-MM-DD') AS event_day, event AS event_name, COUNT(*) AS event_count 
 FROM chef_event_archive
 WHERE 
@@ -47,26 +117,61 @@ GROUP BY TO_CHAR(event_date,'YYYY-MM-DD'), event
 ORDER BY event_day, event_name;
 SPOOL OFF
 
+Site creation (site.add) events per hour:
+SET PAGESIZE 30000
+SPOOL c:\dev\analysis\sitescreated_per_hour.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_time, COUNT(*) AS event_count 
+FROM chef_event_archive
+WHERE event='site.add' 
+AND event_date >= '01-JAN-05' AND event_date <= '31-JAN-05'
+GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24') 
+ORDER BY event_time;
+SPOOL OFF
+
+Site creation (site.add) events per day:
+SET PAGESIZE 30000
+SPOOL c:\dev\analysis\sitescreated_per_day.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD') AS event_time, COUNT(*) AS event_count 
+FROM chef_event_archive
+WHERE event='site.add' 
+AND event_date >= '01-JAN-05' AND event_date <= '01-MAY-05'
+GROUP BY TO_CHAR(event_date,'YYYY-MM-DD') 
+ORDER BY event_time;
+SPOOL OFF
+
 Sessions starting per hour:
 SET PAGESIZE 30000
-SPOOL c:\dev\sessions_per_hour.txt
-SELECT TO_CHAR(session_start,'YYYY-MM-DD HH24')||':00:00' AS session_hour, COUNT(*) AS session_count 
+SPOOL c:\dev\analysis\sessions_per_hour.txt
+SELECT TO_CHAR(session_start,'YYYY-MM-DD HH24')||':00:00' AS event_time, COUNT(*) AS session_count 
 FROM chef_session_archive
 WHERE session_start <> session_end AND session_end > session_start
-AND session_start >= '01-JAN-05' AND session_start <= '01-FEB-05'
+AND session_start >= '01-JAN-05' AND session_start <= '01-MAY-05'
 GROUP BY TO_CHAR(session_start,'YYYY-MM-DD HH24') 
-ORDER BY session_hour;
+ORDER BY event_time;
 SPOOL OFF
+
+# of events per minute (with min, max, median):
+SET PAGESIZE 30000
+SPOOL c:\dev\analysis\events_per_seconds.txt
+SELECT MIN(event_count), MEDIAN(event_count), MAX(event_count) FROM (
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24:MI')||':00' AS event_time, COUNT(*) AS event_count
+FROM ctools_user.sakai_event_archive
+WHERE event_date > '11-AUG-05' AND event_date < '12-AUG-05'
+GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24:MI') 
+ORDER BY event_time
+);
+SPOOL OFF
+
 
 Sessions starting per day:
 SET PAGESIZE 30000
-SPOOL c:\dev\sessions_per_day.txt
-SELECT TO_CHAR(session_start,'YYYY-MM-DD') AS session_day, COUNT(*) AS session_count 
+SPOOL c:\dev\analysis\sessions_per_day.txt
+SELECT TO_CHAR(session_start,'YYYY-MM-DD') AS event_time, COUNT(*) AS session_count 
 FROM chef_session_archive
 WHERE session_start <> session_end AND session_end > session_start
 AND session_start >= '01-JAN-05' AND session_start <= '01-MAY-05'
 GROUP BY TO_CHAR(session_start,'YYYY-MM-DD') 
-ORDER BY session_day;
+ORDER BY event_time;
 SPOOL OFF
 
 Number of sessions that are shorter than the given length of time:
@@ -78,28 +183,41 @@ are more than 5 minutes long.  1 day divided by 24 hours divided by 60 minutes t
 
 Accesses of /content/public/server_info.html per hour:
 SET PAGESIZE 30000
-SPOOL c:\dev\server_info_html_per_hour.txt
-SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_hour, COUNT(*) AS event_count 
+SPOOL c:\dev\analysis\server_info_html_per_hour.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_time, COUNT(*) AS event_count 
 FROM chef_event_archive
 WHERE 
 event='content.read' 
 AND ref='/content/public/server_info.html'
 AND event_date >= '01-JAN-05' AND event_date <= '31-JAN-05'
 GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24') 
-ORDER BY event_hour;
+ORDER BY event_time;
 SPOOL OFF
 
 uploads and downloads (content.XXXX) per hour _minus the extraneous gateway page content_:
 SET PAGESIZE 30000
-SPOOL c:\dev\content_per_hour_no_gateway.txt
-SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_hour, event AS event_name, COUNT(*) AS event_count 
+SPOOL c:\dev\analysis\content_per_hour_no_gateway.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_time, event AS event_name, COUNT(*) AS event_count 
 FROM chef_event_archive
 WHERE 
 event_date >= '01-JAN-05' AND event_date <= '01-FEB-05'
 AND (event='content.read' OR event='content.new' OR event='content.revise' or event='content.delete')
 AND ref NOT LIKE '/content/public/%'
 GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24'), event
-ORDER BY event_hour, event_name;
+ORDER BY event_time, event_name;
+SPOOL OFF
+
+downloads (content.read) per minute _minus the extraneous gateway page content_:
+SET PAGESIZE 30000
+SPOOL c:\dev\analysis\downloads_per_minute_no_gateway.txt
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24:MI')||':00' AS event_time, COUNT(*) AS event_count 
+FROM chef_event_archive
+WHERE 
+event_date >= '18-JAN-05' AND event_date <= '21-JAN-05'
+AND (event='content.read')
+AND ref NOT LIKE '/content/public/%'
+GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24:MI')
+ORDER BY event_time;
 SPOOL OFF
 
 Gateway fluff content.read:
