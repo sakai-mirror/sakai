@@ -60,6 +60,18 @@ GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24')
 ORDER BY event_time;
 SPOOL OFF
 
+Maximum login events in an hour, over the winter 2005 term:
+SET PAGESIZE 30000
+SELECT MAX(event_count), MIN(event_count), MEDIAN(event_count) FROM
+(
+SELECT TO_CHAR(event_date,'YYYY-MM-DD HH24')||':00:00' AS event_time, COUNT(*) AS event_count 
+FROM chef_event_archive
+WHERE event='user.login' 
+AND event_date >= '01-JAN-05' AND event_date <= '01-MAY-05'
+GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24') 
+ORDER BY event_time
+)
+
 Login events per day:
 SET PAGESIZE 30000
 SPOOL c:\dev\analysis\logins_per_day.txt
@@ -218,6 +230,21 @@ AND (event='content.read')
 AND ref NOT LIKE '/content/public/%'
 GROUP BY TO_CHAR(event_date,'YYYY-MM-DD HH24:MI')
 ORDER BY event_time;
+SPOOL OFF
+
+Top 300 downloads (not including gateway page, site icons, etc):
+SET PAGESIZE 30000
+SET LINESIZE 300
+SPOOL c:\dev\analysis\downloads_top_300.txt
+SELECT * FROM (
+SELECT COUNT(*) AS download_count, ref 
+FROM chef_event_archive
+WHERE
+event_date >= '01-JAN-05' AND event_date < '01-MAY-05' 
+AND ref NOT LIKE '/content/public/%'
+GROUP BY ref ORDER BY download_count DESC
+)
+WHERE rownum <= 300;
 SPOOL OFF
 
 Gateway fluff content.read:
