@@ -131,6 +131,14 @@
 
    <filter-mapping>
        <filter-name>sakai.request</filter-name>
+       <servlet-name>sakai.permissions.helper</servlet-name>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
+       <dispatcher>INCLUDE</dispatcher>
+   </filter-mapping>
+
+   <filter-mapping>
+       <filter-name>sakai.request</filter-name>
        <servlet-name>sakai.filepicker</servlet-name>
        <dispatcher>REQUEST</dispatcher>
        <dispatcher>FORWARD</dispatcher>
@@ -504,6 +512,20 @@
        <init-param>
            <param-name>template</param-name>
            <param-value>announcement/chef_announcements</param-value>
+       </init-param>
+       <load-on-startup>1</load-on-startup>
+    </servlet>
+
+   <servlet>
+       <servlet-name>
+          sakai.permissions.helper
+       </servlet-name>
+       <servlet-class>
+           org.sakaiproject.tool.helper.PermissionsHelperAction
+       </servlet-class>
+       <init-param>
+           <param-name>template</param-name>
+           <param-value>helper/chef_permissions</param-value>
        </init-param>
        <load-on-startup>1</load-on-startup>
     </servlet>

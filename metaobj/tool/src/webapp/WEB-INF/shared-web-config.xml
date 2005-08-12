@@ -63,6 +63,9 @@
             </property>
             <property name="listScrollIndexer"><ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/></property>
             <property name="toolId"><value>osp.structuredartifact</value></property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+            </property>
          </bean>
       </property>
       <property name="sessionForm"><value>true</value></property>
@@ -71,7 +74,7 @@
             <prop key="success">listStructuredArtifactDefinitions</prop>
             <prop key="preview">previewStructuredArtifactDefinitionRedirect</prop>
             <prop key="failure">addStructuredArtifactDefinition</prop>
-
+            <prop key="pickSchema">pickSchemaFileRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -126,6 +129,9 @@
             <property name="worksiteManager"><ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/></property>
             <property name="listScrollIndexer"><ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/></property>
             <property name="toolId"><value>osp.structuredartifact</value></property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+            </property>
          </bean>
       </property>
       <property name="sessionForm"><value>true</value></property>
@@ -134,6 +140,7 @@
             <prop key="success">listStructuredArtifactDefinitions</prop>
             <prop key="preview">previewStructuredArtifactDefinitionRedirect</prop>
             <prop key="failure">addStructuredArtifactDefinition</prop>
+            <prop key="pickSchema">pickSchemaFileRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">

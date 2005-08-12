@@ -100,6 +100,12 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
       if (attachments != null) {
          sstate.setAttribute(ResourcesAction.STATE_ATTACHMENTS, new ReferenceVector(attachments));
       }
+
+      String message = (String)toolSession.getAttribute(FilePickerHelper.FILE_PICKER_FROM_TEXT);
+      toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_FROM_TEXT);
+      if (message != null) {
+         sstate.setAttribute(ResourcesAction.STATE_FROM_TEXT, message);
+      }
    }
 
 }

@@ -24,7 +24,17 @@
    </bean>
 
    <bean id="org.sakaiproject.metaobj.security.AuthorizationFacade"
-      class="org.sakaiproject.metaobj.security.impl.AuthzShim" />
+      class="org.sakaiproject.metaobj.security.impl.AuthzShim" >
+      <property name="realmService">
+         <ref bean="org.sakaiproject.service.legacy.realm.RealmService" />
+      </property>
+      <property name="portalService">
+         <ref bean="org.sakaiproject.service.framework.portal.PortalService" />
+      </property>
+      <property name="userDirectoryService">
+         <ref bean="org.sakaiproject.service.legacy.user.UserDirectoryService" />
+      </property>
+   </bean>
    
    <bean id="artifactFinderManager" class="org.sakaiproject.metaobj.shared.mgt.ArtifactFinderManagerImpl">
       <property name="finders">

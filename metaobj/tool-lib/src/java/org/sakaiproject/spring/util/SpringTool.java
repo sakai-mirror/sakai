@@ -23,6 +23,7 @@
 package org.sakaiproject.spring.util;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -70,6 +71,8 @@ public class SpringTool extends HttpServlet
 
    /** The folder to the jsf files, as configured. Does not end with a "/". */
    protected String m_path = null;
+   
+   private static final String HELPER_SESSION_PREFIX = "session.";
 
    /**
     * Compute a target (i.e. the servlet path info, not including folder root or jsf extension) for the case of the actual path being empty.
@@ -247,6 +250,15 @@ public class SpringTool extends HttpServlet
       }
 
       ToolSession toolSession = SessionManager.getCurrentToolSession();
+
+      Enumeration params = req.getParameterNames();
+      while (params.hasMoreElements()) {
+         String paramName = (String)params.nextElement();
+         if (paramName.startsWith(HELPER_SESSION_PREFIX)) {
+            String attributeName = paramName.substring(HELPER_SESSION_PREFIX.length());
+            toolSession.setAttribute(attributeName, req.getParameter(paramName));
+         }
+      }
 
       // calc helper id
       int posEnd = parts[1].lastIndexOf(".");

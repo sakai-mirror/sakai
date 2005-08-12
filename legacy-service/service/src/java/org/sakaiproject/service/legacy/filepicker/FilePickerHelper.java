@@ -20,4 +20,9 @@ public interface FilePickerHelper {
     **/
    public static final String FILE_PICKER_CANCEL = "sakaiproject.filepicker.cancel";
 
+   /** Name of the attribute used in the tool session to tell the
+    * picker the the message after "Attachments for:", set by the client tool.
+    **/
+   public static final String FILE_PICKER_FROM_TEXT = "sakaiproject.filepicker.from";
+
 }

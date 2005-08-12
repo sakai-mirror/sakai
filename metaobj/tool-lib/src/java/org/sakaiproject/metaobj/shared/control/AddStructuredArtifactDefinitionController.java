@@ -30,14 +30,25 @@ import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
+import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.SessionManager;
+import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
+import org.sakaiproject.service.legacy.resource.ReferenceVector;
+import org.sakaiproject.service.legacy.resource.Reference;
 
 import java.util.Map;
+import java.util.Hashtable;
 
 /**
  * @author chmaurer
  */
 public class AddStructuredArtifactDefinitionController extends AbstractStructuredArtifactDefinitionController
-      implements CustomCommandController, FormController {
+      implements CustomCommandController, FormController, LoadObjectController {
+
+   protected static final String SAD_SESSION_TAG =
+         "org.sakaiproject.metaobj.shared.control.AddStructuredArtifactDefinitionController.sad";
+   private SessionManager sessionManager;
 
    public Object formBackingObject(Map request, Map session, Map application) {
 
@@ -49,8 +60,25 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       return backingObject;
    }
 
-   public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
+   public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
+      if (session.get(SAD_SESSION_TAG) != null) {
+         return session.remove(SAD_SESSION_TAG);
+      }
+      else {
+         return incomingModel;
+      }
+   }
+
+   public ModelAndView handleRequest(Object requestModel, Map request,
+                                     Map session, Map application, Errors errors) {
       StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) requestModel;
+
+      if (StructuredArtifactDefinitionValidator.PICK_SCHEMA_ACTION.equals(sad.getFilePickerAction()) ||
+          StructuredArtifactDefinitionValidator.PICK_TRANSFORM_ACTION.equals(sad.getFilePickerAction())) {
+         session.put(SAD_SESSION_TAG, sad);
+         session.put(FilePickerHelper.FILE_PICKER_FROM_TEXT, request.get("filePickerFrom"));
+         return new ModelAndView("pickSchema");
+      }
 
       String action = "";
       Object actionObj = request.get("action");
@@ -75,10 +103,6 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
             errors.rejectValue("schemaFile", errorMessage, errorMessage);
             return new ModelAndView("failure");
          }
-      }
-
-      if (action.equals("schema")) {
-         return new ModelAndView("failure");
       }
 
       try {
@@ -117,12 +141,47 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
    public Map referenceData(Map request, Object command, Errors errors) {
       Map base = super.referenceData(request, command, errors);
       StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) command;
+
+      ToolSession session = getSessionManager().getCurrentToolSession();
+      if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
+            session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
+         // here is where we setup the id
+         ReferenceVector refs = (ReferenceVector)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+         Reference ref = (Reference)refs.get(0);
+
+         if (StructuredArtifactDefinitionValidator.PICK_SCHEMA_ACTION.equals(sad.getFilePickerAction())) {
+            sad.setSchemaFile(getIdManager().getId(ref.getId()));
+            sad.setSchemaFileName(ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
+         }
+         else if (StructuredArtifactDefinitionValidator.PICK_TRANSFORM_ACTION.equals(sad.getFilePickerAction())) {
+            sad.setXslConversionFileId(getIdManager().getId(ref.getId()));
+            sad.setXslFileName(ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
+         }
+      }
+
+      session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+      session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
+
       if (sad.getSchemaFile() != null){
-         base.put("elements", getStructuredArtifactDefinitionManager().getRootElements(sad));
+         try {
+            base.put("elements", getStructuredArtifactDefinitionManager().getRootElements(sad));
+         }
+         catch (Exception e) {
+            String errorMessage = "error reading schema file: " + e.getMessage();
+            sad.setSchemaFile(null);
+            sad.setSchemaFileName(null);
+            errors.rejectValue("schemaFile", errorMessage, errorMessage);
+         }
       }
       return base;
    }
 
+   public SessionManager getSessionManager() {
+      return sessionManager;
+   }
 
+   public void setSessionManager(SessionManager sessionManager) {
+      this.sessionManager = sessionManager;
+   }
 
 }

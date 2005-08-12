@@ -57,14 +57,20 @@ Warning: changing the .xsd file may adversely impact all existing items built wi
 <br/>
 </c:if>
 <spring:bind path="bean.schemaFileName">
-<input type="text" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true" value="<c:out value="${status.value}" />" />
+<input type="text" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"
+      disabled="true" value="<c:out value="${status.value}" />" />
 </spring:bind>
 <spring:bind path="bean.schemaFile">
-<input type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>" value="<c:out value="${status.value}"/>" />
+<input type="hidden" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>"
+      value="<c:out value="${status.value}"/>" />
 
      <span class="error_message"><c:out value="${status.errorMessage}"/></span>
 <a href="#"
-   onclick="document.forms[0]['action'].value='schema';document.forms[0].submit();return false;">Get Elements</a>
+   onclick="document.forms[0]['filePickerAction'].value='pickSchema';
+      document.forms[0]['filePickerFrom'].value='<spring:message
+         code="filePickerMessage.pickSchema" />';
+      document.forms[0].submit();return false;">
+Pick Schema</a>
 </td></tr>
 </spring:bind>
 
@@ -86,26 +92,21 @@ Warning: changing the .xsd file may adversely impact all existing items built wi
 <td class="chefLabel" nowrap>Conversion File (xsl):</td>
 <td>
 <spring:bind path="bean.xslFileName">
-<input type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>" disabled="true" value="<c:out value="${status.value}"/>" />
+<input type="text" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"
+      disabled="true" value="<c:out value="${status.value}" />" />
 </spring:bind>
 <spring:bind path="bean.xslConversionFileId">
-<input type="hidden" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>" value="<c:out value="${status.value}"/>" />
-   <script language="javascript">
-      var pickerId = createFilePickerLink('<osp:url value="/member/filePicker.osp"/>', '<c:out value="${status.value}" />',
-         'templateXslFileFilter', '1=1',
-         '<c:out value="${status.expression}"/>', 'xslFileName');
-   </script>
+<input type="hidden" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>"
+      value="<c:out value="${status.value}"/>" />
+
      <span class="error_message"><c:out value="${status.errorMessage}"/></span>
+<a href="#"
+   onclick="document.forms[0]['filePickerAction'].value='pickTransform';
+            document.forms[0]['filePickerFrom'].value='<spring:message
+               code="filePickerMessage.pickTransform" />';
+            document.forms[0].submit();return false;">
+Pick Transformation File</a>
 </td></tr>
-<tr>
-   <td colspan="2">
-   <script language="javascript">
-      createFilePickerFrame(pickerId, '<osp:url value="/member/filePicker.osp"/>', '<c:out value="${status.value}" />',
-         'templateXslFileFilter', '1=1',
-         '<c:out value="${status.expression}"/>', '<c:out value="${status.expression}"/>Name');
-   </script>
-</td>
-</tr>
 </spring:bind>
 </c:if>
 <spring:bind path="bean.instruction">
@@ -135,6 +136,8 @@ Warning: changing the .xsd file may adversely impact all existing items built wi
 <input name="action" type="submit" value="Preview"/>
 <input name="action" type="submit" value="Save"/>
 <input name="action" id="action" type="hidden" value=""/>
+<input name="filePickerAction" id="filePickerAction" type="hidden" value="" />
+<input name="filePickerFrom" id="filePickerFrom" type="hidden" value="" />
 
 <input type="button" value="Cancel" onclick="window.document.location='<osp:url value="listStructuredArtifactDefinitions.osp"/>'">
 </div>

@@ -35,6 +35,8 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
  */
 public class StructuredArtifactDefinitionValidator implements Validator {
 
+   public static final String PICK_SCHEMA_ACTION = "pickSchema";
+   public static final String PICK_TRANSFORM_ACTION = "pickTransform";
 
    public boolean supports(Class clazz) {
       return (StructuredArtifactDefinitionBean.class.isAssignableFrom(clazz));
@@ -43,6 +45,11 @@ public class StructuredArtifactDefinitionValidator implements Validator {
    public void validate(Object obj, Errors errors) {
       if (obj instanceof StructuredArtifactDefinitionBean) {
          StructuredArtifactDefinitionBean artifactHome = (StructuredArtifactDefinitionBean) obj;
+
+         if (PICK_SCHEMA_ACTION.equals(artifactHome.getFilePickerAction()) ||
+             PICK_TRANSFORM_ACTION.equals(artifactHome.getFilePickerAction())) {
+            return;
+         }
 
          if ((artifactHome.getSchemaFile() == null ||
                artifactHome.getSchemaFile().getValue() == null ||

@@ -26,6 +26,15 @@ import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.service.legacy.security.SecurityService;
+import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.service.legacy.user.UserDirectoryService;
+import org.sakaiproject.service.legacy.realm.RealmService;
+import org.sakaiproject.service.legacy.realm.Realm;
+import org.sakaiproject.service.framework.portal.PortalService;
+import org.sakaiproject.exception.IdUnusedException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -38,20 +47,58 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class AuthzShim implements AuthorizationFacade {
+   protected final transient Log logger = LogFactory.getLog(getClass());
+
+   private RealmService realmService;
+   private PortalService portalService;
+   private UserDirectoryService userDirectoryService;
 
    public void checkPermission(String function, Id id) throws AuthorizationFailedException {
-
+      if (!isAuthorized(function, id)) {
+         throw new AuthorizationFailedException(function, id);
+      }
    }
 
    public void checkPermission(Agent agent, String function, Id id) throws AuthorizationFailedException {
+      if (!isAuthorized(agent, function, id)) {
+         throw new AuthorizationFailedException(agent, function, id);
+      }
    }
 
    public boolean isAuthorized(String function, Id id) {
-      return true;
+      return isAuthorized(null, function, id);
    }
 
    public boolean isAuthorized(Agent agent, String function, Id id) {
-      return true;
+      String agentId = null;
+      if (agent == null) {
+         agentId = getUserDirectoryService().getCurrentUser().getId();
+      }
+      if (function.equals("maintain")) {
+         return checkMaintain(agentId);
+      }
+      return getRealmService().unlock(agentId, function, getCurrentRealm());
+   }
+
+   protected boolean checkMaintain(String agentId) {
+      Realm siteRealm = null;
+      try {
+         siteRealm = getRealmService().getRealm(getCurrentRealm());
+      }
+      catch (IdUnusedException e) {
+         logger.warn("unkown realm", e);
+      }
+      String maintain = siteRealm.getMaintainRole();
+
+      return siteRealm.hasRole(agentId, maintain);
+   }
+
+   protected String getCurrentRealm() {
+      return "/site/" + getPortalService().getCurrentSiteId();
+   }
+
+   protected String getReference(Id id) {
+      return null;
    }
 
    public List getAuthorizations(Agent agent, String function, Id id) {
@@ -65,5 +112,29 @@ public class AuthzShim implements AuthorizationFacade {
    }
 
    public void deleteAuthorizations(Id qualifier) {
+   }
+
+   public RealmService getRealmService() {
+      return realmService;
+   }
+
+   public void setRealmService(RealmService realmService) {
+      this.realmService = realmService;
+   }
+
+   public PortalService getPortalService() {
+      return portalService;
+   }
+
+   public void setPortalService(PortalService portalService) {
+      this.portalService = portalService;
+   }
+
+   public UserDirectoryService getUserDirectoryService() {
+      return userDirectoryService;
+   }
+
+   public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
+      this.userDirectoryService = userDirectoryService;
    }
 }

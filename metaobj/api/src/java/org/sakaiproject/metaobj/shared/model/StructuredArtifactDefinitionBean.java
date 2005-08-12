@@ -53,6 +53,7 @@ public class StructuredArtifactDefinitionBean implements Comparable {
    private String siteId;
    private String externalType;
    private String instruction;
+   private String filePickerAction;
 
    /**
     * should be one of the following states
@@ -361,6 +362,14 @@ public class StructuredArtifactDefinitionBean implements Comparable {
             (StructuredArtifactDefinitionBean) o;
       return this.getType().getDescription().toLowerCase().compareTo(
             that.getType().getDescription().toLowerCase());
+   }
+
+   public String getFilePickerAction() {
+      return filePickerAction;
+   }
+
+   public void setFilePickerAction(String filePickerAction) {
+      this.filePickerAction = filePickerAction;
    }
 
 }

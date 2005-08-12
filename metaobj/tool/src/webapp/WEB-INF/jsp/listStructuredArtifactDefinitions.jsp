@@ -1,22 +1,25 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<osp:authZMap prefix="osp.sad." var="can" qualifier="${authZqualifier}"/>
+<osp:authZMap prefix="metaobj." var="can" qualifier="${authZqualifier}"/>
 <!-- GUID=<c:out value="${newFormId}" /> -->
 
 <div class="chefToolBarWrap">
-<%--   <c:if test="${can.create}"> --%>
+<c:if test="${can.create}">
       <a href="<osp:url value="/addStructuredArtifactDefinition.osp?new=true"/>"
           title="New..." >New...</a>
-<%--   </c:if> --%>
+</c:if>
    <c:if test="${isMaintainer}">
-      <a href="<osp:url value="/editPermissions.osp">
-       <osp:param name="message" value="Set permissions for ${tool.title} in worksite '${worksite.title}'"/>
-       <osp:param name="name" value="artifacts"/>
-       <osp:param name="qualifier" value="${authZqualifier}"/>
-       <osp:param name="returnView" value="listStructuredArtifactDefinitionsRedirect"/>
+
+      <a href="<osp:url value="sakai.permissions.helper.helper/tool?panel=Main">
+       <osp:param name="session.sakaiproject.permissions.description"
+            value="Set permissions for ${tool.title} in worksite '${worksite.title}'"/>
+       <osp:param name="session.sakaiproject.permissions.siteRef"
+            value="${worksite.reference}"/>
+       <osp:param name="session.sakaiproject.permissions.prefix" value="metaobj."/>
        </osp:url>"title="Permissions..." >Permissions...
      </a>
+
    </c:if>
 </div>
 
@@ -48,7 +51,7 @@
             <c:if test="${can.edit}"><a href="<osp:url value="/editStructuredArtifactDefinition.osp"/>&id=<c:out value="${home.id}" />">edit</a></c:if>
             <c:if test="${!isGlobal && can.publish && home.canPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=site_publish&id=<c:out value="${home.id}" />">publish</a></c:if>
             <c:if test="${isGlobal && can.publish &&  home.canGlobalPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />">global publish</a></c:if>
-            <c:if test="${!isGlobal && home.canSuggestGlobalPublish && can.suggest_global_publish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=suggest_global_publish&id=<c:out value="${home.id}" />">suggest for global publish</a></c:if>
+            <c:if test="${!isGlobal && home.canSuggestGlobalPublish && can['suggest.global.publish']}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=suggest_global_publish&id=<c:out value="${home.id}" />">suggest for global publish</a></c:if>
             <c:if test="${isGlobal && home.canApproveGlobalPublish && can.publish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />">approve global publish</a></c:if>
          </c:if>
       </TD>

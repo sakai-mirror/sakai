@@ -103,6 +103,11 @@
 	<function name="crud.delete" />
 	<function name="gradebook.access" />
 	<function name="gradebook.maintain" />
+   <function name="metaobj.create" />
+   <function name="metaobj.edit" />
+   <function name="metaobj.publish" />
+   <function name="metaobj.suggest.global.publish" />
+   <function name="metaobj.global.publish" /> 
 
 </registration>
 	

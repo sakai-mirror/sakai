@@ -36,6 +36,10 @@ public class EditStructuredArtifactDefinitionController extends AddStructuredArt
 
 //TODO removed reference to ArtifactFinderManager
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
+      if (session.get(SAD_SESSION_TAG) != null) {
+         return session.remove(SAD_SESSION_TAG);
+      }
+
       StructuredArtifactDefinitionBean home = (StructuredArtifactDefinitionBean) incomingModel;
       home = getStructuredArtifactDefinitionManager().loadHome(home.getId());
       return home;
