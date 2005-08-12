@@ -391,10 +391,10 @@
 					<tr>
 						<td colspan="3">
 						<p class="discTria">
-							<a href="#toolLink("ResourcesAction" "doHideOtherSites")" title= "$tlang.getString('sh.one')">
-								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") $group.name" border="0" width="15" height="15" align="top" />
+							<a href="#toolLink("ResourcesAction" "doHideOtherSites")" title= "$tlang.getString('list.hide')">
+								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString('list.hide')" border="0" width="15" height="15" align="top" />
 							</a>
-							$validator.escapeHtml("Hide other sites")
+							$validator.escapeHtml("$tlang.getString('list.hide')")
 						</p>
 						</td>
 					</tr>
@@ -672,10 +672,10 @@
 					<tr>
 						<td colspan="3">
 						<p class="discTria">
-							<a href="#toolLink("ResourcesAction" "doShowOtherSites")" title= "$tlang.getString('sh.one')">
-								<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("edit.show") $group.name" border="0" width="15" height="15" align="top" />
+							<a href="#toolLink("ResourcesAction" "doShowOtherSites")" title= "$tlang.getString('list.show')">
+								<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString('list.show')" border="0" width="15" height="15" align="top" />
 							</a>
-							$validator.escapeHtml("Show other sites")
+							$validator.escapeHtml("$tlang.getString('list.show')")
 						</p>
 						</td>
 					</tr>
