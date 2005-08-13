@@ -534,7 +534,8 @@
          <configuration>
             <spoolPath>file://var/nntp/spool</spoolPath>
             <!-- The number of threads that process spooler related tasks. -->
-            <threadCount>1</threadCount>
+            <!-- CHANGED: from 1 to 0 - this was causing James to not shutdown when Tomcat shuts down -->
+            <threadCount>0</threadCount>
             <!-- The spool thread(s) should idle for some time, if it has nothing to do  -->
             <threadIdleTime>60000</threadIdleTime>
          </configuration>
