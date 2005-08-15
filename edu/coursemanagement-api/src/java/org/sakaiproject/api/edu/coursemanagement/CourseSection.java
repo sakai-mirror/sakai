@@ -107,14 +107,14 @@ public interface CourseSection extends Persistable
 	 * 
 	 * @return maxiumum number of students allowed
 	 */
-	public int getMaximumStudents();
+	public Integer getMaximumStudents();
 
 	/**
 	 * Set the maximum number of students permitted to entroll in this course section.
 	 * 
 	 * @param maxStudents
 	 */
-	public void setMaximumStudents(int maxStudents);
+	public void setMaximumStudents(Integer maxStudents);
 
 	/**
 	 * Get the session for this course section.
