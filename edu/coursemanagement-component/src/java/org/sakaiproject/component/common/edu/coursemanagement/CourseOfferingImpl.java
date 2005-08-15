@@ -107,6 +107,17 @@ public class CourseOfferingImpl
 
   public CourseOfferingImpl() {}
 
+  public CourseOfferingImpl(String title, String description,
+      String offeringNumber, String canonicalCourseUuid,
+      String sessionUuid, String courseOfferingTypeUuid){
+    this.setTitle(title);
+    this.setDescription(description);
+    this.setOfferingNumber(offeringNumber);
+    this.setCanonicalCourse(canonicalCourseUuid);
+    this.setSessionUuid(sessionUuid);
+    this.setCourseOfferingTypeUuid(courseOfferingTypeUuid);
+  }
+
   public Long getCourseOfferingId() {
     return this.courseOfferingId;
   }
@@ -146,22 +157,16 @@ public class CourseOfferingImpl
 
   public void setSession(Session session) {
     this.session = session;
+    if (session != null)
+      this.sessionUuid = session.getUuid();
   }
 
-  public String getSessionUuid() {
-    if (session != null) {
-      return session.getUuid();
-    }
-    else {
-      return null;
-    }
+  private String getSessionUuid() {
+    return sessionUuid;
   }
 
-  public void setSessionUuid(String uuid) {
+  private void setSessionUuid(String uuid) {
     this.sessionUuid = uuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.
-        getInstance();
-    this.session = manager.getSessionByUuid(uuid);
   }
 
   public Integer getMaximumStudents() {
@@ -277,22 +282,16 @@ public class CourseOfferingImpl
 
   public void setOfferingType(CourseOfferingType type) {
     this.courseOfferingType = type;
+    if (type != null)
+      this.courseOfferingTypeUuid = type.getUuid();
   }
 
   public void setCourseOfferingTypeUuid(String uuid) {
     this.courseOfferingTypeUuid = uuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.
-        getInstance();
-    this.courseOfferingType = manager.getCourseOfferingTypeByUuid(uuid);
   }
 
   public String getCourseOfferingTypeUuid() {
-    if (courseOfferingType != null) {
-      return courseOfferingType.getUuid();
-    }
-    else {
-      return null;
-    }
+    return courseOfferingTypeUuid;
   }
 
   public CourseOfferingStatusType getOfferingStatus() {
@@ -301,22 +300,16 @@ public class CourseOfferingImpl
 
   public void setOfferingStatus(CourseOfferingStatusType status) {
     this.courseOfferingStatus = status;
+    if (status != null)
+      this.courseOfferingStatusUuid = status.getUuid();
   }
 
   public void setCourseOfferingStatusUuid(String uuid) {
     this.courseOfferingStatusUuid = uuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.
-        getInstance();
-    this.courseOfferingStatus = manager.getCourseOfferingStatusByUuid(uuid);
   }
 
   public String getCourseOfferingStatusUuid() {
-    if (courseOfferingStatus != null) {
-      return courseOfferingStatus.getUuid();
-    }
-    else {
-      return null;
-    }
+    return courseOfferingStatusUuid;
   }
 
   /* ***************** Structural Methods ***************** */
@@ -453,18 +446,10 @@ public class CourseOfferingImpl
 
   public void setEnrollmentTypeUuid(String uuid) {
     this.enrollmentTypeUuid = uuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.
-        getInstance();
-    this.enrollmentType = manager.getEnrollmentTypeByUuid(uuid);
   }
 
   public String getEnrollmentTypeUuid() {
-    if (enrollmentType != null) {
-      return enrollmentType.getUuid();
-    }
-    else {
-      return null;
-    }
+    return enrollmentTypeUuid;
   }
 
   /* ***************** Persistence Methods ***************** */

@@ -27,7 +27,7 @@
         <property name="equivalentString" column="EQUIVALENTS" type="java.lang.String"  not-null="false" />
 
         <!-- Structural -->
-        <set name="offerings" cascade="all" inverse="true">
+        <set name="courseOfferingSet" cascade="all" inverse="true">
             <key column="CANONICALCOURSEID"/>
             <one-to-many class="CourseOfferingImpl"/>
         </set>

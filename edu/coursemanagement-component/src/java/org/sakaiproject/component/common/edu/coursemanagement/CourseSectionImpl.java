@@ -180,7 +180,7 @@ public class CourseSectionImpl
     this.sessionUuid = uuid;
     CourseManagementManagerImpl manager = CourseManagementManagerImpl.
         getInstance();
-    this.session = manager.getSessionByUuid(uuid);
+    this.session = manager.getSession(uuid);
   }
 
   public String getSessionUuid() {

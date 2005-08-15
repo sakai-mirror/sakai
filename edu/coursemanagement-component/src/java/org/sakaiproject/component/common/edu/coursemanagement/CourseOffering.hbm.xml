@@ -18,7 +18,7 @@
         <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="false" />
         <property name="offeringNumber" column="OFFERINGNUMBER" type="java.lang.String"  not-null="true" />
         <property name="sessionUuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
-        <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  not-null="false" />
+        <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Integer"  not-null="false" />
         <property name="defaultLocation" column="DEFAULTLOCATION"  type="java.lang.String"  not-null="false" />
         <property name="defaultMeetingTime" column="DEFAULTMEETINGTIME" type="java.lang.String"  not-null="false" />
         <property name="defaultSchedule" column="DEFAULTSCHEDULE" type="java.lang.String"  not-null="false" />
@@ -29,7 +29,7 @@
 
         <!-- Typing -->
         <property name="courseOfferingTypeUuid" column="COURSEOFFERINGTYPEUUID" type="java.lang.String"  not-null="true" />
-        <property name="courseOfferingStatusUuid" column="COURSEOFFERINGSTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
+        <property name="courseOfferingStatusUuid" column="COURSEOFFERINGSTATUSTYPEUUID" type="java.lang.String" not-null="true"  />
 
         <!-- Structural -->
         <set name="courseSections" cascade="all" inverse="true">
@@ -37,7 +37,7 @@
             <one-to-many class="CourseSectionImpl"/>
         </set>
         <property name="canonicalCourse" column="CANONICALCOURSEUUID" type="java.lang.String"  not-null="true" />
-        <property name="canonicalCourseId" column="CANONICALCOURSEID" type="java.lang.Integer"  not-null="true" />
+        <property name="canonicalCourseId" column="CANONICALCOURSEID" type="java.lang.Long"  not-null="true" />
 
         <!-- Grouping -->
         <set name="participationSet" cascade="all" inverse="true">

@@ -12,67 +12,68 @@ import org.sakaiproject.api.edu.coursemanagement.CanonicalCourse;
 import org.sakaiproject.api.edu.coursemanagement.CanonicalCourseStatusType;
 
 public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
-	
+
   private static final long serialVersionUID = 1L;
-  
+
   /** The cached hash code value for this instance.  Settting to 0 triggers re-calculation. */
   private int hashValue = 0;
-  
+
   /** The composite primary key value. */
   private Long canonicalCourseId;
-  
+
   /** The value of the CanonicalCourseStatusType association. */
   private CanonicalCourseStatusType canonicalCourseStatus;
-  
+
   /** The uuid of the equivalentCourses */
   private Set equivalentSet;
-  
+
   /** The value of the preRequisites. */
   private String prerequisiteString;
-  
+
   /** The value of the simple title property. */
   private String title;
-  
+
   /** The value of the simple description property. */
   private String description;
-  
+
   /** The value of the simple courseNumber property. */
   private String courseNumber;
-  
+
   /** The value of the simple uuid property. */
   private String uuid;
-  
+
   /** The value of the simple defaultCredits property. */
   private String defaultCredits;
-  
+
   private String topicsString;
-  
+
   private List topicList;
-  
+
   /** The value of the simple createdby property. */
   private String createdBy;
-  
+
   /** The value of the simple createddate property. */
   private Date createdDate;
-  
+
   /** The value of the simple lastmodifiedby property. */
   private String lastModifiedBy;
-  
+
   /** The value of the simple lastmodifieddate property. */
   private Date lastModifiedDate;
-  
+
   private Set prerequisiteSet;
-  
+
   private Set courseOfferingSet;
-  
+
   private String canonicalCourseStatusUuid;
-  
+
   private String equivalentString;
-  
+
   private String parentUuId;
-  
+
+  private Set offerings;
   public CanonicalCourseImpl() {}
-  
+
   public CanonicalCourseImpl(String title, String description,
       String courseNumber, String uuid, CanonicalCourseStatusType status){
     this.setTitle(title);
@@ -82,49 +83,49 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
     if (status != null)
       this.setCanonicalCourseStatus(status);
   }
-  
+
   public Long getCanonicalCourseId() {
     return this.canonicalCourseId;
   }
-  
+
   public void setCanonicalCourseId(Long canonicalCourseId) {
     this.canonicalCourseId = canonicalCourseId;
   }
-  
+
   /* ***************** Metadata Methods ***************** */
   public String getTitle() {
     return title;
   }
-  
+
   public void setTitle(String title) {
     this.title = title;
   }
-  
+
   public String getDescription() {
     return description;
   }
-  
+
   public void setDescription(String description) {
     this.description = description;
   }
-  
+
   public String getCourseNumber() {
     return courseNumber;
   }
-  
+
   public void setCourseNumber(String courseNumber) {
     this.courseNumber = courseNumber;
   }
-  
-  
+
+
   public String getDefaultCredits() {
     return this.defaultCredits;
   }
-  
+
   public void setDefaultCredits(String defaultCredits) {
     this.defaultCredits = defaultCredits;
   }
-  
+
   /**
    * Return the value of the TOPICS column.
    * @return String
@@ -133,7 +134,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
   {
     return topicsString;
   }
-  
+
   /**
    * Set the value of the TOPICS column.
    * @param topics
@@ -143,17 +144,19 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
     this.topicsString = topicsString;
     topicList = getTopics();
   }
-  
+
   public List getTopics() {
     topicList = new ArrayList();
-    String[] topicsArray = topicsString.split("|");
-    for (int i=0;i<topicsArray.length;i++){
-      String t = topicsArray[i];
-      topicList.add(t);
+    if (topicsString !=null){
+      String[] topicsArray = topicsString.split("|");
+      for (int i = 0; i < topicsArray.length; i++) {
+        String t = topicsArray[i];
+        topicList.add(t);
+      }
     }
     return topicList;
   }
-  
+
   public void addTopic(String topic) {
     if (topicsString == null)
       topicsString = topic;
@@ -163,7 +166,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
       topicList = new ArrayList();
     topicList.add(topic);
   }
-  
+
   public void removeTopic(String topic) {
     topicsString = "";
     Iterator i = topicList.iterator();
@@ -179,7 +182,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
       }
     }
   }
-  
+
   /**
    * Return the value of the Equivalent column.
    * @return String
@@ -188,7 +191,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
   {
     return this.prerequisiteString;
   }
-  
+
   /**
    * Set the value of the Equivalent column.
    * @param Equivalent
@@ -198,17 +201,19 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
     this.prerequisiteString = prerequisiteString;
     prerequisiteSet = getPrerequisites();
   }
-  
+
   public Set getPrerequisites() {
     prerequisiteSet = new HashSet();
-    String[] pArray = prerequisiteString.split("|");
-    for (int i=0;i<pArray.length;i++){
-      String p = pArray[i];
-      prerequisiteSet.add(p);
+    if (prerequisiteString !=null){
+      String[] pArray = prerequisiteString.split("|");
+      for (int i = 0; i < pArray.length; i++) {
+        String p = pArray[i];
+        prerequisiteSet.add(p);
+      }
     }
     return prerequisiteSet;
   }
-  
+
   public void addPrerequisite(String prerequisite) {
     if (prerequisiteString == null)
       prerequisiteString = prerequisite;
@@ -218,7 +223,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
       prerequisiteSet = new HashSet();
     prerequisiteSet.add(prerequisite);
   }
-  
+
   public void removePrerequisite(String prerequisite) {
     prerequisiteString ="";
     Iterator i = prerequisiteSet.iterator();
@@ -234,29 +239,26 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
       }
     }
   }
-  
+
   /* ***************** Typing Methods ***************** */
   public CanonicalCourseStatusType getCanonicalCourseStatus() {
     return canonicalCourseStatus;
   }
-  
+
   public void setCanonicalCourseStatus(CanonicalCourseStatusType status) {
     this.canonicalCourseStatus = status;
+    if (status !=null)
+      this.canonicalCourseStatusUuid = status.getUuid();
   }
-  
+
   public void setCanonicalCourseStatusUuid(String statusUuid) {
     this.canonicalCourseStatusUuid = statusUuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.getInstance();
-    this.canonicalCourseStatus = manager.getCanonicalCourseStatusByUuid(statusUuid);
   }
-  
+
   public String getCanonicalCourseStatusUuid() {
-    if (canonicalCourseStatus!=null)
-      return canonicalCourseStatus.getUuid();
-    else
-      return null;
+    return canonicalCourseStatusUuid;
   }
-  
+
   /* ***************** Cross Listing Methods ***************** */
   /**
    * Return the value of the TOPICS column.
@@ -266,7 +268,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
   {
     return equivalentString;
   }
-  
+
   /**
    * Set the value of the Equivalent column.
    * @param Equivalent
@@ -276,7 +278,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
     this.equivalentString = equivalentString;
     equivalentSet = getEquivalents();
   }
-  
+
   public Set getEquivalents() {
     equivalentSet = new HashSet();
     if (equivalentString!=null){
@@ -288,7 +290,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
     }
     return equivalentSet;
   }
-  
+
   public void addEquivalent(String equivalent) {
     if (equivalentString == null)
       equivalentString = equivalent;
@@ -298,7 +300,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
       equivalentSet = new HashSet();
     equivalentSet.add(equivalent);
   }
-  
+
   public void removeEquivalent(String equivalent) {
     equivalentString = "";
     Iterator i = equivalentSet.iterator();
@@ -314,22 +316,46 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
       }
     }
   }
-  
-  /* ***************** Structural Methods ***************** */  
+
+  /* ***************** Structural Methods ***************** */
   public Set getOfferings() {
+    return offerings;
+  }
+
+  public void setOfferings(Set offerings) {
+    this.offerings = offerings;
+  }
+
+  private Set getCourseOfferingSet() {
     return courseOfferingSet;
   }
-  
-  public void setOfferings(Set offerings) {
-    this.courseOfferingSet = offerings;
+
+  private void setCourseOfferingSet(Set courseOfferingSet) {
+    this.courseOfferingSet = courseOfferingSet;
   }
-  
+
   public void addOffering(String offeringUuid) {
     if (courseOfferingSet == null)
       courseOfferingSet = new HashSet();
     courseOfferingSet.add(offeringUuid);
   }
-  
+
+  public void addCourseOffering(CourseOfferingImpl offering) {
+    if (courseOfferingSet == null){
+      courseOfferingSet = new HashSet();
+      offerings = new HashSet();
+    }
+    courseOfferingSet.add(offering);
+    offerings.add(offering.getUuid());
+  }
+
+  public void removeCourseOffering(CourseOfferingImpl offering) {
+    if (courseOfferingSet == null)
+      courseOfferingSet = new HashSet();
+    offerings.remove(offering.getUuid());
+    courseOfferingSet.remove(offering);
+  }
+
   public void removeOffering(String offeringUuid) {
     Iterator i = courseOfferingSet.iterator();
     while (i.hasNext()){
@@ -340,56 +366,56 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
       }
     }
   }
-  
+
   public String getParentId() {
     return parentUuId;
   }
-  
+
   public void setParentId(String parentUuid) {
     this.parentUuId = parentUuid;
   }
-  
-  /* ***************** Persistence Methods ***************** */  
+
+  /* ***************** Persistence Methods ***************** */
   public String getUuid() {
     return uuid;
   }
-  
+
   public void setUuid(String uuid) {
     this.uuid = uuid;
   }
-  
+
   public String getCreatedBy() {
     return this.createdBy;
   }
-  
+
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
   }
-  
+
   public Date getCreatedDate() {
     return this.createdDate;
   }
-  
+
   public void setCreatedDate(Date createdDate) {
     this.createdDate = createdDate;
   }
-  
+
   public String getLastModifiedBy() {
     return lastModifiedBy;
   }
-  
+
   public void setLastModifiedBy(String lastModifiedBy) {
     this.lastModifiedBy = lastModifiedBy;
   }
-  
+
   public Date getLastModifiedDate() {
     return lastModifiedDate;
   }
-  
+
   public void setLastModifiedDate(Date lastModifiedDate) {
     this.lastModifiedDate = lastModifiedDate;
   }
-  
+
   /**
    * Implementation of the equals comparison on the basis of equality of the primary key values.
    * @param rhs
@@ -406,7 +432,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
       return false;
     return (this.getCanonicalCourseId().equals(that.getCanonicalCourseId()));
   }
-  
+
   /**
    * Implementation of the hashCode method conforming to the Bloch pattern with
    * the exception of array properties (these are very unlikely primary key types).
@@ -423,5 +449,5 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
     }
     return this.hashValue;
   }
-  
+
 }
