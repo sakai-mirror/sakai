@@ -128,6 +128,7 @@ public class CourseManagementManagerImpl
     SessionImpl s = new SessionImpl(title, abbreviation,
                                     year, type, uuid, isCurrent);
     Date currentDate = new Date();
+  	s.setUuid("*uuid_session_" + currentDate.getTime());
     s.setCreatedBy("admin");
     s.setCreatedDate(currentDate);
     s.setLastModifiedBy("admin");
@@ -137,10 +138,19 @@ public class CourseManagementManagerImpl
   }
 
   public EnrollmentRecord createEnrollmentRecord(String agentUuid,
-                                                 String role, String status,
+                                                 String role, String statusUuid,
                                                  String courseSectionUuid) {
-    // TODO Auto-generated method stub
-    return null;
+    EnrollmentStatusType status = getEnrollmentStatusByUuid(statusUuid);
+  	EnrollmentRecordImpl e = new EnrollmentRecordImpl(
+    		agentUuid, role, status, courseSectionUuid);
+    Date currentDate = new Date();
+  	e.setUuid("*uuid_enrollment_" + currentDate.getTime());
+    e.setCreatedBy("admin");
+    e.setCreatedDate(currentDate);
+    e.setLastModifiedBy("admin");
+    e.setLastModifiedDate(currentDate);
+    getHibernateTemplate().save(e);
+    return e;
   }
 
   public ParticipationRecord createParticipationRecord(String agentUuid,
@@ -405,6 +415,21 @@ public class CourseManagementManagerImpl
     String query = "select t from EnrollmentStatusTypeImpl t where t.uuid=?";
     List list = getHibernateTemplate().find(query,
                                             new Object[] {uuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    if (list.size() > 0) {
+      return (EnrollmentStatusType) list.get(0);
+    }
+    else {
+      return null;
+    }
+  }
+  
+  public EnrollmentStatusType getEnrollmentStatusByKeyword(String keyword) {
+    String query = "select t from EnrollmentStatusTypeImpl t where t.keyword=?";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {keyword}
                                             ,
                                             new net.sf.hibernate.type.Type[] {
                                             Hibernate.STRING});

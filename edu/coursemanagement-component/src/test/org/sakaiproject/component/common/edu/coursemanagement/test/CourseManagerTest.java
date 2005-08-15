@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.sakaiproject.component.common.edu.coursemanagement.
     CourseManagementManagerImpl;
+import org.sakaiproject.component.common.edu.coursemanagement.EnrollmentRecordImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.SessionImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.SessionTypeImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.
@@ -43,11 +44,9 @@ import org.sakaiproject.component.common.edu.coursemanagement.
     CourseOfferingStatusTypeImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.
     CourseOfferingTypeImpl;
-import org.sakaiproject.component.common.edu.coursemanagement.
-    EnrollmentTypeImpl;
-
-import org.sakaiproject.component.common.edu.coursemanagement.
-    CourseSectionImpl;
+import org.sakaiproject.component.common.edu.coursemanagement.EnrollmentTypeImpl;
+import org.sakaiproject.component.common.edu.coursemanagement.EnrollmentStatusTypeImpl;
+import org.sakaiproject.component.common.edu.coursemanagement.CourseSectionImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.
     CourseSectionStatusTypeImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.
@@ -154,6 +153,15 @@ public class CourseManagerTest
     CourseSectionImpl section = (CourseSectionImpl)((CourseManagementManagerImpl) courseManagementManager)
 		.createCourseSection("title", "description", "1052-eng-101-01", 
 				offering.getUuid(), session.getUuid(), sectionType);
+
+    // 5. add student enrollment to course section
+    EnrollmentStatusTypeImpl enrollmentStatus = (EnrollmentStatusTypeImpl)
+    ( (CourseManagementManagerImpl) courseManagementManager).
+    getEnrollmentStatusByKeyword("enrollment_status.full_credit"); 
+  	EnrollmentRecordImpl e = (EnrollmentRecordImpl)((CourseManagementManagerImpl) courseManagementManager)
+		.createEnrollmentRecord("daisyf", "student", enrollmentStatus.getUuid(), section.getUuid());
+    setComplete();    
+
   }
 
   /**

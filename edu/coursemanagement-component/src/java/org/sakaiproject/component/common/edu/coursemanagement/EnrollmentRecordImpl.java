@@ -23,11 +23,8 @@ public class EnrollmentRecordImpl
   private String agentUuid;
   private String role;
   private EnrollmentStatusType status;
-  private String statusUuid;
   private String credits;
-  private Long courseSectionId;
   private String courseSectionUuid;
-  private Long courseOfferingId;
   private String courseOfferingUuid;
   private String uuid;
   private String createdBy;
@@ -35,10 +32,22 @@ public class EnrollmentRecordImpl
   private String lastModifiedBy;
   private Date lastModifiedDate;
 
+  public EnrollmentRecordImpl() {
+	}
+
+	public EnrollmentRecordImpl(String agentUuid, String role,
+			EnrollmentStatusType status, String courseSectionUuid) {
+		this.agentUuid = agentUuid;
+		this.role = role;
+		this.status = status;
+		this.courseSectionUuid = courseSectionUuid;
+	}
+
   /**
-   * Return the simple primary key value that identifies this object.
-   * @return java.lang.Long
-   */
+	 * Return the simple primary key value that identifies this object.
+	 * 
+	 * @return java.lang.Long
+	 */
   public Long getEnrollmentRecordId() {
     return enrollmentRecordId;
   }
@@ -76,22 +85,6 @@ public class EnrollmentRecordImpl
     this.status = status;
   }
 
-  public void setStatusUuid(String statusUuid) {
-    this.statusUuid = statusUuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.
-        getInstance();
-    this.status = manager.getEnrollmentStatusByUuid(statusUuid);
-  }
-
-  public String getStatusUuid() {
-    if (status != null) {
-      return status.getUuid();
-    }
-    else {
-      return null;
-    }
-  }
-
   public String getCredits() {
     return credits;
   }
@@ -101,27 +94,11 @@ public class EnrollmentRecordImpl
   }
 
   public String getCourseReference() {
-    return getCourseSectionUuid();
-  }
-
-  public void setCourseReference(String courseSectionUuid) {
-    setCourseSectionUuid(courseSectionUuid);
-  }
-
-  public String getCourseSectionUuid() {
     return courseSectionUuid;
   }
 
-  public void setCourseSectionUuid(String courseSectionUuid) {
+  public void setCourseReference(String courseSectionUuid) {
     this.courseSectionUuid = courseSectionUuid;
-  }
-
-  public Long getCourseSectionId() {
-    return courseSectionId;
-  }
-
-  public void setCourseSectionId(Long courseSectionId) {
-    this.courseSectionId = courseSectionId;
   }
 
   public String getCourseOfferingUuid() {
@@ -130,14 +107,6 @@ public class EnrollmentRecordImpl
 
   public void setCourseOfferingUuid(String courseOfferingUuid) {
     this.courseOfferingUuid = courseOfferingUuid;
-  }
-
-  public Long getCourseOfferingId() {
-    return courseOfferingId;
-  }
-
-  public void setCourseOfferingId(Long courseOfferingId) {
-    this.courseOfferingId = courseOfferingId;
   }
 
   public String getUuid() {

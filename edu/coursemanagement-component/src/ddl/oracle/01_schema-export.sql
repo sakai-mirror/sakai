@@ -1,3 +1,4 @@
+alter table CM_ENROLLMENTRECORD_T drop constraint FK371AA8DF6B67A391;
 alter table CM_COURSEOFFERING_T drop constraint FKD254CBEB8B4970AE;
 alter table CM_COURSEOFFERING_T drop constraint FKD254CBEBCA525211;
 alter table CM_COURSEOFFERING_T drop constraint FKD254CBEBA459A5D9;
@@ -55,15 +56,15 @@ create table CM_ENROLLMENTRECORD_T (
    AGENT varchar2(255) not null,
    ROLE varchar2(255),
    CREDITS varchar2(255),
-   CREATEDBY varchar2(255) not null,
-   COURSEOFFERINGID number(10,0) not null,
-   COURSEOFFERINGUUID varchar2(255) not null,
-   COURSESECTIONID number(10,0) not null,
+   COURSEOFFERINGUUID varchar2(255),
    COURSESECTIONUUID varchar2(255) not null,
+   UUID varchar2(255) not null,
+   CREATEDBY varchar2(255) not null,
    CREATEDDATE date not null,
    LASTMODIFIEDBY varchar2(255) not null,
    LASTMODIFIEDDATE date not null,
-   ENROLLMENTSTATUSTYPEUUID varchar2(255) not null,
+   ENROLLMENTSTATUSID number(19,0),
+   COURSESECTIONID number(19,0),
    primary key (ENROLLMENTRECORDID)
 );
 create table CM_COURSEOFFERINGTYPE_T (
@@ -309,6 +310,7 @@ create table CM_COURSESET_T (
    LASTMODIFIEDDATE date not null,
    primary key (COURSESETID)
 );
+alter table CM_ENROLLMENTRECORD_T add constraint FK371AA8DF6B67A391 foreign key (ENROLLMENTSTATUSID) references CM_ENROLLMENTSTATUS_T;
 alter table CM_COURSEOFFERING_T add constraint FKD254CBEB8B4970AE foreign key (COURSEOFFERINGSTATUSID) references CM_COURSEOFFERINGSTATUS_T;
 alter table CM_COURSEOFFERING_T add constraint FKD254CBEBCA525211 foreign key (SESSIONID) references CM_SESSION_T;
 alter table CM_COURSEOFFERING_T add constraint FKD254CBEBA459A5D9 foreign key (ENROLLMENTTYPEID) references CM_ENROLLMENTTYPE_T;
