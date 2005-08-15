@@ -14,9 +14,13 @@
         </id>
 
         <!-- Meta data --> 
-        <property name="title" column="TITLE" type="java.lang.String"  not-null="false" />
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
         <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="false" />
         <property name="offeringNumber" column="OFFERINGNUMBER" type="java.lang.String"  not-null="true" />
+        <many-to-one name="session"
+            column="SESSIONID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.SessionImpl"/>
+
         <property name="sessionUuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
         <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Integer"  not-null="false" />
         <property name="defaultLocation" column="DEFAULTLOCATION"  type="java.lang.String"  not-null="false" />
@@ -29,7 +33,7 @@
 
         <!-- Typing -->
         <property name="courseOfferingTypeUuid" column="COURSEOFFERINGTYPEUUID" type="java.lang.String"  not-null="true" />
-        <property name="courseOfferingStatusUuid" column="COURSEOFFERINGSTATUSTYPEUUID" type="java.lang.String" not-null="true"  />
+        <property name="courseOfferingStatusUuid" column="COURSEOFFERINGSTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
 
         <!-- Structural -->
         <set name="courseSections" cascade="all" inverse="true">
@@ -45,7 +49,7 @@
             <one-to-many class="ParticipationRecordImpl"/>
         </set>
 
-        <property name="enrollmentTypeUuid" column="ENROLLMENTTYPEUUID" type="java.lang.String"  not-null="true" />
+        <property name="enrollmentTypeUuid" column="ENROLLMENTTYPEUUID" type="java.lang.String"  not-null="false" />
                
         <!-- Persistence --> 
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />

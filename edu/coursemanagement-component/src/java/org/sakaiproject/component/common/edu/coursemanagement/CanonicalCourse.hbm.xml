@@ -11,7 +11,7 @@
         </id>
 
         <!--  Meta data -->
-        <property name="title" column="TITLE" type="java.lang.String"  not-null="false" />
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
         <property name="description">
           <column name="DESCRIPTION" sql-type="varchar(4000)" not-null="false" />
         </property>  

@@ -11,10 +11,10 @@
         </id>
  
         <!-- Meta data --> 
-        <property name="title" column="TITLE" type="java.lang.String" />
-        <property name="description" column="DESCRIPTION" type="java.lang.String" />
+        <property name="title" column="TITLE" type="java.lang.String" not-null="true"/>
+        <property name="description" column="DESCRIPTION" type="java.lang.String" not-null="false" />
         <property name="sectionNumber" column="SECTIONNUMBER" type="java.lang.String"  not-null="true" />
-        <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  />
+        <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Integer"  />
         <property name="sessionUuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
         <property name="schedule"> 
           <column name="SCHEDULE" sql-type="varchar(4000)"  not-null="false" />
@@ -41,11 +41,11 @@
             <key column="COURSESECTIONID"/>
             <one-to-many class="EnrollmentRecordImpl"/>
         </set>        
-        <property name="enrollmentStatusUuid" column="ENROLLMENTSTATUSTYPEUUID" type="java.lang.String" not-null="true" />
+        <property name="enrollmentStatusUuid" column="ENROLLMENTSTATUSTYPEUUID" type="java.lang.String" not-null="false" />
 
         <!-- Structural -->
         <property name="courseOffering" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
-        <property name="courseOfferingId" column="COURSEOFFERINGID" type="java.lang.Integer"  not-null="true" />
+        <property name="courseOfferingId" column="COURSEOFFERINGID" type="java.lang.Long"  not-null="true" />
         <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
         <set name="subSectionSet" cascade="all" inverse="true">
             <key column="COURSESECTIONID"/>
