@@ -70,8 +70,23 @@ public class CourseManagementManagerImpl
                                              String canonicalCourseUuid,
                                              String sessionUuid,
                                              CourseOfferingType type) {
-    // TODO Auto-generated method stub
-    return null;
+    SessionImpl session = (SessionImpl) getSession(sessionUuid);
+  	CourseOfferingImpl offering = new CourseOfferingImpl(
+        title, description, offeringNumber,
+        canonicalCourseUuid, session, type);
+    Date currentDate = new Date();
+  	offering.setUuid("*uuid_canonical_" + currentDate.getTime());
+    offering.setCreatedBy("admin");
+    offering.setCreatedDate(currentDate);
+    offering.setLastModifiedBy("admin");
+    offering.setLastModifiedDate(currentDate);
+    getHibernateTemplate().save(offering);
+    return offering;
+  }
+
+  public CourseOffering saveCourseOffering(CourseOffering c) {
+    getHibernateTemplate().saveOrUpdate(c);
+    return c;
   }
 
   public CourseSection createCourseSection(String title, String description,

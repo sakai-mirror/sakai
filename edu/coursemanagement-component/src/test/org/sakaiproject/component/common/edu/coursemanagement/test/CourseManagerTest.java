@@ -122,37 +122,30 @@ public class CourseManagerTest
         "eng-101");
     System.out.println("**** done 1: create eng101");
 
-    // 2. create offering
+    // 2. create offering in eng101
     CourseOfferingTypeImpl offeringType = (CourseOfferingTypeImpl)
         ( (CourseManagementManagerImpl) courseManagementManager).
         getCourseOfferingTypeByKeyword("offering.active");
+    CourseOfferingImpl offering = (CourseOfferingImpl)((CourseManagementManagerImpl) courseManagementManager)
+				.createCourseOffering("title", "description", "1052-eng-101", eng101
+						.getUuid(), session.getUuid(), offeringType);
+		setComplete();
+    System.out.println("**** done 2: create offering 1052-eng-101");
+    
+    // 3. update course offering
     CourseOfferingStatusTypeImpl status = (CourseOfferingStatusTypeImpl)
         ( (CourseManagementManagerImpl) courseManagementManager).
         getCourseOfferingStatusByKeyword("offering_status.open");
     EnrollmentTypeImpl enrollmentType = (EnrollmentTypeImpl)
         ( (CourseManagementManagerImpl) courseManagementManager).
-        getEnrollmentTypeByKeyword("enrollment.final");
-    CourseOfferingImpl offering = new CourseOfferingImpl(
-        "title", "description", "1052-eng-101", eng101.getUuid(),
-        session.getUuid(), offeringType.getUuid());
-    offering.setUuid("*uuid_offering" + currentDate.getTime());
-    offering.setCanonicalCourseId(eng101.getCanonicalCourseId());
-    offering.setCanonicalCourse(eng101.getUuid());
-    offering.setCourseOfferingStatusUuid(status.getUuid());
+        getEnrollmentTypeByKeyword("enrollment.final"); 
+    offering.setOfferingStatus(status);
     offering.setEnrollmentTypeUuid(enrollmentType.getUuid());
     offering.setMaximumStudents(new Integer("0"));
-    offering.setCreatedBy("admin");
-    offering.setCreatedDate(currentDate);
-    offering.setLastModifiedBy("admin");
-    offering.setLastModifiedDate(currentDate);
+    ((CourseManagementManagerImpl) courseManagementManager)
+				.saveCourseOffering(offering);
     setComplete();
-    System.out.println("**** done 2: create offering 1052-eng-101");
-
-    //3. add offering
-    eng101.addCourseOffering(offering);
-    System.out.println("**** done 3: add offering to eng101");
-    setComplete();
-
+    System.out.println("**** done 3: update offering 1052-eng-101");
   }
 
   /**

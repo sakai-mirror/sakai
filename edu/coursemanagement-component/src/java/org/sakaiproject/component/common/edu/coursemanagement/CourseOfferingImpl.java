@@ -109,13 +109,13 @@ public class CourseOfferingImpl
 
   public CourseOfferingImpl(String title, String description,
       String offeringNumber, String canonicalCourseUuid,
-      String sessionUuid, String courseOfferingTypeUuid){
+      SessionImpl session, CourseOfferingType type){
     this.setTitle(title);
     this.setDescription(description);
     this.setOfferingNumber(offeringNumber);
     this.setCanonicalCourse(canonicalCourseUuid);
-    this.setSessionUuid(sessionUuid);
-    this.setCourseOfferingTypeUuid(courseOfferingTypeUuid);
+    this.setSession(session);
+    this.setOfferingType(type);
   }
 
   public Long getCourseOfferingId() {
@@ -157,16 +157,6 @@ public class CourseOfferingImpl
 
   public void setSession(Session session) {
     this.session = session;
-    if (session != null)
-      this.sessionUuid = session.getUuid();
-  }
-
-  private String getSessionUuid() {
-    return sessionUuid;
-  }
-
-  private void setSessionUuid(String uuid) {
-    this.sessionUuid = uuid;
   }
 
   public Integer getMaximumStudents() {
@@ -286,14 +276,6 @@ public class CourseOfferingImpl
       this.courseOfferingTypeUuid = type.getUuid();
   }
 
-  public void setCourseOfferingTypeUuid(String uuid) {
-    this.courseOfferingTypeUuid = uuid;
-  }
-
-  public String getCourseOfferingTypeUuid() {
-    return courseOfferingTypeUuid;
-  }
-
   public CourseOfferingStatusType getOfferingStatus() {
     return courseOfferingStatus;
   }
@@ -304,14 +286,6 @@ public class CourseOfferingImpl
       this.courseOfferingStatusUuid = status.getUuid();
   }
 
-  public void setCourseOfferingStatusUuid(String uuid) {
-    this.courseOfferingStatusUuid = uuid;
-  }
-
-  public String getCourseOfferingStatusUuid() {
-    return courseOfferingStatusUuid;
-  }
-
   /* ***************** Structural Methods ***************** */
   public String getCanonicalCourse() {
     return canonicalCourseUuid;
@@ -319,14 +293,6 @@ public class CourseOfferingImpl
 
   public void setCanonicalCourse(String uuid) {
     this.canonicalCourseUuid = uuid;
-  }
-
-  public Long getCanonicalCourseId() {
-    return canonicalCourseId;
-  }
-
-  public void setCanonicalCourseId(Long id) {
-    this.canonicalCourseId = id;
   }
 
   public Set getCourseSections() {
