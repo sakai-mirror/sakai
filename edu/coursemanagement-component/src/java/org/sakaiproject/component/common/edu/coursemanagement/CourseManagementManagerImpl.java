@@ -75,7 +75,7 @@ public class CourseManagementManagerImpl
         title, description, offeringNumber,
         canonicalCourseUuid, session, type);
     Date currentDate = new Date();
-  	offering.setUuid("*uuid_canonical_" + currentDate.getTime());
+  	offering.setUuid("*uuid_offering_" + currentDate.getTime());
     offering.setCreatedBy("admin");
     offering.setCreatedDate(currentDate);
     offering.setLastModifiedBy("admin");
@@ -94,8 +94,18 @@ public class CourseManagementManagerImpl
                                            String courseOfferingUuid,
                                            String sessionUuid,
                                            CourseSectionType type) {
-    // TODO Auto-generated method stub
-    return null;
+    SessionImpl session = (SessionImpl) getSession(sessionUuid);
+   	CourseSectionImpl section = new CourseSectionImpl(
+        title, description, sectionNumber,
+        courseOfferingUuid, session, type);
+    Date currentDate = new Date();
+  	section.setUuid("*uuid_section_" + currentDate.getTime());
+    section.setCreatedBy("admin");
+    section.setCreatedDate(currentDate);
+    section.setLastModifiedBy("admin");
+    section.setLastModifiedDate(currentDate);
+    getHibernateTemplate().save(section);
+    return section;
   }
 
   public CourseSection createSubSection(String title, String description,

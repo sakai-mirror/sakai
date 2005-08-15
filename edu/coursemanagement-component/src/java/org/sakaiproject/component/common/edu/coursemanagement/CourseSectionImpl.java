@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.api.edu.coursemanagement.CourseOfferingType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSection;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionStatusType;
 import org.sakaiproject.api.edu.coursemanagement.CourseSectionType;
@@ -43,7 +44,7 @@ public class CourseSectionImpl
   private String uuid;
 
   /** The value of the simple maximumstudents property. */
-  private Long maximumStudents;
+  private Integer maximumStudents;
 
   /** The value of the cmSessionT association. */
   private Session session;
@@ -70,13 +71,9 @@ public class CourseSectionImpl
 
   private EnrollmentStatusType enrollmentStatus;
 
-  private String enrollmentStatusUuid;
-
   private String courseOfferingUuid;
 
   private Long courseOfferingId;
-
-  private String scheduleUuid;
 
   private String location;
 
@@ -100,14 +97,19 @@ public class CourseSectionImpl
 
   private Set sectionEventSet;
 
-  private String courseSectionTypeUuid;
-
-  private String courseSectionStatusUuid;
-
-  private String sessionUuid;
-
   public CourseSectionImpl() {
 
+  }
+
+  public CourseSectionImpl(String title, String description,
+      String sectionNumber, String courseOfferingUuid,
+      SessionImpl session, CourseSectionType type){
+    this.setTitle(title);
+    this.setDescription(description);
+    this.setSectionNumber(sectionNumber);
+    this.setCourseOffering(courseOfferingUuid);
+    this.setSession(session);
+    this.setSectionType(type);
   }
 
   /**
@@ -152,20 +154,12 @@ public class CourseSectionImpl
     this.sectionNumber = sectionNumber;
   }
 
-  public int getMaximumStudents() {
-    return getMaximumStudentsLong().intValue();
-  }
-
-  public void setMaximumStudents(int maxStudents) {
-    setMaximumStudentsLong(new Long(maxStudents));
-  }
-
-  public Long getMaximumStudentsLong() {
+  public Integer getMaximumStudents() {
     return maximumStudents;
   }
 
-  public void setMaximumStudentsLong(Long maxStudents) {
-    this.maximumStudents = maxStudents;
+  public void setMaximumStudents(Integer maxStudents) {
+     this.maximumStudents = maxStudents;
   }
 
   public Session getSession() {
@@ -174,22 +168,6 @@ public class CourseSectionImpl
 
   public void setSession(Session session) {
     this.session = session;
-  }
-
-  public void setSessionUuid(String uuid) {
-    this.sessionUuid = uuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.
-        getInstance();
-    this.session = manager.getSession(uuid);
-  }
-
-  public String getSessionUuid() {
-    if (session != null) {
-      return session.getUuid();
-    }
-    else {
-      return null;
-    }
   }
 
   public String getSchedule() {
@@ -281,44 +259,12 @@ public class CourseSectionImpl
     this.courseSectionType = type;
   }
 
-  public void setCourseSectionTypeUuid(String uuid) {
-    this.courseSectionTypeUuid = uuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.
-        getInstance();
-    this.courseSectionType = manager.getCourseSectionTypeByUuid(uuid);
-  }
-
-  public String getCourseSectionTypeUuid() {
-    if (courseSectionType != null) {
-      return courseSectionType.getUuid();
-    }
-    else {
-      return null;
-    }
-  }
-
   public CourseSectionStatusType getSectionStatus() {
     return courseSectionStatus;
   }
 
   public void setSectionStatus(CourseSectionStatusType status) {
     this.courseSectionStatus = status;
-  }
-
-  public void setCourseSectionStatusUuid(String uuid) {
-    this.courseSectionStatusUuid = uuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.
-        getInstance();
-    this.courseSectionStatus = manager.getCourseSectionStatusByUuid(uuid);
-  }
-
-  public String getCourseSectionStatusUuid() {
-    if (courseSectionStatus != null) {
-      return courseSectionStatus.getUuid();
-    }
-    else {
-      return null;
-    }
   }
 
   public Boolean getHoldingSection() {
@@ -416,22 +362,6 @@ public class CourseSectionImpl
     this.enrollmentStatus = status;
   }
 
-  public void setEnrollmentStatusUuid(String statusUuid) {
-    this.enrollmentStatusUuid = statusUuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.
-        getInstance();
-    this.enrollmentStatus = manager.getEnrollmentStatusByUuid(statusUuid);
-  }
-
-  public String getEnrollmentStatusUuid() {
-    if (enrollmentStatus != null) {
-      return enrollmentStatus.getUuid();
-    }
-    else {
-      return null;
-    }
-  }
-
   public Set getOtherPeople() {
     return otherPeopleSet;
   }
@@ -465,14 +395,6 @@ public class CourseSectionImpl
 
   public void setCourseOffering(String courseOfferingUuid) {
     this.courseOfferingUuid = courseOfferingUuid;
-  }
-
-  public Long getCourseOfferingId() {
-    return this.courseOfferingId;
-  }
-
-  public void setCourseOfferingId(Long courseOfferingId) {
-    this.courseOfferingId = courseOfferingId;
   }
 
   public String getParentId() {

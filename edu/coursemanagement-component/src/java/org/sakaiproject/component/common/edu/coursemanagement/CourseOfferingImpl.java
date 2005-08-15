@@ -29,14 +29,12 @@ public class CourseOfferingImpl
   /** The composite primary key value. */
   private java.lang.Long courseOfferingId;
 
-  /** The value of the cmCourseofferingstatustypeT association. */
-  private CourseOfferingStatusType courseOfferingStatusType;
-
   /** The value of the cmCourseofferingtypeT association. */
   private CourseOfferingType courseOfferingType;
 
   /** The value of the cmEnrollmenttypeT association. */
   private EnrollmentType enrollmentType;
+  
   private String enrollmentTypeUuid;
 
   /** The value of the cmSessionT association. */
@@ -62,8 +60,7 @@ public class CourseOfferingImpl
 
   /** The value of the simple canonicalcourseuuid property. */
   private String canonicalCourseUuid;
-  private Long canonicalCourseId;
-
+  
   /** The value of the simple createdby property. */
   private String createdBy;
 
@@ -98,12 +95,6 @@ public class CourseOfferingImpl
   private String defaultSchedule;
 
   private CourseOfferingStatusType courseOfferingStatus;
-
-  private String courseOfferingStatusUuid;
-
-  private String courseOfferingTypeUuid;
-
-  private String sessionUuid;
 
   public CourseOfferingImpl() {}
 
@@ -272,8 +263,6 @@ public class CourseOfferingImpl
 
   public void setOfferingType(CourseOfferingType type) {
     this.courseOfferingType = type;
-    if (type != null)
-      this.courseOfferingTypeUuid = type.getUuid();
   }
 
   public CourseOfferingStatusType getOfferingStatus() {
@@ -282,8 +271,6 @@ public class CourseOfferingImpl
 
   public void setOfferingStatus(CourseOfferingStatusType status) {
     this.courseOfferingStatus = status;
-    if (status != null)
-      this.courseOfferingStatusUuid = status.getUuid();
   }
 
   /* ***************** Structural Methods ***************** */
@@ -410,12 +397,8 @@ public class CourseOfferingImpl
     return enrollmentType;
   }
 
-  public void setEnrollmentTypeUuid(String uuid) {
-    this.enrollmentTypeUuid = uuid;
-  }
-
-  public String getEnrollmentTypeUuid() {
-    return enrollmentTypeUuid;
+  public void setEnrollmentType(EnrollmentType type) {
+    this.enrollmentType = type;
   }
 
   /* ***************** Persistence Methods ***************** */

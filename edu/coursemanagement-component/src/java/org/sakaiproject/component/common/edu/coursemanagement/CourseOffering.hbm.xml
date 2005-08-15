@@ -51,7 +51,9 @@
             <one-to-many class="ParticipationRecordImpl"/>
         </set>
 
-        <property name="enrollmentTypeUuid" column="ENROLLMENTTYPEUUID" type="java.lang.String"  not-null="false" />
+        <many-to-one name="enrollmentType"
+            column="ENROLLMENTTYPEID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.EnrollmentTypeImpl"/>
                
         <!-- Persistence --> 
         <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />

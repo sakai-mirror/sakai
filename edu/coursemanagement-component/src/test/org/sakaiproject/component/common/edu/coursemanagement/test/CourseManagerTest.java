@@ -140,12 +140,20 @@ public class CourseManagerTest
         ( (CourseManagementManagerImpl) courseManagementManager).
         getEnrollmentTypeByKeyword("enrollment.final"); 
     offering.setOfferingStatus(status);
-    offering.setEnrollmentTypeUuid(enrollmentType.getUuid());
+    offering.setEnrollmentType(enrollmentType);
     offering.setMaximumStudents(new Integer("0"));
     ((CourseManagementManagerImpl) courseManagementManager)
 				.saveCourseOffering(offering);
     setComplete();
     System.out.println("**** done 3: update offering 1052-eng-101");
+
+    // 4. add a section to course offering
+    CourseSectionTypeImpl sectionType = (CourseSectionTypeImpl)
+    ( (CourseManagementManagerImpl) courseManagementManager).
+    getCourseSectionTypeByKeyword("section.lecture");
+    CourseSectionImpl section = (CourseSectionImpl)((CourseManagementManagerImpl) courseManagementManager)
+		.createCourseSection("title", "description", "1052-eng-101-01", 
+				offering.getUuid(), session.getUuid(), sectionType);
   }
 
   /**

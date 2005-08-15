@@ -1,3 +1,11 @@
+alter table CM_COURSEOFFERING_T drop constraint FKD254CBEB8B4970AE;
+alter table CM_COURSEOFFERING_T drop constraint FKD254CBEBCA525211;
+alter table CM_COURSEOFFERING_T drop constraint FKD254CBEBA459A5D9;
+alter table CM_COURSEOFFERING_T drop constraint FKD254CBEB21961636;
+alter table CM_COURSESECTION_T drop constraint FKE6425DCA6B67A391;
+alter table CM_COURSESECTION_T drop constraint FKE6425DCACA525211;
+alter table CM_COURSESECTION_T drop constraint FKE6425DCA1880BC9F;
+alter table CM_COURSESECTION_T drop constraint FKE6425DCA722420D7;
 drop table CM_ENROLLMENTSTATUS_T cascade constraints;
 drop table CM_ENROLLMENTRECORD_T cascade constraints;
 drop table CM_COURSEOFFERINGTYPE_T cascade constraints;
@@ -25,8 +33,8 @@ drop sequence CM_ENROLLMENTTYPE_ID_S;
 drop sequence CM_SESSION_ID_S;
 drop sequence CM_COURSESETTYPE_ID_S;
 drop sequence CM_COURSESECTIONSTATUS_ID_S;
-drop sequence CM_PARTICIPATIONSTATUS_ID_S;
 drop sequence CM_SESSIONTYPE_ID_S;
+drop sequence CM_PARTICIPATIONSTATUS_ID_S;
 create table CM_ENROLLMENTSTATUS_T (
    ENROLLMENTSTATUSID number(19,0) not null,
    AUTHORITY varchar2(255) not null,
@@ -75,26 +83,26 @@ create table CM_COURSEOFFERINGTYPE_T (
 );
 create table CM_COURSEOFFERING_T (
    COURSEOFFERINGID number(19,0) not null,
-   TITLE varchar2(255),
+   TITLE varchar2(255) not null,
    DESCRIPTION varchar2(255),
    OFFERINGNUMBER varchar2(255) not null,
-   SESSIONUUID varchar2(255) not null,
-   MAXIMUMSTUDENTS number(19,0),
+   SESSIONID number(19,0),
+   MAXIMUMSTUDENTS number(10,0),
    DEFAULTLOCATION varchar2(255),
    DEFAULTMEETINGTIME varchar2(255),
    DEFAULTSCHEDULE varchar2(255),
    ISCROSSLISTED number(1,0),
    EQUIVALENTS varchar2(255),
-   COURSEOFFERINGTYPEUUID varchar2(255) not null,
-   COURSEOFFERINGSTATUSTYPEUUID varchar2(255) not null,
+   COURSEOFFERINGSTATUSID number(19,0),
+   COURSEOFFERINGTYPEID number(19,0),
    CANONICALCOURSEUUID varchar2(255) not null,
-   CANONICALCOURSEID number(10,0) not null,
-   ENROLLMENTTYPEUUID varchar2(255) not null,
+   ENROLLMENTTYPEID number(19,0),
    UUID varchar2(255) not null,
    CREATEDBY varchar2(255) not null,
    CREATEDDATE date not null,
    LASTMODIFIEDBY varchar2(255) not null,
    LASTMODIFIEDDATE date not null,
+   CANONICALCOURSEID number(19,0),
    primary key (COURSEOFFERINGID)
 );
 create table CM_COURSESETTYPE_T (
@@ -203,7 +211,7 @@ create table CM_SESSION_T (
 );
 create table CM_CANONICALCOURSE_T (
    CANONICALCOURSEID number(19,0) not null,
-   TITLE varchar2(255),
+   TITLE varchar2(255) not null,
    DESCRIPTION varchar(4000),
    COURSENUMBER varchar2(255) not null,
    DEFAULTCREDITS varchar2(255),
@@ -251,21 +259,20 @@ create table CM_PARTICIPATIONSTATUS_T (
 );
 create table CM_COURSESECTION_T (
    COURSESECTIONID number(19,0) not null,
-   TITLE varchar2(255),
+   TITLE varchar2(255) not null,
    DESCRIPTION varchar2(255),
    SECTIONNUMBER varchar2(255) not null,
-   MAXIMUMSTUDENTS number(19,0),
-   SESSIONUUID varchar2(255) not null,
+   MAXIMUMSTUDENTS number(10,0),
+   SESSIONID number(19,0),
    SCHEDULE varchar(4000),
    SECTIONEVENTS varchar2(255),
    LOCATION varchar(4000),
    MEETINGTIME varchar(4000),
-   COURSESECTIONTYPEUUID varchar2(255) not null,
-   COURSESECTIONSTATUSTYPEUUID varchar2(255) not null,
+   COURSESECTIONSTATUSID number(19,0),
+   COURSESECTIONTYPEID number(19,0),
    HOLDINGSECTION number(1,0),
-   ENROLLMENTSTATUSTYPEUUID varchar2(255) not null,
+   ENROLLMENTSTATUSID number(19,0),
    COURSEOFFERINGUUID varchar2(255) not null,
-   COURSEOFFERINGID number(10,0) not null,
    PARENTID varchar2(255),
    UUID varchar2(255) not null,
    CREATEDBY varchar2(255) not null,
@@ -273,6 +280,7 @@ create table CM_COURSESECTION_T (
    LASTMODIFIEDBY varchar2(255) not null,
    LASTMODIFIEDDATE date not null,
    ALLOWSELFREGISTRATION number(1,0),
+   COURSEOFFERINGID number(19,0),
    primary key (COURSESECTIONID)
 );
 create table CM_SESSIONTYPE_T (
@@ -301,6 +309,14 @@ create table CM_COURSESET_T (
    LASTMODIFIEDDATE date not null,
    primary key (COURSESETID)
 );
+alter table CM_COURSEOFFERING_T add constraint FKD254CBEB8B4970AE foreign key (COURSEOFFERINGSTATUSID) references CM_COURSEOFFERINGSTATUS_T;
+alter table CM_COURSEOFFERING_T add constraint FKD254CBEBCA525211 foreign key (SESSIONID) references CM_SESSION_T;
+alter table CM_COURSEOFFERING_T add constraint FKD254CBEBA459A5D9 foreign key (ENROLLMENTTYPEID) references CM_ENROLLMENTTYPE_T;
+alter table CM_COURSEOFFERING_T add constraint FKD254CBEB21961636 foreign key (COURSEOFFERINGTYPEID) references CM_COURSEOFFERINGTYPE_T;
+alter table CM_COURSESECTION_T add constraint FKE6425DCA6B67A391 foreign key (ENROLLMENTSTATUSID) references CM_ENROLLMENTSTATUS_T;
+alter table CM_COURSESECTION_T add constraint FKE6425DCACA525211 foreign key (SESSIONID) references CM_SESSION_T;
+alter table CM_COURSESECTION_T add constraint FKE6425DCA1880BC9F foreign key (COURSESECTIONTYPEID) references CM_COURSESECTIONTYPE_T;
+alter table CM_COURSESECTION_T add constraint FKE6425DCA722420D7 foreign key (COURSESECTIONSTATUSID) references CM_COURSESECTIONSTATUS_T;
 create sequence CM_COURSESECTIONTYPE_ID_S;
 create sequence hibernate_sequence;
 create sequence CM_COURSEOFFERINGSTATUS_ID_S;
@@ -311,5 +327,5 @@ create sequence CM_ENROLLMENTTYPE_ID_S;
 create sequence CM_SESSION_ID_S;
 create sequence CM_COURSESETTYPE_ID_S;
 create sequence CM_COURSESECTIONSTATUS_ID_S;
-create sequence CM_PARTICIPATIONSTATUS_ID_S;
 create sequence CM_SESSIONTYPE_ID_S;
+create sequence CM_PARTICIPATIONSTATUS_ID_S;

@@ -15,7 +15,9 @@
         <property name="description" column="DESCRIPTION" type="java.lang.String" not-null="false" />
         <property name="sectionNumber" column="SECTIONNUMBER" type="java.lang.String"  not-null="true" />
         <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Integer"  />
-        <property name="sessionUuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
+        <many-to-one name="session"
+            column="SESSIONID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.SessionImpl"/>
         <property name="schedule"> 
           <column name="SCHEDULE" sql-type="varchar(4000)"  not-null="false" />
         </property>  
@@ -28,8 +30,12 @@
         </property>  
 
         <!-- Typing -->
-        <property name="courseSectionTypeUuid" column="COURSESECTIONTYPEUUID" type="java.lang.String"  not-null="true" />
-        <property name="courseSectionStatusUuid" column="COURSESECTIONSTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
+        <many-to-one name="sectionStatus"
+            column="COURSESECTIONSTATUSID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.CourseSectionStatusTypeImpl"/>
+        <many-to-one name="sectionType"
+            column="COURSESECTIONTYPEID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.CourseSectionTypeImpl"/>
         <property name="holdingSection" column="HOLDINGSECTION" type="java.lang.Boolean" />
 
         <!-- Grouping -->
@@ -41,11 +47,12 @@
             <key column="COURSESECTIONID"/>
             <one-to-many class="EnrollmentRecordImpl"/>
         </set>        
-        <property name="enrollmentStatusUuid" column="ENROLLMENTSTATUSTYPEUUID" type="java.lang.String" not-null="false" />
+        <many-to-one name="enrollmentStatus"
+            column="ENROLLMENTSTATUSID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.EnrollmentStatusTypeImpl"/>
 
         <!-- Structural -->
         <property name="courseOffering" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
-        <property name="courseOfferingId" column="COURSEOFFERINGID" type="java.lang.Long"  not-null="true" />
         <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
         <set name="subSectionSet" cascade="all" inverse="true">
             <key column="COURSESECTIONID"/>
