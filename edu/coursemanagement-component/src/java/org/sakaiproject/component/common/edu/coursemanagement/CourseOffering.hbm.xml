@@ -19,21 +19,13 @@
         <property name="offeringNumber" column="OFFERINGNUMBER" type="java.lang.String"  not-null="true" />
         <property name="sessionUuid" column="SESSIONUUID" type="java.lang.String"  not-null="true" />
         <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Long"  not-null="false" />
-        <property name="defaultLocation"> 
-          <column name="DEFAULTLOCATION" sql-type="varchar(4000)"  not-null="false" />
-        </property>  
-        <property name="defaultMeetingTime"> 
-          <column name="DEFAULTMEETINGTIME" sql-type="varchar(4000)"  not-null="false" />
-        </property>  
-        <property name="defaultSchedule"> 
-          <column name="DEFAULTSCHEDULE" sql-type="varchar(4000)"  not-null="false" />
-        </property>  
+        <property name="defaultLocation" column="DEFAULTLOCATION"  type="java.lang.String"  not-null="false" />
+        <property name="defaultMeetingTime" column="DEFAULTMEETINGTIME" type="java.lang.String"  not-null="false" />
+        <property name="defaultSchedule" column="DEFAULTSCHEDULE" type="java.lang.String"  not-null="false" />
 
         <!-- Cross Listing -->
         <property name="isCrossListed" column="ISCROSSLISTED" type="java.lang.Boolean"  not-null="false" />
-        <property name="equivalentString"> 
-          <column name="EQUIVALENTS" sql-type="varchar(4000)"  not-null="false" />
-        </property>  
+        <property name="equivalentString" column="EQUIVALENTS" type="java.lang.String"  not-null="false" />
 
         <!-- Typing -->
         <property name="courseOfferingTypeUuid" column="COURSEOFFERINGTYPEUUID" type="java.lang.String"  not-null="true" />

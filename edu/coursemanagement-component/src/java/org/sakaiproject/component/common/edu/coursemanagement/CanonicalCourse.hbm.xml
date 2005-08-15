@@ -17,20 +17,14 @@
         </property>  
         <property name="courseNumber" column="COURSENUMBER" type="java.lang.String"  not-null="true" />
         <property name="defaultCredits" column="DEFAULTCREDITS" type="java.lang.String"  not-null="false" />
-        <property name="topicsString"> 
-          <column name="TOPICS" sql-type="varchar(4000)"  not-null="false" />
-        </property>  
-        <property name="prerequisiteString"> 
-          <column name="PREREQUISITE" sql-type="varchar(4000)"  not-null="false" />
-        </property>  
+        <property name="topicsString" column="TOPICS" type="java.lang.String"  not-null="false" />
+        <property name="prerequisiteString" column="PREREQUISITE" type="java.lang.String"  not-null="false" />
 
         <!-- Typing -->
         <property name="canonicalCourseStatusUuid" column="CANONICALCOURSESTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
 
         <!-- Cross Listing -->
-        <property name="equivalentString"> 
-          <column name="EQUIVALENTS" sql-type="varchar(4000)"  not-null="false" />
-        </property>          
+        <property name="equivalentString" column="EQUIVALENTS" type="java.lang.String"  not-null="false" />
 
         <!-- Structural -->
         <set name="offerings" cascade="all" inverse="true">
