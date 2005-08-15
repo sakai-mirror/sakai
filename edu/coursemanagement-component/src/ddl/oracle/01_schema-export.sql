@@ -1,15 +1,18 @@
 drop table CM_ENROLLMENTSTATUS_T cascade constraints;
+drop table CM_ENROLLMENTRECORD_T cascade constraints;
 drop table CM_COURSEOFFERINGTYPE_T cascade constraints;
+drop table CM_COURSEOFFERING_T cascade constraints;
 drop table CM_COURSESETTYPE_T cascade constraints;
 drop table CM_CANONICALCOURSESTATUS_T cascade constraints;
+drop table CM_PARTICIPATIONRECORD_T cascade constraints;
 drop table CM_COURSEOFFERINGSTATUS_T cascade constraints;
 drop table CM_COURSESECTIONSTATUS_T cascade constraints;
 drop table CM_COURSESECTIONTYPE_T cascade constraints;
-drop table CM_CANONICALCOURSE_T cascade constraints;
 drop table CM_SESSION_T cascade constraints;
-drop table CM_EQUIVALENTCOURSES_T cascade constraints;
+drop table CM_CANONICALCOURSE_T cascade constraints;
 drop table CM_ENROLLMENTTYPE_T cascade constraints;
 drop table CM_PARTICIPATIONSTATUS_T cascade constraints;
+drop table CM_COURSESECTION_T cascade constraints;
 drop table CM_SESSIONTYPE_T cascade constraints;
 drop table CM_COURSESET_T cascade constraints;
 drop sequence CM_COURSESECTIONTYPE_ID_S;
@@ -39,6 +42,22 @@ create table CM_ENROLLMENTSTATUS_T (
    CREATEDDATE date not null,
    primary key (ENROLLMENTSTATUSID)
 );
+create table CM_ENROLLMENTRECORD_T (
+   ENROLLMENTRECORDID number(19,0) not null,
+   AGENT varchar2(255) not null,
+   ROLE varchar2(255),
+   CREDITS varchar2(255),
+   CREATEDBY varchar2(255) not null,
+   COURSEOFFERINGID number(10,0) not null,
+   COURSEOFFERINGUUID varchar2(255) not null,
+   COURSESECTIONID number(10,0) not null,
+   COURSESECTIONUUID varchar2(255) not null,
+   CREATEDDATE date not null,
+   LASTMODIFIEDBY varchar2(255) not null,
+   LASTMODIFIEDDATE date not null,
+   ENROLLMENTSTATUSTYPEUUID varchar2(255) not null,
+   primary key (ENROLLMENTRECORDID)
+);
 create table CM_COURSEOFFERINGTYPE_T (
    COURSEOFFERINGTYPEID number(19,0) not null,
    AUTHORITY varchar2(255) not null,
@@ -53,6 +72,30 @@ create table CM_COURSEOFFERINGTYPE_T (
    CREATEDBY varchar2(255) not null,
    CREATEDDATE date not null,
    primary key (COURSEOFFERINGTYPEID)
+);
+create table CM_COURSEOFFERING_T (
+   COURSEOFFERINGID number(19,0) not null,
+   TITLE varchar2(255),
+   DESCRIPTION varchar2(255),
+   OFFERINGNUMBER varchar2(255) not null,
+   SESSIONUUID varchar2(255) not null,
+   MAXIMUMSTUDENTS number(19,0),
+   DEFAULTLOCATION varchar2(255),
+   DEFAULTMEETINGTIME varchar2(255),
+   DEFAULTSCHEDULE varchar2(255),
+   ISCROSSLISTED number(1,0),
+   EQUIVALENTS varchar2(255),
+   COURSEOFFERINGTYPEUUID varchar2(255) not null,
+   COURSEOFFERINGSTATUSTYPEUUID varchar2(255) not null,
+   CANONICALCOURSEUUID varchar2(255) not null,
+   CANONICALCOURSEID number(10,0) not null,
+   ENROLLMENTTYPEUUID varchar2(255) not null,
+   UUID varchar2(255) not null,
+   CREATEDBY varchar2(255) not null,
+   CREATEDDATE date not null,
+   LASTMODIFIEDBY varchar2(255) not null,
+   LASTMODIFIEDDATE date not null,
+   primary key (COURSEOFFERINGID)
 );
 create table CM_COURSESETTYPE_T (
    COURSESETTYPEID number(19,0) not null,
@@ -83,6 +126,21 @@ create table CM_CANONICALCOURSESTATUS_T (
    CREATEDBY varchar2(255) not null,
    CREATEDDATE date not null,
    primary key (CANONICALCOURSESTATUSID)
+);
+create table CM_PARTICIPATIONRECORD_T (
+   PARTICIPATIONRECORDID number(19,0) not null,
+   AGENT varchar2(255) not null,
+   ROLE varchar2(255),
+   PARTICIPATIONSTATUSUUID varchar2(255) not null,
+   COURSEOFFERINGID number(10,0) not null,
+   COURSEOFFERINGUUID varchar2(255) not null,
+   COURSESECTIONID number(10,0) not null,
+   COURSESECTIONUUID varchar2(255) not null,
+   CREATEDBY varchar2(255) not null,
+   CREATEDDATE date not null,
+   LASTMODIFIEDBY varchar2(255) not null,
+   LASTMODIFIEDDATE date not null,
+   primary key (PARTICIPATIONRECORDID)
 );
 create table CM_COURSEOFFERINGSTATUS_T (
    COURSEOFFERINGSTATUSID number(19,0) not null,
@@ -129,24 +187,6 @@ create table CM_COURSESECTIONTYPE_T (
    CREATEDDATE date not null,
    primary key (COURSESECTIONTYPEID)
 );
-create table CM_CANONICALCOURSE_T (
-   CANONICALCOURSEID number(19,0) not null,
-   TITLE varchar2(255),
-   DESCRIPTION varchar2(255),
-   COURSENUMBER varchar2(255) not null,
-   UUID varchar2(255) not null,
-   DEFAULTCREDITS varchar2(255),
-   PARENTID varchar2(255),
-   TOPICS varchar2(255),
-   PREREQUISITE varchar2(255),
-   CANONICALCOURSESTATUSTYPEUUID varchar2(255) not null,
-   CREATEDBY varchar2(255) not null,
-   CREATEDDATE date not null,
-   LASTMODIFIEDBY varchar2(255) not null,
-   LASTMODIFIEDDATE date not null,
-   CANONICALCOURSEUUID number(19,0),
-   primary key (CANONICALCOURSEID)
-);
 create table CM_SESSION_T (
    SESSIONID number(19,0) not null,
    TITLE varchar2(255) not null,
@@ -161,11 +201,23 @@ create table CM_SESSION_T (
    LASTMODIFIEDDATE date not null,
    primary key (SESSIONID)
 );
-create table CM_EQUIVALENTCOURSES_T (
-   EQUIVALENTID number(19,0) not null,
+create table CM_CANONICALCOURSE_T (
+   CANONICALCOURSEID number(19,0) not null,
    TITLE varchar2(255),
+   DESCRIPTION varchar(4000),
+   COURSENUMBER varchar2(255) not null,
+   DEFAULTCREDITS varchar2(255),
+   TOPICS varchar2(255),
+   PREREQUISITE varchar2(255),
+   CANONICALCOURSESTATUSTYPEUUID varchar2(255) not null,
+   EQUIVALENTS varchar2(255),
+   PARENTID varchar2(255),
    UUID varchar2(255) not null,
-   primary key (EQUIVALENTID)
+   CREATEDBY varchar2(255) not null,
+   CREATEDDATE date not null,
+   LASTMODIFIEDBY varchar2(255) not null,
+   LASTMODIFIEDDATE date not null,
+   primary key (CANONICALCOURSEID)
 );
 create table CM_ENROLLMENTTYPE_T (
    ENROLLMENTTYPEID number(19,0) not null,
@@ -197,6 +249,32 @@ create table CM_PARTICIPATIONSTATUS_T (
    CREATEDDATE date not null,
    primary key (PARTICIPATIONSTATUSID)
 );
+create table CM_COURSESECTION_T (
+   COURSESECTIONID number(19,0) not null,
+   TITLE varchar2(255),
+   DESCRIPTION varchar2(255),
+   SECTIONNUMBER varchar2(255) not null,
+   MAXIMUMSTUDENTS number(19,0),
+   SESSIONUUID varchar2(255) not null,
+   SCHEDULE varchar(4000),
+   SECTIONEVENTS varchar2(255),
+   LOCATION varchar(4000),
+   MEETINGTIME varchar(4000),
+   COURSESECTIONTYPEUUID varchar2(255) not null,
+   COURSESECTIONSTATUSTYPEUUID varchar2(255) not null,
+   HOLDINGSECTION number(1,0),
+   ENROLLMENTSTATUSTYPEUUID varchar2(255) not null,
+   COURSEOFFERINGUUID varchar2(255) not null,
+   COURSEOFFERINGID number(10,0) not null,
+   PARENTID varchar2(255),
+   UUID varchar2(255) not null,
+   CREATEDBY varchar2(255) not null,
+   CREATEDDATE date not null,
+   LASTMODIFIEDBY varchar2(255) not null,
+   LASTMODIFIEDDATE date not null,
+   ALLOWSELFREGISTRATION number(1,0),
+   primary key (COURSESECTIONID)
+);
 create table CM_SESSIONTYPE_T (
    SESSIONTYPEID number(19,0) not null,
    AUTHORITY varchar2(255) not null,
@@ -215,6 +293,7 @@ create table CM_SESSIONTYPE_T (
 create table CM_COURSESET_T (
    COURSESETID number(19,0) not null,
    TITLE varchar2(255),
+   CONTEXT varchar2(255),
    UUID varchar2(255) not null,
    CREATEDBY varchar2(255) not null,
    CREATEDDATE date not null,
