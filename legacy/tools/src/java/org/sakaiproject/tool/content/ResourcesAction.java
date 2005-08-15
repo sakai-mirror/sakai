@@ -4050,7 +4050,7 @@ extends VelocityPortletPaneledAction
 						{
 							byte[] bytes = fileitem.get();
 							String contenttype = fileitem.getContentType();
-							filename = fileitem.getFileName();
+							filename = Validator.getFileName(fileitem.getFileName());
 							
 							redit.setContentType(contenttype);
 							redit.setContent(bytes);
@@ -4365,7 +4365,7 @@ extends VelocityPortletPaneledAction
 			}
 			else if (fileitem.getFileName().length() > 0)
 			{
-				String filename = fileitem.getFileName();
+				String filename = Validator.getFileName(fileitem.getFileName());
 				byte[] bytes = fileitem.get();
 				String contenttype = fileitem.getContentType();
 				
@@ -4751,7 +4751,7 @@ extends VelocityPortletPaneledAction
 				}
 				else if (fileitem.getFileName().length() > 0)
 				{
-					String filename = fileitem.getFileName();
+					String filename = Validator.getFileName(fileitem.getFileName());
 					byte[] bytes = fileitem.get();
 					String contenttype = fileitem.getContentType();
 					
