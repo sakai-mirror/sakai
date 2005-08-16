@@ -93,11 +93,16 @@
 			var nonWhitespaceChar = /\S/;
 			if(theElement.value.search(nonWhitespaceChar))
 			{
-				var delimiter = '/';
+				var delimiters = new Array('/', '\\', ':');
 				var filename = obj_seed.value;
-				if(filename.lastIndexOf(delimiter) > -1)
+				
+				for(var i = 0; i < delimiters.length; i++)
 				{
-					filename = filename.substring(filename.lastIndexOf(delimiter) + 1);
+					var delimiter = delimiters[i];
+					if(filename.lastIndexOf(delimiter) > -1)
+					{
+						filename = filename.substring(filename.lastIndexOf(delimiter) + 1);
+					}
 				}
 				theElement.value = filename;
 			}
@@ -292,7 +297,7 @@
 						<span class="reqStar">*</span>
 				#end
 					<label for="Url$i">$tlang.getString("gen.url")</label>
-					<input type="text" name="Url$i" id="Url$i" size="60" value="$!validator.escapeHtml("$!item.filename")" onchange="javascript:seedValue(this, 'name$i')" />
+					<input type="text" name="Url$i" id="Url$i" size="60" value="$!validator.escapeHtml("$!item.filename")" />
 				</p>
 			#elseif ($item.isPlaintext()) 
 				<!-- item.isPlaintext -->
