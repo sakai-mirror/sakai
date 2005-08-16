@@ -199,6 +199,7 @@ public interface CourseManagementManager
 	 * @return a list of canonical courses
 	 * @author Mark Norton
 	 */
+	// I am not sure this method make sense. -daisyf
 	public List getCanonicalCourses(String canonicalCourseUuid);
 
 	/**
@@ -293,11 +294,11 @@ public interface CourseManagementManager
 	 * @author Mark Norton
 	 */
   public List getCourseSet(String canonicalCourseUuid);
-    //public CanonicalCourseStatusType getCanonicalCourseStatusByUuid(String canonicalCourseUuid);
-    //public CanonicalCourseStatusType getCanonicalCourseStatusByKeyword(String keyword);
-    //public SessionType getSessionTypeByKeyword(String keyword);
-    //public CanonicalCourse getCanonicalCourseByUuid(String canonicalCourseUuid);
-    //public CanonicalCourse saveCanonicalCourse(CanonicalCourse c);        
-  //public EquivalentCourses saveEquivalentCourses(EquivalentCourses e);        
-        
+
+  public void removeCourseSet(String setUuid);
+  public void removeCanonicalCourse(String canonicalUuid);
+  public void removeCourseOffering(String offeringUuid);
+  public void removeCourseSection(String sectionUuid);
+  public void removeSession(String sessionUuid);
+  
 }
