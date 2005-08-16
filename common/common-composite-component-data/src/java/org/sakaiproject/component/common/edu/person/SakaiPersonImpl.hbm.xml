@@ -85,7 +85,7 @@
         <property name="homePhone" column="HOME_PHONE" />
         <property name="homePostalAddress" column="HOME_POSTAL_ADDRESS" />
         <property name="initials" column="INITIALS" />
-        <property name="jpegPhoto" column="JPEG_PHOTO" />
+        <property name="jpegPhoto" type="binary" column="JPEG_PHOTO" />
         <property name="labeledURI" column="LABELED_URI" />
         <property name="mail" column="MAIL" />
         <property name="manager" column="MANAGER" />
