@@ -23,11 +23,6 @@
 
 package org.sakaiproject.jsf.util;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.el.ValueBinding;
-import javax.faces.webapp.UIComponentTag;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

@@ -22,22 +22,20 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.security.impl;
 
-import org.sakaiproject.metaobj.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.security.AuthorizationFailedException;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.service.legacy.security.SecurityService;
-import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.user.UserDirectoryService;
-import org.sakaiproject.service.legacy.realm.RealmService;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.framework.portal.PortalService;
-import org.sakaiproject.exception.IdUnusedException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.List;
-import java.util.ArrayList;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.metaobj.security.AuthorizationFacade;
+import org.sakaiproject.metaobj.security.AuthorizationFailedException;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.service.framework.portal.PortalService;
+import org.sakaiproject.service.legacy.realm.Realm;
+import org.sakaiproject.service.legacy.realm.RealmService;
+import org.sakaiproject.service.legacy.user.UserDirectoryService;
 
 /**
  * Created by IntelliJ IDEA.

@@ -22,8 +22,10 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
-import org.springframework.validation.Errors;
-import org.springframework.web.servlet.ModelAndView;
+import java.util.Map;
+
+import org.sakaiproject.api.kernel.session.SessionManager;
+import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
@@ -31,14 +33,11 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.SessionManager;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.Reference;
-
-import java.util.Map;
-import java.util.Hashtable;
+import org.sakaiproject.service.legacy.resource.ReferenceVector;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author chmaurer

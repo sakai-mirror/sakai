@@ -1,22 +1,21 @@
 package org.sakaiproject.tool.helper;
 
-import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
-import org.sakaiproject.cheftool.VelocityPortlet;
-import org.sakaiproject.cheftool.Context;
-import org.sakaiproject.cheftool.RunData;
-import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.service.legacy.security.PermissionsHelper;
-import org.sakaiproject.tool.content.ResourcesAction;
+import java.io.IOException;
+import java.util.ResourceBundle;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ResourceBundle;
-import java.io.IOException;
+import org.sakaiproject.cheftool.Context;
+import org.sakaiproject.cheftool.RunData;
+import org.sakaiproject.cheftool.VelocityPortlet;
+import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
+import org.sakaiproject.service.framework.session.SessionState;
+import org.sakaiproject.service.legacy.security.PermissionsHelper;
 
 /**
  * Created by IntelliJ IDEA.
