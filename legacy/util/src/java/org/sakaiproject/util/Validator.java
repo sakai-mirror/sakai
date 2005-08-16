@@ -40,7 +40,7 @@ import org.sakaiproject.service.legacy.resource.ResourceProperties;
 public class Validator
 {
 	/** These characters are not allowed in a resource id */
-	protected static final String INVALID_CHARS_IN_RESOURCE_ID = "/\\%*?\n\r\t\b\f";
+	protected static final String INVALID_CHARS_IN_RESOURCE_ID = "^/\\%*?\n\r\t\b\f";
 	
 	/** These characters are allowed; but if escapeResourceName() is called, they are escaped (actually, removed) 
 	 * Certain characters cause problems with filenames in certain OSes - so get rid of these characters in filenames
