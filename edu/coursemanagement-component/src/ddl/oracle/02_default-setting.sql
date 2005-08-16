@@ -330,4 +330,11 @@ insert into CM_ENROLLMENTTYPE_T ("ENROLLMENTTYPEID", "AUTHORITY", "DOMAIN", "KEY
     1, 'site', SYSDATE , 'site' ,SYSDATE);
 
 
+insert into CM_PARTICIPATIONSTATUS_T ("PARTICIPATIONSTATUSID", "AUTHORITY", "DOMAIN", "KEYWORD",
+    "DISPLAYNAME", "DESCRIPTION", "UUID", 
+    "STATUS" ,"CREATEDBY" ,"CREATEDDATE" ,"LASTMODIFIEDBY" , "LASTMODIFIEDDATE" )
+    VALUES (CM_PARTICIPATIONSTATUS_ID_S.nextVal, 'org.sakaiproject' ,'coursemgmt' ,'participation_status.unknown' ,
+    'Unknown', NULL, '*uuid_participation_status_1',
+    1, 'site', SYSDATE , 'site' ,SYSDATE);
+
 commit;
