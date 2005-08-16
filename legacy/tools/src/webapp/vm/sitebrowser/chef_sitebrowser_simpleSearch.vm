@@ -15,7 +15,9 @@
 				<label for="siteType">$tlang.getString("se.any")</label>
 			</div>
 			#if ($siteTypes.size() > 0 )
+				#set($siteTypeCount=0)
 				#foreach ($type in $siteTypes)
+				#set($siteTypeCount=$siteTypeCount + 1)
 					#if ($type == $termSearchSiteType)
 						<input type="hidden" name="ClassSiteFromSystem" value="true" />
 						<div class="checkbox indnt1">
@@ -33,8 +35,8 @@
 						</div>	
 					#else
 						<div class="checkbox indnt1">
-							<input type="radio" name="siteType" id="siteType" value="$type" />
-							<label for="siteType">$type</label>
+							<input type="radio" name="siteType" id="siteType$siteTypeCount" value="$type" />
+							<label for="siteType$siteTypeCount"  style="text-transform: capitalize">$type</label>
 						</div>
 					#end
 				#end
