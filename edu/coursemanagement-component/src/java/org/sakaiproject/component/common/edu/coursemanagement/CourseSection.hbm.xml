@@ -55,7 +55,9 @@
 
         <!-- Structural -->
         <property name="courseOffering" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
-        <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
+        <many-to-one name="parentSection"
+            column="PARENTSECTIONID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.CourseSectionImpl"/>
         <set name="subSectionSet" cascade="all" inverse="true">
             <key column="COURSESECTIONID"/>
             <one-to-many class="CourseSectionImpl"/>

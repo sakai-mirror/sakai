@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.api.edu.coursemanagement.CanonicalCourse;
 import org.sakaiproject.component.common.edu.coursemanagement.
     CourseManagementManagerImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.EnrollmentRecordImpl;
@@ -108,11 +109,20 @@ public class CourseManagerTest
     System.out.println("**** done 4: make equivalent");
   }
 
+  public void testRemoveCanonical() throws Exception {
+    CanonicalCourseImpl c = testCreateCourse();
+    String cUuid = c.getUuid();
+    System.out.println("**** done 1: remove canonical" + c);
+    courseManagementManager.removeCanonicalCourse(cUuid);
+    CanonicalCourse c1 = courseManagementManager.getCanonicalCourse(cUuid);
+    System.out.println("**** done 2: REMOVED canonical" + c1);
+  }
+  
   /**
    * test create a canonical course with one offering and one section
    * @throws java.lang.Exception
    */
-  public void testCreateCourse() throws Exception {
+  private CanonicalCourseImpl testCreateCourse() throws Exception {
     Date currentDate = new Date();
     // 0. create session
     SessionImpl session = testCreateSession();
@@ -155,6 +165,8 @@ public class CourseManagerTest
     CourseSectionImpl section = (CourseSectionImpl)((CourseManagementManagerImpl) courseManagementManager)
 		.createCourseSection("title", "description", "1052-eng-101-01", 
 				offering.getUuid(), session.getUuid(), sectionType);
+    setComplete();
+    System.out.println("**** done 4: add section to offering");
 
     // 5. add student enrollment to course section
     EnrollmentStatusTypeImpl enrollmentStatus = (EnrollmentStatusTypeImpl)
@@ -163,6 +175,7 @@ public class CourseManagerTest
   	EnrollmentRecordImpl e = (EnrollmentRecordImpl)((CourseManagementManagerImpl) courseManagementManager)
 		.createEnrollmentRecord("daisyf", "student", enrollmentStatus.getUuid(), section.getUuid());
     setComplete();    
+    System.out.println("**** done 5: add studnet enrollment");
 
     // 6. add an instructor to course section
     ParticipationStatusTypeImpl participationStatus = (ParticipationStatusTypeImpl)
@@ -171,7 +184,32 @@ public class CourseManagerTest
     ParticipationRecordImpl p = (ParticipationRecordImpl)((CourseManagementManagerImpl) courseManagementManager)
 		.createParticipationRecord("rgollub", "instructor", participationStatus.getUuid(), section.getUuid());
     setComplete();    
+    setComplete();
+    System.out.println("**** done 6: add participation record");
 
+    // 7. add sub section
+    // note: I added a no. of method so I can persist the subsection
+    // through the CourseSectionImpl.addSubSection() method
+    CourseSectionTypeImpl subSectionType = (CourseSectionTypeImpl)
+    ( (CourseManagementManagerImpl) courseManagementManager).
+    getCourseSectionTypeByKeyword("section.lab");
+   	CourseSectionImpl subSection = new CourseSectionImpl(
+        "title: subSection", "description: subSection",
+        "1052-eng-101-01.lab1",
+        offering.getUuid(), session, subSectionType);
+   	subSection.setParentSection(section);
+  	subSection.setUuid("*uuid_session_" + currentDate.getTime());
+    subSection.setCreatedBy("admin");
+    subSection.setCreatedDate(currentDate);
+    subSection.setLastModifiedBy("admin");
+    subSection.setLastModifiedDate(currentDate);
+   	section.addSubSection(subSection);
+    ((CourseManagementManagerImpl) courseManagementManager)
+				.saveCourseSection(section);
+		setComplete();
+		System.out.println("**** done 7: add subsection to section");
+
+    return eng101;
   }
 
   /**

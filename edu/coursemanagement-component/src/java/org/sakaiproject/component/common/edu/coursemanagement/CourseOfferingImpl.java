@@ -35,8 +35,6 @@ public class CourseOfferingImpl
   /** The value of the cmEnrollmenttypeT association. */
   private EnrollmentType enrollmentType;
   
-  private String enrollmentTypeUuid;
-
   /** The value of the cmSessionT association. */
   private Session session;
 

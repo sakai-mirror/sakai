@@ -73,8 +73,6 @@ public class CourseSectionImpl
 
   private String courseOfferingUuid;
 
-  private Long courseOfferingId;
-
   private String location;
 
   private String meetingTime;
@@ -96,6 +94,10 @@ public class CourseSectionImpl
   private String sectionEventsString;
 
   private Set sectionEventSet;
+
+	private CourseSection parentSection;
+
+	private Set subSectionSet;
 
   public CourseSectionImpl() {
 
@@ -193,15 +195,17 @@ public class CourseSectionImpl
 
   public Set getSectionEvents() {
     sectionEventSet = new HashSet();
-    String[] sectionEventsArray = sectionEventsString.split("|");
-    for (int i = 0; i < sectionEventsArray.length; i++) {
-      String t = sectionEventsArray[i];
-      sectionEventSet.add(t);
-    }
-    return sectionEventSet;
-  }
+		if (sectionEventsString != null) {
+			String[] sectionEventsArray = sectionEventsString.split("|");
+			for (int i = 0; i < sectionEventsArray.length; i++) {
+				String t = sectionEventsArray[i];
+				sectionEventSet.add(t);
+			}
+		}
+		return sectionEventSet;
+	}
 
-  public void addSectionEvent(String sectionEvent) {
+	public void addSectionEvent(String sectionEvent) {
     if (sectionEventsString == null) {
       sectionEventsString = sectionEvent;
     }
@@ -284,19 +288,20 @@ public class CourseSectionImpl
     leaderSet = new HashSet();
     otherPeopleSet = new HashSet();
     this.participationSet = new HashSet();
-    this.participationSet = participationSet;
-    Iterator i = participationSet.iterator();
-    while (i.hasNext()) {
-      ParticipationRecord p = (ParticipationRecord) i.next();
-      participationSet.add(p);
-      if (p.getIsLeader().booleanValue()) {
-        leaderSet.add(p);
-      }
-      if (p.getIsOtherPeople().booleanValue()) {
-        otherPeopleSet.add(p);
-      }
-    }
-  }
+		if (participationSet != null) {
+			this.participationSet = participationSet;
+			Iterator i = participationSet.iterator();
+			while (i.hasNext()) {
+				ParticipationRecord p = (ParticipationRecord) i.next();
+				if (p.getIsLeader().booleanValue()) {
+					leaderSet.add(p);
+				}
+				if (p.getIsOtherPeople().booleanValue()) {
+					otherPeopleSet.add(p);
+				}
+			}
+		}
+	}
 
   public Set getLeaders() {
     return leaderSet;
@@ -404,19 +409,39 @@ public class CourseSectionImpl
   public void setParentId(String parentUuid) {
     this.parentUuid = parentUuid;
   }
+  
+  // added by daisyf
+  public CourseSection getParentSection() {
+    return parentSection;
+  }
+
+  // added by daisyf
+  public void setParentSection(CourseSection parentSection) {
+    this.parentSection = parentSection;
+  }
 
   public Set getAllSubSections() {
     return allChildren;
   }
 
+  // daisyf
   public Set getSubSectionSet() {
-    return getAllSubSections();
+    return subSectionSet;
   }
 
+  // daisyf 
   public void setSubSectionSet(Set subSectionSet) {
-    this.allChildren = subSectionSet;
+    this.subSectionSet = subSectionSet;
   }
 
+  // added by daisyf
+  public void addSubSection(CourseSection subSection) {
+    if (subSectionSet == null) {
+    	subSectionSet = new HashSet();
+    }
+    subSectionSet.add(subSection);
+  }
+  
   public void addSection(String sectionUuid) {
     if (allChildren == null) {
       allChildren = new HashSet();

@@ -23,7 +23,9 @@
         <property name="prerequisiteString" column="PREREQUISITE" type="java.lang.String"  not-null="false" />
 
         <!-- Typing -->
-        <property name="canonicalCourseStatusUuid" column="CANONICALCOURSESTATUSTYPEUUID" type="java.lang.String"  not-null="true" />
+        <many-to-one name="canonicalCourseStatus"
+            column="CANONICALCOURSESTATUSID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.CanonicalCourseStatusTypeImpl"/>
 
         <!-- Cross Listing -->
         <property name="equivalentString" column="EQUIVALENTS" type="java.lang.String"  not-null="false" />

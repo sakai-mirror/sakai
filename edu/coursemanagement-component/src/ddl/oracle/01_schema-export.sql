@@ -4,10 +4,12 @@ alter table CM_COURSEOFFERING_T drop constraint FKD254CBEBCA525211;
 alter table CM_COURSEOFFERING_T drop constraint FKD254CBEBA459A5D9;
 alter table CM_COURSEOFFERING_T drop constraint FKD254CBEB21961636;
 alter table CM_PARTICIPATIONRECORD_T drop constraint FKA9134DF2F65C8CAE;
+alter table CM_CANONICALCOURSE_T drop constraint FKDD9E516F49D9D37C;
 alter table CM_COURSESECTION_T drop constraint FKE6425DCA6B67A391;
 alter table CM_COURSESECTION_T drop constraint FKE6425DCACA525211;
 alter table CM_COURSESECTION_T drop constraint FKE6425DCA1880BC9F;
 alter table CM_COURSESECTION_T drop constraint FKE6425DCA722420D7;
+alter table CM_COURSESECTION_T drop constraint FKE6425DCAEA261936;
 drop table CM_ENROLLMENTSTATUS_T cascade constraints;
 drop table CM_ENROLLMENTRECORD_T cascade constraints;
 drop table CM_COURSEOFFERINGTYPE_T cascade constraints;
@@ -26,8 +28,8 @@ drop table CM_COURSESECTION_T cascade constraints;
 drop table CM_SESSIONTYPE_T cascade constraints;
 drop table CM_COURSESET_T cascade constraints;
 drop sequence CM_COURSESECTIONTYPE_ID_S;
-drop sequence CM_CANONICALCOURSESTATUS_ID_S;
 drop sequence CM_PARTICIPATIONRECORD_ID_S;
+drop sequence CM_CANONICALCOURSESTATUS_ID_S;
 drop sequence CM_COURSESECTION_ID_S;
 drop sequence CM_ENROLLMENTRECORD_ID_S;
 drop sequence CM_CANONICALCOURSE_ID_S;
@@ -224,7 +226,7 @@ create table CM_CANONICALCOURSE_T (
    DEFAULTCREDITS varchar2(255),
    TOPICS varchar2(255),
    PREREQUISITE varchar2(255),
-   CANONICALCOURSESTATUSTYPEUUID varchar2(255) not null,
+   CANONICALCOURSESTATUSID number(19,0),
    EQUIVALENTS varchar2(255),
    PARENTID varchar2(255),
    UUID varchar2(255) not null,
@@ -280,7 +282,7 @@ create table CM_COURSESECTION_T (
    HOLDINGSECTION number(1,0),
    ENROLLMENTSTATUSID number(19,0),
    COURSEOFFERINGUUID varchar2(255) not null,
-   PARENTID varchar2(255),
+   PARENTSECTIONID number(19,0),
    UUID varchar2(255) not null,
    CREATEDBY varchar2(255) not null,
    CREATEDDATE date not null,
@@ -322,13 +324,15 @@ alter table CM_COURSEOFFERING_T add constraint FKD254CBEBCA525211 foreign key (S
 alter table CM_COURSEOFFERING_T add constraint FKD254CBEBA459A5D9 foreign key (ENROLLMENTTYPEID) references CM_ENROLLMENTTYPE_T;
 alter table CM_COURSEOFFERING_T add constraint FKD254CBEB21961636 foreign key (COURSEOFFERINGTYPEID) references CM_COURSEOFFERINGTYPE_T;
 alter table CM_PARTICIPATIONRECORD_T add constraint FKA9134DF2F65C8CAE foreign key (PARTICIPATIONSTATUSID) references CM_PARTICIPATIONSTATUS_T;
+alter table CM_CANONICALCOURSE_T add constraint FKDD9E516F49D9D37C foreign key (CANONICALCOURSESTATUSID) references CM_CANONICALCOURSESTATUS_T;
 alter table CM_COURSESECTION_T add constraint FKE6425DCA6B67A391 foreign key (ENROLLMENTSTATUSID) references CM_ENROLLMENTSTATUS_T;
 alter table CM_COURSESECTION_T add constraint FKE6425DCACA525211 foreign key (SESSIONID) references CM_SESSION_T;
 alter table CM_COURSESECTION_T add constraint FKE6425DCA1880BC9F foreign key (COURSESECTIONTYPEID) references CM_COURSESECTIONTYPE_T;
 alter table CM_COURSESECTION_T add constraint FKE6425DCA722420D7 foreign key (COURSESECTIONSTATUSID) references CM_COURSESECTIONSTATUS_T;
+alter table CM_COURSESECTION_T add constraint FKE6425DCAEA261936 foreign key (PARENTSECTIONID) references CM_COURSESECTION_T;
 create sequence CM_COURSESECTIONTYPE_ID_S;
-create sequence CM_CANONICALCOURSESTATUS_ID_S;
 create sequence CM_PARTICIPATIONRECORD_ID_S;
+create sequence CM_CANONICALCOURSESTATUS_ID_S;
 create sequence CM_COURSESECTION_ID_S;
 create sequence CM_ENROLLMENTRECORD_ID_S;
 create sequence CM_CANONICALCOURSE_ID_S;

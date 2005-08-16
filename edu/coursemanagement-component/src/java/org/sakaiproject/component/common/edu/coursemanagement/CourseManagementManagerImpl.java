@@ -27,16 +27,6 @@ public class CourseManagementManagerImpl
     extends HibernateDaoSupport
     implements CourseManagementManager {
 
-  private static CourseManagementManagerImpl instance;
-
-  public static CourseManagementManagerImpl getInstance() {
-    if (instance == null) {
-      ;
-    }
-    instance = new CourseManagementManagerImpl();
-    return instance;
-  }
-
   public CanonicalCourse createCanonicalCourse(String title,
                                                String description,
                                                String courseNumber,
@@ -59,6 +49,7 @@ public class CourseManagementManagerImpl
     return c;
   }
 
+  // added by daisyf
   public CanonicalCourse saveCanonicalCourse(CanonicalCourse c) {
     getHibernateTemplate().saveOrUpdate(c);
     return c;
@@ -84,6 +75,7 @@ public class CourseManagementManagerImpl
     return offering;
   }
 
+  // added by daisyf
   public CourseOffering saveCourseOffering(CourseOffering c) {
     getHibernateTemplate().saveOrUpdate(c);
     return c;
@@ -108,6 +100,12 @@ public class CourseManagementManagerImpl
     return section;
   }
 
+  // added by daisyf  
+  public CourseSection saveCourseSection(CourseSection c) {
+    getHibernateTemplate().saveOrUpdate(c);
+    return c;
+  }
+  
   public CourseSection createSubSection(String title, String description,
                                         String sectionNumber,
                                         String courseSectionUuid,
@@ -169,77 +167,159 @@ public class CourseManagementManagerImpl
   }
 
   public CanonicalCourse getCanonicalCourse(String uuid) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select c from CanonicalCourseImpl c where c.uuid=?";
+    System.out.println("****query=" + query);
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {uuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    System.out.println("****list" + list);
+    if (list != null && list.size() > 0) {
+      return (CanonicalCourse) list.get(0);
+    }
+    else {
+      return null;
+    }
   }
 
   public CourseOffering getCourseOffering(String uuid) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select c from CourseOfferingImpl c where c.uuid=?";
+    System.out.println("****query=" + query);
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {uuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    System.out.println("****list" + list);
+    if (list != null && list.size() > 0) {
+      return (CourseOffering) list.get(0);
+    }
+    else {
+      return null;
+    }
   }
 
   public CourseSection getCourseSection(String uuid) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select c from CourseSectionImpl c where c.uuid=?";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {uuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    System.out.println("****list" + list);
+    if (list != null && list.size() > 0) {
+      return (CourseSection) list.get(0);
+    }
+    else {
+      return null;
+    }
   }
 
   public List getCanonicalCourses() {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select c from CanonicalCourseImpl c";
+    List list = getHibernateTemplate().find(query);
+    return list;
   }
 
+  // this method does not make sense to me - daisyf
   public List getCanonicalCourses(String canonicalCourseUuid) {
     // TODO Auto-generated method stub
     return null;
   }
 
   public List getCourseOfferings(String canonicalCourseUuid) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select c from CourseOfferingImpl c and c.canonicalCourseUuid=?";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {canonicalCourseUuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    return list;
   }
 
   public List getCourseSections(String courseOfferingUuid) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select s from CourseSectionImpl s where s.courseOfferingUuid=? and s.parentId=null";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {courseOfferingUuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    return list;
   }
 
   public List getSubSections(String courseSectionUuid) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select s from CourseSectionImpl s where s.parentSection.uuid=?";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {courseSectionUuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    return list;
   }
 
   public List getSessions() {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select s from SessionImpl s";
+    List list = getHibernateTemplate().find(query);
+    return list;
   }
 
   public List getCanonicalCoursesByType(CanonicalCourseStatusType status) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select c from CanonicalCourseImpl c where c.canonicalCourseStatus.canonicalCourseStatusTypeId=?";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {status.getCanonicalCourseStatusTypeId()}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    return list;
   }
 
+  // hmmmm... i don't understand this one neither
   public List getCanonicalCoursesByType(String canonicalCourseUuid,
                                         CanonicalCourseStatusType status) {
-    // TODO Auto-generated method stub
-    return null;
+  	return null;
   }
 
   public List getCourseOfferingsByType(String canonicalCourseUuid,
                                        CourseOfferingType type) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select c from CourseOfferingImpl c"
+    	+ " where c.offeringType.courseOfferingTypeId=?" 
+    	+ " and c.canonicalCourseUuid=?"	;
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {((CourseOfferingTypeImpl)type).getCourseOfferingTypeId(), canonicalCourseUuid }
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+    		                                    Hibernate.LONG,
+                                            Hibernate.STRING});
+    return list;
   }
 
   public List getCourseSectionsByType(String courseOfferingUuid,
                                       CourseSectionType type) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select s from CourseSectionImpl s"
+    	+ " where s.sectionType.courseSectionTypeId=?" 
+    	+ " and c.courseOfferingUuid=?"	;
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {((CourseSectionTypeImpl)type).getCourseSectionTypeId(), courseOfferingUuid }
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+    		                                    Hibernate.LONG,
+                                            Hibernate.STRING});
+    return list;
   }
 
   public List getSubSectionsByType(String courseSectionUuid,
                                    CourseSectionType type) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select s from CourseSectionImpl s"
+    	+ " where s.sectionType.courseSectionTypeId=?" 
+    	+ " and s.parentSection.uuid=?"	;
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {((CourseSectionTypeImpl)type).getCourseSectionTypeId(), courseSectionUuid }
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+    		                                    Hibernate.LONG,
+                                            Hibernate.STRING});
+    return list;
   }
 
   public List getCourseSet(String canonicalCourseUuid) {
@@ -247,6 +327,7 @@ public class CourseManagementManagerImpl
     return null;
   }
 
+  // all the methods below are added by daisyf
   public SessionType getSessionTypeByKeyword(String keyword) {
     String query = "select t from SessionTypeImpl t where t.keyword=?";
     List list = getHibernateTemplate().find(query,
@@ -304,23 +385,6 @@ public class CourseManagementManagerImpl
                                             Hibernate.STRING});
     if (list.size() > 0) {
       return (CanonicalCourseStatusType) list.get(0);
-    }
-    else {
-      return null;
-    }
-  }
-
-  public CanonicalCourse getCanonicalCourseByUuid(String uuid) {
-    String query = "select c from CanonicalCourseImpl c where c.uuid=?";
-    System.out.println("****query=" + query);
-    List list = getHibernateTemplate().find(query,
-                                            new Object[] {uuid}
-                                            ,
-                                            new net.sf.hibernate.type.Type[] {
-                                            Hibernate.STRING});
-    System.out.println("****list" + list);
-    if (list != null && list.size() > 0) {
-      return (CanonicalCourse) list.get(0);
     }
     else {
       return null;
@@ -509,4 +573,33 @@ public class CourseManagementManagerImpl
       return null;
     }
   }
+
+	public void removeCourseSet(String setUuid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void removeCanonicalCourse(String canonicalUuid) {
+		CanonicalCourse c = getCanonicalCourse(canonicalUuid);
+    if (c != null)
+		  getHibernateTemplate().delete(c);		
+	}
+
+	public void removeCourseOffering(String offeringUuid) {
+		CourseOffering c = getCourseOffering(offeringUuid);
+	  if (c != null)
+  		getHibernateTemplate().delete(c);		
+	}
+
+	public void removeCourseSection(String sectionUuid) {
+		CourseSection c = getCourseSection(sectionUuid);
+	  if (c != null)
+  		getHibernateTemplate().delete(c);		
+	}
+
+	public void removeSession(String sessionUuid) {
+		Session c = getSession(sessionUuid);
+	  if (c != null)
+  		getHibernateTemplate().delete(c);		
+	}
 }

@@ -247,16 +247,6 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 
   public void setCanonicalCourseStatus(CanonicalCourseStatusType status) {
     this.canonicalCourseStatus = status;
-    if (status !=null)
-      this.canonicalCourseStatusUuid = status.getUuid();
-  }
-
-  public void setCanonicalCourseStatusUuid(String statusUuid) {
-    this.canonicalCourseStatusUuid = statusUuid;
-  }
-
-  public String getCanonicalCourseStatusUuid() {
-    return canonicalCourseStatusUuid;
   }
 
   /* ***************** Cross Listing Methods ***************** */
