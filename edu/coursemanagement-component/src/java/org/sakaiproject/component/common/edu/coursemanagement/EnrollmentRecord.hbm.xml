@@ -7,7 +7,9 @@
 
     <class name="EnrollmentRecordImpl" table="CM_ENROLLMENTRECORD_T">
         <id name="enrollmentRecordId" column="ENROLLMENTRECORDID" type="java.lang.Long">
-            <generator class="native"/>
+            <generator class="native">
+              <param name="sequence">CM_ENROLLMENTRECORD_ID_S</param>
+            </generator>
         </id>
  
         <property name="agent" column="AGENT" type="java.lang.String"  not-null="true" />

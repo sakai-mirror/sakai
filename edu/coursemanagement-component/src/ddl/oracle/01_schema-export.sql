@@ -3,6 +3,7 @@ alter table CM_COURSEOFFERING_T drop constraint FKD254CBEB8B4970AE;
 alter table CM_COURSEOFFERING_T drop constraint FKD254CBEBCA525211;
 alter table CM_COURSEOFFERING_T drop constraint FKD254CBEBA459A5D9;
 alter table CM_COURSEOFFERING_T drop constraint FKD254CBEB21961636;
+alter table CM_PARTICIPATIONRECORD_T drop constraint FKA9134DF2F65C8CAE;
 alter table CM_COURSESECTION_T drop constraint FKE6425DCA6B67A391;
 alter table CM_COURSESECTION_T drop constraint FKE6425DCACA525211;
 alter table CM_COURSESECTION_T drop constraint FKE6425DCA1880BC9F;
@@ -25,17 +26,22 @@ drop table CM_COURSESECTION_T cascade constraints;
 drop table CM_SESSIONTYPE_T cascade constraints;
 drop table CM_COURSESET_T cascade constraints;
 drop sequence CM_COURSESECTIONTYPE_ID_S;
-drop sequence hibernate_sequence;
-drop sequence CM_COURSEOFFERINGSTATUS_ID_S;
 drop sequence CM_CANONICALCOURSESTATUS_ID_S;
-drop sequence CM_COURSEOFFERINGTYPE_ID_S;
-drop sequence CM_ENROLLMENTSTATUS_ID_S;
-drop sequence CM_ENROLLMENTTYPE_ID_S;
-drop sequence CM_SESSION_ID_S;
+drop sequence CM_PARTICIPATIONRECORD_ID_S;
+drop sequence CM_COURSESECTION_ID_S;
+drop sequence CM_ENROLLMENTRECORD_ID_S;
+drop sequence CM_CANONICALCOURSE_ID_S;
 drop sequence CM_COURSESETTYPE_ID_S;
-drop sequence CM_COURSESECTIONSTATUS_ID_S;
-drop sequence CM_SESSIONTYPE_ID_S;
 drop sequence CM_PARTICIPATIONSTATUS_ID_S;
+drop sequence CM_SESSIONTYPE_ID_S;
+drop sequence CM_COURSESET_ID_S;
+drop sequence CM_COURSEOFFERINGSTATUS_ID_S;
+drop sequence CM_COURSEOFFERING_ID_S;
+drop sequence CM_COURSEOFFERINGTYPE_ID_S;
+drop sequence CM_ENROLLMENTTYPE_ID_S;
+drop sequence CM_ENROLLMENTSTATUS_ID_S;
+drop sequence CM_SESSION_ID_S;
+drop sequence CM_COURSESECTIONSTATUS_ID_S;
 create table CM_ENROLLMENTSTATUS_T (
    ENROLLMENTSTATUSID number(19,0) not null,
    AUTHORITY varchar2(255) not null,
@@ -140,15 +146,15 @@ create table CM_PARTICIPATIONRECORD_T (
    PARTICIPATIONRECORDID number(19,0) not null,
    AGENT varchar2(255) not null,
    ROLE varchar2(255),
-   PARTICIPATIONSTATUSUUID varchar2(255) not null,
-   COURSEOFFERINGID number(10,0) not null,
-   COURSEOFFERINGUUID varchar2(255) not null,
-   COURSESECTIONID number(10,0) not null,
+   PARTICIPATIONSTATUSID number(19,0),
+   COURSEOFFERINGUUID varchar2(255),
    COURSESECTIONUUID varchar2(255) not null,
    CREATEDBY varchar2(255) not null,
    CREATEDDATE date not null,
    LASTMODIFIEDBY varchar2(255) not null,
    LASTMODIFIEDDATE date not null,
+   COURSEOFFERINGID number(19,0),
+   COURSESECTIONID number(19,0),
    primary key (PARTICIPATIONRECORDID)
 );
 create table CM_COURSEOFFERINGSTATUS_T (
@@ -315,19 +321,25 @@ alter table CM_COURSEOFFERING_T add constraint FKD254CBEB8B4970AE foreign key (C
 alter table CM_COURSEOFFERING_T add constraint FKD254CBEBCA525211 foreign key (SESSIONID) references CM_SESSION_T;
 alter table CM_COURSEOFFERING_T add constraint FKD254CBEBA459A5D9 foreign key (ENROLLMENTTYPEID) references CM_ENROLLMENTTYPE_T;
 alter table CM_COURSEOFFERING_T add constraint FKD254CBEB21961636 foreign key (COURSEOFFERINGTYPEID) references CM_COURSEOFFERINGTYPE_T;
+alter table CM_PARTICIPATIONRECORD_T add constraint FKA9134DF2F65C8CAE foreign key (PARTICIPATIONSTATUSID) references CM_PARTICIPATIONSTATUS_T;
 alter table CM_COURSESECTION_T add constraint FKE6425DCA6B67A391 foreign key (ENROLLMENTSTATUSID) references CM_ENROLLMENTSTATUS_T;
 alter table CM_COURSESECTION_T add constraint FKE6425DCACA525211 foreign key (SESSIONID) references CM_SESSION_T;
 alter table CM_COURSESECTION_T add constraint FKE6425DCA1880BC9F foreign key (COURSESECTIONTYPEID) references CM_COURSESECTIONTYPE_T;
 alter table CM_COURSESECTION_T add constraint FKE6425DCA722420D7 foreign key (COURSESECTIONSTATUSID) references CM_COURSESECTIONSTATUS_T;
 create sequence CM_COURSESECTIONTYPE_ID_S;
-create sequence hibernate_sequence;
-create sequence CM_COURSEOFFERINGSTATUS_ID_S;
 create sequence CM_CANONICALCOURSESTATUS_ID_S;
-create sequence CM_COURSEOFFERINGTYPE_ID_S;
-create sequence CM_ENROLLMENTSTATUS_ID_S;
-create sequence CM_ENROLLMENTTYPE_ID_S;
-create sequence CM_SESSION_ID_S;
+create sequence CM_PARTICIPATIONRECORD_ID_S;
+create sequence CM_COURSESECTION_ID_S;
+create sequence CM_ENROLLMENTRECORD_ID_S;
+create sequence CM_CANONICALCOURSE_ID_S;
 create sequence CM_COURSESETTYPE_ID_S;
-create sequence CM_COURSESECTIONSTATUS_ID_S;
-create sequence CM_SESSIONTYPE_ID_S;
 create sequence CM_PARTICIPATIONSTATUS_ID_S;
+create sequence CM_SESSIONTYPE_ID_S;
+create sequence CM_COURSESET_ID_S;
+create sequence CM_COURSEOFFERINGSTATUS_ID_S;
+create sequence CM_COURSEOFFERING_ID_S;
+create sequence CM_COURSEOFFERINGTYPE_ID_S;
+create sequence CM_ENROLLMENTTYPE_ID_S;
+create sequence CM_ENROLLMENTSTATUS_ID_S;
+create sequence CM_SESSION_ID_S;
+create sequence CM_COURSESECTIONSTATUS_ID_S;

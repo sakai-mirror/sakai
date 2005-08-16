@@ -7,7 +7,9 @@
 
     <class name="CanonicalCourseImpl" table="CM_CANONICALCOURSE_T">
         <id name="canonicalCourseId" column="CANONICALCOURSEID" type="java.lang.Long">
-            <generator class="native"/>
+            <generator class="native">
+              <param name="sequence">CM_CANONICALCOURSE_ID_S</param>
+            </generator>
         </id>
 
         <!--  Meta data -->

@@ -3,6 +3,7 @@ package org.sakaiproject.component.common.edu.coursemanagement;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.sakaiproject.api.edu.coursemanagement.EnrollmentStatusType;
 import org.sakaiproject.api.edu.coursemanagement.ParticipationRecord;
 import org.sakaiproject.api.edu.coursemanagement.ParticipationStatusType;
 
@@ -23,10 +24,7 @@ public class ParticipationRecordImpl
   private String agentUuid;
   private String role;
   private ParticipationStatusType status;
-  private String statusUuid;
-  private Long courseSectionId;
   private String courseSectionUuid;
-  private Long courseOfferingId;
   private String courseOfferingUuid;
   private String createdBy;
   private Date createdDate;
@@ -38,6 +36,17 @@ public class ParticipationRecordImpl
   private Boolean isOtherPeople;
 
   private String uuid;
+
+  public ParticipationRecordImpl() {
+	}
+
+	public ParticipationRecordImpl(String agentUuid, String role,
+			ParticipationStatusType status, String courseSectionUuid) {
+		this.agentUuid = agentUuid;
+		this.role = role;
+		this.status = status;
+		this.courseSectionUuid = courseSectionUuid;
+	}
 
   /**
    * Return the simple primary key value that identifies this object.
@@ -80,44 +89,12 @@ public class ParticipationRecordImpl
     this.status = status;
   }
 
-  public void setStatusUuid(String statusUuid) {
-    this.statusUuid = statusUuid;
-    CourseManagementManagerImpl manager = CourseManagementManagerImpl.
-        getInstance();
-    this.status = manager.getParticipationStatusByUuid(statusUuid);
-  }
-
-  public String getStatusUuid() {
-    if (status != null) {
-      return status.getUuid();
-    }
-    else {
-      return null;
-    }
-  }
-
   public String getCourseReference() {
-    return getCourseSectionUuid();
+    return courseSectionUuid;
   }
 
   public void setCourseReference(String courseSectionUuid) {
-    setCourseSectionUuid(courseSectionUuid);
-  }
-
-  public String getCourseSectionUuid() {
-    return this.courseSectionUuid;
-  }
-
-  public void setCourseSectionUuid(String courseSectionUuid) {
     this.courseSectionUuid = courseSectionUuid;
-  }
-
-  public Long getCourseSectionId() {
-    return this.courseSectionId;
-  }
-
-  public void setCourseSectionId(Long courseSectionId) {
-    this.courseSectionId = courseSectionId;
   }
 
   public String getCourseOfferingUuid() {
@@ -126,14 +103,6 @@ public class ParticipationRecordImpl
 
   public void setCourseOfferingUuid(String courseOfferingUuid) {
     this.courseOfferingUuid = courseOfferingUuid;
-  }
-
-  public Long getCourseOfferingId() {
-    return this.courseOfferingId;
-  }
-
-  public void setCourseOfferingId(Long courseOfferingId) {
-    this.courseOfferingId = courseOfferingId;
   }
 
   public String getUuid() {

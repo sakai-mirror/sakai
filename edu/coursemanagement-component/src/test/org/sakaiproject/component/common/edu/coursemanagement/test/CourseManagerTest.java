@@ -46,6 +46,8 @@ import org.sakaiproject.component.common.edu.coursemanagement.
     CourseOfferingTypeImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.EnrollmentTypeImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.EnrollmentStatusTypeImpl;
+import org.sakaiproject.component.common.edu.coursemanagement.ParticipationStatusTypeImpl;
+import org.sakaiproject.component.common.edu.coursemanagement.ParticipationRecordImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.CourseSectionImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.
     CourseSectionStatusTypeImpl;
@@ -160,6 +162,14 @@ public class CourseManagerTest
     getEnrollmentStatusByKeyword("enrollment_status.full_credit"); 
   	EnrollmentRecordImpl e = (EnrollmentRecordImpl)((CourseManagementManagerImpl) courseManagementManager)
 		.createEnrollmentRecord("daisyf", "student", enrollmentStatus.getUuid(), section.getUuid());
+    setComplete();    
+
+    // 6. add an instructor to course section
+    ParticipationStatusTypeImpl participationStatus = (ParticipationStatusTypeImpl)
+    ( (CourseManagementManagerImpl) courseManagementManager).
+    getParticipationStatusByKeyword("participation_status.unknown"); 
+    ParticipationRecordImpl p = (ParticipationRecordImpl)((CourseManagementManagerImpl) courseManagementManager)
+		.createParticipationRecord("rgollub", "instructor", participationStatus.getUuid(), section.getUuid());
     setComplete();    
 
   }

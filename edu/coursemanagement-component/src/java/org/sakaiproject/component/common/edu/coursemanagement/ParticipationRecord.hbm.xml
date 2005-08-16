@@ -10,16 +10,18 @@
 
     <class name="ParticipationRecordImpl" table="CM_PARTICIPATIONRECORD_T">
         <id name="participationRecordId" column="PARTICIPATIONRECORDID" type="java.lang.Long">
-            <generator class="native"/>
+            <generator class="native">
+              <param name="sequence">CM_PARTICIPATIONRECORD_ID_S</param>
+            </generator>
         </id>
  
         <property name="agent" column="AGENT" type="java.lang.String"  not-null="true" />
         <property name="role" column="ROLE" type="java.lang.String"  />
-        <property name="statusUuid" column="PARTICIPATIONSTATUSUUID" type="java.lang.String"  not-null="true" />
-        <property name="courseOfferingId" column="COURSEOFFERINGID" type="java.lang.Integer"  not-null="true" />
-        <property name="courseOfferingUuid" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="true" />
-        <property name="courseSectionId" column="COURSESECTIONID" type="java.lang.Integer"  not-null="true" />
-        <property name="courseSectionUuid" column="COURSESECTIONUUID" type="java.lang.String"  not-null="true" />
+        <many-to-one name="participationStatus"
+            column="PARTICIPATIONSTATUSID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.ParticipationStatusTypeImpl"/>
+        <property name="courseOfferingUuid" column="COURSEOFFERINGUUID" type="java.lang.String"  not-null="false" />
+        <property name="courseReference" column="COURSESECTIONUUID" type="java.lang.String"  not-null="true" />
         <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
         <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />

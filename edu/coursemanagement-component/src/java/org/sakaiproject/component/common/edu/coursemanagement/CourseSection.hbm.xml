@@ -7,7 +7,9 @@
 
     <class name="CourseSectionImpl" table="CM_COURSESECTION_T">
         <id name="courseSectionId" column="COURSESECTIONID" type="java.lang.Long">
-            <generator class="native"/>
+            <generator class="native">
+              <param name="sequence">CM_COURSESECTION_ID_S</param>
+            </generator>
         </id>
  
         <!-- Meta data --> 

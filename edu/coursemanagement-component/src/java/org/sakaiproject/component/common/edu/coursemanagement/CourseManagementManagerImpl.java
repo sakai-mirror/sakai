@@ -154,9 +154,18 @@ public class CourseManagementManagerImpl
   }
 
   public ParticipationRecord createParticipationRecord(String agentUuid,
-      String role, String status, String courseSectionUuid) {
-    // TODO Auto-generated method stub
-    return null;
+      String role, String statusUuid, String courseSectionUuid) {
+    ParticipationStatusType status = getParticipationStatusByUuid(statusUuid);
+    ParticipationRecordImpl p = new ParticipationRecordImpl(
+    		agentUuid, role, status, courseSectionUuid);
+    Date currentDate = new Date();
+  	p.setUuid("*uuid_enrollment_" + currentDate.getTime());
+    p.setCreatedBy("admin");
+    p.setCreatedDate(currentDate);
+    p.setLastModifiedBy("admin");
+    p.setLastModifiedDate(currentDate);
+    getHibernateTemplate().save(p);
+    return p;
   }
 
   public CanonicalCourse getCanonicalCourse(String uuid) {
@@ -475,6 +484,21 @@ public class CourseManagementManagerImpl
     String query = "select t from ParticipationStatusTypeImpl t where t.uuid=?";
     List list = getHibernateTemplate().find(query,
                                             new Object[] {uuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    if (list.size() > 0) {
+      return (ParticipationStatusType) list.get(0);
+    }
+    else {
+      return null;
+    }
+  }
+  
+  public ParticipationStatusType getParticipationStatusByKeyword(String keyword) {
+    String query = "select t from ParticipationStatusTypeImpl t where t.keyword=?";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {keyword}
                                             ,
                                             new net.sf.hibernate.type.Type[] {
                                             Hibernate.STRING});
