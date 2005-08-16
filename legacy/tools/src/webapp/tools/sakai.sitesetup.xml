@@ -7,8 +7,14 @@
 			title="Worksite Setup"
 			description="Modify your sites and create new ones.">
 
-		<!-- types are seperated by , don't forget to put corresponding type_categories.xml into the reg folder-->
+		<!-- types are seperated by , -->
+		<!-- Steps for adding new site type: -->
+		<!-- 1. add the site type into the following siteTypes value -->
+		<!-- 2. add the site type as category into related tool reg files-->
+		<!-- 3. if the site title is editable, add the site type into titleEditableSiteType in sakai.properties file -->
+		<!-- 4. if specific tool order for the site type is needed, specify it inside toolOrder.xml file -->
 		<configuration name="siteTypes" value="course,project" />
+		
 		<!-- default site type -->
 		<configuration name="defaultSiteType" value="project" />
 		<!-- types of sites that can either be public or private -->
