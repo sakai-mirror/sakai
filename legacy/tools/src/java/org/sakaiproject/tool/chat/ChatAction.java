@@ -273,11 +273,6 @@ public class ChatAction
 		    //update the tool config
 			Placement placement = ToolManager.getCurrentPlacement();
 			placement.setTitle(rb.getString("chatroom") + "\"" + channelName + "\"");
-
-			// deliver an update to the title panel (to show the new title)
-			String peid = ((JetspeedRunData)rundata).getJs_peid();
-			String titleId = titlePanelUpdateId(peid);
-			schedulePeerFrameRefresh(titleId);
 		}
 		// make sure the observer is in sync with state
 		updateObservationOfChannel(state, portlet.getID());
