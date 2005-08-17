@@ -45,6 +45,7 @@ import org.sakaiproject.api.common.type.Type;
 import org.sakaiproject.api.common.type.TypeManager;
 import org.sakaiproject.api.common.uuid.UuidManager;
 import org.sakaiproject.component.common.manager.PersistableHelper;
+import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
@@ -236,7 +237,7 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
           "The sakaiPerson argument contains an invalid Type!");
 
     // AuthZ
-    if (getSystemMutableType().getUuid().equals(sakaiPerson.getTypeUuid()))
+    if (getSystemMutableType().getUuid().equals(sakaiPerson.getTypeUuid()) || SecurityService.isSuperUser())
     {
       throw new IllegalAccessError("System mutable records cannot be updated.");
     }
