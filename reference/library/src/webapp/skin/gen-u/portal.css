@@ -124,7 +124,7 @@ html #siteStatus/* */{background-position:3px center/* - adj for ie - */}
 #pres_title{text-align:center;color:#368;font-size:.7em;margin:.2em auto}
 /* GROUP 4 - content and channels */
 .portletTitleWrap{padding:0;width:99.2%}
-.portletTitleIframe{width:100% !important;margin:0 !important;}
+.portletTitleIframe{width:100% !important;margin:0 !important;height:1.3em}
 .portletMainWrap{border:1px solid #7F9FC0;background-color:#fff;text-align:left;width:99%;margin-bottom:.5em}
 /*GROUP 5:tableless layout*/
 #container{}

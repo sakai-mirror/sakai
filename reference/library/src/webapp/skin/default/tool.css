@@ -24,12 +24,12 @@ html>body .portletBody table.toolTitle{
 .toolTitle td.title{
 padding: 2px 4px 2px 22px;
 background:url(images/titleleft.gif) top left no-repeat;
-height:22px;
-font: normal bold 12px Arial, sans-serif;
+/*height:22px;*/
+font-size:1em;
 color: #5A6D95;
 text-transform: uppercase;
 }
-.toolTitle td.title h2{font: normal bold 12px Arial, sans-serif;margin:0;padding:0;display:inline}
+.toolTitle td.title h2{font: normal bold .9em Arial, sans-serif;margin:0;padding:0;display:inline}
 .toolTitle td.title a {background:url(images/reload.gif) top left no-repeat;}
 .toolTitle td.title a:hover{background:url(images/reload_h.gif) top left no-repeat;}
 

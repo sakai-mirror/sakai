@@ -27,10 +27,10 @@ background-color:#52AAD6;
 color:#FFF;
 padding:2px 4px;
 background:url(images/topleft-p-title.gif) top left no-repeat #52AAD6;
-height:16px;
+font:1em;
 border-bottom:3px solid #52AAD6;
 }
-.toolTitle td.title h2{font: normal bold 12px Verdana, sans-serif;margin:0;padding:0;display:inline}
+.toolTitle td.title h2{font: normal 1em Verdana, sans-serif;margin:0;padding:0;display:inline;color:#fff	}
 .toolTitle td.action{
 background:url(images/topright-p-title.gif) top right no-repeat #52AAD6;
 color:#FFF;

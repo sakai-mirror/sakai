@@ -29,10 +29,10 @@ padding:4px 4px 2px 4px;
 background-image:url(images/topleft.gif);
 background-position:top left;
 background-repeat:no-repeat;
-height:16px;
+font:1em;
 border-bottom:3px solid #BACCDD;
 }
-.toolTitle td.title h2{font: normal bold 12px Verdana, sans-serif;margin:0;padding:0;display:inline}
+.toolTitle td.title h2{font: normal bold .9em Verdana, sans-serif;margin:0;padding:0;display:inline}
 .toolTitle td.action{
 background-image:url(images/topright.gif);
 background-position:top right;

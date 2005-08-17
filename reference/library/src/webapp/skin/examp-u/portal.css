@@ -178,7 +178,7 @@ html>body #leftnavlozenge li a{width:auto;border-width:1px 0 1px 1px;border-colo
 #pres_title{text-align:center;color:#369;font-size:.7em;margin:.2em auto}
 /* GROUP 4 - content and channels */
 .portletTitleWrap{padding:0;width:99.2%}
-.portletTitleIframe{width:100% !important;margin:0 !important;}
+.portletTitleIframe{width:100% !important;margin:0 !important;height:1.3em}
 .portletMainWrap{border:1px solid #BBD6B6;background-color:#fff;text-align:left;width:99%;margin-bottom:.5em}
 /*GROUP 5:tableless layout and footer */
 #container{border-top:1px solid #58894D}
