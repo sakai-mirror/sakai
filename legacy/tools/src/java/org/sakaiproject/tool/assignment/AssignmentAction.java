@@ -1204,7 +1204,7 @@ extends PagedResourceActionII
 				if (submissions.hasNext ())
 				{
 					// if there is submission to the assignment, show the alert
-					addAlert(state, "Are you sure you want to delete " + " " +  a.getTitle () + " " + rb.getString("whihassub"));
+					addAlert(state, rb.getString("areyousur") + " " +  a.getTitle () + " " + rb.getString("whihassub"));
 				}
 				assignments.add (a);
 			}

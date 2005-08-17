@@ -1,28 +1,6 @@
 	##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/discussion/chef_threaded_discussionsII-Control.vm,v 1.7 2005/06/09 14:46:22 zqian.umich.edu Exp $ -->
 <div class="portletBody">
 	#if($menu)#toolbar($menu)#end
-	#*
-	# if (am looking at an item)	
-			$tlang.getString("control.youareloo") 
-	#else	
-		<div class ="chefPortletToolBarMessage">
-					#if ($creating new topic)
-						$tlang.getString("control.cretop")
-					#elseif ($creating new category)
-						$tlang.getString("control.crecat")
-					#elseif ($deleting a category)
-						$tlang.getString("control.delcat")
-					#elseif ($deleting a topic)
-						$tlang.getString("control.deltop")
-					#elseif ($deleting a draft response)
-						$tlang.getString("control.deldra")
-					#elseif ($deleting a draft item)
-						$tlang.getString("control.delposite")
-					#else (anythng else I may have forgotten)
-							$tlang.getString("control.anyels")	
-					#end
-			</div>
-	 *#
 	 ## this is double deep
 	<script type="text/javascript" language="JavaScript">
 		doubleDeep = true;
