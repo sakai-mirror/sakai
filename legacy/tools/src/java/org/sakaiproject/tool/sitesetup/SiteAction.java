@@ -10479,7 +10479,7 @@ public class SiteAction extends PagedResourceActionII
 			from = "postmaster@".concat(ServerConfigurationService.getServerName());
 		}
 		String productionSiteName = ServerConfigurationService.getString("ui.service", "");
-		String productionSiteUrl = ServerConfigurationService.getString("serverUrl", "");
+		String productionSiteUrl = ServerConfigurationService.getPortalUrl();
 		String universityName = ServerConfigurationService.getString("ui.institution", "");
 		
 		String to = newUserEmail;
@@ -10523,7 +10523,7 @@ public class SiteAction extends PagedResourceActionII
 		else
 		{
 			String productionSiteName = ServerConfigurationService.getString("ui.service", "");
-			String productionSiteUrl = ServerConfigurationService.getString("serverUrl", "");
+			String productionSiteUrl = ServerConfigurationService.getPortalUrl();
 			String universityName = ServerConfigurationService.getString("ui.institution", "");
 			String emailInIdAccountUrl = ServerConfigurationService.getString("emailInIdAccount.url", null);
 			String to = emailId;
