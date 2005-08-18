@@ -24,6 +24,7 @@ package org.sakaiproject.metaobj.shared;
 
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.MimeType;
 
 import java.util.Collection;
 
@@ -45,6 +46,8 @@ public interface ArtifactFinder {
     * @return
     */
    public Collection findByOwnerAndType(Id owner, String type);
+
+   public Collection findByOwnerAndType(Id owner, String type, MimeType mimeType);
 
    public Collection findByOwner(Id owner);
 

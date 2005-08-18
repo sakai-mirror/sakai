@@ -35,11 +35,40 @@
          <ref bean="org.sakaiproject.service.legacy.user.UserDirectoryService" />
       </property>
    </bean>
-   
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact"
+      class="org.sakaiproject.metaobj.shared.mgt.impl.FileArtifactFinder">
+      <property name="contentHostingService">
+         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService" />
+      </property>
+      <property name="agentManager">
+         <ref bean="agentManager"/>
+      </property>
+      <property name="idManager"><ref bean="idManager"/></property>
+   </bean>
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.default"
+      class="org.sakaiproject.metaobj.shared.mgt.impl.StructuredArtifactFinder">
+      <property name="contentHostingService">
+         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService" />
+      </property>
+      <property name="agentManager">
+         <ref bean="agentManager"/>
+      </property>
+      <property name="idManager"><ref bean="idManager"/></property>
+   </bean>
+
    <bean id="artifactFinderManager" class="org.sakaiproject.metaobj.shared.mgt.ArtifactFinderManagerImpl">
       <property name="finders">
          <map>
+            <entry key="fileArtifact">
+               <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact"/>
+            </entry>
          </map>
+      </property>
+      <!-- default finder, if can't find a finder in the finder list this one is used -->
+      <property name="artifactFinder">
+         <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.default"/>
       </property>
    </bean>
 
