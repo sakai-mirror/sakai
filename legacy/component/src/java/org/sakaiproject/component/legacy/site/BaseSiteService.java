@@ -419,11 +419,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// if this is the current user's site, we can create it
 			if (isUserSite(id) && id.substring(1).equals(UsageSessionService.getSessionUserId()))
 			{
+				// use lowercase user id inside user's MyWorkspace id
+				id = id.toLowerCase();
+				
 				// pick a template, type based, to clone it exactly but set this as the id
 				BaseSite template = null;
 				try
 				{
-					User user = UserDirectoryService.getUser(UsageSessionService.getSessionUserId());
+					User user = UserDirectoryService.getUser((UsageSessionService.getSessionUserId()).toLowerCase());
 					template = (BaseSite) getDefinedSite(USER_SITE_TEMPLATE + "." + user.getType());
 				}
 				catch (Throwable t) {}
