@@ -23,6 +23,7 @@
 package org.sakaiproject.metaobj.utils.xml;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,17 +33,22 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface ElementType {
-   Class getObjectType();
+   public Class getObjectType();
 
-   int getLength();
+   public int getLength();
 
-   int getMaxLength();
+   public int getMaxLength();
 
-   int getMinLength();
+   public int getMinLength();
 
-   String getDefaultValue();
+   public String getDefaultValue();
 
-   String getFixedValue();
+   public String getFixedValue();
 
-   List getEnumeration();
+   public List getEnumeration();
+   
+   /**
+	* @return A regular expression that expresses a constraint on legal value(s) for the element.
+	*/
+   public Pattern getPattern();
 }
