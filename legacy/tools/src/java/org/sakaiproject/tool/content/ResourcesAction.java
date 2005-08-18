@@ -671,6 +671,11 @@ extends VelocityPortletPaneledAction
 				}
 				
                 	// add all other sites user has access to
+				/*
+				 * NOTE: This does not (and should not) get all sites for admin.  
+				 *       Getting all sites for admin is too big a request and
+				 *       would result in too big a display to render in html.
+				 */
 				Map othersites = CollectionUtil.getCollectionMap();
 				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
@@ -922,6 +927,11 @@ extends VelocityPortletPaneledAction
 
 			if(atHome && show_all_sites)
 			{
+				/*
+				 * NOTE: This does not (and should not) get all sites for admin.  
+				 *       Getting all sites for admin is too big a request and
+				 *       would result in too big a display to render in html.
+				 */
 				Map othersites = CollectionUtil.getCollectionMap();
 				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
@@ -1517,8 +1527,8 @@ extends VelocityPortletPaneledAction
 	}	// doShow_webdav
 	
 	/**
-	 * initiate creation of one or more resource items (file uploads, html docs, text docs, or urls -- not folders)
-	 * default type is file upload
+	 * initiate creation of one or more resource items (folders, file uploads, html docs, text docs, or urls)
+	 * default type is folder
 	 */
 	public static void doCreate(RunData data)
 	{
@@ -1526,6 +1536,10 @@ extends VelocityPortletPaneledAction
 		ParameterParser params = data.getParameters ();
 		
 		String itemType = params.getString("itemType");
+		if(itemType == null || "".equals(itemType))
+		{
+			itemType = TYPE_FOLDER;
+		}
 
 		List new_items = new Vector();
 		for(int i = 0; i < CREATE_MAX_ITEMS; i++)
@@ -1750,6 +1764,14 @@ extends VelocityPortletPaneledAction
 			}
 			state.setAttribute(STATE_STRUCTOBJ_TYPE, formtype);
 			setupStructuredObjects(state);
+		}
+		else if(flow.equals("addInstance"))
+		{
+			captureMultipleValues(state, params, false);
+			String field = params.getString("field");
+			List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
+			addInstance(field, properties);
+			state.setAttribute(STATE_STRUCTOBJ_PROPERTIES, properties);
 		}
 		else if(flow.equals("showOptional"))
 		{
@@ -2416,6 +2438,50 @@ extends VelocityPortletPaneledAction
 		
 	}
 	
+	/**
+	 * Process user's request to add an instance of a particular field to a structured object.
+	 * @param data
+	 */
+	public static void doInsertValue(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+		
+		captureMultipleValues(state, params, false);
+		
+		String field = params.getString("field");
+		List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
+		addInstance(field, properties);
+	}
+	
+	/**
+	 * Search a hierarchical list of ResourcesMetadata properties for one whose localname matches "field".  
+	 * If found and the field can have additional instances, increment the count for that item.
+	 * @param field
+	 * @param properties
+	 * @return true if the field is found, false otherwise.
+	 */
+	protected static boolean addInstance(String field, List properties)
+	{
+		Iterator propIt = properties.iterator();
+		boolean found = false;
+		while(!found && propIt.hasNext())
+		{
+			ResourcesMetadata property = (ResourcesMetadata) propIt.next();
+			List nested = property.getNested();
+			if(field.equals(property.getFullname()))
+			{
+				found = true;
+				property.incrementCount();
+			}
+			else if(nested != null && !nested.isEmpty())
+			{
+				found = addInstance(field, nested);
+			}
+		}
+		return found;
+	}
+	
 	public static void doAttachitem(RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
@@ -2548,13 +2614,14 @@ extends VelocityPortletPaneledAction
 	protected static List createPropertiesList(String namespace, List fields)
 	{
 		List properties = new Vector();
-		List nested = new Vector();
 		for(Iterator fieldIt = fields.iterator(); fieldIt.hasNext(); )
 		{
 			SchemaBean field = (SchemaBean) fieldIt.next();
 			// String namespace = field.getFieldNamePathReadOnly();
 			SchemaNode node = field.getSchema();
 			Map annotations = field.getAnnotations();
+			List nested = new Vector();
+			Pattern pattern = null;
 			
 			String localname = field.getFieldName();
 			String description = field.getDescription();
@@ -2573,7 +2640,7 @@ extends VelocityPortletPaneledAction
 			if(field.getFields().size() > 0)
 			{
 				widget = ResourcesMetadata.WIDGET_NESTED;
-				nested.addAll(createPropertiesList(namespace, field.getFields()));
+				nested.addAll(createPropertiesList(namespace + localname + ".", field.getFields()));
 			}
 			else if(node.hasEnumerations())
 			{
@@ -2592,10 +2659,11 @@ extends VelocityPortletPaneledAction
 				{
 					length = 50;
 				}
-				else if(length < 2)
+				else if(length < 1)
 				{
-					length = 2;
+					length = 1;
 				}
+				pattern = node.getType().getPattern();
 				
 			}
 			else if(typename.equals(Date.class.getName()))
@@ -2645,6 +2713,10 @@ extends VelocityPortletPaneledAction
 				prop.setLength(length);
 			}
 			prop.setNested(nested);
+			if(pattern != null)
+			{
+				prop.setPattern(pattern);
+			}
 			
 			properties.add(prop);
 		}
@@ -2847,15 +2919,20 @@ extends VelocityPortletPaneledAction
 		
 		if(TYPE_FORM.equals(itemType))
 		{
-			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
-			context.put("formtype", formtype);
-			setupStructuredObjects(state);
-			
 			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+			if(listOfHomes == null)
+			{
+				setupStructuredObjects(state);
+				listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+			}
 			context.put("homes", listOfHomes);
+			
 			List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
 			context.put("properties", properties);
 
+			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			context.put("formtype", formtype);
+			
 			context.put("STRING", ResourcesMetadata.WIDGET_STRING);
 			context.put("TEXTAREA", ResourcesMetadata.WIDGET_TEXTAREA);
 			context.put("BOOLEAN", ResourcesMetadata.WIDGET_BOOLEAN);

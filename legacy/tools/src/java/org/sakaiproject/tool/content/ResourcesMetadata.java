@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -646,6 +647,9 @@ public class ResourcesMetadata
 	protected int m_length;
 	protected List m_enumeration;
 	protected List m_nested;
+	protected Object m_minValue;
+	protected Object m_maxValue;
+	protected Pattern m_pattern;
 	
 	/**
 	 * Constructor.
@@ -670,6 +674,7 @@ public class ResourcesMetadata
 		m_enumeration = null;
 		m_currentValues = new Vector();
 		m_nested = new Vector();
+		m_pattern = Pattern.compile(".*");
 		
 	}
 	
@@ -891,6 +896,7 @@ public class ResourcesMetadata
 	{
 		return m_currentCount;
 	}
+	
 	/**
 	 * @return Returns the currentCount.
 	 */
@@ -899,10 +905,18 @@ public class ResourcesMetadata
 		return new Integer(m_currentCount);
 	}
 	
+	/**
+	 * @return
+	 */
 	public List getValues()
 	{
 		return m_currentValues;
 	}
+	
+	/**
+	 * @param index
+	 * @return
+	 */
 	public Object getValue(int index)
 	{
 		Object rv = null;
@@ -916,10 +930,19 @@ public class ResourcesMetadata
 		}
 		return rv;
 	}
+	
+	/**
+	 * @return
+	 */
 	public Object getValue()
 	{
 		return getValue(0);
 	}
+	
+	/**
+	 * @param index
+	 * @param value
+	 */
 	public void setValue(int index, Object value)
 	{
 		try
@@ -931,6 +954,7 @@ public class ResourcesMetadata
 			m_currentValues.add(value);
 		}
 	}
+	
 	/**
 	 * @param currentCount The currentCount to set.
 	 */
@@ -938,6 +962,7 @@ public class ResourcesMetadata
 	{
 		m_currentCount = currentCount;
 	}
+	
 	/**
 	 * @return Returns the maxCardinality.
 	 */
@@ -945,6 +970,7 @@ public class ResourcesMetadata
 	{
 		return m_maxCardinality;
 	}
+	
 	/**
 	 * @param maxCardinality The maxCardinality to set.
 	 */
@@ -952,6 +978,7 @@ public class ResourcesMetadata
 	{
 		m_maxCardinality = maxCardinality;
 	}
+	
 	/**
 	 * @return Returns the minCardinality.
 	 */
@@ -959,6 +986,7 @@ public class ResourcesMetadata
 	{
 		return m_minCardinality;
 	}
+	
 	/**
 	 * @param minCardinality The minCardinality to set.
 	 */
@@ -966,6 +994,7 @@ public class ResourcesMetadata
 	{
 		m_minCardinality = minCardinality;
 	}
+	
 	/**
 	 * increments the currentCount if it is less than maxCardinality.
 	 */
@@ -976,6 +1005,7 @@ public class ResourcesMetadata
 			m_currentCount++;
 		}
 	}
+	
 	/**
 	 * @return true if additional instances of the field can be added, false otherwise.
 	 */
@@ -1018,6 +1048,7 @@ public class ResourcesMetadata
 		}
 		return rv;
 	}
+	
 	/**
 	 * @param enumeration The enumeration to set.
 	 */
@@ -1033,12 +1064,61 @@ public class ResourcesMetadata
 	{
 		return m_nested;
 	}
+	
 	/**
 	 * @param nested The nested to set.
 	 */
 	public void setNested(List nested) 
 	{
-		this.m_nested = nested;
+		m_nested = nested;
+	}
+	
+	/**
+	 * @return Returns the maxValue.
+	 */
+	public Object getMaxValue() 
+	{
+		return m_maxValue;
+	}
+	
+	/**
+	 * @param maxValue The maxValue to set.
+	 */
+	public void setMaxValue(Object maxValue) 
+	{
+		m_maxValue = maxValue;
+	}
+	
+	/**
+	 * @return Returns the minValue.
+	 */
+	public Object getMinValue() 
+	{
+		return m_minValue;
+	}
+	
+	/**
+	 * @param minValue The minValue to set.
+	 */
+	public void setMinValue(Object minValue) 
+	{
+		m_minValue = minValue;
+	}
+	
+	/**
+	 * @return Returns the pattern.
+	 */
+	public Pattern getPattern() 
+	{
+		return m_pattern;
+	}
+	
+	/**
+	 * @param pattern The pattern to set.
+	 */
+	public void setPattern(Pattern pattern) 
+	{
+		m_pattern = pattern;
 	}
 	
 }	// ResourcesMetadata
