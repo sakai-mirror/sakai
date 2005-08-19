@@ -61,7 +61,7 @@ delete from sakai_site_page where site_id = '!gateway';
 delete from sakai_site where site_id like '!gateway';
 INSERT INTO SAKAI_SITE VALUES('!gateway', 'Gateway', null, null, 'The Gateway Site', null, null, null, 1, 0, 0, '', null, null, null, null, 1, 0 );
 UPDATE SAKAI_SITE SET MODIFIEDBY='admin' WHERE SITE_ID = '!gateway';
-UPDATE SAKAI_SITE SET MODIFIEDON=TO_TIMESTAMP('20031126034522061','YYYYMMDDHHMISSFF3') WHERE SITE_ID = '!gateway';
+UPDATE SAKAI_SITE SET MODIFIEDON='2003-11-26 03:45:22' WHERE SITE_ID = '!gateway';
 INSERT INTO SAKAI_SITE_PAGE VALUES('!gateway-100', '!gateway', 'Welcome', '0', 1 );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-110', '!gateway-100', '!gateway', 'sakai.motd', 1, 'Message of the day', NULL );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-120', '!gateway-100', '!gateway', 'sakai.iframe', 2, 'Welcome!', NULL );
