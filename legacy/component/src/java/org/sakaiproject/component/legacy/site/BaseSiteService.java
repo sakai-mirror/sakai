@@ -3120,7 +3120,13 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			m_toolsLazy = true;
 
 			m_title = title;
-			m_layout = "0".equals(layout) ? LAYOUT_SINGLE_COL : LAYOUT_DOUBLE_COL;
+         
+			if ( layout.equals( String.valueOf( LAYOUT_SINGLE_COL ) ) )
+				m_layout = LAYOUT_SINGLE_COL;
+			else if ( layout.equals( String.valueOf( LAYOUT_DOUBLE_COL ) ) )
+				m_layout = LAYOUT_DOUBLE_COL;
+			else if ( layout.equals( String.valueOf( LAYOUT_POPUP_WIN ) ) )
+				m_layout = LAYOUT_POPUP_WIN;
 		}
 
 		/**
@@ -3147,7 +3153,13 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			m_toolsLazy = true;
 
 			m_title = title;
-			m_layout = "0".equals(layout) ? LAYOUT_SINGLE_COL : LAYOUT_DOUBLE_COL;
+         
+			if ( layout.equals( String.valueOf( LAYOUT_SINGLE_COL ) ) )
+				m_layout = LAYOUT_SINGLE_COL;
+			else if ( layout.equals( String.valueOf( LAYOUT_DOUBLE_COL ) ) )
+				m_layout = LAYOUT_DOUBLE_COL;
+			else if ( layout.equals( String.valueOf( LAYOUT_POPUP_WIN ) ) )
+				m_layout = LAYOUT_POPUP_WIN;
 
 			m_siteId = siteId;
 			m_skin = skin;
@@ -3300,6 +3312,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			return m_siteId;
 		}
 
+		/** @return true if page should open in new window. */
+		public boolean isPopUp()
+		{
+			return (m_layout == LAYOUT_POPUP_WIN);
+		}
+      
 		/** @return the layout title for this page. */
 		public String getLayoutTitle()
 		{
@@ -3380,7 +3398,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 */
 		public void setLayout(int layout)
 		{
-			if ((layout == LAYOUT_SINGLE_COL) || (layout == LAYOUT_DOUBLE_COL))
+			if (	(layout == LAYOUT_SINGLE_COL) || 
+					(layout == LAYOUT_DOUBLE_COL) ||
+					(layout == LAYOUT_POPUP_WIN) )
 			{
 				m_layout = layout;
 			}

@@ -26,6 +26,7 @@ package org.sakaiproject.service.legacy.site;
 
 // imports
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.sakaiproject.service.legacy.resource.Resource;
 
@@ -44,8 +45,15 @@ public interface SitePage
 	/** Layout value for a double column layout. */
 	public static final int LAYOUT_DOUBLE_COL = 1;
 
-	/** The layouts in human readable form. */
-	public static final String LAYOUT_NAMES[] = {"Single Column Layout", "Double Column Layout"};
+	/** Layout value for a popup window. */
+	public static final int LAYOUT_POPUP_WIN = 2;
+
+	/** The layouts in human readable form (localized) */
+   static ResourceBundle rb = ResourceBundle.getBundle("admin");
+	public static final String LAYOUT_NAMES[] = {
+           rb.getString("sitpag.lay_sngl"),
+           rb.getString("sitpag.lay_dbl"),
+           rb.getString("sitpag.lay_pop") };
 	
 	/** @return The human readable Title of this SitePage. */
 	public String getTitle();
@@ -68,6 +76,9 @@ public interface SitePage
 	/** @return the site id for this page. */
 	public String getSiteId();
 
+	/** @return true if page should open in new window. */
+	public boolean isPopUp();
+   
 	/**
 	* Access a tool on this page by id.
 	* @param id The tool id.

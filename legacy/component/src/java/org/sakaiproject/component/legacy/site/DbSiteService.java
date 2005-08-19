@@ -282,7 +282,7 @@ public class DbSiteService
 					fields[0] = page.getId();
 					fields[1] = caseId(edit.getId());
 					fields[2] = page.getTitle();
-					fields[3] = (page.getLayout() == SitePage.LAYOUT_SINGLE_COL) ? "0" : "1";
+					fields[3] = Integer.toString(page.getLayout());
 					fields[4] = new Integer(pageOrder++);
 					m_sql.dbWrite(connection, statement, fields);
 					
