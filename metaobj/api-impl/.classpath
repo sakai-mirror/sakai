@@ -57,6 +57,8 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-1.1.5.jar">
   </classpathentry>
+  <classpathentry sourcepath="JAVA_DIR/spring-framework-1.1.5/mock" kind="var" path="MAVEN_REPO/springframework/jars/spring-mock-1.1.5.jar">
+  </classpathentry>      
   <classpathentry kind="output" path="target/classes">
   </classpathentry>
 </classpath>

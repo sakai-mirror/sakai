@@ -24,16 +24,12 @@ package org.sakaiproject.metaobj.shared.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Attribute;
-import org.jdom.Element;
 import org.springframework.validation.Errors;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
-import org.sakaiproject.metaobj.shared.model.ElementListBean;
-//import org.sakaiproject.metaobj.repository.control.FileNameValidator;
+import org.sakaiproject.metaobj.shared.model.ValidationError;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
 import org.sakaiproject.metaobj.utils.mvc.impl.ValidatorBase;
-import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
-import org.sakaiproject.metaobj.utils.xml.NormalizationException;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
@@ -62,93 +58,22 @@ public class XmlValidator extends ValidatorBase {
    public void validate(Object obj, Errors errors, boolean checkListNumbers) {
       ElementBean elementBean = (ElementBean) obj;
 
-      validateDisplayName(elementBean, errors);
+      StructuredArtifactValidationService service = getStructuredArtifactValidationService();
+      List errorList = service.validate(elementBean);
 
-      // go through all nodes... call validate on the nodes that are elements...
-      SchemaNode currentNode = elementBean.getCurrentSchema();
-      Element rootElement = elementBean.currentElement();
-
-      List children = currentNode.getChildren();
-      for (Iterator i = children.iterator(); i.hasNext();) {
-         SchemaNode childSchema = (SchemaNode) i.next();
-
-         try {
-            if (checkWrappedField(childSchema, elementBean, errors)) {
-               continue;
-            }
-
-            Object value = elementBean.get(childSchema.getName());
-
-            if (value instanceof ElementBean) {
-               pushNestedPath(childSchema.getName() + ".", errors);
-               validate(value, errors, checkListNumbers);
-               popNestedPath(errors);
-               if (childSchema.isDataNode()) {
-                  ElementBean bean = (ElementBean)value;
-                  value = bean.currentElement().getTextTrim();
-                  if (value.toString().length() == 0) {
-                     value = null;
-                  }
-                  validateElement(rootElement, childSchema, value, errors);
-               }
-            } else if (value instanceof ElementListBean) {
-               boolean found = false;
-               for (Iterator iter=((ElementListBean)value).iterator();iter.hasNext();) {
-                  found = true;
-                  Object currentValue = iter.next();
-                  validate(currentValue, errors, checkListNumbers);
-                  if (childSchema.isDataNode()) {
-                     ElementBean bean = (ElementBean)currentValue;
-                     currentValue = bean.currentElement().getTextTrim();
-                     if (currentValue.toString().length() == 0) {
-                        currentValue = null;
-                     }
-                     try {
-                        validateChildElement(bean.currentElement(),
-                           childSchema, currentValue, errors);
-                     }
-                      catch (NormalizationException exp) {
-                        errors.rejectValue(childSchema.getName(),
-                           exp.getErrorCode(),
-                           exp.getErrorInfo(),
-                           MessageFormat.format(exp.getErrorCode(), exp.getErrorInfo()));
-                     }
-                  }
-               }
-               if (!found && checkListNumbers) {
-                  validateChildElement(null,
-                     childSchema, null, errors);
-               }
-            } else if (childSchema.isAttribute()) {
-               Attribute childAttribute = rootElement.getAttribute(childSchema.getName());
-
-               if (childAttribute != null) {
-                  String stringValue = null;
-                  if (value != null && value instanceof String) {
-                     stringValue = (String) value;
-                     value = childSchema.getActualNormalizedValue(stringValue);
-                  }
-
-                  childAttribute.setValue(childSchema.getSchemaNormalizedValue(value));
-               } else if (childSchema.getMinOccurs() > 0) {
-                  errors.rejectValue(childSchema.getName(),
-                     "required value {0}",
-                     new Object[]{childSchema.getName()},
-                     MessageFormat.format("required value {0}", new Object[]{childSchema.getName()}));
-               }
-
-            } else {
-               validateElement(rootElement, childSchema, value, errors);
-            }
-         } catch (NormalizationException exp) {
-            errors.rejectValue(childSchema.getName(),
-               exp.getErrorCode(),
-               exp.getErrorInfo(),
-               MessageFormat.format(exp.getErrorCode(), exp.getErrorInfo()));
-         }
+      for (Iterator i=errorList.iterator();i.hasNext();) {
+         ValidationError error = (ValidationError)i.next();
+         errors.rejectValue(error.getFieldName(), error.getErrorCode(),
+               error.getErrorInfo(), error.getDefaultMessage());
       }
    }
 
+   protected StructuredArtifactValidationService getStructuredArtifactValidationService() {
+      return (StructuredArtifactValidationService) ComponentManager.getInstance().get(
+            StructuredArtifactValidationService.class);
+   }
+
+   /*
    protected void validateDisplayName(ElementBean elementBean, Errors errors) {
       // don't care about display name here
    }
@@ -222,4 +147,6 @@ public class XmlValidator extends ValidatorBase {
 //   public void setFileNameValidator(FileNameValidator fileNameValidator) {
 //      this.fileNameValidator = fileNameValidator;
 //   }
+
+ */
 }

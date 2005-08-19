@@ -188,6 +188,10 @@ public class ElementBean extends HashMap implements TypedMap {
       return wrapperFactory;
    }
 
+   public static void setWrapperFactory(FieldValueWrapperFactory wrapperFactory) {
+      ElementBean.wrapperFactory = wrapperFactory;
+   }
+
    public Object remove(Object key) {
       currentElement().removeChild((String) key);
       types.remove(key);

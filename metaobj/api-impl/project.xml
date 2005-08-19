@@ -160,14 +160,19 @@
       <groupId>springframework</groupId>
       <artifactId>spring</artifactId>
       <version>1.1.5</version>
-    </dependency>            
-    
+    </dependency>
+
+     <dependency>
+       <groupId>springframework</groupId>
+       <artifactId>spring-mock</artifactId>
+       <version>1.1.5</version>
+    </dependency>
+
   </dependencies>
 
   <build>
   	<!-- java source -->
   	<sourceDirectory>src/java</sourceDirectory>
-  	<unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
 
   	<resources>
   		<resource>
@@ -183,20 +188,20 @@
   			</includes>
   		</resource>
   	</resources>
-  	<unitTest>
-  		<includes>
-  			<include>**/*Test.java</include>
-  		</includes>
-  		<resources>
-  			<resource>
-  				<directory>src/webapp</directory>
-  				<includes>
-  					<include>**/*.xml</include>
-  					<include>**/*.xsd</include>
-  					<include>**/*.properties</include>
-  				</includes>
-  			</resource>
-  		</resources>
-  	</unitTest>
+     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+     <unitTest>
+        <includes>
+           <include>**/*Test.java</include>
+        </includes>
+        <resources>
+           <resource>
+              <directory>${basedir}/src/test/</directory>
+              <includes>
+                 <include>spring-beans-test.xml</include>
+                 <include>testSchema.xsd</include>
+              </includes>
+           </resource>
+        </resources>
+     </unitTest>
   </build>
 </project>

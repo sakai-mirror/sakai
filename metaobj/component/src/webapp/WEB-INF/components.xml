@@ -143,4 +143,9 @@
 
    </bean>
 
+   <bean id="org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService"
+      class="org.sakaiproject.metaobj.shared.mgt.impl.StructuredArtifactValidationServiceImpl"
+      singleton="true">         
+   </bean>
+
 </beans>
