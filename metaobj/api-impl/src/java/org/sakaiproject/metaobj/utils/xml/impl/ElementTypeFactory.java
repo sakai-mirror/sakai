@@ -95,7 +95,7 @@ public class ElementTypeFactory {
       }
 
       if (INT_TYPES.indexOf(typeName) != -1) {
-         return new IntegerElementType(typeName, schemaElement,
+         return new NumberElementType(typeName, schemaElement,
             parentNode, xsdNamespace).postInit(xsdNamespace);
       } else if (DECIMAL_TYPES.indexOf(typeName) != -1) {
          return new DecimalElementType(typeName, schemaElement,

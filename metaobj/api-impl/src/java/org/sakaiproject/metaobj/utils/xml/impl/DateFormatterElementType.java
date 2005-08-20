@@ -27,6 +27,7 @@ import org.jdom.Namespace;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.metaobj.utils.xml.ValueRange;
 
 import java.text.Format;
 import java.text.ParseException;
@@ -59,6 +60,8 @@ public class DateFormatterElementType extends FormatterElementType {
    private Date maxExcl = null;
    private Date minExcl = null;
 
+   private ValueRange range = null;
+
    public DateFormatterElementType(String typeName, Element schemaElement,
                                    SchemaNode parentNode, Namespace xsdNamespace) {
       super(typeName, schemaElement, parentNode, xsdNamespace);
@@ -89,6 +92,22 @@ public class DateFormatterElementType extends FormatterElementType {
                throw new SchemaInvalidException(e);
             }
          }
+      }
+
+      if (maxIncl != null || minIncl != null ||
+          maxExcl != null || minExcl != null) {
+          // one must not be null, create a range
+         Comparable min = minIncl;
+         if (min == null) {
+            min = minExcl;
+         }
+
+         Comparable max = maxIncl;
+         if (max == null) {
+            max = maxExcl;
+         }
+
+         range = new ValueRange(max, min, maxIncl != null, minIncl != null);
       }
    }
 
@@ -129,5 +148,9 @@ public class DateFormatterElementType extends FormatterElementType {
 
    public Class getObjectType() {
       return Date.class;
+   }
+
+   public ValueRange getRange() {
+      return range;
    }
 }

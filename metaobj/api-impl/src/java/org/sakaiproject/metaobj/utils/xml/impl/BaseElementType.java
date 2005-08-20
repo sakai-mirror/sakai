@@ -275,6 +275,10 @@ public class BaseElementType implements ElementType {
       return pattern;
    }
 
+   public ValueRange getRange() {
+      return null;
+   }
+
    public int getWhiteSpaceType() {
       return whiteSpaceType;
    }

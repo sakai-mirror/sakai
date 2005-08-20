@@ -35,7 +35,32 @@
 						</xs:restriction>
 					</xs:simpleType>
 				</xs:element>
-				<xs:element name="expires" type="xs:date" minOccurs="0"/>
+            <xs:element name="expires" minOccurs="0">
+               <xs:simpleType>
+                  <xs:restriction base="xs:date">
+                     <xs:maxLength value="19" />
+                     <xs:minInclusive value="2005-08-19"/>
+                     <xs:maxInclusive value="2006-08-19"/>
+                  </xs:restriction>
+               </xs:simpleType>
+               <xs:annotation>
+                  <xs:documentation source="ospi.label">expires</xs:documentation>
+                  <xs:documentation source="ospi.description" />
+               </xs:annotation>
+            </xs:element>
+            <xs:element name="years">
+               <xs:simpleType>
+                  <xs:restriction base="xs:integer">
+                     <xs:maxLength value="11" />
+                     <xs:minExclusive value="0"/>
+                     <xs:maxInclusive value="100"/>
+                  </xs:restriction>
+               </xs:simpleType>
+               <xs:annotation>
+                  <xs:documentation source="ospi.label">years lived there</xs:documentation>
+                  <xs:documentation source="ospi.description" />
+               </xs:annotation>
+            </xs:element>
          	<xs:element name="emails">
 					<xs:annotation>
 						<xs:documentation source="ospi.label">Email List</xs:documentation>

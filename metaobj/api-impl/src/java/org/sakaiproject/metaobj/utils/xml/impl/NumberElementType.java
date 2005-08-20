@@ -27,6 +27,7 @@ import org.jdom.Namespace;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.metaobj.utils.xml.ValueRange;
 
 import java.text.Format;
 import java.text.NumberFormat;
@@ -39,7 +40,7 @@ import java.text.ParseException;
  * Time: 4:05:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public class IntegerElementType extends FormatterElementType {
+public class NumberElementType extends FormatterElementType {
 
    protected Number maxIncl = null;
    protected Number minIncl = null;
@@ -47,9 +48,11 @@ public class IntegerElementType extends FormatterElementType {
    protected Number minExcl = null;
    protected int totalDigits = -1;
 
+   private ValueRange range = null;
+
    private Format format = null;
 
-   public IntegerElementType(String typeName, Element schemaElement, SchemaNode parentNode, Namespace xsdNamespace) {
+   public NumberElementType(String typeName, Element schemaElement, SchemaNode parentNode, Namespace xsdNamespace) {
       super(typeName, schemaElement, parentNode, xsdNamespace);
 
       format = NumberFormat.getIntegerInstance();
@@ -72,6 +75,22 @@ public class IntegerElementType extends FormatterElementType {
 
             totalDigits = processIntRestriction(restrictions, "totalDigits", xsdNamespace, totalDigits);
          }
+      }
+
+      if (maxIncl != null || minIncl != null ||
+          maxExcl != null || minExcl != null) {
+          // one must not be null, create a range
+         Comparable min = (Comparable) minIncl;
+         if (min == null) {
+            min = (Comparable) minExcl;
+         }
+
+         Comparable max = (Comparable) maxIncl;
+         if (max == null) {
+            max = (Comparable) maxExcl;
+         }
+
+         range = new NumberValueRange(max, min, maxIncl != null, minIncl != null);
       }
    }
 
@@ -122,6 +141,10 @@ public class IntegerElementType extends FormatterElementType {
 
    public int getMaxLength() {
       return totalDigits;
+   }
+
+   public ValueRange getRange() {
+      return range;
    }
 
 }

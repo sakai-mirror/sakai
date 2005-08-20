@@ -26,6 +26,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.metaobj.utils.xml.ValueRange;
 
 import java.text.DecimalFormat;
 import java.text.Format;
@@ -38,7 +39,7 @@ import java.text.ParseException;
  * Time: 10:09:49 AM
  * To change this template use File | Settings | File Templates.
  */
-public class DecimalElementType extends IntegerElementType {
+public class DecimalElementType extends NumberElementType {
 
    private Format format = null;
    private int fractionDigits = -1;
@@ -111,6 +112,5 @@ public class DecimalElementType extends IntegerElementType {
    public Class getObjectType() {
       return Double.class;
    }
-
 
 }

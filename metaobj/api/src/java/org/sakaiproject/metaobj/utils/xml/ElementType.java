@@ -51,4 +51,12 @@ public interface ElementType {
 	* @return A regular expression that expresses a constraint on legal value(s) for the element.
 	*/
    public Pattern getPattern();
+
+   /**
+    * @return ValueRange object describing the type's range.
+    * Objects within this range will be of the class
+    * getObjectType().  This is null if there is no restriction
+    * on the value's range
+    */
+   public ValueRange getRange();
 }
