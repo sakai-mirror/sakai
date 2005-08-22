@@ -26,6 +26,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Attribute;
 import org.jdom.Element;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 import org.sakaiproject.metaobj.shared.mgt.FieldValueWrapperFactory;
 import org.sakaiproject.metaobj.utils.TypedMap;
 import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
@@ -33,6 +35,9 @@ import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -343,6 +348,30 @@ public class ElementBean extends HashMap implements TypedMap {
    public void setDeferValidation(boolean deferValidation) {
       this.deferValidation = deferValidation;
    }
+   
+   /**
+    * Generate a string containing XML tags and values representing the current contents of the element 
+	* @return An XML String representation of the object 
+	*/
+   public String toXmlString() throws PersistenceException
+   {
+   		XMLOutputter outputter = new XMLOutputter();
+   		ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+   		try 
+		{
+   			Format format = Format.getPrettyFormat();
+   			outputter.setFormat(format);
+   			outputter.output(getBaseElement(), os);
+   			return new String(os.toByteArray());
+   			//return os.toByteArray();
+		} 
+   		catch (IOException e) 
+		{
+   			throw new PersistenceException(e, "Unable to write object", null, null);
+		}
+
+   }	  // toXmlString
    
    class EntrySet implements Map.Entry {
        

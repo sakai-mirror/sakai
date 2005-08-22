@@ -208,6 +208,15 @@
 			</properties>
 		</dependency>
 
+	    <dependency>
+	      <groupId>jdom</groupId>
+	      <artifactId>jdom</artifactId>
+	      <version>1.0</version>
+	      <properties>
+	      	<deploy.target>shared</deploy.target>
+	      </properties>
+	    </dependency>
+	    
 	</dependencies>
 
 	<build>

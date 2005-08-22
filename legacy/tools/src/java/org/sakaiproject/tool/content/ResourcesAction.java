@@ -66,8 +66,12 @@ import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.control.SchemaBean;
+import org.sakaiproject.metaobj.shared.control.XmlValidator;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.ElementBean;
+import org.sakaiproject.metaobj.shared.model.ValidationError;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
@@ -119,7 +123,7 @@ import org.w3c.dom.Text;
 * @version $Revision$
 */
 public class ResourcesAction
-extends VelocityPortletPaneledAction
+	extends VelocityPortletPaneledAction
 {
 	/** Resource bundle using current language locale */
     private static ResourceBundle rb = ResourceBundle.getBundle("content");
@@ -277,6 +281,7 @@ extends VelocityPortletPaneledAction
 	private static final String STATE_STRUCTOBJ_TYPE = "resources.create_structured_object_type";
 	private static final String STATE_STRUCTOBJ_HOMES = "resources.create_structured_object_home";
 	private static final String STATE_STRUCTOBJ_PROPERTIES = "resources.create_structured_object_properties";
+	private static final String STATE_STRUCT_OBJ_SCHEMA = "resources.create_structured_object_schema";
 
 	private static final String MIME_TYPE_DOCUMENT_PLAINTEXT = "text/plain";
 	private static final String MIME_TYPE_DOCUMENT_HTML = "text/html";
@@ -591,9 +596,6 @@ extends VelocityPortletPaneledAction
 		List cPath = getCollectionPath(state);
 		context.put ("collectionPath", cPath);
 
-		String testCollection = collectionId + "test/";
-		String testResource = collectionId + "test";
-
 		// set the sort values
 		String sortedBy = (String) state.getAttribute (STATE_SORT_BY);
 		String sortedAsc = (String) state.getAttribute (STATE_SORT_ASC);
@@ -877,9 +879,6 @@ extends VelocityPortletPaneledAction
 
 		List cPath = getCollectionPath(state);
 		context.put ("collectionPath", cPath);
-
-		String testCollection = collectionId + "test/";
-		String testResource = collectionId + "test";
 
 		// set the sort values
 		String sortedBy = (String) state.getAttribute (STATE_SORT_BY);
@@ -1647,7 +1646,7 @@ extends VelocityPortletPaneledAction
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 			if(alerts.isEmpty())
 			{
-				createFiles(state, params);
+				createFiles(state);
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
@@ -1668,7 +1667,7 @@ extends VelocityPortletPaneledAction
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 			if(alerts.isEmpty())
 			{
-				createFiles(state, params);
+				createFiles(state);
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
@@ -1689,7 +1688,7 @@ extends VelocityPortletPaneledAction
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 			if(alerts.isEmpty())
 			{
-				createFiles(state, params);
+				createFiles(state);
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
@@ -1710,7 +1709,7 @@ extends VelocityPortletPaneledAction
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 			if(alerts.isEmpty())
 			{
-				createUrls(state, params);
+				createUrls(state);
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
@@ -1849,6 +1848,9 @@ extends VelocityPortletPaneledAction
 	}	// doCreateitem
 	
 	/**
+	 * Add a new StructuredArtifact to ContentHosting for each CreateItem in the state attribute named STATE_CREATE_ITEMS.  
+	 * The number of items to be added is indicated by the state attribute named STATE_CREATE_NUMBER, and
+	 * the items are added to the collection identified by the state attribute named STATE_CREATE_COLLECTION_ID. 
 	 * @param state
 	 */
 	private static void createStructuredArtifact(SessionState state) 
@@ -1858,6 +1860,8 @@ extends VelocityPortletPaneledAction
 		// List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
 		List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
 		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		SchemaBean rootSchema = (SchemaBean) state.getAttribute(STATE_STRUCT_OBJ_SCHEMA);
+		SchemaNode rootNode = rootSchema.getSchema();
 
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
@@ -1871,6 +1875,9 @@ extends VelocityPortletPaneledAction
 		for(int i = 0; i < numberOfItems; i++)
 		{
 			EditItem item = (EditItem) items.get(i);
+			
+			ElementBean metaobj = new ElementBean(docRoot, rootNode, true);
+			
 			Document doc = Xml.createDocument();
 			Node root = doc.createElement(docRoot);
 			doc.appendChild(root);
@@ -1895,6 +1902,7 @@ extends VelocityPortletPaneledAction
 						{
 							Node propnode = doc.createElement(propname);
 							root.appendChild(propnode);
+							metaobj.put(propname, value);
 							if(value instanceof String)
 							{
 								propnode.appendChild(doc.createTextNode((String)value));
@@ -1916,7 +1924,42 @@ extends VelocityPortletPaneledAction
 			{
 				try
 				{
+					StructuredArtifactValidationService validator = (StructuredArtifactValidationService) ComponentManager.get(
+		            "org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService");
+			
+					//System.out.println("validator == " + validator);
+					
+					List errors = validator.validate(metaobj);
+					Iterator errorIt = errors.iterator();
+					while(errorIt.hasNext())
+					{
+						ValidationError error = (ValidationError) errorIt.next();
+						String fieldName = error.getFieldName();
+						String errorCode = error.getErrorCode();
+						//System.out.println(" ===> found error in " + fieldName + " (" + errorCode + ")");
+					}
+					
+					//System.out.println(" =========== XML ===========\n" + metaobj.toXmlString() + "\n =========== XML ===========");
+
+//					XmlValidator validator = new XmlValidator();
+//					System.out.println(" ~~~~>  validator " + validator);
+					//Errors errors = new BindException(metaobj, docRoot);
+					//System.out.println(" ~~~~>  errors " + errors);
+					
+					//validator.validate(metaobj, errors);
+					
+					//System.out.println(" ====>  found " + errors.getErrorCount() + " errors");
+				}
+				catch(Exception e)
+				{
+					//System.out.println(" ---->  exception: " + e + "\n" + e.getMessage());
+				}
+				
+				try
+				{
+					
 					String content = Xml.writeDocumentToString(doc);
+					//System.out.println(" =========== XML ===========\n" + content + "\n =========== XML ===========");
 					ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
 					resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
@@ -2121,6 +2164,9 @@ extends VelocityPortletPaneledAction
 	}
 
 	/**
+	 * Add a new folder to ContentHosting for each CreateItem in the state attribute named STATE_CREATE_ITEMS.  
+	 * The number of items to be added is indicated by the state attribute named STATE_CREATE_NUMBER, and
+	 * the items are added to the collection identified by the state attribute named STATE_CREATE_COLLECTION_ID. 
 	 * @param state
 	 */
 	protected static void createFolders(SessionState state) 
@@ -2204,10 +2250,12 @@ extends VelocityPortletPaneledAction
 	}	// createFolders
 
 	/**
+	 * Add a new file to ContentHosting for each CreateItem in the state attribute named STATE_CREATE_ITEMS.  
+	 * The number of items to be added is indicated by the state attribute named STATE_CREATE_NUMBER, and
+	 * the items are added to the collection identified by the state attribute named STATE_CREATE_COLLECTION_ID. 
 	 * @param state
-	 * @param params TODO
 	 */
-	protected static void createFiles(SessionState state, ParameterParser params) 
+	protected static void createFiles(SessionState state) 
 	{
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		List new_files = (List) state.getAttribute(STATE_CREATE_ITEMS);
@@ -2419,6 +2467,7 @@ extends VelocityPortletPaneledAction
 			String docRoot = rootSchema.getFieldName();
 			
 			state.setAttribute(STATE_STRUCTOBJ_ROOTNAME, docRoot);
+			state.setAttribute(STATE_STRUCT_OBJ_SCHEMA, rootSchema);
 			
 			if(state.getAttribute(STATE_CREATE_ITEMS) != null)
 			{
@@ -2725,10 +2774,12 @@ extends VelocityPortletPaneledAction
 	}
 	
 	/**
+	 * Add a new URL to ContentHosting for each CreateItem in the state attribute named STATE_CREATE_ITEMS.  
+	 * The number of items to be added is indicated by the state attribute named STATE_CREATE_NUMBER, and
+	 * the items are added to the collection identified by the state attribute named STATE_CREATE_COLLECTION_ID. 
 	 * @param state
-	 * @param params TODO
 	 */
-	protected static void createUrls(SessionState state, ParameterParser params) 
+	protected static void createUrls(SessionState state) 
 	{
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		List new_urls = (List) state.getAttribute(STATE_CREATE_ITEMS);
@@ -4369,6 +4420,9 @@ extends VelocityPortletPaneledAction
 	}	// doModifyproperties
 	
 	/**
+	 * Retrieve values for an item from edit context.  Edit context contains just one item at a time of a known type 
+	 * (folder, file, text document, structured-artifact, etc).  This method retrieves the data apppropriate to the 
+	 * type and updates the values of the EditItem stored as the STATE_EDIT_ITEM attribute in state. 
 	 * @param state
 	 * @param params
 	 * @param item
@@ -4747,9 +4801,14 @@ extends VelocityPortletPaneledAction
 	}	// captureValues
 	
 	/**
+	 * Retrieve values for one or more items from create context.  Create context contains up to ten items at a time  
+	 * all of the same type (folder, file, text document, structured-artifact, etc).  This method retrieves the data 
+	 * apppropriate to the type and updates the values of the CreateItem objects stored as the STATE_CREATE_ITEMS 
+	 * attribute in state. If the third parameter is "true", missing/incorrect user inputs will generate error messages
+	 * and attach flags to the input elements.  
 	 * @param state
 	 * @param params
-	 * @param item
+	 * @param markMissing Should this method generate error messages and add flags for missing/incorrect user inputs?
 	 */
 	protected static void captureMultipleValues(SessionState state, ParameterParser params, boolean markMissing)
 	{
