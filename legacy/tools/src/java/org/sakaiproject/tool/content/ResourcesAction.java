@@ -4429,6 +4429,7 @@ public class ResourcesAction
 	 */
 	protected void captureValues(SessionState state, ParameterParser params)
 	{
+
 		EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
 		Set alerts = (Set) state.getAttribute(STATE_EDIT_ALERTS);
 		if(alerts == null)
@@ -4440,15 +4441,15 @@ public class ResourcesAction
 		String oldintent = (String) state.getAttribute(STATE_EDIT_INTENT);
 		boolean intent_has_changed = (item.isHtml() || item.isPlaintext()) && !intent.equals(oldintent);
 		
-		String name = params.getString("name").trim();
-		if(name == null || "".equals(name))
+		String name = params.getString("name");
+		if(name == null || "".equals(name.trim()))
 		{
 			alerts.add(rb.getString("titlenotnull"));
 			// addAlert(state, rb.getString("titlenotnull"));
 		}
 		else
 		{
-			item.setName(name);
+			item.setName(name.trim());
 		}
 		
 		String description = params.getString("description");
@@ -4463,10 +4464,23 @@ public class ResourcesAction
 		
 		item.setContentHasChanged(false);
 
-		// this condition is satisfied if the value of "intent" is the same as before 
-		// OR if the item is not plain-text or html
-		if( ! intent_has_changed )
+		if(item.isFolder())
 		{
+			
+		}
+		else if(item.isUrl())
+		{
+			
+		}
+		else if(item.isStructuredArtifact())
+		{
+			
+		}
+		else if(! intent_has_changed )
+		{
+			// this condition is satisfied if the value of "intent" is the same as before 
+			// OR if the item is not plain-text or html
+			
 			// check for input from editor (textarea)
 			String content = params.getString("content");
 			if(content != null)
@@ -4507,6 +4521,7 @@ public class ResourcesAction
 				}
 			}
 		}
+		
 		if(item.isUrl())
 		{
 			String url = params.getString("Url");
@@ -4797,6 +4812,7 @@ public class ResourcesAction
 		}
 		state.setAttribute(STATE_EDIT_ITEM, item);
 		state.setAttribute(STATE_EDIT_ALERTS, alerts);
+
 
 	}	// captureValues
 	
@@ -5225,6 +5241,8 @@ public class ResourcesAction
 			doCancel(data);
 			return;
 		}
+		
+		// get values from form and update STATE_EDIT_ITEM attribute in state
 		captureValues(state, params);
 
 		if(flow.equals("showMetadata"))

@@ -163,10 +163,9 @@
 			</label>
 			#if (! $atHome)						 
 				<input type="text" size="40" id="name" name="name" value="$validator.escapeHtml("$!item.name")" />
-			#elseif ($dropboxMode)
-				$siteTitle $tlang.getString("gen.drop")
 			#else
 				$!item.name
+				<input type="hidden" name="name" id="name" value="$validator.escapeUrl("$!item.name")" />
 			#end
 		</p>	
 		#if (! $item.isFolder()) 
