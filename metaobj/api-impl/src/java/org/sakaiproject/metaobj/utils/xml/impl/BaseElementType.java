@@ -200,27 +200,30 @@ public class BaseElementType implements ElementType {
 
       if (length != -1 && valueLength != length) {
          throw new NormalizationException("Invalid string length",
-            "Value {0} must be {1} characters", new Object[]{startingValue, new Integer(length)});
+            NormalizationException.INVALID_LENGTH_ERROR_CODE, new Object[]{startingValue, new Integer(length)});
       }
 
       if (maxLength != -1 && valueLength > maxLength) {
          throw new NormalizationException("Invalid string length",
-            "Value {0} must be less than {1} characters", new Object[]{startingValue, new Integer(maxLength)});
+            NormalizationException.INVALID_LENGTH_TOO_LONG_ERROR_CODE,
+            new Object[]{startingValue, new Integer(maxLength)});
       }
 
       if (minLength != -1 && valueLength < minLength && minLength == 1) {
          throw new NormalizationException("Required field",
-            "required field", new Object[0]);
+            NormalizationException.REQIRED_FIELD_ERROR_CODE, new Object[0]);
       }
 
       if (minLength != -1 && valueLength < minLength) {
          throw new NormalizationException("Invalid string length",
-            "Value {0} must be at least {1} characters", new Object[]{startingValue, new Integer(minLength)});
+            NormalizationException.INVALID_LENGTH_TOO_SHORT_ERROR_CODE,
+            new Object[]{startingValue, new Integer(minLength)});
       }
 
       if (pattern != null && !pattern.matcher(startingValue).matches()) {
          throw new NormalizationException("Invalid string pattern",
-            "Value {0} must match {1}", new Object[]{startingValue, pattern.pattern()});
+            NormalizationException.INVALID_PATTERN_MATCH_ERROR_CODE,
+            new Object[]{startingValue, pattern.pattern()});
       }
 
       return startingValue;
@@ -251,7 +254,8 @@ public class BaseElementType implements ElementType {
       if (enumeration != null) {
          if (!enumeration.contains(returned)) {
             throw new NormalizationException("Not enumerated",
-               "Value {0} must be in enueration", new Object[]{returned});
+               NormalizationException.NOT_IN_ENUMERATION_ERROR_CODE,
+               new Object[]{returned});
          }
       }
 

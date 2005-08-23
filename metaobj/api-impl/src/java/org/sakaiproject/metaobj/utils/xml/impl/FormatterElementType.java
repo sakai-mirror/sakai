@@ -58,7 +58,7 @@ public abstract class FormatterElementType extends BaseElementType {
 
       if (!getObjectType().isInstance(value)) {
          throw new NormalizationException("Invalid object type",
-            "Object {0} should be class {1}",
+            NormalizationException.INVALID_TYPE_ERROR_CODE,
             new Object[]{value, getObjectType()});
       }
 

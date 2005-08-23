@@ -49,7 +49,7 @@ public class BooleanElementType extends BaseElementType {
          //throw new NormalizationException("Invalid string pattern",
          //      "Value {0} must match {1}", new Object[]{value, getEnumeration()});
          throw new NormalizationException("Required field",
-               "Required", new Object[0]);
+               NormalizationException.REQIRED_FIELD_ERROR_CODE, new Object[0]);
       }
       return value.toString();
    }

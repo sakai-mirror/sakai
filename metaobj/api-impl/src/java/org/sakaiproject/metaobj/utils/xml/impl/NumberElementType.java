@@ -104,27 +104,27 @@ public class NumberElementType extends FormatterElementType {
 
       if (maxIncl != null && i > maxIncl.intValue()) {
          throw new NormalizationException("Invalid number",
-            "Value {0} must be less than or equal to {1}", new Object[]{o, maxIncl});
+            NormalizationException.TOO_LARGE_INCLUSIVE_ERROR_CODE, new Object[]{o, maxIncl});
       }
 
       if (minIncl != null && i < minIncl.intValue()) {
          throw new NormalizationException("Invalid number",
-            "Value {0} must be more than or equal {1}", new Object[]{o, minIncl});
+            NormalizationException.TOO_SMALL_INCLUSIVE_ERROR_CODE, new Object[]{o, minIncl});
       }
 
       if (maxExcl != null && i >= maxExcl.intValue()) {
          throw new NormalizationException("Invalid number",
-            "Value {0} must be less than {1}", new Object[]{o, maxExcl});
+            NormalizationException.TOO_LARGE_ERROR_CODE, new Object[]{o, maxExcl});
       }
 
       if (minExcl != null && i <= minExcl.intValue()) {
          throw new NormalizationException("Invalid number",
-            "Value {0} must be more than {1}", new Object[]{o, minExcl});
+            NormalizationException.TOO_SMALL_ERROR_CODE, new Object[]{o, minExcl});
       }
 
       if (totalDigits != -1 && o.toString().length() > totalDigits) {
          throw new NormalizationException("Invalid number",
-            "Value {0} must be less than {1} digits", new Object[]{o, new Integer(totalDigits)});
+            NormalizationException.TOO_MANY_DIGITS_ERROR_CODE, new Object[]{o, new Integer(totalDigits)});
       }
 
       return o;
@@ -132,7 +132,7 @@ public class NumberElementType extends FormatterElementType {
 
    protected String parserException(String value, ParseException e) {
       throw new NormalizationException("Invalid number",
-         "Value {0} must be a number", new Object[]{value});
+         NormalizationException.INVALID_NUMBER_ERROR_CODE, new Object[]{value});
    }
 
    public Class getObjectType() {

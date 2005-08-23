@@ -6,7 +6,6 @@ import org.sakaiproject.metaobj.shared.model.ElementListBean;
 import org.sakaiproject.metaobj.shared.model.ValidationError;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
-import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
 import org.jdom.Element;
 import org.jdom.Attribute;
 
@@ -131,9 +130,8 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
                } else if (childSchema.getMinOccurs() > 0) {
                   errors.add(new ValidationError(
                         composeName(parentName, childSchema.getName()),
-                        "required value {0}",
-                        new Object[]{childSchema.getName()},
-                        MessageFormat.format("required value {0}", new Object[]{childSchema.getName()})));
+                        NormalizationException.REQIRED_FIELD_ERROR_CODE,
+                        new Object[0], NormalizationException.REQIRED_FIELD_ERROR_CODE));
                }
 
             } else {
@@ -164,9 +162,8 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
       } else if (childSchema.getMinOccurs() > 0) {
          errors.add(new ValidationError(
                composeName(parentName, childSchema.getName()),
-               "required value {0}",
-               new Object[]{childSchema.getName()},
-               MessageFormat.format("required value {0}", new Object[]{childSchema.getName()})));
+               NormalizationException.REQIRED_FIELD_ERROR_CODE,
+               new Object[0], NormalizationException.REQIRED_FIELD_ERROR_CODE));
       }
    }
 

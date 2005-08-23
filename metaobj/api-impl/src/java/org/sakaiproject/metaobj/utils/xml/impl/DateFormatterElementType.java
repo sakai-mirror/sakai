@@ -120,22 +120,22 @@ public class DateFormatterElementType extends FormatterElementType {
 
       if (maxIncl != null && date.after(maxIncl)) {
          throw new NormalizationException("Invalid date",
-            "Value {0} must be before {1}", new Object[]{o, maxIncl});
+            NormalizationException.DATE_AFTER_ERROR_CODE, new Object[]{o, maxIncl});
       }
 
       if (minIncl != null && date.before(minIncl)) {
          throw new NormalizationException("Invalid date",
-            "Value {0} must be after {1}", new Object[]{o, minIncl});
+            NormalizationException.DATE_BEFORE_ERROR_CODE, new Object[]{o, minIncl});
       }
 
       if (maxExcl != null && !date.after(maxExcl)) {
          throw new NormalizationException("Invalid date",
-            "Value {0} must be not be after {1}", new Object[]{o, maxExcl});
+            NormalizationException.DATE_TOO_LATE_ERROR_CODE, new Object[]{o, maxExcl});
       }
 
       if (minExcl != null && !date.before(minExcl)) {
          throw new NormalizationException("Invalid date",
-            "Value {0} must be not be before {1}", new Object[]{o, minExcl});
+            NormalizationException.DATE_TOO_EARLY_ERROR_CODE, new Object[]{o, minExcl});
       }
 
       return o;
@@ -143,7 +143,7 @@ public class DateFormatterElementType extends FormatterElementType {
 
    protected String parserException(String value, ParseException e) {
       throw new NormalizationException("Invalid date/time",
-         "Value {0} must fit {1}", new Object[]{value, format});
+         NormalizationException.DATE_INVALID_ERROR_CODE, new Object[]{value, format});
    }
 
    public Class getObjectType() {

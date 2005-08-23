@@ -31,6 +31,30 @@ package org.sakaiproject.metaobj.utils.xml;
  */
 public class NormalizationException extends RuntimeException {
 
+   public static final String INVALID_LENGTH_ERROR_CODE = "Value {0} must be {1} characters";
+   public static final String INVALID_LENGTH_TOO_LONG_ERROR_CODE = "Value {0} must be less than {1} characters";
+   public static final String INVALID_LENGTH_TOO_SHORT_ERROR_CODE = "Value {0} must be at least {1} characters";
+   public static final String INVALID_PATTERN_MATCH_ERROR_CODE = "Value {0} must match {1}";
+   public static final String NOT_IN_ENUMERATION_ERROR_CODE = "Value {0} must be in enueration";
+
+   public static final String DATE_TOO_LATE_ERROR_CODE = "Value {0} must be before {1}";
+   public static final String DATE_TOO_EARLY_ERROR_CODE = "Value {0} must be after {1}";
+   public static final String DATE_AFTER_ERROR_CODE = "Value {0} must be not be after {1}";
+   public static final String DATE_BEFORE_ERROR_CODE = "Value {0} must be not be before {1}";
+   public static final String DATE_INVALID_ERROR_CODE = "Value {0} must fit {1}";
+
+   public static final String REQIRED_FIELD_ERROR_CODE = "Required value";
+
+   public static final String TOO_LARGE_INCLUSIVE_ERROR_CODE = "Value {0} must be less than or equal to {1}";
+   public static final String TOO_SMALL_INCLUSIVE_ERROR_CODE = "Value {0} must be more than or equal {1}";
+   public static final String TOO_LARGE_ERROR_CODE = "Value {0} must be less than {1}";
+   public static final String TOO_SMALL_ERROR_CODE = "Value {0} must be more than {1}";
+   public static final String TOO_MANY_DIGITS_ERROR_CODE = "Value {0} must be less than {1} digits";
+   public static final String INVALID_DECIMAL_NUMBER_ERROR_CODE = "Value {0} must be a decimal number";
+   public static final String INVALID_NUMBER_ERROR_CODE = "Value {0} must be a number";
+
+   public static final String INVALID_TYPE_ERROR_CODE = "Object {0} should be class {1}";
+
    private String errorCode;
    private Object[] errorInfo;
 
