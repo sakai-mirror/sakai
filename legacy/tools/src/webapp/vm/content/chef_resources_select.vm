@@ -272,7 +272,7 @@
 		
 		<p class="act" >
 			<input type="submit" name="eventSubmit_doAddattachments" 
-				value="$tlang.getString("att.finish")" #if($attached.isEmpty())disabled="disabled" #else class="active" #end />
+				value="$tlang.getString("att.finish")" #if($list_has_changed) class="active" #else disabled="disabled" #end />
 			<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("att.cancel")"  />
 		</p>
 	</form>						

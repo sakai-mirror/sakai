@@ -318,6 +318,9 @@ public class ResourcesAction
 
 	/** The name of the state attribute containing a list of new items to be attached */
 	private static final String STATE_HELPER_NEW_ITEMS = "resources.helper_new_items";
+	
+	/** The name of the state attribute indicating that the list of new items has changed */
+	private static final String STATE_HELPER_CHANGED = "resources.helper_changed";
 
 	/************** the delete context *****************************************/
 
@@ -834,6 +837,11 @@ public class ResourcesAction
 		}
 		context.put("attached", new_items);
 		context.put("last", new Integer(new_items.size() - 1));
+		
+		if(state.getAttribute(STATE_HELPER_CHANGED) != null)
+		{
+			context.put("list_has_changed", "true");
+		}
 		
 		// find the ContentTypeImage service
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
@@ -2571,6 +2579,7 @@ public class ResourcesAction
 		if(found && item != null)
 		{
 			attached.remove(item);
+			state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
 		}
 
 		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
@@ -2648,6 +2657,7 @@ public class ResourcesAction
 				AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
 				item.setContentType(contentType);
 				attached.add(item);
+				state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
 			}
 			catch(Exception ignore) {}
 		}
@@ -6000,6 +6010,7 @@ public class ResourcesAction
 		state.removeAttribute(STATE_EDIT_INTENT);
 		state.removeAttribute(STATE_EXPAND_ALL_FLAG);
 		state.removeAttribute(STATE_HELPER_NEW_ITEMS);
+		state.removeAttribute(STATE_HELPER_CHANGED);
 		state.removeAttribute(STATE_HOME_COLLECTION_DISPLAY_NAME);
 		state.removeAttribute(STATE_HOME_COLLECTION_ID);
 		state.removeAttribute(STATE_MY_COPYRIGHT);
