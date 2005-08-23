@@ -1986,7 +1986,7 @@ public class ResourcesAction
 
 					if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
 					{
-						alerts.add("The name is too long: " + newResourceId);
+						alerts.add(rb.getString("toolong") + " " + newResourceId);
 						continue outerloop;
 					}
 
@@ -2057,7 +2057,7 @@ public class ResourcesAction
 								
 								if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
 								{
-									alerts.add("The name is too long: " + newResourceId);
+									alerts.add(rb.getString("toolong") + " " + newResourceId);
 									continue outerloop;
 								}
 								
@@ -2208,7 +2208,7 @@ public class ResourcesAction
 			
 			if(newCollectionId.length() > RESOURCE_ID_MAX_LENGTH)
 			{
-				alerts.add("The name is too long: " + newCollectionId);
+				alerts.add(rb.getString("toolong") + " " + newCollectionId);
 				continue outerloop;
 			}
 
@@ -2350,7 +2350,7 @@ public class ResourcesAction
 
 			if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
 			{
-				alerts.add("The name is too long: " + newResourceId);
+				alerts.add(rb.getString("toolong") + " " + newResourceId);
 				continue outerloop;
 			}
 
@@ -2397,7 +2397,7 @@ public class ResourcesAction
 						
 						if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
 						{
-							alerts.add("The name is too long: " + newResourceId);
+							alerts.add(rb.getString("toolong") + " " + newResourceId);
 							continue outerloop;
 						}
 
@@ -2852,7 +2852,7 @@ public class ResourcesAction
 		
 			if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
 			{
-				alerts.add("The name is too long: " + newResourceId);
+				alerts.add(rb.getString("toolong") + " " + newResourceId);
 				continue outerloop;
 			}
 			
@@ -2900,7 +2900,7 @@ public class ResourcesAction
 						
 						if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
 						{
-							alerts.add("The name is too long: " + newResourceId);
+							alerts.add(rb.getString("toolong") + " " + newResourceId);
 							continue outerloop;
 						}
 						
