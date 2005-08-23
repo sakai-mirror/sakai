@@ -153,6 +153,9 @@ public class ResourcesAction
 
 	/** The String of new copyright */
 	private static final String NEW_COPYRIGHT = "newcopyright";
+	
+	/** The maximum number of characters allowed in a new resource ID */
+	private static final int RESOURCE_ID_MAX_LENGTH = 254;
 
 	/** The resource not exist string */
 	private static final String RESOURCE_NOT_EXIST_STRING = rb.getString("notexist1");
@@ -1880,7 +1883,7 @@ public class ResourcesAction
 			numberOfItems = number.intValue();
 		}
 		
-		for(int i = 0; i < numberOfItems; i++)
+		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
 			EditItem item = (EditItem) items.get(i);
 			
@@ -1981,6 +1984,12 @@ public class ResourcesAction
 					String attempt = "";
 					String newResourceId = collectionId + filename + attempt + extension;
 
+					if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
+					{
+						alerts.add("The name is too long: " + newResourceId);
+						continue outerloop;
+					}
+
 					boolean tryingToAddItem = true;
 					while(tryingToAddItem)
 					{
@@ -2045,6 +2054,12 @@ public class ResourcesAction
 
 								// add extension if there was one
 								newResourceId = collectionId + filename + "-" + attempt + extension;
+								
+								if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
+								{
+									alerts.add("The name is too long: " + newResourceId);
+									continue outerloop;
+								}
 								
 								try 
 								{
@@ -2186,10 +2201,16 @@ public class ResourcesAction
 		int numberOfFolders = 1;
 		numberOfFolders = number.intValue();
 		
-		for(int i = 0; i < numberOfFolders; i++)
+		outerloop: for(int i = 0; i < numberOfFolders; i++)
 		{
 			CreateItem item = (CreateItem) new_folders.get(i);
 			String newCollectionId = collectionId + Validator.escapeResourceName(item.getName()) + Resource.SEPARATOR;
+			
+			if(newCollectionId.length() > RESOURCE_ID_MAX_LENGTH)
+			{
+				alerts.add("The name is too long: " + newCollectionId);
+				continue outerloop;
+			}
 
 			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 
@@ -2272,10 +2293,10 @@ public class ResourcesAction
 		int numberOfItems = 1;
 		numberOfItems = number.intValue();
 		
-		for(int i = 0; i < numberOfItems; i++)
+		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
 			CreateItem item = (CreateItem) new_files.get(i);
-			
+					
 			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
 			resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
@@ -2327,6 +2348,12 @@ public class ResourcesAction
 			String attempt = "";
 			String newResourceId = collectionId + filename + attempt + extension;
 
+			if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
+			{
+				alerts.add("The name is too long: " + newResourceId);
+				continue outerloop;
+			}
+
 			boolean tryingToAddItem = true;
 			while(tryingToAddItem)
 			{
@@ -2368,6 +2395,12 @@ public class ResourcesAction
 						// add extension if there was one
 						newResourceId = collectionId + filename + "-" + attempt + extension;
 						
+						if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
+						{
+							alerts.add("The name is too long: " + newResourceId);
+							continue outerloop;
+						}
+
 						try 
 						{
 							ContentHostingService.getResource(newResourceId);
@@ -2798,7 +2831,7 @@ public class ResourcesAction
 		int numberOfItems = 1;
 		numberOfItems = number.intValue();
 		
-		for(int i = 0; i < numberOfItems; i++)
+		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
 			CreateItem item = (CreateItem) new_urls.get(i);
 			
@@ -2817,6 +2850,12 @@ public class ResourcesAction
 			String attemptStr = "";
 			String newResourceId = collectionId + baseId + attemptStr;
 		
+			if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
+			{
+				alerts.add("The name is too long: " + newResourceId);
+				continue outerloop;
+			}
+			
 			boolean tryingToAddItem = true;
 
 			while(tryingToAddItem)
@@ -2858,6 +2897,12 @@ public class ResourcesAction
 
 						// add attempt number if there was one
 						newResourceId = collectionId + baseId + attemptStr;
+						
+						if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
+						{
+							alerts.add("The name is too long: " + newResourceId);
+							continue outerloop;
+						}
 						
 						try 
 						{
