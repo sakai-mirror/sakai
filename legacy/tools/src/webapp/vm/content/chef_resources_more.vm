@@ -22,7 +22,7 @@
 					$validator.escapeHtml("$item.name")
 				#end
 			#else
-				<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=$validator.escapeUrl($item.id)" title ="$tlang.getString('sh.go')">
+				<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($item.id)")" title ="$tlang.getString('sh.go')">
 					#if ($dropboxMode && $velocityCount == 1)
 						$siteTitle $tlang.getString("gen.drop")
 					#elseif($velocityCount == 1)
@@ -197,7 +197,7 @@
 					</tr>
 					<tr> 
 						<td colspan="2" class="discTria">
-							<a href="#" onclick="location='#toolLink("ResourcesAction" "doHide_metadata")&group=$validator.escapeUrl($group.name)'; return false;" title="$tlang.getString("edit.hide") group.name">
+							<a href="#" onclick="location='#toolLinkParam("ResourcesAction" "doHide_metadata" "group=$validator.escapeUrl($group.name)")'; return false;" title="$tlang.getString("edit.hide") group.name">
 								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") group.name" border="0" width="15" height="15" align="top" />
 							</a>
 							$validator.escapeHtml($group.name)
@@ -251,7 +251,7 @@
 					</tr>
 					<tr> 
 						<td colspan="2" class="discTria">
-							<a href="#" onclick="location='#toolLink("ResourcesAction" "doShow_metadata")&group=$validator.escapeUrl($group.name)'; return false;" title="$tlang.getString("edit.show") group.name">	
+							<a href="#" onclick="location='#toolLinkParam("ResourcesAction" "doShow_metadata" "group=$validator.escapeUrl($group.name)")'; return false;" title="$tlang.getString("edit.show") group.name">	
 								<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("edit.show") group.name" border="0" width="15" height="15" align="top" />
 							</a>
 							$validator.escapeHtml($group.name)

@@ -41,7 +41,7 @@
 							<a href="$site.Url" target="_top" title="Go to site $validator.escapeHtml($site.Title)">$validator.escapeHtml($site.Title)</a>
 							#if ($SiteService.allowUnjoinSite($site.Id))
 								<div class="itemAction">
-									<a href="#toolLink("$action" "doUnjoin")&itemReference=$site.Id" title="Unjoin the site $validator.escapeHtml($site.Title)">$tlang.getString('mb.unjoin')</a>
+									<a href="#toolLinkParam("$action" "doUnjoin" "itemReference=$site.Id")" title="Unjoin the site $validator.escapeHtml($site.Title)">$tlang.getString('mb.unjoin')</a>
 								</div>	
 							#end
 						</td>

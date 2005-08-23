@@ -72,9 +72,9 @@
 					<td headers="Id">
 						$validator.escapeHtml($site.Title)
 						<div class="itemAction">
-							<a href="#toolLink("$action" "doSitemanage_edit_site_access")&id=$site.Id">$tlang.getString("sitmanlis.access")</a> |
+							<a href="#toolLinkParam("$action" "doSitemanage_edit_site_access" "id=$site.Id")">$tlang.getString("sitmanlis.access")</a> |
 							#if ($service.allowUpdateSite($site.Id))
-								<a href="#toolLink("$action" "doSitemanage_participants")&id=$site.Id">$tlang.getString("sitmanlis.par")</a> | <a href="#toolLink("$action" "doSitemanage_edit_site_info")&id=$site.Id">$tlang.getString("sitmanlis.info")</a>
+								<a href="#toolLinkParam("$action" "doSitemanage_participants" "id=$site.Id")">$tlang.getString("sitmanlis.par")</a> | <a href="#toolLinkParam("$action" "doSitemanage_edit_site_info" "id=$site.Id")">$tlang.getString("sitmanlis.info")</a>
 							#end
 						</div>
 					</td>

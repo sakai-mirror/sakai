@@ -25,18 +25,18 @@
 			<tr>
 				<td headers="move" style="border-bottom:1px dashed  gray">
 					#if ($pageCount > 1)
-					<a href="#toolLink("$action" "doEdit_page_up")&id=$validator.escapeUrl($page.Id)">
+					<a href="#toolLinkParam("$action" "doEdit_page_up" "id=$validator.escapeUrl($page.Id)")">
 						<img src = "#imageLink("sakai/arrowUp.gif")" border="0" alt ="$tlang.getString("sitpag.mopaup")" />
 					</a>
 					#end
 					#if ($pageCount < $pages.size())
-					<a href="#toolLink("$action" "doEdit_page_down")&id=$validator.escapeUrl($page.Id)">
+					<a href="#toolLinkParam("$action" "doEdit_page_down" "id=$validator.escapeUrl($page.Id)")">
 						<img src = "#imageLink("sakai/arrowDown.gif")" border="0" alt ="$tlang.getString("sitpag.mopadown")" />
 					</a>
 					#end
 				</td>
 				<td headers="Id"  style="border-bottom:1px dashed  gray">
-					<a href="#toolLink("$action" "doEdit_page")&id=$validator.escapeUrl($page.Id)">
+					<a href="#toolLinkParam("$action" "doEdit_page" "id=$validator.escapeUrl($page.Id)")">
 						$validator.escapeHtml($page.Id)
 					</a>
 				</td>

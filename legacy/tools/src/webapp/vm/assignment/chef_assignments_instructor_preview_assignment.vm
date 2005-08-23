@@ -3,11 +3,11 @@
 	<div class="chefToolBarWrap">
 		#if ($allowAddAssignment)
 			$!tlang.getString("new")|
-			<a href="#toolLink("$action" "doView")&view=$!tlang.getString('gen.liofass')" title = "$!tlang.getString('gen.liofass')">$!tlang.getString("gen.liofass")</a>|
+			<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.liofass')")" title = "$!tlang.getString('gen.liofass')">$!tlang.getString("gen.liofass")</a>|
 			#if ($withGrade && $!allowGradeSubmission)
-				<a href="#toolLink("$action" "doView")&view=$!tlang.getString('gen.grarep')" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>|
+				<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.grarep')")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>|
 			#end
-			<a href="#toolLink("$action" "doView")&view=$!tlang.getString('gen.stuvie')" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>|
+			<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.stuvie')")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>|
 			<a href="#toolLink("$action" "doPermissions")" title="Permission">Permissions</a>
 		#end
 	</div>

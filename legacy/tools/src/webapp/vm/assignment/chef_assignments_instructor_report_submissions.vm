@@ -4,9 +4,9 @@
 		#if ($allowAddAssignment)
 			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>
 		#end
-		<a href="#toolLink("$action" "doView")&view=$!tlang.getString('gen.liofass')" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
+		<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.liofass')")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
 		<span style="margin:.5em">$!tlang.getString('gen.grarep')</span>
-		<a href="#toolLink("$action" "doView")&view=$!tlang.getString('gen.stuvie')" title="$!tlang.getString('gen.stuvie')">$!tlang.getString('gen.stuvie')</a>		
+		<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.stuvie')")" title="$!tlang.getString('gen.stuvie')">$!tlang.getString('gen.stuvie')</a>		
 		<a href="#toolLink("$action" "doPermissions")" title="Permission">Permissions</a>
 	</div>
 	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
@@ -84,7 +84,7 @@
 				<table class="listHier" border="0" cellspacing="0" summary="">
 					<tr>
 						<th id="studentname">
-							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort_submission")&criteria=lastname'; return false;" title=" $tlang.getString("gen.sorbylas")">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=lastname")'; return false;" title=" $tlang.getString("gen.sorbylas")">
 								 $tlang.getString("gen.stunam")
 								#if ($sortedBy.equals("lastname")) 
 									#if ($sortedAsc.equals("true")) 
@@ -96,7 +96,7 @@
 							</a>
 						</th>
 						<th id="assignment">
-							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort_submission")&criteria=assignment'; return false;" title="$tlang.getString("repsubmi.check")">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=assignment")'; return false;" title="$tlang.getString("repsubmi.check")">
 								$tlang.getString("gen.assig")
 								#if ($sortedBy.equals("assignment")) 
 									#if ($sortedAsc.equals("true")) 
@@ -108,7 +108,7 @@
 							</a>
 						</th>
 						<th id="grade">
-							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort_submission")&criteria=submission_grade'; return false;" title=" $tlang.getString("gen.sorbygra")">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=submission_grade")'; return false;" title=" $tlang.getString("gen.sorbygra")">
 								$tlang.getString("gen.gra")
 								#if ($sortedBy.equals("submission_grade")) 
 									#if ($sortedAsc.equals("true")) 
@@ -120,7 +120,7 @@
 							</a>
 						</th>
 						<th id="scale">
-							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort_submission")&criteria=submission_scale'; return false;" title="$tlang.getString("repsubmi.sorbysca")">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=submission_scale")'; return false;" title="$tlang.getString("repsubmi.sorbysca")">
 								 $tlang.getString("gen.sca")
 								#if ($sortedBy.equals("submission_scale")) 
 									#if ($sortedAsc.equals("true")) 
@@ -132,7 +132,7 @@
 							</a>
 						</th>
 						<th id="submitted">
-							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort_submission")&criteria=submit_time'; return false;" title="$tlang.getString("repsubmi.sorbytur")">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=submit_time")'; return false;" title="$tlang.getString("repsubmi.sorbytur")">
 								 $tlang.getString("gen.subm4")
 								#if ($sortedBy.equals("submit_time")) 
 									#if ($sortedAsc.equals("true")) 

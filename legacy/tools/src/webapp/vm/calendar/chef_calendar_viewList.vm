@@ -157,9 +157,9 @@
 																				#elseif ($aMonth.getMonthName() == "Dec") #set ($monthNumber = 11) 
 																				#end
 				## (gsilver: not sure what this </a> is doing here, comment for now - as it does not validate </a>
-																				<a href="#toolLink("$action" "doGomonth")&month=$monthNumber&year=$thisYear">$aMonth.MonthName</a>
-																				<a href="#toolLink("$action" "doDay")&day=$mu.getDay()&month=$mu.Month&year=$mu.Year">$mu.Day</a>, 
-																				<a href="#toolLink("$action" "doGoyear")&year=$thisYear">$thisYear</a>
+																				<a href="#toolLinkParam("$action" "doGomonth" "month=$monthNumber&year=$thisYear")">$aMonth.MonthName</a>
+																				<a href="#toolLinkParam("$action" "doDay" "day=$mu.getDay()&month=$mu.Month&year=$mu.Year")">$mu.Day</a>, 
+																				<a href="#toolLinkParam("$action" "doGoyear" "year=$thisYear")">$thisYear</a>
 																		#else
 																			&nbsp;
 																		#end
@@ -199,7 +199,7 @@
 																		## description column
 																		<td #if ($counter == 1) #else #if ($dayShown == "false") class="chefTopline" #end #end>
 																			#set ($dayShown = "true")
-																				<a href="#toolLink("$action" "doDescription")&eventReference=$validator.escapeUrl($m.getReference())" title="$validator.escapeHtml($m.getDisplayName())">
+																				<a href="#toolLinkParam("$action" "doDescription" "eventReference=$validator.escapeUrl($m.getReference())")" title="$validator.escapeHtml($m.getDisplayName())">
 																						#if($m.getType()=="Academic Calendar")
 																							<img src = "#imageLink("sakai/academic_calendar.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />
 																						#elseif ($m.getType()=="Activity")

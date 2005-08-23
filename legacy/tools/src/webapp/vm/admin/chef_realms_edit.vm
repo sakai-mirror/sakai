@@ -78,7 +78,7 @@
 						#set ($userCount=$userCount + 1)
 							<tr>
 								<td headers="Id" #if ($userCount > 1) class="chefTopline" #end>
-									<a href="#" onclick="location = '#toolLink("$action" "doEdit_user")&target=$validator.escapeUrl($grant.UserId)'+buildQueryString('$form-name');return false;">
+									<a href="#" onclick="location = '#toolLinkParam("$action" "doEdit_user" "target=$validator.escapeUrl($grant.UserId)")'+buildQueryString('$form-name');return false;">
 										$validator.escapeHtml($grant.UserId)
 									</a>
 								</td>
@@ -127,7 +127,7 @@
 						#set ($roleCount=$roleCount + 1)
 							<tr>
 								<td headers="Id" #if ($roleCount > 1) class="chefTopline" #end>
-									<a href="#" onclick="location = '#toolLink("$action" "doEdit_role")&target=$validator.escapeUrl($role.Id)'+buildQueryString('$form-name');return false;">
+									<a href="#" onclick="location = '#toolLinkParam("$action" "doEdit_role" "target=$validator.escapeUrl($role.Id)")'+buildQueryString('$form-name');return false;">
 										$validator.escapeHtml($role.Id)
 									</a>
 								</td>

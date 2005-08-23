@@ -27,7 +27,7 @@
 				<tr>
 					<td headers="Id">
 		#if ($service.allowUpdateUser($user.Id))
-						<a href="#toolLink("$action" "doEdit")&id=$validator.escapeUrl($user.Id)">
+						<a href="#toolLinkParam("$action" "doEdit" "id=$validator.escapeUrl($user.Id)")">
 							$validator.escapeHtml($user.Id)
 						</a>
 		#else

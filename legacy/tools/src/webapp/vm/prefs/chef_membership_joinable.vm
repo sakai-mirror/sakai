@@ -98,7 +98,7 @@
 					## <a href="$site.Url" target="_top" title="Go to site $validator.escapeHtml($site.Title)">$validator.escapeHtml($site.Title)</a>
 					$validator.escapeHtml($site.Title)
 						<div class="itemAction">
-							<a href="#toolLink("$action" "doJoin")&itemReference=$site.Id" title="Join site $!validator.escapeHtml($!site.Title)">$tlang.getString('mb.join')</a>
+							<a href="#toolLinkParam("$action" "doJoin" "itemReference=$site.Id")" title="Join site $!validator.escapeHtml($!site.Title)">$tlang.getString('mb.join')</a>
 						</div>	
 						</td>
 						<td headers="description">$!validator.escapeHtml($!site.Description)</td>

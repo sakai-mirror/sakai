@@ -16,7 +16,7 @@
 					#
 				</th>
 				<th id="name">
-					<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_name" title ="$tlang.getString('addconf.sortbyname')"> 
+					<a href="#toolLinkParam("SiteAction" "doSort_roster" "criterion=participant_name")" title ="$tlang.getString('addconf.sortbyname')"> 
 						$tlang.getString("addconf.name")
 						#if ($currentSortedBy.equals("participant_name")) 
 							#if ($currentSortAsc.equals("true")) 
@@ -28,7 +28,7 @@
 					</a>
 				</th>
 				<th id="id">
-					<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_uniqname" title ="$tlang.getString('addconf.sortbyuniq')"> 
+					<a href="#toolLinkParam("SiteAction" "doSort_roster" "criterion=participant_uniqname")" title ="$tlang.getString('addconf.sortbyuniq')"> 
 						$tlang.getString("addconf.userid")
 						#if ($currentSortedBy.equals("participant_uniqname")) 
 							#if ($currentSortAsc.equals("true")) 
@@ -40,7 +40,7 @@
 					</a>
 				</th>
 				<th id="role">
-					<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_role" title ="$tlang.getString('addconf.sortbyrole')"> 
+					<a href="#toolLinkParam("SiteAction" "doSort_roster" "criterion=participant_role")" title ="$tlang.getString('addconf.sortbyrole')"> 
 						$tlang.getString("addconf.role")
 						#if ($currentSortedBy.equals("participant_role")) 
 							#if ($currentSortAsc.equals("true")) 

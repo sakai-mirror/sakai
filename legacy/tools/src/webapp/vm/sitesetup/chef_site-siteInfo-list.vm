@@ -177,7 +177,7 @@
 			<table class ="listHier"  cellpadding="0" cellspacing="0" summary ="Table holds the information of site participant. Column 1 holds the index number, column 2 holds the name, Column 3 holds uniqname, Column 4 holds the role, Headers hold links for sorting">
 				<tr>
 					<th id="name">
-						<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_name" title ="$tlang.getString("sitegen.siteinfolist.sortname")"> 
+						<a href="#toolLinkParam("SiteAction" "doSort_roster" "criterion=participant_name")" title ="$tlang.getString("sitegen.siteinfolist.sortname")"> 
 							$tlang.getString("sitegen.siteinfolist.name")
 							#if ($currentSortedBy.equals("participant_name")) 
 								#if ($currentSortAsc.equals("true")) 
@@ -190,7 +190,7 @@
 					</th>
 					#if ($!isCourseSite)
 						<th id="coursename">
-							<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_course" title ="$tlang.getString("sitegen.siteinfolist.sortname1")"> 
+							<a href="#toolLinkParam("SiteAction" "doSort_roster" "criterion=participant_course")" title ="$tlang.getString("sitegen.siteinfolist.sortname1")"> 
 								$tlang.getString("sitegen.siteinfolist.enrolled")
 								#if ($currentSortedBy.equals("participant_course")) 
 									#if ($currentSortAsc.equals("true")) 
@@ -202,7 +202,7 @@
 							</a>
 						</th>
 						<th id="id">
-							<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_id" title ="$tlang.getString("sitegen.siteinfolist.sortid")"> 
+							<a href="#toolLinkParam("SiteAction" "doSort_roster" "criterion=participant_id")" title ="$tlang.getString("sitegen.siteinfolist.sortid")"> 
 								$tlang.getString("sitegen.siteinfolist.id")
 								#if ($currentSortedBy.equals("participant_id")) 
 									#if ($currentSortAsc.equals("true")) 
@@ -214,7 +214,7 @@
 							</a>
 						</th>
 						<th id="credits">
-							<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_credits" title ="$tlang.getString("sitegen.siteinfolist.sortcred")"> 
+							<a href="#toolLinkParam("SiteAction" "doSort_roster" "criterion=participant_credits")" title ="$tlang.getString("sitegen.siteinfolist.sortcred")"> 
 								$tlang.getString("sitegen.siteinfolist.credits")
 								#if ($currentSortedBy.equals("participant_credits")) 
 									#if ($currentSortAsc.equals("true")) 
@@ -227,7 +227,7 @@
 						</th>
 					#end
 					<th id="role">
-						<a href="#toolLink("SiteAction" "doSort_roster")&criterion=participant_role" title ="$tlang.getString("sitegen.siteinfolist.sortrole")"> 
+						<a href="#toolLinkParam("SiteAction" "doSort_roster" "criterion=participant_role")" title ="$tlang.getString("sitegen.siteinfolist.sortrole")"> 
 							$tlang.getString("sitegen.siteinfolist.role")
 							#if ($currentSortedBy.equals("participant_role")) 
 								#if ($currentSortAsc.equals("true")) 

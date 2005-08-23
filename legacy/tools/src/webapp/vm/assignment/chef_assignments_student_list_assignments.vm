@@ -3,9 +3,9 @@
 		#if($allowAddAssignment)
 			<div class="chefToolBarWrap">
 				<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>
-				<a href="#toolLink("$action" "doView")&view=$!tlang.getString('gen.liofass')" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
+				<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.liofass')")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
 				#if ($withGrade && $allowGradeSubmission)
-					<a href="#toolLink("$action" "doView")&view=$!tlang.getString('gen.grarep')" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>
+					<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.grarep')")" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>
 				#end
 				<span style="margin:.5em">$!tlang.getString('gen.stuvie')</span>
 				<a href="#toolLink("$action" "doPermissions")" title="Permission">Permissions</a>
@@ -90,7 +90,7 @@
 						<th id="attachment"  style="width:1.5em">
 						</th>
 						<th id="title">
-							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=title'; return false;">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort" "criteria=title")'; return false;">
 								$tlang.getString("gen.asstit")
 								#if ($sortedBy.equals("title")) 
 									#if ($sortedAsc.equals("true")) 
@@ -103,7 +103,7 @@
 						</th>
 						#*
 						<th id="section">
-							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=section'; return false;">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort" "criteria=section")'; return false;">
 								$tlang.getString("gen.sect")
 								#if ($sortedBy.equals("section")) 
 									#if ($sortedAsc.equals("true")) 
@@ -116,7 +116,7 @@
 						</th>
 						*#
 						<th id="duedate">
-							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=duedate'; return false;">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort" "criteria=duedate")'; return false;">
 								$tlang.getString("gen.due1")
 								#if ($sortedBy.equals("duedate")) 
 									#if ($sortedAsc.equals("true")) 
@@ -128,7 +128,7 @@
 							</a>
 						</th>
 						<th id="status">
-							<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=submission_status'; return false;"> 
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort" "criteria=submission_status")'; return false;"> 
 								$tlang.getString("gen.status")
 								#if ($sortedBy.equals("submission_status")) 
 									#if ($sortedAsc.equals("true")) 
@@ -141,7 +141,7 @@
 						</th>
 						#if ($withGrade)
 							<th id="grade">
-								<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=grade'; return false;">
+								<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort" "criteria=grade")'; return false;">
 									$tlang.getString("gen.gra")
 									#if ($sortedBy.equals("grade")) 
 										#if ($sortedAsc.equals("true")) 
@@ -153,7 +153,7 @@
 								</a>
 							</th>
 							<th id="maxgrade">
-								<a href="#" onclick="location='#toolLink("AssignmentAction" "doSort")&criteria=max_grade'; return false;" title="$tlang.getString("gen.sorbymax")">
+								<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort" "criteria=max_grade")'; return false;" title="$tlang.getString("gen.sorbymax")">
 									$tlang.getString("gen.sca")
 									#if ($sortedBy.equals("max_grade")) 
 										#if ($sortedAsc.equals("true")) 
@@ -190,16 +190,16 @@
 									#if ($!allowAddAssignment)
 										#if ($!submission)
 											#if ($!submission.returned && $submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true"))
-												<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
+												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$assignment.Reference")">
 											#else
-												<a href="#toolLink("AssignmentAction" "doView_grade")&submissionId=$submission.Reference">
+												<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$submission.Reference")">
 											#end
 											$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)</a>
 										#else
 											$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)
 											#if ($!allowSubmit)
 												<br />
-												<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
+												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$assignment.Reference")">
 													$tlang.getString("subasstudent")
 												</a>
 											#end
@@ -207,12 +207,12 @@
 									#elseif($!allowSubmit)
 										#if ($!submission)
 											#if ($!submission.returned && $submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true"))
-												<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
+												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$assignment.Reference")">
 											#else
-												<a href="#toolLink("AssignmentAction" "doView_grade")&submissionId=$submission.Reference">
+												<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$submission.Reference")">
 											#end
 										#else
-											<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
+											<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$assignment.Reference")">
 										#end
 										$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)</a>
 									#end
@@ -272,12 +272,12 @@
 										#if ($!submission && $submission.getGraded() && $submission.getGradeReleased())
 											#if ($!submission.returned) 
 												#if ($submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true"))
-													<a href="#toolLink("AssignmentAction" "doView_submission")&assignmentReference=$assignment.Reference">
+													<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$assignment.Reference")">
 												#else
-													<a href="#toolLink("AssignmentAction" "doView_grade")&submissionId=$submission.Reference">
+													<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$submission.Reference")">
 												#end
 											#else
-												<a href="#toolLink("AssignmentAction" "doView_grade")&submissionId=$submission.Reference">
+												<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$submission.Reference")">
 											#end
 												$submission.getGradeDisplay()
 											</a>

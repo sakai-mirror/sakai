@@ -45,7 +45,7 @@
 								<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
 							</td>
 							<td  style="vertical-align:top">
-								<a href="#toolLink("ResourcesAction" "doRemoveitem")&itemId=$validator.escapeUrl($att_item.id)" title="$tlang.getString('att.remove')">$tlang.getString("att.remove")</a>
+								<a href="#toolLinkParam("ResourcesAction" "doRemoveitem" "itemId=$validator.escapeUrl($att_item.id)")" title="$tlang.getString('att.remove')">$tlang.getString("att.remove")</a>
 							</td>
 						</tr>
 					#end
@@ -61,12 +61,12 @@
 					#if($item.isLast())
 						$validator.escapeHtml("$item.name")
 						#if($upOneLevel)
-							<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=$validator.escapeUrl($upOneLevel.id)&navRoot=$validator.escapeUrl($upOneLevel.root)" title= "$tlang.getString('sh.one')">
+							<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($upOneLevel.id)&navRoot=$validator.escapeUrl($upOneLevel.root)")" title= "$tlang.getString('sh.one')">
 								<img src="/library/image/sakai/onelevelup.gif" border="0" alt ="$tlang.getString('sh.one')"/>
 							</a>
 						#end
 					#else
-						<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=$validator.escapeUrl($item.id)&navRoot=$validator.escapeUrl($item.root)" title ="$tlang.getString('sh.go')">
+						<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($item.id)&navRoot=$validator.escapeUrl($item.root)")" title ="$tlang.getString('sh.go')">
 							$validator.escapeHtml("$item.name")
 						</a> /
 						#set($upOneLevel = $item)
@@ -80,16 +80,16 @@
 			<tr>
 				<th id="title">
 					#if ($expandallflag && "$expandallflag" == "$TRUE")
-						<a href="#toolLink("ResourcesAction" "doUnexpandall")&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('collapseall')">
+						<a href="#toolLinkParam("ResourcesAction" "doUnexpandall" "collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('collapseall')">
 							<img src = "#imageLink("sakai/collapse.gif")" border="0" title="$tlang.getString('collapseall')" alt="$tlang.getString('collapseall')" hspace="0" />
 						</a>								 
 					#else
-						<a href="#toolLink("ResourcesAction" "doExpandall")&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('expandall')">
+						<a href="#toolLinkParam("ResourcesAction" "doExpandall" "collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('expandall')">
 							<img src = "#imageLink("sakai/expand.gif")" border="0" title="$tlang.getString('expandall')" alt="$tlang.getString('expandall')" hspace="0" />
 						</a>								 
 					#end
 					## <img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="%%%" />
-					<a href="#toolLink("ResourcesAction" "doSort")&criteria=title&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.sorttit')"> 
+					<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=title&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sorttit')"> 
 						$tlang.getString("gen.title1")
 						#if ($currentSortAsc.equals("true")) 
 							<img src = "#imageLink("sakai/sortascending.gif")" border="0" title ="$tlang.getString('sh.sorttitas')" alt ="$tlang.getString('sh.sorttitas')" /> 
@@ -112,15 +112,15 @@
 								$validator.escapeHtml(${root.name})
 							#elseif ($root.canRead())
 								#if (!$expandedCollections.containsKey($root.Id))
-									<a href="#toolLink("ResourcesAction" "doExpand_collection")&collectionId=$validator.escapeUrl($root.Id)" title="$tlang.getString('sh.open')">
+									<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.open')">
 										<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
 									</a>
 								#else
-									<a href="#toolLink("ResourcesAction" "doCollapse_collection")&collectionId=$validator.escapeUrl($root.Id)" title="$tlang.getString('sh.close')">
+									<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.close')">
 										<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 									</a>
 								#end
-								<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=${validator.escapeUrl(${root.id})}" title="$tlang.getString('sh.go')">
+								<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('sh.go')">
 									$validator.escapeHtml(${root.name})
 								</a>
 							#else
@@ -140,7 +140,7 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${root.id})" title ="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
+									<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
 								#end
 							</div>
 						#end
@@ -181,15 +181,15 @@
 										$validator.escapeHtml(${member.name})
 									#elseif ($member.canRead())
 										#if (!$expandedCollections.containsKey($member.Id))
-											<a href="#toolLink("ResourcesAction" "doExpand_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.open')">
+											<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.open')">
 												<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
 											</a>
 										#else
-											<a href="#toolLink("ResourcesAction" "doCollapse_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.close')">
+											<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.close')">
 												<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 											</a>
 										#end
-										<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=${validator.escapeUrl(${member.id})}" title="$tlang.getString('sh.go')">
+										<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('sh.go')">
 											$validator.escapeHtml(${member.name})
 										</a>
 									#else
@@ -236,7 +236,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doCreate")&itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${member.id})" title="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${member.id})")" title="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
 										#end
 									#else
 										#set ($itemsOnLine = 0)
@@ -246,7 +246,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doAttachitem")&itemId=$validator.escapeUrl(${member.id})" title ="$tlang.getString('att.select')">$tlang.getString("att.select").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.select')">$tlang.getString("att.select").trim()</a>
 										#end
 										####### deal with duplicating item
 										#if($member.canRead() && $member.canAddItem())
@@ -254,7 +254,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLink("ResourcesAction" "doPasteitem")&itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}")" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
 										#end
 									#end
 								</div>

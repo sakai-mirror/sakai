@@ -88,12 +88,12 @@
 
                 #end  ## -- end of if-elseif-else                          
                                                                                                                                            				
-                <p><a href="#toolLink("$action" "doDay")&day=$mu.getDay()&month=$mu.getMonth()&year=$mu.getYear()">
+                <p><a href="#toolLinkParam("$action" "doDay" "day=$mu.getDay()&month=$mu.getMonth()&year=$mu.getYear()")">
                 $mu.getDay()</a></p>
 
                 <p align="left">
                 #foreach ($m in $eventsn)                    
-                    <a href="#toolLink("$action" "doDescription")&eventReference=$validator.escapeUrl($m.getReference())" title="$validator.escapeHtml($m.getDisplayName())">
+                    <a href="#toolLinkParam("$action" "doDescription" "eventReference=$validator.escapeUrl($m.getReference())")" title="$validator.escapeHtml($m.getDisplayName())">
                     #set($size = $m.getDisplayName().length())
                     #if($m.getType()=="Academic Calendar")
                         <img src = "#imageLink("sakai/academic_calendar.gif")" border="0" alt="$validator.escapeHtml($m.getDisplayName())" />

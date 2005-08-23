@@ -89,7 +89,7 @@
 						&nbsp;&nbsp;
 					</th>
 					<th id="title">
-						<a href="#toolLink("SiteAction" "doSort_sites")&criterion=$validator.escapeUrl($sortby_title)" title ="$tlang.getString('list.sortbytitle')"> 
+						<a href="#toolLinkParam("SiteAction" "doSort_sites" "criterion=$validator.escapeUrl($sortby_title)")" title ="$tlang.getString('list.sortbytitle')"> 
 							$tlang.getString("list.worksite")
 							#if ($currentSortedBy.equals($sortby_title)) 
 								#if ($currentSortAsc.equals("true")) 
@@ -101,7 +101,7 @@
 						</a>
 					</th>
 					<th id="type">
-						<a href="#toolLink("SiteAction" "doSort_sites")&criterion=$validator.escapeUrl($sortby_type)" title ="$tlang.getString('list.sortbytype')"> 
+						<a href="#toolLinkParam("SiteAction" "doSort_sites" "criterion=$validator.escapeUrl($sortby_type)")" title ="$tlang.getString('list.sortbytype')"> 
 							$tlang.getString("list.type")
 							#if ($currentSortedBy.equals($sortby_type)) 
 								#if ($currentSortAsc.equals("true")) 
@@ -113,7 +113,7 @@
 						</a>
 					</th>					
 					<th id="createdBy">
-						<a href="#toolLink("SiteAction" "doSort_sites")&criterion=$validator.escapeUrl($sortby_createdby)" title ="$tlang.getString('list.sortbyowner')"> 
+						<a href="#toolLinkParam("SiteAction" "doSort_sites" "criterion=$validator.escapeUrl($sortby_createdby)")" title ="$tlang.getString('list.sortbyowner')"> 
 							$tlang.getString("list.owner")
 							#if ($currentSortedBy.equals($sortby_createdby))
 								#if ($currentSortAsc.equals("true")) 
@@ -125,7 +125,7 @@
 						</a>
 					</th>
 					<th id="term">
-						##<a href="#toolLink("SiteAction" "doSort_sites")&criterion=term" title ="$tlang.getString('list.sortbyterm')"> 
+						##<a href="#toolLinkParam("SiteAction" "doSort_sites" "criterion=term")" title ="$tlang.getString('list.sortbyterm')"> 
 							$tlang.getString("list.term")
 							#*if ($currentSortedBy.equals("term")) 
 								#if ($currentSortAsc.equals("true")) 
@@ -137,7 +137,7 @@
 						</a>*#
 					</th>
 					<th id="published">
-						<a href="#toolLink("SiteAction" "doSort_sites")&criterion=$validator.escapeUrl($sortby_publish)" title ="$tlang.getString('list.sortbystatus')"> 
+						<a href="#toolLinkParam("SiteAction" "doSort_sites" "criterion=$validator.escapeUrl($sortby_publish)")" title ="$tlang.getString('list.sortbystatus')"> 
 							$tlang.getString("list.status")
 							#if ($currentSortedBy.equals($sortby_publish)) 
 								#if ($currentSortAsc.equals("true")) 
@@ -149,7 +149,7 @@
 						</a>
 					</th>
 					<th id="createdOn">
-						<a href="#toolLink("SiteAction" "doSort_sites")&criterion=$validator.escapeUrl($sortby_createdon)" title ="$tlang.getString('list.sortbycreation')"> 
+						<a href="#toolLinkParam("SiteAction" "doSort_sites" "criterion=$validator.escapeUrl($sortby_createdon)")" title ="$tlang.getString('list.sortbycreation')"> 
 							$tlang.getString("list.creationdate")
 							#if ($currentSortedBy.equals($sortby_createdon))
 								#if ($currentSortAsc.equals("true")) 

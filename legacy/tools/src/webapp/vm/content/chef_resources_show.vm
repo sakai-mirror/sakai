@@ -28,7 +28,7 @@
 					<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString('gen.folder')" />
 					#foreach ($id in $collectionPath)
 						#if ($service.allowGetCollection($id))
-							<a href="#toolLink("ResourcesAction" "doNavigate")&cutFlag=$cutFlag&collectionId=$validator.escapeUrl($id)" title ="$tlang.getString('sh.go') '$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName))' $tlang.getString('gen.folder')">
+							<a href="#toolLinkParam("ResourcesAction" "doNavigate" "cutFlag=$cutFlag&collectionId=$validator.escapeUrl($id)")" title ="$tlang.getString('sh.go') '$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName))' $tlang.getString('gen.folder')">
 								#if ($dropboxMode && $id==$homeCollection)
 									$siteTitle Drop Box
 								#else
@@ -46,11 +46,11 @@
 					#end
 					#if ($collectionId!=$homeCollection)
 						#if ($service.allowGetCollection($service.getContainingCollectionId($collectionId)))
-							<a href="#toolLink("ResourcesAction" "doNavigate")&cutFlag=$cutFlag&collectionId=$validator.escapeUrl($service.getContainingCollectionId($collectionId))" title= "$tlang.getString('sh.one')">
+							<a href="#toolLinkParam("ResourcesAction" "doNavigate" "cutFlag=$cutFlag&collectionId=$validator.escapeUrl($service.getContainingCollectionId($collectionId))")" title= "$tlang.getString('sh.one')">
 								<img src = "#imageLink("sakai/onelevelup.gif")" border="0" alt ="$tlang.getString('sh.one')"/></a>
 						#end
 					#end
-					<a href="#toolLink("ResourcesAction" "doMore")&from=show&id=$validator.escapeUrl($collectionId)&collectionId=$validator.escapeUrl($collectionId)" title="$tlang.getString('sh.inf')">
+					<a href="#toolLinkParam("ResourcesAction" "doMore" "from=show&id=$validator.escapeUrl($collectionId)&collectionId=$validator.escapeUrl($collectionId)")" title="$tlang.getString('sh.inf')">
 						<img src = "#imageLink("sakai/metainfo.gif")" border="0" alt ="$tlang.getString('sh.inf')" /></a>
 					</div>
 					#if (!$collectionMembers  || $collectionMembers.size() ==0)
@@ -83,7 +83,7 @@
 									#end
 								</th>
 								<th>
-									<a href="#toolLink("ResourcesAction" "doSort")&criteria=title&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.sorttit')"> 
+									<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=title&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sorttit')"> 
 										$tlang.getString("gen.title1")
 										#if ($currentSortedBy.equals($resourceProperties.NamePropDisplayName)) 
 											#if ($currentSortAsc.equals("true")) 
@@ -95,7 +95,7 @@
 									</a>
 								</th>
 								<th>
-									<a href="#toolLink("ResourcesAction" "doSort")&criteria=size&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.sortsize')"> 
+									<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=size&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortsize')"> 
 										$tlang.getString("gen.size")
 										#if ($currentSortedBy.equals($resourceProperties.NamePropContentLength)) 
 											#if ($currentSortAsc.equals("true")) 
@@ -108,7 +108,7 @@
 								</th>
 								#if (!($dropboxMode && $collectionId==$homeCollection))
 								<th>
-									<a href="#toolLink("ResourcesAction" "doSort")&criteria=created%20by&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.sortcrea')">  
+									<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=created%20by&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortcrea')">  
 										$tlang.getString("gen.created1")
 									#if ($currentSortedBy.equals($resourceProperties.NamePropCreator)) 
 											#if ($currentSortAsc.equals("true")) 
@@ -121,7 +121,7 @@
 								</th>
 								#end
 								<th>
-									<a href="#toolLink("ResourcesAction" "doSort")&criteria=last%20modified&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.sortdate')"> 
+									<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=last%20modified&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortdate')"> 
 										$tlang.getString("gen.last1")
 										#if ($currentSortedBy.equals($resourceProperties.NamePropModifiedDate)) 
 											#if ($currentSortAsc.equals("true")) 
@@ -163,13 +163,13 @@
 				##							#if (!$expandedCollections.contains($memberId))
 											#if (!$expandedCollections.containsKey($memberId))
 												#if ($service.allowGetCollection($memberId))
-													<a href="#toolLink("ResourcesAction" "doExpand_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.open')">
+													<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.open')">
 														<img src = "#imageLink("sakai/expand.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.closed')" hspace="0" /></a>
 												#else
 													<img src = "#imageLink("sakai/expand.gif")" border="0" alt = "$tlang.getString('sh.closed')" hspace="0" />
 												#end
 											#else
-												<a href="#toolLink("ResourcesAction" "doCollapse_collection")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.close')">
+												<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.close')">
 													<img src = "#imageLink("sakai/collapse.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.opened')" hspace="0" /></a>
 											#end
 										#else
@@ -188,7 +188,7 @@
 										#end
 										#if ($props.getPropertyFormatted($props.NamePropIsCollection)=="true")
 											#if ($service.allowGetCollection($memberId))
-													<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=$validator.escapeUrl($member.Id)">
+													<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($member.Id)")">
 				##   Changed expandedCollections to be a Map so that can keep the resources available as well as the id.									
 				##										#if (!$expandedCollections.contains($memberId))
 														#if (!$expandedCollections.containsKey($memberId))
@@ -197,7 +197,7 @@
 															<img src = "#imageLink("sakai/dir_open.gif")" border="0" title="$tlang.getString('sh.go')" alt="$tlang.getString('sh.go')" />
 														#end	
 													</a>
-												<a href="#toolLink("ResourcesAction" "doNavigate")&collectionId=$validator.escapeUrl($member.Id)" title="$tlang.getString('sh.go')">
+												<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.go')">
 													$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))
 												</a>
 											#else
@@ -293,7 +293,7 @@
 									</td>
 									<td>
 										#if ($service.allowGetProperties($memberId))
-											<a href="#toolLink("ResourcesAction" "doMore")&from=show&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($collectionId)" title ="$tlang.getString('sh.get')">
+											<a href="#toolLinkParam("ResourcesAction" "doMore" "from=show&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.get')">
 												<img src = "#imageLink("sakai/metainfo.gif")" border="0" alt ="$tlang.getString('sh.inf1')" />
 											</a>
 										#else
@@ -319,7 +319,7 @@
 				 <div class ="chefBreadCrumb">
 				 	$tlang.getString("gen.location") #if($collectionDisplayName)$validator.escapeHtml($collectionDisplayName)#end
 					#if ($service.allowGetProperties($collectionId))
-						<a href="#toolLink("ResourcesAction" "doMore")&collectionId=$homeCollection&id=$homeCollection&from=show">
+						<a href="#toolLinkParam("ResourcesAction" "doMore" "collectionId=$homeCollection&id=$homeCollection&from=show")">
 							<img src = "#imageLink("sakai/metainfo.gif")" border="0" title ="$tlang.getString('sh.inf')" alt ="$tlang.getString('sh.inf')" /></a>
 					#else
 						<img src = "#imageLink("sakai/metainfo.gif")" border="0" alt ="$tlang.getString('sh.inf')" title ="$tlang.getString('sh.inf')" />
@@ -355,7 +355,7 @@
 							&nbsp;
 						</th>
 						<th>
-							<a href="#toolLink("ResourcesAction" "doSort")&criteria=title"> 
+							<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=title")"> 
 								Title
 								#if ($currentSortedBy.equals($resourceProperties.NamePropDisplayName)) 
 									#if ($currentSortAsc.equals("true")) 
@@ -367,7 +367,7 @@
 							</a>
 						</th>
 						<th>
-							<a href="#toolLink("ResourcesAction" "doSort")&criteria=size&collectionId=$validator.escapeUrl($collectionId)">
+							<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=size&collectionId=$validator.escapeUrl($collectionId)")">
 								Size
 								#if ($currentSortedBy.equals($resourceProperties.NamePropContentLength)) 
 									#if ($currentSortAsc.equals("true")) 
@@ -380,7 +380,7 @@
 						</th>
 						#if (!($dropboxMode && $collectionId==$homeCollection))
 						<th>
-							<a href="#toolLink("ResourcesAction" "doSort")&criteria=created%20by"> 
+							<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=created%20by")"> 
 								Created By
 								#if ($currentSortedBy.equals($resourceProperties.NamePropCreator)) 
 									#if ($currentSortAsc.equals("true")) 
@@ -393,7 +393,7 @@
 						</th>
 						#end
 						<th>
-							<a href="#toolLink("ResourcesAction" "doSort")&criteria=last%20modified"> 
+							<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=last%20modified")"> 
 								Last Modified
 								#if ($currentSortedBy.equals($resourceProperties.NamePropModifiedDate)) 
 									#if ($currentSortAsc.equals("true")) 

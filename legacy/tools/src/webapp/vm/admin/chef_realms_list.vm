@@ -24,7 +24,7 @@
 			<tr>
 				<td headers="Id" #if ($realmCount > 1) class="chefTopline" #end>
 					#if ($service.allowUpdateRealm($realm.Id))
-						<a href="#toolLink("$action" "doEdit")&id=$validator.escapeUrl($realm.Id)">
+						<a href="#toolLinkParam("$action" "doEdit" "id=$validator.escapeUrl($realm.Id)")">
 							$validator.escapeHtml($realm.Id)
 						</a>
 					#else

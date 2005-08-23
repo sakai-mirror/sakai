@@ -334,7 +334,7 @@
 		  	#foreach($group in $metadataGroups)				  
 				#if ($group.isShowing())
 					<p class="discTria">
-						<a href="#" onclick="location='#toolLink("ResourcesAction" "doHide_metadata")&group=$validator.escapeUrl($group.name)'; return false;" title="$tlang.getString("edit.hide") group.name">
+						<a href="#" onclick="location='#toolLinkParam("ResourcesAction" "doHide_metadata" "group=$validator.escapeUrl($group.name)")'; return false;" title="$tlang.getString("edit.hide") group.name">
 							<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") group.name" border="0" width="15" height="15" align="top" />
 						</a>
 						$validator.escapeHtml($group.name)
@@ -395,7 +395,7 @@
 #else
 
 					<p class="discTria">
-						<a href="#" onclick="location='#toolLink("ResourcesAction" "doShow_metadata")&group=$validator.escapeUrl($group.name)'; return false;" title="$tlang.getString("edit.show") group.name">	
+						<a href="#" onclick="location='#toolLinkParam("ResourcesAction" "doShow_metadata" "group=$validator.escapeUrl($group.name)")'; return false;" title="$tlang.getString("edit.show") group.name">	
 							<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("edit.show") group.name" border="0" width="15" height="15" align="top" />
 						</a>
 						$validator.escapeHtml($group.name)

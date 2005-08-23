@@ -34,7 +34,7 @@ doubleDeep = true;
 						## Don't allow deleting a message that has already been deleted
 						#if ($channel.allowRemoveMessage($item))
 							## Only allow the user to see the delete message icon if they have sufficient permissions to delete the message
-							<a href="#" onclick="location='#toolLink($action "doConfirmDeleteMessage")&messageid=$validator.escapeUrl($item.header.id)'; return false;" title="Delete this message" >				
+							<a href="#" onclick="location='#toolLinkParam($action "doConfirmDeleteMessage" "messageid=$validator.escapeUrl($item.header.id)")'; return false;" title="Delete this message" >				
 							<img src="#imageLink("sakai/delete.gif")" border="0" alt="$tlang.getString('list.del')" /></a>
 						#end
 					#end

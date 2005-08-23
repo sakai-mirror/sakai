@@ -27,7 +27,7 @@
 			<tr>
 				<td style="border-bottom:1px dashed gray;font-size:.9em" headers="Id" #if ($siteCount > 1) class="line" #end>
 					#if ($service.allowUpdateSite($site.Id))
-						<a href="#toolLink("$action" "doEdit")&id=$validator.escapeUrl($site.Id)">
+						<a href="#toolLinkParam("$action" "doEdit" "id=$validator.escapeUrl($site.Id)")">
 							$validator.escapeHtml($site.Id)
 						</a>
 					#else

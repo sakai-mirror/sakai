@@ -98,7 +98,7 @@
                 <tr>
                         <td headers="Title">
                         	<div class="indnt1">
-                                <a href="#toolLink("$action" "doVisit")&id=$validator.escapeUrl($site.Id)">
+                                <a href="#toolLinkParam("$action" "doVisit" "id=$validator.escapeUrl($site.Id)")">
                                         $validator.escapeHtml($site.Title)
                                 </a>
                             </div>

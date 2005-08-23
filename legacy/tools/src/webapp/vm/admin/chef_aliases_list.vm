@@ -19,7 +19,7 @@
 				<tr>
 					<td headers="Id">
 		#if ($service.allowEdit($alias.Id))
-						<a href="#toolLink("$action" "doEdit")&id=$validator.escapeUrl($alias.Id)">
+						<a href="#toolLinkParam("$action" "doEdit" "id=$validator.escapeUrl($alias.Id)")">
 							$validator.escapeHtml($alias.Id)
 						</a>
 		#else
