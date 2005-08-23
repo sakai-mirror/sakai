@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -1005,8 +1006,21 @@ public class BasicSqlService implements SqlService
 			// last, put in the string value
 			if (lastField != null)
 			{
-				pstmt.setCharacterStream(pos, new StringReader(lastField), lastField.length());
-				pos++;
+                if ("mysql".equals(m_vendor))
+                {
+                    // see http://bugs.sakaiproject.org/jira/browse/SAK-1737
+                    // MySQL setCharacterStream() is broken and truncates UTF-8 
+                    // international characters sometimes.  So use setBytes() 
+                    // instead (just for MySQL).
+                    pstmt.setBytes(pos, lastField.getBytes("UTF-8"));
+                    pos++;
+
+                }
+                else
+                {
+                    pstmt.setCharacterStream(pos, new StringReader(lastField), lastField.length());
+                    pos++;
+                }
 			}
 
 			int result = pstmt.executeUpdate();
@@ -1311,8 +1325,20 @@ public class BasicSqlService implements SqlService
 			// prepare the update statement and fill with the last variable (if any)
 			if (var != null)
 			{
-				pstmt.setCharacterStream(pos, new StringReader(var), var.length());
-				pos++;
+                if ("mysql".equals(m_vendor))
+                {
+                    // see http://bugs.sakaiproject.org/jira/browse/SAK-1737
+                    // MySQL setCharacterStream() is broken and truncates UTF-8 
+                    // international characters sometimes.  So use setBytes() 
+                    // instead (just for MySQL).
+                    pstmt.setBytes(pos, var.getBytes("UTF-8"));
+                    pos++;
+                }
+                else
+                {
+                    pstmt.setCharacterStream(pos, new StringReader(var), var.length());
+                    pos++;
+                }
 			}
 
 			// run the SQL statement
@@ -1481,8 +1507,9 @@ public class BasicSqlService implements SqlService
 	 * @param fields
 	 *        The Object array of values to fill in.
 	 * @return the next pos that was not filled in.
+	 * @throws UnsupportedEncodingException 
 	 */
-	protected int prepareStatement(PreparedStatement pstmt, Object[] fields) throws SQLException
+	protected int prepareStatement(PreparedStatement pstmt, Object[] fields) throws SQLException, UnsupportedEncodingException
 	{
 		if (LOG.isDebugEnabled())
 		{
@@ -1527,8 +1554,20 @@ public class BasicSqlService implements SqlService
 				else
 				{
 					String value = fields[i].toString();
-					pstmt.setCharacterStream(pos, new StringReader(value), value.length());
-					pos++;
+                    if ("mysql".equals(m_vendor))
+                    {
+                        // see http://bugs.sakaiproject.org/jira/browse/SAK-1737
+                        // MySQL setCharacterStream() is broken and truncates UTF-8 
+                        // international characters sometimes.  So use setBytes() 
+                        // instead (just for MySQL).
+                        pstmt.setBytes(pos, value.getBytes("UTF-8"));
+                        pos++;
+                    }
+                    else
+                    {
+                        pstmt.setCharacterStream(pos, new StringReader(value), value.length());
+                        pos++;
+                    }
 				}
 			}
 		}
