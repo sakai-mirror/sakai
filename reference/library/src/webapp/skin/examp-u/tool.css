@@ -176,3 +176,4 @@ fieldset p {}
     text-decoration:none;
 }
 
+.login td.logo{background:url(images/logo_inst.gif) no-repeat top left;width:13em}

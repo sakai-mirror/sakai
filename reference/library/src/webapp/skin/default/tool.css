@@ -202,3 +202,5 @@ fieldset p {}
 	font-weight:normal;
     text-decoration:none;
 }
+
+.login td.logo{background:url(../../image/sakai.jpg) no-repeat top left;width:13em}

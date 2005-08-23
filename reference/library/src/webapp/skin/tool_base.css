@@ -368,7 +368,6 @@ p.instruction  {line-height:1.3em;}
 /*external login form formatting*/
 .login{margin:5em auto;border:1px solid #666;width:auto;background-color:#fff}
 .login th{background-color:#eee;padding:.5em;border-bottom:1px solid #666}
-.login td.logo{background:url(../image/sakai.jpg) no-repeat top left;width:13em}
 .login td.form{padding:.5em}
 .loginform{}
 .loginform td{padding:.3em;}
