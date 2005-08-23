@@ -237,7 +237,8 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
           "The sakaiPerson argument contains an invalid Type!");
 
     // AuthZ
-    if (getSystemMutableType().getUuid().equals(sakaiPerson.getTypeUuid()) || SecurityService.isSuperUser())
+    // if record is of type system and the current user is not an admin, then throw an exception.
+    if (getSystemMutableType().getUuid().equals(sakaiPerson.getTypeUuid()) && !SecurityService.isSuperUser())
     {
       throw new IllegalAccessError("System mutable records cannot be updated.");
     }
