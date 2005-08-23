@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+           "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
+   <web-app>
+      <display-name>wsrp4j producer</display-name>
+      
+      <servlet>
+         <servlet-name>wsrp4j</servlet-name>
+         <servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>
+      </servlet>
+      
+      <servlet-mapping>
+         <servlet-name>wsrp4j</servlet-name>
+         <url-pattern>/wsrp4j/*</url-pattern>
+      </servlet-mapping>
+      
+      <!-- To have correct axis wsdl links -->
+      <servlet-mapping>
+        <servlet-name>wsrp4j</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+     </servlet-mapping>  
+
+    <!-- Added to allow Tomcat to serve the CONTENT-TYPE header when serving WSDL files -->
+    <mime-mapping>
+        <extension>wsdl</extension>
+        <mime-type>text/xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xsd</extension>
+        <mime-type>text/xml</mime-type>
+    </mime-mapping>
+
+   </web-app>
