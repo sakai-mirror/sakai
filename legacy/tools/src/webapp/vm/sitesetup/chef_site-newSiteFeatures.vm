@@ -134,11 +134,11 @@
 					value="$tlang.getString('gen.continue')"
 					class="active"
 					onclick="document.featuresForm.option.value='continue';javascript:document.featuresForm.submit();" />
-			<input type="submit" name="$tlang.getString('gen.back')" 
-					value="Back" 
+			<input type="submit" value="$tlang.getString('gen.back')" 
+					name="Back" 
 					onclick="document.featuresForm.option.value='back';javascript:document.featuresForm.submit();" />
-			<input type="submit" name="$tlang.getString('gen.cancel')" 
-					value="Cancel" 
+			<input type="submit" value="$tlang.getString('gen.cancel')" 
+					name="Cancel" 
 					onclick="document.featuresForm.option.value='cancel';javascript:document.featuresForm.submit();" />
 		</p>
 	</form>
