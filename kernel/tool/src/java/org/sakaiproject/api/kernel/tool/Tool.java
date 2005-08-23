@@ -39,6 +39,9 @@ public interface Tool
 	/** The request attribute name whose value if "true" requests producing a document fragment rather than a full document. */
 	public static final String FRAGMENT = "sakai.fragment";
 
+	/** The request attribute name whose value if "true" requests producing a document suitable for aggregation in a portal. */
+	public static final String PORTLET = "sakai.portlet";
+
 	/** The request attribute name containing the Tool definition for the current request. */
 	public static final String TOOL = "sakai.tool";
 

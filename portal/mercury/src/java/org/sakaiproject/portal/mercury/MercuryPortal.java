@@ -51,6 +51,7 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolURL;
 import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
@@ -499,6 +500,7 @@ public class MercuryPortal extends HttpServlet
 		req.setAttribute("sakai.html.head.css.skin", headCssToolSkin);
 		req.setAttribute("sakai.html.head.js", headJs);
 		req.setAttribute("sakai.html.body.onload", bodyonload.toString());
+        req.setAttribute(ToolURL.MANAGER, new ToolURLManagerImpl(res));
 
 		tool.forward(req, res, p, toolContextPath, toolPathInfo);
 	}

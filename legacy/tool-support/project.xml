@@ -78,6 +78,16 @@
 			<artifactId>servletapi</artifactId>
 			<version>2.4-20040521</version>
 		</dependency>
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-thread_local</artifactId>
+			<version>${pom.currentVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-active-tool</artifactId>
+			<version>${pom.currentVersion}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -298,11 +298,15 @@ public class RequestFilter implements Filter
 		/** The request. */
 		protected HttpServletRequest m_req = null;
 
+		/** Wrapped Response **/
+		protected HttpServletResponse m_res = null;
+
 		public WrappedResponse(Session s, HttpServletRequest req, HttpServletResponse res)
 		{
 			super(res);
 
 			m_req = req;
+			m_res = res;
 		}
 
 		public String encodeRedirectUrl(String url)
@@ -379,10 +383,14 @@ public class RequestFilter implements Filter
 						newUrl.append(Tool.PLACEMENT_ID);
 						newUrl.append("=");
 						newUrl.append(placementId);
-						return newUrl.toString();
+						url = newUrl.toString();
 					}
 				}
 			}
+
+			// Chain back so the wrapped response can encode the URL futher if needed
+			// this is necessary for WSRP support.
+			if (m_res != null) url = m_res.encodeURL(url);
 
 			return url;
 		}

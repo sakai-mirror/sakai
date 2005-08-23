@@ -181,7 +181,7 @@ public abstract class VmServlet extends ComponentServlet
 	 */
 	protected ActionURL getActionURL(HttpServletRequest request)
 	{
-		ActionURL a = new ActionURL(Web.returnUrl(request, null));
+		ActionURL a = new ActionURL(Web.returnUrl(request, null), request);
 
 		// set the pid and panel, if present in the request
 		//a.setPid(request.getParameter(ActionURL.PARAM_PID));

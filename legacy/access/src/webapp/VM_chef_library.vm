@@ -363,11 +363,11 @@ scheduleUpdate();
 
 #macro (toolLink $toolLinkJunk $toolLinkAction)$sakai_ActionURL.setParameter("sakai_action","$toolLinkAction")#end
 
-#macro (toolForm $toolFormJunk)$sakai_ActionURL#end
+#macro (toolForm $toolFormJunk)$sakai_ActionURL.setAction()#end
 
-#macro (imageLink $imageLinkName)${sakai_image_path}${imageLinkName}#end
+#macro (imageLink $imageLinkName)$sakai_ActionURL.setResourcePath("${sakai_image_path}${imageLinkName}")#end
 
-#macro (scriptLink $scriptName)${sakai_script_path}${scriptName}#end
+#macro (scriptLink $scriptName)$sakai_ActionURL.setResourcePath("${sakai_script_path}${scriptName}")#end
 
 #macro (libraryLink $path)${sakai_library_path}${path}#end
 
@@ -378,3 +378,5 @@ scheduleUpdate();
 #macro (contentLink $contentLinkPanel)$sakai_ActionURL.setParameter("$param_panel","$contentLinkPanel")#end
 
 #macro (contentCourierLink $contentCourierLinkPanel)$sakai_ActionURL.setParameter("$param_panel","$contentCourierLinkPanel")#end
+
+#macro (toolLinkParam $toolLinkJunk $toolLinkAction $toolLinkQuery)$sakai_ActionURL.setParameter("sakai_action","$toolLinkAction").setQueryString("$toolLinkQuery")#end
