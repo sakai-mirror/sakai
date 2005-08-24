@@ -22,18 +22,17 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.validation.Errors;
-import org.sakaiproject.metaobj.shared.model.ElementBean;
-import org.sakaiproject.metaobj.shared.model.ValidationError;
-import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
-import org.sakaiproject.metaobj.utils.mvc.impl.ValidatorBase;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-
-import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
+import org.sakaiproject.metaobj.shared.model.ElementBean;
+import org.sakaiproject.metaobj.shared.model.ValidationError;
+import org.sakaiproject.metaobj.utils.mvc.impl.ValidatorBase;
+import org.springframework.validation.Errors;
 
 public class XmlValidator extends ValidatorBase {
    protected final Log logger = LogFactory.getLog(getClass());

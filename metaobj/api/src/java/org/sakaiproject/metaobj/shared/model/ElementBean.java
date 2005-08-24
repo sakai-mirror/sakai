@@ -22,23 +22,29 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.model;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.FieldValueWrapperFactory;
 import org.sakaiproject.metaobj.utils.TypedMap;
 import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.

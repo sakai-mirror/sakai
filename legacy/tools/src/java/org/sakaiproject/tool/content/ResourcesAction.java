@@ -66,7 +66,6 @@ import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.control.SchemaBean;
-import org.sakaiproject.metaobj.shared.control.XmlValidator;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;

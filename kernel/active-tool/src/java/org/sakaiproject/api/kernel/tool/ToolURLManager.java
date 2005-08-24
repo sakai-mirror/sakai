@@ -3,7 +3,6 @@
  */
 package org.sakaiproject.api.kernel.tool;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * The ToolURLManager interface allows creation of ToolURL that reference the
