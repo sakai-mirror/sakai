@@ -162,6 +162,10 @@ public class IFrameAction
 		{
 			return buildOptionsPanelContext(portlet, context, rundata, state);
 		}
+		//htripath- partial fix for SAK-1480 load saved url
+		Placement placement = ToolManager.getCurrentPlacement();
+		String dbUrl=(String)placement.getPlacementConfig().getProperty(SOURCE);
+		String dbHeight=(String)placement.getPlacementConfig().getProperty(HEIGHT);
 		
 		// if we have a source url, use it 
 		String sourceUrl = StringUtil.trimToNull((String) state.getAttribute(SOURCE));
@@ -169,6 +173,13 @@ public class IFrameAction
 		{
 			context.put(SOURCE,(String) state.getAttribute(SOURCE));
 			context.put(HEIGHT, state.getAttribute(HEIGHT));
+			context.put("tlang",rb);
+		}
+		//htripath- partial fix for SAK-1480 load saved url
+		else if (dbUrl !=null)
+		{
+			context.put(SOURCE,dbUrl);
+			context.put(HEIGHT, dbHeight);
 			context.put("tlang",rb);
 		}
 
