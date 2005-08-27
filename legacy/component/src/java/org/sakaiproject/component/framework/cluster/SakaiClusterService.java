@@ -174,6 +174,22 @@ public class SakaiClusterService implements ClusterService
 		m_threadLocalManager = manager;
 	}
 
+	/** Configuration: percent of maintenance passes to run the full de-ghosting / cleanup activities. */
+	protected int m_ghostingPercent = 100;
+	
+	/**
+	 * Configuration: set the percent of maintenance passes to run the full de-ghosting / cleanup activities
+	 * @param value The percent of maintenance passes to run the full de-ghosting / cleanup activities.
+	 */
+	public void setGhostingPercent(String value)
+	{
+		try
+		{
+			m_ghostingPercent = Integer.parseInt(value);
+		}
+		catch (Exception ignore) {}
+	}
+
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -195,7 +211,7 @@ public class SakaiClusterService implements ClusterService
 			m_maintenance = new Maintenance();
 			m_maintenance.start();
 
-			m_logger.info(this + "init: refresh: " + m_refresh + " expired: " + m_expired);
+			m_logger.info(this + "init: refresh: " + m_refresh + " expired: " + m_expired + " ghostingPercent: " + m_ghostingPercent);
 		}
 		catch (Throwable t)
 		{
@@ -308,6 +324,8 @@ public class SakaiClusterService implements ClusterService
 		 * Then check for any cluster entries that are more than EXPIRED seconds old, indicating a failed
 		 * app server, and remove that record, that server's sessions, and presence, generating appropriate
 		 * session and presence events so the other app servers know what's going on.
+		 * The "then" checks need not be done each iteration - run them on 1 of n randomly choosen iterations.
+		 * In a clustered environment, this also distributes the work over the cluster better.
 		 */
 		public void run()
 		{
@@ -357,110 +375,121 @@ public class SakaiClusterService implements ClusterService
 						}
 					}
 
-					// get all expired open app servers not me
-					if ("oracle".equals(m_sqlService.getVendor()))
+					// pick a random number, 0..99, to see if we want to do the full ghosting / cleanup activities now
+					int rand = (int)(Math.random() * 100.0);
+					if (rand < m_ghostingPercent)
 					{
-						statement = "select SERVER_ID from SAKAI_CLUSTER where SERVER_ID != ? and UPDATE_TIME < (CURRENT_TIMESTAMP - "
-						+ ((float)m_expired / (float)(60*60*24))
-						+ " )";
-					}
-					else if ("mysql".equals(m_sqlService.getVendor()))
-					{
-						statement =
-						"select SERVER_ID from SAKAI_CLUSTER where SERVER_ID != ? and UPDATE_TIME < CURRENT_TIMESTAMP() - INTERVAL "
-						+ m_expired + " SECOND";
-					}
-					else //if ("hsqldb".equals(m_sqlService.getVendor()))
-					{
-						statement = "select SERVER_ID from SAKAI_CLUSTER where SERVER_ID != ? and DATEDIFF('ss', UPDATE_TIME, CURRENT_TIMESTAMP) >= "+m_expired;				    
-					}
-					// setup the fields to skip reading me!
-					fields[0] = serverIdInstance;
-					
-					List instances = m_sqlService.dbRead(statement, fields, null);
-
-					// close any severs found to be expired
-					for (Iterator iInstances = instances.iterator(); iInstances.hasNext();)
-					{
-						String serverId = (String) iInstances.next();
-
-						// close the server - delete the record
-						statement =
-								"delete from SAKAI_CLUSTER where SERVER_ID = ?";
-						fields[0] = serverId;
-						boolean ok = m_sqlService.dbWrite(statement, fields);
-						if (!ok)
+						// get all expired open app servers not me
+						if ("oracle".equals(m_sqlService.getVendor()))
 						{
-							m_logger.warn(this + ".run(): dbWrite failed: " + statement);
+							statement = "select SERVER_ID from SAKAI_CLUSTER where SERVER_ID != ? and UPDATE_TIME < (CURRENT_TIMESTAMP - "
+							+ ((float)m_expired / (float)(60*60*24))
+							+ " )";
 						}
-
-						m_logger.warn(this + ".run(): ghost-busting server: " + serverId + " from : " + serverIdInstance);
-					}
-
-					// find all the session ids of sessions that are open but are from closed servers
-					statement =
-								"select SESSION_ID from SAKAI_SESSION where SESSION_START = SESSION_END "
-							+	"and SESSION_SERVER not in "
-							+	"(select SERVER_ID from SAKAI_CLUSTER)";
-					List sessions = m_sqlService.dbRead(statement);
-
-					// process each session to close it and lose it's presence
-					for (Iterator iSessions = sessions.iterator(); iSessions.hasNext();)
-					{
-						String sessionId = (String) iSessions.next();
-						
-						// get all the presence for this session
-						statement =
-								"select LOCATION_ID from SAKAI_PRESENCE where SESSION_ID = ?";
-						fields[0] = sessionId;		
-						List presence = m_sqlService.dbRead(statement, fields, null);
-						
-						// remove all the presence for this session
-						statement =
-								"delete from SAKAI_PRESENCE where SESSION_ID = ?";			
-						boolean ok = m_sqlService.dbWrite(statement, fields);
-						if (!ok)
+						else if ("mysql".equals(m_sqlService.getVendor()))
 						{
-							m_logger.warn(this + ".run(): dbWrite failed: " + statement);
+							statement =
+							"select SERVER_ID from SAKAI_CLUSTER where SERVER_ID != ? and UPDATE_TIME < CURRENT_TIMESTAMP() - INTERVAL "
+							+ m_expired + " SECOND";
 						}
-
-						// get the session
-						UsageSession session = m_usageSessionService.getSession(sessionId);
-
-						// send presence end events for these
-						for (Iterator iPresence = presence.iterator(); iPresence.hasNext();)
+						else //if ("hsqldb".equals(m_sqlService.getVendor()))
 						{
-							String locationId = (String) iPresence.next();
-
-							Event event = m_eventTrackingService.newEvent(PresenceService.EVENT_ABSENCE,
-									PresenceService.presenceReference(locationId), true);
+							statement = "select SERVER_ID from SAKAI_CLUSTER where SERVER_ID != ? and DATEDIFF('ss', UPDATE_TIME, CURRENT_TIMESTAMP) >= "+m_expired;				    
+						}
+						// setup the fields to skip reading me!
+						fields[0] = serverIdInstance;
+						
+						List instances = m_sqlService.dbRead(statement, fields, null);
+	
+						// close any severs found to be expired
+						for (Iterator iInstances = instances.iterator(); iInstances.hasNext();)
+						{
+							String serverId = (String) iInstances.next();
+	
+							// close the server - delete the record
+							statement =
+									"delete from SAKAI_CLUSTER where SERVER_ID = ?";
+							fields[0] = serverId;
+							boolean ok = m_sqlService.dbWrite(statement, fields);
+							if (!ok)
+							{
+								m_logger.warn(this + ".run(): dbWrite failed: " + statement);
+							}
+	
+							m_logger.warn(this + ".run(): ghost-busting server: " + serverId + " from : " + serverIdInstance);
+						}
+	
+						// find all the session ids of sessions that are open but are from closed servers
+	//					statement =
+	//								"select SESSION_ID from SAKAI_SESSION where SESSION_START = SESSION_END "
+	//							+	"and SESSION_SERVER not in "
+	//							+	"(select SERVER_ID from SAKAI_CLUSTER)";
+						statement =
+									"select SSA.SESSION_ID from SAKAI_SESSION SSA "
+									+ "where SSA.SESSION_START = SSA.SESSION_END "
+									+ "and not exists (select SC.SERVER_ID from SAKAI_CLUSTER SC, SAKAI_SESSION SSB "
+									+ "where SC.SERVER_ID = SSB.SESSION_SERVER)";
+	
+						List sessions = m_sqlService.dbRead(statement);
+	
+						// process each session to close it and lose it's presence
+						for (Iterator iSessions = sessions.iterator(); iSessions.hasNext();)
+						{
+							String sessionId = (String) iSessions.next();
+							
+							// get all the presence for this session
+							statement =
+									"select LOCATION_ID from SAKAI_PRESENCE where SESSION_ID = ?";
+							fields[0] = sessionId;		
+							List presence = m_sqlService.dbRead(statement, fields, null);
+							
+							// remove all the presence for this session
+							statement =
+									"delete from SAKAI_PRESENCE where SESSION_ID = ?";			
+							boolean ok = m_sqlService.dbWrite(statement, fields);
+							if (!ok)
+							{
+								m_logger.warn(this + ".run(): dbWrite failed: " + statement);
+							}
+	
+							// get the session
+							UsageSession session = m_usageSessionService.getSession(sessionId);
+	
+							// send presence end events for these
+							for (Iterator iPresence = presence.iterator(); iPresence.hasNext();)
+							{
+								String locationId = (String) iPresence.next();
+	
+								Event event = m_eventTrackingService.newEvent(PresenceService.EVENT_ABSENCE,
+										PresenceService.presenceReference(locationId), true);
+								m_eventTrackingService.post(event, session);
+							}
+	
+							// a session closed event (logout)
+							Event event = m_eventTrackingService.newEvent(UsageSessionService.EVENT_LOGOUT, null, true);
 							m_eventTrackingService.post(event, session);
+	
+							// close this session on the db
+							statement =
+									"update SAKAI_SESSION set SESSION_END = "+sqlTimestamp()+" where SESSION_ID = ?";
+							fields[0] = sessionId;		
+							ok = m_sqlService.dbWrite(statement, fields);
+							if (!ok)
+							{
+								m_logger.warn(this + ".run(): dbWrite failed: " + statement);
+							}
+							
+							// remove any locks from the session
+							statement =
+									"delete from SAKAI_LOCKS where USAGE_SESSION_ID = ?";
+							fields[0] = sessionId;		
+							ok = m_sqlService.dbWrite(statement, fields);
+							if (!ok)
+							{
+								m_logger.warn(this + ".run(): dbWrite failed: " + statement);
+							}
 						}
-
-						// a session closed event (logout)
-						Event event = m_eventTrackingService.newEvent(UsageSessionService.EVENT_LOGOUT, null, true);
-						m_eventTrackingService.post(event, session);
-
-						// close this session on the db
-						statement =
-								"update SAKAI_SESSION set SESSION_END = "+sqlTimestamp()+" where SESSION_ID = ?";
-						fields[0] = sessionId;		
-						ok = m_sqlService.dbWrite(statement, fields);
-						if (!ok)
-						{
-							m_logger.warn(this + ".run(): dbWrite failed: " + statement);
-						}
-						
-						// remove any locks from the session
-						statement =
-								"delete from SAKAI_LOCKS where USAGE_SESSION_ID = ?";
-						fields[0] = sessionId;		
-						ok = m_sqlService.dbWrite(statement, fields);
-						if (!ok)
-						{
-							m_logger.warn(this + ".run(): dbWrite failed: " + statement);
-						}
-					}					
+					}
 				}
 				catch (Throwable e) {m_logger.warn(this + ": exception: ", e);}
 				finally
