@@ -57,7 +57,7 @@ public class ClusterEventTracking
 	protected static String m_logId = "EventTracking: ";
 
 	/** How long to wait between checks for new events from the db. */
-	protected static long PERIOD = 1000 * 2;
+	protected long m_period = 1000 * 2;
 
 	/** The thread I run my db event checker on. */
 	protected Thread m_thread = null;
@@ -138,6 +138,17 @@ public class ClusterEventTracking
 		m_autoDdl = new Boolean(value).booleanValue();
 	}
 
+	/**
+	 * Set the # seconds to wait between db checks for new events.
+	 * 
+	 * @param time
+	 *        The # seconds to wait between db checks for new events.
+	 */
+	public void setPeriod(String time)
+	{
+		m_period = Integer.parseInt(time) * 1000L;
+	}
+
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -157,6 +168,8 @@ public class ClusterEventTracking
 
 			super.init();
 
+			m_logger.info(this + ".init() - period: " + m_period / 1000);
+	
 			// find the latest event in the db, we will start processing events after this
 			if (m_checkDb)
 			{
@@ -357,7 +370,7 @@ public class ClusterEventTracking
 				else // non-Oracle, without Oracle hint
 				{
 					statement =
-					"select /*+ FIRST_ROWS */ EVENT_ID,EVENT_DATE,EVENT,REF,SAKAI_EVENT.SESSION_ID,EVENT_CODE,SESSION_SERVER"
+					"select EVENT_ID,EVENT_DATE,EVENT,REF,SAKAI_EVENT.SESSION_ID,EVENT_CODE,SESSION_SERVER"
 						+ " from SAKAI_EVENT,SAKAI_SESSION"
 						+ " where (SAKAI_EVENT.SESSION_ID = SAKAI_SESSION.SESSION_ID) and (EVENT_ID > ?)";				
 				}
@@ -441,7 +454,7 @@ public class ClusterEventTracking
 			// take a small nap
 			try
 			{
-				Thread.sleep(PERIOD);
+				Thread.sleep(m_period);
 			}
 			catch (Exception ignore) {}
 

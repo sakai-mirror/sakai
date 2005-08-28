@@ -225,6 +225,7 @@
 		<property name="timeService"><ref bean="org.sakaiproject.service.legacy.time.TimeService"/></property>
  		<property name="checkDb"><value>true</value></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
+ 		<property name="period"><value>2</value></property>
 	</bean>
 
     <!-- Alternate EventTrackingService implementation (no database required) -->  
