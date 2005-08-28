@@ -273,14 +273,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 		m_regenerateIds = new Boolean(value).booleanValue();
 	}
 
-	/** The # seconds to cache the security answers. 0 disables the cache. */
+	/** The # seconds to cache the site queries. 0 disables the cache. */
 	protected int m_cacheSeconds = 3 * 60;
 
 	/**
-	 * Set the # minutes to cache a security answer.
+	 * Set the # minutes to cache the site queries.
 	 * 
 	 * @param time
-	 *        The # minutes to cache a security answer (as an integer string).
+	 *        The # minutes to cache the site queries (as an integer string).
 	 */
 	public void setCacheMinutes(String time)
 	{
