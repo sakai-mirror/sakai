@@ -120,7 +120,7 @@
 							#set($siteSelected = true)
 						#end
 					#end
-					<option value="$site.getId()" #if ($siteSelected)selected="selected"#end>$site.getTitle()</option>
+					<option value="$site.getId()" #if ($siteSelected)selected="selected"#end>$validator.escapeHtml($site.getTitle())</option>
 				#end
 			</select>
 			<p class="instruction">

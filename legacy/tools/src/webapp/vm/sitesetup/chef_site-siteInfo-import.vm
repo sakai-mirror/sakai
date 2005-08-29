@@ -25,7 +25,7 @@
 					#end
 				 />
 					<label for="site_$site.getId()">
-						$site.getTitle()
+						$validator.escapeHtml($site.getTitle())
 					</label>
 				</p>	
 			#end

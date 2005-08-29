@@ -85,7 +85,7 @@
 										#set($importSiteIds = $importSiteTools.get($toolId))
 										#foreach($importSiteId in $importSiteIds)
 											#set($importSite = $siteService.getSite($importSiteId))
-											$importSite.getTitle(),
+											$validator.escapeHtml($importSite.getTitle()),
 										#end
 									)
 								#end

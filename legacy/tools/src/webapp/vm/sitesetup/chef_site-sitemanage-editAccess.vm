@@ -6,7 +6,7 @@
 		<div style="display:block;clear:both"></div>
 	#end
 	<h3 class="insColor insBak insBor">
-		$tlang.getString("sitegen.manageaccess.change") $site.Title	
+		$tlang.getString("sitegen.manageaccess.change") $validator.escapeHtml($site.Title)	
 	</h3>
 	<form name="editParticipantForm" action="#toolForm("SiteAction")" method="post">
 		<h4 class="insColor insBak insBor">

@@ -8,7 +8,7 @@
 	#end
 	#if ($!siteEdit)
 		<h3>
-			$tlang.getString("ediacc.chaacc") $site.Title
+			$tlang.getString("ediacc.chaacc") $validator.escapeHtml($site.Title)
 		</h3>
 	#else
 		<h3 class="insCol insBak insBor">

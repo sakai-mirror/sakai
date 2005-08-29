@@ -10,13 +10,13 @@
 
 		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitmanpar.alert") $validator.escapeHtml($alertMessage)</div>#end
 		
-	<h3>$site.Title $tlang.getString("sitmanpar.parlis")</h3>
+	<h3>$validator.escapeHtml($site.Title) $tlang.getString("sitmanpar.parlis")</h3>
 	
 #if ($participants.size() > 0)
 
  	<p>
     <span class="leftNav">
-        $tlang.getString("sitmanpar.vieandedi") $site.Title $tlang.getString("sitmanpar.below")
+        $tlang.getString("sitmanpar.vieandedi") $validator.escapeHtml($site.Title) $tlang.getString("sitmanpar.below")
     </span>
     <span class="rightNav">
         <span class="instruction">$tlang.getString("sitmanpar.view") $topMsgPos - $btmMsgPos $tlang.getString("sitmanpar.of") $allMsgNumber $tlang.getString("sitmanpar.par")</span>

@@ -10,13 +10,13 @@
 	<div class ="chefPortletContent">
 		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 		
-	<h3 class="insColor insBak">$site.Title $tlang.getString("part.partlist")</h3>
+	<h3 class="insColor insBak">$validator.escapeHtml($site.Title) $tlang.getString("part.partlist")</h3>
 	
 #if ($participants.size() > 0)
 
  	<p>
     <span class="leftNav">
-        $tlang.getString("part.view") $site.Title $tlang.getString("part.below")
+        $tlang.getString("part.view") $validator.escapeHtml($site.Title) $tlang.getString("part.below")
     </span>
     <span class="rightNav">
         <span class="instruction">$tlang.getString("part.viewing") $topMsgPos - $btmMsgPos $tlang.getString("import.of") $allMsgNumber $tlang.getString("part.items")</span>
