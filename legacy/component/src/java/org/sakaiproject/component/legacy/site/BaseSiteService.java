@@ -412,11 +412,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 
 		Site rv = null;
 
-		// check the cache - return a copy if found
+		// check the cache
 		String command = "site@" + id;
 		if ((m_callCache != null) && (m_callCache.containsKey(command)))
 		{
-			rv = new BaseSite((Site) m_callCache.get(command), true);
+			rv = (Site) m_callCache.get(command);
 			return rv;
 		}
 
@@ -428,27 +428,13 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 		// track it - we don't track site access -ggolden
 		// EventTrackingService.post(EventTrackingService.newEvent(SECURE_ACCESS_SITE, site.getReference()));
 
-		// cache a copy
+		// cache
 		if (m_callCache != null)
 		{
-			BaseSite copy = new BaseSite(rv, true);
-			m_callCache.put(command, copy, m_cacheSeconds);
+			m_callCache.put(command, rv, m_cacheSeconds);
 			
-			// the copying forced a full (page / tool / properties) read - cache the pages and tools, too
-			for (Iterator iPage = copy.m_pages.iterator(); iPage.hasNext();)
-			{
-				BaseSitePageEdit page = (BaseSitePageEdit) iPage.next();
-				m_callCache.put("page@" + page.getId(), page, m_cacheSeconds);
-				
-				for (Iterator iTool = page.m_tools.iterator(); iTool.hasNext();)
-				{
-					BaseToolConfiguration tool = (BaseToolConfiguration) iTool.next();
-					m_callCache.put("tool@" + tool.getId(), tool, m_cacheSeconds);
-				}
-			}
-			
-			// cache the getSiteSkin response, since we have the site handy
-			m_callCache.put("skin@" + id, adjustSkin(copy.getSkin(), copy.isPublished()), m_cacheSeconds);
+			// also cache the getSiteSkin response, since we have the site handy
+			m_callCache.put("skin@" + id, adjustSkin(rv.getSkin(), rv.isPublished()), m_cacheSeconds);
 		}
 
 		return rv;
@@ -1091,19 +1077,18 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 	{
 		ToolConfiguration rv = null;
 
-		// check the cache - return a copy if found
+		// check the cache
 		String command = "tool@" + id;
 		if ((m_callCache != null) && (m_callCache.containsKey(command)))
 		{
 			rv = (ToolConfiguration) m_callCache.get(command);
-			rv = new BaseToolConfiguration(rv, ((BaseToolConfiguration)rv).m_page, true);
 			return rv;
 		}
 
 		rv = m_storage.findTool(id);
 
-		// cache a copy
-		if (m_callCache != null) m_callCache.put(command, new BaseToolConfiguration(rv, ((BaseToolConfiguration)rv).m_page, true), m_cacheSeconds);
+		// cache
+		if (m_callCache != null) m_callCache.put(command, rv, m_cacheSeconds);
 
 		return rv;
 
@@ -1116,20 +1101,19 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 	{
 		SitePage rv = null;
 
-		// check the cache - return a copy if found
+		// check the cache
 		String command = "page@" + id;
 		if ((m_callCache != null) && (m_callCache.containsKey(command)))
 		{
 			rv = (SitePage) m_callCache.get(command);
-			rv = new BaseSitePageEdit((BaseSitePageEdit)rv, ((BaseSitePageEdit)rv).m_site, true);
 			return rv;
 		}
 
 		rv = m_storage.findPage(id);
 
-		// cache a copy
-		if (m_callCache != null) m_callCache.put(command, new BaseSitePageEdit((BaseSitePageEdit)rv, ((BaseSitePageEdit)rv).m_site, true), m_cacheSeconds);
-		
+		// cache
+		if (m_callCache != null) m_callCache.put(command, rv, m_cacheSeconds);
+
 		return rv;
 	}
 
