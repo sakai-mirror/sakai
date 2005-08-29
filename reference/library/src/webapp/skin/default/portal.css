@@ -1,3 +1,9 @@
+/*table: red
+tabHolder:green
+tabNavigation: yellow
+li:Lime
+*/
+
 body{width:100%;padding:0;font-family:Verdana,Geneva,Arial,Helvetica,sans-serif; }
 /*GROUP 1 - top navigation*/
 /*iframe sizes for different states*/
@@ -34,7 +40,7 @@ html>body #tabNavigation{margin:0 0 -1px 3px;}
 
 #tabBottom{display:none}
 /*the tab*/
-#tabNavigation li{display:inline;line-height:.9em;}
+#tabNavigation li{display:inline;line-height:.9em;border:1px solid #084A87}
 /*the current tab*/
 #tabNavigation .selectedTab a,#tabNavigation .selectedTab a:link,#tabNavigation .selectedTab a:visited,
 	#tabNavigation .selectedTab a:hover{
@@ -164,8 +170,7 @@ html #siteStatus/* */{background-position:3px center/* - adj for ie - */}
 
 .portletTitleWrap{width:95.5%;margin-top:1em;}
 .portletMainWrap{width:95.5%}
-.portletTitleIframe{width:95.2% !important;margin:0 !important;height:1.3em;
-	}
+.portletTitleIframe{width:95.2% !important;margin:0 !important;height:1.3em;}
 .portletMainIframe{border: 1px solid #90A1C6;
 	text-align:left;width:95%; margin-bottom:.5em;height:auto}
 
