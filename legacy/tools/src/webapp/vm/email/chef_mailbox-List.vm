@@ -6,7 +6,8 @@
 	#if($menu)#toolbar($menu)#end
 	<div class="rightNav" style="margin-top:.5em;display:block;clear:both;">
 		<form name="toolbar" action="#toolForm("$action")" method="post" class="toolbarForm">
-			<input size="15" value="$!search" name="search" id="search" type="text" class="searchField" style="font-size:1em;padding: .2em;border:1px solid gray" />
+			<input size="15" value="$!search" name="search" id="search" type="text" class="searchField" style="font-size:1em;padding: .2em;border:1px solid gray" onkeypress="formSubmitOnEnter(this, event)"/>
+			<input type="hidden" name="eventSubmit_doSearch" id="eventSubmit_doSearch" value="Search for emails" />
 			<a href="#" title="Search" onclick="location = '#toolLink("$action" "doSearch")'+buildQueryString('toolbar');return false;">
 				<span class="act"><input type="button" value="Search" /></span>
 			</a>
