@@ -303,11 +303,12 @@
 						#if ($allowUpdate)
 							#if ($!activeInactiveUser)
 								<td>
+								 #set($grant="")
 									#set($grant = $realm.getUserGrant($uniqname))
 									#set($grantActive = $!grant.isActive())
 									<label class="skip" for="activeGrant$uniqname">Select status for $uniqname</label>
 									<select id="activeGrant$uniqname" name="activeGrant$uniqname">
-										#if ($!grant.isActive())
+										#if($grant=="" || $!grant.isActive())
 											<option value="true" selected="selected" >$tlang.getString("sitegen.siteinfolist.active")</option>
 											<option value="false">$tlang.getString("sitegen.siteinfolist.inactive")</option>
 										#else
