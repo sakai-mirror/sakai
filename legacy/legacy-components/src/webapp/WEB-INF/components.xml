@@ -428,6 +428,7 @@
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="provider"><ref bean="org.sakaiproject.service.legacy.user.UserDirectoryProvider"/></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
+ 		<property name="cacheMinutes"><value>3</value></property>
 	</bean>
 
    <bean id="lockManagerHibernateMappings"

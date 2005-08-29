@@ -41,8 +41,9 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
-
+import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
@@ -91,6 +92,9 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 
 	/** Key for current service caching of current user */
 	protected final String M_curUserKey = getClass().getName()+".currentUser";
+
+	/** A cache of calls to the service and the results. */
+	protected Cache m_callCache = null;
 
 	/*******************************************************************************
 	* Abstractions, etc.
@@ -236,6 +240,20 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		m_provider = provider;
 	}
 
+	/** The # seconds to cache gets. 0 disables the cache. */
+	protected int m_cacheSeconds = 3 * 60;
+
+	/**
+	 * Set the # minutes to cache a get.
+	 * 
+	 * @param time
+	 *        The # minutes to cache a get (as an integer string).
+	 */
+	public void setCacheMinutes(String time)
+	{
+		m_cacheSeconds = Integer.parseInt(time) * 60;
+	}
+
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -256,7 +274,14 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			// make an anon. user
 			m_anon = new BaseUserEdit("");
 
-			m_logger.info(this +".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()));
+			// <= 0 minutes indicates no caching desired
+			if (m_cacheSeconds > 0)
+			{
+				// build a synchronized map for the call cache, automatiaclly checking for expiration every 15 mins.
+				m_callCache = MemoryService.newHardCache(this, 15 * 60);
+			}
+
+			m_logger.info(this +".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()) + " - caching minutes: " + m_cacheSeconds / 60);
 		}
 		catch (Throwable t)
 		{
@@ -307,27 +332,39 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		// if not
 		if (user == null)
 		{
-			// find our user record, and use it if we have it
-			user = findUser(id);
+			// check the cache
+			if ((m_callCache != null) && (m_callCache.containsKey(id)))
+			{
+				user = (UserEdit) m_callCache.get(id);
+			}
 
-			if ((user == null) && (m_provider != null))
+			else
 			{
-				// make a new edit to hold the provider's info, hoping it will be filled in
-				user = new BaseUserEdit((String) null);
-				((BaseUserEdit) user).m_id = id;
-			
-				if (!m_provider.getUser(user))
+				// find our user record, and use it if we have it
+				user = findUser(id);
+	
+				if ((user == null) && (m_provider != null))
 				{
-					// it was not provided for, so clear back to null
-					user = null;
+					// make a new edit to hold the provider's info, hoping it will be filled in
+					user = new BaseUserEdit((String) null);
+					((BaseUserEdit) user).m_id = id;
+				
+					if (!m_provider.getUser(user))
+					{
+						// it was not provided for, so clear back to null
+						user = null;
+					}
 				}
-			}
-			
-			// if found, save it for later use in this thread
-			if (user != null)
-			{
-				CurrentService.setInThread(ref, user);
-			}
+
+				// if found, save it for later use in this thread
+				if (user != null)
+				{
+					CurrentService.setInThread(ref, user);
+					
+					// cache
+					if (m_callCache != null) m_callCache.put(id, user, m_cacheSeconds);
+				}
+			}			
 		}
 
 		// if not found
@@ -873,6 +910,12 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 					// user "existance" (i.e. provider existance or internal user records) to let the user in -ggolden
 					m_logger.warn(this +".authenticate(): could not getUser() after auth: " + id + " : " + e);
 				}
+			}
+			
+			// cache the user (if we didn't go through the getUser() above, which would have cached it
+			else
+			{
+				if (m_callCache != null) m_callCache.put(id, rv, m_cacheSeconds);
 			}
 		}
 
@@ -1942,16 +1985,19 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	*/
 	public Object refresh(Object key, Object oldValue, Event event)
 	{
-		// key is a reference, but our storage wants an id
-		String id = userId((String) key);
+		// instead of refreshing when an entry expires, let it go and we'll get it again if needed -ggolden
+		return null;
 
-		// get whatever we have from storage for the cache for this vale
-		User user = m_storage.get(id);
-
-		if (m_logger.isDebugEnabled())
-			m_logger.debug(this +".refresh(): " + key + " : " + id);
-
-		return user;
+//		// key is a reference, but our storage wants an id
+//		String id = userId((String) key);
+//
+//		// get whatever we have from storage for the cache for this vale
+//		User user = m_storage.get(id);
+//
+//		if (m_logger.isDebugEnabled())
+//			m_logger.debug(this +".refresh(): " + key + " : " + id);
+//
+//		return user;
 
 	} // refresh
 
