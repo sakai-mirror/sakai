@@ -125,6 +125,12 @@ extends PagedResourceActionII
 	private static final String NOTI_OPTIONAL = rb.getString("java.NOTI_OPTIONAL");//"Low - Only participants who have opted in";
 	private static final String NOTI_NONE = rb.getString("java.NOTI_NONE");//"None - No notification";
 	
+	private static final String SORT_DATE = "date";
+	private static final String SORT_PUBLIC = "public";
+	private static final String SORT_FROM = "from";
+	private static final String SORT_SUBJECT = "subject";
+	private static final String SORT_CHANNEL = "channel";
+	
 	private static final String CONTEXT_VAR_DISPLAY_OPTIONS = "displayOptions";
 	private static final String VELOCITY_DISPLAY_OPTIONS = CONTEXT_VAR_DISPLAY_OPTIONS;
 	private static final String PERMISSIONS_BUTTON_HANDLER = "doPermissions";
@@ -143,6 +149,8 @@ extends PagedResourceActionII
 	
 	protected static final String STATE_INITED = "annc.state.inited";
 
+	private static final String STATE_CURRENT_SORTED_BY = "session.state.sorted.by";
+	private static final String STATE_CURRENT_SORT_ASC = "session.state.sort.asc";
 	/**
 	 * Used by callback to convert channel references to channels.
 	 */
@@ -756,19 +764,6 @@ extends PagedResourceActionII
 		}
 		//context.put("channel_id", ((channelId == null) ? "Now null" : channelId));
 		context.put("channel_id", ((channelId == null) ? rb.getString("java.nownull") : channelId));
-//		// get the current collection ID from state object or prolet initial parameter
-//		String collectionId = state.getCollectionId();
-//		if (collectionId == null)
-//		{
-//			// get the current channel ID for prolet initial parameter
-//			collectionId = StringUtil.trimToNull(portlet.getPortletConfig().getInitParameter("collection"));
-//			if (collectionId == null)
-//				collectionId = ContentHostingService.getSiteCollection(PortalService.getCurrentSiteId());
-//
-//
-//			// let the state object have the current channel id
-//			state.setCollectionId(collectionId);
-//		}
 
 		// set if we have notification enabled
 		context.put("notification", Boolean.valueOf(notificationEnabled(state)));
@@ -871,7 +866,7 @@ extends PagedResourceActionII
 				menu_delete = false;
 			} // if-else
 		} // try-catch
-
+		
 		// check the state status to decide which vm to render
 		String statusName = state.getStatus();
 
@@ -897,62 +892,7 @@ extends PagedResourceActionII
 
 		if (statusName != null)
 		{
-			if (statusName.equals(DELETE_ANNOUNCEMENT_STATUS))
-			{
-				template = buildDeleteAnnouncementContext(portlet, context, rundata, state);
-			}
-			else if (statusName.equals("showMetadata"))
-			{
-				template = buildShowMetadataContext(portlet, context, rundata, state, sstate);
-			}
-			else if ((statusName.equals("goToReviseAnnouncement"))
-				|| (statusName.equals("backToReviseAnnouncement"))
-				|| (statusName.equals("new"))
-				|| (statusName.equals("stayAtRevise")))
-			{
-				template = buildReviseAnnouncementContext(portlet, context, rundata, state, sstate);
-			}
-			else if (statusName.equals("revisePreviw"))
-			{
-				template = buildPreviewContext(portlet, context, rundata, state);
-			}
-			else
-			if ((statusName.equals(CANCEL_STATUS))
-				|| (statusName.equals(POST_STATUS))
-				|| (statusName.equals("FinishDeleting")))
-			{
-				template = buildCancelContext(portlet, context, rundata, state);
-			}
-			else
-			if (statusName.equals("noSelectedForDeletion")
-				|| (statusName.equals(NOT_SELECTED_FOR_REVISE_STATUS)))
-			{
-				//addAlert(sstate, "You have to select the announcement first!");
-				addAlert(sstate, rb.getString("java.alert.youhave"));
-			}
-			else if (statusName.equals("moreThanOneSelectedForRevise"))
-			{
-				//addAlert(sstate, "Please choose only one announcement at a time to revise!");
-				addAlert(sstate, rb.getString("java.alert.pleasechoose"));
-			}
-			else if (statusName.equals("noPermissionToRevise"))
-			{
-				//addAlert(sstate, "You don't have permission to revise this announcement!");
-				addAlert(sstate, rb.getString("java.alert.youdont"));
-			}
-			else
-			if (statusName
-				.equals(MERGE_STATUS))
-			{
-			template =
-					buildMergeContext(portlet, context, rundata, state, sstate);
-		}
-			else
-			if (statusName.equals(OPTIONS_STATUS))
-			{
-				template =
-					buildOptionsPanelContext(portlet, context, rundata, sstate);
-			}
+			template = getTemplate(portlet, context, rundata, sstate, state, template);
 		}
 
 		if (channel != null)
@@ -967,59 +907,10 @@ extends PagedResourceActionII
 				else
 					context.put("currentSortAsc", "false");
 
-				Vector drafts = new Vector();
-				Vector nonDrafts = new Vector();
-				Vector showMessagesList = new Vector();
-
-				List messages = prepPage(sstate);
-				for (int i = 0; i < messages.size(); i++)
-				{
-					AnnouncementMessage m = (AnnouncementMessage) messages.get(i);
-
-					if (m.getAnnouncementHeader().getDraft())
-					{
-						drafts.addElement(m);
-					}
-					else
-					{
-						nonDrafts.add(m);
-					}
-				}
-
-				SortedIterator sortedDraftIterator = new SortedIterator(drafts.iterator(), new AnnouncementComparator(state.getCurrentSortedBy(), state.getCurrentSortAsc()));
-				SortedIterator sortedNonDraftIterator = new SortedIterator(nonDrafts.iterator(), new AnnouncementComparator(state.getCurrentSortedBy(), state.getCurrentSortAsc()));
-
-				if (state.getCurrentSortAsc())
-				{
-					while (sortedDraftIterator.hasNext())
-						showMessagesList.add((AnnouncementMessage)sortedDraftIterator.next());
-
-					while (sortedNonDraftIterator.hasNext())
-						showMessagesList.add((AnnouncementMessage)sortedNonDraftIterator.next());
-				}
-				else
-				{
-					while (sortedDraftIterator.hasNext())
-						showMessagesList.add((AnnouncementMessage)sortedDraftIterator.next());
-
-					while (sortedNonDraftIterator.hasNext())
-						showMessagesList.add((AnnouncementMessage)sortedNonDraftIterator.next());
-				}
-
-				context.put("showMessagesList", showMessagesList.iterator());
-				context.put("showMessagesList2", showMessagesList.iterator());
-				context.put("messageListVector", showMessagesList);
-				
-				context.put("totalPageNumber", sstate.getAttribute(STATE_TOTAL_PAGENUMBER));
-				context.put("formPageNumber", FORM_PAGE_NUMBER);
-				context.put("prev_page_exists", sstate.getAttribute(STATE_PREV_PAGE_EXISTS));
-				context.put("next_page_exists", sstate.getAttribute(STATE_NEXT_PAGE_EXISTS));
-				context.put("current_page", sstate.getAttribute(STATE_CURRENT_PAGE));
-				pagingInfoToContext(sstate, context);
+				buildSortedContext(portlet, context, rundata, sstate);
 				
 			} // if allowGetMessages()
 		}
-		// ********* for sorting *********
 
 		
 		// ********* for site column display ********
@@ -1060,6 +951,142 @@ extends PagedResourceActionII
 		return template;
 
 	}	//	buildMainPanelContext
+	
+	public void buildSortedContext( VelocityPortlet portlet, 
+			Context context,
+			RunData rundata,
+			SessionState sstate)
+	{
+		Vector drafts = new Vector();
+		Vector nonDrafts = new Vector();
+		Vector showMessagesList = new Vector();
+
+		List messages = prepPage(sstate);
+		for (int i = 0; i < messages.size(); i++)
+		{
+			AnnouncementMessage m = (AnnouncementMessage) messages.get(i);
+
+			if (m.getAnnouncementHeader().getDraft())
+			{
+				drafts.addElement(m);
+			}
+			else
+			{
+				nonDrafts.add(m);
+			}
+		}
+		AnnouncementActionState state = (AnnouncementActionState)getState( portlet, rundata, AnnouncementActionState.class );
+		
+		SortedIterator sortedDraftIterator = new SortedIterator(drafts.iterator(), new AnnouncementComparator(state.getCurrentSortedBy(), state.getCurrentSortAsc()));
+		SortedIterator sortedNonDraftIterator = new SortedIterator(nonDrafts.iterator(), new AnnouncementComparator(state.getCurrentSortedBy(), state.getCurrentSortAsc()));
+
+		if (state.getCurrentSortAsc())
+		{
+			while (sortedDraftIterator.hasNext())
+				showMessagesList.add((AnnouncementMessage)sortedDraftIterator.next());
+
+			while (sortedNonDraftIterator.hasNext())
+				showMessagesList.add((AnnouncementMessage)sortedNonDraftIterator.next());
+		}
+		else
+		{
+			while (sortedDraftIterator.hasNext())
+				showMessagesList.add((AnnouncementMessage)sortedDraftIterator.next());
+
+			while (sortedNonDraftIterator.hasNext())
+				showMessagesList.add((AnnouncementMessage)sortedNonDraftIterator.next());
+		}
+
+		context.put("showMessagesList", showMessagesList.iterator());
+		context.put("showMessagesList2", showMessagesList.iterator());
+		context.put("messageListVector", showMessagesList);
+		
+		context.put("totalPageNumber", sstate.getAttribute(STATE_TOTAL_PAGENUMBER));
+		context.put("formPageNumber", FORM_PAGE_NUMBER);
+		context.put("prev_page_exists", sstate.getAttribute(STATE_PREV_PAGE_EXISTS));
+		context.put("next_page_exists", sstate.getAttribute(STATE_NEXT_PAGE_EXISTS));
+		context.put("current_page", sstate.getAttribute(STATE_CURRENT_PAGE));
+		pagingInfoToContext(sstate, context);
+		
+	} // buildSortedContext 
+	
+	public String getTemplate( VelocityPortlet portlet, 
+			Context context,
+			RunData rundata,
+			SessionState sstate,
+			AnnouncementActionState state,
+			String value)
+	{
+		String template = value;
+		String statusName = state.getStatus();
+
+		if (statusName.equals(DELETE_ANNOUNCEMENT_STATUS))
+		{
+			template = buildDeleteAnnouncementContext(portlet, context, rundata, state);
+		}
+		else if (statusName.equals("showMetadata"))
+		{
+			template = buildShowMetadataContext(portlet, context, rundata, state, sstate);
+		}
+		else if ((statusName.equals("goToReviseAnnouncement"))
+			|| (statusName.equals("backToReviseAnnouncement"))
+			|| (statusName.equals("new"))
+			|| (statusName.equals("stayAtRevise")))
+		{
+			template = buildReviseAnnouncementContext(portlet, context, rundata, state, sstate);
+		}
+		else if (statusName.equals("revisePreviw"))
+		{
+			template = buildPreviewContext(portlet, context, rundata, state);
+		}
+		else
+		if ((statusName.equals(CANCEL_STATUS))
+			|| (statusName.equals(POST_STATUS))
+			|| (statusName.equals("FinishDeleting")))
+		{
+			template = buildCancelContext(portlet, context, rundata, state);
+		}
+		else
+		if (statusName.equals("noSelectedForDeletion")
+			|| (statusName.equals(NOT_SELECTED_FOR_REVISE_STATUS)))
+		{
+			//addAlert(sstate, "You have to select the announcement first!");
+			addAlert(sstate, rb.getString("java.alert.youhave"));
+		}
+		else if (statusName.equals("moreThanOneSelectedForRevise"))
+		{
+			//addAlert(sstate, "Please choose only one announcement at a time to revise!");
+			addAlert(sstate, rb.getString("java.alert.pleasechoose"));
+		}
+		else if (statusName.equals("noPermissionToRevise"))
+		{
+			//addAlert(sstate, "You don't have permission to revise this announcement!");
+			addAlert(sstate, rb.getString("java.alert.youdont"));
+		}
+		else
+		if (statusName
+			.equals(MERGE_STATUS))
+		{
+			template =
+				buildMergeContext(portlet, context, rundata, state, sstate);
+		}
+		else
+		if (statusName.equals(OPTIONS_STATUS))
+		{
+			template =
+				buildOptionsPanelContext(portlet, context, rundata, sstate);
+		}
+		return template;
+		
+	} // getTemplate
+	
+	private void prepMenu(VelocityPortlet portlet, 
+					Context context,
+					RunData runData,
+					SessionState state)
+	{
+
+	}
 	
 	/** 
 	 * Setup for the options panel.
@@ -3043,6 +3070,9 @@ extends PagedResourceActionII
 			(AnnouncementActionState) getState(context,
 				rundata,
 				AnnouncementActionState.class);
+		
+		SessionState sstate = ((JetspeedRunData)rundata).getPortletSessionState(((JetspeedRunData)rundata).getJs_peid());
+		sstate.setAttribute(STATE_CURRENT_SORTED_BY, field);
 
 		if (state.getCurrentSortedBy().equals(field))
 		{
@@ -3056,12 +3086,14 @@ extends PagedResourceActionII
 				asc = true;
 
 			state.setCurrentSortAsc(asc);
+			sstate.setAttribute(STATE_CURRENT_SORT_ASC, new Boolean(asc));
 		}
 		else
 		{
 			// if the messages are not already sorted by subject, set the sort sequence to be ascending
 			state.setCurrentSortedBy(field);
 			state.setCurrentSortAsc(true);
+			sstate.setAttribute(STATE_CURRENT_SORT_ASC, Boolean.TRUE);
 		}
 	} // setupSort
 
@@ -3073,7 +3105,7 @@ extends PagedResourceActionII
 		if (Log.getLogger("chef").isDebugEnabled())
 			Log.debug("chef", "AnnouncementAction.doSortbysubject get Called");
 
-		setupSort(rundata, context, "subject");
+		setupSort(rundata, context, SORT_SUBJECT);
 	} // doSortbysubject
 
 	/**
@@ -3084,7 +3116,7 @@ extends PagedResourceActionII
 		if (Log.getLogger("chef").isDebugEnabled())
 			Log.debug("chef", "AnnouncementAction.doSortbyfrom get Called");
 
-		setupSort(rundata, context, "from");
+		setupSort(rundata, context, SORT_FROM);
 	} // doSortbyfrom
 	
 	/**
@@ -3095,7 +3127,7 @@ extends PagedResourceActionII
 		if (Log.getLogger("chef").isDebugEnabled())
 			Log.debug("chef", "AnnouncementAction.doSortbypublic get Called");
 
-		setupSort(rundata, context, "public");
+		setupSort(rundata, context, SORT_PUBLIC);
 	} // doSortbypublic
 
 	/**
@@ -3106,7 +3138,7 @@ extends PagedResourceActionII
 		if (Log.getLogger("chef").isDebugEnabled())
 			Log.debug("chef", "AnnouncementAction.doSortbydate get Called");
 
-		setupSort(rundata, context, "date");
+		setupSort(rundata, context, SORT_DATE);
 	} // doSortbydate
 
 	/**
@@ -3117,7 +3149,7 @@ extends PagedResourceActionII
 		if (Log.getLogger("chef").isDebugEnabled())
 			Log.debug("chef", "AnnouncementAction.doSortbychannel get Called");
 
-		setupSort(rundata, context, "channel");
+		setupSort(rundata, context, SORT_CHANNEL);
 	} // doSortbydate
 
 	private class AnnouncementComparator implements Comparator
@@ -3150,7 +3182,7 @@ extends PagedResourceActionII
 		{
 			int result = -1;
 
-			if (m_criteria.equals("subject"))
+			if (m_criteria.equals(SORT_SUBJECT))
 			{
 				// sorted by the discussion message subject
 				result =
@@ -3163,7 +3195,7 @@ extends PagedResourceActionII
 								.getSubject());
 			}
 			else
-				if (m_criteria.equals("date"))
+				if (m_criteria.equals(SORT_DATE))
 				{
 					// sorted by the discussion message date
 					if (((AnnouncementMessage) o1)
@@ -3182,7 +3214,7 @@ extends PagedResourceActionII
 					}
 				}
 				else
-					if (m_criteria.equals("from"))
+					if (m_criteria.equals(SORT_FROM))
 					{
 						// sorted by the discussion message subject
 						result =
@@ -3197,7 +3229,7 @@ extends PagedResourceActionII
 										.getSortName());
 					}
 					else
-						if (m_criteria.equals("channel"))
+						if (m_criteria.equals(SORT_CHANNEL))
 						{
 							// sorted by the channel name.
 							result =
@@ -3208,7 +3240,7 @@ extends PagedResourceActionII
 										.getChannelDisplayName());
 						}
 						else
-							if (m_criteria.equals("public"))
+							if (m_criteria.equals(SORT_PUBLIC))
 							{
 								// sorted by the public view attribute
 								String factor1 = ((AnnouncementMessage) o1).getProperties().getProperty(ResourceProperties.PROP_PUBVIEW);
@@ -3832,13 +3864,38 @@ extends PagedResourceActionII
 	{
 		// TODO:
 		List rv = (List)state.getAttribute("messages");
-		if (rv == null) rv = new Vector();
+		if (rv == null) 
+			return new Vector();
+		
+		String sortedBy = "";
+		if (state.getAttribute(STATE_CURRENT_SORTED_BY) != null)
+			sortedBy = state.getAttribute(STATE_CURRENT_SORTED_BY).toString();
+		
+		boolean asc = false;
+		if (state.getAttribute(STATE_CURRENT_SORT_ASC) != null)
+			asc = ((Boolean) state.getAttribute(STATE_CURRENT_SORT_ASC)).booleanValue();
+		
+		if ((sortedBy == null) || sortedBy.equals(""))
+		{
+			sortedBy = "date";
+			asc = false;
+		}
+		SortedIterator rvSorted = new SortedIterator(rv.iterator(), new AnnouncementComparator(sortedBy, asc));
 		
 		PagingPosition page = new PagingPosition(first, last);
 		page.validate(rv.size());
-		rv = rv.subList(page.getFirst()-1, page.getLast());
-	
-		return rv;
+		
+		Vector subrv = new Vector();
+		int a = page.getFirst()-1;
+		int b = page.getLast();
+		for (int index=0; index<rv.size(); index++)
+		{
+			if ((index >= (page.getFirst()-1)) && index<page.getLast())
+				subrv.add(rvSorted.next());
+			else
+				rvSorted.next();
+		}
+		return subrv;
 	}
 
 	/* (non-Javadoc)
