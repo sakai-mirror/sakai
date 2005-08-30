@@ -420,16 +420,27 @@ public class SakaiClusterService implements ClusterService
 						}
 	
 						// find all the session ids of sessions that are open but are from closed servers
-	//					statement =
-	//								"select SESSION_ID from SAKAI_SESSION where SESSION_START = SESSION_END "
-	//							+	"and SESSION_SERVER not in "
-	//							+	"(select SERVER_ID from SAKAI_CLUSTER)";
+
+// This one is has a sub-select -ggolden	
+//						statement =
+//									"select SESSION_ID from SAKAI_SESSION where SESSION_START = SESSION_END "
+//								+	"and SESSION_SERVER not in "
+//								+	"(select SERVER_ID from SAKAI_CLUSTER)";
+
+// This one has a lovely execution plan, but does not work -ggolden
+//						statement =
+//									"select SSA.SESSION_ID from SAKAI_SESSION SSA "
+//									+ "where SSA.SESSION_START = SSA.SESSION_END "
+//									+ "and not exists (select SC.SERVER_ID from SAKAI_CLUSTER SC, SAKAI_SESSION SSB "
+//									+ "where SC.SERVER_ID = SSB.SESSION_SERVER)";
+
 						statement =
-									"select SSA.SESSION_ID from SAKAI_SESSION SSA "
-									+ "where SSA.SESSION_START = SSA.SESSION_END "
-									+ "and not exists (select SC.SERVER_ID from SAKAI_CLUSTER SC, SAKAI_SESSION SSB "
-									+ "where SC.SERVER_ID = SSB.SESSION_SERVER)";
-	
+									"select SS.SESSION_ID "
+									+ "from SAKAI_SESSION SS "
+									+ "left join SAKAI_CLUSTER SC on SS.SESSION_SERVER = SC.SERVER_ID "
+									+ "where SS.SESSION_START = SS.SESSION_END "
+									+ "and SC.SERVER_ID is null";
+
 						List sessions = m_sqlService.dbRead(statement);
 	
 						// process each session to close it and lose it's presence
