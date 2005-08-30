@@ -353,6 +353,14 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 	{
 		String rv = null;
 
+        // See http://bugs.sakaiproject.org/jira/browse/SAK-1507
+        // At server startup, when Spring is initializing components, there may not
+        // be a session manager yet.  This adaptor may be called before all components
+        // are initialized since there are hidden dependencies (through static covers)
+        // of which Spring is not aware.  Therefore, check for and handle a null 
+        // m_sessionManager.
+        if (m_sessionManager == null) return null;
+        
 		// do we have a current session?
 		Session s = m_sessionManager.getCurrentSession();
 		if (s != null)
