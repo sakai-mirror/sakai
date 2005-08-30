@@ -6,10 +6,10 @@
 				<span style="margin:.5em">$!tlang.getString("gen.liofass")</span>
 			#end
 			#if ($withGrade && $!allowGradeSubmission)
-				<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.grarep')")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>
+				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>
 			#end
 			#if ($allowAddAssignment)
-				<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.stuvie')")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>
+				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>
 				<a href="#toolLink("$action" "doPermissions")" title="Permission">Permissions</a>
 			#end
 	</div>
@@ -122,9 +122,9 @@
 						<tr>
 							<td headers="studentname">	
 								#if (!$studentListShowTable.containsKey($member.Id))
-									<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doShow_student_submission" "studentId=$member.Id")'; return false;" title="$tlang.getString("stulistsunbm.shostuass")"><img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("stulistsunbm.shostuass")" width="13" height="13" border="0" /></a>
+									<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doShow_student_submission" "studentId=$validator.escapeUrl($member.Id)")'; return false;" title="$tlang.getString("stulistsunbm.shostuass")"><img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("stulistsunbm.shostuass")" width="13" height="13" border="0" /></a>
 								#else
-									<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doHide_student_submission" "studentId=$member.Id")'; return false;" title="$tlang.getString("stulistsunbm.chotri")"><img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("stulistsunbm.chotri")" width="13" height="13" border="0" /></a>
+									<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doHide_student_submission" "studentId=$validator.escapeUrl($member.Id)")'; return false;" title="$tlang.getString("stulistsunbm.chotri")"><img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("stulistsunbm.chotri")" width="13" height="13" border="0" /></a>
 								#end
 								$member.DisplayName
 							</td>

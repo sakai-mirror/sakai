@@ -86,9 +86,9 @@ doubleDeep = true;
 										#end
 										#if ($replyNumber>0)
 											#if (!$expandedMessages.contains($message))
-												<a href="#" onclick="location='#toolLinkParam($action "doExpand_message" "messageId=$message.Id")'; return false;" title="$tlang.getString("list.exp")"><img src = "#imageLink("sakai/expand.gif")" border="0" alt="$tlang.getString("list.exp")" /></a>					
+												<a href="#" onclick="location='#toolLinkParam($action "doExpand_message" "messageId=$validator.escapeUrl($message.Id)")'; return false;" title="$tlang.getString("list.exp")"><img src = "#imageLink("sakai/expand.gif")" border="0" alt="$tlang.getString("list.exp")" /></a>					
 											#else
-												<a href="#" onclick="location='#toolLinkParam($action "doCollapse_message" "messageId=$message.Id")'; return false;" title="$tlang.getString("list.col")"><img src = "#imageLink("sakai/collapse.gif")" border="0" alt="$tlang.getString("list.col")" /></a>					
+												<a href="#" onclick="location='#toolLinkParam($action "doCollapse_message" "messageId=$validator.escapeUrl($message.Id)")'; return false;" title="$tlang.getString("list.col")"><img src = "#imageLink("sakai/collapse.gif")" border="0" alt="$tlang.getString("list.col")" /></a>					
 											#end
 										#else
 											&nbsp;&nbsp;&nbsp;
@@ -103,7 +103,7 @@ doubleDeep = true;
 ##													</a>
 ##												</span>
 											#else
-												<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$message.Id")'; return false;">
+												<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$validator.escapeUrl($message.Id)")'; return false;">
 													#if ($message.getDiscussionHeader().getDraft())<span class="chefAlert">$tlang.getString("gen.dra") </span>#end
 													$validator.limit($validator.escapeHtml($message.getDiscussionHeader().getSubject()), 50)
 												</a>
@@ -136,17 +136,17 @@ doubleDeep = true;
 												<img src = "#imageLink("sakai/attachments.gif")" border="0" alt="$tlang.getString("list.hasatt")" />
 											#end
 											#if ($depth==0)
-												<a href="#" onclick="location='#toolLinkParam($action "doShow_topic_content" "topicId=$message.Id")'; return false;"  title="$tlang.getString("list.shothecon")">
+												<a href="#" onclick="location='#toolLinkParam($action "doShow_topic_content" "topicId=$validator.escapeUrl($message.Id)")'; return false;"  title="$tlang.getString("list.shothecon")">
 												<img src = "#imageLink("sakai/content.gif")" border="0" alt="$tlang.getString("list.prifri")" />
 												</a>
 											#end
 											#if ($channel.allowRemoveMessage($message))
-												<a href="#" onclick="location='#toolLinkParam($action "doDelete_message_confirm" "messageId=$message.Id")'; return false;" title="$tlang.getString("list.delthi")">				
+												<a href="#" onclick="location='#toolLinkParam($action "doDelete_message_confirm" "messageId=$validator.escapeUrl($message.Id)")'; return false;" title="$tlang.getString("list.delthi")">				
 													<img src = "#imageLink("sakai/delete.gif")" border="0" alt="$tlang.getString("list.delthi")" /></a>
 											#end
 										#else
 											<span style="font-weight:bold">
-												<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$message.Id")'; return false;">#if ($message.getDiscussionHeader().getDraft())<span class="chefAlert">$tlang.getString("gen.dra") </span>#end
+												<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$validator.escapeUrl($message.Id)")'; return false;">#if ($message.getDiscussionHeader().getDraft())<span class="chefAlert">$tlang.getString("gen.dra") </span>#end
 													$validator.limit($validator.escapeHtml($message.getDiscussionHeader().getSubject()), 50)
 												</a>
 											</span>
@@ -177,12 +177,12 @@ doubleDeep = true;
 												<img src = "#imageLink("sakai/attachments.gif")" border="0" alt="$tlang.getString("list.hasatt")" />
 											#end
 											#if ($depth==0)
-												<a href="#" onclick="location='#toolLinkParam($action "doShow_topic_content" "topicId=$message.Id")'; return false;"  title="$tlang.getString("list.shothecon")">
+												<a href="#" onclick="location='#toolLinkParam($action "doShow_topic_content" "topicId=$validator.escapeUrl($message.Id)")'; return false;"  title="$tlang.getString("list.shothecon")">
 												<img src = "#imageLink("sakai/content.gif")" border="0" alt="Show the content of this topic" />
 												</a>
 											#end
 											#if ($channel.allowRemoveMessage($message))
-												<a href="#" onclick="location='#toolLinkParam($action "doDelete_message_confirm" "messageId=$message.Id")'; return false;" title="$tlang.getString("list.delthi")">
+												<a href="#" onclick="location='#toolLinkParam($action "doDelete_message_confirm" "messageId=$validator.escapeUrl($message.Id)")'; return false;" title="$tlang.getString("list.delthi")">
 													<img src = "#imageLink("sakai/delete.gif")" border="0" alt="$tlang.getString("list.delthi")" /></a>
 											#end
 										#end

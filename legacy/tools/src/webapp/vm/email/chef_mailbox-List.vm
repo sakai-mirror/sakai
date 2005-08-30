@@ -131,7 +131,7 @@
 				<tr>
 					<td headers="from">$validator.escapeHtml($item.Header.FromAddress)</td>
 					<td headers="subject">
-						<a href="#" onclick="location = '#toolLinkParam($action "doView" "$view-id=$item.Header.Id")';return false;">
+						<a href="#" onclick="location = '#toolLinkParam($action "doView" "$view-id=$validator.escapeUrl($item.Header.Id)")';return false;">
 							$validator.escapeHtml($item.Header.Subject)
 
 							## show the paperclip if existing

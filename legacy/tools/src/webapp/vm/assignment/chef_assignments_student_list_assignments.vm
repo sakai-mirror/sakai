@@ -3,9 +3,9 @@
 		#if($allowAddAssignment)
 			<div class="chefToolBarWrap">
 				<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>
-				<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.liofass')")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
+				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
 				#if ($withGrade && $allowGradeSubmission)
-					<a href="#toolLinkParam("$action" "doView" "view=$!tlang.getString('gen.grarep')")" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>
+					<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>
 				#end
 				<span style="margin:.5em">$!tlang.getString('gen.stuvie')</span>
 				<a href="#toolLink("$action" "doPermissions")" title="Permission">Permissions</a>
@@ -190,16 +190,16 @@
 									#if ($!allowAddAssignment)
 										#if ($!submission)
 											#if ($!submission.returned && $submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true"))
-												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$assignment.Reference")">
+												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
 											#else
-												<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$submission.Reference")">
+												<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">
 											#end
 											$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)</a>
 										#else
 											$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)
 											#if ($!allowSubmit)
 												<br />
-												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$assignment.Reference")">
+												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
 													$tlang.getString("subasstudent")
 												</a>
 											#end
@@ -207,12 +207,12 @@
 									#elseif($!allowSubmit)
 										#if ($!submission)
 											#if ($!submission.returned && $submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true"))
-												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$assignment.Reference")">
+												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
 											#else
-												<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$submission.Reference")">
+												<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">
 											#end
 										#else
-											<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$assignment.Reference")">
+											<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
 										#end
 										$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)</a>
 									#end
@@ -272,12 +272,12 @@
 										#if ($!submission && $submission.getGraded() && $submission.getGradeReleased())
 											#if ($!submission.returned) 
 												#if ($submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true"))
-													<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$assignment.Reference")">
+													<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
 												#else
-													<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$submission.Reference")">
+													<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">
 												#end
 											#else
-												<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$submission.Reference")">
+												<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">
 											#end
 												$submission.getGradeDisplay()
 											</a>
