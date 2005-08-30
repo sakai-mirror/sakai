@@ -84,7 +84,7 @@
 			    <br /><br />
 			    <div class="act">
 			    <h:commandButton id="submit" style="active;" value="Update Preferences" action="#{UserPrefsTool.processActionSave}"></h:commandButton>
-				 <h:commandButton id="cancel" style="active;" value="Cancel" action="#{UserPrefsTool.processActionCancel}"></h:commandButton>
+				 <h:commandButton id="cancel" style="active;" value="Cancel Changes" action="#{UserPrefsTool.processActionCancel}"></h:commandButton>
 			    </div>
 
 		 </h:form>

@@ -69,7 +69,7 @@
   				
 				<p class="act">
 				<h:commandButton id="submit" style="active;" value="Update Preferences" action="#{UserPrefsTool.processActionNotiSave}"></h:commandButton>
-				<h:commandButton id="cancel" style="active;" value="Cancel" action="#{UserPrefsTool.processActionNotiCancel}"></h:commandButton>
+				<h:commandButton id="cancel" style="active;" value="Cancel Changes" action="#{UserPrefsTool.processActionNotiCancel}"></h:commandButton>
 				</p>	
 		 </h:form>
 	</sakai:view_content>
