@@ -2144,6 +2144,9 @@ public class SiteAction extends PagedResourceActionII
 			context.put("wcUrls", wcUrls);
 			
 			context.put("serverName", ServerConfigurationService.getServerName());
+			
+			context.put("oldSelectedTools", state.getAttribute(STATE_TOOL_REGISTRATION_OLD_SELECTED_LIST));	
+			
 			return (String)getContext(data).get("template") + TEMPLATE[26];
 		case 27: 
 			/*  buildContextForTemplate chef_site-importSites.vm
@@ -3768,13 +3771,19 @@ public class SiteAction extends PagedResourceActionII
 	private boolean fromENWModifyView(SessionState state)
 	{
 		boolean fromENW = false;
+		List oTools = (List) state.getAttribute(STATE_TOOL_REGISTRATION_OLD_SELECTED_LIST);
+		
 		List toolList = (List) state.getAttribute(STATE_TOOL_REGISTRATION_SELECTED_LIST);
 		for (int i=0; i<toolList.size() && !fromENW; i++)
 		{
 			String toolId = (String) toolList.get(i);
 			if (toolId.equals("sakai.mailbox") || toolId.indexOf("sakai.news") != -1 || toolId.indexOf("sakai.iframe") != -1)
 			{
-				fromENW = true;
+				//if user is adding either EmailArchive tool, News tool or Web Content tool, go to the Customize page for the tool
+				if (!oTools.contains(toolId))
+				{
+					fromENW = true;
+				}
 			}
 		}
 		return fromENW;
@@ -5703,6 +5712,8 @@ public class SiteAction extends PagedResourceActionII
 	public void doAdd_remove_features ( RunData data )
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		List existTools = (List) state.getAttribute(STATE_TOOL_REGISTRATION_OLD_SELECTED_LIST);
+		
 		ParameterParser params = data.getParameters ();
 		String option = params.getString("option");
 		
@@ -5746,7 +5757,11 @@ public class SiteAction extends PagedResourceActionII
 					}
 					else if (toolId.equals("sakai.mailbox") || toolId.indexOf("sakai.news") != -1 || toolId.indexOf("sakai.iframe") != -1)
 					{
-						goToENWPage = true;
+						// if user is adding either EmailArchive tool, News tool or Web Content tool, go to the Customize page for the tool
+						if (!existTools.contains(toolId))
+						{
+							goToENWPage = true;
+						}
 						
 						if (toolId.equals("sakai.mailbox"))
 						{
@@ -5762,10 +5777,6 @@ public class SiteAction extends PagedResourceActionII
 					}
 				   idsSelected.add(toolId);
 					  
-				}
-				if (!emailSelected)
-				{
-					state.removeAttribute(STATE_TOOL_EMAIL_ADDRESS);
 				}
 					
 				state.setAttribute(STATE_TOOL_HOME_SELECTED, new Boolean(homeSelected));
@@ -9014,7 +9025,7 @@ public class SiteAction extends PagedResourceActionII
 		boolean hasDiscussion = false;
 		boolean hasNews = false;
 		boolean hasWebContent = false;
-				
+		boolean hasEmail = false;
 		
 		//Special case - Worksite Setup Home comes from a hardcoded checkbox on the vm template rather than toolRegistrationList
 		//see if Home was chosen
@@ -9027,6 +9038,7 @@ public class SiteAction extends PagedResourceActionII
 			}
 			else if (choice.equals("sakai.mailbox"))
 			{
+				hasEmail = true;
 				String alias = (String) state.getAttribute(STATE_TOOL_EMAIL_ADDRESS);
 				if (alias == null)
 				{
@@ -9513,6 +9525,12 @@ public class SiteAction extends PagedResourceActionII
 					homePage.moveUp();
 				}
 			}
+		}
+		
+		// if there is no email tool chosen
+		if (!hasEmail)
+		{
+			state.removeAttribute(STATE_TOOL_EMAIL_ADDRESS);
 		}
 
 	} // getRevisedFeatures
