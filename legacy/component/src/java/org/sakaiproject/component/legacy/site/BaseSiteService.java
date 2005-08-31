@@ -49,8 +49,7 @@ import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
-import org.sakaiproject.service.framework.memory.Cache;
-import org.sakaiproject.service.framework.memory.CacheRefresher;
+import org.sakaiproject.service.framework.memory.SiteCache;
 import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.alias.cover.AliasService;
@@ -63,7 +62,6 @@ import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.discussion.cover.DiscussionService;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
-import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.id.cover.IdService;
 import org.sakaiproject.service.legacy.message.MessageChannel;
@@ -108,7 +106,7 @@ import org.w3c.dom.NodeList;
  * @author University of Michigan, Sakai Software Development Team
  * @version $Revision$
  */
-public abstract class BaseSiteService implements SiteService, StorageUser, CacheRefresher
+public abstract class BaseSiteService implements SiteService, StorageUser
 {
 	/** Storage manager for this service. */
 	protected Storage m_storage = null;
@@ -116,8 +114,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 	/** The initial portion of a relative access point URL. */
 	protected String m_relativeAccessPoint = null;
 
-	/** A cache of calls to the service and the results. */
-	protected Cache m_callCache = null;
+	/** A site cache. */
+	protected SiteCache m_siteCache = null;
 
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Abstractions, etc.
@@ -287,6 +285,20 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 		m_cacheSeconds = Integer.parseInt(time) * 60;
 	}
 
+	/** The # seconds to cache gets. 0 disables the cache. */
+	protected int m_cacheCleanerSeconds = 15 * 60;
+
+	/**
+	 * Set the # minutes between cache cleanings.
+	 * 
+	 * @param time
+	 *        The # minutes between cache cleanings. (as an integer string).
+	 */
+	public void setCacheCleanerMinutes(String time)
+	{
+		m_cacheCleanerSeconds = Integer.parseInt(time) * 60;
+	}
+
 	/**
 	 * Regenerate the page and tool ids for all sites.
 	 */
@@ -338,7 +350,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 			if (m_cacheSeconds > 0)
 			{
 				// build a synchronized map for the call cache, automatiaclly checking for expiration every 15 mins.
-				m_callCache = MemoryService.newHardCache(this, 15 * 60);
+				m_siteCache = MemoryService.newSiteCache(m_cacheCleanerSeconds, siteReference(""));
 			}
 
 			m_logger.info(this + ".init() - caching minutes: " + m_cacheSeconds / 60);
@@ -411,12 +423,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 		if (id == null) throw new IdUnusedException("<null>");
 
 		Site rv = null;
-
+		
 		// check the cache
-		String command = "site@" + id;
-		if ((m_callCache != null) && (m_callCache.containsKey(command)))
+		String ref = siteReference(id);
+		if ((m_siteCache != null) && (m_siteCache.containsKey(ref)))
 		{
-			rv = (Site) m_callCache.get(command);
+			rv = (Site) m_siteCache.get(ref);
 			return rv;
 		}
 
@@ -429,12 +441,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 		// EventTrackingService.post(EventTrackingService.newEvent(SECURE_ACCESS_SITE, site.getReference()));
 
 		// cache
-		if (m_callCache != null)
+		if (m_siteCache != null)
 		{
-			m_callCache.put(command, rv, m_cacheSeconds);
-			
-			// also cache the getSiteSkin response, since we have the site handy
-			m_callCache.put("skin@" + id, adjustSkin(rv.getSkin(), rv.isPublished()), m_cacheSeconds);
+			m_siteCache.put(ref, rv, m_cacheSeconds);
 		}
 
 		return rv;
@@ -640,9 +649,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 
 		// close the edit object
 		((BaseSiteEdit) site).closeEdit();
-		
-		// TODO: if from other than an add, invalidate the cache, at least for this site and it's pages and tools... -ggolden
-
 
 	} // commitEdit
 
@@ -855,8 +861,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 
 		// close the edit object
 		((BaseSiteEdit) site).closeEdit();
-		
-		// TODO: invalidate cache, at least for this site and it's pages and tools -ggolden
 
 	} // removeSite
 
@@ -1077,18 +1081,35 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 	{
 		ToolConfiguration rv = null;
 
-		// check the cache
-		String command = "tool@" + id;
-		if ((m_callCache != null) && (m_callCache.containsKey(command)))
+		// check the site cache
+		if (m_siteCache != null)
 		{
-			rv = (ToolConfiguration) m_callCache.get(command);
-			return rv;
+			rv = m_siteCache.getTool(id);
+			if (rv != null)
+			{
+				return rv;
+			}
+			
+			// if not, get the tool's site id, cache the site, and try again
+			String siteId = m_storage.findToolSiteId(id);
+			if (siteId != null)
+			{
+				// read and cache the site, pages, tools
+				try
+				{
+					getDefinedSite(siteId);
+					
+					// try again
+					rv = m_siteCache.getTool(id);
+					return rv;
+				}
+				catch (IdUnusedException e) {}
+			}
+			
+			return null;
 		}
 
 		rv = m_storage.findTool(id);
-
-		// cache
-		if (m_callCache != null) m_callCache.put(command, rv, m_cacheSeconds);
 
 		return rv;
 
@@ -1101,18 +1122,35 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 	{
 		SitePage rv = null;
 
-		// check the cache
-		String command = "page@" + id;
-		if ((m_callCache != null) && (m_callCache.containsKey(command)))
+		// check the site cache
+		if (m_siteCache != null)
 		{
-			rv = (SitePage) m_callCache.get(command);
-			return rv;
+			rv = m_siteCache.getPage(id);
+			if (rv != null)
+			{
+				return rv;
+			}
+			
+			// if not, get the page's site id, cache the site, and try again
+			String siteId = m_storage.findPageSiteId(id);
+			if (siteId != null)
+			{
+				// read and cache the site, pages, tools
+				try
+				{
+					getDefinedSite(siteId);
+					
+					// try again
+					rv = m_siteCache.getPage(id);
+					return rv;
+				}
+				catch (IdUnusedException e) {}
+			}
+			
+			return null;
 		}
 
 		rv = m_storage.findPage(id);
-
-		// cache
-		if (m_callCache != null) m_callCache.put(command, rv, m_cacheSeconds);
 
 		return rv;
 	}
@@ -1187,18 +1225,24 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 	{
 		String rv = null;
 
-		// check the cache
-		String command = "skin@" + id;
-		if ((m_callCache != null) && (m_callCache.containsKey(command)))
+		// check the site cache
+		if (m_siteCache != null)
 		{
-			rv = (String) m_callCache.get(command);
-			return rv;
+			try
+			{
+				// this gets the site from the cache, or reads the site / pages / tools and caches it
+				Site s = getDefinedSite(id);
+				String skin = adjustSkin(s.getSkin(), s.isPublished());
+
+				return skin;
+			}
+			catch (IdUnusedException e) {}
+
+			// if the site's not around, use the default
+			return adjustSkin(null, true);
 		}
 
 		rv = m_storage.getSiteSkin(id);
-
-		// cache
-		if (m_callCache != null) m_callCache.put(command, rv, m_cacheSeconds);
 
 		return rv;
 	}
@@ -1254,27 +1298,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 	public void setUserSecurity(String userId, Set updateSites, Set visitUnpSites, Set visitSites)
 	{
 		m_storage.setUserSecurity(userId, updateSites, visitUnpSites, visitSites);
-	}
-
-	/**********************************************************************************************************************************************************************************************************************************************************
-	 * CacheRefresher implementation
-	 *********************************************************************************************************************************************************************************************************************************************************/
-
-	/**
-	 * Get a new value for this key whose value has already expired in the cache.
-	 * 
-	 * @param key
-	 *        The key whose value has expired and needs to be refreshed.
-	 * @param oldValue
-	 *        The old exipred value of the key.
-	 * @param event
-	 *        The event which triggered this refresh.
-	 * @return a new value for use in the cache for this key; if null, the entry will be removed.
-	 */
-	public Object refresh(Object key, Object oldValue, Event event)
-	{
-		// instead of refreshing when an entry expires, let it go and we'll get it again if needed -ggolden
-		return null;
 	}
 
 	// TODO: the following enable/disable routines are UGLY here - oh gods of the separation of concerns
@@ -2510,6 +2533,18 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 			return m_pages;
 
 		} // getPages
+
+		/**
+		 * Make sure pages and tools are loaded, not lazy
+		 */
+		public void loadPagesTools()
+		{
+			// first, pages
+			getPages();
+			
+			// next, tools from all pages, all at once
+			m_storage.readSiteTools(this);
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -4140,6 +4175,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 			// jam this changed tool configuration into the db, no matter what else is going on
 			// TODO: security? version?
 			m_storage.commitToolConfig(null, this);
+			
+			// track the site change
+			EventTrackingService.post(EventTrackingService.newEvent(SECURE_UPDATE_SITE, siteReference(getSiteId()), true));
 		}
 	}
 
@@ -4285,6 +4323,15 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 		public ToolConfiguration findTool(String id);
 
 		/**
+		 * Access the Site id for the tool with this id.
+		 * 
+		 * @param id
+		 *        The id of the tool.
+		 * @return The Site id for the tool with this id, if the tool is found, else null.
+		 */
+		public String findToolSiteId(String id);
+
+		/**
 		 * Access the Page that has this id, if one is defined, else return null. The page may be on any Site.
 		 * 
 		 * @param id
@@ -4292,6 +4339,15 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 		 * @return The SitePage that has this id, if one is defined, else return null.
 		 */
 		public SitePage findPage(String id);
+
+		/**
+		 * Access the Site id for the page with this id.
+		 * 
+		 * @param id
+		 *        The id of the page.
+		 * @return The Site id for the page with this id, if the page is found, else null.
+		 */
+		public String findPageSiteId(String id);
 
 		/**
 		 * Read site properties from storage into the site's properties.
@@ -4332,6 +4388,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser, Cache
 		 *        The page for which tools are desired.
 		 */
 		public void readPageTools(SitePage page, ResourceVector tools);
+
+		/**
+		 * Read tools for all pages from storage into the site's page's tools.
+		 * @param site The site for which tools are desired.
+		 */
+		public void readSiteTools(Site site);
 
 		/**
 		 * Return the skin for this site

@@ -98,6 +98,11 @@ public interface Site
 	public List getPages();
 
 	/**
+	 * Make sure pages and tools are loaded, not lazy
+	 */
+	public void loadPagesTools();
+
+	/**
 	 * Return the pages ordered by the tool order constraint for this site's type (as tool category).
 	 * @return The pages ordered by the tool order constraint for this site's type (as tool category).
 	 */

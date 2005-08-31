@@ -153,7 +153,7 @@ public class MemoryService
 		return service.newHardCache();
 	}
 
-	public static org.sakaiproject.service.framework.memory.Cache newSiteCache(org.sakaiproject.service.framework.memory.CacheRefresher param0, java.lang.String param1)
+	public static org.sakaiproject.service.framework.memory.SiteCache newSiteCache(long param0, java.lang.String param1)
 	{
 		org.sakaiproject.service.framework.memory.MemoryService service = getInstance();
 		if (service == null)

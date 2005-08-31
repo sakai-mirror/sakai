@@ -108,13 +108,11 @@ public interface MemoryService
 	Cache newHardCache();
 
 	/**
-	 * Construct a special Site Cache.  Attempts to keep complete on Event notification by
-	 * calling the refresher.
-	 * @param refresher The object that will handle refreshing of event notified modified or added entries.
-	 * @param pattern The "startsWith()" string for all resources that may be in this cache -
-	 * if null, don't watch events for updates.
+	 * Construct a special Site Cache.  No automatic refresh: expire only, from time and events.
+	 * @param sleep The number of seconds to sleep between expiration checks.
+	 * @param pattern The "startsWith()" string for all resources that may be in this cache - if null, don't watch events for updates.
 	 */
-	SiteCache newSiteCache(CacheRefresher refresher, String pattern);
+	SiteCache newSiteCache(long sleep, String pattern);
 	
 	/**
 	 * Get a status report of memory users.

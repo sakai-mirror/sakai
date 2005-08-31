@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 * 
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -23,6 +23,7 @@
 
 package org.sakaiproject.service.framework.memory;
 
+import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 
 /**
@@ -39,6 +40,13 @@ public interface SiteCache extends Cache
 	 * @return The ToolConfiguration that has this id, from a cached site.
 	 */
 	ToolConfiguration getTool(String toolId);
+
+	/**
+	 * Access the page that is part of a cached site, by page Id.
+	 * @param pageId The page's id.
+	 * @return The SitePage that has this id, from a cached site.
+	 */
+	SitePage getPage(String pageId);
 }
 
 

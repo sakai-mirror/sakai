@@ -288,9 +288,9 @@ public class BasicMemoryService implements MemoryService, Observer
 	/**
 	 * {@inheritDoc}
 	 */
-	public SiteCache newSiteCache(CacheRefresher refresher, String pattern)
+	public SiteCache newSiteCache(long sleep, String pattern)
 	{
-		return new SiteCacheImpl(this, m_eventTrackingService, m_logger, refresher, pattern);
+		return new SiteCacheImpl(this, m_eventTrackingService, m_logger, sleep, pattern);
 	}
 
 	/*******************************************************************************

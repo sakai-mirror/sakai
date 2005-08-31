@@ -1165,6 +1165,64 @@ public class DbSiteService
 		}
 
 		/**
+		 * Access the Site id for the page with this id.
+		 * 
+		 * @param id
+		 *        The id of the page.
+		 * @return The Site id for the page with this id, if the page is found, else null.
+		 */
+		public String findPageSiteId(String id)
+		{
+			String sql = "select SITE_ID from SAKAI_SITE_PAGE where PAGE_ID = ?";
+			Object fields[] = new Object[1];
+			fields[0] = id;
+
+			List found = m_sql.dbRead(sql, fields, null);
+
+			if (found.size() > 1)
+			{
+				m_logger.warn(this + ".findPageSiteId: multiple results for page id: " + id);
+			}
+			
+			String rv = null;
+			if (found.size() > 0)
+			{
+				rv = (String) found.get(0);
+			}
+
+			return rv;
+		}
+
+		/**
+		 * Access the Site id for the tool with this id.
+		 * 
+		 * @param id
+		 *        The id of the tool.
+		 * @return The Site id for the tool with this id, if the tool is found, else null.
+		 */
+		public String findToolSiteId(String id)
+		{
+			String sql = "select SITE_ID from SAKAI_SITE_TOOL where TOOL_ID = ?";
+			Object fields[] = new Object[1];
+			fields[0] = id;
+
+			List found = m_sql.dbRead(sql, fields, null);
+
+			if (found.size() > 1)
+			{
+				m_logger.warn(this + ".findToolSiteId: multiple results for page id: " + id);
+			}
+			
+			String rv = null;
+			if (found.size() > 0)
+			{
+				rv = (String) found.get(0);
+			}
+
+			return rv;
+		}
+
+		/**
 		 * Establish the internal security for this site.  Previous security settings are replaced for this site.
 		 * Assigning a user with update implies the two reads; assigning a user with unp read implies the other read.
 		 * @param siteId The id of the site.
@@ -1630,6 +1688,61 @@ public class DbSiteService
 					}
 				}
 			);
+		}
+
+		/**
+		 * Read tools for all pages from storage into the site's page's tools.
+		 * @param site The site for which tools are desired.
+		 */
+		public void readSiteTools(final Site site)
+		{
+			// read all tools for the site
+			String sql = "select TOOL_ID, PAGE_ID, REGISTRATION, TITLE, LAYOUT_HINTS, PAGE_ORDER from SAKAI_SITE_TOOL"
+					+ " where SITE_ID = ?"
+					+ " order by PAGE_ID, PAGE_ORDER ASC";
+			
+			Object fields[] = new Object[1];
+			fields[0] = site.getId();
+
+			List all = m_sql.dbRead(sql, fields,
+				new SqlReader()
+				{
+					public Object readSqlResultRecord(ResultSet result)
+					{
+						try
+						{
+							// get the fields
+							String id = result.getString(1);
+							String pageId = result.getString(2);
+							String registration = result.getString(3);
+							String title = result.getString(4);
+							String layout = result.getString(5);
+							int pageOrder = result.getInt(6);
+							
+							// get the page
+							BaseSitePageEdit page = (BaseSitePageEdit) site.getPage(pageId);
+							if ((page != null) && (page.m_toolsLazy))
+							{
+								// make the tool
+								BaseToolConfiguration tool = new BaseToolConfiguration(page, id, registration, title, layout, pageOrder);
+	
+								// add it to the tools
+								page.m_tools.add(tool);
+							}
+
+							return null;
+						}
+						catch (SQLException ignore) { return null;}
+					}
+				}
+			);
+			
+			// unlazy the page tools
+			for (Iterator i = site.getPages().iterator(); i.hasNext();)
+			{
+				BaseSitePageEdit page = (BaseSitePageEdit) i.next();
+				page.m_toolsLazy = false;
+			}
 		}
 
 		/**

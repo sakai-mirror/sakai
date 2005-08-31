@@ -377,7 +377,7 @@ public class MemCache implements Cache, Runnable, Observer
 			if (entry.hasExpired())
 			{
 				// if so, remove it
-				m_map.remove(key);
+				remove(key);
 				return false;
 			}
 			m_hitCount++;
@@ -397,7 +397,7 @@ public class MemCache implements Cache, Runnable, Observer
 		if (disabled()) return;
 
 		// remove it
-		m_map.remove(key);
+		remove(key);
 
 	}	// expire
 
@@ -440,7 +440,7 @@ public class MemCache implements Cache, Runnable, Observer
 			if (entry.hasExpired())
 			{
 				// if so, remove it
-				m_map.remove(key);
+				remove(key);
 				return null;
 			}
 			return entry.getPayload(key);
@@ -821,35 +821,50 @@ public class MemCache implements Cache, Runnable, Observer
 					m_logger.debug(this + ".checking ...");
 				}
 
-				// for each entry in the cache
+				// collect keys of expired entries in the cache
+				List expired = new Vector();
 				for (Iterator iKeys = m_map.entrySet().iterator(); iKeys.hasNext();)
 				{
 					Map.Entry e = (Map.Entry) iKeys.next();
+					String key = (String) e.getKey();
 					CacheEntry entry = (CacheEntry) e.getValue();
 
 					// if it has expired
 					if (entry.hasExpired())
 					{
-						// ask the refresher to deal with it
-						Object newValue = null;
-						
-						if (m_refresher != null)
-						{
-							newValue = m_refresher.refresh(e.getKey(), entry.getPayload(null), null);
-						}
-						
-						// if the response is not null, replace and rejuvinate
-						if (newValue != null)
-						{
-							entry = new CacheEntry(newValue, entry.getDuration());
-							e.setValue(entry);
-						}
+						expired.add(key);
+					}
+				}
 
-						// otherwise remove
-						else
+				// if we have a refresher, for each expired, try to refresh
+				if (m_refresher != null)
+				{
+					for (Iterator iKeys = expired.iterator(); iKeys.hasNext();)
+					{
+						String key = (String) iKeys.next();
+						CacheEntry entry = (CacheEntry) m_map.get(key);
+						if (entry != null)
 						{
-							iKeys.remove();
+							Object newValue = m_refresher.refresh(key, entry.getPayload(null), null);
+
+							remove(key);
+
+							// if the response is not null, replace and rejuvinate
+							if (newValue != null)
+							{
+								put(key, newValue, entry.getDuration());
+							}
 						}
+					}
+				}
+				
+				// if no refresher, for each expired, remove
+				else
+				{
+					for (Iterator iKeys = expired.iterator(); iKeys.hasNext();)
+					{
+						String key = (String) iKeys.next();
+						remove(key);
 					}
 				}
 			}
