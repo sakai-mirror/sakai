@@ -91,6 +91,13 @@ public interface MemoryService
 	Cache newHardCache(CacheRefresher refresher, long sleep);
 
 	/**
+	 * Construct a Cache.  No automatic refresh: expire only, from time and events.
+	 * @param sleep The number of seconds to sleep between expiration checks.
+	 * @param pattern The "startsWith()" string for all resources that may be in this cache - if null, don't watch events for expiration.
+	 */
+	Cache newHardCache(long sleep, String pattern);
+
+	/**
 	 * Construct a Cache.  No automatic refresh handling.
 	 */
 	Cache newCache();

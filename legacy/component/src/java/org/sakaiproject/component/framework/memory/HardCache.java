@@ -77,6 +77,22 @@ public class HardCache extends MemCache
 		super(memoryService, eventTrackingService, logger, refresher, sleep);
 		m_softRefs = false;
 	}
+
+	/**
+	 * Construct the Cache. No automatic refresh: expire only, from time and events.
+	 * @param sleep The number of seconds to sleep between expiration checks.
+	 * @param pattern The "startsWith()" string for all resources that may be in this cache - if null, don't watch events for updates.
+	 */
+	public HardCache(
+		BasicMemoryService memoryService,
+		EventTrackingService eventTrackingService,
+		Logger logger,
+		long sleep,
+		String pattern)
+	{
+		super(memoryService, eventTrackingService, logger, sleep, pattern);
+		m_softRefs = false;
+	}
 }
 
 

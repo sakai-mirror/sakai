@@ -42,10 +42,8 @@ import org.sakaiproject.service.framework.config.cover.ServerConfigurationServic
 import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
-import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
-import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Edit;
@@ -76,7 +74,7 @@ import org.w3c.dom.NodeList;
 * @version $Revision$
 * @see org.chefproject.core.User
 */
-public abstract class BaseUserDirectoryService implements UserDirectoryService, StorageUser, CacheRefresher
+public abstract class BaseUserDirectoryService implements UserDirectoryService, StorageUser
 {
 	/** Storage manager for this service. */
 	protected Storage m_storage = null;
@@ -241,7 +239,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	}
 
 	/** The # seconds to cache gets. 0 disables the cache. */
-	protected int m_cacheSeconds = 3 * 60;
+	protected int m_cacheSeconds = 0;
 
 	/**
 	 * Set the # minutes to cache a get.
@@ -252,6 +250,20 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	public void setCacheMinutes(String time)
 	{
 		m_cacheSeconds = Integer.parseInt(time) * 60;
+	}
+
+	/** The # seconds to cache gets. 0 disables the cache. */
+	protected int m_cacheCleanerSeconds = 0;
+
+	/**
+	 * Set the # minutes between cache cleanings.
+	 * 
+	 * @param time
+	 *        The # minutes between cache cleanings. (as an integer string).
+	 */
+	public void setCacheCleanerMinutes(String time)
+	{
+		m_cacheCleanerSeconds = Integer.parseInt(time) * 60;
 	}
 
 	/*******************************************************************************
@@ -274,14 +286,14 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			// make an anon. user
 			m_anon = new BaseUserEdit("");
 
-			// <= 0 minutes indicates no caching desired
-			if (m_cacheSeconds > 0)
+			// <= 0 indicates no caching desired
+			if ((m_cacheSeconds > 0) && (m_cacheCleanerSeconds > 0))
 			{
-				// build a synchronized map for the call cache, automatiaclly checking for expiration every 15 mins.
-				m_callCache = MemoryService.newHardCache(this, 15 * 60);
+				// build a synchronized map for the call cache, automatiaclly checking for expiration every 15 mins, expire on user events, too.
+				m_callCache = MemoryService.newHardCache(m_cacheCleanerSeconds, userReference(""));
 			}
 
-			m_logger.info(this +".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()) + " - caching minutes: " + m_cacheSeconds / 60);
+			m_logger.info(this +".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()) + " - caching minutes: " + m_cacheSeconds / 60 + " - cache cleaner minutes: " + m_cacheCleanerSeconds / 60);
 		}
 		catch (Throwable t)
 		{
@@ -333,9 +345,9 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		if (user == null)
 		{
 			// check the cache
-			if ((m_callCache != null) && (m_callCache.containsKey(id)))
+			if ((m_callCache != null) && (m_callCache.containsKey(ref)))
 			{
-				user = (UserEdit) m_callCache.get(id);
+				user = (UserEdit) m_callCache.get(ref);
 			}
 
 			else
@@ -362,7 +374,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 					CurrentService.setInThread(ref, user);
 					
 					// cache
-					if (m_callCache != null) m_callCache.put(id, user, m_cacheSeconds);
+					if (m_callCache != null) m_callCache.put(ref, user, m_cacheSeconds);
 				}
 			}			
 		}
@@ -915,7 +927,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			// cache the user (if we didn't go through the getUser() above, which would have cached it
 			else
 			{
-				if (m_callCache != null) m_callCache.put(id, rv, m_cacheSeconds);
+				if (m_callCache != null) m_callCache.put(userReference(id), rv, m_cacheSeconds);
 			}
 		}
 
@@ -1971,35 +1983,6 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	{
 		return null;
 	}
-
-	/*******************************************************************************
-	* CacheRefresher implementation (no container)
-	*******************************************************************************/
-
-	/**
-	* Get a new value for this key whose value has already expired in the cache.
-	* @param key The key whose value has expired and needs to be refreshed.
-	* @param oldValue The old exipred value of the key.
-	* @param event The event which triggered this refresh.
-	* @return a new value for use in the cache for this key; if null, the entry will be removed.
-	*/
-	public Object refresh(Object key, Object oldValue, Event event)
-	{
-		// instead of refreshing when an entry expires, let it go and we'll get it again if needed -ggolden
-		return null;
-
-//		// key is a reference, but our storage wants an id
-//		String id = userId((String) key);
-//
-//		// get whatever we have from storage for the cache for this vale
-//		User user = m_storage.get(id);
-//
-//		if (m_logger.isDebugEnabled())
-//			m_logger.debug(this +".refresh(): " + key + " : " + id);
-//
-//		return user;
-
-	} // refresh
 
 } // BaseUserDirectoryService
 

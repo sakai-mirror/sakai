@@ -248,6 +248,14 @@ public class BasicMemoryService implements MemoryService, Observer
 	/**
 	 * {@inheritDoc}
 	 */
+	public Cache newHardCache(long sleep, String pattern)
+	{
+		return new HardCache(this, m_eventTrackingService, m_logger, sleep, pattern);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public Cache newCache(CacheRefresher refresher, long sleep)
 	{
 		return new MemCache(this, m_eventTrackingService, m_logger, refresher, sleep);

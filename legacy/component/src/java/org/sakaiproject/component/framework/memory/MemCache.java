@@ -273,6 +273,27 @@ public class MemCache implements Cache, Runnable, Observer
 	}
 
 	/**
+	* Construct the Cache.  Event scanning if pattern not null - will expire entries.
+	* @param sleep The number of seconds to sleep between expiration checks.
+	* @param pattern The "startsWith()" string for all resources that may be in this cache - if null, don't watch events for expiration.
+	*/
+	public MemCache(BasicMemoryService memoryService, EventTrackingService eventTrackingService, Logger logger, long sleep, String pattern)
+	{
+		this(memoryService, eventTrackingService, logger);
+		m_refresherSleep = sleep;
+		m_resourcePattern = pattern;
+
+		// start the expiration thread
+		start();
+
+		// register to get events - first, before others
+		if (pattern != null)
+		{
+			m_eventTrackingService.addPriorityObserver(this);
+		}
+	}
+
+	/**
 	* Clean up.
 	*/
 	public void destroy()
@@ -810,7 +831,12 @@ public class MemCache implements Cache, Runnable, Observer
 					if (entry.hasExpired())
 					{
 						// ask the refresher to deal with it
-						Object newValue = m_refresher.refresh(e.getKey(), entry.getPayload(null), null);
+						Object newValue = null;
+						
+						if (m_refresher != null)
+						{
+							newValue = m_refresher.refresh(e.getKey(), entry.getPayload(null), null);
+						}
 						
 						// if the response is not null, replace and rejuvinate
 						if (newValue != null)
