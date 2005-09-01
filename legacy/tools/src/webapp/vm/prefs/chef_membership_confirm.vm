@@ -11,8 +11,9 @@
 	Are you sure, you want to unjoin "$unjoinSite" site. 
 	<p></p>
 		<div class="itemAction">
-			<input type="submit" class="active" name="eventSubmit_doGoto_unjoinyes" value="Yes" />
-			<input type="submit" class="active" name="eventSubmit_doGoto_unjoincancel" value="Cancel" />
+			<a href="#toolLink("$action" "doGoto_unjoinyes")" >Yes</a>
+			|
+			<a href="#toolLink("$action" "doGoto_unjoincancel")" >Cancel</a>
 		
 		</div>	
 	</form>
