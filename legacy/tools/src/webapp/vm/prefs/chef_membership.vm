@@ -39,10 +39,14 @@
 						## TODO: G - as usual the mockups do not get into these details - but is the following column nowrap or not? Depends on the possible length of the text - find out (gsilver)
 						<td headers="worksite" style="white-space:nowrap">
 							<a href="$site.Url" target="_top" title="Go to site $validator.escapeHtml($site.Title)">$validator.escapeHtml($site.Title)</a>
-							#if ($SiteService.allowUnjoinSite($site.Id))
-								<div class="itemAction">
-									<a href="#toolLinkParam("$action" "doUnjoin" "itemReference=$validator.escapeUrl($site.Id)")" title="Unjoin the site $validator.escapeHtml($site.Title)">$tlang.getString('mb.unjoin')</a>
-								</div>	
+							#if($disableUnjoinSelection)
+								<p class ="shorttext"></p>
+							#else		
+								#if ($SiteService.allowUnjoinSite($site.Id))
+									<div class="itemAction">
+										<a href="#toolLinkParam("$action" "doGoto_unjoinconfirm" "itemReference=$validator.escapeUrl($site.Id)")" title="$tlang.getString('mb.unjoin')">$tlang.getString('mb.unjoin')</a>
+									</div>	
+								#end
 							#end
 						</td>
 						<td headers="description">

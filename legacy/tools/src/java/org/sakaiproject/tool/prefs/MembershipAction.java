@@ -38,6 +38,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 
@@ -53,7 +54,9 @@ public class MembershipAction extends PagedResourceActionII
 	private static ResourceBundle rb = ResourceBundle.getBundle("prefs");
 	private static String SORT_ASC = "sort_asc";
 	private static String JOINABLE_SORT_ASC = "sort_asc";
-	
+	//SAK-1606
+	private static String STATE_CONFIRM_VIEW_MODE="state_confirm_view";
+	private static String UNJOIN_SITE="unjoin_site";
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.cheftool.PagedResourceActionII#sizeResources(org.sakaiproject.service.framework.session.SessionState)
 	 */
@@ -131,11 +134,38 @@ public class MembershipAction extends PagedResourceActionII
 			
 			context.put("SiteService", SiteService.getInstance());
 
+			//htripath-SAK-1606
+			//if property set in sakai.properties then completely disable 'unjoin' link
+		  if ((ServerConfigurationService.getString("disable.membership.unjoin.selection")).equals("true"))
+		  {
+		    context.put("disableUnjoinSelection", Boolean.TRUE);
+		  }			
+//		  String siteId=PortalService.getCurrentSiteId();
+//		  String userId = UsageSessionService.getSessionUserId();		  
+//		  String realmId = SiteService.siteReference(siteId);
+//      try
+//      {
+//        Realm realm = RealmService.getRealm(realmId);
+//        Role r = realm.getUserRole(userId);
+//      }
+//      catch (IdUnusedException e)
+//      {
+//        e.printStackTrace();
+//      }      
+		  //htripath-end
 		}
 		else
 		{
 			template = buildJoinableContext(portlet, context, rundata, state);
 		}
+		//htripath-SAK1606
+		//build confirmation screen context
+		if (state.getAttribute(STATE_CONFIRM_VIEW_MODE)!=null){
+		  if (state.getAttribute(STATE_CONFIRM_VIEW_MODE).equals("unjoinconfirm")){
+		  template=buildUnjoinconfirmContext(portlet,context,rundata,state);
+		  }
+		}
+		//htripath-end
 		context.put("tlang",rb);
 		context.put("alertMessage", state.getAttribute(STATE_MESSAGE));
 
@@ -143,6 +173,66 @@ public class MembershipAction extends PagedResourceActionII
 
 	} // buildMainPanelContext
 	
+	//htripath-SAK1606
+	/**
+	 * Navigate to confirmation screen
+	 */
+	public void doGoto_unjoinconfirm(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+		state.setAttribute(STATE_CONFIRM_VIEW_MODE, "unjoinconfirm");
+		String id = data.getParameters().getString("itemReference");
+		state.setAttribute(UNJOIN_SITE,id);
+	}
+	/**
+	 * Build context for confirmation screen
+	 * @param portlet
+	 * @param context
+	 * @param runData
+	 * @param state
+	 * @return
+	 */
+	public String buildUnjoinconfirmContext( VelocityPortlet portlet, 
+			Context context,
+			RunData runData,
+			SessionState state)
+	{
+
+	context.put("tlang",rb);
+	if (state.getAttribute(UNJOIN_SITE) !=null){
+	  try
+    {
+      context.put("unjoinSite", SiteService.getSite(((String)state.getAttribute(UNJOIN_SITE))).getTitle());
+    }
+    catch (IdUnusedException e)
+    {
+      Log.warn("chef", this +".buildUnjoinconfirmContext(): " + e);
+    }
+	}
+	
+	String template = (String)getContext(runData).get("template");
+	return template + "_confirm";
+	}
+	/**
+	 * process unjoin 
+	 * @param data
+	 */
+	public void doGoto_unjoinyes(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+		state.removeAttribute(STATE_CONFIRM_VIEW_MODE);
+		doUnjoin(data);
+	}
+	/**
+	 * cancel unjoin of site
+	 * @param data
+	 */
+	public void doGoto_unjoincancel(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+		state.removeAttribute(STATE_CONFIRM_VIEW_MODE);
+	}
+	//htripath-end
 	/**
 	 * Build the menu.
 	 */
@@ -252,9 +342,10 @@ public class MembershipAction extends PagedResourceActionII
 	public void doUnjoin(RunData data)
 	{
 		SessionState state = ((JetspeedRunData) data).getPortletSessionState(((JetspeedRunData) data).getJs_peid());
-
+		
 		// read the form / state to figure out which attachment(s) to add.
-		String id = data.getParameters().getString("itemReference");
+		//String id = data.getParameters().getString("itemReference");
+		String id=(String) state.getAttribute(UNJOIN_SITE);
 		if (id != null)
 		{		
 			try
