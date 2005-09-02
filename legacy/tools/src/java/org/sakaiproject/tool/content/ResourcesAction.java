@@ -82,11 +82,6 @@ import org.sakaiproject.service.legacy.content.ContentResourceEdit;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.RealmEdit;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.RoleEdit;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.Resource;
@@ -1195,8 +1190,8 @@ public class ResourcesAction
 			context.put("dropboxMode", Boolean.FALSE);
 			
 			// find out about pubview
-			boolean pubview = getPubViewInheritance(ContentHostingService.getReference(id));
-			if (!pubview) pubview = getPubView(ContentHostingService.getReference(id));
+			boolean pubview = ContentHostingService.isInheritingPubView(id);
+			if (!pubview) pubview = ContentHostingService.isPubView(id);
 			context.put("pubview", new Boolean(pubview));
 		}
 		else if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
@@ -1351,8 +1346,8 @@ public class ResourcesAction
 			context.put("dropboxMode", Boolean.FALSE);
 			
 			// find out about pubview
-			context.put("pubviewset", new Boolean(getPubViewInheritance(ContentHostingService.getReference(id))));
-			context.put("pubview", new Boolean(getPubView(ContentHostingService.getReference(id))));
+			context.put("pubviewset", new Boolean(ContentHostingService.isInheritingPubView(id)));
+			context.put("pubview", new Boolean(ContentHostingService.isPubView(id)));
 
 		}
 		else if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
@@ -2009,7 +2004,7 @@ public class ResourcesAction
 								// deal with pubview when in resource mode//%%%
 								if (! item.isPubviewset())
 								{
-									setPubView(ContentHostingService.getReference(resource.getId()), item.isPubview());
+									ContentHostingService.setPubView(resource.getId(), item.isPubview());
 								}
 							}
 							
@@ -2177,7 +2172,7 @@ public class ResourcesAction
 				// deal with pubview when in resource mode//%%%
 				if (! item.isPubviewset())
 				{
-					setPubView(ContentHostingService.getReference(resource.getId()), item.isPubview());
+					ContentHostingService.setPubView(resource.getId(), item.isPubview());
 				}
 			}
 		}
@@ -2225,10 +2220,10 @@ public class ResourcesAction
 				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
 				{
 					// deal with pubview in resource mode//%%%
-					// boolean pubviewset = getPubViewInheritance(ContentHostingService.getReference(collection.getId()));
+					// boolean pubviewset = ContentHostingService.isInheritingPubView(collection.getId());
 					if (!item.isPubviewset())
 					{
-						setPubView(ContentHostingService.getReference(collection.getId()), item.isPubview());
+						ContentHostingService.setPubView(collection.getId(), item.isPubview());
 					}
 				}
 			}
@@ -2373,7 +2368,7 @@ public class ResourcesAction
 						// deal with pubview when in resource mode//%%%
 						if (! item.isPubviewset())
 						{
-							setPubView(ContentHostingService.getReference(resource.getId()), item.isPubview());
+							ContentHostingService.setPubView(resource.getId(), item.isPubview());
 						}
 					}
 					String mode = (String) state.getAttribute(STATE_MODE);
@@ -2875,7 +2870,7 @@ public class ResourcesAction
 						// deal with pubview when in resource mode//%%%
 						if (! item.isPubviewset())
 						{
-							setPubView(ContentHostingService.getReference(resource.getId()), item.isPubview());
+							ContentHostingService.setPubView(resource.getId(), item.isPubview());
 						}
 					}
 					String mode = (String) state.getAttribute(STATE_MODE);
@@ -3919,13 +3914,12 @@ public class ResourcesAction
 				item.setCopyrightAlert(false);
 			}
 			
-			String collectionReference = ContentHostingService.getReference(containerId);
-			boolean pubviewset = getPubViewInheritance(collectionReference) || getPubView(collectionReference);
+			boolean pubviewset = ContentHostingService.isInheritingPubView(containerId) || ContentHostingService.isPubView(containerId);
 			item.setPubviewset(pubviewset);
 			boolean pubview = pubviewset;
 			if (!pubview)
 			{
-				pubview = getPubView(ContentHostingService.getReference(id));
+				pubview = ContentHostingService.isPubView(id);
 			}
 			item.setPubview(pubview);
 			
@@ -4291,7 +4285,7 @@ public class ResourcesAction
 				boolean pubview = false;
 				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
 				{
-					pubviewset = getPubViewInheritance(ContentHostingService.getReference(id));
+					pubviewset = ContentHostingService.isInheritingPubView(id);
 					if (!pubviewset)
 					{
 						pubview = params.getBoolean("pubview");
@@ -4412,7 +4406,7 @@ public class ResourcesAction
 						// when in resource mode
 						if (!pubviewset)
 						{
-							setPubView(cedit.getReference(), pubview);
+							ContentHostingService.setPubView(cedit.getId(), pubview);
 						}
 					}
 				}
@@ -4425,7 +4419,7 @@ public class ResourcesAction
 						// when in resource mode
 						if (!pubviewset)
 						{
-							setPubView(redit.getReference(), pubview);
+							ContentHostingService.setPubView(redit.getId(), pubview);
 						}
 					}
 				}
@@ -5427,7 +5421,7 @@ public class ResourcesAction
 						// when in resource mode
 						if (!item.isPubviewset())
 						{
-							setPubView(cedit.getReference(), item.isPubview());
+							ContentHostingService.setPubView(cedit.getId(), item.isPubview());
 						}
 					}
 				}
@@ -5440,7 +5434,7 @@ public class ResourcesAction
 						// when in resource mode
 						if (!item.isPubviewset())
 						{
-							setPubView(redit.getReference(), item.isPubview());
+							ContentHostingService.setPubView(redit.getId(), item.isPubview());
 						}
 					}
 				}
@@ -7315,186 +7309,6 @@ public class ResourcesAction
 		}
 
 	}	// metadataGroupsIntoContext
-
-	/**
-	* Update this resource's realm so that it matches the setting for public view.
-	* @param ref The resource reference
-	* @param pubview The public view setting.
-	* @throws InUseException if the ream is not availabe for modification.
-	*/
-	protected static void setPubView(String ref, boolean pubview)
-	{
-		// edit the realm
-		RealmEdit edit = null;
-
-		try
-		{
-			edit = RealmService.editRealm(ref);
-		}
-		catch (IdUnusedException e)
-		{
-			// if no realm yet, and we need one, make one
-			if (pubview)
-			{
-				try
-				{
-					edit = RealmService.addRealm(ref);
-				}
-				catch (IdInvalidException ee)
-				{
-				}
-				catch (IdUsedException ee)
-				{
-				}
-				catch (PermissionException ee)
-				{
-				}
-			}
-		}
-		catch (PermissionException e)
-		{
-		}
-		catch (InUseException e)
-		{
-		}
-
-		// if we have no realm and don't need one, we are done
-		if ((edit == null) && (!pubview))
-			return;
-
-		// if we need a realm and didn't get an edit, exception
-		if ((edit == null) && pubview)
-			return;
-
-		boolean changed = false;
-		boolean delete = false;
-
-		// align the realm with our positive setting
-		if (pubview)
-		{
-			// make sure the anon role exists and has "content.read" - the only client of pubview
-			RoleEdit role = edit.getRoleEdit(RealmService.ANON_ROLE);
-			if (role == null)
-			{
-				try
-				{
-					role = edit.addRole(RealmService.ANON_ROLE);
-				}
-				catch (IdUsedException ignore) {}
-			}
-
-			if (!role.contains("content.read"))
-			{
-				role.add("content.read");
-				changed = true;
-			}
-		}
-
-		// align the realm with our negative setting
-		else
-		{
-			// get the role
-			RoleEdit role = edit.getRoleEdit(RealmService.ANON_ROLE);
-			if (role != null)
-			{
-				if (role.contains("content.read"))
-				{
-					changed = true;
-					role.remove("content.read");
-				}
-
-				if (role.isEmpty())
-				{
-					edit.removeRole(role.getId());
-					changed = true;
-				}
-			}
-
-			// if "empty", we can delete the realm
-			if (edit.isEmpty())
-				delete = true;
-		}
-
-		// if we want the realm deleted
-		if (delete)
-		{
-			try
-			{
-				RealmService.removeRealm(edit);
-			}
-			catch (PermissionException e)
-			{
-				RealmService.cancelEdit(edit);
-			}
-		}
-
-		// if we made a change
-		else if (changed)
-		{
-			RealmService.commitEdit(edit);
-		}
-
-		else
-		{
-			RealmService.cancelEdit(edit);
-		}
-
-	} // setPubView
-
-	/**
-	* Does this resource support public view?
-	* @param ref The resource reference
-	* @return true if this resource supports public view, false if not.
-	*/
-	protected static boolean getPubView(String ref)
-	{
-		// get the realm
-		try
-		{
-			Realm realm = RealmService.getRealm(ref);
-
-			// if the realm has no anon role, no pub view
-			Role anon = realm.getRole(RealmService.ANON_ROLE);
-			if (anon == null)
-				return false;
-
-			// if the role doesn't have "content.read", no pub view
-			if (!anon.contains("content.read"))
-				return false;
-		}
-		catch (IdUnusedException e)
-		{
-			// if no realm, no pub view
-			return false;
-		}
-
-		return true;
-
-	} // getPubView
-
-	/**
-	* Does this resource inherit a public view setting from it's relevant set of realms, other than its own?
-	* @param ref The resource reference
-	* @return true if this resource inherits public view, false if not.
-	*/
-	protected static boolean getPubViewInheritance(String ref)
-	{
-		// make a reference, and get the relevant realm ids
-		Reference r = new Reference(ref);
-		List realms = r.getRealms();
-		for (Iterator iRealms = realms.iterator(); iRealms.hasNext();)
-		{
-			String realmId = (String) iRealms.next();
-			if (!realmId.equals(ref))
-			{
-				if (getPubView(realmId))
-					return true;
-			}
-		}
-
-		return false;
-
-	} // getPubViewInheritance
 	
 	/**
 	 * initialize the metadata context

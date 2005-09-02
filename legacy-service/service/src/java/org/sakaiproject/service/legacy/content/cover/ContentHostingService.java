@@ -546,7 +546,31 @@ public class ContentHostingService
 
 		return service.archive(param0, param1, param2, param3, param4);
 	}
+
+	public static boolean isPubView(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null)
+			return false;
+
+		return service.isPubView(param0);
+	}
+
+	public static boolean isInheritingPubView(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null)
+			return false;
+
+		return service.isInheritingPubView(param0);
+	}
+
+	public static void setPubView(java.lang.String param0, boolean param1)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null)
+			return;
+
+		service.setPubView(param0, param1);
+	}
 }
-
-
-
