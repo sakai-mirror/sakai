@@ -3062,8 +3062,41 @@ public class SiteAction extends PagedResourceActionII
         }
       }
     }
+    //htripath- Sep02 - option to select only tools available IM257143
+    List toolzipList = new Vector();
+    List pageList=new Vector();
+    String siteId=PortalService.getCurrentSiteId();//ToolConfiguration.getSiteId();    
+    String userId = UsageSessionService.getSessionUserId();
+    Site site=null;
+    try
+    {
+      site=SiteService.getSite(siteId);
+      pageList=site.getPages();
+    }
+    catch (IdUnusedException e1)
+    {
+      Log.warn("chef-site import", e1.getMessage());
+    }
+    //create toolzipList
+    for (Iterator iter = allzipList.iterator(); iter.hasNext();)
+    {
+      boolean toolpresent=false ;
+      ImportMetadata zipelement = (ImportMetadata) iter.next();
+      for (Iterator iterator = pageList.iterator(); iterator.hasNext();)
+      {
+        SitePage pgelement = (SitePage) iterator.next();
+        if (pgelement.getTitle().equals(zipelement.getSakaiTool())){
+          toolpresent=true;
+        }
+      }
+      if(toolpresent){
+        toolzipList.add(zipelement) ;
+      }      
+    }
+
+    state.setAttribute(ALL_ZIP_IMPORT_SITES, toolzipList);
     //set Attributes
-    state.setAttribute(ALL_ZIP_IMPORT_SITES, allzipList);
+    //state.setAttribute(ALL_ZIP_IMPORT_SITES, allzipList);
     state.setAttribute(FINAL_ZIP_IMPORT_SITES, finalzipList);
     state.setAttribute(DIRECT_ZIP_IMPORT_SITES, directcopyList);
     state.setAttribute(CLASSIC_ZIP_FILE_NAME, fileName);
