@@ -15,5 +15,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-1.1.5.jar"/>
 	<classpathentry kind="src" path="/legacy-service"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util"/>
+	<classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xercesImpl-2.6.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
