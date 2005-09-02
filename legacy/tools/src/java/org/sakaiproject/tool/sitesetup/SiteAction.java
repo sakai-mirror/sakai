@@ -8909,6 +8909,7 @@ public class SiteAction extends PagedResourceActionII
 						{
 							member.setRole(r.getId());
 						}
+						participants.add(member);
 					}
 				}
 				
@@ -8938,8 +8939,6 @@ public class SiteAction extends PagedResourceActionII
 		{
 			Log.warn("chef", this + "  IdUnusedException " + realmId);
 		}
-		
-		participants.addAll(members);
 		
 		state.setAttribute(STATE_PARTICIPANT_LIST, participants);
 		
