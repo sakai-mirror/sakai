@@ -25,6 +25,7 @@ package org.sakaiproject.tool.login;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -71,6 +72,8 @@ public class LoginTool extends HttpServlet
 	/** Session attribute set and shared with ContainerLoginTool: if set we have failed container and need to check internal. */
 	public static final String ATTR_CONTAINER_CHECKED = "sakai.login.container.checked";
 
+	private static ResourceBundle rb = ResourceBundle.getBundle("auth");
+   
 	/**
 	 * Access the Servlet's information display.
 	 * 
@@ -239,7 +242,7 @@ public class LoginTool extends HttpServlet
 				+ "								</tr>"
 				+ "								<tr>"
 				+ "									<td colspan=\"2\">"
-				+ "										<input name=\"submit\" type=\"submit\" id=\"submit\" value=\"Login\"/>"
+				+ "										<input name=\"submit\" type=\"submit\" id=\"submit\" value=\"LoginSubmit\"/>"
 				+ "									</td>"
 				+ "								</tr>"
 				+ "							</table>"
@@ -257,18 +260,10 @@ public class LoginTool extends HttpServlet
 		// fragment or not?
 		boolean fragment = Boolean.TRUE.toString().equals(req.getAttribute(Tool.FRAGMENT));
 
-		String eidWording = null;
-		String pwWording = null;
-
-		// read my configuration
-		if (tool != null)
-		{
-			eidWording = tool.getRegisteredConfig().getProperty("eid");
-			pwWording = tool.getRegisteredConfig().getProperty("pw");
-		}
-
-		if (eidWording == null) eidWording = "eid";
-		if (pwWording == null) pwWording = "pw";
+		String eidWording = rb.getString("userid");
+		String pwWording = rb.getString("log.pass");
+      String loginRequired = rb.getString("log.logreq");
+      String loginWording = rb.getString("log.login");
 
 		if (!fragment)
 		{
@@ -303,6 +298,8 @@ public class LoginTool extends HttpServlet
 		// add our wording
 		html = html.replaceAll("EID", eidWording);
 		html = html.replaceAll("PW", pwWording);
+		html = html.replaceAll("Login Required", loginRequired);
+		html = html.replaceAll("LoginSubmit", loginWording);
 
 		// add the default skin
 		html = html.replaceAll("DEFAULT_SKIN", defaultSkin);
@@ -312,7 +309,7 @@ public class LoginTool extends HttpServlet
 		String msg = (String) session.getAttribute(ATTR_MSG);
 		if (msg != null)
 		{
-			html = html.replaceAll("MSG", "<div class=\"chefAlertBox\">Alert: " + msg + "</div>");
+			html = html.replaceAll("MSG", "<div class=\"chefAlertBox\">" + rb.getString("gen.alert") + " " + msg + "</div>");
 			session.removeAttribute(ATTR_MSG);
 		}
 		else

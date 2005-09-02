@@ -1340,11 +1340,8 @@ public class CharonPortal extends HttpServlet
 			Tool loginTool = ToolManager.getTool("sakai.login");
 			String eidWording = null;
 			String pwWording = null;
-			if (loginTool != null)
-			{
-				eidWording = StringUtil.trimToNull(loginTool.getRegisteredConfig().getProperty("eid"));
-				pwWording = StringUtil.trimToNull(loginTool.getRegisteredConfig().getProperty("pw"));
-			}
+			eidWording = StringUtil.trimToNull(rb.getString("log.userid"));
+			pwWording = StringUtil.trimToNull(rb.getString("log.pass"));
 
 			if (eidWording == null) eidWording = "eid";
 			if (pwWording == null) pwWording = "pw";
@@ -1489,7 +1486,7 @@ public class CharonPortal extends HttpServlet
 
 		out.println("				<a  accesskey=\"h\" href=\"javascript:;\" " +  "onclick=\"window.open('" + helpUrl + "'"
 				+ ",'Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\" onkeypress=\"window.open('" + helpUrl + "'"
-				+ ",'Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\">Help</a>");
+				+ ",'Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\">" + rb.getString("sit.help") +"</a>");
 		out.println("			</li>");
 
 		out.println("		</ul>");
