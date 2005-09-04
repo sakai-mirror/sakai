@@ -38,9 +38,13 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.sakaiproject.javax.PagingPosition;
+import org.sakaiproject.service.framework.memory.Cache;
+import org.sakaiproject.service.framework.memory.CacheRefresher;
+import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
+import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.realm.Realm;
 import org.sakaiproject.service.legacy.realm.RealmEdit;
 import org.sakaiproject.service.legacy.realm.Role;
@@ -62,8 +66,36 @@ import org.w3c.dom.Element;
 * @version $Revision$
 */
 public class DbRealmService
-	extends BaseRealmService
+	extends BaseRealmService implements CacheRefresher
 {
+    /** 
+     * A cache of defined 'functions' (event types) 
+     * so that the existence of a function doesn't have to be checked every time a 
+     * realm record is updated.
+     */
+    protected Cache m_functionCache = null;
+    
+    /** The # minutes to cache the function names. 0 disables the cache. */
+    protected int m_cacheMinutes = 3;
+
+    /**
+     * Set the # minutes to cache the function names.
+     * 
+     * @param time
+     *        The # minutes to cache the function names (as an integer string).
+     */
+    public void setCacheMinutes(String time)
+    {
+        m_cacheMinutes = Integer.parseInt(time);
+    }
+    
+    public Object refresh(Object key, Object oldValue, Event event)
+    {
+        // don't refresh the cache, let it expire
+        return null;
+    }
+
+    
 	/** Table name for realms. */
 	protected String m_realmTableName = "SAKAI_REALM";
 
@@ -159,6 +191,16 @@ public class DbRealmService
 	 */
 	public void init()
 	{
+        // <= 0 minutes indicates no caching desired
+        if (m_cacheMinutes > 0)
+        {
+            // build a synchronized map for the function cache, automatiaclly checking for expiration every 3 mins.
+            m_functionCache = MemoryService.newHardCache(this, m_cacheMinutes*60);
+        }
+
+        m_logger.info(this + ".init() - caching minutes: " + m_cacheMinutes);
+
+        
 		try
 		{
 			// if we are auto-creating our schema, check and create
@@ -182,6 +224,9 @@ public class DbRealmService
 		{
 			m_logger.warn(this +".init(): ", t);
 		}
+        
+        
+        
 	}
 	
 	/*******************************************************************************
@@ -925,6 +970,12 @@ public class DbRealmService
 		 */
 		protected boolean checkFunctionName(Connection conn, String name, boolean force)
 		{
+            if (name == null) return false;
+            name = name.intern();
+            
+            // check the cache to see if the function name already exists
+            if (m_functionCache.containsKey(name)) return true;
+            
 			String statement = "select count(1) from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?";
 			Object[] fields = new Object[1];
 			fields[0] = name;
@@ -970,6 +1021,9 @@ public class DbRealmService
 				rv = true;
 			}
 			
+            // cache the existance of the function name
+            if (rv) m_functionCache.put(name, name, m_cacheMinutes*60);
+            
 			return rv;
 		}
 
