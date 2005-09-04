@@ -268,6 +268,9 @@ public class DbSiteService
 				statement = "delete from SAKAI_SITE_PAGE where SITE_ID = ?";			
 				m_sql.dbWrite(connection, statement, fields);
 
+                // since we've already deleted the old values, don't delete them again.
+                boolean deleteAgain = false;
+                
 				// add each page
 				int pageOrder = 1;
 				for (Iterator iPages = edit.getPages().iterator(); iPages.hasNext();)
@@ -286,8 +289,8 @@ public class DbSiteService
 					fields[4] = new Integer(pageOrder++);
 					m_sql.dbWrite(connection, statement, fields);
 					
-					// write the page's properties
-					writeProperties(connection, "SAKAI_SITE_PAGE_PROPERTY", "PAGE_ID", page.getId(), "SITE_ID", caseId(edit.getId()), page.getProperties());
+ 					// write the page's properties
+					writeProperties(connection, "SAKAI_SITE_PAGE_PROPERTY", "PAGE_ID", page.getId(), "SITE_ID", caseId(edit.getId()), page.getProperties(), deleteAgain);
 					
 					// write the tools
 					int toolOrder = 1;
@@ -310,7 +313,7 @@ public class DbSiteService
 						m_sql.dbWrite(connection, statement, fields);
 
 						// write the tool's properties
-						writeProperties(connection, "SAKAI_SITE_TOOL_PROPERTY", "TOOL_ID", tool.getId(), "SITE_ID", caseId(edit.getId()), tool.getPlacementConfig());
+						writeProperties(connection, "SAKAI_SITE_TOOL_PROPERTY", "TOOL_ID", tool.getId(), "SITE_ID", caseId(edit.getId()), tool.getPlacementConfig(), deleteAgain);
 					}
 				}
 

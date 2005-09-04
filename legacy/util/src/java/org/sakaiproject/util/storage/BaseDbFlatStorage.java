@@ -987,11 +987,17 @@ public class BaseDbFlatStorage
 		}
 	}
 
+    public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId, ResourceProperties props)
+    {
+        boolean deleteFirst = true;
+        writeProperties(conn, table, idField, id, extraIdField, extraId, props, deleteFirst);
+    }
+    
 	/**
 	 * Replace any properties for this resource with the resource's current set of properties.
 	 * @param r The resource for which properties are to be written.
 	 */
-	public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId, ResourceProperties props)
+	public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId, ResourceProperties props, boolean deleteFirst)
 	{
 		// if not properties table set, skip it
 		if (table == null) return;
@@ -1009,17 +1015,24 @@ public class BaseDbFlatStorage
 				connection.setAutoCommit(false);
 			}
 	
-			// delete what's there
-			String statement =
-					"delete from " + table
-					+   " where ( " + idField + " = ? )";
-	
-			Object fields[] = new Object[1];
-			fields[0] = id;
-	
-			// process the delete statement
-			m_sql.dbWrite(connection, statement, fields);
-			
+            String statement;
+            Object fields[];
+            
+            //if (true)
+            if (deleteFirst)
+            {
+    			// delete what's there
+    			statement =
+    					"delete from " + table
+    					+   " where ( " + idField + " = ? )";
+    	
+    			fields = new Object[1];
+    			fields[0] = id;
+    	
+    			// process the delete statement
+    			m_sql.dbWrite(connection, statement, fields);
+            }
+            
 			// the SQL statement
 			statement =
 					"insert into " + table
@@ -1098,11 +1111,21 @@ public class BaseDbFlatStorage
 		}
 	}
 
+    /**
+     * Replace any properties for this resource with the resource's current set of properties.
+     * @param r The resource for which properties are to be written.
+     */
+    public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId, Properties props)
+    {
+        boolean deleteFirst = true;
+        writeProperties(conn, table, idField, id, extraIdField, extraId, props, deleteFirst);
+    }
+    
 	/**
 	 * Replace any properties for this resource with the resource's current set of properties.
 	 * @param r The resource for which properties are to be written.
 	 */
-	public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId, Properties props)
+	public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId, Properties props, boolean deleteFirst)
 	{
 		// if not properties table set, skip it
 		if (table == null) return;
@@ -1120,17 +1143,23 @@ public class BaseDbFlatStorage
 				connection.setAutoCommit(false);
 			}
 	
-			// delete what's there
-			String statement =
-					"delete from " + table
-					+   " where ( " + idField + " = ? )";
+            String statement;
+            Object[] fields;
+            //if (true)
+            if (deleteFirst)
+            {
+    			// delete what's there
+    			statement =
+    					"delete from " + table
+    					+   " where ( " + idField + " = ? )";
 	
-			Object fields[] = new Object[1];
-			fields[0] = id;
-	
-			// process the delete statement
-			m_sql.dbWrite(connection, statement, fields);
-			
+    			fields = new Object[1];
+    			fields[0] = id;
+    	
+    			// process the delete statement
+    			m_sql.dbWrite(connection, statement, fields);
+            }
+            
 			// the SQL statement
 			statement =
 					"insert into " + table
