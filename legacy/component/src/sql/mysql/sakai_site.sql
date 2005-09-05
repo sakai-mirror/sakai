@@ -110,6 +110,11 @@ ALTER TABLE SAKAI_SITE_PAGE_PROPERTY
        ADD  ( FOREIGN KEY (SITE_ID)
                              REFERENCES SAKAI_SITE (SITE_ID) ) ;
 
+CREATE INDEX IE_SAKAI_SITE_PAGE_PROP_SITE ON SAKAI_SITE_PAGE_PROPERTY
+(
+       SITE_ID                       ASC
+);
+
 -----------------------------------------------------------------------------
 -- SAKAI_SITE_TOOL
 -----------------------------------------------------------------------------
@@ -156,6 +161,11 @@ ALTER TABLE SAKAI_SITE_TOOL_PROPERTY
        ADD  ( FOREIGN KEY (SITE_ID)
                              REFERENCES SAKAI_SITE (SITE_ID) ) ;
 
+CREATE INDEX IE_SAKAI_SITE_TOOL_PROP_SITE ON SAKAI_SITE_TOOL_PROPERTY
+(
+       SITE_ID                       ASC
+);
+
 -----------------------------------------------------------------------------
 -- SAKAI_SITE_USER
 -- PERMISSION is -1 for write, 0 for read unpublished, 1 for read published
@@ -174,6 +184,11 @@ ALTER TABLE SAKAI_SITE_USER
 ALTER TABLE SAKAI_SITE_USER
        ADD  ( FOREIGN KEY (SITE_ID)
                              REFERENCES SAKAI_SITE (SITE_ID) ) ;
+
+CREATE INDEX IE_SAKAI_SITE_USER_USER ON SAKAI_SITE_USER
+(
+       USER_ID                       ASC
+);
 
 -- Create sites for the administrator.
 
