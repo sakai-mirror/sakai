@@ -1,25 +1,25 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ * 
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ * 
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 
 // package
 package org.sakaiproject.util.storage;
@@ -46,23 +46,17 @@ import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 
 /**
-* <p>BaseDbFlatStorage is a class that stores Resources (of some type) in a database,
-* provides locked access, and generally implements a services "storage" class.  The
-* service's storage class can extend this to provide covers to turn Resource and
-* Edit into something more type specific to the service.</p>
-*
-* Note: the methods here are all "id" based, with the following assumptions:
-* - just the Resource Id field is enough to distinguish one Resource from another
-* - a resource's reference is based on no more than the resource id
-* - a resource's id cannot change.
-*
-* In order to handle Unicode characters properly, the SQL statements executed by this class 
-* should not embed Unicode characters into the SQL statement text; rather, Unicode values
-* should be inserted as fields in a PreparedStatement.  Databases handle Unicode better in fields.
-*
-* @author University of Michigan, CHEF Software Development Team
-* @version $Revision$
-*/
+ * <p>
+ * BaseDbFlatStorage is a class that stores Resources (of some type) in a database, provides locked access, and generally implements a services "storage" class. The service's storage class can extend this to provide covers to turn Resource and Edit into
+ * something more type specific to the service.
+ * </p>
+ * Note: the methods here are all "id" based, with the following assumptions: - just the Resource Id field is enough to distinguish one Resource from another - a resource's reference is based on no more than the resource id - a resource's id cannot
+ * change. In order to handle Unicode characters properly, the SQL statements executed by this class should not embed Unicode characters into the SQL statement text; rather, Unicode values should be inserted as fields in a PreparedStatement. Databases
+ * handle Unicode better in fields.
+ * 
+ * @author University of Michigan, CHEF Software Development Team
+ * @version $Revision$
+ */
 public class BaseDbFlatStorage
 {
 	/** Table name for resource records. */
@@ -86,7 +80,7 @@ public class BaseDbFlatStorage
 	/** The full set of fields in the table for update - can be field name only, or field=xxx expression. */
 	protected String[] m_resourceTableUpdateFields = null;
 
-	/** The full set of fields in the table for insert - just field  (not counting a dbid field). */
+	/** The full set of fields in the table for insert - just field (not counting a dbid field). */
 	protected String[] m_resourceTableInsertFields = null;
 
 	/** The full set of value expressions for an insert - either null or ? or an expression - to match m_resourceTableInsertFields (not counting a dbid field). */
@@ -111,18 +105,25 @@ public class BaseDbFlatStorage
 	protected SqlReader m_reader = null;
 
 	/**
-	* Construct.
-	* @param resourceTableName Table name for resources.
-	* @param resourceTableIdField The field in the resource table that holds the id.
-	* @param resourceTableFields The complete set of fields to read / write for the resource.
-	* @param propertyTableName The table name for standard property support.
-	* @param locksInTable If true, we do our locks in the remote database in a locks table, otherwise we do them here.
-	* @param reader A SqlReader which will produce Edits given fields read from the table.
-	* @param sqlService The SqlService.
-	*/
-	public BaseDbFlatStorage(String resourceTableName, String resourceTableIdField,
-		String[] resourceTableFields, String propertyTableName, boolean locksInTable, SqlReader reader,
-		SqlService sqlService)
+	 * Construct.
+	 * 
+	 * @param resourceTableName
+	 *        Table name for resources.
+	 * @param resourceTableIdField
+	 *        The field in the resource table that holds the id.
+	 * @param resourceTableFields
+	 *        The complete set of fields to read / write for the resource.
+	 * @param propertyTableName
+	 *        The table name for standard property support.
+	 * @param locksInTable
+	 *        If true, we do our locks in the remote database in a locks table, otherwise we do them here.
+	 * @param reader
+	 *        A SqlReader which will produce Edits given fields read from the table.
+	 * @param sqlService
+	 *        The SqlService.
+	 */
+	public BaseDbFlatStorage(String resourceTableName, String resourceTableIdField, String[] resourceTableFields,
+			String propertyTableName, boolean locksInTable, SqlReader reader, SqlService sqlService)
 	{
 		m_resourceTableName = resourceTableName;
 		m_resourceTableIdField = resourceTableIdField;
@@ -137,12 +138,15 @@ public class BaseDbFlatStorage
 		m_resourceTableInsertFields = resourceTableFields;
 		m_resourceTableInsertValues = resourceTableFields;
 
-	}	// BaseDbSingleStorage
+	} // BaseDbSingleStorage
 
 	/**
 	 * Set the sort field to be something perhaps other than the default of the id field.
-	 * @param sortField1 The field name to use for sorting.
-	 * @param sortField2 Optional second sort field.
+	 * 
+	 * @param sortField1
+	 *        The field name to use for sorting.
+	 * @param sortField2
+	 *        Optional second sort field.
 	 */
 	public void setSortField(String sortField1, String sortField2)
 	{
@@ -151,7 +155,8 @@ public class BaseDbFlatStorage
 	}
 
 	/**
-	 * Set a field that will be read after the field list, and 
+	 * Set a field that will be read after the field list, and
+	 * 
 	 * @param dbidField
 	 */
 	public void setDbidField(String dbidField)
@@ -161,7 +166,9 @@ public class BaseDbFlatStorage
 
 	/**
 	 * Establish a different set of fields for inserts and updated.
-	 * @param resourceTableFields The complete set of fields to write for the resource (not counting a dbid field if needed).
+	 * 
+	 * @param resourceTableFields
+	 *        The complete set of fields to write for the resource (not counting a dbid field if needed).
 	 */
 	public void setWriteFields(String[] updateFields, String[] insertFields, String[] insertValues)
 	{
@@ -171,18 +178,18 @@ public class BaseDbFlatStorage
 	}
 
 	/**
-	* Open and be ready to read / write.
-	*/
+	 * Open and be ready to read / write.
+	 */
 	public void open()
 	{
 		// setup for locks
 		m_locks = new Hashtable();
 
-	}   // open
+	} // open
 
 	/**
-	* Close.
-	*/
+	 * Close.
+	 */
 	public void close()
 	{
 		if (!m_locks.isEmpty())
@@ -193,19 +200,20 @@ public class BaseDbFlatStorage
 		m_locks.clear();
 		m_locks = null;
 
-	}   // close
+	} // close
 
 	/**
-	* Check if a Resource by this id exists.
-	* @param id The id.
-	* @return true if a Resource by this id exists, false if not.
-	*/
+	 * Check if a Resource by this id exists.
+	 * 
+	 * @param id
+	 *        The id.
+	 * @return true if a Resource by this id exists, false if not.
+	 */
 	public boolean checkResource(String id)
 	{
 		// just see if the record exists
-		String sql =
-				"select " + m_resourceTableIdField + " from " + m_resourceTableName
-			+   " where ( " + m_resourceTableIdField + " = ? )";
+		String sql = "select " + m_resourceTableIdField + " from " + m_resourceTableName + " where ( " + m_resourceTableIdField
+				+ " = ? )";
 
 		Object fields[] = new Object[1];
 		fields[0] = caseId(id);
@@ -213,32 +221,36 @@ public class BaseDbFlatStorage
 
 		return (!ids.isEmpty());
 
-	}	// check
+	} // check
 
 	/**
-	* Get the Resource with this id, or null if not found.
-	* @param id The id.
-	* @return The Resource with this id, or null if not found.
-	*/
+	 * Get the Resource with this id, or null if not found.
+	 * 
+	 * @param id
+	 *        The id.
+	 * @return The Resource with this id, or null if not found.
+	 */
 	public Resource getResource(String id)
 	{
 		return getResource(null, id);
 	}
 
 	/**
-	* Get the Resource with this id, or null if not found.
-	* @param optional connection to use.
-	* @param id The id.
-	* @return The Resource with this id, or null if not found.
-	*/
+	 * Get the Resource with this id, or null if not found.
+	 * 
+	 * @param optional
+	 *        connection to use.
+	 * @param id
+	 *        The id.
+	 * @return The Resource with this id, or null if not found.
+	 */
 	public Resource getResource(Connection conn, String id)
 	{
 		Resource entry = null;
 
 		// get the user from the db
-		String sql =
-				"select " + fieldList(m_resourceTableReadFields, null) + " from " + m_resourceTableName
-			+   " where ( " + m_resourceTableIdField + " = ? )";
+		String sql = "select " + fieldList(m_resourceTableReadFields, null) + " from " + m_resourceTableName + " where ( "
+				+ m_resourceTableIdField + " = ? )";
 
 		Object fields[] = new Object[1];
 		fields[0] = caseId(id);
@@ -251,7 +263,7 @@ public class BaseDbFlatStorage
 
 		return entry;
 
-	}   // getResource
+	} // getResource
 
 	public List getAllResources()
 	{
@@ -262,7 +274,7 @@ public class BaseDbFlatStorage
 
 		return rv;
 
-	}   // getAllResources
+	} // getAllResources
 
 	public int countAllResources()
 	{
@@ -271,20 +283,21 @@ public class BaseDbFlatStorage
 		// read all count
 		String sql = "select count(1) from " + m_resourceTableName;
 
-		List results = m_sql.dbRead(sql, null,
-			new SqlReader()
+		List results = m_sql.dbRead(sql, null, new SqlReader()
+		{
+			public Object readSqlResultRecord(ResultSet result)
 			{
-				public Object readSqlResultRecord(ResultSet result)
+				try
 				{
-					try
-					{
-						int count = result.getInt(1);
-						return new Integer(count);
-					}
-					catch (SQLException ignore) { return null;}
+					int count = result.getInt(1);
+					return new Integer(count);
+				}
+				catch (SQLException ignore)
+				{
+					return null;
 				}
 			}
-		 );
+		});
 
 		if (results.isEmpty()) return 0;
 
@@ -298,19 +311,14 @@ public class BaseDbFlatStorage
 		if ("oracle".equals(m_sql.getVendor()))
 		{
 			// use Oracle RANK function, adding the id to the sort fields to assure we have a unique ranking
-			sql = "select " + /* fieldList(m_resourceTableReadFields, null)*/ "*" + " from"
-				+	" (select " + fieldList(m_resourceTableReadFields, null)
-				+	" ,RANK() OVER"
-				+	" (order by " + m_resourceTableName + "." + m_resourceTableSortField1
-				+	(m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2)
-				+	"," + m_resourceTableName + "." + m_resourceTableIdField
-				+	") as rank"
-				+	" from " + m_resourceTableName
-				+	" order by " + m_resourceTableName + "." + m_resourceTableSortField1
-				+	(m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2)
-				+	"," + m_resourceTableName + "." + m_resourceTableIdField
-				+ " )"
-				+	" where rank between ? and ?";
+			sql = "select " + /* fieldList(m_resourceTableReadFields, null) */"*" + " from" + " (select "
+					+ fieldList(m_resourceTableReadFields, null) + " ,RANK() OVER" + " (order by " + m_resourceTableName + "."
+					+ m_resourceTableSortField1
+					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2) + ","
+					+ m_resourceTableName + "." + m_resourceTableIdField + ") as rank" + " from " + m_resourceTableName
+					+ " order by " + m_resourceTableName + "." + m_resourceTableSortField1
+					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2) + ","
+					+ m_resourceTableName + "." + m_resourceTableIdField + " )" + " where rank between ? and ?";
 			fields = new Object[2];
 			fields[0] = new Long(first);
 			fields[1] = new Long(last);
@@ -318,72 +326,80 @@ public class BaseDbFlatStorage
 		else if ("mysql".equals(m_sql.getVendor()))
 		{
 			// use MySQL LIMIT clause
-			sql = "select " + fieldList(m_resourceTableReadFields, null) + " from " 
-				+ m_resourceTableName
-				+	" order by " + m_resourceTableName + "." + m_resourceTableSortField1
-				+	(m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2)
-				+	" limit " + (last-first+1) + " offset " + (first-1);
+			sql = "select " + fieldList(m_resourceTableReadFields, null) + " from " + m_resourceTableName + " order by "
+					+ m_resourceTableName + "." + m_resourceTableSortField1
+					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2)
+					+ " limit " + (last - first + 1) + " offset " + (first - 1);
 		}
-		else //if ("hsqldb".equals(m_sql.getVendor()))
+		else
+		// if ("hsqldb".equals(m_sql.getVendor()))
 		{
 			// use SQL2000 clause
-			sql = "select "
-			    + "limit " + (first-1) + " " + (last-first+1) + " "
-			    + fieldList(m_resourceTableReadFields, null) + " from " 
-				+ m_resourceTableName
-				+	" order by " + m_resourceTableName + "." + m_resourceTableSortField1
-				+	(m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2);	
+			sql = "select " + "limit " + (first - 1) + " " + (last - first + 1) + " " + fieldList(m_resourceTableReadFields, null)
+					+ " from " + m_resourceTableName + " order by " + m_resourceTableName + "." + m_resourceTableSortField1
+					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2);
 		}
 
 		List rv = m_sql.dbRead(sql, fields, m_reader);
 
 		return rv;
 
-	}   // getAllResources
+	} // getAllResources
 
 	/**
-	* Get all Resources matching a SQL where clause, with sorting
-	* @param where The SQL where clause with bind variables indicated (not including the preceeding "where ").
-	* @param values The bind values
-	* @return The list of all Resources that meet the criteria.
-	*/
+	 * Get all Resources matching a SQL where clause, with sorting
+	 * 
+	 * @param where
+	 *        The SQL where clause with bind variables indicated (not including the preceeding "where ").
+	 * @param values
+	 *        The bind values
+	 * @return The list of all Resources that meet the criteria.
+	 */
 	public List getSelectedResources(String where, Object[] values)
 	{
 		return getSelectedResources(where, null, values, null);
 	}
 
 	/**
-	* Get all Resources matching a SQL where clause, with sorting and ordering
-	* @param where The SQL where clause with bind variables indicated (not including the preceeding "where ").
-	* @param order the SQL order clause (not including the preceeding "order by ").
-	* @param values The bind values
-	* @return The list of all Resources that meet the criteria.
-	*/
+	 * Get all Resources matching a SQL where clause, with sorting and ordering
+	 * 
+	 * @param where
+	 *        The SQL where clause with bind variables indicated (not including the preceeding "where ").
+	 * @param order
+	 *        the SQL order clause (not including the preceeding "order by ").
+	 * @param values
+	 *        The bind values
+	 * @return The list of all Resources that meet the criteria.
+	 */
 	public List getSelectedResources(String where, String order, Object[] values)
 	{
 		return getSelectedResources(where, order, values, null);
 	}
 
 	/**
-	* Get all Resources matching a SQL where clause, with sorting and ordering
-	* @param where The SQL where clause with bind variables indicated (not including the preceeding "where ").
-	* @param order the SQL order clause (not including the preceeding "order by ").
-	* @param values The bind values
-	* @param join a single or comma separated set of other tables to join in the from clause
-	* @return The list of all Resources that meet the criteria.
-	*/
+	 * Get all Resources matching a SQL where clause, with sorting and ordering
+	 * 
+	 * @param where
+	 *        The SQL where clause with bind variables indicated (not including the preceeding "where ").
+	 * @param order
+	 *        the SQL order clause (not including the preceeding "order by ").
+	 * @param values
+	 *        The bind values
+	 * @param join
+	 *        a single or comma separated set of other tables to join in the from clause
+	 * @return The list of all Resources that meet the criteria.
+	 */
 	public List getSelectedResources(String where, String order, Object[] values, String join)
 	{
 		if (order == null)
 		{
-			order = m_resourceTableName + "." + m_resourceTableSortField1 + (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2);
+			order = m_resourceTableName + "." + m_resourceTableSortField1
+					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2);
 		}
 
 		// read all resources from the db with a where
-		String sql = "select " + fieldList(m_resourceTableReadFields, null)
-				+ " from " + m_resourceTableName + ((join == null) ? "" : ("," + join))
-				+ " where " + where
-				+ " order by " + order;
+		String sql = "select " + fieldList(m_resourceTableReadFields, null) + " from " + m_resourceTableName
+				+ ((join == null) ? "" : ("," + join)) + " where " + where + " order by " + order;
 
 		List all = m_sql.dbRead(sql, values, m_reader);
 
@@ -391,80 +407,99 @@ public class BaseDbFlatStorage
 	}
 
 	/**
-	* Count all Resources matching a SQL where clause.
-	* @param where The SQL where clause with bind variables indicated (not including the preceeding "where ").
-	* @param values The bind values
-	* @return The count of all Resources that meet the criteria.
-	*/
+	 * Count all Resources matching a SQL where clause.
+	 * 
+	 * @param where
+	 *        The SQL where clause with bind variables indicated (not including the preceeding "where ").
+	 * @param values
+	 *        The bind values
+	 * @return The count of all Resources that meet the criteria.
+	 */
 	public int countSelectedResources(String where, Object[] values)
 	{
 		return countSelectedResources(where, values, null);
 	}
 
 	/**
-	* Count all Resources matching a SQL where clause.
-	* @param where The SQL where clause with bind variables indicated (not including the preceeding "where ").
-	* @param values The bind values
-	* @param join a single or comma separated set of other tables to join in the from clause
-	* @return The count of all Resources that meet the criteria.
-	*/
+	 * Count all Resources matching a SQL where clause.
+	 * 
+	 * @param where
+	 *        The SQL where clause with bind variables indicated (not including the preceeding "where ").
+	 * @param values
+	 *        The bind values
+	 * @param join
+	 *        a single or comma separated set of other tables to join in the from clause
+	 * @return The count of all Resources that meet the criteria.
+	 */
 	public int countSelectedResources(String where, Object[] values, String join)
 	{
 		// read all resources from the db with a where
-		String sql = "select count(1) from " + m_resourceTableName + ((join == null) ? "" : ("," + join))
-				+ " where " + where;
+		String sql = "select count(1) from " + m_resourceTableName + ((join == null) ? "" : ("," + join)) + " where " + where;
 
-		List results = m_sql.dbRead(sql, values,
-			new SqlReader()
+		List results = m_sql.dbRead(sql, values, new SqlReader()
+		{
+			public Object readSqlResultRecord(ResultSet result)
 			{
-				public Object readSqlResultRecord(ResultSet result)
+				try
 				{
-					try
-					{
-						int count = result.getInt(1);
-						return new Integer(count);
-					}
-					catch (SQLException ignore) { return null;}
+					int count = result.getInt(1);
+					return new Integer(count);
+				}
+				catch (SQLException ignore)
+				{
+					return null;
 				}
 			}
-		 );
-	
+		});
+
 		if (results.isEmpty()) return 0;
-	
+
 		return ((Integer) results.get(0)).intValue();
 	}
 
 	/**
-	* Get all Resources matching a SQL where clause.
-	* @param where The SQL where clause with bind variables indicated (not including the preceeding "where ".
-	* @param values The bind values
-	* @return The list of all Resources that meet the criteria.
-	*/
+	 * Get all Resources matching a SQL where clause.
+	 * 
+	 * @param where
+	 *        The SQL where clause with bind variables indicated (not including the preceeding "where ".
+	 * @param values
+	 *        The bind values
+	 * @return The list of all Resources that meet the criteria.
+	 */
 	public List getSelectedResources(String where, Object[] values, int first, int last)
 	{
 		return getSelectedResources(where, null, values, first, last, null);
 	}
 
 	/**
-	* Get all Resources matching a SQL where clause.
-	* @param where The SQL where clause with bind variables indicated (not including the preceeding "where ".
-	* @param order the SQL order clause (not including the preceeding "order by ").
-	* @param values The bind values
-	* @return The list of all Resources that meet the criteria.
-	*/
+	 * Get all Resources matching a SQL where clause.
+	 * 
+	 * @param where
+	 *        The SQL where clause with bind variables indicated (not including the preceeding "where ".
+	 * @param order
+	 *        the SQL order clause (not including the preceeding "order by ").
+	 * @param values
+	 *        The bind values
+	 * @return The list of all Resources that meet the criteria.
+	 */
 	public List getSelectedResources(String where, String order, Object[] values, int first, int last)
 	{
 		return getSelectedResources(where, order, values, first, last, null);
 	}
 
 	/**
-	* Get all Resources matching a SQL where clause.
-	* @param where The SQL where clause with bind variables indicated (not including the preceeding "where ".
-	* @param order the SQL order clause (not including the preceeding "order by ").
-	* @param values The bind values
-	* @param join a single or comma separated set of other tables to join in the from clause
-	* @return The list of all Resources that meet the criteria.
-	*/
+	 * Get all Resources matching a SQL where clause.
+	 * 
+	 * @param where
+	 *        The SQL where clause with bind variables indicated (not including the preceeding "where ".
+	 * @param order
+	 *        the SQL order clause (not including the preceeding "order by ").
+	 * @param values
+	 *        The bind values
+	 * @param join
+	 *        a single or comma separated set of other tables to join in the from clause
+	 * @return The list of all Resources that meet the criteria.
+	 */
 	public List getSelectedResources(String where, String order, Object[] values, int first, int last, String join)
 	{
 		Object[] fields;
@@ -472,7 +507,8 @@ public class BaseDbFlatStorage
 
 		if (order == null)
 		{
-			order = m_resourceTableName + "." + m_resourceTableSortField1 + (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2);
+			order = m_resourceTableName + "." + m_resourceTableSortField1
+					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2);
 		}
 
 		if ("oracle".equals(m_sql.getVendor()))
@@ -488,64 +524,65 @@ public class BaseDbFlatStorage
 			}
 
 			// use Oracle RANK function, adding the id field to the order to assure a unique ranking
-			sql = "select " + /*fieldList(m_resourceTableReadFields, null)*/ "*" + " from"
-				+	" (select " + fieldList(m_resourceTableReadFields, null)
-				+	" ,RANK() OVER"
-				+	" (order by " + order + "," + m_resourceTableName + "." + m_resourceTableIdField + ") as rank"
-				+	" from " + m_resourceTableName + ((join == null) ? "" : ("," + join))
-				+	" where " + where
-				+	" order by " + order + "," + m_resourceTableName + "." + m_resourceTableIdField + " )"
-				+	" where rank between ? and ?";
-				fields[fields.length-2] = new Long(first);
-				fields[fields.length-1] = new Long(last);
+			sql = "select " + /* fieldList(m_resourceTableReadFields, null) */"*" + " from" + " (select "
+					+ fieldList(m_resourceTableReadFields, null) + " ,RANK() OVER" + " (order by " + order + ","
+					+ m_resourceTableName + "." + m_resourceTableIdField + ") as rank" + " from " + m_resourceTableName
+					+ ((join == null) ? "" : ("," + join)) + " where " + where + " order by " + order + "," + m_resourceTableName
+					+ "." + m_resourceTableIdField + " )" + " where rank between ? and ?";
+			fields[fields.length - 2] = new Long(first);
+			fields[fields.length - 1] = new Long(last);
 		}
 		else if ("mysql".equals(m_sql.getVendor()))
 		{
 			fields = values;
 			// use MySQL LIMIT clause
-			sql = "select " + fieldList(m_resourceTableReadFields, null) 
-				+	" from " + m_resourceTableName + ((join == null) ? "" : ("," + join))
-				+	" where " + where
-				+	" order by " + order + "," + m_resourceTableName + "." + m_resourceTableSortField1
-				+	(m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2)
-				+	" limit " + (last-first+1) + " offset " + (first-1);
+			sql = "select " + fieldList(m_resourceTableReadFields, null) + " from " + m_resourceTableName
+					+ ((join == null) ? "" : ("," + join)) + " where " + where + " order by " + order + "," + m_resourceTableName
+					+ "." + m_resourceTableSortField1
+					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2)
+					+ " limit " + (last - first + 1) + " offset " + (first - 1);
 		}
-		else //if ("hsqldb".equals(m_sql.getVendor()))
+		else
+		// if ("hsqldb".equals(m_sql.getVendor()))
 		{
-		    // use SQL2000 LIMIT clause
+			// use SQL2000 LIMIT clause
 			fields = values;
-			sql = "select " 
-			    + "limit " + (first-1) + " " + (last-first+1) + " "
-			    + fieldList(m_resourceTableReadFields, null) 
-				+	" from " + m_resourceTableName + ((join == null) ? "" : ("," + join))
-				+	" where " + where
-				+	" order by " + order + "," + m_resourceTableName + "." + m_resourceTableSortField1
-				+	(m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2);				
+			sql = "select " + "limit " + (first - 1) + " " + (last - first + 1) + " " + fieldList(m_resourceTableReadFields, null)
+					+ " from " + m_resourceTableName + ((join == null) ? "" : ("," + join)) + " where " + where + " order by "
+					+ order + "," + m_resourceTableName + "." + m_resourceTableSortField1
+					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2);
 		}
-		
+
 		List rv = m_sql.dbRead(sql, fields, m_reader);
 
 		return rv;
 	}
 
 	/**
-	* Add a new Resource with this id.
-	* @param id The id.
-	* @param fields The fields to write.
-	* @return The locked Resource object with this id, or null if the id is in use.
-	*/
+	 * Add a new Resource with this id.
+	 * 
+	 * @param id
+	 *        The id.
+	 * @param fields
+	 *        The fields to write.
+	 * @return The locked Resource object with this id, or null if the id is in use.
+	 */
 	public Edit putResource(String id, Object[] fields)
 	{
 		return putResource(null, id, fields);
 	}
 
 	/**
-	* putResource with optional connection to use.
-	* @param conn The optional database connection to use.
-	* @param id The id.
-	* @param fields The fields to write.
-	* @return The locked Resource object with this id, or null if the id is in use.
-	*/
+	 * putResource with optional connection to use.
+	 * 
+	 * @param conn
+	 *        The optional database connection to use.
+	 * @param id
+	 *        The id.
+	 * @param fields
+	 *        The fields to write.
+	 * @return The locked Resource object with this id, or null if the id is in use.
+	 */
 	public Edit putResource(Connection conn, String id, Object[] fields)
 	{
 		// process the insert
@@ -564,45 +601,50 @@ public class BaseDbFlatStorage
 
 		return edit;
 
-	}   // putResource
+	} // putResource
 
 	/**
-	* Add a new Resource with this id - no edit is returned, no lock is held.
-	* @param id The id.
-	* @param fields The fields to write.
-	* @return True if successful, false if not.
-	*/
+	 * Add a new Resource with this id - no edit is returned, no lock is held.
+	 * 
+	 * @param id
+	 *        The id.
+	 * @param fields
+	 *        The fields to write.
+	 * @return True if successful, false if not.
+	 */
 	public boolean insertResource(String id, Object[] fields, Connection conn)
 	{
-		String statement =
-				"insert into " + m_resourceTableName
-			+	"( " + fieldList(m_resourceTableInsertFields, m_resourceTableDbidField) + " )"
-			+   " values ( "
-			+	valuesParams(m_resourceTableInsertValues, (m_resourceTableDbidField))
-			+   " )";
+		String statement = "insert into " + m_resourceTableName + "( "
+				+ fieldList(m_resourceTableInsertFields, m_resourceTableDbidField) + " )" + " values ( "
+				+ valuesParams(m_resourceTableInsertValues, (m_resourceTableDbidField)) + " )";
 
 		// process the insert
 		boolean ok = m_sql.dbWrite(conn, statement, fields);
 		return ok;
 
-	}   // putResource
+	} // putResource
 
 	/**
-	* Get a lock on the Resource with this id, or null if a lock cannot be gotten.
-	* @param id The user id.
-	* @return The locked Resource with this id, or null if this records cannot be locked.
-	*/
+	 * Get a lock on the Resource with this id, or null if a lock cannot be gotten.
+	 * 
+	 * @param id
+	 *        The user id.
+	 * @return The locked Resource with this id, or null if this records cannot be locked.
+	 */
 	public Edit editResource(String id)
 	{
 		return editResource(null, id);
 	}
 
 	/**
-	* Get a lock on the Resource with this id, or null if a lock cannot be gotten.
-	* @param conn The optional database connection to use.
-	* @param id The user id.
-	* @return The locked Resource with this id, or null if this records cannot be locked.
-	*/
+	 * Get a lock on the Resource with this id, or null if a lock cannot be gotten.
+	 * 
+	 * @param conn
+	 *        The optional database connection to use.
+	 * @param id
+	 *        The user id.
+	 * @return The locked Resource with this id, or null if this records cannot be locked.
+	 */
 	public Edit editResource(Connection conn, String id)
 	{
 		Edit edit = null;
@@ -615,10 +657,8 @@ public class BaseDbFlatStorage
 			if (entry == null) return null;
 
 			// write a lock to the lock table - if we can do it, we get the lock
-			String statement =
-					"insert into SAKAI_LOCKS"
-				+	" (TABLE_NAME,RECORD_ID,LOCK_TIME,USAGE_SESSION_ID)"
-				+	" values (?, ?, ?, ?)";
+			String statement = "insert into SAKAI_LOCKS" + " (TABLE_NAME,RECORD_ID,LOCK_TIME,USAGE_SESSION_ID)"
+					+ " values (?, ?, ?, ?)";
 
 			// we need session id and user id
 			String sessionId = UsageSessionService.getSessionId();
@@ -640,7 +680,7 @@ public class BaseDbFlatStorage
 			{
 				return null;
 			}
-			
+
 			// we got the lock! - make the edit from the Resource
 			edit = (Edit) entry;
 		}
@@ -657,7 +697,7 @@ public class BaseDbFlatStorage
 			{
 				// if already locked
 				if (m_locks.containsKey(entry.getReference())) return null;
-				
+
 				// make the edit from the Resource
 				edit = (Edit) entry;
 
@@ -668,35 +708,40 @@ public class BaseDbFlatStorage
 
 		return edit;
 
-	}	// editResource
+	} // editResource
 
 	/**
-	* Commit the changes and release the lock.
-	* @param edit The Edit to commit.
-	* @param fields The set of fields to write to the db, plus the id field as it is to be written again at the end.
-	*/
+	 * Commit the changes and release the lock.
+	 * 
+	 * @param edit
+	 *        The Edit to commit.
+	 * @param fields
+	 *        The set of fields to write to the db, plus the id field as it is to be written again at the end.
+	 */
 	public void commitResource(Edit edit, Object fields[], ResourceProperties props)
 	{
 		commitResource(null, edit, fields, props, null);
 	}
 
 	/**
-	* Commit the changes and release the lock - optionally in a transaction.
-	* @param conn The Db Connection of the transaction (optional).
-	* @param edit The Edit to commit.
-	* @param fields The set of fields to write to the db, plus the id field as it is to be written again at the end.
-	* @param key The object key used to relate to the properties - if null, we use the object id to relate.
-	*/
+	 * Commit the changes and release the lock - optionally in a transaction.
+	 * 
+	 * @param conn
+	 *        The Db Connection of the transaction (optional).
+	 * @param edit
+	 *        The Edit to commit.
+	 * @param fields
+	 *        The set of fields to write to the db, plus the id field as it is to be written again at the end.
+	 * @param key
+	 *        The object key used to relate to the properties - if null, we use the object id to relate.
+	 */
 	public void commitResource(Connection conn, Edit edit, Object fields[], ResourceProperties props, Object key)
 	{
 		// write out the properties
 		writeProperties(conn, edit, props, key);
 
-		String statement =
-				"update " + m_resourceTableName
-			+	" set "
-			+ 	updateSet(m_resourceTableUpdateFields)
-			+   " where ( " + m_resourceTableIdField + " = ? )";
+		String statement = "update " + m_resourceTableName + " set " + updateSet(m_resourceTableUpdateFields) + " where ( "
+				+ m_resourceTableIdField + " = ? )";
 
 		if (m_locksAreInTable)
 		{
@@ -704,8 +749,7 @@ public class BaseDbFlatStorage
 			m_sql.dbWrite(conn, statement, updateFields(fields));
 
 			// remove the lock
-			statement =
-					"delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
+			statement = "delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
 
 			// collect the fields
 			Object lockFields[] = new Object[2];
@@ -727,19 +771,20 @@ public class BaseDbFlatStorage
 			m_locks.remove(edit.getReference());
 		}
 
-	}	// commitResource
+	} // commitResource
 
 	/**
-	* Cancel the changes and release the lock.
-	* @param user The Edit to cancel.
-	*/
+	 * Cancel the changes and release the lock.
+	 * 
+	 * @param user
+	 *        The Edit to cancel.
+	 */
 	public void cancelResource(Edit edit)
 	{
 		if (m_locksAreInTable)
 		{
 			// remove the lock
-			String statement =
-					"delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
+			String statement = "delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
 
 			// collect the fields
 			Object lockFields[] = new Object[2];
@@ -758,32 +803,36 @@ public class BaseDbFlatStorage
 			m_locks.remove(edit.getReference());
 		}
 
-	}	// cancelResource
+	} // cancelResource
 
 	/**
-	* Remove this (locked) Resource.
-	* @param user The Edit to remove.
-	*/
+	 * Remove this (locked) Resource.
+	 * 
+	 * @param user
+	 *        The Edit to remove.
+	 */
 	public void removeResource(Edit edit)
 	{
 		removeResource(null, edit, null);
 	}
 
 	/**
-	* Remove this (locked) Resource.
-	* @param conn Optional db connection to use.
-	* @param edit The Edit to remove.
-	* @param key The key to relate resource to properties, of if null, id is assumed.
-	*/
+	 * Remove this (locked) Resource.
+	 * 
+	 * @param conn
+	 *        Optional db connection to use.
+	 * @param edit
+	 *        The Edit to remove.
+	 * @param key
+	 *        The key to relate resource to properties, of if null, id is assumed.
+	 */
 	public void removeResource(Connection conn, Edit edit, Object key)
 	{
 		// remove the properties
 		deleteProperties(conn, edit, key);
 
 		// form the SQL delete statement
-		String statement =
-				"delete from " + m_resourceTableName
-				+   " where ( " + m_resourceTableIdField + " = ? )";
+		String statement = "delete from " + m_resourceTableName + " where ( " + m_resourceTableIdField + " = ? )";
 
 		Object fields[] = new Object[1];
 		fields[0] = caseId(edit.getId());
@@ -794,8 +843,7 @@ public class BaseDbFlatStorage
 			m_sql.dbWrite(conn, statement, fields);
 
 			// remove the lock
-			statement =
-					"delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
+			statement = "delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
 
 			// collect the fields
 			Object lockFields[] = new Object[2];
@@ -817,12 +865,15 @@ public class BaseDbFlatStorage
 			m_locks.remove(edit.getReference());
 		}
 
-	}   // removeResource
+	} // removeResource
 
 	/**
 	 * Read in properties from the database - when the properties and the main table are related by the id
-	 * @param r The resource for which properties are to be read.
-	 * @param p The properties object to fill.
+	 * 
+	 * @param r
+	 *        The resource for which properties are to be read.
+	 * @param p
+	 *        The properties object to fill.
 	 */
 	public void readProperties(Resource r, ResourcePropertiesEdit p)
 	{
@@ -831,8 +882,11 @@ public class BaseDbFlatStorage
 
 	/**
 	 * Read in properties from the database - when the properties and the main table are related by the dbid
-	 * @param key The resource key.
-	 * @param p The properties object to fill.
+	 * 
+	 * @param key
+	 *        The resource key.
+	 * @param p
+	 *        The properties object to fill.
 	 */
 	public void readProperties(Integer dbid, ResourcePropertiesEdit p)
 	{
@@ -841,8 +895,11 @@ public class BaseDbFlatStorage
 
 	/**
 	 * Read in properties from the database - when the properties and the main table are related by the id
-	 * @param r The resource for which properties are to be read.
-	 * @param p The properties object to fill.
+	 * 
+	 * @param r
+	 *        The resource for which properties are to be read.
+	 * @param p
+	 *        The properties object to fill.
 	 */
 	public void readProperties(Connection conn, Resource r, ResourcePropertiesEdit p)
 	{
@@ -851,8 +908,11 @@ public class BaseDbFlatStorage
 
 	/**
 	 * Read in properties from the database - when the properties and the main table are related by the dbid
-	 * @param key The resource key.
-	 * @param p The properties object to fill.
+	 * 
+	 * @param key
+	 *        The resource key.
+	 * @param p
+	 *        The properties object to fill.
 	 */
 	public void readProperties(Connection conn, Integer dbid, ResourcePropertiesEdit p)
 	{
@@ -861,7 +921,9 @@ public class BaseDbFlatStorage
 
 	/**
 	 * Read in properties from the database.
-	 * @param r The resource for which properties are to be read.
+	 * 
+	 * @param r
+	 *        The resource for which properties are to be read.
 	 */
 	public void readProperties(Connection conn, String table, String idField, Object id, ResourcePropertiesEdit p)
 	{
@@ -873,44 +935,43 @@ public class BaseDbFlatStorage
 
 		// get the properties from the db
 		// ASSUME: NAME, VALUE for fields
-		String sql =
-				"select NAME, VALUE from " + table
-			+   " where ( " + idField + " = ? )";
+		String sql = "select NAME, VALUE from " + table + " where ( " + idField + " = ? )";
 
 		Object fields[] = new Object[1];
 		fields[0] = id;
 		m_sql.dbRead(conn, sql, fields, new SqlReader()
+		{
+			public Object readSqlResultRecord(ResultSet result)
 			{
-				public Object readSqlResultRecord(ResultSet result)
+				try
 				{
-					try
-					{
-						// read the fields
-						String name = result.getString(1);
-						String value = result.getString(2);
+					// read the fields
+					String name = result.getString(1);
+					String value = result.getString(2);
 
-						// add to props, if we got stuff from the fields
-						if ((name != null) && (value != null))
-						{
-							props.addProperty(name, value);
-						}
-
-						// nothing to return
-						return null;
-					}
-					catch (SQLException e)
+					// add to props, if we got stuff from the fields
+					if ((name != null) && (value != null))
 					{
-						Logger.warn(this + ".readProperties: " + e);
-						return null;
+						props.addProperty(name, value);
 					}
+
+					// nothing to return
+					return null;
+				}
+				catch (SQLException e)
+				{
+					Logger.warn(this + ".readProperties: " + e);
+					return null;
 				}
 			}
-		);
+		});
 	}
 
 	/**
 	 * Read in properties from the database.
-	 * @param r The resource for which properties are to be read.
+	 * 
+	 * @param r
+	 *        The resource for which properties are to be read.
 	 */
 	public void readProperties(Connection conn, String table, String idField, Object id, Properties p)
 	{
@@ -922,46 +983,47 @@ public class BaseDbFlatStorage
 
 		// get the properties from the db
 		// ASSUME: NAME, VALUE for fields
-		String sql =
-				"select NAME, VALUE from " + table
-			+   " where ( " + idField + " = ? )";
+		String sql = "select NAME, VALUE from " + table + " where ( " + idField + " = ? )";
 
 		Object fields[] = new Object[1];
 		fields[0] = id;
 		m_sql.dbRead(conn, sql, fields, new SqlReader()
+		{
+			public Object readSqlResultRecord(ResultSet result)
 			{
-				public Object readSqlResultRecord(ResultSet result)
+				try
 				{
-					try
-					{
-						// read the fields
-						String name = result.getString(1);
-						String value = result.getString(2);
+					// read the fields
+					String name = result.getString(1);
+					String value = result.getString(2);
 
-						// add to props, if we got stuff from the fields
-						if ((name != null) && (value != null))
-						{
-							props.setProperty(name, value);
-						}
-
-						// nothing to return
-						return null;
-					}
-					catch (SQLException e)
+					// add to props, if we got stuff from the fields
+					if ((name != null) && (value != null))
 					{
-						Logger.warn(this + ".readProperties: " + e);
-						return null;
+						props.setProperty(name, value);
 					}
+
+					// nothing to return
+					return null;
+				}
+				catch (SQLException e)
+				{
+					Logger.warn(this + ".readProperties: " + e);
+					return null;
 				}
 			}
-		);
+		});
 	}
 
 	/**
 	 * Replace any properties for this resource with the resource's current set of properties.
-	 * @param conn optional database connection to use.
-	 * @param r The resource for which properties are to be written.
-	 * @param props The properties to write.
+	 * 
+	 * @param conn
+	 *        optional database connection to use.
+	 * @param r
+	 *        The resource for which properties are to be written.
+	 * @param props
+	 *        The properties to write.
 	 */
 	public void writeProperties(Connection conn, Resource r, ResourceProperties props)
 	{
@@ -970,10 +1032,15 @@ public class BaseDbFlatStorage
 
 	/**
 	 * Replace any properties for this resource with the resource's current set of properties.
-	 * @param conn optional database connection to use.
-	 * @param r The resource for which properties are to be written.
-	 * @param props The properties to write.
-	 * @param key The key used to relate the props to the resource.
+	 * 
+	 * @param conn
+	 *        optional database connection to use.
+	 * @param r
+	 *        The resource for which properties are to be written.
+	 * @param props
+	 *        The properties to write.
+	 * @param key
+	 *        The key used to relate the props to the resource.
 	 */
 	public void writeProperties(Connection conn, Resource r, ResourceProperties props, Object key)
 	{
@@ -987,17 +1054,21 @@ public class BaseDbFlatStorage
 		}
 	}
 
-    public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId, ResourceProperties props)
-    {
-        boolean deleteFirst = true;
-        writeProperties(conn, table, idField, id, extraIdField, extraId, props, deleteFirst);
-    }
-    
+	public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId,
+			ResourceProperties props)
+	{
+		boolean deleteFirst = true;
+		writeProperties(conn, table, idField, id, extraIdField, extraId, props, deleteFirst);
+	}
+
 	/**
 	 * Replace any properties for this resource with the resource's current set of properties.
-	 * @param r The resource for which properties are to be written.
+	 * 
+	 * @param r
+	 *        The resource for which properties are to be written.
 	 */
-	public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId, ResourceProperties props, boolean deleteFirst)
+	public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId,
+			ResourceProperties props, boolean deleteFirst)
 	{
 		// if not properties table set, skip it
 		if (table == null) return;
@@ -1014,47 +1085,40 @@ public class BaseDbFlatStorage
 				wasCommit = connection.getAutoCommit();
 				connection.setAutoCommit(false);
 			}
-	
-            String statement;
-            Object fields[];
-            
-            //if (true)
-            if (deleteFirst)
-            {
-    			// delete what's there
-    			statement =
-    					"delete from " + table
-    					+   " where ( " + idField + " = ? )";
-    	
-    			fields = new Object[1];
-    			fields[0] = id;
-    	
-    			// process the delete statement
-    			m_sql.dbWrite(connection, statement, fields);
-            }
-            
+
+			String statement;
+			Object fields[];
+
+			// if (true)
+			if (deleteFirst)
+			{
+				// delete what's there
+				statement = "delete from " + table + " where ( " + idField + " = ? )";
+
+				fields = new Object[1];
+				fields[0] = id;
+
+				// process the delete statement
+				m_sql.dbWrite(connection, statement, fields);
+			}
+
 			// the SQL statement
-			statement =
-					"insert into " + table
-				+	"( " + idField
-				+	", NAME, VALUE"
-				+	((extraIdField != null) ? (", " + extraIdField) : "")
-				+	" ) values (?,?,?"
-				+	((extraIdField != null) ? ",?" : "")
-				+	")";
+			statement = "insert into " + table + "( " + idField + ", NAME, VALUE"
+					+ ((extraIdField != null) ? (", " + extraIdField) : "") + " ) values (?,?,?"
+					+ ((extraIdField != null) ? ",?" : "") + ")";
 
 			fields = new Object[((extraIdField != null) ? 4 : 3)];
 			fields[0] = id;
-	
+
 			// process each property
 			for (Iterator i = props.getPropertyNames(); i.hasNext();)
 			{
 				String name = (String) i.next();
 				String value = props.getProperty(name);
-				
+
 				fields[1] = name;
 				fields[2] = value;
-				
+
 				if (extraIdField != null)
 				{
 					fields[3] = extraId;
@@ -1066,7 +1130,7 @@ public class BaseDbFlatStorage
 					m_sql.dbWrite(connection, statement, fields);
 				}
 			}
-			
+
 			// end the transaction
 			if (conn == null)
 			{
@@ -1111,21 +1175,27 @@ public class BaseDbFlatStorage
 		}
 	}
 
-    /**
-     * Replace any properties for this resource with the resource's current set of properties.
-     * @param r The resource for which properties are to be written.
-     */
-    public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId, Properties props)
-    {
-        boolean deleteFirst = true;
-        writeProperties(conn, table, idField, id, extraIdField, extraId, props, deleteFirst);
-    }
-    
 	/**
 	 * Replace any properties for this resource with the resource's current set of properties.
-	 * @param r The resource for which properties are to be written.
+	 * 
+	 * @param r
+	 *        The resource for which properties are to be written.
 	 */
-	public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId, Properties props, boolean deleteFirst)
+	public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId,
+			Properties props)
+	{
+		boolean deleteFirst = true;
+		writeProperties(conn, table, idField, id, extraIdField, extraId, props, deleteFirst);
+	}
+
+	/**
+	 * Replace any properties for this resource with the resource's current set of properties.
+	 * 
+	 * @param r
+	 *        The resource for which properties are to be written.
+	 */
+	public void writeProperties(Connection conn, String table, String idField, Object id, String extraIdField, String extraId,
+			Properties props, boolean deleteFirst)
 	{
 		// if not properties table set, skip it
 		if (table == null) return;
@@ -1142,46 +1212,39 @@ public class BaseDbFlatStorage
 				wasCommit = connection.getAutoCommit();
 				connection.setAutoCommit(false);
 			}
-	
-            String statement;
-            Object[] fields;
-            //if (true)
-            if (deleteFirst)
-            {
-    			// delete what's there
-    			statement =
-    					"delete from " + table
-    					+   " where ( " + idField + " = ? )";
-	
-    			fields = new Object[1];
-    			fields[0] = id;
-    	
-    			// process the delete statement
-    			m_sql.dbWrite(connection, statement, fields);
-            }
-            
+
+			String statement;
+			Object[] fields;
+
+			if (deleteFirst)
+			{
+				// delete what's there
+				statement = "delete from " + table + " where ( " + idField + " = ? )";
+
+				fields = new Object[1];
+				fields[0] = id;
+
+				// process the delete statement
+				m_sql.dbWrite(connection, statement, fields);
+			}
+
 			// the SQL statement
-			statement =
-					"insert into " + table
-				+	"( " + idField
-				+	", NAME, VALUE"
-				+	((extraIdField != null) ? (", " + extraIdField) : "")
-				+	" ) values (?,?,?"
-				+	((extraIdField != null) ? ",?" : "")
-				+	")";
+			statement = "insert into " + table + "( " + idField + ", NAME, VALUE"
+					+ ((extraIdField != null) ? (", " + extraIdField) : "") + " ) values (?,?,?"
+					+ ((extraIdField != null) ? ",?" : "") + ")";
 
 			fields = new Object[((extraIdField != null) ? 4 : 3)];
 			fields[0] = id;
-	
+
 			// process each property
 			for (Enumeration i = props.propertyNames(); i.hasMoreElements();)
 			{
 				String name = (String) i.nextElement();
 				String value = props.getProperty(name);
-				
+
 				fields[1] = name;
 				fields[2] = value;
-				
+
 				if (extraIdField != null)
 				{
 					fields[3] = extraId;
@@ -1193,7 +1256,7 @@ public class BaseDbFlatStorage
 					m_sql.dbWrite(connection, statement, fields);
 				}
 			}
-			
+
 			// end the transaction
 			if (conn == null)
 			{
@@ -1240,8 +1303,11 @@ public class BaseDbFlatStorage
 
 	/**
 	 * Remove all properties for this resource from the db.
-	 * @param conn Optional db connection to use.
-	 * @param r The resource for which properties are to be deleted.
+	 * 
+	 * @param conn
+	 *        Optional db connection to use.
+	 * @param r
+	 *        The resource for which properties are to be deleted.
 	 */
 	protected void deleteProperties(Connection conn, Resource r, Object key)
 	{
@@ -1255,9 +1321,7 @@ public class BaseDbFlatStorage
 		if (m_resourcePropertyTableName == null) return;
 
 		// form the SQL delete statement
-		String statement =
-				"delete from " + m_resourcePropertyTableName
-				+   " where ( " + idField + " = ? )";
+		String statement = "delete from " + m_resourcePropertyTableName + " where ( " + idField + " = ? )";
 
 		Object fields[] = new Object[1];
 		fields[0] = key == null ? caseId(r.getId()) : key;
@@ -1267,12 +1331,12 @@ public class BaseDbFlatStorage
 	}
 
 	/**
-	* Form a string of n question marks with commas, for sql value statements, one for each
-	* item in the values array, or an empty string if null.
-	* If the fields are "(...)" values, use these instead of ?.
-	* @param values The values to be inserted into the sql statement.
-	* @return A sql statement fragment for the values part of an insert, one for each value in the array.
-	*/
+	 * Form a string of n question marks with commas, for sql value statements, one for each item in the values array, or an empty string if null. If the fields are "(...)" values, use these instead of ?.
+	 * 
+	 * @param values
+	 *        The values to be inserted into the sql statement.
+	 * @return A sql statement fragment for the values part of an insert, one for each value in the array.
+	 */
 	protected String valuesParams(String[] fields, String dbidField)
 	{
 		StringBuffer buf = new StringBuffer();
@@ -1288,11 +1352,11 @@ public class BaseDbFlatStorage
 			}
 			buf.append(",");
 		}
-		
+
 		// for the last field
-		if (fields[fields.length-1].startsWith("("))
+		if (fields[fields.length - 1].startsWith("("))
 		{
-			buf.append(fields[fields.length-1]);
+			buf.append(fields[fields.length - 1]);
 		}
 		else
 		{
@@ -1310,27 +1374,29 @@ public class BaseDbFlatStorage
 			}
 			else if ("mysql".equals(m_sql.getVendor()))
 			{
-				// for mysql, the field will auto increment as part of the schema...			    
+				// for mysql, the field will auto increment as part of the schema...
 			}
-			else //if ("hsqldb".equals(m_sql.getVendor()))
+			else
+			// if ("hsqldb".equals(m_sql.getVendor()))
 			{
 				// insert the sequence next value based on the table name value for a dbid field
 				buf.append(", NEXT VALUE FOR ");
 				buf.append(m_resourceTableName);
-				buf.append("_SEQ");			    
+				buf.append("_SEQ");
 			}
 		}
 
 		return buf.toString();
 
-	}	// valuesParams
+	} // valuesParams
 
 	/**
-	* Form a string of n name=?, for sql update set statements, one for each
-	* item in the values array, or an empty string if null.
-	* @param values The values to be inserted into the sql statement.
-	* @return A sql statement fragment for the values part of an insert, one for each value in the array.
-	*/
+	 * Form a string of n name=?, for sql update set statements, one for each item in the values array, or an empty string if null.
+	 * 
+	 * @param values
+	 *        The values to be inserted into the sql statement.
+	 * @return A sql statement fragment for the values part of an insert, one for each value in the array.
+	 */
 	protected String updateSet(String[] fields)
 	{
 		StringBuffer buf = new StringBuffer();
@@ -1347,17 +1413,19 @@ public class BaseDbFlatStorage
 			}
 			buf.append(",");
 		}
-		
+
 		// take off the last comma
-		buf.setLength(buf.length()-1);
+		buf.setLength(buf.length() - 1);
 
 		return buf.toString();
 
-	}	// updateSet
+	} // updateSet
 
 	/**
 	 * For update, we don't want to include the first, primary key, field, so strip it off
-	 * @param fields The full set of fields
+	 * 
+	 * @param fields
+	 *        The full set of fields
 	 * @return The fields with the first removed
 	 */
 	protected Object[] updateFields(Object[] fields)
@@ -1372,38 +1440,43 @@ public class BaseDbFlatStorage
 	}
 
 	/**
-	* Form a string of field, field, field - one for each item in the fields array.
-	* @param fields The field names.
-	* @return A string of field, field, field - one for each item in the fields array.
-	*/
+	 * Form a string of field, field, field - one for each item in the fields array.
+	 * 
+	 * @param fields
+	 *        The field names.
+	 * @return A string of field, field, field - one for each item in the fields array.
+	 */
 	protected String fieldList(String[] fields, String dbidField)
 	{
 		StringBuffer buf = new StringBuffer();
 
-		for (int i = 0; i < fields.length-1; i++)
+		for (int i = 0; i < fields.length - 1; i++)
 		{
 			buf.append(qualifyField(fields[i], m_resourceTableName) + ",");
 		}
 
-		buf.append(qualifyField(fields[fields.length-1], m_resourceTableName));
-		
+		buf.append(qualifyField(fields[fields.length - 1], m_resourceTableName));
+
 		if (dbidField != null)
 		{
-		    if (!"mysql".equals(m_sql.getVendor()))
-		    {
-		        // MySQL doesn't need this field, but Oracle and HSQLDB do
-		        buf.append("," + qualifyField(dbidField, m_resourceTableName ));
-		    }
+			if (!"mysql".equals(m_sql.getVendor()))
+			{
+				// MySQL doesn't need this field, but Oracle and HSQLDB do
+				buf.append("," + qualifyField(dbidField, m_resourceTableName));
+			}
 		}
 
 		return buf.toString();
 
-	}	// fieldList
+	} // fieldList
 
 	/**
 	 * Qualify the fiel with the table name, if it's a field.
-	 * @param field The field.
-	 * @param table The table name.
+	 * 
+	 * @param field
+	 *        The field.
+	 * @param table
+	 *        The table name.
 	 * @return The field name qualified with the table name.
 	 */
 	protected String qualifyField(String field, String table)
@@ -1413,7 +1486,7 @@ public class BaseDbFlatStorage
 		{
 			return field;
 		}
-		
+
 		else
 		{
 			return table + "." + field;
@@ -1421,10 +1494,12 @@ public class BaseDbFlatStorage
 	}
 
 	/**
-	* Fix the case of resource ids to support case insensitive ids if enabled
-	* @param The id to fix.
-	* @return The id, case modified as needed.
-	*/
+	 * Fix the case of resource ids to support case insensitive ids if enabled
+	 * 
+	 * @param The
+	 *        id to fix.
+	 * @return The id, case modified as needed.
+	 */
 	protected String caseId(String id)
 	{
 		if (m_caseInsensitive)
@@ -1434,40 +1509,39 @@ public class BaseDbFlatStorage
 
 		return id;
 
-	}	// caseId
+	} // caseId
 
 	/**
-	* Enable / disable case insensitive ids.
-	* @param setting true to set case insensitivity, false to set case sensitivity.
-	*/
+	 * Enable / disable case insensitive ids.
+	 * 
+	 * @param setting
+	 *        true to set case insensitivity, false to set case sensitivity.
+	 */
 	protected void setCaseInsensitivity(boolean setting)
 	{
 		m_caseInsensitive = setting;
 
-	}	// setCaseInsensitivity
+	} // setCaseInsensitivity
 
 	/**
-	 * Return a record ID to use internally in the database.
-	 * This is needed for databases (MySQL) that have limits on key lengths.  
-	 * The hash code ensures that the record ID will be unique, 
-	 * even if the DB only considers a prefix of a very long record ID.
+	 * Return a record ID to use internally in the database. This is needed for databases (MySQL) that have limits on key lengths. The hash code ensures that the record ID will be unique, even if the DB only considers a prefix of a very long record ID.
+	 * 
 	 * @param recordId
 	 * @return The record ID to use internally in the database
 	 */
 	private String internalRecordId(String recordId)
 	{
-	    if ("mysql".equals(m_sql.getVendor()))
+		if ("mysql".equals(m_sql.getVendor()))
 		{
 			if (recordId == null) recordId = "null";
 			return recordId.hashCode() + " - " + recordId;
 		}
-	    else // oracle, hsqldb
+		else
+		// oracle, hsqldb
 		{
-	        return recordId;
+			return recordId;
 		}
-	}	
-	
-}   // BaseDbSingleStorage
+	}
 
-
+} // BaseDbSingleStorage
 

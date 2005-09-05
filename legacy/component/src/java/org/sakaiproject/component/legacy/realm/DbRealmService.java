@@ -1,25 +1,25 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT not LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. in NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER in AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR in CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS in THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ * 
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ * 
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT not LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. in NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER in AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR in CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS in THE SOFTWARE.
+ *
+ **********************************************************************************/
 
 // package
 package org.sakaiproject.component.legacy.realm;
@@ -38,13 +38,9 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.service.framework.memory.Cache;
-import org.sakaiproject.service.framework.memory.CacheRefresher;
-import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
-import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.realm.Realm;
 import org.sakaiproject.service.legacy.realm.RealmEdit;
 import org.sakaiproject.service.legacy.realm.Role;
@@ -52,50 +48,29 @@ import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.util.java.StringUtil;
-import org.sakaiproject.util.xml.Xml;
 import org.sakaiproject.util.resource.BaseResourceProperties;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.sakaiproject.util.storage.BaseDbFlatStorage;
+import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
-* <p>DbRealmService is an extension of the BaseRealmService with database storage.</p>
-* 
-* @author University of Michigan, Sakai Software Development Team
-* @version $Revision$
-*/
-public class DbRealmService
-	extends BaseRealmService implements CacheRefresher
+ * <p>
+ * DbRealmService is an extension of the BaseRealmService with database storage.
+ * </p>
+ * 
+ * @author University of Michigan, Sakai Software Development Team
+ * @version $Revision$
+ */
+public class DbRealmService extends BaseRealmService
 {
-    /** 
-     * A cache of defined 'functions' (event types) 
-     * so that the existence of a function doesn't have to be checked every time a 
-     * realm record is updated.
-     */
-    protected Cache m_functionCache = null;
-    
-    /** The # minutes to cache the function names. 0 disables the cache. */
-    protected int m_cacheMinutes = 3;
+	/** All the event functions we know exist on the db. */
+	protected Collection m_functionCache = new HashSet();
 
-    /**
-     * Set the # minutes to cache the function names.
-     * 
-     * @param time
-     *        The # minutes to cache the function names (as an integer string).
-     */
-    public void setCacheMinutes(String time)
-    {
-        m_cacheMinutes = Integer.parseInt(time);
-    }
-    
-    public Object refresh(Object key, Object oldValue, Event event)
-    {
-        // don't refresh the cache, let it expire
-        return null;
-    }
+	/** All the event role names we know exist on the db. */
+	protected Collection m_roleNameCache = new HashSet();
 
-    
 	/** Table name for realms. */
 	protected String m_realmTableName = "SAKAI_REALM";
 
@@ -109,35 +84,35 @@ public class DbRealmService
 	protected String m_realmDbidField = "REALM_KEY";
 
 	/** All "fields" for realm reading. */
-	protected String[] m_realmReadFieldNames = {"REALM_ID","PROVIDER_ID",
-			"(select MAX(ROLE_NAME) from SAKAI_REALM_ROLE where ROLE_KEY = MAINTAIN_ROLE)",
-			"CREATEDBY","MODIFIEDBY","CREATEDON","MODIFIEDON","REALM_KEY"};
+	protected String[] m_realmReadFieldNames = { "REALM_ID", "PROVIDER_ID",
+			"(select MAX(ROLE_NAME) from SAKAI_REALM_ROLE where ROLE_KEY = MAINTAIN_ROLE)", "CREATEDBY", "MODIFIEDBY", "CREATEDON",
+			"MODIFIEDON", "REALM_KEY" };
 
 	/** All "fields" for realm update. */
-	protected String[] m_realmUpdateFieldNames = {"REALM_ID","PROVIDER_ID",
-			"MAINTAIN_ROLE = (select MAX(ROLE_KEY) from SAKAI_REALM_ROLE where ROLE_NAME = ?)",
-			"CREATEDBY","MODIFIEDBY","CREATEDON","MODIFIEDON"};
+	protected String[] m_realmUpdateFieldNames = { "REALM_ID", "PROVIDER_ID",
+			"MAINTAIN_ROLE = (select MAX(ROLE_KEY) from SAKAI_REALM_ROLE where ROLE_NAME = ?)", "CREATEDBY", "MODIFIEDBY",
+			"CREATEDON", "MODIFIEDON" };
 
 	/** All "fields" for realm insert. */
-	protected String[] m_realmInsertFieldNames = {"REALM_ID","PROVIDER_ID",
-			"MAINTAIN_ROLE",
-			"CREATEDBY","MODIFIEDBY","CREATEDON","MODIFIEDON"};
+	protected String[] m_realmInsertFieldNames = { "REALM_ID", "PROVIDER_ID", "MAINTAIN_ROLE", "CREATEDBY", "MODIFIEDBY",
+			"CREATEDON", "MODIFIEDON" };
 
 	/** All "field values" for realm insert. */
-	protected String[] m_realmInsertValueNames = {"?","?",
-			"(select MAX(ROLE_KEY) from SAKAI_REALM_ROLE where ROLE_NAME = ?)",
-			"?","?","?","?"};
+	protected String[] m_realmInsertValueNames = { "?", "?", "(select MAX(ROLE_KEY) from SAKAI_REALM_ROLE where ROLE_NAME = ?)",
+			"?", "?", "?", "?" };
 
-	/*******************************************************************************
-	* Constructors, Dependencies and their setter methods
-	*******************************************************************************/
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * Constructors, Dependencies and their setter methods
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/** Dependency: SqlService */
 	protected SqlService m_sqlService = null;
 
 	/**
 	 * Dependency: SqlService.
-	 * @param service The SqlService.
+	 * 
+	 * @param service
+	 *        The SqlService.
 	 */
 	public void setSqlService(SqlService service)
 	{
@@ -149,7 +124,9 @@ public class DbRealmService
 
 	/**
 	 * Configuration: run the from-old conversion.
-	 * @param value The conversion desired value.
+	 * 
+	 * @param value
+	 *        The conversion desired value.
 	 */
 	public void setConvertOld(String value)
 	{
@@ -161,7 +138,9 @@ public class DbRealmService
 
 	/**
 	 * Configuration: set the external locks value.
-	 * @param value The external locks value.
+	 * 
+	 * @param value
+	 *        The external locks value.
 	 */
 	public void setExternalLocks(String value)
 	{
@@ -182,25 +161,15 @@ public class DbRealmService
 		m_autoDdl = new Boolean(value).booleanValue();
 	}
 
-	/*******************************************************************************
-	* Init and Destroy
-	*******************************************************************************/
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * Init and Destroy
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
 	 * Final initialization, once all dependencies are set.
 	 */
 	public void init()
 	{
-        // <= 0 minutes indicates no caching desired
-        if (m_cacheMinutes > 0)
-        {
-            // build a synchronized map for the function cache, automatiaclly checking for expiration every 3 mins.
-            m_functionCache = MemoryService.newHardCache(this, m_cacheMinutes*60);
-        }
-
-        m_logger.info(this + ".init() - caching minutes: " + m_cacheMinutes);
-
-        
 		try
 		{
 			// if we are auto-creating our schema, check and create
@@ -218,49 +187,240 @@ public class DbRealmService
 				convertOld();
 			}
 
-			m_logger.info(this +".init(): table: " + m_realmTableName + " external locks: " + m_useExternalLocks);
+			// pre-cache role and function names
+			cacheRoleNames();
+			cacheFunctionNames();
+
+			m_logger.info(this + ".init(): table: " + m_realmTableName + " external locks: " + m_useExternalLocks);
 		}
 		catch (Throwable t)
 		{
-			m_logger.warn(this +".init(): ", t);
+			m_logger.warn(this + ".init(): ", t);
 		}
-        
-        
-        
 	}
-	
-	/*******************************************************************************
-	* BaseRealmService extensions
-	*******************************************************************************/
+
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * BaseRealmService extensions
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
-	* Construct a Storage object.
-	* @return The new storage object.
-	*/
+	 * Construct a Storage object.
+	 * 
+	 * @return The new storage object.
+	 */
 	protected Storage newStorage()
 	{
 		return new DbStorage();
 
-	}   // newStorage
-
-	/*******************************************************************************
-	* Storage implementation
-	*******************************************************************************/
+	} // newStorage
 
 	/**
-	* Covers for the BaseXmlFileStorage, providing Realm and RealmEdit parameters
-	*/
-	protected class DbStorage
-		extends BaseDbFlatStorage
-		implements Storage, SqlReader
+	 * Check / assure this role name is defined.
+	 * 
+	 * @param name
+	 *        the role name.
+	 */
+	protected void checkRoleName(String name)
+	{
+		if (name == null) return;
+		name = name.intern();
+
+		// check the cache to see if the role name already exists
+		if (m_roleNameCache.contains(name)) return;
+
+		// see if we have it in the db
+		String statement = "select count(1) from SAKAI_REALM_ROLE where ROLE_NAME = ?";
+		Object[] fields = new Object[1];
+		fields[0] = name;
+
+		List results = m_sqlService.dbRead(statement, fields, new SqlReader()
+		{
+			public Object readSqlResultRecord(ResultSet result)
+			{
+				try
+				{
+					int count = result.getInt(1);
+					return new Integer(count);
+				}
+				catch (SQLException ignore)
+				{
+					return null;
+				}
+			}
+		});
+
+		boolean rv = false;
+		if (!results.isEmpty())
+		{
+			rv = ((Integer) results.get(0)).intValue() > 0;
+		}
+
+		// write if we didn't find it
+		if (!rv)
+		{
+			if ("oracle".equals(m_sqlService.getVendor()))
+			{
+				statement = "insert into SAKAI_REALM_ROLE (ROLE_KEY, ROLE_NAME) values (SAKAI_REALM_ROLE_SEQ.NEXTVAL, ?)";
+			}
+			else if ("mysql".equals(m_sqlService.getVendor()))
+			{
+				statement = "insert into SAKAI_REALM_ROLE (ROLE_KEY, ROLE_NAME) values (DEFAULT, ?)";
+			}
+			else
+			// if ("hsqldb".equals(m_sql.getVendor()))
+			{
+				statement = "insert into SAKAI_REALM_ROLE (ROLE_KEY, ROLE_NAME) values (NEXT VALUE FOR SAKAI_REALM_ROLE_SEQ, ?)";
+			}
+
+			// write, but if it fails, we don't really care - it will fail if another app server has just written this role name
+			m_sqlService.dbWriteFailQuiet(null, statement, fields);
+		}
+
+		synchronized (m_roleNameCache)
+		{
+			m_roleNameCache.add(name);
+		}
+	}
+
+	/**
+	 * Read all the role records, caching them
+	 */
+	protected void cacheRoleNames()
+	{		
+		synchronized (m_roleNameCache)
+		{
+			String statement = "select ROLE_NAME from SAKAI_REALM_ROLE";
+			List results = m_sqlService.dbRead(statement, null, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
+				{
+					try
+					{
+						String name = result.getString(1);
+						m_roleNameCache.add(name);
+					}
+					catch (SQLException ignore)
+					{
+					}
+	
+					return null;
+				}
+			});
+		}
+	}
+
+	/**
+	 * Check / assure this function name is defined.
+	 * 
+	 * @param name
+	 *        the role name.
+	 */
+	protected void checkFunctionName(String name)
+	{
+		if (name == null) return;
+		name = name.intern();
+
+		// check the cache to see if the function name already exists
+		if (m_functionCache.contains(name)) return;
+
+		// see if we have this on the db
+		String statement = "select count(1) from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?";
+		Object[] fields = new Object[1];
+		fields[0] = name;
+
+		List results = m_sqlService.dbRead(statement, fields, new SqlReader()
+		{
+			public Object readSqlResultRecord(ResultSet result)
+			{
+				try
+				{
+					int count = result.getInt(1);
+					return new Integer(count);
+				}
+				catch (SQLException ignore)
+				{
+					return null;
+				}
+			}
+		});
+
+		boolean rv = false;
+		if (!results.isEmpty())
+		{
+			rv = ((Integer) results.get(0)).intValue() > 0;
+		}
+
+		// write if we didn't find it
+		if (!rv)
+		{
+			if ("oracle".equals(m_sqlService.getVendor()))
+			{
+				statement = "insert into SAKAI_REALM_FUNCTION (FUNCTION_KEY, FUNCTION_NAME) values (SAKAI_REALM_FUNCTION_SEQ.NEXTVAL, ?)";
+			}
+			else if ("mysql".equals(m_sqlService.getVendor()))
+			{
+				statement = "insert into SAKAI_REALM_FUNCTION (FUNCTION_KEY, FUNCTION_NAME) values (DEFAULT, ?)";
+			}
+			else
+			// if ("hsqldb".equals(m_sql.getVendor()))
+			{
+				statement = "insert into SAKAI_REALM_FUNCTION (FUNCTION_KEY, FUNCTION_NAME) values (NEXT VALUE FOR SAKAI_REALM_FUNCTION_SEQ, ?)";
+			}
+
+			// write, but if it fails, we don't really care - it will fail if another app server has just written this function
+			m_sqlService.dbWriteFailQuiet(null, statement, fields);
+		}
+
+		// cache the existance of the function name
+		synchronized (m_functionCache)
+		{
+			m_functionCache.add(name);
+		}
+	}
+
+	/**
+	 * Read all the function records, caching them
+	 */
+	protected void cacheFunctionNames()
+	{
+		synchronized (m_functionCache)
+		{
+			String statement = "select FUNCTION_NAME from SAKAI_REALM_FUNCTION";
+			List results = m_sqlService.dbRead(statement, null, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
+				{
+					try
+					{
+						String name = result.getString(1);
+						m_functionCache.add(name);
+					}
+					catch (SQLException ignore)
+					{
+					}
+	
+					return null;
+				}
+			});
+		}
+	}
+
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * Storage implementation
+	 *********************************************************************************************************************************************************************************************************************************************************/
+
+	/**
+	 * Covers for the BaseXmlFileStorage, providing Realm and RealmEdit parameters
+	 */
+	protected class DbStorage extends BaseDbFlatStorage implements Storage, SqlReader
 	{
 		/**
-		* Construct.
-		*/
+		 * Construct.
+		 */
 		public DbStorage()
 		{
-			super(m_realmTableName, m_realmIdFieldName, m_realmReadFieldNames, m_realmPropTableName,
-					m_useExternalLocks, null, m_sqlService);
+			super(m_realmTableName, m_realmIdFieldName, m_realmReadFieldNames, m_realmPropTableName, m_useExternalLocks, null,
+					m_sqlService);
 			m_reader = this;
 
 			setDbidField(m_realmDbidField);
@@ -268,9 +428,12 @@ public class DbRealmService
 
 			// setSortField(m_realmSortField, null);
 
-		}	// DbStorage
+		} // DbStorage
 
-		public boolean check(String id) { return super.checkResource(id); }
+		public boolean check(String id)
+		{
+			return super.checkResource(id);
+		}
 
 		public Realm get(String id)
 		{
@@ -281,15 +444,17 @@ public class DbRealmService
 		{
 			// read the base
 			BaseRealm rv = (BaseRealm) super.getResource(conn, id);
-			
+
 			completeGet(conn, rv, false);
-			
+
 			return rv;
 		}
 
 		/**
 		 * Complete the read process once the basic realm info has been read
-		 * @param realm The real to complete
+		 * 
+		 * @param realm
+		 *        The real to complete
 		 */
 		public void completeGet(BaseRealm realm)
 		{
@@ -298,9 +463,13 @@ public class DbRealmService
 
 		/**
 		 * Complete the read process once the basic realm info has been read
-		 * @param conn optional SQL connection to use.
-		 * @param realm The real to complete.
-		 * @param updateProvider if true, update and store the provider info.
+		 * 
+		 * @param conn
+		 *        optional SQL connection to use.
+		 * @param realm
+		 *        The real to complete.
+		 * @param updateProvider
+		 *        if true, update and store the provider info.
 		 */
 		protected void completeGet(Connection conn, final BaseRealm realm, boolean updateProvider)
 		{
@@ -323,59 +492,101 @@ public class DbRealmService
 			}
 
 			// read the roles and role functions
-			String sql = "select " +
-				"(select ROLE_NAME from SAKAI_REALM_ROLE where SAKAI_REALM_ROLE.ROLE_KEY = SAKAI_REALM_RL_FN.ROLE_KEY), " +
-				"(select FUNCTION_NAME from SAKAI_REALM_FUNCTION where SAKAI_REALM_FUNCTION.FUNCTION_KEY = SAKAI_REALM_RL_FN.FUNCTION_KEY) " +
-				"from SAKAI_REALM_RL_FN where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?)";
+			String sql = "select "
+					+ "(select ROLE_NAME from SAKAI_REALM_ROLE where SAKAI_REALM_ROLE.ROLE_KEY = SAKAI_REALM_RL_FN.ROLE_KEY), "
+					+ "(select FUNCTION_NAME from SAKAI_REALM_FUNCTION where SAKAI_REALM_FUNCTION.FUNCTION_KEY = SAKAI_REALM_RL_FN.FUNCTION_KEY) "
+					+ "from SAKAI_REALM_RL_FN where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?)";
 			Object fields[] = new Object[1];
 			fields[0] = realm.getId();
-			List all = m_sql.dbRead(conn, sql, fields,
-				new SqlReader()
+			List all = m_sql.dbRead(conn, sql, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
 				{
-					public Object readSqlResultRecord(ResultSet result)
+					try
 					{
-						try
+						// get the fields
+						String roleName = result.getString(1);
+						String functionName = result.getString(2);
+
+						// make the role if needed
+						BaseRoleEdit role = (BaseRoleEdit) realm.m_roles.get(roleName);
+						if (role == null)
 						{
-							// get the fields
-							String roleName = result.getString(1);
-							String functionName = result.getString(2);
-
-							// make the role if needed
-							BaseRoleEdit role = (BaseRoleEdit) realm.m_roles.get(roleName);
-							if (role == null)
-							{
-								role = new BaseRoleEdit(roleName);
-								realm.m_roles.put(role.getId(), role);
-							}
-
-							// add the function to the role
-							role.add(functionName);
-
-							return null;
+							role = new BaseRoleEdit(roleName);
+							realm.m_roles.put(role.getId(), role);
 						}
-						catch (SQLException ignore) { return null;}
+
+						// add the function to the role
+						role.add(functionName);
+
+						return null;
+					}
+					catch (SQLException ignore)
+					{
+						return null;
 					}
 				}
-			);
+			});
 
 			// read the role descriptions
-			sql = "select " +
-				"(select ROLE_NAME from SAKAI_REALM_ROLE where SAKAI_REALM_ROLE.ROLE_KEY = SAKAI_REALM_ROLE_DESC.ROLE_KEY), " +
-				"DESCRIPTION " +
-				"from SAKAI_REALM_ROLE_DESC where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?)";
-			m_sql.dbRead(conn, sql, fields,
-				new SqlReader()
+			sql = "select "
+					+ "(select ROLE_NAME from SAKAI_REALM_ROLE where SAKAI_REALM_ROLE.ROLE_KEY = SAKAI_REALM_ROLE_DESC.ROLE_KEY), "
+					+ "DESCRIPTION "
+					+ "from SAKAI_REALM_ROLE_DESC where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?)";
+			m_sql.dbRead(conn, sql, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
 				{
-					public Object readSqlResultRecord(ResultSet result)
+					try
 					{
-						try
-						{
-							// get the fields
-							String roleName = result.getString(1);
-							String description = result.getString(2);
+						// get the fields
+						String roleName = result.getString(1);
+						String description = result.getString(2);
 
-							// find the role - create it if needed
-							// Note: if the role does not yet exist, it has no functions
+						// find the role - create it if needed
+						// Note: if the role does not yet exist, it has no functions
+						BaseRoleEdit role = (BaseRoleEdit) realm.m_roles.get(roleName);
+						if (role == null)
+						{
+							role = new BaseRoleEdit(roleName);
+							realm.m_roles.put(role.getId(), role);
+						}
+
+						// set the description
+						role.setDescription(description);
+
+						return null;
+					}
+					catch (SQLException ignore)
+					{
+						return null;
+					}
+				}
+			});
+
+			// read the role grants
+			sql = "select "
+					+ "(select ROLE_NAME from SAKAI_REALM_ROLE where SAKAI_REALM_ROLE.ROLE_KEY = SAKAI_REALM_RL_GR.ROLE_KEY), "
+					+ "USER_ID, ACTIVE, PROVIDED "
+					+ "from SAKAI_REALM_RL_GR where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?)";
+			all = m_sql.dbRead(conn, sql, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
+				{
+					try
+					{
+						// get the fields
+						String roleName = result.getString(1);
+						String userId = result.getString(2);
+						String active = result.getString(3);
+						String provided = result.getString(4);
+
+						// give the user one and only one role grant - there should be no second...
+						MyGrant grant = (MyGrant) realm.m_userGrants.get(userId);
+						if (grant == null)
+						{
+							// find the role - if it does not exist, create it for this grant
+							// NOTE: it would have no functions or description
 							BaseRoleEdit role = (BaseRoleEdit) realm.m_roles.get(roleName);
 							if (role == null)
 							{
@@ -383,65 +594,23 @@ public class DbRealmService
 								realm.m_roles.put(role.getId(), role);
 							}
 
-							// set the description
-							role.setDescription(description);
+							grant = new MyGrant(role, "1".equals(active), "1".equals(provided), userId);
 
-							return null;
+							realm.m_userGrants.put(userId, grant);
 						}
-						catch (SQLException ignore) { return null;}
-					}
-				}
-			);
-
-			// read the role grants
-			sql = "select " +
-				"(select ROLE_NAME from SAKAI_REALM_ROLE where SAKAI_REALM_ROLE.ROLE_KEY = SAKAI_REALM_RL_GR.ROLE_KEY), " +
-				"USER_ID, ACTIVE, PROVIDED " +
-				"from SAKAI_REALM_RL_GR where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?)";
-			all = m_sql.dbRead(conn, sql, fields,
-				new SqlReader()
-				{
-					public Object readSqlResultRecord(ResultSet result)
-					{
-						try
+						else
 						{
-							// get the fields
-							String roleName = result.getString(1);
-							String userId = result.getString(2);
-							String active = result.getString(3);
-							String provided = result.getString(4);
-
-							// give the user one and only one role grant - there should be no second...
-							MyGrant grant = (MyGrant) realm.m_userGrants.get(userId);
-							if (grant == null)
-							{
-								// find the role - if it does not exist, create it for this grant
-								// NOTE: it would have no functions or description
-								BaseRoleEdit role = (BaseRoleEdit) realm.m_roles.get(roleName);
-								if (role == null)
-								{
-									role = new BaseRoleEdit(roleName);
-									realm.m_roles.put(role.getId(), role);
-								}
-
-								grant = new MyGrant(role,
-													"1".equals(active),
-													"1".equals(provided),
-													userId);
-
-								realm.m_userGrants.put(userId, grant);
-							}
-							else
-							{
-								m_logger.warn(this + ".completeGet: additional user - role grant: " + userId + " " + roleName);
-							}
-
-							return null;
+							m_logger.warn(this + ".completeGet: additional user - role grant: " + userId + " " + roleName);
 						}
-						catch (SQLException ignore) { return null;}
+
+						return null;
+					}
+					catch (SQLException ignore)
+					{
+						return null;
 					}
 				}
-			);
+			});
 		}
 
 		/**
@@ -464,7 +633,7 @@ public class DbRealmService
 				{
 					// adjust to the size of the set found
 					// page.validate(rv.size());
-	
+
 					rv = getSelectedResources(where, fields, page.getFirst(), page.getLast());
 				}
 				else
@@ -472,7 +641,7 @@ public class DbRealmService
 					rv = getSelectedResources(where, fields);
 				}
 			}
-			
+
 			else
 			{
 				// paging
@@ -480,7 +649,7 @@ public class DbRealmService
 				{
 					// adjust to the size of the set found
 					// page.validate(rv.size());
-	
+
 					rv = getAllResources(page.getFirst(), page.getLast());
 				}
 				else
@@ -509,12 +678,12 @@ public class DbRealmService
 
 				rv = countSelectedResources(where, fields);
 			}
-			
+
 			else
 			{
 				rv = countAllResources();
 			}
-				
+
 			return rv;
 		}
 
@@ -522,7 +691,7 @@ public class DbRealmService
 		 * {@inheritDoc}
 		 */
 		public Set unlockRealms(String userId, String lock)
-		{			
+		{
 			// Just like unlock, except we use all realms and get their ids
 			// Note: consider over all realms just those realms where there's a grant of a role that satisfies the lock
 			// Ignore realms where anon or auth satisfy the lock.
@@ -530,19 +699,20 @@ public class DbRealmService
 			boolean auth = (userId != null) && (!UserDirectoryService.getAnonymousUser().getId().equals(userId));
 			String sql = "";
 			StringBuffer sqlBuf = null;
-			
+
 			// Assemble SQL
 			sqlBuf = new StringBuffer();
 			sqlBuf.append("select SR.REALM_ID ");
 			sqlBuf.append("from SAKAI_REALM_FUNCTION SRF ");
 			sqlBuf.append("inner join SAKAI_REALM_RL_FN SRRF on SRF.FUNCTION_KEY = SRRF.FUNCTION_KEY ");
-			sqlBuf.append("inner join SAKAI_REALM_RL_GR SRRG on SRRF.ROLE_KEY = SRRG.ROLE_KEY and SRRF.REALM_KEY = SRRG.REALM_KEY ");
+			sqlBuf
+					.append("inner join SAKAI_REALM_RL_GR SRRG on SRRF.ROLE_KEY = SRRG.ROLE_KEY and SRRF.REALM_KEY = SRRG.REALM_KEY ");
 			sqlBuf.append("inner join SAKAI_REALM SR on SRRF.REALM_KEY = SR.REALM_KEY ");
 			sqlBuf.append("where SRF.FUNCTION_NAME = ? ");
 			sqlBuf.append("and SRRG.USER_ID = ? ");
 			sqlBuf.append("and SRRG.ACTIVE = '1'");
 			sql = sqlBuf.toString();
-			
+
 			// String statement = "select distinct REALM_ID from SAKAI_REALM where REALM_KEY in (" +
 			// "select REALM_KEY from SAKAI_REALM_RL_FN " +
 			// "where FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) " +
@@ -568,14 +738,14 @@ public class DbRealmService
 			{
 				rv.activate();
 			}
-			
+
 			return rv;
 		}
 
 		public RealmEdit edit(String id)
 		{
 			BaseRealmEdit edit = (BaseRealmEdit) super.editResource(id);
-			
+
 			if (edit != null)
 			{
 				edit.activate();
@@ -585,36 +755,37 @@ public class DbRealmService
 			return edit;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public void commit(RealmEdit edit)
 		{
-			commit(null, edit);
-		}
+			// pre-check the roles and functions to make sure they are all defined
+			for (Iterator iRoles = ((BaseRealmEdit) edit).m_roles.values().iterator(); iRoles.hasNext();)
+			{
+				Role role = (Role) iRoles.next();
 
-		/**
-		 * Commit, with optional connection to use
-		 * @param conn Optional connection to use.
-		 * @param edit The edit to commit.
-		 */
-		protected void commit(Connection conn, RealmEdit edit)
-		{
+				// make sure the role name is defined / define it
+				checkRoleName(role.getId());
+
+				for (Iterator iFunctions = role.getLocks().iterator(); iFunctions.hasNext();)
+				{
+					String function = (String) iFunctions.next();
+
+					// make sure the role name is defined / define it
+					checkFunctionName(function);
+				}
+			}
+
 			// write role functions, auth grants, anon grants, role grants, function grants, provider ids
 			// and then commit the realm and release the lock, all in one transaction
 			Connection connection = null;
 			boolean wasCommit = true;
 			try
 			{
-				// use the connection given, if any
-				if (conn != null)
-				{
-					connection = conn;
-				}
-
-				else
-				{
-					connection = m_sql.borrowConnection();
-					wasCommit = connection.getAutoCommit();
-					connection.setAutoCommit(false);
-				}
+				connection = m_sql.borrowConnection();
+				wasCommit = connection.getAutoCommit();
+				connection.setAutoCommit(false);
 
 				// delete the role functions, role grants, provider ids, role descriptions
 				Object fields1[] = new Object[1];
@@ -637,19 +808,16 @@ public class DbRealmService
 
 				// write all the role definitions for the realm
 				statement = "insert into SAKAI_REALM_RL_FN (REALM_KEY, ROLE_KEY, FUNCTION_KEY) values ("
-							+ "(select REALM_KEY from SAKAI_REALM where REALM_ID = ?), "
-							+ "(select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), "
-							+ "(select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?))";
+						+ "(select REALM_KEY from SAKAI_REALM where REALM_ID = ?), "
+						+ "(select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), "
+						+ "(select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?))";
 				// and the role descriptions
-				String stmt2 = "insert into SAKAI_REALM_ROLE_DESC (REALM_KEY, ROLE_KEY, DESCRIPTION) values(" +
-					"(select REALM_KEY from SAKAI_REALM where REALM_ID = ?), " +
-					"(select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), ?)";
+				String stmt2 = "insert into SAKAI_REALM_ROLE_DESC (REALM_KEY, ROLE_KEY, DESCRIPTION) values("
+						+ "(select REALM_KEY from SAKAI_REALM where REALM_ID = ?), "
+						+ "(select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), ?)";
 				for (Iterator iRoles = ((BaseRealmEdit) edit).m_roles.values().iterator(); iRoles.hasNext();)
 				{
 					Role role = (Role) iRoles.next();
-					
-					// make sure the role name is defined / define it
-					checkRoleName(connection, role.getId(), true);
 
 					// write the role's function entries
 					fields3[1] = role.getId();
@@ -657,23 +825,20 @@ public class DbRealmService
 					{
 						String function = (String) iFunctions.next();
 
-						// make sure the role name is defined / define it
-						checkFunctionName(connection, function, true);
-
 						fields3[2] = function;
 						m_sql.dbWrite(connection, statement, fields3);
 					}
-					
+
 					// and the description -
 					// lets always write it even if null so we can help keep the role defined even if it has no functions
 					fields3[2] = role.getDescription();
 					m_sql.dbWrite(connection, stmt2, fields3);
 				}
-				
+
 				// write all the role grants for the realm
 				statement = "insert into SAKAI_REALM_RL_GR (REALM_KEY, USER_ID, ROLE_KEY, ACTIVE, PROVIDED) values ("
-							+ "(select REALM_KEY from SAKAI_REALM where REALM_ID = ?), ?, "
-							+ "(select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), ?, ?)";
+						+ "(select REALM_KEY from SAKAI_REALM where REALM_ID = ?), ?, "
+						+ "(select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), ?, ?)";
 				Object[] fields5 = new Object[5];
 				fields5[0] = caseId(edit.getId());
 				for (Iterator i = ((BaseRealmEdit) edit).m_userGrants.entrySet().iterator(); i.hasNext();)
@@ -681,9 +846,6 @@ public class DbRealmService
 					Map.Entry entry = (Map.Entry) i.next();
 					MyGrant grant = (MyGrant) entry.getValue();
 					String user = (String) entry.getKey();
-
-					// make sure the role name is defined / define it
-					checkRoleName(connection, grant.role.getId(), true);
 
 					fields5[1] = user;
 					fields5[2] = grant.role.getId();
@@ -698,7 +860,7 @@ public class DbRealmService
 				{
 					String[] ids = m_provider.unpackId(edit.getProviderRealmId());
 					statement = "insert into SAKAI_REALM_PROVIDER (REALM_KEY, PROVIDER_ID) values ("
-								+ "(select REALM_KEY from SAKAI_REALM where REALM_ID = ?), ?)";
+							+ "(select REALM_KEY from SAKAI_REALM where REALM_ID = ?), ?)";
 					Object[] fields2 = new Object[2];
 					fields2[0] = caseId(edit.getId());
 					for (int i = 0; i < ids.length; i++)
@@ -709,17 +871,15 @@ public class DbRealmService
 				}
 
 				// write the realm and properties, releasing the lock
-				super.commitResource(connection, edit, fields(edit.getId(), ((BaseRealmEdit) edit), true), edit.getProperties(), ((BaseRealmEdit) edit).getKey());
+				super.commitResource(connection, edit, fields(edit.getId(), ((BaseRealmEdit) edit), true), edit.getProperties(),
+						((BaseRealmEdit) edit).getKey());
 
-				// if we have our own connection, commit
-				if (conn == null)
-				{
-					connection.commit();
-				}
+				// commit
+				connection.commit();
 			}
 			catch (Exception e)
 			{
-				if ((connection != null) && (conn == null))
+				if (connection != null)
 				{
 					try
 					{
@@ -734,7 +894,7 @@ public class DbRealmService
 			}
 			finally
 			{
-				if ((connection != null) && (conn == null))
+				if (connection != null)
 				{
 					try
 					{
@@ -749,7 +909,10 @@ public class DbRealmService
 			}
 		}
 
-		public void cancel(RealmEdit edit) { super.cancelResource(edit); }
+		public void cancel(RealmEdit edit)
+		{
+			super.cancelResource(edit);
+		}
 
 		public void remove(RealmEdit edit)
 		{
@@ -819,9 +982,13 @@ public class DbRealmService
 
 		/**
 		 * Get the fields for the database from the edit for this id, and the id again at the end if needed
-		 * @param id The resource id
-		 * @param edit The edit (may be null in a new)
-		 * @param idAgain If true, include the id field again at the end, else don't.
+		 * 
+		 * @param id
+		 *        The resource id
+		 * @param edit
+		 *        The edit (may be null in a new)
+		 * @param idAgain
+		 *        If true, include the id field again at the end, else don't.
 		 * @return The fields for the database.
 		 */
 		protected Object[] fields(String id, BaseRealmEdit edit, boolean idAgain)
@@ -836,7 +1003,7 @@ public class DbRealmService
 			if (edit == null)
 			{
 				String current = UsageSessionService.getSessionUserId();
-				
+
 				// if no current user, since we are working up a new user record, use the user id as creator...
 				if (current == null) current = "";
 
@@ -865,7 +1032,9 @@ public class DbRealmService
 
 		/**
 		 * Read from the result one set of fields to create a Resource.
-		 * @param result The Sql query result.
+		 * 
+		 * @param result
+		 *        The Sql query result.
 		 * @return The Resource object.
 		 */
 		public Object readSqlResultRecord(ResultSet result)
@@ -889,7 +1058,7 @@ public class DbRealmService
 				{
 					modifiedOn = TimeService.newTime(ts.getTime());
 				}
-				
+
 				// the special local integer 'db' id field, read after the field list
 				Integer dbid = new Integer(result.getInt(8));
 
@@ -904,130 +1073,6 @@ public class DbRealmService
 		}
 
 		/**
-		 * Check if this role name is defined.
-		 * @param conn A database connection (transaction) to use.
-		 * @param name the role name.
-		 * @param force if true, and if the role is missing, add it.
-		 * @return true if it is defined, false if not.
-		 */
-		protected boolean checkRoleName(Connection conn, String name, boolean force)
-		{
-			String statement = "select count(1) from SAKAI_REALM_ROLE where ROLE_NAME = ?";
-			Object[] fields = new Object[1];
-			fields[0] = name;
-
-			List results = m_sql.dbRead(conn, statement, fields,
-				new SqlReader()
-				{
-					public Object readSqlResultRecord(ResultSet result)
-					{
-						try
-						{
-							int count = result.getInt(1);
-							return new Integer(count);
-						}
-						catch (SQLException ignore) { return null;}
-					}
-				}
-			 );
-
-
-			boolean rv = false;
-			if (!results.isEmpty())
-			{
-				rv = ((Integer) results.get(0)).intValue() > 0;
-			}
-			
-			if (!rv && force)
-			{
-			    if ("oracle".equals(m_sql.getVendor()))
-			    {
-			        statement = "insert into SAKAI_REALM_ROLE (ROLE_KEY, ROLE_NAME) values (SAKAI_REALM_ROLE_SEQ.NEXTVAL, ?)";
-			    }
-			    else if ("mysql".equals(m_sql.getVendor()))
-			    {
-			        statement = "insert into SAKAI_REALM_ROLE (ROLE_KEY, ROLE_NAME) values (DEFAULT, ?)";
-			    }
-			    else //if ("hsqldb".equals(m_sql.getVendor()))
-			    {
-			        statement = "insert into SAKAI_REALM_ROLE (ROLE_KEY, ROLE_NAME) values (NEXT VALUE FOR SAKAI_REALM_ROLE_SEQ, ?)";
-			    }
-			    
-			    m_sql.dbWrite(conn, statement, fields);
-				// TODO: do this outside the transaction, in fact as an atomic check/add operation?
-				rv = true;
-			}
-			
-			return rv;
-		}
-
-		/**
-		 * Check if this function name is defined.
-		 * @param conn A database connection (transaction) to use.
-		 * @param name the role name.
-		 * @param force if true, and if the function is missing, add it.
-		 * @return true if it is defined, false if not.
-		 */
-		protected boolean checkFunctionName(Connection conn, String name, boolean force)
-		{
-            if (name == null) return false;
-            name = name.intern();
-            
-            // check the cache to see if the function name already exists
-            if (m_functionCache.containsKey(name)) return true;
-            
-			String statement = "select count(1) from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?";
-			Object[] fields = new Object[1];
-			fields[0] = name;
-
-			List results = m_sql.dbRead(conn, statement, fields,
-				new SqlReader()
-				{
-					public Object readSqlResultRecord(ResultSet result)
-					{
-						try
-						{
-							int count = result.getInt(1);
-							return new Integer(count);
-						}
-						catch (SQLException ignore) { return null;}
-					}
-				}
-			 );
-
-			boolean rv = false;
-			if (!results.isEmpty())
-			{
-				rv = ((Integer) results.get(0)).intValue() > 0;
-			}
-			
-			if (!rv && force)
-			{
-			    if ("oracle".equals(m_sql.getVendor()))
-			    {
-			        statement = "insert into SAKAI_REALM_FUNCTION (FUNCTION_KEY, FUNCTION_NAME) values (SAKAI_REALM_FUNCTION_SEQ.NEXTVAL, ?)";
-			    }
-			    else if ("mysql".equals(m_sql.getVendor()))
-			    {
-			        statement = "insert into SAKAI_REALM_FUNCTION (FUNCTION_KEY, FUNCTION_NAME) values (DEFAULT, ?)";
-			    }
-			    else //if ("hsqldb".equals(m_sql.getVendor()))
-			    {
-			        statement = "insert into SAKAI_REALM_FUNCTION (FUNCTION_KEY, FUNCTION_NAME) values (NEXT VALUE FOR SAKAI_REALM_FUNCTION_SEQ, ?)";
-			    }
-			    
-			    m_sql.dbWrite(conn, statement, fields);
-				// TODO: do this outside the transaction, in fact as an atomic check/add operation?
-				rv = true;
-			}
-			
-            // cache the existance of the function name
-            if (rv) m_functionCache.put(name, name, m_cacheMinutes*60);
-            
-			return rv;
-		}
-
-		/**
 		 * {@inheritDoc}
 		 */
 		public boolean unlock(String userId, String lock, String realmId)
@@ -1035,90 +1080,79 @@ public class DbRealmService
 			// does the user have any roles granted that include this lock, based on grants or anon/auth?
 			boolean auth = (userId != null) && (!UserDirectoryService.getAnonymousUser().getId().equals(userId));
 
-//			String statement = "select count(1) from SAKAI_REALM_RL_FN " +
-//				"where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?) " +
-//				"and FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) " +
-//				"and (ROLE_KEY in " +
-//				"(select ROLE_KEY from SAKAI_REALM_RL_GR where ACTIVE = '1' and USER_ID = ? " +
-//				"and SAKAI_REALM_RL_GR.REALM_KEY = SAKAI_REALM_RL_FN.REALM_KEY) " +
-//				"or ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = '" + ANON_ROLE + "') " +
-//				(auth ? "or ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = '" + AUTH_ROLE + "') " : "") +
-//				")";
-//
-//			Object[] fields = new Object[3];
-//			fields[0] = realmId;
-//			fields[1] = lock;
-//			fields[2] = userId;
-//
-//			List results = m_sql.dbRead(statement, fields,
-//				new SqlReader()
-//				{
-//					public Object readSqlResultRecord(ResultSet result)
-//					{
-//						try
-//						{
-//							int count = result.getInt(1);
-//							return new Integer(count);
-//						}
-//						catch (SQLException ignore) { return null;}
-//					}
-//				}
-//			 );
-//
-//			boolean rv = false;
-//			int count = -1;
-//			if (!results.isEmpty())
-//			{
-//				count = ((Integer) results.get(0)).intValue();
-//				rv = count > 0;
-//			}
+			// String statement = "select count(1) from SAKAI_REALM_RL_FN " +
+			// "where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?) " +
+			// "and FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) " +
+			// "and (ROLE_KEY in " +
+			// "(select ROLE_KEY from SAKAI_REALM_RL_GR where ACTIVE = '1' and USER_ID = ? " +
+			// "and SAKAI_REALM_RL_GR.REALM_KEY = SAKAI_REALM_RL_FN.REALM_KEY) " +
+			// "or ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = '" + ANON_ROLE + "') " +
+			// (auth ? "or ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = '" + AUTH_ROLE + "') " : "") +
+			// ")";
+			//
+			// Object[] fields = new Object[3];
+			// fields[0] = realmId;
+			// fields[1] = lock;
+			// fields[2] = userId;
+			//
+			// List results = m_sql.dbRead(statement, fields,
+			// new SqlReader()
+			// {
+			// public Object readSqlResultRecord(ResultSet result)
+			// {
+			// try
+			// {
+			// int count = result.getInt(1);
+			// return new Integer(count);
+			// }
+			// catch (SQLException ignore) { return null;}
+			// }
+			// }
+			// );
+			//
+			// boolean rv = false;
+			// int count = -1;
+			// if (!results.isEmpty())
+			// {
+			// count = ((Integer) results.get(0)).intValue();
+			// rv = count > 0;
+			// }
 
 			// New code
-			String statement = 
-				"select count(1) " +
-				"from " +
-				"  SAKAI_REALM_RL_FN MAINTABLE " +
-				"     LEFT JOIN SAKAI_REALM_RL_GR GRANTED_ROLES " + 
-				"        ON (MAINTABLE.REALM_KEY = GRANTED_ROLES.REALM_KEY AND MAINTABLE.ROLE_KEY = GRANTED_ROLES.ROLE_KEY), " +
-				"  SAKAI_REALM REALMS, " +
-				"  SAKAI_REALM_ROLE ROLES, " +
-				"  SAKAI_REALM_FUNCTION FUNCTIONS " +
-				"where " +
-				// our criteria
-				"  ( " +
-				"    ROLES.ROLE_NAME in('" + ANON_ROLE + "'" + (auth ? ",'" + AUTH_ROLE +  "'" : "") + ") " +
-				"    or " +
-				"    ( " +
-				"      GRANTED_ROLES.USER_ID = ? " +
-				"      AND GRANTED_ROLES.ACTIVE = 1 " +
-				"    ) " +
-				"  )" +
-				"  AND FUNCTIONS.FUNCTION_NAME = ? " +
-				"  AND REALMS.REALM_ID in (?) " +
-				// for the join
-				"  AND MAINTABLE.REALM_KEY = REALMS.REALM_KEY " +
-				"  AND MAINTABLE.FUNCTION_KEY = FUNCTIONS.FUNCTION_KEY " +
-				"  AND MAINTABLE.ROLE_KEY = ROLES.ROLE_KEY ";
+			String statement = "select count(1) "
+					+ "from "
+					+ "  SAKAI_REALM_RL_FN MAINTABLE "
+					+ "     LEFT JOIN SAKAI_REALM_RL_GR GRANTED_ROLES "
+					+ "        ON (MAINTABLE.REALM_KEY = GRANTED_ROLES.REALM_KEY AND MAINTABLE.ROLE_KEY = GRANTED_ROLES.ROLE_KEY), "
+					+ "  SAKAI_REALM REALMS, " + "  SAKAI_REALM_ROLE ROLES, " + "  SAKAI_REALM_FUNCTION FUNCTIONS " + "where " +
+					// our criteria
+					"  ( " + "    ROLES.ROLE_NAME in('" + ANON_ROLE + "'" + (auth ? ",'" + AUTH_ROLE + "'" : "") + ") " + "    or "
+					+ "    ( " + "      GRANTED_ROLES.USER_ID = ? " + "      AND GRANTED_ROLES.ACTIVE = 1 " + "    ) " + "  )"
+					+ "  AND FUNCTIONS.FUNCTION_NAME = ? " + "  AND REALMS.REALM_ID in (?) " +
+					// for the join
+					"  AND MAINTABLE.REALM_KEY = REALMS.REALM_KEY " + "  AND MAINTABLE.FUNCTION_KEY = FUNCTIONS.FUNCTION_KEY "
+					+ "  AND MAINTABLE.ROLE_KEY = ROLES.ROLE_KEY ";
 
 			Object[] fields = new Object[3];
 			fields[0] = userId;
 			fields[1] = lock;
 			fields[2] = realmId;
 
-			List resultsNew = m_sql.dbRead(statement, fields,
-				new SqlReader()
+			List resultsNew = m_sql.dbRead(statement, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
 				{
-					public Object readSqlResultRecord(ResultSet result)
+					try
 					{
-						try
-						{
-							int count = result.getInt(1);
-							return new Integer(count);
-						}
-						catch (SQLException ignore) { return null;}
+						int count = result.getInt(1);
+						return new Integer(count);
+					}
+					catch (SQLException ignore)
+					{
+						return null;
 					}
 				}
-			 );
+			});
 
 			boolean rvNew = false;
 			int countNew = -1;
@@ -1129,16 +1163,16 @@ public class DbRealmService
 			}
 
 			// compare new and old
-//			if ((rv != rvNew) || (count != countNew))
-//			{
-//				m_logger.warn("**unlock1 new mismatch: new/old rv: " + rv + "/" + rvNew + " count: " + count + "/" + countNew + " u: " + userId + " l: " + lock);
-//			}
-//			else
-//			{
-//				m_logger.warn("**unlock1 new worked: rv: " + rv + "/" + rvNew + " count: " + count + "/" + countNew + " u: " + userId + " l: " + lock);
-//			}
-//
-//			return rv;
+			// if ((rv != rvNew) || (count != countNew))
+			// {
+			// m_logger.warn("**unlock1 new mismatch: new/old rv: " + rv + "/" + rvNew + " count: " + count + "/" + countNew + " u: " + userId + " l: " + lock);
+			// }
+			// else
+			// {
+			// m_logger.warn("**unlock1 new worked: rv: " + rv + "/" + rvNew + " count: " + count + "/" + countNew + " u: " + userId + " l: " + lock);
+			// }
+			//
+			// return rv;
 
 			return rvNew;
 		}
@@ -1155,27 +1189,24 @@ public class DbRealmService
 			// make (?, ?, ?...) for realms size
 			StringBuffer buf = new StringBuffer();
 			buf.append("(?");
-			for (int i = 0; i < realms.size()-1; i++)
+			for (int i = 0; i < realms.size() - 1; i++)
 			{
 				buf.append(",?");
 			}
 			buf.append(")");
 
 			String statement = "select count(1) from SAKAI_REALM_RL_FN " +
-				// any of the grant or role realms
-				"where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " +
-				buf.toString() +
-				") " +
-				"and FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) " +
-				"and (ROLE_KEY in " +
-				"(select ROLE_KEY from SAKAI_REALM_RL_GR where ACTIVE = '1' and USER_ID = ? " +
-				// granted in any of the grant or role realms
-				"and REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() + ")) " +
-				"or ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = '" + ANON_ROLE + "') " +
-				(auth ? "or ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = '" + AUTH_ROLE + "') " : "") +
-				")";
+			// any of the grant or role realms
+					"where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() + ") "
+					+ "and FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) "
+					+ "and (ROLE_KEY in " + "(select ROLE_KEY from SAKAI_REALM_RL_GR where ACTIVE = '1' and USER_ID = ? " +
+					// granted in any of the grant or role realms
+					"and REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() + ")) "
+					+ "or ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = '" + ANON_ROLE + "') "
+					+ (auth ? "or ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = '" + AUTH_ROLE + "') " : "")
+					+ ")";
 
-			Object[] fields = new Object[2 + (2 * realms.size() )];
+			Object[] fields = new Object[2 + (2 * realms.size())];
 			int pos = 0;
 			for (Iterator i = realms.iterator(); i.hasNext();)
 			{
@@ -1190,20 +1221,21 @@ public class DbRealmService
 				fields[pos++] = role;
 			}
 
-			List results = m_sql.dbRead(statement, fields,
-				new SqlReader()
+			List results = m_sql.dbRead(statement, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
 				{
-					public Object readSqlResultRecord(ResultSet result)
+					try
 					{
-						try
-						{
-							int count = result.getInt(1);
-							return new Integer(count);
-						}
-						catch (SQLException ignore) { return null;}
+						int count = result.getInt(1);
+						return new Integer(count);
+					}
+					catch (SQLException ignore)
+					{
+						return null;
 					}
 				}
-			 );
+			});
 
 			boolean rv = false;
 			int count = -1;
@@ -1213,83 +1245,83 @@ public class DbRealmService
 				rv = count > 0;
 			}
 
-// the problem with this: once a role is found that has the function in any of the list of realm,
-// if the user is granted this role in any of the realms (not necessairly the one with the function),
-// that should count - but doesnt
-//			String statement = 
-//				"select count(1) " +
-//				"from " +
-//				"  SAKAI_REALM_RL_FN MAINTABLE, " +
-//				"  SAKAI_REALM_RL_GR GRANTED_ROLES, " +
-//				"  SAKAI_REALM REALMS, " +
-//				"  SAKAI_REALM_ROLE ROLES, " +
-//				"  SAKAI_REALM_FUNCTION FUNCTIONS " +
-//				"where " +
-//				// our criteria
-//				"  ( " +
-//				"    ROLES.ROLE_NAME in('" + ANON_ROLE + "'" + (auth ? ",'" + AUTH_ROLE +  "'" : "") + ") " +
-//				"    or " +
-//				"    ( " +
-//				"      GRANTED_ROLES.USER_ID = ? " +
-//				"      AND GRANTED_ROLES.ACTIVE = 1 " +
-//				"    ) " +
-//				"  )" +
-//				"  AND FUNCTIONS.FUNCTION_NAME = ? " +
-//				"  AND REALMS.REALM_ID in " + buf.toString() +
-//				// for the join
-//			 	"  AND MAINTABLE.REALM_KEY = REALMS.REALM_KEY " +
-//				"  AND MAINTABLE.FUNCTION_KEY = FUNCTIONS.FUNCTION_KEY " +
-//				"  AND MAINTABLE.ROLE_KEY = ROLES.ROLE_KEY " +
-//			 	// grant table join should be outer - things reling on anon or auth will not have any grants
-//				"  AND MAINTABLE.REALM_KEY = GRANTED_ROLES.REALM_KEY (+) " +
-//				"  AND MAINTABLE.ROLE_KEY = GRANTED_ROLES.ROLE_KEY (+) ";
-//
-//			Object[] fields = new Object[2 + realms.size()];
-//			int pos = 0;
-//			fields[pos++] = userId;
-//			fields[pos++] = lock;
-//			for (Iterator i = realms.iterator(); i.hasNext();)
-//			{
-//				String role = (String) i.next();
-//				fields[pos++] = role;
-//			}
-//
-//			List resultsNew = m_sql.dbRead(statement, fields,
-//				new SqlReader()
-//				{
-//					public Object readSqlResultRecord(ResultSet result)
-//					{
-//						try
-//						{
-//							int count = result.getInt(1);
-//							return new Integer(count);
-//						}
-//						catch (SQLException ignore) { return null;}
-//					}
-//				}
-//			 );
-//
-//			boolean rvNew = false;
-//			int countNew = -1;
-//			if (!resultsNew.isEmpty())
-//			{
-//				countNew = ((Integer) resultsNew.get(0)).intValue();
-//				rvNew = countNew > 0;
-//			}
+			// the problem with this: once a role is found that has the function in any of the list of realm,
+			// if the user is granted this role in any of the realms (not necessairly the one with the function),
+			// that should count - but doesnt
+			// String statement =
+			// "select count(1) " +
+			// "from " +
+			// " SAKAI_REALM_RL_FN MAINTABLE, " +
+			// " SAKAI_REALM_RL_GR GRANTED_ROLES, " +
+			// " SAKAI_REALM REALMS, " +
+			// " SAKAI_REALM_ROLE ROLES, " +
+			// " SAKAI_REALM_FUNCTION FUNCTIONS " +
+			// "where " +
+			// // our criteria
+			// " ( " +
+			// " ROLES.ROLE_NAME in('" + ANON_ROLE + "'" + (auth ? ",'" + AUTH_ROLE + "'" : "") + ") " +
+			// " or " +
+			// " ( " +
+			// " GRANTED_ROLES.USER_ID = ? " +
+			// " AND GRANTED_ROLES.ACTIVE = 1 " +
+			// " ) " +
+			// " )" +
+			// " AND FUNCTIONS.FUNCTION_NAME = ? " +
+			// " AND REALMS.REALM_ID in " + buf.toString() +
+			// // for the join
+			// " AND MAINTABLE.REALM_KEY = REALMS.REALM_KEY " +
+			// " AND MAINTABLE.FUNCTION_KEY = FUNCTIONS.FUNCTION_KEY " +
+			// " AND MAINTABLE.ROLE_KEY = ROLES.ROLE_KEY " +
+			// // grant table join should be outer - things reling on anon or auth will not have any grants
+			// " AND MAINTABLE.REALM_KEY = GRANTED_ROLES.REALM_KEY (+) " +
+			// " AND MAINTABLE.ROLE_KEY = GRANTED_ROLES.ROLE_KEY (+) ";
+			//
+			// Object[] fields = new Object[2 + realms.size()];
+			// int pos = 0;
+			// fields[pos++] = userId;
+			// fields[pos++] = lock;
+			// for (Iterator i = realms.iterator(); i.hasNext();)
+			// {
+			// String role = (String) i.next();
+			// fields[pos++] = role;
+			// }
+			//
+			// List resultsNew = m_sql.dbRead(statement, fields,
+			// new SqlReader()
+			// {
+			// public Object readSqlResultRecord(ResultSet result)
+			// {
+			// try
+			// {
+			// int count = result.getInt(1);
+			// return new Integer(count);
+			// }
+			// catch (SQLException ignore) { return null;}
+			// }
+			// }
+			// );
+			//
+			// boolean rvNew = false;
+			// int countNew = -1;
+			// if (!resultsNew.isEmpty())
+			// {
+			// countNew = ((Integer) resultsNew.get(0)).intValue();
+			// rvNew = countNew > 0;
+			// }
 
-//			// compare new and old
-//			if ((rv != rvNew) || (count != countNew))
-//			{
-//				m_logger.warn("**unlock new mismatch: new/old rv: " + rv + "/" + rvNew + " count: " + count + "/" + countNew + " u: " + userId + " l: " + lock);
-//			}
-//			else
-//			{
-//				m_logger.warn("**unlock new worked: rv: " + rv + "/" + rvNew + " count: " + count + "/" + countNew + " u: " + userId + " l: " + lock);
-//			}
+			// // compare new and old
+			// if ((rv != rvNew) || (count != countNew))
+			// {
+			// m_logger.warn("**unlock new mismatch: new/old rv: " + rv + "/" + rvNew + " count: " + count + "/" + countNew + " u: " + userId + " l: " + lock);
+			// }
+			// else
+			// {
+			// m_logger.warn("**unlock new worked: rv: " + rv + "/" + rvNew + " count: " + count + "/" + countNew + " u: " + userId + " l: " + lock);
+			// }
 
 			return rv;
 
-//			return rvNew;
+			// return rvNew;
 		}
 
 		/**
@@ -1301,19 +1333,19 @@ public class DbRealmService
 			String sqlParam = "";
 			StringBuffer sqlBuf = null;
 			StringBuffer sqlParamBuf = null;
-		    
-		    // TODO: pre-compute some fields arrays and statements for common roleRealms sizes for efficiency? -ggolden
+
+			// TODO: pre-compute some fields arrays and statements for common roleRealms sizes for efficiency? -ggolden
 
 			// make (?, ?, ?...) for realms size
 			sqlParamBuf = new StringBuffer();
 			sqlParamBuf.append("(?");
-			for (int i = 0; i < realms.size()-1; i++)
+			for (int i = 0; i < realms.size() - 1; i++)
 			{
 				sqlParamBuf.append(",?");
 			}
 			sqlParamBuf.append(")");
-			sqlParam = sqlParamBuf.toString(); 
-			
+			sqlParam = sqlParamBuf.toString();
+
 			// Assemble SQL
 			sqlBuf = new StringBuffer();
 			sqlBuf.append("select SRRG.USER_ID ");
@@ -1322,20 +1354,20 @@ public class DbRealmService
 			sqlBuf.append("where SR.REALM_ID in " + sqlParam + " ");
 			sqlBuf.append("and SRRG.ACTIVE = '1' ");
 			sqlBuf.append("and SRRG.ROLE_KEY in ");
-			        sqlBuf.append("(select SRRF.ROLE_KEY ");
-			        sqlBuf.append("from SAKAI_REALM_RL_FN SRRF ");
-			        sqlBuf.append("inner join SAKAI_REALM_FUNCTION SRF ON SRRF.FUNCTION_KEY = SRF.FUNCTION_KEY ");
-			        sqlBuf.append("inner join SAKAI_REALM SR1 ON SRRF.REALM_KEY = SR1.REALM_KEY ");
-			        sqlBuf.append("where SRF.FUNCTION_NAME = ? ");
-			        sqlBuf.append("and SR1.REALM_ID in  " + sqlParam + ")");
-			 sql = sqlBuf.toString();
+			sqlBuf.append("(select SRRF.ROLE_KEY ");
+			sqlBuf.append("from SAKAI_REALM_RL_FN SRRF ");
+			sqlBuf.append("inner join SAKAI_REALM_FUNCTION SRF ON SRRF.FUNCTION_KEY = SRF.FUNCTION_KEY ");
+			sqlBuf.append("inner join SAKAI_REALM SR1 ON SRRF.REALM_KEY = SR1.REALM_KEY ");
+			sqlBuf.append("where SRF.FUNCTION_NAME = ? ");
+			sqlBuf.append("and SR1.REALM_ID in  " + sqlParam + ")");
+			sql = sqlBuf.toString();
 
-			//String statement = "select USER_ID from SAKAI_REALM_RL_GR where " +
-			//"REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() +
-			//") and ACTIVE = '1' " +
-			//"and ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_RL_FN where " +
-			//"FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) " +
-			//"and REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() + "))";
+			// String statement = "select USER_ID from SAKAI_REALM_RL_GR where " +
+			// "REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() +
+			// ") and ACTIVE = '1' " +
+			// "and ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_RL_FN where " +
+			// "FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) " +
+			// "and REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() + "))";
 
 			Object[] fields = new Object[1 + (2 * realms.size())];
 			int pos = 0;
@@ -1369,22 +1401,22 @@ public class DbRealmService
 			String sqlParam = "";
 			StringBuffer sqlBuf = null;
 			StringBuffer sqlParamBuf = null;
-			
+
 			// TODO: pre-compute some fields arrays and statements for common roleRealms sizes for efficiency? -ggolden
 
 			// make (?, ?, ?...) for realms size
 			sqlParamBuf = new StringBuffer();
 			sqlParamBuf.append("(?");
-			for (int i = 0; i < realms.size()-1; i++)
+			for (int i = 0; i < realms.size() - 1; i++)
 			{
 				sqlParamBuf.append(",?");
 			}
 			sqlParamBuf.append(")");
 			sqlParam = sqlParamBuf.toString();
-						
-			//Assemble SQL
+
+			// Assemble SQL
 			sqlBuf = new StringBuffer();
-			sqlBuf.append("select DISTINCT FUNCTION_NAME "); 
+			sqlBuf.append("select DISTINCT FUNCTION_NAME ");
 			sqlBuf.append("from SAKAI_REALM_FUNCTION SRF ");
 			sqlBuf.append("inner join SAKAI_REALM_RL_FN SRRF on SRF.FUNCTION_KEY = SRRF.FUNCTION_KEY ");
 			sqlBuf.append("inner join SAKAI_REALM_ROLE SRR on SRRF.ROLE_KEY = SRR.ROLE_KEY ");
@@ -1392,11 +1424,11 @@ public class DbRealmService
 			sqlBuf.append("where SRR.ROLE_NAME = ? ");
 			sqlBuf.append("and SR.REALM_ID in " + sqlParam);
 			sql = sqlBuf.toString();
-			
-			//String statement = "select FUNCTION_NAME from SAKAI_REALM_FUNCTION where FUNCTION_KEY in " +
-			//"(select distinct FUNCTION_KEY from SAKAI_REALM_RL_FN where " +
-			//"ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?) " +
-			//"and REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() + "))";
+
+			// String statement = "select FUNCTION_NAME from SAKAI_REALM_FUNCTION where FUNCTION_KEY in " +
+			// "(select distinct FUNCTION_KEY from SAKAI_REALM_RL_FN where " +
+			// "ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?) " +
+			// "and REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() + "))";
 
 			Object[] fields = new Object[1 + realms.size()];
 			fields[0] = role;
@@ -1425,7 +1457,7 @@ public class DbRealmService
 			String sqlParam = "";
 			StringBuffer sqlBuf = null;
 			StringBuffer sqlParamBuf = null;
-			
+
 			// read this user's grants from all realms
 			sqlBuf = new StringBuffer();
 			sqlBuf.append("select SRRG.REALM_KEY, SRR.ROLE_NAME, SRRG.ACTIVE, SRRG.PROVIDED ");
@@ -1433,30 +1465,32 @@ public class DbRealmService
 			sqlBuf.append("inner join SAKAI_REALM_RL_GR SRRG on SRR.ROLE_KEY = SRRG.ROLE_KEY ");
 			sqlBuf.append("where SRRG.USER_ID = ?");
 			sql = sqlBuf.toString();
-			
+
 			// String statement = "select REALM_KEY, ROLE_NAME, ACTIVE, PROVIDED from SAKAI_REALM_RL_GR,SAKAI_REALM_ROLE " +
 			// "where USER_ID = ? and " +
 			// "SAKAI_REALM_RL_GR.ROLE_KEY=SAKAI_REALM_ROLE.ROLE_KEY";
-			
+
 			Object[] fields = new Object[1];
 			fields[0] = userId;
 
-			List grants = m_sql.dbRead(sql, fields,
-				new SqlReader()
+			List grants = m_sql.dbRead(sql, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
 				{
-					public Object readSqlResultRecord(ResultSet result)
+					try
 					{
-						try
-						{
-							int realmKey = result.getInt(1);
-							String roleName = result.getString(2);
-							String active = result.getString(3);
-							String provided = result.getString(4);
-							return new RealmAndRole(new Integer(realmKey), roleName, "1".equals(active), "1".equals(provided));
-						}
-						catch (Throwable ignore) { return null;}
+						int realmKey = result.getInt(1);
+						String roleName = result.getString(2);
+						String active = result.getString(3);
+						String provided = result.getString(4);
+						return new RealmAndRole(new Integer(realmKey), roleName, "1".equals(active), "1".equals(provided));
 					}
-				} );
+					catch (Throwable ignore)
+					{
+						return null;
+					}
+				}
+			});
 
 			// make a map, realm id -> role granted, each for provider and non-provider (or inactive)
 			Map existing = new HashMap();
@@ -1476,7 +1510,7 @@ public class DbRealmService
 						existing.put(rar.realmId, rar.role);
 					}
 				}
-				
+
 				// inactive or not provided are the currently stored internal grants - not to be overwritten by provider info
 				else
 				{
@@ -1497,7 +1531,7 @@ public class DbRealmService
 
 			// for each realm that has a provider in the map, and does not have a grant for the user,
 			// add the active provided grant with the map's role.
-			
+
 			if (providerGrants.size() > 0)
 			{
 				// get all the realms that have providers in the map, with their full provider id
@@ -1512,23 +1546,23 @@ public class DbRealmService
 				}
 				sqlParamBuf.append(")");
 				sqlParam = sqlParamBuf.toString();
-				
-				// Assemble SQL.  Note: distinct must be used because one cannot establish an equijoin between 
+
+				// Assemble SQL. Note: distinct must be used because one cannot establish an equijoin between
 				// SRP.PROVIDER_ID and SR.PROVIDER_ID as the values in SRP.PROVIDER_ID often include
-				// additional concatenated course values. It may be worth reviewing this strategy. 
-				
+				// additional concatenated course values. It may be worth reviewing this strategy.
+
 				sqlBuf = new StringBuffer();
-				sqlBuf.append("select distinct SRP.REALM_KEY, SR.PROVIDER_ID "); 
+				sqlBuf.append("select distinct SRP.REALM_KEY, SR.PROVIDER_ID ");
 				sqlBuf.append("from SAKAI_REALM_PROVIDER SRP ");
 				sqlBuf.append("inner join SAKAI_REALM SR on SRP.REALM_KEY = SR.REALM_KEY ");
 				sqlBuf.append("where SRP.PROVIDER_ID in " + sqlParam);
 				sql = sqlBuf.toString();
-				        
-				//statement = "select distinct SAKAI_REALM_PROVIDER.REALM_KEY, SAKAI_REALM.PROVIDER_ID " +
-				//"from SAKAI_REALM_PROVIDER,SAKAI_REALM where " +
-				//"SAKAI_REALM_PROVIDER.REALM_KEY = SAKAI_REALM.REALM_KEY and " +
-				//"SAKAI_REALM_PROVIDER.PROVIDER_ID in " + buf.toString();
-				
+
+				// statement = "select distinct SAKAI_REALM_PROVIDER.REALM_KEY, SAKAI_REALM.PROVIDER_ID " +
+				// "from SAKAI_REALM_PROVIDER,SAKAI_REALM where " +
+				// "SAKAI_REALM_PROVIDER.REALM_KEY = SAKAI_REALM.REALM_KEY and " +
+				// "SAKAI_REALM_PROVIDER.PROVIDER_ID in " + buf.toString();
+
 				Object[] fieldsx = new Object[providerGrants.size()];
 				int pos = 0;
 				for (Iterator f = providerGrants.keySet().iterator(); f.hasNext();)
@@ -1536,20 +1570,22 @@ public class DbRealmService
 					String providerId = (String) f.next();
 					fieldsx[pos++] = providerId;
 				}
-				List realms = m_sql.dbRead(sql, fieldsx,
-					new SqlReader()
+				List realms = m_sql.dbRead(sql, fieldsx, new SqlReader()
+				{
+					public Object readSqlResultRecord(ResultSet result)
 					{
-						public Object readSqlResultRecord(ResultSet result)
+						try
 						{
-							try
-							{
-								int id = result.getInt(1);
-								String provider = result.getString(2);
-								return new RealmAndProvider(new Integer(id), provider);
-							}
-							catch (Throwable ignore) { return null;}
+							int id = result.getInt(1);
+							String provider = result.getString(2);
+							return new RealmAndProvider(new Integer(id), provider);
 						}
-					} );
+						catch (Throwable ignore)
+						{
+							return null;
+						}
+					}
+				});
 
 				if ((realms != null) && (realms.size() > 0))
 				{
@@ -1579,7 +1615,7 @@ public class DbRealmService
 				Map.Entry entry = (Map.Entry) i.next();
 				Integer realmId = (Integer) entry.getKey();
 				String role = (String) entry.getValue();
-				
+
 				String targetRole = (String) target.get(realmId);
 				if ((targetRole == null) || (!targetRole.equals(role)))
 				{
@@ -1595,7 +1631,7 @@ public class DbRealmService
 				Map.Entry entry = (Map.Entry) i.next();
 				Integer realmId = (Integer) entry.getKey();
 				String role = (String) entry.getValue();
-				
+
 				String existingRole = (String) existing.get(realmId);
 				String nonProviderRole = (String) nonProvider.get(realmId);
 				if ((nonProviderRole == null) && ((existingRole == null) || (!existingRole.equals(role))))
@@ -1603,7 +1639,7 @@ public class DbRealmService
 					toInsert.add(new RealmAndRole(realmId, role, true, true));
 				}
 			}
-		
+
 			// if any, do it
 			if ((toDelete.size() > 0) || (toInsert.size() > 0))
 			{
@@ -1622,8 +1658,8 @@ public class DbRealmService
 				}
 
 				// insert
-				sql = "insert into SAKAI_REALM_RL_GR (REALM_KEY, USER_ID, ROLE_KEY, ACTIVE, PROVIDED) " +
-					"values (?, ?, (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), '1', '1')";
+				sql = "insert into SAKAI_REALM_RL_GR (REALM_KEY, USER_ID, ROLE_KEY, ACTIVE, PROVIDED) "
+						+ "values (?, ?, (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), '1', '1')";
 				fields = new Object[3];
 				fields[1] = userId;
 				for (Iterator i = toInsert.iterator(); i.hasNext();)
@@ -1644,7 +1680,7 @@ public class DbRealmService
 		{
 			String sql = "";
 			StringBuffer sqlBuf = null;
-			
+
 			// Note: the realm is still lazy - we have the realm id but don't need to worry about changing grants
 
 			if ((realm == null) || (m_provider == null)) return;
@@ -1660,30 +1696,32 @@ public class DbRealmService
 			sqlBuf.append("inner join SAKAI_REALM_ROLE SRR on SRRG.ROLE_KEY = SRR.ROLE_KEY ");
 			sqlBuf.append("where SR.REALM_ID = ?");
 			sql = sqlBuf.toString();
-						
-			//String statement = "select USER_ID, ROLE_NAME, ACTIVE, PROVIDED from SAKAI_REALM_RL_GR,SAKAI_REALM_ROLE " +
-			//"where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?) " +
-			//"and SAKAI_REALM_RL_GR.ROLE_KEY=SAKAI_REALM_ROLE.ROLE_KEY";
-			
+
+			// String statement = "select USER_ID, ROLE_NAME, ACTIVE, PROVIDED from SAKAI_REALM_RL_GR,SAKAI_REALM_ROLE " +
+			// "where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?) " +
+			// "and SAKAI_REALM_RL_GR.ROLE_KEY=SAKAI_REALM_ROLE.ROLE_KEY";
+
 			Object[] fields = new Object[1];
 			fields[0] = caseId(realm.getId());
 
-			List grants = m_sql.dbRead(sql, fields,
-				new SqlReader()
+			List grants = m_sql.dbRead(sql, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
 				{
-					public Object readSqlResultRecord(ResultSet result)
+					try
 					{
-						try
-						{
-							String userId = result.getString(1);
-							String roleName = result.getString(2);
-							String active = result.getString(3);
-							String provided = result.getString(4);
-							return new UserAndRole(userId, roleName, "1".equals(active), "1".equals(provided));
-						}
-						catch (Throwable ignore) { return null;}
+						String userId = result.getString(1);
+						String roleName = result.getString(2);
+						String active = result.getString(3);
+						String provided = result.getString(4);
+						return new UserAndRole(userId, roleName, "1".equals(active), "1".equals(provided));
 					}
-				} );
+					catch (Throwable ignore)
+					{
+						return null;
+					}
+				}
+			});
 
 			// make a map, user id -> role granted, each for provider and non-provider (or inactive)
 			Map existing = new HashMap();
@@ -1733,7 +1771,7 @@ public class DbRealmService
 					toDelete.add(userId);
 				}
 			}
-			
+
 			// compute the records we need to add: every target not in existing, or not matching's existing's role
 			// we don't insert target grants that would override internal grants
 			List toInsert = new Vector();
@@ -1742,7 +1780,7 @@ public class DbRealmService
 				Map.Entry entry = (Map.Entry) i.next();
 				String userId = (String) entry.getKey();
 				String role = (String) entry.getValue();
-				
+
 				String existingRole = (String) existing.get(userId);
 				String nonProviderRole = (String) nonProvider.get(userId);
 				if ((nonProviderRole == null) && ((existingRole == null) || (!existingRole.equals(role))))
@@ -1758,8 +1796,8 @@ public class DbRealmService
 				// caused by transactions modifying more than one row at a time.
 
 				// delete
-				sql = "delete from SAKAI_REALM_RL_GR " +
-					"where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?) and USER_ID = ?";
+				sql = "delete from SAKAI_REALM_RL_GR "
+						+ "where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?) and USER_ID = ?";
 				fields = new Object[2];
 				fields[0] = caseId(realm.getId());
 				for (Iterator i = toDelete.iterator(); i.hasNext();)
@@ -1770,8 +1808,8 @@ public class DbRealmService
 				}
 
 				// insert
-				sql = "insert into SAKAI_REALM_RL_GR (REALM_KEY, USER_ID, ROLE_KEY, ACTIVE, PROVIDED) " +
-					"values ((select REALM_KEY from SAKAI_REALM where REALM_ID = ?), ?, (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), '1', '1')";
+				sql = "insert into SAKAI_REALM_RL_GR (REALM_KEY, USER_ID, ROLE_KEY, ACTIVE, PROVIDED) "
+						+ "values ((select REALM_KEY from SAKAI_REALM where REALM_ID = ?), ?, (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), '1', '1')";
 				fields = new Object[3];
 				fields[0] = caseId(realm.getId());
 				for (Iterator i = toInsert.iterator(); i.hasNext();)
@@ -1788,7 +1826,9 @@ public class DbRealmService
 		public class RealmAndProvider
 		{
 			public Integer realmId;
+
 			public String providerId;
+
 			public RealmAndProvider(Integer id, String provider)
 			{
 				this.realmId = id;
@@ -1799,9 +1839,13 @@ public class DbRealmService
 		public class RealmAndRole
 		{
 			public Integer realmId;
+
 			public String role;
+
 			boolean active;
+
 			boolean provided;
+
 			public RealmAndRole(Integer id, String role, boolean active, boolean provided)
 			{
 				this.realmId = id;
@@ -1814,9 +1858,13 @@ public class DbRealmService
 		public class UserAndRole
 		{
 			public String userId;
+
 			public String role;
+
 			boolean active;
+
 			boolean provided;
+
 			public UserAndRole(String userId, String role, boolean active, boolean provided)
 			{
 				this.userId = userId;
@@ -1826,7 +1874,7 @@ public class DbRealmService
 			}
 		}
 
-	}   // DbStorage
+	} // DbStorage
 
 	/**
 	 * Create a new table record for all old table records found, and delete the old.
@@ -1847,38 +1895,37 @@ public class DbRealmService
 			// read all realms we don't already have
 			// TODO: check last modified date, too
 			String sql = "select REALM_ID, XML from CHEF_REALM where REALM_ID not in (select REALM_ID from SAKAI_REALM)";
-			List realms = m_sqlService.dbRead(sql, null,
-				new SqlReader()
+			List realms = m_sqlService.dbRead(sql, null, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
 				{
-					public Object readSqlResultRecord(ResultSet result)
+					String id = null;
+					try
 					{
-						String id = null;
-						try
-						{
-							// create the Resource from the db xml
-							id = result.getString(1);
-							String xml = result.getString(2);
-							
-							// read the xml
-							Document doc =  Xml.readDocumentFromString(xml);
+						// create the Resource from the db xml
+						id = result.getString(1);
+						String xml = result.getString(2);
 
-							// verify the root element
-							Element root = doc.getDocumentElement();
-							if (!root.getTagName().equals("realm"))
-							{
-								m_logger.warn(this + ".convertOld: XML root element not realm: " + root.getTagName());
-								return null;
-							}
-							BaseRealmEdit edit = new BaseRealmEdit(root);
-							return edit;
-						}
-						catch (Throwable e)
+						// read the xml
+						Document doc = Xml.readDocumentFromString(xml);
+
+						// verify the root element
+						Element root = doc.getDocumentElement();
+						if (!root.getTagName().equals("realm"))
 						{
-							m_logger.info(" ** exception converting : " + id + " : ", e);
+							m_logger.warn(this + ".convertOld: XML root element not realm: " + root.getTagName());
 							return null;
 						}
+						BaseRealmEdit edit = new BaseRealmEdit(root);
+						return edit;
 					}
-				} );
+					catch (Throwable e)
+					{
+						m_logger.info(" ** exception converting : " + id + " : ", e);
+						return null;
+					}
+				}
+			});
 
 			m_logger.info(this + ".convertOld: read realms: " + realms.size());
 
@@ -1908,7 +1955,7 @@ public class DbRealmService
 			for (Iterator i = roles.iterator(); i.hasNext();)
 			{
 				String role = (String) i.next();
-				((DbStorage) m_storage).checkRoleName(connection, role, true);
+				checkRoleName(role);
 			}
 			connection.commit();
 			m_logger.info(this + ".convertOld: roles updated");
@@ -1917,7 +1964,7 @@ public class DbRealmService
 			for (Iterator i = functions.iterator(); i.hasNext();)
 			{
 				String function = (String) i.next();
-				((DbStorage) m_storage).checkFunctionName(connection, function, true);
+				checkFunctionName(function);
 			}
 			connection.commit();
 			m_logger.info(this + ".convertOld: functions updated");
@@ -1931,31 +1978,32 @@ public class DbRealmService
 				String role = (String) i.next();
 				fields[0] = role;
 
-				List results = m_sqlService.dbRead(connection, statement, fields,
-					new SqlReader()
+				List results = m_sqlService.dbRead(connection, statement, fields, new SqlReader()
+				{
+					public Object readSqlResultRecord(ResultSet result)
 					{
-						public Object readSqlResultRecord(ResultSet result)
+						try
 						{
-							try
-							{
-								int key = result.getInt(1);
-								return new Integer(key);
-							}
-							catch (SQLException ignore) { return null;}
+							int key = result.getInt(1);
+							return new Integer(key);
+						}
+						catch (SQLException ignore)
+						{
+							return null;
 						}
 					}
-				 );
-				 Object key = results.get(0);
-				 if (key == null)
-				 {
-				 	m_logger.warn(this + ".convertOld: missing role: " + role);
-				 }
-				 else
-				 {
+				});
+				Object key = results.get(0);
+				if (key == null)
+				{
+					m_logger.warn(this + ".convertOld: missing role: " + role);
+				}
+				else
+				{
 					roleMap.put(role, key);
-				 }
+				}
 			}
-			
+
 			// read the functions
 			Map functionMap = new HashMap();
 			statement = "select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?";
@@ -1964,29 +2012,30 @@ public class DbRealmService
 				String function = (String) i.next();
 				fields[0] = function;
 
-				List results = m_sqlService.dbRead(connection, statement, fields,
-					new SqlReader()
+				List results = m_sqlService.dbRead(connection, statement, fields, new SqlReader()
+				{
+					public Object readSqlResultRecord(ResultSet result)
 					{
-						public Object readSqlResultRecord(ResultSet result)
+						try
 						{
-							try
-							{
-								int key = result.getInt(1);
-								return new Integer(key);
-							}
-							catch (SQLException ignore) { return null;}
+							int key = result.getInt(1);
+							return new Integer(key);
+						}
+						catch (SQLException ignore)
+						{
+							return null;
 						}
 					}
-				 );
-				 Object key = results.get(0);
-				 if (key == null)
-				 {
+				});
+				Object key = results.get(0);
+				if (key == null)
+				{
 					m_logger.warn(this + ".convertOld: missing function: " + function);
-				 }
-				 else
-				 {
+				}
+				else
+				{
 					functionMap.put(function, key);
-				 }
+				}
 			}
 
 			m_logger.info(this + ".convertOld: roles & functions mapped");
@@ -1999,26 +2048,32 @@ public class DbRealmService
 			String sqlSequenceCurrVal;
 			if ("oracle".equals(m_sqlService.getVendor()))
 			{
-			    sqlSequenceNextVal = "SAKAI_REALM_SEQ.NEXTVAL";
-			    sqlSequenceCurrVal = "SAKAI_REALM_SEQ.CURRVAL";
+				sqlSequenceNextVal = "SAKAI_REALM_SEQ.NEXTVAL";
+				sqlSequenceCurrVal = "SAKAI_REALM_SEQ.CURRVAL";
 			}
 			else if ("mysql".equals(m_sqlService.getVendor()))
 			{
-			    sqlSequenceNextVal = "DEFAULT";
-			    sqlSequenceCurrVal = "LAST_INSERT_ID()";
+				sqlSequenceNextVal = "DEFAULT";
+				sqlSequenceCurrVal = "LAST_INSERT_ID()";
 			}
-			else //if ("hsqldb".equals(m_sqlService.getVendor()))
+			else
+			// if ("hsqldb".equals(m_sqlService.getVendor()))
 			{
-			    sqlSequenceNextVal = "NEXT VALUE FOR SAKAI_REALM_SEQ";
-			    sqlSequenceCurrVal = "(SELECT START_WITH - 1 FROM SYSTEM_SEQUENCES WHERE SEQUENCE_NAME='SAKAI_REALM_SEQ')";
+				sqlSequenceNextVal = "NEXT VALUE FOR SAKAI_REALM_SEQ";
+				sqlSequenceCurrVal = "(SELECT START_WITH - 1 FROM SYSTEM_SEQUENCES WHERE SEQUENCE_NAME='SAKAI_REALM_SEQ')";
 			}
-			
-			String statement1 = "insert into SAKAI_REALM (REALM_KEY, REALM_ID, PROVIDER_ID, MAINTAIN_ROLE, CREATEDBY, MODIFIEDBY, CREATEDON, MODIFIEDON) values ("+sqlSequenceNextVal+", ?, ?, ?, ?, ?, ?, ?)";
-			String statement2 = "insert into SAKAI_REALM_PROPERTY (REALM_KEY, NAME, VALUE) values ("+sqlSequenceCurrVal+", ?, ?)";
-			String statement3 = "insert into SAKAI_REALM_RL_FN (REALM_KEY, ROLE_KEY, FUNCTION_KEY) values ("+sqlSequenceCurrVal+", ?, ?)";
-			String statement4 = "insert into SAKAI_REALM_ROLE_DESC (REALM_KEY, ROLE_KEY, DESCRIPTION) values ("+sqlSequenceCurrVal+", ?, ?)";
-			String statement5 = "insert into SAKAI_REALM_RL_GR (REALM_KEY, USER_ID, ROLE_KEY, ACTIVE, PROVIDED) values ("+sqlSequenceCurrVal+", ?, ?, ?, ?)";
-			String statement6 = "insert into SAKAI_REALM_PROVIDER (REALM_KEY, PROVIDER_ID) values ("+sqlSequenceCurrVal+", ?)";
+
+			String statement1 = "insert into SAKAI_REALM (REALM_KEY, REALM_ID, PROVIDER_ID, MAINTAIN_ROLE, CREATEDBY, MODIFIEDBY, CREATEDON, MODIFIEDON) values ("
+					+ sqlSequenceNextVal + ", ?, ?, ?, ?, ?, ?, ?)";
+			String statement2 = "insert into SAKAI_REALM_PROPERTY (REALM_KEY, NAME, VALUE) values (" + sqlSequenceCurrVal
+					+ ", ?, ?)";
+			String statement3 = "insert into SAKAI_REALM_RL_FN (REALM_KEY, ROLE_KEY, FUNCTION_KEY) values (" + sqlSequenceCurrVal
+					+ ", ?, ?)";
+			String statement4 = "insert into SAKAI_REALM_ROLE_DESC (REALM_KEY, ROLE_KEY, DESCRIPTION) values ("
+					+ sqlSequenceCurrVal + ", ?, ?)";
+			String statement5 = "insert into SAKAI_REALM_RL_GR (REALM_KEY, USER_ID, ROLE_KEY, ACTIVE, PROVIDED) values ("
+					+ sqlSequenceCurrVal + ", ?, ?, ?, ?)";
+			String statement6 = "insert into SAKAI_REALM_PROVIDER (REALM_KEY, PROVIDER_ID) values (" + sqlSequenceCurrVal + ", ?)";
 			int count = 0;
 			for (Iterator iRealms = realms.iterator(); iRealms.hasNext();)
 			{
@@ -2057,7 +2112,7 @@ public class DbRealmService
 						fields2[1] = functionMap.get(function);
 						m_sqlService.dbWrite(connection, statement3, fields2);
 					}
-					
+
 					// and the description
 					if (role.getDescription() != null)
 					{
@@ -2096,7 +2151,7 @@ public class DbRealmService
 			}
 
 			connection.commit();
-			
+
 			m_logger.info(this + ".convertOld: done realms: " + count);
 
 			connection.setAutoCommit(wasCommit);
@@ -2104,12 +2159,9 @@ public class DbRealmService
 		}
 		catch (Throwable t)
 		{
-			m_logger.warn(this + ".convertOld: failed: " + t);		
+			m_logger.warn(this + ".convertOld: failed: " + t);
 		}
 
 		m_logger.info(this + ".convertOld: done");
 	}
 }
-
-
-
