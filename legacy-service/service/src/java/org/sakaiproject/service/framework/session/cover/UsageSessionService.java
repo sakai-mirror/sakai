@@ -67,15 +67,6 @@ public class UsageSessionService
 		return service.startSession(param0, param1, param2);
 	}
 
-	public static org.sakaiproject.service.framework.session.UsageSession closeSession()
-	{
-		org.sakaiproject.service.framework.session.UsageSessionService service = getInstance();
-		if (service == null)
-			return null;
-
-		return service.closeSession();
-	}
-
 	public static org.sakaiproject.service.framework.session.UsageSession getSession(java.lang.String param0)
 	{
 		org.sakaiproject.service.framework.session.UsageSessionService service = getInstance();

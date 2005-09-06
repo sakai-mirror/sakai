@@ -265,37 +265,6 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 	/**
 	 * {@inheritDoc}
 	 */
-	public UsageSession closeSession()
-	{
-		// do we have a current session?
-		Session s = m_sessionManager.getCurrentSession();
-		if (s != null)
-		{
-			// do we have a usage session in the session?
-			BaseUsageSession session = (BaseUsageSession) s.getAttribute(SESSION_KEY);
-			if (session == null)
-			{
-				M_log.warn("closeSession: no session.");
-				return null;
-			}
-
-			// close the session
-			session.close();
-			
-			// unbind from sakai session
-			s.removeAttribute(SESSION_KEY);
-
-			return session;
-		}
-
-		// if we are running with no session, unbind the user id from the thread local manager
-		m_threadLocalManager.set(SESSION_KEY, null);
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public UsageSession getSession()
 	{
 		UsageSession rv = null;

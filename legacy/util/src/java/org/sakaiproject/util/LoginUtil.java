@@ -77,12 +77,11 @@ public class LoginUtil
 	 */
 	public static void logout()
 	{
-		logoutEvent(null);
-
 		// TODO: through authn manager?
 		UserDirectoryService.destroyAuthentication();
 
-		// invalidate the sakai session, which makes it unavailable, unbinds all the bound objects
+		// invalidate the sakai session, which makes it unavailable, unbinds all the bound objects,
+		// including the session, which will close and generate the logout event
 		Session sakaiSession = SessionManager.getCurrentSession();
 		sakaiSession.invalidate();
 	}

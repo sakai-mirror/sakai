@@ -58,12 +58,6 @@ public interface UsageSessionService
 	UsageSession startSession(String userId, String remoteAddress, String userAgent);
 
 	/**
-	 * Close the usage session associated with the current request or thread.
-	 * @return The newly closed session.
-	 */
-	UsageSession closeSession();
-
-	/**
 	 * Access the usage session associated with the current request or thread.
 	 * @return The UsageSession object holding the information about this session.
 	 */
