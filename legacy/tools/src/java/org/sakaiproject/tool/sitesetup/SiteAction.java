@@ -3812,9 +3812,14 @@ public class SiteAction extends PagedResourceActionII
 			String toolId = (String) toolList.get(i);
 			if (toolId.equals("sakai.mailbox") || toolId.indexOf("sakai.news") != -1 || toolId.indexOf("sakai.iframe") != -1)
 			{
-				//if user is adding either EmailArchive tool, News tool or Web Content tool, go to the Customize page for the tool
-				if (!oTools.contains(toolId))
+				if (oTools == null)
 				{
+					// if during site creation proces
+					fromENW = true;
+				}
+				else if (!oTools.contains(toolId))
+				{
+					//if user is adding either EmailArchive tool, News tool or Web Content tool, go to the Customize page for the tool
 					fromENW = true;
 				}
 			}
