@@ -115,7 +115,7 @@
 			</tr>
 			<tr>
 				<th>
-					$tlang.getString("newsc.visible")
+					$tlang.getString("sitegen.siteinfolist.iclu")
 				</th>
 				<td>
 					#if ($!published && $!include)
