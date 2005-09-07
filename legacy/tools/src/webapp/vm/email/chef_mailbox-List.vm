@@ -9,11 +9,11 @@
 			<input size="15" value="$!search" name="search" id="search" type="text" class="searchField" style="font-size:1em;padding: .2em;border:1px solid gray" onkeypress="formSubmitOnEnter(this, event)"/>
 			<input type="hidden" name="eventSubmit_doSearch" id="eventSubmit_doSearch" value="Search for emails" />
 			<a href="#" title="Search" onclick="location = '#toolLink("$action" "doSearch")'+buildQueryString('toolbar');return false;">
-				<span class="act"><input type="button" value="Search" /></span>
+				<span class="act"><input type="button" value="$tlang.getString('lis.search')" /></span>
 			</a>
 			#if (($!search) && (!$search.equals("")))
 				<a href="#" title="Search" onclick="location = '#toolLink("$action" "doSearch_clear")';return false;">
-					<span class="act"><input type="button" value="Clear Search" /></span>
+					<span class="act"><input type="button" value="$tlang.getString('lis.clear')" /></span>
 				</a>
 			#end
 		</form>
@@ -75,12 +75,12 @@
 			<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
 				<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
 				<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
-				<option value="5" #if($pagesize == 5) selected="selected" #end>show 5 items per page</option>
-					<option value="10" #if($pagesize == 10) selected="selected" #end>show 10 items...</option>
-					<option value="20" #if($pagesize == 20) selected="selected" #end>show 20 items...</option>
-					<option value="50" #if($pagesize == 50) selected="selected" #end>show 50 items...</option>
-					<option value="100" #if($pagesize == 100) selected="selected" #end>show 100 items...</option>
-					<option value="200" #if($pagesize == 200) selected="selected" #end>show 200 items...</option>
+				<option value="5" #if($pagesize == 5) selected="selected" #end>$tlang.getString("lis.show5")</option>
+					<option value="10" #if($pagesize == 10) selected="selected" #end>$tlang.getString("lis.show10")</option>
+					<option value="20" #if($pagesize == 20) selected="selected" #end>$tlang.getString("lis.show20")</option>
+					<option value="50" #if($pagesize == 50) selected="selected" #end>$tlang.getString("lis.show50")</option>
+					<option value="100" #if($pagesize == 100) selected="selected" #end>$tlang.getString("lis.show100")</option>
+					<option value="200" #if($pagesize == 200) selected="selected" #end>$tlang.getString("lis.show200")</option>
 				</select>
 			</form>
 			#if ($pagesize != 0)
