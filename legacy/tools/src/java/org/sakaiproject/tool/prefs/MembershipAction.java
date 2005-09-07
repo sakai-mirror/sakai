@@ -136,7 +136,7 @@ public class MembershipAction extends PagedResourceActionII
 
 			//htripath-SAK-1606
 			//if property set in sakai.properties then completely disable 'unjoin' link
-		  if ((ServerConfigurationService.getString("disable.membership.unjoin.selection")).equals("true"))
+		  if (ServerConfigurationService.getBoolean("disable.membership.unjoin.selection", false))
 		  {
 		    context.put("disableUnjoinSelection", Boolean.TRUE);
 		  }			
