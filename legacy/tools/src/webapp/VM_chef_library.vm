@@ -228,6 +228,10 @@
 
 #* ------------------------------------------------------------------
 # The standard way to setup a date selection widget
+#
+# IMPORTANT: ResourceBundle with months referenced by $tlang.getString("jan")
+#            through $tlang.getString("dec") _must_ be defined
+#
 # Creates a drop-down date selection, as well as a pop-up date selection
 # $yearselect_id  The name and id attribute of the year selection dropdown list (html SELECT tag)
 # $monthselect_id The name and id attribute of the month selection dropdown list (html SELECT tag)
@@ -243,29 +247,29 @@
 	#set($yearList = [$earliestYear .. $latestYear])
 	
     <select name="$monthselect_id" id="$monthselect_id" onchange="blur()">  
-        #if ($monthSelected == 1) <option value="1" selected="selected">JAN</option> #else <option value="1">JAN</option> #end
+      #if ($monthSelected == 1) <option value="1" selected="selected">$tlang.getString("jan")</option> #else <option value="1">$tlang.getString("jan")</option> #end
         
-		#if ($monthSelected == 2) <option value="2" selected="selected">FEB</option> #else <option value="2">FEB</option> #end
+		#if ($monthSelected == 2) <option value="2" selected="selected">$tlang.getString("feb")</option> #else <option value="2">$tlang.getString("feb")</option> #end
         
-		#if ($monthSelected == 3) <option value="3" selected="selected">MAR</option> #else <option value="3">MAR</option> #end
+		#if ($monthSelected == 3) <option value="3" selected="selected">$tlang.getString("mar")</option> #else <option value="3">$tlang.getString("mar")</option> #end
         
-		#if ($monthSelected == 4) <option value="4" selected="selected">APR</option> #else <option value="4">APR</option> #end
+		#if ($monthSelected == 4) <option value="4" selected="selected">$tlang.getString("apr")</option> #else <option value="4">$tlang.getString("apr")</option> #end
         
-		#if ($monthSelected == 5) <option value="5" selected="selected">MAY</option> #else <option value="5">MAY</option> #end
+		#if ($monthSelected == 5) <option value="5" selected="selected">$tlang.getString("may")</option> #else <option value="5">$tlang.getString("may")</option> #end
         
-		#if ($monthSelected == 6) <option value="6" selected="selected">JUN</option> #else <option value="6">JUN</option> #end
+		#if ($monthSelected == 6) <option value="6" selected="selected">$tlang.getString("jun")</option> #else <option value="6">$tlang.getString("jun")</option> #end
         
-		#if ($monthSelected == 7) <option value="7" selected="selected">JUL</option> #else <option value="7">JUL</option> #end
+		#if ($monthSelected == 7) <option value="7" selected="selected">$tlang.getString("jul")</option> #else <option value="7">$tlang.getString("jul")</option> #end
         
-		#if ($monthSelected == 8) <option value="8" selected="selected">AUG</option> #else <option value="8">AUG</option> #end
+		#if ($monthSelected == 8) <option value="8" selected="selected">$tlang.getString("aug")</option> #else <option value="8">$tlang.getString("aug")</option> #end
         
-		#if ($monthSelected == 9) <option value="9" selected="selected">SEP</option> #else <option value="9">SEP</option> #end
+		#if ($monthSelected == 9) <option value="9" selected="selected">$tlang.getString("sep")</option> #else <option value="9">$tlang.getString("sep")</option> #end
         
-		#if ($monthSelected == 10) <option value="10" selected="selected">OCT</option> #else <option value="10">OCT</option> #end
+		#if ($monthSelected == 10) <option value="10" selected="selected">$tlang.getString("oct")</option> #else <option value="10">$tlang.getString("oct")</option> #end
         
-		#if ($monthSelected == 11) <option value="11" selected="selected">NOV</option> #else <option value="11">NOV</option> #end
+		#if ($monthSelected == 11) <option value="11" selected="selected">$tlang.getString("nov")</option> #else <option value="11">$tlang.getString("nov")</option> #end
         
-		#if ($monthSelected == 12) <option value="12" selected="selected">DEC</option> #else <option value="12">DEC</option> #end
+		#if ($monthSelected == 12) <option value="12" selected="selected">$tlang.getString("dec")</option> #else <option value="12">$tlang.getString("dec")</option> #end
 
     </select>
     
