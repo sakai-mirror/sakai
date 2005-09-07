@@ -52,7 +52,7 @@
 				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>|
 			#end
 			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>|
-			<a href="#toolLink("$action" "doPermissions")" title="Permission">Permissions</a>
+			<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
 		#end
 	</div>
 	<h3>

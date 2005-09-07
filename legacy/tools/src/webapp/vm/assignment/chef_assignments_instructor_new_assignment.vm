@@ -52,7 +52,7 @@
 				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>
 			#end
 			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>
-			<a href="#toolLink("$action" "doPermissions")" title="Permission">Permissions</a>
+			<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
 		#end
 	</div>
 	<h3>
@@ -62,7 +62,7 @@
 <p class="instruction">
 	$tlang.getString("newassig.comfor")			
 </p>
-	#if ($alertMessage)<div class="chefAlertBox" style="width:80%  !important">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
+	#if ($alertMessage)<div class="chefAlertBox" style="width:80%  !important">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
 
 	<form name = "newAssignmentForm" action="#toolForm("AssignmentAction")" method="post">
 		<input type="hidden" name="assignmentId" value="" />

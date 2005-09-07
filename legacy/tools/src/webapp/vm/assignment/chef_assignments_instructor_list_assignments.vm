@@ -14,7 +14,7 @@
 		#end
 		#if ($allowAddAssignment)
 			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>
-			<a href="#toolLink("$action" "doPermissions")" title="Permission">Permissions</a>
+			<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
 		#end
 	</div>
 	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
@@ -186,7 +186,7 @@
 						</th>
 					#end
 					<th id="remove"> 
-						Remove?
+                  $tlang.getString("gen.remove.q")
 					</th>
 				</tr>
 				#set ($assignmentCount = 0)
@@ -309,7 +309,7 @@
 							<td headers="remove">
 								#if ($service.allowRemoveAssignment($assignmentReference))
 									<input type="checkbox" name="selectedAssignments" value="$assignmentReference" id="check_$assignmentCount" />
-									<label for="check_$assignmentCount" class="skip">Remove</label> 
+									<label for="check_$assignmentCount" class="skip">$tlang.getString("gen.remove")</label> 
 								#end
 							</td>
 						</tr>

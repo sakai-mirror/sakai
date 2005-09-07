@@ -7,7 +7,7 @@
 		<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
 		<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString('gen.stuvie')">$!tlang.getString('gen.stuvie')</a>
 		#if ($withGrade)<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>#end
-		<a href="#toolLink("$action" "doPermissions")" title="Permission">Permissions</a>
+		<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
 	</div>
 	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
 	<h3>
