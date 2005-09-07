@@ -14,8 +14,8 @@
        <property name="ospiIdManager"><ref bean="idManager"/></property>
    </bean>
 
-   <bean id="sessionFactory"
-      parent="org.sakaiproject.springframework.orm.hibernate.SessionFactoryBase">
+   <bean id="structuredArtifactManagerHibernateMappings"
+      class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
       <property name="mappingResources">
          <list>
             <value>org/sakaiproject/metaobj/shared/mgt/StructuredArtifactDefinition.hbm.xml</value>
@@ -77,18 +77,12 @@
       <property name="idManager"><ref bean="idManager"/></property>
    </bean>
 
-   <bean id="sadTransactionManager"
-      class="org.springframework.orm.hibernate.HibernateTransactionManager">
-      <property name="sessionFactory">
-         <ref
-            bean="sessionFactory" />
-      </property>
-   </bean>
-
    <bean id="structuredArtifactDefinitionManagerTarget"
       class="org.sakaiproject.metaobj.shared.mgt.impl.StructuredArtifactDefinitionManagerImpl"
       singleton="true">
-      <property name="sessionFactory"><ref bean="sessionFactory"/></property>
+      <property name="sessionFactory">
+         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
+      </property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="artifactFinderManager"><ref bean="artifactFinderManager"/></property>
       <property name="authzManager"><ref bean="org.sakaiproject.metaobj.security.AuthorizationFacade"/></property>
@@ -100,7 +94,7 @@
       class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
       singleton="true">
       <property name="transactionManager">
-        <ref bean="sadTransactionManager"/>
+         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
       </property>
       <property name="target">
          <ref bean="structuredArtifactDefinitionManagerTarget"/>
