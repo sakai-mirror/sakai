@@ -220,7 +220,7 @@
 
 			#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 
-			<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post" style="margin:1em -.5em;">
+			<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post" style="margin:1em .5em;">
 				#if (!$messageListVector.iterator().hasNext())
 					<p class="instruction"><br />
       					$tlang.getString("gen.thereare")
