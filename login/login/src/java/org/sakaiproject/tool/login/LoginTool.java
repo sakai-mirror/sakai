@@ -356,7 +356,7 @@ public class LoginTool extends HttpServlet
 		// cancel
 		if (cancel != null)
 		{
-			session.setAttribute(ATTR_MSG, "login canceled");
+			session.setAttribute(ATTR_MSG, rb.getString("log.canceled"));
 
 			// get the session info complete needs, since the logout will invalidate and clear the session
 			String returnUrl = (String) session.getAttribute(Tool.HELPER_DONE_URL);
@@ -390,7 +390,7 @@ public class LoginTool extends HttpServlet
 			}
 			catch (AuthenticationException ex)
 			{
-				session.setAttribute(ATTR_MSG, "invalid login");
+				session.setAttribute(ATTR_MSG, rb.getString("log.invalid"));
 
 				// respond with a redirect back here
 				res.sendRedirect(res.encodeRedirectURL(Web.returnUrl(req, null)));
