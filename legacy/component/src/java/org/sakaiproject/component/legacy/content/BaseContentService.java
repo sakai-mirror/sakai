@@ -3761,7 +3761,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public boolean isInheritingPubView(String id)
 	{
 		// the root does not inherit... and makes a bad ref if we try to isolateContainingId()
-		if (this.isRootCollection(id)) return false;
+		if (isRootCollection(id)) return false;
 
 		// check for pubview on the container
 		String containerId = isolateContainingId(id);
