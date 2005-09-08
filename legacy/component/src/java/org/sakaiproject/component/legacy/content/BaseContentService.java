@@ -3753,22 +3753,6 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	{
 		boolean pubView = SecurityService.unlock(UserDirectoryService.getAnonymousUser(), EVENT_RESOURCE_READ, getReference(id));
 		return pubView;
-
-//		// get the realm
-//		try
-//		{
-//			// get the realm's anon role
-//			Realm realm = RealmService.getRealm(getReference(id));
-//			Role anon = realm.getRole(RealmService.ANON_ROLE);
-//
-//			// if the realm has anon role with content.read, we have pubview
-//			if ((anon != null) && (anon.contains(EVENT_RESOURCE_READ))) return true;
-//		}
-//		catch (IdUnusedException e)
-//		{
-//		}
-//
-//		return false;
 	}
 
 	/**
@@ -3776,37 +3760,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 */
 	public boolean isInheritingPubView(String id)
 	{
+		// the root does not inherit... and makes a bad ref if we try to isolateContainingId()
+		if (this.isRootCollection(id)) return false;
+
 		// check for pubview on the container
 		String containerId = isolateContainingId(id);
 		boolean pubView = SecurityService.unlock(UserDirectoryService.getAnonymousUser(), EVENT_RESOURCE_READ, getReference(containerId));
 		return pubView;
-
-//		String ref = getReference(id);
-//
-//		// make a reference, and get the relevant realm ids
-//		Reference r = new Reference(ref);
-//		List realms = r.getRealms();
-//		for (Iterator iRealms = realms.iterator(); iRealms.hasNext();)
-//		{
-//			String realmId = (String) iRealms.next();
-//			if (!realmId.equals(ref))
-//			{
-//				// get the realm
-//				try
-//				{
-//					Realm realm = RealmService.getRealm(realmId);
-//					Role anon = realm.getRole(RealmService.ANON_ROLE);
-//
-//					// if the realm has anon role with content.read, we have pubview
-//					if ((anon != null) && (anon.contains(EVENT_RESOURCE_READ))) return true;
-//				}
-//				catch (IdUnusedException e)
-//				{
-//				}
-//			}
-//		}
-//
-//		return false;
 	}
 
 	/**
