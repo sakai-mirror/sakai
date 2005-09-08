@@ -75,10 +75,10 @@ public class Reference
 	protected String m_reference = null;
 
 	/** The reference type (a service name string). */
-	protected String m_type = null;
+	protected String m_type = "";
 
 	/** The reference sub-type. */
-	protected String m_subType = null;
+	protected String m_subType = "";
 
 	/** The reference primary id. */
 	protected String m_id = null;
@@ -145,6 +145,16 @@ public class Reference
 	public String getType()
 	{
 		return m_type;
+	}
+
+	/**
+	 * Check if the reference's type is known
+	 * 
+	 * @return true if known, false if not.
+	 */
+	public boolean isKnownType()
+	{
+		return m_type.length() > 0;
 	}
 
 	/**
