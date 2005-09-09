@@ -25,6 +25,7 @@
 package org.sakaiproject.tool.content;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -32,7 +33,7 @@ import java.util.Vector;
 import java.util.regex.Pattern;
 
 /**
- *
+ * The class represents metadata properties.
  */
 public class ResourcesMetadata
 {
@@ -559,6 +560,16 @@ public class ResourcesMetadata
 			PROPERTY_DC_INTEGER
 			
 		};
+
+	/**
+	 * The character(s) used to delimite parts of the Dotted Name of a StructuredArtifact property.
+	 */
+	public static final String DOT = ".";
+
+	/**
+	 * A regular expression that will match DOT in an expression.
+	 */
+	private static final String DOT_REGEX = "\\.";
 		
 	public static ResourcesMetadata getProperty(String name)
 	{
@@ -620,6 +631,11 @@ public class ResourcesMetadata
 	protected String m_namespace;
 	
 	/**
+	 * The parts of the name of a nested structured object.
+	 */
+	protected List m_dottedparts;
+	
+	/**
 	 * A string that can be used to refer to the metadata property
 	 */
 	protected String m_label;
@@ -647,9 +663,15 @@ public class ResourcesMetadata
 	protected int m_length;
 	protected List m_enumeration;
 	protected List m_nested;
+	protected List m_nestedinstances;
+	protected List m_instances;
+	protected ResourcesMetadata m_parent;
 	protected Object m_minValue;
 	protected Object m_maxValue;
+	protected boolean m_minInclusive;
+	protected boolean m_maxInclusive;
 	protected Pattern m_pattern;
+	protected int m_depth;
 	
 	/**
 	 * Constructor.
@@ -675,6 +697,53 @@ public class ResourcesMetadata
 		m_currentValues = new Vector();
 		m_nested = new Vector();
 		m_pattern = Pattern.compile(".*");
+		m_minInclusive = true;
+		m_maxInclusive = true;
+		m_depth = 0;
+		m_dottedparts = new Vector();
+		m_nestedinstances = new Vector();
+		m_instances = new Vector();
+		m_parent = null;
+
+	}
+	
+	/**
+	 * @param prop
+	 */
+	public ResourcesMetadata(ResourcesMetadata other) 
+	{
+		m_datatype = other.m_datatype;
+		m_description = other.m_description;
+		m_label = other.m_label;
+		m_namespace = other.m_namespace;
+		m_localname = other.m_localname;
+		m_widget = other.m_widget;
+		m_minCardinality = other.m_minCardinality;
+		m_maxCardinality = other.m_maxCardinality;
+		m_currentCount = other.m_currentCount;
+		if(other.m_enumeration == null)
+		{
+			m_enumeration = null;
+		}
+		else
+		{
+			m_enumeration = new Vector(other.m_enumeration);
+		}
+		m_currentValues = new Vector();
+		m_pattern = other.m_pattern;
+		m_minInclusive = other.m_minInclusive;
+		m_maxInclusive = other.m_maxInclusive;
+		m_depth = other.m_depth;
+		m_dottedparts = new Vector(other.m_dottedparts);
+		m_nestedinstances = new Vector();
+		m_instances = new Vector();
+		m_nested = new Vector();
+		Iterator it = other.m_nested.iterator();
+		while(it.hasNext())
+		{
+			ResourcesMetadata child = (ResourcesMetadata) it.next();
+			this.m_nested.add(new ResourcesMetadata(child));
+		}
 		
 	}
 	
@@ -805,6 +874,8 @@ public class ResourcesMetadata
 	
 	protected static Map m_ns2abbrev;
 	protected static Map m_abbrev2ns;
+
+	protected String m_id;
 	 
 	/**
 	 * @param namespace The string representation of the namespace for the metadata property
@@ -894,7 +965,11 @@ public class ResourcesMetadata
 	 */
 	public int getCurrentCount() 
 	{
-		return m_currentCount;
+		if(m_parent == null)
+		{
+			return this.m_currentCount;
+		}
+		return m_parent.getCurrentCount();
 	}
 	
 	/**
@@ -902,7 +977,52 @@ public class ResourcesMetadata
 	 */
 	public Integer getCount() 
 	{
-		return new Integer(m_currentCount);
+		return new Integer(this.getCurrentCount());
+	}
+	
+	public void setValue(String name, Object value)
+	{
+		if(name.startsWith(this.getDottedname()))
+		{
+			String localname = name.substring(name.length());
+			if(localname == null || localname.equals(""))
+			{
+				if(this.m_currentValues == null)
+				{
+					this.m_currentValues = new Vector();
+				}
+				
+				if(this.m_currentValues.size() > 0)
+				{
+					this.m_currentValues.set(0, value);	
+				}
+				else
+				{
+					this.m_currentValues.add(0, value);
+				}
+			}
+			else
+			{
+				String[] parts = localname.split(DOT_REGEX);
+				String target = parts[0];
+				boolean found = false;
+				Iterator it = getNested().iterator();
+				ResourcesMetadata prop = null;
+				while(!found && it.hasNext())
+				{
+					prop = (ResourcesMetadata) it.next();
+					if(prop.getLocalname().equals(target))
+					{
+						found = true;
+					}
+				}
+				
+				if(found)
+				{
+					prop.setValue(name, value);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -939,6 +1059,23 @@ public class ResourcesMetadata
 		return getValue(0);
 	}
 	
+	public List getInstanceValues()
+	{
+		List values = new Vector();
+		values.addAll(this.m_currentValues);
+		if(this.m_instances == null)
+		{
+			this.m_instances = new Vector();
+		}
+		Iterator it = this.m_instances.iterator();
+		while(it.hasNext())
+		{
+			ResourcesMetadata instance = (ResourcesMetadata) it.next();
+			values.addAll(instance.getValues());
+		}
+		return values;
+	}
+	
 	/**
 	 * @param index
 	 * @param value
@@ -960,8 +1097,50 @@ public class ResourcesMetadata
 	 */
 	public void setCurrentCount(int currentCount) 
 	{
-		m_currentCount = currentCount;
+		if(m_parent == null)
+		{
+			m_currentCount = currentCount;
+		}
+		else
+		{
+			m_parent.setCurrentCount(currentCount);
+		}
 	}
+	
+	public void incrementCurrentCount(String name)
+	{
+		if(name.startsWith(this.getDottedname()))
+		{
+			String localname = name.substring(name.length());
+			if(localname == null || localname.equals(""))
+			{
+				this.m_currentCount++;
+			}
+			else
+			{
+				String[] parts = localname.split(DOT_REGEX);
+				String target = parts[0];
+				boolean found = false;
+				Iterator it = getNested().iterator();
+				ResourcesMetadata prop = null;
+				while(!found && it.hasNext())
+				{
+					prop = (ResourcesMetadata) it.next();
+					if(prop.getLocalname().equals(target))
+					{
+						found = true;
+					}
+				}
+				
+				if(found)
+				{
+					prop.incrementCurrentCount(name);
+				}
+			}
+		}
+		
+	}
+
 	
 	/**
 	 * @return Returns the maxCardinality.
@@ -1000,9 +1179,16 @@ public class ResourcesMetadata
 	 */
 	public void incrementCount() 
 	{
-		if(m_currentCount < m_maxCardinality)
+		if(this.getCurrentCount() < m_maxCardinality)
 		{
-			m_currentCount++;
+			if(m_parent == null)
+			{
+				m_currentCount++;
+			}
+			else
+			{
+				m_parent.incrementCount();
+			}
 		}
 	}
 	
@@ -1011,7 +1197,7 @@ public class ResourcesMetadata
 	 */
 	public boolean canAddInstances()
 	{
-		return m_currentCount < m_maxCardinality;
+		return this.getCurrentCount() < m_maxCardinality;
 	}
 	
 	/**
@@ -1057,12 +1243,33 @@ public class ResourcesMetadata
 		m_enumeration = new Vector(enumeration);
 	}
 	
+	public boolean isNested()
+	{
+		return (m_nested != null) && ! m_nested.isEmpty();
+	}
+	
 	/**
 	 * @return Returns the nested.
 	 */
 	public List getNested() 
 	{
+		if(m_nested == null)
+		{
+			m_nested = new Vector();
+		}
 		return m_nested;
+	}
+	
+	/**
+	 * @return Returns the nested.
+	 */
+	public List getNestedInstances() 
+	{
+		if(m_nestedinstances == null)
+		{
+			m_nestedinstances = new Vector();
+		}
+		return m_nestedinstances;
 	}
 	
 	/**
@@ -1121,6 +1328,244 @@ public class ResourcesMetadata
 		m_pattern = pattern;
 	}
 	
+	/**
+	 * @return Returns the maxInclusive.
+	 */
+	public boolean isMaxInclusive() 
+	{
+		return m_maxInclusive;
+	}
+	
+	/**
+	 * @param maxInclusive The maxInclusive to set.
+	 */
+	public void setMaxInclusive(boolean maxInclusive) 
+	{
+		m_maxInclusive = maxInclusive;
+	}
+	
+	/**
+	 * @return Returns the minInclusive.
+	 */
+	public boolean isMinInclusive() 
+	{
+		return m_minInclusive;
+	}
+	
+	/**
+	 * @param minInclusive The minInclusive to set.
+	 */
+	public void setMinInclusive(boolean minInclusive) 
+	{
+		m_minInclusive = minInclusive;
+	}
+	
+	/**
+	 * @return Returns the depth.
+	 */
+	public int getDepth() 
+	{
+		return m_depth;
+	}
+	
+	/**
+	 * @param depth The depth to set.
+	 */
+	public void setDepth(int depth) 
+	{
+		m_depth = depth;
+	}
+
+
+	/**
+	 * @param string
+	 */
+	public void setId(String id) 
+	{
+		m_id = id;
+		
+	}
+	
+	public String getId()
+	{
+		return m_id;
+	}
+	
+	public void setDottedparts(List parts)
+	{
+		m_dottedparts = parts;
+	}
+	
+	public List getDottedparts()
+	{
+		return m_dottedparts;
+	}
+	
+	public void setDottedpart(int index, String part)
+	{
+		if(m_dottedparts == null)
+		{
+			m_dottedparts = new Vector();
+		}
+		if(index >= 0 && m_dottedparts.size() < index)
+		{
+			m_dottedparts.set(index, part);
+		}
+		else
+		{
+			m_dottedparts.add(part);
+		}
+	}
+	
+	public void insertDottedpart(int index, String part)
+	{
+		if(m_dottedparts == null)
+		{
+			m_dottedparts = new Vector();
+		}
+		if(index >= 0 && index < m_dottedparts.size())
+		{
+			m_dottedparts.add(index, part);
+		}
+		else
+		{
+			m_dottedparts.add(part);
+		}
+	}
+	
+	public String getDottedname()
+	{
+		String name = "";
+		Iterator it = m_dottedparts.iterator();
+		while(it.hasNext())
+		{
+			String part = (String) it.next();
+			name += part;
+			if(it.hasNext())
+			{
+				name += DOT;
+			}
+		}
+		return name;
+	}
+	
+	public String getParentname()
+	{
+		String name = "";
+		if(m_parent != null)
+		{
+			name = m_parent.getDottedname();
+		}
+		else
+		{
+			boolean first = true;
+			Iterator it = m_dottedparts.iterator();
+			while(it.hasNext())
+			{
+				String part = (String) it.next();
+				if(it.hasNext())
+				{
+					if(!first)
+					{
+						name += DOT;
+					}
+					name += part;
+					first = false;
+				}
+			}
+		}
+		return name;
+	}
+	
+	public void setDottedparts(String path)
+	{
+		String[] names = path.split(DOT_REGEX);
+		m_dottedparts = new Vector();
+		for(int i = 0; i < names.length; i++)
+		{
+			m_dottedparts.add(names[i]);
+		}
+		
+	}
+	
+	/**
+	 * Recursively traverses a hierarchy of ResourcesMetadata objects rooted at this
+	 * node in the hierarchy and returns a flat list of ResourcesMetadata objects.  
+	 * The hierarchy is expressed as references in the list of nested objects. The return
+	 * value is a list of objects ordered for rendering as an HTML form, with at least 
+	 * one entry for each HTML tag required to render the form.
+	 * 
+	 * @return An ordered list of ResourcesMetadata objects.
+	 */
+	public List getFlatList()
+	{
+		List rv = new Vector();
+		rv.add(this);
+		Iterator it = this.getNested().iterator();
+		while(it.hasNext())
+		{
+			ResourcesMetadata prop = (ResourcesMetadata) it.next();
+			if(prop.getMaxCardinality() > 1)
+			{
+				for(int i = 0; i < prop.getCurrentCount(); i++)
+				{
+					ResourcesMetadata copy = null;
+					if(i < prop.m_instances.size())
+					{
+						copy = (ResourcesMetadata) prop.m_instances.get(i);
+					}
+					else
+					{
+						copy = new ResourcesMetadata(prop);
+						List parts = new Vector(this.getDottedparts());
+						parts.add(copy.getLocalname());
+						parts.add(Integer.toString(i));
+						copy.setDottedparts(parts);
+						prop.m_instances.add(i, copy);
+						this.m_nestedinstances.add(copy);
+						copy.m_parent = prop;
+					}
+					if(copy.getNested().isEmpty())
+					{
+						rv.add(copy);
+					}
+					else
+					{
+						rv.addAll(copy.getFlatList());
+					}
+				}
+			}
+			else
+			{
+				ResourcesMetadata copy = null;
+				if(prop.m_instances.size() > 0)
+				{
+					copy = (ResourcesMetadata) prop.m_instances.get(0);
+				}
+				else
+				{
+					copy = new ResourcesMetadata(prop);
+					List parts = new Vector(this.getDottedparts());
+					parts.add(copy.getLocalname());
+					copy.setDottedparts(parts);
+					prop.m_instances.add(copy);
+					this.m_nestedinstances.add(copy);
+					copy.m_parent = prop;
+				}
+				if(copy.getNested().isEmpty())
+				{
+					rv.add(copy);
+				}
+				else
+				{
+					rv.addAll(copy.getFlatList());
+				}
+			}
+		}
+		return rv;
+		
+	}	// getFlatList
+		
 }	// ResourcesMetadata
 
 

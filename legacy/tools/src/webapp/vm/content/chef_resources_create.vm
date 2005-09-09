@@ -3,90 +3,105 @@
 ############################################# macro getPropertyValues 
 ##
 
-#macro(getPropertyValues $tags $num)
+#macro(getPropertyValues $tags)
 	#foreach($tag in $tags)
-		<p class="shorttext">
-			#set($count = $!{tag.count} - 1)
-			<label for ="$validator.escapeJavascript("$!{tag.fullname}_$!{count}_$num")">
-				#if($tag.minCardinality > 0)<span class="reqStar">*</span>#end
-				$tag.label
-				#if($tag.canAddInstances())
-					[<a href="#" onclick="javascript: document.getElementById('flow').value='addInstance'; document.getElementById('field').value='$!{tag.fullname}'; document.getElementById('index').value='$num'; submitform('createForm'); return false;" title="$tlang.getString("edit.hide") $group.name">+</a>]
-				#end
-			</label>
-			#if($count > 0)
-				<table>
+		<!-- $tag.dottedname -->
+		#if($tag && $tag.label && "$!{tag.label}" != "")
+			#set($indent = "")
+			#if($tag.depth > 0)
+				#set($indent = " indnt$!{tag.depth}")
 			#end
-			#foreach($j in [0..$count])
-				#if($count > 0)
-					<tr><td>
-				#end
-				#if("$!tag.widget" == "$!STRING")
-					<input type="text" size="$!{tag.length}"
-						name="$!{tag.fullname}_${j}_$num" 
-						id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$num")" 
-						value="$!item.getValue($!{tag.localname}, $j)" />
-				#elseif("$!tag.widget" == "$!TEXTAREA")
-					<textarea rows="4" cols="60" 
-						name="$!{tag.fullname}_${j}_$num" 
-						id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$num")" >$validator.escapeHtmlTextarea($!item.getValue($!{tag.localname}, $j)))</textarea>
-				#elseif("$!tag.widget" == "$!NESTED")
-					<table>
-						<tr><td>
-							#getPropertyValues($!{tag.nested} "${j}_$num")
-						</td></tr>
-					</table>
-				#elseif("$!tag.widget" == "$!DATE")
-					<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$num")" value="" />
-					#if($!item.getValue($!{tag.localname}, $j))
-						#set($theValue = $!item.getValue($!{tag.localname}, $j))
-					#else
-						#set($theValue = $today)
-					#end 
-					#prop_dateSelectionWidget("${tag.fullname}_${j}_$num" $theValue)
-				#elseif("$!tag.widget" == "$!DATETIME")
-					<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$num")" value="" />
-					#if($!item.getValue($!{tag.localname}, $j))
-						#set($theValue = $!item.getValue($!{tag.localname}, $j))
-					#else
-						#set($theValue = $today)
-					#end 
-					#prop_dateSelectionWidget("$!{tag.fullname}_${j}_$num" $theValue)
-					#prop_timeSelectionWidget("$!{tag.fullname}_${j}_$num" $theValue)
-				#elseif("$!tag.widget" == "$!TIME")
-					<input type="hidden" id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$num")" value="" />
-					#if($!item.getValue($!{tag.localname}, $j))
-						#set($theValue = $!item.getValue($!{tag.localname}, $j))
-					#else
-						#set($theValue = $today)
-					#end 
-					#prop_timeSelectionWidget("$!{tag.fullname}_${j}_$num" $theValue)
-				#elseif("$!tag.widget" == "$!ENUM")
-					<select name="$!{tag.fullname}_${j}_$num" 
-						id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$num")">
-						#foreach($enum in $tag.enumeration)
-							<option value="$enum"#if("$!item.getValue($!{tag.localname}, $j)" == "$enum") selected="selected"#end>$enum</option>
+			#if("$!NESTED" == "$!tag.widget")
+				<div class="fakelabel$!{indent}">
+					#if($tag.minCardinality > 0)<span class="reqStar">*</span>#end
+					$tag.label
+					#if($tag.canAddInstances())
+						[<a href="#" onclick="javascript: document.getElementById('flow').value='addInstance'; document.getElementById('field').value='$!{tag.dottedname}'; submitform('createForm'); return false;" title="$tlang.getString("edit.hide")">+</a>]
+					#end
+					<!-- $!{tag.dottedname} -->
+					<input type="hidden"
+						name="$!{tag.dottedname}" 
+						id="$validator.escapeJavascript("$!{tag.dottedname}")" 
+						value="" />
+				</div>
+			#else
+				<div class="shorttext$!{indent}">
+					<label for ="$validator.escapeJavascript("$!{tag.dottedname}")">
+						#if($tag.minCardinality > 0)<span class="reqStar">*</span>#end
+						$tag.label
+						#if($tag.canAddInstances())
+							[<a href="#" onclick="javascript: document.getElementById('flow').value='addInstance'; document.getElementById('field').value='$!{tag.dottedname}'; submitform('createForm'); return false;" title="$tlang.getString("edit.hide")">+</a>]
 						#end
-					</select>
-				#elseif("$!tag.widget" == "$!BOOLEAN")
-					<input type="checkbox" 
-						name="$!{tag.fullname}_${j}_$num" 
-						id="$validator.escapeJavascript("$!{tag.fullname}_${j}_$num")"
-						#if("$!item.getValue($!{tag.localname}, $j)" == "$TRUE")checked="checked"#end
-						value="true" />
-				#else
-					$tag.fullname<br />
-					$tag.widget<br />
-					"$!item.getValue("$!{tag.localname}", $j)"<br />
-				#end
-				#if($count > 0)
-					</td></tr>
-				#end
+					</label>
+					#if("$!tag.widget" == "$!STRING")
+						<!-- string -->
+						<input type="text" size="$!{tag.length}"
+							name="$!{tag.dottedname}" 
+							id="$validator.escapeJavascript("$!{tag.dottedname}")" 
+							value="$!{tag.value}" />
+					#elseif("$!tag.widget" == "$!TEXTAREA")
+						<!-- textarea -->
+						<textarea rows="4" cols="60" 
+							name="$!{tag.dottedname}" 
+							id="$validator.escapeJavascript("$!{tag.dottedname}")" >$validator.escapeHtmlTextarea($!{tag.value}))</textarea>
+					#elseif("$!tag.widget" == "$!DATE")
+						<input type="hidden" id="$validator.escapeJavascript("$!{tag.dottedname}")" value="" />
+						#if($!{tag.value})
+							#set($theValue = $!{tag.value})
+						#else
+							#set($theValue = $today)
+						#end 
+						#prop_dateSelectionWidget("${tag.dottedname}" $theValue)
+					#elseif("$!tag.widget" == "$!DATETIME")
+						<input type="hidden" id="$validator.escapeJavascript("$!{tag.dottedname}")" value="" />
+						#if($!{tag.value})
+							#set($theValue = $!{tag.value})
+						#else
+							#set($theValue = $today)
+						#end 
+						#prop_dateSelectionWidget("$!{tag.dottedname}" $theValue)
+						#prop_timeSelectionWidget("$!{tag.dottedname}" $theValue)
+					#elseif("$!tag.widget" == "$!TIME")
+						<input type="hidden" id="$validator.escapeJavascript("$!{tag.dottedname}")" value="" />
+						#if($!{tag.value})
+							#set($theValue = $!{tag.value})
+						#else
+							#set($theValue = $today)
+						#end 
+						#prop_timeSelectionWidget("$!{tag.dottedname}" $theValue)
+					#elseif("$!tag.widget" == "$!ENUM")
+						<select name="$!{tag.dottedname}" 
+							id="$validator.escapeJavascript("$!{tag.dottedname}")">
+							#foreach($enum in $tag.enumeration)
+								<option value="$enum"#if("$!{tag.value}" == "$enum") selected="selected"#end>$enum</option>
+							#end
+						</select>
+					#elseif("$!tag.widget" == "$!BOOLEAN")
+						<input type="checkbox" 
+							name="$!{tag.dottedname}" 
+							id="$validator.escapeJavascript("$!{tag.dottedname}")"
+							#if("$!{tag.value}" == "$TRUE")checked="checked"#end
+							value="true" />
+					#elseif("$!tag.widget" == "$!INTEGER")
+						<!-- integer -->
+						<input type="text" size="$!{tag.length}"
+							name="$!{tag.dottedname}" 
+							id="$validator.escapeJavascript("$!{tag.dottedname}")" 
+							value="$!{tag.value}" />
+					#elseif("$!tag.widget" == "$!DOUBLE")
+						<!-- double -->
+						<input type="text" size="$!{tag.length}"
+							name="$!{tag.dottedname}" 
+							id="$validator.escapeJavascript("$!{tag.dottedname}")" 
+							value="$!{tag.value}" />
+					#else
+						$tag.dottedname<br />
+						$tag.widget<br />
+						"$!{tag.value}"<br />
+					#end
+				</div>
 			#end
-			#if($count > 0)
-				</table>
-			#end
-		</p>
+		#end
 	#end
 #end
 ############################################# end of macro getPropertyValues 
@@ -424,7 +439,7 @@
 							#end
 						</select>
 					</p>
-					#getPropertyValues($properties $i)
+					#getPropertyValues($item.properties)
 				#end
 			#else
 				#if("$!{item.Filename}" == "")
