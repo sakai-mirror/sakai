@@ -51,11 +51,11 @@
 							</form>
 						#end
 						#if ($goPPButton == "true")
-							<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_prev" value="<" title="$tlang.getString('gen.previous') $pagesize" />
 							</form>
 						#else
-							<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_prev" value="<" disabled="disabled" />
 							</form>
 						#end
@@ -99,47 +99,47 @@
 						<th id="attach" style="width:0;padding:0;vertical-align:middle;background-color:transparent"></th>
 						<th id ="subject">
 							#if (!$currentSortedBy.equals("subject"))
-								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject">Subject</a>
+								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject">Subject</a>
 							#else
 								#if ($currentSortAsc.equals("true"))
-									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject ascending">Subject <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by subject ascending" /></a>
+									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject ascending">Subject <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by subject ascending" /></a>
 								#else
-									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject ascending">Subject <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by subject descending"/></a>
+									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject ascending">Subject <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by subject descending"/></a>
 								#end
 							#end
 						</th>
 						<th id="author">
 							#if (!$currentSortedBy.equals("from"))
-								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author">From</a>
+								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author">From</a>
 							#else
 								#if ($currentSortAsc.equals("true"))
-									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author ascending">From <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by author ascending" /></a>
+									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author ascending">From <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by author ascending" /></a>
 								#else
-									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author descending">From <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by author descending"/></a>
+									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author descending">From <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by author descending"/></a>
 								#end
 							#end
 						</th>
 						#if ($SiteColumnFlag > 0) ## (there are anns from other sites so show what site they are from)
 							<th id ="Site">
 								#if (!$currentSortedBy.equals("channel"))
-									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="Sort by originating site">Site</a>
+									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="Sort by originating site">Site</a>
 								#else
 									#if ($currentSortAsc.equals("true"))
-										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="Sort by originating site ascending">Site <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by originating site ascending" /></a>
+										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="Sort by originating site ascending">Site <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by originating site ascending" /></a>
 									#else
-										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="Sort by originating site ascending">Site <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by originating site descending"/></a>
+										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="Sort by originating site ascending">Site <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by originating site descending"/></a>
 									#end
 								#end
 							</th>
 						#end
 						<th id ="date">
 							#if (!$currentSortedBy.equals("date"))
-								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="Sort by date ascending">Date</a>
+								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="Sort by date ascending">Date</a>
 							#else
 								#if ($currentSortAsc.equals("true"))
-									 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="Sort by date ascending">Date <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by date ascending" /></a>
+									 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;"  title="Sort by date ascending">Date <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by date ascending" /></a>
 								#else
-									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="Sort by date descending">Date <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt ="Sort by date descending" /></a>
+									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="Sort by date descending">Date <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt ="Sort by date descending" /></a>
 								#end
 							#end
 						</th>
@@ -299,11 +299,11 @@
 										</form>
 									#end
 									#if ($goPPButton == "true")
-										<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_prev" value="<" title="$tlang.getString('gen.previous') $pagesize" />
 										</form>
 									#else
-										<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_prev" value="<" disabled="disabled" />
 										</form>
 									#end
@@ -348,35 +348,35 @@
 							 <th id ="attach"  style="width:0;padding:0;vertical-align:middle;background-color:transparent"></th>
 							 <th id ="subject">
 									#if (!$currentSortedBy.equals("subject"))
-										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject">Subject</a>
+										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject">Subject</a>
 									#else
 										#if ($currentSortAsc.equals("true"))
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject ascending">Subject <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by subject ascending" /></a>
+											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject ascending">Subject <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by subject ascending" /></a>
 										#else
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject ascending">Subject <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by subject descending"/></a>
+											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="Sort by subject ascending">Subject <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by subject descending"/></a>
 										#end
 									#end
 								</th>
 								<th id="author">
 									#if (!$currentSortedBy.equals("from"))
-										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author">From</a>
+										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author">From</a>
 									#else
 										#if ($currentSortAsc.equals("true"))
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author ascending">From <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by author ascending" /></a>
+											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author ascending">From <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by author ascending" /></a>
 										#else
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author descending">From <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by author descending"/></a>
+											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfrom")';return false;" title ="Sort by author descending">From <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by author descending"/></a>
 										#end
 									#end
 								</th>
 								#if ($SiteColumnFlag > 0) ## (there are anns from other sites so show what site they are from)
 									<th id ="Site">
 										#if (!$currentSortedBy.equals("channel"))
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchannel")>$tlang.getString("gen.site")</a>
+											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchannel")>$tlang.getString("gen.site")</a>
 										#else
 											#if ($currentSortAsc.equals("true"))
-												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchanasc")>$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt=$tlang.getString("gen.sortchanasc") /></a>
+												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchanasc")>$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt=$tlang.getString("gen.sortchanasc") /></a>
 											#else
-												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchandesc")>$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt=$tlang.getString("gen.sortchandesc")/></a>
+												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchandesc")>$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt=$tlang.getString("gen.sortchandesc")/></a>
 											#end
 										#end
 									</th>
@@ -384,24 +384,24 @@
 								#if ($EnableItemCheckBoxes) ## mantain role - so show public value
 									<th id="public">
 										#if (!$currentSortedBy.equals("public"))
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" title="$tlang.getString("gen.sortbypub")">$tlang.getString("gen.visible")</a>
+											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" title="$tlang.getString("gen.sortbypub")">$tlang.getString("gen.visible")</a>
 										#else
 											#if ($currentSortAsc.equals("true"))
-												 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" title="$tlang.getString("gen.sortbypubasc")">$tlang.getString("gen.visible") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt=$tlang.getString("gen.sortbypubasc") /></a>
+												 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" title="$tlang.getString("gen.sortbypubasc")">$tlang.getString("gen.visible") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt=$tlang.getString("gen.sortbypubasc") /></a>
 											#else
-												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" title="$tlang.getString("gen.sortbypubdesc")">$tlang.getString("gen.visible") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt =$tlang.getString("gen.sortbypubdesc") /></a>
+												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" title="$tlang.getString("gen.sortbypubdesc")">$tlang.getString("gen.visible") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt =$tlang.getString("gen.sortbypubdesc") /></a>
 											#end
 										#end
 									</th>
 								#end
 								<th id ="date">
 									#if (!$currentSortedBy.equals("date"))
-										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString("gen.sortbydateasc")">$tlang.getString("gen.date")</a>
+										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString("gen.sortbydateasc")">$tlang.getString("gen.date")</a>
 									#else
 										#if ($currentSortAsc.equals("true"))
-											 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString("gen.sortbydateasc")">$tlang.getString("gen.date") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="$tlang.getString("gen.sortbydateasc")" /></a>
+											 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString("gen.sortbydateasc")">$tlang.getString("gen.date") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="$tlang.getString("gen.sortbydateasc")" /></a>
 										#else
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString("gen.sortbydatedesc")">$tlang.getString("gen.date") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt ="$tlang.getString("gen.sortbydatedesc")" /></a>
+											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString("gen.sortbydatedesc")">$tlang.getString("gen.date") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt ="$tlang.getString("gen.sortbydatedesc")" /></a>
 										#end
 									#end
 								</th>
@@ -536,11 +536,11 @@
 										</form>
 									#end
 									#if ($goPPButton == "true")
-										<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_prev" value="<" title="$tlang.getString('gen.previous') $pagesize" />
 										</form>
 									#else
-										<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_prev" value="<" disabled="disabled" />
 										</form>									
 									#end
