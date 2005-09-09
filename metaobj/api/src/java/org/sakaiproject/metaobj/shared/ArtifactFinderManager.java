@@ -1,5 +1,7 @@
 package org.sakaiproject.metaobj.shared;
 
+import java.util.Map;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -9,4 +11,5 @@ package org.sakaiproject.metaobj.shared;
  */
 public interface ArtifactFinderManager {
    ArtifactFinder getArtifactFinderByType(String key);
+   Map getFinders();
 }
