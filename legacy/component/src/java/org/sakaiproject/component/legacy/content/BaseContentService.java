@@ -3568,7 +3568,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 				{
 					extType.put("type", "application/binary");
 				}
-				id = id + ".bin";
+				//htripath- SAK-1811 remove '.bin' extension from binary file without any extension e.g makeFile 
+				//id = id + ".bin";
 				extType.put("id", id);
 			}
 		}
