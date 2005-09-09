@@ -84,40 +84,40 @@
 		<table summary ="List of Sites" class="listHier" cellspacing="0" cellpadding="0">
 		
 			<tr>
-				<th scope="col" id="Title">$tlang.getString("list.work")</th>
-				<th scope="col" id="Type">$tlang.getString("list.type")</th>
-				<th scope="col" id="Owner">$tlang.getString("list.owner")</th>
-				<th scope="col" id="Joinable">$tlang.getString("list.joinable")</th>
-				<th scope="col" id="Term">$tlang.getString("list.term")</th>
-				<th scope="col" id="Description">$tlang.getString("list.description")</th>
+				<th scope="col" id="title">$tlang.getString("list.work")</th>
+				<th scope="col" id="type">$tlang.getString("list.type")</th>
+				<th scope="col" id="owner">$tlang.getString("list.owner")</th>
+				<th scope="col" id="joinable">$tlang.getString("list.joinable")</th>
+				<th scope="col" id="term">$tlang.getString("list.term")</th>
+				<th scope="col" id="description">$tlang.getString("list.description")</th>
 			</tr>
 			#foreach ($site in $sites)
                 #set ($siteCount=$siteCount + 1)
                 #set ($shortDesc = "")
                 #set ($desc = "")
                 <tr>
-                        <td headers="Title">
+                        <td headers="title">
                         	<div class="indnt1">
-                                <a href="#toolLinkParam("$action" "doVisit" "id=$validator.escapeUrl($site.Id)")">
+                                <a href="#toolLinkParam("$action" "doVisit" "id=$validator.escapeUrl($site.Id)")" title="$tlang.getString("list.go") $validator.escapeHtml($site.Title) $tlang.getString("site")">
                                         $validator.escapeHtml($site.Title)
                                 </a>
                             </div>
                         </td>
 
-                        <td headers="Type">
+                        <td headers="type">
                         #set($type = $site.Type)
                      	$validator.escapeHtml($!type)
                         </td>
                         
-                        <td headers="Creator">
+                        <td headers="owner">
                         $site.CreatedBy.DisplayName
                         </td>
                         
-                        <td headers="Joinable">
+                        <td headers="joinable">
                         $site.isJoinable()
                         </td>
 
-                        <td hearders="Term">
+                        <td hearders="term">
              			#if ($termProp)
              				#if ($site.getProperties().getProperty($termProp))
 	                        	$site.getProperties().getProperty($termProp)
@@ -129,7 +129,7 @@
 	                    #end
                         </td>
                                                 
-                        <td headers="Description">
+                        <td headers="description">
                                 #set ($shortDesc = $site.ShortDescription)
 
                                 #if ($shortDesc)

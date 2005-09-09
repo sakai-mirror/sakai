@@ -11,7 +11,7 @@
 		<fieldset>
 			<legend class="radio">$tlang.getString("se.type")</legend>
 			<div class="checkbox indnt1">
-				<input type="radio" name="siteType" id="siteType" value="Any" checked="checked" onclick="clearNewCopyright(newcopyrighttext$i);" />
+				<input type="radio" name="siteType" id="siteType" value="Any" checked="checked" />
 				<label for="siteType">$tlang.getString("se.any")</label>
 			</div>
 			#if ($siteTypes.size() > 0 )
@@ -43,11 +43,11 @@
 			#end
 		</fieldset>
 
-		<div class="shorttext indnt1">
-			<label for="shorttext1">$tlang.getString("se.search1")</label>
-			<input type="text" name="search" id="search" size="32" maxlength="50" value="" onkeypress="formSubmitOnEnter(this, event)">
+		<p class="shorttext indnt1">
+			<label for="searchbox">$tlang.getString("se.search1") </label>
+			<input type="text" name="search" id="searchbox" size="32" maxlength="50" value="" onkeypress="formSubmitOnEnter(this, event)" />
 			<input type="hidden" name="eventSubmit_doSearch" id="eventSubmit_doSearch" value="Search for Sites" />
-		</div>
+		</p>
 		
 		<p class="act">
 			 <input type="submit" name="eventSubmit_doSearch" value="$tlang.getString("se.search")" />
