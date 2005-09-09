@@ -109,10 +109,27 @@
    <bean id="dbXmlHomeFactory" class="org.sakaiproject.metaobj.shared.mgt.factories.DbXmlHomeFactoryImpl">
       <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
    </bean>
+   
+   <bean id="xmlHomeFactory" class="org.sakaiproject.metaobj.shared.mgt.factories.XmlHomeFactoryImpl">
+      <property name="homes">
+		<map>
+		</map>
+      </property>
+   </bean>
+   
+   <bean id="mapHomeFactory" class="org.sakaiproject.metaobj.shared.mgt.factories.MapHomeFactoryImpl">
+      <property name="homes">
+			<map>
+            <!-- <entry key="fileArtifact"><ref bean="fileArtifactHome"/></entry>-->
+			</map>
+      </property>
+   </bean>
 
    <bean id="homeFactory" class="org.sakaiproject.metaobj.shared.mgt.HomeFactoryImpl">
       <property name="homeFactories">
          <list>
+         	<ref bean="xmlHomeFactory"/>
+         	<ref bean="mapHomeFactory"/>
            <ref bean="dbXmlHomeFactory"/>
          </list>
       </property>
