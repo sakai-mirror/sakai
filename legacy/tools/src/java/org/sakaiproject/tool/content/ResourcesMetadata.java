@@ -570,6 +570,9 @@ public class ResourcesMetadata
 	 * A regular expression that will match DOT in an expression.
 	 */
 	private static final String DOT_REGEX = "\\.";
+
+	/** The default size of the text-input widget for strings */
+	public static final int DEFAULT_LENGTH = 50;
 		
 	public static ResourcesMetadata getProperty(String name)
 	{
@@ -704,6 +707,7 @@ public class ResourcesMetadata
 		m_nestedinstances = new Vector();
 		m_instances = new Vector();
 		m_parent = null;
+		m_length = DEFAULT_LENGTH;
 
 	}
 	

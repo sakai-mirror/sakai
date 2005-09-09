@@ -25,10 +25,13 @@
 // package
 package org.sakaiproject.tool.content;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,6 +51,8 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
@@ -68,11 +73,11 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.control.SchemaBean;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-//import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.ElementListBean;
-//import org.sakaiproject.metaobj.shared.model.ValidationError;
+import org.sakaiproject.metaobj.shared.model.ValidationError;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
@@ -1891,13 +1896,12 @@ public class ResourcesAction
 		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
 			EditItem item = (EditItem) items.get(i);
-			List properties = item.getProperties();
 			ResourcesMetadata form = item.getForm();
 			Stack processStack = new Stack();
 			processStack.push(form);
 			Map parents = new Hashtable();
-			List unsavedElements = new LinkedList();
 			Document doc = Xml.createDocument();
+			
 			int count = 0;
 			
 			while(!processStack.isEmpty())
@@ -1912,9 +1916,9 @@ public class ResourcesAction
 					{
 						processStack.push(new ElementCarrier(node, element.getDottedname()));
 						List children = element.getNestedInstances();
-						for(int k = children.size() - 1; i >= 0; i--)
+						for(int k = children.size() - 1; k >= 0; k--)
 						{
-							ResourcesMetadata child = (ResourcesMetadata) children.get(i);
+							ResourcesMetadata child = (ResourcesMetadata) children.get(k);
 							processStack.push(child);
 							parents.put(child.getDottedname(), node);
 						}
@@ -1933,6 +1937,23 @@ public class ResourcesAction
 							else if(value instanceof String)
 							{
 								node.appendChild(doc.createTextNode((String)value));
+							}
+							else if(value instanceof Time)
+							{
+								Time time = (Time) value;
+								TimeBreakdown breakdown = time.breakdownLocal();
+								int year = breakdown.getYear();
+								int month = breakdown.getMonth();
+								int day = breakdown.getDay();
+								String xx = "" + year + (month < 10 ? "-0" : "-") + month + (day < 10 ? "-0" : "-") + day;
+								node.appendChild(doc.createTextNode(xx));
+							}
+							else if(value instanceof Date)
+							{
+								Date date = (Date) value;
+								SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+								String guy = df.format(date);
+								node.appendChild(doc.createTextNode(guy));
 							}
 							else
 							{
@@ -1970,50 +1991,47 @@ public class ResourcesAction
 				
 			}
 			
-			/*
-			int count = 0;
-			Iterator propIt = properties.iterator();
-			while(propIt.hasNext())
+			String content = Xml.writeDocumentToString(doc);
+			// String jcontent = jdoc.toString();
+			
+			StructuredArtifactValidationService validator = (StructuredArtifactValidationService) ComponentManager.get("org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService");
+			List errors = new ArrayList();
+			
+			// convert the String representation to an ElementBean object.  If that fails,
+			// add an error and return.
+			ElementBean bean = null;
+			
+			SAXBuilder builder = new SAXBuilder();
+			StringReader reader = new StringReader(content);
+			try 
 			{
-				ResourcesMetadata prop = (ResourcesMetadata) propIt.next();
-				String propname = prop.getLocalname();
-				List values = item.getList(propname);
-				Iterator valueIt = values.iterator();
-				while(valueIt.hasNext())
-				{
-					try
-					{
-						Object value = valueIt.next();
-						if(value == null)
-						{
-							// do nothing
-						}
-						else
-						{
-							Node propnode = doc.createElement(propname);
-							root.appendChild(propnode);
-							if(value instanceof String)
-							{
-								propnode.appendChild(doc.createTextNode((String)value));
-							}
-							else
-							{
-								propnode.appendChild(doc.createTextNode(value.toString()));
-							}
-							count++;
-						}
-					}
-					catch(Throwable e)
-					{			
-
-					}
-				}
+				org.jdom.Document jdoc = builder.build(reader);
+				bean = new ElementBean(jdoc.getRootElement(), rootSchema.getSchema(), true);
+			} 
+			catch (JDOMException e) 
+			{
+				// add message to list of errors
+				errors.add(new ValidationError("","",null,"JDOMException"));
+			} 
+			catch (IOException e) 
+			{
+				// add message to list of errors
+				errors.add(new ValidationError("","",null,"IOException"));
 			}
-			*/
-			if(count > 0)
+			
+			// call this.validate(bean, rootSchema, errors) and add results to errors list. 
+			if(bean == null)
 			{
-				String content = Xml.writeDocumentToString(doc);
-				
+				// add message to list of errors
+				errors.add(new ValidationError("","",null,"Bean is null"));
+			}
+			else
+			{
+				errors.addAll(validator.validate(bean));
+			}
+						
+			if(errors.isEmpty())
+			{
 				try
 				{
 					ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
@@ -2146,7 +2164,16 @@ public class ResourcesAction
 				{			
 	
 				}
-			}			
+			}
+			else
+			{
+				Iterator errorIt = errors.iterator();
+				while(errorIt.hasNext())
+				{
+					ValidationError error = (ValidationError) errorIt.next();
+					alerts.add(error.getDefaultMessage());
+				}
+			}
 			
 		}
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
@@ -2620,7 +2647,7 @@ public class ResourcesAction
 			else if(typename.equals(String.class.getName()))
 			{
 				length = node.getType().getMaxLength();
-				if(length > 100 || length < 0)
+				if(length > 100 || length < 1)
 				{
 					widget = ResourcesMetadata.WIDGET_TEXTAREA;
 				}
@@ -2628,12 +2655,8 @@ public class ResourcesAction
 				{
 					length = 50;
 				}
-				else if(length < 1)
-				{
-					length = 1;
-				}
-				pattern = node.getType().getPattern();
 				
+				pattern = node.getType().getPattern();
 			}
 			else if(typename.equals(Date.class.getName()))
 			{
@@ -2915,7 +2938,7 @@ public class ResourcesAction
 			else if(typename.equals(String.class.getName()))
 			{
 				length = node.getType().getMaxLength();
-				if(length > 100 || length < 0)
+				if(length > 100 || length < 1)
 				{
 					widget = ResourcesMetadata.WIDGET_TEXTAREA;
 				}
@@ -2923,12 +2946,8 @@ public class ResourcesAction
 				{
 					length = 50;
 				}
-				else if(length < 1)
-				{
-					length = 1;
-				}
-				pattern = node.getType().getPattern();
 				
+				pattern = node.getType().getPattern();
 			}
 			else if(typename.equals(Date.class.getName()))
 			{
@@ -9193,6 +9212,7 @@ public class ResourcesAction
 		{
 			this.parent = parent;
 		}
+
 	}
 	
 }	// ResourcesAction
