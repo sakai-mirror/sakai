@@ -22,19 +22,12 @@
 	align="left"
 	src="#contentCourierLink("$panel-toolbar")">
 </iframe>
-<div class="portletBody" style="background-color:#fff;clear:both;margin-right:0px;padding:6px;width:96%;width:auto !important;margin:0 !important;">
+<div class="portletBody" style="clear:both;margin-right:0px;padding:6px;width:96%;width:auto !important;margin:0 !important;">
 	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="layout" style="margin-top:.5em">
-		<tr>
-			<td width="84%"  style="padding-bottom:.5em;color:#9E9E9E">
-				$tlang.getString("lay.note")
-			</td>
-			<td width="16%"  style="padding-bottom:.5em">
-				<div class="chefInterportLetNavTextItem" style="color:#9E9E9E;">$tlang.getString("lay.user")</div>
-			</td>
-		</tr>
-		<tr valign="top">
-			<td style="border-top:1px dashed silver !important;padding-top:.3em;margin:0;border-right:1px dashed silver">
+			<div style="width:83%;padding-bottom:.5em;color:#9E9E9E;float:left;">
+				<div  style="padding-bottom:.2em;margin-bottom:.5em;border-bottom:1px dotted gray">
+					$tlang.getString("lay.note")
+				</div>
 				<iframe
 					name="$validator.escapeJavascript("$panel-monitor")"
 					id="$validator.escapeJavascript("$panel-monitor")"
@@ -47,8 +40,9 @@
 					scrolling="auto"
 					src="#chatlogLink("$panel-monitor")">
 				</iframe>
-			</td>
-			<td style="border-top:1px dashed silver;padding-top:.3em">
+			</div>	
+			<div style="width:16%;color:#9E9E9E;float:left;border-left:1px dotted silver">			
+				<div class="chefInterportLetNavTextItem" style="color:#9E9E9E;margin-bottom:.5em;padding:0 0  .2em .2em ;border-bottom:1px dotted gray">$tlang.getString("lay.user")</div>
 				<iframe 
 					name="$validator.escapeJavascript("$panel-presence")"
 					id="$validator.escapeJavascript("$panel-presence")"
@@ -62,11 +56,8 @@
 					align="right"
 					src="#contentLink("$panel-presence")">
 				</iframe>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2" valign="top">
-				<iframe
+			</div>	
+			<iframe
 					name="$validator.escapeJavascript("$panel-control")"
 					id="$validator.escapeJavascript("$panel-control")"
 					title="$panel-control"
