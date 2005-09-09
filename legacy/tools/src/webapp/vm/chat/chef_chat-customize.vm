@@ -80,6 +80,7 @@
 				type="radio" 
 				value="$new_chat_channel" 
 				onclick="if(checked) document.getElementById('new-channel').focus()"
+				onkeypress="if(checked) document.getElementById('new-channel').focus()"
 				name="$chat_channel_form" 
 				id="$validator.escapeHtml("${chat_channel_form}_new_channel")" />
 			<label for="$validator.escapeHtml("${chat_channel_form}_new_channel")">
@@ -95,6 +96,7 @@
 				name="$form_new_channel" 
 				id="$form_new_channel" 
 				onclick="document.getElementById('${chat_channel_form}_new_channel').checked=true" 
+				onkeypress="document.getElementById('${chat_channel_form}_new_channel').checked=true" 
 				onchange="document.getElementById('${chat_channel_form}_new_channel').checked=true" 
 				size="30" />
 		</p>
@@ -128,6 +130,7 @@
 			value="SelectMessagesByNumber" 
 
 			onclick="if(checked) document.getElementById('$filter_number_param_form').focus()"
+			onkeypress="if(checked) document.getElementById('$filter_number_param_form').focus()"
 
 			/>
 			<label for="${filter_type_form}_SelectMessagesByNumber">
@@ -139,6 +142,7 @@
 			id="$filter_number_param_form" 
 			size="3" 
 			onclick="document.getElementById('${filter_type_form}_SelectMessagesByNumber').checked=true"
+			onkeypress="document.getElementById('${filter_type_form}_SelectMessagesByNumber').checked=true"
 			onchange="document.getElementById('${filter_type_form}_SelectMessagesByNumber').checked=true"
 			value="$!filter_number_param" />
 			<label for="$filter_number_param_form"> $tlang.getString("custom.mess")</label>
