@@ -20,7 +20,7 @@
 					<p style="margin-left:2em;margin-top:.5em">
 						$validator.escapeHtml($item.Description)
 						#if($item.Link)
-							 <a href="$validator.escapeHtml($item.Link)" target="_blank">($full_story)</a>
+							 <a href="$validator.escapeHtml($item.Link)" target="_blank" title="$tlang.getString("goto.item")">($full_story)</a>
 						 #end
 						 #if($item.Pubdate)
 						 	($item.Pubdate)

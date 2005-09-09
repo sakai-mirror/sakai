@@ -26,9 +26,9 @@
 			</h3>
 		#end
 		#if($channel.Description)
-			<h4>
+			<p>
 				$channel.Description
-			</h4>
+			</p>
 		#end
 		#if($channel.Copyright)
 			<div>
@@ -42,7 +42,7 @@
 		#end
 		#if($channel.Link)
 			<div style="font-size:.8em;font-weight:normal">
-				<a href="$validator.escapeHtml($channel.Link)" target="_blank">($graphic_version)</a>
+				<a href="$validator.escapeHtml($channel.Link)" target="_blank" title="$tlang.getString("goto.graphics")">($graphic_version)</a>
 			</div>
 		#end
 				<hr class="itemSeparator" />

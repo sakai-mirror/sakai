@@ -12,6 +12,9 @@
 		<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
 		<div style="display:block;clear:both" />
 #end
+<p class="instruction">
+	$tlang.getString("revise.required")  <span class="reqStarInline">*</span>
+</p>
 		<form name="customize" id="customize" action="#toolForm("$action")" method="post">
 			<p class="shorttext">
 				<span class="reqStar">*</span>
