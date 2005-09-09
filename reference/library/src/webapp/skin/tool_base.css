@@ -116,6 +116,10 @@ textarea  {
 .checkbox, .shorttext, .longtext  { 
 	margin:1em 
 } 
+.fakelabel  { 
+	margin-right:1em; width:180px;
+	font-weight:bold; clear:both;
+}
 
 /* LIST VIEW(S) */
 
