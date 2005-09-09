@@ -6005,6 +6005,12 @@ public class ResourcesAction
 							}
 						}
 					}
+					//htripath-SAK-1712 - Set new collectionId as resources are not deleted under 'more' requirement.
+					if(state.getAttribute(STATE_MESSAGE) == null){
+					  String newCollectionId=ContentHostingService.getContainingCollectionId(currentId);
+					  state.setAttribute(STATE_COLLECTION_ID, newCollectionId);
+					}
+					
 				}
 				catch (PermissionException e)
 				{
