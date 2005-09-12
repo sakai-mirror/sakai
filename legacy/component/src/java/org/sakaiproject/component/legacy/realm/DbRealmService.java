@@ -876,6 +876,8 @@ public class DbRealmService extends BaseRealmService
 
 				// commit
 				connection.commit();
+				
+				refreshRealm((BaseRealm) edit);
 			}
 			catch (Exception e)
 			{

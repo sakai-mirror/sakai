@@ -8557,7 +8557,7 @@ public class SiteAction extends PagedResourceActionII
 		{
 			removeSiteEditFromState(state);
 		}
-		if (requestClasses != null && requestClasses.size() > 0)
+		if (requestClasses != null && requestClasses.size() > 0 && state.getAttribute(STATE_MANUAL_ADD_COURSE_NUMBER) != null)
 		{
 			try
 			{
