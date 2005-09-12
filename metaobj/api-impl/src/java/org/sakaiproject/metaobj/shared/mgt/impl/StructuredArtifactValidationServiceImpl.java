@@ -6,6 +6,7 @@ import org.sakaiproject.metaobj.shared.model.ElementListBean;
 import org.sakaiproject.metaobj.shared.model.ValidationError;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
+import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
 import org.jdom.Element;
 import org.jdom.Attribute;
 
@@ -152,6 +153,10 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
    protected void validateChildElement(Element childElement, SchemaNode childSchema,
                                        Object value, String parentName, List errors) {
       if (childElement != null) {
+         if (value instanceof FieldValueWrapper){
+            value = ((FieldValueWrapper)value).getValue();
+         }
+
          String stringValue = null;
          if (value != null && value instanceof String) {
             stringValue = (String) value;
