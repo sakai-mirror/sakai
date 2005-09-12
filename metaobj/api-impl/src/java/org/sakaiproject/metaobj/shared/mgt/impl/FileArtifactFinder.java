@@ -56,7 +56,17 @@ public class FileArtifactFinder implements ArtifactFinder {
    }
 
    public Collection findByOwnerAndType(Id owner, String type, MimeType mimeType) {
-      List artifacts = getContentHostingService().getAllResources("/");
+      String primaryMimeType = null;
+      String subMimeType = null;
+
+      if (mimeType != null) {
+         primaryMimeType = mimeType.getPrimaryType();
+         subMimeType = mimeType.getSubType();
+      }
+
+      List artifacts = getContentHostingService().findResources(ResourceProperties.FILE_TYPE,
+            primaryMimeType, subMimeType);
+      
       Collection returned = new ArrayList();
 
       for (Iterator i = artifacts.iterator();i.hasNext();) {

@@ -29,14 +29,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 import org.apache.xerces.impl.dv.util.Base64;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
@@ -3901,7 +3894,52 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		}
 	}
 
-	/**********************************************************************************************************************************************************************************************************************************************************
+	/**
+	 * {@inheritDoc}
+	 */
+   public List findResources(String type, String primaryMimeType, String subMimeType) {
+      // todo -- this will be soon re-written to make this more efficient.
+      // todo -- This implementation should not end up in production anywhere
+      List artifacts = getAllResources("/");
+
+      for (Iterator i = artifacts.iterator();i.hasNext();) {
+         ContentResource resource = (ContentResource)i.next();
+         String currentType = resource.getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+         String mimeType = resource.getProperties().getProperty(ResourceProperties.PROP_CONTENT_TYPE);
+
+         if (type != null && !type.equals(ResourceProperties.FILE_TYPE)) {
+            // process StructuredObject type
+            if (currentType == null) {
+               i.remove();
+            }
+            else if (!currentType.equals(type)) {
+               i.remove();
+            }
+         }
+         else if (currentType != null && type.equals(ResourceProperties.FILE_TYPE)) {
+            // this one is a structured object, get rid of it
+            i.remove();
+         }
+         else {
+            String[] parts = mimeType.split("/");
+            String currentPrimaryType = parts[0];
+            String currentSubtype = null;
+            if (parts.length > 1) currentSubtype = parts[1];
+
+            // check the mime type match
+            if (primaryMimeType != null && !primaryMimeType.equals(currentPrimaryType)) {
+               i.remove();
+            }
+            else if (subMimeType != null && !subMimeType.equals(currentSubtype)) {
+               i.remove();
+            }
+         }
+      }
+
+      return artifacts;
+   }
+
+   /**********************************************************************************************************************************************************************************************************************************************************
 	 * ContentCollection implementation
 	 *********************************************************************************************************************************************************************************************************************************************************/
 

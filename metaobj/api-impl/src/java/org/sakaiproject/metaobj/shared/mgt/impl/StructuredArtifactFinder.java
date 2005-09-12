@@ -52,19 +52,17 @@ public class StructuredArtifactFinder implements ArtifactFinder {
    private IdManager idManager;
 
    public Collection findByOwnerAndType(Id owner, String type) {
-      List artifacts = getContentHostingService().getAllResources("/");
+      List artifacts = getContentHostingService().findResources(type,
+            null, null);
+      
       Collection returned = new ArrayList();
 
       for (Iterator i = artifacts.iterator();i.hasNext();) {
          ContentResource resource = (ContentResource)i.next();
-         String currentType = resource.getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
-
-         if (currentType != null && currentType.equals(type)) {
-            Agent resourceOwner = getAgentManager().getAgent(
-                  resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
-            Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
-            returned.add(new ContentResourceArtifact(resource, resourceId, resourceOwner));
-         }
+         Agent resourceOwner = getAgentManager().getAgent(
+               resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
+         Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
+         returned.add(new ContentResourceArtifact(resource, resourceId, resourceOwner));
       }
 
       return returned;

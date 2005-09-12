@@ -884,4 +884,17 @@ public interface ContentHostingService extends ResourceService
 	 *        The desired public view setting.
 	 */
 	public void setPubView(String id, boolean pubview);
+
+   /**
+    * Find the resources this user has read access to from all worksites of the appropriate type.
+    *
+    * @param type this is the ResourceProperties.PROP_STRUCTOBJ_TYPE for stuctured objects or
+    * ResourceProperties.FILE_TYPE for file resources or null for all resources.
+    * @param primaryMimeType The primary mime type (ie. the "text" of "text/xml")
+    * This may be null to include all resources
+    * @param subMimeType The sub type (ie, the "xml" of "text/xml")
+    * This may be null to include all resources of the primary mime type if specified.
+    * @return List of ContentResource objects that match the search criteria
+    */
+   public List findResources(String type, String primaryMimeType, String subMimeType);
 }

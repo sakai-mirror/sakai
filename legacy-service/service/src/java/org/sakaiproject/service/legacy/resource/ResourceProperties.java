@@ -169,7 +169,10 @@ public interface ResourceProperties
 
 	/** Property for "object type" of a structured artifact */
 	public static final String PROP_STRUCTOBJ_TYPE = "SAKAI:structobj_type";
-	
+
+   /** Used to find non structured object ContentResources (files, url's, etc.) */
+   public static final String FILE_TYPE = "fileResource";
+
 	/**
 	* Access an iterator on the names of the defined properties (Strings).
 	* @return An iterator on the names of the defined properties (Strings) (may be empty).

@@ -25,6 +25,9 @@ package org.sakaiproject.service.legacy.content.cover;
 
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
 * <p>ContentHostingService is a static Cover for the {@link org.sakaiproject.service.legacy.content.ContentHostingService ContentHostingService};
 * see that interface for usage details.</p>
@@ -573,4 +576,85 @@ public class ContentHostingService
 
 		service.setPubView(param0, param1);
 	}
+
+   public static String getUuid(String id)
+   {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return null;
+
+      return service.getUuid(id);
+   }
+
+   public static String resolveUuid(String uuid)
+   {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return null;
+
+      return service.resolveUuid(uuid);
+   }
+
+   public static Collection getLocks(String id)
+   {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return null;
+
+      return service.getLocks(id);
+   }
+
+   public static void lockObject(String id, String lockId, String subject, boolean system)
+   {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return;
+
+      service.lockObject(id, lockId, subject, system);
+   }
+
+   public static void removeLock(String id, String lockId)
+   {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return;
+
+      service.removeLock(id, lockId);
+   }
+
+   public static boolean isLocked(String id)
+   {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return false;
+
+      return service.isLocked(id);
+   }
+
+   public static boolean containsLockedNode(String id)
+   {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return false;
+
+      return service.containsLockedNode(id);
+   }
+
+   public static void removeAllLocks(String id)
+   {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return;
+
+      service.removeAllLocks(id);
+   }
+
+   public List findResources(String type, String primaryMimeType, String subMimeType) {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return null;
+
+      return service.findResources(type, primaryMimeType, subMimeType);
+   }
+
 }
