@@ -1,4 +1,4 @@
-body{width:100%;padding:0px;font-family:Verdana,Geneva,Arial,Helvetica,sans-serif}
+body{width:100%;padding:0px;font-family:Verdana,Geneva,Arial,Helvetica,sans-serif;margin:0}
 /*GROUP 1 - top navigation*/
 /*iframe sizes for different states*/
 .sitenav-log{height:5em} /*user not logged in*/
