@@ -8933,7 +8933,9 @@ public class SiteAction extends PagedResourceActionII
 			//Collections.sort(users);
 			for (Iterator i = grants.iterator(); i.hasNext();)
 			{
-				String userString = ((Grant) i.next()).getUserId();
+				Grant g = (Grant) i.next();
+				String userString = g.getUserId();
+				Role r = g.getRole();
 				
 				boolean alreadyInList = false;
 				for (Iterator p = members.iterator(); p.hasNext() && !alreadyInList;)
@@ -8943,7 +8945,6 @@ public class SiteAction extends PagedResourceActionII
 					if (userString.equalsIgnoreCase(memberUniqname))
 					{
 						alreadyInList = true;
-						Role r = realm.getUserRole(userString);
 						if (r != null)
 						{
 							member.setRole(r.getId());
@@ -8960,7 +8961,6 @@ public class SiteAction extends PagedResourceActionII
 						Participant participant = new Participant();
 						participant.name = user.getSortName();
 						participant.uniqname = userString;
-						Role r = realm.getUserRole(userString);
 						if (r != null)
 						{
 							participant.role = r.getId();
