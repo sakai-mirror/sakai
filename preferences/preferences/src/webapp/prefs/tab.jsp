@@ -42,14 +42,10 @@
 --%>	
 
 			   <table cellspacing="23" cellpadding="5%">
-  				  <tr>
-    			    <th>My Sites.. </th>
-    			    <th></th>
-    			    <th>Sites visible in Tabs.. </th>
-    			    <th></th>
-    			  </tr>
     			  <tr>
     			    <td>
+    			      <b>Sites not visible in Tabs</b>
+    			      <br/>
     			  	  <h:selectManyListbox value="#{UserPrefsTool.selectedExcludeItems}" size="10">
 				   		<f:selectItems value="#{UserPrefsTool.prefExcludeItems}" />
 				 	  </h:selectManyListbox>
@@ -67,6 +63,8 @@
 				 	</td>
 				 	
 				 	<td>
+				 	  <b>Sites visible in Tabs</b>
+    			      <br/>
 				 	  <h:selectManyListbox value="#{UserPrefsTool.selectedOrderItems}" size="10">
 				        <f:selectItems value="#{UserPrefsTool.prefOrderItems}" />
 				      </h:selectManyListbox>
