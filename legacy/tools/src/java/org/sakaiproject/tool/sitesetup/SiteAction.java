@@ -1159,14 +1159,15 @@ public class SiteAction extends PagedResourceActionII
 				context.put("check_home", state.getAttribute(STATE_TOOL_HOME_SELECTED));
 	
 				//get the email alias when an Email Archive tool has been selected
-				if (state.getAttribute(STATE_TOOL_EMAIL_ADDRESS) == null && state.getAttribute(STATE_MESSAGE) == null)
+				String channelReference = MailArchiveService.channelReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId(), SiteService.MAIN_CONTAINER);
+				List aliases = AliasService.getAliases(channelReference, 1, 1);
+				if (aliases.size() > 0)
 				{
-					String channelReference = MailArchiveService.channelReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId(), SiteService.MAIN_CONTAINER);
-					List aliases = AliasService.getAliases(channelReference, 1, 1);
-					if (aliases.size() > 0)
-					{
-						state.setAttribute(STATE_TOOL_EMAIL_ADDRESS, ((Alias) aliases.get(0)).getId());
-					}
+					state.setAttribute(STATE_TOOL_EMAIL_ADDRESS, ((Alias) aliases.get(0)).getId());
+				}
+				else
+				{
+					state.removeAttribute(STATE_TOOL_EMAIL_ADDRESS);
 				}
 				if (state.getAttribute(STATE_TOOL_EMAIL_ADDRESS) != null)
 				{	
@@ -9076,42 +9077,41 @@ public class SiteAction extends PagedResourceActionII
 			else if (choice.equals("sakai.mailbox"))
 			{
 				hasEmail = true;
-				String alias = (String) state.getAttribute(STATE_TOOL_EMAIL_ADDRESS);
-				if (alias == null)
+				String alias = StringUtil.trimToNull((String) state.getAttribute(STATE_TOOL_EMAIL_ADDRESS));
+				if (alias != null)
 				{
-					addAlert(state, rb.getString("java.emailarchive")+" ");
-				}
-				else if (!Validator.checkEmailLocal(alias))
-				{
-					addAlert(state, INVALID_EMAIL);
-				}
-				else
-				{
-					try
+					if (!Validator.checkEmailLocal(alias))
 					{
-						String channelReference = MailArchiveService.channelReference(site.getId(), SiteService.MAIN_CONTAINER);
-						//first, clear any alias set to this channel				
-						AliasService.removeTargetAliases(channelReference);	// check to see whether the alias has been used
+						addAlert(state, INVALID_EMAIL);
+					}
+					else
+					{
 						try
 						{
-							String target = AliasService.getTarget(alias);
-							if (target != null)
-							{
-								addAlert(state, rb.getString("java.emailinuse")+" ");
-							}
-						}
-						catch (IdUnusedException ee)
-						{
+							String channelReference = MailArchiveService.channelReference(site.getId(), SiteService.MAIN_CONTAINER);
+							//first, clear any alias set to this channel				
+							AliasService.removeTargetAliases(channelReference);	// check to see whether the alias has been used
 							try
 							{
-								AliasService.setAlias(alias, channelReference);
+								String target = AliasService.getTarget(alias);
+								if (target != null)
+								{
+									addAlert(state, rb.getString("java.emailinuse")+" ");
+								}
 							}
-							catch (IdUsedException exception) {}
-							catch (IdInvalidException exception) {}
-							catch (PermissionException exception) {}
-						}	
+							catch (IdUnusedException ee)
+							{
+								try
+								{
+									AliasService.setAlias(alias, channelReference);
+								}
+								catch (IdUsedException exception) {}
+								catch (IdInvalidException exception) {}
+								catch (PermissionException exception) {}
+							}	
+						}
+						catch (PermissionException exception) {}
 					}
-					catch (PermissionException exception) {}
 				}
 			}
 			else if (choice.equals("sakai.announcements"))

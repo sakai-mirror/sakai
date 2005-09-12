@@ -43,7 +43,6 @@
 				#end
 			#end
 			#if ($hasEmail)
-				<input type="hidden" name="selectedTools" value="sakai.mailbox" />
 				##if the email archive tool is being added, show the input field for email alias
 				#set($toolExist=false)
 				#foreach ($oldTool in $oldSelectedTools)
@@ -52,6 +51,7 @@
 					#end
 				#end
 				#if(!$toolExist)
+					<input type="hidden" name="selectedTools" value="sakai.mailbox" />
 					<h4>
 						$tlang.getString("enw.email")
 					</h4>
@@ -64,8 +64,6 @@
 							<input type="text" title="$tlang.getString('enw.emailreq')" name="emailId" id="emailId" value="$!emailId" size="10" maxlength="32" />@$serverName
 						</p>
 					</div>
-				#else
-					<input type="hidden" title="$tlang.getString('enw.emailreq')" name="emailId" id="emailId" value="$!emailId" />
 				#end	
 			#end
 			#if ($hasNews)
