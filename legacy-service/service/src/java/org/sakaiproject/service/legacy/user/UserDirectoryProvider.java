@@ -24,6 +24,8 @@
 // package
 package org.sakaiproject.service.legacy.user;
 
+import java.util.Collection;
+
 /**
 * <p>UserDirectoryProvider is the Interface for CHEF user directory information providers.
 * These are used by a user directory service to access external user information.</p>
@@ -68,6 +70,12 @@ public interface UserDirectoryProvider
 	 * @return true if the user object was found and information updated, false if not.
 	 */
 	boolean getUser(UserEdit edit);
+
+	/**
+	 * Access a collection of UserEdit objects; if the user is found, update the information, otherwise remove the UserEdit object from the collection.
+	 * @param users The UserEdit objects (with id set) to fill in or remove.
+	 */
+	void getUsers(Collection users);
 
 	/**
 	 * Find a user object who has this email address. Update the object with the information found.

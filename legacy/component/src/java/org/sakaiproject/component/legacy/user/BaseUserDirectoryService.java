@@ -398,16 +398,87 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	public List getUsers(Collection ids)
 	{
 		// TODO: make this more efficient
+		
+		// User objects to return
 		List rv = new Vector();
+
+		// a list of User (edits) setup to check with the provider
+		Collection fromProvider = new Vector();
+
+		// for each requested id
 		for (Iterator i = ids.iterator(); i.hasNext();)
 		{
 			String id = (String) i.next();
 
-			try
+			// clean up the id
+			id = StringUtil.trimToNullLower(id);
+
+			// skip nulls
+			if (id == null) continue;
+
+			// see if we've done this already in this thread
+			String ref = userReference(id);
+			UserEdit user = (UserEdit) CurrentService.getInThread(ref);
+			
+			// if not
+			if (user == null)
 			{
-				rv.add(getUser(id));
+				// check the cache
+				if ((m_callCache != null) && (m_callCache.containsKey(ref)))
+				{
+					user = (UserEdit) m_callCache.get(ref);
+				}
+
+				else
+				{
+					// find our user record, and use it if we have it
+					user = findUser(id);
+
+					// if we didn't find it locally, collect a list of externals to get
+					if ((user == null) && (m_provider != null))
+					{
+						// make a new edit to hold the provider's info; the provider will either fill this in, if known, or remove it from the collection
+						BaseUserEdit providerUser = new BaseUserEdit((String) null);
+						providerUser.m_id = id;
+						fromProvider.add(providerUser);
+					}
+
+					// if found, save it for later use in this thread
+					if (user != null)
+					{
+						CurrentService.setInThread(ref, user);
+						
+						// cache
+						if (m_callCache != null) m_callCache.put(ref, user, m_cacheSeconds);
+					}
+				}			
 			}
-			catch (IdUnusedException e) {}
+			
+			// if we found a user for this id, add it to the return
+			if (user != null)
+			{
+				rv.add(user);
+			}
+		}
+
+		// check the provider
+		if ((m_provider != null) && (!fromProvider.isEmpty()))
+		{
+			m_provider.getUsers(fromProvider);
+			
+			// for each User in the collection that was filled in (and not removed) by the provider, cache and return it
+			for (Iterator i = fromProvider.iterator(); i.hasNext();)
+			{
+				User user = (User) i.next();				
+				
+				// cache, thread and call cache
+				String ref = user.getReference();
+				CurrentService.setInThread(ref, user);
+				if (m_callCache != null) m_callCache.put(ref, user, m_cacheSeconds);
+				
+				// add to return
+				rv.add(user);
+			}
 		}
 		
 		return rv;
