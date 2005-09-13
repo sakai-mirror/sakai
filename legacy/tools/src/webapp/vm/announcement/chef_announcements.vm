@@ -168,13 +168,15 @@
 
 							</td>
 							<td headers="subject">
-								#if ($ann_item.Header.draft)
-								<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="Edit draft announcement"><span class="chefAlert">$tlang.getString("gen.draft") - </span>
-									$validator.escapeHtml($ann_item.Header.subject)</a>
-								#else
-									<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="View announcement">
-									$validator.escapeHtml($ann_item.Header.subject)</a>
-								#end
+								<h4>
+									#if ($ann_item.Header.draft)
+									<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="Edit draft announcement"><span class="chefAlert">$tlang.getString("gen.draft") - </span>
+										$validator.escapeHtml($ann_item.Header.subject)</a>
+									#else
+										<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="View announcement">
+										$validator.escapeHtml($ann_item.Header.subject)</a>
+									#end
+								</h4>	
 							</td>
 							<td headers="author">
 								$validator.escapeHtml($ann_item.Header.From.DisplayName)
@@ -220,7 +222,7 @@
 
 			#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 
-			<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post" style="margin:1em .5em;">
+			<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post" style="margin:1em -.5em;">
 				#if (!$messageListVector.iterator().hasNext())
 					<p class="instruction"><br />
       					$tlang.getString("gen.thereare")
@@ -232,9 +234,8 @@
 							#if ($ann_item.Header.draft)
 							#else
 							<div style="margin:.3em -.2em;">
-									<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="View announcement">
-									$validator.escapeHtml($ann_item.Header.subject)</a>
-								#end
+								<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="View announcement">
+								$validator.escapeHtml($ann_item.Header.subject)</a>
 								#set ($size = 0)
 								#if (!$ann_item.Header.Attachments.isEmpty())
 									#set ($props = false)
@@ -254,18 +255,15 @@
 										<p style="margin:.2em 1em;font-size:smaller" >($validator.escapeHtml($ann_item.Header.From.DisplayName) - $ann_item.Header.Date.toStringLocalFull())</p>
 								#end
 							</div>	
-						#if ($displayOptions.isShowAnnouncementBody())
-
-## (gsilver) interesting - if created with the WYSIWYG the body is wrapped  in a <p> - then  $ann_item.TrimmedBody returns "<p>trimmed goober<p>..."
-
-							<div style="margin:.3em 0 0 0">
-								$ann_item.TrimmedBody
-							</div>
-
-							<p style="margin:.3em  0 1em 1em;font-size:smaller">
-								($validator.escapeHtml($ann_item.Header.From.DisplayName) - $ann_item.Header.Date.toStringLocalFull())
-							</p>	
-						#end
+							#if ($displayOptions.isShowAnnouncementBody())
+								<div style="margin:.3em 0 0 0">
+									$ann_item.TrimmedBody
+								</div>
+								<p style="margin:.3em  0 1em 1em;font-size:smaller">
+									($validator.escapeHtml($ann_item.Header.From.DisplayName) - $ann_item.Header.Date.toStringLocalFull())
+								</p>	
+							#end
+						#end	
 					#end
 				#end
 			</form>
@@ -436,13 +434,15 @@
 										#end
 									</td>
 									<td headers="subject" style="padding-bottom:0;">
+										<h4>
 											#if ($ann_item.Header.draft)
-											<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="Edit draft announcement"><span class="chefAlert">$tlang.getString("gen.draft") - </span>
+												<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="Edit draft announcement"><span class="chefAlert">$tlang.getString("gen.draft") - </span>
 												$validator.escapeHtml($ann_item.Header.subject)</a>
 											#else
 												<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="View announcement">
 												$validator.escapeHtml($ann_item.Header.subject)</a>
 											#end
+										</h4>	
 										#if ($channel.allowEditMessage($ann_item.Id))
 											<div class="itemAction"><a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="Edit announcement">$tlang.getString("gen.revise")</a></div>
 										#end
@@ -586,7 +586,8 @@
 							 #foreach ($ann_item in $showMessagesList)
 								#set ($rowCount =$rowCount + 1)
 								<tr>
-									 <td width="20%" style="padding-bottom:0;font-size:1.3em" >
+									 <td width="50%" style="padding-bottom:0;" class="line" >
+									 	<h4>
 											#if ($ann_item.Header.draft)
 											<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.editdraft")"><span class="chefAlert">$tlang.getString("gen.draft") - </span>
 												$validator.escapeHtml($ann_item.Header.subject)</a>
@@ -609,24 +610,29 @@
 											#else
 												<img src = "#imageLink("sakai/attachments.gif")" border="0" alt="attachment" />
 											#end
+											</h4>
 										</td>
 										#if (!$displayOptions.isShowAnnouncementBody())
 											<td style="padding-bottom:0">
 										/	($validator.escapeHtml($ann_item.Header.From.DisplayName) - $ann_item.Header.Date.toStringLocalFull())
 											</td>
 										#end
-										<td style="padding-left:3em;padding-bottom:0">
+										<td style="padding-left:3em;padding-bottom:0;"
+										#if  ( ($channel.allowEditMessage($ann_item.Id)) || ($channel.allowRemoveMessage($ann_item.Message)) ) 
+											class="line"
+										#end
+										>
+										#if  ( ($channel.allowEditMessage($ann_item.Id)) && ($channel.allowRemoveMessage($ann_item.Message)) ) 
+											#set($separator=" | ")
+										#else
+											#set($separator="")
+										#end
 											#if ($channel.allowEditMessage($ann_item.Id))
 												<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.editann")">$tlang.getString("gen.revise")</a>
 											#end
-
-											#if ($channel.allowEditMessage($ann_item.Id))
-												#if ($channel.allowRemoveMessage($ann_item.Message))
-												
-												#end
-											#end
+											$separator 
 											#if ($channel.allowRemoveMessage($ann_item.Message))
-											| <a href="#toolLinkParam("AnnouncementAction" "doDelete_announcement_link" "itemReference=$validator.escapeUrl($ann_item.reference)")" 	title="$tlang.getString("gen.removeann")">$tlang.getString("gen.delete")</a>
+											<a href="#toolLinkParam("AnnouncementAction" "doDelete_announcement_link" "itemReference=$validator.escapeUrl($ann_item.reference)")" 	title="$tlang.getString("gen.removeann")">$tlang.getString("gen.delete")</a>
 											#end
 										</td>
 									#if ($displayOptions.isShowAnnouncementBody())
