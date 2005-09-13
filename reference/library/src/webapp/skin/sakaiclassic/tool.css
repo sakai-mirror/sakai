@@ -113,7 +113,7 @@ h5{font-size:100%;color:#52AAD6;font-weight:normal;margin:.5em 0;background-colo
 
 /*toolbar*/
 .chefToolBarWrap, .chefToolBarWrapForm  {background-color:#ffc;padding:.3em;margin:-.3em -2em;text-align:center;line-height:1.5em}
-.navIntraTool a:link, .navIntraTool a, .chefToolBarWrap a:link, .chefToolBarWrap a, .chefToolBarWrapForm a, .chefToolBarWrapForm a:link  {border:none;text-decoration:underline;margin-right:1em}
+.navIntraTool a:link, .navIntraTool a, .chefToolBarWrap a:link, .chefToolBarWrap a, .chefToolBarWrapForm a, .chefToolBarWrapForm a:link  {border:none;text-decoration:underline;margin:0 .5em}
 .navIntraTool a:hover,.chefToolBarWrap a:hover, .chefToolBarWrapForm a:hover {border:none;text-decoration:underline;color:#000}
 .navIntraTool a:visited, .chefToolBarWrap a:visited, .chefToolBarWrapForm a:visited {border:none;text-decoration:underline;background-color:transparent;color:#369}
 .navIntraTool {background-color:#ffb;padding:.3em;text-align:center;line-height:1.5em}

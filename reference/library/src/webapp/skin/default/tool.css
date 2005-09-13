@@ -137,7 +137,7 @@ h5{font-size:100%;color:#084A87;font-weight:normal;margin:.5em 0;background-colo
 	padding: 0px 2px 0px 3px;
 	color: #000;
 	text-decoration:none;
-	margin-right:1em}
+	margin:0 .5em}
 .navIntraTool a:hover,.chefToolBarWrap a:hover, .chefToolBarWrapForm a:hover {
 	border:none;
 	text-decoration: none !important;
