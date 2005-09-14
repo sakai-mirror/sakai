@@ -195,8 +195,7 @@ CREATE INDEX IE_SAKAI_SITE_USER_USER ON SAKAI_SITE_USER
 INSERT INTO SAKAI_SITE VALUES('~admin', 'Administration Workspace', null, null, 'Administration Workspace', null, null, null, 1, 0, 0, '', null, null, null, null, 0, 1 );
 INSERT INTO SAKAI_SITE_PAGE VALUES('~admin-100', '~admin', 'Home', '0', 1 );
 INSERT INTO SAKAI_SITE_TOOL VALUES('~admin-110', '~admin-100', '~admin', 'sakai.motd', 1, 'Message of the Day', NULL );
-INSERT INTO SAKAI_SITE_TOOL VALUES('~admin-120', '~admin-100', '~admin', 'sakai.iframe', 2, 'My Workspace Information', NULL );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('~admin', '~admin-120', 'special', 'workspace' );
+INSERT INTO SAKAI_SITE_TOOL VALUES('~admin-120', '~admin-100', '~admin', 'sakai.iframe.myworkspace', 2, 'My Workspace Information', NULL );
 INSERT INTO SAKAI_SITE_PAGE VALUES('~admin-200', '~admin', 'Users', '0', 2 );
 INSERT INTO SAKAI_SITE_TOOL VALUES('~admin-210', '~admin-200', '~admin', 'sakai.users', 1, 'Users', NULL );
 INSERT INTO SAKAI_SITE_PAGE VALUES('~admin-250', '~admin', 'Aliases', '0', 3 );
@@ -223,8 +222,7 @@ INSERT INTO SAKAI_SITE_TOOL VALUES('~admin-910', '~admin-900', '~admin', 'sakai.
 INSERT INTO SAKAI_SITE VALUES('!admin', 'Administration Workspace', null, null, 'Administration Workspace', null, null, null, 1, 0, 0, '', null, null, null, null, 0, 0 );
 INSERT INTO SAKAI_SITE_PAGE VALUES('!admin-100', '!admin', 'Home', '0', 1 );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!admin-110', '!admin-100', '!admin', 'sakai.motd', 1, 'Message of the Day', NULL );
-INSERT INTO SAKAI_SITE_TOOL VALUES('!admin-120', '!admin-100', '!admin', 'sakai.iframe', 2, 'My Workspace Information', NULL );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!admin', '!admin-120', 'special', 'workspace' );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!admin-120', '!admin-100', '!admin', 'sakai.iframe.myworkspace', 2, 'My Workspace Information', NULL );
 INSERT INTO SAKAI_SITE_PAGE VALUES('!admin-200', '!admin', 'Users', '0', 2 );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!admin-210', '!admin-200', '!admin', 'sakai.users', 1, 'Users', NULL );
 INSERT INTO SAKAI_SITE_PAGE VALUES('!admin-250', '!admin', 'Aliases', '0', 3 );
@@ -258,9 +256,8 @@ UPDATE SAKAI_SITE SET CREATEDON='20030624041508851' WHERE SITE_ID = '!error';
 -- UPDATE SAKAI_SITE SET MODIFIEDON=TO_TIMESTAMP('20030624121053597','YYYYMMDDHHMISSFF6') WHERE SITE_ID = '!error';
 -- UPDATE SAKAI_SITE SET CREATEDON=TO_TIMESTAMP('20030624041508851','YYYYMMDDHHMISSFF6') WHERE SITE_ID = '!error';
 INSERT INTO SAKAI_SITE_PAGE VALUES('!error-100', '!error', 'Site Unavailable', '1', 1 );
-INSERT INTO SAKAI_SITE_TOOL VALUES('!error-110', '!error-100', '!error', 'sakai.iframe', 1, 'Site Unavailable', NULL );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!error-110', '!error-100', '!error', 'sakai.iframe.site', 1, 'Site Unavailable', NULL );
 INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!error', '!error-110', 'height', '400px' );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!error', '!error-110', 'special', 'worksite' );
 
 -- Create the !urlError site to be used when there is a problem understanding the user's request url.
 
@@ -272,9 +269,8 @@ UPDATE SAKAI_SITE SET CREATEDON='20030624041508851' WHERE SITE_ID = '!urlError';
 --UPDATE SAKAI_SITE SET MODIFIEDON=TO_TIMESTAMP('20030624121053597','YYYYMMDDHHMISSFF3') WHERE SITE_ID = '!urlError';
 --UPDATE SAKAI_SITE SET CREATEDON=TO_TIMESTAMP('20030624041508851','YYYYMMDDHHMISSFF3') WHERE SITE_ID = '!urlError';
 INSERT INTO SAKAI_SITE_PAGE VALUES('!urlError-100', '!urlError', 'Invalid URL', '1', 1 );
-INSERT INTO SAKAI_SITE_TOOL VALUES('!urlError-110', '!urlError-100', '!urlError', 'sakai.iframe', 1, 'Invalid URL', NULL );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!urlError-110', '!urlError-100', '!urlError', 'sakai.iframe.site', 1, 'Invalid URL', NULL );
 INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!urlError', '!urlError-110', 'height', '400px' );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!urlError', '!urlError-110', 'special', 'worksite' );
 
 -- Create the !gateway site to be used for the user's initial view of Sakai.
 
@@ -283,8 +279,7 @@ UPDATE SAKAI_SITE SET MODIFIEDBY='admin' WHERE SITE_ID = '!gateway';
 UPDATE SAKAI_SITE SET MODIFIEDON='20031126034522061' WHERE SITE_ID = '!gateway';
 INSERT INTO SAKAI_SITE_PAGE VALUES('!gateway-100', '!gateway', 'Welcome', '0', 1 );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-110', '!gateway-100', '!gateway', 'sakai.motd', 1, 'Message of the day', NULL );
-INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-120', '!gateway-100', '!gateway', 'sakai.iframe', 2, 'Welcome!', NULL );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!gateway', '!gateway-120', 'special', 'site' );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-120', '!gateway-100', '!gateway', 'sakai.iframe.service', 2, 'Welcome!', NULL );
 INSERT INTO SAKAI_SITE_PAGE VALUES('!gateway-200', '!gateway', 'About', '0', 2 );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-210', '!gateway-200', '!gateway', 'sakai.iframe', 1, 'About', NULL );
 INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!gateway', '!gateway-210', 'height', '500px' );
@@ -311,8 +306,7 @@ INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-710', '!gateway-700', '!gateway', '
 INSERT INTO SAKAI_SITE VALUES('!user', 'My Workspace', null, null, 'My Workspace Site', null, null, null, 1, 0, 0, '', null, null, null, null, 1, 0 );
 INSERT INTO SAKAI_SITE_PAGE VALUES('!user-100', '!user', 'Home', '0', 1 );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!user-110', '!user-100', '!user', 'sakai.motd', 1, 'Message of the Day', NULL );
-INSERT INTO SAKAI_SITE_TOOL VALUES('!user-120', '!user-100', '!user', 'sakai.iframe', 2, 'My Workspace Information', NULL );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!user', '!user-120', 'special', 'workspace' );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!user-120', '!user-100', '!user', 'sakai.iframe.myworkspace', 2, 'My Workspace Information', NULL );
 INSERT INTO SAKAI_SITE_PAGE VALUES('!user-150', '!user', 'Profile', '0', 2 );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!user-165', '!user-150', '!user', 'sakai.profile', 1, 'Profile', NULL );
 INSERT INTO SAKAI_SITE_PAGE VALUES('!user-200', '!user', 'Membership', '0', 3 );
@@ -339,10 +333,8 @@ UPDATE SAKAI_SITE SET MODIFIEDBY='admin' WHERE SITE_ID = '!worksite';
 UPDATE SAKAI_SITE SET MODIFIEDON='20030624121053597' WHERE SITE_ID = '!worksite';
 UPDATE SAKAI_SITE SET CREATEDON='20030624041508851' WHERE SITE_ID = '!worksite';
 INSERT INTO SAKAI_SITE_PAGE VALUES('!worksite-100', '!worksite', 'Home', '1', 1 );
-INSERT INTO SAKAI_SITE_TOOL VALUES('!worksite-110', '!worksite-100', '!worksite', 'sakai.iframe', 1, 'My Workspace Information', NULL );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!worksite-110', '!worksite-100', '!worksite', 'sakai.iframe.site', 1, 'My Workspace Information', NULL );
 INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!worksite', '!worksite-110', 'height', '100px' );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!worksite', '!worksite-110', 'special', 'workspace' );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!worksite', '!worksite-110', 'source', '' );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!worksite-120', '!worksite-100', '!worksite', 'sakai.synoptic.announcement', 2, 'Recent Announcements', NULL );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!worksite-130', '!worksite-100', '!worksite', 'sakai.synoptic.discussion', 3, 'Recent Discussion Items', NULL );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!worksite-140', '!worksite-100', '!worksite', 'sakai.synoptic.chat', 4, 'Recent Chat Messages', NULL );
@@ -379,10 +371,7 @@ UPDATE SAKAI_SITE SET MODIFIEDBY='admin' WHERE SITE_ID = 'mercury';
 UPDATE SAKAI_SITE SET MODIFIEDON='20030624121053597' WHERE SITE_ID = 'mercury';
 UPDATE SAKAI_SITE SET CREATEDON='20030624041508851' WHERE SITE_ID = 'mercury';
 INSERT INTO SAKAI_SITE_PAGE VALUES('mercury-100', 'mercury', 'Home', '1', 1 );
-INSERT INTO SAKAI_SITE_TOOL VALUES('mercury-110', 'mercury-100', 'mercury', 'sakai.iframe', 1, 'My Workspace Information', NULL );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('mercury', 'mercury-110', 'height', '100px' );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('mercury', 'mercury-110', 'special', 'workspace' );
-INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('mercury', 'mercury-110', 'source', '' );
+INSERT INTO SAKAI_SITE_TOOL VALUES('mercury-110', 'mercury-100', 'mercury', 'sakai.iframe.site', 1, 'My Workspace Information', NULL );
 INSERT INTO SAKAI_SITE_TOOL VALUES('mercury-120', 'mercury-100', 'mercury', 'sakai.synoptic.announcement', 2, 'Recent Announcements', NULL );
 INSERT INTO SAKAI_SITE_TOOL VALUES('mercury-130', 'mercury-100', 'mercury', 'sakai.synoptic.discussion', 3, 'Recent Discussion Items', NULL );
 INSERT INTO SAKAI_SITE_TOOL VALUES('mercury-140', 'mercury-100', 'mercury', 'sakai.synoptic.chat', 4, 'Recent Chat Messages', NULL );

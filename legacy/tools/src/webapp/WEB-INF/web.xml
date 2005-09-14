@@ -123,6 +123,30 @@
 
     <filter-mapping>
         <filter-name>sakai.request</filter-name>
+        <servlet-name>sakai.iframe.myworkspace</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>sakai.request</filter-name>
+        <servlet-name>sakai.iframe.service</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>sakai.request</filter-name>
+        <servlet-name>sakai.iframe.site</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>sakai.request</filter-name>
         <servlet-name>sakai.sitemanage</servlet-name>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
@@ -405,10 +429,6 @@
             <param-name>template</param-name>
             <param-value>admin/chef_users</param-value>            
         </init-param>
-        <init-param>
-            <param-name>single-user</param-name>
-            <param-value>true</param-value>            
-        </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
 
@@ -423,14 +443,6 @@
             <param-name>template</param-name>
             <param-value>admin/chef_users</param-value>            
         </init-param>
-        <init-param>
-            <param-name>create-user</param-name>
-            <param-value>true</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>create-login</param-name>
-            <param-value>true</param-value>            
-        </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
 
@@ -444,6 +456,48 @@
         <init-param>
             <param-name>template</param-name>
             <param-value>web/chef_iframe</param-value>            
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+     </servlet>
+
+	 <servlet>
+        <servlet-name>
+           sakai.iframe.myworkspace
+        </servlet-name>
+        <servlet-class>
+            org.sakaiproject.tool.web.IFrameAction
+        </servlet-class>
+        <init-param>
+            <param-name>template</param-name>
+            <param-value>web/chef_iframe</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+     </servlet>
+
+	 <servlet>
+        <servlet-name>
+           sakai.iframe.site
+        </servlet-name>
+        <servlet-class>
+            org.sakaiproject.tool.web.IFrameAction
+        </servlet-class>
+        <init-param>
+            <param-name>template</param-name>
+            <param-value>web/chef_iframe</param-value>
+        </init-param>
+       <load-on-startup>1</load-on-startup>
+     </servlet>
+
+	 <servlet>
+        <servlet-name>
+           sakai.iframe.service
+        </servlet-name>
+        <servlet-class>
+            org.sakaiproject.tool.web.IFrameAction
+        </servlet-class>
+        <init-param>
+            <param-name>template</param-name>
+            <param-value>web/chef_iframe</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
@@ -494,10 +548,6 @@
         <init-param>
             <param-name>template</param-name>
             <param-value>sitesetup/chef_site</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>site_mode</param-name>
-            <param-value>sitemanage</param-value>     
         </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
@@ -555,30 +605,6 @@
             <param-name>template</param-name>
             <param-value>announcement/chef_announcements</param-value>            
         </init-param>
-        <init-param>
-            <param-name>days</param-name>
-            <param-value>10</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>items</param-name>
-            <param-value>3</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>length</param-name>
-            <param-value>50</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>showAllColumns</param-name>
-            <param-value>false</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>showOnlyOptionsButton</param-name>
-            <param-value>true</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>showAnnouncementBody</param-name>
-            <param-value>true</param-value>            
-        </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
 
@@ -592,34 +618,6 @@
         <init-param>
             <param-name>template</param-name>
             <param-value>recent/chef_synoptic_message</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>days</param-name>
-            <param-value>1000</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>items</param-name>
-            <param-value>1</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>length</param-name>
-            <param-value>50000</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>show-subject</param-name>
-            <param-value>false</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>show-newlines</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <param-name>channel</param-name>
-            <param-value>/announcement/channel/!site/motd</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>message-service</param-name>
-            <param-value>org.sakaiproject.service.legacy.announcement.AnnouncementService</param-value>            
         </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
@@ -649,30 +647,6 @@
             <param-name>template</param-name>
             <param-value>recent/chef_synoptic_message</param-value>            
         </init-param>
-        <init-param>
-            <param-name>days</param-name>
-            <param-value>10</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>items</param-name>
-            <param-value>3</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>length</param-name>
-            <param-value>50</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>show-subject</param-name>
-            <param-value>true</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>show-newlines</param-name>
-            <param-value>false</param-value>
-        </init-param>
-        <init-param>
-            <param-name>message-service</param-name>
-            <param-value>org.sakaiproject.service.legacy.discussion.DiscussionService</param-value>            
-        </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
 
@@ -700,30 +674,6 @@
         <init-param>
             <param-name>template</param-name>
             <param-value>recent/chef_synoptic_message</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>days</param-name>
-            <param-value>10</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>items</param-name>
-            <param-value>3</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>length</param-name>
-            <param-value>50</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>show-subject</param-name>
-            <param-value>false</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>show-newlines</param-name>
-            <param-value>false</param-value>
-        </init-param>
-        <init-param>
-            <param-name>message-service</param-name>
-            <param-value>org.sakaiproject.service.legacy.chat.ChatService</param-value>            
         </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
@@ -767,10 +717,6 @@
             <param-name>template</param-name>
             <param-value>content/chef_resources</param-value>            
         </init-param>
-        <init-param>
-            <param-name>resources_mode</param-name>
-            <param-value>resources</param-value>            
-        </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
 
@@ -784,10 +730,6 @@
         <init-param>
             <param-name>template</param-name>
             <param-value>content/chef_resources</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>resources_mode</param-name>
-            <param-value>dropbox</param-value>            
         </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
@@ -859,10 +801,6 @@
             <param-name>template</param-name>
             <param-value>sitesetup/chef_site</param-value>            
         </init-param>
-        <init-param>
-            <param-name>site_mode</param-name>
-            <param-value>sitesetup</param-value>            
-        </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
 
@@ -876,10 +814,6 @@
         <init-param>
             <param-name>template</param-name>
             <param-value>sitesetup/chef_site</param-value>            
-        </init-param>
-        <init-param>
-            <param-name>site_mode</param-name>
-            <param-value>siteinfo</param-value>            
         </init-param>
         <load-on-startup>1</load-on-startup>
      </servlet>
