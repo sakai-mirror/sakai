@@ -11,10 +11,12 @@
 		<configuration name="items" value="3" />
 		<configuration name="length" value="50" />
 		<configuration name="show-subject" value="true" />
+		<configuration name="show-newlines" value="false" />
 		<configuration name="channel" value="" />
 
-		<configuration name="reset.button" value="false" />
-		<configuration name="help.id" value="sakai.discussion" />
+		<configuration name="message-service" value="org.sakaiproject.service.legacy.discussion.DiscussionService" type="final" />
+		<configuration name="reset.button" value="false" type="final" />
+		<configuration name="help.id" value="sakai.discussion" type="final" />
 
 	</tool>
 

@@ -151,7 +151,8 @@ public class ActiveToolComponent extends ToolComponent implements ActiveToolMana
 				}
 
 				// collect values for these collections
-				Properties config = new Properties();
+				Properties finalConfig = new Properties();
+				Properties mutableConfig = new Properties();
 				Set categories = new HashSet();
 				Set keywords = new HashSet();
 
@@ -168,9 +169,17 @@ public class ActiveToolComponent extends ToolComponent implements ActiveToolMana
 					{
 						String name = kidElement.getAttribute("name").trim();
 						String value = kidElement.getAttribute("value").trim();
+						String type = kidElement.getAttribute("type").trim();
 						if (name.length() > 0)
 						{
-							config.put(name, value);
+							if ("final".equals(type))
+							{
+								finalConfig.put(name, value);
+							}
+							else
+							{
+								mutableConfig.put(name, value);
+							}
 						}
 					}
 
@@ -196,7 +205,7 @@ public class ActiveToolComponent extends ToolComponent implements ActiveToolMana
 				}
 
 				// set the tool's collected values
-				tool.setRegisteredConfig(config);
+				tool.setRegisteredConfig(finalConfig, mutableConfig);
 				tool.setCategories(categories);
 				tool.setKeywords(keywords);
 
@@ -278,7 +287,8 @@ public class ActiveToolComponent extends ToolComponent implements ActiveToolMana
 		{
 			super();
 			this.m_categories.addAll(t.getCategories());
-			this.m_registeredConfig.putAll(t.getRegisteredConfig());
+			this.m_mutableConfig.putAll(t.getMutableConfig());
+			this.m_finalConfig.putAll(t.getFinalConfig());
 			this.m_keywords.addAll(t.getKeywords());
 			this.m_id = t.getId();
 			this.m_title = t.getTitle();

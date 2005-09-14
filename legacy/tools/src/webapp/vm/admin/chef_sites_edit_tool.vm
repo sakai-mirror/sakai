@@ -75,7 +75,7 @@
 				</h4>	
 
 					<table class="itemSyummary" summary="$tlang.getString("siteditoo.revandmod2")">
-						#set ($regParams = $toolReg.RegisteredConfig)
+						#set ($regParams = $toolReg.MutableConfig)
 						#set ($paramNames = $regParams.propertyNames())
 						#set ($toolParams = $tool.Config)
 						#foreach ($paramName in $paramNames)

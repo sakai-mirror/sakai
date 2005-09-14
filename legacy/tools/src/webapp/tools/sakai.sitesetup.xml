@@ -24,6 +24,8 @@
 		<!-- types of sites that are always private -->
 		<configuration name="privateSiteTypes" value="" />
 
+		<configuration name="site_mode" value="sitesetup" type="final" />
+
 		<category name="myworkspace" />
 		
 	</tool>

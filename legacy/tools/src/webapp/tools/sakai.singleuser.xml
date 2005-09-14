@@ -9,6 +9,8 @@
 
 		<configuration name="include-password" value="true" />
 
+		<configuration name="single-user" value="true" type="final" />
+
 		<category name="myworkspace" />
 
 	</tool>

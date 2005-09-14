@@ -9,6 +9,8 @@
 
 		<configuration name="pagesize" value="20" />
 
+ 		<configuration name="site_mode" value="sitemanage" type="final" />
+
 	</tool>
 
 </registration>

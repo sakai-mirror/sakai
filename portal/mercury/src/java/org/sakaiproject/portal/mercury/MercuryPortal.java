@@ -235,7 +235,7 @@ public class MercuryPortal extends HttpServlet
 		// list the main tools
 		out.println("<H2>Tools</H2>");
 		out.println("<p>These are the tools registered with Sakai:</p>");
-		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th><th>categories</th><th>keywords</th></tr>");
+		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>final configuration</th><th>mutable configuration</th><th>categories</th><th>keywords</th></tr>");
 
 		// sorted
 		TreeSet sorted = new TreeSet(tools);
@@ -244,7 +244,8 @@ public class MercuryPortal extends HttpServlet
 			Tool t = (Tool) i.next();
 			String toolUrl = Web.returnUrl(req, "/" + t.getId() + "/mercury");
 			out.println("<tr><td><a href=\"" + toolUrl + "\">" + t.getId() + "</a></td><td>" + t.getTitle() + "</td><td>"
-					+ t.getDescription() + "</td><td>" + printConfiguration(t.getRegisteredConfig()) + "</td><td>"
+					+ t.getDescription() + "</td><td>" + printConfiguration(t.getFinalConfig()) + "</td><td>"
+					+ printConfiguration(t.getMutableConfig()) + "</td><td>"
 					+ printCategories(t.getCategories()) + "</td><td>" + printKeywords(t.getKeywords()) + "</td></tr>");
 		}
 		out.println("</table>");
@@ -252,7 +253,7 @@ public class MercuryPortal extends HttpServlet
 		// list the helper tools
 		out.println("<H2>Helper Tools</H2>");
 		out.println("<p>These are the tools registered as helperswith Sakai. (Helper tools cannot be directly invoked): </p>");
-		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th><th>categories</th><th>keywords</th></tr>");
+		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>final configuration</th><th>mutable configuration</th><th>categories</th><th>keywords</th></tr>");
 
 		// sorted
 		sorted = new TreeSet(helperTools);
@@ -261,7 +262,9 @@ public class MercuryPortal extends HttpServlet
 			Tool t = (Tool) i.next();
 			String toolUrl = Web.returnUrl(req, "/" + t.getId() + "/mercury");
 			out.println("<tr><td>" + t.getId() + "</td><td>" + t.getTitle() + "</td><td>" + t.getDescription() + "</td><td>"
-					+ printConfiguration(t.getRegisteredConfig()) + printCategories(t.getCategories()) + "</td><td>"
+					+ printConfiguration(t.getFinalConfig()) + "</td><td>"
+					+ printConfiguration(t.getMutableConfig()) + "</td><td>"
+					+ printCategories(t.getCategories()) + "</td><td>"
 					+ printKeywords(t.getKeywords()) + "</td></tr>");
 		}
 		out.println("</table>");
@@ -269,7 +272,7 @@ public class MercuryPortal extends HttpServlet
 		// list the sample tools
 		out.println("<H2>Sample Tools</H2>");
 		out.println("<p>These are the tools registered with Sakai, categorized as <i>sakai.sample</i>:</p>");
-		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th><th>categories</th><th>keywords</th></tr>");
+		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>final configuration</th><th>mutable configuration</th><th>categories</th><th>keywords</th></tr>");
 
 		// sorted
 		sorted = new TreeSet(sampleTools);
@@ -278,7 +281,8 @@ public class MercuryPortal extends HttpServlet
 			Tool t = (Tool) i.next();
 			String toolUrl = Web.returnUrl(req, "/" + t.getId() + "/mercury");
 			out.println("<tr><td><a href=\"" + toolUrl + "\">" + t.getId() + "</a></td><td>" + t.getTitle() + "</td><td>"
-					+ t.getDescription() + "</td><td>" + printConfiguration(t.getRegisteredConfig())
+					+ t.getDescription() + "</td><td>" + printConfiguration(t.getFinalConfig()) + "</td><td>"
+					+ printConfiguration(t.getMutableConfig()) + "</td><td>"
 					+ printCategories(t.getCategories()) + "</td><td>" + printKeywords(t.getKeywords()) + "</td></tr>");
 		}
 		out.println("</table>");
@@ -286,7 +290,7 @@ public class MercuryPortal extends HttpServlet
 		// list the test tools
 		out.println("<H2>Test Tools</H2>");
 		out.println("<p>These are the tools registered with Sakai, categorized as <i>sakai.test</i>:</p>");
-		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>configuration</th><th>categories</th><th>keywords</th></tr>");
+		out.println("<table border='1'><tr><th>id</th><th>title</th><th>description</th><th>final configuration</th><th>mutable configuration</th><th>categories</th><th>keywords</th></tr>");
 
 		// sorted
 		sorted = new TreeSet(testTools);
@@ -295,7 +299,8 @@ public class MercuryPortal extends HttpServlet
 			Tool t = (Tool) i.next();
 			String toolUrl = Web.returnUrl(req, "/" + t.getId() + "/mercury");
 			out.println("<tr><td><a href=\"" + toolUrl + "\">" + t.getId() + "</a></td><td>" + t.getTitle() + "</td><td>"
-					+ t.getDescription() + "</td><td>" + printConfiguration(t.getRegisteredConfig())
+					+ t.getDescription() + "</td><td>" + printConfiguration(t.getFinalConfig()) + "</td><td>"
+					+ printConfiguration(t.getMutableConfig()) + "</td><td>"
 					+ printCategories(t.getCategories()) + "</td><td>" + printKeywords(t.getKeywords()) + "</td></tr>");
 		}
 		out.println("</table>");

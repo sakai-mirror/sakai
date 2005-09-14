@@ -213,7 +213,8 @@ public class ToolComponent implements ToolManager
 				}
 
 				// collect values for these collections
-				Properties config = new Properties();
+				Properties finalConfig = new Properties();
+				Properties mutableConfig = new Properties();
 				Set categories = new HashSet();
 				Set keywords = new HashSet();
 
@@ -230,9 +231,17 @@ public class ToolComponent implements ToolManager
 					{
 						String name = kidElement.getAttribute("name").trim();
 						String value = kidElement.getAttribute("value").trim();
+						String type = kidElement.getAttribute("type").trim();
 						if (name.length() > 0)
 						{
-							config.put(name, value);
+							if ("final".equals(type))
+							{
+								finalConfig.put(name, value);
+							}
+							else
+							{
+								mutableConfig.put(name, value);
+							}
 						}
 					}
 
@@ -258,7 +267,7 @@ public class ToolComponent implements ToolManager
 				}
 
 				// set the tool's collected values
-				tool.setRegisteredConfig(config);
+				tool.setRegisteredConfig(finalConfig, mutableConfig);
 				tool.setCategories(categories);
 				tool.setKeywords(keywords);
 

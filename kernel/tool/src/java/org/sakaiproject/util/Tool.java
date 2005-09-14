@@ -50,8 +50,11 @@ public class Tool implements org.sakaiproject.api.kernel.tool.Tool, Comparable
 	/** The set of keywords. */
 	protected Set m_keywords = new HashSet();
 
-	/** The configuration properties. */
-	protected Properties m_registeredConfig = new Properties();
+	/** The configuration properties that are set by registration and may not be changed by confguration. */
+	protected Properties m_finalConfig = new Properties();
+
+	/** The configuration properties that may be changed by configuration. */
+	protected Properties m_mutableConfig = new Properties();
 
 	/** The title string. */
 	protected String m_title = null;
@@ -136,11 +139,33 @@ public class Tool implements org.sakaiproject.api.kernel.tool.Tool, Comparable
 	 */
 	public Properties getRegisteredConfig()
 	{
-		// to make this read only, make a new properties with this as the defaults
-		//return new Properties(m_registeredConfig);
+		// combine the final and mutable, and return a copy so that it is read only
 		Properties rv = new Properties();
-		rv.putAll(m_registeredConfig);
+		rv.putAll(m_finalConfig);
+		rv.putAll(m_mutableConfig);
 		return rv;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public Properties getMutableConfig()
+	{
+		// return a copy so that it is read only
+		Properties rv = new Properties();
+		rv.putAll(m_mutableConfig);
+		return rv;		
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public Properties getFinalConfig()
+	{
+		// return a copy so that it is read only
+		Properties rv = new Properties();
+		rv.putAll(m_finalConfig);
+		return rv;		
 	}
 
 	/**
@@ -220,12 +245,18 @@ public class Tool implements org.sakaiproject.api.kernel.tool.Tool, Comparable
 	 * @param config
 	 *        The new registered configuration Properties.
 	 */
-	public void setRegisteredConfig(Properties config)
+	public void setRegisteredConfig(Properties finalConfig, Properties mutableConfig)
 	{
-		m_registeredConfig = config;
-		if (m_registeredConfig == null)
+		m_finalConfig = finalConfig;
+		if (m_finalConfig == null)
 		{
-			m_registeredConfig = new Properties();
+			m_finalConfig = new Properties();
+		}
+		
+		m_mutableConfig = mutableConfig;
+		if (m_mutableConfig == null)
+		{
+			m_mutableConfig = new Properties();
 		}
 	}
 

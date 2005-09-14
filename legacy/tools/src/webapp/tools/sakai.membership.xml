@@ -9,7 +9,7 @@
 
 		<category name="myworkspace" />
 
-		<configuration name="reset.button" value="false" />
+		<configuration name="reset.button" value="false" type="final" />
 	</tool>
 
 </registration>

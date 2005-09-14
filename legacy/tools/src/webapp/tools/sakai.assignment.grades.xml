@@ -6,12 +6,12 @@
 			id="sakai.assignment.grades"
 			title="Assignments"
 			description="For posting, submitting and grading assignment(s) online.">
-		<configuration name="withGrades" value="TRUE" />
 		
 		<category name="course" />
 		<category name="project" />
 		
-		<configuration name="help.id" value="sakai.assignment" />
+		<configuration name="withGrades" value="TRUE" type="final" />
+		<configuration name="help.id" value="sakai.assignment" type="final" />
 
 	</tool>
 

@@ -9,7 +9,7 @@
 
 		<configuration name="pagesize" value="20" />
 
-		<configuration name="reset.button" value="false" />
+		<configuration name="reset.button" value="false" type="final" />
 
 	</tool>
 

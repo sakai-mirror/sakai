@@ -7,7 +7,7 @@
 			title="Drop Box"
 			description="For private file sharing between instructor and student.">
 
-		<configuration name="resources_mode" value="dropbox" />
+		<configuration name="resources_mode" value="dropbox" type="final" />
 
 		<category name="course" />
 		<category name="project" />
