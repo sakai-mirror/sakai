@@ -2514,6 +2514,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 */
 		public String getInfoUrlFull()
 		{
+			if (m_info == null) return null;
+
 			return convertReferenceUrl(m_info);
 		}
 
