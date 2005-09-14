@@ -9194,11 +9194,10 @@ public class SiteAction extends PagedResourceActionII
 			
 				//Add worksite information tool
 				ToolConfiguration tool = page.addTool();
-				Tool reg = ToolManager.getTool("sakai.iframe");
+				Tool reg = ToolManager.getTool("sakai.iframe.site");
 				tool.setTool(reg);
 				tool.setTitle(rb.getString("java.workinfo"));
 				tool.setLayoutHints("0,0");
-				tool.getPlacementConfig().setProperty("special", "worksite");
 			}	
 				
 			if (!SiteService.isUserSite(site.getId()))
@@ -9846,10 +9845,9 @@ public class SiteAction extends PagedResourceActionII
 					
 					//Add worksite information tool
 					ToolConfiguration tool = page.addTool();
-					tool.setTool(ToolManager.getTool("sakai.iframe"));
+					tool.setTool(ToolManager.getTool("sakai.iframe.site"));
 					tool.setTitle(rb.getString("java.workinfo"));
 					tool.setLayoutHints("0,0");
-					tool.getPlacementConfig().setProperty("special", "worksite");
 
 					if (hasAnnouncement)
 					{
