@@ -900,7 +900,7 @@ public class AccessServlet
 		PrintWriter out = res.getWriter();
 
 		//out.println("<html><head></head><body>");
-		out.println("<html><head><style type=" + "\"" + "text/css" + "\"" + ">body{margin:0px;padding:0px;font-family:Verdana,Arial,Helvetica,sans-serif;voice-family:" + "\"" + "\\" + "\"" + "}" + "\\" + "\"" + "\"" + ",inherit;font-size:.8em;}html>body { font-size: 90%;}</style></head><body>");
+		out.println("<html><head><style type=" + "\"" + "text/css" + "\"" + ">body{margin:	0px;padding:1em;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:80%;}</style></head><body>");
 		// get the description - if missing, use the site title
 		String description = site.getDescription();
 		if (description == null)
