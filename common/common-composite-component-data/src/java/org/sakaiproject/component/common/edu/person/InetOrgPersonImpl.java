@@ -25,7 +25,16 @@ package org.sakaiproject.component.common.edu.person;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 
+import net.sf.hibernate.Hibernate;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.common.edu.person.InetOrgPerson;
 import org.sakaiproject.api.common.edu.person.OrganizationalPerson;
 import org.sakaiproject.api.common.edu.person.Person;
@@ -37,6 +46,7 @@ import org.sakaiproject.api.common.edu.person.Person;
 public class InetOrgPersonImpl extends OrganizationalPersonImpl implements
     Person, OrganizationalPerson, InetOrgPerson
 {
+  private static final Log LOG = LogFactory.getLog(InetOrgPersonImpl.class);
 
   /**
    * @see org.sakaiproject.service.profile.InetOrgPerson#getAudio()
@@ -530,6 +540,105 @@ public class InetOrgPersonImpl extends OrganizationalPersonImpl implements
   public void setSecretary(String secretary)
   {
     this.secretary = secretary;
+  }
+
+  public Blob getBlobImage()
+  {
+    if (this.jpegPhoto == null || jpegPhoto.length < 1)
+    {
+      return null;
+    }
+    return Hibernate.createBlob(this.jpegPhoto);
+  }
+
+  public void setBlobImage(Blob blobImage)
+  {
+    this.jpegPhoto = toByteArray(blobImage);
+  }
+
+  private byte[] toByteArray(Blob fromBlob)
+  {
+    if(LOG.isDebugEnabled())
+    {
+      LOG.debug("toByteArray(Blob "+fromBlob+")");
+    }
+    
+    try
+    {
+      if (fromBlob == null || fromBlob.length() < 1)
+      {
+        return null;
+      }
+    }
+    catch (SQLException e1)
+    {
+      LOG.error(e1.getMessage(), e1);
+    }
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    try
+    {
+      return toByteArray(fromBlob, baos);
+    }
+    catch (Exception e)
+    {
+      LOG.error(e.getMessage(), e);
+      throw new Error(e);
+    }
+    finally
+    {
+      if (baos != null)
+      {
+        try
+        {
+          baos.close();
+        }
+        catch (IOException ex)
+        {
+          LOG.error(ex.getMessage(), ex);
+        }
+      }
+    }
+  }
+
+  private byte[] toByteArray(Blob fromBlob, ByteArrayOutputStream baos)
+      throws SQLException, IOException
+  {
+    if(LOG.isDebugEnabled())
+    {
+      LOG.debug("toByteArray(Blob "+fromBlob+", ByteArrayOutputStream "+baos+")");
+    }
+    
+    if (fromBlob == null || fromBlob.length() < 1)
+    {
+      return null;
+    }
+    byte[] buf = new byte[4000];
+    InputStream is = fromBlob.getBinaryStream();
+    try
+    {
+      for (;;)
+      {
+        int dataSize = is.read(buf);
+
+        if (dataSize == -1) break;
+        baos.write(buf, 0, dataSize);
+      }
+    }
+    finally
+    {
+      if (is != null)
+      {
+        try
+        {
+          is.close();
+        }
+        catch (IOException ex)
+        {
+          LOG.error(ex.getMessage(), ex);
+        }
+      }
+    }
+    return baos.toByteArray();
   }
 
 }
