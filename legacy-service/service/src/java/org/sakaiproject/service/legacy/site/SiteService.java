@@ -267,6 +267,16 @@ public interface SiteService
 	public void commitEdit(SiteEdit site);
 
 	/**
+	 * Commit a change to the site's description and iconUrl, without reguard to locks.  Just blast it into storage.
+	 * @param siteId The site id to change.
+	 * @param description The new site description.
+	 * @param infoUrl The new site InfoUrl.
+	 * @throws IdUnUsedException if the siteId is not defined.
+	 * @throwsPermissionException if the user does not have permission to update the site.
+	 */
+	public void commitSiteInfo(String siteId, String description, String infoUrl) throws IdUnusedException, PermissionException;
+
+	/**
 	* Cancel the changes made to a SiteEdit object, and release the lock.
 	* The SiteEdit is disabled, and not to be used after this call.
 	* @param site The SiteEdit object to commit.

@@ -121,6 +121,15 @@ public class SiteService
 		service.commitEdit(param0);
 	}
 
+	public static void commitSiteInfo(java.lang.String param0, java.lang.String param1, java.lang.String param2) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return;
+
+		service.commitSiteInfo(param0, param1, param2);
+	}
+
 	public static void cancelEdit(org.sakaiproject.service.legacy.site.SiteEdit param0)
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();

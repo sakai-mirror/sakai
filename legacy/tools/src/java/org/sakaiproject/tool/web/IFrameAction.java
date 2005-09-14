@@ -302,23 +302,40 @@ public class IFrameAction extends VelocityPortletPaneledAction
 		// set the heading based on special
 		else
 		{
-			// if marked for "site", use the site intro from the properties
 			if (SPECIAL_SITE.equals(special))
 			{
-				context.put("heading", rb.getString("gen.custom.site"));
+				context.put("heading", rb.getString("gen.custom.site"));				
 			}
 
-			// if marked for "workspace", use the "user" site info from the properties
 			else if (SPECIAL_WORKSPACE.equals(special))
 			{
 				context.put("heading", rb.getString("gen.custom.workspace"));
 			}
 
-			// if marked for "worksite", use the setting from the site's definition
 			else if (SPECIAL_WORKSITE.equals(special))
 			{
 				context.put("heading", rb.getString("gen.custom.worksite"));
+
+				// for worksite, also include the Site's infourl and description
+				try
+				{
+					Site s = SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
+
+					String infoUrl = StringUtil.trimToNull(s.getInfoUrl());
+					if (infoUrl != null)
+					{
+						context.put("info_url", infoUrl);
+					}
+
+					String description = StringUtil.trimToNull(s.getDescription());
+					if (description != null)
+					{
+						context.put("description", description);
+					}
+				}
+				catch (Throwable e) {}
 			}
+
 			else
 			{
 				context.put("heading", rb.getString("gen.custom"));
@@ -334,7 +351,18 @@ public class IFrameAction extends VelocityPortletPaneledAction
 
 		// pick the "-customize" template based on the standard template name
 		String template = (String) getContext(data).get("template");
-		return template + "-customize";
+		
+		// pick the site customize template if we are in that mode
+		if (SPECIAL_WORKSITE.equals(special))
+		{
+			template = template + "-site-customize";
+		}
+		else
+		{
+			template = template + "-customize";
+		}
+
+		return template;
 	}
 
 	/**
@@ -361,6 +389,23 @@ public class IFrameAction extends VelocityPortletPaneledAction
 			// update state
 			//state.setAttribute(SOURCE, source);
 			placement.getPlacementConfig().setProperty(SOURCE, source);
+		}
+		
+		else if (SPECIAL_WORKSITE.equals(state.getAttribute(SPECIAL)))
+		{
+			String infoUrl = StringUtil.trimToNull(data.getParameters().getString("infourl"));
+			if ((infoUrl != null) && (infoUrl.length() > 0) && (!infoUrl.startsWith("/")) && (infoUrl.indexOf("://") == -1))
+			{
+				infoUrl = "http://" + infoUrl;
+			}
+			String description = StringUtil.trimToNull(data.getParameters().getString("description"));
+			
+			// update the site info
+			try
+			{
+				SiteService.commitSiteInfo(ToolManager.getCurrentPlacement().getContext(), description, infoUrl);
+			}
+			catch (Throwable e) {}
 		}
 
 		// height

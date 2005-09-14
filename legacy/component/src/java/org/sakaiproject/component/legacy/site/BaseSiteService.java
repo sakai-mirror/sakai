@@ -683,6 +683,30 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	} // cancelEdit
 
 	/**
+	 * Commit a change to the site's description and iconUrl, without reguard to locks.  Just blast it into storage.
+	 * @param siteId The site id to change.
+	 * @param description The new site description.
+	 * @param infoUrl The new site InfoUrl.
+	 * @throws IdUnUsedException if the siteId is not defined.
+	 * @throwsPermissionException if the user does not have permission to update the site.
+	 */
+	public void commitSiteInfo(String siteId, String description, String infoUrl) throws IdUnusedException, PermissionException
+	{
+		String ref = siteReference(siteId);
+
+		// check security (throws if not permitted)
+		unlock(SECURE_UPDATE_SITE, ref);
+
+		// check for existance
+		if (!m_storage.check(siteId))
+		{
+			throw new IdUnusedException(siteId);
+		}
+
+		m_storage.commitInfo(siteId, description, infoUrl);
+	}
+
+	/**
 	 * check permissions for addSite().
 	 * 
 	 * @param id
@@ -4245,10 +4269,22 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		/**
 		 * Commit the changes and release the lock.
 		 * 
-		 * @param user
+		 * @param site
 		 *        The site to commit.
 		 */
 		public void commit(SiteEdit site);
+
+		/**
+		 * Commit the changes to the two info fields (description and infoUrl) - no lock involved.
+		 * 
+		 * @param siteId
+		 *        The site to commit.
+		 * @param description
+		 *        The new site description.
+		 * @param infoUrl
+		 *        The new site infoUrl.
+		 */
+		public void commitInfo(String siteId, String description, String infoUrl);
 
 		/**
 		 * Cancel the changes and release the lock.

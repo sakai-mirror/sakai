@@ -359,6 +359,28 @@ public class DbSiteService
 		}
 
 		/**
+		 * Commit the changes to the two info fields (description and infoUrl) - no lock involved.
+		 * 
+		 * @param siteId
+		 *        The site to commit.
+		 * @param description
+		 *        The new site description.
+		 * @param infoUrl
+		 *        The new site infoUrl.
+		 */
+		public void commitInfo(String siteId, String description, String infoUrl)
+		{			
+			String statement = "update " + m_siteTableName + " set DESCRIPTION = ?, INFO_URL = ? where SITE_ID = ?";
+
+			Object fields[] = new Object[3];
+			fields[0] = description;
+			fields[1] = infoUrl;
+			fields[2] = caseId(siteId);
+
+			m_sql.dbWrite(statement, fields);
+		}
+
+		/**
 		 * @inheritDoc
 		 */
 		public void commitToolConfig(Connection conn, ToolConfiguration tool)
