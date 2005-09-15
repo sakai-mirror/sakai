@@ -126,8 +126,8 @@ public class SynopticMessageAction
 				// deal with old CHEF 1.2.10 settings
 				if (serviceName.startsWith("org.chefproject"))
 				{
-					// get the servlet setting, ignoring the others
-					serviceName = config.get3InitParameter(PARAM_SERVICE)[0];
+					// get the registered setting, ignoring the placement
+					serviceName = config.get3InitParameter(PARAM_SERVICE)[1];
 				}
 
 				state.setAttribute(STATE_SERVICE_NAME, serviceName);
