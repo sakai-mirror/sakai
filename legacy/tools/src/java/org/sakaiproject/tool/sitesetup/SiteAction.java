@@ -8349,37 +8349,39 @@ public class SiteAction extends PagedResourceActionII
 				/* actionForTemplate chef_site-editClass.vm
 				*
 				*/
-				if (params.getStrings("providerClassDeletes") == null && params.getStrings("manualClassDeletes") == null && 
-						!direction.equals("back"))
+				if (forward)
 				{
-					addAlert(state, rb.getString("java.classes"));
-				}
-				
-				if (params.getStrings("providerClassDeletes") != null)
-				{
-					// build the deletions list
-					List providerCourseList = (List) state.getAttribute(SITE_PROVIDER_COURSE_LIST);
-					List providerCourseDeleteList = new ArrayList(Arrays.asList(params.getStrings("providerClassDeletes")));
-					for (ListIterator i = providerCourseDeleteList.listIterator(); i.hasNext(); )
+					if (params.getStrings("providerClassDeletes") == null && params.getStrings("manualClassDeletes") == null && 
+							!direction.equals("back"))
 					{
-						providerCourseList.remove((String) i.next());
+						addAlert(state, rb.getString("java.classes"));
 					}
-					state.setAttribute(SITE_PROVIDER_COURSE_LIST, providerCourseList);
-				}
-				if (params.getStrings("manualClassDeletes") != null)
-				{
-					// build the deletions list
-					List manualCourseList = (List) state.getAttribute(SITE_MANUAL_COURSE_LIST);
-					List manualCourseDeleteList = new ArrayList(Arrays.asList(params.getStrings("manualClassDeletes")));
-					for (ListIterator i = manualCourseDeleteList.listIterator(); i.hasNext(); )
+					
+					if (params.getStrings("providerClassDeletes") != null)
 					{
-						manualCourseList.remove((String) i.next());
+						// build the deletions list
+						List providerCourseList = (List) state.getAttribute(SITE_PROVIDER_COURSE_LIST);
+						List providerCourseDeleteList = new ArrayList(Arrays.asList(params.getStrings("providerClassDeletes")));
+						for (ListIterator i = providerCourseDeleteList.listIterator(); i.hasNext(); )
+						{
+							providerCourseList.remove((String) i.next());
+						}
+						state.setAttribute(SITE_PROVIDER_COURSE_LIST, providerCourseList);
 					}
-					state.setAttribute(SITE_MANUAL_COURSE_LIST, manualCourseList);
+					if (params.getStrings("manualClassDeletes") != null)
+					{
+						// build the deletions list
+						List manualCourseList = (List) state.getAttribute(SITE_MANUAL_COURSE_LIST);
+						List manualCourseDeleteList = new ArrayList(Arrays.asList(params.getStrings("manualClassDeletes")));
+						for (ListIterator i = manualCourseDeleteList.listIterator(); i.hasNext(); )
+						{
+							manualCourseList.remove((String) i.next());
+						}
+						state.setAttribute(SITE_MANUAL_COURSE_LIST, manualCourseList);
+					}
+					
+					updateCourseClasses (state, new Vector(), new Vector());
 				}
-				
-				updateCourseClasses (state, new Vector(), new Vector());
-				
 				break;
 			case 44:
 				if (forward)
