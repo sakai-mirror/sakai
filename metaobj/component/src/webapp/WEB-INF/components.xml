@@ -45,6 +45,9 @@
          <ref bean="agentManager"/>
       </property>
       <property name="idManager"><ref bean="idManager"/></property>
+      <property name="contentResourceHome">
+         <bean class="org.sakaiproject.metaobj.shared.mgt.impl.ContentResourceHome" />
+      </property>
    </bean>
 
    <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.default"

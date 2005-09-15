@@ -25,6 +25,7 @@ package org.sakaiproject.metaobj.shared.mgt.impl;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.MimeType;
@@ -32,6 +33,9 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.TypeException;
 
 import java.util.Collection;
 import java.util.List;
@@ -50,6 +54,7 @@ public class FileArtifactFinder implements ArtifactFinder {
    private ContentHostingService contentHostingService;
    private AgentManager agentManager;
    private IdManager idManager;
+   private ReadableObjectHome contentResourceHome = null;
 
    public Collection findByOwnerAndType(Id owner, String type) {
       return findByOwnerAndType(owner, type, null);
@@ -71,13 +76,19 @@ public class FileArtifactFinder implements ArtifactFinder {
 
       for (Iterator i = artifacts.iterator();i.hasNext();) {
          ContentResource resource = (ContentResource)i.next();
-         Agent resourceOwner = getAgentManager().getAgent(
-               resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
-         Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
-         returned.add(new ContentResourceArtifact(resource, resourceId, resourceOwner));
+         ContentResourceArtifact resourceArtifact = createArtifact(resource);
+         returned.add(resourceArtifact);
       }
 
       return returned;
+   }
+
+   protected ContentResourceArtifact createArtifact(ContentResource resource) {
+      Agent resourceOwner = getAgentManager().getAgent(
+            resource.getProperties().getProperty(ResourceProperties.PROP_CREATOR));
+      Id resourceId = getIdManager().getId(getContentHostingService().getUuid(resource.getId()));
+      ContentResourceArtifact resourceArtifact = new ContentResourceArtifact(resource, resourceId, resourceOwner);
+      return resourceArtifact;
    }
 
    public Collection findByOwner(Id owner) {
@@ -93,7 +104,22 @@ public class FileArtifactFinder implements ArtifactFinder {
    }
 
    public Artifact load(Id artifactId) {
-      return null;
+      String resourceId = getContentHostingService().resolveUuid(artifactId.getValue());
+      try {
+         ContentResource resource = getContentHostingService().getResource(resourceId);
+         Artifact returned = createArtifact(resource);
+         returned.setHome(getContentResourceHome());
+         return returned;
+      }
+      catch (PermissionException e) {
+         throw new RuntimeException(e);
+      }
+      catch (IdUnusedException e) {
+         throw new RuntimeException(e);
+      }
+      catch (TypeException e) {
+         throw new RuntimeException(e);
+      }
    }
 
    public Collection findByType(String type) {
@@ -129,6 +155,14 @@ public class FileArtifactFinder implements ArtifactFinder {
 
    public void setIdManager(IdManager idManager) {
       this.idManager = idManager;
+   }
+
+   public ReadableObjectHome getContentResourceHome() {
+      return contentResourceHome;
+   }
+
+   public void setContentResourceHome(ReadableObjectHome contentResourceHome) {
+      this.contentResourceHome = contentResourceHome;
    }
 
 }
