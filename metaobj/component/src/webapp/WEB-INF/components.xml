@@ -46,7 +46,7 @@
       </property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="contentResourceHome">
-         <bean class="org.sakaiproject.metaobj.shared.mgt.impl.ContentResourceHome" />
+         <ref bean="org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome.contentResource" />
       </property>
    </bean>
 
@@ -59,6 +59,9 @@
          <ref bean="agentManager"/>
       </property>
       <property name="idManager"><ref bean="idManager"/></property>
+      <property name="contentResourceHome">
+         <ref bean="org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome.contentResource" />
+      </property>
    </bean>
 
    <bean id="artifactFinderManager" class="org.sakaiproject.metaobj.shared.mgt.ArtifactFinderManagerImpl">
@@ -160,6 +163,13 @@
    <bean id="org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService"
       class="org.sakaiproject.metaobj.shared.mgt.impl.StructuredArtifactValidationServiceImpl"
       singleton="true">         
+   </bean>
+
+   <bean id="org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome.contentResource"
+      class="org.sakaiproject.metaobj.shared.mgt.impl.ContentResourceHome">
+      <property name="homeFactory">
+         <ref bean="dbXmlHomeFactory" />
+      </property>
    </bean>
 
 </beans>

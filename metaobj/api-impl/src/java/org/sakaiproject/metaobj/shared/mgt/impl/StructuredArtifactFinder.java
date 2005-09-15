@@ -22,21 +22,19 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +43,7 @@ import java.util.Iterator;
  * Time: 2:33:51 PM
  * To change this template use File | Settings | File Templates.
  */
-public class StructuredArtifactFinder implements ArtifactFinder {
+public class StructuredArtifactFinder extends FileArtifactFinder {
 
    private ContentHostingService contentHostingService;
    private AgentManager agentManager;
@@ -81,10 +79,6 @@ public class StructuredArtifactFinder implements ArtifactFinder {
    }
 
    public Collection findByWorksite(Id worksiteId) {
-      return null;
-   }
-
-   public Artifact load(Id artifactId) {
       return null;
    }
 

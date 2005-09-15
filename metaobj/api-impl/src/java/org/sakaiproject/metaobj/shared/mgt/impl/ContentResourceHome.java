@@ -1,18 +1,50 @@
+/**********************************************************************************
+* $URL$
+* $Id$
+***********************************************************************************
+*
+* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+*
+* Licensed under the Educational Community License Version 1.0 (the "License");
+* By obtaining, using and/or copying this Original Work, you agree that you have read,
+* understand, and will comply with the terms and conditions of the Educational Community License.
+* You may obtain a copy of the License at:
+*
+*      http://cvs.sakaiproject.org/licenses/license_1_0.html
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*
+**********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.*;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.TypeException;
 import org.jdom.Element;
+import org.jdom.Document;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Iterator;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,6 +54,8 @@ import java.io.InputStream;
  * To change this template use File | Settings | File Templates.
  */
 public class ContentResourceHome implements ReadableObjectHome, PresentableObjectHome {
+
+   private HomeFactory homeFactory;
 
    public Type getType() {
       throw new UnsupportedOperationException("not implemented");
@@ -81,14 +115,80 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
 
       root.addContent(getMetadata(artifact));
 
+      String type = artifact.getBase().getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
+
+      if (type == null) {
+         addFileContent(artifact, root);
+      }
+      else {
+         addStructuredObjectContent(type, artifact, root);
+      }
+
+      return root;
+   }
+
+   protected void addStructuredObjectContent(String type, ContentResourceArtifact artifact, Element root) {
+      Element data = new Element("structuredData");
+      Element baseElement = null;
+
+      byte[] bytes = artifact.getBase().getContent();
+      SAXBuilder builder = new SAXBuilder();
+      Document doc = null;
+
+      try {
+         doc = builder.build(new ByteArrayInputStream(bytes));
+      }
+      catch (JDOMException e) {
+         throw new RuntimeException(e);
+      }
+      catch (IOException e) {
+         throw new RuntimeException(e);
+      }
+
+      baseElement = (Element) doc.getRootElement().detach();
+
+      data.addContent(baseElement);
+      root.addContent(data);
+
+      StructuredArtifactHomeInterface home = (StructuredArtifactHomeInterface)getHomeFactory().getHome(type);
+
+      Element schemaData = new Element("schema");
+      schemaData.addContent(addAnnotations(home.getRootSchema()));
+      root.addContent(schemaData);
+   }
+
+   protected Element addAnnotations(SchemaNode schema) {
+      Element schemaElement = new Element("element");
+      schemaElement.setAttribute("name", schema.getName());
+      Element annotation = schema.getSchemaElement().getChild(
+         "annotation", schema.getSchemaElement().getNamespace());
+
+      if (annotation != null) {
+         schemaElement.addContent(annotation.detach());
+      }
+
+      List children = schema.getChildren();
+      Element childElement = new Element("children");
+      boolean found = false;
+      for (Iterator i=children.iterator();i.hasNext();) {
+         childElement.addContent(addAnnotations((SchemaNode)i.next()));
+         found = true;
+      }
+
+      if (found) {
+         schemaElement.addContent(childElement);
+      }
+
+      return schemaElement;
+   }
+
+   protected void addFileContent(ContentResourceArtifact artifact, Element root) {
       Element fileData = new Element("fileArtifact");
       Element uri = new Element("uri");
       uri.addContent(artifact.getBase().getUrl());
       fileData.addContent(uri);
 
       root.addContent(fileData);
-
-      return root;
    }
 
    protected Element getMetadata(ContentResourceArtifact art) {
@@ -151,5 +251,12 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
       }
    }
 
+   public HomeFactory getHomeFactory() {
+      return homeFactory;
+   }
+
+   public void setHomeFactory(HomeFactory homeFactory) {
+      this.homeFactory = homeFactory;
+   }
 
 }
