@@ -668,6 +668,7 @@ public class ResourcesMetadata
 	protected List m_nested;
 	protected List m_nestedinstances;
 	protected List m_instances;
+	protected ResourcesMetadata m_container;
 	protected ResourcesMetadata m_parent;
 	protected Object m_minValue;
 	protected Object m_maxValue;
@@ -707,6 +708,7 @@ public class ResourcesMetadata
 		m_nestedinstances = new Vector();
 		m_instances = new Vector();
 		m_parent = null;
+		m_container = null;
 		m_length = DEFAULT_LENGTH;
 
 	}
@@ -748,6 +750,7 @@ public class ResourcesMetadata
 			ResourcesMetadata child = (ResourcesMetadata) it.next();
 			this.m_nested.add(new ResourcesMetadata(child));
 		}
+		m_container = other.m_container;
 		
 	}
 	
@@ -876,6 +879,16 @@ public class ResourcesMetadata
 		m_widget = widget;
 	}
 	
+	public void setContainer(ResourcesMetadata container)
+	{
+		this.m_container = container;
+	}
+	
+	public ResourcesMetadata getContainer()
+	{
+		return this.m_container;
+	}
+	
 	protected static Map m_ns2abbrev;
 	protected static Map m_abbrev2ns;
 
@@ -969,11 +982,8 @@ public class ResourcesMetadata
 	 */
 	public int getCurrentCount() 
 	{
-		if(m_parent == null)
-		{
-			return this.m_currentCount;
-		}
-		return m_parent.getCurrentCount();
+		return this.m_currentCount;
+
 	}
 	
 	/**
@@ -1101,50 +1111,21 @@ public class ResourcesMetadata
 	 */
 	public void setCurrentCount(int currentCount) 
 	{
-		if(m_parent == null)
-		{
-			m_currentCount = currentCount;
-		}
-		else
+		m_currentCount = currentCount;
+		if(m_parent != null)
 		{
 			m_parent.setCurrentCount(currentCount);
 		}
-	}
-	
-	public void incrementCurrentCount(String name)
-	{
-		if(name.startsWith(this.getDottedname()))
+		if(this.m_instances != null)
 		{
-			String localname = name.substring(name.length());
-			if(localname == null || localname.equals(""))
+			Iterator it = this.m_instances.iterator();
+			while(it.hasNext())
 			{
-				this.m_currentCount++;
-			}
-			else
-			{
-				String[] parts = localname.split(DOT_REGEX);
-				String target = parts[0];
-				boolean found = false;
-				Iterator it = getNested().iterator();
-				ResourcesMetadata prop = null;
-				while(!found && it.hasNext())
-				{
-					prop = (ResourcesMetadata) it.next();
-					if(prop.getLocalname().equals(target))
-					{
-						found = true;
-					}
-				}
-				
-				if(found)
-				{
-					prop.incrementCurrentCount(name);
-				}
+				ResourcesMetadata instance = (ResourcesMetadata) it.next();
+				instance.m_currentCount = currentCount;
 			}
 		}
-		
 	}
-
 	
 	/**
 	 * @return Returns the maxCardinality.
@@ -1185,16 +1166,10 @@ public class ResourcesMetadata
 	{
 		if(this.getCurrentCount() < m_maxCardinality)
 		{
-			if(m_parent == null)
-			{
-				m_currentCount++;
-			}
-			else
-			{
-				m_parent.incrementCount();
-			}
+			this.setCurrentCount(this.m_currentCount + 1);
 		}
-	}
+		
+	}	// incrementCount
 	
 	/**
 	 * @return true if additional instances of the field can be added, false otherwise.
@@ -1202,6 +1177,7 @@ public class ResourcesMetadata
 	public boolean canAddInstances()
 	{
 		return this.getCurrentCount() < m_maxCardinality;
+		
 	}
 	
 	/**
@@ -1211,6 +1187,7 @@ public class ResourcesMetadata
 	public int getLength() 
 	{
 		return m_length;
+		
 	}
 	
 	/**
@@ -1269,11 +1246,18 @@ public class ResourcesMetadata
 	 */
 	public List getNestedInstances() 
 	{
-		if(m_nestedinstances == null)
+		List instances = new Vector();
+		if(m_nested == null)
 		{
-			m_nestedinstances = new Vector();
+			m_nested = new Vector();
 		}
-		return m_nestedinstances;
+		Iterator it = this.m_nested.iterator();
+		while(it.hasNext())
+		{
+			ResourcesMetadata nested = (ResourcesMetadata) it.next();
+			instances.addAll(nested.m_instances);
+		}
+		return instances;
 	}
 	
 	/**
@@ -1505,6 +1489,7 @@ public class ResourcesMetadata
 	{
 		List rv = new Vector();
 		rv.add(this);
+
 		Iterator it = this.getNested().iterator();
 		while(it.hasNext())
 		{
@@ -1525,10 +1510,22 @@ public class ResourcesMetadata
 						parts.add(copy.getLocalname());
 						parts.add(Integer.toString(i));
 						copy.setDottedparts(parts);
-						prop.m_instances.add(i, copy);
-						this.m_nestedinstances.add(copy);
-						copy.m_parent = prop;
+						copy.setContainer(this);
+						if(prop.m_parent == null)
+						{
+							// in that case, prop is the parent
+							prop.m_instances.add(copy);
+							copy.m_parent = prop;
+						}
+						else
+						{
+							// and otherwise, prop's parent is parent
+							prop.m_parent.m_instances.add(copy);
+							//copy.m_parent = prop.m_parent;
+						}
+						//copy.m_parent.m_currentCount++;
 					}
+
 					if(copy.getNested().isEmpty())
 					{
 						rv.add(copy);
@@ -1552,10 +1549,22 @@ public class ResourcesMetadata
 					List parts = new Vector(this.getDottedparts());
 					parts.add(copy.getLocalname());
 					copy.setDottedparts(parts);
-					prop.m_instances.add(copy);
-					this.m_nestedinstances.add(copy);
-					copy.m_parent = prop;
+					copy.setContainer(this);
+					if(prop.m_parent == null)
+					{
+						// prop is parent
+						prop.m_instances.add(copy);
+						copy.m_parent = prop;
+					}
+					else
+					{
+						// prop's parent is parent
+						prop.m_parent.m_instances.add(copy);
+						//copy.m_parent = prop.m_parent;
+					}
+					// copy.m_parent.m_currentCount++;
 				}
+				
 				if(copy.getNested().isEmpty())
 				{
 					rv.add(copy);
@@ -1569,7 +1578,47 @@ public class ResourcesMetadata
 		return rv;
 		
 	}	// getFlatList
+	
+	/**
+	 * Add an instance of "this" property.  The dotted-name of the new instance will be the 
+	 * same as the dotted-name of "this" property, except that it will have a decimal number 
+	 * appended if the property's maximum cardinality allows multiple instances of the property.
+	 */
+	public ResourcesMetadata addInstance()
+	{
+		if(this.m_currentCount > this.m_maxCardinality)
+		{
+			return null;
+		}
+		ResourcesMetadata copy = new ResourcesMetadata(this);
+		copy.setContainer(this.m_container);
+		List parts = new Vector(this.getDottedparts());
+		if(this.getMaxCardinality() > 1 && this.m_parent == null)
+		{
+			parts.add(Integer.toString(this.m_instances.size()));
+		}
+		else if(this.getMaxCardinality() > 1)
+		{
+			parts.add(Integer.toString(this.m_parent.m_instances.size()));
+		}
+		copy.setDottedparts(parts);
+		if(this.m_parent == null)
+		{
+			this.m_instances.add(copy);
+			copy.m_parent = this;
+			this.setCurrentCount(this.m_instances.size());
+		}
+		else
+		{
+			this.m_parent.m_instances.add(copy);
+			//copy.m_parent = this.m_parent;
+			this.setCurrentCount(this.m_parent.m_instances.size());
+		}
 		
+		return copy;
+		
+	}	// addNestedInstance
+
 }	// ResourcesMetadata
 
 

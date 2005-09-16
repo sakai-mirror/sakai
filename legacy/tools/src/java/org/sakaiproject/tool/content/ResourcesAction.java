@@ -283,7 +283,6 @@ public class ResourcesAction
 	private static final String STATE_STRUCTOBJ_ROOTNAME = "resources.create_structured_object_root";
 	private static final String STATE_STRUCTOBJ_TYPE = "resources.create_structured_object_type";
 	private static final String STATE_STRUCTOBJ_HOMES = "resources.create_structured_object_home";
-	private static final String STATE_STRUCTOBJ_PROPERTIES = "resources.create_structured_object_properties";
 	private static final String STATE_STRUCT_OBJ_SCHEMA = "resources.create_structured_object_schema";
 
 	private static final String MIME_TYPE_DOCUMENT_PLAINTEXT = "text/plain";
@@ -1419,12 +1418,9 @@ public class ResourcesAction
 		{
 			context.put("formtype", item.getFormtype());
 			state.setAttribute(STATE_STRUCTOBJ_TYPE, item.getFormtype());
-			setupStructuredObjects(state);
 			
 			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
 			context.put("homes", listOfHomes);
-			List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
-			context.put("properties", properties);
 
 			context.put("STRING", ResourcesMetadata.WIDGET_STRING);
 			context.put("TEXTAREA", ResourcesMetadata.WIDGET_TEXTAREA);
@@ -1439,7 +1435,8 @@ public class ResourcesAction
 			context.put("NESTED", ResourcesMetadata.WIDGET_NESTED);
 			
 			context.put("today", TimeService.newTime());
-
+			
+			context.put("TRUE", Boolean.TRUE.toString());
 		}
 
 		// copyright
@@ -1565,7 +1562,6 @@ public class ResourcesAction
 		state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
 		state.setAttribute(STATE_CREATE_MISSING_ITEM, new HashSet());
 		state.removeAttribute(STATE_STRUCTOBJ_TYPE);
-		state.removeAttribute(STATE_STRUCTOBJ_PROPERTIES);
 		state.removeAttribute(STATE_STRUCTOBJ_HOMES);
 		
 		String collectionId = params.getString ("collectionId");
@@ -1651,6 +1647,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
+					state.removeAttribute(STATE_CREATE_ITEMS);
 				}
 			}
 		}
@@ -1672,6 +1669,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
+					state.removeAttribute(STATE_CREATE_ITEMS);
 				}
 			}
 		}
@@ -1693,6 +1691,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
+					state.removeAttribute(STATE_CREATE_ITEMS);
 				}
 			}
 		}
@@ -1714,6 +1713,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
+					state.removeAttribute(STATE_CREATE_ITEMS);
 				}
 			}
 		}
@@ -1735,6 +1735,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
+					state.removeAttribute(STATE_CREATE_ITEMS);
 				}
 			}
 		}
@@ -1744,7 +1745,7 @@ public class ResourcesAction
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 			if(alerts.isEmpty())
 			{
-				createStructuredArtifact(state);
+				createStructuredArtifacts(state);
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
@@ -1756,6 +1757,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
+					state.removeAttribute(STATE_CREATE_ITEMS);
 				}
 			}
 		}
@@ -1788,10 +1790,6 @@ public class ResourcesAction
 			ResourcesMetadata form = item.getForm();
 			List flatList = form.getFlatList();
 			item.setProperties(flatList);
-			
-			//List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
-			//addInstance(field, properties);
-			//state.setAttribute(STATE_STRUCTOBJ_PROPERTIES, properties);
 		}
 		else if(flow.equals("showOptional"))
 		{
@@ -1874,161 +1872,30 @@ public class ResourcesAction
 	 * the items are added to the collection identified by the state attribute named STATE_CREATE_COLLECTION_ID. 
 	 * @param state
 	 */
-	private static void createStructuredArtifact(SessionState state) 
+	private static void createStructuredArtifacts(SessionState state) 
 	{
-		String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
-		String docRoot = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
 		// List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
 		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
-		SchemaBean rootSchema = (SchemaBean) state.getAttribute(STATE_STRUCT_OBJ_SCHEMA);
-		SchemaNode rootNode = rootSchema.getSchema();
-
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+
 		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
-		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
 		int numberOfItems = 1;
 		if(number != null)
 		{
 			numberOfItems = number.intValue();
 		}
 		
+		SchemaBean rootSchema = (SchemaBean) state.getAttribute(STATE_STRUCT_OBJ_SCHEMA);
+		SchemaNode rootNode = rootSchema.getSchema();
+		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		
 		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
 			EditItem item = (EditItem) items.get(i);
-			ResourcesMetadata form = item.getForm();
-			Stack processStack = new Stack();
-			processStack.push(form);
-			Map parents = new Hashtable();
-			Document doc = Xml.createDocument();
+			SaveArtifactAttempt attempt = new SaveArtifactAttempt(item, rootNode);
+			validateStructuredArtifact(attempt);
+			List errors = attempt.getErrors();
 			
-			int count = 0;
-			
-			while(!processStack.isEmpty())
-			{
-				Object object = processStack.pop();
-				if(object instanceof ResourcesMetadata)
-				{
-					ResourcesMetadata element = (ResourcesMetadata) object;
-					Element node = doc.createElement(element.getLocalname());
-					
-					if(element.isNested())
-					{
-						processStack.push(new ElementCarrier(node, element.getDottedname()));
-						List children = element.getNestedInstances();
-						for(int k = children.size() - 1; k >= 0; k--)
-						{
-							ResourcesMetadata child = (ResourcesMetadata) children.get(k);
-							processStack.push(child);
-							parents.put(child.getDottedname(), node);
-						}
-					}
-					else
-					{
-						List values = element.getInstanceValues();
-						Iterator valueIt = values.iterator();
-						while(valueIt.hasNext())
-						{
-							Object value = valueIt.next();
-							if(value == null)
-							{
-								// do nothing
-							}
-							else if(value instanceof String)
-							{
-								node.appendChild(doc.createTextNode((String)value));
-							}
-							else if(value instanceof Time)
-							{
-								Time time = (Time) value;
-								TimeBreakdown breakdown = time.breakdownLocal();
-								int year = breakdown.getYear();
-								int month = breakdown.getMonth();
-								int day = breakdown.getDay();
-								String xx = "" + year + (month < 10 ? "-0" : "-") + month + (day < 10 ? "-0" : "-") + day;
-								node.appendChild(doc.createTextNode(xx));
-							}
-							else if(value instanceof Date)
-							{
-								Date date = (Date) value;
-								SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-								String guy = df.format(date);
-								node.appendChild(doc.createTextNode(guy));
-							}
-							else
-							{
-								node.appendChild(doc.createTextNode(value.toString()));
-							}
-						}
-						
-						Element parent = (Element) parents.get(element.getDottedname());
-						if(parent == null)
-						{
-							doc.appendChild(node);
-							count++;
-						}
-						else
-						{
-							parent.appendChild(node);
-						}
-					}
-				}
-				else if(object instanceof ElementCarrier)
-				{
-					ElementCarrier carrier = (ElementCarrier) object;
-					Element node = carrier.getElement();
-					Element parent = (Element) parents.get(carrier.getParent());
-					if(parent == null)
-					{
-						doc.appendChild(node);
-						count++;
-					}
-					else
-					{
-						parent.appendChild(node);
-					}
-				}
-				
-			}
-			
-			String content = Xml.writeDocumentToString(doc);
-			// String jcontent = jdoc.toString();
-			
-			StructuredArtifactValidationService validator = (StructuredArtifactValidationService) ComponentManager.get("org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService");
-			List errors = new ArrayList();
-			
-			// convert the String representation to an ElementBean object.  If that fails,
-			// add an error and return.
-			ElementBean bean = null;
-			
-			SAXBuilder builder = new SAXBuilder();
-			StringReader reader = new StringReader(content);
-			try 
-			{
-				org.jdom.Document jdoc = builder.build(reader);
-				bean = new ElementBean(jdoc.getRootElement(), rootSchema.getSchema(), true);
-			} 
-			catch (JDOMException e) 
-			{
-				// add message to list of errors
-				errors.add(new ValidationError("","",null,"JDOMException"));
-			} 
-			catch (IOException e) 
-			{
-				// add message to list of errors
-				errors.add(new ValidationError("","",null,"IOException"));
-			}
-			
-			// call this.validate(bean, rootSchema, errors) and add results to errors list. 
-			if(bean == null)
-			{
-				// add message to list of errors
-				errors.add(new ValidationError("","",null,"Bean is null"));
-			}
-			else
-			{
-				errors.addAll(validator.validate(bean));
-			}
-						
 			if(errors.isEmpty())
 			{
 				try
@@ -2037,19 +1904,20 @@ public class ResourcesAction
 					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
 					resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
 					resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
-					resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, formtype);
+					resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, item.getFormtype());
 					List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
 					saveMetadata(resourceProperties, metadataGroups, item);
 					String filename = Validator.escapeResourceName(item.getName()).trim();
 					String extension = ".xml";
 					int attemptNum = 0;
-					String attempt = "";
-					String newResourceId = collectionId + filename + attempt + extension;
+					String attemptStr = "";
+					String newResourceId = collectionId + filename + attemptStr + extension;
 
 					if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
 					{
 						alerts.add(rb.getString("toolong") + " " + newResourceId);
-						continue outerloop;
+						state.setAttribute(STATE_CREATE_ALERTS, alerts);
+						return;
 					}
 
 					boolean tryingToAddItem = true;
@@ -2060,8 +1928,9 @@ public class ResourcesAction
 						{
 							ContentResource resource = ContentHostingService.addResource (newResourceId,
 																						MIME_TYPE_STRUCTOBJ,
-																						content.getBytes(),
-																						resourceProperties, item.getNotification());
+																						item.getContent(),
+																						resourceProperties, 
+																						item.getNotification());
 							tryingToAddItem = false;
 							// ResourceProperties rp = resource.getProperties();
 							// item.setAdded(true);
@@ -2111,16 +1980,17 @@ public class ResourcesAction
 							for(int trial = 1;!foundUnusedId && trial < 100; trial++)
 							{
 								attemptNum++;
-								attempt = Integer.toString(attemptNum);
+								attemptStr = Integer.toString(attemptNum);
 							
 
 								// add extension if there was one
-								newResourceId = collectionId + filename + "-" + attempt + extension;
+								newResourceId = collectionId + filename + "-" + attemptStr + extension;
 								
 								if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
 								{
 									alerts.add(rb.getString("toolong") + " " + newResourceId);
-									continue outerloop;
+									state.setAttribute(STATE_CREATE_ALERTS, alerts);
+									return;
 								}
 								
 								try 
@@ -2161,7 +2031,7 @@ public class ResourcesAction
 				}
 				catch(Throwable e)
 				{			
-	
+
 				}
 			}
 			else
@@ -2173,9 +2043,153 @@ public class ResourcesAction
 					alerts.add(error.getDefaultMessage());
 				}
 			}
-			
+
 		}
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		
+	}
+	
+	private static void validateStructuredArtifact(SaveArtifactAttempt attempt)
+	{
+		EditItem item = attempt.getItem();
+		ResourcesMetadata form = item.getForm();
+
+		Stack processStack = new Stack();
+		processStack.push(form);
+		Map parents = new Hashtable();
+		Document doc = Xml.createDocument();
+		
+		int count = 0;
+		
+		while(!processStack.isEmpty())
+		{
+			Object object = processStack.pop();
+			if(object instanceof ResourcesMetadata)
+			{
+
+				ResourcesMetadata element = (ResourcesMetadata) object;
+				Element node = doc.createElement(element.getLocalname());
+				
+				if(element.isNested())
+				{
+					processStack.push(new ElementCarrier(node, element.getDottedname()));
+					List children = element.getNestedInstances();
+					//List children = element.getNested();
+					
+					for(int k = children.size() - 1; k >= 0; k--)
+					{
+						ResourcesMetadata child = (ResourcesMetadata) children.get(k);
+						processStack.push(child);
+						parents.put(child.getDottedname(), node);
+					}
+				}
+				else
+				{
+					List values = element.getInstanceValues();
+					Iterator valueIt = values.iterator();
+					while(valueIt.hasNext())
+					{
+						Object value = valueIt.next();
+						if(value == null)
+						{
+							// do nothing
+						}
+						else if(value instanceof String)
+						{
+							node.appendChild(doc.createTextNode((String)value));
+						}
+						else if(value instanceof Time)
+						{
+							Time time = (Time) value;
+							TimeBreakdown breakdown = time.breakdownLocal();
+							int year = breakdown.getYear();
+							int month = breakdown.getMonth();
+							int day = breakdown.getDay();
+							String xx = "" + year + (month < 10 ? "-0" : "-") + month + (day < 10 ? "-0" : "-") + day;
+							node.appendChild(doc.createTextNode(xx));
+						}
+						else if(value instanceof Date)
+						{
+							Date date = (Date) value;
+							SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+							String guy = df.format(date);
+							node.appendChild(doc.createTextNode(guy));
+						}
+						else
+						{
+							node.appendChild(doc.createTextNode(value.toString()));
+						}
+					}
+					
+					Element parent = (Element) parents.get(element.getDottedname());
+					if(parent == null)
+					{
+						doc.appendChild(node);
+						count++;
+					}
+					else
+					{
+						parent.appendChild(node);
+					}
+				}
+			}
+			else if(object instanceof ElementCarrier)
+			{
+				ElementCarrier carrier = (ElementCarrier) object;
+				Element node = carrier.getElement();
+				Element parent = (Element) parents.get(carrier.getParent());
+				if(parent == null)
+				{
+					doc.appendChild(node);
+					count++;
+				}
+				else
+				{
+					parent.appendChild(node);
+				}
+			}
+			
+		}
+		
+		String content = Xml.writeDocumentToString(doc);
+		item.setContent(content);
+		
+		StructuredArtifactValidationService validator = (StructuredArtifactValidationService) ComponentManager.get("org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService");
+		List errors = new ArrayList();
+		
+		// convert the String representation to an ElementBean object.  If that fails,
+		// add an error and return.
+		ElementBean bean = null;
+		
+		SAXBuilder builder = new SAXBuilder();
+		StringReader reader = new StringReader(content);
+		try 
+		{
+			org.jdom.Document jdoc = builder.build(reader);
+			bean = new ElementBean(jdoc.getRootElement(), attempt.getSchema(), true);
+		} 
+		catch (JDOMException e) 
+		{
+			// add message to list of errors
+			errors.add(new ValidationError("","",null,"JDOMException"));
+		} 
+		catch (IOException e) 
+		{
+			// add message to list of errors
+			errors.add(new ValidationError("","",null,"IOException"));
+		}
+		
+		// call this.validate(bean, rootSchema, errors) and add results to errors list. 
+		if(bean == null)
+		{
+			// add message to list of errors
+			errors.add(new ValidationError("","",null,"Bean is null"));
+		}
+		else
+		{
+			errors.addAll(validator.validate(bean));
+		}
+		attempt.setErrors(errors);
 		
 	}
 
@@ -2185,11 +2199,9 @@ public class ResourcesAction
 	private static void modifyStructuredArtifact(SessionState state, ContentResourceEdit resource, ResourcePropertiesEdit resourceProperties) 
 	{
 		EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
-		
-		List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
-
+		List properties = item.getProperties();
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
-		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		
 		Document doc = Xml.createDocument();
 		Node root = doc.createElement(item.getRootname());
 		doc.appendChild(root);
@@ -2535,200 +2547,6 @@ public class ResourcesAction
 		
 	}	// createFiles
 	
-	
-	public static void setupStructuredObjects(SessionState state)
-	{
-		List flatList = new Vector();
-		
-		String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
-		
-		HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");	
-		
-		Map homes = factory.getHomes();
-		List listOfHomes = new Vector();
-		Iterator it = homes.keySet().iterator();
-		while(it.hasNext())
-		{
-			String key = (String) it.next();
-			listOfHomes.add(homes.get(key));
-		}
-		state.setAttribute(STATE_STRUCTOBJ_HOMES, listOfHomes);
-		
-		StructuredArtifactHomeInterface home = null;
-		SchemaBean rootSchema = null;
-		List properties = new Vector();
-		ResourcesMetadata elements = null;
-		
-		if(formtype == null || formtype.equals(""))
-		{
-			formtype = "";
-			state.setAttribute(STATE_STRUCTOBJ_TYPE, formtype);
-		}
-		else if(listOfHomes.isEmpty())
-		{
-			// hmmm
-		}
-		else
-		{
-			home = (StructuredArtifactHomeInterface) factory.getHome(formtype);
-		}
-		
-		if(home != null)
-		{
-			rootSchema = new SchemaBean(home.getRootNode(), home.getSchema(), formtype, home.getType().getDescription());
-			String namespace = rootSchema.getSchemaName();
-			List fields = rootSchema.getFields();
-			//properties = createPropertiesList(namespace, fields, 0);
-			String docRoot = rootSchema.getFieldName();
-			elements = new ResourcesMetadata("", docRoot, "", "", ResourcesMetadata.WIDGET_NESTED, ResourcesMetadata.WIDGET_NESTED);
-			elements.setDottedparts(docRoot);
-			elements = createHierarchicalList(elements, fields, 1);
-			
-			flatList = elements.getFlatList();
-			
-			state.setAttribute(STATE_STRUCTOBJ_ROOTNAME, docRoot);
-			state.setAttribute(STATE_STRUCT_OBJ_SCHEMA, rootSchema);
-			
-			if(state.getAttribute(STATE_CREATE_ITEMS) != null)
-			{
-				List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
-				Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
-				
-				for(int i = 0; i < numberOfItems.intValue(); i++)
-				{
-					EditItem item = (EditItem) items.get(i);
-					item.setRootname(docRoot);
-					item.setFormtype(formtype);
-					item.setProperties(flatList);
-					item.setForm(elements);
-				}
-				
-				state.setAttribute(STATE_CREATE_ITEMS, items);
-			}
-		}
-		state.setAttribute(STATE_STRUCTOBJ_PROPERTIES, flatList);
-		
-	}
-	
-	private static ResourcesMetadata createHierarchicalList(ResourcesMetadata element, List fields, int depth) 
-	{
-		List properties = new Vector();
-		for(Iterator fieldIt = fields.iterator(); fieldIt.hasNext(); )
-		{
-			SchemaBean field = (SchemaBean) fieldIt.next();
-			SchemaNode node = field.getSchema();
-			Map annotations = field.getAnnotations();
-			Pattern pattern = null;
-			String localname = field.getFieldName();
-			String description = field.getDescription();
-			String label = (String) annotations.get("label");
-			if(label == null || label.trim().equals(""))
-			{
-				label = description;
-			}
-			
-			Class javaclass = node.getObjectType();
-			String typename = javaclass.getName();
-			String widget = ResourcesMetadata.WIDGET_STRING;
-			int length =  0;
-			List enumerals = null;
-			
-			if(field.getFields().size() > 0)
-			{
-				widget = ResourcesMetadata.WIDGET_NESTED;
-			}
-			else if(node.hasEnumerations())
-			{
-				enumerals = node.getEnumeration();
-				typename = String.class.getName();
-				widget = ResourcesMetadata.WIDGET_ENUM;
-			}
-			else if(typename.equals(String.class.getName()))
-			{
-				length = node.getType().getMaxLength();
-				if(length > 100 || length < 1)
-				{
-					widget = ResourcesMetadata.WIDGET_TEXTAREA;
-				}
-				else if(length > 50)
-				{
-					length = 50;
-				}
-				
-				pattern = node.getType().getPattern();
-			}
-			else if(typename.equals(Date.class.getName()))
-			{
-				widget = ResourcesMetadata.WIDGET_DATE;
-			}
-			else if(typename.equals(Boolean.class.getName()))
-			{
-				widget = ResourcesMetadata.WIDGET_BOOLEAN;
-			}
-			else if(typename.equals(URI.class.getName()))
-			{
-				widget = ResourcesMetadata.WIDGET_ANYURI;
-			}
-			else if(typename.equals(Integer.class.getName()))
-			{
-				widget = ResourcesMetadata.WIDGET_INTEGER;
-				length = INTEGER_WIDGET_LENGTH;
-			}
-			else if(typename.equals(Double.class.getName()))
-			{
-				widget = ResourcesMetadata.WIDGET_DOUBLE;
-				length = DOUBLE_WIDGET_LENGTH;
-			}
-			int minCard = node.getMinOccurs();
-			int maxCard = node.getMaxOccurs();
-			if(maxCard < 1)
-			{
-				maxCard = Integer.MAX_VALUE;
-			}
-			if(minCard < 0)
-			{
-				minCard = 0;
-			}
-			minCard = java.lang.Math.max(0,minCard);
-			maxCard = java.lang.Math.max(1,maxCard);
-			int currentCount = java.lang.Math.min(java.lang.Math.max(1,minCard),maxCard);
-			
-			ResourcesMetadata prop = new ResourcesMetadata(element.getDottedname(), localname, label, description, typename, widget);
-			List parts = new Vector(element.getDottedparts());
-			parts.add(localname);
-			prop.setDottedparts(parts);
-			if(ResourcesMetadata.WIDGET_NESTED.equals(widget))
-			{
-				prop = createHierarchicalList(prop, field.getFields(), depth + 1);
-			}
-			prop.setMinCardinality(minCard);
-			prop.setMaxCardinality(maxCard);
-			prop.setCurrentCount(currentCount);
-			prop.setDepth(depth);
-			
-			if(enumerals != null)
-			{
-				prop.setEnumeration(enumerals);
-			}
-			if(length > 0)
-			{
-				prop.setLength(length);
-			}
-			
-			if(pattern != null)
-			{
-				prop.setPattern(pattern);
-			}
-			
-			properties.add(prop);
-		}
-
-		element.setNested(properties);
-		
-		return element;
-		
-	}
-
 	/**
 	 * Process user's request to add an instance of a particular field to a structured object.
 	 * @param data
@@ -2741,12 +2559,29 @@ public class ResourcesAction
 		captureMultipleValues(state, params, false);
 		
 		String field = params.getString("field");
-		List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
-		addInstance(field, properties);
-	}
+		
+		EditItem item = null;
+		String mode = (String) state.getAttribute(STATE_MODE);
+		if (MODE_CREATE.equals(mode))
+		{
+			int index = params.getInt("index");
+			List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+			item = (EditItem) items.get(index);
+		}
+		else if(MODE_EDIT.equals(mode))
+		{
+			item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
+		}
+		
+		if(item != null)
+		{
+			addInstance(field, item.getProperties());
+		}
+		
+	}	// doInsertValue
 	
 	/**
-	 * Search a hierarchical list of ResourcesMetadata properties for one whose localname matches "field".  
+	 * Search a flat list of ResourcesMetadata properties for one whose localname matches "field".  
 	 * If found and the field can have additional instances, increment the count for that item.
 	 * @param field
 	 * @param properties
@@ -2892,146 +2727,6 @@ public class ResourcesAction
 		}
 		state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
 	}
-	
-	/**
-	 * Access an ordered list of ResourcesMetadata objects that describe the fields defined by a list of SchemaBean objects.
-	 * @param namespace
-	 * @param fields The list of SchemaBeans
-	 * @return An ordered list of ResourcesMetadata objects corresponding to the fields.
-	 */
-	protected static List createPropertiesList(String namespace, List fields, int depth)
-	{
-		List properties = new Vector();
-		for(Iterator fieldIt = fields.iterator(); fieldIt.hasNext(); )
-		{
-			SchemaBean field = (SchemaBean) fieldIt.next();
-			SchemaNode node = field.getSchema();
-			Map annotations = field.getAnnotations();
-			List nested = new Vector();
-			Pattern pattern = null;
-			String localname = field.getFieldName();
-			String description = field.getDescription();
-			String label = (String) annotations.get("label");
-			if(label == null || label.trim().equals(""))
-			{
-				label = description;
-			}
-			
-			Class javaclass = node.getObjectType();
-			String typename = javaclass.getName();
-			String widget = ResourcesMetadata.WIDGET_STRING;
-			int length =  0;
-			List enumerals = null;
-			
-			if(field.getFields().size() > 0)
-			{
-				widget = ResourcesMetadata.WIDGET_NESTED;
-				nested.addAll(createPropertiesList(namespace + ResourcesMetadata.DOT + localname, field.getFields(), depth + 1));
-			}
-			else if(node.hasEnumerations())
-			{
-				enumerals = node.getEnumeration();
-				typename = String.class.getName();
-				widget = ResourcesMetadata.WIDGET_ENUM;
-			}
-			else if(typename.equals(String.class.getName()))
-			{
-				length = node.getType().getMaxLength();
-				if(length > 100 || length < 1)
-				{
-					widget = ResourcesMetadata.WIDGET_TEXTAREA;
-				}
-				else if(length > 50)
-				{
-					length = 50;
-				}
-				
-				pattern = node.getType().getPattern();
-			}
-			else if(typename.equals(Date.class.getName()))
-			{
-				widget = ResourcesMetadata.WIDGET_DATE;
-			}
-			else if(typename.equals(Boolean.class.getName()))
-			{
-				widget = ResourcesMetadata.WIDGET_BOOLEAN;
-			}
-			else if(typename.equals(URI.class.getName()))
-			{
-				widget = ResourcesMetadata.WIDGET_ANYURI;
-			}
-			else if(typename.equals(Integer.class.getName()))
-			{
-				widget = ResourcesMetadata.WIDGET_INTEGER;
-			}
-			else if(typename.equals(Double.class.getName()))
-			{
-				widget = ResourcesMetadata.WIDGET_DOUBLE;
-			}
-			int minCard = node.getMinOccurs();
-			int maxCard = node.getMaxOccurs();
-			if(maxCard < 1)
-			{
-				maxCard = Integer.MAX_VALUE;
-			}
-			if(minCard < 0)
-			{
-				minCard = 0;
-			}
-			minCard = java.lang.Math.max(0,minCard);
-			maxCard = java.lang.Math.max(1,maxCard);
-			int currentCount = java.lang.Math.min(java.lang.Math.max(1,minCard),maxCard);
-			
-			ResourcesMetadata prop = new ResourcesMetadata(namespace, localname, label, description, typename, widget);
-			prop.setMinCardinality(minCard);
-			prop.setMaxCardinality(maxCard);
-			prop.setCurrentCount(currentCount);
-			prop.setDottedparts(namespace + ResourcesMetadata.DOT + localname);
-			prop.setDepth(depth);
-			
-			if(enumerals != null)
-			{
-				prop.setEnumeration(enumerals);
-			}
-			if(length > 0)
-			{
-				prop.setLength(length);
-			}
-			
-			// prop.setNested(nested);
-			if(pattern != null)
-			{
-				prop.setPattern(pattern);
-			}
-
-			if(prop.getMaxCardinality() > 1)
-			{
-				int index = prop.getDottedparts().size();
-				for(int i = 0; i < prop.getCurrentCount(); i++)
-				{
-					
-					ResourcesMetadata copy = new ResourcesMetadata(prop);
-					copy.insertDottedpart(index, Integer.toString(i));
-					properties.add(copy);
-					Iterator nestIt = nested.iterator();
-					while(nestIt.hasNext())
-					{
-						ResourcesMetadata nestedItem = (ResourcesMetadata) nestIt.next();
-						copy = new ResourcesMetadata(nestedItem);
-						copy.insertDottedpart(index, Integer.toString(i));
-						properties.add(copy);
-					}
-				}
-			}
-			else
-			{
-				properties.add(prop);
-				properties.addAll(nested);
-			}
-		}
-		return properties;
-		
-	}	// createPropertiesList
 	
 	/**
 	 * Add a new URL to ContentHosting for each EditItem in the state attribute named STATE_CREATE_ITEMS.  
@@ -3250,15 +2945,6 @@ public class ResourcesAction
 			}
 			context.put("homes", listOfHomes);
 			
-			List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
-			Iterator pIt = properties.iterator();
-			while(pIt.hasNext())
-			{
-				ResourcesMetadata p = (ResourcesMetadata) pIt.next();
-			}
-
-			context.put("properties", properties);
-
 			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
 			context.put("formtype", formtype);
 			
@@ -3979,6 +3665,8 @@ public class ResourcesAction
 	{
 		ParameterParser params = data.getParameters ();
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		state.removeAttribute(STATE_CREATE_ITEMS);
+		state.removeAttribute(STATE_EDIT_ITEM);
 
 		// cancel copy if there is one in progress
 		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
@@ -4031,7 +3719,6 @@ public class ResourcesAction
 				
 			String itemName = properties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 
-
 			EditItem item = new EditItem(id, itemName, itemType);
 			
 			if(content != null)
@@ -4057,9 +3744,6 @@ public class ResourcesAction
 			boolean canAddItem = ContentHostingService.allowAddResource(id);
 			boolean canDelete = ContentHostingService.allowRemoveResource(id);
 			boolean canRevise = ContentHostingService.allowUpdateResource(id);
-			boolean canCopy = ContentHostingService.allowGetCollection(id);
-			// boolean isUrl = (ResourceProperties.TYPE_URL.equals(itemType));
-
 			item.setCanRead(canRead);
 			item.setCanRevise(canRevise);
 			item.setCanAddItem(canAddItem);
@@ -4074,9 +3758,15 @@ public class ResourcesAction
 			}
 			else if(item.isStructuredArtifact())
 			{
-				
 				String formtype = properties.getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
-				item.importStructuredArtifact(new String(content), formtype);
+				state.setAttribute(STATE_STRUCTOBJ_TYPE, formtype);
+				state.setAttribute(STATE_EDIT_ITEM, item);
+				setupStructuredObjects(state);
+				Document doc = Xml.readDocumentFromString(new String(content));
+				Element root = doc.getDocumentElement();
+				importStructuredArtifact(root, item.getForm());
+				List flatList = item.getForm().getFlatList();
+				item.setProperties(flatList);
 			}
 			
 			String description = properties.getProperty(ResourceProperties.PROP_DESCRIPTION);
@@ -4244,6 +3934,308 @@ public class ResourcesAction
 		
 	}	// doEdit
 
+	/**
+	 * This method updates the session state with information needed to create or modify
+	 * structured artifacts in the resources tool.  Among other things, it obtains a list 
+	 * of "forms" available to the user and places that list in state indexed as 
+	 * "STATE_STRUCTOBJ_HOMES".  If the current formtype is known (in state indexed as
+	 * "STATE_STRUCTOBJ_TYPE"), the list of properties associated with that form type is
+	 * generated.  If we are in a "create" context, the properties are added to each of 
+	 * the items in the list of items indexed as "STATE_CREATE_ITEMS".  If we are in an 
+	 * "edit" context, the properties are added to the current item being edited (a state
+	 * attribute indexed as "STATE_EDIT_ITEM").  The metaobj SchemaBean associated with
+	 * the current form and its root SchemaNode object are also placed in state for later 
+	 * reference.
+	 */
+	public static void setupStructuredObjects(SessionState state)
+	{
+		String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+		
+		HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");	
+		
+		Map homes = factory.getHomes();
+		List listOfHomes = new Vector();
+		Iterator it = homes.keySet().iterator();
+		while(it.hasNext())
+		{
+			String key = (String) it.next();
+			listOfHomes.add(homes.get(key));
+		}
+		state.setAttribute(STATE_STRUCTOBJ_HOMES, listOfHomes);
+		
+		StructuredArtifactHomeInterface home = null;
+		SchemaBean rootSchema = null;
+		ResourcesMetadata elements = null;
+		
+		if(formtype == null || formtype.equals(""))
+		{
+			formtype = "";
+			state.setAttribute(STATE_STRUCTOBJ_TYPE, formtype);
+		}
+		else if(listOfHomes.isEmpty())
+		{
+			// hmmm
+		}
+		else
+		{
+			home = (StructuredArtifactHomeInterface) factory.getHome(formtype);
+		}
+		
+		if(home != null)
+		{
+			rootSchema = new SchemaBean(home.getRootNode(), home.getSchema(), formtype, home.getType().getDescription());
+			List fields = rootSchema.getFields();
+			String docRoot = rootSchema.getFieldName();
+			elements = new ResourcesMetadata("", docRoot, "", "", ResourcesMetadata.WIDGET_NESTED, ResourcesMetadata.WIDGET_NESTED);
+			elements.setDottedparts(docRoot);
+			elements.setContainer(null);
+			elements = createHierarchicalList(elements, fields, 1);
+			
+			state.setAttribute(STATE_STRUCTOBJ_ROOTNAME, docRoot);
+			state.setAttribute(STATE_STRUCT_OBJ_SCHEMA, rootSchema);
+			
+			if(state.getAttribute(STATE_CREATE_ITEMS) != null)
+			{
+				List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+				Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+				List flatList = elements.getFlatList();
+				
+				for(int i = 0; i < numberOfItems.intValue(); i++)
+				{
+					EditItem item = (EditItem) items.get(i);
+					item.setRootname(docRoot);
+					item.setFormtype(formtype);
+					item.setProperties(flatList);
+					item.setForm(elements);
+				}
+				
+				state.setAttribute(STATE_CREATE_ITEMS, items);
+			}
+			else if(state.getAttribute(STATE_EDIT_ITEM) != null)
+			{
+				EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
+				item.setRootname(docRoot);
+				item.setFormtype(formtype);
+				item.setForm(elements);
+			}
+		}
+		
+	}	// setupStructuredArtifacts
+	
+	/**
+	 * This method navigates through a list of SchemaNode objects representing fields in a form, 
+	 * creates a ResourcesMetadata object for each field and adds those as nested fields within
+	 * a root element.  If a field contains nested fields, a recursive call adds nested fields
+	 * in the corresponding ResourcesMetadata object. 
+	 * @param element The root element to which field descriptions are added.
+	 * @param fields A list of metaobj SchemaNode objects.
+	 * @param depth The depth of nesting, corresponding to the amount of indent that will be used
+	 * when displaying the list.
+	 * @return The update root element.
+	 */
+	private static ResourcesMetadata createHierarchicalList(ResourcesMetadata element, List fields, int depth) 
+	{
+		List properties = new Vector();
+		for(Iterator fieldIt = fields.iterator(); fieldIt.hasNext(); )
+		{
+			SchemaBean field = (SchemaBean) fieldIt.next();
+			SchemaNode node = field.getSchema();
+			Map annotations = field.getAnnotations();
+			Pattern pattern = null;
+			String localname = field.getFieldName();
+			String description = field.getDescription();
+			String label = (String) annotations.get("label");
+			if(label == null || label.trim().equals(""))
+			{
+				label = description;
+			}
+			
+			Class javaclass = node.getObjectType();
+			String typename = javaclass.getName();
+			String widget = ResourcesMetadata.WIDGET_STRING;
+			int length =  0;
+			List enumerals = null;
+			
+			if(field.getFields().size() > 0)
+			{
+				widget = ResourcesMetadata.WIDGET_NESTED;
+			}
+			else if(node.hasEnumerations())
+			{
+				enumerals = node.getEnumeration();
+				typename = String.class.getName();
+				widget = ResourcesMetadata.WIDGET_ENUM;
+			}
+			else if(typename.equals(String.class.getName()))
+			{
+				length = node.getType().getMaxLength();
+				if(length > 100 || length < 1)
+				{
+					widget = ResourcesMetadata.WIDGET_TEXTAREA;
+				}
+				else if(length > 50)
+				{
+					length = 50;
+				}
+				
+				pattern = node.getType().getPattern();
+			}
+			else if(typename.equals(Date.class.getName()))
+			{
+				widget = ResourcesMetadata.WIDGET_DATE;
+			}
+			else if(typename.equals(Boolean.class.getName()))
+			{
+				widget = ResourcesMetadata.WIDGET_BOOLEAN;
+			}
+			else if(typename.equals(URI.class.getName()))
+			{
+				widget = ResourcesMetadata.WIDGET_ANYURI;
+			}
+			else if(typename.equals(Number.class.getName()))
+			{
+				widget = ResourcesMetadata.WIDGET_INTEGER;
+				
+				//length = node.getType().getTotalDigits();
+				length = INTEGER_WIDGET_LENGTH;
+			}
+			else if(typename.equals(Double.class.getName()))
+			{
+				widget = ResourcesMetadata.WIDGET_DOUBLE;
+				length = DOUBLE_WIDGET_LENGTH;
+			}
+			int minCard = node.getMinOccurs();
+			int maxCard = node.getMaxOccurs();
+			if(maxCard < 1)
+			{
+				maxCard = Integer.MAX_VALUE;
+			}
+			if(minCard < 0)
+			{
+				minCard = 0;
+			}
+			minCard = java.lang.Math.max(0,minCard);
+			maxCard = java.lang.Math.max(1,maxCard);
+			int currentCount = java.lang.Math.min(java.lang.Math.max(1,minCard),maxCard);
+			
+			ResourcesMetadata prop = new ResourcesMetadata(element.getDottedname(), localname, label, description, typename, widget);
+			List parts = new Vector(element.getDottedparts());
+			parts.add(localname);
+			prop.setDottedparts(parts);
+			prop.setContainer(element);
+			if(ResourcesMetadata.WIDGET_NESTED.equals(widget))
+			{
+				prop = createHierarchicalList(prop, field.getFields(), depth + 1);
+			}
+			prop.setMinCardinality(minCard);
+			prop.setMaxCardinality(maxCard);
+			prop.setCurrentCount(currentCount);
+			prop.setDepth(depth);
+			
+			if(enumerals != null)
+			{
+				prop.setEnumeration(enumerals);
+			}
+			if(length > 0)
+			{
+				prop.setLength(length);
+			}
+			
+			if(pattern != null)
+			{
+				prop.setPattern(pattern);
+			}
+			
+			properties.add(prop);
+		}
+
+		element.setNested(properties);
+		
+		return element;
+		
+	}	// createHierarchicalList
+
+	/**
+	 * This method captures property values from an org.w3c.dom.Document and inserts them
+	 * into a hierarchical list of ResourcesMetadata objects which describes the structure
+	 * of the form.  The values are added by inserting nested instances into the properties.
+	 * 
+	 * @param element	An org.w3c.dom.Element containing values to be imported.
+	 * @param properties	A hierarchical list of ResourcesMetadata objects describing a form 
+	 */
+	public static void importStructuredArtifact(Node node, ResourcesMetadata property)
+	{
+		if(property == null || node == null)
+		{
+			return;
+		}
+		
+		String tagname = property.getLocalname();
+		String nodename = node.getLocalName();
+		if(! tagname.equals(nodename))
+		{
+			// return;
+		}
+		
+		if(property.getNested().size() == 0)
+		{
+			boolean value_found = false;
+			Node child = node.getFirstChild();
+			while(! value_found && child != null)
+			{
+				if(child.getNodeType() == Node.TEXT_NODE)
+				{
+					Text value = (Text) child;
+					if(ResourcesMetadata.WIDGET_DATE.equals(property.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(property.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(property.getWidget()))
+					{
+						Time time = TimeService.newTime();
+						try
+						{
+							time = TimeService.newTimeGmt(value.getData());
+						}
+						catch(Exception ignore)
+						{
+							// use "now" as default in that case
+						}
+						property.setValue(0, time);
+					}
+					else
+					{
+						property.setValue(0, value.getData());
+					}
+				}
+				child = child.getNextSibling();
+			}
+		}
+		else if(node instanceof Element)
+		{
+			// a nested element
+			Iterator nestedIt = property.getNested().iterator();
+			while(nestedIt.hasNext())
+			{
+				ResourcesMetadata prop = (ResourcesMetadata) nestedIt.next();
+				NodeList nodes = ((Element) node).getElementsByTagName(prop.getLocalname());
+				if(nodes == null)
+				{
+					continue;
+				}
+				for(int i = 0; i < nodes.getLength(); i++)
+				{
+					Node n = nodes.item(i);
+					if(n != null)
+					{
+						ResourcesMetadata instance = prop.addInstance();
+						if(instance != null)
+						{
+							importStructuredArtifact(n, instance);
+						}
+					}
+				}
+			}
+		}
+
+	}	// importStructuredArtifact
+	
 	/**
 	* Edit the editable collection/resource properties
 	*/
@@ -4754,7 +4746,7 @@ public class ResourcesAction
 		}
 		else if(item.isStructuredArtifact())
 		{
-			
+
 		}
 		else if(! intent_has_changed )
 		{
@@ -4865,85 +4857,18 @@ public class ResourcesAction
 		else if(item.isStructuredArtifact())
 		{
 			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
-			String rootname = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
-			List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
-			
 			String formtype_check = params.getString("formtype");
 			
 			if(formtype_check == null || formtype_check.equals(""))
 			{
-				alerts.add(rb.getString("edit.chooseform"));
-				// item.setMissing("formtype");
+				alerts.add("Must select a form type");
+				item.setMissing("formtype");
 			}
 			else if(formtype_check.equals(formtype))
 			{
 				item.setFormtype(formtype);
-				item.setRootname(rootname);
-				Iterator it = properties.iterator();
-				while(it.hasNext())
-				{
-					ResourcesMetadata prop = (ResourcesMetadata) it.next();
-					int count = prop.getCurrentCount();
-					for(int j = 0; j < count; j++)
-					{
-						if(ResourcesMetadata.WIDGET_DATE.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(prop.getWidget()))
-						{
-							String propname = prop.getFullname() + "_" + j;
-							int year = 0;
-							int month = 0;
-							int day = 0;
-							int hour = 0;
-							int minute = 0;
-							int second = 0;
-							int millisecond = 0;
-							String ampm = "";
-							
-							if(prop.getWidget().equals(ResourcesMetadata.WIDGET_DATE) || 
-								prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
-							{
-								year = params.getInt(propname  + "_year", year);
-								month = params.getInt(propname  + "_month", month);
-								day = params.getInt(propname  + "_day", day);
-							}
-							if(prop.getWidget().equals(ResourcesMetadata.WIDGET_TIME) || 
-								prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
-							{
-								hour = params.getInt(propname  + "_hour", hour);
-								minute = params.getInt(propname  + "_minute", minute);
-								second = params.getInt(propname  + "_second", second);
-								millisecond = params.getInt(propname  + "_millisecond", millisecond);
-								ampm = params.getString(propname + "_ampm").trim();
-
-								if("pm".equalsIgnoreCase(ampm))
-								{
-									if(hour < 12)
-									{
-										hour += 12;
-									}
-								}
-								else if(hour == 12)
-								{
-									hour = 0;
-								}
-							}
-							if(hour > 23)
-							{
-								hour = hour % 24;
-								day++;
-							}
-							
-							Time value = TimeService.newTimeLocal(year, month, day, hour, minute, second, millisecond);
-							item.setValue(prop.getLocalname(), j, value);
-						}
-						else
-						{
-							String value = params.getString(prop.getFullname() + "_" + j);
-							item.setValue(prop.getLocalname(), j, value);
-						}
-					}
-				}
+				capturePropertyValues(params, item, item.getProperties());
 			}
-			// item.setMimeType(MIME_TYPE_STRUCTOBJ);			
 		}
 		else
 		{
@@ -5279,9 +5204,6 @@ public class ResourcesAction
 			else if(item.isStructuredArtifact())
 			{
 				String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
-				String rootname = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
-				List properties = (List) state.getAttribute(STATE_STRUCTOBJ_PROPERTIES);
-				
 				String formtype_check = params.getString("formtype");
 				
 				if(formtype_check == null || formtype_check.equals(""))
@@ -5292,11 +5214,7 @@ public class ResourcesAction
 				else if(formtype_check.equals(formtype))
 				{
 					item.setFormtype(formtype);
-					
 					capturePropertyValues(params, item, item.getProperties());
-
-					state.setAttribute(STATE_STRUCTOBJ_PROPERTIES, properties);
-					// item.setValues(values);
 				}
 				item.setMimeType(MIME_TYPE_STRUCTOBJ);
 
@@ -5453,6 +5371,11 @@ public class ResourcesAction
 	
 	protected static void capturePropertyValues(ParameterParser params, EditItem item, List properties)
 	{
+		// use the item's properties if they're not supplied
+		if(properties == null)
+		{
+			properties = item.getProperties();
+		}
 		// if max cardinality > 1, value is a list (Iterate over members of list)
 		// else value is an object, not a list
 		
@@ -5467,7 +5390,7 @@ public class ResourcesAction
 
 			if(ResourcesMetadata.WIDGET_NESTED.equals(prop.getWidget()))
 			{
-				// capturePropertyValues(params, item, prop.getNested());
+				// do nothing
 			}
 			else if(ResourcesMetadata.WIDGET_DATE.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(prop.getWidget()))
 			{
@@ -5515,8 +5438,6 @@ public class ResourcesAction
 				}
 				
 				Time value = TimeService.newTimeLocal(year, month, day, hour, minute, second, millisecond);
-				// rv.put(Integer.toString(j), value);
-				// item.setValue(prefix + prop.getLocalname(), j, value);
 				prop.setValue(0, value);
 			}
 			else
@@ -5524,21 +5445,12 @@ public class ResourcesAction
 				String value = params.getString(propname);
 				if(value != null)
 				{
-					// rv.put(Integer.toString(j), value);
 					prop.setValue(0, value);
 				}
-				// item.setValue(prefix + prop.getLocalname(), j, value);
 			}
 		}
 		
-		Iterator pIt = properties.iterator();
-		while(pIt.hasNext())
-		{
-			ResourcesMetadata p = (ResourcesMetadata) pIt.next();
-		}
-	
-		// return properties;
-	}
+	}	// capturePropertyValues
 	
 	/**
 	* Modify the properties
@@ -5559,6 +5471,8 @@ public class ResourcesAction
 		// get values from form and update STATE_EDIT_ITEM attribute in state
 		captureValues(state, params);
 
+		EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
+
 		if(flow.equals("showMetadata"))
 		{
 			doShow_metadata(data);
@@ -5574,12 +5488,35 @@ public class ResourcesAction
 			doToggle_intent(data);
 			return;
 		}
+		else if(flow.equals("addInstance"))
+		{
+			String field = params.getString("field");
+			addInstance(field, item.getProperties());
+			ResourcesMetadata form = item.getForm();
+			List flatList = form.getFlatList();
+			item.setProperties(flatList);
+			return;
+		}
 		
+
 		Set alerts = (Set) state.getAttribute(STATE_EDIT_ALERTS);
+
+		if(item.isStructuredArtifact())
+		{
+			SchemaBean bean = (SchemaBean) state.getAttribute(STATE_STRUCT_OBJ_SCHEMA);
+			SaveArtifactAttempt attempt = new SaveArtifactAttempt(item, bean.getSchema());
+			validateStructuredArtifact(attempt);
+	
+			Iterator errorIt = attempt.getErrors().iterator();
+			while(errorIt.hasNext())
+			{
+				ValidationError error = (ValidationError) errorIt.next();
+				alerts.add(error.getDefaultMessage());
+			}
+		}
+		
 		if(alerts.isEmpty())
 		{
-			EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
-			boolean intent_has_changed = false;
 			// populate the property list
 			try
 			{
@@ -5606,8 +5543,8 @@ public class ResourcesAction
 					}
 					else if(item.isStructuredArtifact())
 					{
-						modifyStructuredArtifact(state, redit, pedit);
-						
+						redit.setContentType(item.getMimeType());
+						redit.setContent(item.getContent());
 					}
 					else if(item.contentHasChanged())
 					{
@@ -8665,141 +8602,6 @@ public class ResourcesAction
 		}
 		
 		/**
-		 * @param content A string containing an XML document describing a Structured Artifact.
-		 */
-		public void importStructuredArtifact(String content, String formtype)
-		{
-			HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");
-			StructuredArtifactHomeInterface home = null;
-			try
-			{
-				home = (StructuredArtifactHomeInterface) factory.getHome(formtype);
-			}
-			catch(Exception e)
-			{
-			}
-			SchemaBean rootSchema = null;
-			if(home != null)
-			{
-				rootSchema = new SchemaBean(home.getRootNode(), home.getSchema(), m_formtype, home.getType().getDescription());
-			}
-			
-			Document doc = Xml.readDocumentFromString(content);
-			Element root = doc.getDocumentElement();
-			m_formtype = formtype;
-
-			List properties = null;
-			if(rootSchema != null)
-			{
-				String namespace = rootSchema.getSchemaName() + ResourcesMetadata.DOT;
-				List fields = rootSchema.getFields();
-				properties = createPropertiesList(namespace, fields, 0);
-			}
-			
-			if(properties != null)
-			{
-				Iterator propIt = properties.iterator();
-				while(propIt.hasNext())
-				{
-					ResourcesMetadata property = (ResourcesMetadata) propIt.next();
-					String tagname = property.getLocalname();
-					NodeList nodes = doc.getElementsByTagName(tagname);
-					if(nodes != null)
-					{
-						for(int i = 0; i < nodes.getLength(); i++)
-						{
-							Node n = nodes.item(i);
-							if(n != null && n.getNodeType() == Node.ELEMENT_NODE)
-							{
-								Element element = (Element) n;
-								int k = 0;
-								Node child = element.getFirstChild();
-								while(child != null)
-								{
-									if(child.getNodeType() == Node.TEXT_NODE)
-									{
-										Text value = (Text) child;
-										if(ResourcesMetadata.WIDGET_DATE.equals(property.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(property.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(property.getWidget()))
-										{
-											Time time = TimeService.newTime();
-											try
-											{
-												time = TimeService.newTimeGmt(value.getData());
-											}
-											catch(Exception ignore)
-											{
-												// use "now" as default in that case
-											}
-											setValue(tagname, k, time);
-										}
-										else
-										{
-											setValue(tagname, k, value.getData());
-										}
-										k++;
-									}
-									child = child.getNextSibling();
-								}
-							}
-							
-						}
-					}
-					
-					
-				}
-			}
-			else
-			{
-			}
-			/*
-			Node child = root.getFirstChild();
-			int num = 0;
-			while(child != null)
-			{
-				importStructuredArtifact(child);
-				child = child.getNextSibling();
-				num++;
-			}
-				
-			
-			NodeList nodes = root.getChildNodes();	
-			*/ 
-		}
-		
-		/**
-		 * @param element
-		 */
-		public void importStructuredArtifact(Node node)
-		{
-			String name = node.getNodeName();
-			String value = node.getNodeValue();
-			short type = node.getNodeType();
-			if(type == Node.TEXT_NODE)
-			{
-				Text tnode = (Text) node;
-				value = tnode.getData();
-			}
-			else if(type == Node.ELEMENT_NODE)
-			{
-				Element enode = (Element) node;
-				value = enode.getTagName();
-				if(node.hasChildNodes())
-				{
-					Node child = enode.getFirstChild();
-					int num = 0;
-					while(child != null)
-					{
-						importStructuredArtifact(child);
-						child = child.getNextSibling();
-						num++;
-					}
-				}
-			
-			}
-			
-		}
-		
-		/**
 		 * @return
 		 */
 		/*
@@ -9022,6 +8824,10 @@ public class ResourcesAction
 	public static class MetadataGroup
 		extends Vector
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -821054142728929236L;
 		protected String m_name;
 		protected boolean m_isShowing;
 		
@@ -9212,6 +9018,68 @@ public class ResourcesAction
 			this.parent = parent;
 		}
 
+	}
+	
+	public static class SaveArtifactAttempt
+	{
+		protected EditItem item;
+		protected List errors;
+		protected SchemaNode schema;
+		
+		public SaveArtifactAttempt(EditItem item, SchemaNode schema) 
+		{
+			this.item = item;
+			this.schema = schema;
+		}
+		
+		/**
+		 * @return Returns the errors.
+		 */
+		public List getErrors() 
+		{
+			return errors;
+		}
+
+		/**
+		 * @param errors The errors to set.
+		 */
+		public void setErrors(List errors) 
+		{
+			this.errors = errors;
+		}
+		
+		/**
+		 * @return Returns the item.
+		 */
+		public EditItem getItem() 
+		{
+			return item;
+		}
+		
+		/**
+		 * @param item The item to set.
+		 */
+		public void setItem(EditItem item)
+		{
+			this.item = item;
+		}
+		
+		/**
+		 * @return Returns the schema.
+		 */
+		public SchemaNode getSchema() 
+		{
+			return schema;
+		}
+		
+		/**
+		 * @param schema The schema to set.
+		 */
+		public void setSchema(SchemaNode schema) 
+		{
+			this.schema = schema;
+		}
+		
 	}
 	
 }	// ResourcesAction
