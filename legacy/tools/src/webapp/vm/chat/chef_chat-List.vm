@@ -29,7 +29,7 @@ doubleDeep = true;
 				#set($name = $validator.escapeHtml($item.Header.From.DisplayName))
 				#set($color = $color_mapper.getColor($item.header.from.id))		
 				<li style="margin:.2em 0 0 2em;padding: .2em 0;text-indent: -3em;line-height:1.2em">
-					<span  style="color: $color;font-weight:normal"><b style="font-weight:normal">$name</b></span>
+					<span  style="color: $color;font-weight:normal"><em style="font-weight:normal;font-style:normal">$name</em></span>
 					#if(!$item.properties.getProperty("deleted"))
 						## Don't allow deleting a message that has already been deleted
 						#if ($channel.allowRemoveMessage($item))
