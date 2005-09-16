@@ -22,6 +22,7 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
@@ -56,13 +57,14 @@ import java.io.IOException;
 public class ContentResourceHome implements ReadableObjectHome, PresentableObjectHome {
 
    private HomeFactory homeFactory;
+   private IdManager idManager;
 
    public Type getType() {
-      throw new UnsupportedOperationException("not implemented");
+      return new Type(getIdManager().getId("fileArtifact"), "Uploaded File");
    }
 
    public String getExternalType() {
-      throw new UnsupportedOperationException("not implemented");
+      return "fileArtifact";
    }
 
    public Artifact load(Id id) throws PersistenceException {
@@ -257,6 +259,14 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
 
    public void setHomeFactory(HomeFactory homeFactory) {
       this.homeFactory = homeFactory;
+   }
+
+   public IdManager getIdManager() {
+      return idManager;
+   }
+
+   public void setIdManager(IdManager idManager) {
+      this.idManager = idManager;
    }
 
 }

@@ -126,7 +126,9 @@
    <bean id="mapHomeFactory" class="org.sakaiproject.metaobj.shared.mgt.factories.MapHomeFactoryImpl">
       <property name="homes">
 			<map>
-            <!-- <entry key="fileArtifact"><ref bean="fileArtifactHome"/></entry>-->
+            <entry key="fileArtifact">
+               <ref bean="org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome.contentResource" />
+            </entry>
 			</map>
       </property>
    </bean>
@@ -170,6 +172,7 @@
       <property name="homeFactory">
          <ref bean="dbXmlHomeFactory" />
       </property>
+      <property name="idManager"><ref bean="idManager"/></property>
    </bean>
 
 </beans>
