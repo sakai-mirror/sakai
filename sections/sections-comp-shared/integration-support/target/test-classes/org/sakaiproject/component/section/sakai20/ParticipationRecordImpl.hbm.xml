@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
-<hibernate-mapping default-cascade="none" package="org.sakaiproject.component.section">
-	<class name="org.sakaiproject.component.section.ParticipationRecordImpl" table="SEC_PARTICIPATION_T" discriminator-value="0">
+<hibernate-mapping default-cascade="none" package="org.sakaiproject.component.section.sakai20">
+	<class name="org.sakaiproject.component.section.sakai20.ParticipationRecordImpl" table="SEC_PARTICIPATION_T" discriminator-value="0">
 		<id name="id" column="ID" type="long">
 			<generator class="native">
 				<param name="sequence">SEC_PARTICIPATION_S</param>
@@ -13,44 +13,28 @@
 
 		<many-to-one 
 			name="learningContext"
-			class="org.sakaiproject.component.section.LearningContextImpl"
+			class="org.sakaiproject.component.section.sakai20.LearningContextImpl"
 			column="LEARNING_CONTEXT_ID"
 			not-null="true"/>
 
-        <many-to-one
-            name="user"
-            column="USER_ID"
-            class="org.sakaiproject.component.section.UserImpl"
-            not-null="true"/>
+        <property name="userUuid" column="USER_ID" not-null="true"/>
 
 		<property name="uuid" column="PARTICIPATION_UUID" type="string" unique="true" not-null="true"/>
 
-        <subclass name="org.sakaiproject.component.section.EnrollmentRecordImpl" discriminator-value="1">
+        <subclass name="org.sakaiproject.component.section.sakai20.EnrollmentRecordImpl" discriminator-value="1">
             <property name="status" column="STATUS" type="string"/>
         </subclass>
 
-        <subclass name="org.sakaiproject.component.section.InstructorRecordImpl" discriminator-value="2">
+        <subclass name="org.sakaiproject.component.section.sakai20.InstructorRecordImpl" discriminator-value="2">
         </subclass>
 
-        <subclass name="org.sakaiproject.component.section.TeachingAssistantRecordImpl" discriminator-value="3">
+        <subclass name="org.sakaiproject.component.section.sakai20.TeachingAssistantRecordImpl" discriminator-value="3">
         </subclass>
     </class>
     
-    <query name="findSiteInstructors">
-        <![CDATA[
-        from InstructorRecordImpl as participant where participant.learningContext=:course
-        ]]>
-    </query>
-
-    <query name="findSiteEnrollments">
-        <![CDATA[
-        from EnrollmentRecordImpl as participant where participant.learningContext=:course
-        ]]>
-    </query>
-
     <query name="findUserFromSiteParticipation">
         <![CDATA[
-        select record.user from ParticipationRecordImpl as record where record.user.userUuid=:userUuid
+        select record.userUuis from ParticipationRecordImpl as record where record.userUuis=:userUuid
             and record.learningContext in
                 ( from CourseImpl as course where course.siteContext=:siteContext )
         ]]>
@@ -65,7 +49,7 @@
     <query name="checkForSiteMembershipInRole">
         <![CDATA[
         from ParticipationRecordImpl as participant where participant.learningContext=:course and
-            participant.user.userUuid=:userUuid
+            participant.userUuid=:userUuid
         ]]>
     </query>
 
@@ -96,20 +80,20 @@
     <query name="checkForSectionMembershipInRole">
         <![CDATA[
         from ParticipationRecordImpl as participant where participant.learningContext=:section and
-            participant.user.userUuid=:userUuid
+            participant.userUuid=:userUuid
         ]]>
     </query>
 
     <query name="findEnrollment">
         <![CDATA[
-        from EnrollmentRecordImpl as enr where enr.user.userUuid=:userUuid and
+        from EnrollmentRecordImpl as enr where enr.userUuid=:userUuid and
             enr.learningContext.uuid=:sectionUuid
         ]]>
     </query>
     
     <query name="findEnrollmentInCategory">
         <![CDATA[
-        from EnrollmentRecordImpl as enr where enr.user.userUuid=:userUuid and
+        from EnrollmentRecordImpl as enr where enr.userUuid=:userUuid and
             enr.learningContext in
                 ( from CourseSectionImpl as section where section.course=:course
                 and section.category=:category )
@@ -118,7 +102,7 @@
 
     <query name="findOtherEnrollmentsInCategory">
         <![CDATA[
-        from EnrollmentRecordImpl as enr where enr.user.userUuid in (:userUuids)
+        from EnrollmentRecordImpl as enr where enr.userUuid in (:userUuids)
             and enr.learningContext in (
                 from CourseSectionImpl as section where section.course=:course
                 and section.category=:category and
@@ -130,13 +114,13 @@
         <![CDATA[
         from ParticipationRecordImpl as participation where
             participation.learningContext.uuid=:sectionUuid and
-            participation.user.userUuid=:userUuid
+            participation.userUuid=:userUuid
         ]]>
     </query>
 
     <query name="findCategoryEnrollment">
         <![CDATA[
-        from EnrollmentRecordImpl as enr where enr.user.userUuid=:studentUuid
+        from EnrollmentRecordImpl as enr where enr.userUuid=:studentUuid
             and enr.learningContext in (
                 from CourseSectionImpl as section where section.course.siteContext=:siteContext
                 and section.category=:category )
@@ -156,24 +140,37 @@
         ]]>
     </query>
 
-    <query name="findUnsectionedEnrollmentsInCategory">
+
+
+
+
+
+
+
+
+    <query name="findSectionedStudentsInCategory">
         <![CDATA[
-        select courseEnr from EnrollmentRecordImpl as courseEnr where
-        courseEnr.learningContext.uuid=:courseUuid and courseEnr.user.userUuid not in
+        select enr.userUuid from EnrollmentRecordImpl as enr where enr.learningContext in
             (
-                select secEnr.user.userUuid from EnrollmentRecordImpl as secEnr where
-                    secEnr.learningContext in
-                (
-                    from CourseSectionImpl as section where section.course.uuid=:courseUuid and
-                    section.category=:category
-                )
+                from CourseSectionImpl as section where section.course.uuid=:courseUuid and
+                section.category=:category
             )
         ]]>
     </query>
 
+
+
+
+
+
+
+
+
+
+
     <query name="findSingleStudentSectionEnrollmentsInCourse">
         <![CDATA[
-        from EnrollmentRecordImpl as enr where enr.user.userUuid=:userUuid and
+        from EnrollmentRecordImpl as enr where enr.userUuid=:userUuid and
             enr.learningContext.id in
             (
                 select section.id from CourseSectionImpl as section where
@@ -184,32 +181,17 @@
 
     <query name="findSectionEnrollments">
         <![CDATA[
-        from EnrollmentRecordImpl as enr where enr.user.userUuid in (:studentUuids)
+        from EnrollmentRecordImpl as enr where enr.userUuid in (:studentUuids)
             and enr.learningContext.id in
             ( select section.id from CourseSectionImpl as section where section.course=:course )
         ]]>
     </query>
 
-    <query name="loadSiteParticipation">
-        <![CDATA[
-        from ParticipationRecordImpl as record where record.user.userUuid=:userUuid
-            and record.learningContext in
-            ( from CourseImpl as course where course.siteContext=:siteContext )
-        ]]>
-    </query>
-
     <query name="loadSectionParticipation">
         <![CDATA[
-        from ParticipationRecordImpl as record where record.user.userUuid=:userUuid
+        from ParticipationRecordImpl as record where record.userUuid=:userUuid
             and record.learningContext.uuid=:sectionUuid
         ]]>
     </query>
 
-    <query name="getUsersSiteMemberships">
-        <![CDATA[
-        from ParticipationRecordImpl as membership
-            where membership.user.userUuid=:userUuid and membership.learningContext in
-                (from CourseImpl as course)
-        ]]>
-    </query>
 </hibernate-mapping>

@@ -2,11 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="sections-api/src/java"/>
 	<classpathentry kind="src" path="sections-comp-shared/sakai20/src/conf"/>
-	<classpathentry kind="src" path="sections-comp-shared/standalone/src/conf"/>
 	<classpathentry kind="src" path="sections-comp-shared/sakai20/src/hibernate"/>
 	<classpathentry kind="src" path="sections-comp-shared/sakai20/src/java"/>
+	<classpathentry kind="src" path="sections-comp-shared/standalone/src/conf"/>
 	<classpathentry kind="src" path="sections-comp-shared/standalone/src/hibernate"/>
 	<classpathentry kind="src" path="sections-comp-shared/standalone/src/java"/>
+	<classpathentry kind="src" path="sections-comp-shared/integration-support/src/conf"/>
+	<classpathentry kind="src" path="sections-comp-shared/integration-support/src/java"/>
+	<classpathentry kind="src" path="sections-comp-shared/integration-support/src/test"/>
 	<classpathentry kind="src" path="sections-app/src/bundle"/>
 	<classpathentry kind="src" path="sections-api/src/bundle"/>
 	<classpathentry kind="src" path="sections-app/src/java"/>
