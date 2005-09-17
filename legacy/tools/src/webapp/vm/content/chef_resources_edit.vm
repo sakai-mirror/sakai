@@ -4,7 +4,6 @@
 ##
 #macro(editPropertyValues $tags)
 	#foreach($tag in $tags)
-		<!-- $tag.dottedname -->
 		#if($tag && $tag.label && "$!{tag.label}" != "")
 			#set($indent = "")
 			#if($tag.depth > 0)
@@ -17,7 +16,6 @@
 					#if($tag.canAddInstances())
 						[<a href="#" onclick="javascript: document.getElementById('flow').value='addInstance'; document.getElementById('field').value='$!{tag.dottedname}'; submitform('propertyForm'); return false;" title="$tlang.getString("gen.add") $tag.label">+</a>]
 					#end
-					<!-- $!{tag.dottedname} -->
 					<input type="hidden"
 						name="$!{tag.dottedname}" 
 						id="$validator.escapeJavascript("$!{tag.dottedname}")" 
@@ -33,13 +31,11 @@
 						#end
 					</label>
 					#if("$!tag.widget" == "$!STRING")
-						<!-- string $!{tag.length} -->
 						<input type="text" size="$!{tag.length}"
 							name="$!{tag.dottedname}" 
 							id="$validator.escapeJavascript("$!{tag.dottedname}")" 
 							value="$!{tag.value}" />
 					#elseif("$!tag.widget" == "$!TEXTAREA")
-						<!-- textarea $!{tag.length} -->
 						<textarea rows="4" cols="60" 
 							name="$!{tag.dottedname}" 
 							id="$validator.escapeJavascript("$!{tag.dottedname}")" >$validator.escapeHtmlTextarea($!{tag.value})</textarea>
@@ -76,20 +72,17 @@
 							#end
 						</select>
 					#elseif("$!tag.widget" == "$!BOOLEAN")
-					<!-- boolean: $!{tag.value} $TRUE -->
 						<input type="checkbox" 
 							name="$!{tag.dottedname}" 
 							id="$validator.escapeJavascript("$!{tag.dottedname}")"
 							#if("$!{tag.value}" == "$TRUE")checked="checked"#end
 							value="true" />
 					#elseif("$!tag.widget" == "$!INTEGER")
-						<!-- integer $!{tag.length} -->
 						<input type="text" size="$!{tag.length}"
 							name="$!{tag.dottedname}" 
 							id="$validator.escapeJavascript("$!{tag.dottedname}")" 
 							value="$!{tag.value}" />
 					#elseif("$!tag.widget" == "$!DOUBLE")
-						<!-- double $!{tag.length} -->
 						<input type="text" size="$!{tag.length}"
 							name="$!{tag.dottedname}" 
 							id="$validator.escapeJavascript("$!{tag.dottedname}")" 
@@ -115,8 +108,6 @@
 #set($latestYear = $year + 10)	
 #set($month = $theDate.month)
 #set($day = $theDate.day)
-<!-- $propValue $theDate -->
-<!-- year: $year month: $month day: $day y0: $earliestYear yn: $latestYear -->
 #chef_dateselectionwidget("${propName}_year" "${propName}_month" "${propName}_day" $earliestYear $latestYear $year $month $day)
 #end
 ############################################# end of macro prop_dateSelection 
@@ -125,11 +116,9 @@
 #macro(prop_timeSelectionWidget $propName $propValue)
 ## Setup a time selection widget
 #set($theTime = $propValue.breakdownLocal())
-<!-- $propValue $theTime -->
 #set($hour = $theTime.hour)
 #set($minute = $theTime.min)
 #set($second = $theTime.sec)
-<!-- hour: $hour minute: $minute second: $second -->
 #set($timeType = "am")
 #if($hour == 12 && $minute > 0)
 #set($timeType = "pm")
@@ -143,7 +132,6 @@
 #elseif ($hour == 0)
 #set($hour = 12)
 #end
-<!-- hour: $hour minute: $minute second: $second ampm: $ampm -->
 <select name="${propName}_hour" id="${propName}_hour">
 #foreach($hr in [1..12])
 	<option#if($hr == $hour) selected="selected"#end value="$hr">$hr</option>
@@ -235,7 +223,6 @@
 	<p class="instruction">
 		$tlang.getString("edit.instr") <span class="reqStarInline">*</span>
 	</p>
-	<!-- $item -->
 	<div class ="chefBreadCrumb">
 		$tlang.getString("gen.location")
 		<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
@@ -340,7 +327,6 @@
 			#else
 				<p class="shorttext">
 					<label for="fileName">$tlang.getString("rep.thisfile")</label>
-					<!-- $validator.escapeHtml("$!item.filename") -->
 					<input type="file" name="fileName" id="fileName"  class ="upload" />
 				</p>
 			#end
@@ -407,7 +393,6 @@
 				#end
 			</p>	
 		#end
-		<!-- item.canSetQuota() == $item.canSetQuota() -->
 		#if($item.canSetQuota())
 			<p class="shorttext">
 				<label for="hasQuota">

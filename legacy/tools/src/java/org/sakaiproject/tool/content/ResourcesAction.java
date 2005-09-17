@@ -166,9 +166,6 @@ public class ResourcesAction
 	/** The copy, cut, paste not operate on collection string */
 	private static final String RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING = rb.getString("notsupported");
 	
-	/** The multi max add number */
-	private static final int MULTI_ADD_NUMBER = 10;
-	
 	/** State attribute for state initialization.  */
 	private static final String STATE_INITIALIZED = "resources.initialized";
 
@@ -276,7 +273,6 @@ public class ResourcesAction
 	private static final String STATE_CREATE_TYPE = "resources.create_type";
 	private static final String STATE_CREATE_ITEMS = "resources.create_items";
 	private static final String STATE_CREATE_COLLECTION_ID = "resources.create_collection_id";
-	private static final String STATE_CREATE_INTENT = "resources.create_intent";
 	private static final String STATE_CREATE_NUMBER = "resources.create_number";
 	private static final String STATE_CREATE_ALERTS = "resources.create_alerts";
 	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
@@ -302,9 +298,6 @@ public class ResourcesAction
 	/************** the metadata extension of edit/create contexts *****************************************/
 
 	private static final String STATE_METADATA_GROUPS = "resources.metadata.types";
-	private static final String STATE_METADATA_GROUP = "resources.metadata.type";
-	private static final String STATE_METADATA_PROPERTIES = "resources.metadata.properties";
-	private static final String DUBLIN_CORE = "Dublin Core Metadata"; 
 	
 	private static final String INTENT_REVISE_FILE = "revise";
 	private static final String INTENT_REPLACE_FILE = "replace";
@@ -335,28 +328,6 @@ public class ResourcesAction
 	/** The not empty delete ids */
 	private static final String STATE_NOT_EMPTY_DELETE_IDS = "resource.not_empty_delete_ids";
 
-	/************** the replace context *****************************************/
-
-	/** The replace ids */
-	private static final String STATE_REPLACE_ID = "resources.replace_id";
-
-	/** The replace file os names */
-	private static final String STATE_REPLACE_OS_NAME = "resources.replace_os_name";
-
-	/** The replace file titles */
-	private static final String STATE_REPLACE_TITLE = "resources.replace_title";
-
-	/** The replace file content */
-	private static final String STATE_REPLACE_CONTENT = "resources.replace_content";
-
-	/** The replace file contemt type */
-	private static final String STATE_REPLACE_CONTENT_TYPE = "resources.replace_content_type";
-
-	/************** the revise document context *****************************************/
-
-	/** The revise document id */
-	private static final String STATE_REVISE_ID = "resources.revise_id";
-
 	/************** the cut items context *****************************************/
 
 	/** The cut item ids */
@@ -379,8 +350,6 @@ public class ResourcesAction
 	private static final String MODE_DELETE_CONFIRM = "deleteConfirm";
 	private static final String MODE_MORE = "more";
 	private static final String MODE_PROPERTIES = "properties";
-	private static final String MODE_REPLACE = "replace";
-	private static final String MODE_SHOW_COPYRIGHT_ALERT = "showcopyrightalert";
 
 	/** modes for attachment helper */
 	public static final String MODE_ATTACHMENT_SELECT = "resources.attachment_select";
@@ -1019,9 +988,6 @@ public class ResourcesAction
 	{
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		ParameterParser params = data.getParameters();
-		
-		
 		
 		state.setAttribute (STATE_MODE, MODE_LIST);
 		
@@ -1166,6 +1132,7 @@ public class ResourcesAction
 				{
 					try
 					{
+						// Getting the quota as a long validates the property
 						long quota = properties.getLongProperty(ResourceProperties.PROP_COLLECTION_BODY_QUOTA);
 						context.put("hasQuota", Boolean.TRUE);
 						context.put("quota", properties.getProperty(ResourceProperties.PROP_COLLECTION_BODY_QUOTA));
@@ -1315,6 +1282,7 @@ public class ResourcesAction
 			{
 				try
 				{
+					// Getting the quota as a long validates the property value
 					long quota = properties.getLongProperty(ResourceProperties.PROP_COLLECTION_BODY_QUOTA);
 					context.put("hasQuota", Boolean.TRUE);
 					context.put("quota", properties.getProperty(ResourceProperties.PROP_COLLECTION_BODY_QUOTA));
@@ -2049,6 +2017,16 @@ public class ResourcesAction
 		
 	}
 	
+	/**
+	 * Convert from a hierarchical list of ResourcesMetadata objects to an org.w3.dom.Document,
+	 * then to a string representation, then to a metaobj ElementBean.  Validate the ElementBean
+	 * against a SchemaBean.  If it validates, save the string representation. Otherwise, on 
+	 * return, the parameter contains a non-empty list of ValidationError objects describing the 
+	 * problems. 
+	 * @param attempt A wrapper for the EditItem object which contains the hierarchical list of 
+	 * ResourcesMetadata objects for this form.  Also contains an initially empty list of 
+	 * ValidationError objects that describes any of the problems found in validating the form.
+	 */
 	private static void validateStructuredArtifact(SaveArtifactAttempt attempt)
 	{
 		EditItem item = attempt.getItem();
@@ -2190,82 +2168,6 @@ public class ResourcesAction
 			errors.addAll(validator.validate(bean));
 		}
 		attempt.setErrors(errors);
-		
-	}
-
-	/**
-	 * @param state
-	 */
-	private static void modifyStructuredArtifact(SessionState state, ContentResourceEdit resource, ResourcePropertiesEdit resourceProperties) 
-	{
-		EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
-		List properties = item.getProperties();
-		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
-		
-		Document doc = Xml.createDocument();
-		Node root = doc.createElement(item.getRootname());
-		doc.appendChild(root);
-		int count = 0;
-		
-		Iterator propIt = properties.iterator();
-		while(propIt.hasNext())
-		{
-			ResourcesMetadata prop = (ResourcesMetadata) propIt.next();
-			String propname = prop.getLocalname();
-			List values = item.getList(propname);
-			Iterator valueIt = values.iterator();
-			while(valueIt.hasNext())
-			{
-				try
-				{
-					Object value = valueIt.next();
-					if(value == null)
-					{
-						// do nothing
-					}
-					else
-					{
-						Node propnode = doc.createElement(propname);
-						root.appendChild(propnode);
-						if(value instanceof String)
-						{
-							propnode.appendChild(doc.createTextNode((String)value));
-						}
-						else
-						{
-							propnode.appendChild(doc.createTextNode(value.toString()));
-						}
-						count++;
-					}
-				}
-				catch(Throwable e)
-				{			
-
-				}
-			}
-		}
-		if(count > 0)
-		{
-			String content = Xml.writeDocumentToString(doc);
-			resource.setContentLength(content.length());
-			resource.setContent(content.getBytes());
-			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());
-			resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
-			resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
-			resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, item.getFormtype());
-			List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
-			saveMetadata(resourceProperties, metadataGroups, item);
-
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-			{
-				// deal with pubview when in resource mode//%%%
-				if (! item.isPubviewset())
-				{
-					ContentHostingService.setPubView(resource.getId(), item.isPubview());
-				}
-			}
-		}
-		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}
 
@@ -3021,6 +2923,7 @@ public class ResourcesAction
 			{
 				try
 				{
+					// this is a test to see if the collection exists.  If not, it is created.
 					ContentCollection collection = ContentHostingService.getCollection (collectionId);
 				}
 				catch (IdUnusedException e )
@@ -3208,15 +3111,6 @@ public class ResourcesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
-		String currentMode = (String) state.getAttribute (STATE_MODE);
-		/*
-		String collectionId = data.getParameters ().getString ("collectionId");
-		if (collectionId != null)
-		{
-			state.setAttribute (STATE_COLLECTION_ID, collectionId);
-		}
-		*/
-		
 		String from = data.getParameters ().getString ("from");
 		String mode = (String) state.getAttribute(STATE_MODE);
 		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
@@ -3294,9 +3188,6 @@ public class ResourcesAction
 						boolean cutPasteSameCollection = false;
 						String displayName = p.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 
-						// count number
-						int countNumber = 1;
-						
 						// till paste successfully or it fails
 						ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 						// add the properties of the pasted item
@@ -3415,11 +3306,6 @@ public class ResourcesAction
 						ResourceProperties p = ContentHostingService.getProperties(currentPasteCopiedItem);
 						String displayName = DUPLICATE_STRING + p.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 						String id = collectionId + Validator.escapeResourceName(displayName);
-
-						// cut-paste to the same collection?
-						boolean cutPasteSameCollection = false;
-
-						int countNumber = 1;
 
 						ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 
@@ -3576,9 +3462,6 @@ public class ResourcesAction
 						String displayName = SHORTCUT_STRING + p.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 						String id = collectionId + Validator.escapeResourceName(displayName);
 	
-						// add successful?
-						boolean addResourceSuccess = false;
-						boolean addResourceFailed = false;
 						//int countNumber = 2;
 						ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 						// add the properties of the pasted item
@@ -3599,22 +3482,18 @@ public class ResourcesAction
 						{
 							ContentResource referedResource= ContentHostingService.getResource (currentPasteItem);
 							ContentResource newResource = ContentHostingService.addResource (id, ResourceProperties.TYPE_URL, referedResource.getUrl ().getBytes (), resourceProperties, NotificationService.NOTI_NONE);
-							addResourceSuccess = true;
 						}
 						catch (InconsistentException e)
 						{
 							addAlert(state, RESOURCE_INVALID_TITLE_STRING);
-							addResourceFailed = true;
 						}
 						catch (OverQuotaException e)
 						{
 							addAlert(state, rb.getString("overquota"));
-							addResourceFailed = true;
 						}
 						catch (IdInvalidException e)
 						{
 							addAlert(state, rb.getString("title") + " " + e.getMessage ());
-							addResourceFailed = true;
 						}
 						catch (IdUsedException e)
 						{
@@ -4283,8 +4162,6 @@ public class ResourcesAction
 
 			ResourceProperties properties = null;
 
-			String displayName = NULL_STRING;
-
 			// populate the property list
 			try
 			{
@@ -4475,6 +4352,8 @@ public class ResourcesAction
 							// valid protocol?
 							try
 							{
+								// test to see if the input validates as a URL. 
+								// Checks string for format only.
 								URL u = new URL(url);
 								redit.setContent(url.getBytes());
 							}
@@ -4486,6 +4365,8 @@ public class ResourcesAction
 									Matcher matcher = pattern.matcher(url);
 									if(matcher.matches())
 									{
+										// if URL has "unknown" protocol, check remaider with
+										// "http" protocol and accept input it that validates.
 										URL test = new URL("http://" + matcher.group(2));
 										redit.setContent(url.getBytes());
 									}
@@ -4808,6 +4689,7 @@ public class ResourcesAction
 					// valid protocol?
 					try
 					{
+						// test format of input
 						URL u = new URL(url);
 						item.setFilename(url);
 					}
@@ -4815,12 +4697,15 @@ public class ResourcesAction
 					{
 						try
 						{
+							// if URL did not validate, check whether the problem was an 
+							// unrecognized protocol, and accept input if that's the case.
 							Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
 							Matcher matcher = pattern.matcher(url);
 							if(matcher.matches())
 							{
 								URL test = new URL("http://" + matcher.group(2));
-								item.setFilename(url);							}
+								item.setFilename(url);
+							}
 							else
 							{
 								// invalid url
@@ -5168,6 +5053,7 @@ public class ResourcesAction
 						// valid protocol?
 						try
 						{
+							// check format of input
 							URL u = new URL(url);
 							item.setFilename(url);
 						}
@@ -5175,6 +5061,8 @@ public class ResourcesAction
 						{
 							try
 							{
+								// if URL did not validate, check whether the problem was an 
+								// unrecognized protocol, and accept input if that's the case.
 								Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
 								Matcher matcher = pattern.matcher(url);
 								if(matcher.matches())
