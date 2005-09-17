@@ -19,7 +19,7 @@ body{width:100%;padding:0;font-family:Verdana,Geneva,Arial,Helvetica,sans-serif;
 #tabNavigation{
 	background:#084A87;
 	white-space:nowrap;
-	list-style:none none none;
+	list-style:none inside none;
 	font-size:.8em;
 	height:auto;
 /*	margin:0 0 -2px 3px;*/
@@ -85,7 +85,6 @@ input{
 	border:1px solid #90A1C6;
 	background-color:#E9ECF3;
 	margin-left:1em;
-	font-size:.8.5em;
 	padding:1px;
 	color:#084A87
 }
