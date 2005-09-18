@@ -337,8 +337,7 @@
 			</label>
 			<textarea id="description" name="description" rows="2" cols="40" wrap="virtual">$validator.escapeHtmlTextarea("$!item.description")</textarea>
 		</p>	
-		#if (! $item.isFolder()) 
-			#if (! $item.isUrl()) 
+		#if ($item.isFileUpload() || $item.isHtml() || $item.isPlaintext()) 
 				#if ($!copyrightTypes)
 					<p class="shorttext">
 						<span class="reqStar">*</span>
@@ -376,7 +375,6 @@
 						</tr>
 					</table>
 				#end
-			#end
 		#end
 	
 		#if (!$dropboxMode)

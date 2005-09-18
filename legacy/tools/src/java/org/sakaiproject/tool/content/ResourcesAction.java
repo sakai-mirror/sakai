@@ -2169,7 +2169,7 @@ public class ResourcesAction
 		}
 		attempt.setErrors(errors);
 		
-	}
+	}	// validateStructuredArtifact
 
 	/**
 	 * Add a new folder to ContentHosting for each EditItem in the state attribute named STATE_CREATE_ITEMS.  
