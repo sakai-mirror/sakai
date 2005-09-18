@@ -4577,9 +4577,9 @@ public class ResourcesAction
 			alerts = new HashSet();
 		}
 		String intent = params.getString("intent");
-
 		String oldintent = (String) state.getAttribute(STATE_EDIT_INTENT);
-		boolean intent_has_changed = (item.isHtml() || item.isPlaintext()) && !intent.equals(oldintent);
+		boolean upload_file = item.isFileUpload() || ((item.isHtml() || item.isPlaintext()) && INTENT_REPLACE_FILE.equals(intent) && INTENT_REPLACE_FILE.equals(oldintent));
+		boolean revise_file = (item.isHtml() || item.isPlaintext()) && INTENT_REVISE_FILE.equals(intent) && INTENT_REVISE_FILE.equals(oldintent);
 		
 		String name = params.getString("name");
 		if(name == null || "".equals(name.trim()))
@@ -4603,32 +4603,9 @@ public class ResourcesAction
 		}
 		
 		item.setContentHasChanged(false);
-
-		if(item.isFolder())
+		
+		if(upload_file)
 		{
-			
-		}
-		else if(item.isUrl())
-		{
-			
-		}
-		else if(item.isStructuredArtifact())
-		{
-
-		}
-		else if(! intent_has_changed )
-		{
-			// this condition is satisfied if the value of "intent" is the same as before 
-			// OR if the item is not plain-text or html
-			
-			// check for input from editor (textarea)
-			String content = params.getString("content");
-			if(content != null)
-			{
-				item.setContent(content);
-				item.setContentHasChanged(true);
-			}
-			
 			// check for file replacement
 			FileItem fileitem = params.getFileItem("fileName");
 			if(fileitem == null)
@@ -4661,8 +4638,17 @@ public class ResourcesAction
 				}
 			}
 		}
-		
-		if(item.isUrl())
+		else if(revise_file)
+		{
+			// check for input from editor (textarea)
+			String content = params.getString("content");
+			if(content != null)
+			{
+				item.setContent(content);
+				item.setContentHasChanged(true);
+			}
+		}
+		else if(item.isUrl())
 		{
 			String url = params.getString("Url");
 			if(url == null || url.equals(""))
@@ -4742,7 +4728,8 @@ public class ResourcesAction
 				capturePropertyValues(params, item, item.getProperties());
 			}
 		}
-		else
+		
+		if(item.isFileUpload() || item.isHtml() || item.isPlaintext())
 		{
 			// check for copyright status
 			// check for copyright info
@@ -4774,7 +4761,6 @@ public class ResourcesAction
 				item.setCopyrightStatus( copyrightStatus );
 			}
 			item.setCopyrightAlert(copyrightAlert != null);
-
 		}
 
 		boolean pubviewset = item.isPubviewset();
@@ -4889,7 +4875,6 @@ public class ResourcesAction
 		}
 		state.setAttribute(STATE_EDIT_ITEM, item);
 		state.setAttribute(STATE_EDIT_ALERTS, alerts);
-
 
 	}	// captureValues
 	
