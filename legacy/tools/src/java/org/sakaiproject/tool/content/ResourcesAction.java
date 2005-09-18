@@ -2307,22 +2307,9 @@ public class ResourcesAction
 			String filename = Validator.escapeResourceName(item.getFilename()).trim();
 			if("".equals(filename))
 			{
-				if(item.isHtml())
-				{
-					filename = item.getName() + ".html";
-				}
-				else if(item.isPlaintext())
-				{
-					filename = item.getName() + ".txt";
-				}
-				else
-				{
-					filename = item.getName();
-				}
-					
-				filename = Validator.escapeResourceName(filename);
+				filename = Validator.escapeResourceName(item.getName());
 			}
-			int extensionIndex = filename.lastIndexOf (ResourcesMetadata.DOT);
+			int extensionIndex = filename.lastIndexOf (".");
 			String extension = "";
 			if (extensionIndex > 0)
 			{
