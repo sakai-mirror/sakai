@@ -331,6 +331,10 @@
 				</p>
 			#end
 		#end
+		######################## ================ Properties of Item ================ ########################
+		<p class="discTria">
+			$tlang.getString("add.props")
+		</p>
 		<p class="shorttext">
 			<label for="description">
 				$tlang.getString("gen.description")
