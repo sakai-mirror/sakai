@@ -7,9 +7,30 @@
 		  window.open(theURL,winName,winSettings);
 		  return false;
 		}
+		function toggleSelectAll(caller, elementName)
+		{
+			var newValue = caller.checked;
+			var elements = document.getElementsByName(elementName);
+			if(elements)
+			{
+				for(var i = 0; i < elements.length; i++)
+				{
+					elements[i].checked = newValue;
+				}
+			}
+			if(newValue == true)
+			{
+				caller.title = "$tlang.getString("list.unselect")"
+			}
+			else
+			{
+				caller.title = "$tlang.getString("list.select")"
+			}
+		}
 	//-->
 </script>
 <!-- this is the list template -->
+#set($num = 0)
 <div class="portletBody">
 	#set($itemsOnLine = 0)
 	#if ($atHome && $atHome == $TRUE)
@@ -31,10 +52,11 @@
 	#if ($alertMessage)
 		<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" ></div>
 	#end
-	<form name="showForm" action="#toolForm("ResourcesAction")" method="post">
+	<form name="showForm" id="showForm" action="#toolForm("ResourcesAction")" method="post">
 		<input type="hidden" name="source" value="0" />
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
 		<input type="hidden" name="from" value="list" />
+		<input type="hidden" name="sakai_action" id="sakai_action" value="" />
 		######################  Page Title / Breadcrumbs  ##############
 		<h3>
 			<span class ="chefBreadCrumb">
@@ -69,11 +91,16 @@
 				#end
 			</span>		
 		</h3>
+		<div class="navIntraTool">
+			<a href="#" title="$tlang.getString("list.remove")" onclick="javascript:document.getElementById('sakai_action').value='doDeleteconfirm';document.getElementById('showForm').submit();" >$tlang.getString("list.remove")</a>
+##			<a href="#" title="$tlang.getString("list.move")">$tlang.getString("list.move")</a> |
+##			<a href="#" title="$tlang.getString("list.copyall")">$tlang.getString("list.copyall")</a>
+		</div>
 		######################  Heirarchical list of resource folders/items  ##############
 		<table class="listHier speciallistHier" cellspacing="0" border="0">
 			######################  Column labels, sort controls, expand/collapse all  ##############
 			<tr>
-				<th id="title">
+				<th id="expansion">
 					#if ($expandallflag && "$expandallflag" == "$TRUE")
 						<a href="#toolLinkParam("ResourcesAction" "doUnexpandall" "collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('collapseall')">
 							<img src = "#imageLink("sakai/collapse-expand.gif")" border="0" title="$tlang.getString('collapseall')" alt="$tlang.getString('collapseall')" hspace="0" />
@@ -83,6 +110,11 @@
 							<img src = "#imageLink("sakai/expand-collapse.gif")" border="0" title="$tlang.getString('expandall')" alt="$tlang.getString('expandall')" hspace="0" />
 						</a>								 
 					#end
+				</th>
+				<th id="checkboxes">
+					<input type="checkbox" name="selectall" id="selectall" title="$tlang.getString("list.select")" onchange="javascript:toggleSelectAll(this, 'selectedMembers')" />
+				</th>
+				<th id="title">
 					<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=title&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sorttit')"> 
 						$tlang.getString("gen.title1")
 						#if ($currentSortedBy.equals($resourceProperties.NamePropDisplayName)) 
@@ -117,6 +149,14 @@
 			#foreach($root in $this_site)
 				############################### Show top level folder #################
 				<tr>
+					<td headers="expansion">
+					</td>
+					<td headers="checkboxes">
+						#if($root.canDelete())
+							<input type="checkbox" name="selectedMembers" id="list$num" value="$root.id" />
+							#set($num = $num + 1)
+						#end
+					</td>
 					<td headers="title">
 						#if ($root.isFolder())
 							#if ($root.isEmpty())
@@ -220,6 +260,14 @@
 						#end
 						<tr>
 							######################  Item title and action links  ##############
+							<td headers="expansion">
+							</td>
+							<td headers="checkboxes">
+								#if($member.canDelete())
+									<input type="checkbox" name="selectedMembers" id="list$num" value="$member.id" />
+									#set($num = $num + 1)
+								#end
+							</td>
 							<td headers="title" style="text-indent:$width">
 								#if ($member.isFolder())
 									#if ($member.isEmpty())
@@ -298,6 +346,7 @@
 											#set ($itemsOnLine = $itemsOnLine + 1)
 											<a href="#toolLinkParam("ResourcesAction" "doMore" "from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)")" title="$tlang.getString('list.props')">$tlang.getString("list.props").trim()</a>
 										#end
+										#*
 										####### deal with deleting folder
 										#if ($member.canDelete())
 											#if ($itemsOnLine > 0)
@@ -305,7 +354,8 @@
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
 											<a href="#toolLinkParam("ResourcesAction" "doDeleteconfirm" "from=list&selectedMembers=$validator.escapeUrl($member.id)")" title="$tlang.getString('list.del')">$tlang.getString("list.del").trim()</a>
-										#end								
+										#end
+										*#
 										####### deal with folder permissions
 										#if($member.canRevise() && "$!inMyWorkspace" == "false")
 											#if ($itemsOnLine > 0)
@@ -350,6 +400,7 @@
 												<a href="#toolLinkParam("ResourcesAction" "doCopyitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('list.copy')">$tlang.getString("list.copy").trim()</a>
 											#end
 										#end
+										#*
 										####### deal with deleting item
 										#if ($member.canDelete())
 											#if ($itemsOnLine > 0)
@@ -358,7 +409,7 @@
 											#set ($itemsOnLine = $itemsOnLine + 1)
 											<a href="#toolLinkParam("ResourcesAction" "doDeleteconfirm" "from=list&selectedMembers=$validator.escapeUrl($member.id)")" title="$tlang.getString('list.del')">$tlang.getString("list.del").trim()</a>
 										#end								
-			
+										*#
 										####### deal with duplicating item
 										#if($member.canRead() && $member.canAddItem())
 											#if ($itemsOnLine > 0)
@@ -401,6 +452,14 @@
 					#foreach($root in $other_sites)
 						############################### Show top level folder #################
 						<tr>
+							<td headers="expansion">
+							</td>
+							<td headers="checkboxes">
+								#if($root.canDelete())
+									<input type="checkbox" name="selectedMembers" id="list$num" value="$root.id" />
+									#set($num = $num + 1)
+								#end
+							</td>
 							<td headers="title">
 								#if ($root.isFolder())
 									#if ($root.isEmpty())
@@ -504,6 +563,14 @@
 								#end
 								<tr>
 									######################  Item title and action links  ##############
+									<td headers="expansion">
+									</td>
+									<td headers="checkboxes">
+										#if($member.canDelete())
+											<input type="checkbox" name="selectedMembers" id="list$num" value="$member.id" />
+											#set($num = $num + 1)
+										#end
+									</td>
 									<td headers="title" style="text-indent:$width">
 										#if ($member.isFolder())
 											#if ($member.isEmpty())
@@ -582,6 +649,7 @@
 													#set ($itemsOnLine = $itemsOnLine + 1)
 													<a href="#toolLinkParam("ResourcesAction" "doMore" "from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)")" title="$tlang.getString('list.props')">$tlang.getString("list.props").trim()</a>
 												#end
+												#*
 												####### deal with deleting folder
 												#if ($member.canDelete())
 													#if ($itemsOnLine > 0)
@@ -589,7 +657,8 @@
 													#end
 													#set ($itemsOnLine = $itemsOnLine + 1)
 													<a href="#toolLinkParam("ResourcesAction" "doDeleteconfirm" "from=list&selectedMembers=$validator.escapeUrl($member.id)")" title="$tlang.getString('list.del')">$tlang.getString("list.del").trim()</a>
-												#end								
+												#end		
+												*#
 												####### deal with folder permissions
 												#if($member.canRevise() && "$!inMyWorkspace" == "false")
 													#if ($itemsOnLine > 0)
@@ -634,6 +703,7 @@
 														<a href="#toolLinkParam("ResourcesAction" "doCopyitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('list.copy')">$tlang.getString("list.copy").trim()</a>
 													#end
 												#end
+												#*
 												####### deal with deleting item
 												#if ($member.canDelete())
 													#if ($itemsOnLine > 0)
@@ -642,7 +712,7 @@
 													#set ($itemsOnLine = $itemsOnLine + 1)
 													<a href="#toolLinkParam("ResourcesAction" "doDeleteconfirm" "from=list&selectedMembers=$validator.escapeUrl($member.id)")" title="$tlang.getString('list.del')">$tlang.getString("list.del").trim()</a>
 												#end								
-					
+												*#
 												####### deal with duplicating item
 												#if($member.canRead() && $member.canAddItem())
 													#if ($itemsOnLine > 0)
