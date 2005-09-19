@@ -3925,16 +3925,16 @@ public class SiteAction extends PagedResourceActionII
 					catch (IdUnusedException e)
 					{
 						Log.warn("chef", "SiteAction.doSite_delete_confirmed - IdUnusedException " + id);
-						addAlert(state, rb.getString("java.sitewith")+" " + id + " "+ rb.getString("java.couldnt")+" ");
+						addAlert(state, rb.getString("java.sitewith")+" " +  site_title + "(" + id + ") "+ rb.getString("java.couldnt")+" ");
 					}
 					catch (PermissionException e)
 					{
-						Log.warn("chef", "SiteAction.doSite_delete_confirmed -  PermissionException, site " + id);
+						Log.warn("chef", "SiteAction.doSite_delete_confirmed -  PermissionException, site " +  site_title + "(" + id + ").");
 						addAlert(state, site_title + " "+ rb.getString("java.dontperm")+" ");
 					}
 					catch (InUseException e)
 					{
-						Log.warn("chef", "SiteAction.doSite_delete_confirmed -  InUseException, site  " + id);
+						Log.warn("chef", "SiteAction.doSite_delete_confirmed -  InUseException, site  " +  site_title + "(" + id + ").");
 						addAlert(state, site_title + " " + rb.getString("java.already")+ " ");
 					}
 				}
@@ -4888,7 +4888,7 @@ public class SiteAction extends PagedResourceActionII
 					}
 					catch (InUseException e)
 					{
-						addAlert(state, this + " "+rb.getString("java.theaccess"));
+						addAlert(state, this + " "+rb.getString("java.theaccess") + " " + site.getTitle());
 						return;
 					}	
 					catch (Exception e)
@@ -6538,8 +6538,17 @@ public class SiteAction extends PagedResourceActionII
 		}
 		catch (InUseException e)
 		{
-			addAlert(state, rb.getString("java.thissite")+" " + siteId + " "+rb.getString("java.rightnow")+" "); 
-			addAlert(state, rb.getString("java.youalready")+" " + siteId + " "+rb.getString("java.another"));	
+			try
+			{
+				Site s = SiteService.getSite(siteId);
+				addAlert(state, rb.getString("java.thissite")+" "+ s.getTitle() + "(" + siteId + ") "+rb.getString("java.rightnow")+" "); 
+				addAlert(state, rb.getString("java.youalready")+" "+ s.getTitle() + "(" + siteId + ") "+rb.getString("java.another"));
+			}
+			catch (Exception ignore)
+			{
+				addAlert(state, rb.getString("java.thissite")+" " + siteId + " "+rb.getString("java.rightnow")+" "); 
+				addAlert(state, rb.getString("java.youalready")+" " + siteId + " "+rb.getString("java.another"));
+			}
 			Log.warn("chef", this + e.toString());
 		}
 		
@@ -7103,7 +7112,8 @@ public class SiteAction extends PagedResourceActionII
 	{ 
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
-		String realmId = SiteService.siteReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId());
+		Site s = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+		String realmId = SiteService.siteReference(s.getId());
 		if (RealmService.allowUpdateRealm(realmId))
 		{
 			try
@@ -7189,17 +7199,17 @@ public class SiteAction extends PagedResourceActionII
 			catch (IdUnusedException e)
 			{
 				addAlert(state, rb.getString("java.problem2"));
-				Log.warn("chef", this + "  IdUnusedException " + realmId);
+				Log.warn("chef", this + "  IdUnusedException " + s.getTitle() + "(" + realmId + "). ");
 			}
 			catch( PermissionException e)
 			{
 				addAlert(state, rb.getString("java.changeroles"));
-				Log.warn("chef", this + "  PermissionException " + realmId);
+				Log.warn("chef", this + "  PermissionException " + s.getTitle() + "(" + realmId + "). ");
 			}
 			catch (InUseException e)
 			{
 				addAlert(state, rb.getString("java.siteinuse"));
-				Log.warn("chef", this + " InUsedException " + realmId);
+				Log.warn("chef", this + " InUsedException " + s.getTitle() + "(" + realmId + "). ");
 			}
 		}
 		
@@ -8483,19 +8493,19 @@ public class SiteAction extends PagedResourceActionII
 			}
 			catch (IdUnusedException e)
 			{
-				Log.warn("chef", this + " IdUnusedException, " + realmId + " not found, or not an RealmEdit object");
+				Log.warn("chef", this + " IdUnusedException, " + site.getTitle() + "(" + realmId + ") not found, or not an RealmEdit object");
 				addAlert(state, rb.getString("java.cannotedit"));
 				return; 
 			}
 			catch (PermissionException e)
 			{
-				Log.warn("chef", this + " PermissionException, user does not have permission to edit RealmEdit object " + realmId + ". ");
+				Log.warn("chef", this + " PermissionException, user does not have permission to edit RealmEdit object " + site.getTitle() + "(" + realmId + "). ");
 				addAlert(state, rb.getString("java.notaccess"));
 				return;
 			}
 			catch (InUseException e)
 			{
-				addAlert(state, rb.getString("java.theaccessto")+" " + realmId + " "+rb.getString("java.theaccessto2"));
+				addAlert(state, rb.getString("java.theaccessto")+ " " + site.getTitle() + "(" + realmId + ") "+rb.getString("java.theaccessto2"));
 				return;
 			}	
 		}
@@ -8511,19 +8521,19 @@ public class SiteAction extends PagedResourceActionII
 			}
 			catch (IdUnusedException e)
 			{
-				Log.warn("chef", this + " IdUnusedException, " + realmId + " not found, or not an RealmEdit object");
+				Log.warn("chef", this + " IdUnusedException, " + site.getTitle() + "(" + realmId + ") not found, or not an RealmEdit object");
 				addAlert(state, rb.getString("java.cannotclasses"));
 				return;
 			}
 			catch (PermissionException e)
 			{
-				Log.warn("chef", this + " PermissionException, user does not have permission to edit RealmEdit object " + realmId + ". ");
+				Log.warn("chef", this + " PermissionException, user does not have permission to edit RealmEdit object " + site.getTitle() + "(" + realmId + "). ");
 				addAlert(state, rb.getString("java.notaccess"));
 				return;
 			}
 			catch (InUseException e)
 			{
-				addAlert(state, rb.getString("java.theaccessto")+ " " + realmId + " "+rb.getString("java.theaccessto2"));
+				addAlert(state, rb.getString("java.theaccessto")+ " " + site.getTitle() + "(" + realmId + ") "+rb.getString("java.theaccessto2"));
 				return;
 			}	
 	
@@ -8780,17 +8790,17 @@ public class SiteAction extends PagedResourceActionII
 			}
 			catch (IdUnusedException e)
 			{
-				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + id + " not found");
+				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
 			}
 			catch (PermissionException e)
 			{
 				addAlert(state, rb.getString("java.makechanges"));
-				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + id + " not found");
+				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
 			}
 			catch (InUseException e)
 			{
 				addAlert(state, rb.getString("java.because"));
-				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + id + " not found");
+				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
 			}
 		}
 		 
@@ -9972,7 +9982,6 @@ public class SiteAction extends PagedResourceActionII
 		SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
 		site.setPublished(published);
 		SiteInfo siteInfo = (SiteInfo)state.getAttribute(STATE_SITE_INFO);
-		String site_type = (String)state.getAttribute(STATE_SITE_TYPE);
 		
 		String id = site.getId();
 		site.setPublished(published);
@@ -9985,17 +9994,17 @@ public class SiteAction extends PagedResourceActionII
 		}
 		catch (IdUnusedException e)
 		{
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + id + " not found");
+			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
 		}
 		catch (PermissionException e)
 		{
 			addAlert(state, rb.getString("java.makechanges"));
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + id + " not found");
+			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
 		}
 		catch (InUseException e)
 		{
 			addAlert(state, rb.getString("java.because"));
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + id + " not found");
+			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
 		}
 
 	} // commitSite
@@ -10004,6 +10013,7 @@ public class SiteAction extends PagedResourceActionII
 	{
 		SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
 		String id = site.getId();
+		SiteInfo siteInfo = (SiteInfo)state.getAttribute(STATE_SITE_INFO);
 		SiteService.commitEdit(site);
 		try
 		{
@@ -10012,17 +10022,17 @@ public class SiteAction extends PagedResourceActionII
 		}
 		catch (IdUnusedException e)
 		{
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + id + " not found");
+			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
 		}
 			catch (PermissionException e)
 		{
 			addAlert(state, rb.getString("java.makechanges"));
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + id + " not found");
+			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
 		}
 		catch (InUseException e)
 		{
 			addAlert(state, rb.getString("java.because"));
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + id + " not found");
+			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
 		}
 		
 	}// commitSite
@@ -10634,7 +10644,8 @@ public class SiteAction extends PagedResourceActionII
 		try
 		{
 			User user = UserDirectoryService.getUser(id);
-			String realmId = SiteService.siteReference(((SiteEdit) state.getAttribute(STATE_SITE_INSTANCE)).getId());
+			SiteEdit sEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+			String realmId = SiteService.siteReference(sEdit.getId());
 			if (RealmService.allowUpdateRealm(realmId))
 			{
 				try
@@ -10649,15 +10660,15 @@ public class SiteAction extends PagedResourceActionII
 				}
 				catch( PermissionException e)
 				{
-					message.append(rb.getString("java.haveadd")+" " + id + " "+rb.getString("java.tothissite")+" \n");
+					message.append(rb.getString("java.haveadd")+" " + sEdit.getTitle() + "(" + id + ") "+rb.getString("java.tothissite")+" \n");
 				}
 				catch (InUseException e)
 				{
-					message.append(rb.getString("java.elsewhere")+" " + id + " "+rb.getString("java.cadded")+" \n");
+					message.append(rb.getString("java.elsewhere")+" " + sEdit.getTitle() + "(" + id + ") "+rb.getString("java.cadded")+" \n");
 				}
 				catch (Exception e)
 				{
-					message.append(rb.getString("java.unable")+ " " + id + " "+rb.getString("java.tothissite")+" \n" + e.toString());
+					message.append(rb.getString("java.unable")+ " "+ sEdit.getTitle() + "(" + id + ") "+rb.getString("java.tothissite")+" \n" + e.toString());
 				}
 			}
 		}
