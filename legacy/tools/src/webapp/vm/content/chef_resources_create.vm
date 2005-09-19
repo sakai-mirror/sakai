@@ -316,9 +316,15 @@
 		<input type="hidden" name="metadataGroup" id="metadataGroup" value="*" />
 		<input type="hidden" name="field"  id="field" value="no value" />
 		<input type="hidden" name="index" id="index" value="0" />
-		#if("$itemType" == "$TYPE_UPLOAD")
+		#if("$itemType" == "$TYPE_UPLOAD" || "$itemType" == "$TYPE_FOLDER" || "$itemType" == "$TYPE_URL")
 			<p class="shorttext">
-				<label for="numberOfItems">$tlang.getString("add.numfiles")</label>
+				#if("$itemType" == "$TYPE_FOLDER")
+					<label for="numberOfItems">$tlang.getString("add.numfldrs")</label>
+				#elseif("$itemType" == "$TYPE_UPLOAD")
+					<label for="numberOfItems">$tlang.getString("add.numfiles")</label>
+				#elseif("$itemType" == "$TYPE_URL")
+					<label for="numberOfItems">$tlang.getString("add.numurls")</label>
+				#end
 				<select name="numberOfItems" id="numberOfItems" onchange="javascript:document.getElementById('flow').value='updateNumber';submitform('createForm');">
 					#foreach ($i in [1 .. $max_number])
 						#if ("$i" == "$numberOfItems")
@@ -329,20 +335,6 @@
 					#end
 				</select>
 			</p>	
-			<br />
-		#elseif("$itemType" == "$TYPE_FOLDER")
-			<p class="shorttext">
-				<label for="numberOfItems">$tlang.getString("add.numfldrs")</label>
-				<select name="numberOfItems" id="numberOfItems" onchange="javascript:document.getElementById('flow').value='updateNumber';submitform('createForm');">
-					#foreach ($i in [1 .. $max_number])
-						#if ("$i" == "$numberOfItems")
-							<option value="$i" selected="selected">$i</option>
-						#else
-							<option value="$i">$i</option>
-						#end
-					#end
-				</select>
-			</p>
 			<br />
 		#else
 			<input type="hidden" name="numberOfItems" value="$numberOfItems" />
