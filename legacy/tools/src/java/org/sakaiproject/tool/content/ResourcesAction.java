@@ -4651,49 +4651,44 @@ public class ResourcesAction
 		else if(item.isUrl())
 		{
 			String url = params.getString("Url");
-			if(url == null || url.equals(""))
+			if(url == null || url.trim().equals(""))
 			{
 				item.setFilename("");
+				alerts.add(rb.getString("validurl"));
 			}
 			else
 			{
-				if(!url.equals(NULL_STRING))
+				// valid protocol?
+				item.setFilename(url);
+				try
 				{
-					// valid protocol?
+					// test format of input
+					URL u = new URL(url);
+				}
+				catch (MalformedURLException e1)
+				{
 					try
 					{
-						// test format of input
-						URL u = new URL(url);
-						item.setFilename(url);
+						// if URL did not validate, check whether the problem was an 
+						// unrecognized protocol, and accept input if that's the case.
+						Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
+						Matcher matcher = pattern.matcher(url);
+						if(matcher.matches())
+						{
+							URL test = new URL("http://" + matcher.group(2));
+						}
+						else
+						{
+							url = "http://" + url;
+							URL test = new URL(url);
+							item.setFilename(url);					
+						}
 					}
-					catch (MalformedURLException e1)
+					catch (MalformedURLException e2)
 					{
-						try
-						{
-							// if URL did not validate, check whether the problem was an 
-							// unrecognized protocol, and accept input if that's the case.
-							Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
-							Matcher matcher = pattern.matcher(url);
-							if(matcher.matches())
-							{
-								URL test = new URL("http://" + matcher.group(2));
-								item.setFilename(url);
-							}
-							else
-							{
-								// invalid url
-								alerts.add(rb.getString("validurl"));
-								// addAlert(state, rb.getString("validurl"));
-							}
-						}
-						catch (MalformedURLException e2)
-						{
-							// invalid url
-							alerts.add(rb.getString("validurl"));
-							// addAlert(state, rb.getString("validurl"));
-						}
+						// invalid url
+						alerts.add(rb.getString("validurl"));
 					}
-					
 				}
 			}
 		}
@@ -5012,7 +5007,7 @@ public class ResourcesAction
 			else if(item.isUrl())
 			{
 				String url = params.getString("Url" + i);
-				if(url == null || url.equals(""))
+				if(url == null || url.trim().equals(""))
 				{
 					item.setFilename("");
 					alerts.add(rb.getString("specifyurl"));
@@ -5020,44 +5015,38 @@ public class ResourcesAction
 				}
 				else
 				{
-					if(!url.equals(NULL_STRING))
+					item.setFilename(url);
+					// is protocol supplied and, if so, is it recognized?
+					try
 					{
-						// valid protocol?
+						// check format of input
+						URL u = new URL(url);
+					}
+					catch (MalformedURLException e1)
+					{
 						try
 						{
-							// check format of input
-							URL u = new URL(url);
-							item.setFilename(url);
+							// if URL did not validate, check whether the problem was an 
+							// unrecognized protocol, and accept input if that's the case.
+							Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
+							Matcher matcher = pattern.matcher(url);
+							if(matcher.matches())
+							{
+								URL test = new URL("http://" + matcher.group(2));
+							}
+							else
+							{
+								url = "http://" + url;
+								URL test = new URL(url);
+								item.setFilename(url);					
+							}
 						}
-						catch (MalformedURLException e1)
+						catch (MalformedURLException e2)
 						{
-							try
-							{
-								// if URL did not validate, check whether the problem was an 
-								// unrecognized protocol, and accept input if that's the case.
-								Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
-								Matcher matcher = pattern.matcher(url);
-								if(matcher.matches())
-								{
-									URL test = new URL("http://" + matcher.group(2));
-									item.setFilename(url);							}
-								else
-								{
-									// invalid url
-									alerts.add(rb.getString("validurl"));
-									item.setMissing("Url");
-									// addAlert(state, rb.getString("validurl"));
-								}
-							}
-							catch (MalformedURLException e2)
-							{
-								// invalid url
-								alerts.add(rb.getString("validurl"));
-								item.setMissing("Url");
-								// addAlert(state, rb.getString("validurl"));
-							}
+							// invalid url
+							alerts.add(rb.getString("validurl"));
+							item.setMissing("Url");
 						}
-						
 					}
 				}
 			}
