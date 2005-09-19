@@ -47,6 +47,7 @@ import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.util.java.StringUtil;
+import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.sakaiproject.util.storage.BaseDbFlatStorage;
 
 /**
@@ -1613,6 +1614,121 @@ public class DbSiteService
 		public void readSiteProperties(Site site, ResourcePropertiesEdit props)
 		{
 			super.readProperties(site, props);
+		}
+
+		/**
+		 * Read site properties and all page and tool properties for the site from storage.
+		 * 
+		 * @param site
+		 *        The site for which properties are desired.
+		 */
+		public void readAllSiteProperties(Site site)
+		{
+			// read and un-lazy the site properties
+			readSiteProperties(site, ((BaseSite) site).m_properties);
+			((BaseResourcePropertiesEdit) ((BaseSite) site).m_properties).setLazy(false);
+
+			// read and unlazy the page properties for the entire site
+			readSitePageProperties((BaseSite) site);
+			for (Iterator i = site.getPages().iterator(); i.hasNext();)
+			{
+				BaseSitePageEdit page = (BaseSitePageEdit) i.next();
+				((BaseResourcePropertiesEdit) page.m_properties).setLazy(false);
+			}
+			
+			// read and unlazy the tool properties for the entire site
+			readSiteToolProperties((BaseSite) site);
+			for (Iterator i = site.getPages().iterator(); i.hasNext();)
+			{
+				BaseSitePageEdit page = (BaseSitePageEdit) i.next();
+				for (Iterator t = page.getTools().iterator(); t.hasNext();)
+				{
+					BaseToolConfiguration tool = (BaseToolConfiguration) t.next();
+					tool.m_configLazy = false;
+				}
+			}
+		}
+
+		/**
+		 * Read properties for all pages in the site
+		 * @param site The site to read properties for.
+		 */
+		protected void readSitePageProperties(final BaseSite site)
+		{
+			// get the properties from the db for all pages in the site
+			String sql = "select PAGE_ID, NAME, VALUE from SAKAI_SITE_PAGE_PROPERTY where ( SITE_ID = ? )";
+
+			Object fields[] = new Object[1];
+			fields[0] = site.getId();
+			m_sql.dbRead(sql, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
+				{
+					try
+					{
+						// read the fields
+						String pageId = result.getString(1);
+						String name = result.getString(2);
+						String value = result.getString(3);
+
+						// get the page
+						BaseSitePageEdit page = (BaseSitePageEdit) site.getPage(pageId);
+						if (page != null)
+						{
+							page.m_properties.addProperty(name, value);
+						}
+
+						// nothing to return
+						return null;
+					}
+					catch (SQLException e)
+					{
+						m_logger.warn(this + ".readSitePageProperties: " + e);
+						return null;
+					}
+				}
+			});
+		}
+
+		/**
+		 * Read properties for all tools in the site
+		 * @param site The site to read properties for.
+		 */
+		protected void readSiteToolProperties(final BaseSite site)
+		{
+			// get the properties from the db for all pages in the site
+			String sql = "select TOOL_ID, NAME, VALUE from SAKAI_SITE_TOOL_PROPERTY where ( SITE_ID = ? )";
+
+			Object fields[] = new Object[1];
+			fields[0] = site.getId();
+			m_sql.dbRead(sql, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
+				{
+					try
+					{
+						// read the fields
+						String toolId = result.getString(1);
+						String name = result.getString(2);
+						String value = result.getString(3);
+
+						// get the page
+						BaseToolConfiguration tool = (BaseToolConfiguration) site.getTool(toolId);
+						if (tool != null)
+						{
+							tool.getMyConfig().setProperty(name, value);
+						}
+
+						// nothing to return
+						return null;
+					}
+					catch (SQLException e)
+					{
+						m_logger.warn(this + ".readSitePageProperties: " + e);
+						return null;
+					}
+				}
+			});
 		}
 
 		/**

@@ -607,7 +607,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		((BaseSiteEdit) site).setEvent(SECURE_UPDATE_SITE);
 
 		// force the site to be fully read - no more lazy!
-		((BaseSiteEdit) site).readFully();
+		((BaseSiteEdit) site).loadPagesTools();
 
 		return site;
 
@@ -2380,8 +2380,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// if lazy, resolve
 			if (((BaseResourceProperties) m_properties).isLazy())
 			{
-				((BaseResourcePropertiesEdit) m_properties).setLazy(false);
 				m_storage.readSiteProperties(this, m_properties);
+				((BaseResourcePropertiesEdit) m_properties).setLazy(false);
 			}
 
 			return m_properties;
@@ -2552,8 +2552,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			if (m_pagesLazy)
 			{
-				m_pagesLazy = false;
 				m_storage.readSitePages(this, m_pages);
+				m_pagesLazy = false;
 			}
 
 			return m_pages;
@@ -2570,6 +2570,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			
 			// next, tools from all pages, all at once
 			m_storage.readSiteTools(this);
+			
+			// now all three properties
+			m_storage.readAllSiteProperties(this);
 		}
 
 		/**
@@ -2695,24 +2698,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 
 			return false;
-		}
-
-		/**
-		 * Access the site's properties, pages, each page's properties and tools, each tool's properties, to assure they are fully read in and not lazy.
-		 */
-		protected void readFully()
-		{
-			this.getProperties();
-			for (Iterator pages = this.getPages().iterator(); pages.hasNext();)
-			{
-				BaseSitePageEdit page = (BaseSitePageEdit) pages.next();
-				page.getProperties();
-				for (Iterator tools = page.getTools().iterator(); tools.hasNext();)
-				{
-					BaseToolConfiguration tool = (BaseToolConfiguration) tools.next();
-					tool.getPlacementConfig();
-				}
-			}
 		}
 
 		/**
@@ -3130,8 +3115,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// if lazy, resolve
 			if (((BaseResourceProperties) m_properties).isLazy())
 			{
-				((BaseResourcePropertiesEdit) m_properties).setLazy(false);
 				m_storage.readSiteProperties(this, m_properties);
+				((BaseResourcePropertiesEdit) m_properties).setLazy(false);
 			}
 
 			return m_properties;
@@ -3511,8 +3496,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			if (m_toolsLazy)
 			{
-				m_toolsLazy = false;
 				m_storage.readPageTools(this, m_tools);
+				m_toolsLazy = false;
 			}
 
 			// TODO: need to sort by layout hint
@@ -3661,8 +3646,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			if (((BaseResourceProperties) m_properties).isLazy())
 			{
-				((BaseResourcePropertiesEdit) m_properties).setLazy(false);
 				m_storage.readPageProperties(this, m_properties);
+				((BaseResourcePropertiesEdit) m_properties).setLazy(false);
 			}
 
 			return m_properties;
@@ -3768,8 +3753,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			if (((BaseResourceProperties) m_properties).isLazy())
 			{
-				((BaseResourcePropertiesEdit) m_properties).setLazy(false);
 				m_storage.readPageProperties(this, m_properties);
+				((BaseResourcePropertiesEdit) m_properties).setLazy(false);
 			}
 
 			return m_properties;
@@ -4020,10 +4005,18 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// if the config has not yet been read, read it
 			if (m_configLazy)
 			{
-				m_configLazy = false;
 				m_storage.readToolProperties(this, m_config);
+				m_configLazy = false;
 			}
 
+			return m_config;
+		}
+
+		/**
+		 * Acces the m_config, which is inherited and not visible to this package outside this class -ggolden
+		 */
+		protected Properties getMyConfig()
+		{
 			return m_config;
 		}
 
@@ -4394,6 +4387,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 *        The site for which properties are desired.
 		 */
 		public void readSiteProperties(Site site, ResourcePropertiesEdit props);
+
+		/**
+		 * Read site properties and all page and tool properties for the site from storage.
+		 * 
+		 * @param site
+		 *        The site for which properties are desired.
+		 */
+		public void readAllSiteProperties(Site site);
 
 		/**
 		 * Read page properties from storage into the page's properties.
