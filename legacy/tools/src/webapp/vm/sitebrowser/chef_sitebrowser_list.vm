@@ -30,20 +30,20 @@
 	</div>
 	*#
 	<div class="chefToolBarWrapForm">
-		<a href="#" onclick="location='#toolLink("$action" "doShow_simple_search")';return false;" title ="Search">$tlang.getString("list.search")</a>
+		<a href="#" onclick="location='#toolLink("$action" "doShow_simple_search")';return false;" onkeypress="location='#toolLink("$action" "doShow_simple_search")';return false;" title ="Search">$tlang.getString("list.search")</a>
 	</div>
-	<h3 class="insColor insBak insBor">$tlang.getString("list.results")</h3>
+	<h3>$tlang.getString("list.results")</h3>
 	#if ($sites.size() > 0)
-		<p>
-			<span class="leftNav">
+		<div>
+			<div class="leftNav">
 				#if ("$!siteType" == "") #set($siteType="Any") #end
-					#if ($termSelection)
-						$allMsgNumber $tlang.getString("list.sites") "$siteType" $tlang.getString("list.type2") "$!searchText" $tlang.getString("list.text") "$termSelection" $tlang.getString("list.aca")    	
-					#else
-						$allMsgNumber $tlang.getString("list.sites") "$siteType" $tlang.getString("list.type1") "$!searchText".
-					#end
-			</span>
-			<span class="rightNav">
+						#if ($termSelection)
+							$allMsgNumber $tlang.getString("list.sites") "$siteType" $tlang.getString("list.type2") "$!searchText" $tlang.getString("list.text") "$termSelection" $tlang.getString("list.aca")    	
+						#else
+							$allMsgNumber $tlang.getString("list.sites") "$siteType" $tlang.getString("list.type1") "$!searchText".
+						#end
+			</div>
+			<div class="rightNav">
 				<span class="instruction">$tlang.getString("list.view") $topMsgPos - $btmMsgPos $tlang.getString("list.of") $allMsgNumber $tlang.getString("list.items")</span>
 				#if ($pagesize != 0)
 					#if ($goPPButton == "true")
@@ -57,7 +57,8 @@
 			
 				<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
 					<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
-						<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+						<label for="select" class="skip">$tlang.getString("list.select")</label>
+						<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();" id="select">
 							<option value="5" #if($pagesize == 5) selected="selected" #end>$tlang.getString("list.show1")</option>
 							<option value="10" #if($pagesize == 10) selected="selected" #end>$tlang.getString("list.show2")</option>
 							<option value="20" #if($pagesize == 20) selected="selected" #end>$tlang.getString("list.show3")</option>
@@ -77,11 +78,11 @@
 					#end
 				#end
 				<br />
-			</span>
-		</p>
+			</div>
+		</div>
 
 	#set ($siteCount = 0)
-		<table summary ="List of Sites" class="listHier" cellspacing="0" cellpadding="0">
+		<table summary ="List of Sites" class="listHier" cellspacing="0" cellpadding="0" border="0">
 		
 			<tr>
 				<th scope="col" id="title">$tlang.getString("list.work")</th>
@@ -97,11 +98,11 @@
                 #set ($desc = "")
                 <tr>
                         <td headers="title">
-                        	<div class="indnt1">
+##                        	<div class="indnt1">
                                 <a href="#toolLinkParam("$action" "doVisit" "id=$validator.escapeUrl($site.Id)")" title="$tlang.getString("list.go") $validator.escapeHtml($site.Title) $tlang.getString("site")">
                                         $validator.escapeHtml($site.Title)
                                 </a>
-                            </div>
+##                            </div>
                         </td>
 
                         <td headers="type">
@@ -117,7 +118,7 @@
                         $site.isJoinable()
                         </td>
 
-                        <td hearders="term">
+                        <td headers="term">
              			#if ($termProp)
              				#if ($site.getProperties().getProperty($termProp))
 	                        	$site.getProperties().getProperty($termProp)
