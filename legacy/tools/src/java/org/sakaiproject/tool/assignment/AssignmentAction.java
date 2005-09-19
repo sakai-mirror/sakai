@@ -2844,13 +2844,6 @@ extends PagedResourceActionII
 			addAlert(state, rb.getString("assig3"));
 		}
 		
-		// only show alert when dealing with new assignment
-		// allow editing assignment after due date
-		if (validify && dueTime.before(TimeService.newTime()))
-		{
-			addAlert(state, rb.getString("assig4"));
-		}
-		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
 			if (((description == null) || (description.length() == 0)) && ((attachments == null || attachments.size() == 0)) && (state.getAttribute(NEW_ASSIGNMENT_DESCRIPTION_EMPTY) == null))
