@@ -141,6 +141,30 @@
 						#end 
 					</a>
 				</th>
+				<th id="creator">
+					<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=created%20by&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortdate')"> 
+						$tlang.getString("gen.created")
+						#if ($currentSortedBy.equals($resourceProperties.NamePropCreator)) 
+							#if ($currentSortAsc.equals("true")) 
+								<img src = "#imageLink("sakai/sortascending.gif")" border="0"  title ="$tlang.getString('sh.sortdateas')"  alt ="$tlang.getString('sh.sortdateas')" /> 
+							#else 
+								<img src = "#imageLink("sakai/sortdescending.gif")" border="0" title ="$tlang.getString('sh.sortdatedesc')"  alt ="$tlang.getString('sh.sortdatedesc')" /> 
+							#end 
+						#end 
+					</a>
+				</th>
+				<th id="size">
+					<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=size&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortdate')"> 
+						$tlang.getString("gen.size")
+						#if ($currentSortedBy.equals($resourceProperties.NamePropContentLength)) 
+							#if ($currentSortAsc.equals("true")) 
+								<img src = "#imageLink("sakai/sortascending.gif")" border="0"  title ="$tlang.getString('sh.sortdateas')"  alt ="$tlang.getString('sh.sortdateas')" /> 
+							#else 
+								<img src = "#imageLink("sakai/sortdescending.gif")" border="0" title ="$tlang.getString('sh.sortdatedesc')"  alt ="$tlang.getString('sh.sortdatedesc')" /> 
+							#end 
+						#end 
+					</a>
+				</th>
 				##<th>
 				##why this empty column?
 				## &nbsp;
@@ -425,6 +449,12 @@
 							######################  Item/folder modification date  ##############
 							<td headers="modified">
 								$member.ModifiedTime
+							</td>
+							<td headers="creator">
+								$member.createdBy
+							</td>
+							<td headers="size">
+								$member.size
 							</td>
 						</tr>
 					#end
@@ -724,6 +754,12 @@
 									######################  Item/folder modification date  ##############
 									<td headers="modified">
 										$member.ModifiedTime
+									</td>
+									<td headers="creator">
+										$member.createdBy
+									</td>
+									<td headers="size">
+										$member.size
 									</td>
 								</tr>
 							#end
