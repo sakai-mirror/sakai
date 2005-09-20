@@ -145,7 +145,7 @@ public class ResourcesAction
 	private static final String NULL_STRING = "";
 
 	/** The string used when pasting the same resource to the same folder */
-	private static final String DUPLICATE_STRING = rb.getString("copyof");
+	private static final String DUPLICATE_STRING = rb.getString("copyof") + " ";
 	
 	/** The string used when pasting shirtcut of the same resource to the same folder */
 	private static final String SHORTCUT_STRING = rb.getString("shortcut");
