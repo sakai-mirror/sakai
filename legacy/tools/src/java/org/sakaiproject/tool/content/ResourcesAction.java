@@ -1518,7 +1518,7 @@ public class ResourcesAction
 		String itemType = params.getString("itemType");
 		if(itemType == null || "".equals(itemType))
 		{
-			itemType = TYPE_FOLDER;
+			itemType = TYPE_UPLOAD;
 		}
 
 		List new_items = new Vector();

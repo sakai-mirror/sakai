@@ -292,7 +292,7 @@
 		<input type="hidden" name="sakai_action" value="doCreate" />
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
 		<p class="shorttext">
-			<label for="itemType01">$tlang.getString("addi.change")</label>
+			<label for="itemType01">$tlang.getString("addi.add")</label>
 			<select id="itemType01"  name="itemType" onchange="javascript:submitform('addItemForm');">
 				<option value="$TYPE_FOLDER" id="$validator.escapeJavascript("$TYPE_FOLDER")"#if("$itemType" == "$TYPE_FOLDER") selected="selected"#end>$tlang.getString("addi.folder")</option>
 				<option value="$TYPE_UPLOAD" id="$validator.escapeJavascript("$TYPE_UPLOAD")"#if("$itemType" == "$TYPE_UPLOAD") selected="selected"#end>$tlang.getString("addi.upload")</option>

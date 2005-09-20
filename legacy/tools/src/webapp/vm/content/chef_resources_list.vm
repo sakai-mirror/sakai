@@ -212,7 +212,7 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
+									<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
 								#end
 								####### deal with site/folder permissions
 								#if($root.canRevise() && "$!inMyWorkspace" == "false")
@@ -366,7 +366,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${member.id})")" title="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${member.id})")" title="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
 										#end
 									#else
 										#set ($itemsOnLine = 0)
@@ -511,7 +511,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
 										#end
 										####### deal with site/folder permissions
 										#if($root.canRevise() && "$!inMyWorkspace" == "false")
@@ -665,7 +665,7 @@
 														|
 													#end
 													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_FOLDER}&collectionId=$validator.escapeUrl(${member.id})")" title="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
+													<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${member.id})")" title="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
 												#end
 											#else
 												#set ($itemsOnLine = 0)
