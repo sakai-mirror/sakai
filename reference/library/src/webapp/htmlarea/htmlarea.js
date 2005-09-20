@@ -77,7 +77,8 @@ HTMLArea.Config = function () {
 	this.height = "auto";
 
 	// enable creation of a status bar?
-	this.statusBar = true;
+//	this.statusBar = true;
+    this.statusBar = false;
 
 	// intercept ^V and use the HTMLArea paste command
 	// If false, then passes ^V through to browser editor widget
