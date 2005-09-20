@@ -7090,7 +7090,6 @@ public class ResourcesAction
 				ContentResource resource = ContentHostingService.getResource (itemId);
 				ResourceProperties p = ContentHostingService.getProperties(itemId);
 				String displayName = DUPLICATE_STRING + p.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
-				String id = collectionId + Validator.escapeResourceName(displayName);
 
 				// cut-paste to the same collection?
 				boolean cutPasteSameCollection = false;
@@ -7116,33 +7115,49 @@ public class ResourcesAction
 						}
 					}
 				}
-				try
+
+				String newDisplayName = resourceProperties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+				int index = displayName.lastIndexOf(".");
+				String base = displayName.substring(0, index);
+				String ext = displayName.substring(index);
+				
+				boolean copy_completed = false;
+				int num_tries = 0;
+				while(! copy_completed && num_tries < 1000)
 				{
-					// paste the copied resource to the new collection
-					ContentResource newResource = ContentHostingService.addResource (id, resource.getContentType (), resource.getContent (), resourceProperties, NotificationService.NOTI_NONE);
-					
-					String mode = (String) state.getAttribute(STATE_MODE);
-					if(MODE_HELPER.equals(mode))
+					String id = collectionId + Validator.escapeResourceName(displayName);
+					try
 					{
-						attachItem(id, state);
+						// paste the copied resource to the new collection
+						ContentResource newResource = ContentHostingService.addResource (id, resource.getContentType (), resource.getContent (), resourceProperties, NotificationService.NOTI_NONE);
+						
+						String mode = (String) state.getAttribute(STATE_MODE);
+						if(MODE_HELPER.equals(mode))
+						{
+							attachItem(id, state);
+						}
+						copy_completed = true;
 					}
-				}
-				catch (InconsistentException e)
-				{
-					addAlert(state,RESOURCE_INVALID_TITLE_STRING);
-				}
-				catch (IdInvalidException e)
-				{
-					addAlert(state,rb.getString("title") + " " + e.getMessage ());
-				}
-				catch (OverQuotaException e)
-				{
-					addAlert(state, rb.getString("overquota"));
-				}
-				catch (IdUsedException e)
-				{
-					addAlert(state, rb.getString("notaddreso") + " " + id + rb.getString("used2"));
-				}	// try-catch
+					catch (IdUsedException e)
+					{
+						num_tries++;
+						displayName = base + "-" + num_tries + ext;
+						resourceProperties.addProperty(ResourceProperties.PROP_DISPLAY_NAME, newDisplayName + " (" + num_tries + ")");
+					}
+					catch (InconsistentException e)
+					{
+						addAlert(state,RESOURCE_INVALID_TITLE_STRING);
+					}
+					catch (IdInvalidException e)
+					{
+						addAlert(state,rb.getString("title") + " " + e.getMessage ());
+					}
+					catch (OverQuotaException e)
+					{
+						addAlert(state, rb.getString("overquota"));
+					}	// try-catch
+					
+				}	// while
 
 			}	// if-else
 		}
