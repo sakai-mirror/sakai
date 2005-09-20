@@ -38,6 +38,7 @@ import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.component.section.cover.CourseManager;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -1485,6 +1486,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			enableGradebook(site);
 		}
+		
+		// Regardless of whether the section info tool is deployed, the tools
+		// relying on SectionAwareness will need this --jholtzman@berkeley.edu
+		enableSections(site);
 
 		// %%% others ? -ggolden
 
@@ -1980,6 +1985,15 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 	}
 
+	protected void enableSections(SiteEdit site) {
+		String siteId = site.getId();
+    	if(!CourseManager.courseExists(siteId))
+    	{
+    		String title = site.getTitle();
+    		if(m_logger.isInfoEnabled()) m_logger.info("Creating a new Course in site " + siteId);
+    		CourseManager.createCourse(siteId, title, false, false, false);
+    	}
+	}
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Site implementation
 	 *********************************************************************************************************************************************************************************************************************************************************/

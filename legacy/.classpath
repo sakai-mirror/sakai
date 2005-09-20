@@ -40,5 +40,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar"/>
 	<classpathentry kind="src" path="/metaobj"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/sections"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

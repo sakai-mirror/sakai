@@ -151,6 +151,13 @@
       <version>2.0-final-20040126</version>
     </dependency>
     
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-sections-api</artifactId>
+			<version>${pom.currentVersion}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
