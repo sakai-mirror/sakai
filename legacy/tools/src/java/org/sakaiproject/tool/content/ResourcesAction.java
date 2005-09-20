@@ -73,9 +73,11 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.control.SchemaBean;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.model.ValidationError;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
@@ -3825,7 +3827,16 @@ public class ResourcesAction
 		while(it.hasNext())
 		{
 			String key = (String) it.next();
-			listOfHomes.add(homes.get(key));
+			try
+			{
+				Object obj = homes.get(key);
+				if(obj != null && obj instanceof StructuredArtifactDefinitionBean)
+				{
+					listOfHomes.add(obj);
+				}
+			}
+			catch(Exception ignore)
+			{}
 		}
 		state.setAttribute(STATE_STRUCTOBJ_HOMES, listOfHomes);
 		
