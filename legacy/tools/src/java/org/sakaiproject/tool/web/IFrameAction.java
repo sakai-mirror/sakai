@@ -40,6 +40,9 @@ import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.SiteEdit;
+import org.sakaiproject.service.legacy.site.SitePage;
+import org.sakaiproject.service.legacy.site.SitePageEdit;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
 
@@ -417,6 +420,27 @@ public class IFrameAction extends VelocityPortletPaneledAction
 		String title = data.getParameters().getString(TITLE);
 		//state.setAttribute(TITLE, title);
 		placement.setTitle(title);
+
+		if (state.getAttribute(SPECIAL) == null)
+		{
+			// for web content tool, if it is the only tool on the page, update the page title also.
+			SitePage p = SiteService.findPage(PortalService.getCurrentSitePageId());
+			if (p.getTools() != null && p.getTools().size() == 1)
+			{
+				// if this is the only tool on that page, update the page's title also
+				try
+				{
+					SiteEdit sEdit = SiteService.editSite(PortalService.getCurrentSiteId());
+					SitePageEdit pEdit = sEdit.getPageEdit(p.getId());
+					pEdit.setTitle(title);
+					SiteService.commitEdit(sEdit);
+				}
+				catch (Exception ignore)
+				{
+				}
+			}
+		
+		}
 
 		// save
 		placement.save();

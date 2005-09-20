@@ -161,6 +161,6 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 	 */
 	public SitePage getPage(String pageId)
 	{
-		return (SitePage) m_tools.get(pageId);
+		return (SitePage) m_pages.get(pageId);
 	}
 }

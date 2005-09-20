@@ -38,11 +38,16 @@ import org.sakaiproject.cheftool.RunData;
 import org.sakaiproject.cheftool.VelocityPortlet;
 import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
 import org.sakaiproject.cheftool.menu.Menu;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.news.NewsChannel;
 import org.sakaiproject.service.legacy.news.NewsConnectionException;
 import org.sakaiproject.service.legacy.news.NewsFormatException;
 import org.sakaiproject.service.legacy.news.cover.NewsService;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.site.SiteEdit;
+import org.sakaiproject.service.legacy.site.SitePage;
+import org.sakaiproject.service.legacy.site.SitePageEdit;
 import org.sakaiproject.util.java.StringUtil;
 
 // imports
@@ -361,6 +366,22 @@ public class NewsAction
 			// deliver an update to the title panel (to show the new title)
 			String titleId = titlePanelUpdateId(peid);
 			schedulePeerFrameRefresh(titleId);
+			
+			SitePage p = SiteService.findPage(PortalService.getCurrentSitePageId());
+			if (p.getTools() != null && p.getTools().size() == 1)
+			{
+				// if this is the only tool on that page, update the page's title also
+				try
+				{
+					SiteEdit sEdit = SiteService.editSite(PortalService.getCurrentSiteId());
+					SitePageEdit pEdit = sEdit.getPageEdit(p.getId());
+					pEdit.setTitle(newChannelTitle);
+					SiteService.commitEdit(sEdit);
+				}
+				catch (Exception ignore)
+				{
+				}
+			}
 		}
 
 		String newChannelUrl = data.getParameters().getString(FORM_CHANNEL_URL);
@@ -379,7 +400,6 @@ public class NewsAction
 			state.setAttribute(STATE_CHANNEL_URL, newChannelUrl);
 			try {
 				URL url = new URL(newChannelUrl);
-				Object content = url.getContent();
 				NewsService.getChannel(url.toExternalForm());
 				
 				if (Log.getLogger("chef").isDebugEnabled())
