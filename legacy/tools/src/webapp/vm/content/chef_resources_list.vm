@@ -152,10 +152,6 @@
 					<td headers="expansion">
 					</td>
 					<td headers="checkboxes">
-						#if($root.canDelete())
-							<input type="checkbox" name="selectedMembers" id="list$num" value="$root.id" />
-							#set($num = $num + 1)
-						#end
 					</td>
 					<td headers="title">
 						#if ($root.isFolder())
@@ -455,10 +451,6 @@
 							<td headers="expansion">
 							</td>
 							<td headers="checkboxes">
-								#if($root.canDelete())
-									<input type="checkbox" name="selectedMembers" id="list$num" value="$root.id" />
-									#set($num = $num + 1)
-								#end
 							</td>
 							<td headers="title">
 								#if ($root.isFolder())
