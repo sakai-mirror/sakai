@@ -5253,6 +5253,18 @@ public class ResourcesAction
 			{
 				// do nothing
 			}
+			else if(ResourcesMetadata.WIDGET_BOOLEAN.equals(prop.getWidget()))
+			{
+				String value = params.getString(propname);
+				if(value == null || Boolean.FALSE.toString().equals(value))
+				{
+					prop.setValue(0, Boolean.FALSE.toString());
+				}
+				else
+				{
+					prop.setValue(0, Boolean.TRUE.toString());
+				}
+			}
 			else if(ResourcesMetadata.WIDGET_DATE.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(prop.getWidget()))
 			{
 				int year = 0;
