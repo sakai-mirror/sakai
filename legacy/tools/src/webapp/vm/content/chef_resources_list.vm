@@ -112,7 +112,7 @@
 					#end
 				</th>
 				<th id="checkboxes">
-					<input type="checkbox" name="selectall" id="selectall" title="$tlang.getString("list.select")" onchange="javascript:toggleSelectAll(this, 'selectedMembers')" />
+					<input type="checkbox" name="selectall" id="selectall" title="$tlang.getString("list.select")" onclick="javascript:toggleSelectAll(this, 'selectedMembers')" />
 				</th>
 				<th id="title">
 					<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=title&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sorttit')"> 
