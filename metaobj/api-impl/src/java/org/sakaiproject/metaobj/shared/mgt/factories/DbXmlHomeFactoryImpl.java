@@ -31,6 +31,7 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Hashtable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,11 +61,11 @@ public class DbXmlHomeFactoryImpl extends HomeFactoryBase implements HomeFactory
    }
 
    public Map getWorksiteHomes(Id worksiteId) {
-      return getStructuredArtifactDefinitionManager().getWorksiteHomes(worksiteId);
+      return createHomes(getStructuredArtifactDefinitionManager().getWorksiteHomes(worksiteId));
    }
 
    public Map getHomes() {
-      return getStructuredArtifactDefinitionManager().getHomes();
+      return createHomes(getStructuredArtifactDefinitionManager().getHomes());
    }
 
    protected Map createHomes(Map homeBeans) {

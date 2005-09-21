@@ -3821,7 +3821,7 @@ public class ResourcesAction
 		
 		HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");	
 		
-		Map homes = factory.getHomes();
+		Map homes = factory.getHomes(StructuredArtifactHomeInterface.class);
 		List listOfHomes = new Vector();
 		Iterator it = homes.keySet().iterator();
 		while(it.hasNext())
@@ -3830,10 +3830,7 @@ public class ResourcesAction
 			try
 			{
 				Object obj = homes.get(key);
-				if(obj != null && obj instanceof StructuredArtifactDefinitionBean)
-				{
-					listOfHomes.add(obj);
-				}
+				listOfHomes.add(obj);
 			}
 			catch(Exception ignore)
 			{}

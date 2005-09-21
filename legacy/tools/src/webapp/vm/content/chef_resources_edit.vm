@@ -318,7 +318,7 @@
 						<select id="formtype" name="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('propertyForm');">
 							<option value=""#if("$!item.formtype" == "") selected="selected"#end></option>
 							#foreach($home in $homes)
-								<option value="$home.id"#if("$!home.id" == "$!item.formtype")) selected="selected"#end>$home.documentRoot</option>
+								<option value="$home.type.id"#if("$!home.type.id" == "$!item.formtype")) selected="selected"#end>$home.type.description</option>
 							#end
 						</select>
 					</p>

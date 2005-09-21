@@ -420,7 +420,7 @@
 						<select id="formtype" name="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('createForm');">
 							<option value=""#if("$!formtype" == "") selected="selected"#end></option>
 							#foreach($home in $homes)
-								<option value="$home.id"#if("$!home.id" == "$!formtype") selected="selected"#end>$home.documentRoot</option>
+								<option value="$home.type.id"#if("$!home.type.id" == "$!formtype") selected="selected"#end>$home.type.description</option>
 							#end
 						</select>
 					</p>
