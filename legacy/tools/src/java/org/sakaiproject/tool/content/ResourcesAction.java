@@ -31,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,6 +113,7 @@ import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.xml.Xml;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -2085,15 +2087,15 @@ public class ResourcesAction
 							int year = breakdown.getYear();
 							int month = breakdown.getMonth();
 							int day = breakdown.getDay();
-							String xx = "" + year + (month < 10 ? "-0" : "-") + month + (day < 10 ? "-0" : "-") + day;
-							node.appendChild(doc.createTextNode(xx));
+							String date = "" + year + (month < 10 ? "-0" : "-") + month + (day < 10 ? "-0" : "-") + day;
+							node.appendChild(doc.createTextNode(date));
 						}
 						else if(value instanceof Date)
 						{
 							Date date = (Date) value;
 							SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-							String guy = df.format(date);
-							node.appendChild(doc.createTextNode(guy));
+							String formatted = df.format(date);
+							node.appendChild(doc.createTextNode(formatted));
 						}
 						else
 						{
@@ -4062,11 +4064,13 @@ public class ResourcesAction
 					Text value = (Text) child;
 					if(ResourcesMetadata.WIDGET_DATE.equals(property.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(property.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(property.getWidget()))
 					{
+						SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 						Time time = TimeService.newTime();
-						try
+						try 
 						{
-							time = TimeService.newTimeGmt(value.getData());
-						}
+							Date date = df.parse(value.getData());
+							time = TimeService.newTime(date.getTime());
+						} 
 						catch(Exception ignore)
 						{
 							// use "now" as default in that case
