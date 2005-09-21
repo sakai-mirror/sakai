@@ -118,7 +118,18 @@ public interface SakaiPerson extends EduPerson
    * @param hidePublicInfo
    */
   public void setHidePublicInfo(Boolean hidePublicInfo);
+
+  /**
+   * Has the user invoked their FERPA rights?
+   * 
+   * @return
+   */
+  public Boolean getFerpaEnabled();
+
+  /**
+   * 
+   * @param ferpaEnabled TRUE if FERPA rights have been invoked. If FALSE or 
+   * NULL no FERPA rights have been invoked.
+   */
+  public void setFerpaEnabled(Boolean ferpaEnabled);
 }
-
-
-

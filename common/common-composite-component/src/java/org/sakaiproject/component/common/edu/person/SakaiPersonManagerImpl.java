@@ -24,7 +24,10 @@
 package org.sakaiproject.component.common.edu.person;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.sf.hibernate.Criteria;
 import net.sf.hibernate.Hibernate;
@@ -77,11 +80,11 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
   private Type systemMutableType; // oba constant
   private Type userMutableType; // oba constant
 
- // hibernate cannot cache BLOB data types - rshastri
- // private boolean cacheFindSakaiPersonString = true;
- // private boolean cacheFindSakaiPersonStringType = true;
- // private boolean cacheFindSakaiPersonSakaiPerson = true;
- //private boolean cacheFindSakaiPersonByUid = true;
+  // hibernate cannot cache BLOB data types - rshastri
+  // private boolean cacheFindSakaiPersonString = true;
+  // private boolean cacheFindSakaiPersonStringType = true;
+  // private boolean cacheFindSakaiPersonSakaiPerson = true;
+  //private boolean cacheFindSakaiPersonByUid = true;
 
   private static final String[] SYSTEM_MUTBALE_PRIMITIVES = {
       "org.sakaiproject", "api.common.edu.person",
@@ -213,7 +216,7 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
       {
         final Query q = session.getNamedQuery(HQL_FIND_SAKAI_PERSON_BY_UID);
         q.setParameter(UID, uid, Hibernate.STRING);
-  //      q.setCacheable(cacheFindSakaiPersonByUid);
+        //      q.setCacheable(cacheFindSakaiPersonByUid);
         return q.list();
       }
     };
@@ -239,7 +242,8 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
 
     // AuthZ
     // Only superusers can update system records
-    if (getSystemMutableType().getUuid().equals(sakaiPerson.getTypeUuid()) && !SecurityService.isSuperUser())
+    if (getSystemMutableType().getUuid().equals(sakaiPerson.getTypeUuid())
+        && !SecurityService.isSuperUser())
     {
       throw new IllegalAccessError("System mutable records cannot be updated.");
     }
@@ -298,7 +302,7 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
             .getNamedQuery(HQL_FIND_SAKAI_PERSON_BY_AGENT_AND_TYPE);
         q.setParameter(AGENT_UUID, agentUuid, Hibernate.STRING);
         q.setParameter(TYPE_UUID, recordType.getUuid(), Hibernate.STRING);
-       // q.setCacheable(false);
+        // q.setCacheable(false);
         return q.uniqueResult();
       }
     };
@@ -331,7 +335,7 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
             Expression.ilike(GIVENNAME, match)).add(
             Expression.ilike(SURNAME, match)));
         c.addOrder(Order.asc(SURNAME));
- //       c.setCacheable(cacheFindSakaiPersonString);
+        //       c.setCacheable(cacheFindSakaiPersonString);
         return c.list();
       }
     };
@@ -411,7 +415,7 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
       {
         Criteria criteria = session.createCriteria(queryByExample.getClass());
         criteria.add(Example.create(queryByExample));
-    //    criteria.setCacheable(cacheFindSakaiPersonSakaiPerson);
+        //    criteria.setCacheable(cacheFindSakaiPersonSakaiPerson);
         return criteria.list();
       }
     };
@@ -465,29 +469,26 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
   /**
    * @param cacheFindSakaiPersonStringType The cacheFindSakaiPersonStringType to set.
    */
-//  public void setCacheFindSakaiPersonStringType(
-//      boolean cacheFindSakaiPersonStringType)
-//  {
-//    this.cacheFindSakaiPersonStringType = cacheFindSakaiPersonStringType;
-//  }
-
+  //  public void setCacheFindSakaiPersonStringType(
+  //      boolean cacheFindSakaiPersonStringType)
+  //  {
+  //    this.cacheFindSakaiPersonStringType = cacheFindSakaiPersonStringType;
+  //  }
   /**
    * @param cacheFindSakaiPersonString The cacheFindSakaiPersonString to set.
    */
-//  public void setCacheFindSakaiPersonString(boolean cacheFindSakaiPersonString)
-//  {
-//    this.cacheFindSakaiPersonString = cacheFindSakaiPersonString;
-//  }
-
+  //  public void setCacheFindSakaiPersonString(boolean cacheFindSakaiPersonString)
+  //  {
+  //    this.cacheFindSakaiPersonString = cacheFindSakaiPersonString;
+  //  }
   /**
    * @param cacheFindSakaiPersonSakaiPerson The cacheFindSakaiPersonSakaiPerson to set.
    */
-//  public void setCacheFindSakaiPersonSakaiPerson(
-//      boolean cacheFindSakaiPersonSakaiPerson)
-//  {
-    //this.cacheFindSakaiPersonSakaiPerson = cacheFindSakaiPersonSakaiPerson;
-//  }
-
+  //  public void setCacheFindSakaiPersonSakaiPerson(
+  //      boolean cacheFindSakaiPersonSakaiPerson)
+  //  {
+  //this.cacheFindSakaiPersonSakaiPerson = cacheFindSakaiPersonSakaiPerson;
+  //  }
   /**
    * @param uuidManager The uuidManager to set.
    */
@@ -499,11 +500,10 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
   /**
    * @param cacheFindSakaiPersonByUid The cacheFindSakaiPersonByUid to set.
    */
-//  public void setCacheFindSakaiPersonByUid(boolean cacheFindSakaiPersonByUid)
-//  {
- //   this.cacheFindSakaiPersonByUid = cacheFindSakaiPersonByUid;
-//  }
-
+  //  public void setCacheFindSakaiPersonByUid(boolean cacheFindSakaiPersonByUid)
+  //  {
+  //   this.cacheFindSakaiPersonByUid = cacheFindSakaiPersonByUid;
+  //  }
   /**
    * @param persistableHelper The persistableHelper to set.
    */
@@ -512,7 +512,22 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
     this.persistableHelper = persistableHelper;
   }
 
+  public Map isFerpaEnabled(Set agentUuids)
+  {
+    if (LOG.isDebugEnabled())
+    {
+      LOG.debug("isFerpaEnabled(Set " + agentUuids + ")");
+    }
+    if (agentUuids == null || agentUuids.isEmpty())
+    {
+      throw new IllegalArgumentException("Illegal Set agentUuids argument!");
+    }
+    Map retmap = new HashMap();
+    //FIXME return REAL data not dummy data...
+    retmap.put("lance", new Boolean(true));
+    retmap.put("rshastri", new Boolean(true));
+    retmap.put("aalvis", new Boolean(true));
+    return retmap;
+  }
+
 }
-
-
-

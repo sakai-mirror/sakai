@@ -128,6 +128,7 @@
             <property name="pictureUrl" column="PICTURE_URL" />
             <property name="systemPicturePreferred"
               column="SYSTEM_PICTURE_PREFERRED" />
+            <property name="ferpaEnabled" column="ferpaEnabled" />
           </subclass>
         </subclass>
       </subclass>

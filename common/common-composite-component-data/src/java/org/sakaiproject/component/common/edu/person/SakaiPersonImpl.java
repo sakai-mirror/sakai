@@ -145,9 +145,7 @@ public class SakaiPersonImpl extends EduPersonImpl implements Person,
 
   protected Boolean hidePublicInfo;
 
-  /*
-   * (non-Javadoc)
-   * 
+  /**
    * @see org.sakaiproject.service.profile.SakaiPerson#getIsPublicInfoViewable()
    */
   public Boolean getHidePublicInfo()
@@ -155,9 +153,7 @@ public class SakaiPersonImpl extends EduPersonImpl implements Person,
     return hidePublicInfo;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /**
    * @see org.sakaiproject.service.profile.SakaiPerson#setIsPublicInfoViewable(java.lang.Boolean)
    */
   public void setHidePublicInfo(Boolean hidePublicInfo)
@@ -165,7 +161,26 @@ public class SakaiPersonImpl extends EduPersonImpl implements Person,
     this.hidePublicInfo = hidePublicInfo;
   }
 
+  private Boolean ferpaEnabled;
+
+  /**
+   * @see org.sakaiproject.service.profile.SakaiPerson#getFerpaEnabled()
+   * 
+   * @return Returns the ferpaEnabled.
+   */
+  public Boolean getFerpaEnabled()
+  {
+    return ferpaEnabled;
+  }
+
+  /**
+   * @see org.sakaiproject.service.profile.SakaiPerson#setFerpaEnabled(Boolean)
+   * 
+   * @param ferpaEnabled The ferpaEnabled to set.
+   */
+  public void setFerpaEnabled(Boolean ferpaEnabled)
+  {
+    this.ferpaEnabled = ferpaEnabled;
+  }
+
 }
-
-
-
