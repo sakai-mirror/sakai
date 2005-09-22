@@ -24,10 +24,8 @@
 package org.sakaiproject.component.common.edu.person;
 
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import net.sf.hibernate.Criteria;
 import net.sf.hibernate.Hibernate;
@@ -68,6 +66,7 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
   private static final String UID = "uid";
   private static final String TYPE_UUID = "typeUuid";
   private static final String AGENT_UUID = "agentUuid";
+  private static final String FERPA_ENABLED = "ferpaEnabled";
   private static final String HQL_FIND_SAKAI_PERSON_BY_AGENT_AND_TYPE = "findEduPersonByAgentAndType";
   private static final String HQL_FIND_SAKAI_PERSON_BY_UID = "findSakaiPersonByUid";
 
@@ -512,7 +511,7 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
     this.persistableHelper = persistableHelper;
   }
 
-  public Map isFerpaEnabled(Set agentUuids)
+  public List isFerpaEnabled(final Collection agentUuids)
   {
     if (LOG.isDebugEnabled())
     {
@@ -522,12 +521,19 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
     {
       throw new IllegalArgumentException("Illegal Set agentUuids argument!");
     }
-    Map retmap = new HashMap();
-    //FIXME return REAL data not dummy data...
-    retmap.put("lance", new Boolean(true));
-    retmap.put("rshastri", new Boolean(true));
-    retmap.put("aalvis", new Boolean(true));
-    return retmap;
+
+    final HibernateCallback hcb = new HibernateCallback()
+    {
+      public Object doInHibernate(Session session) throws HibernateException,
+          SQLException
+      {
+        final Criteria c = session.createCriteria(SakaiPersonImpl.class);
+        c.add(Expression.in(AGENT_UUID, agentUuids));
+        c.add(Expression.eq(FERPA_ENABLED, Boolean.TRUE));
+        return c.list();
+      }
+    };
+    return getHibernateTemplate().executeFind(hcb);
   }
 
 }

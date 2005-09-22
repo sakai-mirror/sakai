@@ -88,7 +88,7 @@ create table SAKAI_PERSON_T (
    HOME_PHONE varchar(255),
    HOME_POSTAL_ADDRESS varchar(255),
    INITIALS varchar(255),
-   JPEG_PHOTO varbinary(255),
+   JPEG_PHOTO longvarbinary,
    LABELED_URI varchar(255),
    MAIL varchar(255),
    MANAGER varchar(255),
@@ -117,6 +117,7 @@ create table SAKAI_PERSON_T (
    NOTES varchar(255),
    PICTURE_URL varchar(255),
    SYSTEM_PICTURE_PREFERRED bit,
+   ferpaEnabled bit,
    unique (AGENT_UUID, TYPE_UUID),
    unique (UUID)
 )
@@ -214,6 +215,7 @@ create index CMN_TYPE_T_DOMAIN_I on CMN_TYPE_T (DOMAIN)
 create index CMN_TYPE_T_AUTHORITY_I on CMN_TYPE_T (AUTHORITY)
 create index SAKAI_PERSON_TYPE_UUID_I on SAKAI_PERSON_T (TYPE_UUID)
 create index SAKAI_PERSON_SURNAME_I on SAKAI_PERSON_T (SURNAME)
+create index SAKAI_PERSON_ferpaEnabled_I on SAKAI_PERSON_T (ferpaEnabled)
 create index SAKAI_PERSON_AGENT_UUID_I on SAKAI_PERSON_T (AGENT_UUID)
 create index SAKAI_PERSON_GIVEN_NAME_I on SAKAI_PERSON_T (GIVEN_NAME)
 create index SAKAI_PERSON_UID_I on SAKAI_PERSON_T (UID_C)

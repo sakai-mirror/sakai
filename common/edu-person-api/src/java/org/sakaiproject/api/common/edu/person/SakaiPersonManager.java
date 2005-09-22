@@ -23,9 +23,8 @@
 
 package org.sakaiproject.api.common.edu.person;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.sakaiproject.api.common.type.Type;
 
@@ -150,9 +149,8 @@ public interface SakaiPersonManager
    * enabled.
    * 
    * @param agentUuids
-   * @return A Map keyed by agentUuid with a Boolean as the value. TRUE == 
-   * FERPA enabled.
+   * @return A List of agentUuid Strings where FERPA is enabled.
    */
-  public Map isFerpaEnabled(Set agentUuids);
+  public List isFerpaEnabled(Collection agentUuids);
 
 }

@@ -128,8 +128,10 @@
             <property name="pictureUrl" column="PICTURE_URL" />
             <property name="systemPicturePreferred"
               column="SYSTEM_PICTURE_PREFERRED" />
-            <property name="ferpaEnabled" column="ferpaEnabled"
-              index="SAKAI_PERSON_ferpaEnabled_I" />
+            <property name="ferpaEnabled">
+              <column name="ferpaEnabled"
+                index="SAKAI_PERSON_ferpaEnabled_I" />
+            </property>
           </subclass>
         </subclass>
       </subclass>
