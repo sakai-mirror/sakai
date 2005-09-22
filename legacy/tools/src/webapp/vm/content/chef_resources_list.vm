@@ -92,7 +92,8 @@
 			</span>		
 		</h3>
 		<div class="navIntraTool">
-			<a href="#" title="$tlang.getString("list.remove")" onclick="javascript:document.getElementById('sakai_action').value='doDeleteconfirm';document.getElementById('showForm').submit();" >$tlang.getString("list.remove")</a>
+			<a href="#" title="$tlang.getString("list.remove")" onclick="javascript:document.getElementById('sakai_action').value='doDeleteconfirm';document.getElementById('showForm').submit();" >$tlang.getString("list.remove")</a> |
+			<a href="#" title="$tlang.getString("list.copyall")" onclick="javascript:document.getElementById('sakai_action').value='doCopy';document.getElementById('showForm').submit();" >$tlang.getString("list.copyall")</a>
 ##			<a href="#" title="$tlang.getString("list.move")">$tlang.getString("list.move")</a> |
 ##			<a href="#" title="$tlang.getString("list.copyall")">$tlang.getString("list.copyall")</a>
 		</div>
@@ -212,7 +213,7 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl($copiedItem)}&collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
+									<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 								#end
 								####### deal with editing/viewing file/folder information
 								##if ($atHome && !$atHome == $TRUE)
@@ -350,7 +351,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl($copiedItem)}&collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 										#end
 										####### deal with viewing/editing file/folder information
 										#if ($member.canRevise())
@@ -408,6 +409,7 @@
 											#set ($itemsOnLine = $itemsOnLine + 1)
 											<a href="#toolLinkParam("ResourcesAction" "doMore" "from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)")" title="$tlang.getString('list.props')">$tlang.getString("list.props").trim()</a>
 										#end
+										#*
 										####### deal with copying item
 										#if ($paste_place_showing && $member.canRead())
 											#if ($itemsOnLine > 0)
@@ -420,6 +422,7 @@
 												<a href="#toolLinkParam("ResourcesAction" "doCopyitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('list.copy')">$tlang.getString("list.copy").trim()</a>
 											#end
 										#end
+										*#
 										#*
 										####### deal with deleting item
 										#if ($member.canDelete())
@@ -436,13 +439,18 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}")" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}")" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
 										#end
 									#end
 								</div>
-								#if($copyFlag && "${member.id}" == "$copiedItem")
+								#if($copyFlag && $copiedItems && $copiedItems.contains("${member.id}"))
 									<div class="inlineAlert">
 										$tlang.getString("list.copied")
+									</div>
+								#end
+								#if($moveFlag && "${member.isMoved()}")
+									<div class="inlineAlert">
+										$tlang.getString("list.moved")
 									</div>
 								#end
 							</td>
@@ -517,7 +525,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl($copiedItem)}&collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 										#end
 										####### deal with editing/viewing file/folder information
 										##if ($atHome && !$atHome == $TRUE)
@@ -655,7 +663,7 @@
 														|
 													#end
 													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl($copiedItem)}&collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
+													<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 												#end
 												####### deal with viewing/editing file/folder information
 												#if ($member.canRevise())
@@ -713,6 +721,7 @@
 													#set ($itemsOnLine = $itemsOnLine + 1)
 													<a href="#toolLinkParam("ResourcesAction" "doMore" "from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)")" title="$tlang.getString('list.props')">$tlang.getString("list.props").trim()</a>
 												#end
+												#*
 												####### deal with copying item
 												#if ($paste_place_showing && $member.canRead())
 													#if ($itemsOnLine > 0)
@@ -725,6 +734,7 @@
 														<a href="#toolLinkParam("ResourcesAction" "doCopyitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('list.copy')">$tlang.getString("list.copy").trim()</a>
 													#end
 												#end
+												*#
 												#*
 												####### deal with deleting item
 												#if ($member.canDelete())
@@ -741,11 +751,11 @@
 														|
 													#end
 													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}")" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
+													<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}")" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
 												#end
 											#end
 										</div>
-										#if($copyFlag && "${member.id}" == "$copiedItem")
+										#if($copyFlag && $copiedItems && $copiedItems.contains("${member.id}"))
 											<div class="inlineAlert">
 												$tlang.getString("list.copied")
 											</div>

@@ -592,8 +592,10 @@ public class ResourcesAction
 			String copyFlag = (String) state.getAttribute (STATE_COPY_FLAG);
 			context.put ("copyFlag", copyFlag);
 			if (copyFlag.equals (Boolean.TRUE.toString()))
-			{
-				context.put ("copiedItem", state.getAttribute (STATE_COPIED_ID));
+			{ 
+				List copiedItems = (List) state.getAttribute(STATE_COPIED_IDS);
+				// context.put ("copiedItem", state.getAttribute (STATE_COPIED_ID));
+				context.put("copiedItems", copiedItems);
 			}
 
 			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
@@ -6015,31 +6017,77 @@ public class ResourcesAction
 			if (state.getAttribute(STATE_MESSAGE) == null)
 			{
 				state.setAttribute (STATE_COPY_FLAG, Boolean.TRUE.toString());
-				if (((String) state.getAttribute (STATE_SELECT_ALL_FLAG)).equals (Boolean.TRUE.toString()))
-				{
-					state.setAttribute (STATE_SELECT_ALL_FLAG, Boolean.FALSE.toString());
-				}
-
-				Vector cutIds = (Vector) state.getAttribute (STATE_CUT_IDS);
+				
 				for (int i = 0; i < copyItems.length; i++)
 				{
-					if (cutIds.contains (copyItems[i]))
-					{
-						cutIds.remove (copyItems[i]);
-					}
 					copyItemsVector.add (copyItems[i]);
 				}
-				if (cutIds.size ()==0)
-				{
-					state.setAttribute (STATE_CUT_FLAG, Boolean.FALSE.toString());
-				}
-				state.setAttribute (STATE_CUT_IDS, cutIds);
 
 				state.setAttribute (STATE_COPIED_IDS, copyItemsVector);
+				
+				//setCopyFlags(state);
+				
 			}	// if-else
 		}	// if-else
 
 	}	// doCopy
+	
+	/**
+	 * If copy-flag is set to false, erase the copied-id's list and set copied flags to false
+	 * in all the browse items.  If copied-id's list is empty, set copy-flag to false and set
+	 * copied flags to false in all the browse items. If copy-flag is set to true and copied-id's
+	 * list is not empty, update the copied flags of all browse items so copied flags for the 
+	 * copied items are set to true and all others are set to false.
+	 */
+	protected void setCopyFlags(SessionState state)
+	{
+		String copyFlag = (String) state.getAttribute(STATE_COPY_FLAG);
+		List copyItemsVector = (List) state.getAttribute(STATE_COPIED_IDS);
+		
+		if(copyFlag == null)
+		{
+			copyFlag = Boolean.FALSE.toString();
+			state.setAttribute(STATE_COPY_FLAG, copyFlag);
+		}
+		
+		if(copyFlag.equals(Boolean.TRUE.toString()))
+		{
+			if(copyItemsVector == null)
+			{
+				copyItemsVector = new Vector();
+				state.setAttribute(STATE_COPIED_IDS, copyItemsVector);
+			}
+			if(copyItemsVector.isEmpty())
+			{
+				state.setAttribute(STATE_COPY_FLAG, Boolean.FALSE.toString());
+			}
+		}
+		else
+		{
+			copyItemsVector = new Vector();
+			state.setAttribute(STATE_COPIED_IDS, copyItemsVector);
+		}
+		
+		List roots = (List) state.getAttribute(STATE_COLLECTION_ROOTS);
+		Iterator rootIt = roots.iterator();
+		while(rootIt.hasNext())
+		{
+			BrowseItem root = (BrowseItem) rootIt.next();
+			boolean root_copied = copyItemsVector.contains(root.getId());
+			root.setCopied(root_copied);
+			
+			List members = root.getMembers();
+			Iterator memberIt = members.iterator();
+			while(memberIt.hasNext())
+			{
+				BrowseItem member = (BrowseItem) memberIt.next();
+				boolean member_copied = copyItemsVector.contains(member.getId());
+				member.setCopied(member_copied);
+			}
+		}
+		state.setAttribute(STATE_COLLECTION_ROOTS, roots);
+
+	}	// setCopyFlags
 
 	/**
 	* Expand all the collection resources.
@@ -7066,6 +7114,164 @@ public class ResourcesAction
 		}	// if-else
 
 	}	// doCopyitem
+	
+	/**
+	* Paste the previously copied item(s)
+	*/
+	public static void doPasteitems ( RunData data)
+	{
+		ParameterParser params = data.getParameters ();
+
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+
+		List items = (List) state.getAttribute(STATE_COPIED_IDS);
+
+		String collectionId = params.getString ("collectionId");
+		
+		Iterator itemIter = items.iterator();
+		while (itemIter.hasNext())
+		{
+			// get the copied item to be pasted
+			String itemId = (String) itemIter.next();
+				
+			String originalDisplayName = NULL_STRING;
+	
+			try
+			{
+				ResourceProperties properties = ContentHostingService.getProperties (itemId);
+				originalDisplayName = properties.getPropertyFormatted (ResourceProperties.PROP_DISPLAY_NAME);
+	
+				// copy, cut and paste not operated on collections
+				if (properties.getProperty (ResourceProperties.PROP_IS_COLLECTION).equals (Boolean.TRUE.toString()))
+				{
+					String alert = (String) state.getAttribute(STATE_MESSAGE);
+					if (alert == null || ((alert != null) && (alert.indexOf(RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING) == -1)))
+					{
+						addAlert(state, RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING);
+					}
+				}
+				else
+				{
+					// paste the resource
+					ContentResource resource = ContentHostingService.getResource (itemId);
+					ResourceProperties p = ContentHostingService.getProperties(itemId);
+					String displayName = p.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+	
+					ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
+	
+					// add the properties of the pasted item
+					Iterator propertyNames = properties.getPropertyNames ();
+					while ( propertyNames.hasNext ())
+					{
+						String propertyName = (String) propertyNames.next ();
+						if (!properties.isLiveProperty (propertyName))
+						{
+							if (propertyName.equals (ResourceProperties.PROP_DISPLAY_NAME)&&(displayName.length ()>0))
+							{
+								resourceProperties.addProperty (propertyName, displayName);
+							}
+							else
+							{
+								resourceProperties.addProperty (propertyName, properties.getProperty (propertyName));
+							}
+						}
+					}
+	
+					String newDisplayName = resourceProperties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+					int index = displayName.lastIndexOf(".");
+					String base = displayName.substring(0, index);
+					String ext = displayName.substring(index);
+					
+					boolean copy_completed = false;
+					int num_tries = 0;
+					while(! copy_completed && num_tries < 1000)
+					{
+						String id = collectionId + Validator.escapeResourceName(displayName);
+						try
+						{
+							// paste the copied resource to the new collection
+							ContentResource newResource = ContentHostingService.addResource (id, resource.getContentType (), resource.getContent (), resourceProperties, NotificationService.NOTI_NONE);
+							
+							String mode = (String) state.getAttribute(STATE_MODE);
+							if(MODE_HELPER.equals(mode))
+							{
+								attachItem(id, state);
+							}
+							copy_completed = true;
+						}
+						catch (IdUsedException e)
+						{
+							num_tries++;
+							displayName = base + "-" + num_tries + ext;
+							resourceProperties.addProperty(ResourceProperties.PROP_DISPLAY_NAME, newDisplayName + " (" + num_tries + ")");
+						}
+						catch (InconsistentException e)
+						{
+							addAlert(state,RESOURCE_INVALID_TITLE_STRING);
+						}
+						catch (IdInvalidException e)
+						{
+							addAlert(state,rb.getString("title") + " " + e.getMessage ());
+						}
+						catch (OverQuotaException e)
+						{
+							addAlert(state, rb.getString("overquota"));
+						}	// try-catch
+						
+					}	// while
+	
+				}	// if-else
+			}
+			catch (PermissionException e)
+			{
+				addAlert(state, rb.getString("notpermis8") + " " + originalDisplayName + ". ");
+			}
+			catch (IdUnusedException e)
+			{
+				addAlert(state,RESOURCE_NOT_EXIST_STRING);
+			}
+			catch (TypeException e)
+			{
+				addAlert(state, rb.getString("pasteitem") + " " + originalDisplayName + " " + rb.getString("mismatch"));
+			}	// try-catch
+				
+			if (state.getAttribute(STATE_MESSAGE) == null)
+			{
+				// delete sucessful
+				String mode = (String) state.getAttribute(STATE_MODE);
+				if(MODE_HELPER.equals(mode))
+				{
+					state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+				}
+				else
+				{
+					state.setAttribute (STATE_MODE, MODE_LIST);
+				} 
+				
+				// try to expand the collection
+				HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+				if(! expandedCollections.containsKey(collectionId))
+				{
+					org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
+					try
+					{
+						ContentCollection coll = contentService.getCollection(collectionId);
+						expandedCollections.put(collectionId, coll);
+					}
+					catch(Exception ignore){}
+				}			
+	
+				// reset the copy flag
+				if (((String)state.getAttribute (STATE_COPY_FLAG)).equals (Boolean.TRUE.toString()))
+				{
+					state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
+				}
+			}
+		
+		}
+		
+	}	// doPasteitem
+
 
 	/**
 	* Paste the previously copied item(s)
@@ -7378,6 +7584,10 @@ public class ResourcesAction
 		
 	}	// copyrightChoicesIntoContext
 
+	/**
+	 * Add variables and constants to the velocity context to render an editor
+	 * for inputing and modifying optional metadata properties about a resource.
+	 */
 	private static void metadataGroupsIntoContext(SessionState state, Context context)
 	{
 
@@ -7493,6 +7703,7 @@ public class ResourcesAction
 		protected String m_url;
 		protected boolean m_isLocal;
 		protected boolean m_isAttached;
+		private boolean m_isMoved;
 		
 				
 		/**
@@ -7514,6 +7725,7 @@ public class ResourcesAction
 			m_canCopy = false;
 			m_isEmpty = true;
 			m_isCopied = false;
+			m_isMoved = false;
 			m_isAttached = false;
 			m_createdBy = "";
 			m_modifiedBy = "";
@@ -7769,6 +7981,22 @@ public class ResourcesAction
 		public void setCopied(boolean isCopied)
 		{
 			m_isCopied = isCopied;
+		}
+
+		/**
+		 * @return
+		 */
+		public boolean isMoved()
+		{
+			return m_isMoved;
+		}
+
+		/**
+		 * @param isCopied
+		 */
+		public void setMoved(boolean isMoved)
+		{
+			m_isMoved = isMoved;
 		}
 
 		/**
