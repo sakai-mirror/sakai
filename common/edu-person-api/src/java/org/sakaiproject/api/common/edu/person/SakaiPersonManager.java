@@ -153,4 +153,11 @@ public interface SakaiPersonManager
    */
   public List isFerpaEnabled(Collection agentUuids);
 
+  /**
+   * Find all SakaiPerson objects where ferpaEnabled == TRUE.
+   * 
+   * @return A List of SakaiPerson objects where ferpaEnabled == TRUE.
+   */
+  public List findAllFerpaEnabled();
+
 }

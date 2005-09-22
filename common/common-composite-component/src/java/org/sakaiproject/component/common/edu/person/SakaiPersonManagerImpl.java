@@ -536,4 +536,21 @@ public class SakaiPersonManagerImpl extends HibernateDaoSupport implements
     return getHibernateTemplate().executeFind(hcb);
   }
 
+  public List findAllFerpaEnabled()
+  {
+    LOG.debug("findAllFerpaEnabled()");
+
+    final HibernateCallback hcb = new HibernateCallback()
+    {
+      public Object doInHibernate(Session session) throws HibernateException,
+          SQLException
+      {
+        final Criteria c = session.createCriteria(SakaiPersonImpl.class);
+        c.add(Expression.eq(FERPA_ENABLED, Boolean.TRUE));
+        return c.list();
+      }
+    };
+    return getHibernateTemplate().executeFind(hcb);
+  }
+
 }
