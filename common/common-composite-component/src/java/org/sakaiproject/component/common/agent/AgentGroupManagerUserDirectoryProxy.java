@@ -210,6 +210,12 @@ public class AgentGroupManagerUserDirectoryProxy implements AgentGroupManager
       return new AgentUserProxy(userDirectoryService
           .getUser(sessionManagerUserId));
     }
+    catch(org.sakaiproject.exception.IdUnusedException e)
+    {
+      // The user may not exist in the directory; handle it gracefully
+      LOG.info(e.getMessage());
+      return null;
+    }
     catch (Exception e)
     {
       LOG.error(e.getMessage(), e);
