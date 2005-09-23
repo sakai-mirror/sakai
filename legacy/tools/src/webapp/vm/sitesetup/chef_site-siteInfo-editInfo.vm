@@ -43,7 +43,6 @@ function LimitText(fieldObj,maxChars)
 			</p>	
 		#end
 		<p class="longtext">
-			<span class="reqStar">*</span>
 			<label for="description" class="block">
 				$tlang.getString("sitediinf.des")
 			</label>
