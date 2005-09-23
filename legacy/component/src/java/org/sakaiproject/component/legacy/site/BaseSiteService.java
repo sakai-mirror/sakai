@@ -1990,7 +1990,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
     	if(!CourseManager.courseExists(siteId))
     	{
     		String title = site.getTitle();
-    		if(m_logger.isInfoEnabled()) m_logger.info("Creating a new Course in site " + siteId);
+    		if(m_logger.isInfoEnabled()) m_logger.info("Creating a new section container for site " + siteId);
     		CourseManager.createCourse(siteId, title, false, false, false);
     	}
 	}
