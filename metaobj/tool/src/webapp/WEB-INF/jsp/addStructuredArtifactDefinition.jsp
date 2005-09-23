@@ -133,7 +133,6 @@ Pick Transformation File</a>
 </script>
 
 <div class="chefButtonRow">
-<input name="action" type="submit" value="Preview"/>
 <input name="action" type="submit" value="Save"/>
 <input name="action" id="action" type="hidden" value=""/>
 <input name="filePickerAction" id="filePickerAction" type="hidden" value="" />
