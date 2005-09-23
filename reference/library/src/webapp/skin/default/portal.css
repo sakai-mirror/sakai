@@ -161,11 +161,10 @@ html #siteStatus/* */{background-position:3px center/* - adj for ie - */}
 
 /* GROUP 4 - content and channels */
 
-.portletTitleWrap{width:95.5%;margin-top:1em;}
-.portletMainWrap{width:95.5%}
-.portletTitleIframe{width:95.2% !important;margin:0 !important;height:1.3em;}
-.portletMainIframe{border: 1px solid #90A1C6;
-	text-align:left;width:95%; margin-bottom:.5em;height:auto}
+.portletTitleWrap{width:98%;margin:.5em .2em 0 .2em;}
+.portletMainWrap{width:98%;border: 1px solid #90A1C6;margin:0;margin:0 .2em .5em .2em;}
+.portletTitleIframe{width:100% !important;margin:0 !important;height:1.3em;}
+.portletMainIframe{text-align:left;width:100%; height:auto;}
 
 /*GROUP 5:tableless layout*/
 #container{ background: #FFF; }
