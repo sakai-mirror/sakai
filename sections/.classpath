@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="sections-api/src/java"/>
+	<classpathentry kind="src" path="sections-comp-shared/sakai20/data-components/src/hibernate"/>
+	<classpathentry kind="src" path="sections-comp-shared/sakai20/data-components/src/java"/>
 	<classpathentry kind="src" path="sections-comp-shared/sakai20/src/conf"/>
 	<classpathentry kind="src" path="sections-comp-shared/sakai20/src/hibernate"/>
 	<classpathentry kind="src" path="sections-comp-shared/sakai20/src/java"/>
