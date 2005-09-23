@@ -30,10 +30,9 @@
 	<div style="margin:1em -1em">
 		#foreach ($item in $messages)
 			#set ($counter = $counter + 1)
-			
 			#if ($toolId=="sakai.synoptic.discussion")
 				#if ($!item.Header.Subject)
-					<p style="margin:1em 0 .4em 0">$validator.escapeHtml($item.Header.Subject)</p>
+					<h4 style="margin:1em 0 .4em 0;background:none;font-size:1em">$validator.escapeHtml($item.Header.Subject)</h4>
 					#if ($showBody)
 						#set ($text=$item.Body)
 					#end
@@ -50,9 +49,10 @@
 
 			#if ($show_newlines)
 				#if ($toolId=="sakai.synoptic.chat")
-					<p style="margin:1em 0 .4em 0">$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}</p>
+					<h4 style="margin:1em 0 .4em 0;background:none;font-size:1em">$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}</h4>
 				#else
-					<span style="display:block;padding-left:1em">$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}</span>
+					<h4 style="padding:.2em .2em .2em 1em;background:none;font-size:1em">$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}</h4>
+					##<span style="display:block;padding-left:1em">$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}</span>
 				#end
 			#else
 				$!{validator.escapeHtmlFormattedTextSupressNewlines($validator.limitFormattedText($text,$length))}
@@ -61,7 +61,7 @@
 			#if ($toolId=="sakai.motd")
 				#set ($size = 0)
 				#if (!$item.Header.Attachments.isEmpty())
-					<h4>$tlang.getString("gen.attach")</h4>
+					<p>$tlang.getString("gen.attach")</p>
 					#set ($props = false)
 					#set ($size = $item.Header.Attachments.size())
 					<ul class="attachList">
