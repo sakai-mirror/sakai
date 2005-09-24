@@ -227,6 +227,9 @@ public class ResourcesAction
 	/** The can-paste flag */
 	private static final String STATE_PASTE_ALLOWED_FLAG = "resources.can_paste_flag";
 
+	/** The move flag */
+	private static final String STATE_MOVE_FLAG = "resources.move_flag";
+
 	/** The select all flag */
 	private static final String STATE_SELECT_ALL_FLAG = "resources.select_all_flag";
 
@@ -344,6 +347,11 @@ public class ResourcesAction
 
 	/** The copied item id */
 	private static final String STATE_COPIED_ID = "resources.revise_copied_id";
+	
+	/************** the moved items context *****************************************/
+
+	/** The copied item ids */
+	private static final String STATE_MOVED_IDS = "resources.revise_moved_ids";
 
 	/** Modes. */
 	private static final String MODE_LIST = "list";
@@ -387,6 +395,7 @@ public class ResourcesAction
 	private static final String COPYRIGHT_SELF_COPYRIGHT = rb.getString("cpright2");
 	private static final String COPYRIGHT_NEW_COPYRIGHT = rb.getString("cpright3");
 	private static final String COPYRIGHT_ALERT_URL = ServerConfigurationService.getAccessUrl() + COPYRIGHT_PATH;
+
 
 	/**
 	* Build the context for normal display
@@ -596,6 +605,15 @@ public class ResourcesAction
 				List copiedItems = (List) state.getAttribute(STATE_COPIED_IDS);
 				// context.put ("copiedItem", state.getAttribute (STATE_COPIED_ID));
 				context.put("copiedItems", copiedItems);
+			}
+
+			String moveFlag = (String) state.getAttribute (STATE_MOVE_FLAG);
+			context.put ("moveFlag", moveFlag);
+			if (moveFlag.equals (Boolean.TRUE.toString()))
+			{ 
+				List movedItems = (List) state.getAttribute(STATE_MOVED_IDS);
+				// context.put ("copiedItem", state.getAttribute (STATE_COPIED_ID));
+				context.put("movedItems", movedItems);
 			}
 
 			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
@@ -1508,6 +1526,18 @@ public class ResourcesAction
 
 		state.setAttribute (STATE_MODE, MODE_DAV);
 
+		// cancel copy if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
+
 	}	// doShow_webdav
 	
 	/**
@@ -1519,6 +1549,18 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		
+		// cancel copy if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
+
 		String itemType = params.getString("itemType");
 		if(itemType == null || "".equals(itemType))
 		{
@@ -2550,6 +2592,18 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		
+		// cancel copy if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
+
 		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
 		
 		// add to the attachments vector
@@ -2880,7 +2934,16 @@ public class ResourcesAction
 		ParameterParser params = data.getParameters ();
 		
 		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
 
 		// the hosted item ID
 		String id = NULL_STRING;
@@ -2993,7 +3056,16 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
 
 		ParameterParser params = data.getParameters ();
 
@@ -3541,7 +3613,16 @@ public class ResourcesAction
 		state.removeAttribute(STATE_EDIT_ITEM);
 
 		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
 
 		String id = NULL_STRING;
 		id = params.getString ("id");
@@ -4125,7 +4206,16 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
 
 		String id = NULL_STRING;
 		String from = params.getString ("from");
@@ -5764,6 +5854,18 @@ public class ResourcesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
+		// cancel copy if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
+
 		String[] deleteIds = data.getParameters ().getStrings ("selectedMembers");
 		if (deleteIds == null)
 		{
@@ -5976,6 +6078,18 @@ public class ResourcesAction
 	{
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		
+		// cancel copy if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
 
 		Vector copyItemsVector = new Vector ();
 
@@ -6031,7 +6145,83 @@ public class ResourcesAction
 		}	// if-else
 
 	}	// doCopy
+
+	/**
+	* Handle user's selection of items to be moved.
+	*/
+	public void doMove ( RunData data )
+	{
+		// get the state object
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+
+		Vector moveItemsVector = new Vector ();
+
+		// cancel copy if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
+
+		String[] moveItems = data.getParameters ().getStrings ("selectedMembers");
+		if (moveItems == null)
+		{
+			// there is no resource selected, show the alert message to the user
+			addAlert(state, rb.getString("choosefile6"));
+			state.setAttribute (STATE_MODE, MODE_LIST);
+		}
+		else
+		{
+			String moveId = NULL_STRING;
+			for (int i = 0; i < moveItems.length; i++)
+			{
+				moveId = moveItems[i];
+				try
+				{
+					ResourceProperties properties = ContentHostingService.getProperties (moveId);
+					if (properties.getProperty (ResourceProperties.PROP_IS_COLLECTION).equals (Boolean.TRUE.toString()))
+					{
+						String alert = (String) state.getAttribute(STATE_MESSAGE);
+						if (alert == null || ((alert != null) && (alert.indexOf(RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING) == -1)))
+						{
+							addAlert(state, RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING);
+						}
+					}
+				}
+				catch (PermissionException e)
+				{
+					addAlert(state, rb.getString("notpermis15"));
+				}
+				catch (IdUnusedException e)
+				{
+					addAlert(state,RESOURCE_NOT_EXIST_STRING);
+				}	// try-catch
+			}
+
+			if (state.getAttribute(STATE_MESSAGE) == null)
+			{
+				state.setAttribute (STATE_MOVE_FLAG, Boolean.TRUE.toString());
+				
+				for (int i = 0; i < moveItems.length; i++)
+				{
+					moveItemsVector.add (moveItems[i]);
+				}
+
+				state.setAttribute (STATE_MOVED_IDS, moveItemsVector);
+				
+				//setCopyFlags(state);
+				
+			}	// if-else
+		}	// if-else
+
+	}	// doMove
 	
+
 	/**
 	 * If copy-flag is set to false, erase the copied-id's list and set copied flags to false
 	 * in all the browse items.  If copied-id's list is empty, set copy-flag to false and set
@@ -6146,6 +6336,7 @@ public class ResourcesAction
 		if(state.getAttribute(STATE_INITIALIZED) == null)
 		{
 			initCopyContext(state); 
+			initMoveContext(state); 
 		}
 		
 		
@@ -6432,11 +6623,22 @@ public class ResourcesAction
 	/**
 	* initialize the copy context
 	*/
-	private void initCopyContext (SessionState state)
+	private static void initCopyContext (SessionState state)
 	{
 		state.setAttribute (STATE_COPIED_IDS, new Vector ());
 
 		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
+
+	}	// initCopyContent
+
+	/**
+	* initialize the copy context
+	*/
+	private static void initMoveContext (SessionState state)
+	{
+		state.setAttribute (STATE_MOVED_IDS, new Vector ());
+
+		state.setAttribute (STATE_MOVE_FLAG, Boolean.FALSE.toString());
 
 	}	// initCopyContent
 
@@ -7272,6 +7474,189 @@ public class ResourcesAction
 		
 	}	// doPasteitem
 
+	/**
+	* Paste the item(s) selected to be moved
+	*/
+	public static void doMoveitems ( RunData data)
+	{
+		ParameterParser params = data.getParameters ();
+
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+
+		// cancel copy if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
+
+		List items = (List) state.getAttribute(STATE_MOVED_IDS);
+
+		String collectionId = params.getString ("collectionId");
+		
+		Iterator itemIter = items.iterator();
+		while (itemIter.hasNext())
+		{
+			// get the copied item to be pasted
+			String itemId = (String) itemIter.next();
+				
+			String originalDisplayName = NULL_STRING;
+	
+			try
+			{
+				ResourceProperties properties = ContentHostingService.getProperties (itemId);
+				originalDisplayName = properties.getPropertyFormatted (ResourceProperties.PROP_DISPLAY_NAME);
+	
+				// copy, cut and paste not operated on collections
+				if (properties.getProperty (ResourceProperties.PROP_IS_COLLECTION).equals (Boolean.TRUE.toString()))
+				{
+					String alert = (String) state.getAttribute(STATE_MESSAGE);
+					if (alert == null || ((alert != null) && (alert.indexOf(RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING) == -1)))
+					{
+						addAlert(state, RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING);
+					}
+				}
+				else
+				{
+					// paste the resource
+					ContentResource resource = ContentHostingService.getResource (itemId);
+					ResourceProperties p = ContentHostingService.getProperties(itemId);
+					String displayName = p.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+	
+					ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
+	
+					// add the properties of the pasted item
+					Iterator propertyNames = properties.getPropertyNames ();
+					while ( propertyNames.hasNext ())
+					{
+						String propertyName = (String) propertyNames.next ();
+						if (!properties.isLiveProperty (propertyName))
+						{
+							if (propertyName.equals (ResourceProperties.PROP_DISPLAY_NAME)&&(displayName.length ()>0))
+							{
+								resourceProperties.addProperty (propertyName, displayName);
+							}
+							else
+							{
+								resourceProperties.addProperty (propertyName, properties.getProperty (propertyName));
+							}
+						}
+					}
+	
+					String newDisplayName = resourceProperties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+					int index = displayName.lastIndexOf(".");
+					String base = displayName.substring(0, index);
+					String ext = displayName.substring(index);
+					
+					boolean copy_completed = false;
+					int num_tries = 0;
+					while(! copy_completed && num_tries < 1000)
+					{
+						String id = collectionId + Validator.escapeResourceName(displayName);
+						try
+						{
+							// paste the copied resource to the new collection
+							ContentResource newResource = ContentHostingService.addResource (id, resource.getContentType (), resource.getContent (), resourceProperties, NotificationService.NOTI_NONE);
+							
+							String mode = (String) state.getAttribute(STATE_MODE);
+							if(MODE_HELPER.equals(mode))
+							{
+								attachItem(id, state);
+							}
+							copy_completed = true;
+						}
+						catch (IdUsedException e)
+						{
+							num_tries++;
+							displayName = base + "-" + num_tries + ext;
+							resourceProperties.addProperty(ResourceProperties.PROP_DISPLAY_NAME, newDisplayName + " (" + num_tries + ")");
+						}
+						catch (InconsistentException e)
+						{
+							addAlert(state,RESOURCE_INVALID_TITLE_STRING);
+						}
+						catch (IdInvalidException e)
+						{
+							addAlert(state,rb.getString("title") + " " + e.getMessage ());
+						}
+						catch (OverQuotaException e)
+						{
+							addAlert(state, rb.getString("overquota"));
+						}	// try-catch
+						
+					}	// while
+					
+					if(copy_completed)
+					{
+						ContentResourceEdit redit;
+						try 
+						{
+							redit = ContentHostingService.editResource(itemId);
+							ContentHostingService.removeResource(redit);
+						} 
+						catch (InUseException e) 
+						{
+							
+						} 
+					}
+	
+				}	// if-else
+			}
+			catch (PermissionException e)
+			{
+				addAlert(state, rb.getString("notpermis8") + " " + originalDisplayName + ". ");
+			}
+			catch (IdUnusedException e)
+			{
+				addAlert(state,RESOURCE_NOT_EXIST_STRING);
+			}
+			catch (TypeException e)
+			{
+				addAlert(state, rb.getString("pasteitem") + " " + originalDisplayName + " " + rb.getString("mismatch"));
+			}	// try-catch
+				
+			if (state.getAttribute(STATE_MESSAGE) == null)
+			{
+				// delete sucessful
+				String mode = (String) state.getAttribute(STATE_MODE);
+				if(MODE_HELPER.equals(mode))
+				{
+					state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+				}
+				else
+				{
+					state.setAttribute (STATE_MODE, MODE_LIST);
+				} 
+				
+				// try to expand the collection
+				HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+				if(! expandedCollections.containsKey(collectionId))
+				{
+					org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
+					try
+					{
+						ContentCollection coll = contentService.getCollection(collectionId);
+						expandedCollections.put(collectionId, coll);
+					}
+					catch(Exception ignore){}
+				}			
+	
+				// reset the copy flag
+				if (((String)state.getAttribute (STATE_MOVE_FLAG)).equals (Boolean.TRUE.toString()))
+				{
+					state.setAttribute (STATE_MOVE_FLAG, Boolean.FALSE.toString());
+				}
+			}
+		
+		}
+		
+	}	// doPasteitem
+
 
 	/**
 	* Paste the previously copied item(s)
@@ -7437,7 +7822,16 @@ public class ResourcesAction
 		ParameterParser params = data.getParameters();
 
 		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
 
 		// get the current collection id and the related site
 		String collectionId = params.getString("collectionId"); //(String) state.getAttribute (STATE_COLLECTION_ID);
@@ -7483,7 +7877,16 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		// cancel copy if there is one in progress
-		state.setAttribute (STATE_COPY_FLAG, Boolean.FALSE.toString());
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
 
 		// get the current home collection id and the related site
 		String collectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
