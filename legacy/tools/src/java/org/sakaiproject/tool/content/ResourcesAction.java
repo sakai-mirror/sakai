@@ -396,6 +396,8 @@ public class ResourcesAction
 	private static final String COPYRIGHT_NEW_COPYRIGHT = rb.getString("cpright3");
 	private static final String COPYRIGHT_ALERT_URL = ServerConfigurationService.getAccessUrl() + COPYRIGHT_PATH;
 
+	private static final int MAXIMUM_ATTEMPTS_FOR_UNIQUENESS = 1000;
+
 
 	/**
 	* Build the context for normal display
@@ -1917,7 +1919,13 @@ public class ResourcesAction
 				try
 				{
 					ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
+					String displayname = findUniqueDisplayName(collectionId, item.getName());
+					if(displayname == null)
+					{
+						alerts.add(item.getName() + " " + rb.getString("used"));
+						continue outerloop;
+					}
+					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, displayname);
 					resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
 					resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
 					resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, item.getFormtype());
@@ -1932,8 +1940,7 @@ public class ResourcesAction
 					if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
 					{
 						alerts.add(rb.getString("toolong") + " " + newResourceId);
-						state.setAttribute(STATE_CREATE_ALERTS, alerts);
-						return;
+						continue outerloop;
 					}
 
 					boolean tryingToAddItem = true;
@@ -1993,7 +2000,7 @@ public class ResourcesAction
 						catch (IdUsedException e)
 						{
 							boolean foundUnusedId = false;
-							for(int trial = 1;!foundUnusedId && trial < 100; trial++)
+							for(int trial = 1;!foundUnusedId && trial < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS; trial++)
 							{
 								attemptNum++;
 								attemptStr = Integer.toString(attemptNum);
@@ -2331,7 +2338,14 @@ public class ResourcesAction
 			EditItem item = (EditItem) new_files.get(i);
 					
 			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
+			
+			String displayname = findUniqueDisplayName(collectionId, item.getName());
+			if(displayname == null)
+			{
+				alerts.add(item.getName() + " " + rb.getString("used"));
+				continue outerloop;
+			}
+			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, displayname);							
 			resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
 
 			resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, item.getCopyrightInfo());
@@ -2406,7 +2420,7 @@ public class ResourcesAction
 				catch (IdUsedException e)
 				{
 					boolean foundUnusedId = false;
-					for(int trial = 1;!foundUnusedId && trial < 100; trial++)
+					for(int trial = 1;!foundUnusedId && trial < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS; trial++)
 					{
 						attemptNum++;
 						attempt = Integer.toString(attemptNum);
@@ -2484,6 +2498,53 @@ public class ResourcesAction
 		
 	}	// createFiles
 	
+	/**
+	 * Check a candidate display-name for a new resource in a collection. If the candidate 
+	 * is already in use as a display name in the collection, append a number to the
+	 * candidate (in parentheses) and check again. Increment the number and keep trying
+	 * until a variation is found that is not already used as a display-name in the 
+	 * collection or until an arbitrary limit on the number of tries is exceeded. 
+	 * @param collectionId
+	 * @param candidate
+	 * @return The candidate or a variation on it that is not already used as a display-name
+	 * in the collection, or null if a unique variation is not found.
+	 */
+	private static String findUniqueDisplayName(String collectionId, String candidate) 
+	{
+		String displayname = candidate;
+		ContentCollection collection;
+		try 
+		{
+			collection = ContentHostingService.getCollection(collectionId);
+			List otherMembers = collection.getMemberResources();
+			Set otherDisplayNames = new HashSet();
+			Iterator it = otherMembers.iterator();
+			while(it.hasNext())
+			{
+				Resource res = (Resource) it.next();
+				ResourceProperties props = res.getProperties();
+				String dname = props.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+				otherDisplayNames.add(dname);
+			}
+			int attempt = 0;
+			while(otherDisplayNames.contains(displayname) && attempt < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+			{
+				attempt++;
+				displayname = candidate + " (" + attempt + ")";
+			}
+			if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+			{
+				displayname = null;
+			}
+		} 
+		catch (Exception e) 
+		{
+			displayname = null;
+		}
+		return displayname;
+		
+	}	// findUniqueDisplayName
+
 	/**
 	 * Process user's request to add an instance of a particular field to a structured object.
 	 * @param data
@@ -2697,8 +2758,13 @@ public class ResourcesAction
 			EditItem item = (EditItem) new_urls.get(i);
 			
 			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-			String title = item.getName();
-			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, title);							
+			String displayname = findUniqueDisplayName(collectionId, item.getName());
+			if(displayname == null)
+			{
+				alerts.add(item.getName() + " " + rb.getString("used"));
+				continue outerloop;
+			}
+			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, displayname);							
 			resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
 
 			resourceProperties.addProperty(ResourceProperties.PROP_IS_COLLECTION, Boolean.FALSE.toString());
@@ -2706,7 +2772,7 @@ public class ResourcesAction
 			saveMetadata(resourceProperties, metadataGroups, item);
 
 			byte[] newUrl = item.getFilename().getBytes();
-			String baseId = Validator.escapeResourceName(title);
+			String baseId = Validator.escapeResourceName(item.getName());
 			int attemptNum = 0;
 			String attemptStr = "";
 			String newResourceId = collectionId + baseId + attemptStr;
@@ -2750,7 +2816,7 @@ public class ResourcesAction
 				catch (IdUsedException e)
 				{
 					boolean foundUnusedId = false;
-					for(int trial = 1;!foundUnusedId && trial < 100; trial++)
+					for(int trial = 1;!foundUnusedId && trial < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS; trial++)
 					{
 						attemptNum++;
 						attemptStr = "-" + Integer.toString(attemptNum);
@@ -7386,7 +7452,7 @@ public class ResourcesAction
 					
 					boolean copy_completed = false;
 					int num_tries = 0;
-					while(! copy_completed && num_tries < 1000)
+					while(! copy_completed && num_tries < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
 					{
 						String id = collectionId + Validator.escapeResourceName(displayName);
 						try
@@ -7555,7 +7621,7 @@ public class ResourcesAction
 					
 					boolean copy_completed = false;
 					int num_tries = 0;
-					while(! copy_completed && num_tries < 1000)
+					while(! copy_completed && num_tries < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
 					{
 						String id = collectionId + Validator.escapeResourceName(displayName);
 						try
@@ -7727,7 +7793,7 @@ public class ResourcesAction
 				
 				boolean copy_completed = false;
 				int num_tries = 0;
-				while(! copy_completed && num_tries < 1000)
+				while(! copy_completed && num_tries < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
 				{
 					String id = collectionId + Validator.escapeResourceName(displayName);
 					try
