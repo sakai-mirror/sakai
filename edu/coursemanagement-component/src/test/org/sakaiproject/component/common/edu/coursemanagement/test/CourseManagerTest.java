@@ -71,6 +71,7 @@ public class CourseManagerTest
   }
 
   public void testSetUpDefault() throws Exception {
+    System.out.println("[Test #1: testSetUpDefault]");
     addSessionType();
     addEnrollmentStatusType();
     addParticipationStatusType();
@@ -82,6 +83,7 @@ public class CourseManagerTest
    * @throws java.lang.Exception
    */
   public void testCreateCanonicalCourse() throws Exception {
+    System.out.println("[Test #2: testCreateCanonicalCourse]");
     Date currentDate = new Date();
     CanonicalCourseStatusTypeImpl type = (CanonicalCourseStatusTypeImpl)
         ( (CourseManagementManagerImpl) courseManagementManager).
@@ -91,9 +93,7 @@ public class CourseManagerTest
         createCanonicalCourse(
         "title", "description", "math-101",
         "*uuid_canonical" + currentDate.getTime(), type);
-    setComplete();
-    System.out.println("***canonical course Id = " +
-                       math101.getCanonicalCourseId());
+    //setComplete();
     System.out.println("**** done 1: create math101");
 
     //2. add topics to math101
@@ -102,7 +102,7 @@ public class CourseManagerTest
     math101.addPrerequisite("math-10");
     ( (CourseManagementManagerImpl) courseManagementManager).
         saveCanonicalCourse(math101);
-    setComplete();
+    //setComplete();
     System.out.println("**** done 2: add topic");
 
     //3. create stat101
@@ -113,24 +113,30 @@ public class CourseManagerTest
     //4. make them equivalent
     math101.addEquivalent(stat101.getUuid());
     stat101.addEquivalent(math101.getUuid());
-    setComplete();
+    //setComplete();
     System.out.println("**** done 4: make equivalent");
   }
 
   public void testRemoveCanonical() throws Exception {
-    CanonicalCourseImpl c = testCreateCourse();
+    System.out.println("[Test #3: testRemoveCanonical]");
+    CanonicalCourseImpl c = createCourse();
     String cUuid = c.getUuid();
-    System.out.println("**** done 1: remove canonical" + c);
+    System.out.println("**** done 8: remove canonical" + c);
     courseManagementManager.removeCanonicalCourse(cUuid);
     CanonicalCourse c1 = courseManagementManager.getCanonicalCourse(cUuid);
-    System.out.println("**** done 2: REMOVED canonical" + c1);
+    System.out.println("**** done 9: REMOVED canonical" + c1);
   }
   
   /**
    * test create a canonical course with one offering and one section
    * @throws java.lang.Exception
    */
-  private CanonicalCourseImpl testCreateCourse() throws Exception {
+  private CanonicalCourseImpl createCourse() throws Exception {
+    // -1. set up default type
+    addSessionType();
+    addEnrollmentStatusType();
+    addParticipationStatusType();
+
     Date currentDate = new Date();
     // 0. create session
     SessionImpl session = testCreateSession();
@@ -148,7 +154,7 @@ public class CourseManagerTest
     CourseOfferingImpl offering = (CourseOfferingImpl)((CourseManagementManagerImpl) courseManagementManager)
 				.createCourseOffering("title", "description", "1052-eng-101", eng101
 						.getUuid(), session.getUuid(), offeringType);
-		setComplete();
+    //setComplete();
     System.out.println("**** done 2: create offering 1052-eng-101");
     
     // 3. update course offering
@@ -163,7 +169,7 @@ public class CourseManagerTest
     offering.setMaximumStudents(new Integer("0"));
     ((CourseManagementManagerImpl) courseManagementManager)
 				.saveCourseOffering(offering);
-    setComplete();
+    //setComplete();
     System.out.println("**** done 3: update offering 1052-eng-101");
 
     // 4. add a section to course offering
@@ -173,17 +179,17 @@ public class CourseManagerTest
     CourseSectionImpl section = (CourseSectionImpl)((CourseManagementManagerImpl) courseManagementManager)
 		.createCourseSection("title", "description", "1052-eng-101-01", 
 				offering.getUuid(), session.getUuid(), sectionType);
-    setComplete();
+    //setComplete();
     System.out.println("**** done 4: add section to offering");
 
     // 5. add student enrollment to course section
     EnrollmentStatusTypeImpl enrollmentStatus = (EnrollmentStatusTypeImpl)
     ( (CourseManagementManagerImpl) courseManagementManager).
        getEnrollmentStatusByKeyword("enrollment_status.full_credit"); 
-    System.out.println("**** E satus"+enrollmentStatus);
+    System.out.println("**** E status="+enrollmentStatus);
     EnrollmentRecordImpl e = (EnrollmentRecordImpl)((CourseManagementManagerImpl) courseManagementManager)
 		.createEnrollmentRecord("daisyf", "student", enrollmentStatus.getUuid(), section.getUuid());
-    setComplete();    
+    //setComplete();    
     System.out.println("**** done 5: add studnet enrollment");
 
     // 6. add an instructor to course section
@@ -192,8 +198,7 @@ public class CourseManagerTest
     getParticipationStatusByKeyword("participation_status.unknown"); 
     ParticipationRecordImpl p = (ParticipationRecordImpl)((CourseManagementManagerImpl) courseManagementManager)
 		.createParticipationRecord("rgollub", "instructor", participationStatus.getUuid(), section.getUuid());
-    setComplete();    
-    setComplete();
+    //setComplete();    
     System.out.println("**** done 6: add participation record");
 
     // 7. add sub section
@@ -215,9 +220,8 @@ public class CourseManagerTest
    	section.addSubSection(subSection);
     ((CourseManagementManagerImpl) courseManagementManager)
 				.saveCourseSection(section);
-		setComplete();
-		System.out.println("**** done 7: add subsection to section");
-
+    //setComplete();
+    System.out.println("**** done 7: add subsection to section");
     return eng101;
   }
 
@@ -252,7 +256,7 @@ public class CourseManagerTest
         .createCanonicalCourse(
         title, "description", courseNumber,
         "*uuid_" + currentDate.getTime(), type);
-    setComplete();
+    //setComplete();
     System.out.println("***canonical course Id = " + c.getCanonicalCourseId());
     return c;
   }
@@ -270,7 +274,7 @@ public class CourseManagerTest
                                    courseManagementManager)
         .createSession("Fall 2005", "1052", "2005", type,
                        "*uuid_" + currentDate.getTime(), Boolean.TRUE);
-    setComplete();
+    //setComplete();
     System.out.println("*** testCreateSession(), sessionId = " + s.getSessionId());
     String sUuid = s.getUuid();
     System.out.println("*** testCreateSession(), sessionUuid = " + sUuid);
@@ -312,7 +316,7 @@ public class CourseManagerTest
                                  "term.forth_quarter", "Forth Quarter", null, "*uuid_session_9",
                                  new Integer(1), "site", currentDate , "site" ,currentDate));
     ((CourseManagementManagerImpl) courseManagementManager).saveOrUpdateAll(list);
-    setComplete();
+    //setComplete();
   }
 
 
@@ -342,7 +346,7 @@ public class CourseManagerTest
                                  "enrollment_status.pending", "Pending", null, "*uuid_enrollment_status_7",
                                  new Integer(1), "site", currentDate , "site" ,currentDate));
     ((CourseManagementManagerImpl) courseManagementManager).saveOrUpdateAll(list);
-    setComplete();
+    //setComplete();
   }
 
   public void addParticipationStatusType(){
@@ -371,7 +375,7 @@ public class CourseManagerTest
                                  "participation_status.pending", "Pending", null, "*uuid_participation_status_7",
                                  new Integer(1), "site", currentDate , "site" ,currentDate));
     ((CourseManagementManagerImpl) courseManagementManager).saveOrUpdateAll(list);
-    setComplete();
+    //setComplete();
   }
 
 }
