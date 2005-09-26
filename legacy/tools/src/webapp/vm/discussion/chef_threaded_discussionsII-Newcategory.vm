@@ -37,6 +37,9 @@
 				<span class="reqStar">*</span>
 				<label for="newcategory">$tlang.getString("newcat.crenewcat2")</label>
 				<input type="text" name="newcategory" id="newcategory" value="" />
+				## (gilver) - hidden dummy field to get around IE's incomplete implementation of:
+				##	http://www.w3.org/MarkUp/html-spec/html-spec_8.html#SEC8.2
+				<input type="text" name="x" id="x" value="" style="visibility:hidden;display:none" />
 			</p>	
 		<p class="act">
 			<input type="submit" class="active"  name="eventSubmit_doNew_category" value="$tlang.getString("newcat.crecat")" />
