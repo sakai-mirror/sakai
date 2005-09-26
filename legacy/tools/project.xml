@@ -178,11 +178,6 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
-		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-syllabus-api</artifactId>
-			<version>${pom.currentVersion}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>servletapi</groupId>
