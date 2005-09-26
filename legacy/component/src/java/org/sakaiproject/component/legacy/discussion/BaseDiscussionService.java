@@ -40,6 +40,8 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
+import org.sakaiproject.service.legacy.content.ContentResource;
+import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannel;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannelEdit;
 import org.sakaiproject.service.legacy.discussion.DiscussionMessage;
@@ -541,9 +543,34 @@ public abstract class BaseDiscussionService
 						nMessageHeader.setFrom(oMessageHeader.getFrom());
 						nMessageHeader.setSubject(oMessageHeader.getSubject());
 						nMessageHeader.setCategory(category);
-						
 						// attachment
-						nMessageHeader.replaceAttachments(oMessageHeader.getAttachments());
+						ReferenceVector oAttachments = oMessageHeader.getAttachments();
+						ReferenceVector nAttachments = new ReferenceVector();
+						for (int n=0; n<oAttachments.size(); n++)
+						{
+							Reference oAttachment = (Reference) oAttachments.get(n);
+							String oAttachmentId = ((Reference) oAttachments.get(n)).getId();
+							if (oAttachmentId.indexOf(fromContext) !=-1)
+							{
+								// replace old site id with new site id in attachments
+								String nAttachmentId = oAttachmentId.replaceAll(fromContext, toContext);
+								try
+								{
+									ContentResource attachment = ContentHostingService.getResource(nAttachmentId);
+									nAttachments.add(new Reference(attachment.getReference()));
+								}
+								catch (Exception any)
+								{
+									
+								}
+								
+							}
+							else
+							{
+								nAttachments.add(oAttachment);
+							}
+						}
+						nMessageHeader.replaceAttachments(nAttachments);
 						//properties
 						ResourcePropertiesEdit p = nMessage.getPropertiesEdit();
 						p.clear();

@@ -2996,8 +2996,34 @@ public abstract class BaseAssignmentService
 							ResourcePropertiesEdit p = nContent.getPropertiesEdit();
 							p.clear();
 							p.addAll(oContent.getProperties());
-							//attachment
-							nContent.replaceAttachments(oContent.getAttachments());
+							// attachment
+							ReferenceVector oAttachments = oContent.getAttachments();
+							ReferenceVector nAttachments = new ReferenceVector();
+							for (int n=0; n<oAttachments.size(); n++)
+							{
+								Reference oAttachment = (Reference) oAttachments.get(n);
+								String oAttachmentId = ((Reference) oAttachments.get(n)).getId();
+								if (oAttachmentId.indexOf(fromContext) !=-1)
+								{
+									// replace old site id with new site id in attachments
+									String nAttachmentId = oAttachmentId.replaceAll(fromContext, toContext);
+									try
+									{
+										ContentResource attachment = ContentHostingService.getResource(nAttachmentId);
+										nAttachments.add(new Reference(attachment.getReference()));
+									}
+									catch (Exception any)
+									{
+										
+									}
+									
+								}
+								else
+								{
+									nAttachments.add(oAttachment);
+								}
+							}
+							nContent.replaceAttachments(nAttachments);
 							//complete the edit
 							m_contentStorage.commit(nContent);
 							((BaseAssignmentContentEdit) nContent).closeEdit();

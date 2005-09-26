@@ -7874,10 +7874,8 @@ public class SiteAction extends PagedResourceActionII
 						select_import_tools(params, state);
 						Hashtable importTools = (Hashtable) state.getAttribute(STATE_IMPORT_SITE_TOOL);
 						List selectedTools = (List) state.getAttribute(STATE_TOOL_REGISTRATION_SELECTED_LIST);
-						for (int i=0; i<selectedTools.size(); i++)
-						{
-							importToolIntoSite((String)selectedTools.get(i), importTools, existingSite);
-						}
+						importToolIntoSite(selectedTools, importTools, existingSite);
+						
 						if (state.getAttribute(STATE_MESSAGE) == null)
 						{
 							commitSiteAndRemoveEdit(state);
@@ -9816,11 +9814,10 @@ public class SiteAction extends PagedResourceActionII
 						tool.setTool(toolRegFound);
 						tool.setLayoutHints("0,0");
 						
-						// import
-						importToolIntoSite(toolId, importTools, site);
-						
 					} // Other features
 				}
+				//import
+				importToolIntoSite(chosenList, importTools, site);
 				
 				// booleans for synoptic views
 				if (toolId.equals("sakai.announcements"))
@@ -9919,49 +9916,71 @@ public class SiteAction extends PagedResourceActionII
 	} // addFeatures
 	
 	// import tool content into site
-	private void importToolIntoSite(String toolId, Hashtable importTools, SiteEdit site)
+	private void importToolIntoSite(List toolIds, Hashtable importTools, SiteEdit site)
 	{
 		if (importTools != null)
 		{
-			if (importTools.containsKey(toolId))
+			//import resources first
+			boolean resourcesImported = false;
+			for (int i = 0; i<toolIds.size() && !resourcesImported;i++)
 			{
-			   List importSiteIds = (List) importTools.get(toolId);
-				for (int k = 0; k < importSiteIds.size(); k++)
-				{
-					String fromSiteId = (String) importSiteIds.get(k);
-					String toSiteId = site.getId();
-					
-					// which tool?
-					if (toolId.equalsIgnoreCase("sakai.resources"))
-					{
-						String fromSiteCollectionId = ContentHostingService.getSiteCollection(fromSiteId);
-						String toSiteCollectionId = ContentHostingService.getSiteCollection(toSiteId);
-						ContentHostingService.importResources(fromSiteCollectionId, toSiteCollectionId, new Vector());
-					}
-					else if (toolId.equalsIgnoreCase("sakai.announcements"))
-					{
-						AnnouncementService.importResources(fromSiteId, toSiteId, new Vector());
-					}
-					else if (toolId.equalsIgnoreCase("sakai.discussion"))
-					{
-						DiscussionService.importResources(fromSiteId, toSiteId, new Vector());
-					}
-					else if (toolId.equalsIgnoreCase("sakai.assignment") 
-							|| toolId.equalsIgnoreCase("sakai.assignment.grades"))
-					{
-						// for both Assignment with Grades tool and Assignment without Grades tool
-						AssignmentService.importResources(fromSiteId, toSiteId, new Vector());
-					}
-					else if (toolId.equalsIgnoreCase("sakai.schedule"))
-					{
-						CalendarService.importResources(fromSiteId, toSiteId, new Vector());
-					}
-					/*else if (toolId.equalsIgnoreCase("sakai.syllabus"))
-					{
-					  	SyllabusService.importResources(fromSiteId, toSiteId, new Vector());					   
-					}*/
-				}
+				String toolId = (String) toolIds.get(i);
 				
+				if (toolId.equalsIgnoreCase("sakai.resources") && importTools.containsKey(toolId))
+				{
+				   List importSiteIds = (List) importTools.get(toolId);
+				   
+				   for (int k = 0; k < importSiteIds.size(); k++)
+				   {
+					   String fromSiteId = (String) importSiteIds.get(k);
+					   String toSiteId = site.getId();
+					   
+					   String fromSiteCollectionId = ContentHostingService.getSiteCollection(fromSiteId);
+					   String toSiteCollectionId = ContentHostingService.getSiteCollection(toSiteId);
+					   ContentHostingService.importResources(fromSiteCollectionId, toSiteCollectionId, new Vector());
+					   resourcesImported = true;
+				   }
+				}
+			}
+			
+			// ijmport other tools then
+			for (int i = 0; i<toolIds.size();i++)
+			{
+				String toolId = (String) toolIds.get(i);
+				if (!toolId.equalsIgnoreCase("sakai.resources") &&importTools.containsKey(toolId))
+				{
+				   List importSiteIds = (List) importTools.get(toolId);
+				   for (int k = 0; k < importSiteIds.size(); k++)
+				   {
+						String fromSiteId = (String) importSiteIds.get(k);
+						String toSiteId = site.getId();
+						
+						// which tool?
+						if (toolId.equalsIgnoreCase("sakai.announcements"))
+						{
+							AnnouncementService.importResources(fromSiteId, toSiteId, new Vector());
+						}
+						else if (toolId.equalsIgnoreCase("sakai.discussion"))
+						{
+							DiscussionService.importResources(fromSiteId, toSiteId, new Vector());
+						}
+						else if (toolId.equalsIgnoreCase("sakai.assignment") 
+								|| toolId.equalsIgnoreCase("sakai.assignment.grades"))
+						{
+							// for both Assignment with Grades tool and Assignment without Grades tool
+							AssignmentService.importResources(fromSiteId, toSiteId, new Vector());
+						}
+						else if (toolId.equalsIgnoreCase("sakai.schedule"))
+						{
+							CalendarService.importResources(fromSiteId, toSiteId, new Vector());
+						}
+						/*else if (toolId.equalsIgnoreCase("sakai.syllabus"))
+						{
+						  	SyllabusService.importResources(fromSiteId, toSiteId, new Vector());					   
+						}*/
+					}
+					
+				}
 			}
 		}
 	}	// importToolIntoSite

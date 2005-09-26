@@ -43,6 +43,8 @@ import org.sakaiproject.service.legacy.announcement.AnnouncementMessageEdit;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessageHeader;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessageHeaderEdit;
 import org.sakaiproject.service.legacy.announcement.AnnouncementService;
+import org.sakaiproject.service.legacy.content.ContentResource;
+import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.message.Message;
 import org.sakaiproject.service.legacy.message.MessageChannel;
 import org.sakaiproject.service.legacy.message.MessageHeader;
@@ -50,6 +52,7 @@ import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 import org.sakaiproject.service.legacy.notification.NotificationEdit;
 import org.sakaiproject.service.legacy.notification.NotificationService;
 import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
@@ -506,7 +509,33 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 						nMessageHeader.setFrom(oMessageHeader.getFrom());
 						nMessageHeader.setSubject(oMessageHeader.getSubject());
 						//attachment
-						nMessageHeader.replaceAttachments(oMessageHeader.getAttachments());
+						ReferenceVector oAttachments = oMessageHeader.getAttachments();
+						ReferenceVector nAttachments = new ReferenceVector();
+						for (int n=0; n<oAttachments.size(); n++)
+						{
+							Reference oAttachment = (Reference) oAttachments.get(n);
+							String oAttachmentId = ((Reference) oAttachments.get(n)).getId();
+							if (oAttachmentId.indexOf(fromContext) !=-1)
+							{
+								// replace old site id with new site id in attachments
+								String nAttachmentId = oAttachmentId.replaceAll(fromContext, toContext);
+								try
+								{
+									ContentResource attachment = ContentHostingService.getResource(nAttachmentId);
+									nAttachments.add(new Reference(attachment.getReference()));
+								}
+								catch (Exception any)
+								{
+									
+								}
+								
+							}
+							else
+							{
+								nAttachments.add(oAttachment);
+							}
+						}
+						nMessageHeader.replaceAttachments(nAttachments);
 						//properties
 						ResourcePropertiesEdit p = nMessage.getPropertiesEdit();
 						p.clear();

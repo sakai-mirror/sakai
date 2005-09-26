@@ -59,6 +59,8 @@ import org.sakaiproject.service.legacy.calendar.CalendarEventEdit;
 import org.sakaiproject.service.legacy.calendar.CalendarEventVector;
 import org.sakaiproject.service.legacy.calendar.CalendarService;
 import org.sakaiproject.service.legacy.calendar.RecurrenceRule;
+import org.sakaiproject.service.legacy.content.ContentResource;
+import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.id.IdService;
@@ -1166,7 +1168,34 @@ public abstract class BaseCalendarService
 							ResourcePropertiesEdit p = eEdit.getPropertiesEdit();
 							p.clear();
 							p.addAll(oEvent.getProperties());
-							
+							// attachment
+							ReferenceVector oAttachments = eEdit.getAttachments();
+							ReferenceVector nAttachments = new ReferenceVector();
+							for (int n=0; n<oAttachments.size(); n++)
+							{
+								Reference oAttachment = (Reference) oAttachments.get(n);
+								String oAttachmentId = ((Reference) oAttachments.get(n)).getId();
+								if (oAttachmentId.indexOf(fromContext) !=-1)
+								{
+									// replace old site id with new site id in attachments
+									String nAttachmentId = oAttachmentId.replaceAll(fromContext, toContext);
+									try
+									{
+										ContentResource attachment = ContentHostingService.getResource(nAttachmentId);
+										nAttachments.add(new Reference(attachment.getReference()));
+									}
+									catch (Exception any)
+									{
+										
+									}
+									
+								}
+								else
+								{
+									nAttachments.add(oAttachment);
+								}
+							}
+							eEdit.replaceAttachments(nAttachments);
 							// recurrence rule
 							RecurrenceRule rule = oEvent.getRecurrenceRule();
 							eEdit.setRecurrenceRule(rule);
