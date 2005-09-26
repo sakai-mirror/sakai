@@ -137,6 +137,42 @@
 		<p class="indnt2">$tlang.getString("vi.there1")</p>
 	#end
 	
+	<h4>$tlang.getString("vi.public2")</h4>
+	#if ($syllabus.size() > 0)
+		<table class="itemSummary indnt2" cellspacing="0" cellpadding="0" border="0">
+			#foreach ($message in $syllabus)
+				<tr>
+					<th>$tlang.getString("vi.subject")</th>
+					<td>$validator.escapeHtml($message.syllabusData.title)</td> 
+				</tr>
+				<tr>
+					<th>Content</th>
+					<td>$validator.escapeHtmlFormattedText($message.syllabusData.asset)</td>
+				</tr>
+				#if (!$message.attachList.isEmpty())
+					<tr>
+						<th>$tlang.getString("vi.att")</th>
+						<td>
+						<ul class="attachList">
+							#foreach ($attachment in $message.attachList)
+								<li>
+									<a href="$attachment.url" target="_blank">
+										$validator.escapeHtml($attachment.name)
+									</a>
+								</li>
+							#end
+						</ul>
+						</td>	
+					</tr>
+				#end
+				<tr><td>&nbsp;</td><td>&nbsp;</td></tr>	
+			#end
+		</table>
+	#else
+		<p class="indnt2">$tlang.getString("vi.there2")</p>
+	#end
+	
+	
 	<form action="#toolForm("$action")" method="post">	
 	<p class="nav">
 	#if ($prevSite)

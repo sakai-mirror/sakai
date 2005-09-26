@@ -51,6 +51,7 @@ import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
+import org.sakaiproject.api.app.syllabus.cover.SyllabusService;
 
 /**
 * <p>SiteBrowserAction is the CHEF site browser, showing a searchable list of the defined sites, and details including
@@ -405,7 +406,12 @@ public class SiteBrowserAction
 					announcements = new Vector();
 				}
 				context.put("announcements", announcements);
-	
+
+				//get the public syllabus
+				String thisSiteId = site.getId();
+				List syllabusList = SyllabusService.getMessages(site.getId());
+				context.put("syllabus", syllabusList);
+				
 				// get the public resources
 				List resources = ContentHostingService.getAllResources(ContentHostingService.getSiteCollection(site.getId()));
 				context.put("resources", resources);
