@@ -55,6 +55,7 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
@@ -2695,7 +2696,11 @@ extends PagedResourceActionII
 		// setup... we'll use the ResourcesAction's mode
 		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
 		state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
-		state.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(false));
+		boolean show_other_sites = ServerConfigurationService.getBoolean("resources.show_all_collections.helper", ResourcesAction.SHOW_ALL_SITES_IN_FILE_PICKER);
+		/** This attribute indicates whether "Other Sites" twiggle should show */
+		state.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(show_other_sites));
+		/** This attribute indicates whether "Other Sites" twiggle should be open */
+		state.setAttribute(ResourcesAction.STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
 		
 		String subject = data.getParameters().getString("subject");
 		String stateFromText = rb.getString("java.theann");//"the announcement";

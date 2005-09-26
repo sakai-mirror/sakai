@@ -3664,7 +3664,11 @@ extends VelocityPortletStateAction
 		// sstate.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 		sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
 		sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
-		sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(false));
+		boolean show_other_sites = ServerConfigurationService.getBoolean("resources.show_all_collections.helper", ResourcesAction.SHOW_ALL_SITES_IN_FILE_PICKER);
+		/** This attribute indicates whether "Other Sites" twiggle should show */
+		sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(show_other_sites));
+		/** This attribute indicates whether "Other Sites" twiggle should be open */
+		sstate.setAttribute(ResourcesAction.STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
 		
 		String activitytitle = rundata.getParameters().getString("activitytitle");
 		String stateFromText = rb.getString("java.schedule");

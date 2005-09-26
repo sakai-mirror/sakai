@@ -398,6 +398,15 @@ public class ResourcesAction
 
 	private static final int MAXIMUM_ATTEMPTS_FOR_UNIQUENESS = 1000;
 
+	/** The default value for whether to show all sites in file-picker (used if global value can't be read from server config service) */
+	static public final boolean SHOW_ALL_SITES_IN_FILE_PICKER = false;
+
+	/** The default value for whether to show all sites in resources tool (used if global value can't be read from server config service) */
+	private static final boolean SHOW_ALL_SITES_IN_RESOURCES = false;
+
+	/** The default value for whether to show all sites in dropbox (used if global value can't be read from server config service) */
+	private static final boolean SHOW_ALL_SITES_IN_DROPBOX = false;
+
 
 	/**
 	* Build the context for normal display
@@ -645,14 +654,14 @@ public class ResourcesAction
 			
 			boolean show_all_sites = false;
 			List other_sites = new Vector();
-			// In helper mode, calling tool should set attribute STATE_SHOW_ALL_SITES
+			
 			String allowed_to_see_other_sites = (String) state.getAttribute(STATE_SHOW_ALL_SITES);
 			String show_other_sites = (String) state.getAttribute(STATE_SHOW_OTHER_SITES);
 			context.put("show_other_sites", show_other_sites);
-			if(Boolean.TRUE.toString().equalsIgnoreCase(allowed_to_see_other_sites))
+			if(Boolean.TRUE.toString().equals(allowed_to_see_other_sites))
 			{
 				context.put("allowed_to_see_other_sites", Boolean.TRUE.toString());
-				show_all_sites = Boolean.TRUE.toString().equalsIgnoreCase(show_other_sites);
+				show_all_sites = Boolean.TRUE.toString().equals(show_other_sites);
 			}
 
 			if(atHome && show_all_sites)
@@ -906,7 +915,7 @@ public class ResourcesAction
 			
 			state.removeAttribute(STATE_PASTE_ALLOWED_FLAG);
 			
-			List roots = new Vector();
+			List this_site = new Vector();
 			List members = getBrowseItems(collectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, navRoot.equals(homeCollectionId), state);
 			if(members != null && members.size() > 0)
 			{
@@ -921,19 +930,24 @@ public class ResourcesAction
 				}
 				context.put("site", root);
 				root.addMembers(members);
-				roots.add(root);
+				this_site.add(root);
 			}
+			context.put ("this_site", this_site);
 			
 			boolean show_all_sites = false;
-			// In helper mode, calling tool should set attribute STATE_SHOW_ALL_SITES
-			String user_sees_all_their_sites = (String) state.getAttribute(STATE_SHOW_ALL_SITES);
-			if(user_sees_all_their_sites != null && user_sees_all_their_sites.equalsIgnoreCase(Boolean.toString(true)))
+			
+			String allowed_to_see_other_sites = (String) state.getAttribute(STATE_SHOW_ALL_SITES);
+			String show_other_sites = (String) state.getAttribute(STATE_SHOW_OTHER_SITES);
+			context.put("show_other_sites", show_other_sites);
+			if(Boolean.TRUE.toString().equals(allowed_to_see_other_sites))
 			{
-				show_all_sites = true;
+				context.put("allowed_to_see_other_sites", Boolean.TRUE.toString());
+				show_all_sites = Boolean.TRUE.toString().equals(show_other_sites);
 			}
 
-			if(atHome && show_all_sites)
+			if(show_all_sites)
 			{
+				List other_sites = new Vector();
 				/*
 				 * NOTE: This does not (and should not) get all sites for admin.  
 				 *       Getting all sites for admin is too big a request and
@@ -953,13 +967,14 @@ public class ResourcesAction
 							BrowseItem root = (BrowseItem) members.remove(0);
 							root.addMembers(members);
 							root.setName(displayName);
-							roots.add(root);
+							other_sites.add(root);
 						}
 					}
 				}
 
+				context.put ("other_sites", other_sites);
 			}
-			context.put ("roots", roots);
+
 			// context.put ("root", root);
 			context.put("expandedCollections", expandedCollections);
 			state.setAttribute(EXPANDED_COLLECTIONS, expandedCollections);
@@ -6393,8 +6408,6 @@ public class ResourcesAction
 			initMoveContext(state); 
 		}
 		
-		
-		
 		initStateAttributes(state, portlet);
 				
 	}	// initState
@@ -6482,21 +6495,22 @@ public class ResourcesAction
 			state.setAttribute(STATE_RESOURCES_MODE, resources_mode);
 		}
 		
-		// In helper mode, calling tool should set attribute STATE_SHOW_ALL_SITES
-		String user_sees_all_their_sites = (String) state.getAttribute(STATE_SHOW_ALL_SITES);
-		if(user_sees_all_their_sites == null)
+		boolean show_other_sites = false;
+		if(RESOURCES_MODE_HELPER.equals(resources_mode))
 		{
-			// get resources mode from tool registry
-			user_sees_all_their_sites = portlet.getPortletConfig().getInitParameter("user_sees_all_their_sites");
-			if(Boolean.TRUE.toString().equalsIgnoreCase(user_sees_all_their_sites))
-			{
-				state.setAttribute(STATE_SHOW_ALL_SITES, Boolean.TRUE.toString());
-			}
-			else
-			{
-				state.setAttribute(STATE_SHOW_ALL_SITES, Boolean.FALSE.toString());
-			}
+			show_other_sites = ServerConfigurationService.getBoolean("resources.show_all_collections.helper", SHOW_ALL_SITES_IN_FILE_PICKER);
 		}
+		else if(RESOURCES_MODE_DROPBOX.equals(resources_mode))
+		{
+			show_other_sites = ServerConfigurationService.getBoolean("resources.show_all_collections.dropbox", SHOW_ALL_SITES_IN_DROPBOX);
+		}
+		else
+		{
+			show_other_sites = ServerConfigurationService.getBoolean("resources.show_all_collections.tool", SHOW_ALL_SITES_IN_RESOURCES);
+		}
+		/** This attribute indicates whether "Other Sites" twiggle should show */
+		state.setAttribute(STATE_SHOW_ALL_SITES, Boolean.toString(show_other_sites));
+		/** This attribute indicates whether "Other Sites" twiggle should be open */
 		state.setAttribute(STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
 		
 		// set the home collection to the parameter, if present, or the default if not
