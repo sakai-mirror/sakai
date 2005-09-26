@@ -1919,13 +1919,7 @@ public class ResourcesAction
 				try
 				{
 					ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-					String displayname = findUniqueDisplayName(collectionId, item.getName());
-					if(displayname == null)
-					{
-						alerts.add(item.getName() + " " + rb.getString("used"));
-						continue outerloop;
-					}
-					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, displayname);
+					resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());
 					resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
 					resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
 					resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, item.getFormtype());
@@ -2758,13 +2752,7 @@ public class ResourcesAction
 			EditItem item = (EditItem) new_urls.get(i);
 			
 			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-			String displayname = findUniqueDisplayName(collectionId, item.getName());
-			if(displayname == null)
-			{
-				alerts.add(item.getName() + " " + rb.getString("used"));
-				continue outerloop;
-			}
-			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, displayname);							
+			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
 			resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
 
 			resourceProperties.addProperty(ResourceProperties.PROP_IS_COLLECTION, Boolean.FALSE.toString());
