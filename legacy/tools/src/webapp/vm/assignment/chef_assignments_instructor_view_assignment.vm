@@ -294,11 +294,13 @@
 				## 1- text only; 2-attachment only; 3-text and attachment
 				#set ( $submissionType = $assignment.getContent().getTypeOfSubmission())
 				#if (($submissionType==1) || ($submissionType==3))
-					#if ($submissionType==1)
-						$tlang.getString("viewassig.theassall5")
-					#elseif ($submissionType==3)
-						$tlang.getString("viewassig.theassall1")
-					#end
+					<p class="instruction">
+						#if ($submissionType==1)
+							$tlang.getString("viewassig.theassall5")
+						#elseif ($submissionType==3)
+							$tlang.getString("viewassig.theassall1")
+						#end
+					</p>	
 					<textarea cols="80" rows="8" wrap="virtual" name="textarea" id="textarea" disabled="disabled">&nbsp;</textarea><br />
 				#end
 				#if (($submissionType==2) || ($submissionType==3)) 
