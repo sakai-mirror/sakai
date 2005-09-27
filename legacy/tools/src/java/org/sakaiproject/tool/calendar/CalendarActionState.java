@@ -34,9 +34,8 @@ import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.cheftool.ControllerState;
 import org.sakaiproject.service.framework.log.cover.Logger;
-
 import org.sakaiproject.service.legacy.calendar.CalendarEventEdit;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.SiteEdit;
 import org.sakaiproject.util.CalendarUtil;
 
@@ -65,7 +64,7 @@ public class CalendarActionState
 	private boolean m_isNewCal = true;
 
 	// this attachment list is never set to null!
-	private ReferenceVector m_attachments = new ReferenceVector();
+	private List m_attachments = EntityManager.newReferenceList();
     private int m_newday;
     
 	private String m_nextDate = "";
@@ -165,7 +164,7 @@ public class CalendarActionState
 	/**
 	 * Get
 	 */
-	public ReferenceVector getAttachments()
+	public List getAttachments()
 	{
 
 		return m_attachments;
@@ -175,11 +174,11 @@ public class CalendarActionState
 	/**
 	* Set
 	*/
-	public void setAttachments(ReferenceVector attachments)
+	public void setAttachments(List attachments)
 	{
 		if (attachments != null)
 		{
-			m_attachments = (ReferenceVector) attachments.clone();
+			m_attachments = EntityManager.newReferenceList(attachments);
 		}
 		else
 		{

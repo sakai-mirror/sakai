@@ -31,10 +31,9 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
-import org.sakaiproject.util.Filter;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.time.TimeRange;
+import org.sakaiproject.util.Filter;
 import org.w3c.dom.Element;
 
 /**
@@ -45,7 +44,7 @@ import org.w3c.dom.Element;
 * @version $Revision$
 */
 public interface Calendar
-	extends Resource
+	extends Entity
 {
 	/**
 	* Access the context of the resource.
@@ -104,7 +103,7 @@ public interface Calendar
 	* @exception PermissionException If the user does not have permission to modify the calendar.
 	*/
 	public CalendarEvent addEvent(TimeRange range, String displayName, String description,
-									String type, String location, ReferenceVector attachments)
+									String type, String location, List attachments)
 		throws PermissionException;
 
 	/**

@@ -27,7 +27,7 @@ package org.sakaiproject.component.legacy.assignment;
 // import
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,7 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
@@ -75,9 +75,9 @@ import org.sakaiproject.service.legacy.id.cover.IdService;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.AttachmentContainer;
 import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityManager;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -86,14 +86,14 @@ import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.Blob;
 import org.sakaiproject.util.java.EmptyIterator;
-import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.java.StringUtil;
-import org.sakaiproject.util.Validator;
-import org.sakaiproject.util.xml.Xml;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.sakaiproject.util.storage.StorageUser;
+import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -209,7 +209,7 @@ public abstract class BaseAssignmentService
 	 */
 	protected String getAccessPoint(boolean relative)
 	{
-		return (relative ? "" : ServerConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
+		return (relative ? "" : m_serverConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
 
 	}	// getAccessPoint
 
@@ -222,9 +222,9 @@ public abstract class BaseAssignmentService
 	{
 		String retVal = null;
 		if(context == null)
-			retVal = getAccessPoint(true) + Resource.SEPARATOR + "a" + Resource.SEPARATOR + id;
+			retVal = getAccessPoint(true) + Entity.SEPARATOR + "a" + Entity.SEPARATOR + id;
 		else
-			retVal = getAccessPoint(true) + Resource.SEPARATOR + "a" + Resource.SEPARATOR + context + Resource.SEPARATOR + id;
+			retVal = getAccessPoint(true) + Entity.SEPARATOR + "a" + Entity.SEPARATOR + context + Entity.SEPARATOR + id;
 		return retVal;
 
 	}   // assignmentReference
@@ -238,9 +238,9 @@ public abstract class BaseAssignmentService
 	{
 		String retVal = null;
 		if(context == null)
-			retVal = getAccessPoint(true) + Resource.SEPARATOR + "c" + Resource.SEPARATOR + id;
+			retVal = getAccessPoint(true) + Entity.SEPARATOR + "c" + Entity.SEPARATOR + id;
 		else
-			retVal = getAccessPoint(true) + Resource.SEPARATOR + "c" + Resource.SEPARATOR + context + Resource.SEPARATOR + id;
+			retVal = getAccessPoint(true) + Entity.SEPARATOR + "c" + Entity.SEPARATOR + context + Entity.SEPARATOR + id;
 		return retVal;
 
 	}   // contentReference
@@ -254,9 +254,9 @@ public abstract class BaseAssignmentService
 	{
 		String retVal = null;
 		if(context == null)
-			retVal = getAccessPoint(true) + Resource.SEPARATOR + "s" + Resource.SEPARATOR + id;
+			retVal = getAccessPoint(true) + Entity.SEPARATOR + "s" + Entity.SEPARATOR + id;
 		else
-			retVal = getAccessPoint(true) + Resource.SEPARATOR + "s" + Resource.SEPARATOR + context + Resource.SEPARATOR + assignmentId + Resource.SEPARATOR + id;
+			retVal = getAccessPoint(true) + Entity.SEPARATOR + "s" + Entity.SEPARATOR + context + Entity.SEPARATOR + assignmentId + Entity.SEPARATOR + id;
 		return retVal;
 
 	}   // submissionReference
@@ -268,7 +268,7 @@ public abstract class BaseAssignmentService
 	*/
 	protected String assignmentId(String ref)
 	{
-		int i = ref.lastIndexOf(Resource.SEPARATOR);
+		int i = ref.lastIndexOf(Entity.SEPARATOR);
 		if (i == -1) return ref;
 		String id = ref.substring(i + 1);
 		return id;
@@ -282,7 +282,7 @@ public abstract class BaseAssignmentService
 	*/
 	protected String contentId(String ref)
 	{
-		int i = ref.lastIndexOf(Resource.SEPARATOR);
+		int i = ref.lastIndexOf(Entity.SEPARATOR);
 		if (i == -1) return ref;
 		String id = ref.substring(i + 1);
 		return id;
@@ -296,7 +296,7 @@ public abstract class BaseAssignmentService
 	*/
 	protected String submissionId(String ref)
 	{
-		int i = ref.lastIndexOf(Resource.SEPARATOR);
+		int i = ref.lastIndexOf(Entity.SEPARATOR);
 		if (i == -1) return ref;
 		String id = ref.substring(i + 1);
 		return id;
@@ -415,6 +415,34 @@ public abstract class BaseAssignmentService
 		m_caching = new Boolean(value).booleanValue();
 	}
 
+	/** Dependency: EntityManager. */
+	protected EntityManager m_entityManager = null;
+
+	/**
+	 * Dependency: EntityManager.
+	 * 
+	 * @param service
+	 *        The EntityManager.
+	 */
+	public void setEntityManager(EntityManager service)
+	{
+		m_entityManager = service;
+	}
+
+	/** Dependency: ServerConfigurationService. */
+	protected ServerConfigurationService m_serverConfigurationService = null;
+
+	/**
+	 * Dependency: ServerConfigurationService.
+	 * 
+	 * @param service
+	 *        The ServerConfigurationService.
+	 */
+	public void setServerConfigurationService(ServerConfigurationService service)
+	{
+		m_serverConfigurationService = service;
+	}
+
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -443,8 +471,8 @@ public abstract class BaseAssignmentService
 			m_submissionCache = m_memoryService.newCache(new AssignmentSubmissionCacheRefresher(), submissionReference(null, "", ""));
 		}
 
-		// register as a resource service
-		ServerConfigurationService.registerResourceService(this);
+		// register as an entity producer
+		m_entityManager.registerEntityProducer(this);
 
 	}	// init
 
@@ -1000,7 +1028,7 @@ public abstract class BaseAssignmentService
 		
 		AssignmentContentEdit retVal = null;
 		AssignmentContent existingContent = null;
-		Vector tempVector = null;
+		List tempVector = null;
 		String tempString = null;
 		String newContentId = null;
 		Reference tempRef = null;
@@ -1038,7 +1066,7 @@ public abstract class BaseAssignmentService
 						tempRef = (Reference)tempVector.get(z);
 						if(tempRef != null)
 						{
-							newRef = new Reference(tempRef);
+							newRef = m_entityManager.newReference(tempRef);
 							retVal.addAttachment(newRef);
 						}
 					}
@@ -1961,7 +1989,7 @@ public abstract class BaseAssignmentService
 	 */
 	public boolean allowAddAssignment(String context)
 	{
-		String resourceString = getAccessPoint(true) + Resource.SEPARATOR + "a" + Resource.SEPARATOR + context + Resource.SEPARATOR;
+		String resourceString = getAccessPoint(true) + Entity.SEPARATOR + "a" + Entity.SEPARATOR + context + Entity.SEPARATOR;
 
 		if(m_logger.isDebugEnabled())
 		{
@@ -2046,7 +2074,7 @@ public abstract class BaseAssignmentService
 	 */
 	public boolean allowAddAssignmentContent(String context)
 	{
-		String resourceString = getAccessPoint(true) + Resource.SEPARATOR + "c" + Resource.SEPARATOR + context + Resource.SEPARATOR;
+		String resourceString = getAccessPoint(true) + Entity.SEPARATOR + "c" + Entity.SEPARATOR + context + Entity.SEPARATOR;
 		if(m_logger.isDebugEnabled())
 			m_logger.debug("Entering allow add AssignmentContent with resource string : " + resourceString);
 
@@ -2076,7 +2104,7 @@ public abstract class BaseAssignmentService
 	public boolean allowAddSubmission(String context)
 	{
 			// check security (throws if not permitted)
-		String resourceString = getAccessPoint(true) + Resource.SEPARATOR + "s" + Resource.SEPARATOR + context + Resource.SEPARATOR;
+		String resourceString = getAccessPoint(true) + Entity.SEPARATOR + "s" + Entity.SEPARATOR + context + Entity.SEPARATOR;
 
 		if(m_logger.isDebugEnabled())
 			m_logger.debug("Entering allow add Submission with resource string : " + resourceString);
@@ -2137,7 +2165,7 @@ public abstract class BaseAssignmentService
 	
 	public boolean allowGradeSubmission(String context)
 	{
-		String resourceString = getAccessPoint(true) + Resource.SEPARATOR + "a" + Resource.SEPARATOR + context + Resource.SEPARATOR;
+		String resourceString = getAccessPoint(true) + Entity.SEPARATOR + "a" + Entity.SEPARATOR + context + Entity.SEPARATOR;
 
 		if(m_logger.isDebugEnabled())
 		{
@@ -2157,7 +2185,7 @@ public abstract class BaseAssignmentService
 	public byte[] getGradesSpreadsheet(String ref)
 		throws IdUnusedException, PermissionException
 	{
-		String typeGradesString = new String(REF_TYPE_GRADES + Resource.SEPARATOR);
+		String typeGradesString = new String(REF_TYPE_GRADES + Entity.SEPARATOR);
 		String context = ref.substring(ref.indexOf(typeGradesString) + typeGradesString.length());
 			
 		short rowNum = 0;
@@ -2361,7 +2389,7 @@ public abstract class BaseAssignmentService
 				InputStream in = null;
 				
 				// create the folder structor - named after the assignment's title
-				String root = Validator.escapeZipEntry(a.getTitle()) + Resource.SEPARATOR;
+				String root = Validator.escapeZipEntry(a.getTitle()) + Entity.SEPARATOR;
 				
 				Iterator submissions = getSubmissions(a);
 				String submittedText = "";
@@ -2422,7 +2450,7 @@ public abstract class BaseAssignmentService
 								}
 
 								// create the attachment file(s)
-								ReferenceVector attachments = s.getSubmittedAttachments();
+								List attachments = s.getSubmittedAttachments();
 								int attachedUrlCount = 0;
 								for (int j=0; j < attachments.size(); j++)
 								{
@@ -2528,11 +2556,11 @@ public abstract class BaseAssignmentService
 	public String gradesSpreadsheetReference(String context, String assignmentId)
 	{
 		// based on all assignment in that context
-		String s = REFERENCE_ROOT + Resource.SEPARATOR + REF_TYPE_GRADES + Resource.SEPARATOR + context;
+		String s = REFERENCE_ROOT + Entity.SEPARATOR + REF_TYPE_GRADES + Entity.SEPARATOR + context;
 		if (assignmentId != null)
 		{
 			// based on the specified assignment only
-			s = s.concat(Resource.SEPARATOR + assignmentId);
+			s = s.concat(Entity.SEPARATOR + assignmentId);
 		}
 		
 		return s;
@@ -2547,7 +2575,7 @@ public abstract class BaseAssignmentService
 	public String submissionsZipReference(String context, String assignmentReference)
 	{
 		// based on the specified assignment
-		return REFERENCE_ROOT + Resource.SEPARATOR + REF_TYPE_SUBMISSIONS + Resource.SEPARATOR + context + Resource.SEPARATOR + assignmentReference;
+		return REFERENCE_ROOT + Entity.SEPARATOR + REF_TYPE_SUBMISSIONS + Entity.SEPARATOR + context + Entity.SEPARATOR + assignmentReference;
 		
 	}	// submissionsZipReference
 
@@ -2560,7 +2588,7 @@ public abstract class BaseAssignmentService
  	private String assignmentReferenceFromSubmissionsZipReference(String sReference)
  	{
  		// remove the String part relating to submissions zip reference
- 		return sReference.substring (sReference.lastIndexOf (Resource.SEPARATOR + "assignment"));
+ 		return sReference.substring (sReference.lastIndexOf (Entity.SEPARATOR + "assignment"));
  		
  	}	// assignmentReferenceFromSubmissionsZipReference
 
@@ -2579,7 +2607,119 @@ public abstract class BaseAssignmentService
 	/**
 	 * {@inheritDoc}
 	 */
-	public String archive(String siteId, Document doc, Stack stack, String archivePath, ReferenceVector attachments)
+	public boolean willArchiveMerge()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willImport()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		if (reference.startsWith(REFERENCE_ROOT))
+		{
+			String id = null;
+			String subType = null;
+			String container = null;
+			String context = null;
+
+			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
+			// we will get null, assignment, [a|c|s|grades|submissions], context, [auid], id
+
+			if (parts.length > 2)
+			{
+				subType = parts[2];
+
+				if (parts.length > 3)
+				{
+					// context is the container
+					context = parts[3];
+
+					// submissions have the assignment unique id as a container
+					if ("s".equals(subType))
+					{
+						if (parts.length > 5)
+						{
+							container = parts[4];
+							id = parts[5];
+						}
+					}
+
+					// others don't
+					else
+					{
+						if (parts.length > 4)
+						{
+							id = parts[4];
+						}
+					}
+				}
+			}
+
+			ref.set(SERVICE_NAME, subType, id, container, context);
+
+			return true;
+		}
+		
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Entity getEntity(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection getEntityRealms(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		Collection rv = new Vector();
+
+		try
+		{
+			// site
+			ref.addSiteContextRealm(rv);
+
+			// specific
+			rv.add(ref.getReference());
+
+			// mid way - for submission, the assignment reference %%% id is in continer 2
+		}
+		catch (Throwable e)
+		{
+		}
+
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityUrl(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String archive(String siteId, Document doc, Stack stack, String archivePath, List attachments)
 	{
 		
 		//m_logger.info(this + ".archive: stubbed");
@@ -2587,7 +2727,7 @@ public abstract class BaseAssignmentService
 		StringBuffer results = new StringBuffer();
 		
 		//String assignRef = assignmentReference(siteId, SiteService.MAIN_CONTAINER);
-		results.append("archiving " + getLabel() + " context " + Resource.SEPARATOR + siteId + Resource.SEPARATOR + SiteService.MAIN_CONTAINER + ".\n");
+		results.append("archiving " + getLabel() + " context " + Entity.SEPARATOR + siteId + Entity.SEPARATOR + SiteService.MAIN_CONTAINER + ".\n");
 		
 		// start with an element with our very own (service) name
 		Element element = doc.createElement(AssignmentService.class.getName());
@@ -2619,11 +2759,11 @@ public abstract class BaseAssignmentService
 				contentEl.removeAttribute("context");
 				
 				// collect message attachments
-				ReferenceVector atts = content.getAttachments();
+				List atts = content.getAttachments();
 				
 				for (int i = 0; i < atts.size(); i++)
 				{
-					Reference ref = (Reference) atts.elementAt(i);
+					Reference ref = (Reference) atts.get(i);
 					// if it's in the attachment area, and not already in the list
 					if (	(ref.getReference().startsWith("/content/attachment/"))
 					&&	(!attachments.contains(ref)))
@@ -2669,7 +2809,7 @@ public abstract class BaseAssignmentService
 	* @param el The XML element holding the perproties
 	* @param useIdTrans The HashMap to track old WT id to new CTools id
 	 */
-	protected void WTUserIdTrans(Element el, HashMap userIdTrans)
+	protected void WTUserIdTrans(Element el, Map userIdTrans)
 	{
 		NodeList children4 = el.getChildNodes();
 		int length4 = children4.getLength();
@@ -2726,7 +2866,7 @@ public abstract class BaseAssignmentService
 	/**
 	 * {@inheritDoc}
 	 */
-	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames, HashMap userIdTrans, Set userListAllowImport)
+	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames, Map userIdTrans, Set userListAllowImport)
 		{			
 			// prepare the buffer for the results log
 			StringBuffer results = new StringBuffer();
@@ -2933,7 +3073,7 @@ public abstract class BaseAssignmentService
 	* @param toContext The destination context
 	* @param resourceIds when null, all resources will be imported; otherwise, only resources with those ids will be imported
 	*/
-	public void importResources(String fromContext, String toContext, List resourceIds)
+	public void importEntities(String fromContext, String toContext, List resourceIds)
 	{
 		// import Assignment objects
 		Iterator oAssignments = getAssignmentsForContext(fromContext);
@@ -2997,8 +3137,8 @@ public abstract class BaseAssignmentService
 							p.clear();
 							p.addAll(oContent.getProperties());
 							// attachment
-							ReferenceVector oAttachments = oContent.getAttachments();
-							ReferenceVector nAttachments = new ReferenceVector();
+							List oAttachments = oContent.getAttachments();
+							List nAttachments = m_entityManager.newReferenceList();
 							for (int n=0; n<oAttachments.size(); n++)
 							{
 								Reference oAttachment = (Reference) oAttachments.get(n);
@@ -3010,7 +3150,7 @@ public abstract class BaseAssignmentService
 									try
 									{
 										ContentResource attachment = ContentHostingService.getResource(nAttachmentId);
-										nAttachments.add(new Reference(attachment.getReference()));
+										nAttachments.add(m_entityManager.newReference(attachment.getReference()));
 									}
 									catch (Exception any)
 									{
@@ -3067,6 +3207,23 @@ public abstract class BaseAssignmentService
 			}	// if
 		}	// for
 	}	//importResources
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityDescription(Reference ref)
+	{
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ResourceProperties getEntityResourceProperties(Reference ref)
+	{
+		return null;
+	}
+
 	/*******************************************************************************
 	* Assignment Implementation
 	*******************************************************************************/
@@ -3310,7 +3467,7 @@ public abstract class BaseAssignmentService
 		*/
 		public String getUrl()
 		{
-			return getAccessPoint(false) + Resource.SEPARATOR +  "a" + Resource.SEPARATOR + m_context + Resource.SEPARATOR + m_id;
+			return getAccessPoint(false) + Entity.SEPARATOR +  "a" + Entity.SEPARATOR + m_context + Entity.SEPARATOR + m_id;
 
 		}   // getUrl
 
@@ -3828,7 +3985,7 @@ public abstract class BaseAssignmentService
 		protected ResourcePropertiesEdit m_properties;
 		protected String m_id;
 		protected String m_context;
-		protected ReferenceVector m_attachments;
+		protected List m_attachments;
 		protected List m_authors;
 		protected String m_title;
 		protected String m_instructions;
@@ -3861,7 +4018,7 @@ public abstract class BaseAssignmentService
 			m_properties = new BaseResourcePropertiesEdit();
 			addLiveProperties(m_properties);
 			m_authors = new Vector();
-			m_attachments = new ReferenceVector();
+			m_attachments = m_entityManager.newReferenceList();
 			m_title = "";
 			m_instructions = "";
 			m_honorPledge = Assignment.HONOR_PLEDGE_NOT_SET;
@@ -3969,7 +4126,7 @@ public abstract class BaseAssignmentService
 			}
 
 				// READ THE ATTACHMENTS
-			m_attachments = new ReferenceVector();
+			m_attachments = m_entityManager.newReferenceList();
 			if(m_logger.isDebugEnabled())
 			m_logger.debug("DB : DbCachedContent : Reading attachments : ");
 			intString = el.getAttribute("numberofattachments");
@@ -3985,7 +4142,7 @@ public abstract class BaseAssignmentService
 					tempString = el.getAttribute(attributeString);
 					if(tempString != null)
 					{
-						tempReference = new Reference(tempString);
+						tempReference = m_entityManager.newReference(tempString);
 						m_attachments.add(tempReference);
 						if(m_logger.isDebugEnabled())
 						m_logger.debug("DB : DbCachedContent : " + attributeString + " : " + tempString);
@@ -4167,7 +4324,7 @@ public abstract class BaseAssignmentService
 		*/
 		public String getUrl()
 		{
-			return getAccessPoint(false) + Resource.SEPARATOR + "c" + Resource.SEPARATOR + m_context + Resource.SEPARATOR + m_id;
+			return getAccessPoint(false) + Entity.SEPARATOR + "c" + Entity.SEPARATOR + m_context + Entity.SEPARATOR + m_id;
 
 		}   // getUrl
 
@@ -4198,7 +4355,7 @@ public abstract class BaseAssignmentService
 		* Access the attachments.
 		* @return The set of attachments (a ReferenceVector containing Reference objects) (may be empty).
 		*/
-		public ReferenceVector getAttachments()
+		public List getAttachments()
 		{
 			return m_attachments;
 		}
@@ -4571,7 +4728,7 @@ public abstract class BaseAssignmentService
 		* Replace the attachment set.
 		* @param attachments - A ReferenceVector that will become the new set of attachments.
 		*/
-		public void replaceAttachments(ReferenceVector attachments)
+		public void replaceAttachments(List attachments)
 		{
 			m_attachments = attachments;
 		}
@@ -4824,8 +4981,8 @@ public abstract class BaseAssignmentService
 		protected Time m_timeSubmitted;
 		protected Time m_timeReturned;
 		protected Time m_timeLastModified;
-		protected ReferenceVector m_submittedAttachments;
-		protected ReferenceVector m_feedbackAttachments;
+		protected List m_submittedAttachments;
+		protected List m_feedbackAttachments;
 		protected String m_submittedText;
 		protected String m_feedbackComment;
 		protected String m_feedbackText;
@@ -4856,8 +5013,8 @@ public abstract class BaseAssignmentService
 			m_properties = new BaseResourcePropertiesEdit();
 			addLiveProperties(m_properties);
 			m_submitters = new Vector();
-			m_feedbackAttachments = new ReferenceVector();
-			m_submittedAttachments = new ReferenceVector();
+			m_feedbackAttachments = m_entityManager.newReferenceList();
+			m_submittedAttachments = m_entityManager.newReferenceList();
 			m_submitted = false;
 			m_returned = false;
 			m_graded = false;
@@ -4956,7 +5113,7 @@ public abstract class BaseAssignmentService
 			}
 
 				// READ THE FEEDBACK ATTACHMENTS
-			m_feedbackAttachments = new ReferenceVector();
+			m_feedbackAttachments = m_entityManager.newReferenceList();
 			intString = el.getAttribute("numberoffeedbackattachments");
 			if(m_logger.isDebugEnabled())
 			m_logger.debug("ASSIGNMENT : BASE SERVICE : BASE SUB : CONSTRUCTOR : num feedback attachments : " + intString);
@@ -4970,7 +5127,7 @@ public abstract class BaseAssignmentService
 					tempString = el.getAttribute(attributeString);
 					if(tempString != null)
 					{
-						tempReference = new Reference(tempString);
+						tempReference = m_entityManager.newReference(tempString);
 						m_feedbackAttachments.add(tempReference);
 						if(m_logger.isDebugEnabled())
 						m_logger.debug("ASSIGNMENT : BASE SERVICE : BASE SUB : CONSTRUCTOR : " + attributeString + " : " + tempString);
@@ -4983,7 +5140,7 @@ public abstract class BaseAssignmentService
 			}
 
 				// READ THE SUBMITTED ATTACHMENTS
-			m_submittedAttachments = new ReferenceVector();
+			m_submittedAttachments = m_entityManager.newReferenceList();
 			intString = el.getAttribute("numberofsubmittedattachments");
 			if(m_logger.isDebugEnabled())
 				m_logger.debug("ASSIGNMENT : BASE SERVICE : BASE SUB : CONSTRUCTOR : num submitted attachments : " + intString);
@@ -4997,7 +5154,7 @@ public abstract class BaseAssignmentService
 					tempString = el.getAttribute(attributeString);
 					if(tempString != null)
 					{
-						tempReference = new Reference(tempString);
+						tempReference = m_entityManager.newReference(tempString);
 						m_submittedAttachments.add(tempReference);
 						if(m_logger.isDebugEnabled())
 						m_logger.debug("ASSIGNMENT : BASE SERVICE : BASE SUB : CONSTRUCTOR : " + attributeString + " : " + tempString);
@@ -5214,7 +5371,7 @@ public abstract class BaseAssignmentService
 		*/
 		public String getUrl()
 		{
-			return getAccessPoint(false) + Resource.SEPARATOR + "s" + Resource.SEPARATOR + m_context + Resource.SEPARATOR + m_id;
+			return getAccessPoint(false) + Entity.SEPARATOR + "s" + Entity.SEPARATOR + m_context + Entity.SEPARATOR + m_id;
 
 		}   // getUrl
 
@@ -5404,7 +5561,7 @@ public abstract class BaseAssignmentService
 		 * Access the list of attachments to this response to the Assignment.
 		 * @return ReferenceVector of the list of attachments as Reference objects;
 		 */
-		public ReferenceVector getSubmittedAttachments()
+		public List getSubmittedAttachments()
 		{
 			return m_submittedAttachments;
 		}
@@ -5435,7 +5592,7 @@ public abstract class BaseAssignmentService
 		 * or annotated version of the attachment submitted.
 		 * @return ReferenceVector of the Resource objects pointing to the attachments.
 		 */
-		public ReferenceVector getFeedbackAttachments()
+		public List getFeedbackAttachments()
 		{
 			return m_feedbackAttachments;
 		}
@@ -6270,21 +6427,21 @@ public abstract class BaseAssignmentService
 		* @param id The id for the new object.
 		* @return The new container Resource.
 		*/
-		public Resource newContainer(String ref) { return null; }
+		public Entity newContainer(String ref) { return null; }
 
 		/**
 		* Construct a new container resource, from an XML element.
 		* @param element The XML.
 		* @return The new container resource.
 		*/
-		public Resource newContainer(Element element) { return null; }
+		public Entity newContainer(Element element) { return null; }
 
 		/**
 		* Construct a new container resource, as a copy of another
 		* @param other The other contianer to copy.
 		* @return The new container resource.
 		*/
-		public Resource newContainer(Resource other) { return null; }
+		public Entity newContainer(Entity other) { return null; }
 
 		/**
 		* Construct a new resource given just an id.
@@ -6293,7 +6450,7 @@ public abstract class BaseAssignmentService
 		* @param others (options) array of objects to load into the Resource's fields.
 		* @return The new resource.
 		*/
-		public Resource newResource(Resource container, String id, Object[] others)
+		public Entity newResource(Entity container, String id, Object[] others)
 		{ return new BaseAssignment(id, (String) others[0]); }
 
 		/**
@@ -6302,7 +6459,7 @@ public abstract class BaseAssignmentService
 		* @param element The XML.
 		* @return The new resource from the XML.
 		*/
-		public Resource newResource(Resource container, Element element)
+		public Entity newResource(Entity container, Element element)
 		{ return new BaseAssignment(element); }
 
 		/**
@@ -6311,7 +6468,7 @@ public abstract class BaseAssignmentService
 		* @param other The other resource.
 		* @return The new resource as a copy of the other.
 		*/
-		public Resource newResource(Resource container, Resource other)
+		public Entity newResource(Entity container, Entity other)
 		{ return new BaseAssignment((Assignment) other); }
 
 		/**
@@ -6333,7 +6490,7 @@ public abstract class BaseAssignmentService
 		* @param other The other contianer to copy.
 		* @return The new container resource.
 		*/
-		public Edit newContainerEdit(Resource other) { return null; }
+		public Edit newContainerEdit(Entity other) { return null; }
 
 		/**
 		* Construct a new resource given just an id.
@@ -6342,7 +6499,7 @@ public abstract class BaseAssignmentService
 		* @param others (options) array of objects to load into the Resource's fields.
 		* @return The new resource.
 		*/
-		public Edit newResourceEdit(Resource container, String id, Object[] others)
+		public Edit newResourceEdit(Entity container, String id, Object[] others)
 		{
 			BaseAssignmentEdit e = new BaseAssignmentEdit(id, (String) others[0]);
 			e.activate();
@@ -6355,7 +6512,7 @@ public abstract class BaseAssignmentService
 		* @param element The XML.
 		* @return The new resource from the XML.
 		*/
-		public Edit newResourceEdit(Resource container, Element element)
+		public Edit newResourceEdit(Entity container, Element element)
 		{
 			BaseAssignmentEdit e =  new BaseAssignmentEdit(element);
 			e.activate();
@@ -6368,7 +6525,7 @@ public abstract class BaseAssignmentService
 		* @param other The other resource.
 		* @return The new resource as a copy of the other.
 		*/
-		public Edit newResourceEdit(Resource container, Resource other)
+		public Edit newResourceEdit(Entity container, Entity other)
 		{
 			BaseAssignmentEdit e = new BaseAssignmentEdit((Assignment) other);
 			e.activate();
@@ -6379,7 +6536,7 @@ public abstract class BaseAssignmentService
 		* Collect the fields that need to be stored outside the XML (for the resource).
 		* @return An array of field values to store in the record outside the XML (for the resource).
 		*/
-		public Object[] storageFields(Resource r)
+		public Object[] storageFields(Entity r)
 		{
 			Object rv[] = new Object[1];
 			rv[0] = ((Assignment) r).getContext();
@@ -6391,7 +6548,7 @@ public abstract class BaseAssignmentService
 		 * @param r The resource.
 		 * @return true if the resource is in draft mode, false if not.
 		 */
-		public boolean isDraft(Resource r)
+		public boolean isDraft(Entity r)
 		{
 			return false;
 		}
@@ -6401,7 +6558,7 @@ public abstract class BaseAssignmentService
 		 * @param r The resource.
 		 * @return The resource owner user id.
 		 */
-		public String getOwnerId(Resource r)
+		public String getOwnerId(Entity r)
 		{
 			return null;
 		}
@@ -6411,7 +6568,7 @@ public abstract class BaseAssignmentService
 		 * @param r The resource.
 		 * @return The resource date.
 		 */
-		public Time getDate(Resource r)
+		public Time getDate(Entity r)
 		{
 			return null;
 		}
@@ -6432,21 +6589,21 @@ public abstract class BaseAssignmentService
 		* @param id The id for the new object.
 		* @return The new container Resource.
 		*/
-		public Resource newContainer(String ref) { return null; }
+		public Entity newContainer(String ref) { return null; }
 
 		/**
 		* Construct a new container resource, from an XML element.
 		* @param element The XML.
 		* @return The new container resource.
 		*/
-		public Resource newContainer(Element element) { return null; }
+		public Entity newContainer(Element element) { return null; }
 
 		/**
 		* Construct a new container resource, as a copy of another
 		* @param other The other contianer to copy.
 		* @return The new container resource.
 		*/
-		public Resource newContainer(Resource other) { return null; }
+		public Entity newContainer(Entity other) { return null; }
 
 		/**
 		* Construct a new resource given just an id.
@@ -6455,7 +6612,7 @@ public abstract class BaseAssignmentService
 		* @param others (options) array of objects to load into the Resource's fields.
 		* @return The new resource.
 		*/
-		public Resource newResource(Resource container, String id, Object[] others)
+		public Entity newResource(Entity container, String id, Object[] others)
 		{ return new BaseAssignmentContent(id, (String) others[0]); }
 
 		/**
@@ -6464,7 +6621,7 @@ public abstract class BaseAssignmentService
 		* @param element The XML.
 		* @return The new resource from the XML.
 		*/
-		public Resource newResource(Resource container, Element element)
+		public Entity newResource(Entity container, Element element)
 		{ return new BaseAssignmentContent(element); }
 
 		/**
@@ -6473,7 +6630,7 @@ public abstract class BaseAssignmentService
 		* @param other The other resource.
 		* @return The new resource as a copy of the other.
 		*/
-		public Resource newResource(Resource container, Resource other)
+		public Entity newResource(Entity container, Entity other)
 		{ return new BaseAssignmentContent((AssignmentContent) other); }
 
 		/**
@@ -6495,7 +6652,7 @@ public abstract class BaseAssignmentService
 		* @param other The other contianer to copy.
 		* @return The new container resource.
 		*/
-		public Edit newContainerEdit(Resource other) { return null; }
+		public Edit newContainerEdit(Entity other) { return null; }
 
 		/**
 		* Construct a new rsource given just an id.
@@ -6504,7 +6661,7 @@ public abstract class BaseAssignmentService
 		* @param others (options) array of objects to load into the Resource's fields.
 		* @return The new resource.
 		*/
-		public Edit newResourceEdit(Resource container, String id, Object[] others)
+		public Edit newResourceEdit(Entity container, String id, Object[] others)
 		{
 			BaseAssignmentContentEdit e = new BaseAssignmentContentEdit(id, (String) others[0]);
 			e.activate();
@@ -6517,7 +6674,7 @@ public abstract class BaseAssignmentService
 		* @param element The XML.
 		* @return The new resource from the XML.
 		*/
-		public Edit newResourceEdit(Resource container, Element element)
+		public Edit newResourceEdit(Entity container, Element element)
 		{
 			BaseAssignmentContentEdit e =  new BaseAssignmentContentEdit(element);
 			e.activate();
@@ -6530,7 +6687,7 @@ public abstract class BaseAssignmentService
 		* @param other The other resource.
 		* @return The new resource as a copy of the other.
 		*/
-		public Edit newResourceEdit(Resource container, Resource other)
+		public Edit newResourceEdit(Entity container, Entity other)
 		{
 			BaseAssignmentContentEdit e = new BaseAssignmentContentEdit((AssignmentContent) other);
 			e.activate();
@@ -6541,7 +6698,7 @@ public abstract class BaseAssignmentService
 		* Collect the fields that need to be stored outside the XML (for the resource).
 		* @return An array of field values to store in the record outside the XML (for the resource).
 		*/
-		public Object[] storageFields(Resource r)
+		public Object[] storageFields(Entity r)
 		{
 			Object rv[] = new Object[1];
 			rv[0] = ((AssignmentContent) r).getCreator();
@@ -6553,7 +6710,7 @@ public abstract class BaseAssignmentService
 		 * @param r The resource.
 		 * @return true if the resource is in draft mode, false if not.
 		 */
-		public boolean isDraft(Resource r)
+		public boolean isDraft(Entity r)
 		{
 			return false;
 		}
@@ -6563,7 +6720,7 @@ public abstract class BaseAssignmentService
 		 * @param r The resource.
 		 * @return The resource owner user id.
 		 */
-		public String getOwnerId(Resource r)
+		public String getOwnerId(Entity r)
 		{
 			return null;
 		}
@@ -6573,7 +6730,7 @@ public abstract class BaseAssignmentService
 		 * @param r The resource.
 		 * @return The resource date.
 		 */
-		public Time getDate(Resource r)
+		public Time getDate(Entity r)
 		{
 			return null;
 		}
@@ -6596,21 +6753,21 @@ public abstract class BaseAssignmentService
 		* @param id The id for the new object.
 		* @return The new container Resource.
 		*/
-		public Resource newContainer(String ref) { return null; }
+		public Entity newContainer(String ref) { return null; }
 
 		/**
 		* Construct a new container resource, from an XML element.
 		* @param element The XML.
 		* @return The new container resource.
 		*/
-		public Resource newContainer(Element element) { return null; }
+		public Entity newContainer(Element element) { return null; }
 
 		/**
 		* Construct a new container resource, as a copy of another
 		* @param other The other contianer to copy.
 		* @return The new container resource.
 		*/
-		public Resource newContainer(Resource other) { return null; }
+		public Entity newContainer(Entity other) { return null; }
 
 		/**
 		* Construct a new resource given just an id.
@@ -6619,7 +6776,7 @@ public abstract class BaseAssignmentService
 		* @param others (options) array of objects to load into the Resource's fields.
 		* @return The new resource.
 		*/
-		public Resource newResource(Resource container, String id, Object[] others)
+		public Entity newResource(Entity container, String id, Object[] others)
 		{ return new BaseAssignmentSubmission(id, (String)others[0], (String)others[1]); }
 
 		/**
@@ -6628,7 +6785,7 @@ public abstract class BaseAssignmentService
 		* @param element The XML.
 		* @return The new resource from the XML.
 		*/
-		public Resource newResource(Resource container, Element element)
+		public Entity newResource(Entity container, Element element)
 		{ return new BaseAssignmentSubmission(element); }
 
 		/**
@@ -6637,7 +6794,7 @@ public abstract class BaseAssignmentService
 		* @param other The other resource.
 		* @return The new resource as a copy of the other.
 		*/
-		public Resource newResource(Resource container, Resource other)
+		public Entity newResource(Entity container, Entity other)
 		{ return new BaseAssignmentSubmission((AssignmentSubmission) other); }
 
 		/**
@@ -6659,7 +6816,7 @@ public abstract class BaseAssignmentService
 		* @param other The other contianer to copy.
 		* @return The new container resource.
 		*/
-		public Edit newContainerEdit(Resource other) { return null; }
+		public Edit newContainerEdit(Entity other) { return null; }
 
 		/**
 		* Construct a new rsource given just an id.
@@ -6668,7 +6825,7 @@ public abstract class BaseAssignmentService
 		* @param others (options) array of objects to load into the Resource's fields.
 		* @return The new resource.
 		*/
-		public Edit newResourceEdit(Resource container, String id, Object[] others)
+		public Edit newResourceEdit(Entity container, String id, Object[] others)
 		{
 			BaseAssignmentSubmissionEdit e = new BaseAssignmentSubmissionEdit(id, (String)others[0], (String)others[1]);
 			e.activate();
@@ -6681,7 +6838,7 @@ public abstract class BaseAssignmentService
 		* @param element The XML.
 		* @return The new resource from the XML.
 		*/
-		public Edit newResourceEdit(Resource container, Element element)
+		public Edit newResourceEdit(Entity container, Element element)
 		{
 			BaseAssignmentSubmissionEdit e =  new BaseAssignmentSubmissionEdit(element);
 			e.activate();
@@ -6694,7 +6851,7 @@ public abstract class BaseAssignmentService
 		* @param other The other resource.
 		* @return The new resource as a copy of the other.
 		*/
-		public Edit newResourceEdit(Resource container, Resource other)
+		public Edit newResourceEdit(Entity container, Entity other)
 		{
 			BaseAssignmentSubmissionEdit e = new BaseAssignmentSubmissionEdit((AssignmentSubmission) other);
 			e.activate();
@@ -6705,7 +6862,7 @@ public abstract class BaseAssignmentService
 		* Collect the fields that need to be stored outside the XML (for the resource).
 		* @return An array of field values to store in the record outside the XML (for the resource).
 		*/
-		public Object[] storageFields(Resource r)
+		public Object[] storageFields(Entity r)
 		{
 			Object rv[] = new Object[1];
 			rv[0] = ((AssignmentSubmission) r).getAssignmentId();
@@ -6717,7 +6874,7 @@ public abstract class BaseAssignmentService
 		 * @param r The resource.
 		 * @return true if the resource is in draft mode, false if not.
 		 */
-		public boolean isDraft(Resource r)
+		public boolean isDraft(Entity r)
 		{
 			return false;
 		}
@@ -6727,7 +6884,7 @@ public abstract class BaseAssignmentService
 		 * @param r The resource.
 		 * @return The resource owner user id.
 		 */
-		public String getOwnerId(Resource r)
+		public String getOwnerId(Entity r)
 		{
 			return null;
 		}
@@ -6737,7 +6894,7 @@ public abstract class BaseAssignmentService
 		 * @param r The resource.
 		 * @return The resource date.
 		 */
-		public Time getDate(Resource r)
+		public Time getDate(Entity r)
 		{
 			return null;
 		}

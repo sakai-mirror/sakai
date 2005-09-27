@@ -25,6 +25,7 @@
 package org.sakaiproject.component.legacy.message;
 
 // import
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,13 +45,13 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
-
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannel;
@@ -66,9 +67,9 @@ import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 import org.sakaiproject.service.legacy.message.MessageService;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityManager;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -150,6 +151,20 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		m_memoryService = service;
 	}
 
+	/** Dependency: ServerConfigurationService. */
+	protected ServerConfigurationService m_serverConfigurationService = null;
+
+	/**
+	 * Dependency: ServerConfigurationService.
+	 * 
+	 * @param service
+	 *        The ServerConfigurationService.
+	 */
+	public void setServerConfigurationService(ServerConfigurationService service)
+	{
+		m_serverConfigurationService = service;
+	}
+
 	/** Configuration: cache, or not. */
 	protected boolean m_caching = false;
 
@@ -160,6 +175,20 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	public void setCaching(String value)
 	{
 		m_caching = new Boolean(value).booleanValue();
+	}
+
+	/** Dependency: EntityManager. */
+	protected EntityManager m_entityManager = null;
+
+	/**
+	 * Dependency: EntityManager.
+	 * 
+	 * @param service
+	 *        The EntityManager.
+	 */
+	public void setEntityManager(EntityManager service)
+	{
+		m_entityManager = service;
 	}
 
 	/*******************************************************************************
@@ -181,7 +210,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			if (m_caching)
 			{
 				m_channelCache =
-					m_memoryService.newCache(this, getAccessPoint(true) + Resource.SEPARATOR + REF_TYPE_CHANNEL + Resource.SEPARATOR);
+					m_memoryService.newCache(this, getAccessPoint(true) + Entity.SEPARATOR + REF_TYPE_CHANNEL + Entity.SEPARATOR);
 
 				// make the table to hold the message caches
 				m_messageCaches = new Hashtable();
@@ -194,8 +223,8 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			m_logger.warn(this +".init(): ", t);
 		}
 
-		// register as a resource service
-		ServerConfigurationService.registerResourceService(this);
+		// register as an entity producer
+		m_entityManager.registerEntityProducer(this);
 
 	} // init
 
@@ -279,7 +308,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	*/
 	protected String getAccessPoint(boolean relative)
 	{
-		return (relative ? "" : ServerConfigurationService.getAccessUrl()) + getReferenceRoot();
+		return (relative ? "" : m_serverConfigurationService.getAccessUrl()) + getReferenceRoot();
 
 	} // getAccessPoint
 
@@ -292,11 +321,11 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	public String channelReference(String context, String id)
 	{
 		return getAccessPoint(true)
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ REF_TYPE_CHANNEL
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ context
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ id;
 
 	} // channelReference
@@ -311,13 +340,13 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	public String messageReference(String context, String channelId, String id)
 	{
 		return getAccessPoint(true)
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ REF_TYPE_MESSAGE
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ context
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ channelId
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ id;
 
 	} // messageReference
@@ -949,7 +978,230 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	/**
 	 * {@inheritDoc}
 	 */
-	public String archive(String siteId, Document doc, Stack stack, String archivePath, ReferenceVector attachments)
+	public boolean willArchiveMerge()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willImport()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityDescription(Reference ref)
+	{
+		// we could check that the type is one of the message services, but lets just assume it is so we don't need to know them here -ggolden
+
+		String rv = "Message: " + ref.getReference();
+
+		try
+		{
+			// if this is a channel
+			if (REF_TYPE_CHANNEL.equals(ref.getSubType()))
+			{
+				MessageChannel channel = getChannel(ref.getReference());
+				rv = "Channel: " + channel.getId() + " (" + channel.getContext() + ")";
+			}
+		}
+		catch (PermissionException e)
+		{
+		}
+		catch (IdUnusedException e)
+		{
+		}
+		catch (NullPointerException e)
+		{
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ResourceProperties getEntityResourceProperties(Reference ref)
+	{
+		// we could check that the type is one of the message services, but lets just assume it is so we don't need to know them here -ggolden
+		
+		ResourceProperties rv = null;
+
+		try
+		{
+			// if this is a channel
+			if (REF_TYPE_CHANNEL.equals(ref.getSubType()))
+			{
+				MessageChannel channel = getChannel(ref.getReference());
+				rv = channel.getProperties();
+			}
+
+			// otherwise a message
+			else if (REF_TYPE_MESSAGE.equals(ref.getSubType()))
+			{
+				Message message = getMessage(ref);
+				rv = message.getProperties();
+			}
+
+			else
+				Log.warn("chef", this + ".getProperties(): unknown message ref subtype: " + ref.getSubType() + " in ref: "
+						+ ref.getReference());
+		}
+		catch (PermissionException e)
+		{
+			Log.warn("chef", this + ".getProperties(): " + e);
+		}
+		catch (IdUnusedException e)
+		{
+			// This just means that the resource once pointed to as an attachment or something has been deleted.
+			// Log.warn("chef", this + ".getProperties(): " + e);
+		}
+		catch (NullPointerException e)
+		{
+			Log.warn("chef", this + ".getProperties(): " + e);
+		}
+		
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Entity getEntity(Reference ref)
+	{
+		// we could check that the type is one of the message services, but lets just assume it is so we don't need to know them here -ggolden
+		
+		Entity rv = null;
+
+		try
+		{
+			// if this is a channel
+			if (REF_TYPE_CHANNEL.equals(ref.getSubType()))
+			{
+				rv = getChannel(ref.getReference());
+			}
+
+			// otherwise a message
+			else if (REF_TYPE_MESSAGE.equals(ref.getSubType()))
+			{
+				rv = getMessage(ref);
+			}
+
+			// else try {throw new Exception();} catch (Exception e) {Log.warn("chef", this + "getResource(): unknown message ref subtype: " + m_subType + " in ref: " + m_reference, e);}
+			else
+				Log.warn("chef", this + "getResource(): unknown message ref subtype: " + ref.getSubType() + " in ref: " + ref.getReference());
+		}
+		catch (PermissionException e)
+		{
+			Log.warn("chef", this + "getResource(): " + e);
+		}
+		catch (IdUnusedException e)
+		{
+			Log.warn("chef", this + "getResource(): " + e);
+		}
+		catch (NullPointerException e)
+		{
+			Log.warn("chef", this + ".getResource(): " + e);
+		}
+		
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection getEntityRealms(Reference ref)
+	{
+		// we could check that the type is one of the message services, but lets just assume it is so we don't need to know them here -ggolden
+
+		Collection rv = new Vector();
+
+		// for MessageService messages and channels:
+		// the message's realm, the channel's realm
+		try
+		{
+			String channelId = null;
+
+			// if a message, try this realm
+			if (REF_TYPE_MESSAGE.equals(ref.getSubType()))
+			{
+				// a message
+				rv.add(ref.getReference());
+				channelId = ref.getContainer();
+			}
+
+			// otherwise a channel - get the id
+			else
+			{
+				channelId = ref.getId();
+			}
+
+			// try the channel's realm
+			rv.add(channelReference(ref.getContext(), channelId));
+
+			// site
+			ref.addSiteContextRealm(rv);
+		}
+		catch (Throwable e)
+		{
+			Log.warn("chef", this + ".getRealms(): " + e);
+		}
+		
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityUrl(Reference ref)
+	{
+		// we could check that the type is one of the message services, but lets just assume it is so we don't need to know them here -ggolden
+		
+		String url = null;
+
+		try
+		{
+			// if this is a channel
+			if (REF_TYPE_CHANNEL.equals(ref.getSubType()))
+			{
+				MessageChannel channel = getChannel(ref.getReference());
+				url = channel.getUrl();
+			}
+
+			// otherwise a message
+			else if (REF_TYPE_MESSAGE.equals(ref.getSubType()))
+			{
+				Message message = getMessage(ref);
+				url = message.getUrl();
+			}
+
+			else
+				Log.warn("chef", this + "getUrl(): unknown message ref subtype: " + ref.getSubType() + " in ref: " + ref.getReference());
+		}
+		catch (PermissionException e)
+		{
+			Log.warn("chef", this + "getUrl(): " + e);
+		}
+		catch (IdUnusedException e)
+		{
+			Log.warn("chef", this + "getUrl(): " + e);
+		}
+		catch (NullPointerException e)
+		{
+			Log.warn("chef", this + ".getUrl(): " + e);
+		}
+		
+		return url;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String archive(String siteId, Document doc, Stack stack, String archivePath, List attachments)
 	{
 		// prepare the buffer for the results log
 		StringBuffer results = new StringBuffer();
@@ -980,10 +1232,10 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		
 				// collect message attachments
 				MessageHeader header = msg.getHeader();
-				ReferenceVector atts = header.getAttachments();
+				List atts = header.getAttachments();
 				for (int i = 0; i < atts.size(); i++)
 				{
-					Reference ref = (Reference) atts.elementAt(i);
+					Reference ref = (Reference) atts.get(i);
 					// if it's in the attachment area, and not already in the list
 					if (	(ref.getReference().startsWith("/content/attachment/"))
 						&&	(!attachments.contains(ref)))
@@ -1010,7 +1262,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	/**
 	 * {@inheritDoc}
 	 */
-	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames, HashMap userIdTrans, Set userListAllowImport)
+	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames, Map userIdTrans, Set userListAllowImport)
 	{	
 		// get the system name: FROM_WT, FROM_CT, FROM_SAKAI
 		String source = "";
@@ -1279,7 +1531,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	* @param toContext The destination context
 	* @param resourceIds when null, all resources will be imported; otherwise, only resources with those ids will be imported
 	*/
-	public void importResources(String fromContext, String toContext, List resourceIds)
+	public void importEntities(String fromContext, String toContext, List resourceIds)
 	{	
 	}	// importResources
 	
@@ -1314,7 +1566,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		public BaseMessageChannelEdit(String ref)
 		{
 			// set the ids
-			Reference r = new Reference(ref);
+			Reference r = m_entityManager.newReference(ref);
 			m_context = r.getContext();
 			m_id = r.getId();
 
@@ -2569,7 +2821,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		protected User m_from = null;
 
 		/** The attachments - dereferencer objects. */
-		protected ReferenceVector m_attachments = null;
+		protected List m_attachments = null;
 
 		/** The draft status for the message. */
 		protected boolean m_draft = false;
@@ -2592,7 +2844,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			}
 
 			// init the AttachmentContainer
-			m_attachments = new ReferenceVector();
+			m_attachments = m_entityManager.newReferenceList();
 
 		} // BaseMessageHeaderEdit
 
@@ -2607,7 +2859,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			m_from = other.getFrom();
 			m_draft = other.getDraft();
 
-			m_attachments = new ReferenceVector();
+			m_attachments = m_entityManager.newReferenceList();
 			replaceAttachments(other.getAttachments());
 
 		} // BaseMessageHeaderEdit
@@ -2637,7 +2889,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			}
 
 			// attachments
-			m_attachments = new ReferenceVector();
+			m_attachments = m_entityManager.newReferenceList();
 
 			NodeList children = el.getChildNodes();
 			final int length = children.getLength();
@@ -2651,7 +2903,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 					// look for an attachment
 					if (element.getTagName().equals("attachment"))
 					{
-						m_attachments.add(new Reference(element.getAttribute("relative-url")));
+						m_attachments.add(m_entityManager.newReference(element.getAttribute("relative-url")));
 					}
 				}
 			}
@@ -2725,7 +2977,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			{
 				for (int i = 0; i < m_attachments.size(); i++)
 				{
-					Reference attch = (Reference) m_attachments.elementAt(i);
+					Reference attch = (Reference) m_attachments.get(i);
 					Element attachment = doc.createElement("attachment");
 					header.appendChild(attachment);
 					attachment.setAttribute("relative-url", attch.getReference());
@@ -2770,9 +3022,9 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		* Access the attachments of the event.
 		* @return An copy of the set of attachments (a ReferenceVector containing Reference objects) (may be empty).
 		*/
-		public ReferenceVector getAttachments()
+		public List getAttachments()
 		{
-			return (ReferenceVector) m_attachments.clone();
+			return m_entityManager.newReferenceList(m_attachments);
 
 		} // getAttachments
 
@@ -2800,7 +3052,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		* Replace the attachment set.
 		* @param attachments A vector of Reference objects that will become the new set of attachments.
 		*/
-		public void replaceAttachments(ReferenceVector attachments)
+		public void replaceAttachments(List attachments)
 		{
 			m_attachments.clear();
 
@@ -2963,7 +3215,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		Object rv = null;
 
 		// key is a reference
-		Reference ref = new Reference((String) key);
+		Reference ref = m_entityManager.newReference((String) key);
 
 		// get from storage only (not cache!)
 
@@ -3075,7 +3327,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			// if we want pub view only
 			if (m_pubViewOnly)
 			{
-				if (((Resource)o).getProperties().getProperty(ResourceProperties.PROP_PUBVIEW) == null)
+				if (((Entity)o).getProperties().getProperty(ResourceProperties.PROP_PUBVIEW) == null)
 				{
 					return false;
 				}
@@ -3084,11 +3336,11 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			// if we don't want all drafts
 			if (!"*".equals(m_draftsForId))
 			{
-				if (isDraft((Resource)o))
+				if (isDraft((Entity)o))
 				{
 					// reject all drafts?
 					if (	(m_draftsForId == null)
-						||	(!getOwnerId((Resource)o).equals(m_draftsForId)))
+						||	(!getOwnerId((Entity)o).equals(m_draftsForId)))
 					{
 						return false;
 					}

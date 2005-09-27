@@ -66,8 +66,8 @@ import org.sakaiproject.service.legacy.calendar.cover.CalendarService;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
@@ -2027,7 +2027,7 @@ extends VelocityPortletStateAction
 			}
 			
 			// when done, get the new attachments, (if null, there was no change)
-			ReferenceVector attachments = (ReferenceVector) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
+			List attachments = (List) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
 			if (attachments != null)
 			{
 				state.setAttachments(attachments);
@@ -2241,7 +2241,7 @@ extends VelocityPortletStateAction
 		
 		StringBuffer exceptionMessage = new StringBuffer();
 		
-		ReferenceVector attachments = state.getAttachments();
+		List attachments = state.getAttachments();
 		
 		String peid = ((JetspeedRunData)runData).getJs_peid();
 		SessionState sstate = ((JetspeedRunData)runData).getPortletSessionState(peid);
@@ -3391,7 +3391,7 @@ extends VelocityPortletStateAction
 		// get the event id from the CalendarService.
 		// send the event to the vm
 		dateObj1.setNumberOfDaysInMonth(calObj.getNumberOfDays());
-		ReferenceVector attachments = state.getAttachments();
+		List attachments = state.getAttachments();
 		context.put("attachments",attachments);
 		
 		String calId = state.getPrimaryCalendarReference();
@@ -3680,8 +3680,8 @@ extends VelocityPortletStateAction
 		
 		// put a copy of the attachments into the state
 		
-		ReferenceVector attachments = State.getAttachments();
-		sstate.setAttribute(ResourcesAction.STATE_ATTACHMENTS, new ReferenceVector(attachments));
+		List attachments = State.getAttachments();
+		sstate.setAttribute(ResourcesAction.STATE_ATTACHMENTS, EntityManager.newReferenceList(attachments));
 		// whether there is already an attachment //%%%zqian
 		if (attachments.size() > 0)
 		{
@@ -3808,7 +3808,7 @@ extends VelocityPortletStateAction
 		
 		// "crack" the reference (a.k.a dereference, i.e. make a Reference)
 		// and get the event id and calendar reference
-		Reference ref = new Reference(data.getParameters().getString(EVENT_REFERENCE_PARAMETER));
+		Reference ref = EntityManager.newReference(data.getParameters().getString(EVENT_REFERENCE_PARAMETER));
 		String eventId = ref.getId();
 		String calId = CalendarService.calendarReference(ref.getContext(), ref.getContainer());
 		
@@ -5255,7 +5255,7 @@ extends VelocityPortletStateAction
 				}
 				TimeRange range = TimeService.newTimeRange(timeObj, endTime, true, includeEndTime);
 				//TimeRange range = TimeService.newTimeRange(timeObj.getTime(),du);
-				ReferenceVector attachments = state.getAttachments();
+				List attachments = state.getAttachments();
 				
 				// create the event
 				CalendarEventEdit edit = calendarObj.addEvent();
@@ -5546,7 +5546,7 @@ extends VelocityPortletStateAction
 						{
 							range = TimeService.newTimeRange(timeObj, endTime, true, includeEndTime);
 						}
-						ReferenceVector attachments = state.getAttachments();
+						List attachments = state.getAttachments();
 						
                                                 if (edit != null)
 						{
@@ -5783,7 +5783,7 @@ extends VelocityPortletStateAction
 			{
 				 ce = (CalendarEvent) events.get(index-1);
 			}
-			Reference ref = new Reference(ce.getReference());
+			Reference ref = EntityManager.newReference(ce.getReference());
 			eventId = ref.getId();
 			String calId = CalendarService.calendarReference(ref.getContext(), ref.getContainer());
 			
@@ -5798,7 +5798,7 @@ extends VelocityPortletStateAction
 			{
 				ce = (CalendarEvent) events.get(index+1);
 			}
-			Reference ref = new Reference(ce.getReference());
+			Reference ref = EntityManager.newReference(ce.getReference());
 			eventId = ref.getId();
 			String calId = CalendarService.calendarReference(ref.getContext(), ref.getContainer());
 			
@@ -6506,7 +6506,7 @@ extends VelocityPortletStateAction
 		CalendarActionState cstate = (CalendarActionState)getState(context, data, CalendarActionState.class);
 		
 		String calendarRefStr = cstate.getPrimaryCalendarReference();
-		Reference calendarRef = new Reference(calendarRefStr);
+		Reference calendarRef = EntityManager.newReference(calendarRefStr);
 		String siteRef = SiteService.siteReference(calendarRef.getContext());
 		
 		// setup for editing the permissions of the site for this tool, using the roles of this site, too

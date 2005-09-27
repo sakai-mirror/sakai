@@ -36,7 +36,7 @@ import java.util.Vector;
 
 import org.sakaiproject.service.framework.log.cover.Logger;
 import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.util.xml.Xml;
@@ -63,12 +63,12 @@ public class BaseXmlFileStorage
 	protected class Container
 	{
 		/** The container Resource object. */
-		public Resource container;
+		public Entity container;
 		
 		/** The table of contained entry Resources. */
 		public Hashtable contained;
 
-		public Container(Resource c)
+		public Container(Entity c)
 		{
 			container = c;
 			contained = new Hashtable();
@@ -187,7 +187,7 @@ public class BaseXmlFileStorage
 					&&	(rootElement.getTagName().equals(m_entryTagName)))
 				{
 					// re-create the resource and store in the top container
-					Resource entry = m_user.newResource(top.container, rootElement);
+					Entity entry = m_user.newResource(top.container, rootElement);
 					
 					top.contained.put(caseId(entry.getId()), entry);
 				}
@@ -197,7 +197,7 @@ public class BaseXmlFileStorage
 						&&	(rootElement.getTagName().equals(m_containerTagName)))
 				{
 					// re-create the container
-					Resource containerResource = m_user.newContainer(rootElement);
+					Entity containerResource = m_user.newContainer(rootElement);
 					
 					// add to the store
 					Container container = new Container(containerResource);
@@ -216,7 +216,7 @@ public class BaseXmlFileStorage
 						if (containerElement.getTagName().equals(m_entryTagName))
 						{
 							// re-create the resource
-							Resource entry = m_user.newResource(container.container, containerElement);
+							Entity entry = m_user.newResource(container.container, containerElement);
 
 							container.contained.put(caseId(entry.getId()), entry);
 						}
@@ -250,7 +250,7 @@ public class BaseXmlFileStorage
 			Enumeration e = ((Container) m_store.get("")).contained.elements();
 			while (e.hasMoreElements())
 			{
-				Resource entry = (Resource) e.nextElement();
+				Entity entry = (Entity) e.nextElement();
 				entry.toXml(doc, stack);
 			}
 		}
@@ -276,7 +276,7 @@ public class BaseXmlFileStorage
 				Enumeration elementEnum = c.contained.elements();
 				while (elementEnum.hasMoreElements())
 				{
-					Resource entry = (Resource) elementEnum.nextElement();
+					Entity entry = (Entity) elementEnum.nextElement();
 					entry.toXml(doc, stack);
 				}
 				
@@ -331,7 +331,7 @@ public class BaseXmlFileStorage
 	* @param ref The container reference.
 	* @return The container with this id, or null if not found.
 	*/
-	public Resource getContainer(String ref)
+	public Entity getContainer(String ref)
 	{
 		if (ref == null) return null;
 		Container c = ((Container) m_store.get(ref));
@@ -423,7 +423,7 @@ public class BaseXmlFileStorage
 	public void commitContainer(Edit edit)
 	{
 		// make a new Entry from the Edit to update the info store
-		Resource updatedContainer = m_user.newContainer(edit);
+		Entity updatedContainer = m_user.newContainer(edit);
 
 		// update the store
 		Container c = ((Container) m_store.get(updatedContainer.getReference()));
@@ -495,13 +495,13 @@ public class BaseXmlFileStorage
 	* @param id The id.
 	* @return The entry with this id, or null if not found.
 	*/
-	public Resource getResource(String container, String id)
+	public Entity getResource(String container, String id)
 	{
 		if (container == null) container = "";
 		Container c = ((Container) m_store.get(container));
 		if (c == null) return null;
 
-		return (Resource) c.contained.get(caseId(id));
+		return (Entity) c.contained.get(caseId(id));
 
 	}   // getResource
 
@@ -628,7 +628,7 @@ public class BaseXmlFileStorage
 		Container c = ((Container) m_store.get(container));
 		if (c == null) return null;
 
-		Resource entry = (Resource) c.contained.get(caseId(id));
+		Entity entry = (Entity) c.contained.get(caseId(id));
 		if (entry == null) return null;
 	
 		synchronized (m_locks)
@@ -659,7 +659,7 @@ public class BaseXmlFileStorage
 		if (c != null)
 		{
 			// make a new Entry from the Edit to update the info store
-			Resource updatedEntry = m_user.newResource(c.container, edit);
+			Entity updatedEntry = m_user.newResource(c.container, edit);
 
 			c.contained.put(caseId(updatedEntry.getId()), updatedEntry);
 		}
@@ -757,8 +757,8 @@ public class BaseXmlFileStorage
 					if (o1 == o2) return 0;
 
 					// assume they are Resource
-					Resource r1 = (Resource) o1;
-					Resource r2 = (Resource) o2;
+					Entity r1 = (Entity) o1;
+					Entity r2 = (Entity) o2;
 
 					// get each one's date
 					Time t1 = m_user.getDate(r1);
@@ -783,8 +783,8 @@ public class BaseXmlFileStorage
 		// deal with drafts / date / pubview
 		for (Iterator i = all.iterator(); i.hasNext();)
 		{
-			Resource r = (Resource) i.next();
-			Resource candidate = null;
+			Entity r = (Entity) i.next();
+			Entity candidate = null;
 			if (m_user.isDraft(r))
 			{
 				// if some drafts
@@ -854,7 +854,7 @@ public class BaseXmlFileStorage
 		// filter
 		for (Iterator i = containers.iterator(); i.hasNext();)
 		{
-			Resource r = (Resource) i.next();
+			Entity r = (Entity) i.next();
 			String ref = r.getReference();
 			if (ref.startsWith(context))
 			{

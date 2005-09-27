@@ -55,7 +55,7 @@ public class AgentUserProxy implements Agent
 
   /**
    * @see org.sakaiproject.api.common.agent.Agent#getSessionManagerUserId()
-   * @see org.sakaiproject.service.legacy.resource.Resource#getId()
+   * @see org.sakaiproject.service.legacy.resource.Entity#getId()
    */
   public String getSessionManagerUserId()
   {
@@ -80,7 +80,7 @@ public class AgentUserProxy implements Agent
 
   /**
    * @see org.sakaiproject.api.common.agent.Agent#getEnterpriseId()
-   * @see org.sakaiproject.service.legacy.resource.Resource#getId()
+   * @see org.sakaiproject.service.legacy.resource.Entity#getId()
    */
   public String getEnterpriseId()
   {
@@ -155,7 +155,7 @@ public class AgentUserProxy implements Agent
 
   /**
    * @see org.sakaiproject.api.common.manager.Persistable#getUuid()
-   * @see org.sakaiproject.service.legacy.resource.Resource#getId()
+   * @see org.sakaiproject.service.legacy.resource.Entity#getId()
    */
   public String getUuid()
   {

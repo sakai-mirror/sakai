@@ -40,7 +40,7 @@ import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
@@ -198,7 +198,7 @@ public class BaseDbDoubleStorage
 	* @param xml An string containing the xml which describes the Container resource.
 	* @return The Container Resource object created from the xml.
 	*/
-	protected Resource readContainer(String xml)
+	protected Entity readContainer(String xml)
 	{
 		try
 		{
@@ -215,7 +215,7 @@ public class BaseDbDoubleStorage
 			}
 
 			// re-create a resource
-			Resource entry = m_user.newContainer(root);
+			Entity entry = m_user.newContainer(root);
 
 			return entry;
 		}
@@ -250,9 +250,9 @@ public class BaseDbDoubleStorage
 	* @param ref The container reference.
 	* @return The Container with this id, or null if not found.
 	*/
-	public Resource getContainer(String ref)
+	public Entity getContainer(String ref)
 	{
-		Resource entry = null;
+		Entity entry = null;
 
 		// get the user from the db
 		String sql =
@@ -290,7 +290,7 @@ public class BaseDbDoubleStorage
 		{
 			for (int i = 0; i < xml.size(); i++)
 			{
-				Resource entry = readContainer((String) xml.get(i));
+				Entity entry = readContainer((String) xml.get(i));
 				if (entry != null) all.add(entry);
 			}
 		}
@@ -307,7 +307,7 @@ public class BaseDbDoubleStorage
 	public Edit putContainer(String ref)
 	{
 		// create one with just the id
-		Resource entry = m_user.newContainer(ref);
+		Entity entry = m_user.newContainer(ref);
 
 		// form the XML and SQL for the insert
 		Document doc = Xml.createDocument();
@@ -369,7 +369,7 @@ public class BaseDbDoubleStorage
 				if ((lock == null) || (result.length() == 0)) return null;
 	
 				// make first a Resource, then an Edit
-				Resource entry = readContainer(result.toString());
+				Entity entry = readContainer(result.toString());
 				edit = m_user.newContainerEdit(entry);
 	
 				// store the lock for this object
@@ -385,7 +385,7 @@ public class BaseDbDoubleStorage
 		else if (m_locksAreInTable)
 		{
 			// get, and return if not found
-			Resource entry = getContainer(ref);
+			Entity entry = getContainer(ref);
 			if (entry == null) return null;
 
 			// write a lock to the lock table - if we can do it, we get the lock
@@ -423,7 +423,7 @@ public class BaseDbDoubleStorage
 		else
 		{
 			// get, and return if not found
-			Resource entry = getContainer(ref);
+			Entity entry = getContainer(ref);
 			if (entry == null) return null;
 
 			// we only sync this getting - someone may release a lock out of sync
@@ -626,7 +626,7 @@ public class BaseDbDoubleStorage
 	* @param xml An string containing the xml which describes the resource.
 	* @return The Resource object created from the xml.
 	*/
-	protected Resource readResource(Resource container, String xml)
+	protected Entity readResource(Entity container, String xml)
 	{
 		try
 		{
@@ -643,7 +643,7 @@ public class BaseDbDoubleStorage
 			}
 
 			// re-create a resource
-			Resource entry = m_user.newResource(container, root);
+			Entity entry = m_user.newResource(container, root);
 
 			return entry;
 		}
@@ -661,7 +661,7 @@ public class BaseDbDoubleStorage
 	* @param id The id.
 	* @return true if a Resource by this id exists, false if not.
 	*/
-	public boolean checkResource(Resource container, String id)
+	public boolean checkResource(Entity container, String id)
 	{
 		// just see if the record exists
 		String sql =
@@ -682,9 +682,9 @@ public class BaseDbDoubleStorage
 	* @param id The id.
 	* @return The Resource with this id, or null if not found.
 	*/
-	public Resource getResource(Resource container, String id)
+	public Entity getResource(Entity container, String id)
 	{
-		Resource entry = null;
+		Entity entry = null;
 
 		// get the user from the db
 		String sql =
@@ -711,10 +711,10 @@ public class BaseDbDoubleStorage
 	* @param id The id.
 	* @return The Resource with this id, or null if not found.
 	*/
-	public Resource getResource(String containerRef, String id)
+	public Entity getResource(String containerRef, String id)
 	{
 		// TODO: we may need the real container here... -ggolden
-		final Resource container = null;
+		final Entity container = null;
 
 		// get the user from the db
 		String sql =
@@ -735,7 +735,7 @@ public class BaseDbDoubleStorage
 					{
 						// create the Resource from the db xml
 						String xml = result.getString(1);
-						Resource entry = readResource(container, xml);
+						Entity entry = readResource(container, xml);
 						return entry;
 					}
 					catch (SQLException ignore) { return null;}
@@ -744,7 +744,7 @@ public class BaseDbDoubleStorage
 
 		if (!all.isEmpty())
 		{
-			return (Resource) all.get(0);
+			return (Entity) all.get(0);
 		}
 
 		return null;
@@ -756,7 +756,7 @@ public class BaseDbDoubleStorage
 	* @param container The container for this resource.
 	* @return The list (Resource) of all Resources.
 	*/
-	public List getAllResources(Resource container)
+	public List getAllResources(Entity container)
 	{
 		List all = new Vector();
 		
@@ -773,7 +773,7 @@ public class BaseDbDoubleStorage
 		{
 			for (int i = 0; i < xml.size(); i++)
 			{
-				Resource entry = readResource(container, (String) xml.get(i));
+				Entity entry = readResource(container, (String) xml.get(i));
 				if (entry != null) all.add(entry);
 			}
 		}
@@ -789,10 +789,10 @@ public class BaseDbDoubleStorage
 	* @param others Other fields for the newResource call
 	* @return The locked Resource object with this id, or null if the id is in use.
 	*/
-	public Edit putResource(Resource container, String id, Object[] others)
+	public Edit putResource(Entity container, String id, Object[] others)
 	{
 		// create one with just the id, and perhaps some other fields, too
-		Resource entry = m_user.newResource(container, id, others);
+		Entity entry = m_user.newResource(container, id, others);
 
 		// form the XML and SQL for the insert
 		Document doc = Xml.createDocument();
@@ -839,7 +839,7 @@ public class BaseDbDoubleStorage
 	* @param id The user id.
 	* @return The locked Resource with this id, or null if this records cannot be locked.
 	*/
-	public Edit editResource(Resource container, String id)
+	public Edit editResource(Entity container, String id)
 	{
 		Edit edit = null;
 
@@ -862,7 +862,7 @@ public class BaseDbDoubleStorage
 				if ((lock == null) || (result.length() == 0)) return null;
 	
 				// make first a Resource, then an Edit
-				Resource entry = readResource(container, result.toString());
+				Entity entry = readResource(container, result.toString());
 				edit = m_user.newResourceEdit(container, entry);
 	
 				// store the lock for this object
@@ -878,7 +878,7 @@ public class BaseDbDoubleStorage
 		else if (m_locksAreInTable)
 		{
 			// get the entry, and check for existence
-			Resource entry = getResource(container, id);
+			Entity entry = getResource(container, id);
 			if (entry == null) return null;
 
 			// write a lock to the lock table - if we can do it, we get the lock
@@ -916,7 +916,7 @@ public class BaseDbDoubleStorage
 		else
 		{
 			// get the entry, and check for existence
-			Resource entry = getResource(container, id);
+			Entity entry = getResource(container, id);
 			if (entry == null) return null;
 
 			// we only sync this getting - someone may release a lock out of sync
@@ -942,7 +942,7 @@ public class BaseDbDoubleStorage
 	* @param container The container for this resource.
 	* @param user The Edit to commit.
 	*/
-	public void commitResource(Resource container, Edit edit)
+	public void commitResource(Entity container, Edit edit)
 	{
 		// form the SQL statement and the var w/ the XML
 		Document doc = Xml.createDocument();
@@ -1018,7 +1018,7 @@ public class BaseDbDoubleStorage
 	* @param container The container for this resource.
 	* @param user The Edit to cancel.
 	*/
-	public void cancelResource(Resource container, Edit edit)
+	public void cancelResource(Entity container, Edit edit)
 	{
 		if (m_locksAreInDb)
 		{
@@ -1067,7 +1067,7 @@ public class BaseDbDoubleStorage
 	* @param container The container for this resource.
 	* @param user The Edit to remove.
 	*/
-	public void removeResource(Resource container, Edit edit)
+	public void removeResource(Entity container, Edit edit)
 	{
 		// form the SQL delete statement
 		String statement =
@@ -1226,7 +1226,7 @@ public class BaseDbDoubleStorage
 		}
 
 		// TODO: we may need the real container here... -ggolden
-		final Resource container = null;
+		final Entity container = null;
 
 		StringBuffer buf = new StringBuffer();
 		int numFields = 1;
@@ -1341,7 +1341,7 @@ public class BaseDbDoubleStorage
 					{
 						// get the xml and parse into a Resource
 						String xml = result.getString(1);
-						Resource entry = readResource(container, xml);
+						Entity entry = readResource(container, xml);
 						return entry;
 					}
 					catch (SQLException ignore) { return null;}
@@ -1356,8 +1356,8 @@ public class BaseDbDoubleStorage
 			// deal with drafts / pubview
 			for (Iterator i = all.iterator(); i.hasNext();)
 			{
-				Resource r = (Resource) i.next();
-				Resource candidate = null;
+				Entity r = (Entity) i.next();
+				Entity candidate = null;
 				if (m_user.isDraft(r))
 				{
 					// if some drafts

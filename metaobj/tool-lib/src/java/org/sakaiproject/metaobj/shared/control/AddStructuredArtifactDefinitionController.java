@@ -22,6 +22,7 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
+import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.api.kernel.session.SessionManager;
@@ -35,7 +36,6 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -145,7 +145,7 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
             session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
          // here is where we setup the id
-         ReferenceVector refs = (ReferenceVector)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+         List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
          Reference ref = (Reference)refs.get(0);
 
          if (StructuredArtifactDefinitionValidator.PICK_SCHEMA_ACTION.equals(sad.getFilePickerAction())) {

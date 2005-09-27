@@ -48,7 +48,7 @@ import org.sakaiproject.service.legacy.notification.NotificationAction;
 import org.sakaiproject.service.legacy.notification.NotificationEdit;
 import org.sakaiproject.service.legacy.notification.NotificationService;
 import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.Time;
@@ -127,7 +127,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	*/
 	protected String notificationId(String ref)
 	{
-		String start = getAccessPoint(true) + Resource.SEPARATOR;
+		String start = getAccessPoint(true) + Entity.SEPARATOR;
 		int i = ref.indexOf(start);
 		if (i == -1)
 			return ref;
@@ -143,7 +143,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	*/
 	protected String notificationUrl(String id)
 	{
-		return getAccessPoint(false) + Resource.SEPARATOR + id;
+		return getAccessPoint(false) + Entity.SEPARATOR + id;
 
 	} // notificationUrl
 
@@ -331,7 +331,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	*/
 	public String notificationReference(String id)
 	{
-		return getAccessPoint(true) + Resource.SEPARATOR + id;
+		return getAccessPoint(true) + Entity.SEPARATOR + id;
 
 	} // notificationReference
 
@@ -707,7 +707,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* @param id The id for the new object.
 	* @return The new containe Resource.
 	*/
-	public Resource newContainer(String ref)
+	public Entity newContainer(String ref)
 	{
 		return null;
 	}
@@ -717,7 +717,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* @param element The XML.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Element element)
+	public Entity newContainer(Element element)
 	{
 		return null;
 	}
@@ -727,7 +727,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Resource other)
+	public Entity newContainer(Entity other)
 	{
 		return null;
 	}
@@ -739,7 +739,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{
 		return new BaseNotification(id);
 	}
@@ -750,7 +750,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{
 		return new BaseNotification(element);
 	}
@@ -761,7 +761,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{
 		return new BaseNotification((Notification) other);
 	}
@@ -791,7 +791,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Edit newContainerEdit(Resource other)
+	public Edit newContainerEdit(Entity other)
 	{
 		return null;
 	}
@@ -803,7 +803,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseNotificationEdit e = new BaseNotificationEdit(id);
 		e.activate();
@@ -816,7 +816,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		BaseNotificationEdit e = new BaseNotificationEdit(element);
 		e.activate();
@@ -829,7 +829,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseNotificationEdit e = new BaseNotificationEdit((Notification) other);
 		e.activate();
@@ -840,7 +840,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	* Collect the fields that need to be stored outside the XML (for the resource).
 	* @return An array of field values to store in the record outside the XML (for the resource).
 	*/
-	public Object[] storageFields(Resource r)
+	public Object[] storageFields(Entity r)
 	{
 		return null;
 	}
@@ -850,7 +850,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return false;
 	}
@@ -860,7 +860,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return null;
 	}
@@ -870,7 +870,7 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return null;
 	}

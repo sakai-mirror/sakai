@@ -29,7 +29,15 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.Vector;
 
 import org.apache.xerces.impl.dv.util.Base64;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
@@ -67,9 +75,9 @@ import org.sakaiproject.service.legacy.realm.RealmEdit;
 import org.sakaiproject.service.legacy.realm.RoleEdit;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityManager;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -252,6 +260,20 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		}
 	}
 
+	/** Dependency: EntityManager. */
+	protected EntityManager m_entityManager = null;
+
+	/**
+	 * Dependency: EntityManager.
+	 * 
+	 * @param service
+	 *        The EntityManager.
+	 */
+	public void setEntityManager(EntityManager service)
+	{
+		m_entityManager = service;
+	}
+
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Init and Destroy
 	 *********************************************************************************************************************************************************************************************************************************************************/
@@ -283,7 +305,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			edit.addFunction(EVENT_RESOURCE_WRITE);
 
 			// set the filter to any site related resource
-			edit.setResourceFilter(getAccessPoint(true) + Resource.SEPARATOR + "group");
+			edit.setResourceFilter(getAccessPoint(true) + Entity.SEPARATOR + "group");
 			// %%% is this the best we can do? -ggolden
 
 			// set the action
@@ -298,6 +320,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 					buf.append(", ");
 				}
 			}
+
+			// register as an entity producer
+			m_entityManager.registerEntityProducer(this);
+
 			m_logger.info(this + ".init(): site quota: " + m_siteQuota + " body path: " + m_bodyPath + " volumes: "
 					+ buf.toString());
 		}
@@ -305,9 +331,6 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		{
 			m_logger.warn(this + ".init(): ", t);
 		}
-
-		// register as a resource service
-		m_serverConfigurationService.registerResourceService(this);
 
 	} // init
 
@@ -338,32 +361,32 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 */
 	protected class CollectionStorageUser implements StorageUser
 	{
-		public Resource newContainer(String ref)
+		public Entity newContainer(String ref)
 		{
 			return null;
 		}
 
-		public Resource newContainer(Element element)
+		public Entity newContainer(Element element)
 		{
 			return null;
 		}
 
-		public Resource newContainer(Resource other)
+		public Entity newContainer(Entity other)
 		{
 			return null;
 		}
 
-		public Resource newResource(Resource container, String id, Object[] others)
+		public Entity newResource(Entity container, String id, Object[] others)
 		{
 			return new BaseCollectionEdit(id);
 		}
 
-		public Resource newResource(Resource container, Element element)
+		public Entity newResource(Entity container, Element element)
 		{
 			return new BaseCollectionEdit(element);
 		}
 
-		public Resource newResource(Resource container, Resource other)
+		public Entity newResource(Entity container, Entity other)
 		{
 			return new BaseCollectionEdit((ContentCollection) other);
 		}
@@ -378,26 +401,26 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			return null;
 		}
 
-		public Edit newContainerEdit(Resource other)
+		public Edit newContainerEdit(Entity other)
 		{
 			return null;
 		}
 
-		public Edit newResourceEdit(Resource container, String id, Object[] others)
+		public Edit newResourceEdit(Entity container, String id, Object[] others)
 		{
 			BaseCollectionEdit rv = new BaseCollectionEdit(id);
 			rv.activate();
 			return rv;
 		}
 
-		public Edit newResourceEdit(Resource container, Element element)
+		public Edit newResourceEdit(Entity container, Element element)
 		{
 			BaseCollectionEdit rv = new BaseCollectionEdit(element);
 			rv.activate();
 			return rv;
 		}
 
-		public Edit newResourceEdit(Resource container, Resource other)
+		public Edit newResourceEdit(Entity container, Entity other)
 		{
 			BaseCollectionEdit rv = new BaseCollectionEdit((ContentCollection) other);
 			rv.activate();
@@ -409,7 +432,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 * 
 		 * @return An array of field values to store in the record outside the XML (for the resource).
 		 */
-		public Object[] storageFields(Resource r)
+		public Object[] storageFields(Entity r)
 		{
 			Object[] rv = new Object[1];
 			rv[0] = StringUtil.referencePath(((ContentCollection) r).getId());
@@ -424,7 +447,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 *        The resource.
 		 * @return true if the resource is in draft mode, false if not.
 		 */
-		public boolean isDraft(Resource r)
+		public boolean isDraft(Entity r)
 		{
 			return false;
 		}
@@ -436,7 +459,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 *        The resource.
 		 * @return The resource owner user id.
 		 */
-		public String getOwnerId(Resource r)
+		public String getOwnerId(Entity r)
 		{
 			return null;
 		}
@@ -448,7 +471,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 *        The resource.
 		 * @return The resource date.
 		 */
-		public Time getDate(Resource r)
+		public Time getDate(Entity r)
 		{
 			return null;
 		}
@@ -460,32 +483,32 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 */
 	protected class ResourceStorageUser implements StorageUser
 	{
-		public Resource newContainer(String ref)
+		public Entity newContainer(String ref)
 		{
 			return null;
 		}
 
-		public Resource newContainer(Element element)
+		public Entity newContainer(Element element)
 		{
 			return null;
 		}
 
-		public Resource newContainer(Resource other)
+		public Entity newContainer(Entity other)
 		{
 			return null;
 		}
 
-		public Resource newResource(Resource container, String id, Object[] others)
+		public Entity newResource(Entity container, String id, Object[] others)
 		{
 			return new BaseResourceEdit(id);
 		}
 
-		public Resource newResource(Resource container, Element element)
+		public Entity newResource(Entity container, Element element)
 		{
 			return new BaseResourceEdit(element);
 		}
 
-		public Resource newResource(Resource container, Resource other)
+		public Entity newResource(Entity container, Entity other)
 		{
 			return new BaseResourceEdit((ContentResource) other);
 		}
@@ -500,26 +523,26 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			return null;
 		}
 
-		public Edit newContainerEdit(Resource other)
+		public Edit newContainerEdit(Entity other)
 		{
 			return null;
 		}
 
-		public Edit newResourceEdit(Resource container, String id, Object[] others)
+		public Edit newResourceEdit(Entity container, String id, Object[] others)
 		{
 			BaseResourceEdit rv = new BaseResourceEdit(id);
 			rv.activate();
 			return rv;
 		}
 
-		public Edit newResourceEdit(Resource container, Element element)
+		public Edit newResourceEdit(Entity container, Element element)
 		{
 			BaseResourceEdit rv = new BaseResourceEdit(element);
 			rv.activate();
 			return rv;
 		}
 
-		public Edit newResourceEdit(Resource container, Resource other)
+		public Edit newResourceEdit(Entity container, Entity other)
 		{
 			BaseResourceEdit rv = new BaseResourceEdit((ContentResource) other);
 			rv.activate();
@@ -531,7 +554,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 * 
 		 * @return An array of field values to store in the record outside the XML (for the resource).
 		 */
-		public Object[] storageFields(Resource r)
+		public Object[] storageFields(Entity r)
 		{
 			// include the file path field if we are doing body in the file system
 			if (m_bodyPath != null)
@@ -558,7 +581,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 *        The resource.
 		 * @return true if the resource is in draft mode, false if not.
 		 */
-		public boolean isDraft(Resource r)
+		public boolean isDraft(Entity r)
 		{
 			return false;
 		}
@@ -570,7 +593,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 *        The resource.
 		 * @return The resource owner user id.
 		 */
-		public String getOwnerId(Resource r)
+		public String getOwnerId(Entity r)
 		{
 			return null;
 		}
@@ -582,7 +605,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 *        The resource.
 		 * @return The resource date.
 		 */
-		public Time getDate(Resource r)
+		public Time getDate(Entity r)
 		{
 			return null;
 		}
@@ -887,9 +910,9 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public boolean allowAddCollection(String id)
 	{
 		// collection must also end in the separator (we fix it)
-		if (!id.endsWith(Resource.SEPARATOR))
+		if (!id.endsWith(Entity.SEPARATOR))
 		{
-			id = id + Resource.SEPARATOR;
+			id = id + Entity.SEPARATOR;
 		}
 
 		// check security
@@ -953,9 +976,9 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		Validator.checkResourceId(justName);
 
 		// collection must also end in the separator (we fix it)
-		if (!id.endsWith(Resource.SEPARATOR))
+		if (!id.endsWith(Entity.SEPARATOR))
 		{
-			id = id + Resource.SEPARATOR;
+			id = id + Entity.SEPARATOR;
 		}
 
 		// check security
@@ -1442,7 +1465,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public boolean allowAddResource(String id)
 	{
 		// resource must also NOT end with a separator characters (we fix it)
-		if (id.endsWith(Resource.SEPARATOR))
+		if (id.endsWith(Entity.SEPARATOR))
 		{
 			id = id.substring(0, id.length() - 1);
 		}
@@ -1517,7 +1540,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		Validator.checkResourceId(justName);
 
 		// resource must also NOT end with a separator characters (we fix it)
-		if (id.endsWith(Resource.SEPARATOR))
+		if (id.endsWith(Entity.SEPARATOR))
 		{
 			id = id.substring(0, id.length() - 1);
 		}
@@ -1598,13 +1621,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		Validator.checkResourceId(name);
 
 		// resource must also NOT end with a separator characters (we fix it)
-		if (name.endsWith(Resource.SEPARATOR))
+		if (name.endsWith(Entity.SEPARATOR))
 		{
 			name = name.substring(0, name.length() - 1);
 		}
 
 		// form a name based on the attachments collection, a unique folder id, and the given name
-		String collection = ATTACHMENTS_COLLECTION + IdService.getUniqueId() + Resource.SEPARATOR;
+		String collection = ATTACHMENTS_COLLECTION + IdService.getUniqueId() + Entity.SEPARATOR;
 		String id = collection + name;
 
 		// add this collection
@@ -1640,13 +1663,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		Validator.checkResourceId(name);
 
 		// resource must also NOT end with a separator characters (we fix it)
-		if (name.endsWith(Resource.SEPARATOR))
+		if (name.endsWith(Entity.SEPARATOR))
 		{
 			name = name.substring(0, name.length() - 1);
 		}
 
 		// form a name based on the attachments collection, a unique folder id, and the given name
-		String collection = ATTACHMENTS_COLLECTION + IdService.getUniqueId() + Resource.SEPARATOR;
+		String collection = ATTACHMENTS_COLLECTION + IdService.getUniqueId() + Entity.SEPARATOR;
 		String id = collection + name;
 
 		// add this collection
@@ -1970,7 +1993,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	{
 		id = (String) ((Hashtable) fixTypeAndId(id, type)).get("id");
 		// resource must also NOT end with a separator characters (fix it)
-		if (id.endsWith(Resource.SEPARATOR))
+		if (id.endsWith(Entity.SEPARATOR))
 		{
 			id = id.substring(0, id.length() - 1);
 		}
@@ -2121,7 +2144,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 * @@Glenn - review this @@
 	 */
 
-	public String getResourceNameCHEF(Resource mbr)
+	public String getResourceNameCHEF(Entity mbr)
 	{
 		String idx = mbr.getId();
 		String resourceName = isolateName(idx);
@@ -2434,9 +2457,9 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	{
 		unlock(EVENT_RESOURCE_READ, id);
 
-		boolean collectionHint = id.endsWith(Resource.SEPARATOR);
+		boolean collectionHint = id.endsWith(Entity.SEPARATOR);
 
-		Resource o = null;
+		Entity o = null;
 
 		try
 		{
@@ -2501,7 +2524,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_WRITE, id);
 
-		boolean collectionHint = id.endsWith(Resource.SEPARATOR);
+		boolean collectionHint = id.endsWith(Entity.SEPARATOR);
 		Edit o = null;
 		if (collectionHint)
 		{
@@ -2574,7 +2597,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_WRITE, id);
 
-		boolean collectionHint = id.endsWith(Resource.SEPARATOR);
+		boolean collectionHint = id.endsWith(Entity.SEPARATOR);
 		Edit o = null;
 		if (collectionHint)
 		{
@@ -2672,13 +2695,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			int i = 1;
 			// the resource object is a member of base collection
 			String s = resourceId.substring(baseCollectionId.length());
-			while (s.indexOf(Resource.SEPARATOR) != -1)
+			while (s.indexOf(Entity.SEPARATOR) != -1)
 			{
-				if (s.indexOf(Resource.SEPARATOR) != (s.length() - 1))
+				if (s.indexOf(Entity.SEPARATOR) != (s.length() - 1))
 				{
 					// the resource seperator character is not the last character
 					i++;
-					s = s.substring(s.indexOf(Resource.SEPARATOR) + 1);
+					s = s.substring(s.indexOf(Entity.SEPARATOR) + 1);
 				}
 				else
 				{
@@ -2700,13 +2723,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public boolean isRootCollection(String id)
 	{
 		// test for the root local id
-		if (id.equals(Resource.SEPARATOR)) return true;
+		if (id.equals(Entity.SEPARATOR)) return true;
 
 		// test for the root reference
-		if (id.equals(getReference(Resource.SEPARATOR))) return true;
+		if (id.equals(getReference(Entity.SEPARATOR))) return true;
 
 		// test for the root URL
-		if (id.equals(getUrl(Resource.SEPARATOR))) return true;
+		if (id.equals(getUrl(Entity.SEPARATOR))) return true;
 
 		return false;
 
@@ -2728,7 +2751,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
-	 * @return a short string identifying the resources kept here, good for a file name or label.
+	 * {@inheritDoc}
 	 */
 	public String getLabel()
 	{
@@ -2738,7 +2761,125 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	/**
 	 * {@inheritDoc}
 	 */
-	public String archive(String siteId, Document doc, Stack stack, String archivePath, ReferenceVector attachments)
+	public boolean willArchiveMerge()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willImport()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Entity getEntity(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		Entity rv = null;
+
+		try
+		{
+			ResourceProperties props = getProperties(ref.getId());
+			if (props.getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION))
+			{
+				rv = getCollection(ref.getId());
+			}
+			else
+			{
+				rv = getResource(ref.getId());
+			}
+		}
+		catch (PermissionException e)
+		{
+		}
+		catch (IdUnusedException e)
+		{
+		}
+		catch (TypeException e)
+		{
+		}
+		catch (EmptyException e)
+		{
+		}
+		catch (NullPointerException e)
+		{
+		}
+		
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityUrl(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		return getUrl(ref.getId());		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection getEntityRealms(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		// use the resources realm, all container (folder) realms
+
+		Collection rv = new Vector();
+
+		try
+		{
+			// try the resource, all the folders above it (don't include /)
+			String paths[] = StringUtil.split(ref.getId(), Entity.SEPARATOR);
+			boolean container = ref.getId().endsWith(Entity.SEPARATOR);
+			if (paths.length > 1)
+			{
+				String root = getReference(Entity.SEPARATOR + paths[1] + Entity.SEPARATOR);
+				rv.add(root);
+
+				for (int next = 2; next < paths.length; next++)
+				{
+					root = root + paths[next];
+					if ((next < paths.length - 1) || container)
+					{
+						root = root + Entity.SEPARATOR;
+					}
+					rv.add(root);
+				}
+			}
+
+			// special check for group-user : the grant's in the user's My Workspace site
+			String parts[] = StringUtil.split(ref.getId(), Entity.SEPARATOR);
+			if ((parts.length > 3) && (parts[1].equals("group-user")))
+			{
+				rv.add(SiteService.siteReference(SiteService.getUserSiteId(parts[3])));
+			}
+
+			// site
+			ref.addSiteContextRealm(rv);
+		}
+		catch (Throwable e)
+		{
+		}
+
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String archive(String siteId, Document doc, Stack stack, String archivePath, List attachments)
 	{
 		// prepare the buffer for the results log
 		StringBuffer results = new StringBuffer();
@@ -2772,7 +2913,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	/**
 	 * {@inheritDoc}
 	 */
-	public String archiveResources(ReferenceVector attachments, Document doc, Stack stack, String archivePath)
+	public String archiveResources(List attachments, Document doc, Stack stack, String archivePath)
 	{
 		// prepare the buffer for the results log
 		StringBuffer results = new StringBuffer();
@@ -2787,7 +2928,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			Reference ref = (Reference) i.next();
 			try
 			{
-				ContentResource resource = (ContentResource) ref.getResource();
+				ContentResource resource = (ContentResource) ref.getEntity();
 
 				if (resource != null)
 				{
@@ -2814,7 +2955,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 * @param useIdTrans
 	 *        The HashMap to track old WT id to new CTools id
 	 */
-	protected void WTUserIdTrans(Element el, HashMap userIdTrans)
+	protected void WTUserIdTrans(Element el, Map userIdTrans)
 	{
 		NodeList children4 = el.getChildNodes();
 		int length4 = children4.getLength();
@@ -2879,7 +3020,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *        The path to the folder where we are reading auxilary files.
 	 * @return A log of status messages from the archive.
 	 */
-	public String merge(String siteId, Element root, String archivePath, String mergeId, Map attachmentNames, HashMap userIdTrans,
+	public String merge(String siteId, Element root, String archivePath, String mergeId, Map attachmentNames, Map userIdTrans,
 			Set userListAllowImport)
 	{
 		// get the system name: FROM_WT, FROM_CT, FROM_SAKAI
@@ -3096,7 +3237,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 * @param resourceIds
 	 *        when null, all resources will be imported; otherwise, only resources with those ids will be imported
 	 */
-	public void importResources(String fromContext, String toContext, List resourceIds)
+	public void importEntities(String fromContext, String toContext, List resourceIds)
 	{
 		// default to import all resources
 		boolean toBeImported = true;
@@ -3112,7 +3253,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			for (int i = 0; i < oResources.size(); i++)
 			{
 				// get the original resource
-				Resource oResource = (Resource) oResources.get(i);
+				Entity oResource = (Entity) oResources.get(i);
 				String oId = oResource.getId();
 
 				if (resourceIds != null && resourceIds.size() > 0)
@@ -3192,7 +3333,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 						{
 						}
 
-						importResources(oResource.getId(), nId, resourceIds);
+						importEntities(oResource.getId(), nId, resourceIds);
 					}
 					else
 					{
@@ -3237,6 +3378,135 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		}
 
 	} // importResources
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		String id = null;
+		String context = "";
+
+		// for content hosting resources and collections
+		if (reference.startsWith(REFERENCE_ROOT))
+		{
+			// parse out the local resource id
+			id = reference.substring(REFERENCE_ROOT.length(), reference.length());
+		}
+
+		// for content hosting resources and collections - full url
+		else if (reference.startsWith(getUrl("")))
+		{
+			// parse out the local resource id
+			id = reference.substring(getUrl("").length(), reference.length());
+		}
+		
+		// not mine
+		else
+		{
+			return false;
+		}
+
+		// parse out the associated site id
+		String parts[] = StringUtil.split(id, Entity.SEPARATOR);
+		if (parts.length >= 3)
+		{
+			if (parts[1].equals("group"))
+			{
+				context = parts[2];
+			}
+			else if (parts[1].equals("user"))
+			{
+				context = SiteService.getUserSiteId(parts[2]);
+			}
+			else if (parts[1].equals("group-user"))
+			{
+				// use just the group context
+				context = parts[2];
+			}
+		}
+
+		ref.set(SERVICE_NAME, null, id, null, context);
+
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityDescription(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		String rv = "Content: " + ref.getId();
+
+		try
+		{
+			ResourceProperties props = getProperties(ref.getId());
+			if (props.getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION))
+			{
+				ContentCollection c = getCollection(ref.getId());
+				rv = "Collection: " + c.getProperties().getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME) + " ("
+						+ c.getId() + ")\n" + " Created: "
+						+ c.getProperties().getPropertyFormatted(ResourceProperties.PROP_CREATION_DATE) + " by "
+						+ c.getProperties().getPropertyFormatted(ResourceProperties.PROP_CREATOR) + "(User Id:"
+						+ c.getProperties().getProperty(ResourceProperties.PROP_CREATOR) + ")\n"
+						+ StringUtil.limit(c.getProperties().getPropertyFormatted(ResourceProperties.PROP_DESCRIPTION), 30);
+			}
+			else
+			{
+				ContentResource r = getResource(ref.getId());
+				rv = "Resource: " + r.getProperties().getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME) + " ("
+						+ r.getId() + ")\n" + " Created: "
+						+ r.getProperties().getPropertyFormatted(ResourceProperties.PROP_CREATION_DATE) + " by "
+						+ r.getProperties().getPropertyFormatted(ResourceProperties.PROP_CREATOR) + "(User Id:"
+						+ r.getProperties().getProperty(ResourceProperties.PROP_CREATOR) + ")\n"
+						+ StringUtil.limit(r.getProperties().getPropertyFormatted(ResourceProperties.PROP_DESCRIPTION), 30);
+			}
+		}
+		catch (PermissionException e)
+		{
+		}
+		catch (IdUnusedException e)
+		{
+		}
+		catch (TypeException e)
+		{
+		}
+		catch (EmptyException e)
+		{
+		}
+		catch (NullPointerException e)
+		{
+		}
+
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ResourceProperties getEntityResourceProperties(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		ResourceProperties props = null;
+
+		try
+		{
+			props = getProperties(ref.getId());
+		}
+		catch (PermissionException e)
+		{
+		}
+		catch (IdUnusedException e)
+		{
+		}
+
+		return props;
+	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * etc
@@ -3599,11 +3869,11 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		if (!((edit.getId().startsWith("/user/")) || (edit.getId().startsWith("/group/")))) return false;
 
 		// expect null, "user" | "group", user/groupid, rest...
-		String[] parts = StringUtil.split(edit.getId(), Resource.SEPARATOR);
+		String[] parts = StringUtil.split(edit.getId(), Entity.SEPARATOR);
 		if (parts.length <= 2) return false;
 
 		// get this collection
-		String id = Resource.SEPARATOR + parts[1] + Resource.SEPARATOR + parts[2] + Resource.SEPARATOR;
+		String id = Entity.SEPARATOR + parts[1] + Entity.SEPARATOR + parts[2] + Entity.SEPARATOR;
 		ContentCollection collection = null;
 		try
 		{
@@ -4121,7 +4391,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			List mbrs = new Vector();
 			for (int i = 0; i < memberResources.size(); i++)
 			{
-				Resource res = (Resource) memberResources.get(i);
+				Entity res = (Entity) memberResources.get(i);
 				if (res != null)
 				{
 					mbrs.add(res.getId());
@@ -4228,7 +4498,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 							// update the cache, and mark it complete
 							for (int i = 0; i < mbrs.size(); i++)
 							{
-								Resource mbr = (Resource) mbrs.get(i);
+								Entity mbr = (Entity) mbrs.get(i);
 								m_cache.put(mbr.getReference(), mbr);
 							}
 
@@ -5051,13 +5321,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		Object rv = null;
 
 		// key is a reference
-		Reference ref = new Reference((String) key);
+		Reference ref = m_entityManager.newReference((String) key);
 		String id = ref.getId();
 
 		if (m_logger.isDebugEnabled()) m_logger.debug(this + ".refresh(): key " + key + " id : " + ref.getId());
 
 		// get from storage only (not cache!)
-		boolean collectionHint = id.endsWith(Resource.SEPARATOR);
+		boolean collectionHint = id.endsWith(Entity.SEPARATOR);
 		if (collectionHint)
 		{
 			rv = m_storage.getCollection(id);

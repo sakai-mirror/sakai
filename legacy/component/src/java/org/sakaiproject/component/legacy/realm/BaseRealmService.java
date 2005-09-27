@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Vector;
 
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
@@ -42,9 +43,8 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
-
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.realm.Grant;
@@ -55,8 +55,9 @@ import org.sakaiproject.service.legacy.realm.RealmService;
 import org.sakaiproject.service.legacy.realm.Role;
 import org.sakaiproject.service.legacy.realm.RoleEdit;
 import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityManager;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -67,10 +68,10 @@ import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.util.java.StringUtil;
-import org.sakaiproject.util.xml.Xml;
 import org.sakaiproject.util.resource.BaseResourceProperties;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.sakaiproject.util.storage.StorageUser;
+import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -111,7 +112,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 */
 	protected String getAccessPoint(boolean relative)
 	{
-		return (relative ? "" : ServerConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
+		return (relative ? "" : m_serverConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
 
 	} // getAccessPoint
 
@@ -122,7 +123,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 */
 	protected String realmId(String ref)
 	{
-		String start = getAccessPoint(true) + Resource.SEPARATOR;
+		String start = getAccessPoint(true) + Entity.SEPARATOR;
 		int i = ref.indexOf(start);
 		if (i == -1)
 			return ref;
@@ -216,6 +217,34 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		m_provider = provider;
 	}
 
+	/** Dependency: ServerConfigurationService. */
+	protected ServerConfigurationService m_serverConfigurationService = null;
+
+	/**
+	 * Dependency: ServerConfigurationService.
+	 * 
+	 * @param service
+	 *        The ServerConfigurationService.
+	 */
+	public void setServerConfigurationService(ServerConfigurationService service)
+	{
+		m_serverConfigurationService = service;
+	}
+
+	/** Dependency: EntityManager. */
+	protected EntityManager m_entityManager = null;
+
+	/**
+	 * Dependency: EntityManager.
+	 * 
+	 * @param service
+	 *        The EntityManager.
+	 */
+	public void setEntityManager(EntityManager service)
+	{
+		m_entityManager = service;
+	}
+
 	/*******************************************************************************
 	 * Init and Destroy
 	*******************************************************************************/
@@ -232,6 +261,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			// construct storage and read
 			m_storage = newStorage();
 			m_storage.open();
+
+			// register as an entity producer
+			m_entityManager.registerEntityProducer(this);
 
 			m_logger.info(this +".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()));
 		}
@@ -801,7 +833,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 */
 	public String realmReference(String id)
 	{
-		return getAccessPoint(true) + Resource.SEPARATOR + id;
+		return getAccessPoint(true) + Entity.SEPARATOR + id;
 	}
 
 	/**
@@ -865,7 +897,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		for (Iterator i = updRealms.iterator(); i.hasNext();)
 		{
 			String realmId = (String) i.next();
-			Reference ref = new Reference(realmId);
+			Reference ref = m_entityManager.newReference(realmId);
 			if (	(SiteService.SERVICE_NAME.equals(ref.getType()))
 				&&	!SiteService.isSpecialSite(ref.getId())
 				&&	(!SiteService.isUserSite(ref.getId()) || userId.equals(SiteService.getSiteUserId(ref.getId()))))
@@ -878,7 +910,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		for (Iterator i = unpRealms.iterator(); i.hasNext();)
 		{
 			String realmId = (String) i.next();
-			Reference ref = new Reference(realmId);
+			Reference ref = m_entityManager.newReference(realmId);
 			if (	(SiteService.SERVICE_NAME.equals(ref.getType()))
 				&&	!SiteService.isSpecialSite(ref.getId())
 				&&	(!SiteService.isUserSite(ref.getId()) || userId.equals(SiteService.getSiteUserId(ref.getId()))))
@@ -891,7 +923,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		for (Iterator i = visitRealms.iterator(); i.hasNext();)
 		{
 			String realmId = (String) i.next();
-			Reference ref = new Reference(realmId);
+			Reference ref = m_entityManager.newReference(realmId);
 			if (	(SiteService.SERVICE_NAME.equals(ref.getType()))
 				&&	!SiteService.isSpecialSite(ref.getId())
 				&&	(!SiteService.isUserSite(ref.getId()) || userId.equals(SiteService.getSiteUserId(ref.getId()))))
@@ -910,7 +942,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	protected void updateSiteSecurity(Realm realm)
 	{
 		// Special code for the site service
-		Reference ref = new Reference(realm.getId());
+		Reference ref = m_entityManager.newReference(realm.getId());
 		if (SiteService.SERVICE_NAME.equals(ref.getType()))
 		{
 			// collect the users
@@ -929,7 +961,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	protected void removeSiteSecurity(Realm realm)
 	{
 		// Special code for the site service
-		Reference ref = new Reference(realm.getId());
+		Reference ref = m_entityManager.newReference(realm.getId());
 		if (ref.getType().equals(SiteService.SERVICE_NAME))
 		{
 			// no realm, no users
@@ -937,6 +969,152 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			
 			SiteService.setSiteSecurity(ref.getId(), empty, empty, empty);
 		}
+	}
+
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * EntityProducer implementation
+	 *********************************************************************************************************************************************************************************************************************************************************/
+
+	/**
+ 	 * {@inheritDoc}
+	 */
+	public String getLabel()
+	{
+		return "user";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willArchiveMerge()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willImport()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		// for realm access
+		if (reference.startsWith(REFERENCE_ROOT))
+		{
+			// the realm id may have separators - we use everything after "/realm/"
+			String id = reference.substring(REFERENCE_ROOT.length() + 1, reference.length());
+
+			ref.set(SERVICE_NAME, null, id, null, null);
+
+			return true;
+		}
+		
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityDescription(Reference ref)
+	{
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ResourceProperties getEntityResourceProperties(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Entity getEntity(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection getEntityRealms(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		Collection rv = new Vector();
+
+		// if the reference is a realm, and not a special one
+		// get the list of realms for the realm-referenced resource
+		if ((ref.getId() != null) && (ref.getId().length() > 0) && (!ref.getId().startsWith("!")))
+		{
+			// add the current user's realm (for what realm stuff everyone can do, i.e. add)
+			ref.addUserRealm(rv, UsageSessionService.getSessionUserId());
+
+			// make a new reference on the realm's id
+			Reference refnew = m_entityManager.newReference(ref.getId());
+			rv.addAll(refnew.getRealms());
+		}
+
+		// for (special) realm access:
+		// any modification or delete of a realm, checks the realm itself for permission.
+		// all users get to add realms (predefined in the "/user/~" realm
+//		else
+//		{
+//			try
+//			{
+//				rv.add(ref.getReference());
+//	
+//				// add the current user's realm (for what realm stuff everyone can do, i.e. add)
+//				ref.addUserRealm(rv, UsageSessionService.getSessionUserId());
+//			}
+//			catch (NullPointerException e)
+//			{
+//				m_logger.warn("getRealms(): " + e);
+//			}
+//		}
+
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityUrl(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String archive(String siteId, Document doc, Stack stack, String archivePath, List attachments)
+	{
+		return "";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames,
+			Map userIdTrans, Set userListAllowImport)
+	{
+		return "";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void importEntities(String fromContext, String toContext, List ids)
+	{
 	}
 
 	/*******************************************************************************
@@ -1311,7 +1489,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			// the rest are references to some resource
 			try
 			{
-				Reference ref = new Reference(getId());
+				Reference ref = m_entityManager.newReference(getId());
 				return ref.getDescription();
 			}
 			catch (Throwable ignore){}
@@ -2541,7 +2719,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param id The id for the new object.
 	 * @return The new containe Resource.
 	 */
-	public Resource newContainer(String ref)
+	public Entity newContainer(String ref)
 	{
 		return null;
 	}
@@ -2551,7 +2729,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param element The XML.
 	 * @return The new container resource.
 	 */
-	public Resource newContainer(Element element)
+	public Entity newContainer(Element element)
 	{
 		return null;
 	}
@@ -2561,7 +2739,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param other The other contianer to copy.
 	 * @return The new container resource.
 	 */
-	public Resource newContainer(Resource other)
+	public Entity newContainer(Entity other)
 	{
 		return null;
 	}
@@ -2573,7 +2751,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param others (options) array of objects to load into the Resource's fields.
 	 * @return The new resource.
 	 */
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{
 		return new BaseRealm(id);
 	}
@@ -2584,7 +2762,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param element The XML.
 	 * @return The new resource from the XML.
 	 */
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{
 		return new BaseRealm(element);
 	}
@@ -2595,7 +2773,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param other The other resource.
 	 * @return The new resource as a copy of the other.
 	 */
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{
 		return new BaseRealm((Realm) other);
 	}
@@ -2625,7 +2803,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param other The other contianer to copy.
 	 * @return The new container resource.
 	 */
-	public Edit newContainerEdit(Resource other)
+	public Edit newContainerEdit(Entity other)
 	{
 		return null;
 	}
@@ -2637,7 +2815,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param others (options) array of objects to load into the Resource's fields.
 	 * @return The new resource.
 	 */
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseRealmEdit e = new BaseRealmEdit(id);
 		e.activate();
@@ -2650,7 +2828,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param element The XML.
 	 * @return The new resource from the XML.
 	 */
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		BaseRealmEdit e = new BaseRealmEdit(element);
 		e.activate();
@@ -2663,7 +2841,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param other The other resource.
 	 * @return The new resource as a copy of the other.
 	 */
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseRealmEdit e = new BaseRealmEdit((Realm) other);
 		e.activate();
@@ -2674,7 +2852,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * Collect the fields that need to be stored outside the XML (for the resource).
 	 * @return An array of field values to store in the record outside the XML (for the resource).
 	 */
-	public Object[] storageFields(Resource r)
+	public Object[] storageFields(Entity r)
 	{
 		return null;
 	}
@@ -2684,7 +2862,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return false;
 	}
@@ -2694,7 +2872,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return null;
 	}
@@ -2704,7 +2882,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return null;
 	}

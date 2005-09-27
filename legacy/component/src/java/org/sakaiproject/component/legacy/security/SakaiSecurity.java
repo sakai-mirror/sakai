@@ -25,6 +25,7 @@
 package org.sakaiproject.component.legacy.security;
 
 // imports
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -36,6 +37,7 @@ import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;
@@ -218,10 +220,10 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 		}
 
 		//	make a reference for the resource
-		Reference ref = new Reference(resource);
+		Reference ref = EntityManager.newReference(resource);
 
 		// get this resource's Realms
-		List realms = ref.getRealms();
+		Collection realms = ref.getRealms();
 		boolean rv = RealmService.unlock(user.getId(), lock, realms);
 
 		if (m_logger.isDebugEnabled())
@@ -255,10 +257,10 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 		}
 
 		//	make a reference for the resource
-		Reference ref = new Reference(reference);
+		Reference ref = EntityManager.newReference(reference);
 
 		// get this resource's Realms
-		List realms = ref.getRealms();
+		Collection realms = ref.getRealms();
 
 		// get the users who can unlock in these realms
 		List ids = new Vector();

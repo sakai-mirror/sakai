@@ -36,6 +36,7 @@ import org.sakaiproject.service.legacy.chat.ChatMessage;
 import org.sakaiproject.service.legacy.chat.cover.ChatService;
 import org.sakaiproject.service.legacy.message.MessageChannel;
 import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.util.courier.BaseDelivery;
@@ -108,8 +109,8 @@ public class ChatDelivery
 
 		// generate a string of JavaScript commands to update the message log
 
-		Reference ref = new Reference(m_messageId);
-		ChatMessage msg = (ChatMessage) ref.getResource();
+		Reference ref = EntityManager.newReference(m_messageId);
+		ChatMessage msg = (ChatMessage) ref.getEntity();
 		User sender = msg.getHeader().getFrom();
 		User myself = UserDirectoryService.getCurrentUser();
 

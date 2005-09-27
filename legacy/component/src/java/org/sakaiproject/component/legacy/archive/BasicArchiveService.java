@@ -41,22 +41,22 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.service.framework.component.cover.ComponentManager;
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
+import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.assignment.cover.AssignmentService;
-import org.sakaiproject.service.framework.component.cover.ComponentManager;
-import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.legacy.calendar.cover.CalendarService;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.discussion.DiscussionService;
 import org.sakaiproject.service.legacy.email.MailArchiveService;
-import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.realm.Realm;
 import org.sakaiproject.service.legacy.realm.RealmEdit;
 import org.sakaiproject.service.legacy.realm.Role;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.ResourceService;
+import org.sakaiproject.service.legacy.resource.EntityManager;
+import org.sakaiproject.service.legacy.resource.EntityProducer;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteEdit;
@@ -161,6 +161,20 @@ public class BasicArchiveService
 		m_storagePath = path;
 	}
 
+	/** Dependency: EntityManager. */
+	protected EntityManager m_entityManager = null;
+
+	/**
+	 * Dependency: EntityManager.
+	 * 
+	 * @param service
+	 *        The EntityManager.
+	 */
+	public void setEntityManager(EntityManager service)
+	{
+		m_entityManager = service;
+	}
+
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -215,7 +229,7 @@ public class BasicArchiveService
 		}
 
 		// collect all the attachments we need
-		ReferenceVector attachments = new ReferenceVector();
+		List attachments = m_entityManager.newReferenceList();
 
 		Time now = TimeService.newTime();
 
@@ -227,11 +241,12 @@ public class BasicArchiveService
 		dir.mkdirs();
 
 		// for each registered ResourceService, give it a chance to archve
-		List services = m_serverConfigurationService.getResourceServices();
+		List services = m_entityManager.getEntityProducers();
 		for (Iterator iServices = services.iterator(); iServices.hasNext();)
 		{
-			ResourceService service = (ResourceService) iServices.next();
+			EntityProducer service = (EntityProducer) iServices.next();
 			if (service == null) continue;
+			if (!service.willArchiveMerge()) continue;
 
 			Document doc = Xml.createDocument();
 			Stack stack = new Stack();
@@ -730,7 +745,7 @@ public class BasicArchiveService
 				// get the service
 				try
 				{
-					ResourceService service = (ResourceService) ComponentManager.get(serviceName);
+					EntityProducer service = (EntityProducer) ComponentManager.get(serviceName);
 					
 					try
 					{

@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.notification;
 // imports
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.InUseException;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>NotificationService is ... %%%</p>
@@ -41,7 +41,7 @@ public interface NotificationService
 	public static final String SERVICE_NAME = NotificationService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "notification";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "notification";
 
 	/** ability / event for notification add. */
 	public static final String SECURE_ADD_NOTIFICATION = "notification.add";

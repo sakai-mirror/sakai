@@ -31,8 +31,9 @@ import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.notification.NotificationAction;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
@@ -95,8 +96,8 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 	protected String getFrom(Event event)
 	{
 		// get the content & properties
-		Reference ref = new Reference(event.getResource());
-		Resource r = ref.getResource();
+		Reference ref = EntityManager.newReference(event.getResource());
+		Entity r = ref.getEntity();
 		ResourceProperties props = ref.getProperties();
 
 		// make it from the message's creator
@@ -118,8 +119,8 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 	*/
 	public String getSubject(Event event)
 	{
-		Reference ref = new Reference(event.getResource());
-		Resource r = ref.getResource();
+		Reference ref = EntityManager.newReference(event.getResource());
+		Entity r = ref.getEntity();
 		ResourceProperties props = ref.getProperties();
 
 		// get the function
@@ -158,7 +159,7 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 	{
 
 		// get the content & properties
-		Reference ref = new Reference(event.getResource());
+		Reference ref = EntityManager.newReference(event.getResource());
 		//Resource r = ref.getResource();
 		ResourceProperties props = ref.getProperties();
 
@@ -249,20 +250,20 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 		StringBuffer buf = new StringBuffer();
 
 		// expect the ref to be /content/group/site/folder/folder2/folderEtc/file.ext
-		String[] parts = StringUtil.split(ref, Resource.SEPARATOR);
+		String[] parts = StringUtil.split(ref, Entity.SEPARATOR);
 
 		// 0 is null, 1 is "content", 2 is "group" or whatever, 3 is the site, the last is the file name
 		if (parts.length > 4)
 		{
 			// grow this collection id as we descend into the collections
-			String root = Resource.SEPARATOR + parts[2] + Resource.SEPARATOR + parts[3] + Resource.SEPARATOR;
+			String root = Entity.SEPARATOR + parts[2] + Entity.SEPARATOR + parts[3] + Entity.SEPARATOR;
 
 			// take all the collection parts
 			for (int i = 4; i < parts.length - 1; i++)
 			{
 				buf.append(" > ");
 				String collectionId = parts[i];
-				root = root + collectionId + Resource.SEPARATOR;
+				root = root + collectionId + Entity.SEPARATOR;
 				try
 				{
 					// get the display name

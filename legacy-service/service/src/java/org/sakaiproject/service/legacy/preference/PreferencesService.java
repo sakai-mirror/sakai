@@ -29,7 +29,8 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityProducer;
 
 /**
 * <p>The PreferencesService keeps sets of preferences for each user.</p>
@@ -38,12 +39,13 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * @version $Revision$
 */
 public interface PreferencesService
+	extends EntityProducer
 {
 	/** This string can be used to find the service in the service manager. */
 	public static final String SERVICE_NAME = PreferencesService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "prefs";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "prefs";
 
 	/** Securiy / Event for adding a preferences. */
 	public static final String SECURE_ADD_PREFS = "prefs.add";

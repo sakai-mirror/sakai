@@ -29,6 +29,7 @@ import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 
 /**
 * <p>Validator is utility class that helps to validate stuff for CHEF.</p>
@@ -464,7 +465,7 @@ public class Validator
 		//	all blank is rejected
 		//	INVALID_CHARS_IN_RESOURCE_ID characters are rejected
 		
-		Reference r = new Reference(ref);
+		Reference r = EntityManager.newReference(ref);
 		
 		// just check the id... %%% need more? -ggolden
 		String id = r.getId();

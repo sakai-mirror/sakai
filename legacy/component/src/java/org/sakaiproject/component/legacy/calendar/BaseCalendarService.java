@@ -26,6 +26,7 @@ package org.sakaiproject.component.legacy.calendar;
 
 // import
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -44,14 +45,14 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
-
 import org.sakaiproject.service.legacy.calendar.Calendar;
 import org.sakaiproject.service.legacy.calendar.CalendarEdit;
 import org.sakaiproject.service.legacy.calendar.CalendarEvent;
@@ -66,9 +67,9 @@ import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.id.IdService;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityManager;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -78,11 +79,11 @@ import org.sakaiproject.service.legacy.time.TimeRange;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.util.Filter;
 import org.sakaiproject.util.FormattedText;
-import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.Validator;
-import org.sakaiproject.util.xml.Xml;
+import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.sakaiproject.util.storage.StorageUser;
+import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -135,7 +136,7 @@ public abstract class BaseCalendarService
 	*/
 	protected String getAccessPoint(boolean relative)
 	{
-		return (relative ? "" : ServerConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
+		return (relative ? "" : m_serverConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
 
 	} // getAccessPoint
 
@@ -175,11 +176,11 @@ public abstract class BaseCalendarService
 	public String calendarReference(String context, String id)
 	{
 		return getAccessPoint(true)
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ REF_TYPE_CALENDAR
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ context
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ id;
 
 	} // calendarReference
@@ -194,13 +195,13 @@ public abstract class BaseCalendarService
 	public String eventReference(String context, String calendarId, String id)
 	{
 		return getAccessPoint(true)
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ REF_TYPE_EVENT
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ context
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ calendarId
-			+ Resource.SEPARATOR
+			+ Entity.SEPARATOR
 			+ id;
 
 	} // eventReference
@@ -331,6 +332,34 @@ public abstract class BaseCalendarService
 		m_caching = new Boolean(value).booleanValue();
 	}
 
+	/** Dependency: EntityManager. */
+	protected EntityManager m_entityManager = null;
+
+	/**
+	 * Dependency: EntityManager.
+	 * 
+	 * @param service
+	 *        The EntityManager.
+	 */
+	public void setEntityManager(EntityManager service)
+	{
+		m_entityManager = service;
+	}
+
+	/** Dependency: ServerConfigurationService. */
+	protected ServerConfigurationService m_serverConfigurationService = null;
+
+	/**
+	 * Dependency: ServerConfigurationService.
+	 * 
+	 * @param service
+	 *        The ServerConfigurationService.
+	 */
+	public void setServerConfigurationService(ServerConfigurationService service)
+	{
+		m_serverConfigurationService = service;
+	}
+
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -352,7 +381,7 @@ public abstract class BaseCalendarService
 			if (m_caching)
 			{
 				m_calendarCache =
-					m_memoryService.newCache(this, getAccessPoint(true) + Resource.SEPARATOR + REF_TYPE_CALENDAR + Resource.SEPARATOR);
+					m_memoryService.newCache(this, getAccessPoint(true) + Entity.SEPARATOR + REF_TYPE_CALENDAR + Entity.SEPARATOR);
 
 				// make the table to hold the event caches
 				m_eventCaches = new Hashtable();
@@ -365,8 +394,8 @@ public abstract class BaseCalendarService
 			m_logger.warn(this +".init(): ", t);
 		}
 
-		// register as a resource service
-		ServerConfigurationService.registerResourceService(this);
+		// register as an entity producer
+		m_entityManager.registerEntityProducer(this);
 	}
 
 	/**
@@ -869,7 +898,296 @@ public abstract class BaseCalendarService
 	/**
 	 * {@inheritDoc}
 	 */
-	public String archive(String siteId, Document doc, Stack stack, String archivePath, ReferenceVector attachments)
+	public boolean willArchiveMerge()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willImport()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		if (reference.startsWith(CalendarService.REFERENCE_ROOT))
+		{
+			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
+
+			String subType = null;
+			String context = null;
+			String id = null;
+			String container = null;
+
+			// the first part will be null, then next the service, the third will be "calendar" or "event"
+			if (parts.length > 2)
+			{
+				subType = parts[2];
+				if (REF_TYPE_CALENDAR.equals(subType))
+				{
+					// next is the context id
+					if (parts.length > 3)
+					{
+						context = parts[3];
+
+						// next is the calendar id
+						if (parts.length > 4)
+						{
+							id = parts[4];
+						}
+					}
+				}
+				else if (REF_TYPE_EVENT.equals(subType))
+				{
+					// next three parts are context, channel (container) and event id
+					if (parts.length > 5)
+					{
+						context = parts[3];
+						container = parts[4];
+						id = parts[5];
+					}
+				}
+				else
+					Log.warn("chef", this + "parse(): unknown calendar subtype: " + subType + " in ref: " + reference);
+			}
+
+			ref.set(SERVICE_NAME, subType, id, container, context);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityDescription(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		String rv = "Calendar: " + ref.getReference();
+
+		try
+		{
+			// if this is a calendar
+			if (REF_TYPE_CALENDAR.equals(ref.getSubType()))
+			{
+				Calendar cal = getCalendar(ref.getReference());
+				rv = "Calendar: " + cal.getId() + " (" + cal.getContext() + ")";
+			}
+
+			// otherwise an event
+			else if (REF_TYPE_EVENT.equals(ref.getSubType()))
+			{
+				rv = "Event: " + ref.getReference();
+			}
+		}
+		catch (PermissionException e)
+		{
+		}
+		catch (IdUnusedException e)
+		{
+		}
+		catch (NullPointerException e)
+		{
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ResourceProperties getEntityResourceProperties(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		ResourceProperties props = null;
+
+		try
+		{
+			// if this is a calendar
+			if (REF_TYPE_CALENDAR.equals(ref.getSubType()))
+			{
+				Calendar cal = getCalendar(ref.getReference());
+				props = cal.getProperties();
+			}
+
+			// otherwise an event
+			else if (REF_TYPE_EVENT.equals(ref.getSubType()))
+			{
+				Calendar cal = getCalendar(calendarReference(ref.getContext(), ref.getContainer()));
+				CalendarEvent event = cal.getEvent(ref.getId());
+				props = event.getProperties();
+			}
+
+			else
+				Log.warn("chef", this + ".getProperties(): unknown calendar ref subtype: " + ref.getSubType() + " in ref: "
+						+ ref.getReference());
+		}
+		catch (PermissionException e)
+		{
+			Log.warn("chef", this + ".getProperties(): " + e);
+		}
+		catch (IdUnusedException e)
+		{
+			// This just means that the resource once pointed to as an attachment or something has been deleted.
+			// Log.warn("chef", this + ".getProperties(): " + e);
+		}
+		catch (NullPointerException e)
+		{
+			Log.warn("chef", this + ".getProperties(): " + e);
+		}
+		
+		return props;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Entity getEntity(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+		
+		Entity rv = null;
+
+		try
+		{
+			// if this is a calendar
+			if (REF_TYPE_CALENDAR.equals(ref.getSubType()))
+			{
+				rv = getCalendar(ref.getReference());
+			}
+
+			// otherwise a event
+			else if (REF_TYPE_EVENT.equals(ref.getSubType()))
+			{
+				Calendar cal = getCalendar(calendarReference(ref.getContext(), ref.getContainer()));
+				rv = cal.getEvent(ref.getId());
+			}
+
+			else
+				Log.warn("chef", this + "getProperties(): unknown calendar ref subtype: " + ref.getSubType() + " in ref: "
+						+ ref.getReference());
+		}
+		catch (PermissionException e)
+		{
+			Log.warn("chef", this + "getResource(): " + e);
+		}
+		catch (IdUnusedException e)
+		{
+			Log.warn("chef", this + "getResource(): " + e);
+		}
+		catch (NullPointerException e)
+		{
+			Log.warn("chef", this + ".getResource(): " + e);
+		}
+		
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection getEntityRealms(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+		
+		Collection rv = new Vector();
+
+		try
+		{
+			String calendarId = null;
+
+			// if an event try this realm
+			if (REF_TYPE_EVENT.equals(ref.getSubType()))
+			{
+				// an event
+				rv.add(ref.getReference());
+				calendarId = ref.getContainer();
+			}
+
+			// otherwise a calendar, get the id
+			else
+			{
+				calendarId = ref.getId();
+			}
+
+			// try the calendar's realm
+			rv.add(calendarReference(ref.getContext(), calendarId));
+
+			// site
+			ref.addSiteContextRealm(rv);
+		}
+		catch (Throwable e)
+		{
+			Log.warn("chef", this + ".getRealms(): " + e);
+		}
+		
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityUrl(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+		
+		String rv = null;
+
+		try
+		{
+			// if this is a calendar
+			if (REF_TYPE_CALENDAR.equals(ref.getSubType()))
+			{
+				Calendar cal = getCalendar(ref.getReference());
+				rv = cal.getUrl();
+			}
+
+			// otherwise a event
+			else if (REF_TYPE_EVENT.equals(ref.getSubType()))
+			{
+				Calendar cal = getCalendar(calendarReference(ref.getContext(), ref.getContainer()));
+				CalendarEvent event = cal.getEvent(ref.getId());
+				rv = event.getUrl();
+			}
+
+			else
+				Log.warn("chef", this + "getUrl(): unknown calendar ref subtype: " + ref.getSubType() + " in ref: " + ref.getReference());
+		}
+		catch (PermissionException e)
+		{
+			Log.warn("chef", this + "getProperties(): " + e);
+		}
+		catch (IdUnusedException e)
+		{
+			Log.warn("chef", this + "getProperties(): " + e);
+		}
+		catch (NullPointerException e)
+		{
+			Log.warn("chef", this + ".getUrl(): " + e);
+		}
+		
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String archive(String siteId, Document doc, Stack stack, String archivePath, List attachments)
 	{
 		// prepare the buffer for the results log
 		StringBuffer results = new StringBuffer();
@@ -899,10 +1217,10 @@ public abstract class BaseCalendarService
 				event.toXml(doc, stack);
 		
 				// collect message attachments
-				ReferenceVector atts = event.getAttachments();
+				List atts = event.getAttachments();
 				for (int i = 0; i < atts.size(); i++)
 				{
-					Reference ref = (Reference) atts.elementAt(i);
+					Reference ref = (Reference) atts.get(i);
 					// if it's in the attachment area, and not already in the list
 					if (	(ref.getReference().startsWith("/content/attachment/"))
 						&&	(!attachments.contains(ref)))
@@ -929,7 +1247,7 @@ public abstract class BaseCalendarService
 	/**
 	 * {@inheritDoc}
 	 */
-	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames, HashMap userIdTrans, Set userListAllowImport)
+	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames, Map userIdTrans, Set userListAllowImport)
 	{
 		Map ids = new HashMap();
 
@@ -1097,7 +1415,7 @@ public abstract class BaseCalendarService
 	* @param toContext The destination context
 	* @param resourceIds when null, all resources will be imported; otherwise, only resources with those ids will be imported
 	*/
-	public void importResources(String fromContext, String toContext, List resourceIds)
+	public void importEntities(String fromContext, String toContext, List resourceIds)
 	{
 		// get the channel associated with this site
 		String oCalendarRef = calendarReference(fromContext, SiteService.MAIN_CONTAINER);
@@ -1169,8 +1487,8 @@ public abstract class BaseCalendarService
 							p.clear();
 							p.addAll(oEvent.getProperties());
 							// attachment
-							ReferenceVector oAttachments = eEdit.getAttachments();
-							ReferenceVector nAttachments = new ReferenceVector();
+							List oAttachments = eEdit.getAttachments();
+							List nAttachments = m_entityManager.newReferenceList();
 							for (int n=0; n<oAttachments.size(); n++)
 							{
 								Reference oAttachment = (Reference) oAttachments.get(n);
@@ -1182,7 +1500,7 @@ public abstract class BaseCalendarService
 									try
 									{
 										ContentResource attachment = ContentHostingService.getResource(nAttachmentId);
-										nAttachments.add(new Reference(attachment.getReference()));
+										nAttachments.add(m_entityManager.newReference(attachment.getReference()));
 									}
 									catch (Exception any)
 									{
@@ -1263,7 +1581,7 @@ public abstract class BaseCalendarService
 		public BaseCalendarEdit(String ref)
 		{
 			// set the ids
-			Reference r = new Reference(ref);
+			Reference r = m_entityManager.newReference(ref);
 			m_context = r.getContext();
 			m_id = r.getId();
 
@@ -1616,7 +1934,7 @@ public abstract class BaseCalendarService
 			String description,
 			String type,
 			String location,
-			ReferenceVector attachments)
+			List attachments)
 			throws PermissionException
 		{
 			// make one
@@ -2344,7 +2662,7 @@ public abstract class BaseCalendarService
 		protected String m_id = null;
 
 		/** The attachments - dereferencer objects. */
-		protected ReferenceVector m_attachments = null;
+		protected List m_attachments = null;
 
 		/** The event code for this edit. */
 		protected String m_event = null;
@@ -2366,7 +2684,7 @@ public abstract class BaseCalendarService
 			m_properties = new BaseResourcePropertiesEdit();
 
 			// init the AttachmentContainer
-			m_attachments = new ReferenceVector();
+			m_attachments = m_entityManager.newReferenceList();
 
 		} // BaseCalendarEventEdit
 
@@ -2422,7 +2740,7 @@ public abstract class BaseCalendarService
 		{
 			m_calendar = (BaseCalendarEdit) calendar;
 			m_properties = new BaseResourcePropertiesEdit();
-			m_attachments = new ReferenceVector();
+			m_attachments = m_entityManager.newReferenceList();
 
 			m_id = el.getAttribute("id");
 			m_range = TimeService.newTimeRange(el.getAttribute("range"));
@@ -2440,7 +2758,7 @@ public abstract class BaseCalendarService
 					// look for an attachment
 					if (element.getTagName().equals("attachment"))
 					{
-						m_attachments.add(new Reference(element.getAttribute("relative-url")));
+						m_attachments.add(m_entityManager.newReference(element.getAttribute("relative-url")));
 					}
 
 					// look for properties
@@ -2563,7 +2881,7 @@ public abstract class BaseCalendarService
 			m_properties.addAll(other.getProperties());
 
 			// copy the attachments
-			m_attachments = new ReferenceVector();
+			m_attachments = m_entityManager.newReferenceList();
 			replaceAttachments(other.getAttachments());
 
 			// copy the rules
@@ -2587,7 +2905,7 @@ public abstract class BaseCalendarService
 			m_properties.addAll(other.getProperties());
 
 			// copy the attachments
-			m_attachments = new ReferenceVector();
+			m_attachments = m_entityManager.newReferenceList();
 			replaceAttachments(other.getAttachments());
 
 		} // setPartial
@@ -2978,7 +3296,7 @@ public abstract class BaseCalendarService
 			{
 				for (int i = 0; i < m_attachments.size(); i++)
 				{
-					Reference attch = (Reference) m_attachments.elementAt(i);
+					Reference attch = (Reference) m_attachments.get(i);
 					Element attachment = doc.createElement("attachment");
 					event.appendChild(attachment);
 					attachment.setAttribute("relative-url", attch.getReference());
@@ -3074,9 +3392,9 @@ public abstract class BaseCalendarService
 		* Access the attachments of the event.
 		* @return An copy of the set of attachments (a ReferenceVector containing Reference objects) (may be empty).
 		*/
-		public ReferenceVector getAttachments()
+		public List getAttachments()
 		{
-			return (ReferenceVector) m_attachments.clone();
+			return m_entityManager.newReferenceList(m_attachments);
 
 		} // getAttachments
 
@@ -3104,7 +3422,7 @@ public abstract class BaseCalendarService
 		* Replace the attachment set.
 		* @param attachments A vector of Reference objects that will become the new set of attachments.
 		*/
-		public void replaceAttachments(ReferenceVector attachments)
+		public void replaceAttachments(List attachments)
 		{
 			m_attachments.clear();
 
@@ -3275,7 +3593,7 @@ public abstract class BaseCalendarService
 		Object rv = null;
 
 		// key is a reference
-		Reference ref = new Reference((String) key);
+		Reference ref = m_entityManager.newReference((String) key);
 
 		// get from storage only (not cache!)
 
@@ -3327,7 +3645,7 @@ public abstract class BaseCalendarService
 	* @param ref The reference for the new object.
 	* @return The new containe Resource.
 	*/
-	public Resource newContainer(String ref)
+	public Entity newContainer(String ref)
 	{
 		return new BaseCalendarEdit(ref);
 	}
@@ -3337,7 +3655,7 @@ public abstract class BaseCalendarService
 	* @param element The XML.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Element element)
+	public Entity newContainer(Element element)
 	{
 		return new BaseCalendarEdit(element);
 	}
@@ -3347,7 +3665,7 @@ public abstract class BaseCalendarService
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Resource other)
+	public Entity newContainer(Entity other)
 	{
 		return new BaseCalendarEdit((Calendar) other);
 	}
@@ -3359,7 +3677,7 @@ public abstract class BaseCalendarService
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{
 		return new BaseCalendarEventEdit((Calendar) container, id);
 	}
@@ -3370,7 +3688,7 @@ public abstract class BaseCalendarService
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{
 		return new BaseCalendarEventEdit((Calendar) container, element);
 	}
@@ -3381,7 +3699,7 @@ public abstract class BaseCalendarService
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{
 		return new BaseCalendarEventEdit((Calendar) container, (CalendarEvent) other);
 	}
@@ -3415,7 +3733,7 @@ public abstract class BaseCalendarService
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Edit newContainerEdit(Resource other)
+	public Edit newContainerEdit(Entity other)
 	{
 		BaseCalendarEdit rv = new BaseCalendarEdit((Calendar) other);
 		rv.activate();
@@ -3429,7 +3747,7 @@ public abstract class BaseCalendarService
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseCalendarEventEdit rv = new BaseCalendarEventEdit((Calendar) container, id);
 		rv.activate();
@@ -3442,7 +3760,7 @@ public abstract class BaseCalendarService
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		BaseCalendarEventEdit rv = new BaseCalendarEventEdit((Calendar) container, element);
 		rv.activate();
@@ -3455,7 +3773,7 @@ public abstract class BaseCalendarService
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseCalendarEventEdit rv = new BaseCalendarEventEdit((Calendar) container, (CalendarEvent) other);
 		rv.activate();
@@ -3466,7 +3784,7 @@ public abstract class BaseCalendarService
 	* Collect the fields that need to be stored outside the XML (for the resource).
 	* @return An array of field values to store in the record outside the XML (for the resource).
 	*/
-	public Object[] storageFields(Resource r)
+	public Object[] storageFields(Entity r)
 	{
 		Object[] rv = new Object[2];
 		TimeRange range = ((CalendarEvent) r).getRange();
@@ -3481,7 +3799,7 @@ public abstract class BaseCalendarService
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return false;
 	}
@@ -3491,7 +3809,7 @@ public abstract class BaseCalendarService
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return null;
 	}
@@ -3501,7 +3819,7 @@ public abstract class BaseCalendarService
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return null;
 	}

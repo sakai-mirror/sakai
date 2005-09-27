@@ -29,8 +29,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -48,6 +48,7 @@ import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.coursemanagement.cover.CourseManagementService;
 import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
@@ -613,7 +614,7 @@ public class SiteBrowserAction
 	private String convertReferenceUrl(String url)
 	{
 		// make a reference
-		Reference ref = new Reference(url);
+		Reference ref = EntityManager.newReference(url);
 
 		// if it didn't recognize this, return it unchanged
 		if (!ref.isKnownType()) return url;

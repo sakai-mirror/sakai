@@ -23,7 +23,7 @@
 
 package org.sakaiproject.service.legacy.user;
 
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 
 /**
@@ -36,7 +36,7 @@ import org.sakaiproject.service.legacy.time.Time;
 * @see org.sakaiproject.service.legacy.generic.GenericUserDirectoryService
 */
 public interface User
-	extends Resource, Comparable
+	extends Entity, Comparable
 {
 	// TODO: move these to Resource
 	

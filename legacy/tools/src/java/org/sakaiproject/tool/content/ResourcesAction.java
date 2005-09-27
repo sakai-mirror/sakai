@@ -31,7 +31,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,11 +73,9 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.control.SchemaBean;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.model.ValidationError;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
@@ -91,11 +88,11 @@ import org.sakaiproject.service.legacy.content.ContentResourceEdit;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
@@ -113,7 +110,6 @@ import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.xml.Xml;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -192,7 +188,7 @@ public class ResourcesAction
 	private static final String	STATE_MY_COPYRIGHT = "resources.mycopyright";
 
 	/** copyright path -- MUST have same value as AccessServlet.COPYRIGHT_PATH */
-	public static final String COPYRIGHT_PATH = Resource.SEPARATOR + "copyright";	
+	public static final String COPYRIGHT_PATH = Entity.SEPARATOR + "copyright";	
 
 	/** The collection id being browsed. */
 	private static final String STATE_COLLECTION_ID = "resources.collection_id";
@@ -777,10 +773,10 @@ public class ResourcesAction
 			initStateAttributes(state, portlet);
 			state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
 			
-			ReferenceVector attachments = (ReferenceVector) state.getAttribute(STATE_ATTACHMENTS);
+			List attachments = (List) state.getAttribute(STATE_ATTACHMENTS);
 			if(attachments == null)
 			{
-				attachments = new ReferenceVector();
+				attachments = EntityManager.newReferenceList();
 			}
 			
 			List attached = new Vector();
@@ -2253,7 +2249,7 @@ public class ResourcesAction
 		outerloop: for(int i = 0; i < numberOfFolders; i++)
 		{
 			EditItem item = (EditItem) new_folders.get(i);
-			String newCollectionId = collectionId + Validator.escapeResourceName(item.getName()) + Resource.SEPARATOR;
+			String newCollectionId = collectionId + Validator.escapeResourceName(item.getName()) + Entity.SEPARATOR;
 			
 			if(newCollectionId.length() > RESOURCE_ID_MAX_LENGTH)
 			{
@@ -2530,7 +2526,7 @@ public class ResourcesAction
 			Iterator it = otherMembers.iterator();
 			while(it.hasNext())
 			{
-				Resource res = (Resource) it.next();
+				Entity res = (Entity) it.next();
 				ResourceProperties props = res.getProperties();
 				String dname = props.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 				otherDisplayNames.add(dname);
@@ -2677,7 +2673,7 @@ public class ResourcesAction
 		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
 		
 		// add to the attachments vector
-		ReferenceVector attachments = new ReferenceVector();
+		List attachments = EntityManager.newReferenceList();
 		
 		Iterator it = attached.iterator();
 		while(it.hasNext())
@@ -2686,7 +2682,7 @@ public class ResourcesAction
 			
 			try
 			{
-				Reference ref = new Reference(ContentHostingService.getReference(item.getId()));
+				Reference ref = EntityManager.newReference(ContentHostingService.getReference(item.getId()));
 				attachments.add(ref);
 			}
 			catch(Exception e)
@@ -3194,7 +3190,7 @@ public class ResourcesAction
 						else
 						{
 							// for those resource without properties; judge by id
-							if (currentId.endsWith(Resource.SEPARATOR))
+							if (currentId.endsWith(Entity.SEPARATOR))
 							{
 								ContentHostingService.removeCollection (currentId);
 							}
@@ -3643,7 +3639,7 @@ public class ResourcesAction
 				}
 				catch (PermissionException e)
 				{
-					addAlert(state, rb.getString("notpermis9") + " " +  currentPasteItem.substring (currentPasteItem.lastIndexOf (Resource.SEPARATOR)+1) + ". ");
+					addAlert(state, rb.getString("notpermis9") + " " +  currentPasteItem.substring (currentPasteItem.lastIndexOf (Entity.SEPARATOR)+1) + ". ");
 				}
 				catch (IdUnusedException e)
 				{
@@ -3651,7 +3647,7 @@ public class ResourcesAction
 				}
 				catch (TypeException e)
 				{
-					addAlert(state, rb.getString("pasteitem") + " " +  currentPasteItem.substring (currentPasteItem.lastIndexOf (Resource.SEPARATOR)+1) + " " + rb.getString("mismatch"));
+					addAlert(state, rb.getString("pasteitem") + " " +  currentPasteItem.substring (currentPasteItem.lastIndexOf (Entity.SEPARATOR)+1) + " " + rb.getString("mismatch"));
 				}	// try-catch
 	
 			}	// for
@@ -3749,13 +3745,13 @@ public class ResourcesAction
 			}
 			
 			String dummyId = collectionId.trim();
-			if(dummyId.endsWith(Resource.SEPARATOR))
+			if(dummyId.endsWith(Entity.SEPARATOR))
 			{
 				dummyId += "dummy";
 			}
 			else
 			{
-				dummyId += Resource.SEPARATOR + "dummy";
+				dummyId += Entity.SEPARATOR + "dummy";
 			}
 			
 			String containerId = ContentHostingService.getContainingCollectionId (id);
@@ -6772,7 +6768,7 @@ public class ResourcesAction
 			Iterator membersIterator = c.getMemberResources().iterator();
 			while (membersIterator.hasNext())
 			{
-				ResourceProperties p = ((Resource) membersIterator.next()).getProperties();
+				ResourceProperties p = ((Entity) membersIterator.next()).getProperties();
 				String displayName = p.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 				if (displayName != null)
 				{
@@ -6824,7 +6820,7 @@ public class ResourcesAction
 	{
 		context.put("tlang",rb);
 		String home = (String) state.getAttribute(STATE_HOME_COLLECTION_ID);
-		Reference ref = new Reference(ContentHostingService.getReference(home));
+		Reference ref = EntityManager.newReference(ContentHostingService.getReference(home));
 		String siteId = ref.getContext();
 
 		context.put("form-submit", BUTTON + "doConfigure_update");
@@ -7055,13 +7051,13 @@ public class ResourcesAction
 			}
 				
 			String dummyId = collectionId.trim();
-			if(dummyId.endsWith(Resource.SEPARATOR))
+			if(dummyId.endsWith(Entity.SEPARATOR))
 			{
 				dummyId += "dummy";
 			}
 			else
 			{
-				dummyId += Resource.SEPARATOR + "dummy";
+				dummyId += Entity.SEPARATOR + "dummy";
 			}
 			
 			boolean canRead = false;
@@ -7216,7 +7212,7 @@ public class ResourcesAction
 				Iterator it = newMembers.iterator();
 				while(it.hasNext())
 				{
-					Resource resource = (Resource) it.next();
+					Entity resource = (Entity) it.next();
 					ResourceProperties props = resource.getProperties();
 					
 					String itemId = resource.getId();
@@ -7917,7 +7913,7 @@ public class ResourcesAction
 			addAlert(state, rb.getString("notfindfol"));
 		}
 		
-		Reference ref = new Reference(ContentHostingService.getReference(collectionId));
+		Reference ref = EntityManager.newReference(ContentHostingService.getReference(collectionId));
 		String siteId = ref.getContext();
 
 		// setup for editing the permissions of this resource
@@ -7958,7 +7954,7 @@ public class ResourcesAction
 
 		// get the current home collection id and the related site
 		String collectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
-		Reference ref = new Reference(ContentHostingService.getReference(collectionId));
+		Reference ref = EntityManager.newReference(ContentHostingService.getReference(collectionId));
 		String siteRef = SiteService.siteReference(ref.getContext());
 
 		// setup for editing the permissions of the site for this tool, using the roles of this site, too

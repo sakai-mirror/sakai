@@ -26,7 +26,7 @@ package org.sakaiproject.service.legacy.calendar;
 
 // import
 import org.sakaiproject.service.legacy.resource.AttachmentContainer;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.time.TimeRange;
 
 /**
@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.time.TimeRange;
 * @version $Revision$
 */
 public interface CalendarEvent
-	extends Resource, Comparable, AttachmentContainer
+	extends Entity, Comparable, AttachmentContainer
 {
 	/**
 	* Access the time range

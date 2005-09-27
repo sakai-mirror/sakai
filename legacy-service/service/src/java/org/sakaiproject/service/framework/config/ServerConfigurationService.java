@@ -27,8 +27,6 @@ package org.sakaiproject.service.framework.config;
 // imports
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.ResourceService;
-
 /**
  * <p>
  * ServerConfigurationService provides information about how the server is configured.
@@ -197,21 +195,6 @@ public interface ServerConfigurationService
 	 * @return A list of tool ids (String) that are required for this category, or an empty list if there are none for this category.
 	 */
 	List getToolsRequired(String category);
-
-	/**
-	 * Access the list of services which keep site related resources.
-	 * 
-	 * @return List (org.sakaiproject.service.legacy.resource.ResourceService) of services which keep site related resources.
-	 */
-	List getResourceServices();
-
-	/**
-	 * Register this as a resource service, to be returned with the list from getResourceServices()
-	 * 
-	 * @param service
-	 *        The ResourceService to register.
-	 */
-	void registerResourceService(ResourceService service);
 }
 
 

@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.news;
 // import
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.util.Filter;
 
 /**
@@ -44,7 +44,7 @@ public interface NewsService
 	public static final String SERVICE_NAME = NewsService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "news";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "news";
 	
 	/** 
 	* Retrieves a list of rss feeds that are being used.

@@ -35,7 +35,8 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityProducer;
 
 /**
 * <p>RealmService manages Realms.</p>
@@ -44,12 +45,13 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * @version $Revision$
 */
 public interface RealmService
+	extends EntityProducer
 {
 	/** This string can be used to find the service in the service manager. */
 	static final String SERVICE_NAME = RealmService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	static final String REFERENCE_ROOT = Resource.SEPARATOR + "realm";
+	static final String REFERENCE_ROOT = Entity.SEPARATOR + "realm";
 
 	/** Name for the event of accessing a realm. */
 	//static final String SECURE_ACCESS_REALM = "realm.access";

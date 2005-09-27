@@ -30,7 +30,7 @@ import java.util.List;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>The DigestService collects sets of messages for different users, and sends them out periodically.</p>
@@ -44,7 +44,7 @@ public interface DigestService
 	public static final String SERVICE_NAME = DigestService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "digest";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "digest";
 
 	/** Securiy / Event for adding a digest. */
 	public static final String SECURE_ADD_DIGEST = "digest.add";

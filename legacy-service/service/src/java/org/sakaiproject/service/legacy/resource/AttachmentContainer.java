@@ -24,6 +24,8 @@
 // package
 package org.sakaiproject.service.legacy.resource;
 
+import java.util.List;
+
 // import
 
 /**
@@ -37,9 +39,9 @@ public interface AttachmentContainer
 {
 	/**
 	* Access the attachments.
-	* @return An copy of the set of attachments (a ReferenceVector containing Reference objects) (may be empty).
+	* @return An copy of the List of attachments (containing Reference objects) (may be empty).
 	*/
-	public ReferenceVector getAttachments();
+	public List getAttachments();
 
 }	// AttachmentContainer
 

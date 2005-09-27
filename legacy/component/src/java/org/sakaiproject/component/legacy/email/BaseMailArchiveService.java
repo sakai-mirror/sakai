@@ -36,6 +36,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.legacy.email.MailArchiveChannel;
 import org.sakaiproject.service.legacy.email.MailArchiveChannelEdit;
 import org.sakaiproject.service.legacy.email.MailArchiveMessage;
@@ -50,13 +51,14 @@ import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 import org.sakaiproject.service.legacy.notification.NotificationEdit;
 import org.sakaiproject.service.legacy.notification.NotificationService;
 import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.util.java.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -106,7 +108,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 			edit.setFunction(eventId(SECURE_ADD));
 
 			// set the filter to any email resource (see messageReference())
-			edit.setResourceFilter(getAccessPoint(true) + Resource.SEPARATOR + REF_TYPE_MESSAGE);
+			edit.setResourceFilter(getAccessPoint(true) + Entity.SEPARATOR + REF_TYPE_MESSAGE);
 
 			// set the action
 			edit.setAction(new SiteEmailNotificationMail());
@@ -129,7 +131,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param ref The channel reference.
 	* @return The new containe Resource.
 	*/
-	public Resource newContainer(String ref)
+	public Entity newContainer(String ref)
 	{
 		return new BaseMailArchiveChannelEdit(ref);
 	}
@@ -139,7 +141,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param element The XML.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Element element)
+	public Entity newContainer(Element element)
 	{
 		return new BaseMailArchiveChannelEdit(element);
 	}
@@ -149,7 +151,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Resource other)
+	public Entity newContainer(Entity other)
 	{
 		return new BaseMailArchiveChannelEdit((MessageChannel) other);
 	}
@@ -161,7 +163,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{
 		return new BaseMailArchiveMessageEdit((MessageChannel) container, id);
 	}
@@ -172,7 +174,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{
 		return new BaseMailArchiveMessageEdit((MessageChannel) container, element);
 	}
@@ -183,7 +185,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{
 		return new BaseMailArchiveMessageEdit((MessageChannel) container, (Message) other);
 	}
@@ -217,7 +219,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Edit newContainerEdit(Resource other)
+	public Edit newContainerEdit(Entity other)
 	{
 		BaseMailArchiveChannelEdit rv = new BaseMailArchiveChannelEdit((MessageChannel) other);
 		rv.activate();
@@ -231,7 +233,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseMailArchiveMessageEdit rv = new BaseMailArchiveMessageEdit((MessageChannel) container, id);
 		rv.activate();
@@ -244,7 +246,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		BaseMailArchiveMessageEdit rv = new BaseMailArchiveMessageEdit((MessageChannel) container, element);
 		rv.activate();
@@ -257,7 +259,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseMailArchiveMessageEdit rv = new BaseMailArchiveMessageEdit((MessageChannel) container, (Message) other);
 		rv.activate();
@@ -268,7 +270,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* Collect the fields that need to be stored outside the XML (for the resource).
 	* @return An array of field values to store in the record outside the XML (for the resource).
 	*/
-	public Object[] storageFields(Resource r)
+	public Object[] storageFields(Entity r)
 	{
 		Object[] rv = new Object[4];
 		rv[0] = ((Message) r).getHeader().getDate();
@@ -284,7 +286,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return false;
 	}
@@ -294,7 +296,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return ((Message)r).getHeader().getFrom().getId();
 	}
@@ -304,7 +306,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return ((Message)r).getHeader().getDate();
 	}
@@ -374,6 +376,60 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 		return REFERENCE_ROOT;
 
 	} // getReferenceRoot
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		if (reference.startsWith(REFERENCE_ROOT))
+		{
+			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
+
+			String id = null;
+			String subType = null;
+			String context = null;
+			String container = null;
+
+			// the first part will be null, then next the service, the third will be "msg" or "channel"
+			if (parts.length > 2)
+			{
+				subType = parts[2];
+				if (REF_TYPE_CHANNEL.equals(subType))
+				{
+					// next is the context id
+					if (parts.length > 3)
+					{
+						context = parts[3];
+
+						// next is the channel id
+						if (parts.length > 4)
+						{
+							id = parts[4];
+						}
+					}
+				}
+				else if (REF_TYPE_MESSAGE.equals(subType))
+				{
+					// next three parts are context, channel (container) and mesage id
+					if (parts.length > 5)
+					{
+						context = parts[3];
+						container = parts[4];
+						id = parts[5];
+					}
+				}
+				else
+					Log.warn("chef", this + "parse(): unknown message subtype: " + subType + " in ref: " + reference);
+			}
+			
+			ref.set(SERVICE_NAME, subType, id, container, context);
+
+			return true;
+		}
+		
+		return false;
+	}
 
 	/*******************************************************************************
 	* MailArchiveService implementation
@@ -518,7 +574,7 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 			String fromAddress,
 			Time dateSent,
 			List mailHeaders,
-			ReferenceVector attachments,
+			List attachments,
 			String body)
 			throws PermissionException
 		{

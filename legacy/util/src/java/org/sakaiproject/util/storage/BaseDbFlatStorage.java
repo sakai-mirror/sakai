@@ -40,7 +40,7 @@ import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
@@ -230,7 +230,7 @@ public class BaseDbFlatStorage
 	 *        The id.
 	 * @return The Resource with this id, or null if not found.
 	 */
-	public Resource getResource(String id)
+	public Entity getResource(String id)
 	{
 		return getResource(null, id);
 	}
@@ -244,9 +244,9 @@ public class BaseDbFlatStorage
 	 *        The id.
 	 * @return The Resource with this id, or null if not found.
 	 */
-	public Resource getResource(Connection conn, String id)
+	public Entity getResource(Connection conn, String id)
 	{
-		Resource entry = null;
+		Entity entry = null;
 
 		// get the user from the db
 		String sql = "select " + fieldList(m_resourceTableReadFields, null) + " from " + m_resourceTableName + " where ( "
@@ -258,7 +258,7 @@ public class BaseDbFlatStorage
 
 		if ((rv != null) && (rv.size() > 0))
 		{
-			entry = (Resource) rv.get(0);
+			entry = (Entity) rv.get(0);
 		}
 
 		return entry;
@@ -653,7 +653,7 @@ public class BaseDbFlatStorage
 		if (m_locksAreInTable)
 		{
 			// read the record - fail if not there
-			Resource entry = getResource(conn, id);
+			Entity entry = getResource(conn, id);
 			if (entry == null) return null;
 
 			// write a lock to the lock table - if we can do it, we get the lock
@@ -689,7 +689,7 @@ public class BaseDbFlatStorage
 		else
 		{
 			// get the entry, and check for existence
-			Resource entry = getResource(conn, id);
+			Entity entry = getResource(conn, id);
 			if (entry == null) return null;
 
 			// we only sync this getting - someone may release a lock out of sync
@@ -875,7 +875,7 @@ public class BaseDbFlatStorage
 	 * @param p
 	 *        The properties object to fill.
 	 */
-	public void readProperties(Resource r, ResourcePropertiesEdit p)
+	public void readProperties(Entity r, ResourcePropertiesEdit p)
 	{
 		readProperties(null, m_resourcePropertyTableName, m_resourceTableIdField, caseId(r.getId()), p);
 	}
@@ -901,7 +901,7 @@ public class BaseDbFlatStorage
 	 * @param p
 	 *        The properties object to fill.
 	 */
-	public void readProperties(Connection conn, Resource r, ResourcePropertiesEdit p)
+	public void readProperties(Connection conn, Entity r, ResourcePropertiesEdit p)
 	{
 		readProperties(conn, m_resourcePropertyTableName, m_resourceTableIdField, caseId(r.getId()), p);
 	}
@@ -1025,7 +1025,7 @@ public class BaseDbFlatStorage
 	 * @param props
 	 *        The properties to write.
 	 */
-	public void writeProperties(Connection conn, Resource r, ResourceProperties props)
+	public void writeProperties(Connection conn, Entity r, ResourceProperties props)
 	{
 		writeProperties(conn, m_resourcePropertyTableName, m_resourceTableIdField, caseId(r.getId()), null, null, props);
 	}
@@ -1042,7 +1042,7 @@ public class BaseDbFlatStorage
 	 * @param key
 	 *        The key used to relate the props to the resource.
 	 */
-	public void writeProperties(Connection conn, Resource r, ResourceProperties props, Object key)
+	public void writeProperties(Connection conn, Entity r, ResourceProperties props, Object key)
 	{
 		if (key == null)
 		{
@@ -1309,7 +1309,7 @@ public class BaseDbFlatStorage
 	 * @param r
 	 *        The resource for which properties are to be deleted.
 	 */
-	protected void deleteProperties(Connection conn, Resource r, Object key)
+	protected void deleteProperties(Connection conn, Entity r, Object key)
 	{
 		String idField = m_resourceTableIdField;
 		if (key != null)

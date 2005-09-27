@@ -22,16 +22,15 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.factories;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactDefinition;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
-
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Hashtable;
 
 /**
  * Created by IntelliJ IDEA.

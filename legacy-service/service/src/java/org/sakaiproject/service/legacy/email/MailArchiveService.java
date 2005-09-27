@@ -30,7 +30,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.legacy.message.MessageService;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>MailArchiveService is the extension to MessageService configured for the Mail Archive.</p>
@@ -55,7 +55,7 @@ public interface MailArchiveService
 	public static final String SERVICE_NAME = MailArchiveService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "mailarchive";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "mailarchive";
 
 	/** Security lock / event root for generic message events to make it a mail event. */
 	public static final String SECURE_MAIL_ROOT = "mail.";

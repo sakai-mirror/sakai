@@ -24,6 +24,8 @@
 // package
 package org.sakaiproject.service.legacy.resource;
 
+import java.util.List;
+
 // import
 
 /**
@@ -51,7 +53,7 @@ public interface AttachmentContainerEdit
 	* Replace the attachment set.
 	* @param attachments A ReferenceVector that will become the new set of attachments.
 	*/
-	public void replaceAttachments(ReferenceVector attachments);
+	public void replaceAttachments(List attachments);
 
 	/**
 	* Clear all attachments.

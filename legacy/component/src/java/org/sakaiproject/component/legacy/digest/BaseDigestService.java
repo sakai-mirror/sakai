@@ -51,7 +51,7 @@ import org.sakaiproject.service.legacy.digest.DigestMessage;
 import org.sakaiproject.service.legacy.digest.DigestService;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -443,7 +443,7 @@ public abstract class BaseDigestService
 	*/
 	public String digestReference(String id)
 	{
-		return getAccessPoint(true) + Resource.SEPARATOR + id;
+		return getAccessPoint(true) + Entity.SEPARATOR + id;
 
 	}   // digestReference
 
@@ -454,7 +454,7 @@ public abstract class BaseDigestService
 	*/
 	protected String digestId(String ref)
 	{
-		String start = getAccessPoint(true) + Resource.SEPARATOR;
+		String start = getAccessPoint(true) + Entity.SEPARATOR;
 		int i = ref.indexOf(start);
 		if (i == -1) return ref;
 		String id = ref.substring(i+start.length());
@@ -1310,21 +1310,21 @@ public abstract class BaseDigestService
 	* @param id The id for the new object.
 	* @return The new containe Resource.
 	*/
-	public Resource newContainer(String ref) { return null; }
+	public Entity newContainer(String ref) { return null; }
 
 	/**
 	* Construct a new container resource, from an XML element.
 	* @param element The XML.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Element element) { return null; }
+	public Entity newContainer(Element element) { return null; }
 
 	/**
 	* Construct a new container resource, as a copy of another
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Resource other) { return null; }
+	public Entity newContainer(Entity other) { return null; }
 
 	/**
 	* Construct a new resource given just an id.
@@ -1333,7 +1333,7 @@ public abstract class BaseDigestService
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{ return new BaseDigest(id); }
 
 	/**
@@ -1342,7 +1342,7 @@ public abstract class BaseDigestService
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{ return new BaseDigest(element); }
 
 	/**
@@ -1351,7 +1351,7 @@ public abstract class BaseDigestService
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{ return new BaseDigest((Digest) other); }
 
 	/**
@@ -1373,7 +1373,7 @@ public abstract class BaseDigestService
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Edit newContainerEdit(Resource other) { return null; }
+	public Edit newContainerEdit(Entity other) { return null; }
 
 	/**
 	* Construct a new resource given just an id.
@@ -1382,7 +1382,7 @@ public abstract class BaseDigestService
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseDigest e = new BaseDigest(id);
 		e.activate();
@@ -1395,7 +1395,7 @@ public abstract class BaseDigestService
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		BaseDigest e =  new BaseDigest(element);
 		e.activate();
@@ -1408,7 +1408,7 @@ public abstract class BaseDigestService
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseDigest e = new BaseDigest((Digest) other);
 		e.activate();
@@ -1419,14 +1419,14 @@ public abstract class BaseDigestService
 	* Collect the fields that need to be stored outside the XML (for the resource).
 	* @return An array of field values to store in the record outside the XML (for the resource).
 	*/
-	public Object[] storageFields(Resource r) { return null; }
+	public Object[] storageFields(Entity r) { return null; }
 
 	/**
 	 * Check if this resource is in draft mode.
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return false;
 	}
@@ -1436,7 +1436,7 @@ public abstract class BaseDigestService
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return null;
 	}
@@ -1446,7 +1446,7 @@ public abstract class BaseDigestService
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return null;
 	}

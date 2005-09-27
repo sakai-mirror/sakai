@@ -425,7 +425,7 @@ public class DbAnnouncementService
 							else
 							{
 								// m.getReference() won't work cause we didn't give it its channel...
-								Reference channel = new Reference(channelId);
+								Reference channel = m_entityManager.newReference(channelId);
 								String ref = messageReference(channel.getContext(), channel.getId(), m.getId());
 								pubview = getPubView(ref);
 								

@@ -72,8 +72,8 @@ import org.sakaiproject.service.legacy.message.Message;
 import org.sakaiproject.service.legacy.message.MessageHeader;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
@@ -734,7 +734,7 @@ extends PagedResourceActionII
 		}
 		
 		// when done, take the new set of attachments, (if null, there was no change)
-		ReferenceVector attachments = (ReferenceVector) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
+		List attachments = (List) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
 		if (attachments != null)
 		{
 			state.setAttachments(attachments);
@@ -1102,7 +1102,7 @@ extends PagedResourceActionII
 		context.put(CONTEXT_VAR_DISPLAY_OPTIONS, actionState.getDisplayOptions());
 
 		String channelId = actionState.getChannelId();
-		Reference channelRef = new Reference(channelId);
+		Reference channelRef = EntityManager.newReference(channelId);
 				context.put("description", rb.getString("java.setting")//"Setting options for Announcements in worksite "
 				+ SiteService.getSiteDisplay(channelRef.getContext()));
 
@@ -1379,7 +1379,7 @@ extends PagedResourceActionII
 		context.put("user", UserDirectoryService.getCurrentUser());
 		context.put("date", TimeService.newTime());
 
-		ReferenceVector attachments = state.getAttachments();
+		List attachments = state.getAttachments();
 		context.put("attachments", attachments);
 
 		String peid = ((JetspeedRunData) rundata).getJs_peid();
@@ -1429,7 +1429,7 @@ extends PagedResourceActionII
 		// to get the content Type Image Service
 		context.put("contentTypeImageService", ContentTypeImageService.getInstance());
 
-		ReferenceVector attachments = state.getAttachments();
+		List attachments = state.getAttachments();
 
 		// if this a new annoucement, get the subject and body from temparory record
 		if (state.getIsNewAnnouncement())
@@ -1708,7 +1708,7 @@ extends PagedResourceActionII
 	{
 		// "crack" the reference (a.k.a dereference, i.e. make a Reference)
 		// and get the event id and channel reference
-		Reference ref = new Reference(messageReference);
+		Reference ref = EntityManager.newReference(messageReference);
 		return ref.getId();
 	}
 
@@ -1719,7 +1719,7 @@ extends PagedResourceActionII
 	{
 		// "crack" the reference (a.k.a dereference, i.e. make a Reference)
 		// and get the event id and channel reference
-		Reference ref = new Reference(messageReference);
+		Reference ref = EntityManager.newReference(messageReference);
 		String channelId =
 			AnnouncementService.channelReference(
 				ref.getContext(),
@@ -2410,7 +2410,7 @@ extends PagedResourceActionII
 			state.setEdit(edit);
 
 			//ReferenceVector attachmentList = (message.getHeader()).getAttachments();
-			ReferenceVector attachmentList =
+			List attachmentList =
 				(edit.getHeader()).getAttachments();
 			state.setAttachments(attachmentList);
 
@@ -2716,7 +2716,7 @@ extends PagedResourceActionII
 			(AnnouncementActionState) getState(context,
 				data,
 				AnnouncementActionState.class);
-		ReferenceVector attachments = myState.getAttachments();
+		List attachments = myState.getAttachments();
 		// whether there is alread an attachment //%%%zqian
 		if (attachments.size() > 0)
 		{
@@ -2728,7 +2728,7 @@ extends PagedResourceActionII
 		}
 		state.setAttribute(
 			ResourcesAction.STATE_ATTACHMENTS,
-			attachments.clone());
+			EntityManager.newReferenceList(attachments));
 
 		// read in the input of subject and body
 		subject = data.getParameters().getString("subject");
@@ -3629,7 +3629,7 @@ extends PagedResourceActionII
 				AnnouncementActionState.class);
 
 		String channelRefStr = astate.getChannelId();
-		Reference channelRef = new Reference(channelRefStr);
+		Reference channelRef = EntityManager.newReference(channelRefStr);
 		String siteRef = SiteService.siteReference(channelRef.getContext());
 
 		// setup for editing the permissions of the site for this tool, using the roles of this site, too

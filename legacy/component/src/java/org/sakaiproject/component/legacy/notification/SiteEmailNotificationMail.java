@@ -36,7 +36,7 @@ import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.notification.NotificationAction;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.FormattedText;
@@ -96,8 +96,8 @@ public class SiteEmailNotificationMail
 	protected String getFrom(Event event)
 	{
 		// get the message
-		Reference ref = new Reference(event.getResource());
-		MailArchiveMessage msg = (MailArchiveMessage) ref.getResource();
+		Reference ref = EntityManager.newReference(event.getResource());
+		MailArchiveMessage msg = (MailArchiveMessage) ref.getEntity();
 		MailArchiveMessageHeader hdr = (MailArchiveMessageHeader) msg.getMailArchiveHeader();
 
 		// make it from the message's from
@@ -113,8 +113,8 @@ public class SiteEmailNotificationMail
 	public String getSubject(Event event)
 	{
 		// get the message
-		Reference ref = new Reference(event.getResource());
-		MailArchiveMessage msg = (MailArchiveMessage) ref.getResource();
+		Reference ref = EntityManager.newReference(event.getResource());
+		MailArchiveMessage msg = (MailArchiveMessage) ref.getEntity();
 		MailArchiveMessageHeader hdr = (MailArchiveMessageHeader) msg.getMailArchiveHeader();
 
 		// use the message's subject
@@ -132,8 +132,8 @@ public class SiteEmailNotificationMail
 		StringBuffer buf = new StringBuffer();
 
 		// get the message
-		Reference ref = new Reference(event.getResource());
-		MailArchiveMessage msg = (MailArchiveMessage) ref.getResource();
+		Reference ref = EntityManager.newReference(event.getResource());
+		MailArchiveMessage msg = (MailArchiveMessage) ref.getEntity();
 		MailArchiveMessageHeader hdr = (MailArchiveMessageHeader) msg.getMailArchiveHeader();
 
 		// use either the configured site, or if not configured, the site (context) of the resource
@@ -154,7 +154,7 @@ public class SiteEmailNotificationMail
 		buf.append(FormattedText.convertFormattedTextToPlaintext(msg.getBody()));
 
 		// add any attachments
-		ReferenceVector attachments = hdr.getAttachments();
+		List attachments = hdr.getAttachments();
 		if (attachments.size() > 0)
 		{
 			buf.append("\n" + "Attachments:\n");
@@ -182,8 +182,8 @@ public class SiteEmailNotificationMail
 	 */
 	protected List getAdditionalHeaders(Event event)
 	{
-		Reference ref = new Reference(event.getResource());
-		MailArchiveMessage msg = (MailArchiveMessage) ref.getResource();
+		Reference ref = EntityManager.newReference(event.getResource());
+		MailArchiveMessage msg = (MailArchiveMessage) ref.getEntity();
 		MailArchiveMessageHeader hdr = (MailArchiveMessageHeader) msg.getMailArchiveHeader();
 		List headers = hdr.getMailHeaders();
 		

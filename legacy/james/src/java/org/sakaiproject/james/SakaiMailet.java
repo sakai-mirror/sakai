@@ -61,9 +61,9 @@ import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.email.MailArchiveChannel;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
@@ -202,7 +202,7 @@ public class SakaiMailet extends GenericMailet
 
 			// we will parse the body and attachments later, when we know we need to.
 			String body = null;
-			ReferenceVector attachments = null;
+			List attachments = null;
 
 			if (Logger.isInfoEnabled())
 				Logger.info(this + ": " + id + " : mail: from:" + from + " sent: "
@@ -243,7 +243,7 @@ public class SakaiMailet extends GenericMailet
 					if (channel == null)
 					{
 						// if not an alias, it will throw the IdUnusedException caught below
-						Reference ref = new Reference(AliasService.getTarget(mailId));
+						Reference ref = EntityManager.newReference(AliasService.getTarget(mailId));
 
 						// if ref is a site
 						if (ref.getType().equals(SiteService.SERVICE_NAME))
@@ -325,7 +325,7 @@ public class SakaiMailet extends GenericMailet
 					if (body == null)
 					{
 						body = "";
-						attachments = new ReferenceVector();
+						attachments = EntityManager.newReferenceList();
 						try
 						{
 							StringBuffer bodyBuf = new StringBuffer();
@@ -391,7 +391,7 @@ public class SakaiMailet extends GenericMailet
 	/**
 	 * Create an attachment, adding it to the list of attachments.
 	 */
-	protected Reference createAttachment(ReferenceVector attachments, String type, String fileName, byte[] body, String id)
+	protected Reference createAttachment(List attachments, String type, String fileName, byte[] body, String id)
 	{
 		// we just want the file name part - strip off any drive and path stuff
 		String name = Validator.getFileName(fileName);
@@ -408,7 +408,7 @@ public class SakaiMailet extends GenericMailet
 			ContentResource attachment = ContentHostingService.addAttachmentResource(resourceName, type, body, props);
 
 			// add a dereferencer for this to the attachments
-			Reference ref = new Reference(attachment.getReference());
+			Reference ref = EntityManager.newReference(attachment.getReference());
 			attachments.add(ref);
 
 			if (Logger.isInfoEnabled())
@@ -473,7 +473,7 @@ public class SakaiMailet extends GenericMailet
 	 * @return Value of embedCount (updated if this call processed any embedded messages).
 	 */
 	protected Integer parseParts(Part p, String id, StringBuffer bodyBuf, StringBuffer bodyContentType,
-			ReferenceVector attachments, Integer embedCount) throws MessagingException, IOException
+			List attachments, Integer embedCount) throws MessagingException, IOException
 	{
 		String closing = "";
 		// process embedded messages
@@ -659,7 +659,7 @@ public class SakaiMailet extends GenericMailet
 	 * @param embedCount
 	 *        An Integer that counts embedded messages (Outer message is zero).
 	 */
-	protected void parseEnvelope(Message innerMsg, String id, StringBuffer bodyBuf, ReferenceVector attachments, Integer embedCount)
+	protected void parseEnvelope(Message innerMsg, String id, StringBuffer bodyBuf, List attachments, Integer embedCount)
 			throws MessagingException, IOException
 	{
 		Address[] innerFroms = innerMsg.getFrom();

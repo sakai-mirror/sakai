@@ -172,15 +172,6 @@ public class ServerConfigurationService
 		return service.getLocks();
 	}
 
-	public static java.util.List getResourceServices()
-	{
-		org.sakaiproject.service.framework.config.ServerConfigurationService service = getInstance();
-		if (service == null)
-			return null;
-
-		return service.getResourceServices();
-	}
-
 	public static boolean getBoolean(java.lang.String param0, boolean param1)
 	{
 		org.sakaiproject.service.framework.config.ServerConfigurationService service = getInstance();
@@ -242,15 +233,6 @@ public class ServerConfigurationService
 			return 0;
 
 		return service.getInt(param0, param1);
-	}
-
-	public static void registerResourceService(org.sakaiproject.service.legacy.resource.ResourceService param0)
-	{
-		org.sakaiproject.service.framework.config.ServerConfigurationService service = getInstance();
-		if (service == null)
-			return;
-
-		service.registerResourceService(param0);
 	}
 }
 

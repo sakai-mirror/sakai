@@ -25,14 +25,15 @@
 package org.sakaiproject.tool.helper;
 
 // imports
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
-import java.util.ResourceBundle;
 
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -53,6 +54,7 @@ import org.sakaiproject.service.legacy.realm.Role;
 import org.sakaiproject.service.legacy.realm.RoleEdit;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 
 /**
 * <p>PermissionsAction is a helper Action that other tools can use to edit their permissions.</p>
@@ -223,8 +225,8 @@ public class PermissionsAction
 			state.setAttribute(STATE_ROLE_ABILITIES, rolesAbilities);
 
 			// get this resource's role Realms,those that refine the role definitions, but not it's own
-			Reference ref = new Reference(edit.getId());
-			List realms = ref.getRealms();
+			Reference ref = EntityManager.newReference(edit.getId());
+			Collection realms = ref.getRealms();
 			realms.remove(ref.getReference());
 
 			for (Iterator iRoles = roles.iterator(); iRoles.hasNext(); )

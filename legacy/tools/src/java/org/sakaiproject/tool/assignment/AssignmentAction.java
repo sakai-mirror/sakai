@@ -68,9 +68,9 @@ import org.sakaiproject.service.legacy.calendar.CalendarService;
 import org.sakaiproject.service.legacy.content.ContentTypeImageService;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
@@ -1740,7 +1740,7 @@ extends PagedResourceActionII
 			{
 				state.setAttribute (VIEW_SUBMISSION_TEXT, submission.getSubmittedText ());
 				state.setAttribute (VIEW_SUBMISSION_HONOR_PLEDGE_YES, (new Boolean (submission.getHonorPledgeFlag ())).toString ());
-				ReferenceVector v = new ReferenceVector ();
+				List v = EntityManager.newReferenceList();
 				Iterator l = submission.getSubmittedAttachments ().iterator ();
 				while (l.hasNext ())
 				{
@@ -1751,7 +1751,7 @@ extends PagedResourceActionII
 			else
 			{
 				state.setAttribute (VIEW_SUBMISSION_HONOR_PLEDGE_YES, "false");
-				state.setAttribute (ATTACHMENTS, new ReferenceVector ());
+				state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
 			}	
 
 			state.setAttribute (STATE_MODE, MODE_STUDENT_VIEW_SUBMISSION);
@@ -2247,7 +2247,7 @@ extends PagedResourceActionII
 				text.append(feedbackTextString);
 				sEdit.setFeedbackText (text.toString());
 				
-				ReferenceVector v = (ReferenceVector) state.getAttribute(GRADE_SUBMISSION_FEEDBACK_ATTACHMENT);
+				List v = (List) state.getAttribute(GRADE_SUBMISSION_FEEDBACK_ATTACHMENT);
 				if (v!=null)
 				{
 					// clear the old attachments first
@@ -2276,7 +2276,7 @@ extends PagedResourceActionII
 		if ( state.getAttribute(STATE_MESSAGE) == null)
 		{
 			state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_GRADE_ASSIGNMENT);
-			state.setAttribute (ATTACHMENTS, new ReferenceVector ());
+			state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
 		}
 	
 	}	// grade_submission_option
@@ -2329,7 +2329,7 @@ extends PagedResourceActionII
 						edit.setAssignment (a);
 						
 						// add attachments
-						ReferenceVector attachments = (ReferenceVector) state.getAttribute (ATTACHMENTS);
+						List attachments = (List) state.getAttribute (ATTACHMENTS);
 						if (attachments != null)
 						{
 							// clear the old attachments first
@@ -2370,7 +2370,7 @@ extends PagedResourceActionII
 						edit.setAssignment (a);
 						
 						// add attachments
-						ReferenceVector attachments = (ReferenceVector) state.getAttribute (ATTACHMENTS);
+						List attachments = (List) state.getAttribute (ATTACHMENTS);
 						if (attachments != null)
 						{
 							// add each attachment
@@ -2401,7 +2401,7 @@ extends PagedResourceActionII
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{		
 			state.setAttribute (STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
-			state.setAttribute (ATTACHMENTS, new ReferenceVector ());
+			state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
 		}
 
 	}	//doSave_submission
@@ -2582,7 +2582,7 @@ extends PagedResourceActionII
 						sEdit.setAssignment (a);
 						
 						// add attachments
-						ReferenceVector attachments = (ReferenceVector) state.getAttribute (ATTACHMENTS);
+						List attachments = (List) state.getAttribute (ATTACHMENTS);
 						if (attachments != null)
 						{
 							// clear the old attachments first
@@ -2625,7 +2625,7 @@ extends PagedResourceActionII
 						edit.setAssignment (a);
 						
 						// add attachments
-						ReferenceVector attachments = (ReferenceVector) state.getAttribute (ATTACHMENTS);
+						List attachments = (List) state.getAttribute (ATTACHMENTS);
 						if (attachments != null)
 						{
 							// add each attachment
@@ -2658,7 +2658,7 @@ extends PagedResourceActionII
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
 			state.setAttribute (STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
-			state.setAttribute (ATTACHMENTS, new ReferenceVector ());
+			state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
 		}
 
 	}	//doPost_submission
@@ -2675,7 +2675,7 @@ extends PagedResourceActionII
 			if (AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)))
 			{
 				resetAssignment (state);
-				state.setAttribute (ATTACHMENTS, new ReferenceVector ());		
+				state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());		
 				state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_NEW_ASSIGNMENT);
 			}
 			else
@@ -2834,7 +2834,7 @@ extends PagedResourceActionII
 			s = "1";
 		state.setAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE, s);
 
-		ReferenceVector attachments = (ReferenceVector) state.getAttribute (ATTACHMENTS);
+		List attachments = (List) state.getAttribute (ATTACHMENTS);
 		state.setAttribute (NEW_ASSIGNMENT_ATTACHMENT, attachments);
 		
 		//correct inputs
@@ -3051,7 +3051,7 @@ extends PagedResourceActionII
 														rb.getString("assig1")+ " " + title  + " " + rb.getString("isduieon") +" " + dueTime.toStringLocalFull () + ". ",
 														rb.getString("deadl"),
 														/*location*/"",
-														new ReferenceVector ());
+														EntityManager.newReferenceList());
 						aEdit.getPropertiesEdit ().addProperty (NEW_ASSIGNMENT_DUE_DATE_SCHEDULED, Boolean.TRUE.toString ());
 						if (e != null)
 						{
@@ -3079,7 +3079,7 @@ extends PagedResourceActionII
 					{
 						AnnouncementMessage message = channel.addAnnouncementMessage (	rb.getString("assig6") +" "  + title,
 																						false,
-																						new ReferenceVector (),
+																						EntityManager.newReferenceList(),
 																						rb.getString("opedat") + " " + FormattedText.convertPlaintextToFormattedText(title) + " is " + openTime.toStringLocalFull () + ". ");
 						aEdit.getPropertiesEdit ().addProperty (NEW_ASSIGNMENT_OPEN_DATE_ANNOUNCED, Boolean.TRUE.toString ());
 						if (message != null)
@@ -3231,8 +3231,8 @@ extends PagedResourceActionII
 			String checkAddHonorPledge = (String) state.getAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE);
 
 			// the attachments
-			ReferenceVector attachments = (ReferenceVector) state.getAttribute (ATTACHMENTS);
-			ReferenceVector attachments1 = (ReferenceVector) attachments.clone ();
+			List attachments = (List) state.getAttribute (ATTACHMENTS);
+			List attachments1 = EntityManager.newReferenceList(attachments);
 
 			boolean newAssignment = true;
 			
@@ -3357,7 +3357,7 @@ extends PagedResourceActionII
 						ac.clearAttachments ();
 
 						// add each attachment
-						Iterator it = ((ReferenceVector) attachments1.clone ()).iterator ();
+						Iterator it = EntityManager.newReferenceList(attachments1).iterator ();
 						while (it.hasNext ())
 						{
 							ac.addAttachment ((Reference) it.next ());
@@ -3499,7 +3499,7 @@ extends PagedResourceActionII
 												/*description*/ rb.getString("assig1") + " " + title + " " + "is due on " + dueTime.toStringLocalFull () + ". ",
 												/*type*/rb.getString("deadl"),
 												/*location*/"",
-												/*attachments*/new ReferenceVector ());
+												/*attachments*/EntityManager.newReferenceList());
 								aPropertiesEdit.addProperty (NEW_ASSIGNMENT_DUE_DATE_SCHEDULED, Boolean.TRUE.toString ());
 								if (e != null)
 								{
@@ -3534,7 +3534,7 @@ extends PagedResourceActionII
 								AnnouncementMessageEdit message = channel.addAnnouncementMessage();
 								AnnouncementMessageHeaderEdit header = message.getAnnouncementHeaderEdit();
 								header.setDraft(/*draft*/false);
-								header.replaceAttachments(/*attachment*/new ReferenceVector ());
+								header.replaceAttachments(/*attachment*/EntityManager.newReferenceList());
 									
 								if (!openDateModified)
 								{
@@ -3598,7 +3598,7 @@ extends PagedResourceActionII
 		{		
 			state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
 			
-			state.setAttribute (ATTACHMENTS, new ReferenceVector ());
+			state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
 			resetAssignment (state);
 		}
 
@@ -3717,8 +3717,8 @@ extends PagedResourceActionII
 		String checkAddHonorPledge = (String) state.getAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE);
 
 		// the attachments
-		ReferenceVector attachments = (ReferenceVector) state.getAttribute (ATTACHMENTS);
-		ReferenceVector attachments1 = (ReferenceVector) attachments.clone ();
+		List attachments = (List) state.getAttribute (ATTACHMENTS);
+		List attachments1 = EntityManager.newReferenceList(attachments);
 
 		// correct inputs
 		if (state.getAttribute(STATE_MESSAGE) != null) return;
@@ -3846,7 +3846,7 @@ extends PagedResourceActionII
 			cedit.clearAttachments ();
 
 			// add each attachment
-			Iterator it = ((ReferenceVector) attachments1.clone ()).iterator ();
+			Iterator it = EntityManager.newReferenceList(attachments1).iterator ();
 			while (it.hasNext ())
 			{
 				cedit.addAttachment ((Reference) it.next ());
@@ -3881,7 +3881,7 @@ extends PagedResourceActionII
 		{		
 			state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
 		
-			state.setAttribute (ATTACHMENTS, new ReferenceVector ());
+			state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
 			resetAssignment (state);
 		}
 		
@@ -4368,7 +4368,7 @@ extends PagedResourceActionII
 			}
 			state.setAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT, s.getFeedbackComment ());
 			
-			ReferenceVector v = new ReferenceVector ();
+			List v = EntityManager.newReferenceList();
 			Iterator attachments = s.getFeedbackAttachments ().iterator ();
 			while (attachments.hasNext ())
 			{
@@ -5057,7 +5057,7 @@ extends PagedResourceActionII
 		// make the honor pledge not include as the default
 		state.setAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE, (new Integer (Assignment.HONOR_PLEDGE_NONE)).toString ());
 		
-		state.setAttribute (NEW_ASSIGNMENT_ATTACHMENT, new ReferenceVector ());
+		state.setAttribute (NEW_ASSIGNMENT_ATTACHMENT, EntityManager.newReferenceList());
 		
 		state.setAttribute (NEW_ASSIGNMENT_HIDE_OPTION_FLAG, new Boolean (false));
 		

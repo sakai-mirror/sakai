@@ -24,7 +24,7 @@
 // package
 package org.sakaiproject.service.legacy.message;
 
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 
 // import
 
@@ -36,7 +36,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * @see org.sakaiproject.core.MessageHeader
 */
 public interface Message
-	extends Resource, Comparable
+	extends Entity, Comparable
 {
 	/**
 	* Access the message header.

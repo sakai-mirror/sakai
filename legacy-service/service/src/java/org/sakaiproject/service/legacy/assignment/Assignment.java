@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.assignment;
 // import
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 
 
@@ -39,7 +39,7 @@ import org.sakaiproject.service.legacy.time.Time;
 * @version $ $
 */
 public interface Assignment
-	extends Resource, Comparable
+	extends Entity, Comparable
 {
 	/** Grade type not set */
 	public static final int GRADE_TYPE_NOT_SET = -1;

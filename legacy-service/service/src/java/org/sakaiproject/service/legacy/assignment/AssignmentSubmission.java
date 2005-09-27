@@ -27,10 +27,9 @@ package org.sakaiproject.service.legacy.assignment;
 // import
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
-import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.time.Time;
+import org.sakaiproject.service.legacy.user.User;
 
 /**
 * <p>AssignmentSubmission is the an interface for the CHEF assignments module.
@@ -40,7 +39,7 @@ import org.sakaiproject.service.legacy.time.Time;
 * @version $ $
 */
 public interface AssignmentSubmission
-	extends Resource
+	extends Entity
 {
 	/**
 	 * Access the context at the time of creation.
@@ -93,9 +92,9 @@ public interface AssignmentSubmission
 
 	/**
 	 * Access the list of attachments to this response to the Assignment.
-	 * @return ReferenceVector of the list of attachments as Reference objects;
+	 * @return List of the list of attachments as Reference objects;
 	 */
-	public ReferenceVector getSubmittedAttachments();
+	public List getSubmittedAttachments();
 
 	/**
 	 * Get the general comments by the grader
@@ -114,9 +113,9 @@ public interface AssignmentSubmission
 	 * Access the list of attachments returned to the students
 	 * in the process of grading this assignment; usually a modified
 	 * or annotated version of the attachment submitted.
-	 * @return ReferenceVector of the Resource objects pointing to the attachments.
+	 * @return List of the Resource objects pointing to the attachments.
 	 */
-	public ReferenceVector getFeedbackAttachments();
+	public List getFeedbackAttachments();
 
 	/**
 	 * Get whether this Submission was rejected by the grader.

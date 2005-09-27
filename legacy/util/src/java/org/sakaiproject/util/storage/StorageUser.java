@@ -26,7 +26,7 @@ package org.sakaiproject.util.storage;
 
 // imports
 import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 import org.w3c.dom.Element;
 
@@ -44,21 +44,21 @@ public interface StorageUser
 	* @param ref The container reference.
 	* @return The new containe Resource.
 	*/
-	public Resource newContainer(String ref);
+	public Entity newContainer(String ref);
 
 	/**
 	* Construct a new container resource, from an XML element.
 	* @param element The XML.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Element element);
+	public Entity newContainer(Element element);
 
 	/**
 	* Construct a new container resource, as a copy of another
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Resource other);
+	public Entity newContainer(Entity other);
 
 	/**
 	* Construct a new resource given just an id.
@@ -67,7 +67,7 @@ public interface StorageUser
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Resource newResource(Resource container, String id, Object[] others);
+	public Entity newResource(Entity container, String id, Object[] others);
 
 	/**
 	* Construct a new resource, from an XML element.
@@ -75,7 +75,7 @@ public interface StorageUser
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Resource newResource(Resource container, Element element);
+	public Entity newResource(Entity container, Element element);
 
 	/**
 	* Construct a new resource from another resource of the same type.
@@ -83,7 +83,7 @@ public interface StorageUser
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Resource newResource(Resource container, Resource other);
+	public Entity newResource(Entity container, Entity other);
 
 	/**
 	* Construct a new continer given just ids.
@@ -104,7 +104,7 @@ public interface StorageUser
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Edit newContainerEdit(Resource other);
+	public Edit newContainerEdit(Entity other);
 
 	/**
 	* Construct a new resource given just an id.
@@ -113,7 +113,7 @@ public interface StorageUser
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Edit newResourceEdit(Resource container, String id, Object[] others);
+	public Edit newResourceEdit(Entity container, String id, Object[] others);
 
 	/**
 	* Construct a new resource, from an XML element.
@@ -121,7 +121,7 @@ public interface StorageUser
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Edit newResourceEdit(Resource container, Element element);
+	public Edit newResourceEdit(Entity container, Element element);
 
 	/**
 	* Construct a new resource from another resource of the same type.
@@ -129,34 +129,34 @@ public interface StorageUser
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Edit newResourceEdit(Resource container, Resource other);
+	public Edit newResourceEdit(Entity container, Entity other);
 
 	/**
 	* Collect the fields that need to be stored outside the XML (for the resource).
 	* @return An array of field values to store in the record outside the XML (for the resource).
 	*/
-	public Object[] storageFields(Resource r);
+	public Object[] storageFields(Entity r);
 
 	/**
 	 * Check if this resource is in draft mode.
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r);
+	public boolean isDraft(Entity r);
 
 	/**
 	 * Access the resource owner user id.
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r);
+	public String getOwnerId(Entity r);
 
 	/**
 	 * Access the resource date.
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r);
+	public Time getDate(Entity r);
 
 }   // StorageUser
 

@@ -38,11 +38,10 @@ import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityProducer;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
-import org.sakaiproject.service.legacy.resource.ResourceService;
 import org.w3c.dom.Document;
 
 /**
@@ -93,13 +92,13 @@ import org.w3c.dom.Document;
  * @author University of Michigan, Sakai Software Development Team
  * @version $Revision$
  */
-public interface ContentHostingService extends ResourceService
+public interface ContentHostingService extends EntityProducer
 {
 	/** This string can be used to find the service in the service manager. */
 	public static final String SERVICE_NAME = ContentHostingService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "content";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "content";
 
 	/** Name of the event when creating a resource. */
 	public static final String EVENT_RESOURCE_ADD = "content.new";
@@ -803,7 +802,7 @@ public interface ContentHostingService extends ResourceService
 	 *        The path to the folder where we are writing auxilary files.
 	 * @return A log of status messages from the archive.
 	 */
-	String archiveResources(ReferenceVector resources, Document doc, Stack stack, String archivePath);
+	String archiveResources(List resources, Document doc, Stack stack, String archivePath);
 
 	/**
 	 * Gets all locks set on the resource with this local resource id.

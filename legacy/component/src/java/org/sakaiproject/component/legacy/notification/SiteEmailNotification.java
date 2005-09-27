@@ -35,6 +35,7 @@ import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.notification.NotificationAction;
 import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
@@ -95,7 +96,7 @@ public class SiteEmailNotification
 	protected List getRecipients(Event event)
 	{
 		// get the resource reference
-		Reference ref = new Reference(event.getResource());
+		Reference ref = EntityManager.newReference(event.getResource());
 
 		// use either the configured site, or if not configured, the site (context) of the resource
 		String siteId = (getSite() != null) ? getSite() : ref.getContext();
@@ -141,7 +142,7 @@ public class SiteEmailNotification
 	protected String getTo(Event event)
 	{
 		// get the resource reference
-		Reference ref = new Reference(event.getResource());
+		Reference ref = EntityManager.newReference(event.getResource());
 
 		// use either the configured site, or if not configured, the site (context) of the resource
 		String siteId = (getSite() != null) ? getSite() : ref.getContext();

@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -62,10 +63,10 @@ import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.message.MessageService;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.util.ParameterParser;
@@ -103,7 +104,7 @@ public class AccessServlet
 	protected boolean m_ready = false;
 	
 	/** copyright path -- MUST have same value as ResourcesAction.COPYRIGHT_PATH */
-	public static final String COPYRIGHT_PATH = Resource.SEPARATOR + "copyright";
+	public static final String COPYRIGHT_PATH = Entity.SEPARATOR + "copyright";
 	
 	private static final String MIME_TYPE_DOCUMENT_PLAINTEXT= "text/plain";
 
@@ -242,7 +243,7 @@ public class AccessServlet
 		try
 		{
 			// what is being requested?
-			Reference ref = new Reference(path);
+			Reference ref = EntityManager.newReference(path);
 
 			// reject anything we don't want to handle
 			boolean willHandle = false;
@@ -250,7 +251,7 @@ public class AccessServlet
 			if (ContentHostingService.SERVICE_NAME.equals(ref.getType()))
 			{
 				// we will reject collections, which end with a SEPARATOR
-				if (!ref.getId().endsWith(Resource.SEPARATOR))
+				if (!ref.getId().endsWith(Entity.SEPARATOR))
 				{
 					willHandle = true;
 					permitted = ContentHostingService.allowGetResource(ref.getId());
@@ -280,7 +281,7 @@ public class AccessServlet
 				if (MessageService.REF_TYPE_MESSAGE.equals(ref.getSubType()))
 				{
 					willHandle = true;
-					permitted = (ref.getResource() != null);
+					permitted = (ref.getEntity() != null);
 				}
 			}
 
@@ -310,7 +311,7 @@ public class AccessServlet
 				if (ContentHostingService.SERVICE_NAME.equals(ref.getType()))
 				{
 					// we will reject collections, which end with a SEPARATOR
-					if (!ref.getId().endsWith(Resource.SEPARATOR))
+					if (!ref.getId().endsWith(Entity.SEPARATOR))
 					{
 						doContent(ref.getId(), copyrightAlert, req, res);
 					}
@@ -894,7 +895,7 @@ public class AccessServlet
 	protected void doSite(Reference ref, HttpServletResponse res)
 		throws Exception
 	{
-		Site site = (Site) ref.getResource();
+		Site site = (Site) ref.getEntity();
 
 		res.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = res.getWriter();
@@ -925,7 +926,7 @@ public class AccessServlet
 	protected void doAnnouncement(Reference ref, HttpServletRequest req, HttpServletResponse res)
 		throws Exception
 	{
-		AnnouncementMessage msg = (AnnouncementMessage) ref.getResource();
+		AnnouncementMessage msg = (AnnouncementMessage) ref.getEntity();
 		if (ref == null)
 		{
 			respondError(req, res, ref.getReference(), rb.getString("java.message"));
@@ -947,7 +948,7 @@ public class AccessServlet
 		out.println("<p>" + Validator.escapeHtmlFormattedText(msg.getBody()) + "</p>");
 
 		// attachments
-		ReferenceVector attachments = hdr.getAttachments();
+		List attachments = hdr.getAttachments();
 		if (attachments.size() > 0)
 		{
 			out.println("<p>"+rb.getString("java.attach")+"</p><p>");

@@ -30,10 +30,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
@@ -41,7 +39,6 @@ import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
-import org.sakaiproject.service.legacy.resource.ResourceService;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.RequestFilter;
 import org.sakaiproject.util.java.StringUtil;
@@ -78,9 +75,6 @@ public class BasicConfigurationService implements ServerConfigurationService
 
 	/** List of locks (functions). */
 	protected List registeredLocks = new Vector();
-
-	/** Set of resource services. */
-	protected Set m_resourceServices = new HashSet();
 
 	/** loaded tool orders - map keyed by category of List of tool id strings. */
 	protected Map m_toolOrders = new HashMap();
@@ -467,25 +461,6 @@ public class BasicConfigurationService implements ServerConfigurationService
 		}
 
 		return new Vector();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void registerResourceService(ResourceService service)
-	{
-		m_resourceServices.add(service);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public List getResourceServices()
-	{
-		List rv = new Vector();
-		rv.addAll(m_resourceServices);
-
-		return rv;
 	}
 
 	/**

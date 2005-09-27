@@ -25,12 +25,15 @@
 package org.sakaiproject.component.legacy.chat;
 
 // import
+import java.util.List;
+
 import org.sakaiproject.component.legacy.message.BaseMessageService;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.legacy.chat.ChatChannel;
 import org.sakaiproject.service.legacy.chat.ChatChannelEdit;
 import org.sakaiproject.service.legacy.chat.ChatMessage;
@@ -43,10 +46,11 @@ import org.sakaiproject.service.legacy.message.MessageChannel;
 import org.sakaiproject.service.legacy.message.MessageHeader;
 import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
+import org.sakaiproject.util.java.StringUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -72,7 +76,7 @@ public abstract class BaseChatService
 	* @param ref The channel reference.
 	* @return The new containe Resource.
 	*/
-	public Resource newContainer(String ref)
+	public Entity newContainer(String ref)
 	{
 		return new BaseChatChannelEdit(ref);
 	}
@@ -82,7 +86,7 @@ public abstract class BaseChatService
 	* @param element The XML.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Element element)
+	public Entity newContainer(Element element)
 	{
 		return new BaseChatChannelEdit(element);
 	}
@@ -92,7 +96,7 @@ public abstract class BaseChatService
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Resource other)
+	public Entity newContainer(Entity other)
 	{
 		return new BaseChatChannelEdit((MessageChannel) other);
 	}
@@ -104,7 +108,7 @@ public abstract class BaseChatService
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{
 		return new BaseChatMessageEdit((MessageChannel) container, id);
 	}
@@ -115,7 +119,7 @@ public abstract class BaseChatService
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{
 		return new BaseChatMessageEdit((MessageChannel) container, element);
 	}
@@ -126,7 +130,7 @@ public abstract class BaseChatService
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{
 		return new BaseChatMessageEdit((MessageChannel) container, (Message) other);
 	}
@@ -160,7 +164,7 @@ public abstract class BaseChatService
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Edit newContainerEdit(Resource other)
+	public Edit newContainerEdit(Entity other)
 	{
 		BaseChatChannelEdit rv = new BaseChatChannelEdit((MessageChannel) other);
 		rv.activate();
@@ -174,7 +178,7 @@ public abstract class BaseChatService
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseChatMessageEdit rv = new BaseChatMessageEdit((MessageChannel) container, id);
 		rv.activate();
@@ -187,7 +191,7 @@ public abstract class BaseChatService
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		BaseChatMessageEdit rv = new BaseChatMessageEdit((MessageChannel) container, element);
 		rv.activate();
@@ -200,7 +204,7 @@ public abstract class BaseChatService
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseChatMessageEdit rv = new BaseChatMessageEdit((MessageChannel) container, (Message) other);
 		rv.activate();
@@ -211,7 +215,7 @@ public abstract class BaseChatService
 	* Collect the fields that need to be stored outside the XML (for the resource).
 	* @return An array of field values to store in the record outside the XML (for the resource).
 	*/
-	public Object[] storageFields(Resource r)
+	public Object[] storageFields(Entity r)
 	{
 		Object[] rv = new Object[4];
 		rv[0] = ((Message) r).getHeader().getDate();
@@ -227,7 +231,7 @@ public abstract class BaseChatService
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return false;
 	}
@@ -237,7 +241,7 @@ public abstract class BaseChatService
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return ((Message)r).getHeader().getFrom().getId();
 	}
@@ -247,7 +251,7 @@ public abstract class BaseChatService
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return ((Message)r).getHeader().getDate();
 	}
@@ -317,6 +321,60 @@ public abstract class BaseChatService
 		return REFERENCE_ROOT;
 
 	}	// getReferenceRoot
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		if (reference.startsWith(REFERENCE_ROOT))
+		{
+			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
+
+			String id = null;
+			String subType = null;
+			String context = null;
+			String container = null;
+
+			// the first part will be null, then next the service, the third will be "msg" or "channel"
+			if (parts.length > 2)
+			{
+				subType = parts[2];
+				if (REF_TYPE_CHANNEL.equals(subType))
+				{
+					// next is the context id
+					if (parts.length > 3)
+					{
+						context = parts[3];
+
+						// next is the channel id
+						if (parts.length > 4)
+						{
+							id = parts[4];
+						}
+					}
+				}
+				else if (REF_TYPE_MESSAGE.equals(subType))
+				{
+					// next three parts are context, channel (container) and mesage id
+					if (parts.length > 5)
+					{
+						context = parts[3];
+						container = parts[4];
+						id = parts[5];
+					}
+				}
+				else
+					Log.warn("chef", this + "parse(): unknown message subtype: " + subType + " in ref: " + reference);
+			}
+			
+			ref.set(SERVICE_NAME, subType, id, container, context);
+
+			return true;
+		}
+		
+		return false;
+	}
 
 	/*******************************************************************************
 	* ChatService implementation
@@ -455,7 +513,7 @@ public abstract class BaseChatService
 		* @return The newly added message.
 		* @exception PermissionException If the user does not have write permission to the channel.
 		*/
-		public ChatMessage addChatMessage(ReferenceVector attachments, String body)
+		public ChatMessage addChatMessage(List attachments, String body)
 			throws PermissionException
 		{
 			ChatMessageEdit edit = (ChatMessageEdit) addMessage();

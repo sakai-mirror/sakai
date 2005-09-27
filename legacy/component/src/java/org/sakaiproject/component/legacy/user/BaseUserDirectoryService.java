@@ -28,6 +28,8 @@ package org.sakaiproject.component.legacy.user;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -38,7 +40,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
@@ -47,7 +49,9 @@ import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityManager;
+import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -110,7 +114,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	*/
 	protected String getAccessPoint(boolean relative)
 	{
-		return (relative ? "" : ServerConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
+		return (relative ? "" : m_serverConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
 
 	} // getAccessPoint
 
@@ -124,7 +128,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		// clean up the id
 		id = StringUtil.trimToZeroLower(id);
 
-		return getAccessPoint(true) + Resource.SEPARATOR + id;
+		return getAccessPoint(true) + Entity.SEPARATOR + id;
 
 	} // userReference
 
@@ -135,7 +139,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	*/
 	protected String userId(String ref)
 	{
-		String start = getAccessPoint(true) + Resource.SEPARATOR;
+		String start = getAccessPoint(true) + Entity.SEPARATOR;
 		int i = ref.indexOf(start);
 		if (i == -1)
 			return ref;
@@ -266,6 +270,34 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		m_cacheCleanerSeconds = Integer.parseInt(time) * 60;
 	}
 
+	/** Dependency: ServerConfigurationService. */
+	protected ServerConfigurationService m_serverConfigurationService = null;
+
+	/**
+	 * Dependency: ServerConfigurationService.
+	 * 
+	 * @param service
+	 *        The ServerConfigurationService.
+	 */
+	public void setServerConfigurationService(ServerConfigurationService service)
+	{
+		m_serverConfigurationService = service;
+	}
+
+	/** Dependency: EntityManager. */
+	protected EntityManager m_entityManager = null;
+
+	/**
+	 * Dependency: EntityManager.
+	 * 
+	 * @param service
+	 *        The EntityManager.
+	 */
+	public void setEntityManager(EntityManager service)
+	{
+		m_entityManager = service;
+	}
+
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -292,6 +324,9 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 				// build a synchronized map for the call cache, automatiaclly checking for expiration every 15 mins, expire on user events, too.
 				m_callCache = MemoryService.newHardCache(m_cacheCleanerSeconds, userReference(""));
 			}
+
+			// register as an entity producer
+			m_entityManager.registerEntityProducer(this);
 
 			m_logger.info(this +".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()) + " - caching minutes: " + m_cacheSeconds / 60 + " - cache cleaner minutes: " + m_cacheCleanerSeconds / 60);
 		}
@@ -1058,6 +1093,158 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		edit.m_lastModifiedTime = TimeService.newTime();
 
 	} //  addLiveUpdateProperties
+
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * EntityProducer implementation
+	 *********************************************************************************************************************************************************************************************************************************************************/
+
+	/**
+ 	 * {@inheritDoc}
+	 */
+	public String getLabel()
+	{
+		return "user";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willArchiveMerge()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willImport()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		// for user access
+		if (reference.startsWith(REFERENCE_ROOT))
+		{
+			String id = null;
+
+			// we will get null, service, userId
+			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
+
+			if (parts.length > 2)
+			{
+				id = parts[2];
+			}
+
+			ref.set(SERVICE_NAME, null, id, null, null);
+
+			return true;
+		}
+		
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityDescription(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		String rv = "User: " + ref.getReference();
+
+		try
+		{
+			User user = getUser(ref.getId());
+			rv = "User: " + user.getDisplayName();
+		}
+		catch (IdUnusedException e)
+		{
+		}
+		catch (NullPointerException e)
+		{
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ResourceProperties getEntityResourceProperties(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Entity getEntity(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection getEntityRealms(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		Collection rv = new Vector();
+
+		// for user access: user and template realms
+		try
+		{
+			rv.add(userReference(ref.getId()));
+
+			ref.addUserTemplateRealm(rv, UsageSessionService.getSessionUserId());
+		}
+		catch (NullPointerException e)
+		{
+			m_logger.warn("getEntityRealms(): " + e);
+		}
+
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityUrl(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String archive(String siteId, Document doc, Stack stack, String archivePath, List attachments)
+	{
+		return "";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames,
+			Map userIdTrans, Set userListAllowImport)
+	{
+		return "";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void importEntities(String fromContext, String toContext, List ids)
+	{
+	}
 
 	/*******************************************************************************
 	* UserEdit implementation
@@ -1887,7 +2074,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* @param id The id for the new object.
 	* @return The new containe Resource.
 	*/
-	public Resource newContainer(String ref)
+	public Entity newContainer(String ref)
 	{
 		return null;
 	}
@@ -1897,7 +2084,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* @param element The XML.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Element element)
+	public Entity newContainer(Element element)
 	{
 		return null;
 	}
@@ -1907,7 +2094,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Resource other)
+	public Entity newContainer(Entity other)
 	{
 		return null;
 	}
@@ -1919,7 +2106,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{
 		return new BaseUserEdit(id);
 	}
@@ -1930,7 +2117,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{
 		return new BaseUserEdit(element);
 	}
@@ -1941,7 +2128,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{
 		return new BaseUserEdit((User) other);
 	}
@@ -1971,7 +2158,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Edit newContainerEdit(Resource other)
+	public Edit newContainerEdit(Entity other)
 	{
 		return null;
 	}
@@ -1983,7 +2170,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseUserEdit e = new BaseUserEdit(id);
 		e.activate();
@@ -1996,7 +2183,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		BaseUserEdit e = new BaseUserEdit(element);
 		e.activate();
@@ -2009,7 +2196,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseUserEdit e = new BaseUserEdit((User) other);
 		e.activate();
@@ -2020,7 +2207,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	* Collect the fields that need to be stored outside the XML (for the resource).
 	* @return An array of field values to store in the record outside the XML (for the resource).
 	*/
-	public Object[] storageFields(Resource r)
+	public Object[] storageFields(Entity r)
 	{
 		return null;
 	}
@@ -2030,7 +2217,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return false;
 	}
@@ -2040,7 +2227,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return null;
 	}
@@ -2050,7 +2237,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return null;
 	}

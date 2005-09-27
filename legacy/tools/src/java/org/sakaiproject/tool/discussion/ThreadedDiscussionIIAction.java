@@ -60,18 +60,18 @@ import org.sakaiproject.service.legacy.discussion.DiscussionMessageHeader;
 import org.sakaiproject.service.legacy.discussion.DiscussionMessageHeaderEdit;
 import org.sakaiproject.service.legacy.discussion.cover.DiscussionService;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ParameterParser;
+import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.web.Web;
-import org.sakaiproject.util.Validator;
 
 /**
  * <p>DiscussionAction is the action class for the dicussion tool.</p>
@@ -472,7 +472,7 @@ public class ThreadedDiscussionIIAction
 
 		if (state.getAttribute(ATTACHMENTS)== null)
 		{
-			state.setAttribute(ATTACHMENTS, new ReferenceVector());
+			state.setAttribute(ATTACHMENTS, EntityManager.newReferenceList());
 		}
 
 		if (state.getAttribute(STATE_ASCENDING) == null)
@@ -1809,7 +1809,7 @@ public class ThreadedDiscussionIIAction
 					pEdit.addProperty(ResourceProperties.PROP_REPLY_STYLE, style);
 				}
 				postMessage.getDiscussionHeaderEdit().setDraft(false);
-				postMessage.getDiscussionHeaderEdit().replaceAttachments((ReferenceVector) state.getAttribute(ATTACHMENTS));
+				postMessage.getDiscussionHeaderEdit().replaceAttachments((List) state.getAttribute(ATTACHMENTS));
 				
 				channel.commitMessage(postMessage);
 				state.setAttribute(STATE_DISPLAY_MESSAGE, new DisplayMessage(postMessage.getId()));
@@ -1882,7 +1882,7 @@ public class ThreadedDiscussionIIAction
 					pEdit.addProperty(ResourceProperties.PROP_REPLY_STYLE, style);
 				}           
 				postMessage.getDiscussionHeaderEdit().setDraft(true);
-				postMessage.getDiscussionHeaderEdit().replaceAttachments((ReferenceVector) state.getAttribute(ATTACHMENTS));
+				postMessage.getDiscussionHeaderEdit().replaceAttachments((List) state.getAttribute(ATTACHMENTS));
 				
 				channel.commitMessage(postMessage);
 				state.setAttribute(STATE_DISPLAY_MESSAGE, new DisplayMessage(postMessage.getId()));
@@ -2053,7 +2053,7 @@ public class ThreadedDiscussionIIAction
 							hEdit.setCategory(category);
 							hEdit.setSubject(subject);
 							hEdit.setDraft(draft);
-							hEdit.replaceAttachments((ReferenceVector) state.getAttribute(ATTACHMENTS));
+							hEdit.replaceAttachments((List) state.getAttribute(ATTACHMENTS));
 							
 							ResourcePropertiesEdit pEdit = addedMessageEdit.getPropertiesEdit();
 							pEdit.addProperty(ResourceProperties.PROP_REPLY_STYLE, style);
@@ -2170,7 +2170,7 @@ public class ThreadedDiscussionIIAction
 						Iterator l = channel.getThread(originalMessage);
 	
 						// insert the response message
-						DiscussionMessage addedMessage = channel.addDiscussionMessage (category, subject, draft, replyToId, (ReferenceVector) state.getAttribute(ATTACHMENTS), body);
+						DiscussionMessage addedMessage = channel.addDiscussionMessage (category, subject, draft, replyToId, (List) state.getAttribute(ATTACHMENTS), body);
 						
 						// show the added message as the current message
 						showMessage(runData, addedMessage.getId());
@@ -2303,7 +2303,7 @@ public class ThreadedDiscussionIIAction
 						Iterator l = channel.getThread(originalMessage);
 	
 						// insert the response message
-						DiscussionMessage addedMessage = channel.addDiscussionMessage (category, subject, draft, replyToId, (ReferenceVector) state.getAttribute(ATTACHMENTS), body);
+						DiscussionMessage addedMessage = channel.addDiscussionMessage (category, subject, draft, replyToId, (List) state.getAttribute(ATTACHMENTS), body);
 						showMessage(runData, addedMessage.getId());
 						
 						if (!isMessageExpanded(state, originalMessage))
@@ -3732,7 +3732,7 @@ public class ThreadedDiscussionIIAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		String channelRefStr = (String) state.getAttribute(STATE_CHANNEL_REF);
-		Reference channelRef = new Reference(channelRefStr);
+		Reference channelRef = EntityManager.newReference(channelRefStr);
 		String siteRef = SiteService.siteReference(channelRef.getContext());
 
 		// setup for editing the permissions of the site for this tool, using the roles of this site, too

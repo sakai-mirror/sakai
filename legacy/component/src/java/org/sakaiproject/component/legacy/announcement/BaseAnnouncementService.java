@@ -35,6 +35,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannel;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannelEdit;
@@ -52,9 +53,8 @@ import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 import org.sakaiproject.service.legacy.notification.NotificationEdit;
 import org.sakaiproject.service.legacy.notification.NotificationService;
 import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -111,7 +111,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 			edit.addFunction(eventId(SECURE_UPDATE_ANY));
 
 			// set the filter to any announcement resource (see messageReference())
-			edit.setResourceFilter(getAccessPoint(true) + Resource.SEPARATOR + REF_TYPE_MESSAGE);
+			edit.setResourceFilter(getAccessPoint(true) + Entity.SEPARATOR + REF_TYPE_MESSAGE);
 
 			// set the action
 			edit.setAction(new SiteEmailNotificationAnnc());
@@ -134,7 +134,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param ref The container reference.
 	* @return The new containe Resource.
 	*/
-	public Resource newContainer(String ref)
+	public Entity newContainer(String ref)
 	{
 		return new BaseAnnouncementChannelEdit(ref);
 	}
@@ -144,7 +144,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param element The XML.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Element element)
+	public Entity newContainer(Element element)
 	{
 		return new BaseAnnouncementChannelEdit(element);
 	}
@@ -154,7 +154,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Resource other)
+	public Entity newContainer(Entity other)
 	{
 		return new BaseAnnouncementChannelEdit((MessageChannel) other);
 	}
@@ -166,7 +166,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{
 		return new BaseAnnouncementMessageEdit((MessageChannel) container, id);
 	}
@@ -177,7 +177,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{
 		return new BaseAnnouncementMessageEdit((MessageChannel) container, element);
 	}
@@ -188,7 +188,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{
 		return new BaseAnnouncementMessageEdit((MessageChannel) container, (Message) other);
 	}
@@ -222,7 +222,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Edit newContainerEdit(Resource other)
+	public Edit newContainerEdit(Entity other)
 	{
 		BaseAnnouncementChannelEdit rv = new BaseAnnouncementChannelEdit((MessageChannel) other);
 		rv.activate();
@@ -236,7 +236,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseAnnouncementMessageEdit rv = new BaseAnnouncementMessageEdit((MessageChannel) container, id);
 		rv.activate();
@@ -249,7 +249,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		BaseAnnouncementMessageEdit rv = new BaseAnnouncementMessageEdit((MessageChannel) container, element);
 		rv.activate();
@@ -262,7 +262,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseAnnouncementMessageEdit rv = new BaseAnnouncementMessageEdit((MessageChannel) container, (Message) other);
 		rv.activate();
@@ -273,7 +273,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* Collect the fields that need to be stored outside the XML (for the resource).
 	* @return An array of field values to store in the record outside the XML (for the resource).
 	*/
-	public Object[] storageFields(Resource r)
+	public Object[] storageFields(Entity r)
 	{
 		Object[] rv = new Object[4];
 		rv[0] = ((Message) r).getHeader().getDate();
@@ -289,7 +289,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return ((AnnouncementMessage)r).getAnnouncementHeader().getDraft();
 	}
@@ -299,7 +299,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return ((Message)r).getHeader().getFrom().getId();
 	}
@@ -309,7 +309,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return ((Message)r).getHeader().getDate();
 	}
@@ -380,6 +380,60 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 
 	} // getReferenceRoot
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		if (reference.startsWith(REFERENCE_ROOT))
+		{
+			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
+
+			String id = null;
+			String subType = null;
+			String context = null;
+			String container = null;
+
+			// the first part will be null, then next the service, the third will be "msg" or "channel"
+			if (parts.length > 2)
+			{
+				subType = parts[2];
+				if (REF_TYPE_CHANNEL.equals(subType))
+				{
+					// next is the context id
+					if (parts.length > 3)
+					{
+						context = parts[3];
+
+						// next is the channel id
+						if (parts.length > 4)
+						{
+							id = parts[4];
+						}
+					}
+				}
+				else if (REF_TYPE_MESSAGE.equals(subType))
+				{
+					// next three parts are context, channel (container) and mesage id
+					if (parts.length > 5)
+					{
+						context = parts[3];
+						container = parts[4];
+						id = parts[5];
+					}
+				}
+				else
+					Log.warn("chef", this + "parse(): unknown message subtype: " + subType + " in ref: " + reference);
+			}
+			
+			ref.set(SERVICE_NAME, subType, id, container, context);
+
+			return true;
+		}
+		
+		return false;
+	}
+
 	/*******************************************************************************
 	* AnnouncementService implementation
 	*******************************************************************************/
@@ -430,7 +484,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param toContext The destination context
 	* @param resourceIds when null, all resources will be imported; otherwise, only resources with those ids will be imported
 	*/
-	public void importResources(String fromContext, String toContext, List resourceIds)
+	public void importEntities(String fromContext, String toContext, List resourceIds)
 	{	
 		// get the channel associated with this site
 		String oChannelRef = channelReference(fromContext, SiteService.MAIN_CONTAINER);
@@ -509,8 +563,8 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 						nMessageHeader.setFrom(oMessageHeader.getFrom());
 						nMessageHeader.setSubject(oMessageHeader.getSubject());
 						//attachment
-						ReferenceVector oAttachments = oMessageHeader.getAttachments();
-						ReferenceVector nAttachments = new ReferenceVector();
+						List oAttachments = oMessageHeader.getAttachments();
+						List nAttachments = m_entityManager.newReferenceList();
 						for (int n=0; n<oAttachments.size(); n++)
 						{
 							Reference oAttachment = (Reference) oAttachments.get(n);
@@ -522,7 +576,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 								try
 								{
 									ContentResource attachment = ContentHostingService.getResource(nAttachmentId);
-									nAttachments.add(new Reference(attachment.getReference()));
+									nAttachments.add(m_entityManager.newReference(attachment.getReference()));
 								}
 								catch (Exception any)
 								{
@@ -683,7 +737,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 		public AnnouncementMessage addAnnouncementMessage(
 			String subject,
 			boolean draft,
-			ReferenceVector attachments,
+			List attachments,
 			String body)
 			throws PermissionException
 		{

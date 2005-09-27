@@ -31,7 +31,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.util.Filter;
 import org.w3c.dom.Element;
 
@@ -68,7 +68,7 @@ import org.w3c.dom.Element;
 * @see org.sakaiproject.core.Message
 */
 public interface MessageChannel
-	extends Resource
+	extends Entity
 {
 	/**
 	* Access the context of the resource.

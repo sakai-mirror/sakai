@@ -262,7 +262,7 @@ public class ChatService
 		return service.getLabel();
 	}
 
-	public static java.lang.String archive(java.lang.String param0, org.w3c.dom.Document param1, java.util.Stack param2, java.lang.String param3, org.sakaiproject.service.legacy.resource.ReferenceVector param4)
+	public static java.lang.String archive(java.lang.String param0, org.w3c.dom.Document param1, java.util.Stack param2, java.lang.String param3, java.util.List param4)
 	{
 		org.sakaiproject.service.legacy.chat.ChatService service = getInstance();
 		if (service == null)

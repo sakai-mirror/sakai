@@ -28,7 +28,7 @@ package org.sakaiproject.service.legacy.content;
 import java.io.InputStream;
 
 import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>ContentResource is the core interface for a Resource object in the GenericContentHostingService.</p>
@@ -36,10 +36,10 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * @author University of Michigan, CHEF Software Development Team
 * @version $Revision$
 * @see org.chefproject.service.generic.GenericContentHostingService
-* @see org.chefproject.core.Resource
+* @see org.chefproject.core.Entity
 */
 public interface ContentResource
-	extends Resource
+	extends Entity
 {
 	/**
 	* Access the content byte length.

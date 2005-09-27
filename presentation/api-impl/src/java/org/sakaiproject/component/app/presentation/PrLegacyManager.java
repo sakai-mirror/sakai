@@ -48,7 +48,7 @@ import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.Time;
@@ -569,7 +569,7 @@ public class PrLegacyManager implements org.sakaiproject.api.app.presentation.Pr
 		{		
 	    	    try
 			{
-				Resource resource = (Resource) newMembers.get(i);
+				Entity resource = (Entity) newMembers.get(i);
 				String nextId = resource.getId();
 				// System.out.println("Next ID = "+nextId);
 				boolean isCollection = resource.getProperties().getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION);
@@ -625,7 +625,7 @@ public class PrLegacyManager implements org.sakaiproject.api.app.presentation.Pr
 
 			for (int j = 0; j< colsize; j++)
 			{
-				Resource subResource = (Resource) colMembers.get(j);
+				Entity subResource = (Entity) colMembers.get(j);
 				// System.out.println("   Next ID = "+subResource.getId());
 				// System.out.println("   Next URL = "+subResource.getUrl());	
 				

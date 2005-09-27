@@ -28,7 +28,7 @@ package org.sakaiproject.service.legacy.site;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>A Site Page is grouping of tools in a Site.</p>
@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * @version $Revision$
 */
 public interface SitePage
-	extends Resource
+	extends Entity
 {
 	/** Layout value for a single column layout. */
 	public static final int LAYOUT_SINGLE_COL = 0;

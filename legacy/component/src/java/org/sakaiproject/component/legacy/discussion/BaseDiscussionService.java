@@ -39,6 +39,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
@@ -57,9 +58,8 @@ import org.sakaiproject.service.legacy.message.MessageHeader;
 import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -95,7 +95,7 @@ public abstract class BaseDiscussionService
 	* @param ref The channel reference.
 	* @return The new containe Resource.
 	*/
-	public Resource newContainer(String ref)
+	public Entity newContainer(String ref)
 	{
 		return new BaseDiscussionChannelEdit(ref);
 	}
@@ -105,7 +105,7 @@ public abstract class BaseDiscussionService
 	* @param element The XML.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Element element)
+	public Entity newContainer(Element element)
 	{
 		return new BaseDiscussionChannelEdit(element);
 	}
@@ -115,7 +115,7 @@ public abstract class BaseDiscussionService
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Resource other)
+	public Entity newContainer(Entity other)
 	{
 		return new BaseDiscussionChannelEdit((MessageChannel) other);
 	}
@@ -127,7 +127,7 @@ public abstract class BaseDiscussionService
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{
 		return new BaseDiscussionMessageEdit((MessageChannel) container, id);
 	}
@@ -138,7 +138,7 @@ public abstract class BaseDiscussionService
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{
 		return new BaseDiscussionMessageEdit((MessageChannel) container, element);
 	}
@@ -149,7 +149,7 @@ public abstract class BaseDiscussionService
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{
 		return new BaseDiscussionMessageEdit((MessageChannel) container, (Message) other);
 	}
@@ -183,7 +183,7 @@ public abstract class BaseDiscussionService
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Edit newContainerEdit(Resource other)
+	public Edit newContainerEdit(Entity other)
 	{
 		BaseDiscussionChannelEdit rv = new BaseDiscussionChannelEdit((MessageChannel) other);
 		rv.activate();
@@ -197,7 +197,7 @@ public abstract class BaseDiscussionService
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseDiscussionMessageEdit rv = new BaseDiscussionMessageEdit((MessageChannel) container, id);
 		rv.activate();
@@ -210,7 +210,7 @@ public abstract class BaseDiscussionService
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		BaseDiscussionMessageEdit rv = new BaseDiscussionMessageEdit((MessageChannel) container, element);
 		rv.activate();
@@ -223,7 +223,7 @@ public abstract class BaseDiscussionService
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseDiscussionMessageEdit rv = new BaseDiscussionMessageEdit((MessageChannel) container, (Message) other);
 		rv.activate();
@@ -234,7 +234,7 @@ public abstract class BaseDiscussionService
 	* Collect the fields that need to be stored outside the XML (for the resource).
 	* @return An array of field values to store in the record outside the XML (for the resource).
 	*/
-	public Object[] storageFields(Resource r)
+	public Object[] storageFields(Entity r)
 	{
 		Object[] rv = new Object[6];
 		rv[0] = ((Message) r).getHeader().getDate();
@@ -253,7 +253,7 @@ public abstract class BaseDiscussionService
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return ((DiscussionMessage)r).getDiscussionHeader().getDraft();
 	}
@@ -263,7 +263,7 @@ public abstract class BaseDiscussionService
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return ((Message)r).getHeader().getFrom().getId();
 	}
@@ -273,7 +273,7 @@ public abstract class BaseDiscussionService
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return ((Message)r).getHeader().getDate();
 	}
@@ -344,6 +344,60 @@ public abstract class BaseDiscussionService
 
 	}	// getReferenceRoot
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		if (reference.startsWith(REFERENCE_ROOT))
+		{
+			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
+
+			String id = null;
+			String subType = null;
+			String context = null;
+			String container = null;
+
+			// the first part will be null, then next the service, the third will be "msg" or "channel"
+			if (parts.length > 2)
+			{
+				subType = parts[2];
+				if (REF_TYPE_CHANNEL.equals(subType))
+				{
+					// next is the context id
+					if (parts.length > 3)
+					{
+						context = parts[3];
+
+						// next is the channel id
+						if (parts.length > 4)
+						{
+							id = parts[4];
+						}
+					}
+				}
+				else if (REF_TYPE_MESSAGE.equals(subType))
+				{
+					// next three parts are context, channel (container) and mesage id
+					if (parts.length > 5)
+					{
+						context = parts[3];
+						container = parts[4];
+						id = parts[5];
+					}
+				}
+				else
+					Log.warn("chef", this + "parse(): unknown message subtype: " + subType + " in ref: " + reference);
+			}
+			
+			ref.set(SERVICE_NAME, subType, id, container, context);
+
+			return true;
+		}
+		
+		return false;
+	}
+
 	/*******************************************************************************
 	* DiscussionService implementation
 	*******************************************************************************/
@@ -380,7 +434,7 @@ public abstract class BaseDiscussionService
 	/**
 	 * {@inheritDoc}
 	 */
-	public String archive(String siteId, Document doc, Stack stack, String archivePath, ReferenceVector attachments)
+	public String archive(String siteId, Document doc, Stack stack, String archivePath, List attachments)
 	{
 		// prepare the buffer for the results log
 		StringBuffer results = new StringBuffer();
@@ -429,10 +483,10 @@ public abstract class BaseDiscussionService
 		
 				// collect message attachments
 				MessageHeader header = msg.getHeader();
-				ReferenceVector atts = header.getAttachments();
+				List atts = header.getAttachments();
 				for (int i = 0; i < atts.size(); i++)
 				{
-					Reference ref = (Reference) atts.elementAt(i);
+					Reference ref = (Reference) atts.get(i);
 					// if it's in the attachment area, and not already in the list
 					if (	(ref.getReference().startsWith("/content/attachment/"))
 						&&	(!attachments.contains(ref)))
@@ -474,7 +528,7 @@ public abstract class BaseDiscussionService
 	* @param toContext The destination context
 	* @param resourceIds when null, all resources will be imported; otherwise, only resources with those ids will be imported
 	*/
-	public void importResources(String fromContext, String toContext, List resourceIds)
+	public void importEntities(String fromContext, String toContext, List resourceIds)
 	{	
 		// get the channel associated with this site
 		String oChannelRef = channelReference(fromContext, SiteService.MAIN_CONTAINER);
@@ -544,8 +598,8 @@ public abstract class BaseDiscussionService
 						nMessageHeader.setSubject(oMessageHeader.getSubject());
 						nMessageHeader.setCategory(category);
 						// attachment
-						ReferenceVector oAttachments = oMessageHeader.getAttachments();
-						ReferenceVector nAttachments = new ReferenceVector();
+						List oAttachments = oMessageHeader.getAttachments();
+						List nAttachments = m_entityManager.newReferenceList();
 						for (int n=0; n<oAttachments.size(); n++)
 						{
 							Reference oAttachment = (Reference) oAttachments.get(n);
@@ -557,7 +611,7 @@ public abstract class BaseDiscussionService
 								try
 								{
 									ContentResource attachment = ContentHostingService.getResource(nAttachmentId);
-									nAttachments.add(new Reference(attachment.getReference()));
+									nAttachments.add(m_entityManager.newReference(attachment.getReference()));
 								}
 								catch (Exception any)
 								{
@@ -852,7 +906,7 @@ public abstract class BaseDiscussionService
 		* @exception PermissionException If the user does not have write permission to the channel.
 		*/
 		public DiscussionMessage addDiscussionMessage(String category, String subject, boolean draft,
-					String replyTo, ReferenceVector attachments, String body)
+					String replyTo, List attachments, String body)
 			throws PermissionException
 		{
 			DiscussionMessageEdit edit = (DiscussionMessageEdit) addMessage();

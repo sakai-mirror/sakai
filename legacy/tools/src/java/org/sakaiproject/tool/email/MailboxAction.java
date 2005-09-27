@@ -58,6 +58,7 @@ import org.sakaiproject.service.legacy.email.MailArchiveMessage;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.message.MessageEdit;
 import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
@@ -342,7 +343,7 @@ extends PagedResourceActionII
 //				String elementId = mainPanelUpdateId(portlet.getID());
 //				
 //				// the event resource reference pattern to watch for
-//				Reference r = new Reference(channel);
+//				Reference r = EntityManager.newReference(channel);
 //				String pattern = MailArchiveService.messageReference(r.getContext(), r.getId(), "");
 //
 //				state.setAttribute(STATE_OBSERVER, new EventObservingCourier(deliveryId, elementId, pattern));
@@ -641,7 +642,7 @@ extends PagedResourceActionII
 		List all = AliasService.getAliases((String) state.getAttribute(STATE_CHANNEL_REF));
 
 		// and the aliases for the site (context)
-		Reference channelRef = new Reference((String) state.getAttribute(STATE_CHANNEL_REF));
+		Reference channelRef = EntityManager.newReference((String) state.getAttribute(STATE_CHANNEL_REF));
 		String siteRef = SiteService.siteReference(channelRef.getContext());
 		all.addAll(AliasService.getAliases(siteRef));
 
@@ -1198,7 +1199,7 @@ extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		String channelRefStr = (String) state.getAttribute(STATE_CHANNEL_REF);
-		Reference channelRef = new Reference(channelRefStr);
+		Reference channelRef = EntityManager.newReference(channelRefStr);
 		String siteRef = SiteService.siteReference(channelRef.getContext());
 
 		// setup for editing the permissions of the site for this tool, using the roles of this site, too

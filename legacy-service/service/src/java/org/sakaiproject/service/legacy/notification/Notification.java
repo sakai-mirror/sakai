@@ -28,7 +28,7 @@ package org.sakaiproject.service.legacy.notification;
 import java.util.List;
 
 import org.sakaiproject.service.legacy.event.Event;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>Notification the interface for classes that act to notify, used with the GenericNotificationService. </p>
@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * @version $Revision$
 */
 public interface Notification
-	extends Resource
+	extends Entity
 {
 	/**
 	* Do the notification.

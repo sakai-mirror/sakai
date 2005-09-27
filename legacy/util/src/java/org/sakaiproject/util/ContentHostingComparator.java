@@ -29,7 +29,7 @@ import java.util.Comparator;
 
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 
 /**
@@ -83,8 +83,8 @@ public class ContentHostingComparator
 		// try a numeric interpretation
 		try
 		{
-			long l1 = ((Resource)o1).getProperties().getLongProperty(m_property);
-			long l2 = ((Resource)o2).getProperties().getLongProperty(m_property);
+			long l1 = ((Entity)o1).getProperties().getLongProperty(m_property);
+			long l2 = ((Entity)o2).getProperties().getLongProperty(m_property);
 			int rv = ((l1 < l2) ? -1 : ((l1 > l2) ? 1 : 0));
 			if (!m_ascending) rv = -rv;
 			return rv;
@@ -94,8 +94,8 @@ public class ContentHostingComparator
 		// try a Time interpretation
 		try
 		{
-			Time t1 = ((Resource)o1).getProperties().getTimeProperty(m_property);
-			Time t2 = ((Resource)o2).getProperties().getTimeProperty(m_property);
+			Time t1 = ((Entity)o1).getProperties().getTimeProperty(m_property);
+			Time t2 = ((Entity)o2).getProperties().getTimeProperty(m_property);
 			int rv = t1.compareTo(t2);
 			if (!m_ascending) rv = -rv;
 			return rv;
@@ -103,8 +103,8 @@ public class ContentHostingComparator
 		catch (Exception ignore) {}
 
 		// do a formatted interpretation - case insensitive
-		String s1 = ((Resource)o1).getProperties().getPropertyFormatted(m_property);
-		String s2 = ((Resource)o2).getProperties().getPropertyFormatted(m_property);
+		String s1 = ((Entity)o1).getProperties().getPropertyFormatted(m_property);
+		String s2 = ((Entity)o2).getProperties().getPropertyFormatted(m_property);
 		int rv = s1.compareToIgnoreCase(s2);
 		if (!m_ascending) rv = -rv;
 		return rv;

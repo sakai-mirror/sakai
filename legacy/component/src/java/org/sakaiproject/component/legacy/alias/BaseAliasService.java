@@ -25,8 +25,11 @@
 package org.sakaiproject.component.legacy.alias;
 
 // imports
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
@@ -36,7 +39,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
@@ -46,8 +49,9 @@ import org.sakaiproject.service.legacy.alias.AliasService;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityManager;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -56,8 +60,8 @@ import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
-import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.Validator;
+import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.resource.BaseResourceProperties;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.sakaiproject.util.storage.StorageUser;
@@ -97,7 +101,7 @@ public abstract class BaseAliasService
 	*/
 	protected String getAccessPoint(boolean relative)
 	{
-		return (relative ? "" : ServerConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
+		return (relative ? "" : m_serverConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
 
 	}   // getAccessPoint
 
@@ -108,7 +112,7 @@ public abstract class BaseAliasService
 	*/
 	public String aliasReference(String id)
 	{
-		return getAccessPoint(true) + Resource.SEPARATOR + id;
+		return getAccessPoint(true) + Entity.SEPARATOR + id;
 
 	}   // aliasReference
 
@@ -119,7 +123,7 @@ public abstract class BaseAliasService
 	*/
 	protected String aliasId(String ref)
 	{
-		String start = getAccessPoint(true) + Resource.SEPARATOR;
+		String start = getAccessPoint(true) + Entity.SEPARATOR;
 		int i = ref.indexOf(start);
 		if (i == -1) return ref;
 		String id = ref.substring(i+start.length());
@@ -170,7 +174,7 @@ public abstract class BaseAliasService
 		// check the target for modify access.
 		// %%% Note: this is setup only for sites and mail archive channels,
 		// we need a Reference based generic "allowModify()" -ggolden.
-		Reference ref = new Reference(target);
+		Reference ref = m_entityManager.newReference(target);
 		if (ref.getType().equals(SiteService.SERVICE_NAME))
 		{
 			 return SiteService.allowUpdateSite(ref.getId());
@@ -241,6 +245,34 @@ public abstract class BaseAliasService
 		m_memoryService = service;
 	}
 
+	/** Dependency: ServerConfigurationService. */
+	protected ServerConfigurationService m_serverConfigurationService = null;
+
+	/**
+	 * Dependency: ServerConfigurationService.
+	 * 
+	 * @param service
+	 *        The ServerConfigurationService.
+	 */
+	public void setServerConfigurationService(ServerConfigurationService service)
+	{
+		m_serverConfigurationService = service;
+	}
+
+	/** Dependency: EntityManager. */
+	protected EntityManager m_entityManager = null;
+
+	/**
+	 * Dependency: EntityManager.
+	 * 
+	 * @param service
+	 *        The EntityManager.
+	 */
+	public void setEntityManager(EntityManager service)
+	{
+		m_entityManager = service;
+	}
+
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -257,6 +289,9 @@ public abstract class BaseAliasService
 			// construct storage and read
 			m_storage = newStorage();
 			m_storage.open();
+
+			// register as an entity producer
+			m_entityManager.registerEntityProducer(this);
 
 			m_logger.info(this +".init()");
 		}
@@ -654,6 +689,125 @@ public abstract class BaseAliasService
 		((BaseAliasEdit) edit).closeEdit();
 
 	}	// remove
+
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * EntityProducer implementation
+	 *********************************************************************************************************************************************************************************************************************************************************/
+
+	/**
+ 	 * {@inheritDoc}
+	 */
+	public String getLabel()
+	{
+		return "alias";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willArchiveMerge()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willImport()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		// for preferences access
+		if (reference.startsWith(REFERENCE_ROOT))
+		{
+			String id = null;
+
+			// we will get null, service, userId
+			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
+
+			if (parts.length > 2)
+			{
+				id = parts[2];
+			}
+
+			ref.set(SERVICE_NAME, null, id, null, null);
+			
+			return true;
+		}
+		
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityDescription(Reference ref)
+	{
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ResourceProperties getEntityResourceProperties(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Entity getEntity(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection getEntityRealms(Reference ref)
+	{
+		// for alias access %%% ? what realm? -ggolden
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityUrl(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String archive(String siteId, Document doc, Stack stack, String archivePath, List attachments)
+	{
+		return "";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames,
+			Map userIdTrans, Set userListAllowImport)
+	{
+		return "";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void importEntities(String fromContext, String toContext, List ids)
+	{
+	}
 
 	/*******************************************************************************
 	* Alias implementation
@@ -1111,7 +1265,7 @@ public abstract class BaseAliasService
 			try
 			{
 				// the rest are references to some resource
-				Reference ref = new Reference(getTarget());
+				Reference ref = m_entityManager.newReference(getTarget());
 				return ref.getDescription();
 			}
 			catch (Throwable any)
@@ -1271,21 +1425,21 @@ public abstract class BaseAliasService
 	* @param id The id for the new object.
 	* @return The new containe Resource.
 	*/
-	public Resource newContainer(String ref) { return null; }
+	public Entity newContainer(String ref) { return null; }
 
 	/**
 	* Construct a new container resource, from an XML element.
 	* @param element The XML.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Element element) { return null; }
+	public Entity newContainer(Element element) { return null; }
 
 	/**
 	* Construct a new container resource, as a copy of another
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Resource newContainer(Resource other) { return null; }
+	public Entity newContainer(Entity other) { return null; }
 
 	/**
 	* Construct a new resource given just an id.
@@ -1294,7 +1448,7 @@ public abstract class BaseAliasService
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{ return new BaseAliasEdit(id); }
 
 	/**
@@ -1303,7 +1457,7 @@ public abstract class BaseAliasService
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{ return new BaseAliasEdit(element); }
 
 	/**
@@ -1312,7 +1466,7 @@ public abstract class BaseAliasService
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{ return new BaseAliasEdit((BaseAliasEdit) other); }
 
 	/**
@@ -1334,7 +1488,7 @@ public abstract class BaseAliasService
 	* @param other The other contianer to copy.
 	* @return The new container resource.
 	*/
-	public Edit newContainerEdit(Resource other) { return null; }
+	public Edit newContainerEdit(Entity other) { return null; }
 
 	/**
 	* Construct a new resource given just an id.
@@ -1343,7 +1497,7 @@ public abstract class BaseAliasService
 	* @param others (options) array of objects to load into the Resource's fields.
 	* @return The new resource.
 	*/
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseAliasEdit e = new BaseAliasEdit(id);
 		e.activate();
@@ -1356,7 +1510,7 @@ public abstract class BaseAliasService
 	* @param element The XML.
 	* @return The new resource from the XML.
 	*/
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		BaseAliasEdit e =  new BaseAliasEdit(element);
 		e.activate();
@@ -1369,7 +1523,7 @@ public abstract class BaseAliasService
 	* @param other The other resource.
 	* @return The new resource as a copy of the other.
 	*/
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseAliasEdit e = new BaseAliasEdit((BaseAliasEdit) other);
 		e.activate();
@@ -1380,14 +1534,14 @@ public abstract class BaseAliasService
 	* Collect the fields that need to be stored outside the XML (for the resource).
 	* @return An array of field values to store in the record outside the XML (for the resource).
 	*/
-	public Object[] storageFields(Resource r) { return null; }
+	public Object[] storageFields(Entity r) { return null; }
 
 	/**
 	 * Check if this resource is in draft mode.
 	 * @param r The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return false;
 	}
@@ -1397,7 +1551,7 @@ public abstract class BaseAliasService
 	 * @param r The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return null;
 	}
@@ -1407,7 +1561,7 @@ public abstract class BaseAliasService
 	 * @param r The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return null;
 	}

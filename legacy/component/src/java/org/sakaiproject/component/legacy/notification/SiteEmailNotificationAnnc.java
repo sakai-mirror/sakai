@@ -38,7 +38,7 @@ import org.sakaiproject.service.legacy.notification.Notification;
 import org.sakaiproject.service.legacy.notification.NotificationAction;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 
@@ -101,8 +101,8 @@ public class SiteEmailNotificationAnnc
 	public void notify(Notification notification, Event event)
 	{
 		// get the message
-		Reference ref = new Reference(event.getResource());
-		AnnouncementMessage msg = (AnnouncementMessage) ref.getResource();
+		Reference ref = EntityManager.newReference(event.getResource());
+		AnnouncementMessage msg = (AnnouncementMessage) ref.getEntity();
 		AnnouncementMessageHeader hdr = (AnnouncementMessageHeader) msg.getAnnouncementHeader();
 
 		// skip drafts
@@ -120,8 +120,8 @@ public class SiteEmailNotificationAnnc
 	protected String getFrom(Event event)
 	{
 		// get the message
-		Reference ref = new Reference(event.getResource());
-		AnnouncementMessage msg = (AnnouncementMessage) ref.getResource();
+		Reference ref = EntityManager.newReference(event.getResource());
+		AnnouncementMessage msg = (AnnouncementMessage) ref.getEntity();
 		AnnouncementMessageHeader hdr = (AnnouncementMessageHeader) msg.getAnnouncementHeader();
 
 		// make it from the message's creator
@@ -137,8 +137,8 @@ public class SiteEmailNotificationAnnc
 	public String getSubject(Event event)
 	{
 		// get the message
-		Reference ref = new Reference(event.getResource());
-		AnnouncementMessage msg = (AnnouncementMessage) ref.getResource();
+		Reference ref = EntityManager.newReference(event.getResource());
+		AnnouncementMessage msg = (AnnouncementMessage) ref.getEntity();
 		AnnouncementMessageHeader hdr = (AnnouncementMessageHeader) msg.getAnnouncementHeader();
 
 		// use either the configured site, or if not configured, the site (context) of the resource
@@ -168,8 +168,8 @@ public class SiteEmailNotificationAnnc
 		StringBuffer buf = new StringBuffer();
 		String newline = "<br />\n";
 		// get the message
-		Reference ref = new Reference(event.getResource());
-		AnnouncementMessage msg = (AnnouncementMessage) ref.getResource();
+		Reference ref = EntityManager.newReference(event.getResource());
+		AnnouncementMessage msg = (AnnouncementMessage) ref.getEntity();
 		AnnouncementMessageHeader hdr = (AnnouncementMessageHeader) msg.getAnnouncementHeader();
 
 		// use either the configured site, or if not configured, the site (context) of the resource
@@ -188,7 +188,7 @@ public class SiteEmailNotificationAnnc
 		buf.append(msg.getBody() + newline);
 
 		// add any attachments
-		ReferenceVector attachments = hdr.getAttachments();
+		List attachments = hdr.getAttachments();
 		if (attachments.size() > 0)
 		{
 			buf.append(newline + rb.getString("att") + newline);

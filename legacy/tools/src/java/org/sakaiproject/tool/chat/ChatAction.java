@@ -56,6 +56,7 @@ import org.sakaiproject.service.legacy.chat.ChatMessageEdit;
 import org.sakaiproject.service.legacy.chat.cover.ChatService;
 import org.sakaiproject.service.legacy.presence.cover.PresenceService;
 import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
@@ -232,7 +233,7 @@ public class ChatAction
 				
 				// the html element to update on delivery
 				String elementId = MONITOR_PANEL;
-				Reference r = new Reference(channel);
+				Reference r = EntityManager.newReference(channel);
 				String pattern = ChatService.messageReference(r.getContext(), r.getId(), "");
 				boolean wantsBeeps = ((Boolean) state.getAttribute(STATE_SOUND_ALERT)).booleanValue();
 
@@ -287,7 +288,7 @@ public class ChatAction
 	{
 		// make sure the pattern matches the channel we are looking at
 		String channel = (String) state.getAttribute(STATE_CHANNEL_REF);
-		Reference r = new Reference(channel);
+		Reference r = EntityManager.newReference(channel);
 		String pattern = ChatService.messageReference(r.getContext(), r.getId(), "");
 		
 		// update the observer looking for new messages
@@ -1466,7 +1467,7 @@ public class ChatAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(peid);
 
 		String channelRefStr = (String) state.getAttribute(STATE_CHANNEL_REF);
-		Reference channelRef = new Reference(channelRefStr);
+		Reference channelRef = EntityManager.newReference(channelRefStr);
 		String siteRef = SiteService.siteReference(channelRef.getContext());
 
 		// setup for editing the permissions of the site for this tool, using the roles of this site, too

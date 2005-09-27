@@ -48,7 +48,7 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.SiteCache;
 import org.sakaiproject.service.framework.memory.cover.MemoryService;
@@ -73,8 +73,9 @@ import org.sakaiproject.service.legacy.realm.RealmEdit;
 import org.sakaiproject.service.legacy.realm.RoleEdit;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityManager;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -136,7 +137,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	protected String getAccessPoint(boolean relative)
 	{
-		return (relative ? "" : ServerConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
+		return (relative ? "" : m_serverConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
 
 	} // getAccessPoint
 
@@ -149,7 +150,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	protected String siteId(String ref)
 	{
-		String start = getAccessPoint(true) + Resource.SEPARATOR;
+		String start = getAccessPoint(true) + Entity.SEPARATOR;
 		int i = ref.indexOf(start);
 		if (i == -1) return ref;
 		String id = ref.substring(i + start.length());
@@ -230,7 +231,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	protected String convertReferenceUrl(String url)
 	{
 		// make a reference
-		Reference ref = new Reference(url);
+		Reference ref = m_entityManager.newReference(url);
 
 		// if it didn't recognize this, return it unchanged
 		if (!ref.isKnownType()) return url;
@@ -300,6 +301,34 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		m_cacheCleanerSeconds = Integer.parseInt(time) * 60;
 	}
 
+	/** Dependency: ServerConfigurationService. */
+	protected ServerConfigurationService m_serverConfigurationService = null;
+
+	/**
+	 * Dependency: ServerConfigurationService.
+	 * 
+	 * @param service
+	 *        The ServerConfigurationService.
+	 */
+	public void setServerConfigurationService(ServerConfigurationService service)
+	{
+		m_serverConfigurationService = service;
+	}
+
+	/** Dependency: EntityManager. */
+	protected EntityManager m_entityManager = null;
+
+	/**
+	 * Dependency: EntityManager.
+	 * 
+	 * @param service
+	 *        The EntityManager.
+	 */
+	public void setEntityManager(EntityManager service)
+	{
+		m_entityManager = service;
+	}
+
 	/**
 	 * Regenerate the page and tool ids for all sites.
 	 */
@@ -353,6 +382,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				// build a synchronized map for the call cache, automatiaclly checking for expiration every 15 mins.
 				m_siteCache = MemoryService.newSiteCache(m_cacheCleanerSeconds, siteReference(""));
 			}
+
+			// register as an entity producer
+			m_entityManager.registerEntityProducer(this);
 
 			m_logger.info(this + ".init() - caching minutes: " + m_cacheSeconds / 60);
 		}
@@ -898,7 +930,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public String siteReference(String id)
 	{
-		return getAccessPoint(true) + Resource.SEPARATOR + id;
+		return getAccessPoint(true) + Entity.SEPARATOR + id;
 
 	} // siteReference
 
@@ -913,7 +945,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public String sitePageReference(String siteId, String pageId)
 	{
-		return getAccessPoint(true) + Resource.SEPARATOR + siteId + Resource.SEPARATOR + "page" + Resource.SEPARATOR + pageId;
+		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + "page" + Entity.SEPARATOR + pageId;
 
 	} // sitePageReference
 
@@ -928,7 +960,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public String siteToolReference(String siteId, String toolId)
 	{
-		return getAccessPoint(true) + Resource.SEPARATOR + siteId + Resource.SEPARATOR + "tool" + Resource.SEPARATOR + toolId;
+		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + "tool" + Entity.SEPARATOR + toolId;
 
 	} // siteToolReference
 
@@ -1324,6 +1356,187 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	{
 		m_storage.setUserSecurity(userId, updateSites, visitUnpSites, visitSites);
 	}
+
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * EntityProducer implementation
+	 *********************************************************************************************************************************************************************************************************************************************************/
+
+	/**
+ 	 * {@inheritDoc}
+	 */
+	public String getLabel()
+	{
+		return "site";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willArchiveMerge()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean willImport()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean parseEntityReference(String reference, Reference ref)
+	{
+		// for site access
+		if (reference.startsWith(REFERENCE_ROOT))
+		{
+			String id = null;
+
+			// we will get null, service, siteId
+			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
+
+			if (parts.length > 2)
+			{
+				id = parts[2];
+			}
+
+			ref.set(SERVICE_NAME, null, id, null, null);
+
+			return true;
+		}
+		
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityDescription(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		String rv = "Site: " + ref.getReference();
+
+		try
+		{
+			Site site = getSite(ref.getId());
+			rv = "Site: " + site.getTitle() + " (" + site.getId() + ")\n" + " Created: "
+					+ site.getProperties().getPropertyFormatted(ResourceProperties.PROP_CREATION_DATE) + " by "
+					+ site.getProperties().getPropertyFormatted(ResourceProperties.PROP_CREATOR) + "(User Id:"
+					+ site.getProperties().getProperty(ResourceProperties.PROP_CREATOR) + ")\n"
+					+ StringUtil.limit((site.getDescription() == null ? "" : site.getDescription()), 30);
+		}
+		catch (IdUnusedException e)
+		{
+		}
+		catch (NullPointerException e)
+		{
+		}
+		
+		return rv;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public ResourceProperties getEntityResourceProperties(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Entity getEntity(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		Entity rv = null;
+
+		try
+		{
+			rv = getSite(ref.getId());
+		}
+		catch (IdUnusedException e)
+		{
+			m_logger.warn("getEntity(): " + e);
+		}
+		catch (NullPointerException e)
+		{
+			m_logger.warn("getEntity(): " + e);
+		}
+		
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection getEntityRealms(Reference ref)
+	{
+		// double check that it's mine
+		if (SERVICE_NAME != ref.getType()) return null;
+
+		Collection rv = new Vector();
+
+		// for site access: user realm
+		try
+		{
+			rv.add(siteReference(ref.getId()));
+
+			// add the current user's realm
+			ref.addUserRealm(rv, UsageSessionService.getSessionUserId());
+
+			// site helper
+			rv.add("!site.helper");
+		}
+		catch (NullPointerException e)
+		{
+			m_logger.warn("getEntityRealms(): " + e);
+		}
+
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getEntityUrl(Reference ref)
+	{
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String archive(String siteId, Document doc, Stack stack, String archivePath, List attachments)
+	{
+		return "";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames,
+			Map userIdTrans, Set userListAllowImport)
+	{
+		return "";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void importEntities(String fromContext, String toContext, List ids)
+	{
+	}
+
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	// TODO: the following enable/disable routines are UGLY here - oh gods of the separation of concerns
 	// and modularity forgive me - I will clean this up soon -ggolden
@@ -2368,7 +2581,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 */
 		public String getUrl()
 		{
-			return ServerConfigurationService.getPortalUrl() + "/site/" + m_id;
+			return m_serverConfigurationService.getPortalUrl() + "/site/" + m_id;
 			//			return ServerConfigurationService.getPortalUrl() + "?site=" + m_id;
 
 		} // getUrl
@@ -2594,7 +2807,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 */
 		public List getOrderedPages()
 		{
-			List order = ServerConfigurationService.getToolOrder(getType());
+			List order = m_serverConfigurationService.getToolOrder(getType());
 			if (order.isEmpty()) return getPages();
 
 			// get a copy we can modify without changing the site!
@@ -3707,10 +3920,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			String rv = null;
 			if (m_site == null)
 			{
-				rv = ServerConfigurationService.getPortalUrl() + sitePageReference(m_siteId, m_id);
+				rv = m_serverConfigurationService.getPortalUrl() + sitePageReference(m_siteId, m_id);
 			}
 
-			rv = ServerConfigurationService.getPortalUrl() + sitePageReference(m_site.getId(), m_id);
+			rv = m_serverConfigurationService.getPortalUrl() + sitePageReference(m_site.getId(), m_id);
 
 			//			if (m_site == null)
 			//			{
@@ -4508,7 +4721,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The id for the new object.
 	 * @return The new containe Resource.
 	 */
-	public Resource newContainer(String ref)
+	public Entity newContainer(String ref)
 	{
 		return null;
 	}
@@ -4520,7 +4733,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The XML.
 	 * @return The new container resource.
 	 */
-	public Resource newContainer(Element element)
+	public Entity newContainer(Element element)
 	{
 		return null;
 	}
@@ -4532,7 +4745,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The other contianer to copy.
 	 * @return The new container resource.
 	 */
-	public Resource newContainer(Resource other)
+	public Entity newContainer(Entity other)
 	{
 		return null;
 	}
@@ -4548,7 +4761,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        (options) array of objects to load into the Resource's fields.
 	 * @return The new resource.
 	 */
-	public Resource newResource(Resource container, String id, Object[] others)
+	public Entity newResource(Entity container, String id, Object[] others)
 	{
 		return new BaseSite(id);
 	}
@@ -4562,7 +4775,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The XML.
 	 * @return The new resource from the XML.
 	 */
-	public Resource newResource(Resource container, Element element)
+	public Entity newResource(Entity container, Element element)
 	{
 		return null;
 	}
@@ -4576,7 +4789,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The other resource.
 	 * @return The new resource as a copy of the other.
 	 */
-	public Resource newResource(Resource container, Resource other)
+	public Entity newResource(Entity container, Entity other)
 	{
 		return new BaseSite((Site) other, true);
 	}
@@ -4612,7 +4825,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The other contianer to copy.
 	 * @return The new container resource.
 	 */
-	public Edit newContainerEdit(Resource other)
+	public Edit newContainerEdit(Entity other)
 	{
 		return null;
 	}
@@ -4628,7 +4841,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        (options) array of objects to load into the Resource's fields.
 	 * @return The new resource.
 	 */
-	public Edit newResourceEdit(Resource container, String id, Object[] others)
+	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
 		BaseSiteEdit e = new BaseSiteEdit(id);
 		e.activate();
@@ -4644,7 +4857,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The XML.
 	 * @return The new resource from the XML.
 	 */
-	public Edit newResourceEdit(Resource container, Element element)
+	public Edit newResourceEdit(Entity container, Element element)
 	{
 		return null;
 	}
@@ -4658,7 +4871,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The other resource.
 	 * @return The new resource as a copy of the other.
 	 */
-	public Edit newResourceEdit(Resource container, Resource other)
+	public Edit newResourceEdit(Entity container, Entity other)
 	{
 		BaseSiteEdit e = new BaseSiteEdit((Site) other);
 		e.activate();
@@ -4670,7 +4883,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * 
 	 * @return An array of field values to store in the record outside the XML (for the resource).
 	 */
-	public Object[] storageFields(Resource r)
+	public Object[] storageFields(Entity r)
 	{
 		return null;
 	}
@@ -4682,7 +4895,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
-	public boolean isDraft(Resource r)
+	public boolean isDraft(Entity r)
 	{
 		return false;
 	}
@@ -4694,7 +4907,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The resource.
 	 * @return The resource owner user id.
 	 */
-	public String getOwnerId(Resource r)
+	public String getOwnerId(Entity r)
 	{
 		return null;
 	}
@@ -4706,7 +4919,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *        The resource.
 	 * @return The resource date.
 	 */
-	public Time getDate(Resource r)
+	public Time getDate(Entity r)
 	{
 		return null;
 	}

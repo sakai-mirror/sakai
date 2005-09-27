@@ -36,7 +36,8 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityProducer;
 
 /**
 * <p>SiteService manages Sites.</p>
@@ -45,12 +46,13 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * @version $Revision$
 */
 public interface SiteService
+	extends EntityProducer
 {
 	/** This string can be used to find the service in the service manager. */
 	public static final String SERVICE_NAME = SiteService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "site";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "site";
 
 	/** Name for the event of visiting a site. */
 	public static final String SITE_VISIT = "site.visit";

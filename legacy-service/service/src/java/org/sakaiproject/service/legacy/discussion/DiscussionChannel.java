@@ -32,7 +32,6 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.legacy.message.MessageChannel;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 
 /**
 * <p>DiscussionChannel is the extension to the MessageChanel interface for a CHEF
@@ -127,7 +126,7 @@ public interface DiscussionChannel
 	* @exception PermissionException If the user does not have write permission to the channel.
 	*/
 	public DiscussionMessage addDiscussionMessage(String category, String subject, boolean draft,
-				String replyTo, ReferenceVector attachments, String body)
+				String replyTo, List attachments, String body)
 		throws PermissionException;
 
 	/**

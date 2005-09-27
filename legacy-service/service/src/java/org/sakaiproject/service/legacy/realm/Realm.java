@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.realm;
 // imports
 import java.util.Set;
 
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.user.User;
 
@@ -42,7 +42,7 @@ import org.sakaiproject.service.legacy.user.User;
 * @version $Revision$
 */
 public interface Realm
-	extends Resource, Comparable
+	extends Entity, Comparable
 {
 	// TODO: move these to Resource
 	

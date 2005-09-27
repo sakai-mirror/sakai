@@ -39,7 +39,7 @@ import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.util.Filter;
 import org.sakaiproject.util.Validator;
@@ -153,7 +153,7 @@ public class BaseDbSingleStorage
 	* @param xml An string containing the xml which describes the resource.
 	* @return The Resource object created from the xml.
 	*/
-	protected Resource readResource(String xml)
+	protected Entity readResource(String xml)
 	{
 		try
 		{
@@ -170,7 +170,7 @@ public class BaseDbSingleStorage
 			}
 
 			// re-create a resource
-			Resource entry = m_user.newResource(null, root);
+			Entity entry = m_user.newResource(null, root);
 
 			return entry;
 		}
@@ -207,9 +207,9 @@ public class BaseDbSingleStorage
 	* @param id The id.
 	* @return The Resource with this id, or null if not found.
 	*/
-	public Resource getResource(String id)
+	public Entity getResource(String id)
 	{
-		Resource entry = null;
+		Entity entry = null;
 
 		// get the user from the db
 		String sql =
@@ -251,7 +251,7 @@ public class BaseDbSingleStorage
 		{
 			for (int i = 0; i < xml.size(); i++)
 			{
-				Resource entry = readResource((String) xml.get(i));
+				Entity entry = readResource((String) xml.get(i));
 				if (entry != null) all.add(entry);
 			}
 		}
@@ -304,7 +304,7 @@ public class BaseDbSingleStorage
 		{
 			for (int i = 0; i < xml.size(); i++)
 			{
-				Resource entry = readResource((String) xml.get(i));
+				Entity entry = readResource((String) xml.get(i));
 				if (entry != null) rv.add(entry);
 			}
 		}
@@ -395,7 +395,7 @@ public class BaseDbSingleStorage
 					{
 						// create the Resource from the db xml
 						String xml = result.getString(1);
-						Resource entry = readResource(xml);
+						Entity entry = readResource(xml);
 						return entry;
 					}
 					catch (SQLException ignore)
@@ -456,7 +456,7 @@ public class BaseDbSingleStorage
 		{
 			for (int i = 0; i < xml.size(); i++)
 			{
-				Resource entry = readResource((String) xml.get(i));
+				Entity entry = readResource((String) xml.get(i));
 				if (entry != null) all.add(entry);
 			}
 		}
@@ -485,7 +485,7 @@ public class BaseDbSingleStorage
 		{
 			for (int i = 0; i < xml.size(); i++)
 			{
-				Resource entry = readResource((String) xml.get(i));
+				Entity entry = readResource((String) xml.get(i));
 				if (entry != null) all.add(entry);
 			}
 		}
@@ -503,7 +503,7 @@ public class BaseDbSingleStorage
 	public Edit putResource(String id, Object[] others)
 	{
 		// create one with just the id, and perhaps some other fields as well
-		Resource entry = m_user.newResource(null, id, others);
+		Entity entry = m_user.newResource(null, id, others);
 
 		// form the XML and SQL for the insert
 		Document doc = Xml.createDocument();
@@ -545,7 +545,7 @@ public class BaseDbSingleStorage
 	/** store the record in content_resource_delete table along with resource_uuid and date */
   public Edit putDeleteResource(String id, String uuid, String userId,Object[] others)
   {
-    Resource entry = m_user.newResource(null, id, others);
+    Entity entry = m_user.newResource(null, id, others);
 
     // form the XML and SQL for the insert
     Document doc = Xml.createDocument();
@@ -708,7 +708,7 @@ public class BaseDbSingleStorage
 				if ((lock == null) || (result.length() == 0)) return null;
 	
 				// make first a Resource, then an Edit
-				Resource entry = readResource(result.toString());
+				Entity entry = readResource(result.toString());
 				edit = m_user.newResourceEdit(null, entry);
 	
 				// store the lock for this object
@@ -724,7 +724,7 @@ public class BaseDbSingleStorage
 		else if (m_locksAreInTable)
 		{
 			// read the record - fail if not there
-			Resource entry = getResource(id);
+			Entity entry = getResource(id);
 			if (entry == null) return null;
 
 			// write a lock to the lock table - if we can do it, we get the lock
@@ -762,7 +762,7 @@ public class BaseDbSingleStorage
 		else
 		{
 			// get the entry, and check for existence
-			Resource entry = getResource(id);
+			Entity entry = getResource(id);
 			if (entry == null) return null;
 
 			// we only sync this getting - someone may release a lock out of sync

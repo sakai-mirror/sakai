@@ -27,8 +27,8 @@ package org.sakaiproject.component.legacy.notification;
 // imports
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
@@ -42,9 +42,10 @@ import org.sakaiproject.service.legacy.notification.NotificationAction;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.preference.Preferences;
 import org.sakaiproject.service.legacy.preference.cover.PreferencesService;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.Resource;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.util.java.StringUtil;
@@ -163,8 +164,8 @@ public class EmailNotification
 		{
 			// get a site title
 			// use either the configured site, or if not configured, the site (context) of the resource
-			Reference ref = new Reference(event.getResource());
-			Resource r = ref.getResource();
+			Reference ref = EntityManager.newReference(event.getResource());
+			Entity r = ref.getEntity();
 			String title = (getSite() != null) ? getSite() : ref.getContext();
 			org.sakaiproject.service.legacy.site.SiteService siteService = org.sakaiproject.service.legacy.site.cover.SiteService.getInstance();
 			try
@@ -382,7 +383,7 @@ public class EmailNotification
 		else
 			if (option == NotificationService.PREF_NONE)
 			{
-				String type = new Reference(notification.getResourceFilter()).getType();
+				String type = EntityManager.newReference(notification.getResourceFilter()).getType();
 				if (type != null)
 				{
 					if (type.equals(MailArchiveService.SERVICE_NAME))
@@ -453,7 +454,7 @@ public class EmailNotification
 
 		// try the preference for the site from which resources are being watched for this notification
 		// Note: the getSite() is who is notified, not what we are watching; that's based on the notification filter -ggolden
-		String siteId = new Reference(notification.getResourceFilter()).getContext();
+		String siteId = EntityManager.newReference(notification.getResourceFilter()).getContext();
 		if (siteId != null)
 		{
 			props = prefs.getProperties(NotificationService.PREFS_SITE + siteId);
@@ -475,7 +476,7 @@ public class EmailNotification
 		catch (Throwable ignore) {}
 		
 		//try the preference for the resource type service responsibile for resources of this notification
-		String type = new Reference(notification.getResourceFilter()).getType();
+		String type = EntityManager.newReference(notification.getResourceFilter()).getType();
 		if (type != null)
 		{
 			props = prefs.getProperties(NotificationService.PREFS_TYPE + type);

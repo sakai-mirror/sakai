@@ -30,7 +30,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.legacy.message.MessageService;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>DiscussionService is the extension to MessageService configured for Discussions.</p>
@@ -55,7 +55,7 @@ public interface DiscussionService
 	public static final String SERVICE_NAME = DiscussionService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "discussion";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "discussion";
 
 	/** Security lock for posting topic messages to a channel. */
 	public static final String SECURE_ADD_TOPIC = "new.topic";

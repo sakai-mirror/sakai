@@ -32,7 +32,7 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ResourceService;
+import org.sakaiproject.service.legacy.resource.EntityProducer;
 import org.sakaiproject.service.legacy.time.Time;
 
 // import
@@ -48,7 +48,7 @@ import org.sakaiproject.service.legacy.time.Time;
 * @version $Revision$
 */
 public interface MessageService
-	extends ResourceService
+	extends EntityProducer
 {
 	/** Security lock / event for reading channel / message. */
 	public static final String SECURE_READ = "read";

@@ -316,30 +316,26 @@ public class StringUtil
 
 	} // different
 
-	/*
-	 * public static void main(String[] args) { String test = "group-chef-paddle"; String split = "-"; System.out.println(" FIRST: ** " + test + " ** " + split); String[] results = splitFirst(test, split); for (int i = 0; i < results.length; i++) {
-	 * System.out.println(i + " : \"" + results[i] + "\""); } test = "//a/ab/abc/abcd//"; split = "/"; results = split(test, split); System.out.println(" ** " + test + " ** " + split); for (int i = 0; i < results.length; i++) { System.out.println(i + " :
-	 * \"" + results[i] + "\""); } results = test.split(split); for (int i = 0; i < results.length; i++) { System.out.println(i + " : \"" + results[i] + "\""); } test = "#-##-#a#-#ab#-#abc#-#abcd#-##-#"; split = "#-#"; results = split(test, split);
-	 * System.out.println(" ** " + test + " ** " + split); for (int i = 0; i < results.length; i++) { System.out.println(i + " : \"" + results[i] + "\""); } results = test.split(split); for (int i = 0; i < results.length; i++) { System.out.println(i + " :
-	 * \"" + results[i] + "\""); } test = "/folder/holder/bolder/colder/split.txt"; split = "/"; results = split(test, split); System.out.println(" ** " + test + " ** " + split); for (int i = 0; i < results.length; i++) { System.out.println(i + " : \"" +
-	 * results[i] + "\""); } results = test.split(split); for (int i = 0; i < results.length; i++) { System.out.println(i + " : \"" + results[i] + "\""); } test = "/"; split = "/"; results = split(test, split); System.out.println(" ** " + test + " ** " +
-	 * split); if (results == null) System.out.println("null results"); else { System.out.println("len: " + results.length); for (int i = 0; i < results.length; i++) { System.out.println(i + " : \"" + results[i] + "\""); } } results = test.split(split);
-	 * if (results == null) System.out.println("null results"); else { System.out.println("len: " + results.length); for (int i = 0; i < results.length; i++) { System.out.println(i + " : \"" + results[i] + "\""); } } test = "/attachment"; split = "/";
-	 * results = split(test, split); System.out.println(" ** " + test + " ** " + split); if (results == null) System.out.println("null results"); else { System.out.println("len: " + results.length); for (int i = 0; i < results.length; i++) {
-	 * System.out.println(i + " : \"" + results[i] + "\""); } } results = test.split(split); if (results == null) System.out.println("null results"); else { System.out.println("len: " + results.length); for (int i = 0; i < results.length; i++) {
-	 * System.out.println(i + " : \"" + results[i] + "\""); } } test = "/attachment/"; split = "/"; results = split(test, split); System.out.println(" ** " + test + " ** " + split); if (results == null) System.out.println("null results"); else {
-	 * System.out.println("len: " + results.length); for (int i = 0; i < results.length; i++) { System.out.println(i + " : \"" + results[i] + "\""); } } results = test.split(split); if (results == null) System.out.println("null results"); else {
-	 * System.out.println("len: " + results.length); for (int i = 0; i < results.length; i++) { System.out.println(i + " : \"" + results[i] + "\""); } } test = "/user/id"; split = "/"; results = split(test, split); System.out.println(" ** " + test + " ** " +
-	 * split); if (results == null) System.out.println("null results"); else { System.out.println("len: " + results.length); for (int i = 0; i < results.length; i++) { System.out.println(i + " : \"" + results[i] + "\""); } } results = test.split(split);
-	 * if (results == null) System.out.println("null results"); else { System.out.println("len: " + results.length); for (int i = 0; i < results.length; i++) { System.out.println(i + " : \"" + results[i] + "\""); } } test = "/user/id/"; split = "/";
-	 * results = split(test, split); System.out.println(" ** " + test + " ** " + split); if (results == null) System.out.println("null results"); else { System.out.println("len: " + results.length); for (int i = 0; i < results.length; i++) {
-	 * System.out.println(i + " : \"" + results[i] + "\""); } } results = test.split(split); if (results == null) System.out.println("null results"); else { System.out.println("len: " + results.length); for (int i = 0; i < results.length; i++) {
-	 * System.out.println(i + " : \"" + results[i] + "\""); } } String [] tests = {"/", "/a", "/abcde", "/a/", "/a/b", "/a/bcdef", "/abc/", "/abc/d", "/abc/def", "/abc/def/", "/ab/cd/ef/gh/ijklmn/"}; for (int i = 0; i < tests.length; i++) { String path =
-	 * referencePath(tests[i]); System.out.println(" @@ " + tests[i] + " path: " + path); } String [] testsII = {"Postmaster", "group-chef", "", "-one-", "-one-two"}; for (int i = 0; i < testsII.length; i++) { String [] split = splitFirst(testsII[i],"-");
-	 * System.out.println("\nsplitFirst(" + testsII[i] + ",\"-\") len: " + split.length); for (int s = 0; s < split.length; s++) { System.out.println(s + " : \"" + split[s] + "\""); } } } // main
+	/**
+	 * Limit the string to a certain number of characters, adding "..." if it was truncated
+	 * 
+	 * @param value
+	 *        The string to limit.
+	 * @param the
+	 *        length to limit to (as an int).
+	 * @return The limited string.
 	 */
+	public static String limit(String value, int length)
+	{
+		StringBuffer buf = new StringBuffer(value);
+		if (buf.length() > length)
+		{
+			buf.setLength(length);
+			buf.append("...");
+		}
+
+		return buf.toString();
+
+	} // limit
 
 } // StringUtil
-
-
-

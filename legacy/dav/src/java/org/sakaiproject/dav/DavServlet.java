@@ -1077,7 +1077,7 @@ public class DavServlet
 		try
 		{
 			ResourceProperties props;
-			org.sakaiproject.service.legacy.resource.Resource mbr;
+			org.sakaiproject.service.legacy.resource.Entity mbr;
 
 			path = fixDirPathSAKAI(path);  // Add slash as necessary
 
@@ -1091,7 +1091,7 @@ public class DavServlet
 
 			if (!collection)
 			{				
-				mbr = (org.sakaiproject.service.legacy.resource.Resource) ContentHostingService.getResource(path);
+				mbr = (org.sakaiproject.service.legacy.resource.Entity) ContentHostingService.getResource(path);
 				// Props for a file is OK from above
 				length = ((ContentResource) mbr).getContentLength();
 				MIMEType = ((ContentResource) mbr).getContentType();
@@ -1099,7 +1099,7 @@ public class DavServlet
 			}
 			else
 			{
-				mbr = (org.sakaiproject.service.legacy.resource.Resource) ContentHostingService.getCollection(path);
+				mbr = (org.sakaiproject.service.legacy.resource.Entity) ContentHostingService.getCollection(path);
 				props = mbr.getProperties();
 				eTag = our_path;
 			}
@@ -1318,7 +1318,7 @@ public class DavServlet
 	 *    returns the internal name for a resource.
 	 */
 	
-	public String getResourceNameSAKAI(org.sakaiproject.service.legacy.resource.Resource mbr) {
+	public String getResourceNameSAKAI(org.sakaiproject.service.legacy.resource.Entity mbr) {
 	String idx = mbr.getId();
 	ResourceProperties props = mbr.getProperties();
 	String resourceName = props.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
@@ -1547,7 +1547,7 @@ public class DavServlet
 			        Iterator it = resources.list(currentPath);
 			while (it.hasNext())
 			{
-			org.sakaiproject.service.legacy.resource.Resource mbr = (org.sakaiproject.service.legacy.resource.Resource) it.next();
+			org.sakaiproject.service.legacy.resource.Entity mbr = (org.sakaiproject.service.legacy.resource.Entity) it.next();
 				String resourceName = getResourceNameSAKAI(mbr);
 
 			           	String newPath = currentPath;

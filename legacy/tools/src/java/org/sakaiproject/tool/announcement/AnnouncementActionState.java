@@ -26,6 +26,7 @@ package org.sakaiproject.tool.announcement;
 // imports
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Properties;
@@ -40,9 +41,8 @@ import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.ControllerState;
 import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.log.cover.Logger;
-
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessageEdit;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.SiteEdit;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.java.StringUtil;
@@ -573,7 +573,7 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 	// vm status
 	private String m_status = null;
 	// temporary attachment list - never set to null!
-	private ReferenceVector m_attachments = new ReferenceVector();
+	private List m_attachments = EntityManager.newReferenceList();
 	// temporary selected attachment list
 	private Vector m_selectedAttachments = new Vector();
 	// temporary added attachments
@@ -877,7 +877,7 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 	/**
 	 * Get 
 	 */
-	public ReferenceVector getAttachments()
+	public List getAttachments()
 	{
 		return m_attachments;
 
@@ -886,11 +886,11 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 	/**
 	* Set
 	*/
-	public void setAttachments(ReferenceVector attachments)
+	public void setAttachments(List attachments)
 	{
 		if (attachments != null)
 		{
-			m_attachments = (ReferenceVector) attachments.clone();
+			m_attachments = EntityManager.newReferenceList(attachments);
 		}
 		else
 		{

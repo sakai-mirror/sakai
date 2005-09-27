@@ -30,7 +30,6 @@ import java.util.List;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.legacy.message.MessageChannel;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.user.User;
 
@@ -84,7 +83,7 @@ public interface MailArchiveChannel
 	*/
 	public MailArchiveMessage addMailArchiveMessage(String subject,
 					String fromAddress, Time dateSent, List mailHeaders,
-					ReferenceVector attachments, String body)
+					List attachments, String body)
 		throws PermissionException;
 
 	/** @return true if the channel enabled, false if not. */

@@ -33,7 +33,7 @@ import org.sakaiproject.service.legacy.resource.Edit;
 * @author University of Michigan, CHEF Software Development Team
 * @version $Revision$
 * @see org.chefproject.service.generic.GenericContentHostingService
-* @see org.chefproject.core.Resource
+* @see org.chefproject.core.Entity
 */
 public interface ContentResourceEdit
 	extends ContentResource, Edit

@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.presence;
 // imports
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>A PresenceService keeps track of a session's presence at various locations in the system.</p>
@@ -39,7 +39,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 public interface PresenceService
 {
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "presence";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "presence";
 
 	/** Name for the event of establishing presence at a location. */
 	public static final String EVENT_PRESENCE = "pres.begin";

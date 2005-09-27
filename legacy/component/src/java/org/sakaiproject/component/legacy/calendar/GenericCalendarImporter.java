@@ -46,14 +46,12 @@ import org.sakaiproject.service.legacy.calendar.CalendarImporterService;
 import org.sakaiproject.service.legacy.calendar.CalendarService;
 import org.sakaiproject.service.legacy.calendar.RecurrenceRule;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeRange;
 import org.sakaiproject.service.legacy.time.TimeService;
 import org.sakaiproject.util.FormattedText;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -264,7 +262,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		/* (non-Javadoc)
 		 * @see org.sakaiproject.service.legacy.resource.AttachmentContainer#getAttachments()
 		 */
-		public ReferenceVector getAttachments()
+		public List getAttachments()
 		{
 			// Stub routine only
 			return null;
@@ -363,7 +361,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		/* (non-Javadoc)
 		 * @see org.sakaiproject.service.legacy.resource.AttachmentContainerEdit#replaceAttachments(org.sakaiproject.service.legacy.resource.ReferenceVector)
 		 */
-		public void replaceAttachments(ReferenceVector arg0)
+		public void replaceAttachments(List arg0)
 		{
 			// Stub routine only
 		}

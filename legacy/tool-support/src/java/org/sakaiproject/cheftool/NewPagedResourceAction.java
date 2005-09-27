@@ -32,7 +32,7 @@ import org.sakaiproject.cheftool.menu.Menu;
 import org.sakaiproject.cheftool.menu.MenuEntry;
 import org.sakaiproject.cheftool.menu.MenuField;
 import org.sakaiproject.cheftool.menu.MenuItem;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.courier.ObservingCourier;
@@ -327,7 +327,7 @@ public abstract class NewPagedResourceAction
 			}
 
 			// save which item is at the top of the page
-			Resource itemAtTheTopOfThePage = (Resource) allItems.get(posStart);
+			Entity itemAtTheTopOfThePage = (Entity) allItems.get(posStart);
 			state.setAttribute(STATE_TOP_PAGE_ITEM, itemAtTheTopOfThePage.getId());
 
 			// which item starts the next page (if any)
@@ -373,7 +373,7 @@ public abstract class NewPagedResourceAction
 				}
 
 				// update the view item
-				state.setAttribute(STATE_VIEW_ID, ((Resource) allItems.get(viewPos)).getId());
+				state.setAttribute(STATE_VIEW_ID, ((Entity) allItems.get(viewPos)).getId());
 
 				// if the view item is no longer on the current page, adjust the page
 				// Note: next time through this will get processed
@@ -623,7 +623,7 @@ public abstract class NewPagedResourceAction
 		for (int i = 0; i < resources.size(); i++)
 		{
 			// if this is the one, return this index
-			if (((Resource) (resources.get(i))).getId().equals(id)) return i;
+			if (((Entity) (resources.get(i))).getId().equals(id)) return i;
 		}
 
 		// not found

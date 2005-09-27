@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.preference;
 // imports
 import java.util.Collection;
 
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 
 /**
@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.resource.ResourceProperties;
 * @version $Revision$
 */
 public interface Preferences
-	extends Resource, Comparable
+	extends Entity, Comparable
 {
 	/**
 	* Access the user of the user who owns these Preferences.

@@ -42,7 +42,7 @@ import org.sakaiproject.service.framework.session.UsageSessionService;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.EventTrackingService;
 import org.sakaiproject.service.legacy.presence.PresenceService;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 
 /**
@@ -176,7 +176,7 @@ public abstract class BasePresenceService implements PresenceService
 	 */
 	public String presenceReference(String id)
 	{
-		return REFERENCE_ROOT + Resource.SEPARATOR + id;
+		return REFERENCE_ROOT + Entity.SEPARATOR + id;
 
 	} // presenceReference
 

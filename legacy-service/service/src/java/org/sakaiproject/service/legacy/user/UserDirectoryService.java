@@ -33,7 +33,8 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityProducer;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.w3c.dom.Element;
 
@@ -49,12 +50,13 @@ import org.w3c.dom.Element;
 * @see org.chefproject.core.User
 */
 public interface UserDirectoryService
+	extends EntityProducer
 {
 	/** This string can be used to find the service in the service manager. */
 	public static final String SERVICE_NAME = UserDirectoryService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "user";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "user";
 
 	/** Name for the event of accessing a user. */
 	//public static final String SECURE_ACCESS_USER = "user.access";

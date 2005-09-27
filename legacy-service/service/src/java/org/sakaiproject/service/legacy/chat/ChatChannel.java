@@ -25,11 +25,12 @@
 package org.sakaiproject.service.legacy.chat;
 
 // import
+import java.util.List;
+
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.legacy.message.MessageChannel;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 
 /**
 * <p>ChatChannel is the extension to the MessageChanel interface for a CHEF
@@ -91,7 +92,7 @@ public interface ChatChannel
 	* @return The newly added message.
 	* @exception PermissionException If the user does not have write permission to the channel.
 	*/
-	public ChatMessage addChatMessage(ReferenceVector attachments, String body)
+	public ChatMessage addChatMessage(List attachments, String body)
 		throws PermissionException;
 
 }	// ChatChannel

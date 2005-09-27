@@ -32,8 +32,8 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.legacy.resource.Resource;
-import org.sakaiproject.service.legacy.resource.ResourceService;
+import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.EntityProducer;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeRange;
 
@@ -45,13 +45,13 @@ import org.sakaiproject.service.legacy.time.TimeRange;
 * @version $Revision$
 */
 public interface CalendarService
-	extends ResourceService
+	extends EntityProducer
 {
 	/** This string can be used to find the service in the service manager. */
 	public static final String SERVICE_NAME = CalendarService.class.getName();
 
 	/** This string starts the references to resources in this service. */
-	public static final String REFERENCE_ROOT = Resource.SEPARATOR + "calendar";
+	public static final String REFERENCE_ROOT = Entity.SEPARATOR + "calendar";
 
 	/** Name for the event of adding a calendar. */
 	public static final String EVENT_ADD_CALENDAR = "calendar.new";

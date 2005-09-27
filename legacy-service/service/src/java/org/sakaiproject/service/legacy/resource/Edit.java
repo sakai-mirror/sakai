@@ -33,7 +33,7 @@ package org.sakaiproject.service.legacy.resource;
 * @version $Revision$
 */
 public interface Edit
-	extends Resource
+	extends Entity
 {
 	/**
 	* Check to see if the edit is still active, or has already been closed.

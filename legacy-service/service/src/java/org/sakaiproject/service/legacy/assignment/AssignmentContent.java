@@ -28,7 +28,7 @@ package org.sakaiproject.service.legacy.assignment;
 import java.util.List;
 
 import org.sakaiproject.service.legacy.resource.AttachmentContainer;
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 
 /**
@@ -40,7 +40,7 @@ import org.sakaiproject.service.legacy.time.Time;
 * @version $ $
 */
 public interface AssignmentContent
-	extends Resource, AttachmentContainer
+	extends Entity, AttachmentContainer
 {
 	/**
 	 * Access the creator of this object.

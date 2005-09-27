@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.content;
 // import
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.Resource;
+import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>ContentCollection is the core interface for a Collection object in the GenericContentHostingService.</p>
@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.resource.Resource;
 * @version $Revision$
 */
 public interface ContentCollection
-	extends Resource
+	extends Entity
 {
 	/**
 	* Access a List of the collection's internal members, each a resource id String.

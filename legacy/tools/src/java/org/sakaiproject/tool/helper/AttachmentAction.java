@@ -27,8 +27,8 @@ package org.sakaiproject.tool.helper;
 // imports
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
@@ -48,14 +48,14 @@ import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ReferenceVector;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.ContentHostingComparator;
 import org.sakaiproject.util.FileItem;
-import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.Validator;
+import org.sakaiproject.util.java.StringUtil;
 
 /**
 * <p>AttachmentAction is a helper Action that other tools can use to edit their attachments.</p>
@@ -131,10 +131,10 @@ public class AttachmentAction
 		}
 		
 		// make sure we have attachments
-		Vector attachments = (ReferenceVector) state.getAttribute(STATE_ATTACHMENTS);
+		List attachments = (List) state.getAttribute(STATE_ATTACHMENTS);
 		if (attachments == null)
 		{
-			attachments = new ReferenceVector();
+			attachments = EntityManager.newReferenceList();
 			state.setAttribute(STATE_ATTACHMENTS, attachments);
 		}
 
@@ -193,7 +193,7 @@ public class AttachmentAction
 										SessionState state)
 	{
 		// place the attribute vector (of References) into the context
-		ReferenceVector attachments = (ReferenceVector) state.getAttribute(STATE_ATTACHMENTS);
+		List attachments = (List) state.getAttribute(STATE_ATTACHMENTS);
 		context.put("thelp",rb);
 		context.put("attachments", attachments);
 
@@ -472,7 +472,7 @@ public class AttachmentAction
 							props);
 	
 				// add a dereferencer for this to the attachments
-				attachments.add(new Reference(attachment.getReference()));
+				attachments.add(EntityManager.newReference(attachment.getReference()));
 			}
 			catch (Exception any)
 			{
@@ -509,7 +509,7 @@ public class AttachmentAction
 				ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, contentType, in, props);
 	
 				// add a dereferencer for this to the attachments
-				attachments.add(new Reference(attachment.getReference()));
+				attachments.add(EntityManager.newReference(attachment.getReference()));
 			}
 			catch (Exception any)
 			{
@@ -738,7 +738,7 @@ public class AttachmentAction
 	static private void updateAttachments(SessionState state, Vector ids)
 	{
 		String id = (String) state.getAttribute(STATE_BROWSE_COLLECTION_ID);
-		ReferenceVector attachments = (ReferenceVector) state.getAttribute(STATE_ATTACHMENTS);
+		List attachments = (List) state.getAttribute(STATE_ATTACHMENTS);
 
 		List members = null;
 		try
@@ -759,7 +759,7 @@ public class AttachmentAction
 					// make sure it is in the attachments
 					if (!attachments.contains(ref))
 					{
-						attachments.add(new Reference(ref));
+						attachments.add(EntityManager.newReference(ref));
 					}
 				}
 				else
