@@ -22,7 +22,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.tool.content;
+package org.sakaiproject.component.legacy.content;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.cover.SqlService;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
+import org.sakaiproject.component.legacy.site.Dropbox;
 
 public class CollectionUtil
 {

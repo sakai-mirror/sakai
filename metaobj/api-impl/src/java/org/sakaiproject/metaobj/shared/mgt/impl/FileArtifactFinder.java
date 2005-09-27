@@ -105,6 +105,11 @@ public class FileArtifactFinder implements ArtifactFinder {
 
    public Artifact load(Id artifactId) {
       String resourceId = getContentHostingService().resolveUuid(artifactId.getValue());
+
+      if (resourceId == null) {
+         return null;
+      }
+
       try {
          ContentResource resource = getContentHostingService().getResource(resourceId);
          Artifact returned = createArtifact(resource);

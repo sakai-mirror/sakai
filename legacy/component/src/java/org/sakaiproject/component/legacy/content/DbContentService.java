@@ -538,6 +538,10 @@ public class DbContentService
 
 		}	// getResources
 
+      public List getFlatResources(String collectionId) {
+         return m_resourceStore.getAllResourcesWhereLike("IN_COLLECTION", collectionId + "%");
+      }
+
 		public ContentResourceEdit putResource(String id)
 		{
 			return (ContentResourceEdit) m_resourceStore.putResource(id, null);
@@ -1185,6 +1189,10 @@ public class DbContentService
 	public void removeAllLocks(String id) {
         m_lockManager.removeAllLocks(id);
 	}
+
+   protected List getFlatResources(String parentId) {
+      return m_storage.getFlatResources(parentId);
+   }
 
 }	// DbCachedContentService
 

@@ -690,7 +690,7 @@ public class ResourcesAction
 				 *       Getting all sites for admin is too big a request and
 				 *       would result in too big a display to render in html.
 				 */
-				Map othersites = CollectionUtil.getCollectionMap();
+				Map othersites = ContentHostingService.getCollectionMap();
 				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
 				{
@@ -953,7 +953,7 @@ public class ResourcesAction
 				 *       Getting all sites for admin is too big a request and
 				 *       would result in too big a display to render in html.
 				 */
-				Map othersites = CollectionUtil.getCollectionMap();
+				Map othersites = ContentHostingService.getCollectionMap();
 				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
 				{

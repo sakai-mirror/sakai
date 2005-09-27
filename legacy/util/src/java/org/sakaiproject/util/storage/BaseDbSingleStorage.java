@@ -382,7 +382,11 @@ public class BaseDbSingleStorage
 		fields[0] = value;
 		// %%%	+	"order by " + m_resourceTableOrderField + " asc";
 
-		List all = m_sql.dbRead(sql, fields,
+      return loadResources(sql, fields);
+   }
+
+   protected List loadResources(String sql, Object[] fields) {
+      List all = m_sql.dbRead(sql, fields,
 			new SqlReader()
 			{
 				public Object readSqlResultRecord(ResultSet result)
@@ -394,15 +398,25 @@ public class BaseDbSingleStorage
 						Resource entry = readResource(xml);
 						return entry;
 					}
-					catch (SQLException ignore) 
-					{ 
+					catch (SQLException ignore)
+					{
 						return null;
 					}
 				}
 			} );
-		return all;
-	}
-	
+      return all;
+   }
+
+   public List getAllResourcesWhereLike(String field, String value) {
+      String sql = "select XML from " + m_resourceTableName
+            + " where " + field + " like ?";
+      Object[] fields = new Object[1];
+      fields[0] = value;
+      // %%%	+	"order by " + m_resourceTableOrderField + " asc";
+
+      return loadResources(sql, fields);
+   }
+
 	/**
 	* Get selected Resources, filtered by a test on the id field
 	* @param filter A filter to select what gets returned.
@@ -1064,7 +1078,8 @@ public class BaseDbSingleStorage
 		{
 	        return recordId;
 		}
-	}	
+	}
+
 }   // BaseDbSingleStorage
 
 

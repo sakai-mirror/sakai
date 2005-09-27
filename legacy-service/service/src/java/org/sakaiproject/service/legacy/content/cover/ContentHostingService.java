@@ -27,6 +27,7 @@ import org.sakaiproject.service.framework.component.cover.ComponentManager;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
 * <p>ContentHostingService is a static Cover for the {@link org.sakaiproject.service.legacy.content.ContentHostingService ContentHostingService};
@@ -649,12 +650,24 @@ public class ContentHostingService
       service.removeAllLocks(id);
    }
 
-   public List findResources(String type, String primaryMimeType, String subMimeType) {
+   public static List findResources(String type, String primaryMimeType, String subMimeType) {
       org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
       if (service == null)
          return null;
 
       return service.findResources(type, primaryMimeType, subMimeType);
+   }
+
+   /**
+    * Return a map of Worksite collections roots that the user has access to.
+    * @return Map of worksite title (String) to worksite resource root id (String)
+    */
+   public static Map getCollectionMap() {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return null;
+
+      return service.getCollectionMap();
    }
 
 }

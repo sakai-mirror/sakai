@@ -28,6 +28,7 @@ package org.sakaiproject.service.legacy.content;
 import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
+import java.util.Map;
 
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -897,4 +898,10 @@ public interface ContentHostingService extends ResourceService
     * @return List of ContentResource objects that match the search criteria
     */
    public List findResources(String type, String primaryMimeType, String subMimeType);
+
+   /**
+    * Return a map of Worksite collections roots that the user has access to.
+    * @return Map of worksite title (String) to worksite resource root id (String)
+    */
+   public Map getCollectionMap();
 }

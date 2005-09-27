@@ -3898,10 +3898,35 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 * {@inheritDoc}
 	 */
    public List findResources(String type, String primaryMimeType, String subMimeType) {
-      // todo -- this will be soon re-written to make this more efficient.
-      // todo -- This implementation should not end up in production anywhere
-      List artifacts = getAllResources("/");
+      List globalList = new ArrayList();
 
+      Map othersites = CollectionUtil.getCollectionMap();
+      Iterator siteIt = othersites.keySet().iterator();
+      while(siteIt.hasNext())
+      {
+         String displayName = (String) siteIt.next();
+         String collId = (String) othersites.get(displayName);
+         List artifacts = getFlatResources(collId);
+         globalList.addAll(filterArtifacts(artifacts, type, primaryMimeType, subMimeType));
+      }
+
+      return globalList;
+   }
+
+   public Map getCollectionMap() {
+      return CollectionUtil.getCollectionMap();
+   }
+
+   /**
+    * get all the resources under a given directory.
+    * @param parentId
+    * @return List of all the ContentResource objects under this directory.
+    */
+   protected List getFlatResources(String parentId) {
+      return getAllResources(parentId);
+   }
+
+   protected List filterArtifacts(List artifacts, String type, String primaryMimeType, String subMimeType) {
       for (Iterator i = artifacts.iterator();i.hasNext();) {
          ContentResource resource = (ContentResource)i.next();
          String currentType = resource.getProperties().getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
@@ -3935,7 +3960,6 @@ public abstract class BaseContentService implements ContentHostingService, Cache
             }
          }
       }
-
       return artifacts;
    }
 
@@ -4964,6 +4988,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 */
 		public List getResources(ContentCollection collection);
 
+      public List getFlatResources(String collectionId);
+
 		/**
 		 * Keep a new resource.
 		 */
@@ -5003,8 +5029,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		public void commitDeleteResource(ContentResourceEdit edit, String uuid);
 
 		public ContentResourceEdit putDeleteResource(String resourceId, String uuid, String userId);
-
-	} // Storage
+   } // Storage
 
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * CacheRefresher implementation (no container)
