@@ -2,7 +2,7 @@
 
 <project>
 	<pomVersion>3</pomVersion>
-	<name>Samigo</name>
+	<name>Sakai</name>
 	<groupId>sakai2-edu-coursemanagement</groupId>
 	<currentVersion>2.0.0</currentVersion>
 	<organization>

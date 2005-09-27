@@ -21,7 +21,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  **********************************************************************************/
-package org.sakaiproject.component.common.edu.coursemanagement.test;
+package org.sakaiproject.tool.edu.coursemanagement.test;
 
 import java.util.ArrayList;
 import java.util.Date;

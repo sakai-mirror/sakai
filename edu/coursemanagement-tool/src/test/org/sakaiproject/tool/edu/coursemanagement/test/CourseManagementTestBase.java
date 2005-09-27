@@ -21,7 +21,7 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.sakaiproject.component.common.edu.coursemanagement.test;
+package org.sakaiproject.tool.edu.coursemanagement.test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,7 +64,7 @@ public abstract class CourseManagementTestBase extends AbstractTransactionalSpri
      */
     protected String[] getConfigLocations() {
 
-        String[] configLocations = {"spring-db.xml","spring-beans.xml", "spring-hib.xml", "spring-archive.xml"};
+        String[] configLocations = {"spring-db.xml","spring-beans.xml", "spring-hib.xml"};
 
         return configLocations;
     }

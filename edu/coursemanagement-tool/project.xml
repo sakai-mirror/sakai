@@ -4,7 +4,7 @@
   <pomVersion>3</pomVersion>
   <name>Sakai Course Management API</name>
   <groupId>sakaiproject</groupId>
-  <id>sakai2-edu-coursemanagement-component</id>
+  <id>sakai2-edu-coursemanagement-tool</id>
   <currentVersion>2.0.0</currentVersion>
   <organization>
     <name>Sakai Project</name>
@@ -13,13 +13,22 @@
   <inceptionYear>2004</inceptionYear>
 
   <properties>
-    <!-- deploy as a jar -->
-    <deploy.type>jar</deploy.type>
-    <!-- deploy to "shared", "common" or "server" -->
-    <deploy.target>shared</deploy.target>
+    <deploy.type>war</deploy.type>
   </properties>
 
   <dependencies>
+
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai2-edu-coursemanagement-api</artifactId>
+      <version>${pom.currentVersion}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai2-edu-coursemanagement-component</artifactId>
+      <version>${pom.currentVersion}</version>
+    </dependency>
 
     <dependency>
       <groupId>sakaiproject</groupId>
@@ -45,11 +54,6 @@
       <version>${pom.currentVersion}</version>
     </dependency>
 
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai2-edu-coursemanagement-api</artifactId>
-      <version>${pom.currentVersion}</version>
-    </dependency>
 
 <!-- SPRING HIBERNATE DEPENDENCY -->
     <dependency>
@@ -143,13 +147,42 @@
            <include>hibernate.properties</include>
          </includes>
       </resource>
-      <resource>
-        <directory>${basedir}/src/java</directory>
-        <includes>
-            <include>**/*.hbm.xml</include>
-        </includes>
-      </resource>
     </resources>
+
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+      <unitTest>
+        <includes>
+          <include>**/*Test.java</include>
+        </includes>
+        <resources>
+          <resource>
+           <directory>${basedir}/src/hibernate</directory>
+           <includes>
+             <include>hibernate.properties</include>
+           </includes>
+          </resource>
+          <resource>
+            <directory>${basedir}/src/java</directory>
+            <includes>
+              <include>**/*.hbm.xml</include>
+            </includes>
+          </resource>
+          <resource>
+            <directory>${basedir}/src/test/</directory>
+            <includes>
+              <include>spring-beans.xml</include>
+              <include>spring-db.xml</include>
+              <include>spring-hib.xml</include>
+            </includes>
+          </resource>
+          <resource>
+            <directory>${basedir}</directory>
+            <includes>
+              <include>log4j.properties</include>
+            </includes>
+          </resource>
+        </resources>
+      </unitTest>
 
   </build>
 
