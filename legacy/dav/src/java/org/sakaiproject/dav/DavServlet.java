@@ -1,6 +1,7 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+*
+* $Header: /cvs/sakai2/legacy/dav/src/java/org/sakaiproject/dav/DavServlet.java,v 1.6 2005/06/05 23:19:50 ggolden.umich.edu Exp $
+*
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -88,6 +89,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -104,6 +106,8 @@ import java.util.Properties;
 import java.util.Stack;
 import java.util.TimeZone;
 import java.util.Vector;
+import java.util.Collections;
+import java.util.regex.*;
 
 import javax.naming.NameClassPair;
 import javax.naming.NamingException;
@@ -142,17 +146,21 @@ import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.util.IdPwEvidence;
 import org.sakaiproject.util.LoginUtil;
+import org.sakaiproject.util.Validator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
 
 /**
  * Servlet which adds support for WebDAV level 2. All the basic HTTP requests
@@ -322,6 +330,13 @@ public class DavServlet
 
 
 	/**
+	 * Don't show directories starting with "protected" to non-owner
+	 * This defaults off because it requires corresponding changes
+	 * in AccessServlet, which currently aren't present.
+	 */
+        private boolean doProtected = false;
+
+	/**
 	 * The MD5 helper object for this class.
 	 */
 	protected static final MD5Encoder md5Encoder = new MD5Encoder();
@@ -361,6 +376,14 @@ public class DavServlet
 			value = getServletConfig().getInitParameter("secret");
 			if (value != null)
 			    secret = value;
+		} catch (Throwable t) {
+			;
+		}
+
+		try {
+			value = getServletConfig().getInitParameter("doprotected");
+			if (value != null)
+			    doProtected = (new Boolean(value)).booleanValue();
 		} catch (Throwable t) {
 			;
 		}
@@ -750,39 +773,60 @@ public class DavServlet
 	{
 		SakaidavServletInfo info = newInfo(req);
 
-		// see if we have an authenticated user
+		// RequestFilter will give us any session with this username,
+		// even if there's no cookie (which will normally be the case)
+		// Thus we can't assume that just because there's a session,
+		// we're authenticated. So we always check. In theory if we
+		// can verify that this is a proper cookie-based session
+		// we could skip the test. Note that there's nothing in the
+		// DAV RFC about cookies, so it's actually non-standard to
+		// use them, and I think most clients don't.
+		// See kernel/request/src/java/org/sakaiproject/util/RequestFilter.java
+
 		Session session = SessionManager.getCurrentSession();
-		if (session.getUserId() == null)
-		{
-			// try to authenticate based on a Principal (one of ours) in the req
-			Principal prin = req.getUserPrincipal();
-			if ((prin != null) && (prin instanceof DavPrincipal))
-			{
-				String eid = prin.getName();
-				String pw = ((DavPrincipal) prin).getPassword();
-				Evidence e = new IdPwEvidence(eid, pw);
 
-				// authenticate
-				try
-				{
-					if ((eid.length() == 0) || (pw.length() == 0))
-					{
-						throw new AuthenticationException("missing required fields");
-					}
+		// try to authenticate based on a Principal (one of ours) in the req
+		Principal prin = req.getUserPrincipal();
 
-					Authentication a = AuthenticationManager.authenticate(e);
+		if ((prin != null) && (prin instanceof DavPrincipal))
+		    {
+			String eid = prin.getName();
+			String pw = ((DavPrincipal) prin).getPassword();
+			Evidence e = new IdPwEvidence(eid, pw);
+			
+			// authenticate
+			try
+			    {
+				if ((eid.length() == 0) || (pw.length() == 0))
+				    {
+					throw new AuthenticationException("missing required fields");
+				    }
+				
+				Authentication a = AuthenticationManager.authenticate(e);
+				
+				// login the user if needed. RequestFilter
+				// may have found a session with the right 
+				// userid. If so there's no need for a login
+				// as long as it's the right userid. 
+				// getUserID could be our id, null, or the
+				// wrong one. The wrong one should be rare.
 
-					// login the user
-					LoginUtil.login(a, req);
-				}
-				catch (AuthenticationException ex)
-				{
-					// not authenticated
-					res.sendError(401);
-					return;
-				}
-			}
- 		}
+				if (session.getUserId() != eid)
+				    LoginUtil.login(a, req);
+			    }
+			catch (AuthenticationException ex)
+			    {
+				// not authenticated
+				res.sendError(401);
+				return;
+			    }
+		    } 
+		else
+		    {
+			// user name missing, so can't authenticate
+			res.sendError(401);
+			return;
+		    }
 
 // Setup... ?
 
@@ -934,6 +978,8 @@ public class DavServlet
 			return;
 		}
 
+		ResourceInfoSAKAI resourceInfo = new ResourceInfoSAKAI(path, resources);
+
 		boolean exists = true;
 		Object object = null;
 		try {
@@ -943,21 +989,19 @@ public class DavServlet
 		}
 
 		if (!exists) {
-			methodsAllowed = "OPTIONS, MKCOL, PUT, LOCK";
+			methodsAllowed = "OPTIONS, MKCOL, PUT, LOCK, UNLOCK";
 			resp.addHeader("Allow", methodsAllowed);
 			return;
 		}
 
-		methodsAllowed = "OPTIONS, GET, HEAD, POST, DELETE, PROPFIND";
+		methodsAllowed = "OPTIONS, GET, HEAD, POST, DELETE, PROPFIND, COPY, MOVE, LOCK, UNLOCK";
 
-//      methodsAllowed = "OPTIONS, GET, HEAD, POST, DELETE, TRACE, "
-//            + "PROPFIND, PROPPATCH, LOCK, UNLOCK";
-
-//      methodsAllowed = "OPTIONS, GET, HEAD, POST, DELETE, TRACE, "
-//            + "PROPFIND, PROPPATCH, COPY, MOVE, LOCK, UNLOCK";
-
-		if (!(object instanceof DirContext)) {
+// don't know why, but this instanceof test doesn't work
+//		if (!(object instanceof DirContext)) {
+	        if (! resourceInfo.collection) {
 			methodsAllowed += ", PUT";
+		} else {
+			methodsAllowed += ", MKCOL";
 		}
 
 		resp.addHeader("Allow", methodsAllowed);
@@ -1180,7 +1224,7 @@ public class DavServlet
 
 		String path = getRelativePathSAKAI(req);
 
-	doContent(path,resp);
+	doContent(path,req,resp);
 	}
 
 
@@ -1193,7 +1237,150 @@ public class DavServlet
 
 		String path = getRelativePathSAKAI(req);
 
-	doContent(path,resp);
+	doContent(path,req,resp);
+	}
+
+
+        protected int countSlashes(String s)
+        {
+	    int count = 0;
+	    int loc = s.indexOf ('/');
+
+	    while (loc >= 0) {
+		count ++;
+		loc ++;
+		loc = s.indexOf ('/', loc);
+	    }
+
+	    return count;
+	}
+
+        // id is known to be a collectin
+        private void doDirectory(String id, HttpServletRequest req, HttpServletResponse res)
+	{
+	    // OK, it's a collection and we can read it. Do a listing.
+	    // System.out.println("got to final check");
+
+	    String uri = req.getRequestURI();
+	    PrintWriter out = null;
+
+	    // don't set the writer until we verify that
+	    // getallresources is going to work.
+
+	    try {
+		ContentCollection x = 
+		    ContentHostingService.getCollection(id);
+
+		// I want to use relative paths in the listing,
+		// so we need to redirect if there's no trailing /
+		// for the usual reasons.
+		if (!uri.endsWith("/")) {
+		    // System.out.println("need redirect");
+		    try {
+			res.sendRedirect(uri + "/");
+			// System.out.println("redirect ok");
+			return;
+		    } catch (IOException ignore) {
+			// System.out.println("redirect failed");
+			return;
+		    }
+		}
+
+		// can't do directory on any folder starting with protected
+		// Case-indepedent, based on display name.
+		if (doProtected) {
+		    ResourceProperties pl = x.getProperties();
+		    if (pl.getProperty(ResourceProperties.PROP_DISPLAY_NAME).toLowerCase().indexOf("protected") == 0) {
+			if (! ContentHostingService.allowAddCollection(id)) {
+			    return;
+			}
+		    }
+		}
+
+		List xl = x.getMembers();
+		Collections.sort(xl);
+		Iterator xi = xl.iterator();
+
+		res.setContentType("text/html; charset=UTF-8");
+
+		out = res.getWriter();
+		out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+		out.println("<html><head>");
+		String webappRoot = ServerConfigurationService.getServerUrl();
+		out.println("<link href=\"" + webappRoot + "/css/default.css\" type=\"text/css\" rel=\"stylesheet\" media=\"screen\" />");
+		out.println("<STYLE type=\"text/css\">");
+		out.println("<!--");
+		out.println("td {padding-right: .5em}");
+		out.println("-->");
+		out.println("</STYLE>");
+		out.println("</head><body>");
+		out.println("<div style=\"padding: 16px\">");
+		out.println("<h2>Contents of /dav" + id + "</h2>");
+		out.println("<table>");
+
+		// show .. if not already there. we don't get aliases
+		// so this is 
+		//  /group/db5a4d0c-3dfd-4d10-8018-41db42ac7c8b/
+		//  /user/hedrick/
+
+		int slashes = countSlashes(id);
+
+		if (slashes > 3) {
+		    // go up a level
+		    String uplev = id.substring(0, id.length() - 1);
+		    uplev = uplev.substring(0, uplev.lastIndexOf('/')+1);
+		    out.println("<tr><td><a href=\"..\">Up one level</a></td><td><b>Folder</b>" +
+				"</td><td>" +
+				"</td><td>" +
+				"</td><td>" +
+				"</td></tr>");
+		    
+		}
+
+		while (xi.hasNext()) {
+		    String xs = (String) xi.next ();
+		    String xss = xs.substring(id.length());
+		    
+		    if (xss.endsWith("/")) {
+			ContentCollection nextres = ContentHostingService.getCollection(xs);
+			ResourceProperties properties = nextres.getProperties();
+			if (doProtected && properties.getProperty(ResourceProperties.PROP_DISPLAY_NAME).toLowerCase().indexOf("protected") == 0) {
+			    if (! ContentHostingService.allowAddCollection(xs)) {
+				continue;
+			    }
+			}
+			out.println("<tr><td><a href=\"" + Validator.escapeUrl(xss) + "\">" + Validator.escapeHtml(xss) + "</a></td><td><b>Folder</b>" +
+				    "</td><td>" +
+				    "</td><td>" +
+				    "</td><td>" +
+				    "</td></tr>");
+		    } else try {
+			ContentResource nextres = ContentHostingService.getResource(xs);
+			ResourceProperties properties = nextres.getProperties();
+
+			long filesize = ((nextres.getContentLength() - 1) / 1024) + 1;
+			String createdBy = properties.getUserProperty(ResourceProperties.PROP_CREATOR).getDisplayName();
+			Time modTime = properties.getTimeProperty(ResourceProperties.PROP_MODIFIED_DATE);
+			String modifiedTime = modTime.toStringLocalShortDate() + " " + modTime.toStringLocalShort();
+			String filetype = nextres.getContentType();
+			out.println("<tr><td><a href=\"" + Validator.escapeUrl(xss) + "\">" + Validator.escapeHtml(xss) + "</a></td><td>" +
+				    filesize + "</td><td>" +
+				    createdBy + "</td><td>" +
+				    filetype + "</td><td>" +
+				    modifiedTime + "</td></tr>");
+		    } catch (Throwable ignore) {
+			    out.println("<tr><td><a href=\"" + Validator.escapeUrl(xss) + "\">" + Validator.escapeHtml(xss) + "</a></td><td>" +
+					"</td><td>" +
+					"</td><td>" +
+					"</td><td>" +
+					"</td></tr>");
+
+		    }
+		}
+	    } catch (Throwable ignore) {
+	    } 
+	    if (out != null) 
+		out.println("</table></div></body></html>");
 	}
 
  	/**
@@ -1202,7 +1389,7 @@ public class DavServlet
 	* @param res The http servlet response object.
 	* @return any error message, or null if all went well.
 	*/
-	private String doContent(String id, HttpServletResponse res)
+	private String doContent(String id, HttpServletRequest req, HttpServletResponse res)
 	{
 		// resource or collection? check the properties (also finds bad id and checks permissions)
 		boolean isCollection = false;
@@ -1255,7 +1442,9 @@ public class DavServlet
 		// for collections
 		else
 		{
-			if (Log.getLogger("sakai").isDebugEnabled()) Log.debug("sakai","SAKAIAccess doContent is collection " + id);
+		    doDirectory(id, req, res);
+
+		    //			if (Log.getLogger("sakai").isDebugEnabled()) Log.debug("sakai","SAKAIAccess doContent is collection " + id);
 // This is bad
 			        // res.sendError(SakaidavStatus.SC_METHOD_NOT_ALLOWED);
 		}
@@ -1501,8 +1690,8 @@ public class DavServlet
 		}
 
 		if (!exists) {
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND, path);
-			return;
+		    resp.sendError(HttpServletResponse.SC_NOT_FOUND, "/dav" + path);
+		    return;
 		}
 
 		resp.setStatus(SakaidavStatus.SC_MULTI_STATUS);
@@ -1594,7 +1783,7 @@ public class DavServlet
 
 		generatedXML.writeElement(null, "multistatus",
 			                      XMLWriter.CLOSING);
-	// if (Log.getLogger("sakai").isDebugEnabled()) Log.debug("sakai","SAKAIDAV.propfind() at end:" + generatedXML.toString());
+		//	if (Log.getLogger("sakai").isDebugEnabled()) Log.debug("sakai","SAKAIDAV.propfind() at end:" + generatedXML.toString());
 		generatedXML.sendData();
 
 	}
@@ -1793,6 +1982,10 @@ public class DavServlet
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 		throws ServletException, IOException {
 
+		ResourceProperties oldProps = null;
+
+		boolean newfile = true;
+
 		if (isLocked(req)) {
 			resp.sendError(SakaidavStatus.SC_LOCKED);
 			return;
@@ -1812,9 +2005,14 @@ public class DavServlet
 			resp.sendError(SakaidavStatus.SC_NOT_IMPLEMENTED);
 		}
 
-	ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties();
 
 		String name = justName(path);
+
+		// Database max for id field is 255. If we allow longer, odd things happen
+		if (path.length() > 254) {
+			resp.sendError(SakaidavStatus.SC_FORBIDDEN);
+			return;
+		}
 
 		if ((name.toUpperCase().startsWith("/WEB-INF")) ||
 			(name.toUpperCase().startsWith("/META-INF"))) {
@@ -1834,6 +2032,9 @@ public class DavServlet
 		}
 		else
 		{
+		        // save original properties; we're just updating the file
+			oldProps = ContentHostingService.getProperties(path);
+			newfile = false;
 			ContentHostingService.removeResource (path);
 		}
 	}
@@ -1918,15 +2119,37 @@ public class DavServlet
 		TimeBreakdown timeBreakdown = TimeService.newTime().breakdownLocal();
 		String mycopyright = "copyright (c)" + " " + timeBreakdown.getYear () +", " + user.getDisplayName() + ". All Rights Reserved. ";
 
-		resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, mycopyright);
+		// use this code rather than the long form of addResource
+		// because it doesn't add an extension. Delete doesn't, so we have
+		// to match, and I'd just as soon be able to create items with no extension anyway
+		org.sakaiproject.service.legacy.content.ContentResourceEdit
+		   edit = ContentHostingService.addResource(path);
+		edit.setContentType(contentType);
+		edit.setContent(byteContent);
+		ResourcePropertiesEdit p = edit.getPropertiesEdit();
 
-		resourceProperties.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+		// copy old props, if any
+		if (oldProps != null) {
+		    Iterator it = oldProps.getPropertyNames();
 
-		ContentResource resource = ContentHostingService.addResource (path,
-					contentType,
-					byteContent,
-					resourceProperties,
-		NotificationService.NOTI_NONE);
+		    while (it.hasNext()) {
+			String pname = (String) it.next();
+
+			// skip any live properties
+			if (!oldProps.isLiveProperty(pname)) {
+				p.addProperty(pname, oldProps.getProperty(pname));
+			}
+		    }
+		}
+
+		if (newfile) {
+		    p.addProperty (ResourceProperties.PROP_COPYRIGHT, mycopyright);
+		    p.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+		}
+
+		// commit the change
+		ContentHostingService.commitResource(edit, NotificationService.NOTI_NONE);
+
 	}
 	catch (IdUsedException e)
 	{
@@ -2247,6 +2470,14 @@ public class DavServlet
 			        // Bad request
 			        resp.setStatus(SakaidavStatus.SC_BAD_REQUEST);
 			    }
+			    
+			    // contribute feeds us an owner that looks
+			    // like <A:href>...</A:href>. Since we'll put it
+			    // back with a different namespace prefix, we
+			    // don't want to save it that way.
+
+			    lock.owner = lock.owner.replaceAll("<(/?)[^>]+:([hH][rR][eE][fF])>","<$1$2>");
+			    // System.out.println("lock.owner: " + lock.owner);
 
 			} else {
 			    lock.owner = new String();
@@ -2255,8 +2486,17 @@ public class DavServlet
 		}
 
 		String path = getRelativePath(req);
+		String lockToken = null;
 
 		lock.path = path;
+
+                // We don't want to allow just anyone to lock a resource.
+                // It seems reasonable to allow it only for someone who
+                // is allowed to modify it.
+                if (!ContentHostingService.allowUpdateResource (path)) {
+                    resp.sendError(SakaidavStatus.SC_FORBIDDEN, path);
+                    return;
+                }
 
 		// Retrieve the resources
 		// DirContext resources = getResources();
@@ -2285,7 +2525,7 @@ public class DavServlet
 			    + lock.depth + "-" + lock.owner + "-" + lock.tokens + "-"
 			    + lock.expiresAt + "-" + System.currentTimeMillis() + "-"
 			    + secret;
-			String lockToken = md5Encoder.encode(md5Helper.digest(lockTokenStr.getBytes()));
+			lockToken = md5Encoder.encode(md5Helper.digest(lockTokenStr.getBytes()));
 
 			if ( (exists) && (object instanceof DirContext) &&
 			     (lock.depth == INFINITY) ) {
@@ -2522,6 +2762,11 @@ public class DavServlet
 
 		generatedXML.writeElement(null, "prop", XMLWriter.CLOSING);
 
+		/* the RFC requires this header in response to lock creation */
+
+		if (lockRequestType == LOCK_CREATION)
+		    resp.addHeader("Lock-Token", "opaquelocktoken:" 
+				                 + lockToken);
 		resp.setStatus(SakaidavStatus.SC_OK);
 		resp.setContentType("text/xml; charset=UTF-8");
 		Writer writer = resp.getWriter();
@@ -2552,6 +2797,22 @@ public class DavServlet
 		String lockTokenHeader = req.getHeader("Lock-Token");
 		if (lockTokenHeader == null)
 			lockTokenHeader = "";
+
+                // Only allow lock/unlock for someone who can do update
+                // NB: we don't check that the person unlocking is the same as
+                // the one locking. Experience with Contribute says that
+                // significant size groups have a big problem with people
+                // leaving resources inadvertently locked. No one will use
+                // the system if they continually have to find a privileged
+                // user to unscramble things. Contribute does check who owns
+                // the lock, so to bypass the lock you have to run a copy of
+                // DAVExplorer and unlock it manually. That seems like a
+                // good compromise. At any rate, there needs to be some
+                // check here, which there wasn't originally.
+                if (!ContentHostingService.allowUpdateResource (path)) {
+                    resp.sendError(SakaidavStatus.SC_FORBIDDEN);
+                    return;
+                }
 
 		// Checking resource locks
 
@@ -3391,6 +3652,7 @@ public class DavServlet
 
 		case FIND_BY_PROPERTY :
 
+
 			Vector propertiesNotFound = new Vector();
 
 			// Parse the list of properties
@@ -3468,6 +3730,12 @@ public class DavServlet
 			            generatedXML.writeElement(null, "resourcetype",
 			                                      XMLWriter.NO_CONTENT);
 			        }
+// iscollection is an MS property. Contribute uses it but seems to be
+// able to get along without it
+//			    } else if (property.equals("iscollection")) {
+//				generatedXML.writeProperty
+//			                (null, "iscollection", 
+//					 resourceInfo.collection ? "1" : "0");
 			    } else if (property.equals("source")) {
 			        generatedXML.writeProperty(null, "source", "");
 			    } else if (property.equals("supportedlock")) {
@@ -3938,8 +4206,15 @@ public class DavServlet
 		 * Get an XML representation of this lock token. This method will
 		 * append an XML fragment to the given XML writer.
 		 */
+                // originally this called toXML( ... false). That causes
+                // the system to show a dummy lock name. That breaks 
+                // Contribute. It also violates the RFC. Contribute uses
+                // PROPFIND to find the lock name. Furthermore, the RFC
+                // specifically prohibits hiding the lock name this way.
+                // Rather than treating the lock name as secret, it's
+                // better to check permissions, as I now do.
 		public void toXML(XMLWriter generatedXML) {
-			toXML(generatedXML, false);
+			toXML(generatedXML, true);
 		}
 
 
