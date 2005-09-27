@@ -600,6 +600,10 @@ public class ResourcesAction
 		context.put ("currentSortAsc", sortedAsc);
 		context.put("TRUE", Boolean.TRUE.toString());
 		
+		boolean showRemoveAction = false;
+		boolean showMoveAction = false;
+		boolean showCopyAction = false;
+		
 		try
 		{
 			contentService.checkCollection (collectionId);
@@ -634,6 +638,10 @@ public class ResourcesAction
 			if(members != null && members.size() > 0)
 			{
 				BrowseItem root = (BrowseItem) members.remove(0);
+				showRemoveAction = showRemoveAction || root.hasDeletableChildren();
+				showMoveAction = showMoveAction || root.hasDeletableChildren();
+				showCopyAction = showCopyAction || root.hasCopyableChildren();
+				
 				if(atHome && dropboxMode)
 				{
 					root.setName(siteTitle + " " + rb.getString("gen.drop"));
@@ -647,7 +655,7 @@ public class ResourcesAction
 				this_site.add(root);
 			}
 			context.put ("this_site", this_site);
-			
+
 			boolean show_all_sites = false;
 			List other_sites = new Vector();
 			
@@ -659,7 +667,7 @@ public class ResourcesAction
 				context.put("allowed_to_see_other_sites", Boolean.TRUE.toString());
 				show_all_sites = Boolean.TRUE.toString().equals(show_other_sites);
 			}
-
+			
 			if(atHome && show_all_sites)
 			{
 				// add user's personal workspace
@@ -674,6 +682,10 @@ public class ResourcesAction
 	                	if(members != null && members.size() > 0)
 				    {
 				        BrowseItem root = (BrowseItem) members.remove(0);
+						showRemoveAction = showRemoveAction || root.hasDeletableChildren();
+						showMoveAction = showMoveAction || root.hasDeletableChildren();
+						showCopyAction = showCopyAction || root.hasCopyableChildren();
+						
 				        root.addMembers(members);
 				        root.setName(userName + " Workspace " + rb.getString("gen.reso"));
 				        other_sites.add(root);
@@ -709,11 +721,27 @@ public class ResourcesAction
 			context.put ("other_sites", other_sites);
 			state.setAttribute(STATE_COLLECTION_ROOTS, this_site);
 			// context.put ("root", root);
-			
+
 			if(state.getAttribute(STATE_PASTE_ALLOWED_FLAG) != null)
 			{
 				context.put("paste_place_showing", state.getAttribute(STATE_PASTE_ALLOWED_FLAG));
 			}
+			
+			if(showRemoveAction)
+			{
+				context.put("showRemoveAction", Boolean.TRUE.toString());
+			}
+			
+			if(showMoveAction)
+			{
+				context.put("showMoveAction", Boolean.TRUE.toString());
+			}
+			
+			if(showCopyAction)
+			{
+				context.put("showCopyAction", Boolean.TRUE.toString());
+			}
+			
 		}
 		catch (IdUnusedException e)
 		{
@@ -7021,7 +7049,7 @@ public class ResourcesAction
 	 * @param state - The session state
 	 * @return a List of BrowseItem objects
 	 */
-	public static List getBrowseItems(String collectionId, HashMap expandedCollections, String sortedBy, String sortedAsc, BrowseItem parent, boolean isLocal, SessionState state)
+	protected static List getBrowseItems(String collectionId, HashMap expandedCollections, String sortedBy, String sortedAsc, BrowseItem parent, boolean isLocal, SessionState state)
 	{
 		boolean need_to_expand_all = Boolean.TRUE.toString().equals((String)state.getAttribute(STATE_NEED_TO_EXPAND_ALL));
 		
@@ -7117,6 +7145,8 @@ public class ResourcesAction
 			{
 				state.setAttribute(STATE_PASTE_ALLOWED_FLAG, Boolean.TRUE.toString());
 			}
+			boolean hasDeletableChildren = canDelete;
+			boolean hasCopyableChildren = canRead;
 			
 			String homeCollectionId = (String) state.getAttribute(STATE_HOME_COLLECTION_ID);
 
@@ -7229,8 +7259,16 @@ public class ResourcesAction
 					
 					if(isCollection)
 					{
+						List offspring = getBrowseItems(itemId, expandedCollections, sortedBy, sortedAsc, folder, isLocal, state);
+						if(! offspring.isEmpty())
+						{
+							BrowseItem child = (BrowseItem) offspring.get(0);
+							hasDeletableChildren = hasDeletableChildren || child.hasDeletableChildren();
+							hasCopyableChildren = hasCopyableChildren || child.hasCopyableChildren();
+						}
+						
 						// add all the items in the subfolder to newItems
-						newItems.addAll(getBrowseItems(itemId, expandedCollections, sortedBy, sortedAsc, folder, isLocal, state));
+						newItems.addAll(offspring);
 					}
 					else
 					{
@@ -7313,6 +7351,8 @@ public class ResourcesAction
 				}
 				
 			}
+			folder.seDeletableChildren(hasDeletableChildren);
+			folder.setCopyableChildren(hasCopyableChildren);
 			// return newItems;
 		}
 		catch (IdUnusedException ignore)
@@ -8166,6 +8206,8 @@ public class ResourcesAction
 		protected String m_container;
 		protected String m_root;
 		protected int m_depth;
+		protected boolean m_hasDeletableChildren;
+		protected boolean m_hasCopyableChildren;
 		protected boolean m_copyrightAlert;
 		protected String m_url;
 		protected boolean m_isLocal;
@@ -8194,6 +8236,8 @@ public class ResourcesAction
 			m_isCopied = false;
 			m_isMoved = false;
 			m_isAttached = false;
+			m_hasDeletableChildren = false;
+			m_hasCopyableChildren = false;
 			m_createdBy = "";
 			m_modifiedBy = "";
 			// m_createdTime = TimeService.newTime().toStringLocalDate();
@@ -8618,6 +8662,39 @@ public class ResourcesAction
 		{
 			this.m_isAttached = isAttached;
 		}
+
+		/**
+		 * @return Returns the hasCopyableChildren.
+		 */
+		public boolean hasCopyableChildren() 
+		{
+			return m_hasCopyableChildren;
+		}
+
+		/**
+		 * @param hasCopyableChildren The hasCopyableChildren to set.
+		 */
+		public void setCopyableChildren(boolean hasCopyableChildren) 
+		{
+			this.m_hasCopyableChildren = hasCopyableChildren;
+		}
+
+		/**
+		 * @return Returns the hasDeletableChildren.
+		 */
+		public boolean hasDeletableChildren() 
+		{
+			return m_hasDeletableChildren;
+		}
+
+		/**
+		 * @param hasDeletableChildren The hasDeletableChildren to set.
+		 */
+		public void seDeletableChildren(boolean hasDeletableChildren) 
+		{
+			this.m_hasDeletableChildren = hasDeletableChildren;
+		}
+		
 	}	// inner class BrowseItem
 	
 	

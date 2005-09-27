@@ -1,36 +1,10 @@
 ## version: $Id:  $
 <!-- chef_resources_list.vm, use with org.sakaiproject.tool.content.ResourcesAction.java -->
-<script language="JavaScript" type="text/JavaScript">
-	<!--
-		function openCopyrightWindow(theURL,winName,winSettings) 
-		{ 
-		  window.open(theURL,winName,winSettings);
-		  return false;
-		}
-		function toggleSelectAll(caller, elementName)
-		{
-			var newValue = caller.checked;
-			var elements = document.getElementsByName(elementName);
-			if(elements)
-			{
-				for(var i = 0; i < elements.length; i++)
-				{
-					elements[i].checked = newValue;
-				}
-			}
-			if(newValue == true)
-			{
-				caller.title = "$tlang.getString("list.unselect")"
-			}
-			else
-			{
-				caller.title = "$tlang.getString("list.select")"
-			}
-		}
-	//-->
-</script>
 <!-- this is the list template -->
 #set($num = 0)
+#set($removeCount = 0)
+#set($moveCount = 0)
+#set($copyCount = 0)
 <div class="portletBody">
 	#set($itemsOnLine = 0)
 	#if ($atHome && $atHome == $TRUE)
@@ -57,6 +31,9 @@
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
 		<input type="hidden" name="from" value="list" />
 		<input type="hidden" name="sakai_action" id="sakai_action" value="" />
+		<input type="hidden" id="removeCount" value="0" />
+		<input type="hidden" id="moveCount" value="0" />
+		<input type="hidden" id="copyCount" value="0" />
 		######################  Page Title / Breadcrumbs  ##############
 		<h3>
 			<span class ="chefBreadCrumb">
@@ -91,11 +68,26 @@
 				#end
 			</span>		
 		</h3>
-		<div class="navIntraTool">
-			<a href="#" title="$tlang.getString("list.remove")" onclick="javascript:document.getElementById('sakai_action').value='doDeleteconfirm';document.getElementById('showForm').submit();" >$tlang.getString("list.remove")</a> |
-			<a href="#" title="$tlang.getString("list.copyall")" onclick="javascript:document.getElementById('sakai_action').value='doCopy';document.getElementById('showForm').submit();" >$tlang.getString("list.copyall")</a> |
-			<a href="#" title="$tlang.getString("list.move")" onclick="javascript:document.getElementById('sakai_action').value='doMove';document.getElementById('showForm').submit();" >$tlang.getString("list.move")</a>
-		</div>
+		#if($showRemoveAction || $showMoveAction || $showCopyAction)
+			<div class="navIntraTool" style="margin: .5em 0em;">
+				#set ($itemsOnLine = 0)
+				#if($showRemoveAction)
+					#if($itemsOnLine > 0)|#end
+					<input id="removeButton" type="button" value="$tlang.getString("list.remove")" onclick="javascript:document.getElementById('sakai_action').value='doDeleteconfirm';document.getElementById('showForm').submit();" disabled="disabled" alt="$tlang.getString("list.remove")" />
+					#set ($itemsOnLine = $itemsOnLine + 1)
+				#end
+				#if($showMoveAction)
+					#if($itemsOnLine > 0)|#end
+					<input id="moveButton" type="button" value="$tlang.getString("list.move")" onclick="javascript:document.getElementById('sakai_action').value='doMove';document.getElementById('showForm').submit();" disabled="disabled" alt="$tlang.getString("list.move")" />
+					#set ($itemsOnLine = $itemsOnLine + 1)
+				#end
+				#if($showCopyAction)
+					#if($itemsOnLine > 0)|#end
+					<input id="copyButton" type="button" value="$tlang.getString("list.copyall")" onclick="javascript:document.getElementById('sakai_action').value='doCopy';document.getElementById('showForm').submit();" disabled="disabled" alt="$tlang.getString("list.copyall")" />
+					#set ($itemsOnLine = $itemsOnLine + 1)
+				#end
+			</div>
+		#end
 		######################  Heirarchical list of resource folders/items  ##############
 		<table class="listHier speciallistHier" cellspacing="0" border="0">
 			######################  Column labels, sort controls, expand/collapse all  ##############
@@ -112,7 +104,9 @@
 					#end
 				</th>
 				<th id="checkboxes">
-					<input type="checkbox" name="selectall" id="selectall" title="$tlang.getString("list.select")" onclick="javascript:toggleSelectAll(this, 'selectedMembers')" />
+					#if($showRemoveAction || $showMoveAction || $showCopyAction)
+						<input type="checkbox" name="selectall" id="selectall" title="$tlang.getString("list.select")" onclick="javascript:toggleSelectAll(this, 'selectedMembers')" />
+					#end
 				</th>
 				<th id="title">
 					<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=title&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sorttit')"> 
@@ -165,19 +159,15 @@
 						#end 
 					</a>
 				</th>
-				##<th>
-				##why this empty column?
-				## &nbsp;
-				##</th>
 			</tr>
 			#foreach($root in $this_site)
 				############################### Show top level folder #################
 				<tr>
-					<td headers="expansion">
+					<td class="line" headers="expansion">
 					</td>
-					<td headers="checkboxes">
+					<td class="line" headers="checkboxes">
 					</td>
-					<td headers="title">
+					<td class="line" headers="title">
 						#if ($root.isFolder())
 							#if ($root.isEmpty())
 								<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
@@ -201,7 +191,7 @@
 							#end
 						#end	
 					</td>
-					<td headers="actions">
+					<td class="line" headers="actions" colspan="4">
 						######################  Add Action Links at Top Level  ##############
 						#if($root && ($root.canAddItem() || $root.canAddFolder()))
 							<div class="itemAction">
@@ -265,7 +255,8 @@
 				######################  No items message  ##############
 				#if ($root.isLocal() && $collectionMembers.isEmpty())
 					<tr>
-						<td  colspan="4">
+						<td class="line" colspan="2"></td>
+						<td class="line" colspan="5">
 							<p class="instruction">
 								$tlang.getString("sh.no")
 								#if($dropboxMode)$tlang.getString("sh.drop")#else$tlang.getString("sh.reso")#end
@@ -288,15 +279,24 @@
 						#end
 						<tr>
 							######################  Item title and action links  ##############
-							<td headers="expansion">
+							<td class="line" headers="expansion">
 							</td>
-							<td headers="checkboxes">
-								#if($member.canDelete())
-									<input type="checkbox" name="selectedMembers" id="list$num" value="$member.id" />
+							<td class="line" headers="checkboxes">
+								#if($member.canDelete() || $member.canRead())
+									<input type="checkbox" name="selectedMembers" id="list$num" 
+										onclick="#if($member.canDelete())adjustCount(this, 'removeCount', 'removeButton');adjustCount(this, 'moveCount', 'moveButton');#end#if($member.canRead())adjustCount(this, 'copyCount', 'copyButton');#end" 
+										value="$member.id" />
 									#set($num = $num + 1)
+									#if($member.canDelete())
+										#set($removeCount = $removeCount + 1)
+										#set($moveCount = $moveCount + 1)
+									#end
+									#if($member.canRead())
+										#set($copyCount = $copyCount + 1)
+									#end
 								#end
 							</td>
-							<td headers="title" style="text-indent:$width">
+							<td class="line" headers="title" style="text-indent:$width">
 								#if ($member.isFolder())
 									#if ($member.isEmpty())
 										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
@@ -348,7 +348,7 @@
 									#end
 								#end
 							</td>
-							<td headers="actions">
+							<td class="line" headers="actions">
 								<div class="itemAction">
 									#if($member.isFolder())
 										#set ($itemsOnLine = 0)
@@ -470,13 +470,13 @@
 								#end
 							</td>
 							######################  Item/folder modification date  ##############
-							<td headers="modified">
+							<td class="line" headers="modified">
 								$member.ModifiedTime
 							</td>
-							<td headers="creator">
+							<td class="line" headers="creator">
 								$member.createdBy
 							</td>
-							<td headers="size">
+							<td class="line" headers="size">
 								$member.size
 							</td>
 						</tr>
@@ -489,7 +489,7 @@
 			#if($allowed_to_see_other_sites)
 				#if("$!show_other_sites" == "true")
 					<tr>
-						<td colspan="3">
+						<td colspan="7">
 						<h4 style="margin: .5em -.5em;font-size:1em">
 							<a href="#toolLink("ResourcesAction" "doHideOtherSites")" title= "$tlang.getString('list.hide')">
 								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString('list.hide')" border="0" align="top" />
@@ -501,11 +501,11 @@
 					#foreach($root in $other_sites)
 						############################### Show top level folder #################
 						<tr>
-							<td headers="expansion">
+							<td class="line" headers="expansion">
 							</td>
-							<td headers="checkboxes">
+							<td class="line" headers="checkboxes">
 							</td>
-							<td headers="title">
+							<td class="line" headers="title">
 								#if ($root.isFolder())
 									#if ($root.isEmpty())
 										<img src = "#imageLink("sakai/dir_closed.gif")" border="0"  alt="folder" />
@@ -529,7 +529,7 @@
 									#end
 								#end	
 							</td>
-							<td headers="actions">
+							<td class="line" headers="actions" colspan="4">
 								######################  Add Action Links at Top Level  ##############
 								#if($root && ($root.canAddItem() || $root.canAddFolder()))
 									<div class="itemAction">
@@ -593,7 +593,9 @@
 						######################  No items message  ##############
 						#if ($root.isLocal() && $collectionMembers.isEmpty())
 							<tr>
-								<td  colspan="4">
+								<td class="line"></td>
+								<td class="line"></td>
+								<td class="line"  colspan="5">
 									<p class="instruction">
 										$tlang.getString("sh.no")
 										#if($dropboxMode)$tlang.getString("sh.drop")#else$tlang.getString("sh.reso")#end
@@ -616,15 +618,24 @@
 								#end
 								<tr>
 									######################  Item title and action links  ##############
-									<td headers="expansion">
+									<td class="line" headers="expansion">
 									</td>
-									<td headers="checkboxes">
-										#if($member.canDelete())
-											<input type="checkbox" name="selectedMembers" id="list$num" value="$member.id" />
+									<td class="line" headers="checkboxes">
+										#if($member.canDelete() || $member.canRead())
+											<input type="checkbox" name="selectedMembers" id="list$num" 
+												onclick="#if($member.canDelete())adjustCount(this, 'removeCount', 'removeButton');adjustCount(this, 'moveCount', 'moveButton');#end#if($member.canRead())adjustCount(this, 'copyCount', 'copyButton');#end" 
+												value="$member.id" />
 											#set($num = $num + 1)
+											#if($member.canDelete())
+												#set($removeCount = $removeCount + 1)
+												#set($moveCount = $moveCount + 1)
+											#end
+											#if($member.canRead())
+												#set($copyCount = $copyCount + 1)
+											#end
 										#end
 									</td>
-									<td headers="title" style="text-indent:$width">
+									<td class="line" headers="title" style="text-indent:$width">
 										#if ($member.isFolder())
 											#if ($member.isEmpty())
 												<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
@@ -676,7 +687,7 @@
 											#end
 										#end
 									</td>
-									<td headers="actions">
+									<td class="line" headers="actions">
 										<div class="itemAction">
 											#if($member.isFolder())
 												#set ($itemsOnLine = 0)
@@ -798,13 +809,13 @@
 										#end
 									</td>
 									######################  Item/folder modification date  ##############
-									<td headers="modified">
+									<td class="line" headers="modified">
 										$member.ModifiedTime
 									</td>
-									<td headers="creator">
+									<td class="line" headers="creator">
 										$member.createdBy
 									</td>
-									<td headers="size">
+									<td class="line" headers="size">
 										$member.size
 									</td>
 								</tr>
@@ -814,7 +825,7 @@
 	
 				#else
 					<tr>
-						<td colspan="3">
+						<td colspan="7">
 						<h4 style="margin: .5em -.5em;font-size:1em">
 							<a href="#toolLink("ResourcesAction" "doShowOtherSites")" title= "$tlang.getString('list.show')">
 								<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString('list.show')" border="0" align="top" alt="show"/>
@@ -829,6 +840,76 @@
 			############################################# end of "Other sites" section 
 		
 		</table>
-
 	</form>						
 </div>
+<script language="JavaScript" type="text/JavaScript">
+	<!--
+		function openCopyrightWindow(theURL,winName,winSettings) 
+		{ 
+		  window.open(theURL,winName,winSettings);
+		  return false;
+		}
+		function toggleSelectAll(caller, elementName)
+		{
+			var newValue = caller.checked;
+			var elements = document.getElementsByName(elementName);
+			
+			if(elements)
+			{
+				for(var i = 0; i < elements.length; i++)
+				{
+					elements[i].checked = newValue;
+				}
+			}
+			
+			if(newValue == true)
+			{
+				caller.title = "$tlang.getString("list.unselect")";
+				document.getElementById("removeButton").disabled = false;
+				document.getElementById("removeCount").value = "$removeCount";
+				document.getElementById("moveButton").disabled = false;
+				document.getElementById("moveCount").value = "$moveCount";
+				document.getElementById("copyButton").disabled = false;
+				document.getElementById("copyCount").value = "$copyCount";
+			}
+			else
+			{
+				caller.title = "$tlang.getString("list.select")";
+				document.getElementById("removeButton").disabled = true;
+				document.getElementById("removeCount").value = "0";
+				document.getElementById("moveButton").disabled = true;
+				document.getElementById("moveCount").value = "0";
+				document.getElementById("copyButton").disabled = true;
+				document.getElementById("copyCount").value = "0";
+			}
+		}
+		
+		function adjustCount(caller, countName, buttonName)
+		{
+			var counter = document.getElementById(countName);
+			var button = document.getElementById(buttonName);
+			
+			if(caller && caller.checked && caller.checked == true)
+			{
+				counter.value = parseInt(counter.value) + 1;
+			}
+			else
+			{
+				counter.value = parseInt(counter.value) - 1;
+			}
+	
+			if(button)
+			{
+				if(counter.value > 0)
+				{
+					button.disabled = false;
+				}
+				else
+				{
+					button.disabled = true;
+				}
+			}
+		}
+	//-->
+</script>
+
