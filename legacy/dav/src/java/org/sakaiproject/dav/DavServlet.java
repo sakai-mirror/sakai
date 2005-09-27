@@ -1,7 +1,6 @@
 /**********************************************************************************
-*
-* $Header: /cvs/sakai2/legacy/dav/src/java/org/sakaiproject/dav/DavServlet.java,v 1.6 2005/06/05 23:19:50 ggolden.umich.edu Exp $
-*
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
