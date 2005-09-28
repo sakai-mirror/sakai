@@ -2,10 +2,11 @@
 
 <project>
   <pomVersion>3</pomVersion>
+  <extend>../../master/project.xml</extend>
   <name>Sakai Common Type API</name>
   <groupId>sakaiproject</groupId>
   <id>sakai-common-type-api</id>
-  <currentVersion>2.0.0</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
     <name>Sakai Project</name>
     <url>http://sakaiproject.org/</url>
@@ -24,7 +25,7 @@
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-common-manager-api</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${sakai.version}</version>
     </dependency>
 
   </dependencies>

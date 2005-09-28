@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <pomVersion>3</pomVersion>
+  <extend>../../master/project.xml</extend>
   <id>sakai-metaobj-impl</id>
   <groupId>sakaiproject</groupId>
   <name>Sakai Meta Object Implementation</name>
-  <currentVersion>2.0.0</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
       <name>Sakai Project</name>
       <url>http://sakaiproject.org/</url>
@@ -20,32 +21,32 @@
   		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.plugin.version}</version>
 			<type>plugin</type>
 		</dependency>
 
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-component</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${sakai.version}</version>
     </dependency>
 
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-legacy-service</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${sakai.version}</version>
     </dependency>
     
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${sakai.version}</version>
     </dependency>
     
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-tool</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${sakai.version}</version>
     </dependency>
     
     <dependency>

@@ -2,10 +2,11 @@
 
 <project>
 	<pomVersion>3</pomVersion>
+	<extend>../../master/project.xml</extend>
 	<name>Sakai Sample QA Helper</name>
 	<groupId>sakaiproject</groupId>
 	<id>sakai-sample-tools-jsf1</id>
-	<currentVersion>2.0.0</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>
@@ -23,7 +24,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-jsf-tool</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -33,7 +34,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-jsf-app</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -42,7 +43,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-util-web</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -51,7 +52,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-util-text</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -161,7 +162,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-session</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 
 		<dependency>

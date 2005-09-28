@@ -2,10 +2,11 @@
 
 <project>
 	<pomVersion>3</pomVersion>
+	<extend>../../master/project.xml</extend>
 	<name>OSID Implementation</name>
 	<groupId>sakaiproject</groupId>
 	<id>sakai-osid-impl</id>
-	<currentVersion>2.0.0</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>Sakai Project</name>
 		<url>http://www.sakaiproject.org/</url>
@@ -23,7 +24,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-legacy-service</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 
 		<!-- Need the OSID APIs -->

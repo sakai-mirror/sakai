@@ -2,10 +2,11 @@
 
 <project>
 	<pomVersion>3</pomVersion>
+	<extend>../../master/project.xml</extend>
 	<name>Sakai Tool Registration</name>
 	<groupId>sakaiproject</groupId>
 	<id>sakai-tool-registration</id>
-	<currentVersion>2.0.0</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>
@@ -24,13 +25,13 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-tool</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-active-tool</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 
 		<dependency>

@@ -2,10 +2,11 @@
 
 <project>
 	<pomVersion>3</pomVersion>
+	<extend>../../master/project.xml</extend>
 	<name>Sakai Axis Servlet</name>
 	<groupId>sakaiproject</groupId>
 	<id>sakai-axis</id>
-	<currentVersion>2.0.0</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>
@@ -127,13 +128,13 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-component</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-session</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 
                 <dependency>
@@ -142,7 +143,7 @@
       			<properties>
         			<war.bundle>true</war.bundle>
       			</properties>
-                        <version>${pom.currentVersion}</version>
+                        <version>${sakai.version}</version>
                 </dependency>
 
 	</dependencies>

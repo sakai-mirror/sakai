@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
 	<pomVersion>3</pomVersion>
+	<extend>../../master/project.xml</extend>
 	<name>Presentation Service API</name>
 	<groupId>sakaiproject</groupId>
 	<id>sakai-present-api</id>
-	<currentVersion>2.0.0</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>Sakai Project</name>
 		<url>http://www.sakaiproject.org/</url>
@@ -22,7 +23,7 @@
                 <dependency>
                         <groupId>sakaiproject</groupId>
                         <artifactId>sakai</artifactId>
-                        <version>${pom.currentVersion}</version>
+                        <version>${sakai.plugin.version}</version>
                         <type>plugin</type>
                 </dependency>
 
@@ -38,7 +39,7 @@
                 <dependency>
                         <groupId>sakaiproject</groupId>
                         <artifactId>sakai-legacy-service</artifactId>
-                        <version>${pom.currentVersion}</version>
+                        <version>${sakai.version}</version>
                 </dependency>
 
 	</dependencies>

@@ -2,10 +2,8 @@
 
 <project>
 	<pomVersion>3</pomVersion>
-	<extend>../../master/project.xml</extend>
-	<name>Sakai Scheduler Component</name>
+	<name>Sakai</name>
 	<groupId>sakaiproject</groupId>
-	<id>sakai-comp-scheduler</id>
 	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
@@ -13,14 +11,19 @@
 	</organization>
 	<inceptionYear>2003</inceptionYear>
 
-	<properties>
-		<deploy.type>components</deploy.type>
-	</properties>
-
 	<dependencies>
-			
+	  <!--
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai</artifactId>
+			<version>${sakai.plugin.version}</version>
+			<type>plugin</type>
+		</dependency>
+		-->
+
 	</dependencies>
 
-	
+	<build>	
+	</build>
 
 </project>

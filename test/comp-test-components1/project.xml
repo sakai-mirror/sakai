@@ -2,10 +2,11 @@
 
 <project>
 	<pomVersion>3</pomVersion>
+	<extend>../../master/project.xml</extend>
 	<name>Sakai Component Manager Test Components 1</name>
 	<groupId>sakaiproject</groupId>
 	<id>sakai-comp-test-components1</id>
-	<currentVersion>2.0.0</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>
@@ -23,7 +24,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-comp-test-api</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 
 		<dependency>

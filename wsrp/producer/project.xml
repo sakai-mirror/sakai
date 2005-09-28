@@ -2,10 +2,11 @@
 
 <project>
 	<pomVersion>3</pomVersion>
+	<extend>../../master/project.xml</extend>
 	<name>Sakai WSRP Producer Module</name>
 	<groupId>sakaiproject</groupId>
 	<id>sakai-wsrp-producer</id>
-	<currentVersion>2.0.0</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>
@@ -110,27 +111,27 @@
                 <dependency>				     
                         <groupId>sakaiproject</groupId>	     
                         <artifactId>sakai-tool</artifactId> 
-                        <version>${pom.currentVersion}</version>	     
+                        <version>${sakai.version}</version>	     
                 </dependency>				     
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-session</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-active-tool</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-id</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-thread_local</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 	</dependencies>
 

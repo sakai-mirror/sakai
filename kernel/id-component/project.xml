@@ -2,10 +2,11 @@
 
 <project>
 	<pomVersion>3</pomVersion>
+	<extend>../../master/project.xml</extend>
 	<name>Sakai Id API Component</name>
 	<groupId>sakaiproject</groupId>
 	<id>sakai-id-component</id>
-	<currentVersion>2.0.0</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>
@@ -22,7 +23,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-id</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 		</dependency>
 
 		<!-- Id Generator Jar -->
