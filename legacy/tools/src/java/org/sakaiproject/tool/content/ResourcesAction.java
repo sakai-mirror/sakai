@@ -546,7 +546,7 @@ public class ResourcesAction
 		
 		boolean inMyWorkspace = SiteService.isUserSite(PortalService.getCurrentSiteId());
 		context.put("inMyWorkspace", Boolean.toString(inMyWorkspace));
-			
+		
 		boolean atHome = false;
 
 		boolean dropboxMode = ((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX);
@@ -585,7 +585,8 @@ public class ResourcesAction
 		}
 		if(atHome && SiteService.allowUpdateSite(PortalService.getCurrentSiteId()))
 		{
-			buildListMenu(portlet, context, data, state);
+			context.put("showPermissions", Boolean.TRUE.toString());		
+			//buildListMenu(portlet, context, data, state);
 		}
 
 		context.put("atHome", Boolean.toString(atHome));
