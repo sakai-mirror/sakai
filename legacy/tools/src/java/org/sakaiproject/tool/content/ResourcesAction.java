@@ -5676,30 +5676,20 @@ public class ResourcesAction
 				if (cedit != null)
 				{
 					ContentHostingService.commitCollection(cedit);
-					
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						// when in resource mode
-						if (!item.isPubviewset())
-						{
-							ContentHostingService.setPubView(cedit.getId(), item.isPubview());
-						}
-					}
 				}
 				else
 				{
 					ContentHostingService.commitResource(redit, item.getNotification());
-					
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						// when in resource mode
-						if (!item.isPubviewset())
-						{
-							ContentHostingService.setPubView(redit.getId(), item.isPubview());
-						}
-					}
 				}
 				
+				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+				{
+					// when in resource mode
+					if (!item.isPubviewset())
+					{
+						ContentHostingService.setPubView(item.getId(), item.isPubview());
+					}
+				}
 			}
 			catch (TypeException e)
 			{
