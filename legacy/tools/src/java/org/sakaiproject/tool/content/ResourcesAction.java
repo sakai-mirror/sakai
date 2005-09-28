@@ -88,6 +88,7 @@ import org.sakaiproject.service.legacy.content.ContentResourceEdit;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
+import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
@@ -7084,6 +7085,7 @@ public class ResourcesAction
 			boolean canRevise = false;
 			boolean canAddFolder = false;
 			boolean canAddItem = false;
+			boolean canUpdate = false;
 			int depth = 0;
 			
 			if(parent == null || ! parent.canRead())
@@ -7126,7 +7128,14 @@ public class ResourcesAction
 			{
 				canAddItem = parent.canAddItem();
 			}
-			
+			if(parent == null || ! parent.canUpdate())
+			{
+				canUpdate = RealmService.allowUpdateRealm(collectionId);
+			}
+			else
+			{
+				canUpdate = parent.canUpdate();
+			}			
 			if(parent != null)
 			{
 				depth = parent.getDepth() + 1;
@@ -8204,6 +8213,7 @@ public class ResourcesAction
 		protected boolean m_isLocal;
 		protected boolean m_isAttached;
 		private boolean m_isMoved;
+		private boolean m_canUpdate;
 		
 				
 		/**
@@ -8242,6 +8252,7 @@ public class ResourcesAction
 			
 			m_canAddItem = false;
 			m_canAddFolder = false;
+			m_canUpdate = false;
 		}
 		
 		/**
@@ -8684,6 +8695,22 @@ public class ResourcesAction
 		public void seDeletableChildren(boolean hasDeletableChildren) 
 		{
 			this.m_hasDeletableChildren = hasDeletableChildren;
+		}
+
+		/**
+		 * @return Returns the canUpdate.
+		 */
+		public boolean canUpdate() 
+		{
+			return m_canUpdate;
+		}
+
+		/**
+		 * @param canUpdate The canUpdate to set.
+		 */
+		public void setCanUpdate(boolean canUpdate) 
+		{
+			m_canUpdate = canUpdate;
 		}
 		
 	}	// inner class BrowseItem

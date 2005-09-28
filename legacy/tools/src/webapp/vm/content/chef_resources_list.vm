@@ -237,7 +237,7 @@
 									<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
 								#end
 								####### deal with site/folder permissions
-								#if($root.canRevise() && "$!inMyWorkspace" == "false")
+								#if($root.canUpdate() && "$!inMyWorkspace" == "false")
 									#if (!$atHome || ($atHome && $atHome != $TRUE))
 										#if ($itemsOnLine > 0)
 											|
@@ -393,7 +393,7 @@
 										#end
 										*#
 										####### deal with folder permissions
-										#if($member.canRevise() && "$!inMyWorkspace" == "false")
+										#if($member.canUpdate() && "$!inMyWorkspace" == "false")
 											#if ($itemsOnLine > 0)
 												|
 											#end
@@ -575,7 +575,7 @@
 											<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
 										#end
 										####### deal with site/folder permissions
-										#if($root.canRevise() && "$!inMyWorkspace" == "false")
+										#if($root.canUpdate() && "$!inMyWorkspace" == "false")
 											#if (!$atHome || ($atHome && $atHome != $TRUE))
 												#if ($itemsOnLine > 0)
 													|
@@ -732,7 +732,7 @@
 												#end		
 												*#
 												####### deal with folder permissions
-												#if($member.canRevise() && "$!inMyWorkspace" == "false")
+												#if($member.canUpdate() && "$!inMyWorkspace" == "false")
 													#if ($itemsOnLine > 0)
 														|
 													#end
