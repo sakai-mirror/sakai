@@ -583,7 +583,7 @@ public class ResourcesAction
 			catch (TypeException e) {}
 			catch (PermissionException e) {}
 		}
-		if(atHome && SiteService.allowUpdateSite(PortalService.getCurrentSiteId()))
+		if(!inMyWorkspace && !dropboxMode && atHome && SiteService.allowUpdateSite(PortalService.getCurrentSiteId()))
 		{
 			context.put("showPermissions", Boolean.TRUE.toString());		
 			//buildListMenu(portlet, context, data, state);

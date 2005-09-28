@@ -14,7 +14,7 @@
 					#set($itemsOnLine = 1)
 					<a href="#toolLink("ResourcesAction" "doShow_webdav")" title="$tlang.getString('dav.webdav')">$tlang.getString("dav.webdav").trim()</a> 
 				#end 
-				#if("$!inMyWorkspace" == "false" && $showPermissions)
+				#if($showPermissions)
 					#if($itemsOnLine > 0)
 						|
 					#end
