@@ -8409,7 +8409,6 @@ public class SiteAction extends PagedResourceActionII
 						List manualAddCourses = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_COURSES);
 						List manualAddSections = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS);
 						
-						Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 						Term t = (Term) state.getAttribute(STATE_TERM_SELECTED);
 						for (int m=0; m<manualAddNumber && t!=null; m++)
 						{
@@ -8419,7 +8418,7 @@ public class SiteAction extends PagedResourceActionII
 						state.setAttribute(SITE_MANUAL_COURSE_LIST, manualList);
 					}
 					
-					updateCourseClasses(state, (List) state.getAttribute(SITE_MANUAL_COURSE_LIST), (List) state.getAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN));
+					updateCourseClasses(state, (List) state.getAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN), (List) state.getAttribute(SITE_MANUAL_COURSE_LIST));
 					
 					removeAddClassContext(state);
 				}
