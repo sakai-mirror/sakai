@@ -5692,6 +5692,13 @@ public class ResourcesAction
 						ContentHostingService.setPubView(item.getId(), item.isPubview());
 					}
 				}
+				
+				// need to refresh collection containing current edit item make changes show up 
+				String containerId = ContentHostingService.getContainingCollectionId(item.getId());
+				ContentCollection container = ContentHostingService.getCollection(containerId);
+				Map expandedCollections = (Map) state.getAttribute(EXPANDED_COLLECTIONS);
+				expandedCollections.remove(containerId);
+				expandedCollections.put(containerId, container);
 			}
 			catch (TypeException e)
 			{
