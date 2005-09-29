@@ -10,15 +10,12 @@
 	#if ($atHome && $atHome == $TRUE)
 		#if($site.canRevise())
 			<div class="chefToolBarWrapForm">
+				$tlang.getString("list.site")
 				#if(!$dropboxMode)
-					#set($itemsOnLine = 1)
-					<a href="#toolLink("ResourcesAction" "doShow_webdav")" title="$tlang.getString('dav.webdav')">$tlang.getString("dav.webdav").trim()</a> 
+				| <a href="#toolLink("ResourcesAction" "doShow_webdav")" title="$tlang.getString('dav.webdav')">$tlang.getString("dav.webdav").trim()</a> 
 				#end 
 				#if($showPermissions)
-					#if($itemsOnLine > 0)
-						|
-					#end
-					<a href="#toolLinkParam("ResourcesAction" "doPermissions" "collectionId=$validator.escapeUrl(${site.id})")" title="$tlang.getString('list.sPerm')">$tlang.getString("list.sPerm").trim()</a>
+				| <a href="#toolLinkParam("ResourcesAction" "doPermissions" "collectionId=$validator.escapeUrl(${site.id})")" title="$tlang.getString('list.sPerm')">$tlang.getString("list.sPerm").trim()</a>
 				#end
 			</div>
 		#end

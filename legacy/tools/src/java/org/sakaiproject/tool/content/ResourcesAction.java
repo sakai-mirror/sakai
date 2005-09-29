@@ -405,6 +405,7 @@ public class ResourcesAction
 	private static final boolean SHOW_ALL_SITES_IN_DROPBOX = false;
 
 
+
 	/**
 	* Build the context for normal display
 	*/
@@ -849,7 +850,7 @@ public class ResourcesAction
 	}
 	
 	/**
-	* Build the context for the helper view
+	* Build the context for selecting attachments
 	*/
 	public static String buildSelectAttachmentContext (	VelocityPortlet portlet,
 										Context context,
@@ -1046,7 +1047,7 @@ public class ResourcesAction
 		// pick the "show" template based on the helper's template name
 		return TEMPLATE_SELECT;
 		
-	}	// buildHelperContext
+	}	// buildSelectAttachmentContext
 
 	/**
 	* Expand all the collection resources and put in EXPANDED_COLLECTIONS attribute.
@@ -1609,7 +1610,7 @@ public class ResourcesAction
 		{
 			itemType = TYPE_UPLOAD;
 		}
-
+		
 		List new_items = new Vector();
 		for(int i = 0; i < CREATE_MAX_ITEMS; i++)
 		{

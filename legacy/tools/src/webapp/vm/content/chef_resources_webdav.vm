@@ -17,6 +17,10 @@
 <![endif]--> 
 
 <div class="portletBody">
+	<div class="chefToolBarWrapForm">
+		<a href="#toolLink("ResourcesAction" "doCancel")">$tlang.getString("list.site")</a>
+		| $tlang.getString('dav.webdav')
+	</div>
 	#if($menu)#toolbar($menu)#end
 	<h3>$tlang.getString("dav.webdav")</h3>
 	<ul class="attchList">
