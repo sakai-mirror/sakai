@@ -2187,181 +2187,187 @@ public abstract class BaseAssignmentService
 	{
 		String typeGradesString = new String(REF_TYPE_GRADES + Entity.SEPARATOR);
 		String context = ref.substring(ref.indexOf(typeGradesString) + typeGradesString.length());
-			
-		short rowNum = 0;
-		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet sheet = wb.createSheet("sheet 1");
-
-		// Create a row and put some cells in it. Rows are 0 based.
-		HSSFRow row = sheet.createRow(rowNum++);
-
-		row.createCell((short)0).setCellValue("Assignment Submission Excel File for group ");
-
-		// the bold font
-		HSSFFont font = wb.createFont();
-		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-
-		// the cell style with bold font
-		HSSFCellStyle style = wb.createCellStyle();
-		style.setFont(font);
-
-		// set up the header cells
-		row = sheet.createRow(rowNum++);
-		short cellNum = 0;
-		HSSFCell cell = row.createCell(cellNum++);
-		cell.setCellStyle(style);
-		cell.setCellValue("Name");
 		
-		Iterator assignments = getAssignmentsForContext(context);
-		Vector assignmentTypeVector = new Vector();
-		Vector assignmentSubmissionVector = new Vector();
-		
-		int index = 0;
-		List members = new Vector();
-		while (assignments.hasNext())
+		if (allowGradeSubmission(context))
 		{
-			Assignment a = (Assignment) assignments.next();
-			String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
-			if ((deleted == null || deleted.equals("")) && (!a.getDraft()) && (a.getOpenTime().before(TimeService.newTime())))
-			{
-				if (index == 0)
-				{
-					members = allowAddSubmissionUsers(a.getReference());
-				}
-				assignmentTypeVector.add(index, new Integer(a.getContent().getTypeOfGrade()));
-				Iterator submissions = getSubmissions(a);
-				List submissionList = new Vector();
-				while(submissions.hasNext())
-				{
-					submissionList.add(submissions.next());
-				}
-				assignmentSubmissionVector.add(index, submissionList);
-				
-				cell = row.createCell(cellNum++);
-				cell.setCellStyle(style);
-				cell.setCellValue(a.getTitle());
-				
-				index++;
-			}
-		}
-		
-		// is there a grade or not
-		AssignmentSubmission submissionWithGrade = null;
-		List submitterIds = null;
-		String submitterId = "";
-		User member = null;
-		for (Iterator it= members.iterator(); it.hasNext(); )
-		{
-			// create one row for each user
+			short rowNum = 0;
+			HSSFWorkbook wb = new HSSFWorkbook();
+			HSSFSheet sheet = wb.createSheet("sheet 1");
+	
+			// Create a row and put some cells in it. Rows are 0 based.
+			HSSFRow row = sheet.createRow(rowNum++);
+	
+			row.createCell((short)0).setCellValue("Assignment Submission Excel File for group ");
+	
+			// the bold font
+			HSSFFont font = wb.createFont();
+			font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+	
+			// the cell style with bold font
+			HSSFCellStyle style = wb.createCellStyle();
+			style.setFont(font);
+	
+			// set up the header cells
 			row = sheet.createRow(rowNum++);
-			cellNum = 0;
-			member = (User) it.next();
-			// show user's name
-			row.createCell(cellNum++).setCellValue(member.getSortName());
-
-			for (int i = 0; i < assignmentSubmissionVector.size(); i++)
-			{	
-				// type for this assignment
-				int assignmentType = ((Integer)assignmentTypeVector.get(i)).intValue();
-				
-				// submission for this assignment
-				List submissions = (List) (assignmentSubmissionVector.get(i));
-				
-				// initialize it for every assignment
-				submissionWithGrade = null;
-				
-				for (int k=0; k<submissions.size() && submissionWithGrade == null;k++)
-				{	
-					AssignmentSubmission s = (AssignmentSubmission) submissions.get(k);
-					
-					submitterIds = (List) s.getSubmitterIds();
-					for(int a = 0; a < submitterIds.size(); a++)
-					{
-						submitterId = (String) submitterIds.get(a);
-						
-						if ( submitterId.equals(member.getId()))
-						{
-							// found the member's submission to the assignment
-							// show user's grade
-							if ((s!=null) && (s.getGraded()) && (s.getGradeReleased()))
-							{
-								submissionWithGrade = s;
-							}
-						}	// if
-					}	// for
-				}	// for
-				
-				if (submissionWithGrade != null)
+			short cellNum = 0;
+			HSSFCell cell = row.createCell(cellNum++);
+			cell.setCellStyle(style);
+			cell.setCellValue("Name");
+			
+			Iterator assignments = getAssignmentsForContext(context);
+			Vector assignmentTypeVector = new Vector();
+			Vector assignmentSubmissionVector = new Vector();
+			
+			int index = 0;
+			List members = new Vector();
+			while (assignments.hasNext())
+			{
+				Assignment a = (Assignment) assignments.next();
+				String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
+				if ((deleted == null || deleted.equals("")) && (!a.getDraft()) && (a.getOpenTime().before(TimeService.newTime())))
 				{
-					if (assignmentType == 3)
+					if (index == 0)
 					{
-						try
+						members = allowAddSubmissionUsers(a.getReference());
+					}
+					assignmentTypeVector.add(index, new Integer(a.getContent().getTypeOfGrade()));
+					Iterator submissions = getSubmissions(a);
+					List submissionList = new Vector();
+					while(submissions.hasNext())
+					{
+						submissionList.add(submissions.next());
+					}
+					assignmentSubmissionVector.add(index, submissionList);
+					
+					cell = row.createCell(cellNum++);
+					cell.setCellStyle(style);
+					cell.setCellValue(a.getTitle());
+					
+					index++;
+				}
+			}
+			
+			// is there a grade or not
+			AssignmentSubmission submissionWithGrade = null;
+			List submitterIds = null;
+			String submitterId = "";
+			User member = null;
+			for (Iterator it= members.iterator(); it.hasNext(); )
+			{
+				// create one row for each user
+				row = sheet.createRow(rowNum++);
+				cellNum = 0;
+				member = (User) it.next();
+				// show user's name
+				row.createCell(cellNum++).setCellValue(member.getSortName());
+	
+				for (int i = 0; i < assignmentSubmissionVector.size(); i++)
+				{	
+					// type for this assignment
+					int assignmentType = ((Integer)assignmentTypeVector.get(i)).intValue();
+					
+					// submission for this assignment
+					List submissions = (List) (assignmentSubmissionVector.get(i));
+					
+					// initialize it for every assignment
+					submissionWithGrade = null;
+					
+					for (int k=0; k<submissions.size() && submissionWithGrade == null;k++)
+					{	
+						AssignmentSubmission s = (AssignmentSubmission) submissions.get(k);
+						
+						submitterIds = (List) s.getSubmitterIds();
+						for(int a = 0; a < submitterIds.size(); a++)
 						{
-							//numeric cell type?
-							String grade = submissionWithGrade.getGradeDisplay();
-							Float.parseFloat(grade);
+							submitterId = (String) submitterIds.get(a);
 							
-							cell = row.createCell(cellNum++);
-							cell.setCellType(0); 
-							cell.setCellValue(Float.parseFloat(grade));
-
-							style = wb.createCellStyle();
-							style.setDataFormat(wb.createDataFormat().getFormat("#,##0.0"));
-							cell.setCellStyle(style);
-						}
-						catch (Exception e)
+							if ( submitterId.equals(member.getId()))
+							{
+								// found the member's submission to the assignment
+								// show user's grade
+								if ((s!=null) && (s.getGraded()) && (s.getGradeReleased()))
+								{
+									submissionWithGrade = s;
+								}
+							}	// if
+						}	// for
+					}	// for
+					
+					if (submissionWithGrade != null)
+					{
+						if (assignmentType == 3)
 						{
-							// if the grade is not numeric, let's make it as String type
+							try
+							{
+								//numeric cell type?
+								String grade = submissionWithGrade.getGradeDisplay();
+								Float.parseFloat(grade);
+								
+								cell = row.createCell(cellNum++);
+								cell.setCellType(0); 
+								cell.setCellValue(Float.parseFloat(grade));
+	
+								style = wb.createCellStyle();
+								style.setDataFormat(wb.createDataFormat().getFormat("#,##0.0"));
+								cell.setCellStyle(style);
+							}
+							catch (Exception e)
+							{
+								// if the grade is not numeric, let's make it as String type
+								cell = row.createCell(cellNum++);
+								cell.setCellType(1); 
+								cell.setCellValue(submissionWithGrade.getGrade());
+							}
+							
+						}
+						else
+						{
+							// String cell type
 							cell = row.createCell(cellNum++);
 							cell.setCellType(1); 
 							cell.setCellValue(submissionWithGrade.getGrade());
 						}
-						
-					}
+					}	// if
 					else
-					{
-						// String cell type
-						cell = row.createCell(cellNum++);
-						cell.setCellType(1); 
-						cell.setCellValue(submissionWithGrade.getGrade());
-					}
-				}	// if
-				else
-				{	
-					// no grade to show yet
-					if (assignmentType == 3)
-					{
-						// numeric cell type
-						// set value to be 0 if there is no grade yet
-						cell = row.createCell(cellNum++);
-						cell.setCellType(0); 
-						style = wb.createCellStyle();
-						style.setDataFormat(wb.createDataFormat().getFormat("#,##0.0"));
-						cell.setCellStyle(style);
-					}
-					else
-					{
-						// String cell type
-						// set value to be "" if there is no grade yet
-						cell = row.createCell(cellNum++);
-						cell.setCellType(1); 
-						cell.setCellValue("");
-					}
-				}	// if
+					{	
+						// no grade to show yet
+						if (assignmentType == 3)
+						{
+							// numeric cell type
+							// set value to be 0 if there is no grade yet
+							cell = row.createCell(cellNum++);
+							cell.setCellType(0); 
+							style = wb.createCellStyle();
+							style.setDataFormat(wb.createDataFormat().getFormat("#,##0.0"));
+							cell.setCellStyle(style);
+						}
+						else
+						{
+							// String cell type
+							// set value to be "" if there is no grade yet
+							cell = row.createCell(cellNum++);
+							cell.setCellType(1); 
+							cell.setCellValue("");
+						}
+					}	// if
+				}	//	for
 			}	//	for
-		}	//	for
-		 
-		Blob b = new Blob();
-		try
-		{
-			wb.write(b.outputStream());
+			 
+			Blob b = new Blob();
+			try
+			{
+				wb.write(b.outputStream());
+			}
+			catch (IOException e)
+			{
+				m_logger.debug(this + "Can not output the grade spread sheet. ");
+			}
+			return b.getBytes();
 		}
-		catch (IOException e)
+		else
 		{
-			m_logger.debug(this + "Can not output the grade spread sheet. ");
+			return null;
 		}
-		
-		return b.getBytes();
 		
 	}	// getGradesSpreadsheet
 
@@ -2378,173 +2384,182 @@ public abstract class BaseAssignmentService
 		if (m_logger.isDebugEnabled())
 					m_logger.debug(this + ": getSubmissionsZip reference=" + ref);
 		
-		Blob b = new Blob();
-		StringBuffer exceptionMessage = new StringBuffer();
-		try
+		String typeGradesString = new String(REF_TYPE_GRADES + Entity.SEPARATOR);
+		String context = ref.substring(ref.indexOf(typeGradesString) + typeGradesString.length());
+		if (allowGradeSubmission(context))
 		{
-			Assignment a = getAssignment(assignmentReferenceFromSubmissionsZipReference(ref));
+			Blob b = new Blob();
+			StringBuffer exceptionMessage = new StringBuffer();
 			try
 			{
-				ZipOutputStream out = new ZipOutputStream(b.outputStream());
-				InputStream in = null;
-				
-				// create the folder structor - named after the assignment's title
-				String root = Validator.escapeZipEntry(a.getTitle()) + Entity.SEPARATOR;
-				
-				Iterator submissions = getSubmissions(a);
-				String submittedText = "";
-				if (!submissions.hasNext())
+				Assignment a = getAssignment(assignmentReferenceFromSubmissionsZipReference(ref));
+				try
 				{
-					exceptionMessage.append("There is no submission yet. ");
-				}
-
-				// Create a buffer for reading the files
-				byte[] buf = new byte[1024];
-				int len;
-				
-				// Create the ZIP file				
-				String submittersName = "";
-				int count = 1;
-				while (submissions.hasNext())
-				{
-					count = 1;
-					submittersName = root;
-					AssignmentSubmission s = (AssignmentSubmission) submissions.next();
+					ZipOutputStream out = new ZipOutputStream(b.outputStream());
+					InputStream in = null;
 					
-					if (s.getSubmitted())
+					// create the folder structor - named after the assignment's title
+					String root = Validator.escapeZipEntry(a.getTitle()) + Entity.SEPARATOR;
+					
+					Iterator submissions = getSubmissions(a);
+					String submittedText = "";
+					if (!submissions.hasNext())
 					{
-						User[] submitters = s.getSubmitters();
-						String submittersString = "";
-						for (int i = 0; i < submitters.length; i++)
+						exceptionMessage.append("There is no submission yet. ");
+					}
+	
+					// Create a buffer for reading the files
+					byte[] buf = new byte[1024];
+					int len;
+					
+					// Create the ZIP file				
+					String submittersName = "";
+					int count = 1;
+					while (submissions.hasNext())
+					{
+						count = 1;
+						submittersName = root;
+						AssignmentSubmission s = (AssignmentSubmission) submissions.next();
+						
+						if (s.getSubmitted())
 						{
-							if (i>0)
+							User[] submitters = s.getSubmitters();
+							String submittersString = "";
+							for (int i = 0; i < submitters.length; i++)
 							{
-								submittersString = submittersString.concat("; ");
-							}
-							submittersString = submittersString.concat(submitters[i].getSortName());
-						}
-						submittersName = submittersName.concat(submittersString);
-						submittedText= s.getSubmittedText();
-
-						boolean added = false;
-						while (!added)
-						{
-							try
-							{
-								submittersName = submittersName.concat("/");
-								// create the folder structure - named after the submitter's name
-								AssignmentContent ac = a.getContent();
-								if (ac.getTypeOfSubmission() != Assignment.ATTACHMENT_ONLY_ASSIGNMENT_SUBMISSION)
+								if (i>0)
 								{
-									//create the text file only when a text submission is allowed
-									ZipEntry textEntry = new ZipEntry(submittersName + submittersString + "_submissionText.txt");
-									in = (new Blob(FormattedText.convertFormattedTextToPlaintext(submittedText).getBytes())).inputStream();
-									out.putNextEntry(textEntry);
-									
-									while ((len = in.read(buf)) > 0)
-									{
-										out.write(buf, 0, len);
-									}
-									out.closeEntry();
-									in.close();
+									submittersString = submittersString.concat("; ");
 								}
-
-								// create the attachment file(s)
-								List attachments = s.getSubmittedAttachments();
-								int attachedUrlCount = 0;
-								for (int j=0; j < attachments.size(); j++)
+								submittersString = submittersString.concat(submitters[i].getSortName());
+							}
+							submittersName = submittersName.concat(submittersString);
+							submittedText= s.getSubmittedText();
+	
+							boolean added = false;
+							while (!added)
+							{
+								try
 								{
-									Reference r = (Reference) attachments.get(j);
-									try
+									submittersName = submittersName.concat("/");
+									// create the folder structure - named after the submitter's name
+									AssignmentContent ac = a.getContent();
+									if (ac.getTypeOfSubmission() != Assignment.ATTACHMENT_ONLY_ASSIGNMENT_SUBMISSION)
 									{
-										ContentResource resource = ContentHostingService.getResource(r.getId());
-
-										String contentType = resource.getContentType();
-										byte[] content = resource.getContent();
-										ResourceProperties props = r.getProperties();
-										String displayName = props.getPropertyFormatted(props.getNamePropDisplayName());
-
-										// for URL content type, encode a redirect to the body URL
-										if (contentType.equalsIgnoreCase(ResourceProperties.TYPE_URL))
-										{
-											displayName = "attached_URL_" + attachedUrlCount;
-											attachedUrlCount++;
-										}
-
-										ZipEntry attachmentEntry = new ZipEntry(submittersName + displayName);
-
-										// if the attachment's content is null, use the empty constructor %%%zqian 
-										if (content != null)
-										{
-											in = (new Blob(content)).inputStream();
-										}
-										else
-										{
-											in = (new Blob()).inputStream();
-										}
-
-										out.putNextEntry(attachmentEntry);
+										//create the text file only when a text submission is allowed
+										ZipEntry textEntry = new ZipEntry(submittersName + submittersString + "_submissionText.txt");
+										in = (new Blob(FormattedText.convertFormattedTextToPlaintext(submittedText).getBytes())).inputStream();
+										out.putNextEntry(textEntry);
+										
 										while ((len = in.read(buf)) > 0)
 										{
 											out.write(buf, 0, len);
 										}
 										out.closeEntry();
 										in.close();
-
 									}
-									catch (PermissionException e)
+	
+									// create the attachment file(s)
+									List attachments = s.getSubmittedAttachments();
+									int attachedUrlCount = 0;
+									for (int j=0; j < attachments.size(); j++)
 									{
-										m_logger.debug(this + ": getSubmissionsZip--PermissionException submittersName=" + submittersName + " attachment reference=" + r);
-									}
-									catch (IdUnusedException e)
-									{
-										m_logger.debug(this + ": getSubmissionsZip--IdUnusedException submittersName=" + submittersName + " attachment reference=" + r);
-									}
-									catch (TypeException e)
-									{
-										m_logger.debug(this + ": getSubmissionsZip--TypeException: submittersName=" + submittersName + " attachment reference=" + r);
-									}
-									catch (IOException e)
-									{
-										m_logger.debug(this + ": getSubmissionsZip--IOException: Problem in creating the attachment file: submittersName=" + submittersName + " attachment reference=" + r);
-									}
-								}	// for
-
-								added= true;
-							}
-							catch (IOException e)
-							{
-								exceptionMessage.append("Can not establish the IO to create zip file for user " + submittersName);
-								m_logger.debug(this + ": getSubmissionsZip--IOException unable to create the zip file for user" + submittersName);
-								submittersName= submittersName.substring(0, submittersName.length() - 1) + "_" + count++;
-							}
-						}	// while
-					}	// submitted
+										Reference r = (Reference) attachments.get(j);
+										try
+										{
+											ContentResource resource = ContentHostingService.getResource(r.getId());
+	
+											String contentType = resource.getContentType();
+											byte[] content = resource.getContent();
+											ResourceProperties props = r.getProperties();
+											String displayName = props.getPropertyFormatted(props.getNamePropDisplayName());
+	
+											// for URL content type, encode a redirect to the body URL
+											if (contentType.equalsIgnoreCase(ResourceProperties.TYPE_URL))
+											{
+												displayName = "attached_URL_" + attachedUrlCount;
+												attachedUrlCount++;
+											}
+	
+											ZipEntry attachmentEntry = new ZipEntry(submittersName + displayName);
+	
+											// if the attachment's content is null, use the empty constructor %%%zqian 
+											if (content != null)
+											{
+												in = (new Blob(content)).inputStream();
+											}
+											else
+											{
+												in = (new Blob()).inputStream();
+											}
+	
+											out.putNextEntry(attachmentEntry);
+											while ((len = in.read(buf)) > 0)
+											{
+												out.write(buf, 0, len);
+											}
+											out.closeEntry();
+											in.close();
+	
+										}
+										catch (PermissionException e)
+										{
+											m_logger.debug(this + ": getSubmissionsZip--PermissionException submittersName=" + submittersName + " attachment reference=" + r);
+										}
+										catch (IdUnusedException e)
+										{
+											m_logger.debug(this + ": getSubmissionsZip--IdUnusedException submittersName=" + submittersName + " attachment reference=" + r);
+										}
+										catch (TypeException e)
+										{
+											m_logger.debug(this + ": getSubmissionsZip--TypeException: submittersName=" + submittersName + " attachment reference=" + r);
+										}
+										catch (IOException e)
+										{
+											m_logger.debug(this + ": getSubmissionsZip--IOException: Problem in creating the attachment file: submittersName=" + submittersName + " attachment reference=" + r);
+										}
+									}	// for
+	
+									added= true;
+								}
+								catch (IOException e)
+								{
+									exceptionMessage.append("Can not establish the IO to create zip file for user " + submittersName);
+									m_logger.debug(this + ": getSubmissionsZip--IOException unable to create the zip file for user" + submittersName);
+									submittersName= submittersName.substring(0, submittersName.length() - 1) + "_" + count++;
+								}
+							}	// while
+						}	// submitted
+						
+					}	// while -- there is submission
 					
-				}	// while -- there is submission
-				
-				// Complete the ZIP file
-				out.close();
+					// Complete the ZIP file
+					out.close();
+				}
+				catch (IOException e)
+				{
+					exceptionMessage.append("Can not establish the IO to create zip file. ");
+					m_logger.debug(this + ": getSubmissionsZip--IOException unable to create the zip file for assignment " + a.getTitle());
+				}
 			}
-			catch (IOException e)
+			catch (IdUnusedException e)
 			{
-				exceptionMessage.append("Can not establish the IO to create zip file. ");
-				m_logger.debug(this + ": getSubmissionsZip--IOException unable to create the zip file for assignment " + a.getTitle());
+				if (m_logger.isDebugEnabled())
+					m_logger.debug(this + ": getSubmissionsZip--IdUnusedException Unable to get assignment " + ref);
+				throw new IdUnusedException(ref);
 			}
+			catch (PermissionException e)
+			{
+				m_logger.debug(this + ": getSubmissionsZip--PermissionException Not permitted to get assignment " + ref);
+				throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ACCESS_ASSIGNMENT, ref);
+			}
+			
+			return b.getBytes();
 		}
-		catch (IdUnusedException e)
+		else
 		{
-			if (m_logger.isDebugEnabled())
-				m_logger.debug(this + ": getSubmissionsZip--IdUnusedException Unable to get assignment " + ref);
-			throw new IdUnusedException(ref);
+			return null;
 		}
-		catch (PermissionException e)
-		{
-			m_logger.debug(this + ": getSubmissionsZip--PermissionException Not permitted to get assignment " + ref);
-			throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ACCESS_ASSIGNMENT, ref);
-		}
-		
-		return b.getBytes();
 		
 	}	// getSubmissionsZip
 	
@@ -5852,7 +5867,10 @@ public abstract class BaseAssignmentService
 		 */
 		public void setGradeReleased(boolean released)
 		{
-			m_gradeReleased = released;
+			if (allowGradeSubmission(getContext()))
+			{
+				m_gradeReleased = released;
+			}
 		}
 		
 		/**
@@ -5861,7 +5879,10 @@ public abstract class BaseAssignmentService
 		 */
 		public void setGrade(String grade)
 		{
-			m_grade = grade;
+			if (allowGradeSubmission(getContext()))
+			{
+				m_grade = grade;
+			}
 		}
 		
 		/**
@@ -5970,7 +5991,10 @@ public abstract class BaseAssignmentService
 		 */
 		public void setGraded(boolean value)
 		{
-			m_graded = value;
+			if (allowGradeSubmission(getContext()))
+			{
+				m_graded = value;
+			}
 		}
 		
 

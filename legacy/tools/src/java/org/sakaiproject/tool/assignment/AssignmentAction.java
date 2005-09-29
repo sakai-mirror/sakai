@@ -481,22 +481,14 @@ extends PagedResourceActionII
 		}	// if
 		
 		String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);		
-		if (AssignmentService.allowAddAssignment(contextString))
-		{
-			context.put("allowAddAssignment", Boolean.TRUE);
-		}
-		else
-		{
-			context.put("allowAddAssignment", Boolean.FALSE);
-		}
-		if (AssignmentService.allowGradeSubmission(contextString))
-		{
-			context.put("allowGradeSubmission", Boolean.TRUE);
-		}
-		else
-		{
-			context.put("allowGradeSubmission", Boolean.FALSE);
-		}
+		
+		// allow add assignment?
+		boolean allowAddAssignment = AssignmentService.allowAddAssignment(contextString);
+		context.put("allowAddAssignment", Boolean.valueOf(allowAddAssignment));
+		
+		// allow grade assignment?
+		boolean allowGradeSubmission = AssignmentService.allowGradeSubmission(contextString);
+		context.put("allowGradeSubmission", Boolean.valueOf(allowGradeSubmission));
 		
 		// grading option
 		context.put("withGrade", state.getAttribute(WITH_GRADES));
@@ -541,7 +533,7 @@ extends PagedResourceActionII
 			// build the context for showing one graded submission
 			template = build_student_view_grade_context (portlet, context, data, state);
 		}
-		else if (mode.equals (MODE_INSTRUCTOR_LIST_ASSIGNMENTS))
+		else if (mode.equals (MODE_INSTRUCTOR_LIST_ASSIGNMENTS) && (allowAddAssignment || allowGradeSubmission))
 		{
 //			// enable the observer when comming to the instructor assignment list view
 //			// watch for both the assignment update and the submission update for any assignment
@@ -556,7 +548,7 @@ extends PagedResourceActionII
 			// build the context for the instructor assignment list view
 			template = build_instructor_list_assignments_context (portlet, context, data, state);
 		}
-		else if (mode.equals (MODE_INSTRUCTOR_NEW_ASSIGNMENT))
+		else if (mode.equals (MODE_INSTRUCTOR_NEW_ASSIGNMENT) && allowAddAssignment)
 		{
 			// disable auto-updates while leaving the list view
 			justDelivered(state);
@@ -566,21 +558,46 @@ extends PagedResourceActionII
 		}
 		else if (mode.equals (MODE_INSTRUCTOR_EDIT_ASSIGNMENT))
 		{
-			// disable auto-updates while leaving the list view
-			justDelivered(state);
-						
-			// build the context for the instructor's edit assignment
-			template = build_instructor_edit_assignment_context (portlet, context, data, state);
+			if (state.getAttribute (EDIT_ASSIGNMENT_ID) != null)
+			{
+				String aReference = AssignmentService.assignmentReference(contextString,(String) state.getAttribute (EDIT_ASSIGNMENT_ID));
+				if (AssignmentService.allowUpdateAssignment(aReference))
+				{
+					// disable auto-updates while leaving the list view
+					justDelivered(state);
+								
+					// build the context for the instructor's edit assignment
+					template = build_instructor_edit_assignment_context (portlet, context, data, state);
+				}
+			}
 		}
 		else if (mode.equals (MODE_INSTRUCTOR_DELETE_ASSIGNMENT))
 		{
-			// disable auto-updates while leaving the list view
-			justDelivered(state);
+			if (state.getAttribute (DELETE_ASSIGNMENT_IDS) != null)
+			{
+				Vector assignmentIds = (Vector) state.getAttribute (DELETE_ASSIGNMENT_IDS);
+				boolean allowRemove = false;
+				for (int i=0; !allowRemove && i<assignmentIds.size(); i++)
+				{
+					String aReference = AssignmentService.assignmentReference(contextString,(String) assignmentIds.get(i));
+					if (AssignmentService.allowRemoveAssignment(aReference))
+					{
+						allowRemove = true;
+					}
+				}
 				
-			// build the context for the instructor's delete assignment
-			template = build_instructor_delete_assignment_context (portlet, context, data, state);
+				//if user can remove at least one assignment
+				if (allowRemove)
+				{
+					//disable auto-updates while leaving the list view
+					justDelivered(state);
+					
+					// build the context for the instructor's delete assignment
+					template = build_instructor_delete_assignment_context (portlet, context, data, state);
+				}
+			}
 		}
-		else if (mode.equals (MODE_INSTRUCTOR_GRADE_ASSIGNMENT))
+		else if (mode.equals (MODE_INSTRUCTOR_GRADE_ASSIGNMENT) && allowGradeSubmission)
 		{
 			// change the observer to watch for the submission update for this assignment
 			/*MultipleEventsObservingCourier o = (MultipleEventsObservingCourier) state.getAttribute(STATE_OBSERVER);
@@ -593,7 +610,7 @@ extends PagedResourceActionII
 			// build the context for the instructor's grade assignment
 			template = build_instructor_grade_assignment_context (portlet, context, data, state);
 		}
-		else if (mode.equals (MODE_INSTRUCTOR_GRADE_SUBMISSION))
+		else if (mode.equals (MODE_INSTRUCTOR_GRADE_SUBMISSION) && allowGradeSubmission)
 		{
 			// disable auto-updates while leaving the list view
 			justDelivered(state);
@@ -601,17 +618,17 @@ extends PagedResourceActionII
 			// build the context for the instructor's grade submission
 			template = build_instructor_grade_submission_context (portlet, context, data, state);
 		}
-		else if (mode.equals (MODE_INSTRUCTOR_PREVIEW_GRADE_SUBMISSION))
+		else if (mode.equals (MODE_INSTRUCTOR_PREVIEW_GRADE_SUBMISSION) && allowGradeSubmission)
 		{
 			// build the context for the instructor's preview grade submission
 			template = build_instructor_preview_grade_submission_context (portlet, context, data, state);
 		}
-		else if (mode.equals (MODE_INSTRUCTOR_PREVIEW_ASSIGNMENT))
+		else if (mode.equals (MODE_INSTRUCTOR_PREVIEW_ASSIGNMENT) && allowAddAssignment)
 		{
 			// build the context for preview one assignment
 			template = build_instructor_preview_assignment_context (portlet, context, data, state);
 		}
-		else if (mode.equals (MODE_INSTRUCTOR_VIEW_ASSIGNMENT))
+		else if (mode.equals (MODE_INSTRUCTOR_VIEW_ASSIGNMENT) && (allowAddAssignment || allowGradeSubmission))
 		{
 			// disable auto-updates while leaving the list view
 			justDelivered(state);
@@ -619,7 +636,7 @@ extends PagedResourceActionII
 			// build the context for view one assignment
 			template = build_instructor_view_assignment_context (portlet, context, data, state);
 		}
-		else if (mode.equals (MODE_INSTRUCTOR_VIEW_STUDENTS_ASSIGNMENT))
+		else if (mode.equals (MODE_INSTRUCTOR_VIEW_STUDENTS_ASSIGNMENT) && (allowAddAssignment || allowGradeSubmission) )
 		{
 //			// set the observer to watch for both assignment and submission updates for any assignment
 //			MultipleEventsObservingCourier o = (MultipleEventsObservingCourier) state.getAttribute(STATE_OBSERVER);
@@ -634,7 +651,7 @@ extends PagedResourceActionII
 			// build the context for the instructor's create new assignment view
 			template = build_instructor_view_students_assignment_context (portlet, context, data, state);
 		}
-		else if (mode.equals (MODE_INSTRUCTOR_REPORT_SUBMISSIONS))
+		else if (mode.equals (MODE_INSTRUCTOR_REPORT_SUBMISSIONS) && (allowAddAssignment || allowGradeSubmission))
 		{
 //			// set the observer to watch for both assignment and submission updates for any assignment
 //			MultipleEventsObservingCourier o = (MultipleEventsObservingCourier) state.getAttribute(STATE_OBSERVER);
@@ -650,6 +667,13 @@ extends PagedResourceActionII
 			template = build_instructor_report_submissions (portlet, context, data, state);
 		}
 
+		if (template == null)
+		{
+			// default to student list view
+			state.setAttribute(STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
+			template = build_student_list_assignments_context (portlet, context, data, state);
+		}
+		
 		return template;
 		
 	}	// buildNormalContext
@@ -5777,27 +5801,30 @@ extends PagedResourceActionII
 	*/
 	public void doPermissions(RunData data, Context context)
 	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
-
-		String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);
-		String siteRef = SiteService.siteReference(contextString);
-
-		// setup for editing the permissions of the site for this tool, using the roles of this site, too
-		state.setAttribute(PermissionsAction.STATE_REALM_ID, siteRef);
-		state.setAttribute(PermissionsAction.STATE_REALM_ROLES_ID, siteRef);
-
-		// ... with this description
-		state.setAttribute(PermissionsAction.STATE_DESCRIPTION, rb.getString("setperfor") + " "
-				+ SiteService.getSiteDisplay(contextString));
-
-		// ... showing only locks that are prpefixed with this
-		state.setAttribute(PermissionsAction.STATE_PREFIX, "asn.");
-		
-		// disable auto-updates while leaving the list view
-		justDelivered(state);
-				
-		// start the helper
-		state.setAttribute(PermissionsAction.STATE_MODE, PermissionsAction.MODE_MAIN);
+		if (SiteService.allowUpdateSite(PortalService.getCurrentSiteId()))
+		{
+			SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+	
+			String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);
+			String siteRef = SiteService.siteReference(contextString);
+	
+			// setup for editing the permissions of the site for this tool, using the roles of this site, too
+			state.setAttribute(PermissionsAction.STATE_REALM_ID, siteRef);
+			state.setAttribute(PermissionsAction.STATE_REALM_ROLES_ID, siteRef);
+	
+			// ... with this description
+			state.setAttribute(PermissionsAction.STATE_DESCRIPTION, rb.getString("setperfor") + " "
+					+ SiteService.getSiteDisplay(contextString));
+	
+			// ... showing only locks that are prpefixed with this
+			state.setAttribute(PermissionsAction.STATE_PREFIX, "asn.");
+			
+			// disable auto-updates while leaving the list view
+			justDelivered(state);
+					
+			// start the helper
+			state.setAttribute(PermissionsAction.STATE_MODE, PermissionsAction.MODE_MAIN);
+		}
 
 	}	// doPermissions
 
