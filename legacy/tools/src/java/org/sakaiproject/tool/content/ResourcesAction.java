@@ -1111,11 +1111,11 @@ public class ResourcesAction
 		{
 			if (notEmptyDeleteIds.indexOf (",")>-1)
 			{
-				addAlert(state, rb.getString("folder1") + " " + notEmptyDeleteIds + " " + rb.getString("contain") + " ");
+				addAlert(state, rb.getString("folder1") + " " + notEmptyDeleteIds + " " + rb.getString("contain1") + " ");
 			}
 			else
 			{
-				addAlert(state, rb.getString("folder2") + " " + notEmptyDeleteIds + " " + rb.getString("contain") + " ");
+				addAlert(state, rb.getString("folder2") + " " + notEmptyDeleteIds + " " + rb.getString("contain2") + " ");
 			}
 		}
 
