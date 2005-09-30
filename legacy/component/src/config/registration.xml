@@ -81,7 +81,6 @@
 	<function name="content.new" />
 	<function name="content.revise" />
 	<function name="content.delete" />
-	<function name="content.dropbox" />
 	<function name="calendar.read" />
 	<function name="calendar.new" />
 	<function name="calendar.delete" />

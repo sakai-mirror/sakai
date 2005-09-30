@@ -405,6 +405,7 @@ public class ResourcesAction
 	/** The default value for whether to show all sites in dropbox (used if global value can't be read from server config service) */
 	private static final boolean SHOW_ALL_SITES_IN_DROPBOX = false;
 
+
 	/**
 	* Build the context for normal display
 	*/
@@ -592,11 +593,6 @@ public class ResourcesAction
 
 		context.put("atHome", Boolean.toString(atHome));
 		
-		//SAK-2053 - Read separate realm value to view drop box of other users.
-		boolean testdropbox= false;		
-		testdropbox=PermissionsAction.checkDispOthrDropbox(portlet, context, data, state) ;
-		String user_id=UserDirectoryService.getCurrentUser().getId();
-
 		List cPath = getCollectionPath(state);
 		context.put ("collectionPath", cPath);
 
@@ -652,27 +648,13 @@ public class ResourcesAction
 				if(atHome && dropboxMode)
 				{
 					root.setName(siteTitle + " " + rb.getString("gen.drop"));
-					//SAK-2053 - if dropbox mode add logic for display else for resources add all members of list
-					List dispMembers=new LinkedList();
-					for (int i = 0; i < members.size(); i++)
-	        {
-	          BrowseItem array_element =(BrowseItem) members.get(i);
-	          //if admin or 'content.dropbox' realm is set or created by user then only display members of the list
-	          if(SecurityService.isSuperUser()||testdropbox || (array_element.getCreatedBy().equals(user_id))){
-	            dispMembers.add(array_element);
-	          }
-	        }
-					root.addMembers(dispMembers);
-					//
 				}
 				else if(atHome)
 				{
 					root.setName(siteTitle + " " + rb.getString("gen.reso"));
-					root.addMembers(members);
 				}
 				context.put("site", root);
-
-				
+				root.addMembers(members);
 				this_site.add(root);
 			}
 			context.put ("this_site", this_site);
@@ -731,20 +713,8 @@ public class ResourcesAction
 	                      if(members != null && members.size() > 0)
 	                      {
 	                          BrowseItem root = (BrowseItem) members.remove(0);
+	                          root.addMembers(members);
 	                          root.setName(displayName);
-	                          //SAK-2053 - added logic for members of the list
-	                          //root.addMembers(members);
-	                  				List dispMembers=new LinkedList();
-	                  				for (int i = 0; i < members.size(); i++)
-	                          {
-	                            BrowseItem array_element =(BrowseItem) members.get(i);
-	                            //if admin or 'content.dropbox' realm is set or created by user then only display in the list
-	                            if(SecurityService.isSuperUser()||testdropbox || (array_element.getCreatedBy().equals(user_id))){
-	                              dispMembers.add(array_element);
-	                            }
-	                          }
-	                  				root.addMembers(dispMembers);
-	                  				//
 	                          other_sites.add(root);
 	                      }
 	                  }
@@ -7394,7 +7364,7 @@ public class ResourcesAction
 		}
 		catch (PermissionException e)
 		{
-		  addAlert(state, "PermissionException");
+			addAlert(state, "PermissionException");
 		}
 		
 		return newItems;
