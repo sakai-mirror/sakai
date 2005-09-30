@@ -47,6 +47,7 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.cover.Log;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.realm.Realm;
 import org.sakaiproject.service.legacy.realm.RealmEdit;
@@ -55,6 +56,7 @@ import org.sakaiproject.service.legacy.realm.RoleEdit;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
 
 /**
 * <p>PermissionsAction is a helper Action that other tools can use to edit their permissions.</p>
@@ -101,6 +103,11 @@ public class PermissionsAction
 	/** vm files for each mode. TODO: path too hard coded */
 	private static final String TEMPLATE_MAIN = "helper/chef_permissions";
 
+	//SAK-2053- separate realm to view dropbox of other users
+	private static final String DBOX_STATE_REALM_EDIT = "dropboxpermission.realm";
+	private static final String DBOX_STATE_ABILITIES = "dropboxpermission.abilities";
+	private static final String DBOX_STATE_ROLES = "dropboxpermission.roles";
+	private static final String DBOX_DISPLAY="dropbox.displayall";
 	/** 
 	* build the context.
 	* @return The name of the template to use.
@@ -216,7 +223,6 @@ public class PermissionsAction
 			Collections.sort(roles);
 			state.setAttribute(STATE_ROLES, roles);
 		}
-
 		// the abilities not including this realm for each role
 		Map rolesAbilities = (Map) state.getAttribute(STATE_ROLE_ABILITIES);
 		if (rolesAbilities == null)
@@ -227,6 +233,7 @@ public class PermissionsAction
 			// get this resource's role Realms,those that refine the role definitions, but not it's own
 			Reference ref = EntityManager.newReference(edit.getId());
 			Collection realms = ref.getRealms();
+			
 			realms.remove(ref.getReference());
 
 			for (Iterator iRoles = roles.iterator(); iRoles.hasNext(); )
@@ -364,6 +371,122 @@ public class PermissionsAction
 		}
 
 	}	// readForm
+
+  /**
+   * SAK-2053 
+   * This method is called from ResoucesAction to read the status of content.dropbox realm for a role.
+   * @param portlet
+   * @param context
+   * @param data
+   * @param state
+   * @return
+   */
+  public static boolean checkDispOthrDropbox(VelocityPortlet portlet, Context context, RunData data, SessionState state)
+  {
+    boolean dispOthrDropbox=false;
+	  
+		// in state is the realm id
+		String realmId = SiteService.siteReference(PortalService.getCurrentSiteId());
+		
+		RealmEdit edit = (RealmEdit) state.getAttribute(DBOX_STATE_REALM_EDIT);
+		if (edit == null)
+		{
+      try
+      {
+        edit =(RealmEdit)RealmService.editRealm(realmId);
+        state.setAttribute(DBOX_STATE_REALM_EDIT, edit);
+      }
+      catch (IdUnusedException e)
+      {
+        try
+        {
+          edit=RealmService.addRealm(realmId) ;
+          state.setAttribute(DBOX_STATE_REALM_EDIT, edit);
+        }
+        catch (IdInvalidException e1)
+        {
+          state.removeAttribute(DBOX_STATE_REALM_EDIT);
+          return false;
+        }
+        catch (IdUsedException e1)
+        {
+          state.removeAttribute(DBOX_STATE_REALM_EDIT);
+          return false;
+        }
+        catch (PermissionException e1)
+        {
+          state.removeAttribute(DBOX_STATE_REALM_EDIT);
+          return false;
+        }
+        
+      }
+      catch (PermissionException e)
+      {
+        state.removeAttribute(DBOX_STATE_REALM_EDIT);
+        return false;
+      }
+      catch (InUseException e)
+      {
+        state.removeAttribute(DBOX_STATE_REALM_EDIT);
+        return false;
+      }
+		}
+    //abilities
+    List abilities = (List) state.getAttribute(DBOX_STATE_ABILITIES);
+    if (abilities == null){
+      abilities=new Vector();
+      for (Iterator iter = ServerConfigurationService.getLocks().iterator(); iter.hasNext();){
+        String element = (String) iter.next();
+        if(element.startsWith("content.")){
+          abilities.add(element) ;
+        }
+      }
+      state.setAttribute(DBOX_STATE_ABILITIES,abilities);
+    }
+      
+    //Role	    
+    List roles = (List) state.getAttribute(DBOX_STATE_ROLES);
+    if (roles == null){
+      Realm roleRealm=edit;
+      try
+      {
+        roleRealm=RealmService.getRealm(realmId) ;
+      }
+      catch (IdUnusedException e)
+      {
+        Log.warn("chef", "PermissionsAction.checkDispOthrDropbox: getRolesRealm: " + " : " + e);
+      }
+      
+      roles = new Vector();
+      roles.addAll(roleRealm.getRoles());
+      Collections.sort(roles);
+      state.setAttribute(DBOX_STATE_ROLES,roles);
+    }
+
+		// look for each role's ability field
+		for (Iterator iRoles = roles.iterator(); iRoles.hasNext(); )
+		{
+			Role role = (Role) iRoles.next();
+			  String lock = "content.dropbox";
+			  RoleEdit myRole = edit.getRoleEdit(role.getId());
+			  if(myRole.contains(lock))
+			  {
+			    dispOthrDropbox=true;				  
+			  }
+		}
+		//unlock 
+		RealmEdit editlock = (RealmEdit) state.getAttribute(DBOX_STATE_REALM_EDIT);
+		if (editlock != null)
+		{
+			RealmService.cancelEdit(editlock);
+			state.removeAttribute(DBOX_STATE_REALM_EDIT);
+			state.removeAttribute(DBOX_STATE_ABILITIES);
+			state.removeAttribute(DBOX_STATE_ROLES);	
+			
+			state.removeAttribute(STATE_MODE);				
+		}			
+	  return dispOthrDropbox;
+  }
 
 }	// PermissionsAction
 
