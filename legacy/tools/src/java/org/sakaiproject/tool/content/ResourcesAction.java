@@ -3891,7 +3891,7 @@ public class ResourcesAction
 			String url = ContentHostingService.getUrl(id);
 			item.setUrl(url);
 	
-			String size = properties.getPropertyFormatted(ResourceProperties.PROP_CONTENT_LENGTH) + " (" + Validator.getFileSizeWithDividor(properties.getPropertyFormatted(ResourceProperties.PROP_CONTENT_LENGTH)) +" bytes)";
+			String size = properties.getPropertyFormatted(ResourceProperties.PROP_CONTENT_LENGTH) + " (" + Validator.getFileSizeWithDividor(properties.getProperty(ResourceProperties.PROP_CONTENT_LENGTH)) +" bytes)";
 			item.setSize(size);
 			
 			String copyrightStatus = properties.getProperty(properties.getNamePropCopyrightChoice());
@@ -8582,6 +8582,10 @@ public class ResourcesAction
 		 */
 		public String getSize()
 		{
+			if(m_size == null)
+			{
+				m_size = "";
+			}
 			return m_size;
 		}
 

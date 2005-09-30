@@ -458,7 +458,7 @@
 					</td>
 				</tr>
 			#end
-			#if (! $item.isFolder() && ! item.isStructuredArtifact())
+			#if (! $item.isFolder() && ! $item.isStructuredArtifact())
 				<tr> 
 					<td style="width:180px;padding-left:.7em"> 
 						<label>$tlang.getString("gen.stored")</label>
@@ -475,16 +475,14 @@
 						$item.MimeType
 					</td>
 				</tr>
-				#*
 				<tr> 
-					<th> 
-						$tlang.getString("gen.size")
-					</th>
+					<td  style="width:180px;padding-left:.7em"> 
+						<label>$tlang.getString("gen.size")</label>
+					</td>
 					<td>
 						$item.size 
 					</td>
 				</tr>
-				*#
 			#end
 		</table> 
 		#if (!$dropboxMode)
