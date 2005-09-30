@@ -28,14 +28,28 @@ public class CourseManagementManagerImpl
     extends HibernateDaoSupport
     implements CourseManagementManager {
 
+
+
+  /**
+   * Create a new canonical course given the parameters. If the canonicalCourseUuid is 
+   * given as null, it is assumed to be a root canonical course.
+   *
+   * @param title
+   * @param description
+   * @param courseNumber
+   * @param canonicalCourseUuid
+   * @param status
+   * @return a new canonical course.
+   * @author Mark Norton
+   */
   public CanonicalCourse createCanonicalCourse(String title,
                                                String description,
                                                String courseNumber,
-                                               String uuid,
+                                               String canonicalCourseUuid,
                                                CanonicalCourseStatusType status) {
     CanonicalCourseImpl c = new CanonicalCourseImpl(
         title, description, courseNumber,
-        uuid, status);
+        canonicalCourseUuid, status);
     Date currentDate = new Date();
     c.setTitle(title);
     c.setDescription(description);
@@ -56,7 +70,19 @@ public class CourseManagementManagerImpl
     return c;
   }
 
-  public CourseOffering createCourseOffering(String title,
+    /**
+     * Course offerings must always be derived from a Canonical Course.
+     *
+     * @param title
+     * @param description
+     * @param offeringNumber
+     * @param canonicalCourseUuid
+     * @param sessionUuid
+     * @param type
+     * @return a new course offering.
+     * @author Mark Norton
+     */
+   public CourseOffering createCourseOffering(String title,
                                              String description,
                                              String offeringNumber,
                                              String canonicalCourseUuid,
@@ -82,6 +108,18 @@ public class CourseManagementManagerImpl
     return c;
   }
 
+    /**
+     * Course sections must always be derived from a Course Offering.
+     *
+     * @param title
+     * @param description
+     * @param sectionNumber
+     * @param courseOfferingUuid
+     * @param sessionUuid
+     * @param type
+     * @return a new course section.
+     * @author Mark Norton
+     */
   public CourseSection createCourseSection(String title, String description,
                                            String sectionNumber,
                                            String courseOfferingUuid,
@@ -107,6 +145,19 @@ public class CourseManagementManagerImpl
     return c;
   }
   
+    /**
+     * Create a sub-section. Sub sections must always be derived from a Course Section 
+     * (or another sub-section).
+     *
+     * @param title
+     * @param description
+     * @param sectionNumber
+     * @param courseSectionUuid
+     * @param sessionUuid
+     * @param type
+     * @return a new course section.
+     * @author Mark Norton
+     */
   public CourseSection createSubSection(String title, String description,
                                         String sectionNumber,
                                         String courseSectionUuid,
@@ -130,6 +181,12 @@ public class CourseManagementManagerImpl
 
   }
 
+    /**
+     * Create a course set.
+     *
+     * @param title
+     * @return a new course set.
+     */
   public CourseSet createCourseSet(String title) {
     Date currentDate = new Date();
     CourseSetImpl cs = new CourseSetImpl(title);
@@ -148,6 +205,18 @@ public class CourseManagementManagerImpl
     return cs;
   }
 
+    /**
+     * Create a new session record.
+     *
+     * @param title
+     * @param abbreviation
+     * @param year
+     * @param type
+     * @param uuid
+     * @param isCurrent
+     * @return a new session.
+     * @author Mark Norton
+     */
   public Session createSession(String title, String abbreviation,
                                String year, SessionType type, String uuid,
                                Boolean isCurrent) {
@@ -163,6 +232,16 @@ public class CourseManagementManagerImpl
     return s;
   }
 
+    /**
+     * Create a new enrollment record.
+     *
+     * @param agentUuid
+     * @param role
+     * @param status
+     * @param courseSectionUuid
+     * @return a new enrollment record.
+     * @author Mark Norton
+     */
   public EnrollmentRecord createEnrollmentRecord(String agentUuid,
                                                  String role, String statusUuid,
                                                  String courseSectionUuid) {
@@ -179,6 +258,16 @@ public class CourseManagementManagerImpl
     return e;
   }
 
+    /**
+     * Create a new participation record.
+     *
+     * @param agentUuid
+     * @param role
+     * @param statusUuid
+     * @param courseSectionUuid
+     * @return a new participation record.
+     * @author Mark Norton
+     */
   public ParticipationRecord createParticipationRecord(String agentUuid,
       String role, String statusUuid, String courseSectionUuid) {
     ParticipationStatusType status = getParticipationStatusByUuid(statusUuid);
@@ -194,6 +283,13 @@ public class CourseManagementManagerImpl
     return p;
   }
 
+    /**
+     * Find the canonical course associated with the uuid passed.
+     *
+     * @param uuid
+     * @return a canonical course
+     * @author Mark Norton
+     */
   public CanonicalCourse getCanonicalCourse(String uuid) {
     String query = "select c from CanonicalCourseImpl c where c.uuid=?";
     System.out.println("****query=" + query);
@@ -211,6 +307,13 @@ public class CourseManagementManagerImpl
     }
   }
 
+    /**
+     * Fine the course offering associated with the uuid passed.
+     *
+     * @param uuid
+     * @return a course offering.
+     * @author Mark Norton
+     */
   public CourseOffering getCourseOffering(String uuid) {
     String query = "select c from CourseOfferingImpl c where c.uuid=?";
     System.out.println("****query=" + query);
@@ -228,6 +331,13 @@ public class CourseManagementManagerImpl
     }
   }
 
+    /**
+     * Find the course section associated with the uuid passed.
+     *
+     * @param uuid
+     * @return a course section.
+     * @author Mark Norton
+     */
   public CourseSection getCourseSection(String uuid) {
     String query = "select c from CourseSectionImpl c where c.uuid=?";
     List list = getHibernateTemplate().find(query,
@@ -244,18 +354,38 @@ public class CourseManagementManagerImpl
     }
   }
 
+    /**
+     * Return a list of all canonical courses.
+     *
+     * @return a list of canonical courses
+     * @author Mark Norton
+     */
   public List getCanonicalCourses() {
     String query = "select c from CanonicalCourseImpl c";
     List list = getHibernateTemplate().find(query);
     return list;
   }
 
-  // this method does not make sense to me - daisyf
+    /**
+     * Return a list of canonical courses derrived from the one given by the uuid passed.
+     *
+     * @param canonicalCourseUuid
+     * @return a list of canonical courses
+     * @author Mark Norton
+     */
   public List getCanonicalCourses(String canonicalCourseUuid) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select c from CanonicalCourseImpl c where c.parentId="+canonicalCourseUuid;
+    List list = getHibernateTemplate().find(query);
+    return list;
   }
 
+    /**
+     * Return a list of course offerings derived from the
+     *
+     * @param canonicalCourseUuid
+     * @return a list of course offerings
+     * @author Mark Norton
+     */
   public List getCourseOfferings(String canonicalCourseUuid) {
     String query = "select c from CourseOfferingImpl c and c.canonicalCourseUuid=?";
     List list = getHibernateTemplate().find(query,
@@ -266,6 +396,13 @@ public class CourseManagementManagerImpl
     return list;
   }
 
+    /**
+     * Return a list of course sections derived from the course offering uuid passed.
+     *
+     * @param courseOfferingUuid
+     * @return a list of course sections
+     * @author Mark Norton
+     */
   public List getCourseSections(String courseOfferingUuid) {
     String query = "select s from CourseSectionImpl s where s.courseOfferingUuid=? and s.parentId=null";
     List list = getHibernateTemplate().find(query,
@@ -276,6 +413,13 @@ public class CourseManagementManagerImpl
     return list;
   }
 
+    /**
+     * Return a list of course sections derived from the course section uuid passed (sub-sections).
+     *
+     * @param courseSectionUuid
+     * @return a list of course sub-sections
+     * @author Mark Norton
+     */
   public List getSubSections(String courseSectionUuid) {
     String query = "select s from CourseSectionImpl s where s.parentSection.uuid=?";
     List list = getHibernateTemplate().find(query,
@@ -286,12 +430,26 @@ public class CourseManagementManagerImpl
     return list;
   }
 
+    /**
+     * Get the session associated with the uuid given.
+     *
+     * @param uuid
+     * @return a session
+     * @author Mark Norton
+     */
   public List getSessions() {
     String query = "select s from SessionImpl s";
     List list = getHibernateTemplate().find(query);
     return list;
   }
 
+    /**
+     * Return a list of all canonical courses filtered by status.
+     *
+     * @param status
+     * @return a list of canoncial courses.
+     * @author Mark Norton
+     */
   public List getCanonicalCoursesByType(CanonicalCourseStatusType status) {
     String query = "select c from CanonicalCourseImpl c where c.canonicalCourseStatus.canonicalCourseStatusTypeId=?";
     List list = getHibernateTemplate().find(query,
@@ -302,12 +460,33 @@ public class CourseManagementManagerImpl
     return list;
   }
 
-  // hmmmm... i don't understand this one neither
+    /**
+     * Return a list of canonical courses derived from the one given filtered by type.
+     *
+     * @param canonicalCourseUuid - this is the parentId
+     * @param status
+     * @return a list of canonical courses
+     * @author Mark Norton
+     */
   public List getCanonicalCoursesByType(String canonicalCourseUuid,
                                         CanonicalCourseStatusType status) {
-  	return null;
+    String query = "select c from CanonicalCourseImpl c where c.canonicalCourseStatus.canonicalCourseStatusTypeId=? and c.parentId="+canonicalCourseUuid;
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {status.getCanonicalCourseStatusTypeId()}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    return list;
   }
 
+    /**
+     * Return a list of course offerings derived from the canonical course given filtered by type.
+     *
+     * @param canonicalCourseUuid
+     * @param type
+     * @return a list of course offerings
+     * @author Mark Norton
+     */
   public List getCourseOfferingsByType(String canonicalCourseUuid,
                                        CourseOfferingType type) {
     String query = "select c from CourseOfferingImpl c"
@@ -322,6 +501,14 @@ public class CourseManagementManagerImpl
     return list;
   }
 
+    /**
+     * Return a list course sections derived from the course offering given filtered by type.
+     *
+     * @param courseOfferingUuid
+     * @param type
+     * @return a list of sections
+     * @author Mark Norton
+     */
   public List getCourseSectionsByType(String courseOfferingUuid,
                                       CourseSectionType type) {
     String query = "select s from CourseSectionImpl s"
@@ -336,6 +523,14 @@ public class CourseManagementManagerImpl
     return list;
   }
 
+    /**
+     * Return a list of sub-sections derived from the course section given filtered by type.
+     *
+     * @param courseSectionUuid
+     * @param type
+     * @return a list of sub-sections
+     * @author Mark Norton
+     */
   public List getSubSectionsByType(String courseSectionUuid,
                                    CourseSectionType type) {
     String query = "select s from CourseSectionImpl s"
@@ -355,6 +550,28 @@ public class CourseManagementManagerImpl
     return null;
   }
 
+    /**
+     * Get the session associated with the uuid given.
+     *
+     * @param uuid
+     * @return a session
+     * @author Mark Norton
+     */
+  public Session getSession(String uuid) {
+    String query = "select t from SessionImpl t where t.uuid=?";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {uuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    if (list.size() > 0) {
+      return (Session) list.get(0);
+    }
+    else {
+      return null;
+    }
+  }
+
   // all the methods below are added by daisyf
   public SessionType getSessionTypeByKeyword(String keyword) {
     String query = "select t from SessionTypeImpl t where t.keyword=?";
@@ -365,21 +582,6 @@ public class CourseManagementManagerImpl
                                             Hibernate.STRING});
     if (list.size() > 0) {
       return (SessionType) list.get(0);
-    }
-    else {
-      return null;
-    }
-  }
-
-  public Session getSession(String uuid) {
-    String query = "select t from SessionImpl t where t.uuid=?";
-    List list = getHibernateTemplate().find(query,
-                                            new Object[] {uuid}
-                                            ,
-                                            new net.sf.hibernate.type.Type[] {
-                                            Hibernate.STRING});
-    if (list.size() > 0) {
-      return (Session) list.get(0);
     }
     else {
       return null;
