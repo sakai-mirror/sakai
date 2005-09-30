@@ -324,11 +324,13 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
     this.courseOfferingSet = courseOfferingSet;
   }
 
+    /*
   public void addOffering(String offeringUuid) {
     if (courseOfferingSet == null)
       courseOfferingSet = new HashSet();
     courseOfferingSet.add(offeringUuid);
   }
+    */
 
   public void addCourseOffering(CourseOfferingImpl offering) {
     if (courseOfferingSet == null){

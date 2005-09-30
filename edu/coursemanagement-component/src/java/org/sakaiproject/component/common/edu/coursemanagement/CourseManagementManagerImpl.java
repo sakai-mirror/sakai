@@ -112,8 +112,22 @@ public class CourseManagementManagerImpl
                                         String courseSectionUuid,
                                         String sessionUuid,
                                         CourseSectionType type) {
-    // TODO Auto-generated method stub
-    return null;
+
+      SessionImpl session = (SessionImpl) getSession(sessionUuid);
+      CourseSection parentSection = getCourseSection(courseSectionUuid);
+      CourseSectionImpl section = new CourseSectionImpl(
+				   title, description, sectionNumber,
+                                   parentSection.getCourseOffering(), session, type);
+      section.setParentId(parentSection.getUuid());
+      Date currentDate = new Date();
+      section.setUuid("*uuid_section_" + currentDate.getTime());
+      section.setCreatedBy("admin");
+      section.setCreatedDate(currentDate);
+      section.setLastModifiedBy("admin");
+      section.setLastModifiedDate(currentDate);
+      getHibernateTemplate().save(section);
+      return section;
+
   }
 
   public CourseSet createCourseSet(String title) {

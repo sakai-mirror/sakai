@@ -288,12 +288,14 @@ public class CourseOfferingImpl
     this.courseSectionSet = courseSectionSet;
   }
 
+    /*
   public void addCourseSection(String sectionUuid) {
     if (this.courseSectionSet == null) {
       this.courseSectionSet = new HashSet();
     }
     courseSectionSet.add(sectionUuid);
   }
+    */
 
   public void removeCourseSection(String sectionUuid) {
     Iterator i = courseSectionSet.iterator();

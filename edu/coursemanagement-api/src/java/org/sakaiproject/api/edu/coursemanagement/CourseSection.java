@@ -382,19 +382,19 @@ public interface CourseSection extends Persistable
 	 */
 	public Set getAllSubSections();
 
-	/**
+	/*
 	 * Add a course section uuid to represent this offering.
 	 * 
 	 * @param sectionUuid
 	 */
-	public void addSection(String sectionUuid);
+	//public void addSection(String sectionUuid);
 
-	/**
+	/*
 	 * Remove a course section uuid that reprsents this course offering.
 	 * 
 	 * @param sectionUuid
 	 */
-	public void removeSection(String sectionUuid);
+	//public void removeSection(String sectionUuid);
 		
 	/**
 	 * Get a set of uuids of child sections of a given type, derived from this course section. Each of these sections is a real class with a location, teacher, students, etc.

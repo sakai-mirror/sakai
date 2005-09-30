@@ -205,7 +205,7 @@ public class CourseSectionImpl
 		return sectionEventSet;
 	}
 
-	public void addSectionEvent(String sectionEvent) {
+  public void addSectionEvent(String sectionEvent) {
     if (sectionEventsString == null) {
       sectionEventsString = sectionEvent;
     }
@@ -435,13 +435,14 @@ public class CourseSectionImpl
   }
 
   // added by daisyf
-  public void addSubSection(CourseSection subSection) {
+  private void addSubSection(CourseSection subSection) {
     if (subSectionSet == null) {
     	subSectionSet = new HashSet();
     }
     subSectionSet.add(subSection);
   }
   
+    /*
   public void addSection(String sectionUuid) {
     if (allChildren == null) {
       allChildren = new HashSet();
@@ -454,6 +455,7 @@ public class CourseSectionImpl
       allChildren.remove(sectionUuid);
     }
   }
+    */
 
   public Set getSubSectionsByType(CourseSectionType type) {
     return null;

@@ -208,12 +208,12 @@ public interface CourseOffering extends Persistable
 	 */
 	public Set getCourseSections();
 
-	/**
+	/*
 	 * Add a course section that represents this offering.
 	 * 
 	 * @param sectionUuid
 	 */
-	public void addCourseSection(String sectionUuid);
+	//public void addCourseSection(String sectionUuid);
 
 	/**
 	 * Remove a course section from this offering set.

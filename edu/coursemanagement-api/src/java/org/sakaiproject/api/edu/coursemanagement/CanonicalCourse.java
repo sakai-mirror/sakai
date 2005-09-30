@@ -226,12 +226,12 @@ public interface CanonicalCourse extends Persistable{
 	 */
 	public Set getOfferings();
 	
-	/**
+	/*
 	 * Add a course offering uuid as derived from this canonical course.
 	 * 
 	 * @param offeringUuid
 	 */
-	public void addOffering (String offeringUuid);
+	//public void addOffering (String offeringUuid);
 	
 	/**
 	 * Remove a course offering from the list in this canonical course.  Uuid must

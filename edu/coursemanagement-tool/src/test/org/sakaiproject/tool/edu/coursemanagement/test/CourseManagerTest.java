@@ -204,26 +204,15 @@ public class CourseManagerTest
     System.out.println("**** done 6: add participation record");
 
     // 7. add sub section
-    // note: I added a no. of method so I can persist the subsection
-    // through the CourseSectionImpl.addSubSection() method
+    // through the CourseManagementManager.createSubSection() method
     CourseSectionTypeImpl subSectionType = (CourseSectionTypeImpl)
-    ( (CourseManagementManagerImpl) courseManagementManager).
-    getCourseSectionTypeByKeyword("section.lab");
-   	CourseSectionImpl subSection = new CourseSectionImpl(
+      ( (CourseManagementManagerImpl) courseManagementManager).getCourseSectionTypeByKeyword("section.lab");
+    CourseSectionImpl subSection = (CourseSectionImpl)courseManagementManager.createSubSection(
         "title: subSection", "description: subSection",
         "1052-eng-101-01.lab1",
-        offering.getUuid(), session, subSectionType);
-   	subSection.setParentSection(section);
-  	subSection.setUuid("*uuid_session_" + currentDate.getTime());
-    subSection.setCreatedBy("admin");
-    subSection.setCreatedDate(currentDate);
-    subSection.setLastModifiedBy("admin");
-    subSection.setLastModifiedDate(currentDate);
-   	section.addSubSection(subSection);
-    ((CourseManagementManagerImpl) courseManagementManager)
-				.saveCourseSection(section);
+        section.getUuid(), session.getUuid(), subSectionType);
     //setComplete();
-    System.out.println("**** done 7: add subsection to section");
+    System.out.println("**** done 7: add subsection to section, subSection="+subSection.getCourseSectionId());
     return eng101;
   }
 
