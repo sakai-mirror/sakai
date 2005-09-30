@@ -294,10 +294,16 @@
 						</p>
 					#end
 				#else
-					<p class="shorttext">
-						<label for="fileName">$tlang.getString("addi.upload")</label>
-						$validator.escapeHtml("$!item.filename")
-					</p>
+					<table class="itemSummary" border="0" style="clear:both;margin:left:.7em">
+						<tr> 
+							<td style="width:180px;padding-left:.7em"> 
+								<label>$tlang.getString("edit.filename")</label>
+							</td>
+							<td>
+								$validator.escapeHtml("$!item.filename")
+							</td>
+						</tr>
+					</table>
 					<p class="shorttext">
 						<label for="fileName">$tlang.getString("rep.thisfile")</label>
 						<input type="file" name="fileName" id="fileName" class="upload" />
@@ -325,6 +331,16 @@
 					#editPropertyValues($item.properties)
 				#end
 			#else
+				<table class="itemSummary" border="0" style="clear:both;margin:left:.7em">
+					<tr> 
+						<td style="width:180px;padding-left:.7em"> 
+							<label>$tlang.getString("edit.filename")</label>
+						</td>
+						<td>
+							$validator.escapeHtml("$!item.filename")
+						</td>
+					</tr>
+				</table>
 				<p class="shorttext">
 					<label for="fileName">$tlang.getString("rep.thisfile")</label>
 					<input type="file" name="fileName" id="fileName"  class ="upload" />

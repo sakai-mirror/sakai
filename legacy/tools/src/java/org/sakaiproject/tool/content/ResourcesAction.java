@@ -2407,6 +2407,9 @@ public class ResourcesAction
 			{
 				filename = Validator.escapeResourceName(item.getName());
 			}
+			
+			resourceProperties.addProperty(ResourceProperties.PROP_ORIGINAL_FILENAME, filename);
+
 			int extensionIndex = filename.lastIndexOf (".");
 			String extension = "";
 			if (extensionIndex > 0)
@@ -2423,7 +2426,7 @@ public class ResourcesAction
 				alerts.add(rb.getString("toolong") + " " + newResourceId);
 				continue outerloop;
 			}
-
+			
 			boolean tryingToAddItem = true;
 			while(tryingToAddItem)
 			{
@@ -3816,6 +3819,27 @@ public class ResourcesAction
 				importStructuredArtifact(root, item.getForm());
 				List flatList = item.getForm().getFlatList();
 				item.setProperties(flatList);
+			}
+			else if(item.isHtml() || item.isPlaintext() || item.isFileUpload())
+			{
+				String filename = properties.getProperty(ResourceProperties.PROP_ORIGINAL_FILENAME);
+				if(filename == null)
+				{
+					// this is a hack to deal with the fact that original filenames were not saved for some time.
+					if(containerId != null && item.getId().startsWith(containerId) && containerId.length() < item.getId().length())
+					{
+						filename = item.getId().substring(containerId.length());
+					}
+				}
+				
+				if(filename == null)
+				{
+					item.setFilename(itemName);
+				}
+				else
+				{
+					item.setFilename(filename);
+				}
 			}
 			
 			String description = properties.getProperty(ResourceProperties.PROP_DESCRIPTION);
@@ -5612,6 +5636,7 @@ public class ResourcesAction
 						redit.setContentType(item.getMimeType());
 						redit.setContent(item.getContent());
 					}
+					
 					String copyright = StringUtil.trimToNull(params.getString ("copyright"));
 					String newcopyright = StringUtil.trimToNull(params.getCleanString (NEW_COPYRIGHT));
 					String copyrightAlert = StringUtil.trimToNull(params.getString("copyrightAlert"));
