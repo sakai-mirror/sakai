@@ -2381,13 +2381,7 @@ public class ResourcesAction
 					
 			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 			
-			String displayname = findUniqueDisplayName(collectionId, item.getName());
-			if(displayname == null)
-			{
-				alerts.add(item.getName() + " " + rb.getString("used"));
-				continue outerloop;
-			}
-			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, displayname);							
+			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
 			resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
 
 			resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, item.getCopyrightInfo());
@@ -2543,53 +2537,6 @@ public class ResourcesAction
 		
 	}	// createFiles
 	
-	/**
-	 * Check a candidate display-name for a new resource in a collection. If the candidate 
-	 * is already in use as a display name in the collection, append a number to the
-	 * candidate (in parentheses) and check again. Increment the number and keep trying
-	 * until a variation is found that is not already used as a display-name in the 
-	 * collection or until an arbitrary limit on the number of tries is exceeded. 
-	 * @param collectionId
-	 * @param candidate
-	 * @return The candidate or a variation on it that is not already used as a display-name
-	 * in the collection, or null if a unique variation is not found.
-	 */
-	private static String findUniqueDisplayName(String collectionId, String candidate) 
-	{
-		String displayname = candidate;
-		ContentCollection collection;
-		try 
-		{
-			collection = ContentHostingService.getCollection(collectionId);
-			List otherMembers = collection.getMemberResources();
-			Set otherDisplayNames = new HashSet();
-			Iterator it = otherMembers.iterator();
-			while(it.hasNext())
-			{
-				Entity res = (Entity) it.next();
-				ResourceProperties props = res.getProperties();
-				String dname = props.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
-				otherDisplayNames.add(dname);
-			}
-			int attempt = 0;
-			while(otherDisplayNames.contains(displayname) && attempt < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
-			{
-				attempt++;
-				displayname = candidate + " (" + attempt + ")";
-			}
-			if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
-			{
-				displayname = null;
-			}
-		} 
-		catch (Exception e) 
-		{
-			displayname = null;
-		}
-		return displayname;
-		
-	}	// findUniqueDisplayName
-
 	/**
 	 * Process user's request to add an instance of a particular field to a structured object.
 	 * @param data
