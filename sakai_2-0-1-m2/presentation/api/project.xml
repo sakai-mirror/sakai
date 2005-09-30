@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Presentation Service API</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-present-api</id>
+	<currentVersion>2.0.0</currentVersion>
+	<organization>
+		<name>Sakai Project</name>
+		<url>http://www.sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2005</inceptionYear>
+
+        <properties>
+                <deploy.type>jar</deploy.type>
+                <deploy.target>shared</deploy.target>
+        </properties>
+
+	<dependencies>
+
+               <!-- our plugin so we can run maven from this directory for testing -->
+                <dependency>
+                        <groupId>sakaiproject</groupId>
+                        <artifactId>sakai</artifactId>
+                        <version>${pom.currentVersion}</version>
+                        <type>plugin</type>
+                </dependency>
+
+               <!-- Need the OSID APIs -->
+                <dependency>
+                        <groupId>OKI</groupId>
+                        <artifactId>OkiOSID</artifactId>
+                        <version>2.0</version>
+                        <url>http://sourceforge.net/projects/okiproject</url>
+                </dependency>
+
+                <!-- to be able to access Sakai Services -->
+                <dependency>
+                        <groupId>sakaiproject</groupId>
+                        <artifactId>sakai-legacy-service</artifactId>
+                        <version>${pom.currentVersion}</version>
+                </dependency>
+
+	</dependencies>
+
+	<build>
+		<!-- java source -->
+		<sourceDirectory>src/java</sourceDirectory>
+	</build>
+</project>
+

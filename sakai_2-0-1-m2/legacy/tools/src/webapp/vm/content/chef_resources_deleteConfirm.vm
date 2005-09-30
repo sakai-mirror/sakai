@@ -1,0 +1,103 @@
+<!-- chef_resources_deleteConfirm.vm, version: $Revision:  $, use with org.sakaiproject.tool.content.ResourcesAction.java -->
+## #paitence("delete") %%% currently disabled -ggolden
+<div class="portletBody">
+	<h3>
+		$tlang.getString("del.del")
+	</h3>
+	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" ></div>#end
+	<span class="chefAlertBox">$tlang.getString("del.sure")</span><div style="display:block;clear:both" ></div>
+	<div class ="breadCrumb">
+		$tlang.getString("gen.location")
+		<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" alt= "$tlang.getString('gen.folder')" border="0" />
+		#foreach ($id in $collectionPath)
+			#if ($dropboxMode && $id==$homeCollection)
+				$siteTitle Drop Box /
+			#else
+				$validator.escapeHtml($service.getProperties($id).getPropertyFormatted($resourceProperties.NamePropDisplayName)) /
+			#end
+		#end
+		#if ($dropboxMode && $collectionId==$homeCollection)
+			$siteTitle Drop Box
+		#else
+			$validator.escapeHtml($service.getProperties($collectionId).getPropertyFormatted($resourceProperties.NamePropDisplayName))
+		#end
+	</div>
+	<form action="#toolForm("ResourcesAction")" name="deleteFileForm" method="post" >
+		<input type="hidden" name="deleteResourceIds" value="$deleteResourceIds">
+		<input type="hidden" name="view" value="general" />
+		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+		<table class ="listHier" cellspacing="0" summary ="Table holds ..... Column 1 may hold .... Column 1 holds ..., column 2  holds .... Column 3 holds .... Headers hold links to sort ....">
+			#if ($deleteResourceIds.size()>0)
+				<tr>
+					<th>
+						&nbsp
+					</th>
+					<th align="left">
+						$tlang.getString("gen.title")
+					</th>
+					<th>
+						$tlang.getString("gen.size")
+					</th>
+					#if (!($dropboxMode && $collectionId==$homeCollection))
+					<th>
+						$tlang.getString("gen.created")
+					</th>
+					#end
+					<th>
+						$tlang.getString("gen.last")
+					</th>
+					<th>
+						&nbsp;&nbsp;
+					</th>
+				</tr>
+				#foreach ($member in $deleteResourceIds)
+					#set ( $props = $service.getProperties($member) )
+					#if (($!props) && ($!props.getPropertyFormatted($props.NamePropDisplayName).length() > 0))
+						<tr>
+							<td>
+								#if ($props.getPropertyFormatted($props.NamePropIsCollection)=="true")
+									<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" alt ="$tlang.getString('gen.folder)" />
+								#else
+									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" alt ="($props.getProperty($props.NamePropContentType))" />
+								#end
+							</td>
+							<td>
+								<a href="$service.getUrl($member)" target="_blank">
+									$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))
+								</a>
+							</td>
+							<td>
+								$validator.escapeHtml($props.getPropertyFormatted($props.NamePropContentLength))
+							</td>
+							#if (!($dropboxMode && $collectionId==$homeCollection))
+							<td>
+								$validator.escapeHtml($props.getPropertyFormatted($props.NamePropCreator))
+							</td>
+							#end
+							<td>
+								$props.getPropertyFormatted($props.NamePropModifiedDate)
+							</td>
+						</tr>
+					#else
+						<tr>
+							<td id="ID">
+								$tlang.getString("gen.resoid")
+							</td>
+							<td colspan="5">
+								$validator.escapeHtml($member)
+							</td>				
+						</tr>
+					#end
+				#end
+			#end
+		</table>
+			<p class ="act">
+					#if ($deleteResourceIds.size()>0)
+						<input type="submit" name="eventSubmit_doDelete" value="$tlang.getString("del.del1")" />
+					#end
+					<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("gen.cancel")" />
+			</p>
+	</form>
+</div>
+
+

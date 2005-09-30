@@ -1,0 +1,68 @@
+##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/sitesetup/chef_site-importSites.vm,v 1.3 2005/05/25 20:24:30 zqian.umich.edu Exp $ -->
+<div class="portletBody">
+	<h3 class="insColor insBak insBor">
+		$tlang.getString("import.reuse")
+	</h3>
+	<p class="step">
+		$tlang.getString("import.reuse2")
+	</p>
+	<p class="instruction">
+	$tlang.getString("import.choose")
+	</p>
+	<form name="importSitesForm" action="#toolForm("$action")" method="post">
+		<table class ="listHier" cellspacing="0" summary="import sites and their tools" border="0">
+			<tr>
+				<th>
+					&nbsp;
+				</th>
+				#foreach($site in $importSites.keys())
+					<th>
+						$site.getTitle()
+					</th>
+				#end
+			</tr>
+			#foreach($toolId in $selectedTools)
+				#if ($toolId == "sakai.schedule" || $toolId == "sakai.announcements" || $toolId == "sakai.resources" || $toolId == "sakai.discussion" || $toolId == "sakai.assignment")
+					<tr>
+						<td>
+							#set($toolTitle = "")
+							#foreach($t in $toolRegistrationList)
+								#if ($t.getId() == $toolId)
+									#set($toolTitle = $t.getTitle())
+								#end
+							#end
+							$toolTitle
+						</td>
+						#foreach($site in $importSites.keys())
+							<td>
+								#set($toolFound = false)
+								#set($allPages = $site.getPages())
+								#foreach ($page in $allPages)
+									#set($pageTools = $page.getTools())
+									#foreach ($pageTool in $pageTools)
+										#if ($pageTool.getTool().getId() == $toolId)
+											#set($toolFound = true)
+										#end
+									#end
+								#end
+								#if ($toolFound)
+									<input type="checkbox" name="$toolId" value="$site.Id" />
+								#else
+									<input type="checkbox" name="$toolId" value="$site.Id" disabled="disabled" />
+								#end
+							</td>
+						#end
+					</tr>
+				#end
+			#end
+		</table>
+		<input type="hidden" name="back" value="$back" />
+		<input type="hidden" name="template-index" value="27" />
+		<input type="hidden" name="continue" value="$continue" />
+		<p class="act">
+			<input type="submit" class="active" name="eventSubmit_doContinue" value="$tlang.getString('gen.continue')" />
+			<input type="submit" name="eventSubmit_doBack" value="$tlang.getString('gen.back')" />
+			<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString('gen.cancel')" />
+		</p>
+	</form>
+</div>

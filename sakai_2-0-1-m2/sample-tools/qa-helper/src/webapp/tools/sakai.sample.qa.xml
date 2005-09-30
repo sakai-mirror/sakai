@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.sample.qa"
+			title="Question and Answer Helper"
+			description="A sample helper.">
+
+		<category name="sakai.helper" />
+
+	</tool>
+
+</registration>

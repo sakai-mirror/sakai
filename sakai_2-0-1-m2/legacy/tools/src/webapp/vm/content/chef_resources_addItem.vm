@@ -1,0 +1,33 @@
+###############################################################
+##### deprecated -- not used in refactored resources tool #####
+###############################################################
+<div class="chefPortletContainer">
+	<div class ="chefPortletToolBarMessage">
+		$tlang.getString("addi.choose")
+	</div>
+	<div class="chefPortletContent">
+		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+		<form name="form2" method="post" action="#toolForm("ResourcesAction")" >
+			<input type="hidden" name="from" value="show" />
+			<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+			<fieldset>
+				<legend>$tlang.getString("addi.type")</legend>
+				<input type="radio" name="itemType" value="file" id="file" checked="checked" />
+					<label for="file">$tlang.getString("addi.file")</label><br />
+				<input type="radio" name="itemType" value="emptyFolder" id="emptyFolder" />
+					<label for="emptyFolder">$tlang.getString("addi.folder")</label><br />
+				<input type="radio" name="itemType" value="Url" id="Url" />
+					<label for="Url">$tlang.getString("addi.url")</label><br />
+				<input type="radio" name="itemType" value="plaintextdocument" id="plaintextdocument" />
+					<label for="plaintextdocument">$tlang.getString("addi.text")</label><br />
+				<input type="radio" name="itemType" value="htmldocument" id="htmldocument" />
+					<label for="htmldocument">$tlang.getString("addi.html")</label><br />
+			</fieldset>
+			<div class ="chefButtonRow">
+				<input type="submit" name="eventSubmit_doAdditem" value="$tlang.getString("gen.continue")"  />
+				<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("gen.cancel")" />
+			</div>	
+		</form>
+	</div>
+</div>
+

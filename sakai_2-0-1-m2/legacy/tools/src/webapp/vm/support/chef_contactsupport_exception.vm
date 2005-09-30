@@ -1,0 +1,18 @@
+<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/support/chef_contactsupport_exception.vm,v 1.3 2005/05/25 18:37:22 gsilver.umich.edu Exp $ -->
+<div class="portletBody">
+
+	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+
+	#if (!$alertMessage)
+		<div class="information">
+		   $tlang.getString("exe.sor") <a href="mailto:$config.getString("mail.support")">$tlang.getString("doc.emaus") $config.getString("mail.support")</a>.
+		</div>
+	#end
+
+	<form action="#toolForm("$action")" method="post">
+		<div class="act">
+			<input type="submit" name="eventSubmit_doNew" value="$tlang.getString("exe.newcom")" />
+			<input type="submit" name="eventSubmit_doDoc" value="$tlang.getString("exe.gobac")" />
+		</div>
+	</form>
+</div>
