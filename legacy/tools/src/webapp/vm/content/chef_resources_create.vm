@@ -299,7 +299,9 @@
 				<option value="$TYPE_URL" id="$validator.escapeJavascript("$TYPE_URL")"#if("$itemType" == "$TYPE_URL") selected="selected"#end>$tlang.getString("addi.url")</option>
 				<option value="$TYPE_HTML" id="$validator.escapeJavascript("$TYPE_HTML")"#if("$itemType" == "$TYPE_HTML") selected="selected"#end>$tlang.getString("addi.txthtml")</option>
 				<option value="$TYPE_TEXT" id="$validator.escapeJavascript("$TYPE_TEXT")"#if("$itemType" == "$TYPE_TEXT") selected="selected"#end>$tlang.getString("addi.txttxt")</option>
-				<option value="$TYPE_FORM" id="$validator.escapeJavascript("$TYPE_FORM")"#if("$itemType" == "$TYPE_FORM") selected="selected"#end>$tlang.getString("addi.meta")</option>
+				#if($show_form_items)
+					<option value="$TYPE_FORM" id="$validator.escapeJavascript("$TYPE_FORM")"#if("$itemType" == "$TYPE_FORM") selected="selected"#end>$tlang.getString("addi.meta")</option>
+				#end
 			</select>
 		</p>
 	</form>

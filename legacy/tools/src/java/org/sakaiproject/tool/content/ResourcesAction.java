@@ -271,6 +271,7 @@ public class ResourcesAction
 	private static final String STATE_EDIT_ITEM = "resources.edit_item";
 	private static final String STATE_EDIT_COLLECTION_ID = "resources.edit_collection_id";
 	private static final String STATE_EDIT_INTENT = "resources.properties_intent";
+	private static final String STATE_SHOW_FORM_ITEMS = "resources.show_form_items";
 
 	/************** the create contexts *****************************************/
 
@@ -403,7 +404,6 @@ public class ResourcesAction
 
 	/** The default value for whether to show all sites in dropbox (used if global value can't be read from server config service) */
 	private static final boolean SHOW_ALL_SITES_IN_DROPBOX = false;
-
 
 
 	/**
@@ -1444,6 +1444,12 @@ public class ResourcesAction
 		context.put("intent", intent);
 		context.put("REVISE", INTENT_REVISE_FILE);
 		context.put("REPLACE", INTENT_REPLACE_FILE);
+		
+		String show_form_items = (String) state.getAttribute(STATE_SHOW_FORM_ITEMS);
+		if(show_form_items != null)
+		{
+			context.put("show_form_items", show_form_items);
+		}
 
 		// put the item into context
 		EditItem item = (EditItem)state.getAttribute(STATE_EDIT_ITEM);
@@ -2966,6 +2972,12 @@ public class ResourcesAction
 			context.put("atHome", Boolean.TRUE.toString());
 		}
 			
+		String show_form_items = (String) state.getAttribute(STATE_SHOW_FORM_ITEMS);
+		if(show_form_items != null)
+		{
+			context.put("show_form_items", show_form_items);
+		}
+
 		// copyright
 		copyrightChoicesIntoContext(state, context);
 
@@ -6596,6 +6608,13 @@ public class ResourcesAction
 		state.setAttribute (STATE_HOME_COLLECTION_ID, home);
 		state.setAttribute (STATE_COLLECTION_ID, home);
 		state.setAttribute (STATE_NAVIGATION_ROOT, home);
+		
+		HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");	
+		Map homes = factory.getHomes(StructuredArtifactHomeInterface.class);
+		if(! homes.isEmpty())
+		{
+			state.setAttribute(STATE_SHOW_FORM_ITEMS, Boolean.TRUE.toString());
+		}
 		
 		// state.setAttribute (STATE_COLLECTION_ID, state.getAttribute (STATE_HOME_COLLECTION_ID));
 		
