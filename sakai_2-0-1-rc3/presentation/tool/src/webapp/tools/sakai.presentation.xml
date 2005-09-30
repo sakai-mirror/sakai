@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<registration>
+        <tool
+                        id="sakai.presentation"
+                        title="Presentation"
+                        description="Presentation tool.">
+                <category name="course" />
+                <category name="project" />
+ 
+               <configuration name="help.id" value="presentation_main" />
+        </tool>
+</registration>

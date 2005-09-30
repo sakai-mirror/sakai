@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+
+  <class
+    name="org.sakaiproject.component.common.agent.GroupParentMemberMap"
+    table="CMN_GRP_PRNT_MMBR_MAP_T" optimistic-lock="version">
+
+    <cache usage="read-write" />
+
+    <id name="id">
+      <column name="ID" not-null="true" length="19" />
+      <generator class="native">
+        <param name="sequence">CMN_GRP_PRNT_MMBR_MAP_S</param>
+      </generator>
+    </id>
+
+    <version name="version" column="VERSION" />
+
+    <many-to-one name="parent" cascade="none"
+      class="org.sakaiproject.component.common.agent.GroupBean">
+      <column name="PARENT" index="CMN_GRP_PRNT_MMBR_MAP_PRNT_I"
+        not-null="true" unique-key="CMN_GRP_PRNT_MMBR_MAP_U_I"
+        unique="false" />
+    </many-to-one>
+
+    <many-to-one name="member" cascade="none"
+      class="org.sakaiproject.component.common.agent.GroupBean">
+      <column name="MEMBER" index="CMN_GRP_PRNT_MMBR_MAP_MMBR_I"
+        not-null="true" unique-key="CMN_GRP_PRNT_MMBR_MAP_U_I"
+        unique="false" />
+    </many-to-one>
+
+  </class>
+
+</hibernate-mapping>

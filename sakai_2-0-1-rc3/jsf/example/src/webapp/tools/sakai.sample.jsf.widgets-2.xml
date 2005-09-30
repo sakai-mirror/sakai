@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.sample.jsf.widgets-2"
+			title="Sakai 2.0 JSF Tags"
+			description="Individual examples of the Sakai 2.0 JSF tags.">
+
+		<category name="sakai.sample" />
+
+	</tool>
+
+</registration>
