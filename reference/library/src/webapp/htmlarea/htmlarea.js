@@ -1922,7 +1922,8 @@ HTMLArea.cloneObject = function(obj) {
 		newObj = obj; // just copy reference to it
 	} else for (var n in obj) {
 		var node = obj[n];
-		if (typeof node == 'object') { newObj[n] = HTMLArea.cloneObject(node); }
+//        if (typeof node == 'object') { newObj[n] = HTMLArea.cloneObject(node); }
+        if (node != null && typeof node == 'object') { newObj[n] = HTMLArea.cloneObject(node); }
 		else                         { newObj[n] = node; }
 	}
 

@@ -163,7 +163,7 @@ function chef_setupformattedtext(textarea_id, width, height, toolbar_num_button_
 		[ 
 		  "orderedlist", "unorderedlist", "outdent", "indent",
 		  "htmlmode", "separator", 
-		  "showhelp", "about" ]
+		  "popupeditor", "separator","showhelp", "about" ]
 		];
 	}
 	else if (toolbar_num_button_rows == 3)
