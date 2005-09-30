@@ -1,0 +1,16 @@
+body {
+	background: #ffffff;
+	}
+	
+.errors {
+	font-style: italic;
+}
+
+.evenRows {
+	background: #eeeeee;
+}
+
+.oddRows {
+	background: #cccccc;
+}
+
