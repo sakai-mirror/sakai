@@ -1,0 +1,45 @@
+##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/admin/chef_presence.sessions-List.vm,v 1.4 2005/06/06 19:42:22 gsilver.umich.edu Exp $ -->
+<div class="portletBody">
+#if($menu)
+	#toolbar($menu)
+#end
+	<h3>
+		$tlang.getString("presence.session.active")
+	</h3>
+
+		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("presence.session.alert") $validator.escapeHtml($alertMessage)</div>#end
+		<div class="instruction">$tlang.getString("presence.session.total") $total</div>
+		<table  cellspacing="0" cellpadding="3" summary ="Table holds users present" border="0">	
+#foreach ($serverName in $serverList)
+			<tr>
+				<th colspan="3" style="vertical-align:top;background-color:#D2D2D2;text-align:left">$servers.get("$serverName").size() $tlang.getString("presence.session.on") $validator.escapeHtml($serverName)</th>
+			</tr>
+	#foreach ($session in $servers.get("$serverName"))
+
+			<tr>
+				<td rowspan="5" style="background-color:#E6E6E6;font-weigth:bold;padding:.5em" >$velocityCount</td>
+				<td>$tlang.getString("presence.session.session")</td>
+				<td>$validator.escapeHtml($session.Id)</td>
+			</tr>
+			<tr>
+				<td nowrap="nowrap">$tlang.getString("presence.session.name")</td>
+				<td>$validator.escapeHtml($session.UserId)</td>
+			</tr>
+			<tr>
+				<td>$tlang.getString("presence.session.adress")</td>
+				<td>$validator.escapeHtml($session.IpAddress)</td>															
+			</tr>
+			<tr>
+				<td>$tlang.getString("presence.session.agent")</td>
+				<td>$validator.escapeHtml($session.UserAgent)</td>															
+			</tr>
+			<tr>
+				<td  style="border-bottom:1px solid gray">$tlang.getString("presence.session.started")</td>
+				<td style="border-bottom:1px solid gray">$validator.escapeHtml($session.getStart().toStringLocalFull())</td>															
+			</tr>	
+	#end
+#end
+		</table>
+	</div>
+
+#sakai_courier()

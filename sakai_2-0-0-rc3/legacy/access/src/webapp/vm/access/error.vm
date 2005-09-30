@@ -1,0 +1,9 @@
+## $Header: /cvs/sakai2/legacy/access/src/webapp/vm/access/error.vm,v 1.1 2005/04/14 02:17:53 ggolden.umich.edu Exp $
+#chef_start()
+<div style="padding:0 1em;border:1px solid #fff">
+	<p>$tlang.getString("error.thereq")
+	&nbsp;&nbsp;&nbsp;&nbsp;$!ref<br/>
+	$tlang.getString("error.isnot")</p>
+	<p>$msg</p>
+</div>	
+#chef_end()

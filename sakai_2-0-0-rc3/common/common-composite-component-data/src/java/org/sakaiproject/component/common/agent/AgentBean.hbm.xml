@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+
+  <class name="org.sakaiproject.component.common.agent.AgentBean"
+    table="CMN_AGENT_GROUP_T" discriminator-value="AG"
+    optimistic-lock="version">
+
+    <cache usage="read-write" />
+
+    <!-- Persistable fields -->
+    <id name="id">
+      <column name="ID" not-null="true" length="19" />
+      <generator class="native">
+        <param name="sequence">CMN_AGENT_GROUP_S</param>
+      </generator>
+    </id>
+
+    <discriminator column="AGENT_TYPE" type="string" length="2" />
+
+    <version name="version" column="VERSION" />
+
+    <property name="uuid" column="UUID" length="36" unique="true"
+      not-null="true" />
+    <property name="lastModifiedBy" column="LAST_MODIFIED_BY"
+      length="36" not-null="true" />
+    <property name="lastModifiedDate" column="LAST_MODIFIED_DATE"
+      not-null="true" />
+    <property name="createdBy" column="CREATED_BY" length="36"
+      not-null="true" />
+    <property name="createdDate" column="CREATED_DATE" not-null="true" />
+
+    <!-- Agent fields -->
+    <property name="displayName">
+      <column name="DISPLAY_NAME" length="255" not-null="true"
+        index="CMN_AGENT_T_DISPLAY_NAME_I" />
+    </property>
+
+    <property name="enterpriseId">
+      <column name="ENTERPRISE_ID" length="36" not-null="true"
+        unique="true" index="CMN_AGENT_T_ENTERPRISE_ID_I" />
+    </property>
+
+    <property name="sessionManagerUserId">
+      <column name="SESSION_MGR_USER_ID" length="36" not-null="false"
+        unique="true" index="CMN_AGENT_T_SESSN_MGR_USR_ID_I" />
+    </property>
+
+    <!-- NodeAwareTypeablePersistableImpl fields -->
+    <many-to-one name="type" column="TYPE_FK"
+      class="org.sakaiproject.component.common.type.TypeImpl"
+      not-null="true" index="CMN_AGENT_T_TYPE_I" />
+
+    <many-to-one name="node" column="NODE_FK"
+      class="org.sakaiproject.component.common.superstructure.NodeImpl"
+      not-null="true" index="CMN_AGENT_T_NODE_I" />
+
+    <subclass name="org.sakaiproject.component.common.agent.GroupBean"
+      discriminator-value="GR">
+      <set name="members" table="CMN_AGENT_GROUP_ASSOC_T" lazy="true"
+        inverse="false" cascade="save-update">
+        <cache usage="read-write" />
+        <key column="PARENT" />
+        <many-to-many
+          class="org.sakaiproject.component.common.agent.GroupBean"
+          column="CHILD" />
+      </set>
+    </subclass>
+
+  </class>
+
+  <query name="findGroupsContainingMember">
+    <![CDATA[from org.sakaiproject.component.common.agent.GroupBean g where :agent in elements(g.members)]]>
+  </query>
+
+  <query name="getAgentByUuid">
+    <![CDATA[from org.sakaiproject.component.common.agent.AgentBean a where a.uuid = :uuid]]>
+  </query>
+
+  <query name="getAgentByDisplayName">
+    <![CDATA[from org.sakaiproject.component.common.agent.AgentBean a where a.displayName = :displayName]]>
+  </query>
+
+  <query name="getGroupByUuid">
+    <![CDATA[from org.sakaiproject.component.common.agent.GroupBean g where g.uuid = :uuid]]>
+  </query>
+
+  <query name="getAgentByEnterpriseId">
+    <![CDATA[from org.sakaiproject.component.common.agent.AgentBean a where a.enterpriseId = :enterpriseId]]>
+  </query>
+
+  <query name="getAgentBySessionManagerUserId">
+    <![CDATA[from org.sakaiproject.component.common.agent.AgentBean a where a.sessionManagerUserId = :sessionManagerUserId]]>
+  </query>
+
+  <query name="getGroupByEnterpriseId">
+    <![CDATA[from org.sakaiproject.component.common.agent.GroupBean g where g.enterpriseId = :enterpriseId]]>
+  </query>
+
+  <query name="findDescendentsForGroup">
+    <![CDATA[select ab from org.sakaiproject.component.common.agent.AgentBean as ab, org.sakaiproject.component.common.agent.GroupParentMemberMap as pm where pm.member = :member and ab = pm.parent]]>
+  </query>
+
+  <query name="findIdsOfAncestorsForAgent">
+    <![CDATA[select ab.uuid from org.sakaiproject.component.common.agent.AgentBean as ab, org.sakaiproject.component.common.agent.GroupParentMemberMap as pm where pm.member = :member and ab = pm.parent]]>
+  </query>
+
+</hibernate-mapping>

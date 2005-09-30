@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Sakai Component Manager Test Components 2</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-comp-test-components2</id>
+	<currentVersion>2.0.0</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+
+	<properties>
+		<!-- deploy as a components -->
+		<deploy.type>components</deploy.type>
+	</properties>
+
+	<dependencies>
+
+		<!-- access our apis -->
+		<dependency>                                          
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-comp-test-api</artifactId>
+			<version>${pom.currentVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<!-- java source -->
+		<sourceDirectory>src/java</sourceDirectory>
+
+	</build>
+
+</project>

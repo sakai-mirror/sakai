@@ -1,0 +1,51 @@
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
+
+import org.apache.axis.AxisFault;
+
+import org.sakaiproject.javax.PagingPosition;
+
+/**
+ * class to support Sakai Login headers sent in request as a string array
+ */
+public class SakaiSite {
+
+    public String[] getSites(String id, String search, int first, int last) 
+	throws AxisFault 
+    {
+	System.out.println("SakaiSites.getSites() session id="+id);
+        Session s = SessionManager.getSession(id);
+      	ArrayList list=new ArrayList();
+        if (s == null)
+        {
+		System.out.println("Throwing axis fault");
+		throw new AxisFault("Session "+id+" is not active");
+        }
+        else
+        {
+ 		List siteList = SiteService.getSites(
+			org.sakaiproject.service.legacy.site.SiteService.SelectionType.NON_USER,
+                        null, search, null,
+                        org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC,
+                        new PagingPosition(first, last));
+
+        	for(int i=0;i<siteList.size();i++) {
+			Site theSite = (Site) siteList.get(i);
+			list.add(theSite.getTitle());
+		}
+        }
+
+        String[] results=new String[list.size()];
+        for(int i=0;i<list.size();i++) {
+            results[i]=(String) list.get(i);
+        }
+        return results;
+    }
+}

@@ -1,0 +1,43 @@
+<div class="portletBody">
+	<h3>
+		$tlang.getString("delcat.delcat")
+	</h3>
+	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
+	<script type="text/javascript">
+		focus_path = [ "eventSubmit_doDelete_category" ];
+		if (parent) if (parent.parent) parent.parent.window.scrollTo(0,400);
+	</script>
+	#if (!$delete_messages || !$delete_messages.hasNext())
+		<div class="chefAlertBox">$tlang.getString("delcat.areyousure1") $category? </div><div style="display:block;clear:both" />
+	#else
+		<div class="chefAlertBox">$tlang.getString("delcat.areyousure2") $category?  $tlang.getString("delcat.allmes")</div><div style="display:block;clear:both" />
+		<form name="forNotLetDeleteSelectedOnLoad"></form>
+		<table class="listHier" cellspacing="0">
+			<tr>
+				<th>$tlang.getString("gen.sub")</th>
+				<th>$tlang.getString("gen.fro")</th>
+				<th>$tlang.getString("gen.dat")</th>
+			</tr>
+			#foreach ($delete_item in $delete_messages)
+			## J - need top know the thread dept of each message to indent appropriately (gsilver)
+				<tr>
+					<td>
+						#if ($delete_item.Header.draft)
+							<span class="alert">$tlang.getString("gen.dra") </span>
+						#end
+						$validator.escapeHtml($delete_item.Header.subject)
+					</td>
+					<td>$validator.escapeHtml($delete_item.Header.From.DisplayName)</td>
+					<td>$delete_item.Header.Date.toStringLocalFull()</td>
+				</tr>                  
+				#end
+		</table>
+	#end
+	<form action="#toolForm($action)" method="post">
+		<div class="act">
+			<input type="hidden" name="category" value="$validator.escapeHtml($category)" />
+			<input type="submit" class="active"  name="eventSubmit_doDelete_category" id="eventSubmit_doDelete_category" value="$tlang.getString("delcat.delcat")" />
+			<input type="submit" name="eventSubmit_doCancel_delete_category" value="$tlang.getString("gen.can")" />
+		</div>
+	</form>
+</div>
