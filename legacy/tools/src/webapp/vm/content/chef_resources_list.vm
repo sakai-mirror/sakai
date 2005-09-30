@@ -86,7 +86,7 @@
 			</div>
 		#end
 		######################  Heirarchical list of resource folders/items  ##############
-		<table class="listHier speciallistHier" cellspacing="0" border="0">
+		<table class="listHier lines" cellspacing="0" border="0">
 			######################  Column labels, sort controls, expand/collapse all  ##############
 			<tr>
 				<th id="expansion">
@@ -160,11 +160,11 @@
 			#foreach($root in $this_site)
 				############################### Show top level folder #################
 				<tr>
-					<td class="line" headers="expansion">
+					<td headers="expansion">
 					</td>
-					<td class="line" headers="checkboxes">
+					<td headers="checkboxes">
 					</td>
-					<td class="line" headers="title">
+					<td headers="title">
 						#if ($root.isFolder())
 							#if ($root.isEmpty())
 								<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
@@ -188,7 +188,7 @@
 							#end
 						#end	
 					</td>
-					<td class="line" headers="actions" colspan="4">
+					<td headers="actions" colspan="4">
 						######################  Add Action Links at Top Level  ##############
 						#if($root && ($root.canAddItem() || $root.canAddFolder()))
 							<div class="itemAction">
@@ -252,8 +252,8 @@
 				######################  No items message  ##############
 				#if ($root.isLocal() && $collectionMembers.isEmpty())
 					<tr>
-						<td class="line" colspan="2"></td>
-						<td class="line" colspan="5">
+						<td colspan="2"></td>
+						<td colspan="5">
 							<p class="instruction">
 								$tlang.getString("sh.no")
 								#if($dropboxMode)$tlang.getString("sh.drop")#else$tlang.getString("sh.reso")#end
@@ -274,11 +274,43 @@
 							#set ($margin="margin-left:2em")
 							#set ($marginAction="margin-left:4.7em")
 						#end
-						<tr>
+							
+
+						<tr
+							#set ($copy="false")
+							#set ($move="false")
+							#if($copyFlag && $copiedItems && $copiedItems.contains("${member.id}"))
+									class="selectedCopy"
+									 title ="$tlang.getString("list.copied")"
+									#set ($copy="true")
+							#end
+							#if($moveFlag && $movedItems && $movedItems.contains("${member.id}"))
+								class="selectedMove" 
+								title ="$tlang.getString("list.moved")"
+								#set ($move="true")
+							#end
+							>
 							######################  Item title and action links  ##############
-							<td class="line" headers="expansion">
-							</td>
-							<td class="line" headers="checkboxes">
+							<td headers="expansion"
+								#if ($copy=="true")
+									class="selected">
+									<span class="skip">
+										$tlang.getString("list.copied")
+									</span>
+									<img src="/library/image/sakai/arrowhere.gif" border="0" alt ="" style="margin-top:.2em" />
+								</td>	
+								#elseif($move=="true")
+											class="selected">
+											<span class="skip">
+												$tlang.getString("list.moved")
+											</span>
+											<img src="/library/image/sakai/arrowhere.gif" border="0" alt ="" style="margin-top:.2em" />
+									</td>		
+								#else
+									</td>
+								#end	
+							
+							<td headers="checkboxes">
 								#if($member.canDelete() || $member.canRead())
 									<input type="checkbox" name="selectedMembers" id="list$num" 
 										onclick="#if($member.canDelete())adjustCount(this, 'removeCount', 'removeButton');adjustCount(this, 'moveCount', 'moveButton');#end#if($member.canRead())adjustCount(this, 'copyCount', 'copyButton');#end" 
@@ -293,7 +325,7 @@
 									#end
 								#end
 							</td>
-							<td class="line" headers="title" style="text-indent:$width">
+							<td headers="title" style="text-indent:$width">
 								#if ($member.isFolder())
 									#if ($member.isEmpty())
 										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
@@ -345,7 +377,7 @@
 									#end
 								#end
 							</td>
-							<td class="line" headers="actions">
+							<td headers="actions">
 								<div class="itemAction">
 									#if($member.isFolder())
 										#set ($itemsOnLine = 0)
@@ -455,25 +487,15 @@
 										#end
 									#end
 								</div>
-								#if($copyFlag && $copiedItems && $copiedItems.contains("${member.id}"))
-									<div class="inlineAlert">
-										$tlang.getString("list.copied")
-									</div>
-								#end
-								#if($moveFlag && $movedItems && $movedItems.contains("${member.id}"))
-									<div class="inlineAlert">
-										$tlang.getString("list.moved")
-									</div>
-								#end
 							</td>
 							######################  Item/folder modification date  ##############
-							<td class="line" headers="modified">
+							<td headers="modified">
 								$member.ModifiedTime
 							</td>
-							<td class="line" headers="creator">
+							<td headers="creator">
 								$member.createdBy
 							</td>
-							<td class="line" headers="size">
+							<td headers="size">
 								$member.size
 							</td>
 						</tr>
@@ -498,11 +520,11 @@
 					#foreach($root in $other_sites)
 						############################### Show top level folder #################
 						<tr>
-							<td class="line" headers="expansion">
+							<td headers="expansion">
 							</td>
-							<td class="line" headers="checkboxes">
+							<td headers="checkboxes">
 							</td>
-							<td class="line" headers="title">
+							<td headers="title">
 								#if ($root.isFolder())
 									#if ($root.isEmpty())
 										<img src = "#imageLink("sakai/dir_closed.gif")" border="0"  alt="folder" />
@@ -526,7 +548,7 @@
 									#end
 								#end	
 							</td>
-							<td class="line" headers="actions" colspan="4">
+							<td headers="actions" colspan="4">
 								######################  Add Action Links at Top Level  ##############
 								#if($root && ($root.canAddItem() || $root.canAddFolder()))
 									<div class="itemAction">
@@ -590,9 +612,9 @@
 						######################  No items message  ##############
 						#if ($root.isLocal() && $collectionMembers.isEmpty())
 							<tr>
-								<td class="line"></td>
-								<td class="line"></td>
-								<td class="line"  colspan="5">
+								<td></td>
+								<td></td>
+								<td  colspan="5">
 									<p class="instruction">
 										$tlang.getString("sh.no")
 										#if($dropboxMode)$tlang.getString("sh.drop")#else$tlang.getString("sh.reso")#end
@@ -615,9 +637,9 @@
 								#end
 								<tr>
 									######################  Item title and action links  ##############
-									<td class="line" headers="expansion">
+									<td headers="expansion">
 									</td>
-									<td class="line" headers="checkboxes">
+									<td headers="checkboxes">
 										#if($member.canDelete() || $member.canRead())
 											<input type="checkbox" name="selectedMembers" id="list$num" 
 												onclick="#if($member.canDelete())adjustCount(this, 'removeCount', 'removeButton');adjustCount(this, 'moveCount', 'moveButton');#end#if($member.canRead())adjustCount(this, 'copyCount', 'copyButton');#end" 
@@ -632,7 +654,7 @@
 											#end
 										#end
 									</td>
-									<td class="line" headers="title" style="text-indent:$width">
+									<td headers="title" style="text-indent:$width">
 										#if ($member.isFolder())
 											#if ($member.isEmpty())
 												<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
@@ -684,7 +706,7 @@
 											#end
 										#end
 									</td>
-									<td class="line" headers="actions">
+									<td headers="actions">
 										<div class="itemAction">
 											#if($member.isFolder())
 												#set ($itemsOnLine = 0)
@@ -806,13 +828,13 @@
 										#end
 									</td>
 									######################  Item/folder modification date  ##############
-									<td class="line" headers="modified">
+									<td headers="modified">
 										$member.ModifiedTime
 									</td>
-									<td class="line" headers="creator">
+									<td headers="creator">
 										$member.createdBy
 									</td>
-									<td class="line" headers="size">
+									<td headers="size">
 										$member.size
 									</td>
 								</tr>

@@ -96,6 +96,17 @@ a:hover{color:#000077 !important;text-decoration:underline;background-color:tran
 .syllabusTable th, .listHier th{background-color:#ddd;}
 .syllabusTable td,.listHier td{vertical-align:top;padding:.4em !important}
 .syllabusTable td h4,.listHier td h4{margin:0;padding:0;font-size: 1em;background:none}
+table.lines{
+	border-collapse: collapse;
+}
+table.lines td{
+/*	no lines in table for this skin*/
+	/*border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7*/
+	}
+tr.selectedCopy {background:#ffe;border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7}
+tr.selectedMove {color:#8A8A8A;background:#F8F8F8;border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7}
+tr.selectedMove a:link,tr.selectedMove a:visited{color:#8A8A8A}
+
 .listHier td.line{border-bottom:1px dashed gray}
 .listHier td .itemAction  a {text-decoration:underline !important}
 /*a table that emulates the layout of the label-input pairs when tabular info and inputs are mixed int he view*/
@@ -123,7 +134,11 @@ h5{font-size:100%;color:#52698C;font-weight:normal;margin:.5em 0;background-colo
 .navIntraTool a:visited, .chefToolBarWrap a:visited, .chefToolBarWrapForm a:visited {border:none;text-decoration:underline;background-color:transparent;color:#369}
 .navIntraTool {background-color:#ffb;padding:.3em;text-align:center;line-height:1.5em}
 
-
+.navIntraTool input{
+		padding:0;
+	border:none;
+	background:transparent;
+}
 /*messages -moved to base. override as needed here */
 
 /*navigation*/
