@@ -458,13 +458,13 @@
 					</td>
 				</tr>
 			#end
-			#if (! $item.isFolder())
+			#if (! $item.isFolder() && ! item.isStructuredArtifact())
 				<tr> 
 					<td style="width:180px;padding-left:.7em"> 
 						<label>$tlang.getString("gen.stored")</label>
 					</td>
 					<td>
-						$item.url
+						<a href="$item.url" target="_blank">$item.url</a>
 					</td>
 				</tr>
 				<tr> 
