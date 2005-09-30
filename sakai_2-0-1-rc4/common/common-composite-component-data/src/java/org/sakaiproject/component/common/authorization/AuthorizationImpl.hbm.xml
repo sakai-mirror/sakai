@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+
+  <class
+    name="org.sakaiproject.component.common.authorization.AuthorizationImpl"
+    table="CMN_AUTHORIZATION_T" optimistic-lock="version">
+
+    <!-- Persistable fields -->
+    <id name="id">
+      <column name="ID" not-null="true" length="19" />
+      <generator class="native">
+        <param name="sequence">CMN_AUTHORIZATION_S</param>
+      </generator>
+    </id>
+
+    <version name="version" column="VERSION" />
+
+    <property name="uuid" column="UUID" length="36" unique="true"
+      not-null="true" />
+    <property name="lastModifiedBy" column="LAST_MODIFIED_BY"
+      length="36" not-null="true" />
+    <property name="lastModifiedDate" column="LAST_MODIFIED_DATE"
+      not-null="true" />
+    <property name="createdBy" column="CREATED_BY" length="36"
+      not-null="true" />
+    <property name="createdDate" column="CREATED_DATE" not-null="true" />
+
+    <!-- Authorization fields -->
+    <property name="agentUuid">
+      <column name="AGENT_UUID" unique-key="CMN_AUTHZ_BUS_KEY_I"
+        not-null="true" index="CMN_AUTHZ_AGENT_UUID_I" length="36" />
+    </property>
+
+    <property name="permissionsUuid">
+      <column name="PERMISSIONS_UUID" unique-key="CMN_AUTHZ_BUS_KEY_I"
+        not-null="true" index="CMN_AUTHZ_PERMISSIONS_UUID_I" length="36" />
+    </property>
+
+    <property name="nodeUuid">
+      <column name="NODE_UUID" unique-key="CMN_AUTHZ_BUS_KEY_I"
+        not-null="true" index="CMN_AUTHZ_NODE_UUID_I" length="36" />
+    </property>
+
+    <property name="effectiveDate" column="EFFECTIVE_DATE"
+      not-null="true" />
+    <property name="expirationDate" column="EXPIRATION_DATE"
+      not-null="false" />
+
+  </class>
+
+</hibernate-mapping>

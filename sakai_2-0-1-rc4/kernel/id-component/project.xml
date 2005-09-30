@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Sakai Id API Component</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-id-component</id>
+	<currentVersion>2.0.1</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+
+	<properties>
+		<!-- build as a jar -->
+		<deploy.type>jar</deploy.type>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-id</artifactId>
+			<version>${pom.currentVersion}</version>
+		</dependency>
+
+		<!-- Id Generator Jar -->
+		<dependency>
+			<groupId>commons-id</groupId>
+			<artifactId>commons-id</artifactId>
+			<version>0.1-dev</version>
+			<url>
+				http://brutus.apache.org/gump/public/jakarta-commons-sandbox/commons-id/
+			</url>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<!-- java source -->
+		<sourceDirectory>src/java</sourceDirectory>
+
+	</build>
+
+</project>

@@ -1,0 +1,103 @@
+## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/content/chef_resources_addFileOptions.vm,v 1.2 2005/06/03 15:50:41 jimeng.umich.edu Exp $ 
+###############################################################
+##### deprecated -- not used in refactored resources tool #####
+###############################################################
+<script type="text/javascript" language="JavaScript">
+  focus_path = ["title1"];
+</script>
+<div class="PortletContainer">
+		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+$tlang.getString("addo.form")<br/>
+<span class="Alert">*</span> $tlang.getString("gen.form1") $tlang.getString("gen.form2")<p/>
+<table border="0" cellspacing="1" cellpadding="3" width=100%>
+	<form name="addFileBasicForm" action="#toolForm("ResourcesAction")" method="post" enctype="multipart/form-data" >
+		<input type="hidden" name="from" value="addFileBasic" />
+		<input type="hidden" name="fileNumber" value="$fileNumber" />
+		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+		<input type="hidden" name="addFileStep" value="Set Properties" />
+
+		##set($i=1)
+		#set($j=0)
+		#foreach ($i in [1..$fileNumber])
+		##foreach( $titleElement in $titles )
+		<tr> 
+		  <td width="30%" valign="top">
+		    #if (( $unqualified_fields.get($i).indexOf($service.newResourceProperties().NamePropDisplayName)!=-1)|| (($titles.get($i).length()>0)&&($unqualified_fields.get($i).indexOf($titles.get($i))!=-1)))
+				<span class="Alert">$tlang.getString("gen.title")</span>
+		    #else
+				$tlang.getString("gen.title")
+		    #end 
+		    <input type="text" name="title$i" value="$titles.get($i)" />
+		  </td>
+ 		  <td width="20%" align="right" valign="top"> 
+			$tlang.getString("gen.description")
+		  </td>
+		  <td>  
+			<textarea name="description$i" rows="5" cols="40" wrap="virtual">$validator.escapeHtmlTextarea($descriptions.get($i))</textarea>
+		  </td>
+		</tr>
+		<tr> 
+		  <td width="30%"> 
+			&nbsp;
+		  </td>
+ 		  <td width="20%" align="right" valign="top">
+			#if ($unqualified_fields.get($i).indexOf($service.newResourceProperties().NamePropCopyright)!=-1)
+			    <span class="Alert">*$tlang.getString("gen.cpr")</span>
+			#else
+			    <span class="Alert">*</span>$tlang.getString("gen.cpr")
+			#end
+		  </td>
+		  <td>  
+			#if ($copyrights.get($i)!="newcopyright")
+				<input type="radio" name="copyright$i" value="mycopyright" checked>
+				$tlang.getString("gen.cpr2")<br>
+				<input type="radio" name="copyright$i" value="newcopyright">
+				$tlang.getString("gen.cpr3")<br>
+				<textarea name="newcopyright$i" rows="5" cols="40" wrap=virtual></textarea>
+			#else
+				<input type="radio" name="copyright$i" value="mycopyright">
+				$tlang.getString("gen.cpr2")<br>
+				<input type="radio" name="copyright$i" value="newcopyright" checked>
+				$tlang.getString("gen.cpr3")<br>
+				<textarea name="newcopyright$i" rows="5" cols="40" wrap=virtual>$validator.escapeHtmlTextarea($newcopyrights.get($i))</textarea>				
+			#end
+		  </td>
+		 </tr>
+		<tr> 
+		  <td width="30%"> 
+			&nbsp;
+		  </td>
+		  <td width="20%" valign="top" align="right"> 
+			Open in: </span>
+		  </td>
+			<td>		
+				#if ($openIns.get($i) == "false")
+					<input type="radio" name="target$i" value="true">
+					$tlang.getString("gen.newwin")<br>
+					<input type="radio" name="target$i" value="false" checked>
+					$tlang.getString("gen.thiswin")
+				#else
+					<input type="radio" name="target$i" value="true" checked>
+					$tlang.getString("gen.newwin")<br>
+					<input type="radio" name="target$i" value="false">
+					$tlang.getString("gen.thiswin")<br>
+				#end
+			</td>
+		</tr>
+		<tr> 
+		  <td colspan=3>
+			<hr/>
+		  </td>
+		</tr>
+		##set ($i=$i+1)
+		#set ($j=$j+1)
+		#end
+			<tr>
+				<td colspan=3>
+					<INPUT type="submit" name="eventSubmit_doAdd_file_options" value="$tlang.getString("addo.save")" />
+					<INPUT type="submit" name="eventSubmit_doCancel" value="$tlang.getString("gen.cancel")" />
+				</td>
+			</tr>
+	</form>
+</table>
+</div>

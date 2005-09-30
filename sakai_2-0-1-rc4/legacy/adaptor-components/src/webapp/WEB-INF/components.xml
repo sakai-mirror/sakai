@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springkernel.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="org.sakaiproject.service.framework.component.ComponentManager"
+			class="org.sakaiproject.component.adaptor.ComponentManagerAdaptor"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+	</bean>
+
+	<bean id="org.sakaiproject.service.framework.current.CurrentService"
+			class="org.sakaiproject.component.adaptor.CurrentServiceAdaptor"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="threadLocalManager"><ref bean="org.sakaiproject.api.kernel.thread_local.ThreadLocalManager"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.legacy.id.IdService"
+			class="org.sakaiproject.component.adaptor.IdServiceAdaptor"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="idManager"><ref bean="org.sakaiproject.api.kernel.id.IdManager"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.service.framework.session.UsageSessionService"
+			class="org.sakaiproject.component.adaptor.UsageSessionServiceAdaptor"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
+		<property name="threadLocalManager"><ref bean="org.sakaiproject.api.kernel.thread_local.ThreadLocalManager"/></property>
+		<property name="timeService"><ref bean="org.sakaiproject.service.legacy.time.TimeService"/></property>
+		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
+		<property name="sessionManager"><ref bean="org.sakaiproject.api.kernel.session.SessionManager"/></property>
+		<property name="idManager"><ref bean="org.sakaiproject.api.kernel.id.IdManager"/></property>
+ 		<property name="autoDdl"><value>${auto.ddl}</value></property>
+	</bean>
+
+</beans>

@@ -1,0 +1,97 @@
+##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/helper/chef_attachment_main.vm,v 1.3 2005/06/08 17:30:33 zqian.umich.edu Exp $ -->
+<div class="portletBody">
+#if($menu)#toolbar($menu)#end
+	
+		#if ($alertMessage)<br /><div class="chefAlertBox">$thelp.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end<br />
+		#set ($size = $attachments.size())
+	<form name="mainForm" action="#toolForm("$action")" method="post">
+		<input type="hidden" name="source" value="0" />
+		#if ($size == 0)
+			<div class="instruction">
+				#if (!$has_attachment_before)
+					 ##es aqui falla
+					 $validator.escapeHtml($from) $thelp.getString("main.have")
+				#else
+					$thelp.getString("main.youhav")
+				#end
+			</div>
+		#elseif ($size > 0)
+			<div class="instruction">
+				$thelp.getString("main.toadd")
+			</div>
+			<table cellspacing ="0" cellpadding ="0" border="0" class="listHier">
+				<tr>		  
+				  <th id="checkbox" >&nbsp;&nbsp;</th>
+				  <th id="typeicon">&nbsp;&nbsp;</th>
+				  <th id ="title">$thelp.getString("gen.tit")</th>
+				  <th id ="size">$thelp.getString("gen.siz")</th>
+				  <th id ="type"> $thelp.getString("gen.typ")</th>
+				  <th id ="createdby">$thelp.getString("gen.creby")</th>
+				  <th id ="modified">$thelp.getString("gen.lasmod")</th>
+				</tr>
+				#foreach ($attachment in $attachments)
+					#set ($props = $attachment.Properties)
+					#if ($!props)
+						#if ($props.getBooleanProperty($props.NamePropIsCollection))
+							#set ($isCol = true)
+						#else
+							#set ($isCol = false)
+						#end
+						<tr>
+							## checkbox col
+							<td headers="checkbox">
+								<input type="checkbox" name="select" value="$velocityCount">
+							</td>
+							## icon col
+							<td headers="typeicon">
+								#if ($isCol == true)
+									<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
+								#else
+									<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" />
+								#end
+							</td>
+							## display name and link
+							<td headers="title">
+								<a href="$attachment.Url" target="_blank">
+									$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))
+								</a>
+							</td>
+							<td headers="size">
+								#if (!$isCol)
+									$props.getPropertyFormatted($props.NamePropContentLength)
+								#else
+									-
+								#end
+							</td>
+							<td headers="type">
+								$props.getPropertyFormatted($props.NamePropContentType)
+							</td>
+							<td headers="createdby">
+								$validator.escapeHtml($props.getPropertyFormatted($props.NamePropCreator))
+							</td>
+							<td headers="modified">
+								$props.getPropertyFormatted($props.NamePropModifiedDate)
+							</td>
+						</tr>
+					#else
+						#if ($size > 0)
+							#set ($size = $size - 1)
+						#end
+					#end
+				#end
+			</table>
+		#end
+	</form>
+	<form name="formII" action="#toolForm("$action")" method="post">
+		<div class="act">
+			#if ($attachments.size()>0)
+				## there is more than one attachment 
+				<input type="submit" name="eventSubmit_doSave" value="$thelp.getString("gen.sav")" />
+			#elseif ($has_attachment_before && $attachments.size()== 0)
+				## current session removes the previous attachment(s)
+				<input type="submit" name="eventSubmit_doSave" value="$thelp.getString("gen.don")" />
+			#end
+			<input type="submit" name="eventSubmit_doCancel" value="$thelp.getString("gen.can")" />
+		</div>	
+	</form>
+</div>
