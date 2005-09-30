@@ -35,6 +35,12 @@ public class CourseSetImpl implements CourseSet, Serializable {
 	/** The value of the simple lastmodifieddate property. */
 	private java.util.Date lastModifiedDate;
 	
+        public CourseSetImpl(){}
+
+        public CourseSetImpl(String title){
+	  this.setTitle(title);
+        }
+
 	/**
 	 * Return the simple primary key value that identifies this object.
 	 * @return java.lang.Long

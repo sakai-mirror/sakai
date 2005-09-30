@@ -55,6 +55,8 @@ import org.sakaiproject.component.common.edu.coursemanagement.
     CourseSectionStatusTypeImpl;
 import org.sakaiproject.component.common.edu.coursemanagement.
     CourseSectionTypeImpl;
+import org.sakaiproject.component.common.edu.coursemanagement.
+    CourseSetImpl;
 
 import junit.framework.Assert;
 
@@ -225,26 +227,6 @@ public class CourseManagerTest
     return eng101;
   }
 
-  /**
-   * Course sections must always be derived from a Course Offering.
-   *
-   * @param title
-   * @param description
-   * @param sectionNumber
-   * @param courseOfferingUuid
-   * @param sessionUuid
-   * @param type
-   * @return a new course section.
-   * @author Mark Norton
-   */
-  /*
-     public CourseSection createCourseSection(String title, String description,
-                                           String sectionNumber,
-                                           String courseOfferingUuid,
-                                           String sessionUuid,
-                                           CourseSectionType type) {
-     }
-   */
   private CanonicalCourseImpl createCanonicalCourse(String title,
       String courseNumber) {
     Date currentDate = new Date();
@@ -282,6 +264,20 @@ public class CourseManagerTest
                                     courseManagementManager).getSession(sUuid);
     System.out.println("*** testCreateSession(), session = " + s1);
     return s;
+  }
+
+  public void testCreateCourseSet() throws Exception {
+    Date currentDate = new Date();
+    HashSet set = new HashSet();
+    set.add(createCanonicalCourse("spanish101", "1052-spanish-101-01"));
+    set.add(createCanonicalCourse("spanish201", "1052-spanish-102-01"));
+    set.add(createCanonicalCourse("spanish301", "1052-spanish-103-01"));
+    CourseSetImpl cs =(CourseSetImpl) courseManagementManager.createCourseSet("Course Set 1");
+    cs.setContext("Site One");
+    cs.setCanonicalCourseSet(set); 
+    ((CourseManagementManagerImpl)courseManagementManager).saveCourseSet(cs);
+    //setComplete();
+    System.out.println("**** testCreateCourseSet(), courseSetId="+cs.getCourseSetId());
   }
 
   public void addSessionType(){

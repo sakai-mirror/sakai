@@ -92,7 +92,7 @@ public class CourseManagementManagerImpl
         title, description, sectionNumber,
         courseOfferingUuid, session, type);
     Date currentDate = new Date();
-  	section.setUuid("*uuid_section_" + currentDate.getTime());
+    section.setUuid("*uuid_section_" + currentDate.getTime());
     section.setCreatedBy("admin");
     section.setCreatedDate(currentDate);
     section.setLastModifiedBy("admin");
@@ -117,8 +117,21 @@ public class CourseManagementManagerImpl
   }
 
   public CourseSet createCourseSet(String title) {
-    // TODO Auto-generated method stub
-    return null;
+    Date currentDate = new Date();
+    CourseSetImpl cs = new CourseSetImpl(title);
+    cs.setUuid("*uuid_courseset_" + currentDate.getTime());
+    cs.setCreatedBy("admin");
+    cs.setCreatedDate(currentDate);
+    cs.setLastModifiedBy("admin");
+    cs.setLastModifiedDate(currentDate);
+    getHibernateTemplate().save(cs);
+    return cs;
+  }
+
+  // added by daisyf
+  public CourseSet saveCourseSet(CourseSet cs) {
+    getHibernateTemplate().saveOrUpdate(cs);
+    return cs;
   }
 
   public Session createSession(String title, String abbreviation,
