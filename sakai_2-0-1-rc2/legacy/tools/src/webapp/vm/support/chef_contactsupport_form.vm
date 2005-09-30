@@ -1,0 +1,39 @@
+## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/support/chef_contactsupport_form.vm,v 1.2 2005/05/24 19:36:34 gsilver.umich.edu Exp $
+
+<script type="text/javascript">
+	focus_path = [ "username" ];
+</script>
+<div class="portletBody">
+	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	<h3>$tlang.getString("form.come")</h3>
+	<form action="#toolForm("$action")" method="post">
+		<p class="instruction">$tlang.getString("form.usethi")</p>
+		<p class="shorttext">
+			<label for="displayName">$tlang.getString("form.name")</label>
+			<input type="text" name="displayName" id="displayName" size="32" maxlength="50">
+		</p>	
+		<p class="shorttext">
+			<label for ="username">	
+				$tlang.getString("form.uniname")
+			</label>
+			<input type="text" name="username" id="username" size="32" maxlength="50" value = "$validator.escapeHtml($user.Id)">
+		</p>
+		<p class="shorttext">
+			<label for ="comments">	
+				$tlang.getString("form.come2")
+			</label>	
+			<textarea id="comments" name="comments" width="100%" wrap="virtual" rows="4" cols="50"></textarea>
+		</p>
+			<p class="shorttext">
+			<label for ="email">	
+				$tlang.getString("form.email")
+			</label>
+			<input type="text" id="email" name="email" size="32" maxlength="50" value="$validator.escapeHtml($user.Email)">
+		</p>	
+		<div class="act">
+			<input type="submit" name="eventSubmit_doSend" value="$tlang.getString("form.send")" />
+			<input type="reset" name="reset" value="$tlang.getString("form.reset")"/>
+			<input type="submit" name="eventSubmit_doDoc" value="$tlang.getString("form.gobac")" />
+		</div>
+	</form>
+</div>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>OSID Implementation</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-osid-impl</id>
+	<currentVersion>2.0.1</currentVersion>
+	<organization>
+		<name>Sakai Project</name>
+		<url>http://www.sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2005</inceptionYear>
+
+        <properties>
+                <!-- build as a jar -->
+                <deploy.type>jar</deploy.type>
+        </properties>
+
+	<dependencies>
+
+		<!-- to be able to access the IdManager interface -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-legacy-service</artifactId>
+			<version>${pom.currentVersion}</version>
+		</dependency>
+
+		<!-- Need the OSID APIs -->
+		<dependency>
+			<groupId>OKI</groupId>
+			<artifactId>OkiOSID</artifactId>
+			<version>2.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+
+		<!-- java source -->
+		<sourceDirectory>src/java</sourceDirectory>
+
+		<!-- other resources for the jar - the message bundles -->
+		<resources>
+			<resource>
+				<directory>${basedir}/src/bundle</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	
+	</build>
+
+</project>
