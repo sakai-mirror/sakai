@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -236,6 +237,9 @@ public class ResourcesAction
 	/** The name of the state attribute indicating whether the hierarchical list needs to be expanded */
 	private static final String STATE_NEED_TO_EXPAND_ALL = "resources.need_to_expand_all";
 
+	/** The name of the state attribute indicating whether to show checkmarks in list view */
+	private static final String STATE_LIST_IGNORE_SELECTIONS = "resources.ignore_delete_selections";
+
 	/** The from state name */
 	private static final String STATE_FROM = "resources.from";
 	
@@ -333,6 +337,15 @@ public class ResourcesAction
 	/** The not empty delete ids */
 	private static final String STATE_NOT_EMPTY_DELETE_IDS = "resource.not_empty_delete_ids";
 
+	/** The name of the state attribute containing a list of BrowseItem objects corresponding to resources selected for deletion */
+	private static final String STATE_DELETE_ITEMS = "resources.delete_items";
+
+	/** The name of the state attribute containing a list of BrowseItem objects corresponding to nonempty folders selected for deletion */
+	private static final String STATE_DELETE_ITEMS_NOT_EMPTY = "resources.delete_items_not_empty";
+
+	/** The name of the state attribute containing a list of BrowseItem objects selected for deletion that cannot be deleted */
+	private static final String STATE_DELETE_ITEMS_CANNOT_DELETE = "resources.delete_items_cannot_delete";
+
 	/************** the cut items context *****************************************/
 
 	/** The cut item ids */
@@ -404,6 +417,7 @@ public class ResourcesAction
 
 	/** The default value for whether to show all sites in dropbox (used if global value can't be read from server config service) */
 	private static final boolean SHOW_ALL_SITES_IN_DROPBOX = false;
+
 
 
 	/**
@@ -636,6 +650,7 @@ public class ResourcesAction
 			
 			state.removeAttribute(STATE_PASTE_ALLOWED_FLAG);
 			
+			List all_roots = new Vector();
 			List this_site = new Vector();
 			List members = getBrowseItems(collectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, navRoot.equals(homeCollectionId), state);
 			if(members != null && members.size() > 0)
@@ -656,6 +671,7 @@ public class ResourcesAction
 				context.put("site", root);
 				root.addMembers(members);
 				this_site.add(root);
+				all_roots.add(root);
 			}
 			context.put ("this_site", this_site);
 
@@ -690,8 +706,9 @@ public class ResourcesAction
 						showCopyAction = showCopyAction || root.hasCopyableChildren();
 						
 				        root.addMembers(members);
-				        root.setName(userName + " Workspace " + rb.getString("gen.reso"));
+				        root.setName(userName + " " + rb.getString("gen.wsreso"));
 				        other_sites.add(root);
+				        all_roots.add(root);
 				    }
 				}
 				
@@ -716,13 +733,14 @@ public class ResourcesAction
 	                          root.addMembers(members);
 	                          root.setName(displayName);
 	                          other_sites.add(root);
+	                          all_roots.add(root);
 	                      }
 	                  }
                   }
 			}
 			
 			context.put ("other_sites", other_sites);
-			state.setAttribute(STATE_COLLECTION_ROOTS, this_site);
+			state.setAttribute(STATE_COLLECTION_ROOTS, all_roots);
 			// context.put ("root", root);
 
 			if(state.getAttribute(STATE_PASTE_ALLOWED_FLAG) != null)
@@ -1103,25 +1121,23 @@ public class ResourcesAction
 		
 		//%%%% FIXME
 		context.put ("collectionPath", state.getAttribute (STATE_COLLECTION_PATH));
-		context.put ("deleteResourceIds", state.getAttribute (STATE_DELETE_IDS));
 		
-		String notEmptyDeleteIds = (String) state.getAttribute(STATE_NOT_EMPTY_DELETE_IDS);
+		List deleteItems = (List) state.getAttribute(STATE_DELETE_ITEMS);
+		List nonEmptyFolders = (List) state.getAttribute(STATE_DELETE_ITEMS_NOT_EMPTY);
+
+		context.put ("deleteItems", deleteItems);
 		
-		if (notEmptyDeleteIds.length ()>0)
+		Iterator it = nonEmptyFolders.iterator();
+		while(it.hasNext())
 		{
-			if (notEmptyDeleteIds.indexOf (",")>-1)
-			{
-				addAlert(state, rb.getString("folder1") + " " + notEmptyDeleteIds + " " + rb.getString("contain1") + " ");
-			}
-			else
-			{
-				addAlert(state, rb.getString("folder2") + " " + notEmptyDeleteIds + " " + rb.getString("contain2") + " ");
-			}
+			BrowseItem folder = (BrowseItem) it.next();
+			addAlert(state, rb.getString("folder2") + " " + folder.getName() + " " + rb.getString("contain2") + " ");
 		}
 
 		// find the ContentTypeImage service
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
 		context.put ("service", state.getAttribute (STATE_CONTENT_SERVICE));
+		
 		//not show the public option when in dropbox mode
 		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
 		{
@@ -3126,91 +3142,76 @@ public class ResourcesAction
 		}
 
 		ParameterParser params = data.getParameters ();
+		
+		List Items = (List) state.getAttribute(STATE_DELETE_ITEMS);
 
-		Vector deleteIds = (Vector) state.getAttribute (STATE_DELETE_IDS);
+		// Vector deleteIds = (Vector) state.getAttribute (STATE_DELETE_IDS);
 
 		// delete the lowest item in the hireachy first
 		Hashtable deleteItems = new Hashtable();
-		String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
+		// String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
 		int maxDepth = 0;
 		int depth = 0;
-		String currentId = "";
-		for (int i=0; i < deleteIds.size (); i++)
+		
+		Iterator it = Items.iterator();
+		while(it.hasNext())
 		{
-			currentId = (String)deleteIds.elementAt (i);
-			depth = ContentHostingService.getDepth(currentId, collectionId);
+			BrowseItem item = (BrowseItem) it.next();
+			depth = ContentHostingService.getDepth(item.getId(), item.getRoot());
 			if (depth > maxDepth)
 			{
 				maxDepth = depth;
 			}
-			Vector v = (Vector) deleteItems.get(new Integer(depth));
-			if (v == null)
+			List v = (List) deleteItems.get(new Integer(depth));
+			if(v == null)
 			{
 				v = new Vector();
 			}
-			v.add(currentId);
+			v.add(item);
 			deleteItems.put(new Integer(depth), v);
-		}	// for
+		}
 		
 		boolean isCollection = false;
 		for (int j=maxDepth; j>0; j--)
 		{
-			Vector v = (Vector) deleteItems.get(new Integer(j));
-			if (v!=null)
+			List v = (List) deleteItems.get(new Integer(j));
+			if (v==null)
 			{
-				for (int k = 0; k<v.size (); k++)
+				v = new Vector();
+			}
+			Iterator itemIt = v.iterator();
+			while(itemIt.hasNext())
+			{
+				BrowseItem item = (BrowseItem) itemIt.next();
+				try
 				{
-					currentId = (String) v.get (k);
-					isCollection = false;
-					String displayName = NULL_STRING;
-					try
+					if (item.isFolder())
 					{
-						String collectionProperty = ContentHostingService.getProperties (currentId).getProperty (ResourceProperties.PROP_IS_COLLECTION);
-						displayName = ContentHostingService.getProperties (currentId).getPropertyFormatted (ResourceProperties.PROP_DISPLAY_NAME);
-						
-						if (collectionProperty == null)
-						{
-							isCollection = (new Boolean(collectionProperty)).booleanValue();
-							if (isCollection)
-							{
-								ContentHostingService.removeCollection (currentId);
-							}
-							else
-							{
-								ContentHostingService.removeResource (currentId);
-							}
-						}
-						else
-						{
-							// for those resource without properties; judge by id
-							if (currentId.endsWith(Entity.SEPARATOR))
-							{
-								ContentHostingService.removeCollection (currentId);
-							}
-							else
-							{
-								ContentHostingService.removeResource(currentId);
-							}
-						}
+						ContentHostingService.removeCollection(item.getId());
+					}						
+					else
+					{
+						ContentHostingService.removeResource(item.getId());
 					}
-					catch (PermissionException e)
-					{
-						addAlert(state, rb.getString("notpermis6") + " " + displayName + ". ");
-					}
-					catch (IdUnusedException e)
-					{
-						addAlert(state,RESOURCE_NOT_EXIST_STRING);
-					}
-					catch (TypeException e)
-					{
-						addAlert(state, rb.getString("deleteres") + " " + displayName + " " + rb.getString("wrongtype"));
-					}	
-					catch (InUseException e)
-					{
-						addAlert(state, rb.getString("deleteres") + " " + displayName + " " + rb.getString("locked"));
-					}// try - catch
-				}	// for
-			}	// if
+				}
+				catch (PermissionException e)
+				{
+					addAlert(state, rb.getString("notpermis6") + " " + item.getName() + ". ");
+				}
+				catch (IdUnusedException e)
+				{
+					addAlert(state,RESOURCE_NOT_EXIST_STRING);
+				}
+				catch (TypeException e)
+				{
+					addAlert(state, rb.getString("deleteres") + " " + item.getName() + " " + rb.getString("wrongtype"));
+				}	
+				catch (InUseException e)
+				{
+					addAlert(state, rb.getString("deleteres") + " " + item.getName() + " " + rb.getString("locked"));
+				}// try - catch
+			}	// for
+
 		}	// for
 			
 		if (state.getAttribute(STATE_MESSAGE) == null)
@@ -5951,102 +5952,97 @@ public class ResourcesAction
 		}
 		else
 		{
-			Vector deleteIdsVector = new Vector ();
-			String notEmptyDeleteIds = NULL_STRING;
-			String nonDeleteIds = NULL_STRING;
-			for (int i=0; i<deleteIds.length; i++)
+			List deleteItems = new Vector();
+			List notDeleteItems = new Vector();
+			List nonEmptyFolders = new Vector();
+			Set deleteIdSet  = new TreeSet(Arrays.asList(deleteIds));
+			List roots = (List) state.getAttribute(STATE_COLLECTION_ROOTS);
+			Iterator rootIt = roots.iterator();
+			while(rootIt.hasNext())
 			{
-				String currentId = deleteIds[i];
-				try
+				BrowseItem root = (BrowseItem) rootIt.next();
+				
+				List members = root.getMembers();
+				Iterator memberIt = members.iterator();
+				while(memberIt.hasNext())
 				{
-					ResourceProperties p = ContentHostingService.getProperties (currentId);
-					String name = p.getPropertyFormatted (ResourceProperties.PROP_DISPLAY_NAME);
-					if (p.getPropertyFormatted (ResourceProperties.PROP_IS_COLLECTION).equals (Boolean.TRUE.toString()))
+					BrowseItem member = (BrowseItem) memberIt.next();
+					if(deleteIdSet.contains(member.getId()))
 					{
-						if (ContentHostingService.allowRemoveCollection (currentId))
+						if(member.isFolder())
 						{
-							deleteIdsVector.add (currentId);
-							
-							// check for if the collection contains any resource
-							ContentCollection c = ContentHostingService.getCollection(currentId);
-							Iterator iterator = c.getMembers().iterator();
-							if (iterator.hasNext ())
+							if(ContentHostingService.allowRemoveCollection(member.getId()))
 							{
-								if (notEmptyDeleteIds.length ()>0)
+								deleteItems.add(member);
+								if(! member.isEmpty())
 								{
-									notEmptyDeleteIds = notEmptyDeleteIds + ", " + name;
+									nonEmptyFolders.add(member);
 								}
-								else
-								{
-									notEmptyDeleteIds = name;
-								}
-							}
-						}
-						else
-						{
-							if (nonDeleteIds.length ()>0)
-							{
-								nonDeleteIds = nonDeleteIds + ", " +  name;	
 							}
 							else
 							{
-								// first item
-								nonDeleteIds = name;
+								notDeleteItems.add(member);
 							}
 						}
+						else if(ContentHostingService.allowRemoveResource(member.getId()))
+						{
+							deleteItems.add(member);
+						}
+						else
+						{
+							notDeleteItems.add(member);
+						}
+					}
+				}
+			}
+			
+			if(! notDeleteItems.isEmpty())
+			{
+				String notDeleteNames = "";
+				boolean first_item = true;
+				Iterator notIt = notDeleteItems.iterator();
+				while(notIt.hasNext())
+				{
+					BrowseItem item = (BrowseItem) notIt.next();
+					if(first_item)
+					{
+						notDeleteNames = item.getName();
+						first_item = false;
+					}
+					else if(notIt.hasNext())
+					{
+						notDeleteNames += ", " + item.getName();
 					}
 					else
 					{
-						if (ContentHostingService.allowRemoveResource (currentId))
-						{
-							deleteIdsVector.add (currentId);
-						}
-						else
-						{
-							if (nonDeleteIds.length ()>0)
-							{
-								nonDeleteIds = nonDeleteIds + "; " +  name;	
-							}
-							else
-							{
-								// first item
-								nonDeleteIds = name;
-							}
-						}
+						notDeleteNames += " and " + item.getName();
 					}
+				}
+				addAlert(state, rb.getString("notpermis14") + notDeleteNames);
+			}
+
+			
+			/*
 					//htripath-SAK-1712 - Set new collectionId as resources are not deleted under 'more' requirement.
 					if(state.getAttribute(STATE_MESSAGE) == null){
 					  String newCollectionId=ContentHostingService.getContainingCollectionId(currentId);
 					  state.setAttribute(STATE_COLLECTION_ID, newCollectionId);
 					}
-					
-				}
-				catch (PermissionException e)
-				{
-				}
-				catch (IdUnusedException e)
-				{
-					addAlert(state, rb.getString("resource") + " " + "\"" + currentId +  "\"" + " " + rb.getString("notexist"));
-				}
-				catch (TypeException e)
-				{
-				}
-			}
+			*/	
 			
-			if (nonDeleteIds.length ()>0)
-			{
-				addAlert(state, rb.getString("notpermis14") + " " + nonDeleteIds );
-			}
-		
 			// delete item
-			state.setAttribute (STATE_DELETE_IDS, deleteIdsVector);
-			state.setAttribute (STATE_NOT_EMPTY_DELETE_IDS, notEmptyDeleteIds);
-			
+			state.setAttribute (STATE_DELETE_ITEMS, deleteItems);
+			state.setAttribute (STATE_DELETE_ITEMS_NOT_EMPTY, nonEmptyFolders);			
 		}	// if-else
 
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
 			state.setAttribute (STATE_MODE, MODE_DELETE_CONFIRM);
+			state.setAttribute(STATE_LIST_IGNORE_SELECTIONS, Boolean.TRUE.toString());
+		}
+		else
+		{
+			state.setAttribute(STATE_LIST_IGNORE_SELECTIONS, Boolean.FALSE.toString());
 		}
 
 
@@ -6492,6 +6488,8 @@ public class ResourcesAction
 		
 		state.setAttribute (STATE_EXPAND_ALL_FLAG, Boolean.FALSE.toString());
 
+		state.setAttribute(STATE_LIST_IGNORE_SELECTIONS, Boolean.TRUE.toString());
+		
 		state.setAttribute (STATE_COLLECTION_PATH, new Vector ());
 		
 		// In helper mode, calling tool should set attribute STATE_RESOURCES_MODE
@@ -7173,6 +7171,7 @@ public class ResourcesAction
 			folder.setCanAddItem(canAddItem);
 			folder.setCanAddFolder(canAddFolder);
 			folder.setCanDelete(canDelete);
+			folder.setCanUpdate(canUpdate);
 			
 			try
 			{
@@ -7276,6 +7275,7 @@ public class ResourcesAction
 						BrowseItem newItem = new BrowseItem(itemId, itemName, itemType);
 						
 						newItem.setContainer(collectionId);
+						newItem.setRoot(folder.getRoot());
 						
 						newItem.setCanDelete(canDelete);
 						newItem.setCanRevise(canRevise);
