@@ -237,8 +237,8 @@ public class ResourcesAction
 	/** The name of the state attribute indicating whether the hierarchical list needs to be expanded */
 	private static final String STATE_NEED_TO_EXPAND_ALL = "resources.need_to_expand_all";
 
-	/** The name of the state attribute indicating whether to show checkmarks in list view */
-	private static final String STATE_LIST_IGNORE_SELECTIONS = "resources.ignore_delete_selections";
+	/** The name of the state attribute containing a java.util.Set with the id's of selected items */
+	private static final String STATE_LIST_SELECTIONS = "resources.ignore_delete_selections";
 
 	/** The from state name */
 	private static final String STATE_FROM = "resources.from";
@@ -556,6 +556,14 @@ public class ResourcesAction
 		context.put("TYPE_FOLDER", TYPE_FOLDER);
 		context.put("TYPE_UPLOAD", TYPE_UPLOAD);
 
+		Set selectedItems = (Set) state.getAttribute(STATE_LIST_SELECTIONS);
+		if(selectedItems == null)
+		{
+			selectedItems = new TreeSet();
+			state.setAttribute(STATE_LIST_SELECTIONS, selectedItems);
+		}
+		context.put("selectedItems", selectedItems);
+		
 		// find the ContentHosting service
 		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
 		context.put ("service", contentService);
@@ -829,6 +837,14 @@ public class ResourcesAction
 			}
 			
 			List attached = new Vector();
+			
+			Set selectedItems = (Set) state.getAttribute(STATE_LIST_SELECTIONS);
+			if(selectedItems == null)
+			{
+				selectedItems = new TreeSet();
+				state.setAttribute(STATE_LIST_SELECTIONS, selectedItems);
+			}
+			context.put("selectedItems", selectedItems);
 			
 			Iterator it = attachments.iterator();
 			while(it.hasNext())
@@ -1537,6 +1553,15 @@ public class ResourcesAction
 			state.setAttribute (STATE_EXPAND_ALL_FLAG, Boolean.FALSE.toString());
 		}
 
+		// save the current selections
+		Set selectedSet  = new TreeSet();
+		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		if(selectedItems != null)
+		{
+			selectedSet.addAll(Arrays.asList(selectedItems));
+		}
+		state.setAttribute(STATE_LIST_SELECTIONS, selectedSet);
+		
 		String collectionId = data.getParameters().getString ("collectionId");
 		String navRoot = data.getParameters().getString("navRoot");
 		state.setAttribute(STATE_NAVIGATION_ROOT, navRoot);
@@ -1590,6 +1615,8 @@ public class ResourcesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
+		
 		state.setAttribute (STATE_MODE, MODE_DAV);
 
 		// cancel copy if there is one in progress
@@ -1626,6 +1653,8 @@ public class ResourcesAction
 		{
 			initMoveContext(state);
 		}
+		
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
 		String itemType = params.getString("itemType");
 		if(itemType == null || "".equals(itemType))
@@ -1670,6 +1699,8 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
+
 		String itemType = params.getString("itemType");
 		String flow = params.getString("flow");
 		String mode = (String) state.getAttribute(STATE_MODE);
@@ -2613,7 +2644,9 @@ public class ResourcesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
-		
+
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
+
 		String itemId = params.getString("itemId");
 		attachItem(itemId, state);
 
@@ -2625,6 +2658,8 @@ public class ResourcesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
+		
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 		
 		String itemId = params.getString("itemId");
 		
@@ -2672,6 +2707,8 @@ public class ResourcesAction
 		{
 			initMoveContext(state);
 		}
+		
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
 		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
 		
@@ -3019,6 +3056,8 @@ public class ResourcesAction
 			initMoveContext(state);
 		}
 
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
+		
 		// the hosted item ID
 		String id = NULL_STRING;
 
@@ -3238,6 +3277,8 @@ public class ResourcesAction
 		String from = data.getParameters ().getString ("from");
 		String mode = (String) state.getAttribute(STATE_MODE);
 		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+		
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 		
 		if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_SELECT.equals(helper_mode))
 		{
@@ -3670,6 +3711,7 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.removeAttribute(STATE_CREATE_ITEMS);
 		state.removeAttribute(STATE_EDIT_ITEM);
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
 		// cancel copy if there is one in progress
 		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
@@ -3851,7 +3893,11 @@ public class ResourcesAction
 			String url = ContentHostingService.getUrl(id);
 			item.setUrl(url);
 	
-			String size = properties.getPropertyFormatted(ResourceProperties.PROP_CONTENT_LENGTH) + " (" + Validator.getFileSizeWithDividor(properties.getProperty(ResourceProperties.PROP_CONTENT_LENGTH)) +" bytes)";
+			String size = "";
+			if(properties.getProperty(ResourceProperties.PROP_CONTENT_LENGTH) != null)
+			{
+				size = properties.getPropertyFormatted(ResourceProperties.PROP_CONTENT_LENGTH) + " (" + Validator.getFileSizeWithDividor(properties.getProperty(ResourceProperties.PROP_CONTENT_LENGTH)) +" bytes)";
+			}
 			item.setSize(size);
 			
 			String copyrightStatus = properties.getProperty(properties.getNamePropCopyrightChoice());
@@ -3956,7 +4002,6 @@ public class ResourcesAction
 		{
 			addAlert(state," " + rb.getString("typeex") + " "  + id);
 		}
-		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
 			// got resource and sucessfully populated item with values
@@ -4297,6 +4342,8 @@ public class ResourcesAction
 			initMoveContext(state);
 		}
 
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
+		
 		String id = NULL_STRING;
 		String from = params.getString ("from");
 		if ((from!=null)&&(from.equals ("revise")))
@@ -5793,6 +5840,16 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
 		state.setAttribute(STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
+
+		// save the current selections
+		Set selectedSet  = new TreeSet();
+		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		if(selectedItems != null)
+		{
+			selectedSet.addAll(Arrays.asList(selectedItems));
+		}
+		state.setAttribute(STATE_LIST_SELECTIONS, selectedSet);
+
 	}
 
 	
@@ -5802,7 +5859,16 @@ public class ResourcesAction
 	public static void doShowOtherSites(RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		
+
+		// save the current selections
+		Set selectedSet  = new TreeSet();
+		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		if(selectedItems != null)
+		{
+			selectedSet.addAll(Arrays.asList(selectedItems));
+		}
+		state.setAttribute(STATE_LIST_SELECTIONS, selectedSet);
+
 		state.setAttribute(STATE_SHOW_OTHER_SITES, Boolean.TRUE.toString());
 	}
 
@@ -5871,7 +5937,16 @@ public class ResourcesAction
 
 		//get the ParameterParser from RunData
 		ParameterParser params = data.getParameters ();
-
+		
+		// save the current selections
+		Set selectedSet  = new TreeSet();
+		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		if(selectedItems != null)
+		{
+			selectedSet.addAll(Arrays.asList(selectedItems));
+		}
+		state.setAttribute(STATE_LIST_SELECTIONS, selectedSet);
+		
 		String criteria = params.getString ("criteria");
 
 		if (criteria.equals ("title"))
@@ -5931,6 +6006,7 @@ public class ResourcesAction
 	public void doDeleteconfirm ( RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		Set deleteIdSet  = new TreeSet();
 
 		// cancel copy if there is one in progress
 		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
@@ -5952,10 +6028,10 @@ public class ResourcesAction
 		}
 		else
 		{
+			deleteIdSet.addAll(Arrays.asList(deleteIds));
 			List deleteItems = new Vector();
 			List notDeleteItems = new Vector();
 			List nonEmptyFolders = new Vector();
-			Set deleteIdSet  = new TreeSet(Arrays.asList(deleteIds));
 			List roots = (List) state.getAttribute(STATE_COLLECTION_ROOTS);
 			Iterator rootIt = roots.iterator();
 			while(rootIt.hasNext())
@@ -6034,15 +6110,11 @@ public class ResourcesAction
 			state.setAttribute (STATE_DELETE_ITEMS, deleteItems);
 			state.setAttribute (STATE_DELETE_ITEMS_NOT_EMPTY, nonEmptyFolders);			
 		}	// if-else
-
+		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
 			state.setAttribute (STATE_MODE, MODE_DELETE_CONFIRM);
-			state.setAttribute(STATE_LIST_IGNORE_SELECTIONS, Boolean.TRUE.toString());
-		}
-		else
-		{
-			state.setAttribute(STATE_LIST_IGNORE_SELECTIONS, Boolean.FALSE.toString());
+			state.setAttribute(STATE_LIST_SELECTIONS, deleteIdSet);
 		}
 
 
@@ -6240,6 +6312,8 @@ public class ResourcesAction
 		{
 			initMoveContext(state);
 		}
+		
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
 		String[] moveItems = data.getParameters ().getStrings ("selectedMembers");
 		if (moveItems == null)
@@ -6360,6 +6434,15 @@ public class ResourcesAction
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
+		// save the current selections
+		Set selectedSet  = new TreeSet();
+		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		if(selectedItems != null)
+		{
+			selectedSet.addAll(Arrays.asList(selectedItems));
+		}
+		state.setAttribute(STATE_LIST_SELECTIONS, selectedSet);
+
 		// expansion actually occurs in getBrowseItems method.
 		state.setAttribute(STATE_EXPAND_ALL_FLAG,  Boolean.TRUE.toString());
 		state.setAttribute(STATE_NEED_TO_EXPAND_ALL, Boolean.TRUE.toString());
@@ -6374,6 +6457,15 @@ public class ResourcesAction
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
+		// save the current selections
+		Set selectedSet  = new TreeSet();
+		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		if(selectedItems != null)
+		{
+			selectedSet.addAll(Arrays.asList(selectedItems));
+		}
+		state.setAttribute(STATE_LIST_SELECTIONS, selectedSet);
+		
 		state.setAttribute(EXPANDED_COLLECTIONS, new HashMap());
 		state.setAttribute(STATE_EXPAND_ALL_FLAG, Boolean.FALSE.toString());
 
@@ -6443,6 +6535,7 @@ public class ResourcesAction
 		state.removeAttribute(STATE_HELPER_CHANGED);
 		state.removeAttribute(STATE_HOME_COLLECTION_DISPLAY_NAME);
 		state.removeAttribute(STATE_HOME_COLLECTION_ID);
+		state.removeAttribute(STATE_LIST_SELECTIONS);
 		state.removeAttribute(STATE_MY_COPYRIGHT);
 		state.removeAttribute(STATE_NAVIGATION_ROOT);
 		state.removeAttribute(STATE_PASTE_ALLOWED_FLAG);
@@ -6488,7 +6581,7 @@ public class ResourcesAction
 		
 		state.setAttribute (STATE_EXPAND_ALL_FLAG, Boolean.FALSE.toString());
 
-		state.setAttribute(STATE_LIST_IGNORE_SELECTIONS, Boolean.TRUE.toString());
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 		
 		state.setAttribute (STATE_COLLECTION_PATH, new Vector ());
 		
@@ -6900,6 +6993,16 @@ public class ResourcesAction
 		
 		//get the ParameterParser from RunData
 		ParameterParser params = data.getParameters ();
+		
+		// save the current selections
+		Set selectedSet  = new TreeSet();
+		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		if(selectedItems != null)
+		{
+			selectedSet.addAll(Arrays.asList(selectedItems));
+		}
+		state.setAttribute(STATE_LIST_SELECTIONS, selectedSet);
+		
 		String id = params.getString("collectionId");
 		currentMap.put (id,ContentHostingService.getCollection (id)); 
 		
@@ -6921,6 +7024,15 @@ public class ResourcesAction
 		//get the ParameterParser from RunData
 		ParameterParser params = data.getParameters ();
 		String collectionId = params.getString("collectionId");
+		
+		// save the current selections
+		Set selectedSet  = new TreeSet();
+		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		if(selectedItems != null)
+		{
+			selectedSet.addAll(Arrays.asList(selectedItems));
+		}
+		state.setAttribute(STATE_LIST_SELECTIONS, selectedSet);
 		
 		HashMap newSet = new HashMap();
 		Iterator l = currentMap.keySet().iterator ();
@@ -7990,6 +8102,9 @@ public class ResourcesAction
 		{
 			initMoveContext(state);
 		}
+
+		// should we save here?
+		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
 		// get the current home collection id and the related site
 		String collectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
