@@ -5841,9 +5841,12 @@ public class ResourcesAction
 		
 		state.setAttribute(STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
 
+		//get the ParameterParser from RunData
+		ParameterParser params = data.getParameters ();
+		
 		// save the current selections
 		Set selectedSet  = new TreeSet();
-		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		String[] selectedItems = params.getStrings("selectedMembers");
 		if(selectedItems != null)
 		{
 			selectedSet.addAll(Arrays.asList(selectedItems));
@@ -5860,9 +5863,12 @@ public class ResourcesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
+		//get the ParameterParser from RunData
+		ParameterParser params = data.getParameters ();
+		
 		// save the current selections
 		Set selectedSet  = new TreeSet();
-		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		String[] selectedItems = params.getStrings("selectedMembers");
 		if(selectedItems != null)
 		{
 			selectedSet.addAll(Arrays.asList(selectedItems));
@@ -6434,9 +6440,12 @@ public class ResourcesAction
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
+		//get the ParameterParser from RunData
+		ParameterParser params = data.getParameters ();
+		
 		// save the current selections
 		Set selectedSet  = new TreeSet();
-		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		String[] selectedItems = params.getStrings("selectedMembers");
 		if(selectedItems != null)
 		{
 			selectedSet.addAll(Arrays.asList(selectedItems));
@@ -6457,9 +6466,12 @@ public class ResourcesAction
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
+		//get the ParameterParser from RunData
+		ParameterParser params = data.getParameters ();
+		
 		// save the current selections
 		Set selectedSet  = new TreeSet();
-		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		String[] selectedItems = params.getStrings ("selectedMembers");
 		if(selectedItems != null)
 		{
 			selectedSet.addAll(Arrays.asList(selectedItems));
@@ -6996,7 +7008,7 @@ public class ResourcesAction
 		
 		// save the current selections
 		Set selectedSet  = new TreeSet();
-		String[] selectedItems = data.getParameters ().getStrings ("selectedMembers");
+		String[] selectedItems = params.getStrings ("selectedMembers");
 		if(selectedItems != null)
 		{
 			selectedSet.addAll(Arrays.asList(selectedItems));
