@@ -211,6 +211,15 @@ public class SiteService
 		return service.siteToolReference(param0, param1);
 	}
 
+	public static java.lang.String siteSectionReference(java.lang.String param0, java.lang.String param1)
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.siteSectionReference(param0, param1);
+	}
+
 	public static boolean isUserSite(java.lang.String param0)
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
@@ -389,6 +398,60 @@ public class SiteService
 			return null;
 		
 		return service.merge(param0, param1, param2);
+	}
+
+	public static org.sakaiproject.service.legacy.site.Section getSection(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return null;
+		
+		return service.getSection(param0);
+	}
+
+	public static org.sakaiproject.service.legacy.site.Section newSection(java.lang.String param0, java.lang.String param1, java.lang.String param2) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return null;
+		
+		return service.newSection(param0, param1, param2);
+	}
+
+	public static void removeSection(org.sakaiproject.service.legacy.site.Section param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return;
+		
+		service.removeSection(param0);
+	}
+
+	public static void saveSection(org.sakaiproject.service.legacy.site.Section param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return;
+		
+		service.saveSection(param0);
+	}
+
+	public static java.util.Collection getSections(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return null;
+		
+		return service.getSections(param0);
+	}
+
+	public static boolean hasSections(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return false;
+		
+		return service.hasSections(param0);
 	}
 }
 

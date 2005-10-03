@@ -28,6 +28,7 @@ package org.sakaiproject.component.legacy.site;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +41,7 @@ import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteEdit;
 import org.sakaiproject.service.legacy.site.SitePage;
@@ -133,6 +135,9 @@ public class DbSiteService
 			if (m_autoDdl)
 			{
 				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_site");
+				
+				// also load the 2.1 new site database tables
+				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_site_section");
 			}
 
 			super.init();
@@ -269,7 +274,13 @@ public class DbSiteService
 				statement = "delete from SAKAI_SITE_PAGE where SITE_ID = ?";			
 				m_sql.dbWrite(connection, statement, fields);
 
-                // since we've already deleted the old values, don't delete them again.
+				statement = "delete from SAKAI_SITE_SECTION_PROPERTY where SITE_ID = ?";			
+				m_sql.dbWrite(connection, statement, fields);
+
+				statement = "delete from SAKAI_SITE_SECTION where SITE_ID = ?";			
+				m_sql.dbWrite(connection, statement, fields);
+
+				// since we've already deleted the old values, don't delete them again.
                 boolean deleteAgain = false;
                 
 				// add each page
@@ -316,6 +327,26 @@ public class DbSiteService
 						// write the tool's properties
 						writeProperties(connection, "SAKAI_SITE_TOOL_PROPERTY", "TOOL_ID", tool.getId(), "SITE_ID", caseId(edit.getId()), tool.getPlacementConfig(), deleteAgain);
 					}
+				}
+				
+				// add each section
+				for (Iterator iSections = edit.getSections().iterator(); iSections.hasNext();)
+				{
+					Section section = (Section) iSections.next();
+
+					// write the section
+					statement = "insert into SAKAI_SITE_SECTION (SECTION_ID, SITE_ID, TITLE, DESCRIPTION)"
+							+ 	" values (?,?,?,?)";
+
+					fields = new Object[4];
+					fields[0] = section.getId();
+					fields[1] = caseId(section.getSiteId());
+					fields[2] = section.getTitle();
+					fields[3] = section.getDescription();
+					m_sql.dbWrite(connection, statement, fields);
+
+					// write the section's properties
+					writeProperties(connection, "SAKAI_SITE_SECTION_PROPERTY", "SECTION_ID", section.getId(), "SITE_ID", caseId(section.getSiteId()), section.getProperties());
 				}
 
 				// write the site and properties, releasing the lock
@@ -469,6 +500,164 @@ public class DbSiteService
 			}
 		}
 
+		/**
+		 * @inheritDoc
+		 */
+		public void commitSection(Connection conn, Section section)
+		{
+			Connection connection = null;
+			boolean wasCommit = true;
+			try
+			{
+				// use the connection given if given.
+				if (conn != null)
+				{
+					connection = conn;
+				}
+
+				else
+				{
+					connection = m_sql.borrowConnection();
+					wasCommit = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+				}
+
+				// delete this section and section properties
+				Object fields[] = new Object[2];
+				fields[0] = caseId(section.getSiteId());
+				fields[1] = section.getId();
+
+				String statement = "delete from SAKAI_SITE_SECTION_PROPERTY where SITE_ID = ? and SECTION_ID = ?";
+				m_sql.dbWrite(connection, statement, fields);
+
+				statement = "delete from SAKAI_SITE_SECTION where SITE_ID = ? and SECTION_ID = ?";	
+				m_sql.dbWrite(connection, statement, fields);
+				
+				// write the section
+				statement = "insert into SAKAI_SITE_SECTION (SECTION_ID, SITE_ID, TITLE, DESCRIPTION)"
+						+ 	" values (?,?,?,?)";
+
+				fields = new Object[4];
+				fields[0] = section.getId();
+				fields[1] = caseId(section.getSiteId());
+				fields[2] = section.getTitle();
+				fields[3] = section.getDescription();
+				m_sql.dbWrite(connection, statement, fields);
+
+				// write the section's properties
+				writeProperties(connection, "SAKAI_SITE_SECTION_PROPERTY", "SECTION_ID", section.getId(), "SITE_ID", caseId(section.getSiteId()), section.getProperties());
+
+				// if the connection is new, commit
+				if (conn == null)
+				{
+					connection.commit();
+				}
+			}
+			catch (Exception e)
+			{
+				if ((connection != null) && (conn == null))
+				{
+					try
+					{
+						connection.rollback();
+					}
+					catch (Exception ee)
+					{
+						m_logger.warn(this + ".commitSection, while rolling back: " + ee);
+					}
+				}
+				m_logger.warn(this + ".commitSection: " + e);
+			}
+			finally
+			{
+				if ((connection != null) && (conn == null))
+				{
+					try
+					{
+						connection.setAutoCommit(wasCommit);
+					}
+					catch (Exception e)
+					{
+						m_logger.warn(this + ".commitSection, while setting auto commit: " + e);
+					}
+					m_sql.returnConnection(connection);
+				}
+			}
+			
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public void commitRemoveSection(Connection conn, Section section)
+		{
+			Connection connection = null;
+			boolean wasCommit = true;
+			try
+			{
+				// use the connection given if given.
+				if (conn != null)
+				{
+					connection = conn;
+				}
+
+				else
+				{
+					connection = m_sql.borrowConnection();
+					wasCommit = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+				}
+
+				// delete this section and section properties
+				Object fields[] = new Object[2];
+				fields[0] = caseId(section.getSiteId());
+				fields[1] = section.getId();
+
+				String statement = "delete from SAKAI_SITE_SECTION_PROPERTY where SITE_ID = ? and SECTION_ID = ?";
+				m_sql.dbWrite(connection, statement, fields);
+
+				statement = "delete from SAKAI_SITE_SECTION where SITE_ID = ? and SECTION_ID = ?";	
+				m_sql.dbWrite(connection, statement, fields);
+
+				// if the connection is new, commit
+				if (conn == null)
+				{
+					connection.commit();
+				}
+			}
+			catch (Exception e)
+			{
+				if ((connection != null) && (conn == null))
+				{
+					try
+					{
+						connection.rollback();
+					}
+					catch (Exception ee)
+					{
+						m_logger.warn(this + ".commitSection, while rolling back: " + ee);
+					}
+				}
+				m_logger.warn(this + ".commitSection: " + e);
+			}
+			finally
+			{
+				if ((connection != null) && (conn == null))
+				{
+					try
+					{
+						connection.setAutoCommit(wasCommit);
+					}
+					catch (Exception e)
+					{
+						m_logger.warn(this + ".commitSection, while setting auto commit: " + e);
+					}
+					m_sql.returnConnection(connection);
+				}
+			}
+			
+		}
+
 		public void cancel(SiteEdit edit)
 		{
 			super.cancelResource(edit);
@@ -503,6 +692,12 @@ public class DbSiteService
 				m_sql.dbWrite(connection, statement, fields);
 
 				statement = "delete from SAKAI_SITE_USER where SITE_ID = ?";
+				m_sql.dbWrite(connection, statement, fields);
+
+				statement = "delete from SAKAI_SITE_SECTION_PROPERTY where SITE_ID = ?";
+				m_sql.dbWrite(connection, statement, fields);
+
+				statement = "delete from SAKAI_SITE_SECTION where SITE_ID = ?";	
 				m_sql.dbWrite(connection, statement, fields);
 
 				// delete the site and properties
@@ -1220,6 +1415,83 @@ public class DbSiteService
 		}
 
 		/**
+		 * {@inheritDoc}
+		 */
+		public Section findSection(final String id)
+		{
+			String sql = "select SS.SECTION_ID, SS.TITLE, SS.DESCRIPTION, SS.SITE_ID " +
+				"from SAKAI_SITE_SECTION SS where SS.SECTION_ID = ?";
+
+			Object fields[] = new Object[1];
+			fields[0] = id;
+
+			List found = m_sql.dbRead(sql, fields,
+				new SqlReader()
+				{
+					public Object readSqlResultRecord(ResultSet result)
+					{
+						try
+						{
+							// get the fields
+							String sectionId = result.getString(1);
+							String title = result.getString(2);
+							String description = result.getString(3);
+							String siteId = result.getString(4);
+
+							// make the section
+							BaseSection section = new BaseSection(sectionId, title, description, siteId);
+
+							return section;
+						}
+						catch (SQLException e)
+						{
+							m_logger.warn(this + ".findPage: " + id + " : " + e);
+							return null;
+						}
+					}
+				}
+			);
+
+			if (found.size() > 1)
+			{
+				m_logger.warn(this + ".findPage: multiple results for page id: " + id);
+			}
+			
+			Section rv = null;
+			if (found.size() > 0)
+			{
+				rv = (Section) found.get(0);
+			}
+
+			return rv;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public String findSectionSiteId(String id)
+		{
+			String sql = "select SS.SITE_ID from SAKAI_SITE_SECTION SS where SS.SECTION_ID = ?";
+			Object fields[] = new Object[1];
+			fields[0] = id;
+
+			List found = m_sql.dbRead(sql, fields, null);
+
+			if (found.size() > 1)
+			{
+				m_logger.warn(this + ".findSectionSiteId: multiple results for page id: " + id);
+			}
+			
+			String rv = null;
+			if (found.size() > 0)
+			{
+				rv = (String) found.get(0);
+			}
+
+			return rv;
+		}
+
+		/**
 		 * Access the Site id for the tool with this id.
 		 * 
 		 * @param id
@@ -1647,6 +1919,14 @@ public class DbSiteService
 					tool.m_configLazy = false;
 				}
 			}
+
+			// read and unlazy the section properties for the entire site
+			readSiteSectionProperties((BaseSite) site);
+			for (Iterator i = site.getSections().iterator(); i.hasNext();)
+			{
+				BaseSection section = (BaseSection) i.next();
+				((BaseResourcePropertiesEdit) section.m_properties).setLazy(false);
+			}
 		}
 
 		/**
@@ -1732,7 +2012,48 @@ public class DbSiteService
 		}
 
 		/**
-		 * Read site properties from storage into the site's properties.
+		 * Read properties for all sections in the site
+		 * @param site The site to read properties for.
+		 */
+		protected void readSiteSectionProperties(final BaseSite site)
+		{
+			// get the properties from the db for all pages in the site
+			String sql = "select SECTION_ID, NAME, VALUE from SAKAI_SITE_SECTION_PROPERTY where ( SITE_ID = ? )";
+
+			Object fields[] = new Object[1];
+			fields[0] = site.getId();
+			m_sql.dbRead(sql, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
+				{
+					try
+					{
+						// read the fields
+						String sectionId = result.getString(1);
+						String name = result.getString(2);
+						String value = result.getString(3);
+
+						// get the section
+						BaseSection section = (BaseSection) site.getSection(sectionId);
+						if (section != null)
+						{
+							section.m_properties.addProperty(name, value);
+						}
+
+						// nothing to return
+						return null;
+					}
+					catch (SQLException e)
+					{
+						m_logger.warn(this + ".readSiteSectionProperties: " + e);
+						return null;
+					}
+				}
+			});
+		}
+
+		/**
+		 * Read page properties from storage into the page's properties.
 		 * @param page The page for which properties are desired.
 		 */
 		public void readPageProperties(SitePage page, ResourcePropertiesEdit props)
@@ -1741,12 +2062,21 @@ public class DbSiteService
 		}
 
 		/**
-		 * Read site properties from storage into the site's properties.
+		 * Read tool properties from storage into the tool's properties.
 		 * @param tool The tool for which properties are desired.
 		 */
 		public void readToolProperties(ToolConfiguration tool, Properties props)
 		{
 			super.readProperties(null, "SAKAI_SITE_TOOL_PROPERTY", "TOOL_ID", tool.getId(), props);
+		}
+
+		/**
+		 * Read section properties from storage into the section's properties.
+		 * @param section The section for which properties are desired.
+		 */
+		public void readSectionProperties(Section section, Properties props)
+		{
+			super.readProperties(null, "SAKAI_SITE_SECTION_PROPERTY", "SECTION_ID", section.getId(), props);
 		}
 
 		/**
@@ -1884,6 +2214,49 @@ public class DbSiteService
 				BaseSitePageEdit page = (BaseSitePageEdit) i.next();
 				page.m_toolsLazy = false;
 			}
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public void readSiteSections(final Site site, final Collection sections)
+		{
+			String sql = "select SS.SECTION_ID, SS.TITLE, SS.DESCRIPTION, SS.SITE_ID "
+					+ "from SAKAI_SITE_SECTION SS where SS.SITE_ID = ?";
+			// TODO: order by? title? -ggolden
+					
+			Object fields[] = new Object[1];
+			fields[0] = site.getId();
+
+			List all = m_sql.dbRead(sql, fields,
+				new SqlReader()
+				{
+					public Object readSqlResultRecord(ResultSet result)
+					{
+						try
+						{
+							// get the fields
+							String sectionId = result.getString(1);
+							String title = result.getString(2);
+							String description = result.getString(3);
+							String siteId = result.getString(4);
+	
+							// make the section
+							BaseSection section = new BaseSection(sectionId, title, description, siteId);
+	
+							// add it to the sections
+							sections.add(section);
+							
+							return null;
+						}
+						catch (SQLException e)
+						{
+							m_logger.warn(this + ".readSiteSections: " + site.getId() + " : " + e);
+							return null;
+						}
+					}
+				}
+			);
 		}
 
 		/**

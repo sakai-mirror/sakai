@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
  * 
  * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -21,45 +21,42 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.service.framework.memory;
+// package
+package org.sakaiproject.service.legacy.site;
 
-import org.sakaiproject.service.legacy.site.Section;
-import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.service.legacy.resource.Edit;
 
 /**
  * <p>
- * SiteCache is a cache that holds Site objects, and gives access to the cached site's ToolConfigurations by their id.
+ * A Site Section is a way to divide up a Site into separate units, each with its own authorization group and descriptive information.
  * </p>
  * 
  * @author Sakai Software Development Team
  */
-public interface SiteCache extends Cache
+public interface Section extends Edit
 {
-	/**
-	 * Access the tool that is part of a cached site, by tool Id.
-	 * 
-	 * @param toolId
-	 *        The tool's id.
-	 * @return The ToolConfiguration that has this id, from a cached site.
-	 */
-	ToolConfiguration getTool(String toolId);
+	/** @return a human readable short title of this section. */
+	String getTitle();
+
+	/** @return a text describing the section. */
+	String getDescription();
+
+	/** @return the site id for this section. */
+	String getSiteId();
 
 	/**
-	 * Access the page that is part of a cached site, by page Id.
+	 * Set the human readable short title of this section.
 	 * 
-	 * @param pageId
-	 *        The page's id.
-	 * @return The SitePage that has this id, from a cached site.
+	 * @param title
+	 *        The new title.
 	 */
-	SitePage getPage(String pageId);
+	void setTitle(String title);
 
 	/**
-	 * Access the section that is part of a cached site, by section Id.
+	 * Set the text describing this section.
 	 * 
-	 * @param sectionId
-	 *        The section's id.
-	 * @return The Section that has this id, from a cached site.
+	 * @param description
+	 *        The new description.
 	 */
-	Section getSection(String sectionId);
+	void setDescription(String description);
 }

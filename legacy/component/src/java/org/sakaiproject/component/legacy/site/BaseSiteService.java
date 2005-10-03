@@ -79,6 +79,7 @@ import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
+import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteEdit;
 import org.sakaiproject.service.legacy.site.SitePage;
@@ -640,7 +641,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		((BaseSiteEdit) site).setEvent(SECURE_UPDATE_SITE);
 
 		// force the site to be fully read - no more lazy!
-		((BaseSiteEdit) site).loadPagesTools();
+		((BaseSiteEdit) site).loadAll();
 
 		return site;
 
@@ -672,7 +673,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		addLiveUpdateProperties(((BaseSite) site));
 
 		// sync up with all other services
-		enableRelated(site);
+		enableRelated((BaseSiteEdit) site);
 
 		// complete the edit
 		m_storage.commit(site);
@@ -963,6 +964,20 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + "tool" + Entity.SEPARATOR + toolId;
 
 	} // siteToolReference
+
+	/**
+	 * Access the internal reference which can be used to access the site section from within the system.
+	 * 
+	 * @param siteId
+	 *        The site id.
+	 * @param sectionId
+	 *        The section id.
+	 * @return The the internal reference which can be used to access the site section from within the system.
+	 */
+	public String siteSectionReference(String siteId, String sectionId)
+	{
+		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + "section" + Entity.SEPARATOR + sectionId;
+	}
 
 	/**
 	 * Is this site (id or reference) a user site? Note, /site/~ and ~ are NOT considered user sites.
@@ -1394,16 +1409,25 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		if (reference.startsWith(REFERENCE_ROOT))
 		{
 			String id = null;
+			String container = null;
+			String subType = "site";
 
-			// we will get null, service, siteId
+			// we will get null, service, siteId, page | section | tool, page/section/tool id
 			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
 
 			if (parts.length > 2)
 			{
 				id = parts[2];
+				container = id;
+				
+				if (parts.length > 4)
+				{
+					subType = parts[3];
+					id = parts[4];
+				}
 			}
 
-			ref.set(SERVICE_NAME, null, id, null, null);
+			ref.set(SERVICE_NAME, subType, id, container, null);
 
 			return true;
 		}
@@ -1547,7 +1571,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param site
 	 *        The site.
 	 */
-	protected void enableRelated(SiteEdit site)
+	protected void enableRelated(BaseSiteEdit site)
 	{
 		// skip if special
 		if (isSpecialSite(site.getId()))
@@ -1625,36 +1649,31 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		// enable features used, disable those not
 
-		// the site's realm
-		String realmTemplate = null;
-		String userId = null;
-		if (isUserSite(site.getId()))
-		{
-			realmTemplate = "!site.user";
-		}
-		else
-		{
-			// use the type's template, if defined
-			realmTemplate = "!site.template";
-			String type = site.getType();
-			if (type != null)
-			{
-				realmTemplate = realmTemplate + "." + type;
-			}
+		// figure the site's realm template
+		String realmTemplate = siteRealmTemplate(site);
 
-			try
-			{
-				Realm realm = RealmService.getRealm(site.getReference());
-			}
-			catch (IdUnusedException un)
-			{
-				if (site.getCreatedBy() != null)
-				{
-					userId = site.getCreatedBy().getId();
-				}
-			}
+		// try the site created-by user for the maintain role in the site
+		String userId = null;
+		if (site.getCreatedBy() != null)
+		{
+			userId = site.getCreatedBy().getId();
 		}
+
 		enableRealm(site.getReference(), realmTemplate, userId, "!site.template");
+		
+		// enable a realm for each section: use the same template as for the site
+		for (Iterator iSections = site.getSections().iterator(); iSections.hasNext();)
+		{
+			Section section = (Section) iSections.next();
+			enableRealm(section.getReference(), realmTemplate, userId, "!site.template");
+		}
+		
+		// disable the reams for any sections deleted in this edit
+		for (Iterator iSections = site.m_deletedSections.iterator(); iSections.hasNext();)
+		{
+			Section section = (Section) iSections.next();
+			disableRealm(section.getReference());
+		}
 
 		if (hasMailbox)
 		{
@@ -1709,6 +1728,33 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	} // enableRelated
 
 	/**
+	 * Figure the site's realm template, based on type and if it's a user site.
+	 * @param site The site to figure the realm for.
+	 * @return the site's realm template, based on type and if it's a user site.
+	 */
+	protected String siteRealmTemplate(Site site)
+	{
+		// figure the site's realm template
+		String realmTemplate = null;
+		if (isUserSite(site.getId()))
+		{
+			realmTemplate = "!site.user";
+		}
+		else
+		{
+			// use the type's template, if defined
+			realmTemplate = "!site.template";
+			String type = site.getType();
+			if (type != null)
+			{
+				realmTemplate = realmTemplate + "." + type;
+			}
+		}
+		
+		return realmTemplate;
+	}
+
+	/**
 	 * Sync up with all other services for a site that is going away.
 	 * 
 	 * @param site
@@ -1726,7 +1772,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// others %%%
 
 		// disable realm last, to keep those permissions around
-		disableRealm(site);
+		disableRealm(site.getReference());
+
+		// disable a realm for each section
+		for (Iterator iSections = site.getSections().iterator(); iSections.hasNext();)
+		{
+			Section section = (Section) iSections.next();
+			disableRealm(section.getReference());
+		}
 
 	} // disableRelated
 
@@ -1833,12 +1886,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param site
 	 *        The site.
 	 */
-	protected void disableRealm(Site site)
+	protected void disableRealm(String ref)
 	{
 		try
 		{
 			// delete all at once, so it's not tempted to try to update the realm when it makes the edit -ggolden
-			RealmService.removeRealm(site.getReference());
+			RealmService.removeRealm(ref);
 		}
 		catch (Exception e)
 		{
@@ -2275,6 +2328,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		/** The time last modified. */
 		protected Time m_lastModifiedTime = null;
 
+		/** The list of site sections for this site. */
+		protected ResourceVector m_sections = null;
+
+		/** Set true while the sections have not yet been read in for a site. */
+		protected boolean m_sectionsLazy = false;
+
 		/**
 		 * Construct.
 		 * 
@@ -2290,6 +2349,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			// set up the page list
 			m_pages = new ResourceVector();
+
+			// set up the sections collection
+			m_sections = new ResourceVector();
 
 			// if the id is not null (a new site, rather than a reconstruction)
 			// add the automatic (live) properties
@@ -2325,6 +2387,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			// setup for page list
 			m_pages = new ResourceVector();
+			
+			// setup for the sections list
+			m_sections = new ResourceVector();
 
 			m_id = el.getAttribute("id");
 			m_title = StringUtil.trimToNull(el.getAttribute("title"));
@@ -2484,6 +2549,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 						BaseSitePageEdit page = new BaseSitePageEdit(pageEl, this);
 						m_pages.add(page);
 					}
+					
+				// TODO: else if ( "sections")
 				}
 			}
 
@@ -2559,6 +2626,15 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				m_pages.add(new BaseSitePageEdit(page, this, exact));
 			}
 			m_pagesLazy = other.m_pagesLazy;
+
+			// deep copy the sections
+			m_sections = new ResourceVector();
+			for (Iterator iSections = other.getSections().iterator(); iSections.hasNext();)
+			{
+				Section section = (Section) iSections.next();
+				m_sections.add(new BaseSection(section, this, exact));
+			}
+			m_sectionsLazy = other.m_sectionsLazy;
 
 		} // set
 
@@ -2788,9 +2864,32 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		} // getPages
 
 		/**
-		 * Make sure pages and tools are loaded, not lazy
+		 * {@inheritDoc}
 		 */
-		public void loadPagesTools()
+		public Collection getSections()
+		{
+			if (m_sectionsLazy)
+			{
+				m_storage.readSiteSections(this, m_sections);
+				m_sectionsLazy = false;
+			}
+
+			return m_sections;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public boolean hasSections()
+		{
+			Collection sections = getSections();
+			return !sections.isEmpty();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void loadAll()
 		{
 			// first, pages
 			getPages();
@@ -2798,7 +2897,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// next, tools from all pages, all at once
 			m_storage.readSiteTools(this);
 			
-			// now all three properties
+			// get sections, all at once
+			getSections();
+
+			// now all properties
 			m_storage.readAllSiteProperties(this);
 		}
 
@@ -2880,6 +2982,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			return null;
 
 		} // getTool
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Section getSection(String id)
+		{
+			return (Section) ((ResourceVector) getSections()).getById(id);
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -3070,6 +3180,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		/** Active flag. */
 		protected boolean m_active = false;
 
+		/** List of sections deleted in this edit pass. */
+		protected Collection m_deletedSections = new Vector();
+
 		/**
 		 * Construct.
 		 * 
@@ -3144,8 +3257,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// setup for properties, but mark them lazy since we have not yet established them from data
 			((BaseResourcePropertiesEdit) m_properties).setLazy(true);
 
-			// set up the page list
 			m_pagesLazy = true;
+			m_sectionsLazy = true;
 		}
 
 		/**
@@ -3410,6 +3523,29 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 
 			m_pages = newPages;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Section addSection()
+		{
+			Section rv = new BaseSection(this);
+			m_sections.add(rv);
+			
+			return rv;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void removeSection(Section section)
+		{
+			// remove it
+			m_sections.remove(section);
+			
+			// track so we can clean up related on commit
+			m_deletedSections.add(section);
 		}
 
 		/******************************************************************************************************************************************************************************************************************************************************
@@ -4428,6 +4564,180 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
+	 * SitePage/Edit implementation
+	 *********************************************************************************************************************************************************************************************************************************************************/
+
+	protected class BaseSection implements Section, Identifiable
+	{
+		/** The title. */
+		protected String m_title = null;
+
+		/** The description. */
+		protected String m_description = null;
+
+		/** The site id. */
+		protected String m_id = null;
+
+		/** The properties. */
+		protected ResourcePropertiesEdit m_properties = null;
+		
+		/** The site Id I belong to. */
+		protected String m_siteId = null;
+
+		/**
+		 * Construct. Auto-generate the id.
+		 * 
+		 * @param site
+		 *        The site in which this page lives.
+		 */
+		protected BaseSection(Site site)
+		{
+			m_siteId = site.getId();
+			m_id = IdService.getUniqueId();
+			m_properties = new BaseResourcePropertiesEdit();
+		}
+
+		protected BaseSection(String id, String title, String description, String siteId)
+		{
+			m_id = id;
+			m_title = title;
+			m_description = description;
+			m_siteId = siteId;
+			m_properties = new BaseResourcePropertiesEdit();
+		}
+
+		/**
+		 * Construct as a copy of another.
+		 * 
+		 * @param other
+		 *        The other to copy.
+		 * @param site
+		 *        The site in which this section lives.
+		 * @param exact
+		 *        If true, we copy id - else we generate a new one.
+		 */
+		protected BaseSection(Section other, Site site, boolean exact)
+		{
+			BaseSection bOther = (BaseSection) other;
+
+			m_siteId = site.getId();
+
+			if (exact)
+			{
+				m_id = bOther.m_id;
+			}
+			else
+			{
+				m_id = IdService.getUniqueId();
+			}
+
+			m_title = bOther.m_title;
+			m_description = bOther.m_description;
+
+			m_properties = new BaseResourcePropertiesEdit();
+			m_properties.addAll(other.getProperties());
+			((BaseResourcePropertiesEdit) m_properties).setLazy(((BaseResourceProperties) other.getProperties()).isLazy());
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getTitle()
+		{
+			return m_title;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getDescription()
+		{
+			return m_description;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getSiteId()
+		{
+			return m_siteId;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public void setTitle(String title)
+		{
+			m_title = title;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public void setDescription(String description)
+		{
+			m_description = description;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl()
+		{
+			return null;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference()
+		{
+			return siteSectionReference(m_siteId, getId());
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getId()
+		{
+			return m_id;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public ResourceProperties getProperties()
+		{
+			return m_properties;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public Element toXml(Document doc, Stack stack)
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public boolean isActiveEdit()
+		{
+			return true;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public ResourcePropertiesEdit getPropertiesEdit()
+		{
+			return m_properties;
+		}
+	}
+
+	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Storage
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
@@ -4640,6 +4950,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		public void readToolProperties(ToolConfiguration tool, Properties props);
 
 		/**
+		 * Read section properties from storage into the section's properties.
+		 * 
+		 * @param section
+		 *        The section for which properties are desired.
+		 */
+		public void readSectionProperties(Section section, Properties props);
+
+		/**
 		 * Read site pages from storage into the site's pages.
 		 * 
 		 * @param site
@@ -4707,6 +5025,54 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 *        TooConfiguration to commit.
 		 */
 		public void commitToolConfig(Connection conn, ToolConfiguration tool);
+
+		/**
+		 * Write a new or updated section to the database.
+		 * 
+		 * @param conn
+		 *        Optional connection to use.
+		 * @param section
+		 *        Section to commit.
+		 */
+		public void commitSection(Connection conn, Section section);
+
+		/**
+		 * Remove a section to the database.
+		 * 
+		 * @param conn
+		 *        Optional connection to use.
+		 * @param section
+		 *        Section to remove.
+		 */
+		public void commitRemoveSection(Connection conn, Section section);
+
+		/**
+		 * Access the Section that has this id, if one is defined, else return null. The section may be in any Site.
+		 * 
+		 * @param id
+		 *        The id of the section.
+		 * @return The Section that has this id, if one is defined, else return null.
+		 */
+		public Section findSection(String id);
+
+		/**
+		 * Access the Site id for the section with this id.
+		 * 
+		 * @param id
+		 *        The id of the section.
+		 * @return The Site id for the section with this id, if the section is found, else null.
+		 */
+		public String findSectionSiteId(String id);
+
+		/**
+		 * Read site pages from storage into the site's pages.
+		 * 
+		 * @param site
+		 *        The site for which pages are desired.
+		 * @param sections
+		 *        The Collection to fill in.
+		 */
+		public void readSiteSections(Site site, Collection sections);
 
 	} // Storage
 
@@ -5007,7 +5373,152 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		
 		return msg.toString();
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public Section getSection(String sectionRefOrId) throws IdUnusedException
+	{
+		Section rv = null;
+
+		// parse the reference or id
+		Reference ref = m_entityManager.newReference(sectionRefOrId);
+
+		// for ref, get the site from the cache, or cache it and get the section from the site
+		if (SERVICE_NAME.equals(ref.getType()))
+		{
+			Site site = getDefinedSite(ref.getContainer());
+			
+			rv = site.getSection(ref.getId());
+		}
+
+		// for id, check the cache or get the section from storage
+		else
+		{
+			// check the site cache
+			if (m_siteCache != null)
+			{
+				rv = m_siteCache.getSection(sectionRefOrId);
+				if (rv == null)
+				{
+					// if not, get the section's site id, cache the site, and try again
+					String siteId = m_storage.findSectionSiteId(sectionRefOrId);
+					if (siteId != null)
+					{
+						// read and cache the site, pages, tools
+						getDefinedSite(siteId);
+						
+						// try again
+						rv = m_siteCache.getSection(sectionRefOrId);
+					}
+				}
+			}
+
+			else
+			{
+				rv = m_storage.findSection(sectionRefOrId);
+			}
+		}
+
+		if (rv == null) throw new IdUnusedException(sectionRefOrId);
+
+		return rv;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public Section newSection(String siteId, String title, String description) throws IdUnusedException, PermissionException
+	{
+		// get the site
+		Site s = getDefinedSite(siteId);
+		
+		// make sure we are allowed to edit the site
+		// TODO: separate permission for site edit / section work? -ggolden
+		String ref = siteReference(siteId);
+		unlock(SECURE_UPDATE_SITE, ref);
+
+		// create the section
+		BaseSection section = new BaseSection(s);
+		
+		// fill in the values
+		section.setTitle(title);
+		section.setDescription(description);
+		
+		// force the save
+		m_storage.commitSection(null, section);
+
+		// enable the section realm
+		String realmTemplate = siteRealmTemplate(s);
+
+		// try the site created-by user for the maintain role in the site
+		String userId = null;
+		if (s.getCreatedBy() != null)
+		{
+			userId = s.getCreatedBy().getId();
+		}
+
+		enableRealm(section.getReference(), realmTemplate, userId, "!site.template");
+
+		return section;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public void removeSection(Section section) throws IdUnusedException, PermissionException
+	{
+		// get the site
+		Site s = getDefinedSite(section.getSiteId());
+		
+		// make sure we are allowed to edit the site
+		// TODO: separate permission for site edit / section work? -ggolden
+		String ref = siteReference(section.getSiteId());
+		unlock(SECURE_UPDATE_SITE, ref);
+
+		// force the removal
+		m_storage.commitRemoveSection(null, section);
+		
+		// clean up the realm
+		disableRealm(section.getReference());
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public void saveSection(Section section) throws IdUnusedException, PermissionException
+	{
+		// get the site
+		Site s = getDefinedSite(section.getSiteId());
+		
+		// make sure we are allowed to edit the site
+		// TODO: separate permission for site edit / section work? -ggolden
+		String ref = siteReference(section.getSiteId());
+		unlock(SECURE_UPDATE_SITE, ref);
+		
+		// force the save
+		m_storage.commitSection(null, section);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public Collection getSections(String siteId) throws IdUnusedException
+	{
+		// get the site
+		Site s = getDefinedSite(siteId);
+		
+		return s.getSections();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public boolean hasSections(String siteId) throws IdUnusedException
+	{
+		// get the site
+		Site s = getDefinedSite(siteId);
+		
+		return s.hasSections();
+	}
 }
-
-
-

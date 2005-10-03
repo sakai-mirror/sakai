@@ -29,6 +29,7 @@ import java.util.Map;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.SiteCache;
 import org.sakaiproject.service.legacy.event.EventTrackingService;
+import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
@@ -48,6 +49,9 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 
 	/** Map of a page id to a cached site's SitePage instance. */
 	protected Map m_pages = new ConcurrentReaderHashMap();
+
+	/** Map of a section id to a cached site's Section instance. */
+	protected Map m_sections = new ConcurrentReaderHashMap();
 
 	/**
 	 * Construct the Cache.  No automatic refresh: expire only, from time and events.
@@ -82,8 +86,8 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 		{
 			Site site = (Site) payload;
 			
-			// get the pages and tools loaded efficiently
-			site.loadPagesTools();
+			// get the pages and tools, sections and propeties all loaded efficiently
+			site.loadAll();
 			
 			// add the pages and tools to the cache
 			for (Iterator pages = site.getPages().iterator(); pages.hasNext();)
@@ -95,6 +99,13 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 					ToolConfiguration tool = (ToolConfiguration) tools.next();
 					m_tools.put(tool.getId(), tool);
 				}
+			}
+			
+			// add the sections to the cache
+			for (Iterator sections = site.getSections().iterator(); sections.hasNext();)
+			{
+				Section section = (Section) sections.next();
+				m_sections.put(section.getId(), section);
 			}
 		}
 	}
@@ -145,6 +156,12 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 					m_tools.remove(tool.getId());
 				}
 			}
+
+			for (Iterator sections = site.getSections().iterator(); sections.hasNext();)
+			{
+				Section section = (Section) sections.next();
+				m_sections.remove(section.getId());
+			}
 		}
 	}
 	
@@ -162,5 +179,13 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 	public SitePage getPage(String pageId)
 	{
 		return (SitePage) m_pages.get(pageId);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public Section getSection(String sectionId)
+	{
+		return (Section) m_sections.get(sectionId);
 	}
 }

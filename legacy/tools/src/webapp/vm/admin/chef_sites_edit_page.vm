@@ -50,6 +50,27 @@
 					</td>
 				</tr>
 			</table>
+			#if ($page)
+				<h4>
+					$tlang.getString("sitedi.pro")
+				</h4>
+				<table class="itemSyummary" summary="$tlang.getString("sitedi.pro")">
+					#set ($paramNames = $page.Properties.PropertyNames)
+					#foreach ($paramName in $paramNames)
+						#set ($paramValue = $page.Properties.getPropertyFormatted($paramName))
+						<tr>
+							<th>
+								<label for="param_$paramName">
+									$paramName:
+								</label>
+							</th>
+							<td>
+								<input type="text" disabled name="param_$paramName" id="param_$paramName" value="$validator.escapeHtml($paramValue)" />
+							</td>
+						</tr>
+					#end
+				</table>
+			#end
 			<h4>	
 				$tlang.getString("sitedipag.conedi")
 			</h4>	

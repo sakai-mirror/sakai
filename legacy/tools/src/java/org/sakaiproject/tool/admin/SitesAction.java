@@ -25,12 +25,16 @@
 package org.sakaiproject.tool.admin;
 
 // imports
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
@@ -53,6 +57,7 @@ import org.sakaiproject.service.legacy.coursemanagement.cover.CourseManagementSe
 import org.sakaiproject.service.legacy.realm.Realm;
 import org.sakaiproject.service.legacy.realm.Role;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
+import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteEdit;
 import org.sakaiproject.service.legacy.site.SitePage;
@@ -71,6 +76,9 @@ import org.sakaiproject.util.java.StringUtil;
 public class SitesAction
 	extends PagedResourceActionII
 {
+	/** Helper tool for realm editing. */
+	protected static final String REALM_HELPER = "sakai.realms";
+
 	/** A Boolean indicating if we are to search only user sites (True) or non-user sites (False). */
 	protected static String STATE_SEARCH_USER = "search.user";
 	private static ResourceBundle rb = ResourceBundle.getBundle("admin");
@@ -171,6 +179,12 @@ public class SitesAction
 		context.put("tlang",rb);
 		String template = null;
 
+		// get the Sakai session
+		Session session = SessionManager.getCurrentSession();
+
+		// get the Tool session
+		ToolSession toolSession = SessionManager.getCurrentToolSession();
+			
 		// check mode and dispatch
 		String mode = (String) state.getAttribute("mode");
 		if (mode == null)
@@ -205,6 +219,19 @@ public class SitesAction
 		else if (mode.equals("editPage"))
 		{
 			template = buildEditPageContext(state, context);
+		}
+
+		else if (mode.equals("sections"))
+		{
+			template = buildSectionsContext(state, context);
+		}
+		else if (mode.equals("newSection"))
+		{
+			template = buildNewSectionContext(state, context);
+		}
+		else if (mode.equals("editSection"))
+		{
+			template = buildEditSectionContext(state, context);
 		}
 
 		else if (mode.equals("tools"))
@@ -463,6 +490,72 @@ public class SitesAction
 		return "_edit_page";
 
 	}	// buildEditPageContext
+
+	/**
+	* Build the context for the sections display in edit mode.
+	*/
+	private String buildSectionsContext(SessionState state, Context context)
+	{
+		context.put("tlang",rb);
+		// get the site to edit
+		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		context.put("site", site);
+
+		// put all site's sections into the context
+		Collection sections = site.getSections();
+		context.put("sections", sections);
+
+		// build the menu
+		Menu bar = new Menu();
+		bar.add( new MenuEntry(rb.getString("sitact.newsec"), "doNew_section") );
+		context.put(Menu.CONTEXT_MENU, bar);
+
+		return "_sections";
+
+	}	// buildSectionsContext
+
+	/**
+	* Build the context for the new section mode.
+	*/
+	private String buildNewSectionContext(SessionState state, Context context)
+	{
+		context.put("tlang",rb);
+		// name the html form for user edit fields
+		context.put("form-name", "page-form");
+
+		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Section section = (Section) state.getAttribute("section");
+
+		context.put("site", site);
+		context.put("section", section);
+
+		return "_edit_section";
+
+	}	// buildNewSectionContext
+
+	/**
+	* Build the context for the edit section mode.
+	*/
+	private String buildEditSectionContext(SessionState state, Context context)
+	{
+		context.put("tlang",rb);
+		// name the html form for user edit fields
+		context.put("form-name", "section-form");
+
+		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Section section = (Section) state.getAttribute("section");
+
+		context.put("site", site);
+		context.put("section", section);
+
+		// build the menu
+		Menu bar = new Menu();
+		bar.add( new MenuEntry(rb.getString("sitact.remsec"), null, true, MenuItem.CHECKED_NA, "doRemove_section") );
+		context.put(Menu.CONTEXT_MENU, bar);
+
+		return "_edit_section";
+
+	}	// buildEditSectionContext
 
 	/**
 	* Build the context for the tools display in edit mode.
@@ -1160,6 +1253,138 @@ public class SitesAction
 	}	// doRemove_page
 
 	/**
+	* Switch to section display mode within a site edit.
+	*/
+	public void doSections(RunData data, Context context)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+
+		// read the form - if rejected, leave things as they are
+		if (!readSiteForm(data, state)) return;
+
+		state.setAttribute("mode", "sections");
+
+	}	// doSections
+
+	/**
+	* Edit an existing section.
+	*/
+	public void doEdit_section(RunData data, Context context)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+		state.setAttribute("mode", "editSection");
+
+		String id = data.getParameters().getString("id");
+
+		// get the section
+		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Section section = site.getSection(id);
+		state.setAttribute("section", section);
+
+	}	// doEdit_section
+
+	/**
+	* save the section edited, and save the site edit
+	*/
+	public void doSave_section(RunData data, Context context)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+
+		// read the form - if rejected, leave things as they are
+		if (!readSectionForm(data, state)) return;
+
+		// done with the section
+		state.removeAttribute("section");
+
+		// commit the entire site edit
+		doSave_edit(data, context);
+
+	}	// doSave_section
+
+	/**
+	* save the section edited, and return to the sections mode
+	*/
+	public void doDone_section(RunData data, Context context)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+
+		// read the form - if rejected, leave things as they are
+		if (!readSectionForm(data, state)) return;
+
+		// done with the section
+		state.removeAttribute("section");
+
+		// return to main mode
+		state.setAttribute("mode", "sections");
+
+	}	// doDone_section
+
+	/**
+	* cancel a section edit, return to the sections list
+	*/
+	public void doCancel_section(RunData data, Context context)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+
+		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Section section = (Section) state.getAttribute("section");
+
+		// if the page was new, remove it
+		if ("true".equals(state.getAttribute("newSection")))
+		{
+			site.removeSection(section);
+		}
+
+		// %%% do we need the old section around for a restore; did we already modify it? - ggolden
+
+		// done with the section
+		state.removeAttribute("section");
+
+		// return to main mode
+		state.setAttribute("mode", "sections");
+
+	}	// doCancel_section
+
+	/**
+	* Handle a request to remove the section being edited.
+	*/
+	public void doRemove_section(RunData data, Context context)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+
+		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Section section = (Section) state.getAttribute("section");
+
+		// remove the page (no confirm)
+		site.removeSection(section);
+
+		// done with the page
+		state.removeAttribute("section");
+
+		// return to pages mode
+		state.setAttribute("mode", "sections");
+
+	}	// doRemove_section
+
+	/**
+	* Handle a request to create a new section in the site edit.
+	*/
+	public void doNew_section(RunData data, Context context)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+		state.setAttribute("mode", "newSection");
+
+		// make the page so we have the id
+		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Section section = site.addSection();
+		state.setAttribute("section", section);
+
+		// mark the site as new, so on cancel it can be deleted
+		state.setAttribute("newSection", "true");
+
+	}	// doNew_section
+
+	/**
 	* Switch back to edit main info mode from another edit mode (like pages).
 	*/
 	public void doEdit_to_main(RunData data, Context context)
@@ -1171,7 +1396,7 @@ public class SitesAction
 	}	// doEdit_to_main
 
 	/**
-	* Read the site form and update the site in state.
+	* Read the page form and update the site in state.
 	* @return true if the form is accepted, false if there's a validation error (an alertMessage will be set)
 	*/
 	private boolean readPageForm(RunData data, SessionState state)
@@ -1202,6 +1427,34 @@ public class SitesAction
 		}
 
 	}	// readPageForm
+
+	/**
+	* Read the section form and update the site in state.
+	* @return true if the form is accepted, false if there's a validation error (an alertMessage will be set)
+	*/
+	private boolean readSectionForm(RunData data, SessionState state)
+	{
+		// get the section - it's there
+		Section section = (Section) state.getAttribute("section");
+
+		// read the form
+		String title = StringUtil.trimToNull(data.getParameters().getString("title"));
+		section.setTitle(title);
+
+		String description = StringUtil.trimToNull(data.getParameters().getString("description"));
+		section.setDescription(description);
+
+		if (title == null)
+		{
+			addAlert(state, rb.getString("sitsec.plespe"));
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+
+	}	// readSectionForm
 
 	/**
 	* Switch to tools display mode within a site edit.

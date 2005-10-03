@@ -196,6 +196,25 @@
 					</td>
 				</tr>
 			</table>
+			<h4>
+				$tlang.getString("sitedi.pro")
+			</h4>
+			<table class="itemSyummary" summary="$tlang.getString("sitedi.pro")">
+				#set ($paramNames = $site.Properties.PropertyNames)
+				#foreach ($paramName in $paramNames)
+					#set ($paramValue = $site.Properties.getPropertyFormatted($paramName))
+					<tr>
+						<th>
+							<label for="param_$paramName">
+								$paramName:
+							</label>
+						</th>
+						<td>
+							<input type="text" disabled name="param_$paramName" id="param_$paramName" value="$validator.escapeHtml($paramValue)" />
+						</td>
+					</tr>
+				#end
+			</table>
 		#end
 		<h4>
 			$tlang.getString("sitedi.conedi")
@@ -203,6 +222,10 @@
 		Add/edit pages
 		<div class="act">
 			<input type="submit" name="eventSubmit_doPages" value="$tlang.getString("sitedi.pag")" />
+		</div>
+		Add/edit sections
+		<div class="act">
+			<input type="submit" name="eventSubmit_doSections" value="$tlang.getString("sitedi.sec")" />
 		</div>
 		$tlang.getString("sitedi.specon")
 		<div class="chefAlertBox">$tlang.getString("sitedi.sitcre")</div>
