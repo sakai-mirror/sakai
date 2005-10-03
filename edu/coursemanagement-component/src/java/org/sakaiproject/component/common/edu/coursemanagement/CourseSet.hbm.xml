@@ -23,12 +23,6 @@
         <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
         <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
   
-     	<set name="canonicalCourseSet" table="CM_CANONICALCOURSE_T" cascade="all"
-           inverse="true">
-      		<key column="CANONICALCOURSEID" />
-      		<one-to-many  class="CanonicalCourseImpl" />
-    	</set>
-
     </class>
     
 </hibernate-mapping>

@@ -546,8 +546,38 @@ public class CourseManagementManagerImpl
   }
 
   public List getCourseSet(String canonicalCourseUuid) {
-    // TODO Auto-generated method stub
-    return null;
+    String query = "select c0 from CanonicalCourseSet ccs, CanonicalCourseImpl c, CanonicalCourseImpl c0 where c.uuid=? and ccs.canonicalCourseId=c.canonicalCourseId and c0.canonicalCourseId=ccs.canonicalCourseId";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {canonicalCourseUuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    return list;
+  }
+
+  public CourseSet getCourseSetByUuid(String setUuid) {
+    String query = "select c from CourseSetImpl c where c.uuid=?";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {setUuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    if (list.size() > 0) {
+      return (CourseSet) list.get(0);
+    }
+    else {
+      return null;
+    }
+  }
+
+  public List getCanonicalCourseSetBySetUuid(String setUuid) {
+    String query = "select ccs from CanonicalCourseSet ccs, CourseSetImpl cs where cs.uuid=? and cs.courseSetId=ccs.courseSetId";
+    List list = getHibernateTemplate().find(query,
+                                            new Object[] {setUuid}
+                                            ,
+                                            new net.sf.hibernate.type.Type[] {
+                                            Hibernate.STRING});
+    return list;
   }
 
     /**
@@ -804,10 +834,14 @@ public class CourseManagementManagerImpl
     }
   }
 
-	public void removeCourseSet(String setUuid) {
-		// TODO Auto-generated method stub
-		
-	}
+  public void removeCourseSet(String setUuid) {
+    CourseSet cs = getCourseSetByUuid(setUuid);
+    if (cs != null){
+      List l = getCanonicalCourseSetBySetUuid(setUuid);
+      getHibernateTemplate().deleteAll(l);		
+      getHibernateTemplate().delete(cs);		
+    }
+  }
 
 	public void removeCanonicalCourse(String canonicalUuid) {
 		CanonicalCourse c = getCanonicalCourse(canonicalUuid);
