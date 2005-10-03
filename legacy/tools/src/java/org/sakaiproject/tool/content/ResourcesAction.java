@@ -283,6 +283,7 @@ public class ResourcesAction
 	private static final String STATE_CREATE_ITEMS = "resources.create_items";
 	private static final String STATE_CREATE_COLLECTION_ID = "resources.create_collection_id";
 	private static final String STATE_CREATE_NUMBER = "resources.create_number";
+	private static final String STATE_CREATE_ACTUAL_COUNT = "resources.create_actual_count";
 	private static final String STATE_CREATE_ALERTS = "resources.create_alerts";
 	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
 	private static final String STATE_STRUCTOBJ_ROOTNAME = "resources.create_structured_object_root";
@@ -417,6 +418,7 @@ public class ResourcesAction
 
 	/** The default value for whether to show all sites in dropbox (used if global value can't be read from server config service) */
 	private static final boolean SHOW_ALL_SITES_IN_DROPBOX = false;
+
 
 
 
@@ -2005,6 +2007,10 @@ public class ResourcesAction
 		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
 			EditItem item = (EditItem) items.get(i);
+			if(item.isBlank())
+			{
+				continue;
+			}
 			SaveArtifactAttempt attempt = new SaveArtifactAttempt(item, rootNode);
 			validateStructuredArtifact(attempt);
 			List errors = attempt.getErrors();
@@ -2333,6 +2339,10 @@ public class ResourcesAction
 		outerloop: for(int i = 0; i < numberOfFolders; i++)
 		{
 			EditItem item = (EditItem) new_folders.get(i);
+			if(item.isBlank())
+			{
+				continue;
+			}
 			String newCollectionId = collectionId + Validator.escapeResourceName(item.getName()) + Entity.SEPARATOR;
 			
 			if(newCollectionId.length() > RESOURCE_ID_MAX_LENGTH)
@@ -2425,7 +2435,11 @@ public class ResourcesAction
 		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
 			EditItem item = (EditItem) new_files.get(i);
-					
+			if(item.isBlank())
+			{
+				continue;
+			}
+			
 			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 			
 			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
@@ -2801,6 +2815,10 @@ public class ResourcesAction
 		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
 			EditItem item = (EditItem) new_urls.get(i);
+			if(item.isBlank())
+			{
+				continue;
+			}
 			
 			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 			resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());							
@@ -5105,6 +5123,349 @@ public class ResourcesAction
 	}	// captureValues
 	
 	/**
+	 * Retrieve from an html form all the values needed to create a new resource
+	 * @param item The EditItem object in which the values are temporarily stored.
+	 * @param index The index of the item (used as a suffix in the name of the form element)
+	 * @param state
+	 * @param params
+	 * @param markMissing Indicates whether to mark required elements if they are missing.
+	 * @return
+	 */
+	public static Set captureValues(EditItem item, int index, SessionState state, ParameterParser params, boolean markMissing)
+	{
+		Set item_alerts = new HashSet();
+		boolean blank_entry = true;
+		item.clearMissing();
+
+		String name = params.getString("name" + index);
+		if(name == null || name.trim().equals(""))
+		{
+			if(markMissing)
+			{
+				item_alerts.add(rb.getString("titlenotnull"));
+				item.setMissing("name");
+			}
+			item.setName("");
+			// addAlert(state, rb.getString("titlenotnull"));
+		}
+		else
+		{
+			item.setName(name);
+			blank_entry = false;
+		}
+		
+		String description = params.getString("description" + index);
+		if(description == null || description.trim().equals(""))
+		{
+			item.setDescription("");
+		}
+		else
+		{
+			item.setDescription(description);
+			blank_entry = false;
+		}
+		
+		item.setContentHasChanged(false);
+		
+		if(item.isFileUpload())
+		{
+			// check for file replacement
+			FileItem fileitem = null;
+			try
+			{
+				fileitem = params.getFileItem("fileName" + index);
+			}
+			catch(Exception e)
+			{
+				// this is an error in Firefox, Mozilla and Netscape
+				// "The user didn't select a file to upload!"
+				if(item.getContent() == null || item.getContent().length <= 0)
+				{
+					item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
+					item.setMissing("fileName");
+				}
+			}
+			if(fileitem == null)
+			{
+				// "The user submitted a file to upload but it was too big!"
+				item_alerts.add(rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded2"));
+				item.setMissing("fileName");
+			}
+			else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
+			{
+				if(item.getContent() == null || item.getContent().length <= 0)
+				{
+					// "The user submitted the form, but didn't select a file to upload!"
+					item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
+					item.setMissing("fileName");
+				}
+			}
+			else if (fileitem.getFileName().length() > 0)
+			{
+				String filename = Validator.getFileName(fileitem.getFileName());
+				byte[] bytes = fileitem.get();
+				String contenttype = fileitem.getContentType();
+				
+				if(bytes.length > 0)
+				{
+					item.setContent(bytes);
+					item.setContentHasChanged(true);
+					item.setMimeType(contenttype);
+					item.setFilename(filename);									
+					blank_entry = false;
+				}
+				else 
+				{
+					item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
+					item.setMissing("fileName");
+				}
+			}
+		}
+		else if(item.isPlaintext())
+		{
+			// check for input from editor (textarea)
+			String content = params.getString("content" + index);
+			if(content != null)
+			{
+				item.setContentHasChanged(true);
+				item.setContent(content);
+				blank_entry = false;
+			}
+			item.setMimeType(MIME_TYPE_DOCUMENT_PLAINTEXT);
+		}
+		else if(item.isHtml())
+		{
+			// check for input from editor (textarea)
+			String content = params.getCleanString("content" + index);
+			StringBuffer alertMsg = new StringBuffer();
+			content = FormattedText.processHtmlDocument(content, alertMsg);
+			if (alertMsg.length() > 0)
+			{
+				item_alerts.add(alertMsg.toString());
+			}
+			if(content != null && !content.equals(""))
+			{
+				item.setContent(content);
+				item.setContentHasChanged(true);
+				blank_entry = false;
+			}
+			item.setMimeType(MIME_TYPE_DOCUMENT_HTML);
+		}
+		else if(item.isUrl())
+		{
+			String url = params.getString("Url" + index);
+			if(url == null || url.trim().equals(""))
+			{
+				item.setFilename("");
+				item_alerts.add(rb.getString("specifyurl"));
+				item.setMissing("Url");
+			}
+			else
+			{
+				item.setFilename(url);
+				blank_entry = false;
+				// is protocol supplied and, if so, is it recognized?
+				try
+				{
+					// check format of input
+					URL u = new URL(url);
+				}
+				catch (MalformedURLException e1)
+				{
+					try
+					{
+						// if URL did not validate, check whether the problem was an 
+						// unrecognized protocol, and accept input if that's the case.
+						Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
+						Matcher matcher = pattern.matcher(url);
+						if(matcher.matches())
+						{
+							URL test = new URL("http://" + matcher.group(2));
+						}
+						else
+						{
+							url = "http://" + url;
+							URL test = new URL(url);
+							item.setFilename(url);					
+						}
+					}
+					catch (MalformedURLException e2)
+					{
+						// invalid url
+						item_alerts.add(rb.getString("validurl"));
+						item.setMissing("Url");
+					}
+				}
+			}
+		}
+		else if(item.isStructuredArtifact())
+		{
+			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			String formtype_check = params.getString("formtype");
+			
+			if(formtype_check == null || formtype_check.equals(""))
+			{
+				item_alerts.add("Must select a form type");
+				item.setMissing("formtype");
+			}
+			else if(formtype_check.equals(formtype))
+			{
+				item.setFormtype(formtype);
+				capturePropertyValues(params, item, item.getProperties());
+				// blank_entry = false;
+			}
+			item.setMimeType(MIME_TYPE_STRUCTOBJ);
+
+		}
+		if(item.isFileUpload() || item.isHtml() || item.isPlaintext())
+		{
+			// check for copyright status
+			// check for copyright info
+			// check for copyright alert
+			
+			String copyrightStatus = StringUtil.trimToNull(params.getString ("copyright" + index));
+			String copyrightInfo = StringUtil.trimToNull(params.getCleanString ("newcopyright" + index));
+			String copyrightAlert = StringUtil.trimToNull(params.getString("copyrightAlert" + index));
+
+			if (copyrightStatus != null)
+			{
+				if (state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) != null && copyrightStatus.equals(state.getAttribute(COPYRIGHT_NEW_COPYRIGHT)))
+				{
+					if (copyrightInfo != null)
+					{
+						item.setCopyrightInfo( copyrightInfo );
+					}
+					else
+					{
+						item_alerts.add(rb.getString("specifycp2"));
+						// addAlert(state, rb.getString("specifycp2"));
+					}
+				}
+				else if (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) != null && copyrightStatus.equals (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT)))
+				{
+					item.setCopyrightInfo((String) state.getAttribute (STATE_MY_COPYRIGHT));
+				}
+
+				item.setCopyrightStatus( copyrightStatus );
+			}
+			item.setCopyrightAlert(copyrightAlert != null);
+
+		}
+
+		boolean pubviewset = item.isPubviewset();
+		boolean pubview = false;
+		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+		{
+			if (!pubviewset)
+			{
+				pubview = params.getBoolean("pubview" + index);
+				item.setPubview(pubview);
+			}
+		}
+		
+		int noti = NotificationService.NOTI_OPTIONAL;
+		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
+		{
+			// set noti to none if in dropbox mode
+			noti = NotificationService.NOTI_NONE;
+		}
+		else
+		{
+			// read the notification options
+			String notification = params.getString("notify" + index);
+			if ("r".equals(notification))
+			{
+				noti = NotificationService.NOTI_REQUIRED;
+			}
+			else if ("n".equals(notification))
+			{
+				noti = NotificationService.NOTI_NONE;
+			}
+		}
+		item.setNotification(noti);
+		
+		List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
+		if(metadataGroups != null && ! metadataGroups.isEmpty())
+		{
+			Iterator groupIt = metadataGroups.iterator();
+			while(groupIt.hasNext())
+			{
+				MetadataGroup group = (MetadataGroup) groupIt.next();
+				if(item.isGroupShowing(group.getName()))
+				{
+					Iterator propIt = group.iterator();
+					while(propIt.hasNext())
+					{
+						ResourcesMetadata prop = (ResourcesMetadata) propIt.next();
+						String propname = prop.getFullname();
+						if(ResourcesMetadata.WIDGET_DATE.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(prop.getWidget()))
+						{
+							int year = 0;
+							int month = 0;
+							int day = 0;
+							int hour = 0;
+							int minute = 0;
+							int second = 0;
+							int millisecond = 0;
+							String ampm = "";
+							
+							if(prop.getWidget().equals(ResourcesMetadata.WIDGET_DATE) || 
+								prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
+							{
+								year = params.getInt(propname + "_" + index + "_year", year);
+								month = params.getInt(propname + "_" + index + "_month", month);
+								day = params.getInt(propname + "_" + index + "_day", day);
+							}
+							if(prop.getWidget().equals(ResourcesMetadata.WIDGET_TIME) || 
+								prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
+							{
+								hour = params.getInt(propname + "_" + index + "_hour", hour);
+								minute = params.getInt(propname + "_" + index + "_minute", minute);
+								second = params.getInt(propname + "_" + index + "_second", second);
+								millisecond = params.getInt(propname + "_" + index + "_millisecond", millisecond);
+								ampm = params.getString(propname + "_" + index + "_ampm").trim();
+
+								if("pm".equalsIgnoreCase(ampm))
+								{
+									if(hour < 12)
+									{
+										hour += 12;
+									}
+								}
+								else if(hour == 12)
+								{
+									hour = 0;
+								}
+							}
+							if(hour > 23)
+							{
+								hour = hour % 24;
+								day++;
+							}
+							
+							Time value = TimeService.newTimeLocal(year, month, day, hour, minute, second, millisecond);
+							item.setMetadataItem(propname,value);
+
+						}
+						else
+						{
+							String value = params.getString(propname + "_" + index);
+							if(value != null)
+							{
+								item.setMetadataItem(propname, value);
+							}
+						}
+					}
+				}
+			}
+		}
+		item.markAsBlank(blank_entry);
+		
+		return item_alerts;
+		
+	}
+	
+	/**
 	 * Retrieve values for one or more items from create context.  Create context contains up to ten items at a time  
 	 * all of the same type (folder, file, text document, structured-artifact, etc).  This method retrieves the data 
 	 * apppropriate to the type and updates the values of the EditItem objects stored as the STATE_CREATE_ITEMS 
@@ -5119,331 +5480,41 @@ public class ResourcesAction
 		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
 		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		int actualCount = 0;
+		Set first_item_alerts = null;
 		
 		for(int i = 0; i < numberOfItems.intValue(); i++)
 		{
 			EditItem item = (EditItem) items.get(i);
-			item.clearMissing();
-
-			String name = params.getString("name" + i);
-			if(name == null || name.trim().equals(""))
+			Set item_alerts = captureValues(item, i, state, params, markMissing);
+			if(i == 0)
 			{
-				if(markMissing)
-				{
-					alerts.add(rb.getString("titlenotnull"));
-					item.setMissing("name");
-				}
-				item.setName("");
-				// addAlert(state, rb.getString("titlenotnull"));
+				first_item_alerts = item_alerts;
 			}
-			else
+			else if(item.isBlank())
 			{
-				item.setName(name);
+				item.clearMissing();
 			}
-			
-			String description = params.getString("description" + i);
-			if(description == null || description.trim().equals(""))
+			if(! item.isBlank())
 			{
-				item.setDescription("");
+				alerts.addAll(item_alerts);
+				actualCount ++;
 			}
-			else
+		}
+		if(actualCount > 0)
+		{
+			EditItem item = (EditItem) items.get(0);
+			if(item.isBlank())
 			{
-				item.setDescription(description);
+				item.clearMissing();
 			}
-			
-			item.setContentHasChanged(false);
-			
-			if(item.isFileUpload())
-			{
-				// check for file replacement
-				FileItem fileitem = null;
-				try
-				{
-					fileitem = params.getFileItem("fileName" + i);
-					
-				}
-				catch(Exception e)
-				{
-					// this is an error in Firefox, Mozilla and Netscape
-					// "The user didn't select a file to upload!"
-					if(item.getContent() == null || item.getContent().length <= 0)
-					{
-						alerts.add(rb.getString("choosefile") + " " + (i + 1) + ". ");
-						item.setMissing("fileName");
-					}
-				}
-				if(fileitem == null)
-				{
-					// "The user submitted a file to upload but it was too big!"
-					alerts.add(rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded2"));
-					item.setMissing("fileName");
-				}
-				else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
-				{
-					if(item.getContent() == null || item.getContent().length <= 0)
-					{
-						// "The user submitted the form, but didn't select a file to upload!"
-						alerts.add(rb.getString("choosefile") + " " + (i + 1) + ". ");
-						item.setMissing("fileName");
-					}
-				}
-				else if (fileitem.getFileName().length() > 0)
-				{
-					String filename = Validator.getFileName(fileitem.getFileName());
-					byte[] bytes = fileitem.get();
-					String contenttype = fileitem.getContentType();
-					
-					if(bytes.length > 0)
-					{
-						item.setContent(bytes);
-						item.setContentHasChanged(true);
-						item.setMimeType(contenttype);
-						item.setFilename(filename);									
-					}
-					else 
-					{
-						alerts.add(rb.getString("choosefile") + " " + (i + 1) + ". ");
-						item.setMissing("fileName");
-					}
-				}
-			}
-			else if(item.isPlaintext())
-			{
-				// check for input from editor (textarea)
-				String content = params.getString("content" + i);
-				if(content != null)
-				{
-					item.setContentHasChanged(true);
-					item.setContent(content);
-				}
-				item.setMimeType(MIME_TYPE_DOCUMENT_PLAINTEXT);
-			}
-			else if(item.isHtml())
-			{
-				// check for input from editor (textarea)
-				String content = params.getCleanString("content" + i);
-				StringBuffer alertMsg = new StringBuffer();
-				content = FormattedText.processHtmlDocument(content, alertMsg);
-				if (alertMsg.length() > 0)
-				{
-					alerts.add(alertMsg.toString());
-				}
-				if(content != null && !content.equals(""))
-				{
-					item.setContent(content);
-					item.setContentHasChanged(true);
-				}
-				item.setMimeType(MIME_TYPE_DOCUMENT_HTML);
-			}
-			else if(item.isUrl())
-			{
-				String url = params.getString("Url" + i);
-				if(url == null || url.trim().equals(""))
-				{
-					item.setFilename("");
-					alerts.add(rb.getString("specifyurl"));
-					item.setMissing("Url");
-				}
-				else
-				{
-					item.setFilename(url);
-					// is protocol supplied and, if so, is it recognized?
-					try
-					{
-						// check format of input
-						URL u = new URL(url);
-					}
-					catch (MalformedURLException e1)
-					{
-						try
-						{
-							// if URL did not validate, check whether the problem was an 
-							// unrecognized protocol, and accept input if that's the case.
-							Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
-							Matcher matcher = pattern.matcher(url);
-							if(matcher.matches())
-							{
-								URL test = new URL("http://" + matcher.group(2));
-							}
-							else
-							{
-								url = "http://" + url;
-								URL test = new URL(url);
-								item.setFilename(url);					
-							}
-						}
-						catch (MalformedURLException e2)
-						{
-							// invalid url
-							alerts.add(rb.getString("validurl"));
-							item.setMissing("Url");
-						}
-					}
-				}
-			}
-			else if(item.isStructuredArtifact())
-			{
-				String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
-				String formtype_check = params.getString("formtype");
-				
-				if(formtype_check == null || formtype_check.equals(""))
-				{
-					alerts.add("Must select a form type");
-					item.setMissing("formtype");
-				}
-				else if(formtype_check.equals(formtype))
-				{
-					item.setFormtype(formtype);
-					capturePropertyValues(params, item, item.getProperties());
-				}
-				item.setMimeType(MIME_TYPE_STRUCTOBJ);
-
-			}
-			if(item.isFileUpload() || item.isHtml() || item.isPlaintext())
-			{
-				// check for copyright status
-				// check for copyright info
-				// check for copyright alert
-				
-				String copyrightStatus = StringUtil.trimToNull(params.getString ("copyright" + i));
-				String copyrightInfo = StringUtil.trimToNull(params.getCleanString ("newcopyright" + i));
-				String copyrightAlert = StringUtil.trimToNull(params.getString("copyrightAlert" + i));
-
-				if (copyrightStatus != null)
-				{
-					if (state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) != null && copyrightStatus.equals(state.getAttribute(COPYRIGHT_NEW_COPYRIGHT)))
-					{
-						if (copyrightInfo != null)
-						{
-							item.setCopyrightInfo( copyrightInfo );
-						}
-						else
-						{
-							alerts.add(rb.getString("specifycp2"));
-							// addAlert(state, rb.getString("specifycp2"));
-						}
-					}
-					else if (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) != null && copyrightStatus.equals (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT)))
-					{
-						item.setCopyrightInfo((String) state.getAttribute (STATE_MY_COPYRIGHT));
-					}
-
-					item.setCopyrightStatus( copyrightStatus );
-				}
-				item.setCopyrightAlert(copyrightAlert != null);
-
-			}
-
-			boolean pubviewset = item.isPubviewset();
-			boolean pubview = false;
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-			{
-				if (!pubviewset)
-				{
-					pubview = params.getBoolean("pubview" + i);
-					item.setPubview(pubview);
-				}
-			}
-			
-			int noti = NotificationService.NOTI_OPTIONAL;
-			if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-			{
-				// set noti to none if in dropbox mode
-				noti = NotificationService.NOTI_NONE;
-			}
-			else
-			{
-				// read the notification options
-				String notification = params.getString("notify" + i);
-				if ("r".equals(notification))
-				{
-					noti = NotificationService.NOTI_REQUIRED;
-				}
-				else if ("n".equals(notification))
-				{
-					noti = NotificationService.NOTI_NONE;
-				}
-			}
-			item.setNotification(noti);
-			
-			List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
-			if(metadataGroups != null && ! metadataGroups.isEmpty())
-			{
-				Iterator groupIt = metadataGroups.iterator();
-				while(groupIt.hasNext())
-				{
-					MetadataGroup group = (MetadataGroup) groupIt.next();
-					if(item.isGroupShowing(group.getName()))
-					{
-						Iterator propIt = group.iterator();
-						while(propIt.hasNext())
-						{
-							ResourcesMetadata prop = (ResourcesMetadata) propIt.next();
-							String propname = prop.getFullname();
-							if(ResourcesMetadata.WIDGET_DATE.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_DATETIME.equals(prop.getWidget()) || ResourcesMetadata.WIDGET_TIME.equals(prop.getWidget()))
-							{
-								int year = 0;
-								int month = 0;
-								int day = 0;
-								int hour = 0;
-								int minute = 0;
-								int second = 0;
-								int millisecond = 0;
-								String ampm = "";
-								
-								if(prop.getWidget().equals(ResourcesMetadata.WIDGET_DATE) || 
-									prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
-								{
-									year = params.getInt(propname + "_" + i + "_year", year);
-									month = params.getInt(propname + "_" + i + "_month", month);
-									day = params.getInt(propname + "_" + i + "_day", day);
-								}
-								if(prop.getWidget().equals(ResourcesMetadata.WIDGET_TIME) || 
-									prop.getWidget().equals(ResourcesMetadata.WIDGET_DATETIME))
-								{
-									hour = params.getInt(propname + "_" + i + "_hour", hour);
-									minute = params.getInt(propname + "_" + i + "_minute", minute);
-									second = params.getInt(propname + "_" + i + "_second", second);
-									millisecond = params.getInt(propname + "_" + i + "_millisecond", millisecond);
-									ampm = params.getString(propname + "_" + i + "_ampm").trim();
-
-									if("pm".equalsIgnoreCase(ampm))
-									{
-										if(hour < 12)
-										{
-											hour += 12;
-										}
-									}
-									else if(hour == 12)
-									{
-										hour = 0;
-									}
-								}
-								if(hour > 23)
-								{
-									hour = hour % 24;
-									day++;
-								}
-								
-								Time value = TimeService.newTimeLocal(year, month, day, hour, minute, second, millisecond);
-								item.setMetadataItem(propname,value);
-
-							}
-							else
-							{
-								String value = params.getString(propname + "_" + i);
-								if(value != null)
-								{
-									item.setMetadataItem(propname, value);
-								}
-							}
-						}
-					}
-				}
-			}
-			
+		}
+		else if(markMissing)
+		{
+			alerts.addAll(first_item_alerts);
 		}
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		state.setAttribute(STATE_CREATE_ACTUAL_COUNT, Integer.toString(actualCount));
 
 	}	// captureMultipleValues
 	
@@ -8879,6 +8950,7 @@ public class ResourcesAction
 		protected Set m_missingInformation;
 		protected boolean m_hasBeenAdded;
 		private ResourcesMetadata m_form;
+		private boolean m_isBlank;
 		
 		
 		/**
@@ -8903,9 +8975,28 @@ public class ResourcesAction
 			m_missingInformation = new HashSet();
 			m_hasBeenAdded = false;
 			m_properties = new Vector();
+			m_isBlank = true;
 			
 		}
 		
+		/**
+		 * Set marker indicating whether current item is a blank entry
+		 * @param isBlank
+		 */
+		public void markAsBlank(boolean isBlank) 
+		{
+			m_isBlank = isBlank;
+		}
+		
+		/**
+		 * Access marker indicating whether current item is a blank entry
+		 * @return true if current entry is blank, false otherwise
+		 */
+		public boolean isBlank()
+		{
+			return m_isBlank;
+		}
+
 		/**
 		 * Change the root ResourcesMetadata object that defines the form for a Structured Artifact. 
 		 * @param form
