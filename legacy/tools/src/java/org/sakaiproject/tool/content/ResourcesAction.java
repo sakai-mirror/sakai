@@ -6376,7 +6376,7 @@ public class ResourcesAction
 		// get the state object
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
-		Vector moveItemsVector = new Vector ();
+		List moveItemsVector = new Vector();
 
 		// cancel copy if there is one in progress
 		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
@@ -6431,14 +6431,9 @@ public class ResourcesAction
 			{
 				state.setAttribute (STATE_MOVE_FLAG, Boolean.TRUE.toString());
 				
-				for (int i = 0; i < moveItems.length; i++)
-				{
-					moveItemsVector.add (moveItems[i]);
-				}
-
-				state.setAttribute (STATE_MOVED_IDS, moveItemsVector);
+				moveItemsVector.addAll(Arrays.asList(moveItems));
 				
-				//setCopyFlags(state);
+				state.setAttribute (STATE_MOVED_IDS, moveItemsVector);
 				
 			}	// if-else
 		}	// if-else
@@ -7785,12 +7780,6 @@ public class ResourcesAction
 		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
 		{
 			initCopyContext(state);
-		}
-
-		// cancel move if there is one in progress
-		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
-		{
-			initMoveContext(state);
 		}
 
 		List items = (List) state.getAttribute(STATE_MOVED_IDS);
