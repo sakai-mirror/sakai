@@ -108,9 +108,7 @@ import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SiteEdit;
 import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.SitePageEdit;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.SiteService.SortType;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
@@ -208,7 +206,7 @@ public class SiteAction extends PagedResourceActionII
 	/** Used to check if there is a site instance in state */
 	private boolean siteInState = false;
 	
-	/** Name of state attribute for SiteEdit instance  */
+	/** Name of state attribute for Site instance  */
 	private static final String STATE_SITE_INSTANCE = "site.instance";
 	
 	/** Name of state attribute for Site Information  */
@@ -1675,7 +1673,7 @@ public class SiteAction extends PagedResourceActionII
 				/*  buildContextForTemplate chef_site-siteInfo-editInfo.vm
 				* 
 				*/
-				site = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+				site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 				siteProperties = site.getProperties();
 				
 				context.put("title", state.getAttribute(FORM_SITEINFO_TITLE));
@@ -1745,8 +1743,8 @@ public class SiteAction extends PagedResourceActionII
 				/*  buildContextForTemplate chef_site-siteInfo-editInfoConfirm.vm
 				* 
 				*/
-				SiteEdit siteEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
-				siteProperties = siteEdit.getProperties();
+				Site Site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+				siteProperties = Site.getProperties();
 				siteType = (String)state.getAttribute(STATE_SITE_TYPE);
 				if (siteType != null && siteType.equalsIgnoreCase("course"))
 				{ 
@@ -1757,20 +1755,20 @@ public class SiteAction extends PagedResourceActionII
 				{
 					context.put("isCourseSite", Boolean.FALSE);
 				}
-				context.put("oTitle", siteEdit.getTitle());
+				context.put("oTitle", Site.getTitle());
 				context.put("title", state.getAttribute(FORM_SITEINFO_TITLE));
 				
 				context.put("description", state.getAttribute(FORM_SITEINFO_DESCRIPTION));
-				context.put("oDescription", siteEdit.getDescription());
+				context.put("oDescription", Site.getDescription());
 				context.put("short_description", state.getAttribute(FORM_SITEINFO_SHORT_DESCRIPTION));
-				context.put("oShort_description", siteEdit.getShortDescription());
+				context.put("oShort_description", Site.getShortDescription());
 				context.put("skin", state.getAttribute(FORM_SITEINFO_SKIN));
-				context.put("oSkin", siteEdit.getIconUrl());
+				context.put("oSkin", Site.getIconUrl());
 				context.put("skins", state.getAttribute("skins"));
-				context.put("oIcon", siteEdit.getIconUrl());
+				context.put("oIcon", Site.getIconUrl());
 				context.put("icon", state.getAttribute(FORM_SITEINFO_ICON_URL));
 				context.put("include", state.getAttribute(FORM_SITEINFO_INCLUDE));
-				context.put("oInclude", Boolean.valueOf(siteEdit.isPubView()));
+				context.put("oInclude", Boolean.valueOf(Site.isPubView()));
 				context.put("name", state.getAttribute(FORM_SITEINFO_CONTACT_NAME));
 				context.put("oName", siteProperties.getProperty(PROP_SITE_CONTACT_NAME));
 				context.put("email", state.getAttribute(FORM_SITEINFO_CONTACT_EMAIL));
@@ -1781,14 +1779,14 @@ public class SiteAction extends PagedResourceActionII
 				/*  buildContextForTemplate chef_site-addRemoveFeatureConfirm.vm
 				* 
 				*/
-				siteEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
-				context.put("title", siteEdit.getTitle());
+				Site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+				context.put("title", Site.getTitle());
 				
 				site_type = (String)state.getAttribute(STATE_SITE_TYPE); 
 				myworkspace_site = false;
-				if (SiteService.isUserSite(siteEdit.getId()))
+				if (SiteService.isUserSite(Site.getId()))
 				{
-					if (SiteService.getSiteUserId(siteEdit.getId()).equals(UsageSessionService.getSessionUserId()))
+					if (SiteService.getSiteUserId(Site.getId()).equals(UsageSessionService.getSessionUserId()))
 					{
 						myworkspace_site = true;
 						site_type = "myworkspace";
@@ -1824,16 +1822,16 @@ public class SiteAction extends PagedResourceActionII
 				/*  buildContextForTemplate chef_site-publishUnpublish-sendEmail.vm
 				* 
 				*/
-				siteEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
-				context.put("title", siteEdit.getTitle());
+				Site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+				context.put("title", Site.getTitle());
 				context.put("willNotify", state.getAttribute(FORM_WILL_NOTIFY));
 				return (String)getContext(data).get("template") + TEMPLATE[16];		
 			case 17:
 				/*  buildContextForTemplate chef_site-publishUnpublish-confirm.vm
 				* 
 				*/
-				siteEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
-				context.put("title", siteEdit.getTitle());
+				Site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+				context.put("title", Site.getTitle());
 				context.put("continueIndex", "12");
 				SiteInfo sInfo = (SiteInfo) state.getAttribute(STATE_SITE_INFO);
 				if (sInfo.getPublished())
@@ -1858,7 +1856,7 @@ public class SiteAction extends PagedResourceActionII
 			if (site != null)
 			{
 				//editing existing site
-				context.put("siteEdit", Boolean.TRUE);
+				context.put("Site", Boolean.TRUE);
 				context.put("site", site);
 				siteType = state.getAttribute(STATE_SITE_TYPE)!=null?(String)state.getAttribute(STATE_SITE_TYPE):null;
 				
@@ -1895,7 +1893,7 @@ public class SiteAction extends PagedResourceActionII
 			}
 			else
 			{
-				context.put("siteEdit", Boolean.FALSE);
+				context.put("Site", Boolean.FALSE);
 				siteInfo = (SiteInfo) state.getAttribute(STATE_SITE_INFO);
 				
 				if ( siteInfo.site_type != null 
@@ -2475,7 +2473,7 @@ public class SiteAction extends PagedResourceActionII
 			if (state.getAttribute(STATE_SITE_INSTANCE) != null)
 			{
 				site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
-				context.put("siteEdit", Boolean.TRUE);
+				context.put("Site", Boolean.TRUE);
 				context.put("siteTitle", site.getTitle());
 				terms = CourseManagementService.getTerms();
 				if (terms != null && terms.size() >0)
@@ -2519,7 +2517,7 @@ public class SiteAction extends PagedResourceActionII
 			}
 			else
 			{
-				context.put("siteEdit", Boolean.FALSE);
+				context.put("Site", Boolean.FALSE);
 				if (state.getAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN) != null)
 				{
 					context.put ("selectedProviderCourse", state.getAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN));
@@ -2548,13 +2546,13 @@ public class SiteAction extends PagedResourceActionII
 			 */
 			if (state.getAttribute(STATE_SITE_INSTANCE) != null)
 			{
-				context.put("siteEdit", Boolean.TRUE);
+				context.put("Site", Boolean.TRUE);
 				context.put("siteTitle", ((Site) state.getAttribute(STATE_SITE_INSTANCE)).getTitle());
 				coursesIntoContext(state, context, (Site) state.getAttribute(STATE_SITE_INSTANCE));
 			}
 			else
 			{
-				context.put("siteEdit", Boolean.FALSE);
+				context.put("Site", Boolean.FALSE);
 			}
 			buildInstructorSectionsList(state, params, context);
 			context.put("form_subject", siteInfo.subject);
@@ -2716,7 +2714,7 @@ public class SiteAction extends PagedResourceActionII
 			/*  
 			* buildContextForTemplate chef_site-sitemanage-site-saveas.vm
 			*/
-			site = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+			site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 			context.put("site", site);
 			return (String)getContext(data).get("template") + TEMPLATE[41];	
 		case 42:
@@ -3919,7 +3917,7 @@ public class SiteAction extends PagedResourceActionII
 					
 					try
 					{
-						SiteEdit site = SiteService.editSite(id);
+						Site site = SiteService.getSite(id);
 						site_title = site.getTitle();					
 						SiteService.removeSite(site);
 					}
@@ -3932,11 +3930,6 @@ public class SiteAction extends PagedResourceActionII
 					{
 						Log.warn("chef", "SiteAction.doSite_delete_confirmed -  PermissionException, site " +  site_title + "(" + id + ").");
 						addAlert(state, site_title + " "+ rb.getString("java.dontperm")+" ");
-					}
-					catch (InUseException e)
-					{
-						Log.warn("chef", "SiteAction.doSite_delete_confirmed -  InUseException, site  " +  site_title + "(" + id + ").");
-						addAlert(state, site_title + " " + rb.getString("java.already")+ " ");
 					}
 				}
 				else
@@ -3968,7 +3961,7 @@ public class SiteAction extends PagedResourceActionII
 			try
 			{
 				title = SiteService.getSite(id).getTitle();
-				SiteEdit site = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+				Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 				SiteService.removeSite(site);
 				state.removeAttribute("siteId");
 				state.removeAttribute(STATE_SITE_INSTANCE);
@@ -4016,33 +4009,33 @@ public class SiteAction extends PagedResourceActionII
 	*/
 	private boolean readSiteForm(RunData data, SessionState state)
 	{
-		SiteEdit siteEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
-		ResourcePropertiesEdit siteProperties = siteEdit.getPropertiesEdit();
+		Site Site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+		ResourcePropertiesEdit siteProperties = Site.getPropertiesEdit();
 		
 		ParameterParser params = data.getParameters ();
 		
 		String title = StringUtil.trimToZero(params.getString("title"));
-		siteEdit.setTitle(title);
+		Site.setTitle(title);
 							
 		String type = StringUtil.trimToZero(params.getString("type"));
-		if (!(type.equals(""))){siteEdit.setType(type);}
+		if (!(type.equals(""))){Site.setType(type);}
 		
 		String description = StringUtil.trimToNull(params.getString("description"));
-		siteEdit.setDescription(description);
+		Site.setDescription(description);
 		
 		String short_description = StringUtil.trimToNull(params.getString("short_description"));
-		siteEdit.setShortDescription(short_description);
+		Site.setShortDescription(short_description);
 		
 		// "skin" will be the icon from the list (course sites), or we have the icon as a full URL
 		String skin = StringUtil.trimToNull(params.getString("skin"));
 		if (skin != null)
 		{
-			setAppearance(state, siteEdit, skin);
+			setAppearance(state, Site, skin);
 		}
 		else
 		{
 			String iconUrl = StringUtil.trimToNull(params.getString("icon"));
-			siteEdit.setIconUrl(iconUrl);
+			Site.setIconUrl(iconUrl);
 		}
 
 		String include = StringUtil.trimToNull(params.getString("include"));	
@@ -4051,10 +4044,10 @@ public class SiteAction extends PagedResourceActionII
 		{
 			pubview = false;
 		}
-		siteEdit.setPubView(pubview);			
+		Site.setPubView(pubview);			
 		
 		String contactName = StringUtil.trimToZero(params.getString ("siteContactName"));
-		siteProperties = siteEdit.getPropertiesEdit();
+		siteProperties = Site.getPropertiesEdit();
 		siteProperties.addProperty(PROP_SITE_CONTACT_NAME, contactName);
 		
 		String email = StringUtil.trimToZero(params.getString ("siteContactEmail"));
@@ -4177,12 +4170,11 @@ public class SiteAction extends PagedResourceActionII
 		String id = data.getParameters().getString("id");
 
 		// get the site to copy from
-		SiteEdit siteEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+		Site Site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 		try
 		{
 			// make a new site with this id and as a structural copy of site
-			SiteEdit newSite = SiteService.addSite(id, siteEdit);
-			SiteService.commitEdit(newSite);
+			Site newSite = SiteService.addSite(id, Site);
 		}
 		catch (IdUsedException e)
 		{
@@ -4199,8 +4191,6 @@ public class SiteAction extends PagedResourceActionII
 			addAlert(state, rb.getString("java.nocreate"));
 			return;
 		}
-		// cancel and close
-		SiteService.cancelEdit(siteEdit);
 
 		// return to sitemanage site list mode
 		state.removeAttribute(STATE_SITE_INSTANCE);
@@ -4284,7 +4274,7 @@ public class SiteAction extends PagedResourceActionII
 		throws Exception
 	{
 		// called from chef_site-list.vm after a site has been selected from list
-		// create a new SiteEdit object based on selected SiteEdit object and put in state
+		// create a new Site object based on selected Site object and put in state
 		//
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (STATE_TEMPLATE_INDEX, "1");
@@ -4298,7 +4288,7 @@ public class SiteAction extends PagedResourceActionII
 		throws Exception
 	{
 		// called from chef_site-list.vm after a site has been selected from list
-		// get site as SiteEdit object, check SiteCreationStatus and SiteType of site, put in state, and set STATE_TEMPLATE_INDEX correctly
+		// get site as Site object, check SiteCreationStatus and SiteType of site, put in state, and set STATE_TEMPLATE_INDEX correctly
 		// set mode to state_mode_site_type
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (STATE_TEMPLATE_INDEX, "1");
@@ -4839,7 +4829,7 @@ public class SiteAction extends PagedResourceActionII
 			String siteType = (String) state.getAttribute(STATE_SITE_TYPE);
 			if (siteType != null && siteType.equalsIgnoreCase("course"))
 			{
-				SiteEdit site = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+				Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 				String siteId = site.getId();
 				
 				ResourcePropertiesEdit rp = site.getPropertiesEdit();
@@ -4931,7 +4921,7 @@ public class SiteAction extends PagedResourceActionII
 				
 			}
 
-			SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+			Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 			String siteId = site.getId();
 			
 			SiteInfo siteInfo = (SiteInfo) state.getAttribute(STATE_SITE_INFO);
@@ -5029,7 +5019,7 @@ public class SiteAction extends PagedResourceActionII
 			try
 			{
 				User user = UserDirectoryService.getUser(affiliate);
-				String realmId = "/site/" + ((SiteEdit) state.getAttribute(STATE_SITE_INSTANCE)).getId();
+				String realmId = "/site/" + ((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId();
 				if (RealmService.allowUpdateRealm(realmId))
 				{
 					try
@@ -5650,26 +5640,22 @@ public class SiteAction extends PagedResourceActionII
 			removeAddClassContext(state);
 		}
 		
-		// remove SiteEdit object if any
-		removeSiteEditFromState(state);
+		// remove Site object if any
+		removeSiteFromState(state);
 		
 	} // doCancel
 	
 	/** 
-	 * remove SiteEdit object from state, use a Site object instead
+	 * remove Site object from state, use a Site object instead
 	 * @param state SessionState object
 	 */
-	private void removeSiteEditFromState(SessionState state)
+	private void removeSiteFromState(SessionState state)
 	{
 		// cancel edit 
 		try
 		{
-			SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+			Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 			String id = site.getId();
-			if (site.isActiveEdit())
-			{
-				SiteService.cancelEdit(site);
-			}
 
 			Site updated_site = SiteService.getSite(id);
 			state.setAttribute(STATE_SITE_INSTANCE, updated_site);
@@ -5680,7 +5666,7 @@ public class SiteAction extends PagedResourceActionII
 		catch (IdUnusedException e)
 		{
 		}	
-	}	// removeSiteEdit
+	}	// removeSite
 	
 	/**
 	* doMenu_customize is called when "eventSubmit_doBack" is in the request parameters
@@ -5732,8 +5718,8 @@ public class SiteAction extends PagedResourceActionII
 		if ((params.getString("name")) == null || (params.getString("url") == null))
 		{
 			Tool tr = ToolManager.getTool("sakai.iframe");
-			SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
-			SitePageEdit page = site.addPage();
+			Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
+			SitePage page = site.addPage();
 			page.setTitle(params.getString("name")); // the visible label on the tool menu
 			ToolConfiguration tool = page.addTool();
 			tool.setTool(tr);
@@ -5864,9 +5850,20 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		getRevisedFeatures(params, state);
-		SiteEdit site = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+		Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 		String id = site.getId();
-		SiteService.commitEdit(site);
+		try
+		{
+			SiteService.save(site);
+		}
+		catch (IdUnusedException e)
+		{
+			// TODO:
+		}
+		catch (PermissionException e)
+		{
+			// TODO:
+		}
 		//now that the site exists, we can set the email alias when an Email Archive tool has been selected
 		String alias = StringUtil.trimToNull((String) state.getAttribute(STATE_TOOL_EMAIL_ADDRESS));
 		if (alias != null)
@@ -5926,7 +5923,7 @@ public class SiteAction extends PagedResourceActionII
 		state.setAttribute (STATE_TEMPLATE_INDEX, "5");
 		
 		//get site edit
-		siteEditIntoState(state);
+		SiteIntoState(state);
 		
 	} //  doMenu_add_participant
 	
@@ -5938,7 +5935,7 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
 		//get site edit
-		siteEditIntoState(state);
+		SiteIntoState(state);
 		
 		state.removeAttribute(STATE_SELECTED_USER_LIST);
 		
@@ -6015,7 +6012,7 @@ public class SiteAction extends PagedResourceActionII
 			setSelectedParticipantRoles(state);
 			
 			//get site edit
-			siteEditIntoState(state);
+			SiteIntoState(state);
 			
 			if (state.getAttribute(STATE_MESSAGE) == null)
 			{
@@ -6033,7 +6030,7 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
 		//get site edit
-		siteEditIntoState(state);
+		SiteIntoState(state);
 		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
@@ -6062,7 +6059,7 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
 		//get site edit
-		siteEditIntoState(state);
+		SiteIntoState(state);
 		
 		//get the tools
 		siteToolsIntoState(state);
@@ -6242,23 +6239,23 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		// get site edit
-		siteEditIntoState(state);
+		SiteIntoState(state);
 		
-		SiteEdit siteEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
-		ResourceProperties siteProperties = siteEdit.getProperties(); 
-		state.setAttribute(FORM_SITEINFO_TITLE, siteEdit.getTitle());
+		Site Site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+		ResourceProperties siteProperties = Site.getProperties(); 
+		state.setAttribute(FORM_SITEINFO_TITLE, Site.getTitle());
 		
 		String site_type = (String)state.getAttribute(STATE_SITE_TYPE); 
 		if(site_type != null && !site_type.equalsIgnoreCase("myworkspace")) 
 		{
-			state.setAttribute(FORM_SITEINFO_INCLUDE, Boolean.valueOf(siteEdit.isPubView()).toString());
+			state.setAttribute(FORM_SITEINFO_INCLUDE, Boolean.valueOf(Site.isPubView()).toString());
 		}
-		state.setAttribute(FORM_SITEINFO_DESCRIPTION, siteEdit.getDescription());
-		state.setAttribute(FORM_SITEINFO_SHORT_DESCRIPTION, siteEdit.getShortDescription());
-		state.setAttribute(FORM_SITEINFO_SKIN, siteEdit.getIconUrl());
-		if (siteEdit.getIconUrl() != null)
+		state.setAttribute(FORM_SITEINFO_DESCRIPTION, Site.getDescription());
+		state.setAttribute(FORM_SITEINFO_SHORT_DESCRIPTION, Site.getShortDescription());
+		state.setAttribute(FORM_SITEINFO_SKIN, Site.getIconUrl());
+		if (Site.getIconUrl() != null)
 		{
-			state.setAttribute(FORM_SITEINFO_SKIN, siteEdit.getIconUrl());
+			state.setAttribute(FORM_SITEINFO_SKIN, Site.getIconUrl());
 		}
 		
 		// site contact information
@@ -6309,80 +6306,79 @@ public class SiteAction extends PagedResourceActionII
 		
 		if (siteId != null)
 		{
-			try
+			if (SiteService.allowUpdateSite(siteId))
 			{
-				SiteEdit siteEdit = SiteService.editSite(siteId);
-				state.setAttribute(STATE_SITE_INSTANCE, siteEdit);
-				state.setAttribute("siteId", siteId);
-				
-				ResourceProperties siteProperties = siteEdit.getProperties(); 
-				state.setAttribute(FORM_SITEINFO_TITLE, siteEdit.getTitle());
-
-				String site_type = siteEdit.getType(); 
-				if(site_type != null && !site_type.equalsIgnoreCase("myworkspace")) 
+				try
 				{
-					state.setAttribute(FORM_SITEINFO_INCLUDE, Boolean.valueOf(siteEdit.isPubView()).toString());
-				}
-				state.setAttribute("siteType", site_type);
-				state.setAttribute(FORM_SITEINFO_DESCRIPTION, siteEdit.getDescription());
-				state.setAttribute(FORM_SITEINFO_SHORT_DESCRIPTION, siteEdit.getShortDescription());
-				state.setAttribute(FORM_SITEINFO_SKIN, siteEdit.getIconUrl());
-				state.setAttribute("siteIconUrl", siteEdit.getIconUrl());
-				if (siteEdit.getIconUrl() != null)
-				{
-					state.setAttribute(FORM_SITEINFO_SKIN, siteEdit.getIconUrl());
-				}
-
-				// site contact information
-				String contactName = siteProperties.getProperty(PROP_SITE_CONTACT_NAME);
-				String contactEmail = siteProperties.getProperty(PROP_SITE_CONTACT_EMAIL);
-				if (contactName == null && contactEmail == null)
-				{
-					String creatorId = siteProperties.getProperty(ResourceProperties.PROP_CREATOR);
-					try
+					Site Site = SiteService.getSite(siteId);
+					state.setAttribute(STATE_SITE_INSTANCE, Site);
+					state.setAttribute("siteId", siteId);
+					
+					ResourceProperties siteProperties = Site.getProperties(); 
+					state.setAttribute(FORM_SITEINFO_TITLE, Site.getTitle());
+	
+					String site_type = Site.getType(); 
+					if(site_type != null && !site_type.equalsIgnoreCase("myworkspace")) 
 					{
-						User u = UserDirectoryService.getUser(creatorId);
-						String email = u.getEmail();
-						if (email != null)
+						state.setAttribute(FORM_SITEINFO_INCLUDE, Boolean.valueOf(Site.isPubView()).toString());
+					}
+					state.setAttribute("siteType", site_type);
+					state.setAttribute(FORM_SITEINFO_DESCRIPTION, Site.getDescription());
+					state.setAttribute(FORM_SITEINFO_SHORT_DESCRIPTION, Site.getShortDescription());
+					state.setAttribute(FORM_SITEINFO_SKIN, Site.getIconUrl());
+					state.setAttribute("siteIconUrl", Site.getIconUrl());
+					if (Site.getIconUrl() != null)
+					{
+						state.setAttribute(FORM_SITEINFO_SKIN, Site.getIconUrl());
+					}
+	
+					// site contact information
+					String contactName = siteProperties.getProperty(PROP_SITE_CONTACT_NAME);
+					String contactEmail = siteProperties.getProperty(PROP_SITE_CONTACT_EMAIL);
+					if (contactName == null && contactEmail == null)
+					{
+						String creatorId = siteProperties.getProperty(ResourceProperties.PROP_CREATOR);
+						try
 						{
-							contactEmail = u.getEmail();	
+							User u = UserDirectoryService.getUser(creatorId);
+							String email = u.getEmail();
+							if (email != null)
+							{
+								contactEmail = u.getEmail();	
+							}
+							contactName = u.getDisplayName();
 						}
-						contactName = u.getDisplayName();
+						catch (IdUnusedException e)
+						{
+						}
 					}
-					catch (IdUnusedException e)
+					if (contactName != null)
 					{
+						state.setAttribute(FORM_SITEINFO_CONTACT_NAME, contactName);
 					}
+					if (contactEmail != null)
+					{
+						state.setAttribute(FORM_SITEINFO_CONTACT_EMAIL, contactEmail);
+					}
+			
+					if (state.getAttribute(STATE_MESSAGE) == null)
+					{
+						state.setAttribute(STATE_TEMPLATE_INDEX, "38");
+					}
+					
 				}
-				if (contactName != null)
+				catch (IdUnusedException e)
 				{
-					state.setAttribute(FORM_SITEINFO_CONTACT_NAME, contactName);
+					addAlert(state, rb.getString("java.specif")+" " + siteId + ". ");
+					Log.warn("chef", this + e.toString());
 				}
-				if (contactEmail != null)
-				{
-					state.setAttribute(FORM_SITEINFO_CONTACT_EMAIL, contactEmail);
-				}
-		
-				if (state.getAttribute(STATE_MESSAGE) == null)
-				{
-					state.setAttribute(STATE_TEMPLATE_INDEX, "38");
-				}
-				
 			}
-			catch (IdUnusedException e)
-			{
-				addAlert(state, rb.getString("java.specif")+" " + siteId + ". ");
-				Log.warn("chef", this + e.toString());
-			}
-			catch (PermissionException e)
+			
+			// no permission
+			else
 			{
 				addAlert(state, rb.getString("java.permeditsite")+" " + siteId + ".");
-				Log.warn("chef", this + e.toString());
-			}
-			catch (InUseException e)
-			{
-				addAlert(state, rb.getString("java.thissite")+" " + siteId + " "+rb.getString("java.rightnow")+" "); 
-				addAlert(state, rb.getString("java.youalready")+" " + siteId + " "+rb.getString("java.another"));	
-				Log.warn("chef", this + e.toString());
+				Log.warn("chef", this + "no update permission to site : " + siteId);				
 			}
 		}
 		else
@@ -6403,7 +6399,7 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
 		// get site edit
-		siteEditIntoState(state);
+		SiteIntoState(state);
 		// get the tools
 		siteToolsIntoState(state);
 		
@@ -6423,7 +6419,7 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
 		//get site edit
-		siteEditIntoState(state);
+		SiteIntoState(state);
 		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
@@ -6444,32 +6440,30 @@ public class SiteAction extends PagedResourceActionII
 		
 		if (siteId != null)
 		{
-			try
+			if (SiteService.allowUpdateSite(siteId))
 			{
-				SiteEdit siteEdit = SiteService.editSite(siteId);
-				state.setAttribute(STATE_SITE_INSTANCE, siteEdit);
+				try
+				{
+					Site Site = SiteService.getSite(siteId);
+					state.setAttribute(STATE_SITE_INSTANCE, Site);
+				}
+				catch (IdUnusedException e)
+				{
+					addAlert(state, rb.getString("java.cannot")+" " + siteId + ". ");
+					Log.warn("chef", this + e.toString());
+				}
 				
-			}
-			catch (IdUnusedException e)
-			{
-				addAlert(state, rb.getString("java.cannot")+" " + siteId + ". ");
-				Log.warn("chef", this + e.toString());
-			}
-			catch (PermissionException e)
-			{
-				addAlert(state, rb.getString("java.permeditsite")+ " " + siteId + ".");
-				Log.warn("chef", this + e.toString());
-			}
-			catch (InUseException e)
-			{
-				addAlert(state, rb.getString("java.thissite")+" " + siteId + " "+rb.getString("java.rightnow")+" "); 
-				addAlert(state, rb.getString("java.youalready") +" " + siteId + " "+rb.getString("java.another"));	
-				Log.warn("chef", this + e.toString());
+				if (state.getAttribute(STATE_MESSAGE) == null)
+				{
+					state.setAttribute(STATE_TEMPLATE_INDEX, "39");
+				}
 			}
 			
-			if (state.getAttribute(STATE_MESSAGE) == null)
+			// not permitted
+			else
 			{
-				state.setAttribute(STATE_TEMPLATE_INDEX, "39");
+				addAlert(state, rb.getString("java.permeditsite")+ " " + siteId + ".");
+				Log.warn("chef", this + "no update permission to site : " + siteId);				
 			}
 		}
 		else
@@ -6489,7 +6483,7 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
 		// get the site edit
-		siteEditIntoState(state);
+		SiteIntoState(state);
 		
 		// get the site properties
 		sitePropertiesIntoState(state);
@@ -6517,43 +6511,32 @@ public class SiteAction extends PagedResourceActionII
 	} // doBack_to_site_list
 	
 	/**
-	 * Get an SiteEdit object of current site into state
+	 * Get an Site object of current site into state
 	 */
-	private void siteEditIntoState(SessionState state)
+	private void SiteIntoState(SessionState state)
 	{
 		String siteId = ((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId();
-		try
-		{
-			SiteEdit siteEdit = SiteService.editSite(siteId);
-			state.setAttribute(STATE_SITE_INSTANCE, siteEdit);
-		}
-		catch (IdUnusedException e)
-		{
-			addAlert(state, rb.getString("java.cannot")+" " + siteId + ". ");
-			Log.warn("chef", this + e.toString());
-		}
-		catch (PermissionException e)
-		{
-			addAlert(state, rb.getString("java.permeditsite")+" " + siteId + ".");
-			Log.warn("chef", this + e.toString());
-		}
-		catch (InUseException e)
+		if (SiteService.allowUpdateSite(siteId))
 		{
 			try
 			{
-				Site s = SiteService.getSite(siteId);
-				addAlert(state, rb.getString("java.thissite")+" "+ s.getTitle() + "(" + siteId + ") "+rb.getString("java.rightnow")+" "); 
-				addAlert(state, rb.getString("java.youalready")+" "+ s.getTitle() + "(" + siteId + ") "+rb.getString("java.another"));
+				Site Site = SiteService.getSite(siteId);
+				state.setAttribute(STATE_SITE_INSTANCE, Site);
 			}
-			catch (Exception ignore)
+			catch (IdUnusedException e)
 			{
-				addAlert(state, rb.getString("java.thissite")+" " + siteId + " "+rb.getString("java.rightnow")+" "); 
-				addAlert(state, rb.getString("java.youalready")+" " + siteId + " "+rb.getString("java.another"));
+				addAlert(state, rb.getString("java.cannot")+" " + siteId + ". ");
+				Log.warn("chef", this + e.toString());
 			}
-			Log.warn("chef", this + e.toString());
 		}
 		
-	}	// SiteEditIntoState
+		// no permission
+		else
+		{
+			addAlert(state, rb.getString("java.permeditsite")+" " + siteId + ".");
+			Log.warn("chef", this + "no update permission to site : " + siteId);				
+		}
+	}	// SiteIntoState
 	
 	/**
 	*  doSave_site_info
@@ -6562,18 +6545,18 @@ public class SiteAction extends PagedResourceActionII
 	public void doSave_siteInfo ( RunData data )
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		SiteEdit siteEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
-		ResourcePropertiesEdit siteProperties = siteEdit.getPropertiesEdit();
+		Site Site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+		ResourcePropertiesEdit siteProperties = Site.getPropertiesEdit();
 		String site_type = (String)state.getAttribute(STATE_SITE_TYPE); 
 			
 		List titleEditableSiteType = (List) state.getAttribute(TITLE_EDITABLE_SITE_TYPE);
-		if (titleEditableSiteType.contains(siteEdit.getType()))
+		if (titleEditableSiteType.contains(Site.getType()))
 		{
-			siteEdit.setTitle((String) state.getAttribute(FORM_SITEINFO_TITLE));
+			Site.setTitle((String) state.getAttribute(FORM_SITEINFO_TITLE));
 		}
 
-		siteEdit.setDescription((String) state.getAttribute(FORM_SITEINFO_DESCRIPTION));
-		siteEdit.setShortDescription((String) state.getAttribute(FORM_SITEINFO_SHORT_DESCRIPTION));
+		Site.setDescription((String) state.getAttribute(FORM_SITEINFO_DESCRIPTION));
+		Site.setShortDescription((String) state.getAttribute(FORM_SITEINFO_SHORT_DESCRIPTION));
 
 		if(site_type != null) 
 		{
@@ -6581,13 +6564,13 @@ public class SiteAction extends PagedResourceActionII
 			{
 				//set icon url for course
 				String skin = (String) state.getAttribute(FORM_SITEINFO_SKIN);
-				setAppearance(state, siteEdit, skin);
+				setAppearance(state, Site, skin);
 			}
 			else
 			{
 				//set icon url for others
 				String iconUrl = (String) state.getAttribute(FORM_SITEINFO_ICON_URL);
-				siteEdit.setIconUrl(iconUrl);
+				Site.setIconUrl(iconUrl);
 			}
 				
 		}
@@ -6607,8 +6590,19 @@ public class SiteAction extends PagedResourceActionII
 		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
-			String id = siteEdit.getId();
-			SiteService.commitEdit(siteEdit);
+			String id = Site.getId();
+			try
+			{
+				SiteService.save(Site);
+			}
+			catch (IdUnusedException e)
+			{
+				// TODO:
+			}
+			catch (PermissionException e)
+			{
+				// TODO:
+			}
 			try
 			{
 				Site updated_site = SiteService.getSite(id);
@@ -6933,15 +6927,25 @@ public class SiteAction extends PagedResourceActionII
 		
 		if (siteId != null)
 		{
-			try
+			if (SiteService.allowUpdateSite(siteId))
 			{
-				state.setAttribute(STATE_SITE_INSTANCE, SiteService.editSite(siteId));
-				state.setAttribute(STATE_TEMPLATE_INDEX, "32");
+				try
+				{
+					state.setAttribute(STATE_SITE_INSTANCE, SiteService.getSite(siteId));
+					state.setAttribute(STATE_TEMPLATE_INDEX, "32");
+				}
+				catch(Exception e)
+				{
+					addAlert(state, rb.getString("java.problem"));
+					// stay at the same mode
+				}
 			}
-			catch(Exception e)
+			
+			// no permission
+			else
 			{
 				addAlert(state, rb.getString("java.problem"));
-				// stay at the same mode
+				// stay at the same mode				
 			}
 		}
 		
@@ -7224,7 +7228,7 @@ public class SiteAction extends PagedResourceActionII
 	public void doUpdate_site_access(RunData data)
 	{ 
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		SiteEdit sEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+		Site sEdit = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 		
 		ParameterParser params = data.getParameters ();
 		String publishUnpublish = params.getString("publishunpublish");
@@ -7392,7 +7396,7 @@ public class SiteAction extends PagedResourceActionII
 	public void doSitemanage_update_site_access(RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		SiteEdit sEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+		Site sEdit = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 			
 		ParameterParser params = data.getParameters ();
 				
@@ -7435,7 +7439,18 @@ public class SiteAction extends PagedResourceActionII
 			sEdit.setJoinerRole(null);
 		}
 		
-		SiteService.commitEdit(sEdit);
+		try
+		{
+			SiteService.save(sEdit);
+		}
+		catch (IdUnusedException e)
+		{
+			// TODO:
+		}
+		catch (PermissionException e)
+		{
+			// TODO:
+		}
 		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
@@ -7582,7 +7597,7 @@ public class SiteAction extends PagedResourceActionII
 					// remove related state variables
 					removeAddParticipantContext(state);
 					//remove edit object
-					removeSiteEditFromState(state);
+					removeSiteFromState(state);
 			
 				}
 				break;
@@ -7619,7 +7634,7 @@ public class SiteAction extends PagedResourceActionII
 				{
 					removeChangeRoleContext(state);
 					//remove edit object
-					removeSiteEditFromState(state);
+					removeSiteFromState(state);
 				}
 				break;
 			case 8:
@@ -7661,11 +7676,11 @@ public class SiteAction extends PagedResourceActionII
 				*/
 				if (forward)
 				{
-					SiteEdit siteEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
-					ResourcePropertiesEdit siteProperties = siteEdit.getPropertiesEdit();
+					Site Site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+					ResourcePropertiesEdit siteProperties = Site.getPropertiesEdit();
 					
 					List titleEditableSiteType = (List) state.getAttribute(TITLE_EDITABLE_SITE_TYPE);
-					if (titleEditableSiteType.contains(siteEdit.getType()))
+					if (titleEditableSiteType.contains(Site.getType()))
 					{
 						// site titel is editable and could not be null
 						String title = StringUtil.trimToNull(params.getString("title"));
@@ -7743,7 +7758,7 @@ public class SiteAction extends PagedResourceActionII
 				*/
 				if (forward) 
 				{
-					boolean oldStatus =  ((SiteEdit)state.getAttribute(STATE_SITE_INSTANCE)).isPublished();
+					boolean oldStatus =  ((Site)state.getAttribute(STATE_SITE_INSTANCE)).isPublished();
 					boolean newStatus = ((SiteInfo) state.getAttribute(STATE_SITE_INFO)).getPublished();
 					saveSiteStatus(state, newStatus);
 				
@@ -7757,9 +7772,21 @@ public class SiteAction extends PagedResourceActionII
 					}
 	
 					// commit site edit
-					SiteEdit site = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+					Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 					String id = site.getId();
-					SiteService.commitEdit(site);
+
+					try
+					{
+						SiteService.save(site);
+					}
+					catch (IdUnusedException e)
+					{
+						// TODO:
+					}
+					catch (PermissionException e)
+					{
+						// TODO:
+					}
 					
 					// TODO: hard coding this frame id is fragile, portal dependent, and needs to be fixed -ggolden
 					schedulePeerFrameRefresh("sitenav");
@@ -7839,7 +7866,7 @@ public class SiteAction extends PagedResourceActionII
 				else
 				{
 					//remove edit object
-					removeSiteEditFromState(state);
+					removeSiteFromState(state);
 				}
 				break;
 			case 24:
@@ -7870,7 +7897,7 @@ public class SiteAction extends PagedResourceActionII
 				{
 					if (state.getAttribute(STATE_SITE_INSTANCE) != null)
 					{
-						SiteEdit existingSite = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+						Site existingSite = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 						// revising a existing site's tool
 						select_import_tools(params, state);
 						Hashtable importTools = (Hashtable) state.getAttribute(STATE_IMPORT_SITE_TOOL);
@@ -7952,13 +7979,24 @@ public class SiteAction extends PagedResourceActionII
 							{
 								String oSiteId = ((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId();
 								String nSiteId = IdService.getUniqueId();
-								SiteEdit site = SiteService.addSite(nSiteId, (Site) state.getAttribute(STATE_SITE_INSTANCE));
+								Site site = SiteService.addSite(nSiteId, (Site) state.getAttribute(STATE_SITE_INSTANCE));
 								
-								SiteService.commitEdit(site);
+								try
+								{
+									SiteService.save(site);
+								}
+								catch (IdUnusedException e)
+								{
+									// TODO:
+								}
+								catch (PermissionException e)
+								{
+									// TODO:
+								}
 								
 								try 
 								{
-									site = SiteService.editSite(nSiteId);
+									site = SiteService.getSite(nSiteId);
 									
 									// set title
 									site.setTitle(title);
@@ -8009,7 +8047,19 @@ public class SiteAction extends PagedResourceActionII
 									//if goes here, IdService or SiteService has done something wrong.
 									Log.warn("chef", this + "Exception" + e1 + ":"+ nSiteId + "when duplicating site");
 								}
-								SiteService.commitEdit(site);
+
+								try
+								{
+									SiteService.save(site);
+								}
+								catch (IdUnusedException e)
+								{
+									// TODO:
+								}
+								catch (PermissionException e)
+								{
+									// TODO:
+								}
 								
 								// TODO: hard coding this frame id is fragile, portal dependent, and needs to be fixed -ggolden
 								schedulePeerFrameRefresh("sitenav");
@@ -8141,7 +8191,7 @@ public class SiteAction extends PagedResourceActionII
 				 */
 				if (forward)
 				{
-					SiteEdit siteEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+					Site siteEdit = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 					ResourcePropertiesEdit siteProperties = siteEdit.getPropertiesEdit();
 					if (SecurityService.isSuperUser())
 					{
@@ -8192,14 +8242,14 @@ public class SiteAction extends PagedResourceActionII
 							ContentCollectionEdit newCollectionEdit = ContentHostingService.addCollection(newCollectionId);
 							String resourceId = newCollectionId + Validator.escapeResourceName(filename);
 							String url = ContentHostingService.getUrl(resourceId);
-							siteEdit.setIconUrl(url);
+							Site.setIconUrl(url);
 							ContentHostingService.commitCollection(newCollectionEdit);
 						}
 						catch(IdUsedException err)
 						{
 							String resourceId = newCollectionId + Validator.escapeResourceName(filename);
 							String url = ContentHostingService.getUrl(resourceId);
-							siteEdit.setIconUrl(url);
+							Site.setIconUrl(url);
 						}
 						catch(IdInvalidException err)
 						{
@@ -8331,9 +8381,20 @@ public class SiteAction extends PagedResourceActionII
 							addAlert(state, rb.getString("java.someone"));
 						}
 					}
-					
-					SiteService.commitEdit(siteEdit);
 						
+					try
+					{
+						SiteService.save(siteEdit);
+					}
+					catch (IdUnusedException e)
+					{
+						// TODO:
+					}
+					catch (PermissionException e)
+					{
+						// TODO:
+					}
+
 					if (state.getAttribute(STATE_MESSAGE) == null)
 					{
 						state.setAttribute(STATE_TEMPLATE_INDEX, "31");
@@ -8475,8 +8536,8 @@ public class SiteAction extends PagedResourceActionII
 	{
 		List providerCourseSectionList = (List) state.getAttribute(SITE_PROVIDER_COURSE_LIST);
 		List manualCourseSectionList = (List) state.getAttribute(SITE_MANUAL_COURSE_LIST);
-		siteEditIntoState(state);
-		SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+		SiteIntoState(state);
+		Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 		String id = site.getId();
 		String realmId = SiteService.siteReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId());
 		
@@ -8565,7 +8626,7 @@ public class SiteAction extends PagedResourceActionII
 		}
 		else
 		{
-			removeSiteEditFromState(state);
+			removeSiteFromState(state);
 		}
 		if (requestClasses != null && requestClasses.size() > 0 && state.getAttribute(STATE_MANUAL_ADD_COURSE_NUMBER) != null)
 		{
@@ -8721,7 +8782,7 @@ public class SiteAction extends PagedResourceActionII
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
-		SiteEdit s = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+		Site s = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 		boolean joinable = ((Boolean) state.getAttribute("form_joinable")).booleanValue();
 		s.setJoinable(joinable);
 		if (joinable)
@@ -8760,7 +8821,7 @@ public class SiteAction extends PagedResourceActionII
 		if (state.getAttribute(STATE_SITE_INSTANCE) != null)
 		{
 
-			SiteEdit site = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+			Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 			if (StringUtil.trimToNull(siteInfo.title) != null)
 			{
 				site.setTitle(siteInfo.title);
@@ -8780,25 +8841,38 @@ public class SiteAction extends PagedResourceActionII
 			}
 			// Make changes and then put changed site back in state
 			String id = site.getId();
-			SiteService.commitEdit(site);
+
 			try
 			{
-				SiteEdit updated_site = SiteService.editSite(id);
-				state.setAttribute(STATE_SITE_INSTANCE, updated_site);
+				SiteService.save(site);
 			}
 			catch (IdUnusedException e)
 			{
-				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+				// TODO:
 			}
 			catch (PermissionException e)
 			{
-				addAlert(state, rb.getString("java.makechanges"));
-				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+				// TODO:
 			}
-			catch (InUseException e)
+
+			if (SiteService.allowUpdateSite(id))
 			{
-				addAlert(state, rb.getString("java.because"));
-				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+				try
+				{
+					Site updated_site = SiteService.getSite(id);
+					state.setAttribute(STATE_SITE_INSTANCE, updated_site);
+				}
+				catch (IdUnusedException e)
+				{
+					Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+				}
+			}
+			
+			// no permission
+			else
+			{
+				addAlert(state, rb.getString("java.makechanges"));
+				Log.warn("chef", "SiteAction.commitSite PermissionException " + siteInfo.getTitle() + "(" + id + ")");
 			}
 		}
 		 
@@ -9025,7 +9099,7 @@ public class SiteAction extends PagedResourceActionII
 	private List getUsers (SessionState state)
 	{
 		List users = new Vector();
-		String realmId = SiteService.siteReference(((SiteEdit) state.getAttribute(STATE_SITE_INSTANCE)).getId());
+		String realmId = SiteService.siteReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId());
 		try
 		{
 			Realm realm = RealmService.getRealm(realmId);
@@ -9042,7 +9116,7 @@ public class SiteAction extends PagedResourceActionII
 
 	private void getRevisedFeatures(ParameterParser params, SessionState state)
 	{	
-		SiteEdit site = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+		Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 		//get the list of Worksite Setup configured pages
 		List wSetupPageList = (List)state.getAttribute(STATE_WORKSITE_SETUP_PAGE_LIST);
 		
@@ -9157,7 +9231,7 @@ public class SiteAction extends PagedResourceActionII
 		
 		if (homeInChosenList)
 		{
-			SitePageEdit page = null;
+			SitePage page = null;
 			if (homeInWSetupPageList)
 			{
 				if (!SiteService.isUserSite(site.getId()))
@@ -9169,7 +9243,7 @@ public class SiteAction extends PagedResourceActionII
 						WorksiteSetupPage comparePage = (WorksiteSetupPage) i.next();
 						if((comparePage.getPageTitle()).equals("Home")) { homePage = comparePage; }
 					}
-					page = site.getPageEdit(homePage.getPageId());
+					page = site.getPage(homePage.getPageId());
 					List toolList = page.getTools();
 					List removeToolList = new Vector();
 					// get those synoptic tools
@@ -9271,7 +9345,7 @@ public class SiteAction extends PagedResourceActionII
 				WorksiteSetupPage comparePage = (WorksiteSetupPage) i.next();
 				if((comparePage.getPageTitle()).equals(rb.getString("java.home"))) { removePage = comparePage; }
 			}
-			SitePageEdit siteHome = site.getPageEdit(removePage.getPageId());
+			SitePage siteHome = site.getPage(removePage.getPageId());
 			site.removePage(siteHome);
 			wSetupPageList.remove(removePage);
 			
@@ -9323,7 +9397,7 @@ public class SiteAction extends PagedResourceActionII
 		{
 			//if the tool exists in the wSetupPageList, remove it from the site
 			String removeId = (String) removePageIds.get(i);
-			SitePageEdit sitePage = site.getPageEdit(removeId);
+			SitePage sitePage = site.getPage(removeId);
 			site.removePage(sitePage);
 			
 			// and remove it from wSetupPageList
@@ -9364,7 +9438,7 @@ public class SiteAction extends PagedResourceActionII
 					// but for News and Web Content tool, need to change the title
 					if (toolId.indexOf("sakai.news") != -1)
 					{
-						SitePageEdit pEdit = (SitePageEdit) site.getPageEdit(wSetupPage.pageId);
+						SitePage pEdit = (SitePage) site.getPage(wSetupPage.pageId);
 						pEdit.setTitle((String) newsTitles.get(toolId));
 						List toolList = pEdit.getTools();
 						for (ListIterator jTool = toolList.listIterator(); jTool.hasNext(); )
@@ -9392,7 +9466,7 @@ public class SiteAction extends PagedResourceActionII
 					}
 					else if (toolId.indexOf("sakai.iframe") != -1)
 					{
-						SitePageEdit pEdit = (SitePageEdit) site.getPageEdit(wSetupPage.pageId);
+						SitePage pEdit = (SitePage) site.getPage(wSetupPage.pageId);
 						pEdit.setTitle((String) wcTitles.get(toolId));
 						
 						List toolList = pEdit.getTools();
@@ -9437,7 +9511,7 @@ public class SiteAction extends PagedResourceActionII
 				{
 					// we know such a tool, so add it
 					WorksiteSetupPage addPage = new WorksiteSetupPage();
-					SitePageEdit page = site.addPage();
+					SitePage page = site.addPage();
 					addPage.pageId = page.getId();
 					if (toolId.indexOf("sakai.news") != -1)
 					{
@@ -9521,12 +9595,12 @@ public class SiteAction extends PagedResourceActionII
 				if(wspage.getToolId().indexOf(tool.getId()) != -1)
 				{
 					//if page is in site, move it
-					pageList = site.getPageEdits();
+					pageList = site.getPages();
 					if(pageList != null && pageList.size() != 0)
 					{
 						for (ListIterator k = pageList.listIterator(); k.hasNext() && !toolFound; )
 						{
-							SitePageEdit page = (SitePageEdit)k.next();
+							SitePage page = (SitePage)k.next();
 							if((page.getId()).equals(wspage.getPageId())) 
 							{
 								toolFound = true;
@@ -9547,13 +9621,13 @@ public class SiteAction extends PagedResourceActionII
 		if (homeInChosenList)
 		{
 			//Order tools - move Home to the top - first find it
-			SitePageEdit homePage = null;
-			pageList = site.getPageEdits();
+			SitePage homePage = null;
+			pageList = site.getPages();
 			if (pageList != null && pageList.size() != 0)
 			{
 				for (ListIterator i = pageList.listIterator(); i.hasNext(); )
 				{
-					SitePageEdit page = (SitePageEdit)i.next();
+					SitePage page = (SitePage)i.next();
 					if (rb.getString("java.home").equals(page.getTitle()))//if ("Home".equals(page.getTitle())) 
 					{
 						homePage = page;
@@ -9713,7 +9787,7 @@ public class SiteAction extends PagedResourceActionII
 	private void addFeatures(SessionState state)
 	{
 		List toolRegistrationList = (Vector)state.getAttribute(STATE_TOOL_REGISTRATION_LIST);
-		SiteEdit site = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+		Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 
 		List pageList = new Vector();
 		int moves = 0;
@@ -9776,7 +9850,7 @@ public class SiteAction extends PagedResourceActionII
 					{
 						// adding multiple news tool
 						String newsTitle = (String) newsTitles.get(toolId);
-						SitePageEdit page = site.addPage();
+						SitePage page = site.addPage();
 						page.setTitle(newsTitle); // the visible label on the tool menu
 						page.setLayout(SitePage.LAYOUT_SINGLE_COL);
 						ToolConfiguration tool = page.addTool();
@@ -9791,7 +9865,7 @@ public class SiteAction extends PagedResourceActionII
 					{
 						// adding multiple web content tool
 						String wcTitle = (String) wcTitles.get(toolId);
-						SitePageEdit page = site.addPage();
+						SitePage page = site.addPage();
 						page.setTitle(wcTitle); // the visible label on the tool menu
 						page.setLayout(SitePage.LAYOUT_SINGLE_COL);
 						ToolConfiguration tool = page.addTool();
@@ -9807,7 +9881,7 @@ public class SiteAction extends PagedResourceActionII
 					}
 					else
 					{
-						SitePageEdit page = site.addPage();
+						SitePage page = site.addPage();
 						page.setTitle(toolRegFound.getTitle()); // the visible label on the tool menu
 						page.setLayout(SitePage.LAYOUT_SINGLE_COL);
 						ToolConfiguration tool = page.addTool();
@@ -9841,7 +9915,7 @@ public class SiteAction extends PagedResourceActionII
 				// Home is a special case, with several tools on the page. "home" is hard coded in chef_site-addRemoveFeatures.vm.
 				try
 				{
-					SitePageEdit page = site.addPage();
+					SitePage page = site.addPage();
 					page.setTitle(rb.getString("java.home")); // the visible label on the tool menu
 					if (hasAnnouncement || hasDiscussion || hasChat)
 					{
@@ -9894,12 +9968,12 @@ public class SiteAction extends PagedResourceActionII
 				state.setAttribute(STATE_TOOL_HOME_SELECTED, Boolean.TRUE);
 				
 				//Order tools - move Home to the top 
-				pageList = site.getPageEdits();
+				pageList = site.getPages();
 				if(pageList != null && pageList.size() != 0)
 				{
 					for (ListIterator i = pageList.listIterator(); i.hasNext(); )
 					{
-						SitePageEdit page = (SitePageEdit)i.next();
+						SitePage page = (SitePage)i.next();
 						if((page.getTitle()).equals(rb.getString("java.home"))) 
 						{
 							moves = pageList.indexOf(page);
@@ -9916,7 +9990,7 @@ public class SiteAction extends PagedResourceActionII
 	} // addFeatures
 	
 	// import tool content into site
-	private void importToolIntoSite(List toolIds, Hashtable importTools, SiteEdit site)
+	private void importToolIntoSite(List toolIds, Hashtable importTools, Site site)
 	{
 		if (importTools != null)
 		{
@@ -9987,7 +10061,7 @@ public class SiteAction extends PagedResourceActionII
 	
 	public void saveSiteStatus(SessionState state, boolean published)
 	{
-		SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+		Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 		SiteInfo siteInfo = (SiteInfo)state.getAttribute(STATE_SITE_INFO);
 		String site_type = site.getType();
 		String skin = NULL_STRING;
@@ -9998,69 +10072,107 @@ public class SiteAction extends PagedResourceActionII
 
 	public void commitSite(SessionState state, boolean published)
 	{
-		SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+		Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 		site.setPublished(published);
 		SiteInfo siteInfo = (SiteInfo)state.getAttribute(STATE_SITE_INFO);
 		
 		String id = site.getId();
 		site.setPublished(published);
 		
-		SiteService.commitEdit(site);
 		try
 		{
-			SiteEdit updated_site = SiteService.editSite(id);
-			state.setAttribute(STATE_SITE_INSTANCE, updated_site);
+			SiteService.save(site);
 		}
 		catch (IdUnusedException e)
 		{
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+			// TODO:
 		}
 		catch (PermissionException e)
 		{
-			addAlert(state, rb.getString("java.makechanges"));
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+			// TODO:
 		}
-		catch (InUseException e)
+
+		if (SiteService.allowUpdateSite(id))
 		{
-			addAlert(state, rb.getString("java.because"));
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+			try
+			{
+				Site updated_site = SiteService.getSite(id);
+				state.setAttribute(STATE_SITE_INSTANCE, updated_site);
+			}
+			catch (IdUnusedException e)
+			{
+				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+			}
+		}
+		
+		// no permission
+		else
+		{
+			addAlert(state, rb.getString("java.makechanges"));
+			Log.warn("chef", "SiteAction.commitSite PermissionException " + siteInfo.getTitle() + "(" + id + ")");
 		}
 
 	} // commitSite
 	
 	public void commitSite(SessionState state)
 	{
-		SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+		Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 		String id = site.getId();
 		SiteInfo siteInfo = (SiteInfo)state.getAttribute(STATE_SITE_INFO);
-		SiteService.commitEdit(site);
+
 		try
 		{
-			SiteEdit updated_site = SiteService.editSite(id);
-			state.setAttribute(STATE_SITE_INSTANCE, updated_site);
+			SiteService.save(site);
 		}
 		catch (IdUnusedException e)
 		{
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+			// TODO:
 		}
-			catch (PermissionException e)
+		catch (PermissionException e)
 		{
-			addAlert(state, rb.getString("java.makechanges"));
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+			// TODO:
 		}
-		catch (InUseException e)
+
+		if (SiteService.allowUpdateSite(id))
 		{
-			addAlert(state, rb.getString("java.because"));
-			Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+			try
+			{
+				Site updated_site = SiteService.getSite(id);
+				state.setAttribute(STATE_SITE_INSTANCE, updated_site);
+			}
+			catch (IdUnusedException e)
+			{
+				Log.warn("chef", "SiteAction.commitSite IdUnusedException " + siteInfo.getTitle() + "(" + id + ") not found");
+			}
 		}
 		
+		// no permission
+		else
+		{
+			addAlert(state, rb.getString("java.makechanges"));
+			Log.warn("chef", "SiteAction.commitSite PermissionException " + siteInfo.getTitle() + "(" + id + ")");
+		}
+
 	}// commitSite
 	
 	public void commitSiteAndRemoveEdit(SessionState state)
 	{
-		SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+		Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 		String id = site.getId();
-		SiteService.commitEdit(site);
+
+		try
+		{
+			SiteService.save(site);
+		}
+		catch (IdUnusedException e)
+		{
+			// TODO:
+		}
+		catch (PermissionException e)
+		{
+			// TODO:
+		}
+
 		try
 		{
 			Site updated_site = SiteService.getSite(id);
@@ -10093,28 +10205,40 @@ public class SiteAction extends PagedResourceActionII
 			
 				if (state.getAttribute(STATE_SITE_INSTANCE) != null)
 				{
-					SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+					Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 					String id = site.getId();
 					setAppearance(state, site, siteInfo.iconUrl);
-					SiteService.commitEdit(site);
 					try
 					{
-						SiteEdit updated_site = SiteService.editSite(id);
-						state.setAttribute(STATE_SITE_INSTANCE, updated_site);
+						SiteService.save(site);
 					}
 					catch (IdUnusedException e)
 					{
-						Log.warn("chef", "SiteAction.commitSite IdUnusedException");
+						// TODO:
 					}
 					catch (PermissionException e)
 					{
+						// TODO:
+					}
+
+					if (SiteService.allowUpdateSite(id))
+					{
+						try
+						{
+							Site updated_site = SiteService.getSite(id);
+							state.setAttribute(STATE_SITE_INSTANCE, updated_site);
+						}
+						catch (IdUnusedException e)
+						{
+							Log.warn("chef", "SiteAction.commitSite IdUnusedException");
+						}
+					}
+					
+					// no permission
+					else
+					{
 						addAlert(state, rb.getString("java.makechanges"));
 						Log.warn("chef", "SiteAction.commitSite PermissionException");
-					}
-					catch (InUseException e)
-					{
-						addAlert(state, rb.getString("java.because"));
-						Log.warn("chef", "SiteAction.commitSite IdUnusedException");
 					}
 				}
 			}
@@ -10131,7 +10255,7 @@ public class SiteAction extends PagedResourceActionII
 		try
 		{
 			//trimToNull can leave properties null
-			SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+			Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 			SiteInfo siteInfo = (SiteInfo)state.getAttribute(STATE_SITE_INFO);
 			if(siteInfo.site_type != null)  site.setType(siteInfo.site_type);			
 			setAppearance(state, site, siteInfo.iconUrl);
@@ -10663,7 +10787,7 @@ public class SiteAction extends PagedResourceActionII
 		try
 		{
 			User user = UserDirectoryService.getUser(id);
-			SiteEdit sEdit = (SiteEdit) state.getAttribute(STATE_SITE_INSTANCE);
+			Site sEdit = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 			String realmId = SiteService.siteReference(sEdit.getId());
 			if (RealmService.allowUpdateRealm(realmId))
 			{
@@ -10716,7 +10840,7 @@ public class SiteAction extends PagedResourceActionII
 	{
 		if(state.getAttribute(STATE_SITE_INSTANCE) != null)
 		{
-			// There is a SiteEdit in state already, so use it rather than creating a new SiteEdit
+			// There is a Site in state already, so use it rather than creating a new Site
 			return;
 		}
 					
@@ -10738,7 +10862,7 @@ public class SiteAction extends PagedResourceActionII
 		{		
 			try
 			{
-				SiteEdit site = SiteService.addSite(id);
+				Site site = SiteService.addSite(id);
 				
 				siteInfo = (SiteInfo) state.getAttribute(STATE_SITE_INFO);
 				
@@ -10853,7 +10977,7 @@ public class SiteAction extends PagedResourceActionII
 	{
 		try
 		{
-			SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+			Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 			SiteInfo siteInfo = new SiteInfo();
 			
 			// set from site attributes
@@ -10987,7 +11111,7 @@ public class SiteAction extends PagedResourceActionII
 	{
 		String wSetupTool = NULL_STRING;
 		List wSetupPageList = new Vector();
-		SiteEdit site = (SiteEdit)state.getAttribute(STATE_SITE_INSTANCE);
+		Site site = (Site)state.getAttribute(STATE_SITE_INSTANCE);
 		List pageList = site.getPages();
 		
 		//Put up tool lists filtered by category
@@ -11381,7 +11505,7 @@ public class SiteAction extends PagedResourceActionII
 		state.setAttribute(STATE_ICONS, icons);
 	}
 	
-	private void setAppearance(SessionState state, SiteEdit edit, String iconUrl)
+	private void setAppearance(SessionState state, Site edit, String iconUrl)
 	{
 		// set the icon 
 		edit.setIconUrl(iconUrl);
@@ -12615,7 +12739,7 @@ public class SiteAction extends PagedResourceActionII
 	*/
 	private void addGradToolsFeatures(SessionState state)
 	{
-		SiteEdit edit = null;
+		Site edit = null;
 		Site template = null;
 		
 		//get a unique id
@@ -12656,11 +12780,10 @@ public class SiteAction extends PagedResourceActionII
 				//ResourcePropertiesEdit rpe = edit.getPropertiesEdit();
 				try
 				{
-					SiteService.commitEdit(edit);
+					SiteService.save(edit);
 				}
 				catch(Exception e)
 				{
-					SiteService.cancelEdit(edit);
 					if(Log.isWarnEnabled())
 						Log.warn("chef", this + ".addGradToolsFeartures commitEdit " + e);
 				}

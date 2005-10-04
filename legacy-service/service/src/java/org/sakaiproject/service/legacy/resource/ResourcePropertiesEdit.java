@@ -24,7 +24,6 @@
 // package
 package org.sakaiproject.service.legacy.resource;
 
-import java.util.Properties;
 
 // import
 
@@ -37,48 +36,6 @@ import java.util.Properties;
 public interface ResourcePropertiesEdit
 	extends ResourceProperties
 {
-	/**
-	* Add a single valued property.
-	* @param name The property name.
-	* @param value The property value.
-	*/
-	public void addProperty(String name, String value);
-
-	/**
-	* Add a value to a multi-valued property.
-	* @param name The property name.
-	* @param value The property value.
-	*/
-	public void addPropertyToList(String name, String value);
-
-	/**
-	* Add all the properties from the other ResourceProperties object.
-	* @param other The ResourceProperties to add.
-	*/
-	public void addAll(ResourceProperties other);
-
-	/**
-	* Add all the properties from the Properties object.
-	* @param props The Properties to add.
-	*/
-	public void addAll(Properties props);
-
-	/**
-	* Remove all properties.
-	*/
-	public void clear();
-
-	/**
-	* Remove a property.
-	* @param name The property name.
-	*/
-	public void removeProperty(String name);
-
-	/**
-	* Take all values from this object.
-	* @param other The ResourceProperties object to take values from.
-	*/
-	public void set(ResourceProperties other);
 
 }	// ResourcePropertiesEdit
 

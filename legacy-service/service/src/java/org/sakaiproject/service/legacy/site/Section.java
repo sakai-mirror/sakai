@@ -41,8 +41,15 @@ public interface Section extends Edit
 	/** @return a text describing the section. */
 	String getDescription();
 
-	/** @return the site id for this section. */
-	String getSiteId();
+	/**
+	 * Access the site in which this section lives.
+	 * 
+	 * @return the site in which this section lives.
+	 */
+	public Site getContainingSite();
+
+	/** @return the site id for this page. */
+	public String getSiteId();
 
 	/**
 	 * Set the human readable short title of this section.

@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+ * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
  * 
  * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -47,15 +47,14 @@ import org.sakaiproject.service.legacy.time.cover.TimeService;
 
 /**
  * <p>
- * BaseDbFlatStorage is a class that stores Resources (of some type) in a database, provides locked access, and generally implements a services "storage" class. The service's storage class can extend this to provide covers to turn Resource and Edit into
+ * BaseDbFlatStorage is a class that stores Resources (of some type) in a database, provides (optional) locked access, and generally implements a services "storage" class. The service's storage class can extend this to provide covers to turn Resource and Edit into
  * something more type specific to the service.
  * </p>
  * Note: the methods here are all "id" based, with the following assumptions: - just the Resource Id field is enough to distinguish one Resource from another - a resource's reference is based on no more than the resource id - a resource's id cannot
  * change. In order to handle Unicode characters properly, the SQL statements executed by this class should not embed Unicode characters into the SQL statement text; rather, Unicode values should be inserted as fields in a PreparedStatement. Databases
  * handle Unicode better in fields.
  * 
- * @author University of Michigan, CHEF Software Development Team
- * @version $Revision$
+ * @author Sakai Software Development Team
  */
 public class BaseDbFlatStorage
 {
@@ -88,6 +87,9 @@ public class BaseDbFlatStorage
 
 	/** The extra db field for an integer 'db' id - auto-written on insert only. */
 	protected String m_resourceTableDbidField = null;
+
+	/** If false, we are not doing any locking, else we are. */
+	protected boolean m_locking = true;
 
 	/** If true, we do our locks in the remote database using a separate locking table, otherwise we do them in the class. */
 	protected boolean m_locksAreInTable = true;
@@ -175,6 +177,17 @@ public class BaseDbFlatStorage
 		m_resourceTableUpdateFields = updateFields;
 		m_resourceTableInsertFields = insertFields;
 		m_resourceTableInsertValues = insertValues;
+	}
+
+	/**
+	 * Set if we are doing locking or not.
+	 * 
+	 * @param value
+	 *        If true, we should do locking, else not.
+	 */
+	public void setLocking(boolean value)
+	{
+		m_locking = value;
 	}
 
 	/**
@@ -649,6 +662,11 @@ public class BaseDbFlatStorage
 	{
 		Edit edit = null;
 
+		if (!m_locking)
+		{
+			return (Edit) getResource(conn, id);
+		}
+
 		// if the locks are in a separate table in the db
 		if (m_locksAreInTable)
 		{
@@ -743,32 +761,32 @@ public class BaseDbFlatStorage
 		String statement = "update " + m_resourceTableName + " set " + updateSet(m_resourceTableUpdateFields) + " where ( "
 				+ m_resourceTableIdField + " = ? )";
 
-		if (m_locksAreInTable)
+		// process the update
+		m_sql.dbWrite(conn, statement, updateFields(fields));
+
+		if (m_locking)
 		{
-			// process the update
-			m_sql.dbWrite(conn, statement, updateFields(fields));
-
-			// remove the lock
-			statement = "delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
-
-			// collect the fields
-			Object lockFields[] = new Object[2];
-			lockFields[0] = m_resourceTableName;
-			lockFields[1] = internalRecordId(caseId(edit.getId()));
-			boolean ok = m_sql.dbWrite(conn, statement, lockFields);
-			if (!ok)
+			if (m_locksAreInTable)
 			{
-				Logger.warn(this + ".commit: missing lock for table: " + lockFields[0] + " key: " + lockFields[1]);
+				// remove the lock
+				statement = "delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
+	
+				// collect the fields
+				Object lockFields[] = new Object[2];
+				lockFields[0] = m_resourceTableName;
+				lockFields[1] = internalRecordId(caseId(edit.getId()));
+				boolean ok = m_sql.dbWrite(conn, statement, lockFields);
+				if (!ok)
+				{
+					Logger.warn(this + ".commit: missing lock for table: " + lockFields[0] + " key: " + lockFields[1]);
+				}
 			}
-		}
-
-		else
-		{
-			// just process the update
-			m_sql.dbWrite(conn, statement, updateFields(fields));
-
-			// remove the lock
-			m_locks.remove(edit.getReference());
+	
+			else
+			{	
+				// remove the lock
+				m_locks.remove(edit.getReference());
+			}
 		}
 
 	} // commitResource
@@ -781,26 +799,29 @@ public class BaseDbFlatStorage
 	 */
 	public void cancelResource(Edit edit)
 	{
-		if (m_locksAreInTable)
+		if (m_locking)
 		{
-			// remove the lock
-			String statement = "delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
-
-			// collect the fields
-			Object lockFields[] = new Object[2];
-			lockFields[0] = m_resourceTableName;
-			lockFields[1] = internalRecordId(caseId(edit.getId()));
-			boolean ok = m_sql.dbWrite(statement, lockFields);
-			if (!ok)
+			if (m_locksAreInTable)
 			{
-				Logger.warn(this + ".cancel: missing lock for table: " + lockFields[0] + " key: " + lockFields[1]);
+				// remove the lock
+				String statement = "delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
+	
+				// collect the fields
+				Object lockFields[] = new Object[2];
+				lockFields[0] = m_resourceTableName;
+				lockFields[1] = internalRecordId(caseId(edit.getId()));
+				boolean ok = m_sql.dbWrite(statement, lockFields);
+				if (!ok)
+				{
+					Logger.warn(this + ".cancel: missing lock for table: " + lockFields[0] + " key: " + lockFields[1]);
+				}
 			}
-		}
-
-		else
-		{
-			// release the lock
-			m_locks.remove(edit.getReference());
+	
+			else
+			{
+				// release the lock
+				m_locks.remove(edit.getReference());
+			}
 		}
 
 	} // cancelResource
@@ -837,32 +858,32 @@ public class BaseDbFlatStorage
 		Object fields[] = new Object[1];
 		fields[0] = caseId(edit.getId());
 
-		if (m_locksAreInTable)
+		// process the delete statement
+		m_sql.dbWrite(conn, statement, fields);
+
+		if (m_locking)
 		{
-			// process the delete statement
-			m_sql.dbWrite(conn, statement, fields);
-
-			// remove the lock
-			statement = "delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
-
-			// collect the fields
-			Object lockFields[] = new Object[2];
-			lockFields[0] = m_resourceTableName;
-			lockFields[1] = internalRecordId(caseId(edit.getId()));
-			boolean ok = m_sql.dbWrite(conn, statement, lockFields);
-			if (!ok)
+			if (m_locksAreInTable)
 			{
-				Logger.warn(this + ".remove: missing lock for table: " + lockFields[0] + " key: " + lockFields[1]);
+				// remove the lock
+				statement = "delete from SAKAI_LOCKS where TABLE_NAME = ? and RECORD_ID = ?";
+	
+				// collect the fields
+				Object lockFields[] = new Object[2];
+				lockFields[0] = m_resourceTableName;
+				lockFields[1] = internalRecordId(caseId(edit.getId()));
+				boolean ok = m_sql.dbWrite(conn, statement, lockFields);
+				if (!ok)
+				{
+					Logger.warn(this + ".remove: missing lock for table: " + lockFields[0] + " key: " + lockFields[1]);
+				}
 			}
-		}
-
-		else
-		{
-			// process the delete statement
-			m_sql.dbWrite(conn, statement, fields);
-
-			// release the lock
-			m_locks.remove(edit.getReference());
+	
+			else
+			{
+				// release the lock
+				m_locks.remove(edit.getReference());
+			}
 		}
 
 	} // removeResource

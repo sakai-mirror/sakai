@@ -67,6 +67,11 @@ public class SiteService
 	public static java.lang.String SITE_ERROR = org.sakaiproject.service.legacy.site.SiteService.SITE_ERROR;
 	public static java.lang.String URL_ERROR = org.sakaiproject.service.legacy.site.SiteService.URL_ERROR;
 
+	public static java.lang.String SITE_SUBTYPE = org.sakaiproject.service.legacy.site.SiteService.SITE_SUBTYPE;
+	public static java.lang.String SECTION_SUBTYPE = org.sakaiproject.service.legacy.site.SiteService.SECTION_SUBTYPE;
+	public static java.lang.String PAGE_SUBTYPE = org.sakaiproject.service.legacy.site.SiteService.PAGE_SUBTYPE;
+	public static java.lang.String TOOL_SUBTYPE = org.sakaiproject.service.legacy.site.SiteService.TOOL_SUBTYPE;
+
 	public static boolean allowAccessSite(java.lang.String param0)
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
@@ -103,40 +108,22 @@ public class SiteService
 		return service.allowUpdateSite(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.site.SiteEdit editSite(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.InUseException
-	{
-		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
-		if (service == null)
-			return null;
-
-		return service.editSite(param0);
-	}
-
-	public static void commitEdit(org.sakaiproject.service.legacy.site.SiteEdit param0)
+	public static void save(org.sakaiproject.service.legacy.site.Site param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
 		if (service == null)
 			return;
 
-		service.commitEdit(param0);
+		service.save(param0);
 	}
 
-	public static void commitSiteInfo(java.lang.String param0, java.lang.String param1, java.lang.String param2) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	public static void saveSiteInfo(java.lang.String param0, java.lang.String param1, java.lang.String param2) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
 		if (service == null)
 			return;
 
-		service.commitSiteInfo(param0, param1, param2);
-	}
-
-	public static void cancelEdit(org.sakaiproject.service.legacy.site.SiteEdit param0)
-	{
-		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
-		if (service == null)
-			return;
-
-		service.cancelEdit(param0);
+		service.saveSiteInfo(param0, param1, param2);
 	}
 
 	public static boolean allowAddSite(java.lang.String param0)
@@ -148,7 +135,7 @@ public class SiteService
 		return service.allowAddSite(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.site.SiteEdit addSite(java.lang.String param0) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException
+	public static org.sakaiproject.service.legacy.site.Site addSite(java.lang.String param0) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
 		if (service == null)
@@ -157,7 +144,7 @@ public class SiteService
 		return service.addSite(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.site.SiteEdit addSite(java.lang.String param0, org.sakaiproject.service.legacy.site.Site param1) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException
+	public static org.sakaiproject.service.legacy.site.Site addSite(java.lang.String param0, org.sakaiproject.service.legacy.site.Site param1) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
 		if (service == null)
@@ -175,7 +162,7 @@ public class SiteService
 		return service.allowRemoveSite(param0);
 	}
 
-	public static void removeSite(org.sakaiproject.service.legacy.site.SiteEdit param0) throws org.sakaiproject.exception.PermissionException
+	public static void removeSite(org.sakaiproject.service.legacy.site.Site param0) throws org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
 		if (service == null)
@@ -400,60 +387,12 @@ public class SiteService
 		return service.merge(param0, param1, param2);
 	}
 
-	public static org.sakaiproject.service.legacy.site.Section getSection(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException
+	public static org.sakaiproject.service.legacy.site.Section findSection(java.lang.String param0)
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
 		if (service == null)
 			return null;
 		
-		return service.getSection(param0);
-	}
-
-	public static org.sakaiproject.service.legacy.site.Section newSection(java.lang.String param0, java.lang.String param1, java.lang.String param2) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
-	{
-		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
-		if (service == null)
-			return null;
-		
-		return service.newSection(param0, param1, param2);
-	}
-
-	public static void removeSection(org.sakaiproject.service.legacy.site.Section param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
-	{
-		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
-		if (service == null)
-			return;
-		
-		service.removeSection(param0);
-	}
-
-	public static void saveSection(org.sakaiproject.service.legacy.site.Section param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
-	{
-		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
-		if (service == null)
-			return;
-		
-		service.saveSection(param0);
-	}
-
-	public static java.util.Collection getSections(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException
-	{
-		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
-		if (service == null)
-			return null;
-		
-		return service.getSections(param0);
-	}
-
-	public static boolean hasSections(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException
-	{
-		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
-		if (service == null)
-			return false;
-		
-		return service.hasSections(param0);
+		return service.findSection(param0);
 	}
 }
-
-
-

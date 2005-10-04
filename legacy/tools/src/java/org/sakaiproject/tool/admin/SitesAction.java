@@ -48,7 +48,6 @@ import org.sakaiproject.cheftool.menu.MenuItem;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
@@ -59,9 +58,7 @@ import org.sakaiproject.service.legacy.realm.Role;
 import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SiteEdit;
 import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.SitePageEdit;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.courier.EventObservingCourier;
@@ -335,7 +332,7 @@ public class SitesAction
 	{
 		// get the site to edit
 		context.put("tlang",rb);
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		context.put("site", site);
 		
 		if (ServerConfigurationService.getString("courseSiteType") != null && site.getType() != null && site.getType().equals(ServerConfigurationService.getString("courseSiteType")))
@@ -386,7 +383,7 @@ public class SitesAction
 	{
 		context.put("tlang",rb);
 		// get the site to edit
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		context.put("site", site);
 
 		// get the site's realm
@@ -404,7 +401,7 @@ public class SitesAction
 	{
 		context.put("tlang",rb);
 		// get the site to edit
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		context.put("site", site);
 
 		return "_saveas";
@@ -428,7 +425,7 @@ public class SitesAction
 	{
 		context.put("tlang",rb);
 		// get the site to edit
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		context.put("site", site);
 
 		// put all site's pages into the context
@@ -453,8 +450,8 @@ public class SitesAction
 		// name the html form for user edit fields
 		context.put("form-name", "page-form");
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = (SitePage) state.getAttribute("page");
 
 		context.put("site", site);
 		context.put("page", page);
@@ -474,8 +471,8 @@ public class SitesAction
 		// name the html form for user edit fields
 		context.put("form-name", "page-form");
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = (SitePage) state.getAttribute("page");
 
 		context.put("site", site);
 		context.put("page", page);
@@ -498,7 +495,7 @@ public class SitesAction
 	{
 		context.put("tlang",rb);
 		// get the site to edit
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		context.put("site", site);
 
 		// put all site's sections into the context
@@ -523,7 +520,7 @@ public class SitesAction
 		// name the html form for user edit fields
 		context.put("form-name", "page-form");
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		Section section = (Section) state.getAttribute("section");
 
 		context.put("site", site);
@@ -542,7 +539,7 @@ public class SitesAction
 		// name the html form for user edit fields
 		context.put("form-name", "section-form");
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		Section section = (Section) state.getAttribute("section");
 
 		context.put("site", site);
@@ -564,11 +561,11 @@ public class SitesAction
 	{
 		context.put("tlang",rb);
 		// get the site to edit
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		context.put("site", site);
 
 		// get the page being edited
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		SitePage page = (SitePage) state.getAttribute("page");
 		context.put("page", page);
 
 		// put all page's tools into the context
@@ -593,8 +590,8 @@ public class SitesAction
 		// name the html form for user edit fields
 		context.put("form-name", "tool-form");
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = (SitePage) state.getAttribute("page");
 		ToolConfiguration tool = (ToolConfiguration) state.getAttribute("tool");
 
 		context.put("site", site);
@@ -619,8 +616,8 @@ public class SitesAction
 		// name the html form for user edit fields
 		context.put("form-name", "tool-form");
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = (SitePage) state.getAttribute("page");
 		ToolConfiguration tool = (ToolConfiguration) state.getAttribute("tool");
 
 		context.put("site", site);
@@ -666,44 +663,40 @@ public class SitesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 		String id = data.getParameters().getString("id");
-
-		// get the site
-		try
+		
+		if (SiteService.allowUpdateSite(id))
 		{
-			SiteEdit site = SiteService.editSite(id);
-			state.setAttribute("site", site);
-
-//			RealmEdit realm = RealmService.editRealm("/site/" + id);	// %%% use a site service call -ggolden
-//			state.setAttribute("realm", realm);
-
-			state.setAttribute("mode", "edit");
-
-			// disable auto-updates while in view mode
-			((EventObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
+			// get the site
+			try
+			{
+				Site site = SiteService.getSite(id);
+				state.setAttribute("site", site);
+	
+	//			RealmEdit realm = RealmService.editRealm("/site/" + id);	// %%% use a site service call -ggolden
+	//			state.setAttribute("realm", realm);
+	
+				state.setAttribute("mode", "edit");
+	
+				// disable auto-updates while in view mode
+				((EventObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
+			}
+			catch (IdUnusedException e)
+			{
+				Log.warn("chef", "SitesAction.doEdit: site not found: " + id);
+	
+				addAlert(state,  rb.getString("siteact.site") +" " + id + " " + rb.getString("siteact.notfou"));
+				state.removeAttribute("mode");
+	
+				// make sure auto-updates are enabled
+				enableObserver(state);
+			}
 		}
-		catch (IdUnusedException e)
-		{
-			Log.warn("chef", "SitesAction.doEdit: site not found: " + id);
 
-			addAlert(state,  rb.getString("siteact.site") +" " + id + " " + rb.getString("siteact.notfou"));
-			state.removeAttribute("mode");
-
-			// make sure auto-updates are enabled
-			enableObserver(state);
-		}
-		catch (PermissionException e)
+		else
 		{
 			addAlert(state,  rb.getString("youdonot1") + " " + id);
 			state.removeAttribute("mode");
-
-			// make sure auto-updates are enabled
-			enableObserver(state);
-		}
-		catch (InUseException e)
-		{
-			addAlert(state,  rb.getString("sitact.somone") + " " + id);
-			state.removeAttribute("mode");
-
+	
 			// make sure auto-updates are enabled
 			enableObserver(state);
 		}
@@ -732,13 +725,24 @@ public class SitesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		// commit the change
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		if (site != null)
 		{
 			// bring the mail archive service's channel for this site in sync with the site's setting
 //			syncWithMailArchive(site);
 
-			SiteService.commitEdit(site);
+			try
+			{
+				SiteService.save(site);
+			}
+			catch (PermissionException e)
+			{
+				Log.warn("chef", "SitesAction.doSave_edit: " + e);
+			}
+			catch (IdUnusedException e)
+			{
+				Log.warn("chef", "SitesAction.doSave_edit: " + e);
+			}
 
 			// save the realm, too
 //			RealmEdit realm = (RealmEdit) state.getAttribute("realm");
@@ -785,15 +789,12 @@ public class SitesAction
 		String id = data.getParameters().getString("id");
 
 		// get the site to copy from
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 
 		try
 		{
 			// make a new site with this id and as a structural copy of site
-			SiteEdit newSite = SiteService.addSite(id, site);
-
-			// commit
-			SiteService.commitEdit(newSite);
+			Site newSite = SiteService.addSite(id, site);
 		}
 		catch (IdUsedException e)
 		{
@@ -810,9 +811,6 @@ public class SitesAction
 			addAlert(state,  rb.getString("sitact.youdonot2"));
 			return;
 		}
-
-		// cancel and close
-		SiteService.cancelEdit(site);
 
 		cleanState(state);
 
@@ -854,7 +852,7 @@ public class SitesAction
 //		}
 
 		// get the site
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		if (site != null)
 		{
 			// if this was a new, delete the site
@@ -869,11 +867,6 @@ public class SitesAction
 				{
 					addAlert(state,  rb.getString("sitact.youdonot3") + " " + site.getId());
 				}
-			}
-			// otherwise, just cancel the edits
-			else
-			{
-				SiteService.cancelEdit(site);
 			}
 		}
 
@@ -911,7 +904,7 @@ public class SitesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		// get the site
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		
 		// cancel the realm edit - the site remove will remove the realm
 //		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
@@ -975,7 +968,7 @@ public class SitesAction
 		boolean pubView = data.getParameters().getBoolean("pubView");
 
 		// get the site
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 
 		// add if needed
 		if (site == null)
@@ -1105,8 +1098,8 @@ public class SitesAction
 		state.setAttribute("mode", "newPage");
 
 		// make the page so we have the id
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = site.addPage();
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = site.addPage();
 		state.setAttribute("page", page);
 
 		// mark the site as new, so on cancel it can be deleted
@@ -1125,8 +1118,8 @@ public class SitesAction
 		String id = data.getParameters().getString("id");
 
 		// get the page
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = site.getPageEdit(id);
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = site.getPage(id);
 		state.setAttribute("page", page);
 
 	}	// doEdit_page
@@ -1141,8 +1134,8 @@ public class SitesAction
 		String id = data.getParameters().getString("id");
 
 		// get the page
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = site.getPageEdit(id);
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = site.getPage(id);
 		state.setAttribute("page", page);
 		
 		// move it
@@ -1160,8 +1153,8 @@ public class SitesAction
 		String id = data.getParameters().getString("id");
 
 		// get the page
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = site.getPageEdit(id);
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = site.getPage(id);
 		state.setAttribute("page", page);
 		
 		// move it
@@ -1212,8 +1205,8 @@ public class SitesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = (SitePage) state.getAttribute("page");
 
 		// if the page was new, remove it
 		if ("true".equals(state.getAttribute("newPage")))
@@ -1238,8 +1231,8 @@ public class SitesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = (SitePage) state.getAttribute("page");
 
 		// remove the page (no confirm)
 		site.removePage(page);
@@ -1277,7 +1270,7 @@ public class SitesAction
 		String id = data.getParameters().getString("id");
 
 		// get the section
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		Section section = site.getSection(id);
 		state.setAttribute("section", section);
 
@@ -1326,7 +1319,7 @@ public class SitesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		Section section = (Section) state.getAttribute("section");
 
 		// if the page was new, remove it
@@ -1352,7 +1345,7 @@ public class SitesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		Section section = (Section) state.getAttribute("section");
 
 		// remove the page (no confirm)
@@ -1375,7 +1368,7 @@ public class SitesAction
 		state.setAttribute("mode", "newSection");
 
 		// make the page so we have the id
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		Section section = site.addSection();
 		state.setAttribute("section", section);
 
@@ -1402,7 +1395,7 @@ public class SitesAction
 	private boolean readPageForm(RunData data, SessionState state)
 	{
 		// get the page - it's there
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		SitePage page = (SitePage) state.getAttribute("page");
 
 		// read the form
 		String title = StringUtil.trimToNull(data.getParameters().getString("title"));
@@ -1479,7 +1472,7 @@ public class SitesAction
 		state.setAttribute("mode", "newTool");
 
 		// make the tool so we have the id
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		SitePage page = (SitePage) state.getAttribute("page");
 		ToolConfiguration tool = page.addTool();
 		state.setAttribute("tool", tool);
 
@@ -1499,8 +1492,8 @@ public class SitesAction
 		String id = data.getParameters().getString("id");
 
 		// get the tool
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = (SitePage) state.getAttribute("page");
 		ToolConfiguration tool = page.getTool(id);
 		state.setAttribute("tool", tool);
 
@@ -1516,8 +1509,8 @@ public class SitesAction
 		String id = data.getParameters().getString("id");
 
 		// get the tool
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = (SitePage) state.getAttribute("page");
 		ToolConfiguration tool = page.getTool(id);
 		
 		// move it
@@ -1535,8 +1528,8 @@ public class SitesAction
 		String id = data.getParameters().getString("id");
 
 		// get the tool
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = (SitePage) state.getAttribute("page");
 		ToolConfiguration tool = page.getTool(id);
 		
 		// move it
@@ -1602,8 +1595,8 @@ public class SitesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		Site site = (Site) state.getAttribute("site");
+		SitePage page = (SitePage) state.getAttribute("page");
 		ToolConfiguration tool = (ToolConfiguration) state.getAttribute("tool");
 
 		// if the tool was new, remove it
@@ -1629,7 +1622,7 @@ public class SitesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
-		SitePageEdit page = (SitePageEdit) state.getAttribute("page");
+		SitePage page = (SitePage) state.getAttribute("page");
 		ToolConfiguration tool = (ToolConfiguration) state.getAttribute("tool");
 
 		// remove the tool (no confirm)
@@ -1662,7 +1655,7 @@ public class SitesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		// get the site
-		SiteEdit site = (SiteEdit) state.getAttribute("site");
+		Site site = (Site) state.getAttribute("site");
 		
 		site.regenerateIds();
 		addAlert(state, rb.getString("sitact.thesit"));

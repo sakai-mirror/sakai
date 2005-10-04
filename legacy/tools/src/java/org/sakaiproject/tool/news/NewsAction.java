@@ -44,10 +44,9 @@ import org.sakaiproject.service.legacy.news.NewsChannel;
 import org.sakaiproject.service.legacy.news.NewsConnectionException;
 import org.sakaiproject.service.legacy.news.NewsFormatException;
 import org.sakaiproject.service.legacy.news.cover.NewsService;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.service.legacy.site.SiteEdit;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.SitePageEdit;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
 
 // imports
@@ -373,10 +372,11 @@ public class NewsAction
 				// if this is the only tool on that page, update the page's title also
 				try
 				{
-					SiteEdit sEdit = SiteService.editSite(PortalService.getCurrentSiteId());
-					SitePageEdit pEdit = sEdit.getPageEdit(p.getId());
+					// TODO: save site page title? -ggolden
+					Site sEdit = SiteService.getSite(PortalService.getCurrentSiteId());
+					SitePage pEdit = sEdit.getPage(p.getId());
 					pEdit.setTitle(newChannelTitle);
-					SiteService.commitEdit(sEdit);
+					SiteService.save(sEdit);
 				}
 				catch (Exception ignore)
 				{

@@ -43,7 +43,7 @@ import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.log.cover.Logger;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessageEdit;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
-import org.sakaiproject.service.legacy.site.SiteEdit;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.java.StringUtil;
 
@@ -555,7 +555,7 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 	}	// init
 	
 	
-	private SiteEdit m_editSite;
+	private Site m_editSite;
 	// the announcement channel id
 	private String m_channelId = null;
 	// the announecement message id
@@ -1124,14 +1124,14 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 
 
 	
-	public SiteEdit getEditSite()
+	public Site getEditSite()
 	{
 		return m_editSite;
 	}
 
 
 	
-	public void setEditSite(SiteEdit site)
+	public void setEditSite(Site site)
 	{
 		m_editSite = site;
 		

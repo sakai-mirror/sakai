@@ -34,8 +34,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
-import org.sakaiproject.api.kernel.session.SessionBindingEvent;
-import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.component.section.cover.CourseManager;
@@ -81,9 +79,7 @@ import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SiteEdit;
 import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.SitePageEdit;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.time.Time;
@@ -103,11 +99,10 @@ import org.w3c.dom.NodeList;
 
 /**
  * <p>
- * BaseSiteService is a base implementation of the SiteService .
+ * BaseSiteService is a base implementation of the SiteService.
  * </p>
  * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
+ * @author Sakai Software Development Team
  */
 public abstract class BaseSiteService implements SiteService, StorageUser
 {
@@ -139,8 +134,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	protected String getAccessPoint(boolean relative)
 	{
 		return (relative ? "" : m_serverConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
-
-	} // getAccessPoint
+	}
 
 	/**
 	 * Access the site id extracted from a site reference.
@@ -156,8 +150,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		if (i == -1) return ref;
 		String id = ref.substring(i + start.length());
 		return id;
-
-	} // siteId
+	}
 
 	/**
 	 * Check security permission.
@@ -176,8 +169,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		return true;
-
-	} // unlockCheck
+	}
 
 	/**
 	 * Check security permission.
@@ -195,8 +187,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, resource);
 		}
-
-	} // unlock
+	}
 
 	/**
 	 * Update the live properties for a site for when modified.
@@ -207,8 +198,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		site.m_lastModifiedUserId = current;
 		site.m_lastModifiedTime = TimeService.newTime();
-
-	} //  addLiveUpdateProperties
+	}
 
 	/**
 	 * Create the live properties for the site.
@@ -223,8 +213,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		Time now = TimeService.newTime();
 		site.m_createdTime = now;
 		site.m_lastModifiedTime = (Time) now.clone();
-
-	} //  addLiveProperties
+	}
 
 	/**
 	 * Return the url unchanged, unless it's a reference, then return the reference url
@@ -239,8 +228,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		// return the reference's url
 		return ref.getUrl();
-
-	} // convertReferenceUrl
+	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Constructors, Dependencies and their setter methods
@@ -339,11 +327,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		for (Iterator iSites = sites.iterator(); iSites.hasNext();)
 		{
 			Site site = (Site) iSites.next();
-			SiteEdit edit = m_storage.edit(site.getId());
+			Site edit = m_storage.get(site.getId());
 			if (site != null)
 			{
 				edit.regenerateIds();
-				m_storage.commit(edit);
+				m_storage.save(edit);
 
 				m_logger.info(this + ".regenerateAllSiteIds: site: " + site.getId());
 			}
@@ -393,8 +381,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			m_logger.warn(this + ".init(): ", t);
 		}
-
-	} // init
+	}
 
 	/**
 	 * Returns to uninitialized state.
@@ -412,11 +399,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
-	 * check permissions for accessing (i.e. visiting) a site
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @return true if the site is allowed to access the site, false if not.
+	 * @inheritDoc
 	 */
 	public boolean allowAccessSite(String id)
 	{
@@ -440,8 +423,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		return rv;
-
-	} // allowAccessSite
+	}
 
 	/**
 	 * Access an already defined site object.
@@ -457,12 +439,16 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		if (id == null) throw new IdUnusedException("<null>");
 
 		Site rv = null;
-		
+
 		// check the cache
 		String ref = siteReference(id);
 		if ((m_siteCache != null) && (m_siteCache.containsKey(ref)))
 		{
 			rv = (Site) m_siteCache.get(ref);
+			
+			// return a copy of the site from the cache
+			rv = new BaseSite(rv, true);
+
 			return rv;
 		}
 
@@ -474,24 +460,18 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// track it - we don't track site access -ggolden
 		// EventTrackingService.post(EventTrackingService.newEvent(SECURE_ACCESS_SITE, site.getReference()));
 
-		// cache
+		// cache a copy
 		if (m_siteCache != null)
 		{
-			m_siteCache.put(ref, rv, m_cacheSeconds);
+			Site copy = new BaseSite(rv, true);
+			m_siteCache.put(ref, copy, m_cacheSeconds);
 		}
 
 		return rv;
+	}
 
-	} // getDefinedSite
-	
 	/**
-	 * Access a site object. If thie site is a user site, and it's not defined yet, create it if possible.
-	 * 
-	 * @param id
-	 *        The site id string.
-	 * @return A site object containing the site information
-	 * @exception IdUnusedException
-	 *            if not found
+	 * @inheritDoc
 	 */
 	public Site getSite(String id) throws IdUnusedException
 	{
@@ -511,7 +491,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			{
 				// use lowercase user id inside user's MyWorkspace id
 				id = id.toLowerCase();
-				
+
 				// pick a template, type based, to clone it exactly but set this as the id
 				BaseSite template = null;
 				try
@@ -519,8 +499,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 					User user = UserDirectoryService.getUser((UsageSessionService.getSessionUserId()).toLowerCase());
 					template = (BaseSite) getDefinedSite(USER_SITE_TEMPLATE + "." + user.getType());
 				}
-				catch (Throwable t) {}
-				
+				catch (Throwable t)
+				{
+				}
+
 				// if a type based template was not found, use the generic one
 				// will throw IdUnusedException all the way out of this method if that's not defined
 				if (template == null)
@@ -535,7 +517,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 					unlock(SECURE_ADD_USER_SITE, siteReference(id));
 
 					// reserve a site with this id from the info store - if it's in use, this will return null
-					BaseSiteEdit site = (BaseSiteEdit) m_storage.put(id);
+					BaseSite site = (BaseSite) m_storage.put(id);
 					if (site == null)
 					{
 						throw new IdUsedException(id);
@@ -546,7 +528,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 					// copy in the template
 					site.set(template, false);
 
-					commitEdit(site);
+					save(site);
 
 					return site;
 				}
@@ -567,15 +549,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 
 	/**
-	 * Access a site object for purposes of having the user visit the site - visitation permissions are in effect.
-	 * 
-	 * @param id
-	 *        The site id string.
-	 * @return A site object containing the site information.
-	 * @exception IdUnusedException
-	 *            if not found.
-	 * @exception PermissionException
-	 *            if the current user does not have permission to visit this site.
+	 * @inheritDoc
 	 */
 	public Site getSiteVisit(String id) throws IdUnusedException, PermissionException
 	{
@@ -596,32 +570,35 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 
 	/**
-	 * check permissions for updating a site (i.s. using getSiteEditClone() and calling commitEditClone())
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @return true if the user is allowed to update the site, false if not.
+	 * @inheritDoc
 	 */
 	public boolean allowUpdateSite(String id)
 	{
 		return unlockCheck(SECURE_UPDATE_SITE, siteReference(id));
-
-	} // allowUpdateSite
+	}
 
 	/**
-	 * Get a locked site object for editing. Must commitEdit() to make official, or cancelEdit() when done!
-	 * 
-	 * @param id
-	 *        The site id string.
-	 * @return A SiteEdit object for editing.
-	 * @exception IdUnusedException
-	 *            if not found, or if not an SiteEdit object
-	 * @exception PermissionException
-	 *            if the current user does not have permission to mess with this site.
-	 * @exception InUseException
-	 *            if the site is being edited by another user.
+	 * @inheritDoc
 	 */
-	public SiteEdit editSite(String id) throws IdUnusedException, PermissionException, InUseException
+	public void save(Site site)
+	{
+		// update the properties
+		addLiveUpdateProperties(((BaseSite) site));
+
+		// sync up with all other services
+		enableRelated((BaseSite) site);
+
+		// complete the edit
+		m_storage.save(site);
+
+		// track it
+		EventTrackingService.post(EventTrackingService.newEvent(((BaseSite) site).getEvent(), site.getReference(), true));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public void saveSiteInfo(String id, String description, String infoUrl) throws IdUnusedException, PermissionException
 	{
 		String ref = siteReference(id);
 
@@ -634,118 +611,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			throw new IdUnusedException(id);
 		}
 
-		// ignore the cache - get the site with a lock from the info store
-		SiteEdit site = m_storage.edit(id);
-		if (site == null) throw new InUseException(id);
-
-		((BaseSiteEdit) site).setEvent(SECURE_UPDATE_SITE);
-
-		// force the site to be fully read - no more lazy!
-		((BaseSiteEdit) site).loadAll();
-
-		return site;
-
-	} // editSite
-
-	/**
-	 * Commit the changes made to a SiteEdit object, and release the lock.
-	 * 
-	 * @param user
-	 *        The SiteEdit object to commit.
-	 */
-	public void commitEdit(SiteEdit site)
-	{
-		// check for closed edit
-		if (!site.isActiveEdit())
-		{
-			try
-			{
-				throw new Exception();
-			}
-			catch (Exception e)
-			{
-				m_logger.warn(this + ".commitEdit(): closed SiteEdit", e);
-			}
-			return;
-		}
-
-		// update the properties
-		addLiveUpdateProperties(((BaseSite) site));
-
-		// sync up with all other services
-		enableRelated((BaseSiteEdit) site);
-
-		// complete the edit
-		m_storage.commit(site);
-
-		// track it
-		EventTrackingService.post(EventTrackingService.newEvent(((BaseSiteEdit) site).getEvent(), site.getReference(), true));
-
-		// close the edit object
-		((BaseSiteEdit) site).closeEdit();
-
-	} // commitEdit
-
-	/**
-	 * Cancel the changes made to a SiteEdit object, and release the lock.
-	 * 
-	 * @param user
-	 *        The SiteEdit object to cancel.
-	 */
-	public void cancelEdit(SiteEdit site)
-	{
-		// check for closed edit
-		if (!site.isActiveEdit())
-		{
-			try
-			{
-				throw new Exception();
-			}
-			catch (Exception e)
-			{
-				m_logger.warn(this + ".cancelEdit(): closed SiteEdit", e);
-			}
-			return;
-		}
-
-		// release the edit lock
-		m_storage.cancel(site);
-
-		// close the edit object
-		((BaseSiteEdit) site).closeEdit();
-
-	} // cancelEdit
-
-	/**
-	 * Commit a change to the site's description and iconUrl, without reguard to locks.  Just blast it into storage.
-	 * @param siteId The site id to change.
-	 * @param description The new site description.
-	 * @param infoUrl The new site InfoUrl.
-	 * @throws IdUnUsedException if the siteId is not defined.
-	 * @throwsPermissionException if the user does not have permission to update the site.
-	 */
-	public void commitSiteInfo(String siteId, String description, String infoUrl) throws IdUnusedException, PermissionException
-	{
-		String ref = siteReference(siteId);
-
-		// check security (throws if not permitted)
-		unlock(SECURE_UPDATE_SITE, ref);
-
-		// check for existance
-		if (!m_storage.check(siteId))
-		{
-			throw new IdUnusedException(siteId);
-		}
-
-		m_storage.commitInfo(siteId, description, infoUrl);
+		m_storage.saveInfo(id, description, infoUrl);
 	}
 
 	/**
-	 * check permissions for addSite().
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @return true if the user is allowed to addSite(id), false if not.
+	 * @inheritDoc
 	 */
 	public boolean allowAddSite(String id)
 	{
@@ -758,23 +628,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			return unlockCheck(SECURE_ADD_SITE, siteReference(id));
 		}
-
-	} // allowAddSite
+	}
 
 	/**
-	 * Add a new site to the directory. Must commitEdit() to make official, or cancelEdit() when done!
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @return The new locked site object.
-	 * @exception IdInvalidException
-	 *            if the site id is invalid.
-	 * @exception IdUsedException
-	 *            if the site id is already used.
-	 * @exception PermissionException
-	 *            if the current user does not have permission to add a site.
+	 * @inheritDoc
 	 */
-	public SiteEdit addSite(String id) throws IdInvalidException, IdUsedException, PermissionException
+	public Site addSite(String id) throws IdInvalidException, IdUsedException, PermissionException
 	{
 		// check for a valid site name
 		Validator.checkResourceId(id);
@@ -785,34 +644,21 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		unlock(SECURE_ADD_SITE, siteReference(id));
 
 		// reserve a site with this id from the info store - if it's in use, this will return null
-		SiteEdit site = m_storage.put(id);
+		Site site = m_storage.put(id);
 		if (site == null)
 		{
 			throw new IdUsedException(id);
 		}
 
-		((BaseSiteEdit) site).setEvent(SECURE_ADD_SITE);
+		((BaseSite) site).setEvent(SECURE_ADD_SITE);
 
 		return site;
-
-	} // addSite
+	}
 
 	/**
-	 * Add a new site. Will be structured just like <other>. Must commitEdit() to make official, or cancelEdit() when done!
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @param other
-	 *        The site to make this site a structural copy of.
-	 * @return The new locked site object.
-	 * @exception IdInvalidException
-	 *            if the site id is invalid.
-	 * @exception IdUsedException
-	 *            if the site id is already used.
-	 * @exception PermissionException
-	 *            if the current site does not have permission to add a site.
+	 * @inheritDoc
 	 */
-	public SiteEdit addSite(String id, Site other) throws IdInvalidException, IdUsedException, PermissionException
+	public Site addSite(String id, Site other) throws IdInvalidException, IdUsedException, PermissionException
 	{
 		// check for a valid site name
 		Validator.checkResourceId(id);
@@ -830,13 +676,13 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		// reserve a site with this id from the info store - if it's in use, this will return null
-		SiteEdit site = m_storage.put(id);
+		Site site = m_storage.put(id);
 		if (site == null)
 		{
 			throw new IdUsedException(id);
 		}
 
-		((BaseSiteEdit) site).setEvent(SECURE_ADD_SITE);
+		((BaseSite) site).setEvent(SECURE_ADD_SITE);
 
 		// make this site a copy of other, but with new ids (not an exact copy)
 		((BaseSite) site).set((BaseSite) other, false);
@@ -853,7 +699,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			RealmService.commitEdit(re);
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			m_logger.warn(this + ".addSite(): error copying realm", e);
 		}
@@ -865,46 +711,21 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		addLiveProperties(((BaseSite) site));
 
 		return site;
-
-	} // addSite
+	}
 
 	/**
-	 * check permissions for removeSite().
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @return true if the user is allowed to removeSite(id), false if not.
+	 * @inheritDoc
 	 */
 	public boolean allowRemoveSite(String id)
 	{
 		return unlockCheck(SECURE_REMOVE_SITE, siteReference(id));
-
-	} // allowRemoveSite
+	}
 
 	/**
-	 * Remove this site's information from the directory - it must be a site with a lock from editSite(). The SiteEdit is disabled, and not to be used after this call.
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @exception PermissionException
-	 *            if the current user does not have permission to remove this site.
+	 * @inheritDoc
 	 */
-	public void removeSite(SiteEdit site) throws PermissionException
+	public void removeSite(Site site) throws PermissionException
 	{
-		// check for closed edit
-		if (!site.isActiveEdit())
-		{
-			try
-			{
-				throw new Exception();
-			}
-			catch (Exception e)
-			{
-				m_logger.warn(this + ".removeSite(): closed SiteEdit", e);
-			}
-			return;
-		}
-
 		// check security (throws if not permitted)
 		unlock(SECURE_REMOVE_SITE, site.getReference());
 
@@ -916,75 +737,42 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		// get the services related to this site setup for the site's removal
 		disableRelated(site);
-
-		// close the edit object
-		((BaseSiteEdit) site).closeEdit();
-
-	} // removeSite
+	}
 
 	/**
-	 * Access the internal reference which can be used to access the site from within the system.
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @return The the internal reference which can be used to access the site from within the system.
+	 * @inheritDoc
 	 */
 	public String siteReference(String id)
 	{
 		return getAccessPoint(true) + Entity.SEPARATOR + id;
-
-	} // siteReference
-
-	/**
-	 * Access the internal reference which can be used to access the site page from within the system.
-	 * 
-	 * @param siteId
-	 *        The site id.
-	 * @param pageId
-	 *        The page id.
-	 * @return The the internal reference which can be used to access the site page from within the system.
-	 */
-	public String sitePageReference(String siteId, String pageId)
-	{
-		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + "page" + Entity.SEPARATOR + pageId;
-
-	} // sitePageReference
-
-	/**
-	 * Access the internal reference which can be used to access the site tool from within the system.
-	 * 
-	 * @param siteId
-	 *        The site id.
-	 * @param toolId
-	 *        The tool id.
-	 * @return The the internal reference which can be used to access the site tool from within the system.
-	 */
-	public String siteToolReference(String siteId, String toolId)
-	{
-		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + "tool" + Entity.SEPARATOR + toolId;
-
-	} // siteToolReference
-
-	/**
-	 * Access the internal reference which can be used to access the site section from within the system.
-	 * 
-	 * @param siteId
-	 *        The site id.
-	 * @param sectionId
-	 *        The section id.
-	 * @return The the internal reference which can be used to access the site section from within the system.
-	 */
-	public String siteSectionReference(String siteId, String sectionId)
-	{
-		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + "section" + Entity.SEPARATOR + sectionId;
 	}
 
 	/**
-	 * Is this site (id or reference) a user site? Note, /site/~ and ~ are NOT considered user sites.
-	 * 
-	 * @param site
-	 *        The site id or reference.
-	 * @return true if this is a user site, false if not.
+	 * @inheritDoc
+	 */
+	public String sitePageReference(String siteId, String pageId)
+	{
+		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + PAGE_SUBTYPE+ Entity.SEPARATOR + pageId;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public String siteToolReference(String siteId, String toolId)
+	{
+		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + TOOL_SUBTYPE + Entity.SEPARATOR + toolId;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public String siteSectionReference(String siteId, String sectionId)
+	{
+		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + SECTION_SUBTYPE + Entity.SEPARATOR + sectionId;
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public boolean isUserSite(String site)
 	{
@@ -995,15 +783,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		// deal with an id
 		return (site.startsWith("~") && (!site.equals("~")));
-
-	} // isUserSite
+	}
 
 	/**
-	 * Extract the user id for this user site from the site id or reference.
-	 * 
-	 * @param site
-	 *        The site id or reference.
-	 * @return The user id associated with this site.
+	 * @inheritDoc
 	 */
 	public String getSiteUserId(String site)
 	{
@@ -1020,24 +803,18 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		return null;
+	}
 
-	} // getSiteUserId
-
-	/*
-	 * Form the site id for this user's site. @param userId The user id. @return The site id for this user's site.
+	/**
+	 * @inheritDoc
 	 */
 	public String getUserSiteId(String userId)
 	{
 		return "~" + userId;
-
-	} // getUserSiteId
+	}
 
 	/**
-	 * Is this site (id or reference) a special site?
-	 * 
-	 * @param site
-	 *        The site id or reference.
-	 * @return true if this is a special site, false if not.
+	 * @inheritDoc
 	 */
 	public boolean isSpecialSite(String site)
 	{
@@ -1058,15 +835,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		if (site.equals("~")) return true;
 
 		return false;
-
-	} // isSpecialSite
+	}
 
 	/**
-	 * Extract the special id for this special site from the site id or reference.
-	 * 
-	 * @param site
-	 *        The site id or reference.
-	 * @return The special id associated with this site.
+	 * @inheritDoc
 	 */
 	public String getSiteSpecialId(String site)
 	{
@@ -1083,28 +855,18 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		return null;
-
-	} // getSiteSpecialId
+	}
 
 	/**
-	 * Form the site id for this special site.
-	 * 
-	 * @param special
-	 *        The special id.
-	 * @return The site id for this user's site.
+	 * @inheritDoc
 	 */
 	public String getSpecialSiteId(String special)
 	{
 		return "!" + special;
-
-	} // getUserSiteId
+	}
 
 	/**
-	 * Form a display of the site title and id for this site.
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @return A display of the site title and id for this site.
+	 * @inheritDoc
 	 */
 	public String getSiteDisplay(String id)
 	{
@@ -1139,15 +901,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		return rv;
-
-	} // getSiteDisplay
+	}
 
 	/**
-	 * Access the ToolConfiguration that has this id, if one is defined, else return null. The tool may be on any SitePage in the site.
-	 * 
-	 * @param id
-	 *        The id of the tool.
-	 * @return The ToolConfiguration that has this id, if one is defined, else return null.
+	 * @inheritDoc
 	 */
 	public ToolConfiguration findTool(String id)
 	{
@@ -1159,33 +916,37 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			rv = m_siteCache.getTool(id);
 			if (rv != null)
 			{
+				// return a copy from the cache
+				rv = new BaseToolConfiguration(rv, rv.getContainingPage(), true);
 				return rv;
 			}
-			
+
 			// if not, get the tool's site id, cache the site, and try again
 			String siteId = m_storage.findToolSiteId(id);
 			if (siteId != null)
 			{
-				// read and cache the site, pages, tools
+				// read and cache the site, pages, tools, etc.
 				try
 				{
-					getDefinedSite(siteId);
-					
-					// try again
-					rv = m_siteCache.getTool(id);
+					Site site = getDefinedSite(siteId);
+
+					// return what we find from the copy we got from the cache
+					rv = site.getTool(id);
+
 					return rv;
 				}
-				catch (IdUnusedException e) {}
+				catch (IdUnusedException e)
+				{
+				}
 			}
-			
+
 			return null;
 		}
 
 		rv = m_storage.findTool(id);
 
 		return rv;
-
-	} // findTool
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -1200,9 +961,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			rv = m_siteCache.getPage(id);
 			if (rv != null)
 			{
+				rv = new BaseSitePage(rv, rv.getContainingSite(), true);
 				return rv;
 			}
-			
+
 			// if not, get the page's site id, cache the site, and try again
 			String siteId = m_storage.findPageSiteId(id);
 			if (siteId != null)
@@ -1210,15 +972,17 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				// read and cache the site, pages, tools
 				try
 				{
-					getDefinedSite(siteId);
-					
-					// try again
-					rv = m_siteCache.getPage(id);
+					Site site = getDefinedSite(siteId);
+
+					// return what we find from the site copy from the cache
+					rv = site.getPage(id);
 					return rv;
 				}
-				catch (IdUnusedException e) {}
+				catch (IdUnusedException e)
+				{
+				}
 			}
-			
+
 			return null;
 		}
 
@@ -1228,58 +992,45 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 
 	/**
-	 * check permissions for viewing project site participants
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @return true if the site is allowed to addSite(id), false if not.
+	 * @inheritDoc
 	 */
 	public boolean allowViewRoster(String id)
 	{
 		return unlockCheck(SECURE_VIEW_ROSTER, siteReference(id));
-
-	} // allowViewRoster
-
-	/**
-	 * Cause the current user to join the site as defined by the site's joinable flag and joiner role.
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @throws IdUnusedException
-	 *         if the id is not a valid site id.
-	 * @exception PermissionException
-	 *            if the current user does not have permission to join this site.
-	 * @exception InUseException
-	 *            if the site is otherwise being edited.
-	 */
-	public void join(String id) throws IdUnusedException, PermissionException, InUseException
-	{
-		RealmService.joinSite(id);
 	}
 
 	/**
-	 * Cause the current user to unjoin the site, removing all role relationships.
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @throws IdUnusedException
-	 *         if the id is not a valid site id.
-	 * @exception PermissionException
-	 *            if the current user does not have permission to unjoin this site.
-	 * @exception InUseException
-	 *            if the site is otherwise being edited.
+	 * @inheritDoc
 	 */
-	public void unjoin(String id) throws IdUnusedException, PermissionException, InUseException
+	public void join(String id) throws IdUnusedException, PermissionException
 	{
-		RealmService.unjoinSite(id);
+		// TODO: fix realm to avoid this try block
+		try
+		{
+			RealmService.joinSite(id);
+		}
+		catch (Throwable e)
+		{
+		}
 	}
 
 	/**
-	 * check permissions for unjoin() - unjoining the site and removing all role relationships.
-	 * 
-	 * @param id
-	 *        The site id.
-	 * @return true if the user is allowed to unjoin(id), false if not.
+	 * @inheritDoc
+	 */
+	public void unjoin(String id) throws IdUnusedException, PermissionException
+	{
+		// TODO: fix realm to avoid this try block
+		try
+		{
+			RealmService.unjoinSite(id);
+		}
+		catch (Throwable e)
+		{
+		}
+	}
+
+	/**
+	 * @inheritDoc
 	 */
 	public boolean allowUnjoinSite(String id)
 	{
@@ -1287,11 +1038,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 
 	/**
-	 * Compute the skin to use for the (optional) site specified in the id parameter. If no site specified, or if the site has no skin defined, use the configured default skin.
-	 * 
-	 * @param id
-	 *        The (optional) site id.
-	 * @return A skin to use for this site.
+	 * @inheritDoc
 	 */
 	public String getSiteSkin(String id)
 	{
@@ -1308,7 +1055,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 				return skin;
 			}
-			catch (IdUnusedException e) {}
+			catch (IdUnusedException e)
+			{
+			}
 
 			// if the site's not around, use the default
 			return adjustSkin(null, true);
@@ -1327,28 +1076,25 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		return m_storage.getSiteTypes();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public List getSites(SelectionType type, Object ofType, String criteria, Map propertyCriteria, SortType sort,
 			PagingPosition page)
 	{
 		return m_storage.getSites(type, ofType, criteria, propertyCriteria, sort, page);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public int countSites(SelectionType type, Object ofType, String criteria, Map propertyCriteria)
 	{
 		return m_storage.countSites(type, ofType, criteria, propertyCriteria);
 	}
 
 	/**
-	 * Establish the internal security for this site. Previous security settings are replaced for this site. Assigning a user with update implies the two reads; assigning a user with unp read implies the other read.
-	 * 
-	 * @param siteId
-	 *        The id of the site.
-	 * @param updateUsers
-	 *        The set of User objects who have update access.
-	 * @param visitUnpUsers
-	 *        The set of User objects who have visit unpublished access.
-	 * @param visitUsers
-	 *        The set of User objects who have visit access.
+	 * @inheritDoc
 	 */
 	public void setSiteSecurity(String siteId, Set updateUsers, Set visitUnpUsers, Set visitUsers)
 	{
@@ -1356,16 +1102,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 
 	/**
-	 * Establish the internal security for user for all sites. Previous security settings are replaced for this user. Assigning a user with update implies the two reads; assigning a user with unp read implies the other read.
-	 * 
-	 * @param userId
-	 *        The id of the user.
-	 * @param updateSites
-	 *        The set of String site ids where the user has update access.
-	 * @param visitUnpSites
-	 *        The set of String site ids where the user has visit unpublished access.
-	 * @param visitSites
-	 *        The set of String site ids where the user has visit access.
+	 * @inheritDoc
 	 */
 	public void setUserSecurity(String userId, Set updateSites, Set visitUnpSites, Set visitSites)
 	{
@@ -1377,7 +1114,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
- 	 * {@inheritDoc}
+	 * {@inheritDoc}
 	 */
 	public String getLabel()
 	{
@@ -1410,7 +1147,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			String id = null;
 			String container = null;
-			String subType = "site";
+			String subType = SITE_SUBTYPE;
 
 			// we will get null, service, siteId, page | section | tool, page/section/tool id
 			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
@@ -1419,7 +1156,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			{
 				id = parts[2];
 				container = id;
-				
+
 				if (parts.length > 4)
 				{
 					subType = parts[3];
@@ -1431,7 +1168,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -1460,10 +1197,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		catch (NullPointerException e)
 		{
 		}
-		
+
 		return rv;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1494,7 +1231,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			m_logger.warn("getEntity(): " + e);
 		}
-		
+
 		return rv;
 	}
 
@@ -1546,8 +1283,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	/**
 	 * {@inheritDoc}
 	 */
-	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames,
-			Map userIdTrans, Set userListAllowImport)
+	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames, Map userIdTrans,
+			Set userListAllowImport)
 	{
 		return "";
 	}
@@ -1564,14 +1301,13 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 	// TODO: the following enable/disable routines are UGLY here - oh gods of the separation of concerns
 	// and modularity forgive me - I will clean this up soon -ggolden
-
 	/**
 	 * Sync up with all other services for a site that exists.
 	 * 
 	 * @param site
 	 *        The site.
 	 */
-	protected void enableRelated(BaseSiteEdit site)
+	protected void enableRelated(BaseSite site)
 	{
 		// skip if special
 		if (isSpecialSite(site.getId()))
@@ -1660,14 +1396,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		enableRealm(site.getReference(), realmTemplate, userId, "!site.template");
-		
+
 		// enable a realm for each section: use the same template as for the site
 		for (Iterator iSections = site.getSections().iterator(); iSections.hasNext();)
 		{
 			Section section = (Section) iSections.next();
 			enableRealm(section.getReference(), realmTemplate, userId, "!site.template");
 		}
-		
+
 		// disable the reams for any sections deleted in this edit
 		for (Iterator iSections = site.m_deletedSections.iterator(); iSections.hasNext();)
 		{
@@ -1718,18 +1454,19 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			enableGradebook(site);
 		}
-		
+
 		// Regardless of whether the section info tool is deployed, the tools
 		// relying on SectionAwareness will need this --jholtzman@berkeley.edu
 		enableSections(site);
 
 		// %%% others ? -ggolden
-
-	} // enableRelated
+	}
 
 	/**
 	 * Figure the site's realm template, based on type and if it's a user site.
-	 * @param site The site to figure the realm for.
+	 * 
+	 * @param site
+	 *        The site to figure the realm for.
 	 * @return the site's realm template, based on type and if it's a user site.
 	 */
 	protected String siteRealmTemplate(Site site)
@@ -1750,7 +1487,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				realmTemplate = realmTemplate + "." + type;
 			}
 		}
-		
+
 		return realmTemplate;
 	}
 
@@ -1760,7 +1497,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param site
 	 *        The site.
 	 */
-	protected void disableRelated(SiteEdit site)
+	protected void disableRelated(Site site)
 	{
 		// skip if special
 		if (isSpecialSite(site.getId()))
@@ -1780,8 +1517,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			Section section = (Section) iSections.next();
 			disableRealm(section.getReference());
 		}
-
-	} // disableRelated
+	}
 
 	/**
 	 * Setup the realm for an active site.
@@ -1877,8 +1613,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				m_logger.warn(this + ".enableRealm: Realm exception: " + e);
 			}
 		}
-
-	} // enableRealm
+	}
 
 	/**
 	 * Remove a site's realm.
@@ -1899,8 +1634,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		// %%% do we want to remove all the realms associated with the site's resources? -ggolden
-
-	} // disableRealm
+	}
 
 	/**
 	 * Setup the mailbox for an active site.
@@ -1908,7 +1642,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param site
 	 *        The site.
 	 */
-	protected void enableMailbox(SiteEdit site)
+	protected void enableMailbox(Site site)
 	{
 		// form the email channel name
 		String channelRef = MailArchiveService.channelReference(site.getId(), MAIN_CONTAINER);
@@ -1971,8 +1705,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			{
 			}
 		}
-
-	} // enableMailbox
+	}
 
 	/**
 	 * Set a site's mailbox to inactive - it remains in existance, just disabled
@@ -1980,7 +1713,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param site
 	 *        The site.
 	 */
-	protected void disableMailbox(SiteEdit site)
+	protected void disableMailbox(Site site)
 	{
 		// form the email channel name
 		String channelRef = MailArchiveService.channelReference(site.getId(), MAIN_CONTAINER);
@@ -2030,8 +1763,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		catch (PermissionException e)
 		{
 		}
-
-	} // disableMailbox
+	}
 
 	/**
 	 * Setup a message channel.
@@ -2041,7 +1773,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param serviceId
 	 *        The name of the message service.
 	 */
-	protected void enableMessageChannel(SiteEdit site, String serviceId)
+	protected void enableMessageChannel(Site site, String serviceId)
 	{
 		MessageService service = getMessageService(serviceId);
 
@@ -2074,8 +1806,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		catch (PermissionException e)
 		{
 		}
-
-	} // enableMessageChannel
+	}
 
 	/**
 	 * Setup a calendar for the site.
@@ -2083,7 +1814,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param site
 	 *        The site.
 	 */
-	protected void enableSchedule(SiteEdit site)
+	protected void enableSchedule(Site site)
 	{
 		// form the calendar name
 		String calRef = CalendarService.calendarReference(site.getId(), MAIN_CONTAINER);
@@ -2114,8 +1845,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		catch (PermissionException e)
 		{
 		}
-
-	} // enableSchedule
+	}
 
 	/**
 	 * Make sure a home in resources exists for the site.
@@ -2123,7 +1853,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param site
 	 *        The site.
 	 */
-	protected void enableResources(SiteEdit site)
+	protected void enableResources(Site site)
 	{
 		// it would be called
 		String id = ContentHostingService.getSiteCollection(site.getId());
@@ -2190,8 +1920,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			m_logger.warn(this + ".enableResources: " + e);
 		}
-
-	} // enableResources
+	}
 
 	/**
 	 * Make sure a home in resources for dropbox exists for the site.
@@ -2199,12 +1928,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param site
 	 *        The site.
 	 */
-	protected void enableDropbox(SiteEdit site)
+	protected void enableDropbox(Site site)
 	{
 		// create it and the user folders within
 		Dropbox.createCollection(site.getId());
-
-	} // enableDropbox
+	}
 
 	/**
 	 * Setup the gradebook for an active site.
@@ -2212,14 +1940,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param site
 	 *        The site.
 	 */
-	protected void enableGradebook(SiteEdit site)
+	protected void enableGradebook(Site site)
 	{
 		// find the gradebook service
-//		org.sakaiproject.service.gradebook.shared.GradebookService service = (org.sakaiproject.service.gradebook.shared.GradebookService) ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
-//		if (service == null) return;
-//
-//		// just to keep us from having a dependency on this optional tool, do this the hard way
-//		if (!service.gradebookExists(site.getId())) service.addGradebook(site.getId(), site.getId());
+		// org.sakaiproject.service.gradebook.shared.GradebookService service = (org.sakaiproject.service.gradebook.shared.GradebookService) ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
+		// if (service == null) return;
+		//
+		// // just to keep us from having a dependency on this optional tool, do this the hard way
+		// if (!service.gradebookExists(site.getId())) service.addGradebook(site.getId(), site.getId());
 
 		Object service = ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
 		if (service == null) return;
@@ -2245,32 +1973,43 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// make the call
 			method.invoke(service, args);
 		}
-		catch (Throwable t) 
+		catch (Throwable t)
 		{
 			m_logger.debug(t.toString());
 		}
 	}
 
-	protected void enableSections(SiteEdit site) {
+	protected void enableSections(Site site)
+	{
 		String siteId = site.getId();
-    	if(!CourseManager.courseExists(siteId))
-    	{
-    		String title = site.getTitle();
-    		if(m_logger.isInfoEnabled()) m_logger.info("Creating a new section container for site " + siteId);
-    		CourseManager.createCourse(siteId, title, false, false, false);
-    	}
+		if (!CourseManager.courseExists(siteId))
+		{
+			String title = site.getTitle();
+			if (m_logger.isInfoEnabled()) m_logger.info("Creating a new section container for site " + siteId);
+			CourseManager.createCourse(siteId, title, false, false, false);
+		}
 	}
+
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Site implementation
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
 	 * <p>
-	 * BaseSite is an implementation of the CHEF Site object.
+	 * BaseSite is an implementation of the Sakai Site object.
 	 * </p>
 	 */
 	public class BaseSite implements Site
 	{
+		/** The event code for this edit. */
+		protected String m_event = null;
+
+		/** Active flag. */
+		protected boolean m_active = false;
+
+		/** List of sections deleted in this edit pass. */
+		protected Collection m_deletedSections = new Vector();
+
 		/** The site id. */
 		protected String m_id = null;
 
@@ -2356,8 +2095,21 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// if the id is not null (a new site, rather than a reconstruction)
 			// add the automatic (live) properties
 			if (m_id != null) addLiveProperties(this);
+		}
 
-		} // BaseSite
+		/**
+		 * Construct from another Site, exact.
+		 * 
+		 * @param site
+		 *        The other site to copy values from.
+		 * @param exact
+		 *        If true, we copy ids - else we generate new ones for site, page and tools.
+		 */
+		public BaseSite(Site other)
+		{
+			BaseSite bOther = (BaseSite) other;
+			set(bOther, true);
+		}
 
 		/**
 		 * Construct from another Site.
@@ -2371,8 +2123,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			BaseSite bOther = (BaseSite) other;
 			set(bOther, exact);
-
-		} // BaseSite
+		}
 
 		/**
 		 * Construct from an existing definition, in xml.
@@ -2387,7 +2138,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			// setup for page list
 			m_pages = new ResourceVector();
-			
+
 			// setup for the sections list
 			m_sections = new ResourceVector();
 
@@ -2546,11 +2297,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 						Element pageEl = (Element) pageNode;
 						if (!pageEl.getTagName().equals("page")) continue;
 
-						BaseSitePageEdit page = new BaseSitePageEdit(pageEl, this);
+						BaseSitePage page = new BaseSitePage(pageEl, this);
 						m_pages.add(page);
 					}
-					
-				// TODO: else if ( "sections")
+
+					// TODO: else if ( "sections")
 				}
 			}
 
@@ -2566,8 +2317,68 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			// set the type, now it's found in either the attribute or the properties
 			m_type = typeValue;
+		}
 
-		} // BaseSite
+		/**
+		 * ReConstruct.
+		 * 
+		 * @param id
+		 * @param title
+		 * @param type
+		 * @param shortDesc
+		 * @param description
+		 * @param iconUrl
+		 * @param infoUrl
+		 * @param skin
+		 * @param published
+		 * @param joinable
+		 * @param pubView
+		 * @param joinRole
+		 * @param isSpecial
+		 * @param isUser
+		 * @param createdBy
+		 * @param createdOn
+		 * @param modifiedBy
+		 * @param modifiedOn
+		 */
+		public BaseSite(String id, String title, String type, String shortDesc, String description, String iconUrl, String infoUrl,
+				String skin, boolean published, boolean joinable, boolean pubView, String joinRole, boolean isSpecial,
+				boolean isUser, String createdBy, Time createdOn, String modifiedBy, Time modifiedOn)
+		{
+			// setup for properties
+			m_properties = new BaseResourcePropertiesEdit();
+
+			// set up the page list
+			m_pages = new ResourceVector();
+
+			// set up the sections collection
+			m_sections = new ResourceVector();
+
+			m_id = id;
+			m_title = title;
+			m_type = type;
+			m_shortDescription = shortDesc;
+			m_description = description;
+			m_icon = iconUrl;
+			m_info = infoUrl;
+			m_skin = skin;
+			m_published = published;
+			m_joinable = joinable;
+			m_pubView = pubView;
+			m_joinerRole = joinRole;
+			// TODO: isSpecial
+			// TODO: isUser
+			m_createdUserId = createdBy;
+			m_lastModifiedUserId = modifiedBy;
+			m_createdTime = createdOn;
+			m_lastModifiedTime = modifiedOn;
+
+			// setup for properties, but mark them lazy since we have not yet established them from data
+			((BaseResourcePropertiesEdit) m_properties).setLazy(true);
+
+			m_pagesLazy = true;
+			m_sectionsLazy = true;
+		}
 
 		/**
 		 * Set me to be a deep copy of other (all but my id.)
@@ -2622,8 +2433,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			m_pages = new ResourceVector();
 			for (Iterator iPages = other.getPages().iterator(); iPages.hasNext();)
 			{
-				BaseSitePageEdit page = (BaseSitePageEdit) iPages.next();
-				m_pages.add(new BaseSitePageEdit(page, this, exact));
+				BaseSitePage page = (BaseSitePage) iPages.next();
+				m_pages.add(new BaseSitePage(page, this, exact));
 			}
 			m_pagesLazy = other.m_pagesLazy;
 
@@ -2635,48 +2446,35 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				m_sections.add(new BaseSection(section, this, exact));
 			}
 			m_sectionsLazy = other.m_sectionsLazy;
-
-		} // set
+		}
 
 		/**
-		 * Access the site id.
-		 * 
-		 * @return The site id string.
+		 * @inheritDoc
 		 */
 		public String getId()
 		{
 			if (m_id == null) return "";
 			return m_id;
-
-		} // getId
+		}
 
 		/**
-		 * Access the URL which can be used to access the resource.
-		 * 
-		 * @return The URL which can be used to access the resource.
+		 * @inheritDoc
 		 */
 		public String getUrl()
 		{
 			return m_serverConfigurationService.getPortalUrl() + "/site/" + m_id;
-			//			return ServerConfigurationService.getPortalUrl() + "?site=" + m_id;
-
-		} // getUrl
+		}
 
 		/**
-		 * Access the internal reference which can be used to access the resource from within the system.
-		 * 
-		 * @return The the internal reference which can be used to access the resource from within the system.
+		 * @inheritDoc
 		 */
 		public String getReference()
 		{
 			return siteReference(m_id);
-
-		} // getReference
+		}
 
 		/**
-		 * Access the resources's properties.
-		 * 
-		 * @return The resources's properties.
+		 * @inheritDoc
 		 */
 		public ResourceProperties getProperties()
 		{
@@ -2688,8 +2486,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 
 			return m_properties;
-
-		} // getProperties
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -2738,9 +2535,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Access the site's full name (for display purposes).
-		 * 
-		 * @return The site's full name (for display purposes).
+		 * @inheritDoc
 		 */
 		public String getTitle()
 		{
@@ -2749,13 +2544,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			// if not otherwise set, use the id
 			return getId();
-
-		} // getTitle
+		}
 
 		/**
-		 * Access the site's short description.
-		 * 
-		 * @return The site's short description.
+		 * @inheritDoc
 		 */
 		public String getShortDescription()
 		{
@@ -2763,33 +2555,28 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Access the site's description.
-		 * 
-		 * @return The site's description.
+		 * @inheritDoc
 		 */
 		public String getDescription()
 		{
 			return m_description;
-
-		} // getDescription
+		}
 
 		/**
-		 * Is this site open for users to join?
-		 * 
-		 * @return true if the site is joinable, false if closed.
+		 * @inheritDoc
 		 */
 		public boolean isJoinable()
 		{
 			return m_joinable;
+		}
 
-		} // isJoinable
-
-		/** @return the role name given to users who join a joinable site. */
+		/**
+		 * @inheritDoc
+		 */
 		public String getJoinerRole()
 		{
 			return m_joinerRole;
-
-		} // getJoinerRole
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -2799,23 +2586,21 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			return m_published;
 		}
 
-		/** @return the skin to use for this site. */
+		/**
+		 * @inheritDoc
+		 */
 		public String getSkin()
 		{
 			return m_skin;
-
-		} // getSkin
+		}
 
 		/**
-		 * Access the site's display icon image URL.
-		 * 
-		 * @return the site's display icon image URL.
+		 * @inheritDoc
 		 */
 		public String getIconUrl()
 		{
 			return m_icon;
-
-		} // getIconUrl
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -2826,15 +2611,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Access the site's site info URL.
-		 * 
-		 * @return the site's site info URL.
+		 * @inheritDoc
 		 */
 		public String getInfoUrl()
 		{
 			return m_info;
-
-		} // getSiteInfoUrl
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -2847,9 +2629,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Return the page list for this site.
-		 * 
-		 * @return List (SitePage) the page list for this site
+		 * {@inheritDoc}
 		 */
 		public List getPages()
 		{
@@ -2860,8 +2640,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 
 			return m_pages;
-
-		} // getPages
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -2893,10 +2672,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			// first, pages
 			getPages();
-			
+
 			// next, tools from all pages, all at once
 			m_storage.readSiteTools(this);
-			
+
 			// get sections, all at once
 			getSections();
 
@@ -2917,7 +2696,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			// find any pages that include the tool type for each tool in the ordering, move them into the newOrder and remove from the old
 			List newOrder = new Vector();
-					
+
 			// for each entry in the order
 			for (Iterator i = order.iterator(); i.hasNext();)
 			{
@@ -2941,7 +2720,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 					}
 				}
 			}
-			
+
 			// add any remaining
 			newOrder.addAll(pages);
 
@@ -2949,24 +2728,15 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Access the SitePage that has this id, if one is defined, or null if not defined.
-		 * 
-		 * @param id
-		 *        The id of the SitePage.
-		 * @return The SitePage that has this id, if one is defined, or null if not defined.
+		 * {@inheritDoc}
 		 */
 		public SitePage getPage(String id)
 		{
 			return (SitePage) ((ResourceVector) getPages()).getById(id);
-
-		} // getPage
+		}
 
 		/**
-		 * Access the ToolConfiguration that has this id, if one is defined, else return null. The tool may be on any SitePage in the site.
-		 * 
-		 * @param id
-		 *        The id of the tool.
-		 * @return The ToolConfiguration that has this id, if one is defined, else return null.
+		 * {@inheritDoc}
 		 */
 		public ToolConfiguration getTool(String id)
 		{
@@ -2980,8 +2750,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 
 			return null;
-
-		} // getTool
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -3000,11 +2769,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Test if the site is of this type. It is if the param is null.
-		 * 
-		 * @param type
-		 *        A String type to match, or a String[], List or Set of Strings, any of which can match.
-		 * @return true if the site is of the type(s) specified, false if not.
+		 * @inheritDoc
 		 */
 		public boolean isType(Object type)
 		{
@@ -3038,9 +2803,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Are these objects equal? If they are both Site objects, and they have matching id's, they are.
-		 * 
-		 * @return true if they are equal, false if not.
+		 * @inheritDoc
 		 */
 		public boolean equals(Object obj)
 		{
@@ -3056,22 +2819,18 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 
 			return false;
-
-		} // equals
+		}
 
 		/**
-		 * Make a hash code that reflects the equals() logic as well. We want two objects, even if different instances, if they have the same id to hash the same.
+		 * @inheritDoc
 		 */
 		public int hashCode()
 		{
 			return getId().hashCode();
-
-		} // hashCode
+		}
 
 		/**
-		 * Compare this object with the specified object for order.
-		 * 
-		 * @return A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+		 * @inheritDoc
 		 */
 		public int compareTo(Object obj)
 		{
@@ -3091,8 +2850,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 
 			return compare;
-
-		} // compareTo
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -3103,13 +2861,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Serialize the resource into XML, adding an element to the doc under the top of the stack element.
-		 * 
-		 * @param doc
-		 *        The DOM doc to contain the XML (or null for a string return).
-		 * @param stack
-		 *        The DOM elements, the top of which is the containing element of the new "resource" element.
-		 * @return The newly added element.
+		 * {@inheritDoc}
 		 */
 		public Element toXml(Document doc, Stack stack)
 		{
@@ -3157,140 +2909,26 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			stack.push(list);
 			for (Iterator iPages = getPages().iterator(); iPages.hasNext();)
 			{
-				BaseSitePageEdit page = (BaseSitePageEdit) iPages.next();
+				BaseSitePage page = (BaseSitePage) iPages.next();
 				page.toXml(doc, stack);
 			}
 			stack.pop();
 
+			// TODO: site sections
+
 			return site;
-
-		} // toXml
-
-	} // BaseSite
-
-	/**********************************************************************************************************************************************************************************************************************************************************
-	 * SiteEdit implementation
-	 *********************************************************************************************************************************************************************************************************************************************************/
-
-	public class BaseSiteEdit extends BaseSite implements SiteEdit, SessionBindingListener
-	{
-		/** The event code for this edit. */
-		protected String m_event = null;
-
-		/** Active flag. */
-		protected boolean m_active = false;
-
-		/** List of sections deleted in this edit pass. */
-		protected Collection m_deletedSections = new Vector();
-
-		/**
-		 * Construct.
-		 * 
-		 * @param id
-		 *        The site id.
-		 */
-		public BaseSiteEdit(String id)
-		{
-			super(id);
-
-		} // BaseSiteEdit
-
-		/**
-		 * Construct from another Site.
-		 * 
-		 * @param otherSite
-		 *        The other site to copy values from.
-		 */
-		public BaseSiteEdit(Site otherSite)
-		{
-			super(otherSite, true);
-
-		} // BaseSiteEdit
-
-		/**
-		 * ReConstruct.
-		 * 
-		 * @param id
-		 * @param title
-		 * @param type
-		 * @param shortDesc
-		 * @param description
-		 * @param iconUrl
-		 * @param infoUrl
-		 * @param skin
-		 * @param published
-		 * @param joinable
-		 * @param pubView
-		 * @param joinRole
-		 * @param isSpecial
-		 * @param isUser
-		 * @param createdBy
-		 * @param createdOn
-		 * @param modifiedBy
-		 * @param modifiedOn
-		 */
-		public BaseSiteEdit(String id, String title, String type, String shortDesc, String description, String iconUrl,
-				String infoUrl, String skin, boolean published, boolean joinable, boolean pubView, String joinRole,
-				boolean isSpecial, boolean isUser, String createdBy, Time createdOn, String modifiedBy, Time modifiedOn)
-		{
-			super((String) null);
-
-			m_id = id;
-			m_title = title;
-			m_type = type;
-			m_shortDescription = shortDesc;
-			m_description = description;
-			m_icon = iconUrl;
-			m_info = infoUrl;
-			m_skin = skin;
-			m_published = published;
-			m_joinable = joinable;
-			m_pubView = pubView;
-			m_joinerRole = joinRole;
-			// TODO: isSpecial
-			// TODO: isUser
-			m_createdUserId = createdBy;
-			m_lastModifiedUserId = modifiedBy;
-			m_createdTime = createdOn;
-			m_lastModifiedTime = modifiedOn;
-
-			// setup for properties, but mark them lazy since we have not yet established them from data
-			((BaseResourcePropertiesEdit) m_properties).setLazy(true);
-
-			m_pagesLazy = true;
-			m_sectionsLazy = true;
 		}
 
 		/**
-		 * Clean up.
-		 */
-		protected void finalize()
-		{
-			// catch the case where an edit was made but never resolved
-			if (m_active)
-			{
-				cancelEdit(this);
-			}
-
-		} // finalize
-
-		/**
-		 * Set the site's title (for display purposes).
-		 * 
-		 * @param name
-		 *        The site's titlesite's (for display purposes).
+		 * {@inheritDoc}
 		 */
 		public void setTitle(String title)
 		{
 			m_title = StringUtil.trimToNull(title);
-
-		} // setTitle
+		}
 
 		/**
-		 * Set the site's short description.
-		 * 
-		 * @param name
-		 *        The site's short description.
+		 * {@inheritDoc}
 		 */
 		public void setShortDescription(String shortDescripion)
 		{
@@ -3298,40 +2936,28 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Set the site's description.
-		 * 
-		 * @param name
-		 *        The site's description.
+		 * {@inheritDoc}
 		 */
 		public void setDescription(String description)
 		{
 			m_description = StringUtil.trimToNull(description);
-
-		} // setDescription
+		}
 
 		/**
-		 * Set the joinable status for a site.
-		 * 
-		 * @param joinable
-		 *        true if the site is joinable, false if closed.
+		 * {@inheritDoc}
 		 */
 		public void setJoinable(boolean joinable)
 		{
 			m_joinable = joinable;
-
-		} // setJoinable
+		}
 
 		/**
-		 * Set the joiner role for a site.
-		 * 
-		 * @param role
-		 *        the joiner role for a site.
+		 * {@inheritDoc}
 		 */
 		public void setJoinerRole(String role)
 		{
 			m_joinerRole = role;
-
-		} // setJoinerRole
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -3343,86 +2969,47 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Set the skin to use for this site.
-		 * 
-		 * @param skin
-		 *        The skin to use for this site.
+		 * {@inheritDoc}
 		 */
 		public void setSkin(String skin)
 		{
 			m_skin = skin;
-
-		} // setSkin
+		}
 
 		/**
-		 * Set the site's display icon image URL.
-		 * 
-		 * @param url
-		 *        The site's display icon image URL.
+		 * {@inheritDoc}
 		 */
 		public void setIconUrl(String url)
 		{
 			m_icon = StringUtil.trimToNull(url);
-
-		} // setIconUrl
+		}
 
 		/**
-		 * Set the site's site info URL.
-		 * 
-		 * @param url
-		 *        The site's site info URL.
+		 * {@inheritDoc}
 		 */
 		public void setInfoUrl(String url)
 		{
 			m_info = StringUtil.trimToNull(url);
-
-		} // setInfoUrl
+		}
 
 		/**
-		 * Create a new site page and add it to this site.
-		 * 
-		 * @return The SitePageEdit object for the new site page.
+		 * {@inheritDoc}
 		 */
-		public SitePageEdit addPage()
+		public SitePage addPage()
 		{
-			BaseSitePageEdit page = new BaseSitePageEdit(this);
+			BaseSitePage page = new BaseSitePage(this);
 			getPages().add(page);
 
 			return page;
-
-		} // addPage
-
-		/** @return the List (SitePageEdit) of editable Site Pages. */
-		public List getPageEdits()
-		{
-			return m_pages;
-
-		} // getPageEdits
+		}
 
 		/**
-		 * Access the SitePage that has this id, if one is defined, editable, or null if not defined.
-		 * 
-		 * @param id
-		 *        The id of the SitePage.
-		 * @return The SitePage that has this id, if one is defined, or null if not defined.
+		 * @inheritDoc
 		 */
-		public SitePageEdit getPageEdit(String id)
-		{
-			return (SitePageEdit) ((ResourceVector) getPages()).getById(id);
-
-		} // getPageEdit
-
-		/**
-		 * Remove a site page from this site.
-		 * 
-		 * @param page
-		 *        The SitePage to remove.
-		 */
-		public void removePage(SitePageEdit page)
+		public void removePage(SitePage page)
 		{
 			getPages().remove(page);
-
-		} // removePage
+		}
 
 		/**
 		 * Access the event code for this edit.
@@ -3446,9 +3033,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Access the resource's properties for modification
-		 * 
-		 * @return The resource's properties.
+		 * @inheritDoc
 		 */
 		public ResourcePropertiesEdit getPropertiesEdit()
 		{
@@ -3460,8 +3045,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 
 			return m_properties;
-
-		} // getPropertiesEdit
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -3486,19 +3070,15 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		protected void activate()
 		{
 			m_active = true;
-
-		} // activate
+		}
 
 		/**
-		 * Check to see if the edit is still active, or has already been closed.
-		 * 
-		 * @return true if the edit is active, false if it's been closed.
+		 * @inheritDoc
 		 */
 		public boolean isActiveEdit()
 		{
 			return m_active;
-
-		} // isActiveEdit
+		}
 
 		/**
 		 * Close the edit object - it cannot be used after this.
@@ -3506,11 +3086,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		protected void closeEdit()
 		{
 			m_active = false;
-
-		} // closeEdit
+		}
 
 		/**
-		 * Generate a new set of pages and tools that have new, unique ids. Good if the site had non-unique-system-wide ids for pages and tools. The Site Id does not change.
+		 * @inheritDoc
 		 */
 		public void regenerateIds()
 		{
@@ -3518,8 +3097,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			ResourceVector newPages = new ResourceVector();
 			for (Iterator iPages = getPages().iterator(); iPages.hasNext();)
 			{
-				BaseSitePageEdit page = (BaseSitePageEdit) iPages.next();
-				newPages.add(new BaseSitePageEdit(page, this, false));
+				BaseSitePage page = (BaseSitePage) iPages.next();
+				newPages.add(new BaseSitePage(page, this, false));
 			}
 
 			m_pages = newPages;
@@ -3532,7 +3111,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			Section rv = new BaseSection(this);
 			m_sections.add(rv);
-			
+
 			return rv;
 		}
 
@@ -3543,38 +3122,17 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			// remove it
 			m_sections.remove(section);
-			
+
 			// track so we can clean up related on commit
 			m_deletedSections.add(section);
 		}
-
-		/******************************************************************************************************************************************************************************************************************************************************
-		 * SessionBindingListener implementation
-		 *****************************************************************************************************************************************************************************************************************************************************/
-
-		public void valueBound(SessionBindingEvent event)
-		{
-		}
-
-		public void valueUnbound(SessionBindingEvent event)
-		{
-			if (m_logger.isDebugEnabled()) m_logger.debug(this + ".valueUnbound()");
-
-			// catch the case where an edit was made but never resolved
-			if (m_active)
-			{
-				cancelEdit(this);
-			}
-
-		} // valueUnbound
-
-	} // BaseSiteEdit
+	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
-	 * SitePage/Edit implementation
+	 * SitePage implementation
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
-	protected class BaseSitePageEdit implements SitePageEdit, Identifiable
+	protected class BaseSitePage implements SitePage, Identifiable
 	{
 		/** The title. */
 		protected String m_title = null;
@@ -3612,14 +3170,13 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 * @param site
 		 *        The site in which this page lives.
 		 */
-		protected BaseSitePageEdit(Site site)
+		protected BaseSitePage(Site site)
 		{
 			m_site = (BaseSite) site;
 			m_id = IdService.getUniqueId();
 			m_properties = new BaseResourcePropertiesEdit();
 			m_tools = new ResourceVector();
-
-		} // BaseSitePageEdit
+		}
 
 		/**
 		 * ReConstruct
@@ -3633,7 +3190,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 * @param layout
 		 *        The layout as a string ("0" or not currently supported).
 		 */
-		protected BaseSitePageEdit(Site site, String id, String title, String layout)
+		protected BaseSitePage(Site site, String id, String title, String layout)
 		{
 			m_site = (BaseSite) site;
 			m_id = id;
@@ -3645,13 +3202,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			m_toolsLazy = true;
 
 			m_title = title;
-         
-			if ( layout.equals( String.valueOf( LAYOUT_SINGLE_COL ) ) )
+
+			if (layout.equals(String.valueOf(LAYOUT_SINGLE_COL)))
 				m_layout = LAYOUT_SINGLE_COL;
-			else if ( layout.equals( String.valueOf( LAYOUT_DOUBLE_COL ) ) )
-				m_layout = LAYOUT_DOUBLE_COL;
-			else if ( layout.equals( String.valueOf( LAYOUT_POPUP_WIN ) ) )
-				m_layout = LAYOUT_POPUP_WIN;
+			else if (layout.equals(String.valueOf(LAYOUT_DOUBLE_COL))) m_layout = LAYOUT_DOUBLE_COL;
 		}
 
 		/**
@@ -3666,7 +3220,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 * @param layout
 		 *        The layout as a string ("0" or not currently supported).
 		 */
-		protected BaseSitePageEdit(String pageId, String title, String layout, String siteId, String skin)
+		protected BaseSitePage(String pageId, String title, String layout, String siteId, String skin)
 		{
 			m_site = null;
 			m_id = pageId;
@@ -3678,13 +3232,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			m_toolsLazy = true;
 
 			m_title = title;
-         
-			if ( layout.equals( String.valueOf( LAYOUT_SINGLE_COL ) ) )
+
+			if (layout.equals(String.valueOf(LAYOUT_SINGLE_COL)))
 				m_layout = LAYOUT_SINGLE_COL;
-			else if ( layout.equals( String.valueOf( LAYOUT_DOUBLE_COL ) ) )
-				m_layout = LAYOUT_DOUBLE_COL;
-			else if ( layout.equals( String.valueOf( LAYOUT_POPUP_WIN ) ) )
-				m_layout = LAYOUT_POPUP_WIN;
+			else if (layout.equals(String.valueOf(LAYOUT_DOUBLE_COL))) m_layout = LAYOUT_DOUBLE_COL;
 
 			m_siteId = siteId;
 			m_skin = skin;
@@ -3700,9 +3251,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 * @param exact
 		 *        If true, we copy ids - else we generate new ones for page and tools.
 		 */
-		protected BaseSitePageEdit(SitePageEdit other, Site site, boolean exact)
+		protected BaseSitePage(SitePage other, Site site, boolean exact)
 		{
-			BaseSitePageEdit bOther = (BaseSitePageEdit) other;
+			BaseSitePage bOther = (BaseSitePage) other;
 
 			m_site = (BaseSite) site;
 
@@ -3723,7 +3274,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			while (l.hasNext())
 			{
 				String pOtherName = (String) l.next();
-				// TODO: why this replaceAll?  When is the site id in a page property? if exact, it's a big waste... - ggolden
+				// TODO: why this replaceAll? When is the site id in a page property? if exact, it's a big waste... - ggolden
 				m_properties.addProperty(pOtherName, pOther.getProperty(pOtherName).replaceAll(bOther.getSiteId(), getSiteId()));
 			}
 			((BaseResourcePropertiesEdit) m_properties).setLazy(((BaseResourceProperties) other.getProperties()).isLazy());
@@ -3735,12 +3286,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				BaseToolConfiguration tool = (BaseToolConfiguration) iTools.next();
 				m_tools.add(new BaseToolConfiguration(tool, this, exact));
 			}
-			m_toolsLazy = ((BaseSitePageEdit) other).m_toolsLazy;
+			m_toolsLazy = ((BaseSitePage) other).m_toolsLazy;
 
 			m_siteId = bOther.m_siteId;
 			m_skin = bOther.m_skin;
-
-		} // BaseSitePageEdit
+		}
 
 		/**
 		 * Construct from XML element.
@@ -3750,7 +3300,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 * @param site
 		 *        The site in which this page lives.
 		 */
-		protected BaseSitePageEdit(Element el, Site site)
+		protected BaseSitePage(Element el, Site site)
 		{
 			m_site = (BaseSite) site;
 
@@ -3802,24 +3352,27 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 					}
 				}
 			}
+		}
 
-		} // BaseSitePageEdit
-
-		/** @return The human readable Title of this SitePage. */
+		/**
+		 * @inheritDoc
+		 */
 		public String getTitle()
 		{
 			return m_title;
+		}
 
-		} // getTitle
-
-		/** @return the layout for this page. */
+		/**
+		 * @inheritDoc
+		 */
 		public int getLayout()
 		{
 			return m_layout;
+		}
 
-		} // getLayout
-
-		/** @return the skin to use for this page. */
+		/**
+		 * @inheritDoc
+		 */
 		public String getSkin()
 		{
 			if (m_site != null)
@@ -3830,7 +3383,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			return m_skin;
 		}
 
-		/** @return the site id for this page. */
+		/**
+		 * @inheritDoc
+		 */
 		public String getSiteId()
 		{
 			if (m_site != null)
@@ -3841,20 +3396,26 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			return m_siteId;
 		}
 
-		/** @return true if page should open in new window. */
+		/**
+		 * @inheritDoc
+		 */
 		public boolean isPopUp()
 		{
-			return (m_layout == LAYOUT_POPUP_WIN);
+			// TODO:
+			return false;
 		}
-      
-		/** @return the layout title for this page. */
+
+		/**
+		 * @inheritDoc
+		 */
 		public String getLayoutTitle()
 		{
 			return LAYOUT_NAMES[m_layout];
+		}
 
-		} // getLayoutTitle
-
-		/** @return The List (ToolConfiguration) of tools on this page. */
+		/**
+		 * @inheritDoc
+		 */
 		public List getTools()
 		{
 			if (m_toolsLazy)
@@ -3865,10 +3426,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			// TODO: need to sort by layout hint
 			return m_tools;
+		}
 
-		} // getTools
-
-		/** @return The List (ToolConfiguration) of tools on this column (0 based) of this page. */
+		/**
+		 * @inheritDoc
+		 */
 		public List getTools(int col)
 		{
 			// TODO: need to sort by layout hint
@@ -3895,53 +3457,36 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Access a tool on this page by id.
-		 * 
-		 * @param id
-		 *        The tool id.
-		 * @return The tool on this page with this id, or null if not found.
+		 * @inheritDoc
 		 */
 		public ToolConfiguration getTool(String id)
 		{
 			return (ToolConfiguration) ((ResourceVector) getTools()).getById(id);
-
-		} // getTool
+		}
 
 		/**
-		 * Set the display title of this page.
-		 * 
-		 * @param title
-		 *        The new title.
+		 * @inheritDoc
 		 */
 		public void setTitle(String title)
 		{
 			m_title = StringUtil.trimToNull(title);
-
-		} // setTitle
+		}
 
 		/**
-		 * Set the layout for this page.
-		 * 
-		 * @param layout
-		 *        The new layout.
+		 * @inheritDoc
 		 */
 		public void setLayout(int layout)
 		{
-			if (	(layout == LAYOUT_SINGLE_COL) || 
-					(layout == LAYOUT_DOUBLE_COL) ||
-					(layout == LAYOUT_POPUP_WIN) )
+			if ((layout == LAYOUT_SINGLE_COL) || (layout == LAYOUT_DOUBLE_COL))
 			{
 				m_layout = layout;
 			}
 			else
 				m_logger.warn(this + ".setLayout(): set to invalid value: " + layout);
-
-		} // setLayout
+		}
 
 		/**
-		 * Add a new tool to the page.
-		 * 
-		 * @return the ToolConfigurationEdit object for the new tool.
+		 * @inheritDoc
 		 */
 		public ToolConfiguration addTool()
 		{
@@ -3949,15 +3494,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			((ResourceVector) getTools()).add(tool);
 
 			return tool;
-
-		} // addTool
+		}
 
 		/**
-		 * Add a new tool to the page, initialized to the tool registration information provided.
-		 * 
-		 * @param ref
-		 *        The tool registration information used to initialize the tool.
-		 * @return the ToolConfigurationEdit object for the new tool.
+		 * @inheritDoc
 		 */
 		public ToolConfiguration addTool(Tool reg)
 		{
@@ -3965,45 +3505,36 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			((ResourceVector) getTools()).add(tool);
 
 			return tool;
-
-		} // addTool
+		}
 
 		/**
-		 * Remove a tool from this page, if found.
-		 * 
-		 * @param tool
-		 *        The tool to remove.
+		 * @inheritDoc
 		 */
 		public void removeTool(ToolConfiguration tool)
 		{
 			((ResourceVector) getTools()).remove(tool);
-
-		} // removeTool
+		}
 
 		/**
-		 * Move this page one step towards the start of the order of pages in this site.
+		 * @inheritDoc
 		 */
 		public void moveUp()
 		{
 			if (m_site == null) return;
 			((ResourceVector) m_site.getPages()).moveUp(this);
-
-		} // moveUp
+		}
 
 		/**
-		 * Move this page one step towards the end of the order of pages in this site.
+		 * @inheritDoc
 		 */
 		public void moveDown()
 		{
 			if (m_site == null) return;
 			((ResourceVector) m_site.getPages()).moveDown(this);
-
-		} // moveDown
+		}
 
 		/**
-		 * Access the resource's properties for modification
-		 * 
-		 * @return The resource's properties.
+		 * @inheritDoc
 		 */
 		public ResourcePropertiesEdit getPropertiesEdit()
 		{
@@ -4014,8 +3545,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 
 			return m_properties;
-
-		} // getPropertiesEdit
+		}
 
 		/**
 		 * Enable editing.
@@ -4023,19 +3553,15 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		protected void activate()
 		{
 			m_active = true;
-
-		} // activate
+		}
 
 		/**
-		 * Check to see if the edit is still active, or has already been closed.
-		 * 
-		 * @return true if the edit is active, false if it's been closed.
+		 * @inheritDoc
 		 */
 		public boolean isActiveEdit()
 		{
 			return m_active;
-
-		} // isActiveEdit
+		}
 
 		/**
 		 * Close the edit object - it cannot be used after this.
@@ -4043,13 +3569,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		protected void closeEdit()
 		{
 			m_active = false;
-
-		} // closeEdit
+		}
 
 		/**
-		 * Access the URL which can be used to access the resource.
-		 * 
-		 * @return The URL which can be used to access the resource.
+		 * @inheritDoc
 		 */
 		public String getUrl()
 		{
@@ -4061,19 +3584,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			rv = m_serverConfigurationService.getPortalUrl() + sitePageReference(m_site.getId(), m_id);
 
-			//			if (m_site == null)
-			//			{
-			//				return ServerConfigurationService.getPortalUrl() + sitePageReference(m_siteId, m_id);
-			//			}
-			//
-			//			return ServerConfigurationService.getPortalUrl() + sitePageReference(m_site.getId(), m_id);
 			return rv;
-		} // getUrl
+		}
 
 		/**
-		 * Access the internal reference which can be used to access the resource from within the system.
-		 * 
-		 * @return The the internal reference which can be used to access the resource from within the system.
+		 * @inheritDoc
 		 */
 		public String getReference()
 		{
@@ -4083,13 +3598,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 
 			return sitePageReference(m_site.getId(), m_id);
-
-		} // getReference
+		}
 
 		/**
-		 * Access the id of the resource.
-		 * 
-		 * @return The id.
+		 * @inheritDoc
 		 */
 		public String getId()
 		{
@@ -4097,20 +3609,15 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Access the site in which this page belongs.
-		 * 
-		 * @return the site in which this page belongs.
+		 * @inheritDoc
 		 */
 		public Site getContainingSite()
 		{
 			return m_site;
-
-		} // getContainingSite
+		}
 
 		/**
-		 * Access the resource's properties.
-		 * 
-		 * @return The resource's properties.
+		 * @inheritDoc
 		 */
 		public ResourceProperties getProperties()
 		{
@@ -4124,13 +3631,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Serialize the resource into XML, adding an element to the doc under the top of the stack element.
-		 * 
-		 * @param doc
-		 *        The DOM doc to contain the XML (or null for a string return).
-		 * @param stack
-		 *        The DOM elements, the top of which is the containing element of the new "resource" element.
-		 * @return The newly added element.
+		 * @inheritDoc
 		 */
 		public Element toXml(Document doc, Stack stack)
 		{
@@ -4158,10 +3659,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			stack.pop();
 
 			return page;
-
-		} // toXml
-
-	} // class BaseSitePageEdit
+		}
+	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * ToolConfiguration implementation
@@ -4173,7 +3672,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		protected String m_layoutHints = null;
 
 		/** The SitePage I belong to. */
-		protected BaseSitePageEdit m_page = null;
+		protected BaseSitePage m_page = null;
 
 		/** The site id I belong to, in case I have no m_page. */
 		protected transient String m_siteId = null;
@@ -4210,7 +3709,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			super(id, ToolManager.getTool(toolId), null, null, title);
 
-			m_page = (BaseSitePageEdit) page;
+			m_page = (BaseSitePage) page;
 			m_layoutHints = layoutHints;
 			m_pageOrder = pageOrder;
 
@@ -4265,7 +3764,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 */
 		protected BaseToolConfiguration(ToolConfiguration other, SitePage page, boolean exact)
 		{
-			m_page = (BaseSitePageEdit) page;
+			m_page = (BaseSitePage) page;
 			BaseToolConfiguration bOther = (BaseToolConfiguration) other;
 
 			if (exact)
@@ -4300,7 +3799,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			super(IdService.getUniqueId(), null, null, null, null);
 
-			m_page = (BaseSitePageEdit) page;
+			m_page = (BaseSitePage) page;
 		}
 
 		/**
@@ -4315,7 +3814,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			super(IdService.getUniqueId(), reg, null, null, null);
 
-			m_page = (BaseSitePageEdit) page;
+			m_page = (BaseSitePage) page;
 		}
 
 		/**
@@ -4330,7 +3829,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			super();
 
-			m_page = (BaseSitePageEdit) page;
+			m_page = (BaseSitePage) page;
 
 			m_id = el.getAttribute("id");
 			String toolId = StringUtil.trimToNull(el.getAttribute("toolId"));
@@ -4357,8 +3856,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 					Xml.xmlToProperties(m_config, element);
 				}
 			}
-
-		} // BaseToolConfigurationEdit
+		}
 
 		/**
 		 * {@inheritDoc}
@@ -4472,10 +3970,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Set the layout hints for this tool.
-		 * 
-		 * @param hints
-		 *        The new layout hints.
+		 * {@inheritDoc}
 		 */
 		public void setLayoutHints(String hints)
 		{
@@ -4483,7 +3978,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Move this tool one step towards the start of the order of pages in this page.
+		 * {@inheritDoc}
 		 */
 		public void moveUp()
 		{
@@ -4497,7 +3992,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Move this tpp; one step towards the end of the order of pages in this page.
+		 * {@inheritDoc}
 		 */
 		public void moveDown()
 		{
@@ -4511,9 +4006,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Access the SitePage in which this tool configuration lives.
-		 * 
-		 * @return the SitePage on which this tool configuration lives.
+		 * {@inheritDoc}
 		 */
 		public SitePage getContainingPage()
 		{
@@ -4521,13 +4014,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		/**
-		 * Serialize the resource into XML, adding an element to the doc under the top of the stack element.
-		 * 
-		 * @param doc
-		 *        The DOM doc to contain the XML (or null for a string return).
-		 * @param stack
-		 *        The DOM elements, the top of which is the containing element of the new "resource" element.
-		 * @return The newly added element.
+		 * {@inheritDoc}
 		 */
 		public Element toXml(Document doc, Stack stack)
 		{
@@ -4546,25 +4033,23 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			stack.pop();
 
 			return (Element) element;
-
-		} // toXml
+		}
 
 		/**
 		 * {@inheritDoc}
 		 */
 		public void save()
 		{
-			// jam this changed tool configuration into the db, no matter what else is going on
 			// TODO: security? version?
-			m_storage.commitToolConfig(null, this);
-			
+			m_storage.saveToolConfig(null, this);
+
 			// track the site change
 			EventTrackingService.post(EventTrackingService.newEvent(SECURE_UPDATE_SITE, siteReference(getSiteId()), true));
 		}
 	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
-	 * SitePage/Edit implementation
+	 * Section implementation
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	protected class BaseSection implements Section, Identifiable
@@ -4580,9 +4065,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		/** The properties. */
 		protected ResourcePropertiesEdit m_properties = null;
-		
-		/** The site Id I belong to. */
-		protected String m_siteId = null;
+
+		/** The site I belong to. */
+		protected BaseSite m_site = null;
+
+		/** The site id I belong to, in case I have no m_site. */
+		protected transient String m_siteId = null;
 
 		/**
 		 * Construct. Auto-generate the id.
@@ -4592,8 +4080,17 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 */
 		protected BaseSection(Site site)
 		{
-			m_siteId = site.getId();
+			m_site = (BaseSite) site;
 			m_id = IdService.getUniqueId();
+			m_properties = new BaseResourcePropertiesEdit();
+		}
+
+		protected BaseSection(String id, String title, String description, Site site)
+		{
+			m_id = id;
+			m_title = title;
+			m_description = description;
+			m_site = (BaseSite) site;
 			m_properties = new BaseResourcePropertiesEdit();
 		}
 
@@ -4620,7 +4117,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			BaseSection bOther = (BaseSection) other;
 
-			m_siteId = site.getId();
+			m_site = (BaseSite) site;
+			m_siteId = bOther.m_siteId;
 
 			if (exact)
 			{
@@ -4658,8 +4156,21 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		/**
 		 * @inheritDoc
 		 */
+		public Site getContainingSite()
+		{
+			return m_site;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
 		public String getSiteId()
 		{
+			if (m_site != null)
+			{
+				return m_site.getId();
+			}
+			
 			return m_siteId;
 		}
 
@@ -4692,6 +4203,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 */
 		public String getReference()
 		{
+			if (m_site != null)
+			{
+				return siteSectionReference(m_site.getId(), getId());
+			}
+			
 			return siteSectionReference(m_siteId, getId());
 		}
 
@@ -4783,29 +4299,20 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 * 
 		 * @param id
 		 *        The site id.
-		 * @return The locked site with this id, or null if in use.
+		 * @return The site with this id, or null if in use.
 		 */
-		public SiteEdit put(String id);
+		public Site put(String id);
 
 		/**
-		 * Get a lock on the site with this id, or null if a lock cannot be gotten.
-		 * 
-		 * @param id
-		 *        The site reference.
-		 * @return The locked Site with this id, or null if this records cannot be locked.
-		 */
-		public SiteEdit edit(String id);
-
-		/**
-		 * Commit the changes and release the lock.
+		 * Save the changes.
 		 * 
 		 * @param site
 		 *        The site to commit.
 		 */
-		public void commit(SiteEdit site);
+		public void save(Site site);
 
 		/**
-		 * Commit the changes to the two info fields (description and infoUrl) - no lock involved.
+		 * Save the changes to the two info fields (description and infoUrl) only.
 		 * 
 		 * @param siteId
 		 *        The site to commit.
@@ -4814,15 +4321,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 * @param infoUrl
 		 *        The new site infoUrl.
 		 */
-		public void commitInfo(String siteId, String description, String infoUrl);
-
-		/**
-		 * Cancel the changes and release the lock.
-		 * 
-		 * @param user
-		 *        The site to commit.
-		 */
-		public void cancel(SiteEdit site);
+		public void saveInfo(String siteId, String description, String infoUrl);
 
 		/**
 		 * Remove this site.
@@ -4830,7 +4329,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 * @param user
 		 *        The site to remove.
 		 */
-		public void remove(SiteEdit site);
+		public void remove(Site site);
 
 		/**
 		 * Count all the sites.
@@ -4975,7 +4474,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		/**
 		 * Read tools for all pages from storage into the site's page's tools.
-		 * @param site The site for which tools are desired.
+		 * 
+		 * @param site
+		 *        The site for which tools are desired.
 		 */
 		public void readSiteTools(Site site);
 
@@ -5024,27 +4525,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 * @param tool
 		 *        TooConfiguration to commit.
 		 */
-		public void commitToolConfig(Connection conn, ToolConfiguration tool);
-
-		/**
-		 * Write a new or updated section to the database.
-		 * 
-		 * @param conn
-		 *        Optional connection to use.
-		 * @param section
-		 *        Section to commit.
-		 */
-		public void commitSection(Connection conn, Section section);
-
-		/**
-		 * Remove a section to the database.
-		 * 
-		 * @param conn
-		 *        Optional connection to use.
-		 * @param section
-		 *        Section to remove.
-		 */
-		public void commitRemoveSection(Connection conn, Section section);
+		public void saveToolConfig(Connection conn, ToolConfiguration tool);
 
 		/**
 		 * Access the Section that has this id, if one is defined, else return null. The section may be in any Site.
@@ -5073,8 +4554,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 *        The Collection to fill in.
 		 */
 		public void readSiteSections(Site site, Collection sections);
-
-	} // Storage
+	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * StorageUser implementation
@@ -5209,7 +4689,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
-		BaseSiteEdit e = new BaseSiteEdit(id);
+		BaseSite e = new BaseSite(id);
 		e.activate();
 		return e;
 	}
@@ -5239,7 +4719,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public Edit newResourceEdit(Entity container, Entity other)
 	{
-		BaseSiteEdit e = new BaseSiteEdit((Site) other);
+		BaseSite e = new BaseSite((Site) other);
 		e.activate();
 		return e;
 	}
@@ -5323,7 +4803,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		if (skin == null) return null;
 
 		if (!skin.endsWith(".css")) return skin;
-		
+
 		return skin.substring(0, skin.lastIndexOf(".css"));
 	}
 
@@ -5348,7 +4828,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				unlock(SECURE_ADD_USER_SITE, siteReference(siteId));
 
 				// reserve a site with this id from the info store - if it's in use, this will return null
-				BaseSiteEdit site = (BaseSiteEdit) m_storage.put(siteId);
+				BaseSite site = (BaseSite) m_storage.put(siteId);
 				if (site == null)
 				{
 					msg.append(this + "cannot find site: " + siteId);
@@ -5360,24 +4840,24 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				{
 					el.setAttribute("created-id", creatorId);
 				}
-				
+
 				// assign source site's attributes to the target site
-				((BaseSiteEdit) site).set(new BaseSite(el), false);
-				
-				commitEdit(site);
+				((BaseSite) site).set(new BaseSite(el), false);
+
+				save(site);
 			}
 			catch (PermissionException ignore)
 			{
 			}
 		}
-		
+
 		return msg.toString();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public Section getSection(String sectionRefOrId) throws IdUnusedException
+	public Section findSection(String sectionRefOrId)
 	{
 		Section rv = null;
 
@@ -5387,9 +4867,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// for ref, get the site from the cache, or cache it and get the section from the site
 		if (SERVICE_NAME.equals(ref.getType()))
 		{
-			Site site = getDefinedSite(ref.getContainer());
-			
-			rv = site.getSection(ref.getId());
+			try
+			{
+				Site site = getDefinedSite(ref.getContainer());	
+				rv = site.getSection(ref.getId());
+			}
+			catch (IdUnusedException e) {}
 		}
 
 		// for id, check the cache or get the section from storage
@@ -5399,17 +4882,27 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			if (m_siteCache != null)
 			{
 				rv = m_siteCache.getSection(sectionRefOrId);
-				if (rv == null)
+				if (rv != null)
+				{
+					// make a copy from the cache
+					rv = new BaseSection(rv, rv.getContainingSite(), true);
+				}
+
+				else
 				{
 					// if not, get the section's site id, cache the site, and try again
 					String siteId = m_storage.findSectionSiteId(sectionRefOrId);
 					if (siteId != null)
 					{
-						// read and cache the site, pages, tools
-						getDefinedSite(siteId);
-						
-						// try again
-						rv = m_siteCache.getSection(sectionRefOrId);
+						try
+						{
+							// read and cache the site, pages, tools
+							Site site = getDefinedSite(siteId);
+	
+							// find in the copy we get from the cache
+							rv = site.getSection(sectionRefOrId);
+						}
+						catch (IdUnusedException e) {}
 					}
 				}
 			}
@@ -5420,105 +4913,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 		}
 
-		if (rv == null) throw new IdUnusedException(sectionRefOrId);
-
 		return rv;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public Section newSection(String siteId, String title, String description) throws IdUnusedException, PermissionException
-	{
-		// get the site
-		Site s = getDefinedSite(siteId);
-		
-		// make sure we are allowed to edit the site
-		// TODO: separate permission for site edit / section work? -ggolden
-		String ref = siteReference(siteId);
-		unlock(SECURE_UPDATE_SITE, ref);
-
-		// create the section
-		BaseSection section = new BaseSection(s);
-		
-		// fill in the values
-		section.setTitle(title);
-		section.setDescription(description);
-		
-		// force the save
-		m_storage.commitSection(null, section);
-
-		// enable the section realm
-		String realmTemplate = siteRealmTemplate(s);
-
-		// try the site created-by user for the maintain role in the site
-		String userId = null;
-		if (s.getCreatedBy() != null)
-		{
-			userId = s.getCreatedBy().getId();
-		}
-
-		enableRealm(section.getReference(), realmTemplate, userId, "!site.template");
-
-		return section;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public void removeSection(Section section) throws IdUnusedException, PermissionException
-	{
-		// get the site
-		Site s = getDefinedSite(section.getSiteId());
-		
-		// make sure we are allowed to edit the site
-		// TODO: separate permission for site edit / section work? -ggolden
-		String ref = siteReference(section.getSiteId());
-		unlock(SECURE_UPDATE_SITE, ref);
-
-		// force the removal
-		m_storage.commitRemoveSection(null, section);
-		
-		// clean up the realm
-		disableRealm(section.getReference());
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public void saveSection(Section section) throws IdUnusedException, PermissionException
-	{
-		// get the site
-		Site s = getDefinedSite(section.getSiteId());
-		
-		// make sure we are allowed to edit the site
-		// TODO: separate permission for site edit / section work? -ggolden
-		String ref = siteReference(section.getSiteId());
-		unlock(SECURE_UPDATE_SITE, ref);
-		
-		// force the save
-		m_storage.commitSection(null, section);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public Collection getSections(String siteId) throws IdUnusedException
-	{
-		// get the site
-		Site s = getDefinedSite(siteId);
-		
-		return s.getSections();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public boolean hasSections(String siteId) throws IdUnusedException
-	{
-		// get the site
-		Site s = getDefinedSite(siteId);
-		
-		return s.hasSections();
 	}
 }

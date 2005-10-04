@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 * 
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -27,6 +27,7 @@ package org.sakaiproject.service.legacy.resource;
 // import
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Stack;
 
 import org.sakaiproject.exception.EmptyException;
@@ -42,8 +43,7 @@ import org.w3c.dom.Element;
 * <p>ResourceProperties are read only, and are name, value pairs.</p>
 * <p>Pre-defined property names are defined in static string here. </p>
 *
-* @author University of Michigan, Sakai Software Development Team
-* @version $Revision$
+* @author Sakai Software Development Team
 */
 public interface ResourceProperties
 {
@@ -416,6 +416,49 @@ public interface ResourceProperties
 	* @return The newly added element.
 	*/
 	public Element toXml(Document doc, Stack stack);
+
+	/**
+	* Add a single valued property.
+	* @param name The property name.
+	* @param value The property value.
+	*/
+	public void addProperty(String name, String value);
+
+	/**
+	* Add a value to a multi-valued property.
+	* @param name The property name.
+	* @param value The property value.
+	*/
+	public void addPropertyToList(String name, String value);
+
+	/**
+	* Add all the properties from the other ResourceProperties object.
+	* @param other The ResourceProperties to add.
+	*/
+	public void addAll(ResourceProperties other);
+
+	/**
+	* Add all the properties from the Properties object.
+	* @param props The Properties to add.
+	*/
+	public void addAll(Properties props);
+
+	/**
+	* Remove all properties.
+	*/
+	public void clear();
+
+	/**
+	* Remove a property.
+	* @param name The property name.
+	*/
+	public void removeProperty(String name);
+
+	/**
+	* Take all values from this object.
+	* @param other The ResourceProperties object to take values from.
+	*/
+	public void set(ResourceProperties other);
 
 }	// ResourceProperties
 

@@ -25,7 +25,6 @@
 package org.sakaiproject.service.legacy.site;
 
 // imports
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,8 +51,20 @@ public interface SiteService extends EntityProducer
 	/** This string can be used to find the service in the service manager. */
 	static final String SERVICE_NAME = SiteService.class.getName();
 
+	/** The Entity Reference sub-type for Site references. */
+	static final String SITE_SUBTYPE = "site";
+
+	/** The Entity Reference sub-type for Section references. */
+	static final String SECTION_SUBTYPE = "section";
+
+	/** The Entity Reference sub-type for Page references. */
+	static final String PAGE_SUBTYPE = "page";
+
+	/** The Entity Reference sub-type for Tool references. */
+	static final String TOOL_SUBTYPE = "tool";
+
 	/** This string starts the references to resources in this service. */
-	static final String REFERENCE_ROOT = Entity.SEPARATOR + "site";
+	static final String REFERENCE_ROOT = Entity.SEPARATOR + SITE_SUBTYPE;
 
 	/** Name for the event of visiting a site. */
 	static final String SITE_VISIT = "site.visit";
@@ -277,50 +288,32 @@ public interface SiteService extends EntityProducer
 	boolean allowUpdateSite(String id);
 
 	/**
-	 * Get a locked site object for editing. Must commitEdit() to make official, or cancelEdit() when done!
+	 * Save any updates to this site - it must be a defined site (the id must exist) and the user must have update permissions.
+	 * 
+	 * @param site
+	 *        The site, modified, to save.
+	 * @throws IdUnusedException
+	 *         If the site's id is not a defined site id.
+	 * @throws PermissionException
+	 *         If the end user does not have permission to update the site.
+	 */
+	void save(Site site) throws IdUnusedException, PermissionException;
+
+	/**
+	 * Save a site's information display fields: description and info url
 	 * 
 	 * @param id
-	 *        The site id string.
-	 * @return A SiteEdit object for editing.
-	 * @exception IdUnusedException
-	 *            if not found, or if not an SiteEdit object
-	 * @exception PermissionException
-	 *            if the current user does not have permission to modify with this site.
-	 * @exception InUseException
-	 *            if the site is otherwise being edited.
-	 */
-	SiteEdit editSite(String id) throws IdUnusedException, PermissionException, InUseException;
-
-	/**
-	 * Commit the changes made to a SiteEdit object, and release the lock. The SiteEdit is disabled, and not to be used after this call.
-	 * 
-	 * @param site
-	 *        The SiteEdit object to commit.
-	 */
-	void commitEdit(SiteEdit site);
-
-	/**
-	 * Commit a change to the site's description and iconUrl, without reguard to locks. Just blast it into storage.
-	 * 
-	 * @param siteId
-	 *        The site id to change.
+	 *        The site id to update.
 	 * @param description
-	 *        The new site description.
+	 *        The updated description.
 	 * @param infoUrl
-	 *        The new site InfoUrl.
-	 * @throws IdUnUsedException
-	 *         if the siteId is not defined.
-	 * @throwsPermissionException if the user does not have permission to update the site.
+	 *        The updated infoUrl
+	 * @throws IdUnusedException
+	 *         If the site's id is not a defined site id.
+	 * @throws PermissionException
+	 *         If the end user does not have permission to update the site.
 	 */
-	void commitSiteInfo(String siteId, String description, String infoUrl) throws IdUnusedException, PermissionException;
-
-	/**
-	 * Cancel the changes made to a SiteEdit object, and release the lock. The SiteEdit is disabled, and not to be used after this call.
-	 * 
-	 * @param site
-	 *        The SiteEdit object to commit.
-	 */
-	void cancelEdit(SiteEdit site);
+	void saveSiteInfo(String id, String description, String infoUrl) throws IdUnusedException, PermissionException;
 
 	/**
 	 * check permissions for addSite().
@@ -332,11 +325,11 @@ public interface SiteService extends EntityProducer
 	boolean allowAddSite(String id);
 
 	/**
-	 * Add a new site. Must commitEdit() to make official, or cancelEdit() when done!
+	 * Add a new site. The site will exist with just an id once done, so remove() it if you don't want to keep it.
 	 * 
 	 * @param id
 	 *        The site id.
-	 * @return The new locked site object.
+	 * @return The new site object.
 	 * @exception IdInvalidException
 	 *            if the site id is invalid.
 	 * @exception IdUsedException
@@ -344,16 +337,16 @@ public interface SiteService extends EntityProducer
 	 * @exception PermissionException
 	 *            if the current user does not have permission to add a site.
 	 */
-	SiteEdit addSite(String id) throws IdInvalidException, IdUsedException, PermissionException;
+	Site addSite(String id) throws IdInvalidException, IdUsedException, PermissionException;
 
 	/**
-	 * Add a new site. Will be structured just like <other>. Must commitEdit() to make official, or cancelEdit() when done!
+	 * Add a new site. Will be structured just like <other>.
 	 * 
 	 * @param id
 	 *        The site id.
 	 * @param other
 	 *        The site to make this site a structural copy of.
-	 * @return The new locked site object.
+	 * @return The new site object.
 	 * @exception IdInvalidException
 	 *            if the site id is invalid.
 	 * @exception IdUsedException
@@ -361,7 +354,7 @@ public interface SiteService extends EntityProducer
 	 * @exception PermissionException
 	 *            if the current user does not have permission to add a site.
 	 */
-	SiteEdit addSite(String id, Site other) throws IdInvalidException, IdUsedException, PermissionException;
+	Site addSite(String id, Site other) throws IdInvalidException, IdUsedException, PermissionException;
 
 	/**
 	 * check permissions for removeSite().
@@ -373,14 +366,14 @@ public interface SiteService extends EntityProducer
 	boolean allowRemoveSite(String id);
 
 	/**
-	 * Remove this site's information - it must be a site with a lock from editSite(). The SiteEdit is disabled, and not to be used after this call.
+	 * Remove this site's information.
 	 * 
 	 * @param id
 	 *        The site id.
 	 * @exception PermissionException
 	 *            if the current user does not have permission to remove this site.
 	 */
-	void removeSite(SiteEdit site) throws PermissionException;
+	void removeSite(Site site) throws PermissionException;
 
 	/**
 	 * Access the internal reference which can be used to access the site from within the system.
@@ -526,7 +519,7 @@ public interface SiteService extends EntityProducer
 	 * @exception InUseException
 	 *            if the site is otherwise being edited.
 	 */
-	void join(String id) throws IdUnusedException, PermissionException, InUseException;
+	void join(String id) throws IdUnusedException, PermissionException;
 
 	/**
 	 * check permissions for unjoin() - unjoining the site and removing all role relationships.
@@ -549,7 +542,7 @@ public interface SiteService extends EntityProducer
 	 * @exception InUseException
 	 *            if the site is otherwise being edited.
 	 */
-	void unjoin(String id) throws IdUnusedException, PermissionException, InUseException;
+	void unjoin(String id) throws IdUnusedException, PermissionException;
 
 	/**
 	 * Compute the skin to use for the (optional) site specified in the id parameter. If no site specified, or if the site has no skin defined, use the configured default skin.
@@ -649,71 +642,7 @@ public interface SiteService extends EntityProducer
 	 * 
 	 * @param sectionRefOrId
 	 *        The section reference or id string.
-	 * @return The Section object if found.
-	 * @exception IdUnusedException
-	 *            if the section cannot be found.
+	 * @return The Section object if found, or null if not.
 	 */
-	Section getSection(String sectionRefOrId) throws IdUnusedException;
-
-	/**
-	 * Create a new section in the given site with the given title and description. The section is immediately available after this call, no commit needed.
-	 * 
-	 * @param siteId
-	 *        The site to contain the section
-	 * @param title
-	 *        The section title
-	 * @param description
-	 *        The section description
-	 * @return The Section object created, or null if there is
-	 * @exception PermissionException
-	 *            if the current user does not have permission to create a section for this site.
-	 * @exception IdUnusedException
-	 *            if the site cannot be found.
-	 */
-	Section newSection(String siteId, String title, String description) throws IdUnusedException, PermissionException;
-
-	/**
-	 * Remove the specified section from its site.
-	 * 
-	 * @param section
-	 *        The section to remove
-	 * @throws IdUnusedException
-	 *         If the section cannot be found.
-	 * @throws PermissionException
-	 *         If the current user does not have permission to remove this section.
-	 */
-	void removeSection(Section section) throws IdUnusedException, PermissionException;
-
-	/**
-	 * Save any changes made to this Section object.
-	 * 
-	 * @param section
-	 *        The section to save
-	 * @throws IdUnusedException
-	 *         If the section cannot be found.
-	 * @throws PermissionException
-	 *         If the current user does not have permission to save this section.
-	 */
-	void saveSection(Section section) throws IdUnusedException, PermissionException;
-
-	/**
-	 * Access the collection of Section objects for the given site.
-	 * 
-	 * @param siteId
-	 * @return the collection (Section) of section objects for the given site.
-	 * @throws IdUnusedException
-	 *         If the site cannot be found.
-	 */
-	Collection getSections(String siteId) throws IdUnusedException;
-
-	/**
-	 * Does the site have any sections defined?
-	 * 
-	 * @param siteId
-	 *        The site to check
-	 * @return true if the site and has any sections, false if not.
-	 * @throws IdUnusedException
-	 *         if the site cannot be found.
-	 */
-	boolean hasSections(String siteId) throws IdUnusedException;
+	Section findSection(String sectionRefOrId);
 }

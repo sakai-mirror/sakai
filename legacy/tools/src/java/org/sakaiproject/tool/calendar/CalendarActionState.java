@@ -36,7 +36,7 @@ import org.sakaiproject.cheftool.ControllerState;
 import org.sakaiproject.service.framework.log.cover.Logger;
 import org.sakaiproject.service.legacy.calendar.CalendarEventEdit;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
-import org.sakaiproject.service.legacy.site.SiteEdit;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.util.CalendarUtil;
 
 
@@ -647,7 +647,7 @@ public class CalendarActionState
 	
 	
 	
-	private SiteEdit m_editSite;
+	private Site m_editSite;
 	private CalendarEventEdit m_edit;
 	
 	/**

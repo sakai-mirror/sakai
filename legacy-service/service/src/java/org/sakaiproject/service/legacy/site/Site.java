@@ -28,7 +28,7 @@ package org.sakaiproject.service.legacy.site;
 import java.util.Collection;
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.resource.Edit;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.user.User;
 
@@ -39,10 +39,8 @@ import org.sakaiproject.service.legacy.user.User;
  * 
  * @author Sakai Software Development Team
  */
-public interface Site extends Entity, Comparable
+public interface Site extends Edit, Comparable
 {
-	// TODO: move these to Resource?? -ggolden
-
 	/**
 	 * @return the user who created this.
 	 */
@@ -62,8 +60,6 @@ public interface Site extends Entity, Comparable
 	 * @return the time last modified.
 	 */
 	Time getModifiedTime();
-
-	// TODO:
 
 	/** @return The human readable Title of the site. */
 	String getTitle();
@@ -103,11 +99,7 @@ public interface Site extends Entity, Comparable
 	 */
 	void loadAll();
 
-	/**
-	 * Return the pages ordered by the tool order constraint for this site's type (as tool category).
-	 * 
-	 * @return The pages ordered by the tool order constraint for this site's type (as tool category).
-	 */
+	/** @return The pages ordered by the tool order constraint for this site's type (as tool category). */
 	List getOrderedPages();
 
 	/** @return true if the site is published, false if not. */
@@ -176,4 +168,125 @@ public interface Site extends Entity, Comparable
 	 * @return true if the site and has any sections, false if not.
 	 */
 	boolean hasSections();
+
+	/**
+	 * Set the human readable Title of the site.
+	 * 
+	 * @param title
+	 *        the new title.
+	 */
+	void setTitle(String title);
+
+	/**
+	 * Set the url of an icon for the site.
+	 * 
+	 * @param url
+	 *        The new icon's url.
+	 */
+	void setIconUrl(String url);
+
+	/**
+	 * Set the url for information about the site.
+	 * 
+	 * @param url
+	 *        The new information url.
+	 */
+	void setInfoUrl(String url);
+
+	/**
+	 * Set the joinable status of the site.
+	 * 
+	 * @param joinable
+	 *        represents whether the site is joinable (true) or not (false).
+	 */
+	void setJoinable(boolean joinable);
+
+	/**
+	 * Set the joiner role for a site.
+	 * 
+	 * @param role
+	 *        the joiner role for a site.
+	 */
+	void setJoinerRole(String role);
+
+	/**
+	 * Set the short Description of the site. Used to give a short text description of the site.
+	 * 
+	 * @param description
+	 *        The new short description.
+	 */
+	void setShortDescription(String description);
+
+	/**
+	 * Set the Description of the site. Used to give a longer text description of the site.
+	 * 
+	 * @param description
+	 *        The new description.
+	 */
+	void setDescription(String description);
+
+	/**
+	 * Set the published state of this site.
+	 * 
+	 * @param status
+	 *        The published state of the site.
+	 */
+	void setPublished(boolean published);
+
+	/**
+	 * Set the skin to use for this site.
+	 * 
+	 * @param skin
+	 *        The skin to use for this site.
+	 */
+	void setSkin(String skin);
+
+	/**
+	 * Create a new site page and add it to this site.
+	 * 
+	 * @return The SitePage object for the new site page.
+	 */
+	SitePage addPage();
+
+	/**
+	 * Remove a site page from this site.
+	 * 
+	 * @param page
+	 *        The SitePage to remove.
+	 */
+	void removePage(SitePage page);
+
+	/**
+	 * Generate a new set of pages and tools that have new, unique ids. Good if the site had non-unique-system-wide ids for pages and tools. The Site Id does not change.
+	 */
+	void regenerateIds();
+
+	/**
+	 * Set the site type.
+	 * 
+	 * @param type
+	 *        The site type.
+	 */
+	void setType(String type);
+
+	/**
+	 * Set the site view.
+	 * 
+	 * @param pubView
+	 *        The site view setting.
+	 */
+	void setPubView(boolean pubView);
+
+	/**
+	 * Add a new section. The Id is generated, the rest of the fields can be set using calls to the Section object returned.
+	 */
+	Section addSection();
+
+	/**
+	 * Remove this section from the sections for this site.
+	 * 
+	 * @param section
+	 *        The section to remove.
+	 */
+	void removeSection(Section section);
 }

@@ -59,7 +59,6 @@ import org.sakaiproject.service.legacy.resource.EntityManager;
 import org.sakaiproject.service.legacy.resource.EntityProducer;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SiteEdit;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
@@ -801,7 +800,7 @@ public class BasicArchiveService
 		// heck security (throws if not permitted)
 		unlock(SiteService.SECURE_UPDATE_SITE, SiteService.siteReference(siteId));
 	
-		SiteEdit edit = SiteService.editSite(siteId);
+		Site edit = SiteService.getSite(siteId);
 		String desc = el.getAttribute("description-enc");
 			
 		try
@@ -816,7 +815,7 @@ public class BasicArchiveService
 		//edit.setTitle(title);
 		edit.setDescription(desc);
 		
-		SiteService.commitEdit(edit);
+		SiteService.save(edit);
 			 
 		return;
 		
