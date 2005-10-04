@@ -21,9 +21,8 @@
 
 package org.apache.wsrp4j.producer.provider.driver;
 
-import java.io.Serializable;
-
 import org.apache.wsrp4j.producer.provider.Portlet;
+import org.apache.wsrp4j.producer.provider.ProducerOfferedPortlet;
 
 /**
  * <p>This abstract class implements the Portlet interface encapsulating

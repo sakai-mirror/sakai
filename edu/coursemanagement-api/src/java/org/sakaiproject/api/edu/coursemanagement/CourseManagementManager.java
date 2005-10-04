@@ -24,7 +24,6 @@
 package org.sakaiproject.api.edu.coursemanagement;
 
 import java.util.List;
-import java.util.Date;
 
 /**
  * The Course Management Manager provides the following capabilities:

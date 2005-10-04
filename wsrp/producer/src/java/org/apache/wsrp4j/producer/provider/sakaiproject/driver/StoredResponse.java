@@ -24,7 +24,6 @@ package org.apache.wsrp4j.producer.provider.sakaiproject.driver;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.HashSet;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
@@ -33,7 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wsrp4j.producer.provider.Provider;
-import org.apache.wsrp4j.producer.provider.sakaiproject.WSRPDynamicInformationProvider;
 import org.apache.wsrp4j.util.Constants;
 
 /**

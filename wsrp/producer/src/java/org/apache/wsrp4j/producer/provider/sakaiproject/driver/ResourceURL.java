@@ -3,8 +3,6 @@
  */
 package org.apache.wsrp4j.producer.provider.sakaiproject.driver;
 
-import java.util.HashSet;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.wsrp4j.log.Logger;
