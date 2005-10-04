@@ -9,43 +9,55 @@ public class CanonicalCourseSet implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private Long courseSetId;
-	private Long canonicalCourseId;
+    private Long canonicalCourseSetId;
+	private String courseSetUuid;
+	private String canonicalCourseUuid;
 	
         public CanonicalCourseSet(){}
 
-        public CanonicalCourseSet(Long courseSetId, Long canonicalCourseId){
-	  this.setCourseSetId(courseSetId);
-	  this.setCanonicalCourseId(canonicalCourseId);
+        public CanonicalCourseSet(String courseSetUuid, String canonicalCourseUuid){
+	  this.setCourseSetUuid(courseSetUuid);
+	  this.setCanonicalCourseUuid(canonicalCourseUuid);
         }
+
+    public Long getCanonicalCourseSetId()
+    {
+	return this.canonicalCourseSetId;
+    }
+
+    public void setCanonicalCourseSetId(Long canonicalCourseSetId)
+    {
+	this.canonicalCourseSetId = canonicalCourseSetId;
+    }
+
 
 	/**
 	 * Return the simple primary key value that identifies this object.
-	 * @return java.lang.Long
+	 * @return java.lang.String
 	 */
-	public Long getCourseSetId()
+	public String getCourseSetUuid()
 	{
-		return this.courseSetId;
+		return this.courseSetUuid;
 	}
 	
 	/**
 	 * Set the simple primary key value that identifies this object.
 	 * @param coursesetid
 	 */
-	public void setCourseSetId(Long courseSetId)
+	public void setCourseSetUuid(String courseSetUuid)
 	{
-		this.courseSetId = courseSetId;
+		this.courseSetUuid = courseSetUuid;
 	}
 
 
-	public Long getCanonicalCourseId()
+	public String getCanonicalCourseUuid()
 	{
-		return this.canonicalCourseId;
+		return this.canonicalCourseUuid;
 	}
 	
-	public void setCanonicalCourseId(Long canonicalCourseId)
+	public void setCanonicalCourseUuid(String canonicalCourseUuid)
 	{
-		this.canonicalCourseId = canonicalCourseId;
+		this.canonicalCourseUuid = canonicalCourseUuid;
 	}
 
     public boolean equals(Object o){
@@ -54,15 +66,15 @@ public class CanonicalCourseSet implements Serializable {
 	    returnValue = true;
 	if (o != null && o.getClass()==this.getClass()){
 	    CanonicalCourseSet ccs = (CanonicalCourseSet)o;
-	    if ((getCanonicalCourseId()).equals(ccs.getCanonicalCourseId())
-		&& (getCourseSetId()).equals(ccs.getCourseSetId()))
+	    if ((getCanonicalCourseUuid()).equals(ccs.getCanonicalCourseUuid())
+		&& (getCourseSetUuid()).equals(ccs.getCourseSetUuid()))
 		returnValue = true;
 	}
 	return returnValue;
     }
 
     public int hashCode(){
-	String s = courseSetId.toString()+":"+canonicalCourseId.toString();
+	String s = courseSetUuid+":"+canonicalCourseUuid;
 	return (s.hashCode());
     }
 	

@@ -546,7 +546,7 @@ public class CourseManagementManagerImpl
   }
 
   public List getCourseSet(String canonicalCourseUuid) {
-    String query = "select c0 from CanonicalCourseSet ccs, CanonicalCourseImpl c, CanonicalCourseImpl c0 where c.uuid=? and ccs.canonicalCourseId=c.canonicalCourseId and c0.canonicalCourseId=ccs.canonicalCourseId";
+    String query = "select c from CanonicalCourseSet ccs1, CanonicalCourseSet ccs2, CanonicalCourseImpl c where ccs1.canonicalCourseUuid=? and ccs1.courseSetId=ccs2.courseSetId and ccs2.canonicalCourseId=c.canonicalCourseId";
     List list = getHibernateTemplate().find(query,
                                             new Object[] {canonicalCourseUuid}
                                             ,
@@ -571,7 +571,7 @@ public class CourseManagementManagerImpl
   }
 
   public List getCanonicalCourseSetBySetUuid(String setUuid) {
-    String query = "select ccs from CanonicalCourseSet ccs, CourseSetImpl cs where cs.uuid=? and cs.courseSetId=ccs.courseSetId";
+    String query = "select ccs from CanonicalCourseSet ccs where ccs.courseSetUuid=?";
     List list = getHibernateTemplate().find(query,
                                             new Object[] {setUuid}
                                             ,

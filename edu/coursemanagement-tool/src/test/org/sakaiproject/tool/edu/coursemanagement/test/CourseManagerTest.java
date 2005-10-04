@@ -255,7 +255,6 @@ public class CourseManagerTest
     return s;
   }
 
-    /*
   public void testCreateCourseSet() throws Exception {
     Date currentDate = new Date();
     HashSet set = new HashSet();
@@ -269,7 +268,6 @@ public class CourseManagerTest
     //setComplete();
     System.out.println("**** testCreateCourseSet(), courseSetId="+cs.getCourseSetId());
   }
-    */
 
   public void addSessionType(){
     Date currentDate = new Date();
