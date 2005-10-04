@@ -18,11 +18,12 @@ drop table if exists CM_COURSESETTYPE_T;
 drop table if exists CM_CANONICALCOURSESTATUS_T;
 drop table if exists CM_PARTICIPATIONRECORD_T;
 drop table if exists CM_COURSEOFFERINGSTATUS_T;
-drop table if exists CM_COURSESECTIONSTATUS_T;
 drop table if exists CM_COURSESECTIONTYPE_T;
-drop table if exists CM_SESSION_T;
+drop table if exists CM_COURSESECTIONSTATUS_T;
 drop table if exists CM_CANONICALCOURSE_T;
+drop table if exists CM_SESSION_T;
 drop table if exists CM_ENROLLMENTTYPE_T;
+drop table if exists CM_CANONICALCOURSESET_T;
 drop table if exists CM_PARTICIPATIONSTATUS_T;
 drop table if exists CM_COURSESECTION_T;
 drop table if exists CM_COURSESET_T;
@@ -157,21 +158,6 @@ create table CM_COURSEOFFERINGSTATUS_T (
    CREATEDDATE datetime not null,
    primary key (COURSEOFFERINGSTATUSID)
 );
-create table CM_COURSESECTIONSTATUS_T (
-   COURSESECTIONSTATUSID bigint not null auto_increment,
-   AUTHORITY varchar(255) not null,
-   DOMAIN varchar(255) not null,
-   KEYWORD varchar(255) not null,
-   DISPLAYNAME varchar(255),
-   DESCRIPTION varchar(255),
-   UUID varchar(255) not null,
-   STATUS integer not null,
-   LASTMODIFIEDBY varchar(255) not null,
-   LASTMODIFIEDDATE datetime not null,
-   CREATEDBY varchar(255) not null,
-   CREATEDDATE datetime not null,
-   primary key (COURSESECTIONSTATUSID)
-);
 create table CM_COURSESECTIONTYPE_T (
    COURSESECTIONTYPEID bigint not null auto_increment,
    AUTHORITY varchar(255) not null,
@@ -187,19 +173,20 @@ create table CM_COURSESECTIONTYPE_T (
    CREATEDDATE datetime not null,
    primary key (COURSESECTIONTYPEID)
 );
-create table CM_SESSION_T (
-   SESSIONID bigint not null auto_increment,
-   TITLE varchar(255) not null,
-   ABBREVIATION varchar(255) not null,
-   YEAR varchar(255) not null,
-   ISCURRENT bit not null,
+create table CM_COURSESECTIONSTATUS_T (
+   COURSESECTIONSTATUSID bigint not null auto_increment,
+   AUTHORITY varchar(255) not null,
+   DOMAIN varchar(255) not null,
+   KEYWORD varchar(255) not null,
+   DISPLAYNAME varchar(255),
+   DESCRIPTION varchar(255),
    UUID varchar(255) not null,
-   SESSIONTYPEUUID varchar(255),
-   CREATEDBY varchar(255) not null,
-   CREATEDDATE datetime not null,
+   STATUS integer not null,
    LASTMODIFIEDBY varchar(255) not null,
    LASTMODIFIEDDATE datetime not null,
-   primary key (SESSIONID)
+   CREATEDBY varchar(255) not null,
+   CREATEDDATE datetime not null,
+   primary key (COURSESECTIONSTATUSID)
 );
 create table CM_CANONICALCOURSE_T (
    CANONICALCOURSEID bigint not null auto_increment,
@@ -219,6 +206,20 @@ create table CM_CANONICALCOURSE_T (
    LASTMODIFIEDDATE datetime not null,
    primary key (CANONICALCOURSEID)
 );
+create table CM_SESSION_T (
+   SESSIONID bigint not null auto_increment,
+   TITLE varchar(255) not null,
+   ABBREVIATION varchar(255) not null,
+   YEAR varchar(255) not null,
+   ISCURRENT bit not null,
+   UUID varchar(255) not null,
+   SESSIONTYPEUUID varchar(255),
+   CREATEDBY varchar(255) not null,
+   CREATEDDATE datetime not null,
+   LASTMODIFIEDBY varchar(255) not null,
+   LASTMODIFIEDDATE datetime not null,
+   primary key (SESSIONID)
+);
 create table CM_ENROLLMENTTYPE_T (
    ENROLLMENTTYPEID bigint not null auto_increment,
    AUTHORITY varchar(255) not null,
@@ -233,6 +234,12 @@ create table CM_ENROLLMENTTYPE_T (
    CREATEDBY varchar(255) not null,
    CREATEDDATE datetime not null,
    primary key (ENROLLMENTTYPEID)
+);
+create table CM_CANONICALCOURSESET_T (
+   CANONICALCOURSESETID bigint not null auto_increment,
+   COURSESETUUID varchar(255) not null,
+   CANONICALCOURSEUUID varchar(255) not null,
+   primary key (CANONICALCOURSESETID)
 );
 create table CM_PARTICIPATIONSTATUS_T (
    PARTICIPATIONSTATUSID bigint not null auto_increment,
