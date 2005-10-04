@@ -180,17 +180,17 @@
 								$validator.escapeHtml(${root.name})
 							#elseif ($root.canRead())
 								#if (!$expandedCollections.containsKey($root.Id))
-									<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$validator.escapeUrl($root.Id)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.open')">
+									<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$root.Id';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.open')">
 									##<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.open')">
 										<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
 									</a>
 								#else
-									<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doCollapse_collection';document.getElementById('collectionId').value='$validator.escapeUrl($root.Id)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.close')">
+									<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doCollapse_collection';document.getElementById('collectionId').value='$root.Id';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.close')">
 									##<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.close')">
 										<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 									</a>
 								#end
-								<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$validator.escapeUrl($root.id)';document.getElementById('navRoot').value='$validator.escapeUrl($root.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
+								<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$root.id';document.getElementById('navRoot').value='$validator.escapeUrl($root.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
 								##<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${root.id})}&navRoot=$validator.escapeUrl($root.root)")" title="$tlang.getString('sh.go')">
 									$validator.escapeHtml(${root.name})
 								</a>
@@ -352,17 +352,17 @@
 										$validator.escapeHtml(${member.name})
 									#elseif ($member.canRead())
 										#if (!$expandedCollections.containsKey($member.Id))
-											<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$validator.escapeUrl($member.Id)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.open')">
+											<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$member.Id';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.open')">
 											##<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.open')">
 												<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
 											</a>
 										#else
-											<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doCollapse_collection';document.getElementById('collectionId').value='$validator.escapeUrl($member.Id)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.close')">
+											<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doCollapse_collection';document.getElementById('collectionId').value='$member.Id';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.close')">
 											##<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.close')">
 												<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 											</a>
 										#end
-										<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$validator.escapeUrl($member.id)';document.getElementById('navRoot').value='$validator.escapeUrl($member.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
+										<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$member.id';document.getElementById('navRoot').value='$validator.escapeUrl($member.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
 										##<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}&navRoot=$validator.escapeUrl($member.root)")" title="$tlang.getString('sh.go')">
 											$validator.escapeHtml(${member.name})
 										</a>
@@ -545,17 +545,17 @@
 										$validator.escapeHtml(${root.name})
 									#elseif ($root.canRead())
 										#if (!$expandedCollections.containsKey($root.Id))
-											<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$validator.escapeUrl($root.Id)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.open')">
+											<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$root.Id';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.open')">
 											##<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.open')">
 												<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
 											</a>
 										#else
-											<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doCollapse_collection';document.getElementById('collectionId').value='$validator.escapeUrl($root.Id)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.close')">
+											<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doCollapse_collection';document.getElementById('collectionId').value='$root.Id';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.close')">
 											##<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.close')">
 												<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 											</a>
 										#end
-										<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$validator.escapeUrl($root.id)';document.getElementById('navRoot').value='$validator.escapeUrl($root.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
+										<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$root.id';document.getElementById('navRoot').value='$validator.escapeUrl($root.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
 										##<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${root.id})}&navRoot=$validator.escapeUrl($root.root)")" title="$tlang.getString('sh.go')">
 											$validator.escapeHtml(${root.name})
 										</a>
@@ -716,17 +716,17 @@
 												$validator.escapeHtml(${member.name})
 											#elseif ($member.canRead())
 												#if (!$expandedCollections.containsKey($member.Id))
-													<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$validator.escapeUrl($member.Id)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.open')">
+													<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$member.Id';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.open')">
 													##<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.open')">
 														<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
 													</a>
 												#else
-													<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doCollapse_collection';document.getElementById('collectionId').value='$validator.escapeUrl($member.Id)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.close')">
+													<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doCollapse_collection';document.getElementById('collectionId').value='$member.Id';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.close')">
 													##<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.close')">
 														<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 													</a>
 												#end
-												<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$validator.escapeUrl($member.id)';document.getElementById('navRoot').value='$validator.escapeUrl($member.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
+												<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$member.id';document.getElementById('navRoot').value='$validator.escapeUrl($member.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
 												##<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}&navRoot=$validator.escapeUrl($member.root)")" title="$tlang.getString('sh.go')">
 													$validator.escapeHtml(${member.name})
 												</a>
