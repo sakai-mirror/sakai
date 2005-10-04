@@ -103,6 +103,7 @@
 	<function name="crud.delete" />
 	<function name="gradebook.access" />
 	<function name="gradebook.maintain" />
+	<function name="section.ta" />
    <function name="metaobj.create" />
    <function name="metaobj.edit" />
    <function name="metaobj.publish" />
