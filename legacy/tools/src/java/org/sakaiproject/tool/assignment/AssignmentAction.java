@@ -2260,16 +2260,19 @@ extends PagedResourceActionII
 				
 				// the instructor inline feedback
 				String feedbackTextString = (String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_TEXT);
-				StringBuffer text = new StringBuffer();
-				int index = feedbackTextString.indexOf(COMMENT_OPEN);
-				while (index != -1)
+				if (feedbackTextString != null)
 				{
-					text.append(feedbackTextString.substring(0, index)).append(COMMENT_OPEN).append(feedbackUserString);
-					feedbackTextString = feedbackTextString.substring(index + COMMENT_OPEN.length());
-					index = feedbackTextString.indexOf(COMMENT_OPEN);
+					StringBuffer text = new StringBuffer();
+					int index = feedbackTextString.indexOf(COMMENT_OPEN);
+					while (index != -1)
+					{
+						text.append(feedbackTextString.substring(0, index)).append(COMMENT_OPEN).append(feedbackUserString);
+						feedbackTextString = feedbackTextString.substring(index + COMMENT_OPEN.length());
+						index = feedbackTextString.indexOf(COMMENT_OPEN);
+					}
+					text.append(feedbackTextString);
+					sEdit.setFeedbackText (text.toString());
 				}
-				text.append(feedbackTextString);
-				sEdit.setFeedbackText (text.toString());
 				
 				List v = (List) state.getAttribute(GRADE_SUBMISSION_FEEDBACK_ATTACHMENT);
 				if (v!=null)
