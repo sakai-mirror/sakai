@@ -47,13 +47,13 @@
 							$validator.escapeHtml("$item.name")
 						#end
 						#if($upOneLevel)
-							<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$validator.escapeUrl($upOneLevel.id)';document.getElementById('navRoot').value='$validator.escapeUrl($upOneLevel.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.one')">
+							<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$upOneLevel.id';document.getElementById('navRoot').value='$upOneLevel.root';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.one')">
 							##<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($upOneLevel.id)&navRoot=$validator.escapeUrl($upOneLevel.root)")" title= "$tlang.getString('sh.one')">
 								<img src="/library/image/sakai/onelevelup.gif" border="0" alt ="$tlang.getString('sh.one')"/>
 							</a>
 						#end
 					#else
-						<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$validator.escapeUrl($item.id)';document.getElementById('navRoot').value='$validator.escapeUrl($item.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
+						<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$item.id';document.getElementById('navRoot').value='$item.root';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
 						##<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($item.id)&navRoot=$validator.escapeUrl($item.root)")" title ="$tlang.getString('sh.go')">
 							#if ($dropboxMode && $velocityCount == 1)
 								$siteTitle $tlang.getString("gen.drop")
@@ -94,12 +94,12 @@
 			<tr>
 				<th id="expansion">
 					#if ($expandallflag && "$expandallflag" == "$TRUE")
-						<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doUnexpandall';document.getElementById('collectionId').value='$validator.escapeUrl($collectionId)';document.getElementById('showForm').submit();" title= "$tlang.getString('collapseall')">
+						<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doUnexpandall';document.getElementById('collectionId').value='$collectionId';document.getElementById('showForm').submit();" title= "$tlang.getString('collapseall')">
 						##<a href="#toolLinkParam("ResourcesAction" "doUnexpandall" "collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('collapseall')">
 							<img src = "#imageLink("sakai/collapse-expand.gif")" border="0" title="$tlang.getString('collapseall')" alt="$tlang.getString('collapseall')" hspace="0" />
 						</a>								 
 					#else
-						<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doExpandall';document.getElementById('collectionId').value='$validator.escapeUrl($collectionId)';document.getElementById('showForm').submit();" title= "$tlang.getString('expandall')">
+						<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doExpandall';document.getElementById('collectionId').value='$collectionId';document.getElementById('showForm').submit();" title= "$tlang.getString('expandall')">
 						##<a href="#toolLinkParam("ResourcesAction" "doExpandall" "collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('expandall')">
 							<img src = "#imageLink("sakai/expand-collapse.gif")" border="0" title="$tlang.getString('expandall')" alt="$tlang.getString('expandall')" hspace="0" />
 						</a>								 
@@ -111,7 +111,7 @@
 					#end
 				</th>
 				<th id="title">
-					<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$validator.escapeUrl($collectionId)';document.getElementById('criteria').value='title';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.sorttit')">
+					<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$collectionId';document.getElementById('criteria').value='title';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.sorttit')">
 					##<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=title&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sorttit')"> 
 						$tlang.getString("gen.title1")
 						#if ($currentSortedBy.equals($resourceProperties.NamePropDisplayName)) 
@@ -127,7 +127,7 @@
 					$tlang.getString("gen.actions")
 				</th>
 				<th id="modified">
-					<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$validator.escapeUrl($collectionId)';document.getElementById('criteria').value='last%20modified';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.sortdate')">
+					<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$collectionId';document.getElementById('criteria').value='last modified';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.sortdate')">
 					##<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=last%20modified&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortdate')"> 
 						$tlang.getString("gen.last1")
 						#if ($currentSortedBy.equals($resourceProperties.NamePropModifiedDate)) 
@@ -141,7 +141,7 @@
 				</th>
 				<th id="creator">
 					##<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=created%20by&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortcrea')"> 
-					<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$validator.escapeUrl($collectionId)';document.getElementById('criteria').value='created%20by';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.sortcrea')">
+					<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$collectionId';document.getElementById('criteria').value='created by';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.sortcrea')">
 						$tlang.getString("gen.created")
 						#if ($currentSortedBy.equals($resourceProperties.NamePropCreator)) 
 							#if ($currentSortAsc.equals("true")) 
@@ -154,7 +154,7 @@
 				</th>
 				<th id="size">
 					##<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=size&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortsize')"> 
-					<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$validator.escapeUrl($collectionId)';document.getElementById('criteria').value='size';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.sortsize')">
+					<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$collectionId';document.getElementById('criteria').value='size';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.sortsize')">
 						$tlang.getString("gen.size")
 						#if ($currentSortedBy.equals($resourceProperties.NamePropContentLength)) 
 							#if ($currentSortAsc.equals("true")) 
@@ -362,7 +362,7 @@
 												<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 											</a>
 										#end
-										<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$member.id';document.getElementById('navRoot').value='$validator.escapeUrl($member.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
+										<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$member.id';document.getElementById('navRoot').value='$member.root';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
 										##<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}&navRoot=$validator.escapeUrl($member.root)")" title="$tlang.getString('sh.go')">
 											$validator.escapeHtml(${member.name})
 										</a>
@@ -555,7 +555,7 @@
 												<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 											</a>
 										#end
-										<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$root.id';document.getElementById('navRoot').value='$validator.escapeUrl($root.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
+										<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$root.id';document.getElementById('navRoot').value='$root.root';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
 										##<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${root.id})}&navRoot=$validator.escapeUrl($root.root)")" title="$tlang.getString('sh.go')">
 											$validator.escapeHtml(${root.name})
 										</a>
@@ -726,7 +726,7 @@
 														<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 													</a>
 												#end
-												<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$member.id';document.getElementById('navRoot').value='$validator.escapeUrl($member.root)';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
+												<a href="#" onclick="javascript:document.getElementById('sakai_action').value='doNavigate';document.getElementById('collectionId').value='$member.id';document.getElementById('navRoot').value='$member.root';document.getElementById('showForm').submit();" title= "$tlang.getString('sh.go')">
 												##<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}&navRoot=$validator.escapeUrl($member.root)")" title="$tlang.getString('sh.go')">
 													$validator.escapeHtml(${member.name})
 												</a>
