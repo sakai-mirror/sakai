@@ -4855,12 +4855,25 @@ public class ResourcesAction
 		
 		if(upload_file)
 		{
+			String max_file_size_mb = (String) state.getAttribute(FILE_UPLOAD_MAX_SIZE);
+			int max_bytes = 1096 * 1096;
+			try
+			{
+				max_bytes = Integer.parseInt(max_file_size_mb) * 1096 * 1096;
+			}
+			catch(Exception e)
+			{
+				// if unable to parse an integer from the value 
+				// in the properties file, use 1 MB as a default
+				max_file_size_mb = "1";
+				max_bytes = 1096 * 1096;
+			}
 			// check for file replacement
 			FileItem fileitem = params.getFileItem("fileName");
 			if(fileitem == null)
 			{
 				// "The user submitted a file to upload but it was too big!"
-				alerts.add(rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded2"));
+				alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
 				//item.setMissing("fileName");
 			}
 			else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
@@ -4878,7 +4891,12 @@ public class ResourcesAction
 				byte[] bytes = fileitem.get();
 				String contenttype = fileitem.getContentType();
 				
-				if(bytes.length > 0)
+				if(bytes.length > max_bytes)
+				{
+					alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
+					// item.setMissing("fileName");					
+				}
+				else if(bytes.length > 0)
 				{
 					item.setContent(bytes);
 					item.setContentHasChanged(true);
@@ -5169,6 +5187,19 @@ public class ResourcesAction
 		
 		if(item.isFileUpload())
 		{
+			String max_file_size_mb = (String) state.getAttribute(FILE_UPLOAD_MAX_SIZE);
+			int max_bytes = 1096 * 1096;
+			try
+			{
+				max_bytes = Integer.parseInt(max_file_size_mb) * 1096 * 1096;
+			}
+			catch(Exception e)
+			{
+				// if unable to parse an integer from the value 
+				// in the properties file, use 1 MB as a default
+				max_file_size_mb = "1";
+				max_bytes = 1096 * 1096;
+			}
 			// check for file replacement
 			FileItem fileitem = null;
 			try
@@ -5188,7 +5219,7 @@ public class ResourcesAction
 			if(fileitem == null)
 			{
 				// "The user submitted a file to upload but it was too big!"
-				item_alerts.add(rb.getString("size") + " " + state.getAttribute(FILE_UPLOAD_MAX_SIZE) + "MB " + rb.getString("exceeded2"));
+				item_alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
 				item.setMissing("fileName");
 			}
 			else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
@@ -5206,7 +5237,12 @@ public class ResourcesAction
 				byte[] bytes = fileitem.get();
 				String contenttype = fileitem.getContentType();
 				
-				if(bytes.length > 0)
+				if(bytes.length > max_bytes)
+				{
+					item_alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
+					item.setMissing("fileName");					
+				}
+				else if(bytes.length > 0)
 				{
 					item.setContent(bytes);
 					item.setContentHasChanged(true);
