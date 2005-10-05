@@ -5,7 +5,7 @@
   <extend>../../master/project.xml</extend>
   <name>Sakai Course Management Tool</name>
   <groupId>sakaiproject</groupId>
-  <id>sakai2-edu-coursemanagement-tool</id>
+  <id>sakai-edu-coursemanagement-tool</id>
   <currentVersion>${sakai.version}</currentVersion>
   <organization>
     <name>Sakai Project</name>
@@ -21,13 +21,13 @@
 
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai2-edu-coursemanagement-api</artifactId>
+      <artifactId>sakai-edu-coursemanagement-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
 
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai2-edu-coursemanagement-component</artifactId>
+      <artifactId>sakai-edu-coursemanagement-component</artifactId>
       <version>${sakai.version}</version>
     </dependency>
 
