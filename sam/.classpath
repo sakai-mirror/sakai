@@ -11,19 +11,19 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/navigo/jars/SakaiBaseFramework-1.0.a1.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-tool-2.0.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-tool-TRUNK.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-jsf-tool-2.0.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-jsf-tool-TRUNK.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-jsf-app-2.0.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-jsf-app-TRUNK.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-util-web-2.0.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-util-web-TRUNK.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-gradebook-service-2.0.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-gradebook-service-TRUNK.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-component-2.0.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-component-TRUNK.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-service-2.0.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-service-TRUNK.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/OKI/jars/OkiOSID-2.0.jar">
   </classpathentry>
