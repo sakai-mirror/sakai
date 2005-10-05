@@ -65,6 +65,7 @@ import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
+import org.sakaiproject.tool.content.ResourcesAction;
 import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.FormattedText;
@@ -523,19 +524,19 @@ public class ThreadedDiscussionIIAction
 		//state.setAttribute(STATE_MODE, "attach");
 
 		// setup... we'll use the attachment action's mode
-		state.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
+//chen - SAK-1624 (use new file picker)    state.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 		String subject = params.getString("subject");
 		String stateFromText = rb.getString("thedissit");
 		if (subject != null && subject.length() > 0)
 		{
 			stateFromText = rb.getString("disite") +" " + '"' + subject + '"';
 		}
-		state.setAttribute(AttachmentAction.STATE_FROM_TEXT, stateFromText);
+//chen - SAK-1624 (use new file picker)		state.setAttribute(AttachmentAction.STATE_FROM_TEXT, stateFromText);
 
 		String mode = (String) state.getAttribute(STATE_MODE);
-        if (mode != null && mode.equals(MODE_NEW_TOPIC))
-        {
-            subject = ((String) params.getString ("subject")).trim();
+		if (mode != null && mode.equals(MODE_NEW_TOPIC))
+		{
+		  subject = ((String) params.getString ("subject")).trim();
 			state.setAttribute(NEW_TOPIC_SUBJECT, subject);
 			
 			String body = params.getCleanString ("body");
@@ -552,36 +553,37 @@ public class ThreadedDiscussionIIAction
 				// no new category input
 				state.setAttribute(NEW_TOPIC_NEW_CATEGORY, new Boolean(Boolean.FALSE.toString()));
 				category = ((String) params.getString("category")).trim();
-                state.setAttribute(NEW_TOPIC_CATEGORY, category);
-            }
-            else
-            {
-                // new category input
-                state.setAttribute(NEW_TOPIC_NEW_CATEGORY, new Boolean(Boolean.TRUE.toString()));
-                state.setAttribute(NEW_TOPIC_CATEGORY, category);
-            }
-         }
-        else if (mode!=null && mode.equals(MODE_REPLY))
-        {
-			try
-            {
-                DiscussionChannel channel = DiscussionService.getDiscussionChannel((String) state.getAttribute(STATE_CHANNEL_REF));
-				
-				// save the input infos for the respond message
-				subject = ((String) params.getString ("subject")).trim();
-				state.setAttribute(RESPOND_SUBJECT, subject);
-
-				String body = params.getCleanString ("body");
-				body = processFormattedTextFromBrowser(state, body);
-				state.setAttribute(RESPOND_BODY, body);
-            }
-            catch (Exception e)
-            {
-            }
-        }
-                    
+				state.setAttribute(NEW_TOPIC_CATEGORY, category);
+			}
+			else
+			{
+			  // new category input
+			  state.setAttribute(NEW_TOPIC_NEW_CATEGORY, new Boolean(Boolean.TRUE.toString()));
+			  state.setAttribute(NEW_TOPIC_CATEGORY, category);
+			}
+		}
+		else if (mode!=null && mode.equals(MODE_REPLY))
+		{
+		  try
+		  {
+		    DiscussionChannel channel = DiscussionService.getDiscussionChannel((String) state.getAttribute(STATE_CHANNEL_REF));
+		    
+		    // save the input infos for the respond message
+		    subject = ((String) params.getString ("subject")).trim();
+		    state.setAttribute(RESPOND_SUBJECT, subject);
+		    
+		    String body = params.getCleanString ("body");
+		    body = processFormattedTextFromBrowser(state, body);
+		    state.setAttribute(RESPOND_BODY, body);
+		  }
+		  catch (Exception e)
+		  {
+		  }
+		}
+		
 		Vector attachments = (Vector) state.getAttribute(ATTACHMENTS);
-		if (attachments!=null)
+//chen - SAK-1624 (use new file picker)
+/*		if (attachments!=null)
 		{
 			if (attachments.size() > 0)
 			{
@@ -592,9 +594,19 @@ public class ThreadedDiscussionIIAction
 				state.setAttribute(AttachmentAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.FALSE);
 			}
 			state.setAttribute(AttachmentAction.STATE_ATTACHMENTS, attachments.clone());
-		}
-		
-		state.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
+		}*/
+		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
+		state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+		if(attachments.size() > 0)
+    {
+      state.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
+    }
+    else
+    {
+      state.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.FALSE);
+    }
+	  state.setAttribute (ResourcesAction.STATE_ATTACHMENTS, attachments.clone());
+//chen - SAK-1624 (use new file picker)		state.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 
 		// make sure the Main panel is updated
 		String peid = ((JetspeedRunData) data).getJs_peid();
@@ -657,7 +669,7 @@ public class ThreadedDiscussionIIAction
 		}
 
 		// if we are in edit attachments...
-		String attachment_mode = (String) state.getAttribute(AttachmentAction.STATE_MODE);
+/*		String attachment_mode = (String) state.getAttribute(AttachmentAction.STATE_MODE);
 		if (attachment_mode != null)
 		{
 			// if the attachment mode is not done, defer to the AttachmentAction
@@ -676,7 +688,27 @@ public class ThreadedDiscussionIIAction
 			state.removeAttribute(AttachmentAction.STATE_MODE);
 			state.removeAttribute(AttachmentAction.STATE_ATTACHMENTS);
 		}
-		context.put("attachments", state.getAttribute(ATTACHMENTS));
+		context.put("attachments", state.getAttribute(ATTACHMENTS));*/
+		String attachTemplate = (String) getContext(rundata).get("template");
+		String attachMode = (String) state.getAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+		if (attachMode != null)
+		{
+			if (!attachMode.equals(ResourcesAction.MODE_ATTACHMENT_DONE))
+			{
+				attachTemplate = ResourcesAction.buildHelperContext(portlet, context, rundata, state);
+				return attachTemplate;
+			}
+		}
+		context.put("tlang",rb);
+		List attachments = (List) state.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
+		if (attachments != null)
+		{
+			state.setAttribute(ATTACHMENTS, attachments);
+		  context.put ("attachments", attachments);
+		}
+		state.removeAttribute(ResourcesAction.STATE_MODE);
+		state.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
+		state.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
 		
 		String state_mode = (String) state.getAttribute(STATE_MODE);
 		
