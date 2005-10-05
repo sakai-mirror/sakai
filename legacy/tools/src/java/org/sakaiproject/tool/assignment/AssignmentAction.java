@@ -77,11 +77,15 @@ import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.tool.content.ResourcesAction;
 import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.java.StringUtil;
+
+//chen - SAK-1624 (use new file picker)
+import java.util.ArrayList;
 
 /**
  * <p>AssignmentAction is the action class for the dicussion tool.</p>
@@ -426,7 +430,6 @@ extends PagedResourceActionII
 	
 	/** The alert flag when doing global navigation from improper mode */
 	private static final String ALERT_GLOBAL_NAVIGATION = "alert_global_navigation";
-	
 	/**
 	 * central place for dispatching the build routines based on the state name
 	 */
@@ -436,7 +439,7 @@ extends PagedResourceActionII
 											SessionState state)
 	{		
 		// if we are in edit permissions...
-		context.put("tlang",rb);
+//chen - SAK-1624 (use new file picker)		context.put("tlang",rb);
 		String helperMode = (String) state.getAttribute(PermissionsAction.STATE_MODE);
 		if (helperMode != null)
 		{
@@ -456,7 +459,8 @@ extends PagedResourceActionII
 		context.put("cheffeedbackhelper", this);
 		
 		// if we are in edit attachments..
-		String attachment_mode = (String) state.getAttribute (AttachmentAction.STATE_MODE);
+//chen - SAK-1624 (use new file picker)
+/*		String attachment_mode = (String) state.getAttribute (AttachmentAction.STATE_MODE);
 		if (attachment_mode != null)
 		{
 			// if the attachment mode is not done, defer to the AttachmentAction
@@ -479,7 +483,32 @@ extends PagedResourceActionII
 			state.removeAttribute (AttachmentAction.STATE_MODE);
 			state.removeAttribute (AttachmentAction.STATE_ATTACHMENTS);
 		}	// if
+*/
+		String attachTemplate = (String) getContext(data).get("template");
+		String attachMode = (String) state.getAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+		if (attachMode != null)
+		{
+			if (!attachMode.equals(ResourcesAction.MODE_ATTACHMENT_DONE))
+			{
+				attachTemplate = ResourcesAction.buildHelperContext(portlet, context, data, state);
+				return attachTemplate;
+			}
+		}
 		
+//chen - SAK-1624 (use new file picker)
+		context.put("tlang",rb);
+		List attachments = (List) state.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
+		if (attachments != null)
+		{
+			//state.setAttachments(attachments);
+			state.setAttribute(ATTACHMENTS_MODIFIED, new Boolean(true));
+			state.setAttribute (ATTACHMENTS, attachments);
+			context.put ("attachments", attachments);
+		}
+		state.removeAttribute(ResourcesAction.STATE_MODE);
+		state.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
+		state.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+
 		String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);		
 		
 		// allow add assignment?
@@ -4676,6 +4705,7 @@ extends PagedResourceActionII
 			{
 				stateFromText = rb.getString("newass") +" " + '"' + title + '"';
 			}
+
 			state.setAttribute(AttachmentAction.STATE_FROM_TEXT, stateFromText);
 			setNewAssignmentParameters(data, false);
 		}
@@ -4727,6 +4757,8 @@ extends PagedResourceActionII
 		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
+//chen - SAK-1624 (use new file picker)
+/*		  
 			Vector attachments = (Vector) state.getAttribute (ATTACHMENTS);
 			if (attachments!=null)
 			{
@@ -4740,11 +4772,76 @@ extends PagedResourceActionII
 				}
 				state.setAttribute (AttachmentAction.STATE_ATTACHMENTS, attachments.clone ());
 			}
-
+*/
 			// setup... we'll use the attachment action's mode
-			state.setAttribute (AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
+//chen - SAK-1624 (use new file picker)			state.setAttribute (AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
+			state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
+			state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+			try
+			{
+			  String assignmentId = StringUtil.trimToNull(params.getString("assignmentId"));
+			  if(assignmentId != null)
+			  {
+			    Assignment a = AssignmentService.getAssignment (assignmentId);
+			    List existedAttachments = new ArrayList();
+			    if(((Boolean)state.getAttribute(ATTACHMENTS_MODIFIED)).booleanValue())
+			    {
+			      existedAttachments = (List) state.getAttribute (ATTACHMENTS);
+			    }
+			    else
+			    {
+			      existedAttachments = a.getContent ().getAttachments ();
+			    }
+/*			    List existedAttachments = a.getContent ().getAttachments ();
+			    List changedAttachments = new ArrayList();
+			    if(((Boolean)state.getAttribute(ATTACHMENTS_MODIFIED)).booleanValue())
+			    {
+			      changedAttachments = (List) state.getAttribute (ATTACHMENTS);
+			    }
+			    for(int i=0; i<changedAttachments.size(); i++)
+			    {
+			      existedAttachments.add(changedAttachments.get(i));
+			    }*/
+
+			    if(existedAttachments.size() > 0)
+			    {
+			      state.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
+			    }
+			    else
+			    {
+			      state.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.FALSE);
+			    }
+				  state.setAttribute (ResourcesAction.STATE_ATTACHMENTS, 
+				      EntityManager.newReferenceList(existedAttachments));
+			  }
+			  else
+			  {
+			    List existedAttachments = new ArrayList();
+			    if(((Boolean)state.getAttribute(ATTACHMENTS_MODIFIED)).booleanValue())
+			    {
+			      existedAttachments = (List) state.getAttribute (ATTACHMENTS);
+			    }
+		      if(existedAttachments.size() > 0)
+		      {
+		        state.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
+		      }
+		      else
+		      {
+		        state.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.FALSE);
+		      }
+				  state.setAttribute (ResourcesAction.STATE_ATTACHMENTS, 
+				      EntityManager.newReferenceList(existedAttachments));
+			  }
+			}
+			catch (IdUnusedException e )
+			{
+				addAlert(state, rb.getString("cannotfin3"));
+			}
+			catch (PermissionException e)
+			{
+				addAlert(state, rb.getString("youarenot14"));
+			}
 		}
-		
 	}	//doAttachments	
 	
 	/**
