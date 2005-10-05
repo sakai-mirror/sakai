@@ -163,7 +163,17 @@ h5{font-size:100%;color:#084A87;font-weight:normal;margin:.5em 0;background-colo
 	border:none;
 	background:transparent;
 }
-
+.navIntraTool input.disabled{
+	padding-bottom:1px;
+}
+.navIntraTool input.enabled{
+	color:#000;
+	border-bottom:1px dashed #90A1C6;	
+}
+.navIntraTool input.enabled:hover{
+	border-bottom:1px solid #fff;
+	color:#084A87
+}
 /*messages -moved to base. override as needed here */
 
 /*navigation*/

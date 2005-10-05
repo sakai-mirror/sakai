@@ -986,13 +986,16 @@
 				if(counter.value > 0)
 				{
 					button.disabled = false;
+					button.className='enabled';
 				}
 				else
 				{
 					button.disabled = true;
+					button.className='disabled';
 				}
 			}
 		}
 	//-->
 </script>
 
+	
