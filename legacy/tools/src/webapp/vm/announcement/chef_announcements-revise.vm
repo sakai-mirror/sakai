@@ -41,13 +41,20 @@
 				<table border="0" cellpadding="0" cellspacing="0" >
 					<tr>
 						<td>
-							<textarea name="body" class="block" id="body" cols="65" rows="15" wrap="virtual">
-								#if ($new=="true")
-									$validator.escapeHtmlFormattedTextarea($tempBody)
+							#if ($new=="true")
+								#if ($!tempBody.length() != 0)
+									<textarea name="body" class="block" id="body" cols="65" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($tempBody)</textarea>
 								#else
-									$validator.escapeHtmlFormattedTextarea($message.body)
+									<textarea name="body" class="block" id="body" cols="65" rows="15" wrap="virtual"></textarea>
 								#end
-							</textarea>
+							#else
+								#set($messageBody = $message.body)
+								#if ($!messageBody.length() != 0)
+									<textarea name="body" class="block" id="body" cols="65" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($message.body)</textarea>
+								#else
+									<textarea name="body" class="block" id="body" cols="65" rows="15" wrap="virtual"></textarea>
+								#end
+							#end
 							#chef_setupformattedtextarea("body")
 						</td>
 					</tr>
