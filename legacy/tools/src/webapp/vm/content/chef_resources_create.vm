@@ -648,8 +648,9 @@
 
 		######################## ================ Add Button, Cancel Button ================ ########################
 		<p class="act">
-			<input type="button" class="active" name="eventSubmit_doSavechanges" onclick="javascript:document.getElementById('flow').value='create'; submitform('createForm');" value="$tlang.getString("gen.add")" />
+			<input type="button" class="active" name="savechanges" id="saveChanges" onclick="javascript:showNotif('submitnotif','saveChanges','createForm');document.getElementById('flow').value='create'; submitform('createForm');" value="$tlang.getString("gen.add")" />
 			<input type="button" name="cancel" onclick="javascript:document.getElementById('flow').value='cancel';document.forms.createForm.submit();" value="$tlang.getString("gen.cancel")" />
+			<span id="submitnotif" style="visibility:hidden">$tlang.getString("gen.proces")</span>
 		</p>
 	</form>
 </div>
