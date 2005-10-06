@@ -46,7 +46,7 @@ public interface Reference
 	 * @param rv
 	 *        The list.
 	 */
-	void addSiteContextRealm(Collection rv);
+	void addSiteContextAuthzGroup(Collection rv);
 
 	/**
 	 * Add the AuthzGroup for this user id, or for the user's type template, or for the general template.
@@ -56,7 +56,7 @@ public interface Reference
 	 * @param id
 	 *        The user id.
 	 */
-	void addUserRealm(Collection rv, String id);
+	void addUserAuthzGroup(Collection rv, String id);
 
 	/**
 	 * Add the AuthzGroup for this user id, or for the user's type template, or for the general template.
@@ -66,7 +66,7 @@ public interface Reference
 	 * @param id
 	 *        The user id.
 	 */
-	void addUserTemplateRealm(Collection rv, String id);
+	void addUserTemplateAuthzGroup(Collection rv, String id);
 
 	/**
 	 * Access a single container id, the from most general (or only)

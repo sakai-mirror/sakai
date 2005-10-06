@@ -1095,7 +1095,7 @@ public abstract class BaseCalendarService
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection getEntityRealms(Reference ref)
+	public Collection getEntityAuthzGroups(Reference ref)
 	{
 		// double check that it's mine
 		if (SERVICE_NAME != ref.getType()) return null;
@@ -1124,7 +1124,7 @@ public abstract class BaseCalendarService
 			rv.add(calendarReference(ref.getContext(), calendarId));
 
 			// site
-			ref.addSiteContextRealm(rv);
+			ref.addSiteContextAuthzGroup(rv);
 		}
 		catch (Throwable e)
 		{

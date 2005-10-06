@@ -547,7 +547,7 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection getEntityRealms(Reference ref)
+	public Collection getEntityAuthzGroups(Reference ref)
 	{
 		// double check that it's mine
 		if (SERVICE_NAME != ref.getType()) return null;
@@ -559,7 +559,7 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 		{
 			rv.add(UserDirectoryService.userReference(ref.getId()));
 
-			ref.addUserTemplateRealm(rv, UsageSessionService.getSessionUserId());
+			ref.addUserTemplateAuthzGroup(rv, UsageSessionService.getSessionUserId());
 		}
 		catch (NullPointerException e)
 		{

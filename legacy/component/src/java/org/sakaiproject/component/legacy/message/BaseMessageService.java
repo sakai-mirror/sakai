@@ -1110,7 +1110,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection getEntityRealms(Reference ref)
+	public Collection getEntityAuthzGroups(Reference ref)
 	{
 		// we could check that the type is one of the message services, but lets just assume it is so we don't need to know them here -ggolden
 
@@ -1140,7 +1140,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			rv.add(channelReference(ref.getContext(), channelId));
 
 			// site
-			ref.addSiteContextRealm(rv);
+			ref.addSiteContextAuthzGroup(rv);
 		}
 		catch (Throwable e)
 		{

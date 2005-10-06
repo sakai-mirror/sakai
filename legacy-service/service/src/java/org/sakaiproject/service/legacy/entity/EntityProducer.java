@@ -140,9 +140,9 @@ public interface EntityProducer
 	String getEntityUrl(Reference ref);
 	
 	/**
-	 * Access a collection of realm ids for security on the for the referenced entity - the entity will belong to the service.
+	 * Access a collection of authorization group ids for security on the for the referenced entity - the entity will belong to the service.
 	 * @param ref The entity reference.
-	 * @return The entity's collection of security realm ids, or null if this cannot be done.
+	 * @return The entity's collection of authorization group ids, or null if this cannot be done.
 	 */
-	Collection getEntityRealms(Reference ref);
+	Collection getEntityAuthzGroups(Reference ref);
 }

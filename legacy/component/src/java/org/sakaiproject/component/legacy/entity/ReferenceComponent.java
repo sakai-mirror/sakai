@@ -277,7 +277,7 @@ public class ReferenceComponent
 		
 		if (m_service != null)
 		{
-			realms = m_service.getEntityRealms(this);
+			realms = m_service.getEntityAuthzGroups(this);
 		}
 
 		if (realms == null) realms = new Vector();
@@ -326,7 +326,7 @@ public class ReferenceComponent
 	 * @param rv
 	 *        The list.
 	 */
-	public void addSiteContextRealm(Collection rv)
+	public void addSiteContextAuthzGroup(Collection rv)
 	{
 		// site using context as id
 		rv.add(SiteService.siteReference(getContext()));
@@ -343,14 +343,14 @@ public class ReferenceComponent
 	 * @param id
 	 *        The user id.
 	 */
-	public void addUserRealm(Collection rv, String id)
+	public void addUserAuthzGroup(Collection rv, String id)
 	{
 		if (id == null) id = "";
 
 		// the user's realm
 		rv.add(UserDirectoryService.userReference(id));
 
-		addUserTemplateRealm(rv, id);
+		addUserTemplateAuthzGroup(rv, id);
 	}
 
 	/**
@@ -361,7 +361,7 @@ public class ReferenceComponent
 	 * @param id
 	 *        The user id.
 	 */
-	public void addUserTemplateRealm(Collection rv, String id)
+	public void addUserTemplateAuthzGroup(Collection rv, String id)
 	{
 		if (id == null) id = "";
 

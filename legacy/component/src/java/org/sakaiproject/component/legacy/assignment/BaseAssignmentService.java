@@ -2696,7 +2696,7 @@ public abstract class BaseAssignmentService
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection getEntityRealms(Reference ref)
+	public Collection getEntityAuthzGroups(Reference ref)
 	{
 		// double check that it's mine
 		if (SERVICE_NAME != ref.getType()) return null;
@@ -2706,7 +2706,7 @@ public abstract class BaseAssignmentService
 		try
 		{
 			// site
-			ref.addSiteContextRealm(rv);
+			ref.addSiteContextAuthzGroup(rv);
 
 			// specific
 			rv.add(ref.getReference());

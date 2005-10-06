@@ -771,7 +771,7 @@ public abstract class BaseAliasService
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection getEntityRealms(Reference ref)
+	public Collection getEntityAuthzGroups(Reference ref)
 	{
 		// for alias access %%% ? what realm? -ggolden
 		return null;
