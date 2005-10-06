@@ -219,7 +219,7 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste3')">$tlang.getString("list.paste3").trim()</a>
+									<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
 								#end
 								####### deal with editing/viewing file/folder information
 								##if ($atHome && !$atHome == $TRUE)
@@ -418,7 +418,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste3')">$tlang.getString("list.paste3").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
 										#end
 										####### deal with viewing/editing file/folder information
 										#if ($member.canRevise())
@@ -584,7 +584,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste3')">$tlang.getString("list.paste3").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
 										#end
 										####### deal with editing/viewing file/folder information
 										##if ($atHome && !$atHome == $TRUE)
@@ -782,7 +782,7 @@
 														|
 													#end
 													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste3')">$tlang.getString("list.paste3").trim()</a>
+													<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
 												#end
 												####### deal with viewing/editing file/folder information
 												#if ($member.canRevise())

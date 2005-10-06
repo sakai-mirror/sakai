@@ -7754,9 +7754,14 @@ public class ResourcesAction
 					}
 	
 					String newDisplayName = resourceProperties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+					String base = displayName;
+					String ext = "";
 					int index = displayName.lastIndexOf(".");
-					String base = displayName.substring(0, index);
-					String ext = displayName.substring(index);
+					if(index >= 0)
+					{
+						base = displayName.substring(0, index);
+						ext = displayName.substring(index);
+					}
 					
 					boolean copy_completed = false;
 					int num_tries = 0;
@@ -7917,9 +7922,14 @@ public class ResourcesAction
 					}
 	
 					String newDisplayName = resourceProperties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+					String base = displayName;
+					String ext = "";
 					int index = displayName.lastIndexOf(".");
-					String base = displayName.substring(0, index);
-					String ext = displayName.substring(index);
+					if(index >= 0)
+					{
+						base = displayName.substring(0, index);
+						ext = displayName.substring(index);	
+					}
 					
 					boolean copy_completed = false;
 					int num_tries = 0;
