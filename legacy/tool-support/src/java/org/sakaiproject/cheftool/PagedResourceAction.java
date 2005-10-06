@@ -34,7 +34,7 @@ import org.sakaiproject.cheftool.menu.MenuDivider;
 import org.sakaiproject.cheftool.menu.MenuEntry;
 import org.sakaiproject.cheftool.menu.MenuField;
 import org.sakaiproject.cheftool.menu.MenuItem;
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.courier.ObservingCourier;

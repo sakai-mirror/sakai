@@ -42,12 +42,12 @@ import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.preference.Preferences;
 import org.sakaiproject.service.legacy.preference.PreferencesEdit;
 import org.sakaiproject.service.legacy.preference.PreferencesService;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
-import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 

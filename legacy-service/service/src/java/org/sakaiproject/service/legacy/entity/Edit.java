@@ -22,28 +22,32 @@
 **********************************************************************************/
 
 // package
-package org.sakaiproject.service.legacy.resource;
+package org.sakaiproject.service.legacy.entity;
 
-import java.util.List;
-
-// import
+// imports
 
 /**
-* <p>AttachmentContainer is the interface for objects that may contain attachments.</p>
-* <p>An Attachment is a reference string to a CHEF Resource.  Attachments is a list of these.</p>
-*
-* @author University of Michigan, CHEF Software Development Team
+* <p>Edit is the core interface for the editable Sakai User object.</p>
+* 
+* @author University of Michigan, Sakai Software Development Team
 * @version $Revision$
 */
-public interface AttachmentContainer
+public interface Edit
+	extends Entity
 {
 	/**
-	* Access the attachments.
-	* @return An copy of the List of attachments (containing Reference objects) (may be empty).
+	* Check to see if the edit is still active, or has already been closed.
+	* @return true if the edit is active, false if it's been closed.
 	*/
-	public List getAttachments();
+	public boolean isActiveEdit();
 
-}	// AttachmentContainer
+	/**
+	* Access the resource's properties for modification
+	* @return The resource's properties.
+	*/
+	public ResourcePropertiesEdit getPropertiesEdit();
+
+}   // Edit
 
 
 

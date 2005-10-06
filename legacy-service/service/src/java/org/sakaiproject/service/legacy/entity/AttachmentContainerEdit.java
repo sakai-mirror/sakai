@@ -22,7 +22,7 @@
 **********************************************************************************/
 
 // package
-package org.sakaiproject.service.legacy.resource;
+package org.sakaiproject.service.legacy.entity;
 
 import java.util.List;
 

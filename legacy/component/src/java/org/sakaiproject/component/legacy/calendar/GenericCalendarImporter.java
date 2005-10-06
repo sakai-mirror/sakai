@@ -45,9 +45,9 @@ import org.sakaiproject.service.legacy.calendar.CalendarEventEdit;
 import org.sakaiproject.service.legacy.calendar.CalendarImporterService;
 import org.sakaiproject.service.legacy.calendar.CalendarService;
 import org.sakaiproject.service.legacy.calendar.RecurrenceRule;
-import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
-import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeRange;
 import org.sakaiproject.service.legacy.time.TimeService;
@@ -206,7 +206,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.Resource#getUrl()
+		 * @see org.sakaiproject.service.legacy.entity.Resource#getUrl()
 		 */
 		public String getUrl()
 		{
@@ -215,7 +215,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.Resource#getReference()
+		 * @see org.sakaiproject.service.legacy.entity.Resource#getReference()
 		 */
 		public String getReference()
 		{
@@ -224,7 +224,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.Resource#getId()
+		 * @see org.sakaiproject.service.legacy.entity.Resource#getId()
 		 */
 		public String getId()
 		{
@@ -233,7 +233,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.Resource#getProperties()
+		 * @see org.sakaiproject.service.legacy.entity.Resource#getProperties()
 		 */
 		public ResourceProperties getProperties()
 		{
@@ -242,7 +242,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.Resource#toXml(org.w3c.dom.Document, java.util.Stack)
+		 * @see org.sakaiproject.service.legacy.entity.Resource#toXml(org.w3c.dom.Document, java.util.Stack)
 		 */
 		public Element toXml(Document arg0, Stack arg1)
 		{
@@ -260,7 +260,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.AttachmentContainer#getAttachments()
+		 * @see org.sakaiproject.service.legacy.entity.AttachmentContainer#getAttachments()
 		 */
 		public List getAttachments()
 		{
@@ -325,7 +325,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.Edit#isActiveEdit()
+		 * @see org.sakaiproject.service.legacy.entity.Edit#isActiveEdit()
 		 */
 		public boolean isActiveEdit()
 		{
@@ -334,7 +334,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.Edit#getPropertiesEdit()
+		 * @see org.sakaiproject.service.legacy.entity.Edit#getPropertiesEdit()
 		 */
 		public ResourcePropertiesEdit getPropertiesEdit()
 		{
@@ -343,7 +343,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.AttachmentContainerEdit#addAttachment(org.sakaiproject.service.legacy.resource.Reference)
+		 * @see org.sakaiproject.service.legacy.entity.AttachmentContainerEdit#addAttachment(org.sakaiproject.service.legacy.entity.Reference)
 		 */
 		public void addAttachment(Reference arg0)
 		{
@@ -351,7 +351,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.AttachmentContainerEdit#removeAttachment(org.sakaiproject.service.legacy.resource.Reference)
+		 * @see org.sakaiproject.service.legacy.entity.AttachmentContainerEdit#removeAttachment(org.sakaiproject.service.legacy.entity.Reference)
 		 */
 		public void removeAttachment(Reference arg0)
 		{
@@ -359,7 +359,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.AttachmentContainerEdit#replaceAttachments(org.sakaiproject.service.legacy.resource.ReferenceVector)
+		 * @see org.sakaiproject.service.legacy.entity.AttachmentContainerEdit#replaceAttachments(org.sakaiproject.service.legacy.entity.ReferenceVector)
 		 */
 		public void replaceAttachments(List arg0)
 		{
@@ -367,7 +367,7 @@ public class GenericCalendarImporter implements CalendarImporterService
 		}
 
 		/* (non-Javadoc)
-		 * @see org.sakaiproject.service.legacy.resource.AttachmentContainerEdit#clearAttachments()
+		 * @see org.sakaiproject.service.legacy.entity.AttachmentContainerEdit#clearAttachments()
 		 */
 		public void clearAttachments()
 		{

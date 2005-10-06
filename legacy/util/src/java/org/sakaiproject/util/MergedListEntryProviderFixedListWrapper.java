@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.site.Site;
 
 /*

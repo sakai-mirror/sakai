@@ -29,8 +29,8 @@ import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.message.MessageService;
-import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>ChatService is the extension to GenericMessageService configured for Chat.</p>

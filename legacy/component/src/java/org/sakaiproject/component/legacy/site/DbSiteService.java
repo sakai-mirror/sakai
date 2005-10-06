@@ -40,7 +40,7 @@ import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
-import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;

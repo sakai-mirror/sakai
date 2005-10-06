@@ -27,8 +27,8 @@ package org.sakaiproject.service.legacy.preference;
 // imports
 import java.util.Collection;
 
-import org.sakaiproject.service.legacy.resource.Entity;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 
 /**
 * <p>Preferences stores keyed sets of properties for a given user (id).</p>

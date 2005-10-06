@@ -29,7 +29,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 
 import java.util.ArrayList;
 import java.util.Collection;

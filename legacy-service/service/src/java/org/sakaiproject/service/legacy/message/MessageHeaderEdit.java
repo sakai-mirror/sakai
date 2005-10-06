@@ -24,7 +24,7 @@
 // package
 package org.sakaiproject.service.legacy.message;
 
-import org.sakaiproject.service.legacy.resource.AttachmentContainerEdit;
+import org.sakaiproject.service.legacy.entity.AttachmentContainerEdit;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.time.Time;
 

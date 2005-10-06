@@ -25,8 +25,8 @@
 package org.sakaiproject.service.legacy.calendar;
 
 // import
-import org.sakaiproject.service.legacy.resource.AttachmentContainer;
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.AttachmentContainer;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.time.TimeRange;
 
 /**

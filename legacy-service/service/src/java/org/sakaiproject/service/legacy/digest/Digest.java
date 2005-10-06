@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.digest;
 // imports
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 
 /**

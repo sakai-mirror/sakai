@@ -47,7 +47,7 @@ import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.coursemanagement.cover.CourseManagementService;
-import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;

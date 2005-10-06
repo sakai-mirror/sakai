@@ -101,7 +101,7 @@ public class ContentHostingService
 		return service.allowAddCollection(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.content.ContentCollection addCollection(java.lang.String param0, org.sakaiproject.service.legacy.resource.ResourceProperties param1) throws org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.InconsistentException
+	public static org.sakaiproject.service.legacy.content.ContentCollection addCollection(java.lang.String param0, org.sakaiproject.service.legacy.entity.ResourceProperties param1) throws org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.InconsistentException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -218,7 +218,7 @@ public class ContentHostingService
 		return service.allowAddResource(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.content.ContentResource addResource(java.lang.String param0, java.lang.String param1, byte[] param2, org.sakaiproject.service.legacy.resource.ResourceProperties param3, int param4) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.OverQuotaException
+	public static org.sakaiproject.service.legacy.content.ContentResource addResource(java.lang.String param0, java.lang.String param1, byte[] param2, org.sakaiproject.service.legacy.entity.ResourceProperties param3, int param4) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.OverQuotaException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -245,7 +245,7 @@ public class ContentHostingService
 		return service.allowAddAttachmentResource();
 	}
 
-	public static org.sakaiproject.service.legacy.content.ContentResource addAttachmentResource(java.lang.String param0, java.lang.String param1, byte[] param2, org.sakaiproject.service.legacy.resource.ResourceProperties param3) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.OverQuotaException
+	public static org.sakaiproject.service.legacy.content.ContentResource addAttachmentResource(java.lang.String param0, java.lang.String param1, byte[] param2, org.sakaiproject.service.legacy.entity.ResourceProperties param3) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.OverQuotaException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -389,7 +389,7 @@ public class ContentHostingService
 		return service.allowAddProperty(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.resource.ResourceProperties addProperty(java.lang.String param0, java.lang.String param1, java.lang.String param2) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException
+	public static org.sakaiproject.service.legacy.entity.ResourceProperties addProperty(java.lang.String param0, java.lang.String param1, java.lang.String param2) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -407,7 +407,7 @@ public class ContentHostingService
 		return service.allowRemoveProperty(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.resource.ResourceProperties removeProperty(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException
+	public static org.sakaiproject.service.legacy.entity.ResourceProperties removeProperty(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -434,7 +434,7 @@ public class ContentHostingService
 		return service.isRootCollection(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit newResourceProperties()
+	public static org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit newResourceProperties()
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -470,7 +470,7 @@ public class ContentHostingService
 		return service.getResource(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.resource.ResourceProperties getProperties(java.lang.String param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException
+	public static org.sakaiproject.service.legacy.entity.ResourceProperties getProperties(java.lang.String param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)

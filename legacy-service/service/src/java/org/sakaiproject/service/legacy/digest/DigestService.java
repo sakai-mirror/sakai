@@ -30,7 +30,7 @@ import java.util.List;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 
 /**
 * <p>The DigestService collects sets of messages for different users, and sends them out periodically.</p>

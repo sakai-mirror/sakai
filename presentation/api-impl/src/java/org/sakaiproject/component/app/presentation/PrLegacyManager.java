@@ -48,9 +48,9 @@ import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
-import org.sakaiproject.service.legacy.resource.Entity;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
-import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.Time;
 
 /**

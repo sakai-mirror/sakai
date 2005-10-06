@@ -10,7 +10,7 @@ package org.sakaiproject.service.legacy.filepicker;
 public interface FilePickerHelper {
 
    /** Name of the attribute used in the tool session to pass a
-    * org.sakaiproject.service.legacy.resource.ReferenceVector
+    * org.sakaiproject.service.legacy.entity.ReferenceVector
     * back and forth to the picker.
     **/
    public static final String FILE_PICKER_ATTACHMENTS = "sakaiproject.filepicker.attachments";

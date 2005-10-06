@@ -203,7 +203,7 @@ public class UserDirectoryService
 		return service.addUser(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.user.User addUser(java.lang.String param0, java.lang.String param1, java.lang.String param2, java.lang.String param3, java.lang.String param4, java.lang.String param5, org.sakaiproject.service.legacy.resource.ResourceProperties param6) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException
+	public static org.sakaiproject.service.legacy.user.User addUser(java.lang.String param0, java.lang.String param1, java.lang.String param2, java.lang.String param3, java.lang.String param4, java.lang.String param5, org.sakaiproject.service.legacy.entity.ResourceProperties param6) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.user.UserDirectoryService service = getInstance();
 		if (service == null)

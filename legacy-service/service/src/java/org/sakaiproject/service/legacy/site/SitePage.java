@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.sakaiproject.api.kernel.tool.Tool;
-import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.entity.Edit;
 
 /**
  * <p>

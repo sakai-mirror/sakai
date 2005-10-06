@@ -22,7 +22,7 @@
  **********************************************************************************/
 
 // package
-package org.sakaiproject.service.legacy.resource;
+package org.sakaiproject.service.legacy.entity;
 
 // imports
 import java.util.Stack;

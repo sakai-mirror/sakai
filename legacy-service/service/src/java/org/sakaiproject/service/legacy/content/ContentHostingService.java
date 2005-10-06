@@ -38,10 +38,10 @@ import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.service.legacy.resource.Entity;
-import org.sakaiproject.service.legacy.resource.EntityProducer;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
-import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.w3c.dom.Document;
 
 /**

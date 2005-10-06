@@ -40,6 +40,10 @@ import org.sakaiproject.service.framework.config.cover.ServerConfigurationServic
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 
+import org.sakaiproject.service.legacy.entity.Edit;
+import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.EventTrackingService;
 import org.sakaiproject.service.legacy.id.cover.IdService;
@@ -47,10 +51,6 @@ import org.sakaiproject.service.legacy.notification.Notification;
 import org.sakaiproject.service.legacy.notification.NotificationAction;
 import org.sakaiproject.service.legacy.notification.NotificationEdit;
 import org.sakaiproject.service.legacy.notification.NotificationService;
-import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Entity;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
-import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;

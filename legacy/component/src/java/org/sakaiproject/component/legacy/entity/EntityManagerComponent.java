@@ -30,9 +30,9 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.service.legacy.resource.EntityManager;
-import org.sakaiproject.service.legacy.resource.EntityProducer;
-import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.entity.EntityManager;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
+import org.sakaiproject.service.legacy.entity.Reference;
 
 /**
  * <p>

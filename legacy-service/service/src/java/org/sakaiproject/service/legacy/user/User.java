@@ -23,7 +23,7 @@
 
 package org.sakaiproject.service.legacy.user;
 
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 
 /**

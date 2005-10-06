@@ -25,8 +25,8 @@
 package org.sakaiproject.service.legacy.notification;
 
 // imports
+import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.event.Event;
-import org.sakaiproject.service.legacy.resource.Edit;
 
 /**
 * <p>NotificationEdit is a modifiable Notification. </p>

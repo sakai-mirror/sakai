@@ -32,7 +32,7 @@ import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.TypeException;

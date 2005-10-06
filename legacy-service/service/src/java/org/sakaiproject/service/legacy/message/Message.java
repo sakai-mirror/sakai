@@ -24,7 +24,7 @@
 // package
 package org.sakaiproject.service.legacy.message;
 
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 
 // import
 

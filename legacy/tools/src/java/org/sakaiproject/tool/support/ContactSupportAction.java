@@ -41,7 +41,7 @@ import org.sakaiproject.service.framework.email.cover.EmailService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;

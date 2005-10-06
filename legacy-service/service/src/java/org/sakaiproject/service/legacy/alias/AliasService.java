@@ -32,8 +32,8 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.legacy.resource.Entity;
-import org.sakaiproject.service.legacy.resource.EntityProducer;
+import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
 
 /**
 * <p>AliasService provides aliases for CHEF resources.  Aliases are not case sensitive.</p>

@@ -12,7 +12,7 @@
 		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
   		<property name="autoDdl"><value>${auto.ddl}</value></property>
 	</bean>
 
@@ -26,7 +26,7 @@
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="notificationService"><ref bean="org.sakaiproject.service.legacy.notification.NotificationService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
  		<property name="containerTableName"><value>ANNOUNCEMENT_CHANNEL</value></property>
  		<property name="resourceTableName"><value>ANNOUNCEMENT_MESSAGE</value></property>
  		<property name="locksInDb"><value>false</value></property>
@@ -40,7 +40,7 @@
 			singleton="true">
 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
  		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
  		<property name="storagePath"><value>${sakai.home}archive/</value></property>
 	</bean>
 
@@ -53,7 +53,7 @@
 		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
  		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
  		<property name="assignmentTableName"><value>ASSIGNMENT_ASSIGNMENT</value></property>
  		<property name="contentTableName"><value>ASSIGNMENT_CONTENT</value></property>
  		<property name="submissionTableName"><value>ASSIGNMENT_SUBMISSION</value></property>
@@ -76,7 +76,7 @@
 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
 		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
  		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
 		<property name="idService"><ref bean="org.sakaiproject.service.legacy.id.IdService"/></property>
  		<property name="containerTableName"><value>CALENDAR_CALENDAR</value></property>
@@ -104,7 +104,7 @@
 		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
  		<property name="containerTableName"><value>CHAT_CHANNEL</value></property>
  		<property name="resourceTableName"><value>CHAT_MESSAGE</value></property>
  		<property name="locksInDb"><value>false</value></property>
@@ -121,7 +121,7 @@
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="notificationService"><ref bean="org.sakaiproject.service.legacy.notification.NotificationService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
 		<property name="lockManager"><ref bean="org.sakaiproject.component.legacy.content.LockManager"/></property>
  		<property name="collectionTableName"><value>CONTENT_COLLECTION</value></property>
  		<property name="resourceTableName"><value>CONTENT_RESOURCE</value></property>
@@ -188,7 +188,7 @@
 		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
  		<property name="containerTableName"><value>DISCUSSION_CHANNEL</value></property>
  		<property name="resourceTableName"><value>DISCUSSION_MESSAGE</value></property>
  		<property name="locksInDb"><value>false</value></property>
@@ -228,7 +228,7 @@
 	</bean>
 	-->
 
-	<bean id="org.sakaiproject.service.legacy.resource.EntityManager"
+	<bean id="org.sakaiproject.service.legacy.entity.EntityManager"
 			class="org.sakaiproject.component.legacy.entity.EntityManagerComponent"
 			init-method="init"
 			destroy-method="destroy"
@@ -317,7 +317,7 @@
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="notificationService"><ref bean="org.sakaiproject.service.legacy.notification.NotificationService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
  		<property name="containerTableName"><value>MAILARCHIVE_CHANNEL</value></property>
  		<property name="resourceTableName"><value>MAILARCHIVE_MESSAGE</value></property>
  		<property name="locksInDb"><value>false</value></property>
@@ -342,7 +342,7 @@
 		<property name="memoryService"><ref bean="org.sakaiproject.service.framework.memory.MemoryService"/></property>
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
  		<property name="tableName"><value>SAKAI_PREFERENCES</value></property>
  		<property name="locksInDb"><value>false</value></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
@@ -370,7 +370,7 @@
 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
 		<property name="provider"><ref bean="org.sakaiproject.service.legacy.authzGroup.GroupProvider"/></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
 	</bean>
@@ -403,7 +403,7 @@
 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
  		<property name="cacheMinutes"><value>3</value></property>
  		<property name="cacheCleanerMinutes"><value>15</value></property>
@@ -458,7 +458,7 @@
 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
-		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.resource.EntityManager"/></property>
+		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
 		<property name="provider"><ref bean="org.sakaiproject.service.legacy.user.UserDirectoryProvider"/></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
  		<property name="cacheMinutes"><value>0</value></property>

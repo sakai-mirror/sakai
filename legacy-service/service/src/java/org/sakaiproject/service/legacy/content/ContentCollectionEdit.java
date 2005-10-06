@@ -25,7 +25,7 @@
 package org.sakaiproject.service.legacy.content;
 
 // import
-import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.entity.Edit;
 
 /**
 * <p>ContentCollectionEdit is an editable ContentCollection.</p>

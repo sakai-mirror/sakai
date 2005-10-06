@@ -24,8 +24,8 @@
 // package
 package org.sakaiproject.service.legacy.preference;
 
-import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.entity.Edit;
+import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 
 // imports
 

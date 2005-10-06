@@ -34,8 +34,8 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.resource.Reference;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 

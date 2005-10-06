@@ -24,7 +24,7 @@
 // package
 package org.sakaiproject.service.legacy.alias;
 
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.user.User;
 

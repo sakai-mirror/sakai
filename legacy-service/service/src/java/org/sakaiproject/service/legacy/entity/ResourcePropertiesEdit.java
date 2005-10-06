@@ -22,32 +22,22 @@
 **********************************************************************************/
 
 // package
-package org.sakaiproject.service.legacy.resource;
+package org.sakaiproject.service.legacy.entity;
 
-// imports
+
+// import
 
 /**
-* <p>Edit is the core interface for the editable Sakai User object.</p>
-* 
+* <p>ResourcePropertiesEdit is the core interface for read/write ResourceProperties.</p>
+*
 * @author University of Michigan, Sakai Software Development Team
 * @version $Revision$
 */
-public interface Edit
-	extends Entity
+public interface ResourcePropertiesEdit
+	extends ResourceProperties
 {
-	/**
-	* Check to see if the edit is still active, or has already been closed.
-	* @return true if the edit is active, false if it's been closed.
-	*/
-	public boolean isActiveEdit();
 
-	/**
-	* Access the resource's properties for modification
-	* @return The resource's properties.
-	*/
-	public ResourcePropertiesEdit getPropertiesEdit();
-
-}   // Edit
+}	// ResourcePropertiesEdit
 
 
 

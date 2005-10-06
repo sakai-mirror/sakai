@@ -24,7 +24,7 @@
 // package
 package org.sakaiproject.service.legacy.site;
 
-import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.entity.Edit;
 
 /**
  * <p>

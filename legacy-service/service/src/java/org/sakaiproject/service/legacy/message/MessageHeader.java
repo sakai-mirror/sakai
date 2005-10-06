@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.message;
 // import
 import java.util.Stack;
 
-import org.sakaiproject.service.legacy.resource.AttachmentContainer;
+import org.sakaiproject.service.legacy.entity.AttachmentContainer;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.time.Time;
 import org.w3c.dom.Document;

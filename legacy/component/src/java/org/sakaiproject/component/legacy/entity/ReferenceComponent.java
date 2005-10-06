@@ -31,10 +31,10 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.service.legacy.resource.Entity;
-import org.sakaiproject.service.legacy.resource.EntityProducer;
-import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
+import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;

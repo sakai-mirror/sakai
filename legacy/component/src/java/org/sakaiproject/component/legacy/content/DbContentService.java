@@ -49,7 +49,7 @@ import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.ContentResourceEdit;
 import org.sakaiproject.service.legacy.content.LockManager;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.util.storage.BaseDbSingleStorage;

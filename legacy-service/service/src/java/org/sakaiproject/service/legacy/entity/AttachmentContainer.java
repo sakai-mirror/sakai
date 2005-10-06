@@ -22,22 +22,28 @@
 **********************************************************************************/
 
 // package
-package org.sakaiproject.service.legacy.resource;
+package org.sakaiproject.service.legacy.entity;
 
+import java.util.List;
 
 // import
 
 /**
-* <p>ResourcePropertiesEdit is the core interface for read/write ResourceProperties.</p>
+* <p>AttachmentContainer is the interface for objects that may contain attachments.</p>
+* <p>An Attachment is a reference string to a CHEF Resource.  Attachments is a list of these.</p>
 *
-* @author University of Michigan, Sakai Software Development Team
+* @author University of Michigan, CHEF Software Development Team
 * @version $Revision$
 */
-public interface ResourcePropertiesEdit
-	extends ResourceProperties
+public interface AttachmentContainer
 {
+	/**
+	* Access the attachments.
+	* @return An copy of the List of attachments (containing Reference objects) (may be empty).
+	*/
+	public List getAttachments();
 
-}	// ResourcePropertiesEdit
+}	// AttachmentContainer
 
 
 

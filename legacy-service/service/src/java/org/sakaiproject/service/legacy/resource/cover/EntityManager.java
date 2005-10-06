@@ -26,7 +26,7 @@ package org.sakaiproject.service.legacy.resource.cover;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 
 /**
-* <p>EntityManager is a static Cover for the {@link org.sakaiproject.service.legacy.resource.EntityManager EntityManager};
+* <p>EntityManager is a static Cover for the {@link org.sakaiproject.service.legacy.entity.EntityManager EntityManager};
 * see that interface for usage details.</p>
 * 
 * @author Sakai Software Development Team
@@ -37,24 +37,24 @@ public class EntityManager
 	 * Access the component instance: special cover only method.
 	 * @return the component instance.
 	 */
-	public static org.sakaiproject.service.legacy.resource.EntityManager getInstance()
+	public static org.sakaiproject.service.legacy.entity.EntityManager getInstance()
 	{
 		if (ComponentManager.CACHE_SINGLETONS)
 		{
-			if (m_instance == null) m_instance = (org.sakaiproject.service.legacy.resource.EntityManager) ComponentManager.get(org.sakaiproject.service.legacy.resource.EntityManager.class);
+			if (m_instance == null) m_instance = (org.sakaiproject.service.legacy.entity.EntityManager) ComponentManager.get(org.sakaiproject.service.legacy.entity.EntityManager.class);
 			return m_instance;
 		}
 		else
 		{
-			return (org.sakaiproject.service.legacy.resource.EntityManager) ComponentManager.get(org.sakaiproject.service.legacy.resource.EntityManager.class);
+			return (org.sakaiproject.service.legacy.entity.EntityManager) ComponentManager.get(org.sakaiproject.service.legacy.entity.EntityManager.class);
 		}
 	}
-	private static org.sakaiproject.service.legacy.resource.EntityManager m_instance = null;
+	private static org.sakaiproject.service.legacy.entity.EntityManager m_instance = null;
 
 
-	public static void registerEntityProducer(org.sakaiproject.service.legacy.resource.EntityProducer param0)
+	public static void registerEntityProducer(org.sakaiproject.service.legacy.entity.EntityProducer param0)
 	{
-		org.sakaiproject.service.legacy.resource.EntityManager service = getInstance();
+		org.sakaiproject.service.legacy.entity.EntityManager service = getInstance();
 		if (service == null)
 			return;
 
@@ -63,25 +63,25 @@ public class EntityManager
 
 	public static java.util.List getEntityProducers()
 	{
-		org.sakaiproject.service.legacy.resource.EntityManager service = getInstance();
+		org.sakaiproject.service.legacy.entity.EntityManager service = getInstance();
 		if (service == null)
 			return null;
 
 		return service.getEntityProducers();
 	}
 
-	public static org.sakaiproject.service.legacy.resource.Reference newReference(java.lang.String param0)
+	public static org.sakaiproject.service.legacy.entity.Reference newReference(java.lang.String param0)
 	{
-		org.sakaiproject.service.legacy.resource.EntityManager service = getInstance();
+		org.sakaiproject.service.legacy.entity.EntityManager service = getInstance();
 		if (service == null)
 			return null;
 
 		return service.newReference(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.resource.Reference newReference(org.sakaiproject.service.legacy.resource.Reference param0)
+	public static org.sakaiproject.service.legacy.entity.Reference newReference(org.sakaiproject.service.legacy.entity.Reference param0)
 	{
-		org.sakaiproject.service.legacy.resource.EntityManager service = getInstance();
+		org.sakaiproject.service.legacy.entity.EntityManager service = getInstance();
 		if (service == null)
 			return null;
 
@@ -90,7 +90,7 @@ public class EntityManager
 
 	public static java.util.List newReferenceList()
 	{
-		org.sakaiproject.service.legacy.resource.EntityManager service = getInstance();
+		org.sakaiproject.service.legacy.entity.EntityManager service = getInstance();
 		if (service == null)
 			return null;
 
@@ -99,7 +99,7 @@ public class EntityManager
 
 	public static java.util.List newReferenceList(java.util.List param0)
 	{
-		org.sakaiproject.service.legacy.resource.EntityManager service = getInstance();
+		org.sakaiproject.service.legacy.entity.EntityManager service = getInstance();
 		if (service == null)
 			return null;
 

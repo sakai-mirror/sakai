@@ -35,10 +35,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.preference.PreferencesEdit;
 import org.sakaiproject.service.legacy.preference.PreferencesService;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
-import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 
 /**
  * <p>

@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.news;
 // import
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.util.Filter;
 
 /**

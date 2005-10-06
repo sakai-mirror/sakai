@@ -27,8 +27,8 @@ package org.sakaiproject.util;
 // imports
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.service.framework.log.cover.Log;
-import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 
 /**

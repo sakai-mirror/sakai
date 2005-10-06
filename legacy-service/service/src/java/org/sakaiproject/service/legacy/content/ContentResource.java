@@ -28,7 +28,7 @@ package org.sakaiproject.service.legacy.content;
 import java.io.InputStream;
 
 import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 
 /**
 * <p>ContentResource is the core interface for a Resource object in the GenericContentHostingService.</p>

@@ -50,7 +50,7 @@ import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 
 /**

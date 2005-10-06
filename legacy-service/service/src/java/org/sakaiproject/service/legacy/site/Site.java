@@ -28,7 +28,7 @@ package org.sakaiproject.service.legacy.site;
 import java.util.Collection;
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.user.User;
 

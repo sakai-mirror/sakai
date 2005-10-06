@@ -31,8 +31,8 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.legacy.resource.Reference;
-import org.sakaiproject.service.legacy.resource.EntityProducer;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
+import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.time.Time;
 
 // import

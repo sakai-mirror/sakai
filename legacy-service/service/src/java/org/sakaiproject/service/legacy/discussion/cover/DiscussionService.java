@@ -227,7 +227,7 @@ public class DiscussionService
 		return service.getChannelIds(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.message.Message getMessage(org.sakaiproject.service.legacy.resource.Reference param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	public static org.sakaiproject.service.legacy.message.Message getMessage(org.sakaiproject.service.legacy.entity.Reference param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.discussion.DiscussionService service = getInstance();
 		if (service == null)

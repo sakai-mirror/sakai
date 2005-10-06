@@ -25,8 +25,8 @@
 package org.sakaiproject.util.storage;
 
 // imports
-import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Edit;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 import org.w3c.dom.Element;
 

@@ -35,9 +35,9 @@ import java.util.Stack;
 import java.util.Vector;
 
 import org.sakaiproject.service.framework.log.cover.Logger;
-import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Entity;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.Edit;
+import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;

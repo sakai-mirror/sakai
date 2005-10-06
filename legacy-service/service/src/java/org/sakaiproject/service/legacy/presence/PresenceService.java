@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.presence;
 // imports
 import java.util.List;
 
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 
 /**
 * <p>A PresenceService keeps track of a session's presence at various locations in the system.</p>

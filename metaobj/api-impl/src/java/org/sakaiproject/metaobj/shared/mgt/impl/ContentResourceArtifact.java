@@ -27,7 +27,7 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.resource.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 
 /**
  * Created by IntelliJ IDEA.

@@ -27,8 +27,8 @@ package org.sakaiproject.service.legacy.notification;
 // imports
 import java.util.List;
 
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.event.Event;
-import org.sakaiproject.service.legacy.resource.Entity;
 
 /**
 * <p>Notification the interface for classes that act to notify, used with the GenericNotificationService. </p>

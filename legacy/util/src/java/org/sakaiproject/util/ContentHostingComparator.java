@@ -29,7 +29,7 @@ import java.util.Comparator;
 
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.time.Time;
 
 /**

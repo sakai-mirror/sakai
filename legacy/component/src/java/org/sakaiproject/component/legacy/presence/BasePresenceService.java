@@ -39,10 +39,10 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.session.UsageSession;
 import org.sakaiproject.service.framework.session.UsageSessionService;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.EventTrackingService;
 import org.sakaiproject.service.legacy.presence.PresenceService;
-import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 
 /**

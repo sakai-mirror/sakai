@@ -27,7 +27,7 @@ package org.sakaiproject.service.legacy.notification;
 // imports
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.InUseException;
-import org.sakaiproject.service.legacy.resource.Entity;
+import org.sakaiproject.service.legacy.entity.Entity;
 
 /**
 * <p>NotificationService is ... %%%</p>

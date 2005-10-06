@@ -25,8 +25,8 @@
 package org.sakaiproject.service.legacy.assignment;
 
 // import
-import org.sakaiproject.service.legacy.resource.Edit;
-import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.entity.Edit;
+import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.time.Time;
 

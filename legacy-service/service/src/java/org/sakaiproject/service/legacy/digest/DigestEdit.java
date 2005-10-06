@@ -25,7 +25,7 @@
 package org.sakaiproject.service.legacy.digest;
 
 // imports
-import org.sakaiproject.service.legacy.resource.Edit;
+import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.time.Time;
 
 /**

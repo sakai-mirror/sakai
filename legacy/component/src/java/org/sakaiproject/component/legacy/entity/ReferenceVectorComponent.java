@@ -29,8 +29,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.sakaiproject.service.legacy.resource.Entity;
-import org.sakaiproject.service.legacy.resource.Reference;
+import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.Reference;
 
 /**
  * <p>
