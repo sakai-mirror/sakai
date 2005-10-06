@@ -59,7 +59,7 @@ public interface EnrollmentRecord {
 	/**
 	 * Get the role string.
 	 * 
-	 * @return
+	 * @return role string
 	 */
 	public String getRole();
 	

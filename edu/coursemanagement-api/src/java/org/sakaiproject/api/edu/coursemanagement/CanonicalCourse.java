@@ -109,7 +109,7 @@ public interface CanonicalCourse extends Persistable{
 	 * Get the course type of this canonical course.  Typically,
 	 * this type will indicate if ths canonical course is available,
 	 * discontinued, etc.
-	 * @return
+	 * @return status
 	 */
 	public CanonicalCourseStatusType getCanonicalCourseStatus();
 	
