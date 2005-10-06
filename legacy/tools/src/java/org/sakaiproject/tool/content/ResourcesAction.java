@@ -4868,40 +4868,50 @@ public class ResourcesAction
 				max_file_size_mb = "1";
 				max_bytes = 1096 * 1096;
 			}
-			// check for file replacement
-			FileItem fileitem = params.getFileItem("fileName");
-			if(fileitem == null)
+			/*
+			 // params.getContentLength() returns m_req.getContentLength()
+			if(params.getContentLength() >= max_bytes)
 			{
-				// "The user submitted a file to upload but it was too big!"
 				alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
-				//item.setMissing("fileName");
 			}
-			else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
+			else
+			*/
 			{
-				if(item.getContent() == null || item.getContent().length <= 0)
+				// check for file replacement
+				FileItem fileitem = params.getFileItem("fileName");
+				if(fileitem == null)
 				{
-					// "The user submitted the form, but didn't select a file to upload!"
-					alerts.add(rb.getString("choosefile") + ". ");
+					// "The user submitted a file to upload but it was too big!"
+					alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
 					//item.setMissing("fileName");
 				}
-			}
-			else if (fileitem.getFileName().length() > 0)
-			{
-				String filename = Validator.getFileName(fileitem.getFileName());
-				byte[] bytes = fileitem.get();
-				String contenttype = fileitem.getContentType();
-				
-				if(bytes.length > max_bytes)
+				else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
 				{
-					alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
-					// item.setMissing("fileName");					
+					if(item.getContent() == null || item.getContent().length <= 0)
+					{
+						// "The user submitted the form, but didn't select a file to upload!"
+						alerts.add(rb.getString("choosefile") + ". ");
+						//item.setMissing("fileName");
+					}
 				}
-				else if(bytes.length > 0)
+				else if (fileitem.getFileName().length() > 0)
 				{
-					item.setContent(bytes);
-					item.setContentHasChanged(true);
-					item.setMimeType(contenttype);
-					item.setFilename(filename);									
+					String filename = Validator.getFileName(fileitem.getFileName());
+					byte[] bytes = fileitem.get();
+					String contenttype = fileitem.getContentType();
+					
+					if(bytes.length >= max_bytes)
+					{
+						alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
+						// item.setMissing("fileName");					
+					}
+					else if(bytes.length > 0)
+					{
+						item.setContent(bytes);
+						item.setContentHasChanged(true);
+						item.setMimeType(contenttype);
+						item.setFilename(filename);									
+					}
 				}
 			}
 		}
@@ -5200,61 +5210,72 @@ public class ResourcesAction
 				max_file_size_mb = "1";
 				max_bytes = 1096 * 1096;
 			}
-			// check for file replacement
-			FileItem fileitem = null;
-			try
+			/*
+			 // params.getContentLength() returns m_req.getContentLength()
+			if(params.getContentLength() >= max_bytes)
 			{
-				fileitem = params.getFileItem("fileName" + index);
-			}
-			catch(Exception e)
-			{
-				// this is an error in Firefox, Mozilla and Netscape
-				// "The user didn't select a file to upload!"
-				if(item.getContent() == null || item.getContent().length <= 0)
-				{
-					item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
-					item.setMissing("fileName");
-				}
-			}
-			if(fileitem == null)
-			{
-				// "The user submitted a file to upload but it was too big!"
 				item_alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
-				item.setMissing("fileName");
 			}
-			else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
+			else
+			*/
 			{
-				if(item.getContent() == null || item.getContent().length <= 0)
+				// check for file replacement
+				FileItem fileitem = null;
+				try
 				{
-					// "The user submitted the form, but didn't select a file to upload!"
-					item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
-					item.setMissing("fileName");
+					fileitem = params.getFileItem("fileName" + index);
 				}
-			}
-			else if (fileitem.getFileName().length() > 0)
-			{
-				String filename = Validator.getFileName(fileitem.getFileName());
-				byte[] bytes = fileitem.get();
-				String contenttype = fileitem.getContentType();
-				
-				if(bytes.length > max_bytes)
+				catch(Exception e)
 				{
+					// this is an error in Firefox, Mozilla and Netscape
+					// "The user didn't select a file to upload!"
+					if(item.getContent() == null || item.getContent().length <= 0)
+					{
+						item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
+						item.setMissing("fileName");
+					}
+				}
+				if(fileitem == null)
+				{
+					// "The user submitted a file to upload but it was too big!"
 					item_alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
-					item.setMissing("fileName");					
-				}
-				else if(bytes.length > 0)
-				{
-					item.setContent(bytes);
-					item.setContentHasChanged(true);
-					item.setMimeType(contenttype);
-					item.setFilename(filename);									
-					blank_entry = false;
-				}
-				else 
-				{
-					item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
 					item.setMissing("fileName");
 				}
+				else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
+				{
+					if(item.getContent() == null || item.getContent().length <= 0)
+					{
+						// "The user submitted the form, but didn't select a file to upload!"
+						item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
+						item.setMissing("fileName");
+					}
+				}
+				else if (fileitem.getFileName().length() > 0)
+				{
+					String filename = Validator.getFileName(fileitem.getFileName());
+					byte[] bytes = fileitem.get();
+					String contenttype = fileitem.getContentType();
+					
+					if(bytes.length >= max_bytes)
+					{
+						item_alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
+						item.setMissing("fileName");					
+					}
+					else if(bytes.length > 0)
+					{
+						item.setContent(bytes);
+						item.setContentHasChanged(true);
+						item.setMimeType(contenttype);
+						item.setFilename(filename);									
+						blank_entry = false;
+					}
+					else 
+					{
+						item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
+						item.setMissing("fileName");
+					}
+				}
+
 			}
 		}
 		else if(item.isPlaintext())
@@ -5519,6 +5540,30 @@ public class ResourcesAction
 		int actualCount = 0;
 		Set first_item_alerts = null;
 		
+		String max_file_size_mb = (String) state.getAttribute(FILE_UPLOAD_MAX_SIZE);
+		int max_bytes = 1096 * 1096;
+		try
+		{
+			max_bytes = Integer.parseInt(max_file_size_mb) * 1096 * 1096;
+		}
+		catch(Exception e)
+		{
+			// if unable to parse an integer from the value 
+			// in the properties file, use 1 MB as a default
+			max_file_size_mb = "1";
+			max_bytes = 1096 * 1096;
+		}
+
+		/*
+		// params.getContentLength() returns m_req.getContentLength()
+		if(params.getContentLength() > max_bytes)
+		{
+			alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
+			state.setAttribute(STATE_CREATE_ALERTS, alerts);
+			
+			return;
+		}
+		*/
 		for(int i = 0; i < numberOfItems.intValue(); i++)
 		{
 			EditItem item = (EditItem) items.get(i);
