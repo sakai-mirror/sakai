@@ -363,7 +363,7 @@
 	</bean>
 
 	<bean id="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService"
-			class="org.sakaiproject.component.legacy.authzGroup.DbRealmService"
+			class="org.sakaiproject.component.legacy.authzGroup.DbAuthzGroupService"
 			init-method="init"
 			destroy-method="destroy"
 			singleton="true">

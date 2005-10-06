@@ -56,13 +56,13 @@ import org.w3c.dom.Element;
 
 /**
  * <p>
- * DbRealmService is an extension of the BaseRealmService with database storage.
+ * DbAuthzGroupService is an extension of the BaseAuthzGroupService with database storage.
  * </p>
  * 
  * @author University of Michigan, Sakai Software Development Team
  * @version $Revision$
  */
-public class DbRealmService extends BaseRealmService
+public class DbAuthzGroupService extends BaseAuthzGroupService
 {
 	/** All the event functions we know exist on the db. */
 	protected Collection m_functionCache = new HashSet();
@@ -199,7 +199,7 @@ public class DbRealmService extends BaseRealmService
 	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
-	 * BaseRealmService extensions
+	 * BaseAuthzGroupService extensions
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**

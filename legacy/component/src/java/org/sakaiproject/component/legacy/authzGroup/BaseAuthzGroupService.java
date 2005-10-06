@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * <p>
- * BaseRealmService is a Sakai azGroup service implementation.
+ * BaseAuthzGroupService is a Sakai azGroup service implementation.
  * </p>
  * <p>
  * To support the public view feature, an AuthzGroup named TEMPLATE_PUBVIEW must exist, with a role named ROLE_PUBVIEW - all the abilities in this role become the public view abilities for any resource.
@@ -82,7 +82,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author Sakai Software Development Team
  */
-public abstract class BaseRealmService implements AuthzGroupService, StorageUser
+public abstract class BaseAuthzGroupService implements AuthzGroupService, StorageUser
 {
 	/** Storage manager for this service. */
 	protected Storage m_storage = null;
