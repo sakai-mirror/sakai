@@ -362,7 +362,7 @@
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
 	</bean>
 
-	<bean id="org.sakaiproject.service.legacy.realm.RealmService"
+	<bean id="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService"
 			class="org.sakaiproject.component.legacy.realm.DbRealmService"
 			init-method="init"
 			destroy-method="destroy"

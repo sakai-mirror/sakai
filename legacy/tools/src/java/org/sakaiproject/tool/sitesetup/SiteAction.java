@@ -89,6 +89,10 @@ import org.sakaiproject.service.legacy.archive.ImportMetadata;
 import org.sakaiproject.service.legacy.archive.cover.ArchiveService;
 import org.sakaiproject.service.legacy.archive.cover.ImportMetadataService;
 import org.sakaiproject.service.legacy.assignment.cover.AssignmentService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Member;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.calendar.cover.CalendarService;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
@@ -99,11 +103,6 @@ import org.sakaiproject.service.legacy.coursemanagement.cover.CourseManagementSe
 import org.sakaiproject.service.legacy.discussion.cover.DiscussionService;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.id.cover.IdService;
-import org.sakaiproject.service.legacy.realm.Grant;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.RealmEdit;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -122,9 +121,9 @@ import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.FileItem;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.SortedIterator;
+import org.sakaiproject.util.SubjectAffiliates;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.StringUtil;
-import org.sakaiproject.util.SubjectAffiliates;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -1218,7 +1217,7 @@ public class SiteAction extends PagedResourceActionII
 				realmId = SiteService.siteReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId());
 				try
 				{
-					Realm realm = RealmService.getRealm(realmId);
+					AuthzGroup realm = RealmService.getAuthzGroup(realmId);
 					try
 					{
 						List removeableList = (List) state.getAttribute(STATE_REMOVEABLE_USER_LIST);
@@ -1656,7 +1655,7 @@ public class SiteAction extends PagedResourceActionII
 					realmId = SiteService.siteReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId());
 					try
 					{
-						context.put("realm", RealmService.getRealm(realmId));
+						context.put("realm", RealmService.getAuthzGroup(realmId));
 					}
 					catch (IdUnusedException e)
 					{
@@ -1918,14 +1917,14 @@ public class SiteAction extends PagedResourceActionII
 				}
 				try
 				{
-					Realm r = RealmService.getRealm(realmTemplate);
+					AuthzGroup r = RealmService.getAuthzGroup(realmTemplate);
 					context.put("roles", r.getRoles());
 				}
 				catch (IdUnusedException e)
 				{
 					try
 					{
-						Realm rr = RealmService.getRealm("!site.template");
+						AuthzGroup rr = RealmService.getAuthzGroup("!site.template");
 						context.put("roles", rr.getRoles());
 					}
 					catch (IdUnusedException ee)
@@ -2308,8 +2307,8 @@ public class SiteAction extends PagedResourceActionII
 					String rv = null;
 					try
 					{
-						Realm realm = RealmService.getRealm(realmId);
-						rv = realm.getProviderRealmId();
+						AuthzGroup realm = RealmService.getAuthzGroup(realmId);
+						rv = realm.getProviderGroupId();
 					}
 					catch (IdUnusedException e)
 					{
@@ -2381,7 +2380,7 @@ public class SiteAction extends PagedResourceActionII
 					realmId = SiteService.siteReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId());
 					try
 					{
-						context.put("realm", RealmService.getRealm(realmId));
+						context.put("realm", RealmService.getAuthzGroup(realmId));
 					}
 					catch (IdUnusedException e)
 					{
@@ -4861,27 +4860,22 @@ public class SiteAction extends PagedResourceActionII
 					
 					try
 					{
-						RealmEdit realmEdit = RealmService.editRealm(realm);
-						realmEdit.setProviderRealmId(providerRealm);
-						RealmService.commitEdit(realmEdit);
+						AuthzGroup realmEdit = RealmService.getAuthzGroup(realm);
+						realmEdit.setProviderGroupId(providerRealm);
+						RealmService.save(realmEdit);
 					}
 					catch (IdUnusedException e)
 					{
-						Log.warn("chef", this + " IdUnusedException, not found, or not an RealmEdit object");
+						Log.warn("chef", this + " IdUnusedException, not found, or not an AuthzGroup object");
 						addAlert(state, rb.getString("java.realm"));
 						return;
 					}
-					catch (PermissionException e)
-					{
-						Log.warn("chef", this + " PermissionException, user does not have permission to edit RealmEdit object.");
-						addAlert(state, rb.getString("java.notaccess"));
-						return;
-					}
-					catch (InUseException e)
-					{
-						addAlert(state, this + " "+rb.getString("java.theaccess") + " " + site.getTitle());
-						return;
-					}	
+//					catch (PermissionException e)
+//					{
+//						Log.warn("chef", this + " PermissionException, user does not have permission to edit AuthzGroup object.");
+//						addAlert(state, rb.getString("java.notaccess"));
+//						return;
+//					}
 					catch (Exception e)
 					{
 						addAlert(state, this + rb.getString("java.problem"));
@@ -5020,14 +5014,14 @@ public class SiteAction extends PagedResourceActionII
 			{
 				User user = UserDirectoryService.getUser(affiliate);
 				String realmId = "/site/" + ((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId();
-				if (RealmService.allowUpdateRealm(realmId))
+				if (RealmService.allowUpdate(realmId))
 				{
 					try
 					{
-						RealmEdit realmEdit = RealmService.editRealm(realmId);
+						AuthzGroup realmEdit = RealmService.getAuthzGroup(realmId);
 						Role role = realmEdit.getRole("Affiliate");
-						realmEdit.addUserRole(user.getId(), role.getId(), true, false);
-						RealmService.commitEdit(realmEdit);
+						realmEdit.addMember(user.getId(), role.getId(), true, false);
+						RealmService.save(realmEdit);
 					}
 					catch(Exception ignore) {}
 				}
@@ -5070,7 +5064,7 @@ public class SiteAction extends PagedResourceActionII
 	private String buildExternalRealm(String id, SessionState state, List sectionList)
 	{
 		String realm = SiteService.siteReference(id);
-		if (!RealmService.allowUpdateRealm(realm))
+		if (!RealmService.allowUpdate(realm))
 		{
 			addAlert(state, rb.getString("java.rosters"));
 			return null;
@@ -7119,11 +7113,11 @@ public class SiteAction extends PagedResourceActionII
 		ParameterParser params = data.getParameters ();
 		Site s = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 		String realmId = SiteService.siteReference(s.getId());
-		if (RealmService.allowUpdateRealm(realmId))
+		if (RealmService.allowUpdate(realmId))
 		{
 			try
 			{
-				RealmEdit realmEdit = RealmService.editRealm(realmId);
+				AuthzGroup realmEdit = RealmService.getAuthzGroup(realmId);
 				// update participant roles
 				List participants = (List) state.getAttribute(STATE_PARTICIPANT_LIST);;
 				// remove all roles and then add back those that were checked
@@ -7172,7 +7166,7 @@ public class SiteAction extends PagedResourceActionII
 									fromProvider = true;
 								}
 							}
-							realmEdit.addUserRole(id, roleId, activeGrant, fromProvider);
+							realmEdit.addMember(id, roleId, activeGrant, fromProvider);
 						}
 					}
 				}
@@ -7191,7 +7185,7 @@ public class SiteAction extends PagedResourceActionII
 							Participant selected = new Participant();
 							selected.name = user.getDisplayName();
 							selected.uniqname = user.getId();
-							realmEdit.removeUser(user.getId());
+							realmEdit.removeMember(user.getId());
 						}
 						catch (IdUnusedException e)
 						{
@@ -7199,7 +7193,7 @@ public class SiteAction extends PagedResourceActionII
 						}
 					}
 				}
-				RealmService.commitEdit(realmEdit);
+				RealmService.save(realmEdit);
 			}
 			catch (IdUnusedException e)
 			{
@@ -7210,11 +7204,6 @@ public class SiteAction extends PagedResourceActionII
 			{
 				addAlert(state, rb.getString("java.changeroles"));
 				Log.warn("chef", this + "  PermissionException " + s.getTitle() + "(" + realmId + "). ");
-			}
-			catch (InUseException e)
-			{
-				addAlert(state, rb.getString("java.siteinuse"));
-				Log.warn("chef", this + " InUsedException " + s.getTitle() + "(" + realmId + "). ");
 			}
 		}
 		
@@ -8546,27 +8535,22 @@ public class SiteAction extends PagedResourceActionII
 			//no section access so remove Provider Id
 			try
 			{
-				RealmEdit realmEdit1 = RealmService.editRealm(realmId);
-				realmEdit1.setProviderRealmId(NULL_STRING);
-				RealmService.commitEdit(realmEdit1);
+				AuthzGroup realmEdit1 = RealmService.getAuthzGroup(realmId);
+				realmEdit1.setProviderGroupId(NULL_STRING);
+				RealmService.save(realmEdit1);
 			}
 			catch (IdUnusedException e)
 			{
-				Log.warn("chef", this + " IdUnusedException, " + site.getTitle() + "(" + realmId + ") not found, or not an RealmEdit object");
+				Log.warn("chef", this + " IdUnusedException, " + site.getTitle() + "(" + realmId + ") not found, or not an AuthzGroup object");
 				addAlert(state, rb.getString("java.cannotedit"));
 				return; 
 			}
 			catch (PermissionException e)
 			{
-				Log.warn("chef", this + " PermissionException, user does not have permission to edit RealmEdit object " + site.getTitle() + "(" + realmId + "). ");
+				Log.warn("chef", this + " PermissionException, user does not have permission to edit AuthzGroup object " + site.getTitle() + "(" + realmId + "). ");
 				addAlert(state, rb.getString("java.notaccess"));
 				return;
 			}
-			catch (InUseException e)
-			{
-				addAlert(state, rb.getString("java.theaccessto")+ " " + site.getTitle() + "(" + realmId + ") "+rb.getString("java.theaccessto2"));
-				return;
-			}	
 		}
 		if ((providerCourseSectionList != null) && (providerCourseSectionList.size() != 0))
 		{
@@ -8574,27 +8558,22 @@ public class SiteAction extends PagedResourceActionII
 			String externalRealm = buildExternalRealm(id, state, providerCourseSectionList);
 			try
 			{
-				RealmEdit realmEdit2 = RealmService.editRealm(realmId);
-				realmEdit2.setProviderRealmId(externalRealm);
-				RealmService.commitEdit(realmEdit2);
+				AuthzGroup realmEdit2 = RealmService.getAuthzGroup(realmId);
+				realmEdit2.setProviderGroupId(externalRealm);
+				RealmService.save(realmEdit2);
 			}
 			catch (IdUnusedException e)
 			{
-				Log.warn("chef", this + " IdUnusedException, " + site.getTitle() + "(" + realmId + ") not found, or not an RealmEdit object");
+				Log.warn("chef", this + " IdUnusedException, " + site.getTitle() + "(" + realmId + ") not found, or not an AuthzGroup object");
 				addAlert(state, rb.getString("java.cannotclasses"));
 				return;
 			}
 			catch (PermissionException e)
 			{
-				Log.warn("chef", this + " PermissionException, user does not have permission to edit RealmEdit object " + site.getTitle() + "(" + realmId + "). ");
+				Log.warn("chef", this + " PermissionException, user does not have permission to edit AuthzGroup object " + site.getTitle() + "(" + realmId + "). ");
 				addAlert(state, rb.getString("java.notaccess"));
 				return;
 			}
-			catch (InUseException e)
-			{
-				addAlert(state, rb.getString("java.theaccessto")+ " " + site.getTitle() + "(" + realmId + ") "+rb.getString("java.theaccessto2"));
-				return;
-			}	
 	
 		}
 		
@@ -8967,8 +8946,8 @@ public class SiteAction extends PagedResourceActionII
 		String rv = null;
 		try
 		{
-			Realm realm = RealmService.getRealm(realmId);
-			rv = realm.getProviderRealmId();
+			AuthzGroup realm = RealmService.getAuthzGroup(realmId);
+			rv = realm.getProviderGroupId();
 		}
 		catch (IdUnusedException e)
 		{
@@ -9013,12 +8992,12 @@ public class SiteAction extends PagedResourceActionII
 		
 		try
 		{
-			Realm realm = RealmService.getRealm(realmId);
-			Set grants = realm.getGrants();
+			AuthzGroup realm = RealmService.getAuthzGroup(realmId);
+			Set grants = realm.getMembers();
 			//Collections.sort(users);
 			for (Iterator i = grants.iterator(); i.hasNext();)
 			{
-				Grant g = (Grant) i.next();
+				Member g = (Member) i.next();
 				String userString = g.getUserId();
 				Role r = g.getRole();
 				
@@ -9080,7 +9059,7 @@ public class SiteAction extends PagedResourceActionII
 		String realmId = SiteService.siteReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId());
 		try
 		{
-			Realm realm = RealmService.getRealm(realmId);
+			AuthzGroup realm = RealmService.getAuthzGroup(realmId);
 			roles.addAll(realm.getRoles());
 			Collections.sort(roles);
 		}
@@ -9102,7 +9081,7 @@ public class SiteAction extends PagedResourceActionII
 		String realmId = SiteService.siteReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId());
 		try
 		{
-			Realm realm = RealmService.getRealm(realmId);
+			AuthzGroup realm = RealmService.getAuthzGroup(realmId);
 			users.addAll(realm.getUsers());
 			Collections.sort(users);
 		}
@@ -10789,26 +10768,22 @@ public class SiteAction extends PagedResourceActionII
 			User user = UserDirectoryService.getUser(id);
 			Site sEdit = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 			String realmId = SiteService.siteReference(sEdit.getId());
-			if (RealmService.allowUpdateRealm(realmId))
+			if (RealmService.allowUpdate(realmId))
 			{
 				try
 				{
-					RealmEdit realmEdit = RealmService.editRealm(realmId);
-					realmEdit.addUserRole(user.getId(), role, true, false);
-					RealmService.commitEdit(realmEdit);
+					AuthzGroup realmEdit = RealmService.getAuthzGroup(realmId);
+					realmEdit.addMember(user.getId(), role, true, false);
+					RealmService.save(realmEdit);
 				}
 				catch (IdUnusedException e)
 				{
 					message.append(id + " " +rb.getString("java.notvalidid")+" \n");
 				}
-				catch( PermissionException e)
-				{
-					message.append(rb.getString("java.haveadd")+" " + sEdit.getTitle() + "(" + id + ") "+rb.getString("java.tothissite")+" \n");
-				}
-				catch (InUseException e)
-				{
-					message.append(rb.getString("java.elsewhere")+" " + sEdit.getTitle() + "(" + id + ") "+rb.getString("java.cadded")+" \n");
-				}
+//				catch( PermissionException e)
+//				{
+//					message.append(rb.getString("java.haveadd")+" " + sEdit.getTitle() + "(" + id + ") "+rb.getString("java.tothissite")+" \n");
+//				}
 				catch (Exception e)
 				{
 					message.append(rb.getString("java.unable")+ " "+ sEdit.getTitle() + "(" + id + ") "+rb.getString("java.tothissite")+" \n" + e.toString());
@@ -10918,7 +10893,7 @@ public class SiteAction extends PagedResourceActionII
 	} // addNewSite
 	
 	/**
-	* Use the Realm Provider Id to build a Site tab
+	* Use the AuthzGroup Provider Id to build a Site tab
 	*
 	*/
 	private String getCourseTab(SessionState state, String id)

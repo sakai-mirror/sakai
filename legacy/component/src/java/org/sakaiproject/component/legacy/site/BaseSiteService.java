@@ -53,6 +53,8 @@ import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.alias.cover.AliasService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.calendar.CalendarEdit;
 import org.sakaiproject.service.legacy.calendar.cover.CalendarService;
 import org.sakaiproject.service.legacy.chat.cover.ChatService;
@@ -66,10 +68,6 @@ import org.sakaiproject.service.legacy.id.cover.IdService;
 import org.sakaiproject.service.legacy.message.MessageChannel;
 import org.sakaiproject.service.legacy.message.MessageChannelEdit;
 import org.sakaiproject.service.legacy.message.MessageService;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.RealmEdit;
-import org.sakaiproject.service.legacy.realm.RoleEdit;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Edit;
 import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.EntityManager;
@@ -690,14 +688,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// copy the realm (to get permissions settings)
 		try
 		{
-			Realm realm = RealmService.getRealm(other.getReference());
-			RealmEdit re = RealmService.addRealm(site.getReference(), realm);
+			AuthzGroup realm = RealmService.getAuthzGroup(other.getReference());
+			AuthzGroup re = RealmService.addAuthzGroup(site.getReference(), realm, UserDirectoryService.getCurrentUser().getId());
 
 			// clear the users from the copied realm, adding in the current user as a maintainer
-			re.removeUsers();
-			re.addUserRole(UserDirectoryService.getCurrentUser().getId(), re.getMaintainRole(), true, false);
+			re.removeMembers();
+			re.addMember(UserDirectoryService.getCurrentUser().getId(), re.getMaintainRole(), true, false);
 
-			RealmService.commitEdit(re);
+			RealmService.save(re);
 		}
 		catch (Exception e)
 		{
@@ -709,6 +707,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		// give it new properties
 		addLiveProperties(((BaseSite) site));
+
+		// save the new info
+		m_storage.save(site);
 
 		return site;
 	}
@@ -1534,22 +1535,22 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// see if it exists already
 		try
 		{
-			Realm realm = RealmService.getRealm(ref);
+			AuthzGroup realm = RealmService.getAuthzGroup(ref);
 		}
 		catch (IdUnusedException un)
 		{
-			// see if there's a new site Realm template
-			Realm template = null;
+			// see if there's a new site AuthzGroup template
+			AuthzGroup template = null;
 			try
 			{
-				template = RealmService.getRealm(templateId);
+				template = RealmService.getAuthzGroup(templateId);
 			}
 			catch (Exception e)
 			{
 				try
 				{
 					// if the template is not defined, try the fall back template
-					template = RealmService.getRealm(fallbackTemplate);
+					template = RealmService.getAuthzGroup(fallbackTemplate);
 				}
 				catch (Exception ee)
 				{
@@ -1580,37 +1581,38 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// add the realm
 			try
 			{
-				RealmEdit realm = null;
+				AuthzGroup realm = null;
 
 				if (template == null)
 				{
-					realm = RealmService.addRealm(ref);
+					realm = RealmService.addAuthzGroup(ref);
 				}
 				else
 				{
-					realm = RealmService.addRealm(ref, template);
+					realm = RealmService.addAuthzGroup(ref, template, user.getId());
 				}
 
-				// make sure there's a maintain role, creating it if needed
-				RoleEdit role = realm.getRoleEdit(realm.getMaintainRole());
-				if (role == null)
-				{
-					role = realm.addRole(realm.getMaintainRole());
-					role.add(SECURE_UPDATE_SITE);
-					role.add(SITE_VISIT);
-					role.add(SITE_VISIT_UNPUBLISHED);
-				}
-
-				if (!realm.hasRole(user.getId(), role.getId()))
-				{
-					realm.addUserRole(user.getId(), role.getId(), true, false);
-				}
-
-				RealmService.commitEdit(realm);
+				// if there's not a maintain role, then the user will not have any realm access to the new realm, so will not be able to proceed...
+//				// make sure there's a maintain role, creating it if needed
+//				Role role = realm.getRole(realm.getMaintainRole());
+//				if (role == null)
+//				{
+//					role = realm.addRole(realm.getMaintainRole());
+//					role.allowFunction(SECURE_UPDATE_SITE);
+//					role.allowFunction(SITE_VISIT);
+//					role.allowFunction(SITE_VISIT_UNPUBLISHED);
+//				}
+//
+//				if (!realm.hasRole(user.getId(), role.getId()))
+//				{
+//					realm.addMember(user.getId(), role.getId(), true, false);
+//				}
+//
+//				RealmService.save(realm);
 			}
 			catch (Exception e)
 			{
-				m_logger.warn(this + ".enableRealm: Realm exception: " + e);
+				m_logger.warn(this + ".enableRealm: AuthzGroup exception: " + e);
 			}
 		}
 	}
@@ -1626,11 +1628,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		try
 		{
 			// delete all at once, so it's not tempted to try to update the realm when it makes the edit -ggolden
-			RealmService.removeRealm(ref);
+			RealmService.removeAuthzGroup(ref);
 		}
 		catch (Exception e)
 		{
-			m_logger.warn(this + ".removeSite: Realm exception: " + e);
+			m_logger.warn(this + ".removeSite: AuthzGroup exception: " + e);
 		}
 
 		// %%% do we want to remove all the realms associated with the site's resources? -ggolden

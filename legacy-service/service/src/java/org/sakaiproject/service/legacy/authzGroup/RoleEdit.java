@@ -22,10 +22,9 @@
 **********************************************************************************/
 
 // package
-package org.sakaiproject.service.legacy.realm;
+package org.sakaiproject.service.legacy.authzGroup;
 
 // imports
-import java.util.Collection;
 
 /**
 * <p>RoleEdit is an editable Role.</p>
@@ -36,46 +35,6 @@ import java.util.Collection;
 public interface RoleEdit
 	extends Role
 {
-	/**
-	 * Set the role description.
-	 * @param description The role description.
-	 */
-	void setDescription(String description);
-
-	/**
-	 * Add this lock to the Role.
-	 * @param lock The lock.
-	 */
-	void add(String lock);
-
-	/**
-	 * Add these locks to the Role.
-	 * @param lock The locks.
-	 */
-	void add(Collection locks);
-
-	/**
-	 * Remove this lock from the Role.
-	 * @param lock The lock.
-	 */
-	void remove(String lock);
-
-	/**
-	 * Remove these locks from the Role.
-	 * @param lock The locks.
-	 */
-	void remove(Collection lock);
-
-	/**
-	 * Remove all locks from the Role.
-	 */
-	void clear();
-	
-	/**
-	 * Check if the Role has no locks.
-	 * @return true if the role has no locks, false if it does.
-	 */
-	boolean isEmpty();
 }
 
 

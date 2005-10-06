@@ -30,9 +30,9 @@ import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.service.legacy.user.UserEdit;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.metaobj.security.AnonymousAgent;
 import org.sakaiproject.metaobj.security.PasswordGenerator;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -131,7 +131,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
    public List getWorksiteRoles(String siteId){
       List roles = new ArrayList();
       try {
-         Realm siteRealm = RealmService.getRealm("/site/" + siteId);
+         AuthzGroup siteRealm = RealmService.getAuthzGroup("/site/" + siteId);
          for (Iterator i=siteRealm.getRoles().iterator();i.hasNext();){
             Role sakaiRole = (Role) i.next();
             roles.add(convertRole(sakaiRole, siteRealm));
@@ -145,7 +145,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
    public Agent getWorksiteRole(String roleName, String siteId) {
       try {
-         Realm siteRealm = RealmService.getRealm("/site/" +
+         AuthzGroup siteRealm = RealmService.getAuthzGroup("/site/" +
             siteId);
 
          Role sakaiRole = siteRealm.getRole(roleName);
@@ -187,8 +187,8 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       roleName = username.substring(pos + 1);
 
       Role role = null;
-      Realm realm = null;
-      realm = RealmService.getRealm(siteId);
+      AuthzGroup realm = null;
+      realm = RealmService.getAuthzGroup(siteId);
       role = realm.getRole(roleName);
 
       if (role == null || realm == null)
@@ -205,7 +205,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 		List participants = new ArrayList();
 		String realmId = "/site/" + siteId;
 		try {
-			Realm realm = RealmService.getRealm(realmId);
+			AuthzGroup realm = RealmService.getAuthzGroup(realmId);
 			users.addAll(getDirectoryService().getUsers(realm.getUsers()));
 			Collections.sort(users);
 			for (int i = 0; i < users.size(); i++){

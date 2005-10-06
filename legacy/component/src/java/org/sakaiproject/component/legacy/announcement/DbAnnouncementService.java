@@ -33,13 +33,13 @@ import java.util.Stack;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.message.Message;
 import org.sakaiproject.service.legacy.message.MessageChannel;
 import org.sakaiproject.service.legacy.message.MessageChannelEdit;
 import org.sakaiproject.service.legacy.message.MessageEdit;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
@@ -501,7 +501,7 @@ public class DbAnnouncementService
 		// get the realm
 		try
 		{
-			Realm realm = RealmService.getRealm(ref);
+			AuthzGroup realm = RealmService.getAuthzGroup(ref);
 
 			// if the announcement realm has "pubview" role, then the announcement is publicly viewable
 			Role pubview = realm.getRole("pubview");
@@ -510,11 +510,11 @@ public class DbAnnouncementService
 			
 			// if the announcement realm has the anonymous role and the anonymous 
 			// role contains content.read then the announcement is publicly viewable.
-			// (Because the RealmService converts pubview role (in a realm)
+			// (Because the AuthzGroupService converts pubview role (in a realm)
 			// to just .anon role with content.read function)
 			Role anon = realm.getRole(".anon");
 			
-			if (anon != null && anon.getLocks().contains("content.read"))
+			if (anon != null && anon.getAllowedFunctions().contains("content.read"))
 			{
 			    return true;
 			}

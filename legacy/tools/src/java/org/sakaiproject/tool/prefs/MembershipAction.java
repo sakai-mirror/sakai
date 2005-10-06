@@ -145,7 +145,7 @@ public class MembershipAction extends PagedResourceActionII
 //		  String realmId = SiteService.siteReference(siteId);
 //      try
 //      {
-//        Realm realm = RealmService.getRealm(realmId);
+//        AuthzGroup realm = AuthzGroupService.getRealm(realmId);
 //        Role r = realm.getUserRole(userId);
 //      }
 //      catch (IdUnusedException e)

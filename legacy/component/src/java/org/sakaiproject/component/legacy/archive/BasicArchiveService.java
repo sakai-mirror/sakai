@@ -47,14 +47,13 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.assignment.cover.AssignmentService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.calendar.cover.CalendarService;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.discussion.DiscussionService;
 import org.sakaiproject.service.legacy.email.MailArchiveService;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.RealmEdit;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.EntityManager;
 import org.sakaiproject.service.legacy.resource.EntityProducer;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
@@ -363,7 +362,7 @@ public class BasicArchiveService
 		try
 		{
 			Role role = null;
-			Realm realm = RealmService.getRealm(realmId);
+			AuthzGroup realm = RealmService.getAuthzGroup(realmId);
 			
 			Element realmNode = doc.createElement("roles");
 			((Element)stack.peek()).appendChild(realmNode);
@@ -379,7 +378,7 @@ public class BasicArchiveService
 				realmNode.appendChild(node);
 				
 				List users = new Vector();
-				users.addAll(realm.getUsersWithRole(role.getId()));
+				users.addAll(realm.getUsersHasRole(role.getId()));
 				for (int j = 0; j < users.size(); j++)
 				{			
 					Element abilityNode = doc.createElement("ability");
@@ -420,7 +419,7 @@ public class BasicArchiveService
 			String realmId = "/site/" + site.getId();
 			try
 			{
-				Realm realm = RealmService.getRealm(realmId);
+				AuthzGroup realm = RealmService.getAuthzGroup(realmId);
 				users.addAll(UserDirectoryService.getUsers(realm.getUsers()));
 				Collections.sort(users);
 				for (int i = 0; i < users.size(); i++)
@@ -543,7 +542,7 @@ public class BasicArchiveService
 		// currently, all the tools allowed to be imported, are using the same role set
 		try
 		{
-			Realm realm = RealmService.getRealm(siteId);
+			AuthzGroup realm = RealmService.getAuthzGroup(siteId);
 			
 			// get the role of the user as this realm
 			Role role = realm.getRole(userId);
@@ -852,8 +851,8 @@ public class BasicArchiveService
 		String realmId = "/site/" + siteId;
 		try
 		{
-			//RealmEdit realmEdit = RealmService.editRealm(realmId);
-			Realm realm = RealmService.getRealm(realmId);
+			//AuthzGroup realmEdit = AuthzGroupService.getRealm(realmId);
+			AuthzGroup realm = RealmService.getAuthzGroup(realmId);
 			
 			//roles.addAll(realmEdit.getRoles());
 			roles.addAll(realm.getRoles());
@@ -899,9 +898,9 @@ public class BasicArchiveService
 							Role role = realm.getRole(roleId);
 							if (role != null)
 							{
-								RealmEdit realmEdit = RealmService.editRealm(realmId);
-								realmEdit.addUserRole(user.getId(), role.getId(), true, false);
-								RealmService.commitEdit(realmEdit);
+								AuthzGroup realmEdit = RealmService.getAuthzGroup(realmId);
+								realmEdit.addMember(user.getId(), role.getId(), true, false);
+								RealmService.save(realmEdit);
 							}
 						} 
 						catch (IdUnusedException e) 

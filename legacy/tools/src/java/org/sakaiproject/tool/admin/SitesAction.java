@@ -52,10 +52,10 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.session.SessionState;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.coursemanagement.cover.CourseManagementService;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
@@ -672,7 +672,7 @@ public class SitesAction
 				Site site = SiteService.getSite(id);
 				state.setAttribute("site", site);
 	
-	//			RealmEdit realm = RealmService.editRealm("/site/" + id);	// %%% use a site service call -ggolden
+	//			RealmEdit realm = AuthzGroupService.editRealm("/site/" + id);	// %%% use a site service call -ggolden
 	//			state.setAttribute("realm", realm);
 	
 				state.setAttribute("mode", "edit");
@@ -746,7 +746,7 @@ public class SitesAction
 
 			// save the realm, too
 //			RealmEdit realm = (RealmEdit) state.getAttribute("realm");
-//			RealmService.commitEdit(realm);
+//			AuthzGroupService.commitEdit(realm);
 		}
 
 		// cleanup
@@ -848,7 +848,7 @@ public class SitesAction
 //		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
 //		if (realm != null)
 //		{
-//			RealmService.cancelEdit(realm);
+//			AuthzGroupService.cancelEdit(realm);
 //		}
 
 		// get the site
@@ -908,7 +908,7 @@ public class SitesAction
 		
 		// cancel the realm edit - the site remove will remove the realm
 //		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
-//		RealmService.cancelEdit(realm);
+//		AuthzGroupService.cancelEdit(realm);
 
 		// remove the site
 		try
@@ -1010,10 +1010,10 @@ public class SitesAction
 				}
 				Vector roles = new Vector();
 				Vector roleIds = new Vector();
-				Realm realm = null;
+				AuthzGroup realm = null;
 				try 
 				{
-					realm = RealmService.getRealm(site.getReference());
+					realm = RealmService.getAuthzGroup(site.getReference());
 					roles.addAll(realm.getRoles());
 				} 
 				catch (IdUnusedException e) 
@@ -1026,14 +1026,14 @@ public class SitesAction
 					}
 					try
 					{
-						Realm r = RealmService.getRealm(realmTemplate);
+						AuthzGroup r = RealmService.getAuthzGroup(realmTemplate);
 						roles.addAll(r.getRoles());
 					}
 					catch (IdUnusedException err)
 					{
 						try
 						{
-							Realm rr = RealmService.getRealm("!site.template");
+							AuthzGroup rr = RealmService.getAuthzGroup("!site.template");
 							roles.addAll(rr.getRoles());
 						}
 						catch (IdUnusedException ee){}

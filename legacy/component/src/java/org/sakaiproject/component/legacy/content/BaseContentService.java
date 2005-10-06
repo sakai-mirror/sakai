@@ -60,6 +60,9 @@ import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
@@ -71,9 +74,6 @@ import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.id.cover.IdService;
 import org.sakaiproject.service.legacy.notification.NotificationEdit;
 import org.sakaiproject.service.legacy.notification.NotificationService;
-import org.sakaiproject.service.legacy.realm.RealmEdit;
-import org.sakaiproject.service.legacy.realm.RoleEdit;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Edit;
 import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.EntityManager;
@@ -1308,11 +1308,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// remove any realm defined for this resource
 		try
 		{
-			RealmService.removeRealm(RealmService.editRealm(edit.getReference()));
-		}
-		catch (InUseException e)
-		{
-			m_logger.warn(this + ".removeCollection: removing realm for : " + edit.getReference() + " : " + e);
+			RealmService.removeAuthzGroup(RealmService.getAuthzGroup(edit.getReference()));
 		}
 		catch (PermissionException e)
 		{
@@ -1965,11 +1961,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// remove any realm defined for this resource
 		try
 		{
-			RealmService.removeRealm(RealmService.editRealm(edit.getReference()));
-		}
-		catch (InUseException e)
-		{
-			m_logger.warn(this + ".removeResource: removing realm for : " + edit.getReference() + " : " + e);
+			RealmService.removeAuthzGroup(RealmService.getAuthzGroup(edit.getReference()));
 		}
 		catch (PermissionException e)
 		{
@@ -4044,16 +4036,15 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public void setPubView(String id, boolean pubview)
 	{
 		// TODO: check efficiency here -ggolden
-		// TODO: permissions!  IdUnusedException?
 
 		String ref = getReference(id);
 
 		// edit the realm
-		RealmEdit edit = null;
+		AuthzGroup edit = null;
 
 		try
 		{
-			edit = RealmService.editRealm(ref);
+			edit = RealmService.getAuthzGroup(ref);
 		}
 		catch (IdUnusedException e)
 		{
@@ -4062,7 +4053,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			{
 				try
 				{
-					edit = RealmService.addRealm(ref);
+					edit = RealmService.addAuthzGroup(ref);
 				}
 				catch (IdInvalidException ee)
 				{
@@ -4074,12 +4065,6 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 				{
 				}
 			}
-		}
-		catch (PermissionException e)
-		{
-		}
-		catch (InUseException e)
-		{
 		}
 
 		// if we have no realm and don't need one, we are done
@@ -4097,7 +4082,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		if (pubview)
 		{
 			// make sure the anon role exists and has "content.read" - the only client of pubview
-			RoleEdit role = edit.getRoleEdit(RealmService.ANON_ROLE);
+			Role role = edit.getRole(RealmService.ANON_ROLE);
 			if (role == null)
 			{
 				try
@@ -4107,9 +4092,9 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 				catch (IdUsedException ignore) {}
 			}
 
-			if (!role.contains(EVENT_RESOURCE_READ))
+			if (!role.isAllowed(EVENT_RESOURCE_READ))
 			{
-				role.add(EVENT_RESOURCE_READ);
+				role.allowFunction(EVENT_RESOURCE_READ);
 				changed = true;
 			}
 		}
@@ -4118,16 +4103,16 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		else
 		{
 			// get the role
-			RoleEdit role = edit.getRoleEdit(RealmService.ANON_ROLE);
+			Role role = edit.getRole(RealmService.ANON_ROLE);
 			if (role != null)
 			{
-				if (role.contains(EVENT_RESOURCE_READ))
+				if (role.isAllowed(EVENT_RESOURCE_READ))
 				{
 					changed = true;
-					role.remove(EVENT_RESOURCE_READ);
+					role.disallowFunction(EVENT_RESOURCE_READ);
 				}
 
-				if (role.isEmpty())
+				if (role.allowsNoFunctions())
 				{
 					edit.removeRole(role.getId());
 					changed = true;
@@ -4144,23 +4129,26 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		{
 			try
 			{
-				RealmService.removeRealm(edit);
+				RealmService.removeAuthzGroup(edit);
 			}
-			catch (PermissionException e)
-			{
-				RealmService.cancelEdit(edit);
-			}
+			catch (PermissionException e) {}
 		}
 
 		// if we made a change
 		else if (changed)
 		{
-			RealmService.commitEdit(edit);
-		}
-
-		else
-		{
-			RealmService.cancelEdit(edit);
+			try
+			{
+				RealmService.save(edit);
+			}
+			catch (IdUnusedException e)
+			{
+				// TODO: IdUnusedException
+			}
+			catch (PermissionException e)
+			{
+				// TODO: PermissionException
+			}
 		}
 	}
 

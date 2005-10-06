@@ -26,7 +26,7 @@
    <bean id="org.sakaiproject.metaobj.security.AuthorizationFacade"
       class="org.sakaiproject.metaobj.security.impl.AuthzShim" >
       <property name="realmService">
-         <ref bean="org.sakaiproject.service.legacy.realm.RealmService" />
+         <ref bean="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService" />
       </property>
       <property name="portalService">
          <ref bean="org.sakaiproject.service.framework.portal.PortalService" />

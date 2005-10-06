@@ -22,7 +22,7 @@
 				<th id="Description">$tlang.getString("sitlis.des")</th>
 			</tr>
 	#foreach ($site in $sites)
-##		#set ($realm = $realms.getRealm($site.Reference))
+##		#set ($realm = $realms.getAuthzGroup($site.Reference))
 		#set ($siteCount=$siteCount + 1)
 			<tr>
 				<td style="border-bottom:1px dashed gray;font-size:.9em" headers="Id" #if ($siteCount > 1) class="line" #end>
@@ -78,12 +78,12 @@
 							#if ($site.CreatedTime) $site.CreatedTime.toStringLocalFull() #end by
 							#if ($site.CreatedBy) $site.CreatedBy.DisplayName #end
 						</div>
-##					#if ($realm.ProviderRealmId)
+##					#if ($realm.ProviderGroupId)
 ##						<div class="instruction">
-##							Realm Provider Id:
+##							Authorization Group External Group Id:
 ##						</div>
 ##						<div style="margin-left:2em">
-##							$realm.ProviderRealmId
+##							$realm.ProviderGroupId
 ##						</div>
 ##					#end
 					&nbsp;

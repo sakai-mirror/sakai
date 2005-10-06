@@ -33,8 +33,8 @@ import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.framework.portal.PortalService;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 
 /**
@@ -47,7 +47,7 @@ import org.sakaiproject.service.legacy.user.UserDirectoryService;
 public class AuthzShim implements AuthorizationFacade {
    protected final transient Log logger = LogFactory.getLog(getClass());
 
-   private RealmService realmService;
+   private AuthzGroupService realmService;
    private PortalService portalService;
    private UserDirectoryService userDirectoryService;
 
@@ -75,13 +75,13 @@ public class AuthzShim implements AuthorizationFacade {
       if (function.equals("maintain")) {
          return checkMaintain(agentId);
       }
-      return getRealmService().unlock(agentId, function, getCurrentRealm());
+      return getRealmService().isAllowed(agentId, function, getCurrentRealm());
    }
 
    protected boolean checkMaintain(String agentId) {
-      Realm siteRealm = null;
+      AuthzGroup siteRealm = null;
       try {
-         siteRealm = getRealmService().getRealm(getCurrentRealm());
+         siteRealm = getRealmService().getAuthzGroup(getCurrentRealm());
       }
       catch (IdUnusedException e) {
          logger.warn("unkown realm", e);
@@ -112,11 +112,11 @@ public class AuthzShim implements AuthorizationFacade {
    public void deleteAuthorizations(Id qualifier) {
    }
 
-   public RealmService getRealmService() {
+   public AuthzGroupService getRealmService() {
       return realmService;
    }
 
-   public void setRealmService(RealmService realmService) {
+   public void setRealmService(AuthzGroupService realmService) {
       this.realmService = realmService;
    }
 

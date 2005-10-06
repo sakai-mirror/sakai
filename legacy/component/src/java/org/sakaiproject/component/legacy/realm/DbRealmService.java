@@ -41,9 +41,8 @@ import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.RealmEdit;
-import org.sakaiproject.service.legacy.realm.Role;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
@@ -80,7 +79,7 @@ public class DbRealmService extends BaseRealmService
 	/** ID field for realm. */
 	protected String m_realmIdFieldName = "REALM_ID";
 
-	/** Realm dbid field. */
+	/** AuthzGroup dbid field. */
 	protected String m_realmDbidField = "REALM_KEY";
 
 	/** All "fields" for realm reading. */
@@ -410,7 +409,7 @@ public class DbRealmService extends BaseRealmService
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
-	 * Covers for the BaseXmlFileStorage, providing Realm and RealmEdit parameters
+	 * Covers for the BaseXmlFileStorage, providing AuthzGroup and RealmEdit parameters
 	 */
 	protected class DbStorage extends BaseDbFlatStorage implements Storage, SqlReader
 	{
@@ -426,6 +425,8 @@ public class DbRealmService extends BaseRealmService
 			setDbidField(m_realmDbidField);
 			setWriteFields(m_realmUpdateFieldNames, m_realmInsertFieldNames, m_realmInsertValueNames);
 
+			setLocking(false);
+
 			// setSortField(m_realmSortField, null);
 
 		} // DbStorage
@@ -435,15 +436,15 @@ public class DbRealmService extends BaseRealmService
 			return super.checkResource(id);
 		}
 
-		public Realm get(String id)
+		public AuthzGroup get(String id)
 		{
 			return get(null, id);
 		}
 
-		protected Realm get(Connection conn, String id)
+		protected AuthzGroup get(Connection conn, String id)
 		{
 			// read the base
-			BaseRealm rv = (BaseRealm) super.getResource(conn, id);
+			BaseAuthzGroup rv = (BaseAuthzGroup) super.getResource(conn, id);
 
 			completeGet(conn, rv, false);
 
@@ -456,7 +457,7 @@ public class DbRealmService extends BaseRealmService
 		 * @param realm
 		 *        The real to complete
 		 */
-		public void completeGet(BaseRealm realm)
+		public void completeGet(BaseAuthzGroup realm)
 		{
 			completeGet(null, realm, false);
 		}
@@ -471,7 +472,7 @@ public class DbRealmService extends BaseRealmService
 		 * @param updateProvider
 		 *        if true, update and store the provider info.
 		 */
-		protected void completeGet(Connection conn, final BaseRealm realm, boolean updateProvider)
+		protected void completeGet(Connection conn, final BaseAuthzGroup realm, boolean updateProvider)
 		{
 			if (realm == null) return;
 
@@ -481,7 +482,7 @@ public class DbRealmService extends BaseRealmService
 			// update the db and realm with latest provider
 			if (updateProvider)
 			{
-				refreshRealm(realm);
+				refreshAuthzGroup(realm);
 			}
 
 			// read the properties
@@ -509,15 +510,15 @@ public class DbRealmService extends BaseRealmService
 						String functionName = result.getString(2);
 
 						// make the role if needed
-						BaseRoleEdit role = (BaseRoleEdit) realm.m_roles.get(roleName);
+						BaseRole role = (BaseRole) realm.m_roles.get(roleName);
 						if (role == null)
 						{
-							role = new BaseRoleEdit(roleName);
+							role = new BaseRole(roleName);
 							realm.m_roles.put(role.getId(), role);
 						}
 
 						// add the function to the role
-						role.add(functionName);
+						role.allowFunction(functionName);
 
 						return null;
 					}
@@ -545,10 +546,10 @@ public class DbRealmService extends BaseRealmService
 
 						// find the role - create it if needed
 						// Note: if the role does not yet exist, it has no functions
-						BaseRoleEdit role = (BaseRoleEdit) realm.m_roles.get(roleName);
+						BaseRole role = (BaseRole) realm.m_roles.get(roleName);
 						if (role == null)
 						{
-							role = new BaseRoleEdit(roleName);
+							role = new BaseRole(roleName);
 							realm.m_roles.put(role.getId(), role);
 						}
 
@@ -582,19 +583,19 @@ public class DbRealmService extends BaseRealmService
 						String provided = result.getString(4);
 
 						// give the user one and only one role grant - there should be no second...
-						MyGrant grant = (MyGrant) realm.m_userGrants.get(userId);
+						BaseMember grant = (BaseMember) realm.m_userGrants.get(userId);
 						if (grant == null)
 						{
 							// find the role - if it does not exist, create it for this grant
 							// NOTE: it would have no functions or description
-							BaseRoleEdit role = (BaseRoleEdit) realm.m_roles.get(roleName);
+							BaseRole role = (BaseRole) realm.m_roles.get(roleName);
 							if (role == null)
 							{
-								role = new BaseRoleEdit(roleName);
+								role = new BaseRole(roleName);
 								realm.m_roles.put(role.getId(), role);
 							}
 
-							grant = new MyGrant(role, "1".equals(active), "1".equals(provided), userId);
+							grant = new BaseMember(role, "1".equals(active), "1".equals(provided), userId);
 
 							realm.m_userGrants.put(userId, grant);
 						}
@@ -616,7 +617,7 @@ public class DbRealmService extends BaseRealmService
 		/**
 		 * {@inheritDoc}
 		 */
-		public List getRealms(String criteria, PagingPosition page)
+		public List getAuthzGroups(String criteria, PagingPosition page)
 		{
 			List rv = null;
 
@@ -664,7 +665,7 @@ public class DbRealmService extends BaseRealmService
 		/**
 		 * {@inheritDoc}
 		 */
-		public int countRealms(String criteria)
+		public int countAuthzGroups(String criteria)
 		{
 			int rv = 0;
 
@@ -690,7 +691,7 @@ public class DbRealmService extends BaseRealmService
 		/**
 		 * {@inheritDoc}
 		 */
-		public Set unlockRealms(String userId, String lock)
+		public Set getAuthzGroupsIsAllowed(String userId, String lock)
 		{
 			// Just like unlock, except we use all realms and get their ids
 			// Note: consider over all realms just those realms where there's a grant of a role that satisfies the lock
@@ -731,9 +732,9 @@ public class DbRealmService extends BaseRealmService
 			return rv;
 		}
 
-		public RealmEdit put(String id)
+		public AuthzGroup put(String id)
 		{
-			BaseRealmEdit rv = (BaseRealmEdit) super.putResource(id, fields(id, null, false));
+			BaseAuthzGroup rv = (BaseAuthzGroup) super.putResource(id, fields(id, null, false));
 			if (rv != null)
 			{
 				rv.activate();
@@ -742,9 +743,9 @@ public class DbRealmService extends BaseRealmService
 			return rv;
 		}
 
-		public RealmEdit edit(String id)
+		public AuthzGroup edit(String id)
 		{
-			BaseRealmEdit edit = (BaseRealmEdit) super.editResource(id);
+			BaseAuthzGroup edit = (BaseAuthzGroup) super.editResource(id);
 
 			if (edit != null)
 			{
@@ -758,17 +759,17 @@ public class DbRealmService extends BaseRealmService
 		/**
 		 * @inheritDoc
 		 */
-		public void commit(RealmEdit edit)
+		public void save(AuthzGroup edit)
 		{
 			// pre-check the roles and functions to make sure they are all defined
-			for (Iterator iRoles = ((BaseRealmEdit) edit).m_roles.values().iterator(); iRoles.hasNext();)
+			for (Iterator iRoles = ((BaseAuthzGroup) edit).m_roles.values().iterator(); iRoles.hasNext();)
 			{
 				Role role = (Role) iRoles.next();
 
 				// make sure the role name is defined / define it
 				checkRoleName(role.getId());
 
-				for (Iterator iFunctions = role.getLocks().iterator(); iFunctions.hasNext();)
+				for (Iterator iFunctions = role.getAllowedFunctions().iterator(); iFunctions.hasNext();)
 				{
 					String function = (String) iFunctions.next();
 
@@ -815,13 +816,13 @@ public class DbRealmService extends BaseRealmService
 				String stmt2 = "insert into SAKAI_REALM_ROLE_DESC (REALM_KEY, ROLE_KEY, DESCRIPTION) values("
 						+ "(select REALM_KEY from SAKAI_REALM where REALM_ID = ?), "
 						+ "(select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), ?)";
-				for (Iterator iRoles = ((BaseRealmEdit) edit).m_roles.values().iterator(); iRoles.hasNext();)
+				for (Iterator iRoles = ((BaseAuthzGroup) edit).m_roles.values().iterator(); iRoles.hasNext();)
 				{
 					Role role = (Role) iRoles.next();
 
 					// write the role's function entries
 					fields3[1] = role.getId();
-					for (Iterator iFunctions = role.getLocks().iterator(); iFunctions.hasNext();)
+					for (Iterator iFunctions = role.getAllowedFunctions().iterator(); iFunctions.hasNext();)
 					{
 						String function = (String) iFunctions.next();
 
@@ -841,10 +842,10 @@ public class DbRealmService extends BaseRealmService
 						+ "(select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = ?), ?, ?)";
 				Object[] fields5 = new Object[5];
 				fields5[0] = caseId(edit.getId());
-				for (Iterator i = ((BaseRealmEdit) edit).m_userGrants.entrySet().iterator(); i.hasNext();)
+				for (Iterator i = ((BaseAuthzGroup) edit).m_userGrants.entrySet().iterator(); i.hasNext();)
 				{
 					Map.Entry entry = (Map.Entry) i.next();
-					MyGrant grant = (MyGrant) entry.getValue();
+					BaseMember grant = (BaseMember) entry.getValue();
 					String user = (String) entry.getKey();
 
 					fields5[1] = user;
@@ -856,9 +857,9 @@ public class DbRealmService extends BaseRealmService
 				}
 
 				// write each provider id component of a possibly compound id
-				if ((edit.getProviderRealmId() != null) && (m_provider != null))
+				if ((edit.getProviderGroupId() != null) && (m_provider != null))
 				{
-					String[] ids = m_provider.unpackId(edit.getProviderRealmId());
+					String[] ids = m_provider.unpackId(edit.getProviderGroupId());
 					statement = "insert into SAKAI_REALM_PROVIDER (REALM_KEY, PROVIDER_ID) values ("
 							+ "(select REALM_KEY from SAKAI_REALM where REALM_ID = ?), ?)";
 					Object[] fields2 = new Object[2];
@@ -871,13 +872,13 @@ public class DbRealmService extends BaseRealmService
 				}
 
 				// write the realm and properties, releasing the lock
-				super.commitResource(connection, edit, fields(edit.getId(), ((BaseRealmEdit) edit), true), edit.getProperties(),
-						((BaseRealmEdit) edit).getKey());
+				super.commitResource(connection, edit, fields(edit.getId(), ((BaseAuthzGroup) edit), true), edit.getProperties(),
+						((BaseAuthzGroup) edit).getKey());
 
 				// commit
 				connection.commit();
 				
-				refreshRealm((BaseRealm) edit);
+				refreshAuthzGroup((BaseAuthzGroup) edit);
 			}
 			catch (Exception e)
 			{
@@ -911,12 +912,12 @@ public class DbRealmService extends BaseRealmService
 			}
 		}
 
-		public void cancel(RealmEdit edit)
+		public void cancel(AuthzGroup edit)
 		{
 			super.cancelResource(edit);
 		}
 
-		public void remove(RealmEdit edit)
+		public void remove(AuthzGroup edit)
 		{
 			// delete all the role functions, auth grants, anon grants, role grants, fucntion grants
 			// and then the realm and release the lock, all in one transaction
@@ -945,7 +946,7 @@ public class DbRealmService extends BaseRealmService
 				m_sql.dbWrite(connection, statement, fields);
 
 				// delete the realm and properties
-				super.removeResource(connection, edit, ((BaseRealmEdit) edit).getKey());
+				super.removeResource(connection, edit, ((BaseAuthzGroup) edit).getKey());
 
 				connection.commit();
 			}
@@ -993,7 +994,7 @@ public class DbRealmService extends BaseRealmService
 		 *        If true, include the id field again at the end, else don't.
 		 * @return The fields for the database.
 		 */
-		protected Object[] fields(String id, BaseRealmEdit edit, boolean idAgain)
+		protected Object[] fields(String id, BaseAuthzGroup edit, boolean idAgain)
 		{
 			Object[] rv = new Object[idAgain ? 8 : 7];
 			rv[0] = caseId(id);
@@ -1065,7 +1066,7 @@ public class DbRealmService extends BaseRealmService
 				Integer dbid = new Integer(result.getInt(8));
 
 				// create the Resource from these fields
-				return new BaseRealmEdit(dbid, id, providerId, maintainRole, createdBy, createdOn, modifiedBy, modifiedOn);
+				return new BaseAuthzGroup(dbid, id, providerId, maintainRole, createdBy, createdOn, modifiedBy, modifiedOn);
 			}
 			catch (SQLException e)
 			{
@@ -1077,7 +1078,7 @@ public class DbRealmService extends BaseRealmService
 		/**
 		 * {@inheritDoc}
 		 */
-		public boolean unlock(String userId, String lock, String realmId)
+		public boolean isAllowed(String userId, String lock, String realmId)
 		{
 			// does the user have any roles granted that include this lock, based on grants or anon/auth?
 			boolean auth = (userId != null) && (!UserDirectoryService.getAnonymousUser().getId().equals(userId));
@@ -1182,7 +1183,7 @@ public class DbRealmService extends BaseRealmService
 		/**
 		 * {@inheritDoc}
 		 */
-		public boolean unlock(String userId, String lock, Collection realms)
+		public boolean isAllowed(String userId, String lock, Collection realms)
 		{
 			boolean auth = (userId != null) && (!UserDirectoryService.getAnonymousUser().getId().equals(userId));
 
@@ -1329,7 +1330,7 @@ public class DbRealmService extends BaseRealmService
 		/**
 		 * {@inheritDoc}
 		 */
-		public Set getUsers(String lock, Collection realms)
+		public Set getUsersIsAllowed(String lock, Collection realms)
 		{
 			String sql = "";
 			String sqlParam = "";
@@ -1397,7 +1398,7 @@ public class DbRealmService extends BaseRealmService
 		/**
 		 * {@inheritDoc}
 		 */
-		public Set getLocks(String role, Collection realms)
+		public Set getAllowedFunctions(String role, Collection realms)
 		{
 			String sql = "";
 			String sqlParam = "";
@@ -1678,7 +1679,7 @@ public class DbRealmService extends BaseRealmService
 		/**
 		 * {@inheritDoc}
 		 */
-		public void refreshRealm(BaseRealm realm)
+		public void refreshAuthzGroup(BaseAuthzGroup realm)
 		{
 			String sql = "";
 			StringBuffer sqlBuf = null;
@@ -1688,7 +1689,7 @@ public class DbRealmService extends BaseRealmService
 			if ((realm == null) || (m_provider == null)) return;
 
 			// get the latest userId -> role name map from the provider
-			Map target = m_provider.getUserRolesForRealm(realm.getProviderRealmId());
+			Map target = m_provider.getUserRolesForGroup(realm.getProviderGroupId());
 
 			// read the realm's grants
 			sqlBuf = new StringBuffer();
@@ -1918,7 +1919,7 @@ public class DbRealmService extends BaseRealmService
 							m_logger.warn(this + ".convertOld: XML root element not realm: " + root.getTagName());
 							return null;
 						}
-						BaseRealmEdit edit = new BaseRealmEdit(root);
+						BaseAuthzGroup edit = new BaseAuthzGroup(root);
 						return edit;
 					}
 					catch (Throwable e)
@@ -1935,7 +1936,7 @@ public class DbRealmService extends BaseRealmService
 			Set roles = new HashSet();
 			for (Iterator i = realms.iterator(); i.hasNext();)
 			{
-				BaseRealmEdit realm = (BaseRealmEdit) i.next();
+				BaseAuthzGroup realm = (BaseAuthzGroup) i.next();
 				roles.addAll(realm.m_roles.keySet());
 			}
 			m_logger.info(this + ".convertOld: total roles: " + roles.size());
@@ -1944,10 +1945,10 @@ public class DbRealmService extends BaseRealmService
 			Set functions = new HashSet();
 			for (Iterator i = realms.iterator(); i.hasNext();)
 			{
-				BaseRealmEdit realm = (BaseRealmEdit) i.next();
+				BaseAuthzGroup realm = (BaseAuthzGroup) i.next();
 				for (Iterator r = realm.getRoles().iterator(); r.hasNext();)
 				{
-					BaseRoleEdit role = (BaseRoleEdit) r.next();
+					BaseRole role = (BaseRole) r.next();
 					functions.addAll(role.m_locks);
 				}
 			}
@@ -2079,7 +2080,7 @@ public class DbRealmService extends BaseRealmService
 			int count = 0;
 			for (Iterator iRealms = realms.iterator(); iRealms.hasNext();)
 			{
-				BaseRealmEdit realm = (BaseRealmEdit) iRealms.next();
+				BaseAuthzGroup realm = (BaseAuthzGroup) iRealms.next();
 
 				// 1. write the main realm record
 				fields7[0] = StringUtil.trimToZero(realm.m_id);
@@ -2108,7 +2109,7 @@ public class DbRealmService extends BaseRealmService
 				{
 					Role role = (Role) iRoles.next();
 					fields2[0] = roleMap.get(role.getId());
-					for (Iterator iFunctions = role.getLocks().iterator(); iFunctions.hasNext();)
+					for (Iterator iFunctions = role.getAllowedFunctions().iterator(); iFunctions.hasNext();)
 					{
 						String function = (String) iFunctions.next();
 						fields2[1] = functionMap.get(function);
@@ -2127,7 +2128,7 @@ public class DbRealmService extends BaseRealmService
 				for (Iterator iGrants = realm.m_userGrants.entrySet().iterator(); iGrants.hasNext();)
 				{
 					Map.Entry entry = (Map.Entry) iGrants.next();
-					MyGrant grant = (MyGrant) entry.getValue();
+					BaseMember grant = (BaseMember) entry.getValue();
 					String user = (String) entry.getKey();
 
 					fields4[0] = user;
@@ -2138,9 +2139,9 @@ public class DbRealmService extends BaseRealmService
 				}
 
 				// 6. write the realm providers
-				if ((realm.getProviderRealmId() != null) && (m_provider != null))
+				if ((realm.getProviderGroupId() != null) && (m_provider != null))
 				{
-					String[] ids = m_provider.unpackId(realm.getProviderRealmId());
+					String[] ids = m_provider.unpackId(realm.getProviderGroupId());
 					for (int i = 0; i < ids.length; i++)
 					{
 						fields[0] = ids[i];

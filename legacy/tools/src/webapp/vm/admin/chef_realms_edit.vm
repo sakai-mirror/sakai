@@ -38,7 +38,7 @@
 						</label>
 					</th>
 					<td>
-						<input type="text" name="provider" id="provider" #if($realm) value="$!validator.escapeHtml($realm.ProviderRealmId)"#end />
+						<input type="text" name="provider" id="provider" #if($realm) value="$!validator.escapeHtml($realm.ProviderGroupId)"#end />
 					</td>
 				</tr>
 				<tr>

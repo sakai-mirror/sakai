@@ -67,12 +67,12 @@ import org.sakaiproject.service.legacy.assignment.AssignmentEdit;
 import org.sakaiproject.service.legacy.assignment.AssignmentService;
 import org.sakaiproject.service.legacy.assignment.AssignmentSubmission;
 import org.sakaiproject.service.legacy.assignment.AssignmentSubmissionEdit;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.id.cover.IdService;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.AttachmentContainer;
 import org.sakaiproject.service.legacy.resource.Edit;
 import org.sakaiproject.service.legacy.resource.Entity;
@@ -917,9 +917,8 @@ public abstract class BaseAssignmentService
 			// remove any realm defined for this resource
 			try
 			{
-				RealmService.removeRealm(RealmService.editRealm(assignment.getReference()));
+				RealmService.removeAuthzGroup(RealmService.getAuthzGroup(assignment.getReference()));
 			}
-			catch (InUseException e) { m_logger.warn(this + ".removeAssignment: removing realm for : " + assignment.getReference() + " : " + e); }
 			catch (PermissionException e) { m_logger.warn(this + ".removeAssignment: removing realm for : " + assignment.getReference() + " : " + e); }
 			catch (IdUnusedException ignore) {}
 		}
@@ -1341,9 +1340,8 @@ public abstract class BaseAssignmentService
 				// remove any realm defined for this resource
 				try
 				{
-					RealmService.removeRealm(RealmService.editRealm(content.getReference()));
+					RealmService.removeAuthzGroup(RealmService.getAuthzGroup(content.getReference()));
 				}
-				catch (InUseException e) { m_logger.warn(this + ".removeAssignmentContent: removing realm for : " + content.getReference() + " : " + e); }
 				catch (PermissionException e) { m_logger.warn(this + ".removeAssignmentContent: removing realm for : " + content.getReference() + " : " + e); }
 				catch (IdUnusedException ignore) {}
 			}
@@ -1576,9 +1574,8 @@ public abstract class BaseAssignmentService
 			// remove any realm defined for this resource
 			try
 			{
-				RealmService.removeRealm(RealmService.editRealm(submission.getReference()));
+				RealmService.removeAuthzGroup(RealmService.getAuthzGroup(submission.getReference()));
 			}
-			catch (InUseException e) { m_logger.warn(this + ".removeSubmission: removing realm for : " + submission.getReference() + " : " + e); }
 			catch (PermissionException e) { m_logger.warn(this + ".removeSubmission: removing realm for : " + submission.getReference() + " : " + e); }
 			catch (IdUnusedException ignore) {}
 		}

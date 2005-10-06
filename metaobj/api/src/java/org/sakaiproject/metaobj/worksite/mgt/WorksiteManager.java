@@ -22,7 +22,7 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.worksite.mgt;
 
-import org.sakaiproject.service.legacy.realm.Realm;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -52,7 +52,7 @@ public interface WorksiteManager {
 
    public Site getSite(String siteId);
 
-   public Realm getSiteRealm(String siteId);
+   public AuthzGroup getSiteRealm(String siteId);
 
    public ToolConfiguration getTool(String id);
 

@@ -1,25 +1,25 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ * 
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ * 
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 
 // package
 package org.sakaiproject.component.legacy.realm;
@@ -35,25 +35,20 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
-import org.sakaiproject.api.kernel.session.SessionBindingEvent;
-import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
+import org.sakaiproject.service.legacy.authzGroup.GroupProvider;
+import org.sakaiproject.service.legacy.authzGroup.Member;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
-import org.sakaiproject.service.legacy.realm.Grant;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.RealmEdit;
-import org.sakaiproject.service.legacy.realm.RealmProvider;
-import org.sakaiproject.service.legacy.realm.RealmService;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.RoleEdit;
 import org.sakaiproject.service.legacy.resource.Edit;
 import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.EntityManager;
@@ -78,14 +73,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
-* <p>BaseRealmService is a Sakai realm service implementation.</p>
-* <p>To support the public view feature, a realm named TEMPLATE_PUBVIEW must exist, with a role
-* named ROLE_PUBVIEW - all the abilities in this role become the public view abilities for any resource.</p>
-* 
-* @author University of Michigan, Sakai Software Development Team
-* @version $Revision$
-*/
-public abstract class BaseRealmService implements RealmService, StorageUser
+ * <p>
+ * BaseRealmService is a Sakai azGroup service implementation.
+ * </p>
+ * <p>
+ * To support the public view feature, an AuthzGroup named TEMPLATE_PUBVIEW must exist, with a role named ROLE_PUBVIEW - all the abilities in this role become the public view abilities for any resource.
+ * </p>
+ * 
+ * @author Sakai Software Development Team
+ */
+public abstract class BaseRealmService implements AuthzGroupService, StorageUser
 {
 	/** Storage manager for this service. */
 	protected Storage m_storage = null;
@@ -94,11 +91,11 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	protected String m_relativeAccessPoint = null;
 
 	/** A provider of additional Abilities for a userId. */
-	protected RealmProvider m_provider = null;
+	protected GroupProvider m_provider = null;
 
-	/*******************************************************************************
+	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Abstractions, etc.
-	*******************************************************************************/
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
 	 * Construct storage for this service.
@@ -107,35 +104,39 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 	/**
 	 * Access the partial URL that forms the root of resource URLs.
-	 * @param relative if true, form within the access path only (i.e. starting with /content)
+	 * 
+	 * @param relative
+	 *        if true, form within the access path only (i.e. starting with /content)
 	 * @return the partial URL that forms the root of resource URLs.
 	 */
 	protected String getAccessPoint(boolean relative)
 	{
 		return (relative ? "" : m_serverConfigurationService.getAccessUrl()) + m_relativeAccessPoint;
-
-	} // getAccessPoint
+	}
 
 	/**
-	 * Access the realm id extracted from a realm reference.
-	 * @param ref The realm reference string.
-	 * @return The the realm id extracted from a realm reference.
+	 * Access the azGroup id extracted from an AuthzGroup reference.
+	 * 
+	 * @param ref
+	 *        The azGroup reference string.
+	 * @return The the azGroup id extracted from an AuthzGroup reference.
 	 */
-	protected String realmId(String ref)
+	protected String authzGroupId(String ref)
 	{
 		String start = getAccessPoint(true) + Entity.SEPARATOR;
 		int i = ref.indexOf(start);
-		if (i == -1)
-			return ref;
+		if (i == -1) return ref;
 		String id = ref.substring(i + start.length());
 		return id;
-
-	} // realmId
+	}
 
 	/**
 	 * Check security permission.
-	 * @param lock The lock id string.
-	 * @param resource The resource reference string, or null if no resource is involved.
+	 * 
+	 * @param lock
+	 *        The lock id string.
+	 * @param resource
+	 *        The resource reference string, or null if no resource is involved.
 	 * @return true if allowd, false if not
 	 */
 	protected boolean unlockCheck(String lock, String resource)
@@ -146,14 +147,17 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		return true;
-
-	} // unlockCheck
+	}
 
 	/**
 	 * Check security permission.
-	 * @param lock The lock id string.
-	 * @param resource The resource reference string, or null if no resource is involved.
-	 * @exception PermissionException Thrown if the realm does not have access
+	 * 
+	 * @param lock
+	 *        The lock id string.
+	 * @param resource
+	 *        The resource reference string, or null if no resource is involved.
+	 * @exception PermissionException
+	 *            Thrown if the azGroup does not have access
 	 */
 	protected void unlock(String lock, String resource) throws PermissionException
 	{
@@ -161,47 +165,46 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		{
 			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, resource);
 		}
-
-	} // unlock
+	}
 
 	/**
-	 * Create the live properties for the realm.
+	 * Create the live properties for the azGroup.
 	 */
-	protected void addLiveProperties(BaseRealm realm)
+	protected void addLiveProperties(BaseAuthzGroup azGroup)
 	{
 		String current = UsageSessionService.getSessionUserId();
 
-		realm.m_createdUserId = current;
-		realm.m_lastModifiedUserId = current;
+		azGroup.m_createdUserId = current;
+		azGroup.m_lastModifiedUserId = current;
 
 		Time now = TimeService.newTime();
-		realm.m_createdTime = now;
-		realm.m_lastModifiedTime = (Time) now.clone();
-
-	} //  addLiveProperties
+		azGroup.m_createdTime = now;
+		azGroup.m_lastModifiedTime = (Time) now.clone();
+	}
 
 	/**
-	 * Update the live properties for a realm for when modified.
+	 * Update the live properties for an AuthzGroup for when modified.
 	 */
-	protected void addLiveUpdateProperties(BaseRealm realm)
+	protected void addLiveUpdateProperties(BaseAuthzGroup azGroup)
 	{
 		String current = UsageSessionService.getSessionUserId();
 
-		realm.m_lastModifiedUserId = current;
-		realm.m_lastModifiedTime = TimeService.newTime();
+		azGroup.m_lastModifiedUserId = current;
+		azGroup.m_lastModifiedTime = TimeService.newTime();
+	}
 
-	} //  addLiveUpdateProperties
-
-	/*******************************************************************************
+	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Dependencies and their setter methods
-	*******************************************************************************/
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/** Dependency: logging service */
 	protected Logger m_logger = null;
 
 	/**
 	 * Dependency: logging service.
-	 * @param service The logging service.
+	 * 
+	 * @param service
+	 *        The logging service.
 	 */
 	public void setLogger(Logger service)
 	{
@@ -209,10 +212,12 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	}
 
 	/**
-	 * Configuration: set the realm provider helper service.
-	 * @param provider the realm provider helper service.
+	 * Configuration: set the azGroup provider helper service.
+	 * 
+	 * @param provider
+	 *        the azGroup provider helper service.
 	 */
-	public void setProvider(RealmProvider provider)
+	public void setProvider(GroupProvider provider)
 	{
 		m_provider = provider;
 	}
@@ -245,9 +250,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		m_entityManager = service;
 	}
 
-	/*******************************************************************************
+	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Init and Destroy
-	*******************************************************************************/
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
 	 * Final initialization, once all dependencies are set.
@@ -265,14 +270,13 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			// register as an entity producer
 			m_entityManager.registerEntityProducer(this);
 
-			m_logger.info(this +".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()));
+			m_logger.info(this + ".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()));
 		}
 		catch (Throwable t)
 		{
-			m_logger.warn(this +".init(); ", t);
+			m_logger.warn(this + ".init(); ", t);
 		}
-
-	} // init
+	}
 
 	/**
 	 * Returns to uninitialized state.
@@ -282,76 +286,55 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		m_storage.close();
 		m_storage = null;
 
-		m_logger.info(this +".destroy()");
+		m_logger.info(this + ".destroy()");
 	}
 
-	/*******************************************************************************
-	 * RealmService implementation
-	*******************************************************************************/
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * AuthzGroupService implementation
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
-	 * Access a list of Realm objets that meet specified criteria, naturally sorted.
-	 * @param criteria Selection criteria: realms returned will match this string somewhere in their
-	 * 			id, or provider realm id.
-	 * @param page The PagePosition subset of items to return.
-	 * @return The List (Realm) of Rrealm objets that meet specified criteria.
+	 * {@inheritDoc}
 	 */
-	public List getRealms(String criteria, PagingPosition page)
+	public List getAuthzGroups(String criteria, PagingPosition page)
 	{
-		return m_storage.getRealms(criteria, page);
+		return m_storage.getAuthzGroups(criteria, page);
 	}
 
 	/**
-	 * Count the Realm objets that meet specified criteria.
-	 * @param criteria Selection criteria: realms returned will match this string somewhere in their
-	 * 			id, or provider realm id.
-	 * @return The count of Realm objets that meet specified criteria.
+	 * {@inheritDoc}
 	 */
-	public int countRealms(String criteria)
+	public int countAuthzGroups(String criteria)
 	{
-		return m_storage.countRealms(criteria);
+		return m_storage.countAuthzGroups(criteria);
 	}
 
 	/**
-	 * Access a realm object.
-	 * @param id The realm id string.
-	 * @return A realm object containing the realm information.
-	 * @exception IdUnusedException if not found.
+	 * {@inheritDoc}
 	 */
-	public Realm getRealm(String id) throws IdUnusedException
+	public AuthzGroup getAuthzGroup(String id) throws IdUnusedException
 	{
 		// Note: since this is a "read" operations, we do NOT refresh (i.e. write) the provider info.
-		if (id == null)
-			throw new IdUnusedException("<null>");
+		if (id == null) throw new IdUnusedException("<null>");
 
-		Realm realm = realm = m_storage.get(id);
+		AuthzGroup azGroup = m_storage.get(id);
 
 		// if not found
-		if (realm == null)
+		if (azGroup == null)
 		{
 			throw new IdUnusedException(id);
 		}
 
-		// track it - Note: we are not tracking realm access -ggolden
-		// EventTrackingService.post(EventTrackingService.newEvent(SECURE_ACCESS_REALM, realm.getReference()));
-
-		return realm;
+		return azGroup;
 	}
 
 	/**
-	 * Cause the current user to join the given site.
-	 * Fails if site's not defined, not joinable, or does not have the proper joiner role defined.
-	 * Security is just realm.upd.own.
-	 * @param siteId the id of the site.
-	 * @throws IdUnusedException if the id is not a valid site id.
-	 * @exception PermissionException if the current user does not have permission to join this site.
-	 * @exception InUseException if the site's realm is otherwise being edited.
+	 * {@inheritDoc}
 	 */
-	public void joinSite(String siteId)
-		throws IdUnusedException, PermissionException, InUseException
+	public void joinSite(String siteId) throws IdUnusedException, PermissionException
 	{
 		String user = UsageSessionService.getSessionUserId();
-		if (user == null) throw new PermissionException(user, SECURE_UPDATE_OWN_REALM, SiteService.siteReference(siteId));
+		if (user == null) throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
 
 		// get the site
 		Site site = SiteService.getSite(siteId);
@@ -359,38 +342,34 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		// must be joinable
 		if (!site.isJoinable())
 		{
-			throw new PermissionException(user, SECURE_UPDATE_OWN_REALM, SiteService.siteReference(siteId));
+			throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
 		}
 
 		// the role to assign
 		String roleId = site.getJoinerRole();
 		if (roleId == null)
 		{
-			m_logger.warn(this +".joinSite(): null site joiner role for site: " + siteId);
-			throw new PermissionException(user, SECURE_UPDATE_OWN_REALM, SiteService.siteReference(siteId));
+			m_logger.warn(this + ".joinSite(): null site joiner role for site: " + siteId);
+			throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
 		}
 
-		// get the site's realm (the realm id is the site reference)
-		String realmId = SiteService.siteReference(siteId);
+		// get the site's azGroup (the azGroup id is the site reference)
+		String azGroupId = SiteService.siteReference(siteId);
 
 		// check security (throws if not permitted)
-		unlock(SECURE_UPDATE_OWN_REALM, realmReference(realmId));
+		unlock(SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupReference(azGroupId));
 
-		// check for existance
-		if (!m_storage.check(realmId))
+		// get the AuthzGroup
+		AuthzGroup azGroup = m_storage.get(azGroupId);
+		if (azGroup == null)
 		{
-			throw new IdUnusedException(realmId);
+			throw new IdUnusedException(azGroupId);
 		}
 
-		// get the realm with a lock from the info store
-		RealmEdit edit = m_storage.edit(realmId);
-		if (edit == null)
-			throw new InUseException(realmId);
-
-		((BaseRealmEdit) edit).setEvent(SECURE_UPDATE_OWN_REALM);
+		((BaseAuthzGroup) azGroup).setEvent(SECURE_UPDATE_OWN_AUTHZ_GROUP);
 
 		// see if already joined
-		MyGrant grant = (MyGrant) edit.getUserGrant(user);
+		BaseMember grant = (BaseMember) azGroup.getMember(user);
 		if (grant != null)
 		{
 			// if inactive, make it active
@@ -400,82 +379,67 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		// give the user this role
 		else
 		{
-			edit.addUserRole(user, roleId, true, false);
+			azGroup.addMember(user, roleId, true, false);
 		}
 
-		// and commit
-		commitEdit(edit);
+		// and save
+		completeSave(azGroup);
 	}
 
 	/**
-	 * Cause the current user to unjoin the given site.
-	 * Fails if site's not defined.
-	 * Security is just realm.upd.own.
-	 * @param siteId the id of the site.
-	 * @throws IdUnusedException if the id is not a valid site id.
-	 * @exception PermissionException if the current user does not have permission to unjoin this site.
-	 * @exception InUseException if the site's realm is otherwise being edited.
+	 * {@inheritDoc}
 	 */
-	public void unjoinSite(String siteId)
-		throws IdUnusedException, PermissionException, InUseException
+	public void unjoinSite(String siteId) throws IdUnusedException, PermissionException
 	{
 		String user = UsageSessionService.getSessionUserId();
-		if (user == null) throw new PermissionException(user, SECURE_UPDATE_OWN_REALM, SiteService.siteReference(siteId));
+		if (user == null) throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
 
 		// get the site
 		Site site = SiteService.getSite(siteId);
 
-		// get the site's realm (the realm id is the site reference)
-		String realmId = SiteService.siteReference(siteId);
+		// get the site's azGroup (the azGroup id is the site reference)
+		String azGroupId = SiteService.siteReference(siteId);
 
 		// check security (throws if not permitted)
-		unlock(SECURE_UPDATE_OWN_REALM, realmReference(realmId));
+		unlock(SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupReference(azGroupId));
 
-		// check for existance
-		if (!m_storage.check(realmId))
+		// get the AuthzGroup
+		AuthzGroup azGroup = m_storage.get(azGroupId);
+		if (azGroup == null)
 		{
-			throw new IdUnusedException(realmId);
-		}
-
-		// get the realm with a lock from the info store
-		RealmEdit edit = m_storage.edit(realmId);
-		if (edit == null)
-		{
-			throw new InUseException(realmId);
+			throw new IdUnusedException(azGroupId);
 		}
 
 		// if not joined (no grant), we are done
-		MyGrant grant = (MyGrant) edit.getUserGrant(user);
+		BaseMember grant = (BaseMember) azGroup.getMember(user);
 		if (grant == null)
 		{
-			cancelEdit(edit);
 			return;
 		}
 
 		// if joined with the maintain role, and the joiner role is different or the site is not joinable
 		// (so the user could not re-join as maintainer), don't allow the unjoin
-		
-		// update: if joined with the maintain role, but not the only maintainer of the realm
+
+		// update: if joined with the maintain role, but not the only maintainer of the azGroup
 		// allow the unjoin
-		
-		String maintainRole = edit.getMaintainRole();
+
+		String maintainRole = azGroup.getMaintainRole();
 		String joinerRole = site.getJoinerRole();
-			
+
 		if (!StringUtil.different(maintainRole, grant.getRole().getId()))
 		{
 			// if maintainter, check if the only maintainer
-			Set maintainers = edit.getUsersWithRole(maintainRole);
+			Set maintainers = azGroup.getUsersHasRole(maintainRole);
 			if (maintainers.size() <= 1)
 			{
 				if (StringUtil.different(maintainRole, joinerRole) || !site.isJoinable())
 				{
-					cancelEdit(edit);
-					throw new PermissionException(user, SECURE_UPDATE_OWN_REALM, SiteService.siteReference(siteId));
+					throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
 				}
 			}
 		}
-		
-		((BaseRealmEdit) edit).setEvent(SECURE_UPDATE_OWN_REALM);
+
+		((BaseAuthzGroup) azGroup).setEvent(SECURE_UPDATE_OWN_AUTHZ_GROUP);
 
 		// if the grant is provider, make it inactive so it doesn't revert to provider status
 		if (grant.isProvided())
@@ -485,47 +449,44 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		else
 		{
 			// remove the user completely
-			((BaseRealmEdit) edit).removeUser(user);
+			((BaseAuthzGroup) azGroup).removeMember(user);
 		}
 
-		// and commit
-		commitEdit(edit);
+		// and save
+		completeSave(azGroup);
 	}
 
 	/**
-	 * check permissions for unjoin() - unjoining the site and removing all role relationships.
-	 * @param id The site id.
-	 * @return true if the user is allowed to unjoin(id), false if not.
+	 * {@inheritDoc}
 	 */
 	public boolean allowUnjoinSite(String siteId)
 	{
 		String user = UsageSessionService.getSessionUserId();
 		try
 		{
-			if (user == null) 
+			if (user == null)
 			{
-				throw new PermissionException(user, SECURE_UPDATE_OWN_REALM, SiteService.siteReference(siteId));
+				throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
 			}
 			// get the site
 			Site site = SiteService.getSite(siteId);
 
-			// get the site's realm (the realm id is the site reference)
-			String realmId = SiteService.siteReference(siteId);
+			// get the site's azGroup (the azGroup id is the site reference)
+			String azGroupId = SiteService.siteReference(siteId);
 
 			// check security (throws if not permitted)
-			unlock(SECURE_UPDATE_OWN_REALM, realmReference(realmId));
+			unlock(SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupReference(azGroupId));
 
-			// check for existance
-			if (!m_storage.check(realmId))
+			// get the azGroup
+			AuthzGroup azGroup = m_storage.get(azGroupId);
+			if (azGroup == null)
 			{
-				throw new IdUnusedException(realmId);
+				throw new IdUnusedException(azGroupId);
 			}
 
-			// get the realm with a lock from the info store
-			Realm realm = m_storage.get(realmId);
 			// if not joined (no grant), we are done
 			// if the grant is provider, unable to unjoin the site
-			MyGrant grant = (MyGrant) realm.getUserGrant(user);
+			BaseMember grant = (BaseMember) azGroup.getMember(user);
 			if (grant == null)
 			{
 				return false;
@@ -538,300 +499,207 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			// if joined with the maintain role, and the joiner role is different or the site is not joinable
 			// (so the user could not re-join as maintainer), don't allow the unjoin
 
-			// update: if joined with the maintain role, but not the only maintainer of the realm
+			// update: if joined with the maintain role, but not the only maintainer of the azGroup
 			// allow the unjoin
 
-			String maintainRole = realm.getMaintainRole();
+			String maintainRole = azGroup.getMaintainRole();
 			String joinerRole = site.getJoinerRole();
-	
+
 			if (!StringUtil.different(maintainRole, grant.getRole().getId()))
 			{
 				// if maintainter, check if the only maintainer
-				Set maintainers = realm.getUsersWithRole(maintainRole);
+				Set maintainers = azGroup.getUsersHasRole(maintainRole);
 				if (maintainers.size() <= 1)
 				{
 					if (StringUtil.different(maintainRole, joinerRole) || !site.isJoinable())
 					{
-						throw new PermissionException(user, SECURE_UPDATE_OWN_REALM, SiteService.siteReference(siteId));
+						throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
 					}
 				}
 			}
 		}
-		catch(IdUnusedException e)
+		catch (IdUnusedException e)
 		{
 			return false;
 		}
-		catch(PermissionException e)
+		catch (PermissionException e)
 		{
 			return false;
 		}
-		
+
 		return true;
-		
-	} // allowUnjoinSite
-
-	/**
-	 * Check permissions for updating a realm.
-	 * @param id The realm id.
-	 * @return true if the user is allowed to update the realm, false if not.
-	 */
-	public boolean allowUpdateRealm(String id)
-	{
-		return unlockCheck(SECURE_UPDATE_REALM, realmReference(id));
-	}
-
-	/**
-	 * Get a locked realm object for editing. Must commitEdit() to make official, or cancelEdit() when done!
-	 * @param id The realm id string.
-	 * @return A RealmEdit object for editing.
-	 * @exception IdUnusedException if not found, or if not an RealmEdit object
-	 * @exception PermissionException if the current user does not have permission to edit with this realm.
-	 * @exception InUseException if the realm is being edited by another user.
-	 */
-	public RealmEdit editRealm(String id) throws IdUnusedException, PermissionException, InUseException
-	{
-		// Note: this method is responsible for refreshing this realm's external provider information.
-		// This is currently more easily done in the storage edit() implementations.
-		
-		if (id == null)
-			throw new IdUnusedException("<null>");
-
-		// check security (throws if not permitted)
-		unlock(SECURE_UPDATE_REALM, realmReference(id));
-
-		// check for existance
-		if (!m_storage.check(id))
-		{
-			throw new IdUnusedException(id);
-		}
-
-		// ignore the cache - get the realm with a lock from the info store
-		RealmEdit realm = m_storage.edit(id);
-		if (realm == null)
-			throw new InUseException(id);
-
-		((BaseRealmEdit) realm).setEvent(SECURE_UPDATE_REALM);
-
-		// since we updated the realm with the latest provider info, update site security to match
-		updateSiteSecurity(realm);
-
-		return realm;
-	}
-
-	/**
-	 * Commit the changes made to a RealmEdit object, and release the lock.
-	 * The RealmEdit is disabled, and not to be used after this call.
-	 * @param realm The RealmEdit object to commit.
-	 */
-	public void commitEdit(RealmEdit realm)
-	{
-		// check for closed edit
-		if (!realm.isActiveEdit())
-		{
-			try
-			{
-				throw new Exception();
-			}
-			catch (Exception e)
-			{
-				m_logger.warn(this +".commitEdit(): closed RealmEdit", e);
-			}
-			return;
-		}
-
-		// update the properties
-		addLiveUpdateProperties((BaseRealm) realm);
-
-		// complete the edit
-		m_storage.commit(realm);
-
-		// track it
-		EventTrackingService.post(
-			EventTrackingService.newEvent(((BaseRealmEdit) realm).getEvent(), realm.getReference(), true));
-
-		// close the edit object
-		((BaseRealmEdit) realm).closeEdit();
-
-		// update the db with latest provider, and site security with the latest changes, using the updated realm
-		BaseRealm updatedRealm = (BaseRealm) m_storage.get(realm.getId());
-		updateSiteSecurity(updatedRealm);
-	}
-
-	/**
-	 * Cancel the changes made to a RealmEdit object, and release the lock.
-	 * The RealmEdit is disabled, and not to be used after this call.
-	 * @param realm The RealmEdit object to commit.
-	 */
-	public void cancelEdit(RealmEdit realm)
-	{
-		// check for closed edit
-		if (!realm.isActiveEdit())
-		{
-			try
-			{
-				throw new Exception();
-			}
-			catch (Exception e)
-			{
-				m_logger.warn(this +".cancelEdit(): closed RealmEdit", e);
-			}
-			return;
-		}
-
-		// release the edit lock
-		m_storage.cancel(realm);
-
-		// close the edit object
-		 ((BaseRealmEdit) realm).closeEdit();
-	}
-
-	/**
-	 * check permissions for addRealm().
-	 * @param id The realm id.
-	 * @return true if the current user is allowed to addRealm(id), false if not.
-	 */
-	public boolean allowAddRealm(String id)
-	{
-		return unlockCheck(SECURE_ADD_REALM, realmReference(id));
-	}
-
-	/**
-	 * Add a new realm.  Must commitEdit() to make official, or cancelEdit() when done!
-	 * @param id The realm id.
-	 * @return The new locked realm object.
-	 * @exception IdInvalidException if the realm id is invalid.
-	 * @exception IdUsedException if the realm id is already used.
-	 * @exception PermissionException if the current user does not have permission to add a realm.
-	 */
-	public RealmEdit addRealm(String id) throws IdInvalidException, IdUsedException, PermissionException
-	{
-		// check security (throws if not permitted)
-		unlock(SECURE_ADD_REALM, realmReference(id));
-
-		// reserve a realm with this id from the info store - if it's in use, this will return null
-		RealmEdit realm = m_storage.put(id);
-		if (realm == null)
-		{
-			throw new IdUsedException(id);
-		}
-
-		((BaseRealmEdit) realm).setEvent(SECURE_ADD_REALM);
-
-		return realm;
-	}
-
-	/**
-	 * Add a new realm, as a copy of another realm (except for id).
-	 * Must commitEdit() to make official, or cancelEdit() when done!
-	 * @param id The realm id.
-	 * @param other The Realm to copy into this new Realm.
-	 * @return The new locked realm object.
-	 * @exception IdInvalidException if the realm id is invalid.
-	 * @exception IdUsedException if the realm id is already used.
-	 * @exception PermissionException if the current user does not have permission to add a realm.
-	 */
-	public RealmEdit addRealm(String id, Realm other) throws IdInvalidException, IdUsedException, PermissionException
-	{
-		// make the new Realm
-		RealmEdit edit = addRealm(id);
-
-		// move in the values from the old Realm
-		((BaseRealmEdit) edit).set(other);
-
-		// restore the proper id!
-		((BaseRealmEdit) edit).m_id = id;
-
-		return edit;
-	}
-
-	/**
-	 * check permissions for removeRealm().
-	 * @param id The realm id.
-	 * @return true if the realm is allowed to removeRealm(id), false if not.
-	 */
-	public boolean allowRemoveRealm(String id)
-	{
-		return unlockCheck(SECURE_REMOVE_REALM, realmReference(id));
-	}
-
-	/**
-	 * Remove this realm's information from the directory
-	 * - it must be a realm with a lock from editRealm().
-	 * The RealmEdit is disabled, and not to be used after this call.
-	 * @param realm The locked realm to remove.
-	 * @exception PermissionException if the current user does not have permission to remove this realm.
-	 */
-	public void removeRealm(RealmEdit realm) throws PermissionException
-	{
-		// check for closed edit
-		if (!realm.isActiveEdit())
-		{
-			try
-			{
-				throw new Exception();
-			}
-			catch (Exception e)
-			{
-				m_logger.warn(this +".removeRealm(): closed RealmEdit", e);
-			}
-			return;
-		}
-
-		// check security (throws if not permitted)
-		unlock(SECURE_REMOVE_REALM, realm.getReference());
-
-		// complete the edit
-		m_storage.remove(realm);
-
-		// track it
-		EventTrackingService.post(EventTrackingService.newEvent(SECURE_REMOVE_REALM, realm.getReference(), true));
-
-		// close the edit object
-		((BaseRealmEdit) realm).closeEdit();
-
-		// clear any site security based on this (if a site) realm
-		removeSiteSecurity(realm);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeRealm(String realmId) throws PermissionException
+	public boolean allowUpdate(String id)
 	{
-		if (realmId == null) return;
+		return unlockCheck(SECURE_UPDATE_AUTHZ_GROUP, authzGroupReference(id));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void save(AuthzGroup azGroup) throws IdUnusedException, PermissionException
+	{
+		if (azGroup.getId() == null) throw new IdUnusedException("<null>");
+
+		// check security (throws if not permitted)
+		unlock(SECURE_UPDATE_AUTHZ_GROUP, authzGroupReference(azGroup.getId()));
 
 		// check for existance
-		if (!m_storage.check(realmId))
+		if (!m_storage.check(azGroup.getId()))
+		{
+			throw new IdUnusedException(azGroup.getId());
+		}
+
+		// complete the save
+		completeSave(azGroup);
+	}
+
+	/**
+	 * Complete the saving of the group, once id and security checks have been cleared.
+	 * 
+	 * @param azGroup
+	 */
+	protected void completeSave(AuthzGroup azGroup)
+	{
+		// update the properties
+		addLiveUpdateProperties((BaseAuthzGroup) azGroup);
+
+		// complete the azGroup
+		m_storage.save(azGroup);
+
+		// track it
+		EventTrackingService.post(EventTrackingService
+				.newEvent(((BaseAuthzGroup) azGroup).getEvent(), azGroup.getReference(), true));
+
+		// close the azGroup object
+		((BaseAuthzGroup) azGroup).closeEdit();
+
+		// update the db with latest provider, and site security with the latest changes, using the updated azGroup
+		BaseAuthzGroup updatedRealm = (BaseAuthzGroup) m_storage.get(azGroup.getId());
+		updateSiteSecurity(updatedRealm);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean allowAdd(String id)
+	{
+		return unlockCheck(SECURE_ADD_AUTHZ_GROUP, authzGroupReference(id));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public AuthzGroup addAuthzGroup(String id) throws IdInvalidException, IdUsedException, PermissionException
+	{
+		// check security (throws if not permitted)
+		unlock(SECURE_ADD_AUTHZ_GROUP, authzGroupReference(id));
+
+		// reserve an AuthzGroup with this id from the info store - if it's in use, this will return null
+		AuthzGroup azGroup = m_storage.put(id);
+		if (azGroup == null)
+		{
+			throw new IdUsedException(id);
+		}
+
+		((BaseAuthzGroup) azGroup).setEvent(SECURE_ADD_AUTHZ_GROUP);
+
+		return azGroup;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public AuthzGroup addAuthzGroup(String id, AuthzGroup other, String userId) throws IdInvalidException, IdUsedException,
+			PermissionException
+	{
+		// make the new AuthzGroup
+		AuthzGroup azGroup = addAuthzGroup(id);
+
+		// move in the values from the old AuthzGroup (this includes the id, which we restore
+		((BaseAuthzGroup) azGroup).set(other);
+		((BaseAuthzGroup) azGroup).m_id = id;
+
+		// give the user the "maintain" role
+		String roleName = azGroup.getMaintainRole();
+		if ((roleName != null) && (userId != null))
+		{
+			azGroup.addMember(userId, roleName, true, false);
+		}
+
+		// save the changes
+		m_storage.save(azGroup);
+
+		return azGroup;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean allowRemove(String id)
+	{
+		return unlockCheck(SECURE_REMOVE_AUTHZ_GROUP, authzGroupReference(id));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeAuthzGroup(AuthzGroup azGroup) throws PermissionException
+	{
+		// check security (throws if not permitted)
+		unlock(SECURE_REMOVE_AUTHZ_GROUP, azGroup.getReference());
+
+		// complete the azGroup
+		m_storage.remove(azGroup);
+
+		// track it
+		EventTrackingService.post(EventTrackingService.newEvent(SECURE_REMOVE_AUTHZ_GROUP, azGroup.getReference(), true));
+
+		// close the azGroup object
+		((BaseAuthzGroup) azGroup).closeEdit();
+
+		// clear any site security based on this (if a site) azGroup
+		removeSiteSecurity(azGroup);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeAuthzGroup(String azGroupId) throws PermissionException
+	{
+		if (azGroupId == null) return;
+
+		// check for existance
+		AuthzGroup azGroup = m_storage.get(azGroupId);
+		if (azGroup == null)
 		{
 			return;
 		}
 
 		// check security (throws if not permitted)
-		unlock(SECURE_REMOVE_REALM, realmReference(realmId));
+		unlock(SECURE_REMOVE_AUTHZ_GROUP, authzGroupReference(azGroupId));
 
-		// ignore the cache - get the realm with a lock from the info store
-		RealmEdit realm = m_storage.edit(realmId);
-		if (realm == null) return;
-
-		// complete the edit
-		m_storage.remove(realm);
+		// complete the azGroup
+		m_storage.remove(azGroup);
 
 		// track it
-		EventTrackingService.post(EventTrackingService.newEvent(SECURE_REMOVE_REALM, realm.getReference(), true));
+		EventTrackingService.post(EventTrackingService.newEvent(SECURE_REMOVE_AUTHZ_GROUP, azGroup.getReference(), true));
 
-		// close the edit object
-		((BaseRealmEdit) realm).closeEdit();
+		// close the azGroup object
+		((BaseAuthzGroup) azGroup).closeEdit();
 
-		// clear any site security based on this (if a site) realm
-		removeSiteSecurity(realm);
+		// clear any site security based on this (if a site) azGroup
+		removeSiteSecurity(azGroup);
 	}
 
 	/**
-	 * Access the internal reference which can be used to access the resource from within the system.
-	 * @param id The realm id string.
-	 * @return The the internal reference which can be used to access the resource from within the system.
+	 * {@inheritDoc}
 	 */
-	public String realmReference(String id)
+	public String authzGroupReference(String id)
 	{
 		return getAccessPoint(true) + Entity.SEPARATOR + id;
 	}
@@ -839,41 +707,41 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean unlock(String user, String lock, String realmId)
+	public boolean isAllowed(String user, String function, String azGroupId)
 	{
-		return m_storage.unlock(user, lock, realmId);
+		return m_storage.isAllowed(user, function, azGroupId);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean unlock(String user, String lock, Collection realms)
+	public boolean isAllowed(String user, String function, Collection azGroups)
 	{
-		return m_storage.unlock(user, lock, realms);
+		return m_storage.isAllowed(user, function, azGroups);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set getUsers(String lock, Collection realms)
+	public Set getUsersIsAllowed(String function, Collection azGroups)
 	{
-		return m_storage.getUsers(lock, realms);
+		return m_storage.getUsersIsAllowed(function, azGroups);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set getLocks(String role, Collection realms)
+	public Set getAllowedFunctions(String role, Collection azGroups)
 	{
-		return m_storage.getLocks(role, realms);
+		return m_storage.getAllowedFunctions(role, azGroups);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set unlockRealms(String userId, String lock)
+	public Set getAuthzGroupsIsAllowed(String userId, String function)
 	{
-		return m_storage.unlockRealms(userId, lock);
+		return m_storage.getAuthzGroupsIsAllowed(userId, function);
 	}
 
 	/**
@@ -883,90 +751,91 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	{
 		if ((m_provider == null) || (userId == null)) return;
 
-		Map providerGrants = m_provider.getRealmRolesForUser(userId);
+		Map providerGrants = m_provider.getGroupRolesForUser(userId);
 		m_storage.refreshUser(userId, providerGrants);
-		
-		// update site security for this user - get the user's realms for the three site locks
-		Set updRealms = unlockRealms(userId, SiteService.SECURE_UPDATE_SITE);
-		Set unpRealms = unlockRealms(userId, SiteService.SITE_VISIT_UNPUBLISHED);
-		Set visitRealms = unlockRealms(userId, SiteService.SITE_VISIT);
 
-		// convert from realm ids (potential site references) to site ids for those that are site,
+		// update site security for this user - get the user's realms for the three site locks
+		Set updAuthzGroups = getAuthzGroupsIsAllowed(userId, SiteService.SECURE_UPDATE_SITE);
+		Set unpAuthzGroups = getAuthzGroupsIsAllowed(userId, SiteService.SITE_VISIT_UNPUBLISHED);
+		Set visitAuthzGroups = getAuthzGroupsIsAllowed(userId, SiteService.SITE_VISIT);
+
+		// convert from azGroup ids (potential site references) to site ids for those that are site,
 		// skipping special and user sites other than our user's
 		Set updSites = new HashSet();
-		for (Iterator i = updRealms.iterator(); i.hasNext();)
+		for (Iterator i = updAuthzGroups.iterator(); i.hasNext();)
 		{
-			String realmId = (String) i.next();
-			Reference ref = m_entityManager.newReference(realmId);
-			if (	(SiteService.SERVICE_NAME.equals(ref.getType()))
-				&&	!SiteService.isSpecialSite(ref.getId())
-				&&	(!SiteService.isUserSite(ref.getId()) || userId.equals(SiteService.getSiteUserId(ref.getId()))))
+			String azGroupId = (String) i.next();
+			Reference ref = m_entityManager.newReference(azGroupId);
+			if ((SiteService.SERVICE_NAME.equals(ref.getType())) && !SiteService.isSpecialSite(ref.getId())
+					&& (!SiteService.isUserSite(ref.getId()) || userId.equals(SiteService.getSiteUserId(ref.getId()))))
 			{
 				updSites.add(ref.getId());
 			}
 		}
 
 		Set unpSites = new HashSet();
-		for (Iterator i = unpRealms.iterator(); i.hasNext();)
+		for (Iterator i = unpAuthzGroups.iterator(); i.hasNext();)
 		{
-			String realmId = (String) i.next();
-			Reference ref = m_entityManager.newReference(realmId);
-			if (	(SiteService.SERVICE_NAME.equals(ref.getType()))
-				&&	!SiteService.isSpecialSite(ref.getId())
-				&&	(!SiteService.isUserSite(ref.getId()) || userId.equals(SiteService.getSiteUserId(ref.getId()))))
+			String azGroupId = (String) i.next();
+			Reference ref = m_entityManager.newReference(azGroupId);
+			if ((SiteService.SERVICE_NAME.equals(ref.getType())) && !SiteService.isSpecialSite(ref.getId())
+					&& (!SiteService.isUserSite(ref.getId()) || userId.equals(SiteService.getSiteUserId(ref.getId()))))
 			{
 				unpSites.add(ref.getId());
 			}
 		}
 
 		Set visitSites = new HashSet();
-		for (Iterator i = visitRealms.iterator(); i.hasNext();)
+		for (Iterator i = visitAuthzGroups.iterator(); i.hasNext();)
 		{
-			String realmId = (String) i.next();
-			Reference ref = m_entityManager.newReference(realmId);
-			if (	(SiteService.SERVICE_NAME.equals(ref.getType()))
-				&&	!SiteService.isSpecialSite(ref.getId())
-				&&	(!SiteService.isUserSite(ref.getId()) || userId.equals(SiteService.getSiteUserId(ref.getId()))))
+			String azGroupId = (String) i.next();
+			Reference ref = m_entityManager.newReference(azGroupId);
+			if ((SiteService.SERVICE_NAME.equals(ref.getType())) && !SiteService.isSpecialSite(ref.getId())
+					&& (!SiteService.isUserSite(ref.getId()) || userId.equals(SiteService.getSiteUserId(ref.getId()))))
 			{
 				visitSites.add(ref.getId());
 			}
 		}
-		
+
 		SiteService.setUserSecurity(userId, updSites, unpSites, visitSites);
 	}
 
 	/**
-	 * Update the site security based on the values in the realm, if it is a site realm.
-	 * @param realm The realm.
+	 * Update the site security based on the values in the AuthzGroup, if it is a site AuthzGroup.
+	 * 
+	 * @param azGroup
+	 *        The AuthzGroup.
 	 */
-	protected void updateSiteSecurity(Realm realm)
+	protected void updateSiteSecurity(AuthzGroup azGroup)
 	{
 		// Special code for the site service
-		Reference ref = m_entityManager.newReference(realm.getId());
+		Reference ref = m_entityManager.newReference(azGroup.getId());
 		if (SiteService.SERVICE_NAME.equals(ref.getType()))
 		{
 			// collect the users
-			Set updUsers = realm.getUsersWithLock(SiteService.SECURE_UPDATE_SITE);
-			Set unpUsers = realm.getUsersWithLock(SiteService.SITE_VISIT_UNPUBLISHED);
-			Set visitUsers = realm.getUsersWithLock(SiteService.SITE_VISIT);
-			
+			Set updUsers = azGroup.getUsersIsAllowed(SiteService.SECURE_UPDATE_SITE);
+			Set unpUsers = azGroup.getUsersIsAllowed(SiteService.SITE_VISIT_UNPUBLISHED);
+			Set visitUsers = azGroup.getUsersIsAllowed(SiteService.SITE_VISIT);
+
 			SiteService.setSiteSecurity(ref.getId(), updUsers, unpUsers, visitUsers);
 		}
 	}
 
 	/**
-	 * Update the site security when a realm is deleted, if it is a site realm.
-	 * @param realm The realm.
+	 * Update the site security when an AuthzGroup is deleted, if it is a site AuthzGroup.
+	 * 
+	 * @param azGroup
+	 *        The AuthzGroup.
 	 */
-	protected void removeSiteSecurity(Realm realm)
+	protected void removeSiteSecurity(AuthzGroup azGroup)
 	{
 		// Special code for the site service
-		Reference ref = m_entityManager.newReference(realm.getId());
+		Reference ref = m_entityManager.newReference(azGroup.getId());
 		if (ref.getType().equals(SiteService.SERVICE_NAME))
 		{
-			// no realm, no users
+			// no azGroup, no users
 			Set empty = new HashSet();
-			
+
 			SiteService.setSiteSecurity(ref.getId(), empty, empty, empty);
 		}
 	}
@@ -976,11 +845,11 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
- 	 * {@inheritDoc}
+	 * {@inheritDoc}
 	 */
 	public String getLabel()
 	{
-		return "user";
+		return "authzGroup";
 	}
 
 	/**
@@ -1004,17 +873,17 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	 */
 	public boolean parseEntityReference(String reference, Reference ref)
 	{
-		// for realm access
+		// for azGroup access
 		if (reference.startsWith(REFERENCE_ROOT))
 		{
-			// the realm id may have separators - we use everything after "/realm/"
+			// the azGroup id may have separators - we use everything after "/realm/"
 			String id = reference.substring(REFERENCE_ROOT.length() + 1, reference.length());
 
 			ref.set(SERVICE_NAME, null, id, null, null);
 
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -1025,7 +894,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	{
 		return null;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1052,35 +921,17 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 		Collection rv = new Vector();
 
-		// if the reference is a realm, and not a special one
-		// get the list of realms for the realm-referenced resource
+		// if the reference is an AuthzGroup, and not a special one
+		// get the list of realms for the azGroup-referenced resource
 		if ((ref.getId() != null) && (ref.getId().length() > 0) && (!ref.getId().startsWith("!")))
 		{
-			// add the current user's realm (for what realm stuff everyone can do, i.e. add)
+			// add the current user's azGroup (for what azGroup stuff everyone can do, i.e. add)
 			ref.addUserRealm(rv, UsageSessionService.getSessionUserId());
 
-			// make a new reference on the realm's id
+			// make a new reference on the azGroup's id
 			Reference refnew = m_entityManager.newReference(ref.getId());
 			rv.addAll(refnew.getRealms());
 		}
-
-		// for (special) realm access:
-		// any modification or delete of a realm, checks the realm itself for permission.
-		// all users get to add realms (predefined in the "/user/~" realm
-//		else
-//		{
-//			try
-//			{
-//				rv.add(ref.getReference());
-//	
-//				// add the current user's realm (for what realm stuff everyone can do, i.e. add)
-//				ref.addUserRealm(rv, UsageSessionService.getSessionUserId());
-//			}
-//			catch (NullPointerException e)
-//			{
-//				m_logger.warn("getRealms(): " + e);
-//			}
-//		}
 
 		return rv;
 	}
@@ -1104,8 +955,8 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	/**
 	 * {@inheritDoc}
 	 */
-	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames,
-			Map userIdTrans, Set userListAllowImport)
+	public String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames, Map userIdTrans,
+			Set userListAllowImport)
 	{
 		return "";
 	}
@@ -1117,31 +968,33 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 	{
 	}
 
-	/*******************************************************************************
-	 * Realm implementation
-	*******************************************************************************/
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * AuthzGroup implementation
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
-	 * <p>BaseRealm is an implementation of the Realm object.</p>
+	 * <p>
+	 * BaseAuthzGroup is an implementation of the AuthzGroup object.
+	 * </p>
 	 */
-	public class BaseRealm implements Realm
+	public class BaseAuthzGroup implements AuthzGroup
 	{
 		/** The internal 'db' key. */
 		protected Integer m_key = null;
 
-		/** The realm id. */
+		/** The azGroup id. */
 		protected String m_id = null;
 
 		/** The properties. */
 		protected ResourcePropertiesEdit m_properties = null;
 
-		/** Map of userId to Grant */
+		/** Map of userId to Member */
 		protected Map m_userGrants = null;
 
-		/** Map of Role id to a Role defined in this Realm. */
+		/** Map of Role id to a Role defined in this AuthzGroup. */
 		protected Map m_roles = null;
 
-		/** The external realm id, or null if not defined. */
+		/** The external azGroup id, or null if not defined. */
 		protected String m_providerRealmId = null;
 
 		/** The role to use for maintain users. */
@@ -1159,14 +1012,22 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/** The time last modified. */
 		protected Time m_lastModifiedTime = null;
 
-		/** Set while the realm is not fully loaded from the storage. */
+		/** Set while the azGroup is not fully loaded from the storage. */
 		protected boolean m_lazy = false;
+
+		/** The event code for this azGroup. */
+		protected String m_event = null;
+
+		/** Active flag. */
+		protected boolean m_active = false;
 
 		/**
 		 * Construct.
-		 * @param id The realm id.
+		 * 
+		 * @param id
+		 *        The azGroup id.
 		 */
-		public BaseRealm(String id)
+		public BaseAuthzGroup(String id)
 		{
 			m_id = id;
 
@@ -1177,26 +1038,75 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			m_userGrants = new HashMap();
 			m_roles = new HashMap();
 
-			// if the id is not null (a new realm, rather than a reconstruction)
+			// if the id is not null (a new azGroup, rather than a reconstruction)
 			// add the automatic (live) properties
-			if (m_id != null)
-				addLiveProperties(this);
+			if (m_id != null) addLiveProperties(this);
 		}
 
 		/**
-		 * Construct from another Realm object.
-		 * @param realm The realm object to use for values.
+		 * Construct from another AuthzGroup object.
+		 * 
+		 * @param azGroup
+		 *        The azGroup object to use for values.
 		 */
-		public BaseRealm(Realm realm)
+		public BaseAuthzGroup(AuthzGroup azGroup)
 		{
-			setAll(realm);
+			setAll(azGroup);
+		}
+
+		/**
+		 * (Re)Construct from parts.
+		 * 
+		 * @param dbid
+		 *        The database id.
+		 * @param id
+		 *        The azGroup id.
+		 * @param providerId
+		 *        The provider id.
+		 * @param maintainRole
+		 *        The maintain role id.
+		 * @param createdBy
+		 *        The user created by id.
+		 * @param createdOn
+		 *        The time created.
+		 * @param modifiedBy
+		 *        The user modified by id.
+		 * @param modifiedOn
+		 *        The time modified.
+		 */
+		public BaseAuthzGroup(Integer dbid, String id, String providerId, String maintainRole, String createdBy, Time createdOn,
+				String modifiedBy, Time modifiedOn)
+		{
+			// setup for properties
+			ResourcePropertiesEdit props = new BaseResourcePropertiesEdit();
+			m_properties = props;
+
+			m_userGrants = new HashMap();
+			m_roles = new HashMap();
+
+			m_key = dbid;
+			m_id = id;
+			m_providerRealmId = StringUtil.trimToNull(providerId);
+			m_maintainRole = StringUtil.trimToNull(maintainRole);
+
+			m_createdUserId = createdBy;
+			m_lastModifiedUserId = modifiedBy;
+			m_createdTime = createdOn;
+			m_lastModifiedTime = modifiedOn;
+
+			// setup for properties, but mark them lazy since we have not yet established them from data
+			((BaseResourcePropertiesEdit) m_properties).setLazy(true);
+
+			m_lazy = true;
 		}
 
 		/**
 		 * Construct from information in XML.
-		 * @param el The XML DOM Element definining the realm.
+		 * 
+		 * @param el
+		 *        The XML DOM Element definining the azGroup.
 		 */
-		public BaseRealm(Element el)
+		public BaseAuthzGroup(Element el)
 		{
 			m_userGrants = new HashMap();
 			m_roles = new HashMap();
@@ -1210,7 +1120,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 			m_createdUserId = StringUtil.trimToNull(el.getAttribute("created-id"));
 			m_lastModifiedUserId = StringUtil.trimToNull(el.getAttribute("modified-id"));
-			
+
 			String time = StringUtil.trimToNull(el.getAttribute("created-time"));
 			if (time != null)
 			{
@@ -1229,8 +1139,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			for (int i = 0; i < length; i++)
 			{
 				Node child = children.item(i);
-				if (child.getNodeType() != Node.ELEMENT_NODE)
-					continue;
+				if (child.getNodeType() != Node.ELEMENT_NODE) continue;
 				Element element = (Element) child;
 
 				// look for properties
@@ -1243,7 +1152,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 				// look for a role
 				else if (element.getTagName().equals("role"))
 				{
-					BaseRoleEdit role = new BaseRoleEdit(element, this);
+					BaseRole role = new BaseRole(element, this);
 					m_roles.put(role.getId(), role);
 				}
 
@@ -1256,26 +1165,29 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 					String provided = StringUtil.trimToNull(element.getAttribute("provided"));
 
 					// record this user - role grant - just use the first one
-					BaseRoleEdit role = (BaseRoleEdit) m_roles.get(roleId);
+					BaseRole role = (BaseRole) m_roles.get(roleId);
 					if (role != null)
 					{
 						// if already granted, update to point to the role with the most permissions
-						MyGrant grant = (MyGrant) m_userGrants.get(userId);
+						BaseMember grant = (BaseMember) m_userGrants.get(userId);
 						if (grant != null)
 						{
-							if (role.m_locks.size() > ((BaseRoleEdit) grant.role).m_locks.size())
+							if (role.m_locks.size() > ((BaseRole) grant.role).m_locks.size())
 							{
-								m_logger.warn(this + "(el): additional lesser user grant ignored: " + m_id + " " + userId + " " + grant.role.getId() + " keeping: " + roleId);
+								m_logger.warn(this + "(el): additional lesser user grant ignored: " + m_id + " " + userId + " "
+										+ grant.role.getId() + " keeping: " + roleId);
 								grant.role = role;
 							}
 							else
 							{
-								m_logger.warn(this + "(el): additional lesser user grant ignored: " + m_id + " " + userId + " " + roleId + " keeping: " + grant.role.getId());
+								m_logger.warn(this + "(el): additional lesser user grant ignored: " + m_id + " " + userId + " "
+										+ roleId + " keeping: " + grant.role.getId());
 							}
 						}
 						else
 						{
-							grant = new MyGrant(role, Boolean.valueOf(active).booleanValue(), Boolean.valueOf(provided).booleanValue(), userId);
+							grant = new BaseMember(role, Boolean.valueOf(active).booleanValue(), Boolean.valueOf(provided)
+									.booleanValue(), userId);
 							m_userGrants.put(userId, grant);
 						}
 					}
@@ -1309,13 +1221,13 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 						if (lock != null)
 						{
-							BaseRoleEdit role = (BaseRoleEdit) m_roles.get(ANON_ROLE);
+							BaseRole role = (BaseRole) m_roles.get(ANON_ROLE);
 							if (role == null)
 							{
-								role = new BaseRoleEdit(ANON_ROLE);
+								role = new BaseRole(ANON_ROLE);
 								m_roles.put(ANON_ROLE, role);
 							}
-							role.add(lock);
+							role.allowFunction(lock);
 						}
 					}
 
@@ -1334,38 +1246,40 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 						if (lock != null)
 						{
-							BaseRoleEdit role = (BaseRoleEdit) m_roles.get(AUTH_ROLE);
+							BaseRole role = (BaseRole) m_roles.get(AUTH_ROLE);
 							if (role == null)
 							{
-								role = new BaseRoleEdit(AUTH_ROLE);
+								role = new BaseRole(AUTH_ROLE);
 								m_roles.put(AUTH_ROLE, role);
 							}
-							role.add(lock);
+							role.allowFunction(lock);
 						}
 					}
 
 					else if (userId != null)
 					{
-						BaseRoleEdit role = (BaseRoleEdit) m_roles.get(roleId);
+						BaseRole role = (BaseRole) m_roles.get(roleId);
 						if (role != null)
 						{
 							// if already granted, update to point to the role with the most permissions
-							MyGrant grant = (MyGrant) m_userGrants.get(userId);
+							BaseMember grant = (BaseMember) m_userGrants.get(userId);
 							if (grant != null)
 							{
-								if (role.m_locks.size() > ((BaseRoleEdit) grant.role).m_locks.size())
+								if (role.m_locks.size() > ((BaseRole) grant.role).m_locks.size())
 								{
-									m_logger.warn(this + "(el): additional lesser user grant ignored: " + m_id + " " + userId + " " + grant.role.getId() + " keeping: " + roleId);
+									m_logger.warn(this + "(el): additional lesser user grant ignored: " + m_id + " " + userId + " "
+											+ grant.role.getId() + " keeping: " + roleId);
 									grant.role = role;
 								}
 								else
 								{
-									m_logger.warn(this + "(el): additional lesser user grant ignored: " + m_id + " " + userId + " " + roleId + " keeping: " + grant.role.getId());
+									m_logger.warn(this + "(el): additional lesser user grant ignored: " + m_id + " " + userId + " "
+											+ roleId + " keeping: " + grant.role.getId());
 								}
 							}
 							else
 							{
-								grant = new MyGrant(role, true, false, userId);
+								grant = new BaseMember(role, true, false, userId);
 								m_userGrants.put(userId, grant);
 							}
 						}
@@ -1392,7 +1306,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 				{
 					m_createdTime = m_properties.getTimeProperty("DAV:creationdate");
 				}
-				catch (Exception ignore) {}
+				catch (Exception ignore)
+				{
+				}
 			}
 			if (m_lastModifiedTime == null)
 			{
@@ -1400,13 +1316,15 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 				{
 					m_lastModifiedTime = m_properties.getTimeProperty("DAV:getlastmodified");
 				}
-				catch (Exception ignore) {}
+				catch (Exception ignore)
+				{
+				}
 			}
 			m_properties.removeProperty("CHEF:creator");
 			m_properties.removeProperty("CHEF:modifiedby");
 			m_properties.removeProperty("DAV:creationdate");
 			m_properties.removeProperty("DAV:getlastmodified");
-			
+
 			// make sure we have our times
 			if ((m_createdTime == null) && (m_lastModifiedTime != null))
 			{
@@ -1422,7 +1340,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			{
 				m_lastModifiedTime = (Time) m_createdTime.clone();
 			}
-			
+
 			// and our users
 			if ((m_createdUserId == null) && (m_lastModifiedUserId != null))
 			{
@@ -1445,13 +1363,13 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			{
 				m_roles.remove("pubview");
 
-				BaseRoleEdit role = (BaseRoleEdit) m_roles.get(ANON_ROLE);
+				BaseRole role = (BaseRole) m_roles.get(ANON_ROLE);
 				if (role == null)
 				{
-					role = new BaseRoleEdit(ANON_ROLE);
+					role = new BaseRole(ANON_ROLE);
 					m_roles.put(ANON_ROLE, role);
 				}
-				role.add("content.read");
+				role.allowFunction("content.read");
 			}
 		}
 
@@ -1463,83 +1381,90 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			// the special ones
 			if (getId().startsWith("!site.template"))
 			{
-				return "Site Realm Template";
+				return "Site AuthzGroup Template";
 			}
 
 			else if (getId().equals("!site.user"))
 			{
-				return "My Workspace Realm Template";
+				return "My Workspace AuthzGroup Template";
 			}
 
 			else if (getId().startsWith("!user.template"))
 			{
-				return "User Realm Template";
+				return "User AuthzGroup Template";
 			}
 
 			else if (getId().equals("!site.helper"))
 			{
-				return "Site Helper Patch Realm";
+				return "Site Helper Patch AuthzGroup";
 			}
 
 			else if (getId().startsWith("!"))
 			{
-				return "Special Realm";
+				return "Special AuthzGroup";
 			}
-			
+
 			// the rest are references to some resource
 			try
 			{
 				Reference ref = m_entityManager.newReference(getId());
 				return ref.getDescription();
 			}
-			catch (Throwable ignore){}
+			catch (Throwable ignore)
+			{
+			}
 
 			return "unknown";
 		}
 
 		/**
 		 * Take all values from this object.
-		 * @param realm The realm object to take values from.
+		 * 
+		 * @param azGroup
+		 *        The AuthzGroup to take values from.
 		 */
-		protected void setAll(Realm realm)
+		protected void setAll(AuthzGroup azGroup)
 		{
-			if (((BaseRealm) realm).m_lazy) m_storage.completeGet(((BaseRealm) realm));
+			if (((BaseAuthzGroup) azGroup).m_lazy) m_storage.completeGet(((BaseAuthzGroup) azGroup));
 
-			m_key = ((BaseRealm) realm).m_key;
-			m_id = ((BaseRealm) realm).m_id;
-			m_providerRealmId = ((BaseRealm) realm).m_providerRealmId;
-			m_maintainRole = ((BaseRealm) realm).m_maintainRole;
+			m_key = ((BaseAuthzGroup) azGroup).m_key;
+			m_id = ((BaseAuthzGroup) azGroup).m_id;
+			m_providerRealmId = ((BaseAuthzGroup) azGroup).m_providerRealmId;
+			m_maintainRole = ((BaseAuthzGroup) azGroup).m_maintainRole;
 
-			m_createdUserId = ((BaseRealm) realm).m_createdUserId;
-			m_lastModifiedUserId = ((BaseRealm) realm).m_lastModifiedUserId;
-			if (((BaseRealm) realm).m_createdTime != null) m_createdTime = (Time) ((BaseRealm) realm).m_createdTime.clone();
-			if (((BaseRealm) realm).m_lastModifiedTime != null) m_lastModifiedTime = (Time) ((BaseRealm) realm).m_lastModifiedTime.clone();
+			m_createdUserId = ((BaseAuthzGroup) azGroup).m_createdUserId;
+			m_lastModifiedUserId = ((BaseAuthzGroup) azGroup).m_lastModifiedUserId;
+			if (((BaseAuthzGroup) azGroup).m_createdTime != null)
+				m_createdTime = (Time) ((BaseAuthzGroup) azGroup).m_createdTime.clone();
+			if (((BaseAuthzGroup) azGroup).m_lastModifiedTime != null)
+				m_lastModifiedTime = (Time) ((BaseAuthzGroup) azGroup).m_lastModifiedTime.clone();
 
 			// make a deep copy of the roles as new Role objects
 			m_roles = new HashMap();
-			for (Iterator it = ((BaseRealm) realm).m_roles.entrySet().iterator(); it.hasNext();)
+			for (Iterator it = ((BaseAuthzGroup) azGroup).m_roles.entrySet().iterator(); it.hasNext();)
 			{
 				Map.Entry entry = (Map.Entry) it.next();
-				BaseRoleEdit role = (BaseRoleEdit) entry.getValue();
+				BaseRole role = (BaseRole) entry.getValue();
 				String id = (String) entry.getKey();
 
-				m_roles.put(id, new BaseRoleEdit(id, role));
+				m_roles.put(id, new BaseRole(id, role));
 			}
 
-			// make a deep copy (w/ new Grant objects pointing to my own roles) of the user - role grants
+			// make a deep copy (w/ new Member objects pointing to my own roles) of the user - role grants
 			m_userGrants = new HashMap();
-			for (Iterator it = ((BaseRealm) realm).m_userGrants.entrySet().iterator(); it.hasNext();)
+			for (Iterator it = ((BaseAuthzGroup) azGroup).m_userGrants.entrySet().iterator(); it.hasNext();)
 			{
 				Map.Entry entry = (Map.Entry) it.next();
-				MyGrant grant = (MyGrant) entry.getValue();
+				BaseMember grant = (BaseMember) entry.getValue();
 				String id = (String) entry.getKey();
 
-				m_userGrants.put(id, new MyGrant((Role) m_roles.get(grant.role.getId()), grant.active, grant.provided, grant.userId));
+				m_userGrants.put(id, new BaseMember((Role) m_roles.get(grant.role.getId()), grant.active, grant.provided,
+						grant.userId));
 			}
 
 			m_properties = new BaseResourcePropertiesEdit();
-			m_properties.addAll(realm.getProperties());
-			((BaseResourcePropertiesEdit) m_properties).setLazy(((BaseResourceProperties) realm.getProperties()).isLazy());
+			m_properties.addAll(azGroup.getProperties());
+			((BaseResourcePropertiesEdit) m_properties).setLazy(((BaseResourceProperties) azGroup.getProperties()).isLazy());
 
 			m_lazy = false;
 		}
@@ -1551,33 +1476,33 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
-			Element realm = doc.createElement("realm");
+			Element azGroup = doc.createElement("azGroup");
 
 			if (stack.isEmpty())
 			{
-				doc.appendChild(realm);
+				doc.appendChild(azGroup);
 			}
 			else
 			{
-				((Element) stack.peek()).appendChild(realm);
+				((Element) stack.peek()).appendChild(azGroup);
 			}
 
-			stack.push(realm);
+			stack.push(azGroup);
 
-			realm.setAttribute("id", getId());
+			azGroup.setAttribute("id", getId());
 			if (m_providerRealmId != null)
 			{
-				realm.setAttribute("provider-id", m_providerRealmId);
+				azGroup.setAttribute("provider-id", m_providerRealmId);
 			}
 			if (m_maintainRole != null)
 			{
-				realm.setAttribute("maintain-role", m_maintainRole);
+				azGroup.setAttribute("maintain-role", m_maintainRole);
 			}
 
-			realm.setAttribute("created-id", m_createdUserId);
-			realm.setAttribute("modified-id", m_lastModifiedUserId);
-			realm.setAttribute("created-time", m_createdTime.toString());
-			realm.setAttribute("modified-time", m_lastModifiedTime.toString());
+			azGroup.setAttribute("created-id", m_createdUserId);
+			azGroup.setAttribute("modified-id", m_lastModifiedUserId);
+			azGroup.setAttribute("created-time", m_createdTime.toString());
+			azGroup.setAttribute("modified-time", m_lastModifiedTime.toString());
 
 			// properties
 			getProperties().toXml(doc, stack);
@@ -1585,7 +1510,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			// roles (write before grants!)
 			for (Iterator i = m_roles.values().iterator(); i.hasNext();)
 			{
-				BaseRoleEdit role = (BaseRoleEdit) i.next();
+				BaseRole role = (BaseRole) i.next();
 				role.toXml(doc, stack);
 			}
 
@@ -1593,11 +1518,11 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			for (Iterator i = m_userGrants.entrySet().iterator(); i.hasNext();)
 			{
 				Map.Entry entry = (Map.Entry) i.next();
-				MyGrant grant = (MyGrant) entry.getValue();
+				BaseMember grant = (BaseMember) entry.getValue();
 				String user = (String) entry.getKey();
-				
+
 				Element element = doc.createElement("grant");
-				realm.appendChild(element);
+				azGroup.appendChild(element);
 				element.setAttribute("user", user);
 				element.setAttribute("role", grant.role.getId());
 				element.setAttribute("active", Boolean.valueOf(grant.active).toString());
@@ -1606,7 +1531,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 			stack.pop();
 
-			return realm;
+			return azGroup;
 		}
 
 		/**
@@ -1614,8 +1539,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		 */
 		public String getId()
 		{
-			if (m_id == null)
-				return "";
+			if (m_id == null) return "";
 			return m_id;
 		}
 
@@ -1640,7 +1564,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		 */
 		public String getReference()
 		{
-			return realmReference(m_id);
+			return authzGroupReference(m_id);
 		}
 
 		/**
@@ -1702,26 +1626,24 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public boolean unlock(String user, String lock)
+		public boolean isAllowed(String user, String lock)
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
 			// consider a role granted
-			MyGrant grant = (MyGrant) m_userGrants.get(user);
+			BaseMember grant = (BaseMember) m_userGrants.get(user);
 			if ((grant != null) && (grant.active))
 			{
-				if (grant.role.contains(lock))
-					return true;
+				if (grant.role.isAllowed(lock)) return true;
 			}
 
-			// consider auth role			
+			// consider auth role
 			if (!UserDirectoryService.getAnonymousUser().getId().equals(user))
 			{
 				Role auth = (Role) m_roles.get(AUTH_ROLE);
 				if (auth != null)
 				{
-					if (auth.contains(lock))
-						return true;
+					if (auth.isAllowed(lock)) return true;
 				}
 			}
 
@@ -1729,8 +1651,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			Role anon = (Role) m_roles.get(ANON_ROLE);
 			if (anon != null)
 			{
-				if (anon.contains(lock))
-					return true;
+				if (anon.isAllowed(lock)) return true;
 			}
 
 			return false;
@@ -1743,7 +1664,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
-			MyGrant grant = (MyGrant) m_userGrants.get(user);
+			BaseMember grant = (BaseMember) m_userGrants.get(user);
 			if ((grant != null) && (grant.active) && (grant.role.getId().equals(role))) return true;
 
 			return false;
@@ -1761,7 +1682,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			{
 				Map.Entry entry = (Map.Entry) it.next();
 				String user = (String) entry.getKey();
-				Grant grant = (Grant) entry.getValue();
+				Member grant = (Member) entry.getValue();
 				if (grant.isActive())
 				{
 					rv.add(user);
@@ -1774,7 +1695,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public Set getGrants()
+		public Set getMembers()
 		{
 			// Note: this is the only way to see non-active grants
 
@@ -1784,7 +1705,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			for (Iterator it = m_userGrants.entrySet().iterator(); it.hasNext();)
 			{
 				Map.Entry entry = (Map.Entry) it.next();
-				Grant grant = (Grant) entry.getValue();
+				Member grant = (Member) entry.getValue();
 				rv.add(grant);
 			}
 
@@ -1794,7 +1715,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public Set getUsersWithLock(String lock)
+		public Set getUsersIsAllowed(String lock)
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
@@ -1803,8 +1724,8 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			{
 				Map.Entry entry = (Map.Entry) it.next();
 				String user = (String) entry.getKey();
-				MyGrant grant = (MyGrant) entry.getValue();
-				if (grant.active && grant.role.contains(lock))
+				BaseMember grant = (BaseMember) entry.getValue();
+				if (grant.active && grant.role.isAllowed(lock))
 				{
 					rv.add(user);
 				}
@@ -1816,7 +1737,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public Set getUsersWithRole(String role)
+		public Set getUsersHasRole(String role)
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
@@ -1825,7 +1746,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			{
 				Map.Entry entry = (Map.Entry) it.next();
 				String user = (String) entry.getKey();
-				MyGrant grant = (MyGrant) entry.getValue();
+				BaseMember grant = (BaseMember) entry.getValue();
 				if (grant.active && grant.role.getId().equals(role))
 				{
 					rv.add(user);
@@ -1842,20 +1763,20 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
-			MyGrant grant = (MyGrant) m_userGrants.get(user);
+			BaseMember grant = (BaseMember) m_userGrants.get(user);
 			if ((grant != null) && (grant.active)) return grant.role;
-			
+
 			return null;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public Grant getUserGrant(String user)
+		public Member getMember(String user)
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
-			MyGrant grant = (MyGrant) m_userGrants.get(user);
+			BaseMember grant = (BaseMember) m_userGrants.get(user);
 			return grant;
 		}
 
@@ -1882,7 +1803,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public String getProviderRealmId()
+		public String getProviderGroupId()
 		{
 			return m_providerRealmId;
 		}
@@ -1917,20 +1838,16 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		/**
-		 * Are these objects equal?  If they are both Realm objects, and they have
-		 * matching id's, they are.
-		 * @return true if they are equal, false if not.
+		 * {@inheritDoc}
 		 */
 		public boolean equals(Object obj)
 		{
-			if (!(obj instanceof Realm))
-				return false;
-			return ((Realm) obj).getId().equals(getId());
+			if (!(obj instanceof AuthzGroup)) return false;
+			return ((AuthzGroup) obj).getId().equals(getId());
 		}
 
 		/**
-		 * Make a hash code that reflects the equals() logic as well.
-		 * We want two objects, even if different instances, if they have the same id to hash the same.
+		 * {@inheritDoc}
 		 */
 		public int hashCode()
 		{
@@ -1938,35 +1855,25 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		/**
-		 * Compare this object with the specified object for order.
-		 * @return A negative integer, zero, or a positive integer as this object is
-		 * less than, equal to, or greater than the specified object.
+		 * {@inheritDoc}
 		 */
 		public int compareTo(Object obj)
 		{
-			if (!(obj instanceof Realm))
-				throw new ClassCastException();
+			if (!(obj instanceof AuthzGroup)) throw new ClassCastException();
 
 			// if the object are the same, say so
-			if (obj == this)
-				return 0;
+			if (obj == this) return 0;
 
 			// sort based on id
-			int compare = getId().compareTo(((Realm) obj).getId());
+			int compare = getId().compareTo(((AuthzGroup) obj).getId());
 
 			return compare;
 		}
 
-		// Note: these next two edit methods are implemented here to support the XmlFileRealmService
-
 		/**
-		 * Add this role to this user in this Realm.
-		 * @param userId The user.
-		 * @param role The role name.
-		 * @param active The active flag for the role grant.
-		 * @param provided If true, from an external provider.
+		 * {@inheritDoc}
 		 */
-		public void addUserRole(String user, String roleId, boolean active, boolean provided)
+		public void addMember(String user, String roleId, boolean active, boolean provided)
 		{
 			Role role = (Role) m_roles.get(roleId);
 			if (role == null)
@@ -1975,10 +1882,10 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 				return;
 			}
 
-			MyGrant grant = (MyGrant) m_userGrants.get(user);
+			BaseMember grant = (BaseMember) m_userGrants.get(user);
 			if (grant == null)
 			{
-				grant = new MyGrant(role, active, provided, user);
+				grant = new BaseMember(role, active, provided, user);
 				m_userGrants.put(user, grant);
 			}
 			else
@@ -1990,116 +1897,30 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		/**
-		 * Remove all Roles for this user from this Realm.
-		 * @param userId The user.
+		 * {@inheritDoc}
 		 */
-		public void removeUser(String user)
+		public void removeMember(String user)
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
 			m_userGrants.remove(user);
 		}
-	}
-
-	/*******************************************************************************
-	 * RealmEdit implementation
-	*******************************************************************************/
-
-	/**
-	 * <p>BaseRealmEdit is an implementation of the RealmEdit object.</p>
-	 */
-	public class BaseRealmEdit extends BaseRealm implements RealmEdit, SessionBindingListener
-	{
-		/** The event code for this edit. */
-		protected String m_event = null;
-
-		/** Active flag. */
-		protected boolean m_active = false;
-
-		/**
-		 * Construct.
-		 * @param id The realm id.
-		 */
-		public BaseRealmEdit(String id)
-		{
-			super(id);
-		}
-
-		/**
-		 * Construct from information in XML.
-		 * @param el The XML DOM Element definining the realm.
-		 */
-		public BaseRealmEdit(Element el)
-		{
-			super(el);
-		}
-
-		/**
-		 * Construct from another Realm object.
-		 * @param realm The realm object to use for values.
-		 */
-		public BaseRealmEdit(Realm realm)
-		{
-			super(realm);
-		}
-
-		/**
-		 * (Re)Construct from parts.
-		 * @param dbid The database id.
-		 * @param id The realm id.
-		 * @param providerId The provider id.
-		 * @param maintainRole The maintain role id.
-		 * @param createdBy The user created by id.
-		 * @param createdOn The time created.
-		 * @param modifiedBy The user modified by id.
-		 * @param modifiedOn The time modified.
-		 */
-		public BaseRealmEdit(Integer dbid, String id, String providerId, String maintainRole,
-							String createdBy, Time createdOn, String modifiedBy, Time modifiedOn)
-		{
-			super((String) null);
-
-			m_key = dbid;
-			m_id = id;
-			m_providerRealmId = StringUtil.trimToNull(providerId);
-			m_maintainRole = StringUtil.trimToNull(maintainRole);
-
-			m_createdUserId = createdBy;
-			m_lastModifiedUserId = modifiedBy;
-			m_createdTime = createdOn;
-			m_lastModifiedTime = modifiedOn;
-
-			// setup for properties, but mark them lazy since we have not yet established them from data
-			((BaseResourcePropertiesEdit) m_properties).setLazy(true);
-
-			m_lazy = true;
-		}
-
-		/**
-		 * Clean up.
-		 */
-		protected void finalize()
-		{
-			// catch the case where an edit was made but never resolved
-			if (m_active)
-			{
-				cancelEdit(this);
-			}
-		}
 
 		/**
 		 * Take all values from this object.
-		 * @param realm The realm object to take values from.
+		 * 
+		 * @param azGroup
+		 *        The AuthzGroup object to take values from.
 		 */
-		protected void set(Realm realm)
+		protected void set(AuthzGroup azGroup)
 		{
-			setAll(realm);
+			setAll(azGroup);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public void removeUsers()
+		public void removeMembers()
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
@@ -2109,15 +1930,14 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public RoleEdit addRole(String id) throws IdUsedException
+		public Role addRole(String id) throws IdUsedException
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
-			RoleEdit role = (RoleEdit) m_roles.get(id);
-			if (role != null)
-				throw new IdUsedException(id);
+			Role role = (Role) m_roles.get(id);
+			if (role != null) throw new IdUsedException(id);
 
-			role = new BaseRoleEdit(id);
+			role = new BaseRole(id);
 			m_roles.put(role.getId(), role);
 
 			return role;
@@ -2126,15 +1946,14 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public RoleEdit addRole(String id, Role other) throws IdUsedException
+		public Role addRole(String id, Role other) throws IdUsedException
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
-			RoleEdit role = (RoleEdit) m_roles.get(id);
-			if (role != null)
-				throw new IdUsedException(id);
+			Role role = (Role) m_roles.get(id);
+			if (role != null) throw new IdUsedException(id);
 
-			role = new BaseRoleEdit(id, other);
+			role = new BaseRole(id, other);
 			m_roles.put(role.getId(), role);
 
 			return role;
@@ -2156,7 +1975,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 				for (Iterator it = m_userGrants.entrySet().iterator(); it.hasNext();)
 				{
 					Map.Entry entry = (Map.Entry) it.next();
-					MyGrant grant = (MyGrant) entry.getValue();
+					BaseMember grant = (BaseMember) entry.getValue();
 					String id = (String) entry.getKey();
 
 					if (grant.role.equals(r))
@@ -2170,7 +1989,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public void clearRoles()
+		public void removeRoles()
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
@@ -2182,21 +2001,20 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public RoleEdit getRoleEdit(String id)
+		public Role getRoleEdit(String id)
 		{
 			if (m_lazy) m_storage.completeGet(this);
 
-			BaseRoleEdit edit = (BaseRoleEdit) m_roles.get(id);
-			if (edit != null)
-				edit.activate();
+			BaseRole azGroup = (BaseRole) m_roles.get(id);
+			if (azGroup != null) azGroup.activate();
 
-			return edit;
+			return azGroup;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public void setProviderRealmId(String id)
+		public void setProviderGroupId(String id)
 		{
 			m_providerRealmId = StringUtil.trimToNull(id);
 		}
@@ -2210,8 +2028,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		/**
-		 * Access the event code for this edit.
-		 * @return The event code for this edit.
+		 * Access the event code for this azGroup.
+		 * 
+		 * @return The event code for this azGroup.
 		 */
 		protected String getEvent()
 		{
@@ -2219,8 +2038,10 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		/**
-		 * Set the event code for this edit.
-		 * @param event The event code for this edit.
+		 * Set the event code for this azGroup.
+		 * 
+		 * @param event
+		 *        The event code for this azGroup.
 		 */
 		protected void setEvent(String event)
 		{
@@ -2246,8 +2067,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		/**
-		 * Check to see if the edit is still active, or has already been closed.
-		 * @return true if the edit is active, false if it's been closed.
+		 * Check to see if the azGroup is still active, or has already been closed.
+		 * 
+		 * @return true if the azGroup is active, false if it's been closed.
 		 */
 		public boolean isActiveEdit()
 		{
@@ -2255,42 +2077,19 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		/**
-		 * Close the edit object - it cannot be used after this.
+		 * Close the azGroup object - it cannot be used after this.
 		 */
 		protected void closeEdit()
 		{
 			m_active = false;
 		}
-
-		/*******************************************************************************
-		 * SessionBindingListener implementation
-		*******************************************************************************/
-
-		public void valueBound(SessionBindingEvent event)
-		{
-		}
-
-		public void valueUnbound(SessionBindingEvent event)
-		{
-			if (m_logger.isDebugEnabled())
-				m_logger.debug(this +".valueUnbound()");
-
-			// catch the case where an edit was made but never resolved
-			if (m_active)
-			{
-				cancelEdit(this);
-			}
-		}
 	}
 
-	/*******************************************************************************
-	 * RoleEdit implementation
-	*******************************************************************************/
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * Role implementation
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
-	/**
-	 * <p>BaseRoleEdit is an implementation of the CHEF RoleEdit object.</p>
-	 */
-	public class BaseRoleEdit implements RoleEdit
+	public class BaseRole implements Role
 	{
 		/** The role id. */
 		protected String m_id = null;
@@ -2306,9 +2105,11 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 		/**
 		 * Construct.
-		 * @param id The role id.
+		 * 
+		 * @param id
+		 *        The role id.
 		 */
-		public BaseRoleEdit(String id)
+		public BaseRole(String id)
 		{
 			m_id = id;
 			m_locks = new HashSet();
@@ -2316,22 +2117,27 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 		/**
 		 * Construct as a copy
-		 * @param id The role id.
-		 * @param other The role to copy.
+		 * 
+		 * @param id
+		 *        The role id.
+		 * @param other
+		 *        The role to copy.
 		 */
-		public BaseRoleEdit(String id, Role other)
+		public BaseRole(String id, Role other)
 		{
 			m_id = id;
-			m_description = ((BaseRoleEdit) other).m_description;
+			m_description = ((BaseRole) other).m_description;
 			m_locks = new HashSet();
-			m_locks.addAll(((BaseRoleEdit) other).m_locks);
+			m_locks.addAll(((BaseRole) other).m_locks);
 		}
 
 		/**
 		 * Construct from information in XML.
-		 * @param el The XML DOM Element definining the role.
+		 * 
+		 * @param el
+		 *        The XML DOM Element definining the role.
 		 */
-		public BaseRoleEdit(Element el, BaseRealm realm)
+		public BaseRole(Element el, BaseAuthzGroup azGroup)
 		{
 			m_locks = new HashSet();
 			m_id = StringUtil.trimToNull(el.getAttribute("id"));
@@ -2348,8 +2154,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			for (int i = 0; i < length; i++)
 			{
 				Node child = children.item(i);
-				if (child.getNodeType() != Node.ELEMENT_NODE)
-					continue;
+				if (child.getNodeType() != Node.ELEMENT_NODE) continue;
 				Element element = (Element) child;
 
 				// look for role | lock ability
@@ -2369,10 +2174,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		/**
-		 * Serialize the resource into XML, adding an element to the doc under the top of the stack element.
-		 * @param doc The DOM doc to contain the XML (or null for a string return).
-		 * @param stack The DOM elements, the top of which is the containing element of the new "resource" element.
-		 * @return The newly added element.
+		 * {@inheritDoc}
 		 */
 		public Element toXml(Document doc, Stack stack)
 		{
@@ -2392,8 +2194,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 			role.setAttribute("id", getId());
 
 			// encode the description
-			if (m_description != null)
-				Xml.encodeAttribute(role, "description-enc", m_description);
+			if (m_description != null) Xml.encodeAttribute(role, "description-enc", m_description);
 
 			// locks
 			for (Iterator a = m_locks.iterator(); a.hasNext();)
@@ -2420,8 +2221,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		} // activate
 
 		/**
-		 * Check to see if the edit is still active, or has already been closed.
-		 * @return true if the edit is active, false if it's been closed.
+		 * Check to see if the azGroup is still active, or has already been closed.
+		 * 
+		 * @return true if the azGroup is active, false if it's been closed.
 		 */
 		public boolean isActiveEdit()
 		{
@@ -2429,7 +2231,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		/**
-		 * Close the edit object - it cannot be used after this.
+		 * Close the azGroup object - it cannot be used after this.
 		 */
 		protected void closeEdit()
 		{
@@ -2455,7 +2257,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public boolean contains(String lock)
+		public boolean isAllowed(String lock)
 		{
 			return m_locks.contains(lock);
 		}
@@ -2463,7 +2265,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public Set getLocks()
+		public Set getAllowedFunctions()
 		{
 			Set rv = new HashSet();
 			rv.addAll(m_locks);
@@ -2481,7 +2283,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public void add(String lock)
+		public void allowFunction(String lock)
 		{
 			m_locks.add(lock);
 		}
@@ -2489,7 +2291,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public void add(Collection locks)
+		public void allowFunctions(Collection locks)
 		{
 			m_locks.addAll(locks);
 		}
@@ -2497,7 +2299,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public void remove(String lock)
+		public void disallowFunction(String lock)
 		{
 			m_locks.remove(lock);
 		}
@@ -2505,7 +2307,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public void remove(Collection locks)
+		public void disallowFunctions(Collection locks)
 		{
 			m_locks.removeAll(locks);
 		}
@@ -2513,7 +2315,7 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public boolean isEmpty()
+		public boolean allowsNoFunctions()
 		{
 			return m_locks.isEmpty();
 		}
@@ -2521,24 +2323,20 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		/**
 		 * {@inheritDoc}
 		 */
-		public void clear()
+		public void disallowAll()
 		{
 			m_locks.clear();
 		}
 
 		/**
-		 * Compare this object with the specified object for order.
-		 * @return A negative integer, zero, or a positive integer as this object is
-		 * less than, equal to, or greater than the specified object.
+		 * {@inheritDoc}
 		 */
 		public int compareTo(Object obj)
 		{
-			if (!(obj instanceof Role))
-				throw new ClassCastException();
+			if (!(obj instanceof Role)) throw new ClassCastException();
 
 			// if the object are the same, say so
-			if (obj == this)
-				return 0;
+			if (obj == this) return 0;
 
 			// sort based on (unique) id
 			int compare = getId().compareTo(((Role) obj).getId());
@@ -2547,21 +2345,17 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 
 		/**
-		 * Are these objects equal?  If they are both Realm objects, and they have
-		 * matching id's, they are.
-		 * @return true if they are equal, false if not.
+		 * {@inheritDoc}
 		 */
 		public boolean equals(Object obj)
 		{
-			if (!(obj instanceof Role))
-				return false;
+			if (!(obj instanceof Role)) return false;
 
 			return ((Role) obj).getId().equals(getId());
 		}
 
 		/**
-		 * Make a hash code that reflects the equals() logic as well.
-		 * We want two objects, even if different instances, if they have the same id to hash the same.
+		 * {@inheritDoc}
 		 */
 		public int hashCode()
 		{
@@ -2569,9 +2363,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		}
 	}
 
-	/*******************************************************************************
+	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Storage
-	*******************************************************************************/
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	protected interface Storage
 	{
@@ -2586,137 +2380,163 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		void close();
 
 		/**
-		 * Check if a realm by this id exists.
-		 * @param id The realm id.
-		 * @return true if a realm by this id exists, false if not.
+		 * Check if an AuthzGroup by this id exists.
+		 * 
+		 * @param id
+		 *        The AuthzGroup id.
+		 * @return true if an AuthzGroup by this id exists, false if not.
 		 */
 		boolean check(String id);
 
 		/**
-		 * Get the realm with this id, or null if not found.
-		 * @param id The realm id.
-		 * @return The realm with this id, or null if not found.
+		 * Get the AuthzGroup with this id, or null if not found.
+		 * 
+		 * @param id
+		 *        The AuthzGroup id.
+		 * @return The AuthzGroup with this id, or null if not found.
 		 */
-		Realm get(String id);
+		AuthzGroup get(String id);
 
 		/**
-		 * Add a new realm with this id.
-		 * @param id The realm id.
-		 * @return The locked Realm object with this id, or null if the id is in use.
+		 * Add a new AuthzGroup with this id.
+		 * 
+		 * @param id
+		 *        The AuthzGroup id.
+		 * @return The new AuthzGroup, or null if the id is in use.
 		 */
-		RealmEdit put(String id);
+		AuthzGroup put(String id);
 
 		/**
-		 * Get a lock on the realm with this id, or null if a lock cannot be gotten.
-		 * @param id The realm id.
-		 * @return The locked Realm with this id, or null if this records cannot be locked.
+		 * Save the changes to the AuthzGroup
+		 * 
+		 * @param azGroup
+		 *        The AuthzGroup to save.
 		 */
-		RealmEdit edit(String id);
+		void save(AuthzGroup azGroup);
 
 		/**
-		 * Commit the changes and release the lock.
-		 * @param realm The realm to commit.
+		 * Remove this AuthzGroup.
+		 * 
+		 * @param azGroup
+		 *        The azGroup to remove.
 		 */
-		void commit(RealmEdit realm);
+		void remove(AuthzGroup azGroup);
 
 		/**
-		 * Cancel the changes and release the lock.
-		 * @param realm The realm to commit.
+		 * Access a list of AuthzGroups that meet specified criteria, naturally sorted.
+		 * 
+		 * @param criteria
+		 *        Selection criteria: AuthzGroups returned will match this string somewhere in their id, or provider group id.
+		 * @param page
+		 *        The PagePosition subset of items to return.
+		 * @return The List (AuthzGroup) of AuthzGroups that meet specified criteria.
 		 */
-		void cancel(RealmEdit realm);
+		List getAuthzGroups(String criteria, PagingPosition page);
 
 		/**
-		 * Remove this realm.
-		 * @param realm The realm to remove.
+		 * Count the AuthzGroup objets that meet specified criteria.
+		 * 
+		 * @param criteria
+		 *        Selection criteria: realms returned will match this string somewhere in their id, or provider group id.
+		 * @return The count of AuthzGroups that meet specified criteria.
 		 */
-		void remove(RealmEdit realm);
+		int countAuthzGroups(String criteria);
 
 		/**
-		 * Access a list of Realm objets that meet specified criteria, naturally sorted.
-		 * @param criteria Selection criteria: realms returned will match this string somewhere in their
-		 * 			id, or provider realm id.
-		 * @param page The PagePosition subset of items to return.
-		 * @return The List (Realm) of Rrealm objets that meet specified criteria.
+		 * Complete the read process once the basic AuthzGroup info has been read.
+		 * 
+		 * @param azGroup
+		 *        The AuthzGroup to complete.
 		 */
-		List getRealms(String criteria, PagingPosition page);
+		void completeGet(BaseAuthzGroup azGroup);
 
 		/**
-		 * Count the Realm objets that meet specified criteria.
-		 * @param criteria Selection criteria: realms returned will match this string somewhere in their
-		 * 			id, or provider realm id.
-		 * @return The count of Realm objets that meet specified criteria.
+		 * Test if this user is allowed to perform the function in the named AuthzGroup.
+		 * 
+		 * @param userId
+		 *        The user id.
+		 * @param function
+		 *        The function to open.
+		 * @param azGroupId
+		 *        The AuthzGroup id to consult, if it exists.
+		 * @return true if this user is allowed to perform the function in the named AuthzGroup, false if not.
 		 */
-		int countRealms(String criteria);
+		boolean isAllowed(String userId, String function, String azGroupId);
 
 		/**
-		 * Complete the read process once the basic realm info has been read
-		 * @param realm The real to complete
+		 * Test if this user is allowed to perform the function in the named AuthzGroups.
+		 * 
+		 * @param userId
+		 *        The user id.
+		 * @param function
+		 *        The function to open.
+		 * @param azGroups
+		 *        A collection of AuthzGroup ids to consult.
+		 * @return true if this user is allowed to perform the function in the named AuthzGroups, false if not.
 		 */
-		void completeGet(BaseRealm realm);
+		boolean isAllowed(String userId, String function, Collection realms);
 
 		/**
-		 * Test if this user can unlock the lock in the named realm.
-		 * @param userId The user id.
-		 * @param lock The lock to open.
-		 * @param realmId The realm id to consult, if it exists.
-		 * @return true if this user can unlock the lock in this realm, false if not.
+		 * Get the set of user ids of users who are allowed to perform the function in the named AuthzGroups.
+		 * 
+		 * @param function
+		 *        The function to check.
+		 * @param azGroups
+		 *        A collection of the ids of AuthzGroups to consult.
+		 * @return the Set (String) of user ids of users who are allowed to perform the function in the named AuthzGroups.
 		 */
-		boolean unlock(String userId, String lock, String realmId);
+		Set getUsersIsAllowed(String function, Collection azGroups);
 
 		/**
-		 * Test if this user can unlock the lock in the named realms.
-		 * @param userId The user id.
-		 * @param lock The lock to open.
-		 * @param roleRealms A collection of realm ids to consult.
-		 * @return true if this user can unlock the lock in these realms, false if not.
+		 * Get the set of functions that users with this role in these AuthzGroups are allowed to perform.
+		 * 
+		 * @param role
+		 *        The role name.
+		 * @param azGroups
+		 *        A collection of AuthzGroup ids to consult.
+		 * @return the Set (String) of functions that users with this role in these AuthzGroups are allowed to perform
 		 */
-		boolean unlock(String userId, String lock, Collection realms);
+		Set getAllowedFunctions(String role, Collection azGroups);
 
 		/**
-		 * Get the set of user ids which are granted roles which can unlock this lock in this realm.
-		 * @param lock The lock.
-		 * @param roleRealms A collection of realm ids to consult.
-		 * @return the Set (String) of user ids which are granted roles which can unlock this lock in this realm.
+		 * Get the set of AuthzGroup ids in which this user is allowed to perform this function.
+		 * 
+		 * @param userId
+		 *        The user id.
+		 * @param function
+		 *        The function to check.
+		 * @return the Set (String) of AuthzGroup ids in which this user is allowed to perform this function.
 		 */
-		Set getUsers(String lock, Collection realms);
+		Set getAuthzGroupsIsAllowed(String userId, String function);
 
 		/**
-		 * Get the set of locks that this role contains in these realms.
-		 * @param role The role.
-		 * @param realms A collection of realm ids to consult.
-		 * @return the Set (String) of locks that this role contains in these realms.
+		 * Refresh this user's roles in any AuthzGroup that has an entry in the map; the user's new role is in the map.
+		 * 
+		 * @param userId
+		 *        The user id
+		 * @param providerMembership
+		 *        The Map of external group id -> role id.
 		 */
-		Set getLocks(String role, Collection realms);
+		void refreshUser(String userId, Map providerMembership);
 
 		/**
-		 * Get the set of realm ids in which this user is granted roles which can unlock this lock.
-		 * @param userId  The user id.
-		 * @param lock The lock.
-		 * @return the Set (String) of realm ids in which this user is granted roles which can unlock this lock.
+		 * Refresh the external user - role membership for this AuthzGroup
+		 * 
+		 * @param azGroup
+		 *        The azGroup to refresh.
 		 */
-		Set unlockRealms(String userId, String lock);
-
-		/**
-		 * Refresh this user's roles in any realm with an external provider in the map to the role in the map.
-		 * @param userId The user id
-		 * @param providerGrants The Map of external realm id -> role id.
-		 */
-		void refreshUser(String userId, Map providerGrants);
-
-		/**
-		 * Refresh the external user - role grants for this realm
-		 * @param realm The realm to refresh.
-		 */		
-		void refreshRealm(BaseRealm realm);
+		void refreshAuthzGroup(BaseAuthzGroup azGroup);
 	}
 
-	/*******************************************************************************
+	/**********************************************************************************************************************************************************************************************************************************************************
 	 * StorageUser implementation (no container)
-	*******************************************************************************/
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
 	 * Construct a new continer given just an id.
-	 * @param id The id for the new object.
+	 * 
+	 * @param id
+	 *        The id for the new object.
 	 * @return The new containe Resource.
 	 */
 	public Entity newContainer(String ref)
@@ -2726,7 +2546,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 	/**
 	 * Construct a new container resource, from an XML element.
-	 * @param element The XML.
+	 * 
+	 * @param element
+	 *        The XML.
 	 * @return The new container resource.
 	 */
 	public Entity newContainer(Element element)
@@ -2736,7 +2558,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 	/**
 	 * Construct a new container resource, as a copy of another
-	 * @param other The other contianer to copy.
+	 * 
+	 * @param other
+	 *        The other contianer to copy.
 	 * @return The new container resource.
 	 */
 	public Entity newContainer(Entity other)
@@ -2746,41 +2570,53 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 	/**
 	 * Construct a new rsource given just an id.
-	 * @param container The Resource that is the container for the new resource (may be null).
-	 * @param id The id for the new object.
-	 * @param others (options) array of objects to load into the Resource's fields.
+	 * 
+	 * @param container
+	 *        The Resource that is the container for the new resource (may be null).
+	 * @param id
+	 *        The id for the new object.
+	 * @param others
+	 *        (options) array of objects to load into the Resource's fields.
 	 * @return The new resource.
 	 */
 	public Entity newResource(Entity container, String id, Object[] others)
 	{
-		return new BaseRealm(id);
+		return new BaseAuthzGroup(id);
 	}
 
 	/**
 	 * Construct a new resource, from an XML element.
-	 * @param container The Resource that is the container for the new resource (may be null).
-	 * @param element The XML.
+	 * 
+	 * @param container
+	 *        The Resource that is the container for the new resource (may be null).
+	 * @param element
+	 *        The XML.
 	 * @return The new resource from the XML.
 	 */
 	public Entity newResource(Entity container, Element element)
 	{
-		return new BaseRealm(element);
+		return new BaseAuthzGroup(element);
 	}
 
 	/**
 	 * Construct a new resource from another resource of the same type.
-	 * @param container The Resource that is the container for the new resource (may be null).
-	 * @param other The other resource.
+	 * 
+	 * @param container
+	 *        The Resource that is the container for the new resource (may be null).
+	 * @param other
+	 *        The other resource.
 	 * @return The new resource as a copy of the other.
 	 */
 	public Entity newResource(Entity container, Entity other)
 	{
-		return new BaseRealm((Realm) other);
+		return new BaseAuthzGroup((AuthzGroup) other);
 	}
 
 	/**
 	 * Construct a new continer given just an id.
-	 * @param id The id for the new object.
+	 * 
+	 * @param id
+	 *        The id for the new object.
 	 * @return The new containe Resource.
 	 */
 	public Edit newContainerEdit(String ref)
@@ -2790,7 +2626,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 	/**
 	 * Construct a new container resource, from an XML element.
-	 * @param element The XML.
+	 * 
+	 * @param element
+	 *        The XML.
 	 * @return The new container resource.
 	 */
 	public Edit newContainerEdit(Element element)
@@ -2800,7 +2638,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 	/**
 	 * Construct a new container resource, as a copy of another
-	 * @param other The other contianer to copy.
+	 * 
+	 * @param other
+	 *        The other contianer to copy.
 	 * @return The new container resource.
 	 */
 	public Edit newContainerEdit(Entity other)
@@ -2810,46 +2650,57 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 	/**
 	 * Construct a new rsource given just an id.
-	 * @param container The Resource that is the container for the new resource (may be null).
-	 * @param id The id for the new object.
-	 * @param others (options) array of objects to load into the Resource's fields.
+	 * 
+	 * @param container
+	 *        The Resource that is the container for the new resource (may be null).
+	 * @param id
+	 *        The id for the new object.
+	 * @param others
+	 *        (options) array of objects to load into the Resource's fields.
 	 * @return The new resource.
 	 */
 	public Edit newResourceEdit(Entity container, String id, Object[] others)
 	{
-		BaseRealmEdit e = new BaseRealmEdit(id);
+		BaseAuthzGroup e = new BaseAuthzGroup(id);
 		e.activate();
 		return e;
 	}
 
 	/**
 	 * Construct a new resource, from an XML element.
-	 * @param container The Resource that is the container for the new resource (may be null).
-	 * @param element The XML.
+	 * 
+	 * @param container
+	 *        The Resource that is the container for the new resource (may be null).
+	 * @param element
+	 *        The XML.
 	 * @return The new resource from the XML.
 	 */
 	public Edit newResourceEdit(Entity container, Element element)
 	{
-		BaseRealmEdit e = new BaseRealmEdit(element);
+		BaseAuthzGroup e = new BaseAuthzGroup(element);
 		e.activate();
 		return e;
 	}
 
 	/**
 	 * Construct a new resource from another resource of the same type.
-	 * @param container The Resource that is the container for the new resource (may be null).
-	 * @param other The other resource.
+	 * 
+	 * @param container
+	 *        The Resource that is the container for the new resource (may be null).
+	 * @param other
+	 *        The other resource.
 	 * @return The new resource as a copy of the other.
 	 */
 	public Edit newResourceEdit(Entity container, Entity other)
 	{
-		BaseRealmEdit e = new BaseRealmEdit((Realm) other);
+		BaseAuthzGroup e = new BaseAuthzGroup((AuthzGroup) other);
 		e.activate();
 		return e;
 	}
 
 	/**
 	 * Collect the fields that need to be stored outside the XML (for the resource).
+	 * 
 	 * @return An array of field values to store in the record outside the XML (for the resource).
 	 */
 	public Object[] storageFields(Entity r)
@@ -2859,7 +2710,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 	/**
 	 * Check if this resource is in draft mode.
-	 * @param r The resource.
+	 * 
+	 * @param r
+	 *        The resource.
 	 * @return true if the resource is in draft mode, false if not.
 	 */
 	public boolean isDraft(Entity r)
@@ -2869,7 +2722,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 	/**
 	 * Access the resource owner user id.
-	 * @param r The resource.
+	 * 
+	 * @param r
+	 *        The resource.
 	 * @return The resource owner user id.
 	 */
 	public String getOwnerId(Entity r)
@@ -2879,7 +2734,9 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 
 	/**
 	 * Access the resource date.
-	 * @param r The resource.
+	 * 
+	 * @param r
+	 *        The resource.
 	 * @return The resource date.
 	 */
 	public Time getDate(Entity r)
@@ -2887,21 +2744,21 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		return null;
 	}
 
-	/*******************************************************************************
-	 * Grant - modeling a role grant to a user in a realm
-	*******************************************************************************/
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * Member Implementation
+	 *********************************************************************************************************************************************************************************************************************************************************/
 
-	/**
-	 * <p>Grant models a role grant to a user in a realm, with the role, and flags for active and provided.</p>
-	 */
-	public class MyGrant implements Grant
+	public class BaseMember implements Member
 	{
 		public Role role = null;
+
 		public boolean provided = false;
+
 		public boolean active = true;
+
 		public String userId = null;
-		
-		public MyGrant(Role role, boolean active, boolean provided, String userId)
+
+		public BaseMember(Role role, boolean active, boolean provided, String userId)
 		{
 			this.role = role;
 			this.active = active;
@@ -2946,20 +2803,15 @@ public abstract class BaseRealmService implements RealmService, StorageUser
 		 */
 		public int compareTo(Object obj)
 		{
-			if (!(obj instanceof Grant))
-				throw new ClassCastException();
+			if (!(obj instanceof Member)) throw new ClassCastException();
 
 			// if the object are the same, say so
-			if (obj == this)
-				return 0;
+			if (obj == this) return 0;
 
 			// compare by comparing the user id
-			int compare = getUserId().compareTo(((Grant) obj).getUserId());
+			int compare = getUserId().compareTo(((Member) obj).getUserId());
 
 			return compare;
 		}
 	}
 }
-
-
-

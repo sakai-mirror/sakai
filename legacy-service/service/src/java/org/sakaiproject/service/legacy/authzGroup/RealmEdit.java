@@ -22,44 +22,19 @@
 **********************************************************************************/
 
 // package
-package org.sakaiproject.service.legacy.realm;
+package org.sakaiproject.service.legacy.authzGroup;
 
 // imports
-import java.util.Set;
 
 /**
-* <p>Role is a collection set of security locks (Strings).</p>
+* <p>RealmEdit is an editable Reaml.</p>
 * 
 * @author University of Michigan, Sakai Software Development Team
 * @version $Revision$
 */
-public interface Role
-	extends Comparable
+public interface RealmEdit
+	extends AuthzGroup
 {
-	/**
-	 * Access the Role id.
-	 * @return The role id.
-	 */
-	String getId();
-
-	/**
-	 * Access the Role description.
-	 * @return The role description.
-	 */
-	String getDescription();
-
-	/**
-	 * Test if the role contains this lock.
-	 * @param lock The lock.
-	 * @return true if the role contains the lock, false if not.
-	 */
-	boolean contains(String lock);
-
-	/**
-	 * Access the set of locks that are defined in the Role.
-	 * @return The Set of locks (String) which defined in the Role.
-	 */
-	Set getLocks();
 }
 
 

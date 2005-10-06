@@ -95,7 +95,7 @@
 						#if ($allowUpdate)
 							#if ($!activeInactiveUser)
 								<td>
-									#set($grant = $realm.getUserGrant($uniqname))
+									#set($grant = $realm.getMember($uniqname))
 									#set($grantActive = $!grant.isActive())
 									<select name="activeGrant$uniqname">
 										#if ($!grant.isActive())

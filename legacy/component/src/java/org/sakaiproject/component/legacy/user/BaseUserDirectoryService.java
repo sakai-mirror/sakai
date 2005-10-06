@@ -46,8 +46,8 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Edit;
 import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.EntityManager;
@@ -941,11 +941,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		// remove any realm defined for this resource
 		try
 		{
-			RealmService.removeRealm(RealmService.editRealm(user.getReference()));
-		}
-		catch (InUseException e)
-		{
-			m_logger.warn(this +".removeUser: removing realm for : " + user.getReference() + " : " + e);
+			RealmService.removeAuthzGroup(RealmService.getAuthzGroup(user.getReference()));
 		}
 		catch (PermissionException e)
 		{

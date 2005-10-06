@@ -43,16 +43,13 @@ import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.RealmEdit;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.RoleEdit;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 
@@ -118,50 +115,49 @@ public class PermissionsAction
 		String realmRolesId = (String) state.getAttribute(STATE_REALM_ROLES_ID);
 
 		// get the realm locked for editing
-		RealmEdit edit = (RealmEdit) state.getAttribute(STATE_REALM_EDIT);
+		AuthzGroup edit = (AuthzGroup) state.getAttribute(STATE_REALM_EDIT);
 		if (edit == null)
 		{
-			try
-			{
-				edit = RealmService.editRealm(realmId);
-				state.setAttribute(STATE_REALM_EDIT, edit);
-			}
-			catch (IdUnusedException e)
+			if (RealmService.allowUpdate(realmId))
 			{
 				try
 				{
-					// we can create the realm
-					edit = RealmService.addRealm(realmId);
+					edit = RealmService.getAuthzGroup(realmId);
 					state.setAttribute(STATE_REALM_EDIT, edit);
 				}
-				catch (IdInvalidException ee)
+				catch (IdUnusedException e)
 				{
-					Log.warn("chef", "PermissionsAction.buildHelperContext: addRealm: " + ee);
-					cleanupState(state);
-					return null;
-				}
-				catch (IdUsedException ee)
-				{
-					Log.warn("chef", "PermissionsAction.buildHelperContext: addRealm: " + ee);
-					cleanupState(state);
-					return null;
-				}
-				catch (PermissionException ee)
-				{
-					Log.warn("chef", "PermissionsAction.buildHelperContext: addRealm: " + ee);
-					cleanupState(state);
-					return null;
+					try
+					{
+						// we can create the realm
+						edit = RealmService.addAuthzGroup(realmId);
+						state.setAttribute(STATE_REALM_EDIT, edit);
+					}
+					catch (IdInvalidException ee)
+					{
+						Log.warn("chef", "PermissionsAction.buildHelperContext: addRealm: " + ee);
+						cleanupState(state);
+						return null;
+					}
+					catch (IdUsedException ee)
+					{
+						Log.warn("chef", "PermissionsAction.buildHelperContext: addRealm: " + ee);
+						cleanupState(state);
+						return null;
+					}
+					catch (PermissionException ee)
+					{
+						Log.warn("chef", "PermissionsAction.buildHelperContext: addRealm: " + ee);
+						cleanupState(state);
+						return null;
+					}
 				}
 			}
-			catch (PermissionException e)
+			
+			// no permission
+			else
 			{
-				Log.warn("chef", "PermissionsAction.buildHelperContext: editRealm: " + e);
-				cleanupState(state);
-				return null;
-			}
-			catch (InUseException e)
-			{
-				// Log.warn("chef", "PermissionsAction.buildHelperContext: editRealm: " + e);
+				Log.warn("chef", "PermissionsAction.buildHelperContext: no permission: " + realmId);
 				cleanupState(state);
 				return null;
 			}
@@ -199,12 +195,12 @@ public class PermissionsAction
 		if (roles == null)
 		{
 			// get the roles from the edit, unless another is specified
-			Realm roleRealm = edit;
+			AuthzGroup roleRealm = edit;
 			if (realmRolesId != null)
 			{
 				try
 				{
-					roleRealm = RealmService.getRealm(realmRolesId);
+					roleRealm = RealmService.getAuthzGroup(realmRolesId);
 				}
 				catch (Exception e)
 				{
@@ -232,7 +228,7 @@ public class PermissionsAction
 			for (Iterator iRoles = roles.iterator(); iRoles.hasNext(); )
 			{
 				Role role = (Role) iRoles.next();
-				Set locks = RealmService.getLocks(role.getId(), realms);
+				Set locks = RealmService.getAllowedFunctions(role.getId(), realms);
 				rolesAbilities.put(role.getId(), locks);
 			}
 		}
@@ -284,13 +280,24 @@ public class PermissionsAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
-		RealmEdit edit = (RealmEdit) state.getAttribute(STATE_REALM_EDIT);
+		AuthzGroup edit = (AuthzGroup) state.getAttribute(STATE_REALM_EDIT);
 
 		// read the form, updating the edit
 		readForm(data, edit, state);
 
 		// commit the change
-		RealmService.commitEdit(edit);
+		try
+		{
+			RealmService.save(edit);
+		}
+		catch (IdUnusedException e)
+		{
+			// TODO: IdUnusedException
+		}
+		catch (PermissionException e)
+		{
+			// TODO: PermissionException
+		}
 
 		// clean up state
 		cleanupState(state);
@@ -304,13 +311,6 @@ public class PermissionsAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
-		// cancel the edit
-		RealmEdit edit = (RealmEdit) state.getAttribute(STATE_REALM_EDIT);
-		if (edit != null)
-		{
-			RealmService.cancelEdit(edit);
-		}
-
 		// clean up state
 		cleanupState(state);
 
@@ -319,7 +319,7 @@ public class PermissionsAction
 	/**
 	* Read the permissions form.
 	*/
-	static private void readForm(RunData data, RealmEdit edit, SessionState state)
+	static private void readForm(RunData data, AuthzGroup edit, SessionState state)
 	{
 		List abilities = (List) state.getAttribute(STATE_ABILITIES);
 		List roles = (List) state.getAttribute(STATE_ROLES);
@@ -337,7 +337,7 @@ public class PermissionsAction
 				if (checked != null)
 				{
 					// we have an ability!  Make sure there's a role
-					RoleEdit myRole = edit.getRoleEdit(role.getId());
+					Role myRole = edit.getRole(role.getId());
 					if (myRole == null)
 					{
 						try
@@ -346,18 +346,18 @@ public class PermissionsAction
 						}
 						catch (IdUsedException e)
 						{
-							Log.warn("chef", "PermissionsAction.readForm: addRole after getRoleEdit null: " + role.getId() + " : " + e);
+							Log.warn("chef", "PermissionsAction.readForm: addRole after getRole null: " + role.getId() + " : " + e);
 						}
 					}
-					myRole.add(lock);
+					myRole.allowFunction(lock);
 				}
 				else
 				{
 					// if we do have this role, make sure there's not this lock
-					RoleEdit myRole = edit.getRoleEdit(role.getId());
+					Role myRole = edit.getRole(role.getId());
 					if (myRole != null)
 					{
-						myRole.remove(lock);
+						myRole.disallowFunction(lock);
 					}
 				}
 			}

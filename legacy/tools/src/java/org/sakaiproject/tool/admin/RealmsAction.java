@@ -41,16 +41,14 @@ import org.sakaiproject.cheftool.menu.MenuItem;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.legacy.realm.Grant;
-import org.sakaiproject.service.legacy.realm.RealmEdit;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.RoleEdit;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Member;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.util.courier.EventObservingCourier;
@@ -79,7 +77,7 @@ public class RealmsAction
 		// search?
 		String search = StringUtil.trimToNull((String) state.getAttribute(STATE_SEARCH));
 		
-		return RealmService.getRealms(search, new PagingPosition(first, last));
+		return RealmService.getAuthzGroups(search, new PagingPosition(first, last));
 	}
 
 	/**
@@ -90,7 +88,7 @@ public class RealmsAction
 		// search?
 		String search = StringUtil.trimToNull((String) state.getAttribute(STATE_SEARCH));
 		
-		return RealmService.countRealms(search);
+		return RealmService.countAuthzGroups(search);
 	}
 
 	/**
@@ -110,7 +108,7 @@ public class RealmsAction
 //			String elementId = mainPanelUpdateId(portlet.getID());
 //
 //			// the event resource reference pattern to watch for
-//			String pattern = RealmService.realmReference("");
+//			String pattern = AuthzGroupService.realmReference("");
 //
 //			state.setAttribute(STATE_OBSERVER, new EventObservingCourier(deliveryId, elementId, pattern));
 //		}
@@ -200,7 +198,7 @@ public class RealmsAction
 
 		// build the menu
 		Menu bar = new Menu();
-		if (RealmService.allowAddRealm(""))
+		if (RealmService.allowAdd(""))
 		{
 			bar.add( new MenuEntry(rb.getString("realm.new"), "doNew") );
 		}
@@ -245,7 +243,7 @@ public class RealmsAction
 	private String buildEditContext(SessionState state, Context context)
 	{
 		// get the realm to edit
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		context.put("realm", realm);
 
 		// get the roles defined in the realm
@@ -256,7 +254,7 @@ public class RealmsAction
 
 		// get a list of the users who have individual grants in the realm
 		List grants = new Vector();
-		grants.addAll(realm.getGrants());
+		grants.addAll(realm.getMembers());
 		Collections.sort(grants);
 		context.put("grants", grants);
 
@@ -266,7 +264,7 @@ public class RealmsAction
 		// build the menu
 		// we need the form fields for the remove...
 		Menu bar = new Menu();
-		if (RealmService.allowRemoveRealm(realm.getId()))
+		if (RealmService.allowRemove(realm.getId()))
 		{
 			bar.add( new MenuEntry(rb.getString("realm.remove"), null, true, MenuItem.CHECKED_NA, "doRemove", "realm-form") );
 		}
@@ -288,7 +286,7 @@ public class RealmsAction
 	private String buildConfirmRemoveContext(SessionState state, Context context)
 	{
 		// get the realm to edit
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		context.put("realm", realm);
 
 		return "_confirm_remove";
@@ -301,11 +299,11 @@ public class RealmsAction
 	private String buildSaveasRoleContext(SessionState state, Context context)
 	{
 		// get the realm to edit
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		context.put("realm", realm);
 
 		// get the role
-		RoleEdit role = (RoleEdit) state.getAttribute("role");
+		Role role = (Role) state.getAttribute("role");
 		context.put("role", role);
 
 		return "_saveas_role";
@@ -320,7 +318,7 @@ public class RealmsAction
 		// name the html form for user edit fields
 		context.put("form-name", "role-form");
 
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		context.put("realm", realm);
 
 		// get all abilities
@@ -347,11 +345,11 @@ public class RealmsAction
 		context.put("form-name", "role-form");
 
 		// get the realm
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		context.put("realm", realm);
 
 		// get the role
-		RoleEdit role = (RoleEdit) state.getAttribute("role");
+		Role role = (Role) state.getAttribute("role");
 		context.put("role", role);
 
 		// get all abilities
@@ -383,7 +381,7 @@ public class RealmsAction
 		// name the html form for user edit fields
 		context.put("form-name", "user-form");
 
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 
 		context.put("realm", realm);
 
@@ -405,14 +403,14 @@ public class RealmsAction
 		// name the html form for user edit fields
 		context.put("form-name", "user-form");
 
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		User user = (User) state.getAttribute("user");
 
 		context.put("realm", realm);
 		context.put("user", user);
 
 		// get this user's role - only if not provided
-		Grant grant = realm.getUserGrant(user.getId());
+		Member grant = realm.getMember(user.getId());
 		if ((grant != null) && (!grant.isProvided()) && (grant.getRole() != null))
 		{
 			context.put("roles", grant.getRole());
@@ -439,7 +437,7 @@ public class RealmsAction
 	private String buildSaveasContext(SessionState state, Context context)
 	{
 		// get the realm being edited
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		context.put("realm", realm);
 
 		return "_saveas";
@@ -457,15 +455,12 @@ public class RealmsAction
 		String id = data.getParameters().getString("id");
 
 		// get the realm to copy from
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 
 		try
 		{
 			// make a new site with this id and as a structural copy of site
-			RealmEdit newRealm = RealmService.addRealm(id, realm);
-
-			// commit
-			RealmService.commitEdit(newRealm);
+			AuthzGroup newRealm = RealmService.addAuthzGroup(id, realm, UserDirectoryService.getCurrentUser().getId());
 		}
 		catch (IdUsedException e)
 		{
@@ -544,7 +539,7 @@ public class RealmsAction
 		// get the realm
 		try
 		{
-			RealmEdit realm = RealmService.editRealm(id);
+			AuthzGroup realm = RealmService.getAuthzGroup(id);
 			state.setAttribute("realm", realm);
 
 			state.setAttribute("mode", "edit");
@@ -562,22 +557,14 @@ public class RealmsAction
 			// make sure auto-updates are enabled
 			enableObserver(state);
 		}
-		catch (PermissionException e)
-		{
-			addAlert(state, rb.getString("realm.notpermis1") + " " + id);
-			state.removeAttribute("mode");
-
-			// make sure auto-updates are enabled
-			enableObserver(state);
-		}
-		catch (InUseException e)
-		{
-			addAlert(state, rb.getString("realm.someone") + " " + id);
-			state.removeAttribute("mode");
-
-			// make sure auto-updates are enabled
-			enableObserver(state);
-		}
+//		catch (PermissionException e)
+//		{
+//			addAlert(state, rb.getString("realm.notpermis1") + " " + id);
+//			state.removeAttribute("mode");
+//
+//			// make sure auto-updates are enabled
+//			enableObserver(state);
+//		}
 
 	}	// doEdit
 
@@ -603,10 +590,21 @@ public class RealmsAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		// commit the change
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		if (realm != null)
 		{
-			RealmService.commitEdit(realm);
+			try
+			{
+				RealmService.save(realm);
+			}
+			catch (IdUnusedException e)
+			{
+				// TODO: IdUnusedException
+			}
+			catch (PermissionException e)
+			{
+				// TODO: PermissionException
+			}
 		}
 
 		// cleanup
@@ -631,7 +629,7 @@ public class RealmsAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		// get the realm
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		if (realm != null)
 		{
 			// if this was a new, delete the realm
@@ -640,17 +638,12 @@ public class RealmsAction
 				// remove the realm
 				try
 				{
-					RealmService.removeRealm(realm);
+					RealmService.removeAuthzGroup(realm);
 				}
 				catch (PermissionException e)
 				{
 					addAlert(state, rb.getString("realm.notpermis2") + " " + realm.getId());
 				}
-			}
-			// otherwise, just cancel the edits
-			else
-			{
-				RealmService.cancelEdit(realm);
 			}
 		}
 
@@ -691,12 +684,12 @@ public class RealmsAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		// get the realm
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		
 		// remove the realm
 		try
 		{
-			RealmService.removeRealm(realm);
+			RealmService.removeAuthzGroup(realm);
 		}
 		catch (PermissionException e)
 		{
@@ -738,14 +731,14 @@ public class RealmsAction
 		String maintain = data.getParameters().getString("maintain");
 
 		// get the realm
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 
 		// add if needed
 		if (realm == null)
 		{
 			try
 			{
-				realm = RealmService.addRealm(id);
+				realm = RealmService.addAuthzGroup(id);
 				
 				// put the realm in the state
 				state.setAttribute("realm", realm);
@@ -770,7 +763,7 @@ public class RealmsAction
 		// update
 		if (realm != null)
 		{
-			realm.setProviderRealmId(provider);
+			realm.setProviderGroupId(provider);
 			realm.setMaintainRole(maintain);
 		}
 
@@ -809,8 +802,8 @@ public class RealmsAction
 		String id = data.getParameters().getString("target");
 
 		// get the role
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
-		RoleEdit role = realm.getRoleEdit(id);
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
+		Role role = realm.getRole(id);
 		state.setAttribute("role", role);
 
 	}	// doEdit_role
@@ -822,8 +815,8 @@ public class RealmsAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
-		RoleEdit role = (RoleEdit) state.getAttribute("role");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
+		Role role = (Role) state.getAttribute("role");
 
 		// remove the role (no confirm)
 		realm.removeRole(role.getId());
@@ -923,13 +916,13 @@ public class RealmsAction
 	private boolean readRoleForm(RunData data, SessionState state)
 	{
 		// get the realm
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 
 		// get the locks
 		String[] locks = data.getParameters().getStrings("locks");
 
 		// we are setting for either a new role or this role
-		RoleEdit role = (RoleEdit) state.getAttribute("role");
+		Role role = (Role) state.getAttribute("role");
 		if (role == null)
 		{
 			// read the form
@@ -959,7 +952,7 @@ public class RealmsAction
 		}
 
 		// clear out the role
-		role.clear();
+		role.disallowAll();
 
 		// description
 		role.setDescription(StringUtil.trimToNull(data.getParameters().getString("description")));
@@ -969,7 +962,7 @@ public class RealmsAction
 		{
 			for (int i = 0; i < locks.length; i++)
 			{
-				role.add(locks[i]);
+				role.allowFunction(locks[i]);
 			}
 		}
 
@@ -984,10 +977,10 @@ public class RealmsAction
 	private boolean readRoleSaveAsForm(RunData data, SessionState state)
 	{
 		// get the realm
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 
 		// we will copy this role
-		RoleEdit role = (RoleEdit) state.getAttribute("role");
+		Role role = (Role) state.getAttribute("role");
 
 		// read the form
 		String id = StringUtil.trimToNull(data.getParameters().getString("id"));
@@ -1066,10 +1059,10 @@ public class RealmsAction
 		User user = (User) state.getAttribute("user");
 
 		// get the realm
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 
 		// clear out this user's settings
-		realm.removeUser(user.getId());
+		realm.removeMember(user.getId());
 
 		// done with the user
 		state.removeAttribute("user");
@@ -1143,23 +1136,23 @@ public class RealmsAction
 		}
 
 		// get the realm
-		RealmEdit realm = (RealmEdit) state.getAttribute("realm");
+		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 
 		// if the user is set to have the same role the user already has, do nothing
-		Grant grant = realm.getUserGrant(user.getId());
+		Member grant = realm.getMember(user.getId());
 
 		// if no change, change nothing
 		if ((roles == null) && ((grant == null) || (grant.isProvided()))) return true;
 		if ((roles != null) && (grant != null) && (grant.getRole().getId().equals(roles)) && !grant.isProvided()) return true;
 
 		// clear out this user's settings
-		realm.removeUser(user.getId());
+		realm.removeMember(user.getId());
 
 		// if there's a role, give it
 		if (roles != null)
 		{
 			// TODO: active, provided
-			realm.addUserRole(user.getId(), roles, true, false);
+			realm.addMember(user.getId(), roles, true, false);
 		}
 
 		return true;

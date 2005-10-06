@@ -27,8 +27,8 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.OspRole;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.Realm;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -38,9 +38,9 @@ public class RoleWrapper implements OspRole {
 
    private Id id = null;
    private Role sakaiRole = null;
-   private Realm sakaiRealm = null;
+   private AuthzGroup sakaiRealm = null;
 
-   public RoleWrapper(Id id, Role sakaiRole, Realm sakaiRealm) {
+   public RoleWrapper(Id id, Role sakaiRole, AuthzGroup sakaiRealm) {
       this.id = id;
       this.sakaiRealm = sakaiRealm;
       this.sakaiRole = sakaiRole;
@@ -86,7 +86,7 @@ public class RoleWrapper implements OspRole {
       return new ArrayList();      
    }
 
-   public Realm getSakaiRealm() {
+   public AuthzGroup getSakaiRealm() {
       return sakaiRealm;
    }
 

@@ -23,7 +23,7 @@
 		#set ($realmCount=$realmCount + 1)
 			<tr>
 				<td headers="Id" #if ($realmCount > 1) class="chefTopline" #end>
-					#if ($service.allowUpdateRealm($realm.Id))
+					#if ($service.allowUpdate($realm.Id))
 						<a href="#toolLinkParam("$action" "doEdit" "id=$validator.escapeUrl($realm.Id)")">
 							$validator.escapeHtml($realm.Id)
 						</a>
@@ -32,7 +32,7 @@
 					#end
 				</td>
 ##				<td headers="Description" #if ($realmCount > 1) class="chefTopline" #end>$!validator.escapeHtml($!realm.Description)</td>
-				<td headers="Provider" #if ($realmCount > 1) class="chefTopline" #end>$!validator.escapeHtml($!realm.ProviderRealmId)</td>
+				<td headers="Provider" #if ($realmCount > 1) class="chefTopline" #end>$!validator.escapeHtml($!realm.ProviderGroupId)</td>
 				<td headers="Maintain" #if ($realmCount > 1) class="chefTopline" #end>$!validator.escapeHtml($!realm.MaintainRole)</td>
 			</tr>
 	#end

@@ -35,9 +35,9 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspRole;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.exception.IdUnusedException;
 
@@ -53,7 +53,7 @@ public class PermissionManagerImpl implements PermissionManager {
 
    public List getWorksiteRoles(PermissionsEdit edit) {
       try {
-         Realm siteRealm = RealmService.getRealm("/site/" +
+         AuthzGroup siteRealm = RealmService.getAuthzGroup("/site/" +
             edit.getSiteId());
 
          Set roles = siteRealm.getRoles();
@@ -86,7 +86,7 @@ public class PermissionManagerImpl implements PermissionManager {
       PermissionsEdit edit, Id qualifier, boolean readOnly) {
 
       try {
-         Realm siteRealm = RealmService.getRealm("/site/" +
+         AuthzGroup siteRealm = RealmService.getAuthzGroup("/site/" +
             edit.getSiteId());
 
          Set roles = siteRealm.getRoles();

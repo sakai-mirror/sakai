@@ -30,8 +30,8 @@ import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.framework.session.UsageSession;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 
 /**

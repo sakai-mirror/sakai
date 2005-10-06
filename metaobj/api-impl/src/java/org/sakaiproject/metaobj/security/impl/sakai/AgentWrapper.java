@@ -25,9 +25,9 @@ package org.sakaiproject.metaobj.security.impl.sakai;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.realm.Role;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -93,7 +93,7 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
       List returned = new ArrayList();
 
       try {
-         Realm siteRealm = RealmService.getRealm("/site/" +
+         AuthzGroup siteRealm = RealmService.getAuthzGroup("/site/" +
             worksiteId);
 
          Role role = siteRealm.getUserRole(getSakaiUser().getId());

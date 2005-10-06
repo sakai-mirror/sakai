@@ -267,9 +267,9 @@ public class ReferenceComponent
 	} // getDescription
 
 	/**
-	 * Compute the set of Realm ids associated with this referenced resource.
+	 * Compute the set of AuthzGroup ids associated with this referenced resource.
 	 * 
-	 * @return List of Realm ids (String) associated with this referenced resource.
+	 * @return List of AuthzGroup ids (String) associated with this referenced resource.
 	 */
 	public Collection getRealms()
 	{
@@ -321,7 +321,7 @@ public class ReferenceComponent
 	} // getRealms
 
 	/**
-	 * Add the Realm(s) for context as a site.
+	 * Add the AuthzGroup(s) for context as a site.
 	 * 
 	 * @param rv
 	 *        The list.
@@ -336,7 +336,7 @@ public class ReferenceComponent
 	}
 
 	/**
-	 * Add the Realm for this user id, or for the user's type template, or for the general template.
+	 * Add the AuthzGroup for this user id, or for the user's type template, or for the general template.
 	 * 
 	 * @param rv
 	 *        The list.
@@ -354,7 +354,7 @@ public class ReferenceComponent
 	}
 
 	/**
-	 * Add the Realm for this user id, or for the user's type template, or for the general template.
+	 * Add the AuthzGroup for this user id, or for the user's type template, or for the general template.
 	 * 
 	 * @param rv
 	 *        The list.

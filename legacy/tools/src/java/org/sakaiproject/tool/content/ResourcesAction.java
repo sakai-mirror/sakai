@@ -82,6 +82,7 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
+import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.ContentResource;
@@ -89,7 +90,6 @@ import org.sakaiproject.service.legacy.content.ContentResourceEdit;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
 import org.sakaiproject.service.legacy.resource.Entity;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.ResourceProperties;
@@ -7353,7 +7353,7 @@ public class ResourcesAction
 			}
 			if(parent == null || ! parent.canUpdate())
 			{
-				canUpdate = RealmService.allowUpdateRealm(collectionId);
+				canUpdate = RealmService.allowUpdate(collectionId);
 			}
 			else
 			{

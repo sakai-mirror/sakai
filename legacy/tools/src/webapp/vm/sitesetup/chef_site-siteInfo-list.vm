@@ -304,7 +304,7 @@
 							#if ($!activeInactiveUser)
 								<td>
 								 #set($grant="")
-									#set($grant = $realm.getUserGrant($uniqname))
+									#set($grant = $realm.getMember($uniqname))
 									#set($grantActive = $!grant.isActive())
 									<label class="skip" for="activeGrant$uniqname">Select status for $uniqname</label>
 									<select id="activeGrant$uniqname" name="activeGrant$uniqname">
