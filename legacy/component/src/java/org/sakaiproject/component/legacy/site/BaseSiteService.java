@@ -54,7 +54,7 @@ import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.alias.cover.AliasService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.calendar.CalendarEdit;
 import org.sakaiproject.service.legacy.calendar.cover.CalendarService;
 import org.sakaiproject.service.legacy.chat.cover.ChatService;
@@ -688,14 +688,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// copy the realm (to get permissions settings)
 		try
 		{
-			AuthzGroup realm = RealmService.getAuthzGroup(other.getReference());
-			AuthzGroup re = RealmService.addAuthzGroup(site.getReference(), realm, UserDirectoryService.getCurrentUser().getId());
+			AuthzGroup realm = AuthzGroupService.getAuthzGroup(other.getReference());
+			AuthzGroup re = AuthzGroupService.addAuthzGroup(site.getReference(), realm, UserDirectoryService.getCurrentUser().getId());
 
 			// clear the users from the copied realm, adding in the current user as a maintainer
 			re.removeMembers();
 			re.addMember(UserDirectoryService.getCurrentUser().getId(), re.getMaintainRole(), true, false);
 
-			RealmService.save(re);
+			AuthzGroupService.save(re);
 		}
 		catch (Exception e)
 		{
@@ -1008,7 +1008,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// TODO: fix realm to avoid this try block
 		try
 		{
-			RealmService.joinSite(id);
+			AuthzGroupService.joinSite(id);
 		}
 		catch (Throwable e)
 		{
@@ -1023,7 +1023,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// TODO: fix realm to avoid this try block
 		try
 		{
-			RealmService.unjoinSite(id);
+			AuthzGroupService.unjoinSite(id);
 		}
 		catch (Throwable e)
 		{
@@ -1035,7 +1035,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public boolean allowUnjoinSite(String id)
 	{
-		return RealmService.allowUnjoinSite(id);
+		return AuthzGroupService.allowUnjoinSite(id);
 	}
 
 	/**
@@ -1535,7 +1535,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// see if it exists already
 		try
 		{
-			AuthzGroup realm = RealmService.getAuthzGroup(ref);
+			AuthzGroup realm = AuthzGroupService.getAuthzGroup(ref);
 		}
 		catch (IdUnusedException un)
 		{
@@ -1543,14 +1543,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			AuthzGroup template = null;
 			try
 			{
-				template = RealmService.getAuthzGroup(templateId);
+				template = AuthzGroupService.getAuthzGroup(templateId);
 			}
 			catch (Exception e)
 			{
 				try
 				{
 					// if the template is not defined, try the fall back template
-					template = RealmService.getAuthzGroup(fallbackTemplate);
+					template = AuthzGroupService.getAuthzGroup(fallbackTemplate);
 				}
 				catch (Exception ee)
 				{
@@ -1585,11 +1585,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 				if (template == null)
 				{
-					realm = RealmService.addAuthzGroup(ref);
+					realm = AuthzGroupService.addAuthzGroup(ref);
 				}
 				else
 				{
-					realm = RealmService.addAuthzGroup(ref, template, user.getId());
+					realm = AuthzGroupService.addAuthzGroup(ref, template, user.getId());
 				}
 
 				// if there's not a maintain role, then the user will not have any realm access to the new realm, so will not be able to proceed...
@@ -1608,7 +1608,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 //					realm.addMember(user.getId(), role.getId(), true, false);
 //				}
 //
-//				RealmService.save(realm);
+//				AuthzGroupService.save(realm);
 			}
 			catch (Exception e)
 			{
@@ -1628,7 +1628,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		try
 		{
 			// delete all at once, so it's not tempted to try to update the realm when it makes the edit -ggolden
-			RealmService.removeAuthzGroup(ref);
+			AuthzGroupService.removeAuthzGroup(ref);
 		}
 		catch (Exception e)
 		{

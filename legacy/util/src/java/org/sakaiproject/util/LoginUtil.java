@@ -30,7 +30,7 @@ import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.framework.session.UsageSession;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 
@@ -64,7 +64,7 @@ public class LoginUtil
 		UsageSession session = UsageSessionService.startSession(authn.getUid(), req.getRemoteAddr(), req.getHeader("user-agent"));
 
 		// update the user's externally provided realm definitions
-		RealmService.refreshUser(authn.getUid());
+		AuthzGroupService.refreshUser(authn.getUid());
 
 		// post the login event
 		EventTrackingService.post(EventTrackingService.newEvent(UsageSessionService.EVENT_LOGIN, null, true));

@@ -62,7 +62,7 @@ import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
@@ -1308,7 +1308,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// remove any realm defined for this resource
 		try
 		{
-			RealmService.removeAuthzGroup(RealmService.getAuthzGroup(edit.getReference()));
+			AuthzGroupService.removeAuthzGroup(AuthzGroupService.getAuthzGroup(edit.getReference()));
 		}
 		catch (PermissionException e)
 		{
@@ -1961,7 +1961,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// remove any realm defined for this resource
 		try
 		{
-			RealmService.removeAuthzGroup(RealmService.getAuthzGroup(edit.getReference()));
+			AuthzGroupService.removeAuthzGroup(AuthzGroupService.getAuthzGroup(edit.getReference()));
 		}
 		catch (PermissionException e)
 		{
@@ -4044,7 +4044,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 		try
 		{
-			edit = RealmService.getAuthzGroup(ref);
+			edit = AuthzGroupService.getAuthzGroup(ref);
 		}
 		catch (IdUnusedException e)
 		{
@@ -4053,7 +4053,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			{
 				try
 				{
-					edit = RealmService.addAuthzGroup(ref);
+					edit = AuthzGroupService.addAuthzGroup(ref);
 				}
 				catch (IdInvalidException ee)
 				{
@@ -4082,12 +4082,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		if (pubview)
 		{
 			// make sure the anon role exists and has "content.read" - the only client of pubview
-			Role role = edit.getRole(RealmService.ANON_ROLE);
+			Role role = edit.getRole(AuthzGroupService.ANON_ROLE);
 			if (role == null)
 			{
 				try
 				{
-					role = edit.addRole(RealmService.ANON_ROLE);
+					role = edit.addRole(AuthzGroupService.ANON_ROLE);
 				}
 				catch (IdUsedException ignore) {}
 			}
@@ -4103,7 +4103,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		else
 		{
 			// get the role
-			Role role = edit.getRole(RealmService.ANON_ROLE);
+			Role role = edit.getRole(AuthzGroupService.ANON_ROLE);
 			if (role != null)
 			{
 				if (role.isAllowed(EVENT_RESOURCE_READ))
@@ -4129,7 +4129,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		{
 			try
 			{
-				RealmService.removeAuthzGroup(edit);
+				AuthzGroupService.removeAuthzGroup(edit);
 			}
 			catch (PermissionException e) {}
 		}
@@ -4139,7 +4139,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		{
 			try
 			{
-				RealmService.save(edit);
+				AuthzGroupService.save(edit);
 			}
 			catch (IdUnusedException e)
 			{

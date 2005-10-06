@@ -67,7 +67,7 @@ import org.sakaiproject.service.legacy.assignment.AssignmentEdit;
 import org.sakaiproject.service.legacy.assignment.AssignmentService;
 import org.sakaiproject.service.legacy.assignment.AssignmentSubmission;
 import org.sakaiproject.service.legacy.assignment.AssignmentSubmissionEdit;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.event.Event;
@@ -917,7 +917,7 @@ public abstract class BaseAssignmentService
 			// remove any realm defined for this resource
 			try
 			{
-				RealmService.removeAuthzGroup(RealmService.getAuthzGroup(assignment.getReference()));
+				AuthzGroupService.removeAuthzGroup(AuthzGroupService.getAuthzGroup(assignment.getReference()));
 			}
 			catch (PermissionException e) { m_logger.warn(this + ".removeAssignment: removing realm for : " + assignment.getReference() + " : " + e); }
 			catch (IdUnusedException ignore) {}
@@ -1340,7 +1340,7 @@ public abstract class BaseAssignmentService
 				// remove any realm defined for this resource
 				try
 				{
-					RealmService.removeAuthzGroup(RealmService.getAuthzGroup(content.getReference()));
+					AuthzGroupService.removeAuthzGroup(AuthzGroupService.getAuthzGroup(content.getReference()));
 				}
 				catch (PermissionException e) { m_logger.warn(this + ".removeAssignmentContent: removing realm for : " + content.getReference() + " : " + e); }
 				catch (IdUnusedException ignore) {}
@@ -1574,7 +1574,7 @@ public abstract class BaseAssignmentService
 			// remove any realm defined for this resource
 			try
 			{
-				RealmService.removeAuthzGroup(RealmService.getAuthzGroup(submission.getReference()));
+				AuthzGroupService.removeAuthzGroup(AuthzGroupService.getAuthzGroup(submission.getReference()));
 			}
 			catch (PermissionException e) { m_logger.warn(this + ".removeSubmission: removing realm for : " + submission.getReference() + " : " + e); }
 			catch (IdUnusedException ignore) {}

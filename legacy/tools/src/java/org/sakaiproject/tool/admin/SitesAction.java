@@ -54,7 +54,7 @@ import org.sakaiproject.service.framework.config.cover.ServerConfigurationServic
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.coursemanagement.cover.CourseManagementService;
 import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
@@ -272,7 +272,7 @@ public class SitesAction
 		context.put("sites", sites);
 
 		// we need the Realms, too!
-		context.put("realms", RealmService.getInstance());
+		context.put("realms", AuthzGroupService.getInstance());
 
 		// build the menu
 		Menu bar = new Menu();
@@ -1013,7 +1013,7 @@ public class SitesAction
 				AuthzGroup realm = null;
 				try 
 				{
-					realm = RealmService.getAuthzGroup(site.getReference());
+					realm = AuthzGroupService.getAuthzGroup(site.getReference());
 					roles.addAll(realm.getRoles());
 				} 
 				catch (IdUnusedException e) 
@@ -1026,14 +1026,14 @@ public class SitesAction
 					}
 					try
 					{
-						AuthzGroup r = RealmService.getAuthzGroup(realmTemplate);
+						AuthzGroup r = AuthzGroupService.getAuthzGroup(realmTemplate);
 						roles.addAll(r.getRoles());
 					}
 					catch (IdUnusedException err)
 					{
 						try
 						{
-							AuthzGroup rr = RealmService.getAuthzGroup("!site.template");
+							AuthzGroup rr = AuthzGroupService.getAuthzGroup("!site.template");
 							roles.addAll(rr.getRoles());
 						}
 						catch (IdUnusedException ee){}

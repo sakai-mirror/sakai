@@ -54,7 +54,7 @@ import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannel;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
@@ -794,7 +794,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		// remove any realm defined for this resource
 		try
 		{
-			RealmService.removeAuthzGroup(RealmService.getAuthzGroup(channel.getReference()));
+			AuthzGroupService.removeAuthzGroup(AuthzGroupService.getAuthzGroup(channel.getReference()));
 		}
 		catch (PermissionException e)
 		{
@@ -2072,7 +2072,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			// remove any realm defined for this resource
 			try
 			{
-				RealmService.removeAuthzGroup(message.getReference());
+				AuthzGroupService.removeAuthzGroup(message.getReference());
 			}
 			catch (PermissionException e)
 			{

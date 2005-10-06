@@ -49,7 +49,7 @@ import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.assignment.cover.AssignmentService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.calendar.cover.CalendarService;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.discussion.DiscussionService;
@@ -362,7 +362,7 @@ public class BasicArchiveService
 		try
 		{
 			Role role = null;
-			AuthzGroup realm = RealmService.getAuthzGroup(realmId);
+			AuthzGroup realm = AuthzGroupService.getAuthzGroup(realmId);
 			
 			Element realmNode = doc.createElement("roles");
 			((Element)stack.peek()).appendChild(realmNode);
@@ -419,7 +419,7 @@ public class BasicArchiveService
 			String realmId = "/site/" + site.getId();
 			try
 			{
-				AuthzGroup realm = RealmService.getAuthzGroup(realmId);
+				AuthzGroup realm = AuthzGroupService.getAuthzGroup(realmId);
 				users.addAll(UserDirectoryService.getUsers(realm.getUsers()));
 				Collections.sort(users);
 				for (int i = 0; i < users.size(); i++)
@@ -542,7 +542,7 @@ public class BasicArchiveService
 		// currently, all the tools allowed to be imported, are using the same role set
 		try
 		{
-			AuthzGroup realm = RealmService.getAuthzGroup(siteId);
+			AuthzGroup realm = AuthzGroupService.getAuthzGroup(siteId);
 			
 			// get the role of the user as this realm
 			Role role = realm.getRole(userId);
@@ -852,7 +852,7 @@ public class BasicArchiveService
 		try
 		{
 			//AuthzGroup realmEdit = AuthzGroupService.getRealm(realmId);
-			AuthzGroup realm = RealmService.getAuthzGroup(realmId);
+			AuthzGroup realm = AuthzGroupService.getAuthzGroup(realmId);
 			
 			//roles.addAll(realmEdit.getRoles());
 			roles.addAll(realm.getRoles());
@@ -898,9 +898,9 @@ public class BasicArchiveService
 							Role role = realm.getRole(roleId);
 							if (role != null)
 							{
-								AuthzGroup realmEdit = RealmService.getAuthzGroup(realmId);
+								AuthzGroup realmEdit = AuthzGroupService.getAuthzGroup(realmId);
 								realmEdit.addMember(user.getId(), role.getId(), true, false);
-								RealmService.save(realmEdit);
+								AuthzGroupService.save(realmEdit);
 							}
 						} 
 						catch (IdUnusedException e) 

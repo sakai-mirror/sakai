@@ -53,7 +53,7 @@ import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.calendar.Calendar;
 import org.sakaiproject.service.legacy.calendar.CalendarEdit;
 import org.sakaiproject.service.legacy.calendar.CalendarEvent;
@@ -594,7 +594,7 @@ public abstract class BaseCalendarService
 		// remove any realm defined for this resource
 		try
 		{
-			RealmService.removeAuthzGroup(RealmService.getAuthzGroup(calendar.getReference()));
+			AuthzGroupService.removeAuthzGroup(AuthzGroupService.getAuthzGroup(calendar.getReference()));
 		}
 		catch (PermissionException e)
 		{
@@ -2113,7 +2113,7 @@ public abstract class BaseCalendarService
 			// remove any realm defined for this resource
 			try
 			{
-				RealmService.removeAuthzGroup(RealmService.getAuthzGroup(edit.getReference()));
+				AuthzGroupService.removeAuthzGroup(AuthzGroupService.getAuthzGroup(edit.getReference()));
 			}
 			catch (PermissionException e)
 			{

@@ -34,7 +34,7 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.cover.MemoryService;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
@@ -164,7 +164,7 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 		// if the user has site modification rights in the "!admin" site, welcome aboard!
 		else
 		{
-			if (RealmService.isAllowed(user.getId(), SiteService.SECURE_UPDATE_SITE, "/site/!admin"))
+			if (AuthzGroupService.isAllowed(user.getId(), SiteService.SECURE_UPDATE_SITE, "/site/!admin"))
 			{
 				rv = true;
 			}
@@ -224,7 +224,7 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 
 		// get this resource's Realms
 		Collection realms = ref.getRealms();
-		boolean rv = RealmService.isAllowed(user.getId(), lock, realms);
+		boolean rv = AuthzGroupService.isAllowed(user.getId(), lock, realms);
 
 		if (m_logger.isDebugEnabled())
 		{
@@ -264,7 +264,7 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 
 		// get the users who can unlock in these realms
 		List ids = new Vector();
-		ids.addAll(RealmService.getUsersIsAllowed(lock, realms));
+		ids.addAll(AuthzGroupService.getUsersIsAllowed(lock, realms));
 
 		// convert the set of Users into a sorted list of users
 		List users = UserDirectoryService.getUsers(ids);

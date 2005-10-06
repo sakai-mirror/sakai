@@ -48,7 +48,7 @@ import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.util.courier.EventObservingCourier;
@@ -77,7 +77,7 @@ public class RealmsAction
 		// search?
 		String search = StringUtil.trimToNull((String) state.getAttribute(STATE_SEARCH));
 		
-		return RealmService.getAuthzGroups(search, new PagingPosition(first, last));
+		return AuthzGroupService.getAuthzGroups(search, new PagingPosition(first, last));
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class RealmsAction
 		// search?
 		String search = StringUtil.trimToNull((String) state.getAttribute(STATE_SEARCH));
 		
-		return RealmService.countAuthzGroups(search);
+		return AuthzGroupService.countAuthzGroups(search);
 	}
 
 	/**
@@ -191,14 +191,14 @@ public class RealmsAction
 		List realms = prepPage(state);
 
 		// put the service in the context (used for allow update calls on each realm)
-		context.put("service", RealmService.getInstance());
+		context.put("service", AuthzGroupService.getInstance());
 
 		// put all realms into the context
 		context.put("realms", realms);
 
 		// build the menu
 		Menu bar = new Menu();
-		if (RealmService.allowAdd(""))
+		if (AuthzGroupService.allowAdd(""))
 		{
 			bar.add( new MenuEntry(rb.getString("realm.new"), "doNew") );
 		}
@@ -264,7 +264,7 @@ public class RealmsAction
 		// build the menu
 		// we need the form fields for the remove...
 		Menu bar = new Menu();
-		if (RealmService.allowRemove(realm.getId()))
+		if (AuthzGroupService.allowRemove(realm.getId()))
 		{
 			bar.add( new MenuEntry(rb.getString("realm.remove"), null, true, MenuItem.CHECKED_NA, "doRemove", "realm-form") );
 		}
@@ -460,7 +460,7 @@ public class RealmsAction
 		try
 		{
 			// make a new site with this id and as a structural copy of site
-			AuthzGroup newRealm = RealmService.addAuthzGroup(id, realm, UserDirectoryService.getCurrentUser().getId());
+			AuthzGroup newRealm = AuthzGroupService.addAuthzGroup(id, realm, UserDirectoryService.getCurrentUser().getId());
 		}
 		catch (IdUsedException e)
 		{
@@ -539,7 +539,7 @@ public class RealmsAction
 		// get the realm
 		try
 		{
-			AuthzGroup realm = RealmService.getAuthzGroup(id);
+			AuthzGroup realm = AuthzGroupService.getAuthzGroup(id);
 			state.setAttribute("realm", realm);
 
 			state.setAttribute("mode", "edit");
@@ -595,7 +595,7 @@ public class RealmsAction
 		{
 			try
 			{
-				RealmService.save(realm);
+				AuthzGroupService.save(realm);
 			}
 			catch (IdUnusedException e)
 			{
@@ -638,7 +638,7 @@ public class RealmsAction
 				// remove the realm
 				try
 				{
-					RealmService.removeAuthzGroup(realm);
+					AuthzGroupService.removeAuthzGroup(realm);
 				}
 				catch (PermissionException e)
 				{
@@ -689,7 +689,7 @@ public class RealmsAction
 		// remove the realm
 		try
 		{
-			RealmService.removeAuthzGroup(realm);
+			AuthzGroupService.removeAuthzGroup(realm);
 		}
 		catch (PermissionException e)
 		{
@@ -738,7 +738,7 @@ public class RealmsAction
 		{
 			try
 			{
-				realm = RealmService.addAuthzGroup(id);
+				realm = AuthzGroupService.addAuthzGroup(id);
 				
 				// put the realm in the state
 				state.setAttribute("realm", realm);

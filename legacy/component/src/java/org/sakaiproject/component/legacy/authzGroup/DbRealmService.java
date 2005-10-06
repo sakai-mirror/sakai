@@ -22,7 +22,7 @@
  **********************************************************************************/
 
 // package
-package org.sakaiproject.component.legacy.realm;
+package org.sakaiproject.component.legacy.authzGroup;
 
 // import
 import java.sql.Connection;

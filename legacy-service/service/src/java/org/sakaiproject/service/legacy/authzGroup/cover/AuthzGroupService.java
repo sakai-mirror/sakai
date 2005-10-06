@@ -32,7 +32,7 @@ import org.sakaiproject.service.framework.component.cover.ComponentManager;
 * @author University of Michigan, Sakai Software Development Team
 * @version $Revision$
 */
-public class RealmService
+public class AuthzGroupService
 {
 	/**
 	 * Access the component instance: special cover only method.

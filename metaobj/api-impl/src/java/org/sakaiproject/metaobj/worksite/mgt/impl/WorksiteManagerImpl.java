@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
@@ -104,7 +104,7 @@ public class WorksiteManagerImpl implements WorksiteManager {
    public AuthzGroup getSiteRealm(String siteId) {
       AuthzGroup siteRealm = null;
       try {
-         siteRealm = RealmService.getAuthzGroup("/site/" +
+         siteRealm = AuthzGroupService.getAuthzGroup("/site/" +
                   siteId);
       } catch (IdUnusedException e) {
          logger.error("", e);

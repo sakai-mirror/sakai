@@ -32,7 +32,7 @@ import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.service.legacy.user.UserEdit;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.metaobj.security.AnonymousAgent;
 import org.sakaiproject.metaobj.security.PasswordGenerator;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -131,7 +131,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
    public List getWorksiteRoles(String siteId){
       List roles = new ArrayList();
       try {
-         AuthzGroup siteRealm = RealmService.getAuthzGroup("/site/" + siteId);
+         AuthzGroup siteRealm = AuthzGroupService.getAuthzGroup("/site/" + siteId);
          for (Iterator i=siteRealm.getRoles().iterator();i.hasNext();){
             Role sakaiRole = (Role) i.next();
             roles.add(convertRole(sakaiRole, siteRealm));
@@ -145,7 +145,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
    public Agent getWorksiteRole(String roleName, String siteId) {
       try {
-         AuthzGroup siteRealm = RealmService.getAuthzGroup("/site/" +
+         AuthzGroup siteRealm = AuthzGroupService.getAuthzGroup("/site/" +
             siteId);
 
          Role sakaiRole = siteRealm.getRole(roleName);
@@ -188,7 +188,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
       Role role = null;
       AuthzGroup realm = null;
-      realm = RealmService.getAuthzGroup(siteId);
+      realm = AuthzGroupService.getAuthzGroup(siteId);
       role = realm.getRole(roleName);
 
       if (role == null || realm == null)
@@ -205,7 +205,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 		List participants = new ArrayList();
 		String realmId = "/site/" + siteId;
 		try {
-			AuthzGroup realm = RealmService.getAuthzGroup(realmId);
+			AuthzGroup realm = AuthzGroupService.getAuthzGroup(realmId);
 			users.addAll(getDirectoryService().getUsers(realm.getUsers()));
 			Collections.sort(users);
 			for (int i = 0; i < users.size(); i++){

@@ -49,7 +49,7 @@ import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.resource.Reference;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 
@@ -118,11 +118,11 @@ public class PermissionsAction
 		AuthzGroup edit = (AuthzGroup) state.getAttribute(STATE_REALM_EDIT);
 		if (edit == null)
 		{
-			if (RealmService.allowUpdate(realmId))
+			if (AuthzGroupService.allowUpdate(realmId))
 			{
 				try
 				{
-					edit = RealmService.getAuthzGroup(realmId);
+					edit = AuthzGroupService.getAuthzGroup(realmId);
 					state.setAttribute(STATE_REALM_EDIT, edit);
 				}
 				catch (IdUnusedException e)
@@ -130,7 +130,7 @@ public class PermissionsAction
 					try
 					{
 						// we can create the realm
-						edit = RealmService.addAuthzGroup(realmId);
+						edit = AuthzGroupService.addAuthzGroup(realmId);
 						state.setAttribute(STATE_REALM_EDIT, edit);
 					}
 					catch (IdInvalidException ee)
@@ -200,7 +200,7 @@ public class PermissionsAction
 			{
 				try
 				{
-					roleRealm = RealmService.getAuthzGroup(realmRolesId);
+					roleRealm = AuthzGroupService.getAuthzGroup(realmRolesId);
 				}
 				catch (Exception e)
 				{
@@ -228,7 +228,7 @@ public class PermissionsAction
 			for (Iterator iRoles = roles.iterator(); iRoles.hasNext(); )
 			{
 				Role role = (Role) iRoles.next();
-				Set locks = RealmService.getAllowedFunctions(role.getId(), realms);
+				Set locks = AuthzGroupService.getAllowedFunctions(role.getId(), realms);
 				rolesAbilities.put(role.getId(), locks);
 			}
 		}
@@ -288,7 +288,7 @@ public class PermissionsAction
 		// commit the change
 		try
 		{
-			RealmService.save(edit);
+			AuthzGroupService.save(edit);
 		}
 		catch (IdUnusedException e)
 		{
