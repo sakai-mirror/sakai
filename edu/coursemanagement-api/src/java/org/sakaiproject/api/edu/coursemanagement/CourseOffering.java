@@ -354,7 +354,7 @@ public interface CourseOffering extends Persistable
 	/**
 	 * Set the default meeting time of this course section.
 	 *
-	 * @param meeting time
+	 * @param meetingTime
 	 */
 	public void setDefaultMeetingTime(String meetingTime);
    	

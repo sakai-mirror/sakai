@@ -80,7 +80,7 @@ public interface ParticipationRecord extends Persistable{
 	/**
 	 * Set the participation status for the participant.
 	 * 
-	 * @param type
+	 * @param status
 	 */
 	public void setParticipationStatus(ParticipationStatusType status);
 	
@@ -123,7 +123,7 @@ public interface ParticipationRecord extends Persistable{
 	/**
 	 * Set is other flag.
 	 * 
-	 * @param isOther
+	 * @param isOtherPeople
 	 */
 	public void setIsOtherPeople(Boolean isOtherPeople);
 

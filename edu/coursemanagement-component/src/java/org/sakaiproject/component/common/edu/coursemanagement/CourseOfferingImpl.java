@@ -203,7 +203,7 @@ public class CourseOfferingImpl
 
   /**
    * Set the value of the Equivalent column.
-   * @param Equivalent
+   * @param equivalentString
    */
   public void setEquivalentString(String equivalentString) {
     this.equivalentString = equivalentString;

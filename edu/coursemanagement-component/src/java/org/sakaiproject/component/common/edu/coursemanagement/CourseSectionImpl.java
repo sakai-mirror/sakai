@@ -124,7 +124,7 @@ public class CourseSectionImpl
 
   /**
    * Set the simple primary key value that identifies this object.
-   * @param coursesectionid
+   * @param courseSectionId
    */
   public void setCourseSectionId(Long courseSectionId) {
     this.hashValue = 0;
@@ -182,7 +182,7 @@ public class CourseSectionImpl
 
   /**
    * Set the value of the SECTIONEVENTS column.
-   * @param topics
+   * @return String
    */
   public String getSectionEventsString() {
     return sectionEventsString;

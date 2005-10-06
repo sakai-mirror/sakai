@@ -175,7 +175,7 @@ public interface CourseSection extends Persistable
 	/**
 	 * Add a participation record as an instructor of this section.
 	 * 
-	 * @param agentUuid
+	 * @param participationRecord
 	 */
 	public void addLeader(ParticipationRecord participationRecord);
 
@@ -196,8 +196,7 @@ public interface CourseSection extends Persistable
 	/**
 	 * Add an enrollment record for a student enrolled in this section.
 	 * 
-	 * @param student
-	 *        enrollment record
+	 * @param record
 	 */
 	public void addEnrollmentRecord(EnrollmentRecord record);
 
@@ -209,9 +208,9 @@ public interface CourseSection extends Persistable
 	public void removeEnrollmentRecord(EnrollmentRecord record);
 
 	/**
-	 * Get the entrollment status type.
+	 * Get the enrollment status type.
 	 * 
-	 * @return
+	 * @return enrollment status type
 	 */
 	public EnrollmentStatusType getEnrollmentStatus();
 
@@ -225,14 +224,14 @@ public interface CourseSection extends Persistable
 	/**
 	 * Get a set of other people associated with this course offering. This set might include teaching assistance, lab supervisors, translators, etc. The set elements are participation uuids.
 	 * 
-	 * @return
+	 * @return a Set of other people associated with this course offering
 	 */
 	public Set getOtherPeople();
 
 	/**
 	 * Add a person to the other set.
 	 * 
-	 * @param agentUuid
+	 * @param participant
 	 */
 	public void addOtherPerson(ParticipationRecord participant);
 
@@ -260,7 +259,7 @@ public interface CourseSection extends Persistable
 	/**
 	 * Get the set of event associated with this course section. Event objects are TBD at this time.
 	 * 
-	 * @return
+	 * @return a set of event associated with this course section
 	 */
 	public Set getSectionEvents();
 
@@ -269,19 +268,19 @@ public interface CourseSection extends Persistable
 	 * 
 	 * @param eventUuid
 	 */
-	public void addSectionEvent(String event);
+	public void addSectionEvent(String eventUuid);
 
 	/**
 	 * Remove an event given it's uuid.
 	 * 
 	 * @param eventUuid
 	 */
-	public void removeSectionEvent(String event);
+	public void removeSectionEvent(String eventUuid);
 
 	/**
 	 * Check to see if this is a holding section. True if this section is being used to hold students that will be re-assigned later.
 	 * 
-	 * @return
+	 * @return true if there is holding section
 	 */
 	public Boolean getHoldingSection();
 
@@ -295,7 +294,7 @@ public interface CourseSection extends Persistable
 	/**
 	 * Check to see if self-registration is allowed for this section. If true, then students may enroll or register themselves.
 	 * 
-	 * @return
+	 * @return true if self registration is allowed
 	 */
 	public Boolean getAllowSelfRegistration();
 
@@ -331,7 +330,7 @@ public interface CourseSection extends Persistable
 	/**
 	 * Set the meeting time of this course section.
 	 *
-	 * @param meeting time
+	 * @param meetingTime
 	 */
 	public void setMeetingTime(String meetingTime);
 
@@ -352,7 +351,7 @@ public interface CourseSection extends Persistable
 	/**
 	 * Set the schedule of this course section.
 	 *
-	 * @param schedule
+	 * @param scheduleEvent
 	 */
 	public void setScheduleEvent(String scheduleEvent);
 	/**
@@ -371,7 +370,7 @@ public interface CourseSection extends Persistable
 	/**
 	 * Set the parentId of this course section.
 	 *
-	 * @param parent uuid
+	 * @param parentUuid
 	 */
 	public void setParentId(String parentUuid);
 	

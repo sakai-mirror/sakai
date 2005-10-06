@@ -232,7 +232,7 @@ public class CourseManagementManagerImpl
      *
      * @param agentUuid
      * @param role
-     * @param status
+     * @param statusUuid
      * @param courseSectionUuid
      * @return a new enrollment record.
      */
@@ -416,10 +416,9 @@ public class CourseManagementManagerImpl
   }
 
     /**
-     * Get the session associated with the uuid given.
+     * Return a list of session
      *
-     * @param uuid
-     * @return a session
+     * @return a list of session
      */
   public List getSessions() {
     String query = "select s from SessionImpl s";

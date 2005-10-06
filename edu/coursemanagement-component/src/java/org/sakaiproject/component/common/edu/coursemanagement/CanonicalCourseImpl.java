@@ -137,7 +137,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 
   /**
    * Set the value of the TOPICS column.
-   * @param topics
+   * @param topicsString
    */
   public void setTopicsString(String topicsString)
   {
@@ -194,7 +194,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 
   /**
    * Set the value of the Equivalent column.
-   * @param Equivalent
+   * @param prerequisiteString
    */
   public void setPrerequisiteString(String prerequisiteString)
   {
@@ -261,7 +261,7 @@ public class CanonicalCourseImpl implements CanonicalCourse, Serializable {
 
   /**
    * Set the value of the Equivalent column.
-   * @param Equivalent
+   * @param equivalentString
    */
   public void setEquivalentString(String equivalentString)
   {

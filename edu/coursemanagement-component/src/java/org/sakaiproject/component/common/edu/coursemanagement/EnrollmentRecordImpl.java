@@ -54,7 +54,7 @@ public class EnrollmentRecordImpl
 
   /**
    * Set the simple primary key value that identifies this object.
-   * @param enrollmentrecordid
+   * @param enrollmentRecordId
    */
   public void setEnrollmentRecordId(Long enrollmentRecordId) {
     this.hashValue = 0;

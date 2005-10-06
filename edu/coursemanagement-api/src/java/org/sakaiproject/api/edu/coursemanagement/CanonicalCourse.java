@@ -131,7 +131,7 @@ public interface CanonicalCourse extends Persistable{
 	/**
 	 * Set the defalt credits.
 	 *
-	 *	@param credits
+	 * @param defaultCredits
 	 */
 	public void setDefaultCredits(String defaultCredits);
 	

@@ -51,7 +51,6 @@ public interface CourseManagementManager
 	 * @param canonicalCourseUuid
 	 * @param status
 	 * @return a new canonical course.
-	 * @author Mark Norton
 	 */
 	public CanonicalCourse createCanonicalCourse(String title, String description, String courseNumber, String canonicalCourseUuid,
 			CanonicalCourseStatusType status);
@@ -66,7 +65,6 @@ public interface CourseManagementManager
 	 * @param sessionUuid
 	 * @param type
 	 * @return a new course offering.
-	 * @author Mark Norton
 	 */
 	public CourseOffering createCourseOffering(String title, String description, String offeringNumber, String canonicalCourseUuid,
 			String sessionUuid, CourseOfferingType type);
@@ -81,7 +79,6 @@ public interface CourseManagementManager
 	 * @param sessionUuid
 	 * @param type
 	 * @return a new course section.
-	 * @author Mark Norton
 	 */
 	public CourseSection createCourseSection(String title, String description, String sectionNumber, String courseOfferingUuid,
 			String sessionUuid, CourseSectionType type);
@@ -96,7 +93,6 @@ public interface CourseManagementManager
 	 * @param sessionUuid
 	 * @param type
 	 * @return a new course section.
-	 * @author Mark Norton
 	 */
 	public CourseSection createSubSection(String title, String description, String sectionNumber, String courseSectionUuid,
 			String sessionUuid, CourseSectionType type);
@@ -116,10 +112,9 @@ public interface CourseManagementManager
 	 * @param abbreviation
 	 * @param year
 	 * @param type
-   * @param uuid
-   * @param isCurrent
+         * @param uuid
+         * @param isCurrent
 	 * @return a new session.
-	 * @author Mark Norton
 	 */
 	public Session createSession(String title, String abbreviation, String year, SessionType type, String uuid, Boolean isCurrent);
 
@@ -131,7 +126,6 @@ public interface CourseManagementManager
 	 * @param status
 	 * @param courseSectionUuid
 	 * @return a new enrollment record.
-	 * @author Mark Norton
 	 */
 	public EnrollmentRecord createEnrollmentRecord(String agentUuid, String role, String status, String courseSectionUuid);
 
@@ -143,7 +137,6 @@ public interface CourseManagementManager
 	 * @param status
 	 * @param courseSectionUuid
 	 * @return a new participation record.
-	 * @author Mark Norton
 	 */
 	public ParticipationRecord createParticipationRecord(String agentUuid, String role, String status, String courseSectionUuid);
 
@@ -152,7 +145,6 @@ public interface CourseManagementManager
 	 * 
 	 * @param uuid
 	 * @return a canonical course
-	 * @author Mark Norton
 	 */
 	public CanonicalCourse getCanonicalCourse(String uuid);
 
@@ -161,7 +153,6 @@ public interface CourseManagementManager
 	 * 
 	 * @param uuid
 	 * @return a course offering.
-	 * @author Mark Norton
 	 */
 	public CourseOffering getCourseOffering(String uuid);
 
@@ -170,7 +161,6 @@ public interface CourseManagementManager
 	 * 
 	 * @param uuid
 	 * @return a course section.
-	 * @author Mark Norton
 	 */
 	public CourseSection getCourseSection(String uuid);
 
@@ -179,7 +169,6 @@ public interface CourseManagementManager
 	 * 
 	 * @param uuid
 	 * @return a session
-	 * @author Mark Norton
 	 */
 	public Session getSession(String uuid);
 
@@ -187,7 +176,6 @@ public interface CourseManagementManager
 	 * Return a list of all canonical courses.
 	 * 
 	 * @return a list of canonical courses
-	 * @author Mark Norton
 	 */
 	public List getCanonicalCourses();
 
@@ -196,7 +184,6 @@ public interface CourseManagementManager
 	 * 
 	 * @param canonicalCourseUuid
 	 * @return a list of canonical courses
-	 * @author Mark Norton
 	 */
 	// I am not sure this method make sense. -daisyf
 	public List getCanonicalCourses(String canonicalCourseUuid);
@@ -206,7 +193,6 @@ public interface CourseManagementManager
 	 * 
 	 * @param canonicalCourseUuid
 	 * @return a list of course offerings
-	 * @author Mark Norton
 	 */
 	public List getCourseOfferings(String canonicalCourseUuid);
 
@@ -215,7 +201,6 @@ public interface CourseManagementManager
 	 * 
 	 * @param courseOfferingUuid
 	 * @return a list of course sections
-	 * @author Mark Norton
 	 */
 	public List getCourseSections(String courseOfferingUuid);
 
@@ -224,7 +209,6 @@ public interface CourseManagementManager
 	 * 
 	 * @param courseSectionUuid
 	 * @return a list of course sub-sections
-	 * @author Mark Norton
 	 */
 	public List getSubSections(String courseSectionUuid);
 
@@ -232,7 +216,6 @@ public interface CourseManagementManager
 	 * Return a list of all known sessions.
 	 * 
 	 * @return a list of sessions
-	 * @author Mark Norton
 	 */
 	public List getSessions();
 
@@ -241,7 +224,6 @@ public interface CourseManagementManager
 	 * 
 	 * @param status
 	 * @return a list of canoncial courses.
-	 * @author Mark Norton
 	 */
 	public List getCanonicalCoursesByType(CanonicalCourseStatusType status);
 
@@ -251,7 +233,6 @@ public interface CourseManagementManager
 	 * @param canonicalCourseUuid
 	 * @param status
 	 * @return a list of canonical courses
-	 * @author Mark Norton
 	 */
 	public List getCanonicalCoursesByType(String canonicalCourseUuid, CanonicalCourseStatusType status);
 
@@ -261,7 +242,6 @@ public interface CourseManagementManager
 	 * @param canonicalCourseUuid
 	 * @param type
 	 * @return a list of course offerings
-	 * @author Mark Norton
 	 */
 	public List getCourseOfferingsByType(String canonicalCourseUuid, CourseOfferingType type);
 
@@ -271,7 +251,6 @@ public interface CourseManagementManager
 	 * @param courseOfferingUuid
 	 * @param type
 	 * @return a list of sections
-	 * @author Mark Norton
 	 */
 	public List getCourseSectionsByType(String courseOfferingUuid, CourseSectionType type);
 
@@ -281,7 +260,6 @@ public interface CourseManagementManager
 	 * @param courseSectionUuid
 	 * @param type
 	 * @return a list of sub-sections
-	 * @author Mark Norton
 	 */
 	public List getSubSectionsByType(String courseSectionUuid, CourseSectionType type);
 
@@ -290,7 +268,6 @@ public interface CourseManagementManager
 	 * 
 	 * @param canonicalCourseUuid
 	 * @return a list of CourseSet
-	 * @author Mark Norton
 	 */
   public List getCourseSet(String canonicalCourseUuid);
 

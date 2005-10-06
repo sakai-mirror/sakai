@@ -42,7 +42,7 @@ public class CanonicalCourseSet implements Serializable {
 	
 	/**
 	 * Set the simple primary key value that identifies this object.
-	 * @param coursesetid
+	 * @param courseSetUuid
 	 */
 	public void setCourseSetUuid(String courseSetUuid)
 	{
