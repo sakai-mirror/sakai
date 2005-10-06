@@ -40,7 +40,6 @@ public class CourseManagementManagerImpl
    * @param canonicalCourseUuid
    * @param status
    * @return a new canonical course.
-   * @author Mark Norton
    */
   public CanonicalCourse createCanonicalCourse(String title,
                                                String description,
@@ -80,7 +79,6 @@ public class CourseManagementManagerImpl
      * @param sessionUuid
      * @param type
      * @return a new course offering.
-     * @author Mark Norton
      */
    public CourseOffering createCourseOffering(String title,
                                              String description,
@@ -118,7 +116,6 @@ public class CourseManagementManagerImpl
      * @param sessionUuid
      * @param type
      * @return a new course section.
-     * @author Mark Norton
      */
   public CourseSection createCourseSection(String title, String description,
                                            String sectionNumber,
@@ -156,7 +153,6 @@ public class CourseManagementManagerImpl
      * @param sessionUuid
      * @param type
      * @return a new course section.
-     * @author Mark Norton
      */
   public CourseSection createSubSection(String title, String description,
                                         String sectionNumber,
@@ -215,7 +211,6 @@ public class CourseManagementManagerImpl
      * @param uuid
      * @param isCurrent
      * @return a new session.
-     * @author Mark Norton
      */
   public Session createSession(String title, String abbreviation,
                                String year, SessionType type, String uuid,
@@ -240,7 +235,6 @@ public class CourseManagementManagerImpl
      * @param status
      * @param courseSectionUuid
      * @return a new enrollment record.
-     * @author Mark Norton
      */
   public EnrollmentRecord createEnrollmentRecord(String agentUuid,
                                                  String role, String statusUuid,
@@ -266,7 +260,6 @@ public class CourseManagementManagerImpl
      * @param statusUuid
      * @param courseSectionUuid
      * @return a new participation record.
-     * @author Mark Norton
      */
   public ParticipationRecord createParticipationRecord(String agentUuid,
       String role, String statusUuid, String courseSectionUuid) {
@@ -288,7 +281,6 @@ public class CourseManagementManagerImpl
      *
      * @param uuid
      * @return a canonical course
-     * @author Mark Norton
      */
   public CanonicalCourse getCanonicalCourse(String uuid) {
     String query = "select c from CanonicalCourseImpl c where c.uuid=?";
@@ -312,7 +304,6 @@ public class CourseManagementManagerImpl
      *
      * @param uuid
      * @return a course offering.
-     * @author Mark Norton
      */
   public CourseOffering getCourseOffering(String uuid) {
     String query = "select c from CourseOfferingImpl c where c.uuid=?";
@@ -336,7 +327,6 @@ public class CourseManagementManagerImpl
      *
      * @param uuid
      * @return a course section.
-     * @author Mark Norton
      */
   public CourseSection getCourseSection(String uuid) {
     String query = "select c from CourseSectionImpl c where c.uuid=?";
@@ -358,7 +348,6 @@ public class CourseManagementManagerImpl
      * Return a list of all canonical courses.
      *
      * @return a list of canonical courses
-     * @author Mark Norton
      */
   public List getCanonicalCourses() {
     String query = "select c from CanonicalCourseImpl c";
@@ -371,7 +360,6 @@ public class CourseManagementManagerImpl
      *
      * @param canonicalCourseUuid
      * @return a list of canonical courses
-     * @author Mark Norton
      */
   public List getCanonicalCourses(String canonicalCourseUuid) {
     String query = "select c from CanonicalCourseImpl c where c.parentId="+canonicalCourseUuid;
@@ -384,7 +372,6 @@ public class CourseManagementManagerImpl
      *
      * @param canonicalCourseUuid
      * @return a list of course offerings
-     * @author Mark Norton
      */
   public List getCourseOfferings(String canonicalCourseUuid) {
     String query = "select c from CourseOfferingImpl c and c.canonicalCourseUuid=?";
@@ -401,7 +388,6 @@ public class CourseManagementManagerImpl
      *
      * @param courseOfferingUuid
      * @return a list of course sections
-     * @author Mark Norton
      */
   public List getCourseSections(String courseOfferingUuid) {
     String query = "select s from CourseSectionImpl s where s.courseOfferingUuid=? and s.parentId=null";
@@ -418,7 +404,6 @@ public class CourseManagementManagerImpl
      *
      * @param courseSectionUuid
      * @return a list of course sub-sections
-     * @author Mark Norton
      */
   public List getSubSections(String courseSectionUuid) {
     String query = "select s from CourseSectionImpl s where s.parentSection.uuid=?";
@@ -435,7 +420,6 @@ public class CourseManagementManagerImpl
      *
      * @param uuid
      * @return a session
-     * @author Mark Norton
      */
   public List getSessions() {
     String query = "select s from SessionImpl s";
@@ -448,7 +432,6 @@ public class CourseManagementManagerImpl
      *
      * @param status
      * @return a list of canoncial courses.
-     * @author Mark Norton
      */
   public List getCanonicalCoursesByType(CanonicalCourseStatusType status) {
     String query = "select c from CanonicalCourseImpl c where c.canonicalCourseStatus.canonicalCourseStatusTypeId=?";
@@ -466,7 +449,6 @@ public class CourseManagementManagerImpl
      * @param canonicalCourseUuid - this is the parentId
      * @param status
      * @return a list of canonical courses
-     * @author Mark Norton
      */
   public List getCanonicalCoursesByType(String canonicalCourseUuid,
                                         CanonicalCourseStatusType status) {
@@ -485,7 +467,6 @@ public class CourseManagementManagerImpl
      * @param canonicalCourseUuid
      * @param type
      * @return a list of course offerings
-     * @author Mark Norton
      */
   public List getCourseOfferingsByType(String canonicalCourseUuid,
                                        CourseOfferingType type) {
@@ -507,7 +488,6 @@ public class CourseManagementManagerImpl
      * @param courseOfferingUuid
      * @param type
      * @return a list of sections
-     * @author Mark Norton
      */
   public List getCourseSectionsByType(String courseOfferingUuid,
                                       CourseSectionType type) {
@@ -529,7 +509,6 @@ public class CourseManagementManagerImpl
      * @param courseSectionUuid
      * @param type
      * @return a list of sub-sections
-     * @author Mark Norton
      */
   public List getSubSectionsByType(String courseSectionUuid,
                                    CourseSectionType type) {
@@ -585,7 +564,6 @@ public class CourseManagementManagerImpl
      *
      * @param uuid
      * @return a session
-     * @author Mark Norton
      */
   public Session getSession(String uuid) {
     String query = "select t from SessionImpl t where t.uuid=?";
