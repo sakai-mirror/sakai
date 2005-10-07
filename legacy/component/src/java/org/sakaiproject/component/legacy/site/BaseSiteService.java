@@ -455,6 +455,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// if not found
 		if (rv == null) throw new IdUnusedException(id);
 
+		// get all of the site loaded
+		rv.loadAll();
+
 		// track it - we don't track site access -ggolden
 		// EventTrackingService.post(EventTrackingService.newEvent(SECURE_ACCESS_SITE, site.getReference()));
 
@@ -4252,6 +4255,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		public ResourcePropertiesEdit getPropertiesEdit()
 		{
 			return m_properties;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public String toString()
+		{
+			return m_title + " (" + m_id + ")";
 		}
 	}
 
