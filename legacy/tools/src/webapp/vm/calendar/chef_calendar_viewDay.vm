@@ -76,7 +76,7 @@
 						#elseif ($day_of_Week == 7)
 						$tlang.getString("java.sat")
 					#end
-					$nameOfMonth $date.Day, $date.Year</span>
+					$nameOfMonth $date.Day, $date.Year $timezone</span>
 				
 				#set($isToday = false)
 				#if ($date.Year == $todayYear)

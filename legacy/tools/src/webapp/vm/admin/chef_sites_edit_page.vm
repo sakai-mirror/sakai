@@ -44,7 +44,7 @@
 					</td>
 					<td>
 						#foreach ($layout in $layouts)
-							<input type="radio" name="layout" id="layout$velocityCount" value="$velocityCount" #if($velocityCount==($page.Layout+1))checked="checked"#end />
+							<input type="radio" name="layout" id="layout$velocityCount" value="$velocityCount" #if($velocityCount==($page.LayoutWithPopup+1))checked="checked"#end />
 							<label for="layout$velocityCount">$layout</label> <br />
 						#end							
 					</td>

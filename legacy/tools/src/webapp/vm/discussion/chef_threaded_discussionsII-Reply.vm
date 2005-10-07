@@ -1,6 +1,6 @@
 <div class="portletBody">
 	<h3>
-		##$tlang.getString("rep.resto") "$validator.escapeHtml($currentMessage.getDiscussionHeader().getSubject())" $tlang.getString("rep.by") $validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFull())
+		##$tlang.getString("rep.resto") "$validator.escapeHtml($currentMessage.getDiscussionHeader().getSubject())" $tlang.getString("rep.by") $validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFullZ())
 		$tlang.getString("rep.newrep")
 	</h3>
 	#if ($alertMessage)
@@ -23,7 +23,7 @@
 				$tlang.getString("gen.fro")
 			</th>
 			<td>
-				$validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFull())
+				$validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFullZ())
 			</td>
 		</tr> 
 		<tr>
@@ -109,7 +109,7 @@
 			<h4>$tlang.getString("rep.yourrep")</h4>
 			<p class="shorttext">
 				<label for="">$tlang.getString("gen.dat")</label>
-					$realDate.toStringLocalFull()
+					$realDate.toStringLocalFullZ()
 			</p>
 			<p class="shorttext">
 				<span class="reqStar">*</span>

@@ -76,6 +76,7 @@
 							#end
 							$startTime - $endHour:#if(($endMin == 0)||($endMin == 5))0$endMin#else$endMin#end $endTimeType
 						#end
+						$timezone
 					</td>
 			</tr>
 			#if (!$event.DescriptionFormatted.equals(""))

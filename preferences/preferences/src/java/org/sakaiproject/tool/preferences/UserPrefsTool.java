@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.Arrays;
+import java.util.TimeZone;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -45,6 +47,7 @@ import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
+import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.preference.Preferences;
 import org.sakaiproject.service.legacy.preference.PreferencesEdit;
 import org.sakaiproject.service.legacy.preference.PreferencesService;
@@ -194,14 +197,18 @@ public class UserPrefsTool
   //	/** The user id (from the end user) to edit. */
   //	protected String m_userId = null;
   /** For display and selection of Items in JSF-- edit.jsp */
-  private List prefExcludeItems = new ArrayList();;
-  private List prefOrderItems = new ArrayList();;
+  private List prefExcludeItems = new ArrayList();
+  private List prefOrderItems = new ArrayList();
+  private List prefTimeZones = new ArrayList();
   private String[] selectedExcludeItems;
   private String[] selectedOrderItems;
   protected final static String EXCLUDE_SITE_LISTS = "exclude";
   protected final static String ORDER_SITE_LISTS = "order";
   protected boolean isNewUser = false;
   protected boolean tabUpdated=false ;		//display of text message upon updation
+  // user's currently selected time zone
+  private TimeZone m_timeZone = null;
+  
   /** The user id retrieved from UsageSessionService	*/
   private String userId = "";
   
@@ -249,6 +256,35 @@ public class UserPrefsTool
   }
 
   /**
+   * @return Returns the prefTimeZones.
+   */
+  public List getPrefTimeZones()
+  {
+    if ( prefTimeZones.size() == 0 )
+    {
+       String[] timeZoneArray = TimeZone.getAvailableIDs();
+       Arrays.sort( timeZoneArray );
+       for ( int i=0; i<timeZoneArray.length; i++ )
+          prefTimeZones.add( new SelectItem(timeZoneArray[i], timeZoneArray[i]) );
+    }
+      
+    return prefTimeZones;
+  }
+
+  /**
+   * @param prefTimeZoness The prefTimeZones to set.
+   */
+  public void setPrefTimeZones(List prefTimeZones)
+  {
+    if (LOG.isDebugEnabled())
+    {
+      LOG.debug("setPrefTimeZones(List " + prefTimeZones + ")");
+    }
+
+    this.prefTimeZones = prefTimeZones;
+  }
+
+  /**
    * @return Returns the selectedExcludeItems.
    */
   public String[] getSelectedExcludeItems()
@@ -289,6 +325,35 @@ public class UserPrefsTool
     }
 
     this.selectedOrderItems = selectedOrderItems;
+  }
+
+  /**
+   * @return Returns the user's selected TimeZone ID
+   */
+  public String getSelectedTimeZone()
+  {
+     if ( m_timeZone != null )
+        return m_timeZone.getID();
+             
+     Preferences prefs = (PreferencesEdit) m_preferencesService
+         .getPreferences(getUserId());
+     ResourceProperties props = prefs.getProperties(TimeService.SERVICE_NAME);
+     String timeZone = props.getProperty( TimeService.TIMEZONE_KEY );
+        
+     if (hasValue(timeZone))
+        m_timeZone = TimeZone.getTimeZone( timeZone );
+     else
+        m_timeZone = TimeZone.getDefault();
+        
+     return m_timeZone.getID();
+  }
+
+  /**
+   * @param selectedTimeZone The selectedTimeZone to set.
+   */
+  public void setSelectedTimeZone(String selectedTimeZone)
+  {
+    m_timeZone = TimeZone.getTimeZone( selectedTimeZone );
   }
 
   /**
@@ -704,6 +769,19 @@ public class UserPrefsTool
   }
 
   /**
+   * Process the cancel command from the edit view.
+   * @return navigation outcome to timezone page (list)
+   */
+  public String processActionTZFrmEdit()
+  {
+    LOG.debug("processActionTZFrmEdit()");
+
+    cancelEdit();
+    // navigation page data are loaded through getter method as navigation is the default page for 'sakai.preferences' tool.
+    return "timezone";
+  }
+
+  /**
    * This is called from edit page for navigation to refresh page
    * @return navigation outcome to refresh page (refresh)
    */
@@ -734,6 +812,7 @@ public class UserPrefsTool
     
     tabUpdated=false;
     notiUpdated=false;
+    tzUpdated=false;    
     refreshUpdated=false;
   }
 
@@ -890,6 +969,7 @@ public class UserPrefsTool
   private String selectedRsrcItem = "";
   private String selectedSyllItem = ""; //syllabus notification
   protected boolean notiUpdated=false ;
+  protected boolean tzUpdated=false;  
   ///////////////////////////////////		GETTER AND SETTER		///////////////////////////////////
   //TODO chec for any preprocessor for handling request for first time. This can simplify getter() methods as below	
   /**
@@ -1052,6 +1132,22 @@ public class UserPrefsTool
   {
     this.notiUpdated = notiUpdated;
   }
+  
+  /**
+   * @return Returns the tzUpdated.
+   */
+  public boolean getTzUpdated()
+  {
+    return tzUpdated;
+  }
+  /**
+   * @param notiUpdated The tzUpdated to set.
+   */
+  public void setTzUpdated(boolean tzUpdated)
+  {
+    this.tzUpdated = tzUpdated;
+  }
+  
   /////////////////////////////////////////NOTIFICATION ACTION - copied from NotificationprefsAction.java////////
   //TODO - clean up method call. These are basically copied from legacy legacy implementations.
   /**
@@ -1097,6 +1193,37 @@ public class UserPrefsTool
 
     loadNotiData();
     return "noti";
+  }
+
+  /**
+   * Process the save command from the edit view.
+   * @return navigation outcome to timezone page
+   */
+  public String processActionTzSave()
+  {
+     setUserEditingOn();
+     ResourcePropertiesEdit props = m_edit.getPropertiesEdit( TimeService.SERVICE_NAME );
+     props.addProperty( TimeService.TIMEZONE_KEY, m_timeZone.getID()  );  
+     m_preferencesService.commit(m_edit);
+     TimeService.clearLocalTimeZone( getUserId() );
+    
+     tzUpdated=true ;		//set for display of text massage
+     return "timezone";
+  }
+
+  /**
+   * process notification cancel
+   * @return navigation outcome to timezone page
+   */
+  public String processActionTzCancel()
+  {
+    LOG.debug("processActionTzCancel()");
+    
+    // restore original time zone
+    m_timeZone = null; 
+    getSelectedTimeZone();
+    
+    return "timezone";
   }
 
   /**

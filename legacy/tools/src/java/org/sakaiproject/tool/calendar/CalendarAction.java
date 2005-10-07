@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
+import java.util.TimeZone;
 
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
@@ -2120,6 +2121,9 @@ extends VelocityPortletStateAction
 			buildFrequencyContext(portlet, context, runData, state);
 		}
 
+      TimeZone timeZone = TimeService.getLocalTimeZone();
+      context.put("timezone", timeZone.getDisplayName(true, TimeZone.SHORT) );
+      
 		context.put("message", state.getState());
 		context.put("state", state.getKey());
 		context.put("tlang",rb);

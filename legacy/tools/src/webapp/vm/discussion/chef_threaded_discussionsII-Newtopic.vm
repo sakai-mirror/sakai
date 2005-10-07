@@ -63,7 +63,7 @@
 					<label for="">
 						$tlang.getString("gen.dat")
 					</label>
-					$date.toStringLocalFull()
+					$date.toStringLocalFullZ()
 				</p>	
 				<p class="shorttext">
 					<span class="reqStar">*</span>

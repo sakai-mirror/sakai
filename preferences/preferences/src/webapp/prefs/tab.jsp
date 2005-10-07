@@ -14,6 +14,7 @@
 			  <%--sakai:tool_bar_item action="#{UserPrefsTool.processActionRefreshFrmEdit}" value="Refresh" /--%>
  		    <sakai:tool_bar_item action="#{UserPrefsTool.processActionNotiFrmEdit}" value="Notifications" />
  		    <sakai:tool_bar_item value="Customize Tabs" />
+ 		    <sakai:tool_bar_item action="#{UserPrefsTool.processActionTZFrmEdit}" value="Time Zone" />
    	  	</sakai:tool_bar>
 
 				<br />

@@ -80,7 +80,7 @@
 										$tlang.getString("control.dat")
 									</th>
 									<td>
-										$currentMessage.getDiscussionHeader().getDate().toStringLocalFull()
+										$currentMessage.getDiscussionHeader().getDate().toStringLocalFullZ()
 									</td>
 								</tr>
 							</table>
@@ -183,7 +183,7 @@
 										$tlang.getString("gen.fro")
 									</th>
 									<td>
-									 	$validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFull())
+									 	$validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFullZ())
 									</td>
 								</tr>
 								<tr>

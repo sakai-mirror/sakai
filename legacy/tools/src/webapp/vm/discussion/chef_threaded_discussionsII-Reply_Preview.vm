@@ -23,7 +23,7 @@
 					$tlang.getString("gen.fro2")
 				</th>
 				<td>
-					$validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFull())
+					$validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFullZ())
 				</td>
 			</tr>
 			<tr>
@@ -40,7 +40,7 @@
 					$tlang.getString("gen.fro2")
 				</th>
 				<td>
-					$validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFull())
+					$validator.escapeHtml($currentMessage.getDiscussionHeader().getFrom().getDisplayName()) ($currentMessage.getDiscussionHeader().getDate().toStringLocalFullZ())
 				</td>
 			</tr> 
 			<tr>

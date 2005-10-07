@@ -40,7 +40,7 @@
 					<span class="alert">$tlang.getString("gen.dra") </span>
 				#end
 				$validator.escapeHtml($message.Header.subject)
-				<p class="instruction" style="font-size:.9em;margin-top:.2em;margin-left:0">$validator.escapeHtml($message.Header.From.DisplayName) - ($message.Header.Date.toStringLocalFull())</p>
+				<p class="instruction" style="font-size:.9em;margin-top:.2em;margin-left:0">$validator.escapeHtml($message.Header.From.DisplayName) - ($message.Header.Date.toStringLocalFullZ())</p>
 			</div>
 				#foreach ($delete_item in $delete_messages)
 					#set ($depthUnit="em")
@@ -49,7 +49,7 @@
 								<span class="chefAlert">$tlang.getString("gen.dra") </span>
 							#end
 							$validator.escapeHtml($delete_item.Header.subject)
-							<p class="instruction" style="font-size:.9em;margin-top:.2em;margin-left:0">$validator.escapeHtml($delete_item.Header.From.DisplayName) - ($delete_item.Header.Date.toStringLocalFull())
+							<p class="instruction" style="font-size:.9em;margin-top:.2em;margin-left:0">$validator.escapeHtml($delete_item.Header.From.DisplayName) - ($delete_item.Header.Date.toStringLocalFullZ())
 						</div>	
 				#end
 	

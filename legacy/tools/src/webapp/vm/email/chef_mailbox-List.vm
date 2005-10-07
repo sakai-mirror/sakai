@@ -152,7 +152,7 @@
 							#end
 						</a>
 					</td>
-					<td headers="date">$item.Header.DateSent.toStringLocalFull()</td>
+					<td headers="date">$item.Header.DateSent.toStringLocalFullZ()</td>
 				</tr>
 			#end		
 		</table>

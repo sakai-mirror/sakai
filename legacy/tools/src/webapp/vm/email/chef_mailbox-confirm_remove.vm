@@ -15,7 +15,7 @@
 			<tr>
 				<td headers ="from">$validator.escapeHtml($email.Header.FromAddress)</td>
 				<td headers="subject">$validator.escapeHtml($email.Header.Subject)</td>
-				<td headers="date">$email.Header.DateSent.toStringLocalFull()</td>
+				<td headers="date">$email.Header.DateSent.toStringLocalFullZ()</td>
 			</tr>
 		</table>
 		<div class="act">

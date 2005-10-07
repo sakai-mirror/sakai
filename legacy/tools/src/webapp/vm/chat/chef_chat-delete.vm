@@ -15,7 +15,7 @@
 			</tr>
 			<tr>
 				<th>$tlang.getString("gen.date")</th> 
-				<td>$message.Header.Date.toStringLocalFull()</td>
+				<td>$message.Header.Date.toStringLocalFullZ()</td>
 			</tr>
 		</table>	
 				<h4>$tlang.getString("gen.mess")</h4>

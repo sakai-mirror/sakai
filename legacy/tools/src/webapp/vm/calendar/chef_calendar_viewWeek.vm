@@ -22,7 +22,7 @@
 			</form>
 		</div>				
 		<div class="rightNav">
-			<span class="instruction" style="margin-bottom:.3em">$week.getWeek(0).getNameOfMonth() $week.getWeek(0).getDay(), $week.getWeek(0).Year - $week.getWeek(6).getNameOfMonth() $week.getWeek(6).getDay(), $week.getWeek(6).Year</span>	
+			<span class="instruction" style="margin-bottom:.3em">$week.getWeek(0).getNameOfMonth() $week.getWeek(0).getDay(), $week.getWeek(0).Year - $week.getWeek(6).getNameOfMonth() $week.getWeek(6).getDay(), $week.getWeek(6).Year $timezone</span>	
 			<form name="weekform" action="#toolForm("$action")" method="post" style="margin-top:0">
 				<input type="submit" name="eventSubmit_doPrev" value="$tlang.getString('vieww.laswk')" title="$tlang.getString('vieww.gotop')" />
 				<input type="submit" name="eventSubmit_doToday" value="$tlang.getString('view.today')" title ="$tlang.getString('view.gotoday')"/>

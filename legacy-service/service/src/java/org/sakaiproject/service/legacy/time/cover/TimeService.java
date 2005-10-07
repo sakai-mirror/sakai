@@ -34,6 +34,10 @@ import org.sakaiproject.service.framework.component.cover.ComponentManager;
 */
 public class TimeService
 {
+	public static java.lang.String SERVICE_NAME = org.sakaiproject.service.legacy.time.TimeService.SERVICE_NAME;
+      
+	public static java.lang.String TIMEZONE_KEY = org.sakaiproject.service.legacy.time.TimeService.TIMEZONE_KEY;
+   
 	/**
 	 * Access the component instance: special cover only method.
 	 * @return the component instance.
@@ -180,6 +184,15 @@ public class TimeService
 		return service.getLocalTimeZone();
 	}
 
+	public static boolean clearLocalTimeZone( String param0 )
+	{
+		org.sakaiproject.service.legacy.time.TimeService service = getInstance();
+		if (service == null)
+			return false;
+
+		return service.clearLocalTimeZone( param0 );
+	}
+                
 	public static java.util.GregorianCalendar getCalendar(java.util.TimeZone param0, int param1, int param2, int param3, int param4, int param5, int param6, int param7)
 	{
 		org.sakaiproject.service.legacy.time.TimeService service = getInstance();

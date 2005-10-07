@@ -25,7 +25,7 @@
 	<table class ="itemSummary">
 		<tr>
 			<th>$tlang.getString("gen.dat")</th>
-			<td>$email.Header.DateSent.toStringLocalFull()</td>
+			<td>$email.Header.DateSent.toStringLocalFullZ()</td>
 		</tr>
 		<tr>
 			<th>$tlang.getString("gen.fro3")</th>

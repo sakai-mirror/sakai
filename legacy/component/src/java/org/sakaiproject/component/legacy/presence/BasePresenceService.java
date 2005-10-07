@@ -206,6 +206,8 @@ public abstract class BasePresenceService implements PresenceService
 		{
 			// presence relates a usage session (the current one) with a location
 			UsageSession curSession = m_usageSessionService.getSession();
+			if ( curSession == null )
+				return;
 
 			// update the storage
 			m_storage.setPresence(curSession.getId(), locationId);

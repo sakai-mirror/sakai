@@ -37,6 +37,12 @@ import java.util.TimeZone;
  */
 public interface TimeService
 {
+	/** This string can be used to find the service in the service manager. */
+	public static final String SERVICE_NAME = TimeService.class.getName();
+   
+	/** Preferences key for user's time zone */
+	public static final String TIMEZONE_KEY = "timezone";
+   
 	/**
 	 * Get a time object.
 	 * @return A time object, set to now.
@@ -161,6 +167,12 @@ public interface TimeService
 	 * @return The local TimeZone.
 	 */
 	TimeZone getLocalTimeZone();
+
+	/**
+	 * Clear local time zone for specified user
+	 * @return true if successful
+	 */
+	boolean clearLocalTimeZone( String userId );
 
 	/**
 	 * Get a Calendar, set to this zone and these values.

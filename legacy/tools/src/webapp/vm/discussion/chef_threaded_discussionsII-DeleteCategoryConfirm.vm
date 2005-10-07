@@ -21,7 +21,7 @@
 					$validator.escapeHtml($delete_item.Header.subject)
 					<p class="instruction" style="font-size:.9em;margin-top:.2em;margin-left:0">
 						$validator.escapeHtml($delete_item.Header.From.DisplayName)
-						$delete_item.Header.Date.toStringLocalFull()
+						$delete_item.Header.Date.toStringLocalFullZ()
 					</p>	
 				</div>	
 				#end

@@ -130,7 +130,7 @@ doubleDeep = true;
 											#set($lastestMessage = $channel.getThreadLatestReply($message))
 											## always show the "created by" not "last modified by"
 											$validator.escapeHtml($message.getDiscussionHeader().getFrom().getDisplayName())
-											$message.getDiscussionHeader().getDate().toStringLocalFull()
+											$message.getDiscussionHeader().getDate().toStringLocalFullZ()
 											</span>
 											#if ($size > 0)
 												<img src = "#imageLink("sakai/attachments.gif")" border="0" alt="$tlang.getString("list.hasatt")" />
@@ -172,7 +172,7 @@ doubleDeep = true;
 											#set($lastestMessage = $channel.getThreadLatestReply($message))
 											## always show the "created by" not "last modified by"
 											$validator.escapeHtml($message.getDiscussionHeader().getFrom().getDisplayName())
-											$message.getDiscussionHeader().getDate().toStringLocalFull()</span>
+											$message.getDiscussionHeader().getDate().toStringLocalFullZ()</span>
 											#if ($size > 0)
 												<img src = "#imageLink("sakai/attachments.gif")" border="0" alt="$tlang.getString("list.hasatt")" />
 											#end
