@@ -205,13 +205,13 @@ public class AuthzGroupService
 		return service.getUsersIsAllowed(param0, param1);
 	}
 
-	public static java.util.Set getAuthzGroupsIsAllowed(java.lang.String param0, java.lang.String param1)
+	public static java.util.Set getAuthzGroupsIsAllowed(java.lang.String param0, java.lang.String param1, java.util.Collection param2)
 	{
 		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
 		if (service == null)
 			return null;
 
-		return service.getAuthzGroupsIsAllowed(param0, param1);
+		return service.getAuthzGroupsIsAllowed(param0, param1, param2);
 	}
 
 	public static java.util.Set getAllowedFunctions(java.lang.String param0, java.util.Collection param1)

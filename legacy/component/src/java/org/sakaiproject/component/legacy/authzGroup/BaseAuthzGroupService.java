@@ -739,9 +739,9 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	/**
 	 * {@inheritDoc}
 	 */
-	public Set getAuthzGroupsIsAllowed(String userId, String function)
+	public Set getAuthzGroupsIsAllowed(String userId, String function, Collection azGroups)
 	{
-		return m_storage.getAuthzGroupsIsAllowed(userId, function);
+		return m_storage.getAuthzGroupsIsAllowed(userId, function, azGroups);
 	}
 
 	/**
@@ -755,9 +755,9 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 		m_storage.refreshUser(userId, providerGrants);
 
 		// update site security for this user - get the user's realms for the three site locks
-		Set updAuthzGroups = getAuthzGroupsIsAllowed(userId, SiteService.SECURE_UPDATE_SITE);
-		Set unpAuthzGroups = getAuthzGroupsIsAllowed(userId, SiteService.SITE_VISIT_UNPUBLISHED);
-		Set visitAuthzGroups = getAuthzGroupsIsAllowed(userId, SiteService.SITE_VISIT);
+		Set updAuthzGroups = getAuthzGroupsIsAllowed(userId, SiteService.SECURE_UPDATE_SITE, null);
+		Set unpAuthzGroups = getAuthzGroupsIsAllowed(userId, SiteService.SITE_VISIT_UNPUBLISHED, null);
+		Set visitAuthzGroups = getAuthzGroupsIsAllowed(userId, SiteService.SITE_VISIT, null);
 
 		// convert from azGroup ids (potential site references) to site ids for those that are site,
 		// skipping special and user sites other than our user's
@@ -2505,9 +2505,11 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 		 *        The user id.
 		 * @param function
 		 *        The function to check.
+		 * @param azGroups
+		 *        The Collection of AuthzGroup ids to search; if null, search them all.
 		 * @return the Set (String) of AuthzGroup ids in which this user is allowed to perform this function.
 		 */
-		Set getAuthzGroupsIsAllowed(String userId, String function);
+		Set getAuthzGroupsIsAllowed(String userId, String function, Collection azGroups);
 
 		/**
 		 * Refresh this user's roles in any AuthzGroup that has an entry in the map; the user's new role is in the map.

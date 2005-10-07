@@ -284,9 +284,11 @@ public interface AuthzGroupService extends EntityProducer
 	 *        The user id.
 	 * @param function
 	 *        The function to check.
+	 * @param azGroups
+	 *        The Collection of AuthzGroup ids to search; if null, search them all.
 	 * @return the Set (String) of AuthzGroup ids in which this user is allowed to perform this function.
 	 */
-	Set getAuthzGroupsIsAllowed(String userId, String function);
+	Set getAuthzGroupsIsAllowed(String userId, String function, Collection azGroups);
 
 	/**
 	 * Get the set of functions that users with this role in these AuthzGroups are allowed to perform.

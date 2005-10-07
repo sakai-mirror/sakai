@@ -691,7 +691,7 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 		/**
 		 * {@inheritDoc}
 		 */
-		public Set getAuthzGroupsIsAllowed(String userId, String lock)
+		public Set getAuthzGroupsIsAllowed(String userId, String lock, Collection azGroups)
 		{
 			// Just like unlock, except we use all realms and get their ids
 			// Note: consider over all realms just those realms where there's a grant of a role that satisfies the lock
@@ -706,12 +706,22 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 			sqlBuf.append("select SR.REALM_ID ");
 			sqlBuf.append("from SAKAI_REALM_FUNCTION SRF ");
 			sqlBuf.append("inner join SAKAI_REALM_RL_FN SRRF on SRF.FUNCTION_KEY = SRRF.FUNCTION_KEY ");
-			sqlBuf
-					.append("inner join SAKAI_REALM_RL_GR SRRG on SRRF.ROLE_KEY = SRRG.ROLE_KEY and SRRF.REALM_KEY = SRRG.REALM_KEY ");
+			sqlBuf.append("inner join SAKAI_REALM_RL_GR SRRG on SRRF.ROLE_KEY = SRRG.ROLE_KEY and SRRF.REALM_KEY = SRRG.REALM_KEY ");
 			sqlBuf.append("inner join SAKAI_REALM SR on SRRF.REALM_KEY = SR.REALM_KEY ");
 			sqlBuf.append("where SRF.FUNCTION_NAME = ? ");
 			sqlBuf.append("and SRRG.USER_ID = ? ");
-			sqlBuf.append("and SRRG.ACTIVE = '1'");
+			sqlBuf.append("and SRRG.ACTIVE = '1' ");
+			
+			if (azGroups != null)
+			{
+				sqlBuf.append("and SR.REALM_ID in (");
+				for (int i = 0; i < azGroups.size()-1; i++)
+				{
+					sqlBuf.append("?,");
+				}
+				sqlBuf.append("?) ");
+			}
+
 			sql = sqlBuf.toString();
 
 			// String statement = "select distinct REALM_ID from SAKAI_REALM where REALM_KEY in (" +
@@ -720,9 +730,22 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 			// "and ROLE_KEY in (select ROLE_KEY from SAKAI_REALM_RL_GR where ACTIVE = '1' and USER_ID = ? and SAKAI_REALM_RL_GR.REALM_KEY=SAKAI_REALM_RL_FN.REALM_KEY)" +
 			// ")";
 
-			Object[] fields = new Object[2];
+			int size = 2;
+			if (azGroups != null)
+			{
+				size += azGroups.size();
+			}
+			Object[] fields = new Object[size];
 			fields[0] = lock;
 			fields[1] = userId;
+			if (azGroups != null)
+			{
+				int pos = 2;
+				for (Iterator i = azGroups.iterator(); i.hasNext();)
+				{
+					fields[pos++] = i.next();
+				}
+			}
 
 			// Get resultset
 			List results = m_sql.dbRead(sql, fields, null);

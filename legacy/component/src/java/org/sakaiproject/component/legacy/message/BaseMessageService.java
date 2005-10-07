@@ -73,6 +73,8 @@ import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 import org.sakaiproject.service.legacy.message.MessageService;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
+import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
@@ -1116,35 +1118,64 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 		Collection rv = new Vector();
 
-		// for MessageService messages and channels:
-		// the message's realm, the channel's realm
+		// for MessageService messages:
+		// if access set to CHANNEL (or PUBLIC), use the message, channel and site authzGroups.
+		// if access set to SECTIONED, use the message, and the sections, but not the channel or site authzGroups.
+		// for Channels, use the channel and site authzGroups.
 		try
 		{
-			String channelId = null;
-
-			// if a message, try this realm
+			// for message
 			if (REF_TYPE_MESSAGE.equals(ref.getSubType()))
 			{
-				// a message
+				// message
 				rv.add(ref.getReference());
-				channelId = ref.getContainer();
-			}
 
-			// otherwise a channel - get the id
+				// get the channel to get the message to get section information
+				// TODO: check for efficiency, cache and thread local caching usage -ggolden
+				boolean sectioned = false;
+				Collection sections = null;
+				String channelRef = channelReference(ref.getContext(), ref.getContainer());
+				MessageChannel c = findChannel(channelRef);
+				if (c != null)
+				{
+					Message m = ((BaseMessageChannelEdit) c).findMessage(ref.getId());
+					if (m != null)
+					{
+						sectioned = MessageHeader.MessageAccess.SECTIONED == m.getHeader().getAccess();
+						sections = m.getHeader().getSections();
+					}
+				}
+
+				if (sectioned)
+				{
+					// sections
+					rv.addAll(sections);
+				}
+
+				// not sectioned
+				else
+				{
+					// channel
+					rv.add(channelRef);
+				
+					// site
+					ref.addSiteContextAuthzGroup(rv);
+				}
+			}
+			
+			// for channel
 			else
 			{
-				channelId = ref.getId();
+				// channel
+				rv.add(channelReference(ref.getContext(), ref.getId()));
+				
+				// site
+				ref.addSiteContextAuthzGroup(rv);
 			}
-
-			// try the channel's realm
-			rv.add(channelReference(ref.getContext(), channelId));
-
-			// site
-			ref.addSiteContextAuthzGroup(rv);
 		}
 		catch (Throwable e)
 		{
-			Log.warn("chef", this + ".getRealms(): " + e);
+			Log.warn("chef", this + ".getEntityAuthzGroups(): " + e);
 		}
 		
 		return rv;
@@ -1714,6 +1745,14 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		} // allowGetMessages
 
 		/**
+		 * @inheritDoc
+		 */
+		public Collection getSectionsAllowGetMessage()
+		{
+			return getSectionsAllowFunction(SECURE_READ);
+		}
+
+		/**
 		* Return a list of all or filtered messages in the channel.
 		* The order in which the messages will be found in the iteration is by date, oldest
 		* first if ascending is true, newest first if ascending is false.
@@ -1921,6 +1960,14 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		} // allowAddMessage
 
 		/**
+		 * @inheritDoc
+		 */
+		public Collection getSectionsAllowAddMessage()
+		{
+			return getSectionsAllowFunction(SECURE_ADD);
+		}
+
+		/**
 		* Add a new message to this channel.
 		* Must commitEdit() to make official, or cancelEdit() when done!
 		* @return The newly added message.
@@ -1959,7 +2006,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 			Message msgFromXml = (Message) newResource(this, el);
 
-			// reserve a user with this id from the info store - if it's in use, this will return null
+			// reserve a message with this id from the info store - if it's in use, this will return null
 			MessageEdit msg = m_storage.putMessage(this, msgFromXml.getId());
 			if (msg == null)
 			{
@@ -1968,6 +2015,14 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 			// transfer from the XML read object to the Edit
 			((BaseMessageEdit) msg).set(msgFromXml);
+			
+			// clear the sections and mark the message as channel
+			// TODO: might be better done in merge(), but easier here -ggolden
+			if (MessageHeader.MessageAccess.SECTIONED == msg.getHeader().getAccess())
+			{
+				msg.getHeaderEdit().setAccess(MessageHeader.MessageAccess.CHANNEL);
+				((BaseMessageHeaderEdit) msg.getHeaderEdit()).m_sections = new Vector();
+			}
 
 			((BaseMessageEdit) msg).setEvent(SECURE_ADD);
 
@@ -2380,6 +2435,46 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			m_active = false;
 
 		} // closeEdit
+
+		/**
+		 * Get the sections of this channel's contex-site that the end user has permission to "function" in.
+		 * @param function The function to check
+		 */
+		protected Collection getSectionsAllowFunction(String function)
+		{
+			Collection rv = new Vector();
+
+			try
+			{
+				// get the channel's site's sections
+				Site site = SiteService.getSite(m_context);
+				Collection sections = site.getSections();
+				
+				// get a list of the section refs, which are authzGroup ids
+				Collection sectionRefs = new Vector();
+				for (Iterator i = sections.iterator(); i.hasNext();)
+				{
+					Section section = (Section) i.next();
+					sectionRefs.add(section.getReference());
+				}
+			
+				// ask the authzGroup service to filter them down based on function
+				sectionRefs = AuthzGroupService.getAuthzGroupsIsAllowed(UserDirectoryService.getCurrentUser().getId(), function, sectionRefs);
+				
+				// pick the Section objects from the site's sections to return, those that are in the sectionRefs list
+				for (Iterator i = sections.iterator(); i.hasNext();)
+				{
+					Section section = (Section) i.next();
+					if (sectionRefs.contains(section.getReference()))
+					{
+						rv.add(section);
+					}
+				}
+			}
+			catch (IdUnusedException e) {}
+
+			return rv;
+		}
 
 		/*******************************************************************************
 		* SessionBindingListener implementation
@@ -2822,6 +2917,12 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		/** The draft status for the message. */
 		protected boolean m_draft = false;
 
+		/** The Collection of sections (authorization group id strings). */
+		protected Collection m_sections = new Vector();
+
+		/** The message access. */
+		protected MessageAccess m_access = MessageAccess.CHANNEL;
+
 		/**
 		* Construct.  Time and From set automatically.
 		* @param id The message id.
@@ -2854,9 +2955,12 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			m_date = TimeService.newTime(other.getDate().getTime());
 			m_from = other.getFrom();
 			m_draft = other.getDraft();
+			m_access = other.getAccess();
 
 			m_attachments = m_entityManager.newReferenceList();
 			replaceAttachments(other.getAttachments());
+
+			m_sections = new Vector(other.getSections());
 
 		} // BaseMessageHeaderEdit
 
@@ -2884,7 +2988,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			{
 			}
 
-			// attachments
+			// attachments and sections
 			m_attachments = m_entityManager.newReferenceList();
 
 			NodeList children = el.getChildNodes();
@@ -2901,7 +3005,20 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 					{
 						m_attachments.add(m_entityManager.newReference(element.getAttribute("relative-url")));
 					}
+
+					// look for an section
+					else	 if (element.getTagName().equals("section"))
+					{
+						m_sections.add(element.getAttribute("authzGroup"));
+					}
 				}
+			}
+
+			// extract access
+			MessageAccess access = MessageAccess.fromString(el.getAttribute("access"));
+			if (access != null)
+			{
+				m_access = access;
 			}
 
 		} // BaseMessageHeaderEdit
@@ -2957,6 +3074,62 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		} // setDraft
 
 		/**
+		* @inheritDoc
+		*/
+		public Collection getSections()
+		{
+			return new Vector(m_sections);
+		}
+
+		/**
+		* @inheritDoc
+		*/
+		public void addSection(Section section) throws PermissionException
+		{
+			if (section == null) throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ADD, "null");
+
+			// does the current user have ADD permission in this section's authorization group?
+			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), SECURE_ADD, section.getReference()))
+			{
+				throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ADD, section.getReference());
+			}
+
+			if (!m_sections.contains(section.getReference())) m_sections.add(section.getReference());
+		}
+
+		/**
+		* @inheritDoc
+		*/
+		public void removeSection(Section section) throws PermissionException
+		{
+			if (section == null) throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ADD, "null");
+
+			// does the current user have ADD permission in this section's authorization group?
+			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), SECURE_ADD, section.getReference()))
+			{
+				throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ADD, section.getReference());
+			}
+
+			if (m_sections.contains(section.getReference())) m_sections.remove(section.getReference());
+		}
+
+		/**
+		* @inheritDoc
+		*/
+		public MessageAccess getAccess()
+		{
+			return m_access;
+		}
+
+		/**
+		* @inheritDoc
+		*/
+		public void setAccess(MessageAccess access)
+		{
+			m_access = access;
+		}
+
+		/**
 		* Serialize the resource into XML, adding an element to the doc under the top of the stack element.
 		* @param doc The DOM doc to contain the XML (or null for a string return).
 		* @param stack The DOM elements, the top of which is the containing element of the new "resource" element.
@@ -2979,6 +3152,21 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 					attachment.setAttribute("relative-url", attch.getReference());
 				}
 			}
+
+			// add sections
+			if ((m_sections != null) && (m_sections.size() > 0))
+			{
+				for (Iterator i = m_sections.iterator(); i.hasNext();)
+				{
+					String section = (String) i.next();
+					Element sect = doc.createElement("section");
+					header.appendChild(sect);
+					sect.setAttribute("authzGroup", section);
+				}
+			}
+
+			// add access
+			header.setAttribute("access", m_access.toString());
 
 			return header;
 

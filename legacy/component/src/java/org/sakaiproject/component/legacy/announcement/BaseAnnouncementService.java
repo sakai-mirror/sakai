@@ -280,6 +280,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 		rv[1] = ((Message) r).getHeader().getFrom().getId();
 		rv[2] = ((AnnouncementMessage) r).getAnnouncementHeader().getDraft() ? "1" : "0";
 		rv[3] = r.getProperties().getProperty(ResourceProperties.PROP_PUBVIEW) == null ? "0" : "1";
+		// rv[3] = ((AnnouncementMessage) r).getAnnouncementHeader().getAccess() == MessageHeader.MessageAccess.PUBLIC ? "1" : "0";
 
 		return rv;
 	}
@@ -845,7 +846,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 		{
 			super(el);
 
-			// now extract the subject, draft
+			// extract the subject
 			m_subject = el.getAttribute("subject");
 
 		} // BaseAnnouncementMessageHeaderEdit
