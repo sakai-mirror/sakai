@@ -8,7 +8,7 @@ languages, and completed for the following:
 1) Chinese (Simplified) 
 2) Korean
 
-Currently, the language locale must be defined at boot time, by
+The language locale must currently be defined at boot time, by
 setting the tomcat JAVA_OPTS property in the catalina.sh or catalina.bat file:
 
 ## Define default language locale: Chinese (Simplified) / China
