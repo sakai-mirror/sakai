@@ -2459,7 +2459,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				}
 			
 				// ask the authzGroup service to filter them down based on function
-				sectionRefs = AuthzGroupService.getAuthzGroupsIsAllowed(UserDirectoryService.getCurrentUser().getId(), function, sectionRefs);
+				sectionRefs = AuthzGroupService.getAuthzGroupsIsAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(function), sectionRefs);
 				
 				// pick the Section objects from the site's sections to return, those that are in the sectionRefs list
 				for (Iterator i = sections.iterator(); i.hasNext();)
@@ -3086,12 +3086,12 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public void addSection(Section section) throws PermissionException
 		{
-			if (section == null) throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ADD, "null");
+			if (section == null) throw new PermissionException(UsageSessionService.getSessionUserId(), eventId(SECURE_ADD), "null");
 
 			// does the current user have ADD permission in this section's authorization group?
-			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), SECURE_ADD, section.getReference()))
+			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(SECURE_ADD), section.getReference()))
 			{
-				throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ADD, section.getReference());
+				throw new PermissionException(UsageSessionService.getSessionUserId(), eventId(SECURE_ADD), section.getReference());
 			}
 
 			if (!m_sections.contains(section.getReference())) m_sections.add(section.getReference());
@@ -3102,12 +3102,12 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public void removeSection(Section section) throws PermissionException
 		{
-			if (section == null) throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ADD, "null");
+			if (section == null) throw new PermissionException(UsageSessionService.getSessionUserId(), eventId(SECURE_ADD), "null");
 
 			// does the current user have ADD permission in this section's authorization group?
-			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), SECURE_ADD, section.getReference()))
+			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(SECURE_ADD), section.getReference()))
 			{
-				throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ADD, section.getReference());
+				throw new PermissionException(UsageSessionService.getSessionUserId(), eventId(SECURE_ADD), section.getReference());
 			}
 
 			if (m_sections.contains(section.getReference())) m_sections.remove(section.getReference());
