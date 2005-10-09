@@ -24,6 +24,8 @@
 // package
 package org.sakaiproject.exception;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+
 /**
 * <p>PermissionException indicates an invalid unlock attempt by a user for a lock and a resource.</p>
 *
@@ -77,6 +79,18 @@ public class PermissionException extends Exception
 	public PermissionException(String user, String lock, String resource)
 	{
 		m_user = user;
+		m_lock = lock;
+		m_resource = resource;
+	}
+
+	/**
+	* Construct, using the current session's user id
+	* @param lock The lock name.
+	* @param resource The resource id.
+	*/
+	public PermissionException(String lock, String resource)
+	{
+		m_user = SessionManager.getCurrentSessionUserId();
 		m_lock = lock;
 		m_resource = resource;
 	}

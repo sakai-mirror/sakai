@@ -239,7 +239,30 @@ public class SessionComponent implements SessionManager
 	 */
 	public Session getCurrentSession()
 	{
-		return (Session) m_threadLocalManager.get(CURRENT_SESSION);
+		Session rv = (Session) m_threadLocalManager.get(CURRENT_SESSION);
+		
+		// if we don't have one already current, make one and bind it as current, but don't save it in our by-id table - let it just go away after the thread
+		if (rv == null)
+		{
+			rv = new MySession();
+			setCurrentSession(rv);
+		}
+
+		return rv;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public String getCurrentSessionUserId()
+	{
+		Session s = (Session) m_threadLocalManager.get(CURRENT_SESSION);
+		if (s != null)
+		{
+			return s.getUserId();
+		}
+
+		return null;
 	}
 
 	/**

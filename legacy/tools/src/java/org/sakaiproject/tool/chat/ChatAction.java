@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
@@ -48,7 +49,6 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.chat.ChatChannel;
 import org.sakaiproject.service.legacy.chat.ChatChannelEdit;
 import org.sakaiproject.service.legacy.chat.ChatMessage;
@@ -208,7 +208,7 @@ public class ChatAction
 				ColorMapper mapper = new ColorMapper();
 
 				// always set this user's color to first color (red)
-				mapper.getColor(StringUtil.trimToZero(UsageSessionService.getSessionUserId()));
+				mapper.getColor(StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()));
 				
 				state.setAttribute(STATE_COLOR_MAPPER, mapper);
 			}

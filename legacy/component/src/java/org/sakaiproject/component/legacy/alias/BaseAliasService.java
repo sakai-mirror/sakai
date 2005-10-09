@@ -34,6 +34,7 @@ import java.util.Stack;
 
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -42,7 +43,6 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.MemoryService;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.alias.Alias;
 import org.sakaiproject.service.legacy.alias.AliasEdit;
 import org.sakaiproject.service.legacy.alias.AliasService;
@@ -159,7 +159,7 @@ public abstract class BaseAliasService
 	{
 		if (!unlockCheck(lock, resource))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, resource);
+			throw new PermissionException(lock, resource);
 		}
 
 	}	// unlock
@@ -194,7 +194,7 @@ public abstract class BaseAliasService
 	*/
 	protected void addLiveProperties(ResourcePropertiesEdit props)
 	{
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 
 		props.addProperty(ResourceProperties.PROP_CREATOR, current);
 		props.addProperty(ResourceProperties.PROP_MODIFIED_BY, current);
@@ -210,7 +210,7 @@ public abstract class BaseAliasService
 	*/
 	protected void addLiveUpdateProperties(ResourcePropertiesEdit props)
 	{
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 
 		props.addProperty(ResourceProperties.PROP_MODIFIED_BY, current);
 		props.addProperty(ResourceProperties.PROP_MODIFIED_DATE, TimeService.newTime().toString());
@@ -345,7 +345,7 @@ public abstract class BaseAliasService
 
 		if (!unlockTargetCheck(target))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ADD_ALIAS, target);
+			throw new PermissionException(SECURE_ADD_ALIAS, target);
 		}
 
 		// attempt to register this alias with storage - if it's in use, this will return null
@@ -415,7 +415,7 @@ public abstract class BaseAliasService
 	{
 		if (!unlockTargetCheck(target))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_REMOVE_ALIAS, target);
+			throw new PermissionException(SECURE_REMOVE_ALIAS, target);
 		}
 
 		List all = getAliases(target);

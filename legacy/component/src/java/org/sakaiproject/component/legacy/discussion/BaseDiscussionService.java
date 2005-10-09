@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.component.legacy.message.BaseMessageService;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -40,7 +41,6 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.log.cover.Log;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannel;
@@ -785,10 +785,10 @@ public abstract class BaseDiscussionService
 			// filter out drafts not by this user (unless this user is a super user or has access_draft ability)
 			if (	(msg.getDiscussionHeader()).getDraft()
 				&&	(!SecurityService.isSuperUser())
-				&&	(!msg.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+				&&	(!msg.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 				&&	(!unlockCheck(SECURE_READ_DRAFT, msg.getReference())))
 			{
-				throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_READ, msg.getReference());
+				throw new PermissionException(SECURE_READ, msg.getReference());
 			}
 
 			return msg;
@@ -1093,7 +1093,7 @@ public abstract class BaseDiscussionService
 									|| (catToMatch.equals(((DiscussionMessageHeader)message.getHeader()).getCategory())))
 							&&	( 	(!message.getDiscussionHeader().getDraft())
 									|| (SecurityService.isSuperUser())
-									|| (message.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+									|| (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 									|| (unlockCheck(SECURE_READ_DRAFT, message.getReference()))
 								)
 							)
@@ -1127,7 +1127,7 @@ public abstract class BaseDiscussionService
 									|| (catToMatch.equals(((DiscussionMessageHeader)message.getHeader()).getCategory())))
 							&&	( 	(!message.getDiscussionHeader().getDraft())
 									|| (SecurityService.isSuperUser())
-									|| (message.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+									|| (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 									|| (unlockCheck(SECURE_READ_DRAFT, message.getReference()))
 								)
 							)
@@ -1392,7 +1392,7 @@ public abstract class BaseDiscussionService
 						if (	(message.getDiscussionHeader().getReplyTo().equals(id))
 							&&	( 	(!message.getDiscussionHeader().getDraft())
 									|| (SecurityService.isSuperUser())
-									|| (message.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+									|| (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 									|| (unlockCheck(SECURE_READ_DRAFT, message.getReference()))
 								)
 							)
@@ -1694,7 +1694,7 @@ public abstract class BaseDiscussionService
 
 				if (	(msg.getDiscussionHeader()).getDraft()
 					&&	(!SecurityService.isSuperUser())
-					&&	(!msg.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+					&&	(!msg.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 					&&	(!unlockCheck(SECURE_READ_DRAFT, msg.getReference())))
 				{
 					return false;

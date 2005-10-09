@@ -29,16 +29,15 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
-import java.util.Hashtable;
 
-import org.sakaiproject.service.legacy.preference.cover.PreferencesService;
-import org.sakaiproject.service.legacy.preference.Preferences;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.framework.log.Logger;
-
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.preference.Preferences;
+import org.sakaiproject.service.legacy.preference.cover.PreferencesService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.TimeRange;
@@ -146,7 +145,7 @@ public class BasicTimeService implements TimeService
    private String getUserLocalTzId()
    {
       // First check if we already cached this user's timezone
-      String userId = UsageSessionService.getSessionUserId();
+      String userId = SessionManager.getCurrentSessionUserId();
       if ( userId == null )
          return M_tz_local_default;
       

@@ -54,7 +54,6 @@ import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.log.cover.Logger;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessage;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessageHeader;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
@@ -298,7 +297,7 @@ public class AccessServlet
 			}
 
 			// if not permitted, and the user is the anon user, let them login
-			if (!permitted && (UsageSessionService.getSessionUserId() == null))
+			if (!permitted && (SessionManager.getCurrentSessionUserId() == null))
 			{
 				doLogin(req, res, path);
 				return;

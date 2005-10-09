@@ -35,6 +35,7 @@ import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
@@ -58,7 +59,6 @@ import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannel;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannelEdit;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessage;
@@ -637,7 +637,7 @@ extends PagedResourceActionII
                 .loadChannelsFromDelimitedString(
                         isOnWorkspaceTab(),
                         new EntryProvider(),
-						StringUtil.trimToZero(UsageSessionService.getSessionUserId()),
+						StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()),
                         mergedAnnouncementList
                                 .getChannelReferenceArrayFromDelimitedString(
                                         state.getChannelId(),
@@ -1268,7 +1268,7 @@ extends PagedResourceActionII
                 new MergedListEntryProviderFixedListWrapper(
                         new EntryProvider(), state.getChannelId(),
                         channelArrayFromConfigParameterValue, new AnnouncementReferenceToChannelConverter()),
-				StringUtil.trimToZero(UsageSessionService.getSessionUserId()),
+				StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()),
                 channelArrayFromConfigParameterValue, SecurityService
                         .isSuperUser(), PortalService.getCurrentSiteId());
 
@@ -3530,7 +3530,7 @@ extends PagedResourceActionII
                     new MergedListEntryProviderFixedListWrapper(
                             new EntryProvider(), annState.getChannelId(),
                             channelArrayFromConfigParameterValue, new AnnouncementReferenceToChannelConverter()),
-                    StringUtil.trimToZero(UsageSessionService.getSessionUserId()),
+                    StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()),
                     channelArrayFromConfigParameterValue, SecurityService
                             .isSuperUser(), PortalService.getCurrentSiteId());
 		}

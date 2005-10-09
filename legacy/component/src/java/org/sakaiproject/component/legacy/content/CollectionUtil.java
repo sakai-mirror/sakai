@@ -34,11 +34,11 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.component.legacy.site.Dropbox;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.cover.SqlService;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
-import org.sakaiproject.component.legacy.site.Dropbox;
 
 public class CollectionUtil
 {
@@ -94,7 +94,7 @@ public class CollectionUtil
   static Map getCollectionMap()
   {
     // create SqlReader
-    String userId = UsageSessionService.getSessionUserId().trim();
+    String userId = SessionManager.getCurrentSessionUserId().trim();
     Object[] fields = new Object[] { userId};
     List collectionList = SqlService.dbRead(sql, fields, sr);
            

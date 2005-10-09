@@ -29,9 +29,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.ResourceBundle;
 
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
@@ -43,8 +43,6 @@ import org.sakaiproject.service.framework.config.cover.ServerConfigurationServic
 import org.sakaiproject.service.framework.email.cover.EmailService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.MemoryService;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
-
 import org.sakaiproject.service.legacy.digest.Digest;
 import org.sakaiproject.service.legacy.digest.DigestEdit;
 import org.sakaiproject.service.legacy.digest.DigestMessage;
@@ -60,9 +58,9 @@ import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.TimeRange;
 import org.sakaiproject.service.legacy.time.TimeService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
-import org.sakaiproject.util.xml.Xml;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.sakaiproject.util.storage.StorageUser;
+import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -490,7 +488,7 @@ public abstract class BaseDigestService
 	{
 		if (!unlockCheck(lock, resource))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, resource);
+			throw new PermissionException(lock, resource);
 		}
 
 	}	// unlock

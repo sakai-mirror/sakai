@@ -33,9 +33,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.Vector;
 import java.util.TimeZone;
+import java.util.Vector;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
@@ -55,7 +56,6 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.calendar.Calendar;
 import org.sakaiproject.service.legacy.calendar.CalendarEdit;
 import org.sakaiproject.service.legacy.calendar.CalendarEvent;
@@ -1042,7 +1042,7 @@ extends VelocityPortletStateAction
 			
 			calendarList.loadChannelsFromDelimitedString(isOnWorkspaceTab(),
                     entryProvider,
-                    StringUtil.trimToZero(UsageSessionService.getSessionUserId()),
+                    StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()),
 
                     calendarList.getChannelReferenceArrayFromDelimitedString(state
                             .getPrimaryCalendarReference(), portlet
@@ -1974,7 +1974,7 @@ extends VelocityPortletStateAction
                                 new EntryProvider(), primaryCalendarReference,
                                 channelArray,
                                 new CalendarReferenceToChannelConverter()),
-						StringUtil.trimToZero(UsageSessionService.getSessionUserId()),
+						StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()),
                         channelArray, SecurityService.isSuperUser(),
                         PortalService.getCurrentSiteId());
 
@@ -6919,7 +6919,7 @@ extends VelocityPortletStateAction
                                     .getPrimaryCalendarReference(),
                             channelArray,
                             new CalendarReferenceToChannelConverter()),
-					StringUtil.trimToZero(UsageSessionService.getSessionUserId()), channelArray,
+					StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()), channelArray,
                     SecurityService.isSuperUser(), PortalService
                             .getCurrentSiteId());
 

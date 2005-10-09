@@ -37,8 +37,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
@@ -1028,7 +1028,7 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 
 			if (edit == null)
 			{
-				String current = UsageSessionService.getSessionUserId();
+				String current = SessionManager.getCurrentSessionUserId();
 
 				// if no current user, since we are working up a new user record, use the user id as creator...
 				if (current == null) current = "";

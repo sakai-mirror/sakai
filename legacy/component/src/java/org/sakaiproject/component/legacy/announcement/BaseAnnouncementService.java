@@ -28,6 +28,7 @@ package org.sakaiproject.component.legacy.announcement;
 import java.util.List;
 import java.util.Stack;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.component.legacy.message.BaseMessageService;
 import org.sakaiproject.component.legacy.notification.SiteEmailNotificationAnnc;
 import org.sakaiproject.exception.IdInvalidException;
@@ -36,7 +37,6 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.log.cover.Log;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannel;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannelEdit;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessage;
@@ -665,13 +665,10 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 			// filter out drafts not by this user (unless this user is a super user or has access_draft ability)
 			if ((msg.getAnnouncementHeader()).getDraft()
 				&& (!SecurityService.isSuperUser())
-				&& (!msg.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+				&& (!msg.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 				&& (!unlockCheck(SECURE_READ_DRAFT, msg.getReference())))
 			{
-				throw new PermissionException(
-					UsageSessionService.getSessionUserId(),
-					SECURE_READ,
-					msg.getReference());
+				throw new PermissionException(SECURE_READ, msg.getReference());
 			}
 
 			return msg;
@@ -939,7 +936,7 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 
 				if ((msg.getAnnouncementHeader()).getDraft()
 					&& (!SecurityService.isSuperUser())
-					&& (!msg.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+					&& (!msg.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 					&& (!unlockCheck(SECURE_READ_DRAFT, msg.getReference())))
 				{
 					return false;

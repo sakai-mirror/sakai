@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jgroups.Address;
 import org.jgroups.blocks.NotificationBus;
 import org.jgroups.blocks.NotificationBus.Consumer;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.jgroups.EventImpl;
 import org.sakaiproject.service.framework.session.UsageSession;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
@@ -248,7 +249,7 @@ public class JGroupsClusterEventTracking extends BaseEventTrackingService
     // post for the session "thread" user
     else
     {
-      id = UsageSessionService.getSessionUserId();
+      id = SessionManager.getCurrentSessionUserId();
       if (id == null)
       {
         id = "?";

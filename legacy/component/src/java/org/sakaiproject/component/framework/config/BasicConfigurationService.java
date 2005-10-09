@@ -35,10 +35,10 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.RequestFilter;
 import org.sakaiproject.util.java.StringUtil;
@@ -282,7 +282,7 @@ public class BasicConfigurationService implements ServerConfigurationService
 		// use the portal URL with the current user's My Workspace, if not otherwise defined
 		if (rv == null)
 		{
-			String user = UsageSessionService.getSessionUserId();
+			String user = SessionManager.getCurrentSessionUserId();
 			boolean loggedIn = (user != null);
 			String siteId = null;
 			if (loggedIn)

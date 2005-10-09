@@ -29,6 +29,7 @@ package org.sakaiproject.component.legacy.site;
 import java.util.Iterator;
 import java.util.List;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -37,7 +38,6 @@ import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.service.framework.log.cover.Logger;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
@@ -110,7 +110,7 @@ public class Dropbox
 		try
 		{
 			ContentHostingService.checkCollection(rv);
-			rv += StringUtil.trimToZero(UsageSessionService.getSessionUserId()) + "/";
+			rv += StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()) + "/";
 			return rv;
 		}
 		catch (Exception ignore) {}

@@ -40,6 +40,7 @@ import java.util.Vector;
 
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -52,7 +53,6 @@ import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannel;
@@ -424,7 +424,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	{
 		if (!unlockCheck(lock, resource))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), eventId(lock), resource);
+			throw new PermissionException(eventId(lock), resource);
 		}
 
 	} // unlock
@@ -440,10 +440,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	{
 		if (!unlockCheck2(lock1, lock2, resource))
 		{
-			throw new PermissionException(
-				UsageSessionService.getSessionUserId(),
-				eventId(lock1) + "/" + eventId(lock2),
-				resource);
+			throw new PermissionException(eventId(lock1) + "/" + eventId(lock2), resource);
 		}
 
 	} // unlock2
@@ -898,7 +895,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			}
 			else
 			{
-				draftsForId = UsageSessionService.getSessionUserId();
+				draftsForId = SessionManager.getCurrentSessionUserId();
 			}
 		}
 
@@ -1808,7 +1805,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				return false;
 
 			// is this the user's own?
-			if (m.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+			if (m.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// own or any
 				return unlockCheck2(SECURE_UPDATE_OWN, SECURE_UPDATE_ANY, getReference());
@@ -1839,7 +1836,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 			// is this the user's own?
 			String function = null;
-			if (m.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+			if (m.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// own or any
 				unlock2(SECURE_UPDATE_OWN, SECURE_UPDATE_ANY, getReference());
@@ -2038,7 +2035,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		public boolean allowRemoveMessage(Message message)
 		{
 			// is this the user's own?
-			if (message.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+			if (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// own or any
 				return unlockCheck2(SECURE_REMOVE_OWN, SECURE_REMOVE_ANY, getReference());
@@ -2099,7 +2096,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 			// is this the user's own?
 			String function = null;
-			if (message.getHeader().getFrom().getId().equals(UsageSessionService.getSessionUserId()))
+			if (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// own or any
 				unlock2(SECURE_REMOVE_OWN, SECURE_REMOVE_ANY, getReference());
@@ -2933,7 +2930,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			m_date = TimeService.newTime();
 			try
 			{
-				m_from = UserDirectoryService.getUser(UsageSessionService.getSessionUserId());
+				m_from = UserDirectoryService.getUser(SessionManager.getCurrentSessionUserId());
 			}
 			catch (IdUnusedException e)
 			{
@@ -3086,12 +3083,12 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public void addSection(Section section) throws PermissionException
 		{
-			if (section == null) throw new PermissionException(UsageSessionService.getSessionUserId(), eventId(SECURE_ADD), "null");
+			if (section == null) throw new PermissionException(eventId(SECURE_ADD), "null");
 
 			// does the current user have ADD permission in this section's authorization group?
 			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(SECURE_ADD), section.getReference()))
 			{
-				throw new PermissionException(UsageSessionService.getSessionUserId(), eventId(SECURE_ADD), section.getReference());
+				throw new PermissionException(eventId(SECURE_ADD), section.getReference());
 			}
 
 			if (!m_sections.contains(section.getReference())) m_sections.add(section.getReference());
@@ -3102,12 +3099,12 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public void removeSection(Section section) throws PermissionException
 		{
-			if (section == null) throw new PermissionException(UsageSessionService.getSessionUserId(), eventId(SECURE_ADD), "null");
+			if (section == null) throw new PermissionException(eventId(SECURE_ADD), "null");
 
 			// does the current user have ADD permission in this section's authorization group?
 			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(SECURE_ADD), section.getReference()))
 			{
-				throw new PermissionException(UsageSessionService.getSessionUserId(), eventId(SECURE_ADD), section.getReference());
+				throw new PermissionException(eventId(SECURE_ADD), section.getReference());
 			}
 
 			if (m_sections.contains(section.getReference())) m_sections.remove(section.getReference());

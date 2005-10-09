@@ -72,9 +72,6 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 	/** Storage manager for this service. */
 	protected Storage m_storage = null;
 
-	/** Store the session in the http session under this key. */
-	protected final static String SESSION_KEY = USAGE_SESSION_KEY;
-
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Abstractions, etc.
 	 *********************************************************************************************************************************************************************************************************************************************************/
@@ -239,7 +236,7 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 		Session s = m_sessionManager.getCurrentSession();
 		if (s != null)
 		{
-			UsageSession session = (UsageSession) s.getAttribute(SESSION_KEY);
+			UsageSession session = (UsageSession) s.getAttribute(USAGE_SESSION_KEY);
 			if (session != null)
 			{
 				M_log.warn("addSession: already have a session");
@@ -249,7 +246,7 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 			// create the usage session and bind it to the session
 			session = new BaseUsageSession(m_idManager.createUuid(), m_serverConfigurationService.getServerIdInstance(),
 					userId, remoteAddress, userAgent, null, null);
-			s.setAttribute(SESSION_KEY, session);
+			s.setAttribute(USAGE_SESSION_KEY, session);
 
 			// store
 			m_storage.addSession(session);
@@ -257,8 +254,6 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 			return session;
 		}
 
-		// if we are running with no session, bind the user id only (not a full usage session) to the thread local (we can replace what's there)
-		m_threadLocalManager.set(SESSION_KEY, userId);
 		return null;
 	}
 
@@ -274,7 +269,7 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 		if (s != null)
 		{
 			// do we have a usage session in the session?
-			rv = (BaseUsageSession) s.getAttribute(SESSION_KEY);
+			rv = (BaseUsageSession) s.getAttribute(USAGE_SESSION_KEY);
 
 			if (rv == null)
 			{
@@ -295,6 +290,7 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 	 */
 	public String getSessionUserId()
 	{
+		// just return the session manage's current user id
 		String rv = null;
 
 		// do we have a current session?
@@ -303,12 +299,6 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 		{
 			// use the authenticated user uuid in the session
 			rv = s.getUserId();
-		}
-
-		// if no session, try one bound to the thread local
-		if (rv == null)
-		{
-			rv = (String) m_threadLocalManager.get(SESSION_KEY);
 		}
 
 		// may be null, which indicates that there's no user id available
@@ -335,7 +325,7 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 		if (s != null)
 		{
 			// do we have a usage session in the session?
-			BaseUsageSession session = (BaseUsageSession) s.getAttribute(SESSION_KEY);
+			BaseUsageSession session = (BaseUsageSession) s.getAttribute(USAGE_SESSION_KEY);
 			if (session != null)
 			{
 				rv = session.getId();

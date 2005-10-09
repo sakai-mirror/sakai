@@ -45,6 +45,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -57,7 +58,6 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.assignment.Assignment;
 import org.sakaiproject.service.legacy.assignment.AssignmentContent;
@@ -352,7 +352,7 @@ public abstract class BaseAssignmentService
 	{
 		if (!unlockCheck(lock, resource))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, resource);
+			throw new PermissionException(lock, resource);
 		}
 
 	}	// unlock
@@ -369,8 +369,7 @@ public abstract class BaseAssignmentService
 	{
 		if (!unlockCheck2(lock1, lock2, resource))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(),
-					lock1 + "/" + lock2, resource);
+			throw new PermissionException(lock1 + "/" + lock2, resource);
 		}
 
 	}	// unlock2
@@ -1956,7 +1955,7 @@ public abstract class BaseAssignmentService
 	protected void addLiveUpdateProperties(ResourcePropertiesEdit props)
 	{
 		props.addProperty(ResourceProperties.PROP_MODIFIED_BY,
-				UsageSessionService.getSessionUserId());
+				SessionManager.getCurrentSessionUserId());
 
 		props.addProperty(ResourceProperties.PROP_MODIFIED_DATE,
 			TimeService.newTime().toString());
@@ -1968,7 +1967,7 @@ public abstract class BaseAssignmentService
 	*/
 	protected void addLiveProperties(ResourcePropertiesEdit props)
 	{
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 		props.addProperty(ResourceProperties.PROP_CREATOR, current);
 		props.addProperty(ResourceProperties.PROP_MODIFIED_BY, current);
 		
@@ -2548,7 +2547,7 @@ public abstract class BaseAssignmentService
 			catch (PermissionException e)
 			{
 				m_logger.debug(this + ": getSubmissionsZip--PermissionException Not permitted to get assignment " + ref);
-				throw new PermissionException(UsageSessionService.getSessionUserId(), SECURE_ACCESS_ASSIGNMENT, ref);
+				throw new PermissionException(SECURE_ACCESS_ASSIGNMENT, ref);
 			}
 			
 			return b.getBytes();
@@ -5037,7 +5036,7 @@ public abstract class BaseAssignmentService
 			m_grade = "";
 			m_timeLastModified = TimeService.newTime();
 
-			String currentUser = UsageSessionService.getSessionUserId();
+			String currentUser = SessionManager.getCurrentSessionUserId();
 			if (currentUser == null) currentUser = "";
 			m_submitters.add(currentUser);
 		}

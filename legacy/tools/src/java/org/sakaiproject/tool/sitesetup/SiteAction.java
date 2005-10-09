@@ -57,6 +57,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.sakaiproject.api.kernel.id.cover.IdManager;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
@@ -81,7 +82,6 @@ import org.sakaiproject.service.framework.config.cover.ServerConfigurationServic
 import org.sakaiproject.service.framework.email.cover.EmailService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.alias.Alias;
 import org.sakaiproject.service.legacy.alias.cover.AliasService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
@@ -846,7 +846,7 @@ public class SiteAction extends PagedResourceActionII
 						try
 						{
 							//the Grad Tools site option is only presented to GradTools Candidates
-							String userId = StringUtil.trimToZero(UsageSessionService.getSessionUserId());
+							String userId = StringUtil.trimToZero(SessionManager.getCurrentSessionUserId());
 							
 							//am I a grad student?
 							if (!isGradToolsCandidate(userId))
@@ -967,7 +967,7 @@ public class SiteAction extends PagedResourceActionII
 					try
 					{
 						//the Grad Tools site option is only presented to UM grad students
-						String userId = StringUtil.trimToZero(UsageSessionService.getSessionUserId());
+						String userId = StringUtil.trimToZero(SessionManager.getCurrentSessionUserId());
 						
 						//am I a UM grad student?
 						Boolean isGradStudent = new Boolean(isGradToolsCandidate(userId));
@@ -1275,7 +1275,7 @@ public class SiteAction extends PagedResourceActionII
 				String site_title = NULL_STRING;
 				String[] removals = (String[]) state.getAttribute(STATE_SITE_REMOVALS);
 				List remove = new Vector();
-				String user = UsageSessionService.getSessionUserId();
+				String user = SessionManager.getCurrentSessionUserId();
 				String workspace = SiteService.getUserSiteId(user);
 				if( removals != null && removals.length != 0 )
 				{
@@ -1419,7 +1419,7 @@ public class SiteAction extends PagedResourceActionII
 					boolean isMyWorkspace = false;
 					if (SiteService.isUserSite(site.getId()))
 					{
-						if (SiteService.getSiteUserId(site.getId()).equals(UsageSessionService.getSessionUserId()))
+						if (SiteService.getSiteUserId(site.getId()).equals(SessionManager.getCurrentSessionUserId()))
 						{
 							isMyWorkspace = true;
 							context.put("siteUserId", SiteService.getSiteUserId(site.getId()));
@@ -1785,7 +1785,7 @@ public class SiteAction extends PagedResourceActionII
 				myworkspace_site = false;
 				if (SiteService.isUserSite(Site.getId()))
 				{
-					if (SiteService.getSiteUserId(Site.getId()).equals(UsageSessionService.getSessionUserId()))
+					if (SiteService.getSiteUserId(Site.getId()).equals(SessionManager.getCurrentSessionUserId()))
 					{
 						myworkspace_site = true;
 						site_type = "myworkspace";
@@ -2488,7 +2488,7 @@ public class SiteAction extends PagedResourceActionII
 				context.put ("term", t);
 				if (t != null)
 				{
-					String userId = StringUtil.trimToZero(UsageSessionService.getSessionUserId());
+					String userId = StringUtil.trimToZero(SessionManager.getCurrentSessionUserId());
 					List courses = CourseManagementService.getInstructorCourses(userId, t.getYear(), t.getTerm());
 					if (courses != null && courses.size() > 0)
 					{
@@ -2663,7 +2663,7 @@ public class SiteAction extends PagedResourceActionII
 			*/
 			String id = (String) state.getAttribute("siteId");
 			site_title = NULL_STRING;				
-			user = UsageSessionService.getSessionUserId();
+			user = SessionManager.getCurrentSessionUserId();
 			workspace = SiteService.getUserSiteId(user);
 			boolean removeable = true;
 			
@@ -3065,7 +3065,7 @@ public class SiteAction extends PagedResourceActionII
     List toolzipList = new Vector();
     List pageList=new Vector();
     String siteId=PortalService.getCurrentSiteId();//ToolConfiguration.getSiteId();    
-    String userId = UsageSessionService.getSessionUserId();
+    String userId = SessionManager.getCurrentSessionUserId();
     Site site=null;
     try
     {
@@ -3492,7 +3492,7 @@ public class SiteAction extends PagedResourceActionII
 	{
 		int size = 0;
 		String search = "";
-		String userId = UsageSessionService.getSessionUserId();
+		String userId = SessionManager.getCurrentSessionUserId();
 		
 		//if called from the site list page
 		if(((String)state.getAttribute(STATE_TEMPLATE_INDEX)).equals("0"))
@@ -3540,7 +3540,7 @@ public class SiteAction extends PagedResourceActionII
 				}
 				catch (IdUnusedException e) 
 				{
-					Log.warn("chef", "Cannot find user " + UsageSessionService.getSessionUserId() + "'s My Workspace site.");
+					Log.warn("chef", "Cannot find user " + SessionManager.getCurrentSessionUserId() + "'s My Workspace site.");
 				}
 				
 				String view = (String) state.getAttribute(STATE_VIEW_SELECTED);
@@ -3682,7 +3682,7 @@ public class SiteAction extends PagedResourceActionII
 			{
 				List rv = new Vector();
 				Site userWorkspaceSite = null;
-				String userId = UsageSessionService.getSessionUserId();
+				String userId = SessionManager.getCurrentSessionUserId();
 				
 				try
 				{
@@ -3690,7 +3690,7 @@ public class SiteAction extends PagedResourceActionII
 				}
 				catch (IdUnusedException e) 
 				{
-					Log.warn("chef", "Cannot find user " + UsageSessionService.getSessionUserId() + "'s My Workspace site.");
+					Log.warn("chef", "Cannot find user " + SessionManager.getCurrentSessionUserId() + "'s My Workspace site.");
 				}
 				
 				String view = (String) state.getAttribute(STATE_VIEW_SELECTED);
@@ -4347,7 +4347,7 @@ public class SiteAction extends PagedResourceActionII
 			
 			if (type.equalsIgnoreCase("course"))
 			{
-				String userId = StringUtil.trimToZero(UsageSessionService.getSessionUserId());
+				String userId = StringUtil.trimToZero(SessionManager.getCurrentSessionUserId());
 				String termId = params.getString("selectTerm");
 				Term t = CourseManagementService.getTerm(termId);
 				state.setAttribute(STATE_TERM_SELECTED, t);
@@ -5251,7 +5251,7 @@ public class SiteAction extends PagedResourceActionII
 			String content = NULL_STRING;
 			
 			String sessionUserName = UserDirectoryService.getCurrentUser().getDisplayName();
-			String sessionUserId = StringUtil.trimToZero(UsageSessionService.getSessionUserId());
+			String sessionUserId = StringUtil.trimToZero(SessionManager.getCurrentSessionUserId());
 			String additional = NULL_STRING;
 			if (request.equals("new"))
 			{
@@ -5439,7 +5439,7 @@ public class SiteAction extends PagedResourceActionII
 			String headerTo = NULL_STRING;
 			String replyTo = NULL_STRING;
 			String sender = UserDirectoryService.getCurrentUser().getDisplayName();
-			String userId = StringUtil.trimToZero(UsageSessionService.getSessionUserId());
+			String userId = StringUtil.trimToZero(SessionManager.getCurrentSessionUserId());
 			
 			//To Support
 			from = UserDirectoryService.getCurrentUser().getEmail();
@@ -6114,7 +6114,7 @@ public class SiteAction extends PagedResourceActionII
 		}
 		else if (option.equalsIgnoreCase("add"))
 		{
-			String userId = StringUtil.trimToZero(UsageSessionService.getSessionUserId());
+			String userId = StringUtil.trimToZero(SessionManager.getCurrentSessionUserId());
 			Term t = (Term) state.getAttribute(STATE_TERM_SELECTED);
 			if (t != null)
 			{
@@ -12765,7 +12765,7 @@ public class SiteAction extends PagedResourceActionII
 				
 				//now that the site and realm exist, we can set the email alias
 				//set the GradToolsStudent site alias as: gradtools-uniqname@servername
-				String alias = "gradtools-" +  UsageSessionService.getSessionUserId();
+				String alias = "gradtools-" +  SessionManager.getCurrentSessionUserId();
 				String channelReference = MailArchiveService.channelReference(id, SiteService.MAIN_CONTAINER);
 				try
 				{
@@ -12781,7 +12781,7 @@ public class SiteAction extends PagedResourceActionII
 				}
 				catch (PermissionException ee) 
 				{
-					Log.warn("chef", UsageSessionService.getSessionUserId() + " does not have permission to add alias. ");
+					Log.warn("chef", SessionManager.getCurrentSessionUserId() + " does not have permission to add alias. ");
 				}
 			}
 		}

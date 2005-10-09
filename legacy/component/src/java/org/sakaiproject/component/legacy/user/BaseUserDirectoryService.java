@@ -35,6 +35,7 @@ import java.util.Vector;
 
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -45,7 +46,6 @@ import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.cover.MemoryService;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
@@ -196,7 +196,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	{
 		if (!unlockCheck(lock, resource))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, resource);
+			throw new PermissionException(lock, resource);
 		}
 
 	} // unlock
@@ -212,7 +212,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	{
 		if (!unlockCheck2(lock1, lock2, resource))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), lock1 + "/" + lock2, resource);
+			throw new PermissionException(lock1 + "/" + lock2, resource);
 		}
 
 	} // unlock2
@@ -524,7 +524,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	 */
 	public User getCurrentUser()
 	{
-		String id = UsageSessionService.getSessionUserId();
+		String id = SessionManager.getCurrentSessionUserId();
 
 		// check current service caching - discard if the session user is different
 		User rv = (User) CurrentService.getInThread(M_curUserKey);
@@ -557,7 +557,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		id = StringUtil.trimToNullLower(id);
 
 		// is this the user's own?
-		if (id.equals(UsageSessionService.getSessionUserId()))
+		if (id.equals(SessionManager.getCurrentSessionUserId()))
 		{
 			// own or any
 			return unlockCheck2(SECURE_UPDATE_USER_OWN, SECURE_UPDATE_USER_ANY, userReference(id));
@@ -589,7 +589,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 
 		// is this the user's own?
 		String function = null;
-		if (id.equals(UsageSessionService.getSessionUserId()))
+		if (id.equals(SessionManager.getCurrentSessionUserId()))
 		{
 			// own or any
 			unlock2(SECURE_UPDATE_USER_OWN, SECURE_UPDATE_USER_ANY, userReference(id));
@@ -1067,7 +1067,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	*/
 	protected void addLiveProperties(BaseUserEdit edit)
 	{
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 
 		edit.m_createdUserId = current;
 		edit.m_lastModifiedUserId = current;
@@ -1083,7 +1083,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	*/
 	protected void addLiveUpdateProperties(BaseUserEdit edit)
 	{
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 
 		edit.m_lastModifiedUserId = current;
 		edit.m_lastModifiedTime = TimeService.newTime();
@@ -1200,7 +1200,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		{
 			rv.add(userReference(ref.getId()));
 
-			ref.addUserTemplateAuthzGroup(rv, UsageSessionService.getSessionUserId());
+			ref.addUserTemplateAuthzGroup(rv, SessionManager.getCurrentSessionUserId());
 		}
 		catch (NullPointerException e)
 		{

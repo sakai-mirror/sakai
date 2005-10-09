@@ -50,7 +50,6 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.content.ContentTypeImageService;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannel;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannelEdit;
@@ -3751,7 +3750,7 @@ public class ThreadedDiscussionIIAction
 		}
 		catch (PermissionException e)
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), null, null);
+			throw new PermissionException(null, null);
 		}
 
 	}	// addCategory

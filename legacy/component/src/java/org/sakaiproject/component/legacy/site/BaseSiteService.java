@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.component.section.cover.CourseManager;
@@ -50,7 +51,6 @@ import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.SiteCache;
 import org.sakaiproject.service.framework.memory.cover.MemoryService;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.alias.cover.AliasService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
@@ -183,7 +183,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	{
 		if (!unlockCheck(lock, resource))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, resource);
+			throw new PermissionException(lock, resource);
 		}
 	}
 
@@ -192,7 +192,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	protected void addLiveUpdateProperties(BaseSite site)
 	{
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 
 		site.m_lastModifiedUserId = current;
 		site.m_lastModifiedTime = TimeService.newTime();
@@ -203,7 +203,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	protected void addLiveProperties(BaseSite site)
 	{
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 
 		site.m_createdUserId = current;
 		site.m_lastModifiedUserId = current;
@@ -488,7 +488,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		catch (IdUnusedException e)
 		{
 			// if this is the current user's site, we can create it
-			if (isUserSite(id) && id.substring(1).equals(UsageSessionService.getSessionUserId()))
+			if (isUserSite(id) && id.substring(1).equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// use lowercase user id inside user's MyWorkspace id
 				id = id.toLowerCase();
@@ -497,7 +497,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				BaseSite template = null;
 				try
 				{
-					User user = UserDirectoryService.getUser((UsageSessionService.getSessionUserId()).toLowerCase());
+					User user = UserDirectoryService.getUser((SessionManager.getCurrentSessionUserId()).toLowerCase());
 					template = (BaseSite) getDefinedSite(USER_SITE_TEMPLATE + "." + user.getType());
 				}
 				catch (Throwable t)
@@ -1255,7 +1255,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			rv.add(siteReference(ref.getId()));
 
 			// add the current user's realm
-			ref.addUserAuthzGroup(rv, UsageSessionService.getSessionUserId());
+			ref.addUserAuthzGroup(rv, SessionManager.getCurrentSessionUserId());
 
 			// site helper
 			rv.add("!site.helper");

@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.alias.Alias;
@@ -45,10 +45,10 @@ import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.util.java.StringUtil;
-import org.sakaiproject.util.xml.Xml;
 import org.sakaiproject.util.storage.BaseDbFlatStorage;
 import org.sakaiproject.util.storage.BaseDbSingleStorage;
 import org.sakaiproject.util.storage.StorageUser;
+import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -522,7 +522,7 @@ public class DbAliasService
 
 			if (edit == null)
 			{
-				String current = UsageSessionService.getSessionUserId();
+				String current = SessionManager.getCurrentSessionUserId();
 				if (current == null) current = "";
 
 				Time now = TimeService.newTime();

@@ -42,6 +42,7 @@ import java.util.Vector;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.component.legacy.notification.SiteEmailNotificationContent;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
@@ -58,7 +59,6 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
@@ -697,7 +697,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		if (uuid != null && this.isLocked(uuid))
 		{
 			// TODO: WebDAV locks need to be more sophisticated than this
-			throw new PermissionException(UsageSessionService.getSessionUserId(), "remove", id);
+			throw new PermissionException("remove", id);
 		}
 	}
 
@@ -725,7 +725,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 		if (!SecurityService.unlock(lock, ref))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, ref);
+			throw new PermissionException(lock, ref);
 		}
 
 	} // unlock
@@ -755,7 +755,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	protected void addLiveCollectionProperties(ContentCollectionEdit c)
 	{
 		ResourcePropertiesEdit p = c.getPropertiesEdit();
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 		p.addProperty(ResourceProperties.PROP_CREATOR, current);
 		p.addProperty(ResourceProperties.PROP_MODIFIED_BY, current);
 
@@ -776,7 +776,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	protected void addLiveUpdateCollectionProperties(ContentCollectionEdit c)
 	{
 		ResourcePropertiesEdit p = c.getPropertiesEdit();
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 		p.addProperty(ResourceProperties.PROP_MODIFIED_BY, current);
 
 		String now = TimeService.newTime().toString();
@@ -794,7 +794,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	{
 		ResourcePropertiesEdit p = r.getPropertiesEdit();
 
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 		p.addProperty(ResourceProperties.PROP_CREATOR, current);
 		p.addProperty(ResourceProperties.PROP_MODIFIED_BY, current);
 
@@ -819,7 +819,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	{
 		ResourcePropertiesEdit p = r.getPropertiesEdit();
 
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 		p.addProperty(ResourceProperties.PROP_MODIFIED_BY, current);
 
 		String now = TimeService.newTime().toString();
@@ -840,7 +840,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	{
 		ResourcePropertiesEdit p = r.getPropertiesEdit();
 
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 		String now = TimeService.newTime().toString();
 
 		if (p.getProperty(ResourceProperties.PROP_CREATOR) == null)
@@ -1223,7 +1223,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 		if (isLocked(getUuid(id)))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), id, ref);
+			throw new PermissionException(id, ref);
 		}
 
 		// check security (throws if not permitted)
@@ -1943,7 +1943,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// htripath -store the metadata information into a delete table
 		// assumed uuid is not null as checkExplicitLock(id) throws exception when null
 		String uuid = this.getUuid(id);
-		String userId = UsageSessionService.getSessionUserId().trim();
+		String userId = SessionManager.getCurrentSessionUserId().trim();
 		addResourceToDeleteTable(edit, uuid, userId);
 
 		// complete the edit
@@ -2106,7 +2106,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			isCollection = true;
 			if (isRootCollection(id))
 			{
-				throw new PermissionException(UsageSessionService.getSessionUserId(), null, null);
+				throw new PermissionException(null, null);
 			}
 		}
 		else
@@ -2237,7 +2237,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		catch (IdUsedException e)
 		{
 			// Could come up with a naming convention to add versions here
-			throw new PermissionException(UsageSessionService.getSessionUserId(), null, null);
+			throw new PermissionException(null, null);
 		}
 	} // copyResource
 
@@ -2264,7 +2264,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 		if (m_logger.isDebugEnabled()) m_logger.debug(this + ".copyCollection size=" + members.size());
 
-		if (members.size() > 0) throw new PermissionException(UsageSessionService.getSessionUserId(), null, null);
+		if (members.size() > 0) throw new PermissionException(null, null);
 
 		String name = isolateName(new_id);
 
@@ -2289,7 +2289,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		}
 		catch (IdUsedException e) // Why is this the case??
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), null, null);
+			throw new PermissionException(null, null);
 		}
 
 	} // copyCollection

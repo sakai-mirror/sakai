@@ -36,6 +36,7 @@ import java.util.Vector;
 
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
@@ -43,7 +44,6 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.MemoryService;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
@@ -159,7 +159,7 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 	{
 		if (!unlockCheck(lock, resource))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, resource);
+			throw new PermissionException(lock, resource);
 		}
 
 	} // unlock
@@ -559,7 +559,7 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 		{
 			rv.add(UserDirectoryService.userReference(ref.getId()));
 
-			ref.addUserTemplateAuthzGroup(rv, UsageSessionService.getSessionUserId());
+			ref.addUserTemplateAuthzGroup(rv, SessionManager.getCurrentSessionUserId());
 		}
 		catch (NullPointerException e)
 		{

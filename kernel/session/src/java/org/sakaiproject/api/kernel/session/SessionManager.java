@@ -64,6 +64,12 @@ public interface SessionManager
 	Session getCurrentSession();
 
 	/**
+	 * Access the current session's user id, or return null if there is no current session.
+	 * @return The current session's user id, or null if there is no current session or it has no user id.
+	 */
+	String getCurrentSessionUserId();
+
+	/**
 	 * Access the tool session associated with the current request or processing thread.
 	 * 
 	 * @return The tool session associatd with the current request or processing thread.

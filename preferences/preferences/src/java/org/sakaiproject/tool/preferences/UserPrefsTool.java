@@ -24,12 +24,12 @@
 package org.sakaiproject.tool.preferences;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
-import java.util.Arrays;
 import java.util.TimeZone;
+import java.util.Vector;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -40,19 +40,18 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
-import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.preference.Preferences;
 import org.sakaiproject.service.legacy.preference.PreferencesEdit;
 import org.sakaiproject.service.legacy.preference.PreferencesService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.time.cover.TimeService;
 
 /**
  * UserPrefsTool is a Sakai Admin tool to view and edit anyone's preferences.
@@ -361,7 +360,7 @@ public class UserPrefsTool
    */
   public String getUserId()
   {
-    return UsageSessionService.getSessionUserId();
+    return m_sessionManager.getCurrentSessionUserId();
   }
 
   /**

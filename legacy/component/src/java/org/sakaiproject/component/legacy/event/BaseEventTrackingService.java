@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.session.UsageSession;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
@@ -206,7 +207,7 @@ public abstract class BaseEventTrackingService
 		// post for the session "thread" user
 		else
 		{
-			id = UsageSessionService.getSessionUserId();
+			id = SessionManager.getCurrentSessionUserId();
 			if (id == null)
 			{
 				id = "?";

@@ -66,6 +66,7 @@ public interface UsageSessionService
 	/**
 	 * Access the user id from the usage session associated with the current request or thread.
 	 * @return The user id from the usage session associated with the current request or thread, or null if there is none.
+	 * @deprecated Use SessionManager.getCurrentSessionUserId()
 	 */
 	String getSessionUserId();
 

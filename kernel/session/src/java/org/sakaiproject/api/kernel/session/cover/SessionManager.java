@@ -93,6 +93,14 @@ public class SessionManager
 		return manager.getCurrentSession();
 	}
 
+	public static java.lang.String getCurrentSessionUserId()
+	{
+		org.sakaiproject.api.kernel.session.SessionManager manager = getInstance();
+		if (manager == null) return null;
+
+		return manager.getCurrentSessionUserId();
+	}
+
 	public static org.sakaiproject.api.kernel.session.ToolSession getCurrentToolSession()
 	{
 		org.sakaiproject.api.kernel.session.SessionManager manager = getInstance();

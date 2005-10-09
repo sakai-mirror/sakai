@@ -35,6 +35,7 @@ import org.sakaiproject.api.common.authentication.Authentication;
 import org.sakaiproject.api.common.authentication.AuthenticationException;
 import org.sakaiproject.api.common.authentication.Evidence;
 import org.sakaiproject.api.common.authentication.cover.AuthenticationManager;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
 import org.sakaiproject.cheftool.PagedResourceActionII;
@@ -52,7 +53,6 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.UserEdit;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
@@ -183,7 +183,7 @@ public class UsersAction extends PagedResourceActionII
 		}
 		else if (singleUser)
 		{
-			String id = UsageSessionService.getSessionUserId();
+			String id = SessionManager.getCurrentSessionUserId();
 			state.setAttribute("user-id", id);
 			template = buildViewContext(state, context);
 		}

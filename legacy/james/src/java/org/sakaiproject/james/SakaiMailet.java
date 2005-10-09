@@ -49,12 +49,13 @@ import javax.mail.internet.MimeUtility;
 import org.apache.mailet.GenericMailet;
 import org.apache.mailet.Mail;
 import org.apache.mailet.MailAddress;
+import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.thread_local.cover.ThreadLocalManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.cover.Logger;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.alias.cover.AliasService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
@@ -160,7 +161,16 @@ public class SakaiMailet extends GenericMailet
 
 		try
 		{
-			UsageSessionService.startSession(postmaster.getId(), null, null);
+			// set the current user to postmaster
+			Session s = SessionManager.getCurrentSession();
+			if (s != null)
+			{
+				s.setUserId(postmaster.getId());
+			}
+			else
+			{
+				Logger.warn(this + ".service - no SessionManager.getCurrentSession, cannot set to postmaser user");
+			}
 
 			MimeMessage msg = mail.getMessage();
 			String id = msg.getMessageID();

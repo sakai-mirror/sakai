@@ -52,7 +52,6 @@ import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.calendar.Calendar;
 import org.sakaiproject.service.legacy.calendar.CalendarEdit;
@@ -162,7 +161,7 @@ public abstract class BaseCalendarService
 	{
 		if (!SecurityService.unlock(lock, reference))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, reference);
+			throw new PermissionException(lock, reference);
 		}
 
 	} // unlock

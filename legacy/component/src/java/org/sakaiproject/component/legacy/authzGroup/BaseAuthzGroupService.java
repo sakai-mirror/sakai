@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -42,7 +43,6 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.authzGroup.GroupProvider;
@@ -163,7 +163,7 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	{
 		if (!unlockCheck(lock, resource))
 		{
-			throw new PermissionException(UsageSessionService.getSessionUserId(), lock, resource);
+			throw new PermissionException(lock, resource);
 		}
 	}
 
@@ -172,7 +172,7 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	 */
 	protected void addLiveProperties(BaseAuthzGroup azGroup)
 	{
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 
 		azGroup.m_createdUserId = current;
 		azGroup.m_lastModifiedUserId = current;
@@ -187,7 +187,7 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	 */
 	protected void addLiveUpdateProperties(BaseAuthzGroup azGroup)
 	{
-		String current = UsageSessionService.getSessionUserId();
+		String current = SessionManager.getCurrentSessionUserId();
 
 		azGroup.m_lastModifiedUserId = current;
 		azGroup.m_lastModifiedTime = TimeService.newTime();
@@ -333,7 +333,7 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	 */
 	public void joinSite(String siteId) throws IdUnusedException, PermissionException
 	{
-		String user = UsageSessionService.getSessionUserId();
+		String user = SessionManager.getCurrentSessionUserId();
 		if (user == null) throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
 
 		// get the site
@@ -391,7 +391,7 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	 */
 	public void unjoinSite(String siteId) throws IdUnusedException, PermissionException
 	{
-		String user = UsageSessionService.getSessionUserId();
+		String user = SessionManager.getCurrentSessionUserId();
 		if (user == null) throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
 
 		// get the site
@@ -461,7 +461,7 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	 */
 	public boolean allowUnjoinSite(String siteId)
 	{
-		String user = UsageSessionService.getSessionUserId();
+		String user = SessionManager.getCurrentSessionUserId();
 		try
 		{
 			if (user == null)
@@ -926,7 +926,7 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 		if ((ref.getId() != null) && (ref.getId().length() > 0) && (!ref.getId().startsWith("!")))
 		{
 			// add the current user's azGroup (for what azGroup stuff everyone can do, i.e. add)
-			ref.addUserAuthzGroup(rv, UsageSessionService.getSessionUserId());
+			ref.addUserAuthzGroup(rv, SessionManager.getCurrentSessionUserId());
 
 			// make a new reference on the azGroup's id
 			Reference refnew = m_entityManager.newReference(ref.getId());

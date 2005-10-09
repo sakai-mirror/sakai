@@ -36,8 +36,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
@@ -771,7 +771,7 @@ public class DbSiteService extends BaseSiteService
 				int pos = 0;
 				if ((type == SelectionType.ACCESS) || (type == SelectionType.UPDATE))
 				{
-					fields[pos++] = UsageSessionService.getSessionUserId();
+					fields[pos++] = SessionManager.getCurrentSessionUserId();
 				}
 				if (ofType != null)
 				{
@@ -827,7 +827,7 @@ public class DbSiteService extends BaseSiteService
 				}
 				if (type == SelectionType.JOINABLE)
 				{
-					fields[pos++] = UsageSessionService.getSessionUserId();
+					fields[pos++] = SessionManager.getCurrentSessionUserId();
 				}
 			}
 
@@ -1029,7 +1029,7 @@ public class DbSiteService extends BaseSiteService
 				int pos = 0;
 				if ((type == SelectionType.ACCESS) || (type == SelectionType.UPDATE))
 				{
-					fields[pos++] = UsageSessionService.getSessionUserId();
+					fields[pos++] = SessionManager.getCurrentSessionUserId();
 				}
 				if (ofType != null)
 				{
@@ -1085,7 +1085,7 @@ public class DbSiteService extends BaseSiteService
 				}
 				if (type == SelectionType.JOINABLE)
 				{
-					fields[pos++] = UsageSessionService.getSessionUserId();
+					fields[pos++] = SessionManager.getCurrentSessionUserId();
 				}
 			}
 
@@ -2127,7 +2127,7 @@ public class DbSiteService extends BaseSiteService
 
 			if (edit == null)
 			{
-				String current = UsageSessionService.getSessionUserId();
+				String current = SessionManager.getCurrentSessionUserId();
 
 				// if no current user, since we are working up a new user record, use the user id as creator...
 				if (current == null) current = "";
