@@ -25,6 +25,7 @@
 package org.sakaiproject.service.legacy.site;
 
 // imports
+import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -38,7 +39,7 @@ import org.sakaiproject.service.legacy.entity.Edit;
  * 
  * @author Sakai Software Development Team
  */
-public interface SitePage extends Edit
+public interface SitePage extends Edit, Serializable
 {
 	/** Layout value for a single column layout. */
 	public static final int LAYOUT_SINGLE_COL = 0;

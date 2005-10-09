@@ -23,6 +23,8 @@
 
 package org.sakaiproject.service.legacy.authzGroup;
 
+import java.io.Serializable;
+
 /**
  * <p>
  * Member records membership in an AuthzGroup; user, role, and flags.
@@ -30,7 +32,7 @@ package org.sakaiproject.service.legacy.authzGroup;
  * 
  * @author Sakai Software Development Team
  */
-public interface Member extends Comparable
+public interface Member extends Comparable, Serializable
 {
 	/**
 	 * Access the user id of the member.

@@ -23,13 +23,15 @@
 
 package org.sakaiproject.service.legacy.time;
 
+import java.io.Serializable;
+
 /**
  * <p>Time ...</p>
  * 
  * @author University of Michigan, Sakai Software Development Team
  * @version $Revision$
  */
-public interface Time extends Cloneable, Comparable
+public interface Time extends Cloneable, Comparable, Serializable
 {
 	/**
 	 * Format as a string, GMT, for a SQL statement.

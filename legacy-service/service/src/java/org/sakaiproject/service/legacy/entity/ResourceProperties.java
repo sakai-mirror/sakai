@@ -25,6 +25,7 @@
 package org.sakaiproject.service.legacy.entity;
 
 // import
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -32,8 +33,8 @@ import java.util.Stack;
 
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.time.Time;
+import org.sakaiproject.service.legacy.user.User;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -45,7 +46,7 @@ import org.w3c.dom.Element;
 *
 * @author Sakai Software Development Team
 */
-public interface ResourceProperties
+public interface ResourceProperties extends Serializable
 {
 	/** Property for resource creator (uploader) (automatic). [user id string]*/
 	public static final String PROP_CREATOR = "CHEF:creator";

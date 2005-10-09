@@ -60,6 +60,9 @@ import org.w3c.dom.NodeList;
  */
 public class BaseResourceProperties implements ResourceProperties
 {
+	/** A fixed class serian number. */
+	private static final long serialVersionUID = 1L;
+
 	/** The hashtable of properties. */
 	protected Hashtable m_props = null;
 

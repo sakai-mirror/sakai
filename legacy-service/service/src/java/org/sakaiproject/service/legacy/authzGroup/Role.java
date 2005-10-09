@@ -25,6 +25,7 @@
 package org.sakaiproject.service.legacy.authzGroup;
 
 // imports
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ import java.util.Set;
  * 
  * @author Sakai Software Development Team
  */
-public interface Role extends Comparable
+public interface Role extends Comparable, Serializable
 {
 	/**
 	 * Access the Role id.

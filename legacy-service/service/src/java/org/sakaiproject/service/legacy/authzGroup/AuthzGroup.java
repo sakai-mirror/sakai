@@ -25,6 +25,7 @@
 package org.sakaiproject.service.legacy.authzGroup;
 
 // imports
+import java.io.Serializable;
 import java.util.Set;
 
 import org.sakaiproject.exception.IdUsedException;
@@ -45,7 +46,7 @@ import org.sakaiproject.service.legacy.user.User;
  * 
  * @author Sakai Software Development Team
  */
-public interface AuthzGroup extends Edit, Comparable
+public interface AuthzGroup extends Edit, Comparable, Serializable
 {
 	/**
 	 * Add a member to the AuthzGroup.

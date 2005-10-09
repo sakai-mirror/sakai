@@ -2006,6 +2006,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public class BaseSite implements Site
 	{
+		/** A fixed class serian number. */
+		private static final long serialVersionUID = 1L;
+
 		/** The event code for this edit. */
 		protected String m_event = null;
 
@@ -3139,6 +3142,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 	protected class BaseSitePage implements SitePage, Identifiable
 	{
+		/** A fixed class serian number. */
+		private static final long serialVersionUID = 1L;
+
 		/** The title. */
 		protected String m_title = null;
 
@@ -3673,6 +3679,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 	protected class BaseToolConfiguration extends org.sakaiproject.util.Placement implements ToolConfiguration, Identifiable
 	{
+		/** A fixed class serian number. */
+		private static final long serialVersionUID = 1L;
+
 		/** The layout hints. */
 		protected String m_layoutHints = null;
 
@@ -4059,6 +4068,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 	protected class BaseSection implements Section, Identifiable
 	{
+		/** A fixed class serian number. */
+		private static final long serialVersionUID = 1L;
+
 		/** The title. */
 		protected String m_title = null;
 

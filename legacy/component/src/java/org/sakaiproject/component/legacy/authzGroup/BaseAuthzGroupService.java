@@ -979,6 +979,9 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	 */
 	public class BaseAuthzGroup implements AuthzGroup
 	{
+		/** A fixed class serian number. */
+		private static final long serialVersionUID = 1L;
+
 		/** The internal 'db' key. */
 		protected Integer m_key = null;
 
@@ -2091,6 +2094,9 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 
 	public class BaseRole implements Role
 	{
+		/** A fixed class serian number. */
+		private static final long serialVersionUID = 1L;
+
 		/** The role id. */
 		protected String m_id = null;
 
@@ -2752,6 +2758,9 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 
 	public class BaseMember implements Member
 	{
+		/** A fixed class serian number. */
+		private static final long serialVersionUID = 1L;
+
 		public Role role = null;
 
 		public boolean provided = false;

@@ -25,6 +25,8 @@
 package org.sakaiproject.service.legacy.site;
 
 // imports
+import java.io.Serializable;
+
 import org.sakaiproject.api.kernel.tool.Placement;
 
 /**
@@ -35,7 +37,7 @@ import org.sakaiproject.api.kernel.tool.Placement;
  * @author University of Michigan, Sakai Software Development Team
  * @version $Revision$
  */
-public interface ToolConfiguration extends Placement
+public interface ToolConfiguration extends Placement, Serializable
 {
 	/**
 	 * @return the layout hints for this tool.

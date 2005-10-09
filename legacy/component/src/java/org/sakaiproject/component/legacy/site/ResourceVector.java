@@ -39,6 +39,9 @@ import java.util.Vector;
  */
 public class ResourceVector extends Vector
 {
+	/** A fixed class serian number. */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Constructor.
 	 */

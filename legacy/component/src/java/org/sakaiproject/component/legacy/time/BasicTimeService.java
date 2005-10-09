@@ -406,6 +406,9 @@ public class BasicTimeService implements TimeService
 
 	public class MyTime implements Time
 	{
+		/** A fixed class serian number. */
+		private static final long serialVersionUID = 1L;
+
 		/** The milliseconds since... same as Date */
 		protected long m_millisecondsSince = 0;
 

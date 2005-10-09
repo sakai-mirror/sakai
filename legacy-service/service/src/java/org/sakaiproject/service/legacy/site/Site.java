@@ -25,6 +25,7 @@
 package org.sakaiproject.service.legacy.site;
 
 //imports
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,7 +40,7 @@ import org.sakaiproject.service.legacy.user.User;
  * 
  * @author Sakai Software Development Team
  */
-public interface Site extends Edit, Comparable
+public interface Site extends Edit, Comparable, Serializable
 {
 	/**
 	 * @return the user who created this.
