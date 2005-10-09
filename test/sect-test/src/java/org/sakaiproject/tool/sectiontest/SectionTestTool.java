@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -34,11 +35,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.service.legacy.announcement.AnnouncementChannel;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannelEdit;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessage;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
+import org.sakaiproject.service.legacy.message.MessageChannel;
 import org.sakaiproject.service.legacy.message.MessageEdit;
 import org.sakaiproject.service.legacy.message.MessageHeader;
 import org.sakaiproject.service.legacy.site.Section;
@@ -104,10 +109,12 @@ public class SectionTestTool extends HttpServlet
 
 		out.println(getServletInfo());
 
+		String siteId = "xxx-section-test";
+		String user1Id = "xxx-section-test-user-1";
+		String user2Id = "xxx-section-test-user-2";
+		String user3Id = "xxx-section-test-user-3";
 		try
 		{
-			String siteId = "XXX-section-test";
-
 			// create a site
 			Site site = SiteService.addSite(siteId);
 
@@ -135,10 +142,6 @@ public class SectionTestTool extends HttpServlet
 
 			// save the site
 			SiteService.save(site);
-
-			String user1Id = "XXX-section-test-user-1";
-			String user2Id = "XXX_section-test-user-2";
-			String user3Id = "XXX-section-test-user-3";
 
 			// create some users
 			UserDirectoryService.addUser(user1Id, "one", "user", "", "", "", null);
@@ -173,7 +176,7 @@ public class SectionTestTool extends HttpServlet
 			AnnouncementService.commitChannel(channel);
 
 			AnnouncementMessage msg = channel.addAnnouncementMessage("subject", false, null, "this is an announcement");
-			
+
 			// make a message for each section
 			msg = channel.addAnnouncementMessage("subject-1", false, null, "this is an announcement");
 			MessageEdit edit = channel.editMessage(msg.getId());
@@ -194,26 +197,88 @@ public class SectionTestTool extends HttpServlet
 			edit.getHeaderEdit().addSection(section1);
 			edit.getHeaderEdit().addSection(section2);
 			channel.commitMessage(edit);
-			
-			// check the message service's section / permission access
-			Collection c = channel.getSectionsAllowAddMessage();
-			out.println("sections with add permission:");
-			for (Iterator i = c.iterator(); i.hasNext();)
-			{
-				out.println("  - " + i.next());
-			}
 
-			c = channel.getSectionsAllowGetMessage();
-			out.println("sections with get permission:");
-			for (Iterator i = c.iterator(); i.hasNext();)
-			{
-				out.println("  - " + i.next());
-			}
-
+			out.println("setup complete.");
 		}
 		catch (Throwable t)
 		{
 			out.println(t);
+		}
+
+		// get the channel
+		try
+		{
+			AnnouncementChannel channel = AnnouncementService.getAnnouncementChannel(AnnouncementService.channelReference(siteId,
+					"main"));
+			checkAccess(channel, out);
+
+			// switch to the users and see what they can do
+			Session s = SessionManager.getCurrentSession();
+			String currentUserId = s.getUserId();
+			try
+			{
+				s.setUserId(user1Id);
+				out.println("\nfor user: " + user1Id);
+				checkAccess(channel, out);
+
+				s.setUserId(user2Id);
+				out.println("\nfor user: " + user2Id);
+				checkAccess(channel, out);
+
+				s.setUserId(user3Id);
+				out.println("\nfor user: " + user3Id);
+				checkAccess(channel, out);
+			}
+			finally
+			{
+				// make sure to switch back to the authenticated user id
+				s.setUserId(currentUserId);
+			}
+		}
+		catch (Throwable t)
+		{
+			out.println(t);
+		}
+	}
+
+	/**
+	 * Check the section access lists for the current user.
+	 * 
+	 * @param channel
+	 * @param out
+	 */
+	protected void checkAccess(MessageChannel channel, PrintWriter out)
+	{
+		// check the message service's section / permission access
+		Collection c = channel.getSectionsAllowAddMessage();
+		out.println("sections with add permission:");
+		for (Iterator i = c.iterator(); i.hasNext();)
+		{
+			out.println("  - " + i.next());
+		}
+
+		c = channel.getSectionsAllowGetMessage();
+		out.println("sections with get permission:");
+		for (Iterator i = c.iterator(); i.hasNext();)
+		{
+			out.println("  - " + i.next());
+		}
+
+		try
+		{
+			boolean allowed = channel.allowGetMessages();
+			out.println("channel.allowGetMessages: " + allowed);
+
+			List messages = channel.getMessages(null, true);
+			for (Iterator i = messages.iterator(); i.hasNext();)
+			{
+				AnnouncementMessage message = (AnnouncementMessage) i.next();
+				out.println(" ** message: " + message.getHeader().getId() + " " + message.getAnnouncementHeader().getSubject());
+			}
+		}
+		catch (Throwable t)
+		{
+			out.println("getting channel messages: " + t);
 		}
 	}
 }
