@@ -815,48 +815,25 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	*/
 	public Message getMessage(Reference ref) throws IdUnusedException, PermissionException
 	{
-		// check security on the message(throws if not permitted)
-		unlock(SECURE_READ, ref.getReference());
-
-		// %%% could also check type, but need to know which message service we are working for! -ggolden
+		// could also check type, but need to know which message service we are working for! -ggolden
 		if (!ref.getSubType().equals(REF_TYPE_MESSAGE))
 		{
 			throw new IdUnusedException(ref.getReference());
 		}
 
-		if ((!m_caching) || (m_channelCache == null) || (m_channelCache.disabled()))
-		{
-			String channelRef = channelReference(ref.getContext(), ref.getContainer());
+		// check security on the message (throws if not permitted)
+		unlock(SECURE_READ, ref.getReference());
 
-			// if we have "cached" the entire set of messages in the thread, get that and find our message there
-			List msgs = (List) CurrentService.getInThread(channelRef+".msgs");
-			if (msgs != null)
-			{
-				for (Iterator i = msgs.iterator(); i.hasNext();)
-				{
-					Message m = (Message) i.next();
-					if (m.getId().equals(ref.getId()))
-					{
-						return m;
-					}
-				}
-			}
-
-			// get the message from storage
-			Message m = m_storage.getMessage(channelRef, ref.getId());		
-			if (m == null)
-				throw new IdUnusedException(ref.getId());
-
-			return m;
-		}
-
-		// use the cache
 		// get the channel, no security check
 		MessageChannel c = findChannel(channelReference(ref.getContext(), ref.getContainer()));
 		if (c == null)
+		{
 			throw new IdUnusedException(ref.getContainer());
+		}
 
+		// get the message from the channel
 		Message m = ((BaseMessageChannelEdit) c).findMessage(ref.getId());
+
 		return m;
 
 	} // getMessage
@@ -1760,7 +1737,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public List getMessages(Filter filter, boolean ascending) throws PermissionException
 		{
-			// check security (throws if not permitted)
+			// check security on the channel (throws if not permitted)
 			unlock(SECURE_READ, getReference());
 			// track event
 			// EventTrackingService.post(EventTrackingService.newEvent(eventId(SECURE_READ), getReference(), false));
@@ -1778,8 +1755,8 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public Message getMessage(String messageId) throws IdUnusedException, PermissionException
 		{
-			// check security on the channel (throws if not permitted)
-			unlock(SECURE_READ, getReference());
+			// check security on the message (throws if not permitted)
+			unlock(SECURE_READ, messageReference(getReference(), messageId));
 
 			Message m = findMessage(messageId);
 
@@ -1808,13 +1785,13 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			if (m.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// own or any
-				return unlockCheck2(SECURE_UPDATE_OWN, SECURE_UPDATE_ANY, getReference());
+				return unlockCheck2(SECURE_UPDATE_OWN, SECURE_UPDATE_ANY, messageReference(getReference(), messageId));
 			}
 
 			else
 			{
 				// just any
-				return unlockCheck(SECURE_UPDATE_ANY, getReference());
+				return unlockCheck(SECURE_UPDATE_ANY, messageReference(getReference(), messageId));
 			}
 
 		} // allowEditMessage
@@ -1839,13 +1816,13 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			if (m.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// own or any
-				unlock2(SECURE_UPDATE_OWN, SECURE_UPDATE_ANY, getReference());
+				unlock2(SECURE_UPDATE_OWN, SECURE_UPDATE_ANY, messageReference(getReference(), messageId));
 				function = SECURE_UPDATE_OWN;
 			}
 			else
 			{
 				// just any
-				unlock(SECURE_UPDATE_ANY, getReference());
+				unlock(SECURE_UPDATE_ANY, messageReference(getReference(), messageId));
 				function = SECURE_UPDATE_ANY;
 			}
 
@@ -1951,7 +1928,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public boolean allowAddMessage()
 		{
-			// check security (throws if not permitted)
+			// check security on the channel (throws if not permitted)
 			return unlockCheck(SECURE_ADD, getReference());
 
 		} // allowAddMessage
@@ -1972,7 +1949,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public MessageEdit addMessage() throws PermissionException
 		{
-			// check security (throws if not permitted)
+			// check security on the channel (throws if not permitted)
 			unlock(SECURE_ADD, getReference());
 
 			String id = null;
@@ -1998,7 +1975,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public MessageEdit mergeMessage(Element el) throws PermissionException, IdUsedException
 		{
-			// check security (throws if not permitted)
+			// check security on the channel (throws if not permitted)
 			unlock(SECURE_ADD, getReference());
 
 			Message msgFromXml = (Message) newResource(this, el);
@@ -2038,13 +2015,13 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			if (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// own or any
-				return unlockCheck2(SECURE_REMOVE_OWN, SECURE_REMOVE_ANY, getReference());
+				return unlockCheck2(SECURE_REMOVE_OWN, SECURE_REMOVE_ANY, message.getReference());
 			}
 
 			else
 			{
 				// just any
-				return unlockCheck(SECURE_REMOVE_ANY, getReference());
+				return unlockCheck(SECURE_REMOVE_ANY, message.getReference());
 			}
 
 		} // allowRemoveMessage
@@ -2099,13 +2076,13 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			if (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// own or any
-				unlock2(SECURE_REMOVE_OWN, SECURE_REMOVE_ANY, getReference());
+				unlock2(SECURE_REMOVE_OWN, SECURE_REMOVE_ANY, message.getReference());
 				function = SECURE_REMOVE_OWN;
 			}
 			else
 			{
 				// just any
-				unlock(SECURE_REMOVE_ANY, getReference());
+				unlock(SECURE_REMOVE_ANY, message.getReference());
 				function = SECURE_REMOVE_ANY;
 			}
 
@@ -2119,7 +2096,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			notify(event);
 
 			// close the edit object
-			 ((BaseMessageEdit) message).closeEdit();
+			((BaseMessageEdit) message).closeEdit();
 
 			// remove any realm defined for this resource
 			try
@@ -2201,7 +2178,21 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 					}
 				}
 
-				Message m = m_storage.getMessage(this, messageId);
+				// if we have this one message cached, get that
+				Message m = (Message) CurrentService.getInThread(messageReference(getReference(), messageId));
+
+				// if not, get from storage and cache
+				if (m == null)
+				{
+					m = m_storage.getMessage(this, messageId);
+					
+					// if we got one, cache it in the thread
+					if (m != null)
+					{
+						CurrentService.setInThread(m.getReference(), m);
+					}
+				}
+
 				return m;
 			}
 

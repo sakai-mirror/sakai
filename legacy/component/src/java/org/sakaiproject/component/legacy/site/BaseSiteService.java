@@ -1389,8 +1389,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		// enable features used, disable those not
 
-		// figure the site's realm template
-		String realmTemplate = siteRealmTemplate(site);
+		// figure the site authorization group template
+		String siteAzgTemplate = siteAzgTemplate(site);
 
 		// try the site created-by user for the maintain role in the site
 		String userId = null;
@@ -1399,20 +1399,23 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			userId = site.getCreatedBy().getId();
 		}
 
-		enableRealm(site.getReference(), realmTemplate, userId, "!site.template");
+		enableAuthorizationGroup(site.getReference(), siteAzgTemplate, userId, "!site.template");
+
+		// figure the secton authorization group template
+		String sectionAzgTemplate = sectionAzgTemplate(site);
 
 		// enable a realm for each section: use the same template as for the site
 		for (Iterator iSections = site.getSections().iterator(); iSections.hasNext();)
 		{
 			Section section = (Section) iSections.next();
-			enableRealm(section.getReference(), realmTemplate, userId, "!site.template");
+			enableAuthorizationGroup(section.getReference(), sectionAzgTemplate, userId, "!section.template");
 		}
 
-		// disable the reams for any sections deleted in this edit
+		// disable the authorization groups for any sections deleted in this edit
 		for (Iterator iSections = site.m_deletedSections.iterator(); iSections.hasNext();)
 		{
 			Section section = (Section) iSections.next();
-			disableRealm(section.getReference());
+			disableAuthorizationGroup(section.getReference());
 		}
 
 		if (hasMailbox)
@@ -1467,32 +1470,59 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 
 	/**
-	 * Figure the site's realm template, based on type and if it's a user site.
+	 * Figure the site's authorization group template, based on type and if it's a user site.
 	 * 
 	 * @param site
 	 *        The site to figure the realm for.
-	 * @return the site's realm template, based on type and if it's a user site.
+	 * @return the site's authorization group template, based on type and if it's a user site.
 	 */
-	protected String siteRealmTemplate(Site site)
+	protected String siteAzgTemplate(Site site)
 	{
-		// figure the site's realm template
-		String realmTemplate = null;
+		String azgTemplate = null;
 		if (isUserSite(site.getId()))
 		{
-			realmTemplate = "!site.user";
+			azgTemplate = "!site.user";
 		}
 		else
 		{
 			// use the type's template, if defined
-			realmTemplate = "!site.template";
+			azgTemplate = "!site.template";
 			String type = site.getType();
 			if (type != null)
 			{
-				realmTemplate = realmTemplate + "." + type;
+				azgTemplate = azgTemplate + "." + type;
 			}
 		}
 
-		return realmTemplate;
+		return azgTemplate;
+	}
+
+	/**
+	 * Figure the authorization group template for a section of this site, based on type and if it's a user site.
+	 * 
+	 * @param site
+	 *        The site to figure the authorization group templates for.
+	 * @return the authorization group template for a section of this site, based on type and if it's a user site.
+	 */
+	protected String sectionAzgTemplate(Site site)
+	{
+		String azgTemplate = null;
+		if (isUserSite(site.getId()))
+		{
+			azgTemplate = "!section.user";
+		}
+		else
+		{
+			// use the type's template, if defined
+			azgTemplate = "!section.template";
+			String type = site.getType();
+			if (type != null)
+			{
+				azgTemplate = azgTemplate + "." + type;
+			}
+		}
+
+		return azgTemplate;
 	}
 
 	/**
@@ -1513,13 +1543,13 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// others %%%
 
 		// disable realm last, to keep those permissions around
-		disableRealm(site.getReference());
+		disableAuthorizationGroup(site.getReference());
 
 		// disable a realm for each section
 		for (Iterator iSections = site.getSections().iterator(); iSections.hasNext();)
 		{
 			Section section = (Section) iSections.next();
-			disableRealm(section.getReference());
+			disableAuthorizationGroup(section.getReference());
 		}
 	}
 
@@ -1533,7 +1563,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param userId
 	 *        The user to get maintain in this realm.
 	 */
-	protected void enableRealm(String ref, String templateId, String userId, String fallbackTemplate)
+	protected void enableAuthorizationGroup(String ref, String templateId, String userId, String fallbackTemplate)
 	{
 		// see if it exists already
 		try
@@ -1626,11 +1656,10 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 * @param site
 	 *        The site.
 	 */
-	protected void disableRealm(String ref)
+	protected void disableAuthorizationGroup(String ref)
 	{
 		try
 		{
-			// delete all at once, so it's not tempted to try to update the realm when it makes the edit -ggolden
 			AuthzGroupService.removeAuthzGroup(ref);
 		}
 		catch (Exception e)
@@ -1638,7 +1667,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			m_logger.warn(this + ".removeSite: AuthzGroup exception: " + e);
 		}
 
-		// %%% do we want to remove all the realms associated with the site's resources? -ggolden
+		// %%% do we want to remove all the azgs associated with the site's resources? -ggolden
 	}
 
 	/**
