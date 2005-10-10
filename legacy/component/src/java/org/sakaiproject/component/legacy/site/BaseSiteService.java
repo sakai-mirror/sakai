@@ -2765,6 +2765,20 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		 */
 		public Section getSection(String id)
 		{
+			if (id == null) return null;
+
+			// if this is a reference, starting with a "/", parse it, make sure it's a section, in this site, and pull the id
+			if (id.startsWith(Entity.SEPARATOR))
+			{
+				Reference ref = m_entityManager.newReference(id);
+				if ((SERVICE_NAME.equals(ref.getType())) && (SECTION_SUBTYPE.equals(ref.getSubType())) && (m_id.equals(ref.getContainer())))
+				{
+					return (Section) ((ResourceVector) getSections()).getById(ref.getId());
+				}
+				
+				return null;
+			}
+
 			return (Section) ((ResourceVector) getSections()).getById(id);
 		}
 

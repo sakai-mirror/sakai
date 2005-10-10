@@ -113,6 +113,7 @@ public class SectionTestTool extends HttpServlet
 		String user1Id = "xxx-section-test-user-1";
 		String user2Id = "xxx-section-test-user-2";
 		String user3Id = "xxx-section-test-user-3";
+
 		try
 		{
 			// create a site
@@ -130,6 +131,7 @@ public class SectionTestTool extends HttpServlet
 			section1.getProperties().addProperty("test-section1-2", "in section one, again");
 
 			String section1Id = section1.getId();
+			String section2Ref = section1.getReference();
 
 			// make another section
 			Section section2 = site.addSection();
@@ -198,7 +200,51 @@ public class SectionTestTool extends HttpServlet
 			edit.getHeaderEdit().addSection(section2);
 			channel.commitMessage(edit);
 
+			// try to get a section by id and ref
+			try
+			{
+				SiteService.getSite(siteId);
+				Section section = site.getSection(section1Id);
+				if (section == null) out.println(" ** error: cannot find section by id: " + section1Id + " in site: " + siteId);
+				
+				section = site.getSection(section2Ref);
+				if (section == null) out.println(" ** error: cannot find section by ref: " + section2Ref + " in site: " + siteId);
+				
+				section = site.getSection(siteId);
+				if (section != null ) out.println(" ** error: found bogus section by id: " + siteId + " in site: " + siteId);
+			}
+			catch (Throwable t)
+			{
+				out.println(t);
+			}
+
 			out.println("setup complete.");
+		}
+		catch (Throwable t)
+		{
+			out.println(t);
+		}
+
+		// try to get a section by id and ref
+		try
+		{
+			Site site = SiteService.getSite(siteId);
+			Section section = (Section) site.getSections().iterator().next();
+			String sectionId = section.getId();
+			String sectionRef = section.getReference();
+
+			Section section2 = site.getSection(sectionId);
+			if (section2 == null) out.println(" ** error: cannot find section by id: " + sectionId + " in site: " + siteId);
+			if (section2 != section) out.println(" ** error: section by id: " + sectionId + " in site: " + siteId + " not matching initial section by ==");
+			
+			Section section3 = site.getSection(sectionRef);
+			if (section3 == null) out.println(" ** error: cannot find section by ref: " + sectionRef + " in site: " + siteId);
+			if (section3 != section) out.println(" ** error: section by ref: " + sectionRef + " in site: " + siteId + " not matching initial section by ==");
+			
+			Section section4 = site.getSection(siteId);
+			if (section4 != null ) out.println(" ** error: found bogus section by id: " + siteId + " in site: " + siteId);
+			
+			out.println("site.getSection() by id or ref working.");
 		}
 		catch (Throwable t)
 		{

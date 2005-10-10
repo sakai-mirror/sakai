@@ -151,7 +151,7 @@ public interface Site extends Edit, Comparable, Serializable
 	 * Get a site section
 	 * 
 	 * @param id
-	 *        The section id.
+	 *        The section id (or reference).
 	 * @return The Section object if found, or null if not found.
 	 */
 	Section getSection(String id);
