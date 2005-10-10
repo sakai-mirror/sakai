@@ -2346,8 +2346,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		public List findFilterMessages(Filter filter, boolean ascending)
 		{
 			List msgs = findMessages();
-			if (msgs.size() == 0)
-				return msgs;
+			if (msgs.size() == 0) return msgs;
 
 			// sort - natural order is date ascending
 			Collections.sort(msgs);
@@ -2359,23 +2358,65 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			}
 
 			// filter out
-			if (filter != null)
+			List filtered = new Vector();
+			
+			// check for the allowed sections of the current end use if we need it, and only once
+			Collection allowedSections = null;
+
+			for (int i = 0; i < msgs.size(); i++)
 			{
-				List filtered = new Vector();
-				for (int i = 0; i < msgs.size(); i++)
+				Message msg = (Message) msgs.get(i);
+				
+				// if sectioned, check that the end user has get access to any of this message's sections; reject if not
+				if (msg.getHeader().getAccess() == MessageHeader.MessageAccess.SECTIONED)
 				{
-					Message msg = (Message) msgs.get(i);
-					if (filter.accept(msg))
-						filtered.add(msg);
+					// check the message's sections to the allowed (get) sections for the current user
+					Collection msgSections = msg.getHeader().getSections();
+	
+					// we need the allowed sections, so get it if we have not done so yet
+					if (allowedSections == null)
+					{
+						allowedSections = getSectionsAllowGetMessage();
+					}
+
+					// reject if there is no intersection
+					if (!isIntersectionSectionRefsToSections(msgSections, allowedSections)) continue;
 				}
-				if (filtered.size() == 0)
-					return filtered;
-				msgs = filtered;
+
+				// reject if the filter rejects
+				if ((filter != null) && (!filter.accept(msg))) continue;
+
+				// if not rejected, keep
+				filtered.add(msg);
 			}
 
-			return msgs;
+			return filtered;
 
 		} // findFilterMessages
+
+		/**
+		 * See if the collection of section reference strings has at least one section that is in the collection of Section objects.
+		 * @param sectionRefs The collection (String) of section references.
+		 * @param sections The collection (Section) of section objects.
+		 * @return true if there is interesection, false if not.
+		 */
+		protected boolean isIntersectionSectionRefsToSections(Collection sectionRefs, Collection sections)
+		{
+			for (Iterator iRefs = sectionRefs.iterator(); iRefs.hasNext();)
+			{
+				String findThisSectionRef = (String) iRefs.next();
+				for (Iterator iSections = sections.iterator(); iSections.hasNext();)
+				{
+					String thisSectionRef = ((Section) iSections.next()).getReference();
+					if (thisSectionRef.equals(findThisSectionRef))
+					{
+						return true;
+					}
+				}
+			}
+			
+			return false;
+		}
 
 		/**
 		* Access the event code for this edit.

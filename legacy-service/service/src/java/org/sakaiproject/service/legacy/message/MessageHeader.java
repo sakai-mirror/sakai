@@ -111,7 +111,7 @@ public interface MessageHeader extends AttachmentContainer
 	/**
 	 * Access the sections defined for this message.
 	 * 
-	 * @return A Collection (String) of section ids (authorization group ids) defined for this message; empty if none are defined.
+	 * @return A Collection (String) of section refs (authorization group ids) defined for this message; empty if none are defined.
 	 */
 	Collection getSections();
 
