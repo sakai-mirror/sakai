@@ -88,7 +88,10 @@ a:hover{color:#5168D6 !important;text-decoration:underline;background-color:tran
 .syllabusTable, .listHier{font-size:1em;}
 .syllabusTable th, .listHier th{background-color:#DDDFE4;}
 .syllabusTable td,.listHier td{vertical-align:top;padding:.4em !important}
-.syllabusTable td h4,.listHier td h4{margin:0;padding:0;font-size: 1em;background:none}
+.syllabusTable td a:link,.listHier a:link, .syllabusTable a:visited	,.listHier a:visited{color:#369;text-decoration:none}
+
+.syllabusTable th h4,.listHier th h3,.listHier th h4, .listHier th h5, .listHier th h6,.syllabusTable td h4,.listHier td h3,.listHier td h4, .listHier td h5, .listHier td h6{margin:0;padding:0;font-size: 1em;background:none;font-weight:normal}
+table.lines tr:hover{background-color:#fff}
 .listHier td.line{border-bottom:1px dashed gray}
 table.lines{border-collapse: collapse;}
 table.lines td{border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7}

@@ -29,34 +29,38 @@
 		<input type="hidden" name="from" value="list" />
 		#if($attached.isEmpty())
 		#else
-			<table class="listHier" cellspacing="0" cellpadding="0">
+			<table class="listHier lines" cellspacing="0" cellpadding="0">
 				<tr>
-					<th>
+					<th id="item">
 						$tlang.getString("att.items")
 					</th>
-					<th>
+					<th  id="action">
 						$tlang.getString("att.rmv")
 					</th>
 				</tr>	
 					#foreach($att_item in $attached)
 						<tr>
-							<td style="vertical-align:top">
-								<img src="#imageLink($contentTypeImageService.getContentTypeImage($att_item.contentType))" border= "0" alt ="" hspace="0" />
-								<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
+							<td headers="item">
+								<h4>
+									<img src="#imageLink($contentTypeImageService.getContentTypeImage($att_item.contentType))" border= "0" alt ="" hspace="0" />
+									<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
+								</h4>	
 							</td>
-							<td  style="vertical-align:top">
-								<a href="#toolLinkParam("ResourcesAction" "doRemoveitem" "itemId=$validator.escapeUrl($att_item.id)")" title="$tlang.getString('att.remove')">$tlang.getString("att.remove")</a>
+							<td  headers="action">
+								<div class="itemAction">
+									<a href="#toolLinkParam("ResourcesAction" "doRemoveitem" "itemId=$validator.escapeUrl($att_item.id)")" title="$tlang.getString('att.remove')">$tlang.getString("att.remove")</a>
+								</div>	
 							</td>
 						</tr>
 					#end
 			</table>
-		<hr class="itemSeparator"  />	
+##		<hr class="itemSeparator"  />	
 		#end	
 		######################  Page Title / Breadcrumbs  ##############
 		<h3>
 			<span class ="chefBreadCrumb">
 				$tlang.getString("gen.location")
-				<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
+				<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString('gen.folder1')" />
 				#foreach ($item in $collectionPath)
 					#if($item.isLast())
 						$validator.escapeHtml("$item.name")
@@ -75,17 +79,17 @@
 			</span>		
 		</h3>
 		######################  Heirarchical list of resource folders/items  ##############
-		<table class="listHier speciallistHier" cellspacing="0" border="0">
+		<table class="listHier lines" cellspacing="0" border="0">
 			######################  Column labels, sort controls, expand/collapse all  ##############
 			<tr>
 				<th id="title">
 					#if ($expandallflag && "$expandallflag" == "$TRUE")
 						<a href="#toolLinkParam("ResourcesAction" "doUnexpandall" "collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('collapseall')">
-							<img src = "#imageLink("sakai/collapse.gif")" border="0" title="$tlang.getString('collapseall')" alt="$tlang.getString('collapseall')" hspace="0" />
+							<img src = "#imageLink("sakai/collapse-expand.gif")" border="0" title="$tlang.getString('collapseall')" alt="$tlang.getString('collapseall')" hspace="0" />
 						</a>								 
 					#else
 						<a href="#toolLinkParam("ResourcesAction" "doExpandall" "collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('expandall')">
-							<img src = "#imageLink("sakai/expand.gif")" border="0" title="$tlang.getString('expandall')" alt="$tlang.getString('expandall')" hspace="0" />
+							<img src = "#imageLink("sakai/expand-collapse.gif")" border="0" title="$tlang.getString('expandall')" alt="$tlang.getString('expandall')" hspace="0" />
 						</a>								 
 					#end
 					## <img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="%%%" />
@@ -106,28 +110,30 @@
 				############################### Show top level folder #################
 				<tr>
 					<td headers="title">
-						#if ($root.isFolder())
-							#if ($root.isEmpty())
-								<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
-								$validator.escapeHtml(${root.name})
-							#elseif ($root.canRead())
-								#if (!$expandedCollections.containsKey($root.Id))
-									<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.open')">
-										<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
+						<h3>
+							#if ($root.isFolder())
+								#if ($root.isEmpty())
+									<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="$tlang.getString('gen.folder1')" />
+									$validator.escapeHtml(${root.name})
+								#elseif ($root.canRead())
+									#if (!$expandedCollections.containsKey($root.Id))
+										<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.open')">
+											<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
+										</a>
+									#else
+										<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.close')">
+											<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
+										</a>
+									#end
+									<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('sh.go')">
+										$validator.escapeHtml(${root.name})
 									</a>
 								#else
-									<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.close')">
-										<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
-									</a>
-								#end
-								<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('sh.go')">
+									<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="$tlang.getString('gen.folder1')" />
 									$validator.escapeHtml(${root.name})
-								</a>
-							#else
-								<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
-								$validator.escapeHtml(${root.name})
-							#end
-						#end					
+								#end
+							#end					
+						</h3>
 					</td>
 					<td headers="actions">
 						######################  Add Action Links at Top Level  ##############
@@ -152,11 +158,13 @@
 				#if ($root.isLocal() && $collectionMembers.isEmpty())
 					<tr>
 						<td  colspan="4">
-							<p class="instruction">
-								$tlang.getString("sh.no")
-								#if($dropboxMode)$tlang.getString("sh.drop")#else$tlang.getString("sh.reso")#end
-								$tlang.getString("sh.item")
-							</p>
+							<h3 style="margin-left:1em">
+								<p class="instruction">
+									$tlang.getString("sh.no")
+									#if($dropboxMode)$tlang.getString("sh.drop")#else$tlang.getString("sh.reso")#end
+									$tlang.getString("sh.item")
+								</p>
+							</h3>	
 						</td>
 					</tr>		
 				#else
@@ -172,9 +180,16 @@
 							#set ($margin="margin-left:2em")
 							#set ($marginAction="margin-left:4.7em")
 						#end
+						#if ($member.depth > 3)
+							#set($headerDepth = 6)
+						#else
+							#set($headerDepth =$member.depth + 3)
+						#end
+						
 						<tr>
 							######################  Item title and action links  ##############
 							<td headers="title" style="text-indent:$width">
+								<h$headerDepth title="$validator.escapeHtml(${member.name})">
 								#if ($member.isFolder())
 									#if ($member.isEmpty())
 										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
@@ -225,6 +240,7 @@
 										#end
 									#end
 								#end
+								</h$headerDepth>
 							</td>
 							<td headers="actions">
 								<div class="itemAction">
@@ -273,40 +289,41 @@
 			#if($allowed_to_see_other_sites)
 				#if("$!show_other_sites" == "true")
 					<tr>
-						<td colspan="3">
-						<h4 style="margin: .5em -.5em;font-size:1em">
+						<th colspan="3">
+						<h4>
 							<a href="#toolLink("ResourcesAction" "doHideOtherSites")" title= "$tlang.getString('list.hide')">
-								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString('list.hide')" border="0" align="top" />
+								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString('list.hide')" border="0" align="top" /> $validator.escapeHtml("$tlang.getString('list.hide')")
 							</a>
-							$validator.escapeHtml("$tlang.getString('list.hide')")
 						</h4>
-						</td>
+						</th>
 					</tr>
 					#foreach($root in $other_sites)
 						############################### Show top level folder #################
 						<tr>
 							<td headers="title">
 								#if ($root.isFolder())
-									#if ($root.isEmpty())
-										<img src = "#imageLink("sakai/dir_closed.gif")" border="0"  alt="folder" />
-										$validator.escapeHtml(${root.name})
-									#elseif ($root.canRead())
-										#if (!$expandedCollections.containsKey($root.Id))
-											<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.open')">
-												<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
+									<h3>
+										#if ($root.isEmpty())
+											<img src = "#imageLink("sakai/dir_closed.gif")" border="0"  alt="folder" />
+											$validator.escapeHtml(${root.name})
+										#elseif ($root.canRead())
+											#if (!$expandedCollections.containsKey($root.Id))
+												<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.open')">
+													<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
+												</a>
+											#else
+												<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.close')">
+													<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
+												</a>
+											#end
+											<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${root.id})}&navRoot=$validator.escapeUrl($root.root)")" title="$tlang.getString('sh.go')">
+												$validator.escapeHtml(${root.name})
 											</a>
 										#else
-											<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($root.Id)")" title="$tlang.getString('sh.close')">
-												<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
-											</a>
-										#end
-										<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${root.id})}&navRoot=$validator.escapeUrl($root.root)")" title="$tlang.getString('sh.go')">
+											<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 											$validator.escapeHtml(${root.name})
-										</a>
-									#else
-										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
-										$validator.escapeHtml(${root.name})
-									#end
+										#end
+									</h3>	
 								#end	
 							</td>
 							<td headers="actions">
@@ -352,59 +369,67 @@
 									#set ($margin="margin-left:2em")
 									#set ($marginAction="margin-left:4.7em")
 								#end
+								#if ($member.depth > 3)
+									#set($headerDepth = 6)
+								#else
+									#set($headerDepth =$member.depth + 3)
+								#end
+
 								<tr>
 									######################  Item title and action links  ##############
 									<td headers="title" style="text-indent:$width">
-										#if ($member.isFolder())
-											#if ($member.isEmpty())
-												<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
-												$validator.escapeHtml(${member.name})
-											#elseif ($member.canRead())
-												#if (!$expandedCollections.containsKey($member.Id))
-													<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.open')">
-														<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
-													</a>
-												#else
-													<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.close')">
-														<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
-													</a>
-												#end
-												<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('sh.go')">
+										<h$headerDepth>
+											#if ($member.isFolder())
+												#if ($member.isEmpty())
+													<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
 													$validator.escapeHtml(${member.name})
-												</a>
-											#else
-												<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
-												$validator.escapeHtml(${member.name})
-											#end
-										#else
-											#if ($member.canRead())
-												#if ($member.hasCopyrightAlert())
-													## if there is a copyright alert, show the alert page first
-													<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false">
+												#elseif ($member.canRead())
+													#if (!$expandedCollections.containsKey($member.Id))
+														<a href="#toolLinkParam("ResourcesAction" "doExpand_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.open')">
+															<img src = "#imageLink("sakai/dir_closedplus.gif")" border="0" title="$tlang.getString('sh.open')" alt="$tlang.getString('sh.open')" />
+														</a>
 													#else
-													<a href="${member.url}" target="${member.target}">
-												#end
-												<img src = "#imageLink($contentTypeImageService.getContentTypeImage($member.type))" border= "0" alt ="" hspace="0" />
-												</a>
-												#if ($member.hasCopyrightAlert())
-													## if there is a copyright alert, show the alert page first
-													<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false;">
-														$validator.escapeHtml($member.name)
+														<a href="#toolLinkParam("ResourcesAction" "doCollapse_collection" "collectionId=$validator.escapeUrl($member.Id)")" title="$tlang.getString('sh.close')">
+															<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
+														</a>
+													#end
+													<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('sh.go')">
+														$validator.escapeHtml(${member.name})
 													</a>
-													&#169;
 												#else
-													<a href="$member.url" target="$member.target">
-														$validator.escapeHtml($member.name)
-													</a>
+													<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+													$validator.escapeHtml(${member.name})
 												#end
 											#else
-												 <img src = "#imageLink($contentTypeImageService.getContentTypeImage($member.type))" border="0" alt ="" hspace="0" />
-												$validator.escapeHtml($member.name)
-												#if ($member.hasCopyrightAlert())
-													&#169;
+												#if ($member.canRead())
+													#if ($member.hasCopyrightAlert())
+														## if there is a copyright alert, show the alert page first
+														<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false">
+														#else
+														<a href="${member.url}" target="${member.target}">
+													#end
+													<img src = "#imageLink($contentTypeImageService.getContentTypeImage($member.type))" border= "0" alt ="" hspace="0" />
+													</a>
+													#if ($member.hasCopyrightAlert())
+														## if there is a copyright alert, show the alert page first
+														<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false;">
+															$validator.escapeHtml($member.name)
+														</a>
+														&#169;
+													#else
+														<a href="$member.url" target="$member.target">
+															$validator.escapeHtml($member.name)
+														</a>
+													#end
+												#else
+													 <img src = "#imageLink($contentTypeImageService.getContentTypeImage($member.type))" border="0" alt ="" hspace="0" />
+													$validator.escapeHtml($member.name)
+													#if ($member.hasCopyrightAlert())
+														&#169;
+													#end
 												#end
 											#end
-										#end
+										</h$headerDepth>
 									</td>
 									<td headers="actions">
 										<div class="itemAction">
@@ -451,14 +476,13 @@
 	
 				#else
 					<tr>
-						<td colspan="3">
-						<h4 style="margin: .5em -.5em;font-size:1em">
+						<th colspan="3">
+						<h4>
 							<a href="#toolLink("ResourcesAction" "doShowOtherSites")" title= "$tlang.getString('list.show')">
-								<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString('list.show')" border="0" align="top" alt="show"/>
+								<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString('list.show')" border="0" align="top" /> $validator.escapeHtml("$tlang.getString('list.show')")
 							</a>
-							$validator.escapeHtml("$tlang.getString('list.show')")
 						</h4>
-						</td>
+						</th>
 					</tr>
 				#end
 			#end
