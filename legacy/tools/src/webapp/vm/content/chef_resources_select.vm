@@ -42,8 +42,8 @@
 						<tr>
 							<td headers="item">
 								<h4>
-									<img src="#imageLink($contentTypeImageService.getContentTypeImage($att_item.contentType))" border= "0" alt ="" hspace="0" />
-									<a href="$att_item.accessUrl" target="_blank">$att_item.displayName</a>
+									<img src="#imageLink($contentTypeImageService.getContentTypeImage($att_item.contentType))" border= "0" alt ="$contentTypeImageService.getContentTypeDisplayName($att_item.contentType) icon" hspace="0" />
+									<a href="$att_item.accessUrl" target="_blank" title="$tlang.getString('gen.type'): $contentTypeImageService.getContentTypeDisplayName($att_item.contentType)  [$tlang.getString('gen.newwin')]">$att_item.displayName</a>
 								</h4>	
 							</td>
 							<td  headers="action">
@@ -192,7 +192,7 @@
 								<h$headerDepth title="$validator.escapeHtml(${member.name})">
 								#if ($member.isFolder())
 									#if ($member.isEmpty())
-										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="$tlang.getString('gen.folder1')" />
 										$validator.escapeHtml(${member.name})
 									#elseif ($member.canRead())
 										#if (!$expandedCollections.containsKey($member.Id))
@@ -208,27 +208,36 @@
 											$validator.escapeHtml(${member.name})
 										</a>
 									#else
-										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+										<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="$tlang.getString('gen.folder1')" />
 										$validator.escapeHtml(${member.name})
 									#end
 								#else
 									#if ($member.canRead())
 										#if ($member.hasCopyrightAlert())
 											## if there is a copyright alert, show the alert page first
-											<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false">
+											<a href="" 
+											title="$tlang.getString('gen.copycomf') $tlang.getString('gen.type'): $contentTypeImageService.getContentTypeDisplayName($member.type)  [$tlang.getString('gen.newwin')]"
+											onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false" onkeypress="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false">
 											#else
-											<a href="${member.url}" target="${member.target}">
+											<a href="${member.url}" target="${member.target}"
+												title="$tlang.getString('gen.type'): $contentTypeImageService.getContentTypeDisplayName($member.type)  [$tlang.getString('gen.newwin')]"
+											>
 										#end
 										<img src = "#imageLink($contentTypeImageService.getContentTypeImage($member.type))" border= "0" alt ="" hspace="0" />
 										</a>
 										#if ($member.hasCopyrightAlert())
 											## if there is a copyright alert, show the alert page first
-											<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false;">
+											<a href=""
+											title="$tlang.getString('gen.copycomf') $tlang.getString('gen.type'): $contentTypeImageService.getContentTypeDisplayName($member.type)  [$tlang.getString('gen.newwin')]"
+											onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false;" 
+											onkeypress="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false;">
 												$validator.escapeHtml($member.name)
 											</a>
 											&#169;
 										#else
-											<a href="$member.url" target="$member.target">
+											<a href="$member.url" target="$member.target"
+											title="$tlang.getString('gen.type'): $contentTypeImageService.getContentTypeDisplayName($member.type)  [$tlang.getString('gen.newwin')]"
+											>
 												$validator.escapeHtml($member.name)
 											</a>
 										#end
@@ -304,7 +313,7 @@
 								#if ($root.isFolder())
 									<h3>
 										#if ($root.isEmpty())
-											<img src = "#imageLink("sakai/dir_closed.gif")" border="0"  alt="folder" />
+											<img src = "#imageLink("sakai/dir_closed.gif")" border="0"  alt="$tlang.getString('gen.folder1')"  />
 											$validator.escapeHtml(${root.name})
 										#elseif ($root.canRead())
 											#if (!$expandedCollections.containsKey($root.Id))
@@ -320,7 +329,7 @@
 												$validator.escapeHtml(${root.name})
 											</a>
 										#else
-											<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
+											<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="$tlang.getString('gen.folder1')" />
 											$validator.escapeHtml(${root.name})
 										#end
 									</h3>	
@@ -381,7 +390,7 @@
 										<h$headerDepth>
 											#if ($member.isFolder())
 												#if ($member.isEmpty())
-													<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+													<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="$tlang.getString('gen.folder1')" />
 													$validator.escapeHtml(${member.name})
 												#elseif ($member.canRead())
 													#if (!$expandedCollections.containsKey($member.Id))
@@ -397,14 +406,17 @@
 														$validator.escapeHtml(${member.name})
 													</a>
 												#else
-													<img src = "#imageLink("sakai/dir_closed.gif")" border="0" />
+													<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="$tlang.getString('gen.folder1')" />
 													$validator.escapeHtml(${member.name})
 												#end
 											#else
 												#if ($member.canRead())
 													#if ($member.hasCopyrightAlert())
 														## if there is a copyright alert, show the alert page first
-														<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false">
+														<a href="" 
+														title="$tlang.getString('gen.copycomf') $tlang.getString('gen.type'): $contentTypeImageService.getContentTypeDisplayName($member.type)  [$tlang.getString('gen.newwin')]"
+														onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false"
+														onkeypress="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false">
 														#else
 														<a href="${member.url}" target="${member.target}">
 													#end
@@ -412,12 +424,16 @@
 													</a>
 													#if ($member.hasCopyrightAlert())
 														## if there is a copyright alert, show the alert page first
-														<a href="" onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false;">
+														<a href="" 
+														title="$tlang.getString('gen.copycomf') $tlang.getString('gen.type'): $contentTypeImageService.getContentTypeDisplayName($member.type)  [$tlang.getString('gen.newwin')]"
+														onclick="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false;"
+														onkeypress="openCopyrightWindow('${member.url}&copyrightAlert','copyrightAlertWindow','scrollbars=yes,menubar=yes,height=600,width=800,resizable=yes,toolbar=yes,location=yes,status=yes');return false;">
 															$validator.escapeHtml($member.name)
 														</a>
 														&#169;
 													#else
-														<a href="$member.url" target="$member.target">
+														<a href="$member.url" target="$member.target"
+														title="$tlang.getString('gen.type'): $contentTypeImageService.getContentTypeDisplayName($member.type)  [$tlang.getString('gen.newwin')]">
 															$validator.escapeHtml($member.name)
 														</a>
 													#end
