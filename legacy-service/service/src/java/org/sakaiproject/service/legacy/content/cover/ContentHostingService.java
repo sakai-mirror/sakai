@@ -25,10 +25,6 @@ package org.sakaiproject.service.legacy.content.cover;
 
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 /**
 * <p>ContentHostingService is a static Cover for the {@link org.sakaiproject.service.legacy.content.ContentHostingService ContentHostingService};
 * see that interface for usage details.</p>
@@ -479,16 +475,36 @@ public class ContentHostingService
 		return service.getProperties(param0);
 	}
 
-	public static void copy(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException
+	public static String copy(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.copy(param0, param1);
+	}
+	
+	public static String copyIntoFolder(java.lang.String param0, java.lang.String param1) 
+		throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null)
+			return null;
+	
+		return service.copyIntoFolder(param0, param1);
+	}
+
+	public static void moveIntoFolder(java.lang.String param0, java.lang.String param1) 
+		throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.InconsistentException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
 			return;
-
-		service.copy(param0, param1);
+	
+		service.moveIntoFolder(param0, param1);
 	}
 
-	public static void rename(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException
+	public static void rename(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.IdUsedException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -596,7 +612,7 @@ public class ContentHostingService
       return service.resolveUuid(uuid);
    }
 
-   public static Collection getLocks(String id)
+   public static java.util.Collection getLocks(String id)
    {
       org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
       if (service == null)
@@ -650,7 +666,7 @@ public class ContentHostingService
       service.removeAllLocks(id);
    }
 
-   public static List findResources(String type, String primaryMimeType, String subMimeType) {
+   public static java.util.List findResources(String type, String primaryMimeType, String subMimeType) {
       org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
       if (service == null)
          return null;
@@ -662,7 +678,7 @@ public class ContentHostingService
     * Return a map of Worksite collections roots that the user has access to.
     * @return Map of worksite title (String) to worksite resource root id (String)
     */
-   public static Map getCollectionMap() {
+   public static java.util.Map getCollectionMap() {
       org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
       if (service == null)
          return null;

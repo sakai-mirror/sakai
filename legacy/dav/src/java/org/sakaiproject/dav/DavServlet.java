@@ -3246,6 +3246,10 @@ public class DavServlet
 		}
 		catch (IdUnusedException e)
 		{
+			return false;
+		}
+		catch (IdUsedException e)
+		{
 			// Resource not found (this is actually the normal case)
 		}
 		catch (OverQuotaException e)

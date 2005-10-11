@@ -565,6 +565,7 @@ public interface ContentHostingService extends EntityProducer
 	 *        The id of the resource or collection.
 	 * @param new_id
 	 *        The desired id of the resource or collection.
+	 * @return The full id of the resource after the rename is completed.
 	 * @exception PermissionException
 	 *            if the user does not have permissions to read a containing collection, or to rename this resource.
 	 * @exception IdUnusedException
@@ -573,8 +574,12 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the resource is a collection.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception IdUsedException
+	 *            if copied item is a collection and the new id is already in use
+	 *            or if the copied item is not a collection and a unique id cannot be found
+	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
 	 */
-	public void rename(String id, String new_id) throws PermissionException, IdUnusedException, TypeException, InUseException;
+	public String rename(String id, String new_id) throws PermissionException, IdUnusedException, TypeException, InUseException, OverQuotaException, InconsistentException, IdUsedException;
 
 	/**
 	 * check permissions for copy().
@@ -594,6 +599,31 @@ public interface ContentHostingService extends EntityProducer
 	 *        The id of the resource.
 	 * @param new_id
 	 *        The desired id of the new resource.
+	 * @return The full id of the new copy of the resource.
+	 * @exception PermissionException
+	 *            if the user does not have permissions to read a containing collection, or to remove this resource.
+	 * @exception IdUnusedException
+	 *            if the resource id is not found.
+	 * @exception TypeException
+	 *            if the resource is a collection.
+	 * @exception InUseException
+	 *            if the resource is locked by someone else.
+	 * @exception IdUsedException
+	 *            if copied item is a collection and the new id is already in use
+	 *            or if the copied item is not a collection and a unique id cannot be found
+	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 */
+	public String copy(String id, String new_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
+			OverQuotaException, IdUsedException;
+
+	/**
+	 * Copy a resource to a folder.
+	 * 
+	 * @param id
+	 *        The id of the resource.
+	 * @param folder_id
+	 *        The id of the folder in which the copy should be created.
+	 * @return The full id of the new copy of the resource.
 	 * @exception PermissionException
 	 *            if the user does not have permissions to read a containing collection, or to remove this resource.
 	 * @exception IdUnusedException
@@ -603,8 +633,30 @@ public interface ContentHostingService extends EntityProducer
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
 	 */
-	public void copy(String id, String new_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
-			OverQuotaException;
+	public String copyIntoFolder(String id, String folder_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
+			OverQuotaException, IdUsedException;
+
+	/**
+	 * Move a resource to a folder.
+	 * 
+	 * @param id
+	 *        The id of the resource.
+	 * @param folder_id
+	 *        The id of the folder to which the resource should be moved.
+	 * @return The full id of the resource after the move is completed.
+	 * @exception PermissionException
+	 *            if the user does not have permissions to read a containing collection, or to remove this resource.
+	 * @exception IdUnusedException
+	 *            if the resource id is not found.
+	 * @exception TypeException
+	 *            if the resource is a collection.
+	 * @exception InUseException
+	 *            if the resource is locked by someone else.
+	 * @exception InconsistentException
+	 *            if the containing collection does not exist.
+	 */
+	public String moveIntoFolder(String id, String folder_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
+			OverQuotaException, IdUsedException, InconsistentException;
 
 	/**
 	 * Commit the changes made, and release the lock. The Object is disabled, and not to be used after this call.
