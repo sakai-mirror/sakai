@@ -20,7 +20,7 @@
 				#end
 		</p>
 	</div>	
-		<form name="reviseForm" action="#toolForm("AnnouncementAction")" method="post">
+		<form name="reviseForm" action="#toolForm("AnnouncementAction")" method="post" onload="showtable('sectionTable');">
 			<div class="indnt1">
 			<input type="hidden" name="fromInterface" value="revise" />
 			<p class="shorttext">
@@ -60,13 +60,78 @@
 					</tr>
 				</table>
 			</p>	
-			#if($pubviewset)
+			#*if($pubviewset)
 				$tlang.getString("revise.setto")
 			#else
 				<p class="checkbox">
 					<input type="checkbox" id="pubview" name="pubview" value="true" #if ($pubview) checked="checked" #end/>
 					<label for="pubview">$tlang.getString("revise.displaynon")</label>
 				</p>	
+			#end
+			*#
+			<input type="radio" name="announceTo" id="pubview" value="pubview" #if($!announceTo == "pubview" || $!pubview)checked="checked"#end onclick="document.getElementById('sectionTable').style.display = 'none';" />
+			<label for="pubview">$tlang.getString("displayto.public")</label> <br />
+			<input type="radio" name="announceTo" id="site" value="site" #if(!$!pubview && ($!announceTo == "site" || $!message.AnnouncementHeader.Access == $channelAccess))checked="checked"#end onclick="document.getElementById('sectionTable').style.display = 'none';" />
+			<label for="site">$tlang.getString("displayto.site")</label> <br />
+			#if ($!sections)
+				## added section awareness
+				<input type="radio" name="announceTo" id="sections" value="sections" #if(!$!pubview && ($!announceTo == "sections" || $!message.AnnouncementHeader.Access == $sectionAccess))checked="checked"#end onclick="document.getElementById('sectionTable').style.display = 'block';" />
+				<label for="sections">$tlang.getString("displayto.selected")</label> <br />
+				## show section list
+				#if (!(!$!pubview && ($!announceTo == "sections" || $!message.AnnouncementHeader.Access == $sectionAccess)))
+					<div style="display:block">
+				#end
+					<table id="sectionTable" class="listHier" border="0" cellspacing="0" summary="Table contains list of announcements. First column may contain checkboxes, second will contain the title, third the author, fourth the date. Headers can be used to sort." width="100%">
+						<tr>					 			
+						<th id ="selectAllSections">
+									<input type="checkbox" name="selectall" id="selectall" title="toggle select all" onclick="javascript:toggleSelectAll(this, 'selectedSections')" />						</th>
+					 		<th id ="Name">
+								#if (!$currentSortedBy.equals("name"))
+									<a href="#" onclick="location='#toolLink("$!action" "doSortbysectionname")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysectionname")';return false;" title ="Sort by section name">Name</a>
+								#else
+									#if ($currentSortAsc.equals("true"))
+										<a href="#" onclick="location='#toolLink("$!action" "doSortbysectionname")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysectionname")';return false;" title ="Sort by section name">Name <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by section name ascending" /></a>
+									#else
+										<a href="#" onclick="location='#toolLink("$!action" "doSortbysectionname")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysectionname")';return false;" title ="Sort by section name">Name <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by section name descending"/></a>
+									#end
+								#end
+							</th>
+							<th id ="Date">
+								#if (!$currentSortedBy.equals("description"))
+									<a href="#" onclick="location='#toolLink("$!action" "doSortbysectiondescription")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysectiondescription")';return false;" title ="Sort by section description">Description</a>
+								#else
+									#if ($currentSortAsc.equals("true"))
+										<a href="#" onclick="location='#toolLink("$!action" "doSortbysectiondescription")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysectiondescription")';return false;" title ="Sort by section description">Description <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by section description ascending" /></a>
+									#else
+										<a href="#" onclick="location='#toolLink("$!action" "doSortbysectiondescription")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysectiondescription")';return false;" title ="Sort by section description">Description <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by section description descending"/></a>
+									#end
+								#end
+							</th>
+						</tr>
+						#foreach ($section in $!sections)
+						<tr>
+								<td headers="selected" style="padding-bottom:0;">
+									#set($selected=false)
+									#foreach($aSectionRef in $message.AnnouncementHeader.Sections)
+										#set($aSection = $!site.getSection($!aSectionRef))
+										#if ($!section.Id == $!aSection.Id)
+											#set($selected = true)
+										#end
+									#end
+									<input type="checkbox" name="selectedSections" id="$section.Id" title="$section.Id" value="$section.Id" #if($selected) checked="checked"#end />
+								</td>
+								<td headers="name" style="padding-bottom:0;">
+									$section.Title
+								</td>
+								<td headers="description" style="padding-bottom:0;">
+									$section.Description
+								</td>
+							</tr>
+						#end
+					</table>
+				#if (!(!$!pubview && ($!announceTo == "sections" || $!message.AnnouncementHeader.Access == $sectionAccess)))
+						</div>
+					#end
 			#end
 			<p class="shorttext">
 				<h4>
@@ -138,4 +203,34 @@
 		</p>
 	</form>
 </div>
+<script language="JavaScript" type="text/JavaScript">
+	<!--
+		function toggleSelectAll(caller, elementName)
+		{
+			var newValue = caller.checked;
+			var elements = document.getElementsByName(elementName);
+			
+			if(elements)
+			{
+				for(var i = 0; i < elements.length; i++)
+				{
+					elements[i].checked = newValue;
+				}
+			}
+		}
 
+		function showTable(tableName)
+		{
+			var element = document.getElementByName("sectionChoice");alert(element);
+			
+			if (!element && element.value.equals("selectedSections"))
+			{
+				document.getElementById("sectionTable").style.display = "block";
+			}
+			else
+			{
+				document.getElementById("sectionTable").style.display = "none";
+			}
+		}
+	-->
+</script>

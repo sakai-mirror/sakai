@@ -29,13 +29,26 @@
 	#if ($isOnWorkspaceTab.equals("true")) ##in workspace
 		<h3>Announcements</h3>
 		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
-
+		<div class="leftNav">
+			<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("AssignmentAction")">
+				<input type="hidden" name="eventSubmit_doView" value="view" />
+				<label for="view">
+					$tlang.getString("view.label")
+				</label>	
+				<select id="view" name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+					<option value="$!tlang.getString('view.all')" #if ($!view == "$!tlang.getString('view.all')")selected="selected"#end >$!tlang.getString('view.all')</option>
+					<option value="$!tlang.getString('view.public')"  #if ($!view == "$!tlang.getString('view.public')")selected="selected"#end >$!tlang.getString('view.public')</option>
+					#if ($!sections)
+						<option value="$!tlang.getString('view.bysection')" #if ($!view == "$!tlang.getString('view.bysection')")selected="selected"#end >$!tlang.getString('view.bysection')</option>
+					#end 
+				</select>
+			</form>
+		</div>
 			#if (!$messageListVector.iterator().hasNext())
 				<p class="instruction">
 					$tlang.getString("gen.thereare")
 				</p>
 			#else
-				
 				<div class="rightNav">
 					<span class="instruction">
 						Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items
@@ -59,7 +72,7 @@
 								<input type="submit" name="eventSubmit_doList_prev" value="<" disabled="disabled" />
 							</form>
 						#end
-					#end	
+					#end
 					<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
 						<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
 						<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
@@ -144,6 +157,7 @@
 							#end
 						</th>
 					</tr>
+					#if ($!view == "$!tlang.getString('view.all')")
 					#set ($rowCount=0)
 					#foreach ($ann_item in $showMessagesList)
 						#set ($rowCount =$rowCount + 1)
@@ -201,20 +215,20 @@
 									#else
 										#if ($SiteColumnFlag > 0)
 											#set ($colspan="4")
-										#else	
-											#set ($colspan="3")
+											#else	
+												#set ($colspan="3")
+											#end	
 										#end	
-									#end	
-								<td colspan="$colspan" style="padding:.5em 0 2em .3em">
-									$ann_item.TrimmedBody
-								</td>
-							</tr>	
+									<td colspan="$colspan" style="padding:.5em 0 2em .3em">
+										$ann_item.TrimmedBody
+									</td>
+								</tr>	
 							#end
-					#end
-				</table>
-			</form>
-		#end
-
+						#end
+					</table>
+				</form>
+			#end
+	#end
 	#else ## not in workspace
 		#if ($toolId == "sakai.synoptic.announcement") 
 		##in home portlet  - so reduce display to title, attach marker, body (if selected), author and date
@@ -269,13 +283,26 @@
 			</form>
 
 		#else ## not in workspace, not in home
-
 			#if ($toolId == "sakai.announcements") ##In tool or admin MOTD...			
 
 				#if ($displayOptions.isShowAllColumns())
 					<h3>Announcements</h3>
 					#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
-
+					<div class="leftNav">
+							<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("$action")">
+								<input type="hidden" name="eventSubmit_doView" value="view" />
+								<label for="view">
+									$tlang.getString("view.label")
+								</label>
+								<select id="view" name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+									<option value="$!tlang.getString('view.all')" #if ($!view == "$!tlang.getString('view.all')")selected="selected"#end >$!tlang.getString('view.all')</option>
+									<option value="$!tlang.getString('view.public')"  #if ($!view == "$!tlang.getString('view.public')")selected="selected"#end >$!tlang.getString('view.public')</option>
+									#if ($!sections)
+										<option value="$!tlang.getString('view.bysection')" #if ($!view == "$!tlang.getString('view.bysection')")selected="selected"#end >$!tlang.getString('view.bysection')</option>
+									#end 
+				</select>
+							</form>
+						</div>
 					#if (!$messageListVector.iterator().hasNext())
 						<p class="instruction">
 							$tlang.getString("gen.thereare")
@@ -283,7 +310,6 @@
 						<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post">
 						</form>
 					#else
-
 						<div class="rightNav">
 							<span class="instruction" style="margin-bottom:.3em">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</span>
 					 			#if ($pagesize != 0)
@@ -366,46 +392,48 @@
 										#end
 									#end
 								</th>
-								#if ($SiteColumnFlag > 0) ## (there are anns from other sites so show what site they are from)
-									<th id ="Site">
-										#if (!$currentSortedBy.equals("channel"))
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchannel")>$tlang.getString("gen.site")</a>
-										#else
-											#if ($currentSortAsc.equals("true"))
-												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchanasc")>$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt=$tlang.getString("gen.sortchanasc") /></a>
+								#if ($EnableItemCheckBoxes)
+									#if ($SiteColumnFlag > 0) ## (there are anns from other sites so show what site they are from)
+										<th id ="Site">
+											#if (!$currentSortedBy.equals("channel"))
+												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchannel")>$tlang.getString("gen.site")</a>
 											#else
-												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchandesc")>$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt=$tlang.getString("gen.sortchandesc")/></a>
+												#if ($currentSortAsc.equals("true"))
+													<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchanasc")>$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt=$tlang.getString("gen.sortchanasc") /></a>
+												#else
+													<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchandesc")>$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt=$tlang.getString("gen.sortchandesc")/></a>
+												#end
 											#end
-										#end
-									</th>
+										</th>
+									#end
 								#end
 								#if ($EnableItemCheckBoxes) ## mantain role - so show public value
-									<th id="public">
-										#if (!$currentSortedBy.equals("public"))
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" title="$tlang.getString("gen.sortbypub")">$tlang.getString("gen.visible")</a>
+									<th id="$tlang.getString('gen.visible')">
+										#if (!$currentSortedBy.equalsIgnoreCase("$tlang.getString('gen.visible')"))
+											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" title="$tlang.getString('gen.sortbyfor')">$tlang.getString("gen.visible")</a>
 										#else
 											#if ($currentSortAsc.equals("true"))
-												 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" title="$tlang.getString("gen.sortbypubasc")">$tlang.getString("gen.visible") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt=$tlang.getString("gen.sortbypubasc") /></a>
+												 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" title="$tlang.getString('gen.sortbyforasc')">$tlang.getString("gen.visible") <img src = "#imageLink('sakai/sortascending.gif')" border="0" alt="$tlang.getString('gen.sortbyforasc')" /></a>
 											#else
-												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbypublic")';return false;" title="$tlang.getString("gen.sortbypubdesc")">$tlang.getString("gen.visible") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt =$tlang.getString("gen.sortbypubdesc") /></a>
+												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" title="$tlang.getString('gen.sortbyfordesc')">$tlang.getString("gen.visible") <img src = "#imageLink('sakai/sortdescending.gif')" border="0" alt ="$tlang.getString('gen.sortbyfordesc')" /></a>
 											#end
 										#end
 									</th>
 								#end
 								<th id ="date">
 									#if (!$currentSortedBy.equals("date"))
-										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString("gen.sortbydateasc")">$tlang.getString("gen.date")</a>
+										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString('gen.sortbydateasc')">$tlang.getString("gen.date")</a>
 									#else
 										#if ($currentSortAsc.equals("true"))
-											 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString("gen.sortbydateasc")">$tlang.getString("gen.date") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="$tlang.getString("gen.sortbydateasc")" /></a>
+											 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString('gen.sortbydateasc')">$tlang.getString("gen.date") <img src = "#imageLink('sakai/sortascending.gif')" border="0" alt="$tlang.getString('gen.sortbydateasc')" /></a>
 										#else
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString("gen.sortbydatedesc")">$tlang.getString("gen.date") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt ="$tlang.getString("gen.sortbydatedesc")" /></a>
+											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString('gen.sortbydatedesc')">$tlang.getString("gen.date") <img src = "#imageLink('sakai/sortdescending.gif')" border="0" alt ="$tlang.getString('gen.sortbydatedesc')" /></a>
 										#end
 									#end
 								</th>
-								#if ($EnableItemCheckBoxes)
+								#if ($!view != $!tlang.getString('view.bysection'))
 									#if ($allow_delete)
-										<th id = "checkbox" style="text-align:center">
+										<th>
 											$tlang.getString("gen.remove_question")
 										</th>
 									#end
@@ -451,37 +479,33 @@
 									<td headers="author"  style="padding-bottom:0">
 										$validator.escapeHtml($ann_item.Header.From.DisplayName)
 									</td>
-									#if ($SiteColumnFlag > 0)
-										<td headers="channel"  style="padding-bottom:0">
-											$validator.escapeHtml($ann_item.channelDisplayName)
-										</td>
-									#end
 									#if ($EnableItemCheckBoxes)
-										#if ($!ann_item.getProperties().getProperty("SAKAI:pubview") == "true")
-											<td  style="padding-bottom:0">
-												$tlang.getString("gen.public")
-											</td>
-										#else
-											<td  style="padding-bottom:0">
-												$tlang.getString("gen.notpublic")
+										#if ($SiteColumnFlag > 0)
+											<td headers="channel"  style="padding-bottom:0">
+												$validator.escapeHtml($ann_item.channelDisplayName)
 											</td>
 										#end
-									#end	
+									#end
+									<td  style="padding-bottom:0">
+										$!ann_item.getRange()
+									</td>
 									<td headers="date" style="white-space:nowrap;padding-bottom:0">
 										$ann_item.Header.Date.toStringLocalFull()
 									</td>
-									#if ($channel.allowRemoveMessage($ann_item.Message))
-										<td valign="top" headers="checkbox" style="text-align:center; padding-bottom:0">
-											<label for ="check-$rowCount" class="skip">$tlang.getString("gen.selectremove")</label>
-											<input title="$tlang.getString("gen.selectremove")" type="checkbox" id="check-$rowCount" name="selectedMembers" value="$ann_item.Reference" />
-										</td>
-									#else
-									 	#if ($allow_delete)
-											<td valign="top" headers="checkbox" style="text-align:center;padding-bottom:0">
+									#if ($!view != $!tlang.getString('view.bysection'))
+										#if ($channel.allowRemoveMessage($ann_item.Message))
+											<td valign="top" headers="checkbox" style="text-align:center; padding-bottom:0">
 												<label for ="check-$rowCount" class="skip">$tlang.getString("gen.selectremove")</label>
-												<input title="$tlang.getString("gen.selectremove")" type="checkbox" id="check-$rowCount" name="selectedMembers" value="$ann_item.Reference" disabled="disabled"/>
+												<input title="$tlang.getString("gen.selectremove")" type="checkbox" id="check-$rowCount" name="selectedMembers" value="$ann_item.Reference" />
 											</td>
-										#end		
+										#else
+									 		#if ($allow_delete)
+												<td valign="top" headers="checkbox" style="text-align:center;padding-bottom:0">
+													<label for ="check-$rowCount" class="skip">$tlang.getString("gen.selectremove")</label>
+													<input title="$tlang.getString("gen.selectremove")" type="checkbox" id="check-$rowCount" name="selectedMembers" value="$ann_item.Reference" disabled="disabled"/>
+												</td>
+											#end		
+										#end
 									#end
 								</tr>
 								#if ($displayOptions.isShowAnnouncementBody()) 

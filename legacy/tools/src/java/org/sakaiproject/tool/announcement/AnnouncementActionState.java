@@ -586,6 +586,8 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 	private String m_tempSubject;
 	// temporary storage for new announcement body
 	private String m_tempBody;
+	//temporary storage for announce to selection
+	private String m_tempAnnounceTo;
 	// temporary storage for local file inputStream, contentType and display name
 	private HashMap m_fileProperties = new HashMap();
 	// temporary storage for attachment properties: title, description, and copyright
@@ -626,6 +628,30 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 	/**
 	 * Get 
 	 */
+	public String getTempAnnounceTo()
+	{
+		return m_tempAnnounceTo;
+
+	}	// getTempAnnounceTo()
+	
+	
+	/**
+	 * set 
+	 */
+	public void setTempAnnounceTo(String tempAnnounceTo)
+	{
+		// if there's a change
+		if (!tempAnnounceTo.equals(m_tempAnnounceTo))
+		{
+			// remember the new
+			m_tempAnnounceTo = tempAnnounceTo;
+		}
+
+	}	// setTempAnnounceTo()
+	
+	/**
+	 * Get 
+	 */
 	public void setTempSubject(String tempSubject)
 	{
 		// if there's a change
@@ -636,6 +662,8 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 		}
 
 	}	// setTempSubject()
+	
+	
 	
 	/**
 	 * Get 

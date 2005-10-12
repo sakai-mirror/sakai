@@ -43,10 +43,12 @@
 			<th class="chefLabel">$tlang.getString("gen.date")</th>
 			<td>$message.Header.Date.toStringLocalFull()</td>
 		</tr>
-		<tr>
-			<th class="chefLabel">$tlang.getString("meta.public")</th>
-			<td>#if ($pubview) $tlang.getString("java.yes") #else $tlang.getString("java.no") #end</td>
-		</tr>
+		#if ($!range)
+			<tr>
+				<th class="chefLabel">$tlang.getString("meta.sections")</th>
+				<td>$!range</td>
+			</tr>
+		#end
 	</table>
 	<h4>
 		$tlang.getString("meta.message")

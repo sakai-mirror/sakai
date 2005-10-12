@@ -26,6 +26,7 @@ package org.sakaiproject.tool.announcement;
 
 // imports
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -75,6 +76,7 @@ import org.sakaiproject.service.legacy.message.MessageHeader;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
+import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
@@ -82,6 +84,7 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.tool.content.ResourcesAction;
 import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
+//import org.sakaiproject.tool.section.jsf.JsfUtil;
 import org.sakaiproject.util.Filter;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.MergedList;
@@ -131,6 +134,7 @@ extends PagedResourceActionII
 	private static final String SORT_FROM = "from";
 	private static final String SORT_SUBJECT = "subject";
 	private static final String SORT_CHANNEL = "channel";
+	private static final String SORT_FOR = "for";
 	
 	private static final String CONTEXT_VAR_DISPLAY_OPTIONS = "displayOptions";
 	private static final String VELOCITY_DISPLAY_OPTIONS = CONTEXT_VAR_DISPLAY_OPTIONS;
@@ -152,6 +156,9 @@ extends PagedResourceActionII
 
 	private static final String STATE_CURRENT_SORTED_BY = "session.state.sorted.by";
 	private static final String STATE_CURRENT_SORT_ASC = "session.state.sort.asc";
+	
+	private static final String STATE_SELECTED_VIEW = "state.selected.view";
+	
 	/**
 	 * Used by callback to convert channel references to channels.
 	 */
@@ -269,86 +276,6 @@ extends PagedResourceActionII
 		}
 
 	}
-
-
-
-	// TODO: is this really necessary?	
-//	/**
-//	 * This class overrides the alert message of Merge,
-//	 * when the site is already being edited
-//	 */
-//	public class VelocityPortletPaneledAlert
-//		extends VelocityPortletPaneledAction
-//	{
-//		/** 
-//		 * Handle a request to set options.
-//		 */
-//		public void doOptions(RunData runData, Context context)
-//		{
-//			AnnouncementActionState actionState = (AnnouncementActionState)getState(context, runData, AnnouncementActionState.class);
-//			String toolId = PortalService.getCurrentToolId();
-//			String siteId = PortalService.getCurrentSiteId();
-//			SessionState state =
-//				((JetspeedRunData) runData).getPortletSessionState(toolId);
-//
-//			String msg = null;
-//
-//			try
-//			{
-//				// get a lock on the site
-//				SiteEdit site = SiteService.editSite(siteId);
-//
-//				// get this tool's configuration
-//				ToolConfigurationEdit tool = site.getToolEdit(toolId);
-//
-//				// put in state
-//				state.setAttribute(STATE_SITE_EDIT, site);
-//				state.setAttribute(STATE_TOOL_EDIT, tool);
-//
-//				// go into options mode
-//				state.setAttribute(STATE_MODE, MODE_OPTIONS);
-//
-//				// disable auto-updates while editing
-//				disableObservers(state);
-//
-//				// if we're not in the main panel for this tool, schedule an update of the main panel
-//				String currentPanelId =
-//					runData.getParameters().getString(REQ_PANEL);
-//				if (!LAYOUT_MAIN.equals(currentPanelId))
-//				{
-//					String address = clientWindowId(state, toolId);
-//					String mainPanelId = mainPanelUpdateId(toolId);
-//					CourierService.deliver(address, mainPanelId);
-//				}
-//				
-//				// Record the SiteEdit object for this site.
-//				actionState.setEditSite(site);
-//				
-//				actionState.setStatus(OPTIONS_STATUS);
-//				return;
-//			}
-//			catch (IdUnusedException ignore)
-//			{
-//				msg = "due to a system error.";
-//			}
-//			catch (PermissionException e)
-//			{
-//				msg =
-//					"you do not have permission to set this option for this Worksite.";
-//			}
-//			catch (InUseException e)
-//			{
-//				msg =
-//					"you are already configuring this Worksite from another tool, or someone else is configuring this Worksite.";
-//			}
-//
-//			// we didn't get a lock on the site, so tell the user and don't change mode
-//			state.setAttribute(
-//				AnnouncementAction.STATE_MESSAGE,
-//				"Merge is unavailable right now: " + msg);
-//
-//		} // doOptions
-//	} 	
 	
 	/**
 	 * Decorator for the "Message" class.  It adds various properties to
@@ -361,6 +288,7 @@ extends PagedResourceActionII
 		private boolean editable;
 		private String channelDisplayName;
 		private int maxNumberOfChars;
+		private String range ;
 		
 		public AnnouncementMessage getMessage()
 		{
@@ -378,7 +306,8 @@ extends PagedResourceActionII
 			AnnouncementMessage message,
 			AnnouncementChannel currentChannel,
 			AnnouncementChannel hostingChannel,
-			AnnouncementActionState.DisplayOptions options)
+			AnnouncementActionState.DisplayOptions options,
+			String range)
 		{
 			this.maxNumberOfChars = options.getNumberOfCharsPerAnnouncement();
 			this.enforceMaxNumberOfChars = options.isEnforceNumberOfCharsPerAnnouncement();
@@ -408,6 +337,25 @@ extends PagedResourceActionII
 			{
 				this.channelDisplayName = "";
 			}
+			
+			if (range != null)
+			{
+				this.range = range;
+			}
+		}
+		
+		/**
+		 * Constructor
+		 * @param announcementWrapper The message to be wrapped.
+		 */
+		public AnnouncementWrapper(AnnouncementWrapper mWrapper)
+		{
+			this.maxNumberOfChars = mWrapper.maxNumberOfChars;
+			this.enforceMaxNumberOfChars = mWrapper.enforceMaxNumberOfChars;
+			this.announcementMesssage = mWrapper.getMessage();
+
+			this.channelDisplayName = mWrapper.channelDisplayName;
+			this.range = mWrapper.range;
 		}
 		
 		/**
@@ -503,6 +451,24 @@ extends PagedResourceActionII
 			return announcementMesssage.getProperties();
 		}
 
+		/**
+         * returns the range string
+         * @return 
+         */
+        public String getRange()
+        {
+        		return range;
+        }
+        
+        /**
+         * Set the range string
+         * @return 
+         */
+        public void setRange(String range)
+        {
+        		this.range = range;
+        }
+        
 		/* (non-Javadoc)
 		 * @see org.chefproject.core.Resource#toXml(org.w3c.dom.Document, java.util.Stack)
 		 */
@@ -580,10 +546,55 @@ extends PagedResourceActionII
 						message,
 						currentChannel,
 						hostingChannel,
-						options));
+						options,
+						getAnnouncementRange(message)));
 			}
 
 			return messageList;
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * get announcement range information
+	 */
+	private static String getAnnouncementRange(AnnouncementMessage a)
+	{
+		if (a.getProperties().getProperty(ResourceProperties.PROP_PUBVIEW) != null && a.getProperties().getProperty(ResourceProperties.PROP_PUBVIEW).equals(Boolean.TRUE.toString()))
+		{
+			return rb.getString("gen.public");
+		}
+		else if (a.getAnnouncementHeader().getAccess().equals(MessageHeader.MessageAccess.CHANNEL))
+		{
+			return rb.getString("range.allsections");
+		}
+		else
+		{
+			int count = 0;
+			String allSectionString="";
+			try
+			{
+				Site site = SiteService.getSite(EntityManager.newReference(a.getReference()).getContext());
+				for (Iterator i= a.getAnnouncementHeader().getSections().iterator(); i.hasNext();)
+				{
+					Section aSection = site.getSection((String) i.next());
+					count++;
+					if (count > 1)
+					{
+						allSectionString = allSectionString.concat(", ").concat(aSection.getTitle());
+					}
+					else
+					{
+						allSectionString = aSection.getTitle();
+					}
+				}
+			}
+			catch (IdUnusedException e)
+			{
+				// No site available.
+			}
+			return allSectionString;
 		}
 	}
 
@@ -733,6 +744,24 @@ extends PagedResourceActionII
 			}
 		}
 		
+		// section realted variables
+		context.put("channelAccess", MessageHeader.MessageAccess.CHANNEL);
+		context.put("sectionAccess", MessageHeader.MessageAccess.SECTIONED);
+		//********* for site column display ********
+		Site site = null;
+		try
+		{
+			site = SiteService.getSite(PortalService.getCurrentSiteId());
+			context.put("site", site);
+		}
+		catch (IdUnusedException e)
+		{
+		// No site available.
+		}
+		catch (NullPointerException e)
+		{
+		}
+		
 		// when done, take the new set of attachments, (if null, there was no change)
 		List attachments = (List) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
 		if (attachments != null)
@@ -787,9 +816,39 @@ extends PagedResourceActionII
 				if (channel.allowGetMessages())
 				{
 					menu_new = channel.allowAddMessage();
-
-					sstate.setAttribute("messages", getMessages(channel, null, true, state, portlet));
-					List messages = prepPage(sstate);
+					
+					if (!menu_new)
+					{
+						// whether user can add to any sections?
+						menu_new = channel.getSectionsAllowAddMessage() != null;
+					}
+					
+					List messages = null;
+					
+					String view = (String) sstate.getAttribute(STATE_SELECTED_VIEW);
+					
+					if (view != null)
+					{
+						if (view.equals(rb.getString("view.all")))
+						{
+							messages = getMessages(channel, null, true, state, portlet);
+						}
+						else if (view.equals(rb.getString("view.bysection")))
+						{
+							messages = getMessagesBySections(site, channel, null, true, state, portlet);
+						}
+						else if (view.equals(rb.getString("view.public")))
+						{
+							messages = getMessagesPublic(site, channel, null, true, state, portlet);
+						}
+					}
+					else
+					{
+						messages = getMessages(channel, null, true, state, portlet);
+					}
+					
+					sstate.setAttribute("messages", messages);
+					messages = prepPage(sstate);
 					sstate.setAttribute(STATE_MESSAGES, messages);
 
 					menu_delete = false;
@@ -806,7 +865,7 @@ extends PagedResourceActionII
 							break;
 						}
 					}
-
+					
 					menu_revise = false;
 					for (int i = 0; i < messages.size(); i++)
 					{
@@ -912,21 +971,6 @@ extends PagedResourceActionII
 				
 			} // if allowGetMessages()
 		}
-
-		
-		// ********* for site column display ********
-		Site site = null;
-		try
-		{
-			site = SiteService.getSite(channel.getContext());
-		}
-		catch (IdUnusedException e)
-		{
-		// No site available.
-		}
-		catch (NullPointerException e)
-		{
-		}
 		
 		String currentChannelDisplayName = "";
 		if (site != null)
@@ -944,6 +988,17 @@ extends PagedResourceActionII
 		String toolId = tool.getId();
 		context.put("toolId", toolId);
 		
+		// show all the sections in this channal that user has get message in
+		Collection sections = channel.getSectionsAllowGetMessage();
+		if (sections != null && sections.size() > 0)
+		{
+			context.put("sections", sections);
+		}
+		
+		if (sstate.getAttribute(STATE_SELECTED_VIEW) != null)
+		{
+			context.put("view", sstate.getAttribute(STATE_SELECTED_VIEW));
+		}
 
 		// inform the observing courier that we just updated the page...
 		// if there are pending requests to do so they can be cleared
@@ -1008,6 +1063,8 @@ extends PagedResourceActionII
 		context.put("next_page_exists", sstate.getAttribute(STATE_NEXT_PAGE_EXISTS));
 		context.put("current_page", sstate.getAttribute(STATE_CURRENT_PAGE));
 		pagingInfoToContext(sstate, context);
+		
+		//context.put("jsfutil", JsfUtil.this);
 		
 	} // buildSortedContext 
 	
@@ -1080,14 +1137,6 @@ extends PagedResourceActionII
 		return template;
 		
 	} // getTemplate
-	
-	private void prepMenu(VelocityPortlet portlet, 
-					Context context,
-					RunData runData,
-					SessionState state)
-	{
-
-	}
 	
 	/** 
 	 * Setup for the options panel.
@@ -1330,6 +1379,88 @@ extends PagedResourceActionII
 		
 		return messageList;
 	}
+	
+	/**
+	 * This get the whole list of announcement, find their sections, and list them based on section attribute
+	 * @throws PermissionException
+	 */
+	private List getMessagesBySections(
+		Site site,
+		AnnouncementChannel defaultChannel,
+		Filter filter,
+		boolean ascending,
+		AnnouncementActionState state,
+		VelocityPortlet portlet)
+		throws PermissionException
+	{
+		List messageList = getMessages(defaultChannel, filter, ascending, state, portlet);
+		List rv = new Vector();
+		
+		for (int i = 0; i < messageList.size(); i++)
+		{
+			AnnouncementWrapper aMessage = (AnnouncementWrapper) messageList.get(i);
+			String pubview = aMessage.getProperties().getProperty(ResourceProperties.PROP_PUBVIEW);
+			if (pubview != null && Boolean.valueOf(pubview).booleanValue())
+			{
+				// public announcements
+				aMessage.setRange(rb.getString("range.public"));
+				rv.add(new AnnouncementWrapper(aMessage));
+			}
+			else
+			{
+				if (aMessage.getAnnouncementHeader().getAccess().equals(MessageHeader.MessageAccess.CHANNEL))
+				{
+					//site announcements
+					aMessage.setRange(rb.getString("range.allsections"));
+					rv.add(new AnnouncementWrapper(aMessage));
+				}
+				else
+				{
+					for (Iterator k = aMessage.getAnnouncementHeader().getSections().iterator(); k.hasNext();)
+					{
+						// announcement by section
+						aMessage.setRange(site.getSection((String) k.next()).getTitle());
+						rv.add(new AnnouncementWrapper(aMessage));
+					}
+				}
+				
+			}
+		}
+		
+		return rv;
+		
+	}	// getMessagesBySections
+	
+	/**
+	 * This get the whole list of announcement, find their sections, and list them based on section attribute
+	 * @throws PermissionException
+	 */
+	private List getMessagesPublic(
+		Site site,
+		AnnouncementChannel defaultChannel,
+		Filter filter,
+		boolean ascending,
+		AnnouncementActionState state,
+		VelocityPortlet portlet)
+		throws PermissionException
+	{
+		List messageList = getMessages(defaultChannel, filter, ascending, state, portlet);
+		List rv = new Vector();
+		
+		for (int i = 0; i < messageList.size(); i++)
+		{
+			AnnouncementMessage aMessage = (AnnouncementMessage) messageList.get(i);
+			String pubview = aMessage.getProperties().getProperty(ResourceProperties.PROP_PUBVIEW);
+			if (pubview != null && Boolean.valueOf(pubview).booleanValue())
+			{
+				// public announcements
+				rv.add(aMessage);
+			}
+		}
+		
+		return rv;
+		
+	}	// getMessagesPublic
 
 	/**
 	 * This will limit the maximum number of announcements that is shown.
@@ -1428,6 +1559,51 @@ extends PagedResourceActionII
 
 		// to get the content Type Image Service
 		context.put("contentTypeImageService", ContentTypeImageService.getInstance());
+		
+		String channelId = state.getChannelId();
+		
+		// find the channel and channel information through the service
+		AnnouncementChannel channel = null;
+		try
+		{
+			if (channelId != null && AnnouncementService.allowGetChannel(channelId))
+			{
+				// get the channel name throught announcement service API
+				channel = AnnouncementService.getAnnouncementChannel(channelId);
+				
+				String announceTo =state.getTempAnnounceTo();
+				if (announceTo != null && announceTo.length() != 0)
+				{
+					context.put("announceTo", announceTo);
+				}
+				else
+				{
+					// section list which user can add message to
+					Collection sections = channel.getSectionsAllowAddMessage();
+					if (sections != null && sections.size() > 0)
+					{
+						context.put("sections", sections);
+						// if this a new annoucement, get the subject and body from temparory record
+						if (state.getIsNewAnnouncement())
+						{
+							// default to make section selections
+							context.put("announceTo", "sections");
+						}
+					}
+					else
+					{
+						if (state.getIsNewAnnouncement())
+						{
+							// default to make site selection
+							context.put("announceTo", "site");
+						}
+					}
+				}
+			}
+		}
+		catch (Exception ignore)
+		{
+		}
 
 		List attachments = state.getAttachments();
 
@@ -1493,7 +1669,7 @@ extends PagedResourceActionII
 
 		context.put("attachments", attachments);
 		context.put("newAnn", (state.getIsNewAnnouncement()) ? "true" : "else");
-
+		
 		String template = (String) getContext(rundata).get("template");
 		return template + "-revise";
 		//return template + rb.getString("java.revise");
@@ -1537,7 +1713,13 @@ extends PagedResourceActionII
 			// find out about pubview
 			context.put("pubviewset", Boolean.FALSE);
 			context.put("pubview", Boolean.valueOf(message.getProperties().getProperty(ResourceProperties.PROP_PUBVIEW) != null));
-				
+			
+			// show all the sections in this channal that user has get message in
+			Collection sections = channel.getSectionsAllowGetMessage();
+			if (sections != null)
+			{
+				context.put("range", getAnnouncementRange(message));
+			}	
 
 			boolean menu_new = channel.allowAddMessage();
 			boolean menu_delete = channel.allowRemoveMessage(message);
@@ -1726,36 +1908,6 @@ extends PagedResourceActionII
 				ref.getContainer());
 		return channelId;
 	} // getChannelIdFromReference
-	
-	/**
-	 * Given a channel id, get a channel reference from it.
-	 */
-	private String getChannelReferenceFromChannelID(String channelId)
-	{
-		// get the channel id throught announcement service
-		AnnouncementChannel channel = null;
-		try
-		{
-			channel = AnnouncementService.getAnnouncementChannel(channelId);
-		}
-		catch (IdUnusedException e)
-		{
-			Log.debug("chef", this +"getChannelReferenceFromChannelID()" + e);
-		}
-		catch (PermissionException e)
-		{
-			Log.debug("chef", this +"getChannelReferenceFromChannelID()" + e);
-		}
-			
-		if ( channel != null )
-		{
-			return channel.getReference();
-		}
-		else
-		{
-			return null; 
-		}
-	}
 
 	/**
 	 * corresponding to chef_announcements doShowMetadata
@@ -1811,7 +1963,21 @@ extends PagedResourceActionII
 		if (v == null)
 			v = new Vector();
 		context.put("delete_messages", v.iterator());
-
+		
+		try
+		{
+			Site site = SiteService.getSite(PortalService.getCurrentSiteId());
+			context.put("site", site);
+		}
+		catch (IdUnusedException e)
+		{
+		// No site available.
+		}
+		catch (NullPointerException e)
+		{
+		}
+		context.put("channelAccess", MessageHeader.MessageAccess.CHANNEL);
+		
 		String template = (String) getContext(rundata).get("template");
 		return template + "-delete";
 		//return template + rb.getString("java.delete");
@@ -1895,7 +2061,19 @@ extends PagedResourceActionII
 						addAlert(sstate,rb.getString("java.alert.youfill"));//"You need to fill in the body of the announcement!");
 					}
 			}
-
+		
+		// announce to public?
+		String announceTo = rundata.getParameters().getString("announceTo");
+		state.setTempAnnounceTo(announceTo);
+		if (announceTo.equals("sections"))
+		{
+			String[] sectionChoice = rundata.getParameters().getStrings("selectedSections");
+			if (sectionChoice== null || sectionChoice.length == 0)
+			{
+				addAlert(sstate,rb.getString("java.alert.youchoosesection"));
+			}
+		}
+		
 		// there is any error message caused by empty subject or body
 		if (sstate.getAttribute(STATE_MESSAGE) != null)
 		{
@@ -1947,104 +2125,137 @@ extends PagedResourceActionII
 
 			try
 			{
+				AnnouncementChannel channel = null;
+				AnnouncementMessageEdit msg = null;
+				
 				// if a new created announcement to be posted
 				if (state.getIsNewAnnouncement())
 				{
 					// get the channel id throught announcement service
-					AnnouncementChannel channel =
-						AnnouncementService.getAnnouncementChannel(channelId);
+					channel = AnnouncementService.getAnnouncementChannel(channelId);
+					msg = channel.addAnnouncementMessage();
+				}
+				else
+				{
+					//get the message object through service
+					//AnnouncementMessageEdit msg = channel.editAnnouncementMessage( messageId );
+					msg = state.getEdit();
 
-					AnnouncementMessageEdit msg =
-						channel.addAnnouncementMessage();
-					msg.setBody(body);
-					AnnouncementMessageHeaderEdit header =
-						msg.getAnnouncementHeaderEdit();
-					header.setSubject(subject);
-					header.setDraft(false);
-					header.replaceAttachments(state.getAttachments());
-
-					// read the pubview settings
-					boolean pubviewset = false;
-					boolean pubview = false;
-					if (!pubviewset)
-					{
-						//pubview = Boolean.valueOf(rundata.getParameters().getString("pubview")).booleanValue();
-						String pubviewStr = rundata.getParameters().getString("pubview");
-						// if from the post in preview, get the setting from sstate object
-						if (pubviewStr == null)
-							pubviewStr = (String) sstate.getAttribute(AnnouncementAction.SSTATE_PUBLICVIEW_VALUE);
-						if (pubviewStr == null)
-							pubviewStr = "false";
-						pubview = Boolean.valueOf(pubviewStr).booleanValue();
-					}
-
-					// pubview property
-					if (pubview)
+					// get the channel id throught announcement service
+					channel = AnnouncementService.getAnnouncementChannel(this.getChannelIdFromReference(msg.getReference()));
+				}
+				
+				msg.setBody(body);
+				AnnouncementMessageHeaderEdit header =
+					msg.getAnnouncementHeaderEdit();
+				header.setSubject(subject);
+				header.setDraft(false);
+				header.replaceAttachments(state.getAttachments());
+					
+				// announce to?
+				try
+				{
+					Site site = SiteService.getSite(channel.getContext());
+					
+					if (announceTo.equals("pubview") || Boolean.valueOf((String) sstate.getAttribute(AnnouncementAction.SSTATE_PUBLICVIEW_VALUE)).booleanValue()) // if from the post in preview, get the setting from sstate object
 					{
 						// any setting of this property indicates pubview
 						msg.getPropertiesEdit().addProperty(ResourceProperties.PROP_PUBVIEW,Boolean.TRUE.toString());
+						header.setAccess(MessageHeader.MessageAccess.CHANNEL);
+						for (Iterator s = header.getSections().iterator(); s.hasNext(); )
+						{
+							try
+							{
+								header.removeSection(site.getSection((String) s.next()));
+							}
+							catch (PermissionException e)
+							{
+								
+							}
+						}
 					}
 					else
 					{
 						// remove the property to indicate no pubview
 						msg.getPropertiesEdit().removeProperty(ResourceProperties.PROP_PUBVIEW);
 					}
-
-					channel.commitMessage(msg, noti);
-
-				}
-				// if a existing announcement to be posted after being revised or previewed
-				else
-				{
-					if (subject.length() > 0)
+	
+					// announce to site?
+					if (announceTo.equals("site"))
 					{
-						// get the message object through service
-						//AnnouncementMessageEdit msg = channel.editAnnouncementMessage( messageId );
-						AnnouncementMessageEdit msg = state.getEdit();
-
-						// get the channel id throught announcement service
-						AnnouncementChannel channel =
-							AnnouncementService.getAnnouncementChannel(
-								this.getChannelIdFromReference(
-									msg.getReference()));
-
-						msg.setBody(body);
-						AnnouncementMessageHeaderEdit header =
-							msg.getAnnouncementHeaderEdit();
-						header.setSubject(subject);
-						header.setDraft(false);
-						header.replaceAttachments(state.getAttachments());
-
-						// read the pubview settings
-						boolean pubviewset = false;
-						boolean pubview = false;
-						if (!pubviewset)
+						header.setAccess(MessageHeader.MessageAccess.CHANNEL);
+						for (Iterator s = header.getSections().iterator(); s.hasNext(); )
 						{
-							//pubview = Boolean.valueOf(rundata.getParameters().getString("pubview")).booleanValue();
-							String pubviewStr = rundata.getParameters().getString("pubview");
-							// if from the post in preview, get the setting from sstate object
-							if (pubviewStr == null)
-								pubviewStr = (String) sstate.getAttribute(AnnouncementAction.SSTATE_PUBLICVIEW_VALUE);
-							if (pubviewStr == null) pubviewStr = "false";
-							pubview = Boolean.valueOf(pubviewStr).booleanValue();
+							try
+							{
+								header.removeSection(site.getSection((String) s.next()));
+							}
+							catch (PermissionException e)
+							{
+								
+							}
 						}
-
-						// pubview property
-						if (pubview)
-						{
-							// any setting of this property indicates pubview
-							msg.getPropertiesEdit().addProperty(ResourceProperties.PROP_PUBVIEW,Boolean.TRUE.toString());
-						}
-						else
-						{
-							// remove the property to indicate no pubview
-							msg.getPropertiesEdit().removeProperty(ResourceProperties.PROP_PUBVIEW);
-						}
-
-						channel.commitMessage(msg, noti);
-
-						state.setEdit(null);
 					}
+					else if (announceTo.equals("sections"))
+					{
+						String[] sectionChoice = rundata.getParameters().getStrings("selectedSections");
+						
+					
+						// if section has been dropped, remove it from announcement header
+						for (Iterator oSIterator=header.getSections().iterator(); oSIterator.hasNext();)
+						{
+							Reference oSRef = EntityManager.newReference((String) oSIterator.next());
+							boolean selected = false;
+							for(int k = 0; k<sectionChoice.length && !selected; k++)
+							{
+								if (oSRef.getId().equals(sectionChoice[k]))
+								{
+									selected = true;
+								}
+							}
+							if (!selected)
+							{
+								try
+								{
+									header.removeSection(site.getSection(oSRef.getId()));
+								}
+								catch (Exception ignore)
+								{
+									if (Log.getLogger("chef").isDebugEnabled())
+										Log.debug("chef", this +"doPost(): cannot remove section " + oSRef.getId());
+								}
+							}
+						}
+						
+						// add section to announcement header
+						if (sectionChoice != null )
+						{
+							header.setAccess(MessageHeader.MessageAccess.SECTIONED);
+							for(int k = 0; k<sectionChoice.length; k++)
+							{
+								try
+								{
+									header.addSection(site.getSection(sectionChoice[k]));
+								}
+								catch (Exception eIgnore)
+								{
+									if (Log.getLogger("chef").isDebugEnabled())
+										Log.debug("chef", this +"doPost(): cannot add section " + sectionChoice[k]);
+								}
+							}
+						}
+					}
+				}
+				catch (Exception ignore)
+				{
+					// No site available.
+				}
+
+				channel.commitMessage(msg, noti);
+
+				if (!state.getIsNewAnnouncement())
+				{
+					state.setEdit(null);
 				} // if-else
 			}
 			catch (IdUnusedException e)
@@ -2734,6 +2945,8 @@ extends PagedResourceActionII
 		subject = data.getParameters().getString("subject");
 		String body = data.getParameters().getString("body");
 		body = processFormattedTextFromBrowser(state, body);
+		String announceTo = data.getParameters().getString("announceTo");
+		myState.setTempAnnounceTo(announceTo);
 		myState.setTempSubject(subject);
 		myState.setTempBody(body);
 		myState.setStatus("backToReviseAnnouncement");
@@ -2857,8 +3070,6 @@ extends PagedResourceActionII
 
 		// get the channel id information from state object
 		String channelId = state.getChannelId();
-		// get the message object through service
-		String messageReference = state.getMessageReference();
 		String subject = "";
 
 		// *** make sure the subject and body won't be empty
@@ -2884,6 +3095,18 @@ extends PagedResourceActionII
 					addAlert(sstate, rb.getString("java.youfill"));//"You need to fill in the body of the announcement!");
 				}
 			}
+		
+		// announce to public?
+		String announceTo = rundata.getParameters().getString("announceTo");
+		state.setTempAnnounceTo(announceTo);
+		if (announceTo.equals("sections"))
+		{
+			String[] sectionChoice = rundata.getParameters().getStrings("selectedSections");
+			if (sectionChoice== null || sectionChoice.length == 0)
+			{
+				addAlert(sstate,rb.getString("java.alert.youchoosesection"));
+			}
+		}
 
 		// there is any error message caused by empty subject or boy
 		if (sstate.getAttribute(STATE_MESSAGE) != null)
@@ -2939,52 +3162,13 @@ extends PagedResourceActionII
 					noti = NotificationService.NOTI_NONE;
 				}
 			
+				AnnouncementChannel channel = null;
+				AnnouncementMessageEdit msg = null;
 				if (state.getIsNewAnnouncement())
 				{
 					// get the channel id throught announcement service
-					AnnouncementChannel channel =
-						AnnouncementService.getAnnouncementChannel(channelId);
-
-					AnnouncementMessageEdit msg =
-						channel.addAnnouncementMessage();
-					msg.setBody(body);
-					AnnouncementMessageHeaderEdit header =
-						msg.getAnnouncementHeaderEdit();
-					header.setSubject(subject);
-					header.setDraft(true);
-					header.replaceAttachments(state.getAttachments());
-					
-					// read the pubview settings
-					boolean pubviewset = false;
-					boolean pubview = false;
-					if (!pubviewset)
-					{
-						//pubview = Boolean.valueOf(rundata.getParameters().getString("pubview")).booleanValue();
-						String pubviewStr = rundata.getParameters().getString("pubview");
-						// if from the post in preview, get the setting from sstate object
-						if (pubviewStr == null)
-							pubviewStr = (String) sstate.getAttribute(AnnouncementAction.SSTATE_PUBLICVIEW_VALUE);
-						if (pubviewStr == null) pubviewStr = "false";
-						pubview = Boolean.valueOf(pubviewStr).booleanValue();
-					}
-					
-					// pubview property
-					if (pubview)
-					{
-						// any setting of this property indicates pubview
-						msg.getPropertiesEdit().addProperty(ResourceProperties.PROP_PUBVIEW,Boolean.TRUE.toString());
-					}
-					else
-					{
-						// remove the property to indicate no pubview
-						msg.getPropertiesEdit().removeProperty(ResourceProperties.PROP_PUBVIEW);
-					}
-
-					channel.commitMessage(msg);
-					
-					//set message id information in state object
-					//messageReference = msg.getReference();
-					//state.setMessageReference(messageReference);
+					channel = AnnouncementService.getAnnouncementChannel(channelId);
+					msg = channel.addAnnouncementMessage();
 				}
 				else
 				{
@@ -2992,54 +3176,125 @@ extends PagedResourceActionII
 					{
 					// get the message object through service
 					//AnnouncementMessageEdit msg = channel.editAnnouncementMessage( messageId );
-					AnnouncementMessageEdit msg = state.getEdit();
+					msg = state.getEdit();
 
 					// get the channel id throught announcement service
-					AnnouncementChannel channel =
-						AnnouncementService.getAnnouncementChannel(
-							this.getChannelIdFromReference(msg.getReference()));
+					channel = AnnouncementService.getAnnouncementChannel(this.getChannelIdFromReference(msg.getReference()));
+					}
+				}
+				
+				msg.setBody(body);
+				AnnouncementMessageHeaderEdit header =
+					msg.getAnnouncementHeaderEdit();
+				header.setSubject(subject);
+				header.setDraft(true);
+				header.replaceAttachments(state.getAttachments());
 
-					msg.setBody(body);
-					AnnouncementMessageHeaderEdit header =
-						msg.getAnnouncementHeaderEdit();
-					header.setSubject(subject);
-					header.setDraft(true);
-					header.replaceAttachments(state.getAttachments());
+				// announce to?
+				try
+				{
+					Site site = SiteService.getSite(channel.getContext());
+					
+					if (announceTo.equals("pubview") || Boolean.valueOf((String) sstate.getAttribute(AnnouncementAction.SSTATE_PUBLICVIEW_VALUE)).booleanValue()) // if from the post in preview, get the setting from sstate object
+					{
+						// any setting of this property indicates pubview
+						msg.getPropertiesEdit().addProperty(ResourceProperties.PROP_PUBVIEW,Boolean.TRUE.toString());
+						header.setAccess(MessageHeader.MessageAccess.CHANNEL);
+						for (Iterator s = header.getSections().iterator(); s.hasNext(); )
+						{
+							try
+							{
+								header.removeSection(site.getSection((String) s.next()));
+							}
+							catch (PermissionException e)
+							{
+								
+							}
+						}
+					}
+					else
+					{
+						// remove the property to indicate no pubview
+						msg.getPropertiesEdit().removeProperty(ResourceProperties.PROP_PUBVIEW);
+					}
+	
+					// announce to site?
+					if (announceTo.equals("site"))
+					{
+						header.setAccess(MessageHeader.MessageAccess.CHANNEL);
+						for (Iterator s = header.getSections().iterator(); s.hasNext(); )
+						{
+							try
+							{
+								header.removeSection(site.getSection((String) s.next()));
+							}
+							catch (PermissionException e)
+							{
+								
+							}
+						}
+					}
+					else if (announceTo.equals("sections"))
+					{
+						String[] sectionChoice = rundata.getParameters().getStrings("selectedSections");
 						
-						// read the pubview settings
-						boolean pubviewset = false;
-						boolean pubview = false;
-						if (!pubviewset)
+					
+						// if section has been dropped, remove it from announcement header
+						for (Iterator oSIterator=header.getSections().iterator(); oSIterator.hasNext();)
 						{
-							//pubview = Boolean.valueOf(rundata.getParameters().getString("pubview")).booleanValue();
-							String pubviewStr = rundata.getParameters().getString("pubview");
-							// if from the post in preview, get the setting from sstate object
-							if (pubviewStr == null)
-								pubviewStr = (String) sstate.getAttribute(AnnouncementAction.SSTATE_PUBLICVIEW_VALUE);
-							if (pubviewStr == null) pubviewStr = "false";
-							pubview = Boolean.valueOf(pubviewStr).booleanValue();
+							Reference oSRef = EntityManager.newReference((String) oSIterator.next());
+							boolean selected = false;
+							for(int k = 0; k<sectionChoice.length && !selected; k++)
+							{
+								if (oSRef.getId().equals(sectionChoice[k]))
+								{
+									selected = true;
+								}
+							}
+							if (!selected)
+							{
+								try
+								{
+									header.removeSection(site.getSection(oSRef.getId()));
+								}
+								catch (Exception ignore)
+								{
+									if (Log.getLogger("chef").isDebugEnabled())
+										Log.debug("chef", this +"doPost(): cannot remove section " + oSRef.getId());
+								}
+							}
 						}
 						
-						// pubview property
-						if (pubview)
+						// add section to announcement header
+						if (sectionChoice != null )
 						{
-							// any setting of this property indicates pubview
-							msg.getPropertiesEdit().addProperty(ResourceProperties.PROP_PUBVIEW,Boolean.TRUE.toString());
+							header.setAccess(MessageHeader.MessageAccess.SECTIONED);
+							for(int k = 0; k<sectionChoice.length; k++)
+							{
+								try
+								{
+									header.addSection(site.getSection(sectionChoice[k]));
+								}
+								catch (Exception eIgnore)
+								{
+									if (Log.getLogger("chef").isDebugEnabled())
+										Log.debug("chef", this +"doPost(): cannot add section " + sectionChoice[k]);
+								}
+							}
 						}
-						else
-						{
-							// remove the property to indicate no pubview
-							msg.getPropertiesEdit().removeProperty(ResourceProperties.PROP_PUBVIEW);
-						}
+					}
+				}
+				catch (Exception ignore)
+				{
+					// No site available.
+				}
 
-					channel.commitMessage(msg);
-					//set message id information in state object
-						//messageReference = msg.getReference();
-						//state.setMessageReference(messageReference);
-
+				channel.commitMessage(msg, noti);
+				
+				if (!state.getIsNewAnnouncement())
+				{
 					state.setEdit(null);
 				}
-			}
 			}
 			catch (IdUnusedException e)
 			{
@@ -3157,6 +3412,17 @@ extends PagedResourceActionII
 		setupSort(rundata, context, SORT_CHANNEL);
 	} // doSortbydate
 
+	/**
+	 * Do sort by for - section/site/public
+	 */
+	public void doSortbyfor(RunData rundata, Context context)
+	{
+		if (Log.getLogger("chef").isDebugEnabled())
+			Log.debug("chef", "AnnouncementAction.doSortbyfrom get Called");
+
+		setupSort(rundata, context, SORT_FOR);
+	} // doSortbyfrom
+	
 	private class AnnouncementComparator implements Comparator
 	{
 		// the criteria
@@ -3254,6 +3520,14 @@ extends PagedResourceActionII
 								if (factor2 == null) factor2 = "false";
 								result = factor1.compareToIgnoreCase(factor2);
 							}
+							else
+								if (m_criteria.equals(SORT_FOR))
+								{
+									// sorted by the public view attribute
+									String factor1 = ((AnnouncementWrapper) o1).getRange();
+									String factor2 = ((AnnouncementWrapper) o2).getRange();
+									result = factor1.compareToIgnoreCase(factor2);
+								}
 
 			// sort ascending or descending
 			if (!m_asc)
@@ -3463,6 +3737,11 @@ extends PagedResourceActionII
 			annState.setIsListVM(true);
 		}
 		state.setAttribute(STATE_CHANNEL_REF, channelId);
+		
+		if (state.getAttribute(STATE_SELECTED_VIEW) == null)
+		{
+			state.setAttribute(STATE_SELECTED_VIEW, rb.getString("view.all"));
+		}
 
 //		// get the current collection ID from state object or prolet initial parameter
 //		String collectionId = annState.getCollectionId();
@@ -3497,8 +3776,6 @@ extends PagedResourceActionII
 //			state.setAttribute(STATE_OBSERVER, observer);
 
 			MergedList mergedAnnouncementList = new MergedList();
-
-			MergedList.EntryProvider entryProvider = new EntryProvider();
 
 			String[] channelArrayFromConfigParameterValue = null;
 
@@ -3541,7 +3818,6 @@ extends PagedResourceActionII
 			loadDisplayOptionsFromPortletConfig(portlet, annState);
 		}
 		
-
 	} // initState
 
 //	/**
@@ -3891,8 +4167,6 @@ extends PagedResourceActionII
 		page.validate(rv.size());
 		
 		Vector subrv = new Vector();
-		int a = page.getFirst()-1;
-		int b = page.getLast();
 		for (int index=0; index<rv.size(); index++)
 		{
 			if ((index >= (page.getFirst()-1)) && index<page.getLast())
@@ -3913,6 +4187,40 @@ extends PagedResourceActionII
 
 		return rv.size();
 	}
+	
+	// toggle through different views
+	public void doView (RunData data, Context context)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		
+		String viewMode = data.getParameters ().getString("view");
+		state.setAttribute(STATE_SELECTED_VIEW, viewMode);
+		
+		if (viewMode.equalsIgnoreCase(rb.getString("view.all")))
+		{
+			
+		}
+		else if (viewMode.equalsIgnoreCase(rb.getString("view.public")))
+		{
+			
+		}
+		else if (viewMode.equalsIgnoreCase(rb.getString("view.bysection")))
+		{
+			state.setAttribute(STATE_CURRENT_SORTED_BY, SORT_FOR);
+			state.setAttribute(STATE_CURRENT_SORT_ASC, Boolean.TRUE);
+		}
+		else if (viewMode.equalsIgnoreCase(rb.getString("view.mysections")))
+		{
+			
+		}
+		
+		// we are changing the view, so start with first page again. 
+		resetPaging(state);
+	
+		// clear search form
+		doSearch_clear(data, context);
+		
+	}	// doView
 	
 	// ********
 	// ******** functions copied from VelocityPortletStateAction ********

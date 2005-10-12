@@ -8,9 +8,10 @@
 	<form name="forNotLetDeleteSelectedOnLoad"></form>
 		<table class="listHier" cellspacing="0">
 			<tr>
-				<th>$tlang.getString("gen.subject")</th>
-				<th>$tlang.getString("gen.from")</th>
-				<th>$tlang.getString("gen.date")</th>
+				<th class="chefLabel">$tlang.getString("gen.subject")</th>
+				<th class="chefLabel">$tlang.getString("gen.from")</th>
+				<th class="chefLabel">$tlang.getString("gen.date")</th>
+				<th class="chefLabel">$tlang.getString("gen.visible")</th>
 			</tr>
 			#foreach ($delete_item in $delete_messages)
 				<tr>
@@ -22,6 +23,27 @@
 					</td>
 					<td>$validator.escapeHtml($delete_item.Header.From.DisplayName)</td>
 					<td>$delete_item.Header.Date.toStringLocalFull()</td>
+					<td>
+						#set($publicProperty = $delete_item.getProperties().getProperty("SAKAI:pubview"))
+						#if ($!publicProperty && $publicProperty.equals("true"))
+							$tlang.getString("gen.public");
+						#elseif ($delete_item.getAnnouncementHeader().getAccess().equals("channelAccess"))
+							$tlang.getString("range.allsections");
+						#else
+							#set($count = 0)
+							#set($allSectionString="")
+							#foreach ($aSectionRef in $delete_item.getAnnouncementHeader().getSections())
+								#set($aSection=$!site.getSection($aSectionRef))
+								#set($count=$count+1)
+								#if ($count > 1)
+									#set($allSectionString = $allSectionString.concat(", ").concat($aSection.getTitle()))
+								#else
+									#set($allSectionString = $aSection.getTitle())
+								#end
+							#end
+							$allSectionString
+						#end
+					</td>
 				</tr>
 			#end
 		</table>
