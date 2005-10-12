@@ -23,7 +23,11 @@
 
 package org.sakaiproject.tool.sectiontest;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Iterator;
@@ -63,10 +67,15 @@ public class SectionTestTool extends HttpServlet
 {
 
 	protected static final String siteId = "xxx-section-test";
+
 	protected static final String user1Id = "xxx-section-test-user-1";
+
 	protected static final String user2Id = "xxx-section-test-user-2";
+
 	protected static final String user3Id = "xxx-section-test-user-3";
+
 	protected static final String user4Id = "xxx-section-test-user-4";
+
 	protected static final String siteIdNs = "xxx-section-test-ns";
 
 	/**
@@ -128,6 +137,9 @@ public class SectionTestTool extends HttpServlet
 		{
 			out.println("\n\nSectioned Site Tests\n");
 			test(out, siteId);
+			
+			out.println("\n\nSite / Section serialization Tests\n");
+			checkSerialization(siteId, out);
 		}
 		finally
 		{
@@ -137,7 +149,7 @@ public class SectionTestTool extends HttpServlet
 
 		try
 		{
-			out.println("\n\n Non-Sectioned Site Tests\n");
+			out.println("\n\nNon-Sectioned Site Tests\n");
 			test(out, siteIdNs);
 		}
 		finally
@@ -196,7 +208,7 @@ public class SectionTestTool extends HttpServlet
 			AuthzGroup azg = AuthzGroupService.getAuthzGroup(section.getReference());
 			azg.addMember(user1Id, "maintain", true, false);
 			azg.addMember(user2Id, "access", true, false);
-	
+
 			AuthzGroupService.save(azg);
 			out.println(" ** section azg modified");
 		}
@@ -205,7 +217,37 @@ public class SectionTestTool extends HttpServlet
 			out.println(t);
 		}
 	}
-	
+
+	protected void checkSerialization(String sid, PrintWriter out)
+	{
+		try
+		{
+			Site site = SiteService.getSite(sid);
+			Section section = (Section) site.getSections().iterator().next();
+
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(bos);
+
+			oos.writeObject(site);
+			oos.writeObject(section);
+
+			oos.close();
+			out.println(" ** serialization done");
+			
+			ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bis);
+			
+			Site site2 = (Site) ois.readObject();
+			Section section2 = (Section) ois.readObject();
+
+			out.print(" ** restoration done");
+		}
+		catch (Throwable t)
+		{
+			out.println("checking serialization: " + t);
+		}
+	}
+
 	protected void setup(PrintWriter out)
 	{
 		try
@@ -309,8 +351,7 @@ public class SectionTestTool extends HttpServlet
 			azg.addMember(user3Id, "access", true, false);
 			AuthzGroupService.save(azg);
 
-			channel = AnnouncementService.addAnnouncementChannel(AnnouncementService.channelReference(
-					siteIdNs, "main"));
+			channel = AnnouncementService.addAnnouncementChannel(AnnouncementService.channelReference(siteIdNs, "main"));
 			AnnouncementService.commitChannel(channel);
 			msg = channel.addAnnouncementMessage("subject NS", false, null, "this is an announcement");
 
@@ -321,7 +362,7 @@ public class SectionTestTool extends HttpServlet
 			out.println(t);
 		}
 	}
-	
+
 	protected void test(PrintWriter out, String sid)
 	{
 		Session s = SessionManager.getCurrentSession();
@@ -364,15 +405,19 @@ public class SectionTestTool extends HttpServlet
 
 			Section section2 = site.getSection(sectionId);
 			if (section2 == null) out.println(" ** error: cannot find section by id: " + sectionId + " in site: " + sid);
-			if (section2 != section) out.println(" ** error: section by id: " + sectionId + " in site: " + sid + " not matching initial section by ==");
-			
+			if (section2 != section)
+				out.println(" ** error: section by id: " + sectionId + " in site: " + sid + " not matching initial section by ==");
+
 			Section section3 = site.getSection(sectionRef);
 			if (section3 == null) out.println(" ** error: cannot find section by ref: " + sectionRef + " in site: " + sid);
-			if (section3 != section) out.println(" ** error: section by ref: " + sectionRef + " in site: " + sid + " not matching initial section by ==");
-			
+			if (section3 != section)
+				out
+						.println(" ** error: section by ref: " + sectionRef + " in site: " + sid
+								+ " not matching initial section by ==");
+
 			Section section4 = site.getSection(sid);
-			if (section4 != null ) out.println(" ** error: found bogus section by id: " + sid + " in site: " + sid);
-			
+			if (section4 != null) out.println(" ** error: found bogus section by id: " + sid + " in site: " + sid);
+
 			out.println("site.getSection() by id or ref working.");
 		}
 		catch (Throwable t)
@@ -409,7 +454,7 @@ public class SectionTestTool extends HttpServlet
 		{
 			out.println("Annc channel/msg access: " + t);
 		}
-		
+
 		// section manipulation tests
 		try
 		{
