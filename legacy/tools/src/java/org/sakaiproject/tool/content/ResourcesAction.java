@@ -55,6 +55,7 @@ import java.util.regex.Pattern;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -329,6 +330,9 @@ public class ResourcesAction
 	
 	/** The name of the state attribute indicating that the list of new items has changed */
 	private static final String STATE_HELPER_CHANGED = "resources.helper_changed";
+	
+	/** The name of the state attribute indicating which dropbox(es) the items should be saved in */
+	public static final String STATE_SAVE_ATTACHMENT_IN_DROPBOX = "resources.save_attachment_in_dropbox";
 
 	/************** the delete context *****************************************/
 
@@ -919,6 +923,7 @@ public class ResourcesAction
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
 		
 		context.put("TYPE_FOLDER", TYPE_FOLDER);
+		context.put("TYPE_UPLOAD", TYPE_UPLOAD);
 
 		// find the ContentHosting service
 		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
@@ -969,9 +974,24 @@ public class ResourcesAction
 		
 		try
 		{
-			contentService.checkCollection (collectionId);
-			// context.put ("collectionFlag", Boolean.TRUE.toString());
-
+			try
+			{
+				contentService.checkCollection (collectionId);
+				// context.put ("collectionFlag", Boolean.TRUE.toString());
+				
+			}
+			catch(IdUnusedException e)
+			{
+				try
+				{
+					contentService.addCollection(collectionId);
+				}
+				catch(Exception ignore)
+				{
+				}
+				contentService.checkCollection (collectionId);
+			}
+			
 			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
 			ContentCollection coll = contentService.getCollection(collectionId);
 			expandedCollections.put(collectionId, coll);
@@ -979,6 +999,54 @@ public class ResourcesAction
 			state.removeAttribute(STATE_PASTE_ALLOWED_FLAG);
 			
 			List this_site = new Vector();
+			User[] submitters = (User[]) state.getAttribute(STATE_SAVE_ATTACHMENT_IN_DROPBOX);
+			if(submitters != null)
+			{
+				String dropboxId = Dropbox.getCollection();
+				if(dropboxId == null)
+				{
+					Dropbox.createCollection();
+					dropboxId = Dropbox.getCollection();
+				}
+				
+				if(dropboxId == null)
+				{
+					// do nothing
+				}
+				else if(Dropbox.isDropboxMaintainer())
+				{
+					for(int i = 0; i < submitters.length; i++)
+					{
+						User submitter = submitters[i]; 
+						String dbId = dropboxId + StringUtil.trimToZero(submitter.getId()) + "/";
+						ContentCollection db = ContentHostingService.getCollection(dbId);
+						expandedCollections.put(dbId, db);
+						List dbox = getBrowseItems(dbId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+						if(dbox != null && dbox.size() > 0)
+						{
+							BrowseItem root = (BrowseItem) dbox.remove(0);
+							// context.put("site", root);
+							root.setName(submitter.getDisplayName() + " " + rb.getString("gen.drop"));
+							root.addMembers(dbox);
+							this_site.add(root);
+						}
+					}
+				}
+				else
+				{
+					ContentCollection db = ContentHostingService.getCollection(dropboxId);
+					expandedCollections.put(dropboxId, db);
+					List dbox = getBrowseItems(dropboxId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+					if(dbox != null && dbox.size() > 0)
+					{
+						BrowseItem root = (BrowseItem) dbox.remove(0);
+						// context.put("site", root);
+						root.setName(Dropbox.getDisplayName());
+						root.addMembers(dbox);
+						this_site.add(root);
+					}
+				}
+			}
 			List members = getBrowseItems(collectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, navRoot.equals(homeCollectionId), state);
 			if(members != null && members.size() > 0)
 			{
@@ -995,6 +1063,8 @@ public class ResourcesAction
 				root.addMembers(members);
 				this_site.add(root);
 			}
+			
+
 			context.put ("this_site", this_site);
 			
 			boolean show_all_sites = false;
@@ -6678,6 +6748,7 @@ public class ResourcesAction
 	{
 		state.removeAttribute(STATE_FROM_TEXT);
 		state.removeAttribute(STATE_HAS_ATTACHMENT_BEFORE);
+		state.removeAttribute(STATE_SAVE_ATTACHMENT_IN_DROPBOX);
 		
 		state.removeAttribute(COPYRIGHT_FAIRUSE_URL);
 		state.removeAttribute(COPYRIGHT_NEW_COPYRIGHT);
@@ -7874,7 +7945,7 @@ public class ResourcesAction
 		
 		}
 		
-	}	// doPasteitem
+	}	// doPasteitems
 
 	/**
 	* Paste the item(s) selected to be moved
@@ -7986,7 +8057,7 @@ public class ResourcesAction
 		
 		}
 		
-	}	// doPasteitem
+	}	// doMoveitems
 
 
 	/**

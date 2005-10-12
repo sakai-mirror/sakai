@@ -4696,6 +4696,8 @@ extends PagedResourceActionII
 				state.setAttribute (VIEW_SUBMISSION_HONOR_PLEDGE_YES,"true");
 			}
 			state.setAttribute(AttachmentAction.STATE_FROM_TEXT, rb.getString("thenewass"));
+			User[] users = {UserDirectoryService.getCurrentUser()};
+			state.setAttribute(ResourcesAction.STATE_SAVE_ATTACHMENT_IN_DROPBOX, users);
 		}
 		else if (mode.equals (MODE_INSTRUCTOR_NEW_ASSIGNMENT))
 		{
@@ -4751,6 +4753,18 @@ extends PagedResourceActionII
 			catch (PermissionException e)
 			{
 				addAlert(state, rb.getString("youarenot14"));
+			}
+			try
+			{
+				AssignmentSubmission s = AssignmentService.getSubmission ((String) state.getAttribute (GRADE_SUBMISSION_SUBMISSION_ID));
+				if (s != null)
+				{
+					User[] users = s.getSubmitters();
+					state.setAttribute(ResourcesAction.STATE_SAVE_ATTACHMENT_IN_DROPBOX, users);
+				}
+			}
+			catch(Exception ignore)
+			{
 			}
 			
 		}

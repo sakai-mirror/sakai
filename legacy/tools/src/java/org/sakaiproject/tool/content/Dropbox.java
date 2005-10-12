@@ -122,6 +122,40 @@ public class Dropbox
 		return null;
 
 	}	// getCollection
+	
+	/**
+	* Determine whether the default dropbox collection id for this user in this site 
+	* is the site's entire dropbox collection or just the current user's collection 
+	* within the site's dropbox.	 
+	* @return True if user sees all dropboxes in the site, false otherwise.
+	*/
+	public static boolean isDropboxMaintainer()
+	{
+		return isDropboxMaintainer(ToolManager.getCurrentPlacement().getContext());
+	}
+	
+	/**
+	* Determine whether the default dropbox collection id for this user in some site 
+	* is the site's entire dropbox collection or just the current user's collection 
+	* within the site's dropbox.	 
+	* @return True if user sees all dropboxes in the site, false otherwise.
+	*/
+	public static boolean isDropboxMaintainer(String siteId)
+	{
+		String dropboxId = null;
+
+		// make sure we are in a worksite, not a workspace
+		if (SiteService.isUserSite(siteId) || SiteService.isSpecialSite(siteId))
+		{
+			return false;
+		}
+
+		// form the site's dropbox collection
+		dropboxId = COLLECTION_DROPBOX + siteId + "/";
+
+		return ContentHostingService.allowUpdateCollection(dropboxId);
+		
+	}
 
 	/**
 	* Access the default dropbox collection display name for the current request.
