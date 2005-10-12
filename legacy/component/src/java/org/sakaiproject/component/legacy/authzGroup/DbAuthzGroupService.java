@@ -693,6 +693,14 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 		 */
 		public Set getAuthzGroupsIsAllowed(String userId, String lock, Collection azGroups)
 		{
+			// further limited to only those authz groups in the azGroups parameter if not null
+			
+			// if azGroups is not null, but empty, we can short-circut and return an empty set
+			if ((azGroups != null) && azGroups.isEmpty())
+			{
+				return new HashSet();
+			}
+
 			// Just like unlock, except we use all realms and get their ids
 			// Note: consider over all realms just those realms where there's a grant of a role that satisfies the lock
 			// Ignore realms where anon or auth satisfy the lock.

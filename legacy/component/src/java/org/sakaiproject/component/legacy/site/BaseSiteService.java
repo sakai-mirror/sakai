@@ -1248,11 +1248,17 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		if (SERVICE_NAME != ref.getType()) return null;
 
 		Collection rv = new Vector();
-
-		// for site access: user realm
+		
 		try
 		{
-			rv.add(siteReference(ref.getId()));
+			// first, use the reference as an authzGroup (site, section, page or tool)
+			rv.add(ref.getReference());
+			
+			// if this is a sub-type, add the site's reference - container is site id
+			if (!SITE_SUBTYPE.equals(ref.getSubType()))
+			{
+				rv.add(siteReference(ref.getContainer()));
+			}
 
 			// add the current user's realm
 			ref.addUserAuthzGroup(rv, SessionManager.getCurrentSessionUserId());
@@ -1260,7 +1266,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// site helper
 			rv.add("!site.helper");
 		}
-		catch (NullPointerException e)
+		catch (Throwable e)
 		{
 			m_logger.warn("getEntityRealms(): " + e);
 		}

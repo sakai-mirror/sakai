@@ -42,6 +42,7 @@ import org.sakaiproject.service.legacy.announcement.AnnouncementChannelEdit;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessage;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.message.MessageChannel;
 import org.sakaiproject.service.legacy.message.MessageEdit;
@@ -60,6 +61,14 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
  */
 public class SectionTestTool extends HttpServlet
 {
+
+	protected static final String siteId = "xxx-section-test";
+	protected static final String user1Id = "xxx-section-test-user-1";
+	protected static final String user2Id = "xxx-section-test-user-2";
+	protected static final String user3Id = "xxx-section-test-user-3";
+	protected static final String user4Id = "xxx-section-test-user-4";
+	protected static final String siteIdNs = "xxx-section-test-ns";
+
 	/**
 	 * Access the Servlet's information display.
 	 * 
@@ -109,14 +118,99 @@ public class SectionTestTool extends HttpServlet
 
 		out.println(getServletInfo());
 
-		String siteId = "xxx-section-test";
-		String user1Id = "xxx-section-test-user-1";
-		String user2Id = "xxx-section-test-user-2";
-		String user3Id = "xxx-section-test-user-3";
+		Session s = SessionManager.getCurrentSession();
+		String currentUserId = s.getUserId();
+
+		// create the test data
+		setup(out);
 
 		try
 		{
-			// create a site
+			out.println("\n\nSectioned Site Tests\n");
+			test(out, siteId);
+		}
+		finally
+		{
+			// make sure to switch back to the authenticated user id
+			s.setUserId(currentUserId);
+		}
+
+		try
+		{
+			out.println("\n\n Non-Sectioned Site Tests\n");
+			test(out, siteIdNs);
+		}
+		finally
+		{
+			// make sure to switch back to the authenticated user id
+			s.setUserId(currentUserId);
+		}
+	}
+
+	/**
+	 * Check the section access lists for the current user.
+	 * 
+	 * @param channel
+	 * @param out
+	 */
+	protected void checkAccess(MessageChannel channel, PrintWriter out)
+	{
+		// check the message service's section / permission access
+		Collection c = channel.getSectionsAllowAddMessage();
+		out.println("sections with add permission:");
+		for (Iterator i = c.iterator(); i.hasNext();)
+		{
+			out.println("  - " + i.next());
+		}
+
+		c = channel.getSectionsAllowGetMessage();
+		out.println("sections with get permission:");
+		for (Iterator i = c.iterator(); i.hasNext();)
+		{
+			out.println("  - " + i.next());
+		}
+
+		try
+		{
+			boolean allowed = channel.allowGetMessages();
+			out.println("channel.allowGetMessages: " + allowed);
+
+			List messages = channel.getMessages(null, true);
+			for (Iterator i = messages.iterator(); i.hasNext();)
+			{
+				AnnouncementMessage message = (AnnouncementMessage) i.next();
+				out.println(" ** message: " + message.getHeader().getId() + " " + message.getAnnouncementHeader().getSubject());
+			}
+		}
+		catch (Throwable t)
+		{
+			out.println("getting channel messages: " + t);
+		}
+	}
+
+	protected void checkSectionManip(Section section, PrintWriter out)
+	{
+		try
+		{
+			// edit the section1 azg
+			AuthzGroup azg = AuthzGroupService.getAuthzGroup(section.getReference());
+			azg.addMember(user1Id, "maintain", true, false);
+			azg.addMember(user2Id, "access", true, false);
+	
+			AuthzGroupService.save(azg);
+			out.println(" ** section azg modified");
+		}
+		catch (Throwable t)
+		{
+			out.println(t);
+		}
+	}
+	
+	protected void setup(PrintWriter out)
+	{
+		try
+		{
+			// create a site w/ sections
 			Site site = SiteService.addSite(siteId);
 
 			// write some properties
@@ -149,10 +243,12 @@ public class SectionTestTool extends HttpServlet
 			UserDirectoryService.addUser(user1Id, "one", "user", "", "", "", null);
 			UserDirectoryService.addUser(user2Id, "two", "user", "", "", "", null);
 			UserDirectoryService.addUser(user3Id, "three", "user", "", "", "", null);
+			UserDirectoryService.addUser(user4Id, "four", "user", "", "", "", null);
 
 			// edit the site azg
 			AuthzGroup azg = AuthzGroupService.getAuthzGroup(SiteService.siteReference(siteId));
 			azg.addMember(user1Id, "maintain", true, false);
+			azg.addMember(user4Id, "maintain", true, false);
 			azg.addMember(user2Id, "access", true, false);
 			azg.addMember(user3Id, "access", true, false);
 
@@ -200,23 +296,23 @@ public class SectionTestTool extends HttpServlet
 			edit.getHeaderEdit().addSection(section2);
 			channel.commitMessage(edit);
 
-			// try to get a section by id and ref
-			try
-			{
-				SiteService.getSite(siteId);
-				Section section = site.getSection(section1Id);
-				if (section == null) out.println(" ** error: cannot find section by id: " + section1Id + " in site: " + siteId);
-				
-				section = site.getSection(section2Ref);
-				if (section == null) out.println(" ** error: cannot find section by ref: " + section2Ref + " in site: " + siteId);
-				
-				section = site.getSection(siteId);
-				if (section != null ) out.println(" ** error: found bogus section by id: " + siteId + " in site: " + siteId);
-			}
-			catch (Throwable t)
-			{
-				out.println(t);
-			}
+			// create a site w/o sections
+			site = SiteService.addSite(siteIdNs);
+			site.getProperties().addProperty("test", "site no sections");
+			site.getProperties().addProperty("test2", "site-2 no sections");
+			SiteService.save(site);
+
+			azg = AuthzGroupService.getAuthzGroup(SiteService.siteReference(siteIdNs));
+			azg.addMember(user1Id, "maintain", true, false);
+			azg.addMember(user4Id, "maintain", true, false);
+			azg.addMember(user2Id, "access", true, false);
+			azg.addMember(user3Id, "access", true, false);
+			AuthzGroupService.save(azg);
+
+			channel = AnnouncementService.addAnnouncementChannel(AnnouncementService.channelReference(
+					siteIdNs, "main"));
+			AnnouncementService.commitChannel(channel);
+			msg = channel.addAnnouncementMessage("subject NS", false, null, "this is an announcement");
 
 			out.println("setup complete.");
 		}
@@ -224,107 +320,123 @@ public class SectionTestTool extends HttpServlet
 		{
 			out.println(t);
 		}
+	}
+	
+	protected void test(PrintWriter out, String sid)
+	{
+		Session s = SessionManager.getCurrentSession();
+		String currentUserId = s.getUserId();
+
+		try
+		{
+			Site site = SiteService.getSite(sid);
+			out.println("Site: " + site.getId() + " " + site.getTitle());
+			AuthzGroup azg = AuthzGroupService.getAuthzGroup(site.getReference());
+			for (Iterator m = azg.getMembers().iterator(); m.hasNext();)
+			{
+				Member mbr = (Member) m.next();
+				out.println("    Member: " + mbr.getUserId() + " " + mbr.getRole().getId());
+			}
+			for (Iterator i = site.getSections().iterator(); i.hasNext();)
+			{
+				Section section = (Section) i.next();
+				out.println("    Section: " + section.getId() + " " + section.getTitle());
+				azg = AuthzGroupService.getAuthzGroup(section.getReference());
+				for (Iterator m = azg.getMembers().iterator(); m.hasNext();)
+				{
+					Member mbr = (Member) m.next();
+					out.println("        Member: " + mbr.getUserId() + " " + mbr.getRole().getId());
+				}
+			}
+		}
+		catch (Throwable t)
+		{
+			out.println("site display: " + t);
+		}
 
 		// try to get a section by id and ref
 		try
 		{
-			Site site = SiteService.getSite(siteId);
+			Site site = SiteService.getSite(sid);
 			Section section = (Section) site.getSections().iterator().next();
 			String sectionId = section.getId();
 			String sectionRef = section.getReference();
 
 			Section section2 = site.getSection(sectionId);
-			if (section2 == null) out.println(" ** error: cannot find section by id: " + sectionId + " in site: " + siteId);
-			if (section2 != section) out.println(" ** error: section by id: " + sectionId + " in site: " + siteId + " not matching initial section by ==");
+			if (section2 == null) out.println(" ** error: cannot find section by id: " + sectionId + " in site: " + sid);
+			if (section2 != section) out.println(" ** error: section by id: " + sectionId + " in site: " + sid + " not matching initial section by ==");
 			
 			Section section3 = site.getSection(sectionRef);
-			if (section3 == null) out.println(" ** error: cannot find section by ref: " + sectionRef + " in site: " + siteId);
-			if (section3 != section) out.println(" ** error: section by ref: " + sectionRef + " in site: " + siteId + " not matching initial section by ==");
+			if (section3 == null) out.println(" ** error: cannot find section by ref: " + sectionRef + " in site: " + sid);
+			if (section3 != section) out.println(" ** error: section by ref: " + sectionRef + " in site: " + sid + " not matching initial section by ==");
 			
-			Section section4 = site.getSection(siteId);
-			if (section4 != null ) out.println(" ** error: found bogus section by id: " + siteId + " in site: " + siteId);
+			Section section4 = site.getSection(sid);
+			if (section4 != null ) out.println(" ** error: found bogus section by id: " + sid + " in site: " + sid);
 			
 			out.println("site.getSection() by id or ref working.");
 		}
 		catch (Throwable t)
 		{
-			out.println(t);
+			out.println("Section id/ref access: " + t);
 		}
 
 		// get the channel
 		try
 		{
-			AnnouncementChannel channel = AnnouncementService.getAnnouncementChannel(AnnouncementService.channelReference(siteId,
+			AnnouncementChannel channel = AnnouncementService.getAnnouncementChannel(AnnouncementService.channelReference(sid,
 					"main"));
 			checkAccess(channel, out);
 
 			// switch to the users and see what they can do
-			Session s = SessionManager.getCurrentSession();
-			String currentUserId = s.getUserId();
-			try
-			{
-				s.setUserId(user1Id);
-				out.println("\nfor user: " + user1Id);
-				checkAccess(channel, out);
+			s.setUserId(user1Id);
+			out.println("\nfor user: " + user1Id);
+			checkAccess(channel, out);
 
-				s.setUserId(user2Id);
-				out.println("\nfor user: " + user2Id);
-				checkAccess(channel, out);
+			s.setUserId(user2Id);
+			out.println("\nfor user: " + user2Id);
+			checkAccess(channel, out);
 
-				s.setUserId(user3Id);
-				out.println("\nfor user: " + user3Id);
-				checkAccess(channel, out);
-			}
-			finally
-			{
-				// make sure to switch back to the authenticated user id
-				s.setUserId(currentUserId);
-			}
+			s.setUserId(user3Id);
+			out.println("\nfor user: " + user3Id);
+			checkAccess(channel, out);
+
+			// user 4 has site maintain, nothing in the sections
+			s.setUserId(user4Id);
+			out.println("\nfor user: " + user4Id);
+			checkAccess(channel, out);
 		}
 		catch (Throwable t)
 		{
-			out.println(t);
+			out.println("Annc channel/msg access: " + t);
 		}
-	}
-
-	/**
-	 * Check the section access lists for the current user.
-	 * 
-	 * @param channel
-	 * @param out
-	 */
-	protected void checkAccess(MessageChannel channel, PrintWriter out)
-	{
-		// check the message service's section / permission access
-		Collection c = channel.getSectionsAllowAddMessage();
-		out.println("sections with add permission:");
-		for (Iterator i = c.iterator(); i.hasNext();)
-		{
-			out.println("  - " + i.next());
-		}
-
-		c = channel.getSectionsAllowGetMessage();
-		out.println("sections with get permission:");
-		for (Iterator i = c.iterator(); i.hasNext();)
-		{
-			out.println("  - " + i.next());
-		}
-
+		
+		// section manipulation tests
 		try
 		{
-			boolean allowed = channel.allowGetMessages();
-			out.println("channel.allowGetMessages: " + allowed);
+			s.setUserId(currentUserId);
 
-			List messages = channel.getMessages(null, true);
-			for (Iterator i = messages.iterator(); i.hasNext();)
-			{
-				AnnouncementMessage message = (AnnouncementMessage) i.next();
-				out.println(" ** message: " + message.getHeader().getId() + " " + message.getAnnouncementHeader().getSubject());
-			}
+			Site site = SiteService.getSite(sid);
+			Section section = (Section) site.getSections().iterator().next();
+
+			s.setUserId(user1Id);
+			out.println("\nfor user: " + user1Id + "(should have access)");
+			checkSectionManip(section, out);
+
+			s.setUserId(user2Id);
+			out.println("\nfor user: " + user2Id + "(should not have access)");
+			checkSectionManip(section, out);
+
+			s.setUserId(user3Id);
+			out.println("\nfor user: " + user3Id + "(should not have access)");
+			checkSectionManip(section, out);
+
+			s.setUserId(user4Id);
+			out.println("\nfor user: " + user4Id + "(should have access)");
+			checkSectionManip(section, out);
 		}
 		catch (Throwable t)
 		{
-			out.println("getting channel messages: " + t);
+			out.println("Section manip: " + t);
 		}
 	}
 }
