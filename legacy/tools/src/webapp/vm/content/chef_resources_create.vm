@@ -243,6 +243,21 @@
 			obj_newcopyright_item.disabled=false;
 		}
 	}
+	function submitWithNumberOfItems(formName, element)
+	{
+		var theForm = document.getElementById(formName);
+		var theNumber = element.value;
+		
+		theForm.action="#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=updateNumber")&numberOfItems=" + theNumber;
+		if(theForm && theForm.onsubmit)
+		{
+			theForm.onsubmit();
+		}
+		if(theForm && theForm.submit)
+		{
+			theForm.submit();
+		}
+	}
 	//-->
 </script>
 
@@ -306,14 +321,14 @@
 		</p>
 	</form>
 	#if("$itemType" == "$TYPE_UPLOAD")
-		<form name="createForm" id="createForm" action="#toolForm("ResourcesAction")&special=upload" method="post" enctype="multipart/form-data">
+		<form name="createForm" id="createForm" action="#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=create&itemType=$itemType")" method="post" enctype="multipart/form-data">
 	#else
-		<form name="createForm" id="createForm" action="#toolForm("ResourcesAction")" method="post" >
+		<form name="createForm" id="createForm" action="#toolLink("ResourcesAction" "doCreateitem")" method="post" >
 	#end
+		<input type="hidden" name="sakai_action" value="doCreateitem" />
+		<input type="hidden" name="flow" id="flow" value="create" />
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
-		<input type="hidden" name="eventSubmit_doCreateitem" value="x" />
 		<input type="hidden" name="itemType" id="itemType" value="$itemType" />
-		<input type="hidden" name="flow" id="flow" value="save" />
 		<input type="hidden" name="twiggleNumber" id="twiggleNumber" value="-1" />
 		<input type="hidden" name="metadataGroup" id="metadataGroup" value="*" />
 		<input type="hidden" name="field"  id="field" value="no value" />
@@ -327,7 +342,11 @@
 				#elseif("$itemType" == "$TYPE_URL")
 					<label for="numberOfItems">$tlang.getString("add.numurls")</label>
 				#end
-				<select name="numberOfItems" id="numberOfItems" onchange="javascript:document.getElementById('flow').value='updateNumber';submitform('createForm');">
+				#if("$itemType" == "$TYPE_UPLOAD")
+					<select name="numberOfItems" id="numberOfItems" onchange="javascript:submitWithNumberOfItems('createForm', this);">
+				#else
+					<select name="numberOfItems" id="numberOfItems" onchange="javascript:document.getElementById('flow').value='updateNumber';submitform('createForm');">
+				#end
 					#foreach ($i in [1 .. $max_number])
 						#if ("$i" == "$numberOfItems")
 							<option value="$i" selected="selected">$i</option>
@@ -419,7 +438,12 @@
 						<p class="shorttext">
 					#end
 						<label for="formtype">$tlang.getString("add.formtype")</label>
-						<select id="formtype" name="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('createForm');">
+						#if("$itemType" == "$TYPE_UPLOAD")
+							<select name="formtype" id="formtype" onchange="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=updateDocType")';submitform('createForm');">
+						#else
+							<select name="formtype" id="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('createForm');">
+						#end
+						##<select id="formtype" name="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('createForm');">
 							<option value=""#if("$!formtype" == "") selected="selected"#end></option>
 							#foreach($home in $homes)
 								<option value="$home.type.id"#if("$!home.type.id" == "$!formtype") selected="selected"#end>$home.type.description</option>
@@ -563,9 +587,14 @@
 			######################## ================ Optional Properties of Item ================ ########################
 			#if($metadataGroups)
 				#foreach($group in $metadataGroups)				  
-					#if ($item.isGroupShowing($validator.escapeUrl($group.name)))
+					#if ($item.isGroupShowing($group.name))
 						<p class="discTria">
-							<a href="#" onclick="javascript: document.getElementById('flow').value='hideOptional'; document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i'; submitform('createForm'); return false;" title="$tlang.getString("edit.hide") $group.name">
+							#if("$itemType" == "$TYPE_UPLOAD")
+								<a href="#" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=hideOptional&metadataGroup=$validator.escapeUrl($group.name)&twiggleNumber=$i")';submitform('createForm');">
+							#else
+								<a href="#" onclick="javascript:document.getElementById('flow').value='hideOptional';document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i';submitform('createForm');">
+							#end
+							##<a href="#" onclick="javascript: document.getElementById('flow').value='hideOptional'; document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i'; submitform('createForm'); return false;" title="$tlang.getString("edit.hide") $group.name">
 								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") $group.name" border="0" width="15" height="15" align="top" />
 							</a>
 							$validator.escapeHtml($group.name)
@@ -633,7 +662,12 @@
 						
 					#else
 						<p class="discTria">
-							<a href="#" onclick="javascript: document.getElementById('flow').value='showOptional'; document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i'; submitform('createForm'); return false;" title="$tlang.getString("edit.show") $group.name">	
+							#if("$itemType" == "$TYPE_UPLOAD")
+								<a href="#" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=showOptional&metadataGroup=$validator.escapeUrl($group.name)&twiggleNumber=$i")';submitform('createForm');">
+							#else
+								<a href="#" onclick="javascript:document.getElementById('flow').value='showOptional';document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i';submitform('createForm');">
+							#end
+							##<a href="#" onclick="javascript: document.getElementById('flow').value='showOptional'; document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i'; submitform('createForm'); return false;" title="$tlang.getString("edit.show") $group.name">	
 								<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("edit.show") $group.name" border="0" width="15" height="15" align="top" />
 							</a>
 							$validator.escapeHtml($group.name)
