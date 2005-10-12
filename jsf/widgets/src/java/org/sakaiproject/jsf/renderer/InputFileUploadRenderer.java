@@ -66,7 +66,7 @@ public class InputFileUploadRenderer extends Renderer
  
         ResponseWriter writer = context.getResponseWriter();
         String clientId = component.getClientId(context);
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        //HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 
         // check that the structure of the form is valid
         boolean atDecodeTime = false;
@@ -173,8 +173,16 @@ public class InputFileUploadRenderer extends Renderer
         ExternalContext external = context.getExternalContext();
         HttpServletRequest request = (HttpServletRequest) external.getRequest();
 
-        // check form structure
-        UIForm form = getForm(component);
+        UIForm form = null;
+        try
+        {
+        	form = getForm(component);
+        }
+        catch (IllegalArgumentException e)
+        {
+        	// there are more than one nested form - thats not OK!
+        	return "DEVELOPER ERROR: The <inputFileUpload> tag must be enclosed in just ONE form.  Nested forms confuse the browser.";
+        }
         if (form == null || !"multipart/form-data".equals(RendererUtil.getAttribute(context, form, "enctype")))
         {
             return "DEVELOPER ERROR: The <inputFileUpload> tag must be enclosed in a <h:form enctype=\"multipart/form-data\"> tag.";
@@ -329,15 +337,27 @@ public class InputFileUploadRenderer extends Renderer
 
     /**
      * get containing UIForm from component hierarchy.
+     * @throws IllegalArgumentException If there is more than one enclosing form - only one form is allowed!
      */
     private static UIForm getForm(UIComponent component)
+    	throws IllegalArgumentException
     {
+    	UIForm ret = null;
         while (component != null)
         {
-            if (component instanceof UIForm) return (UIForm) component;
+            if (component instanceof UIForm)
+            {
+            	if (ret != null)
+            	{
+            		// Cannot have a doubly-nested form!
+            		throw new IllegalArgumentException();
+            	}
+            	ret = (UIForm) component;
+            }
             component = component.getParent();
         }
 
-        return null;
+        return ret;
     }
 }
+
