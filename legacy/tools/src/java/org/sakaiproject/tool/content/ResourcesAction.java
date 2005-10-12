@@ -4993,8 +4993,7 @@ public class ResourcesAction
 			
 			if(formtype_check == null || formtype_check.equals(""))
 			{
-				alerts.add("Must select a form type");
-//				alerts.add(rb.getString("type"));
+				alerts.add(rb.getString("type"));
 				item.setMissing("formtype");
 			}
 			else if(formtype_check.equals(formtype))
