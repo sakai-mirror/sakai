@@ -239,13 +239,13 @@
 			#end
 		#end
 	</div>	
-	<form name="propertyForm" id="propertyForm" action="#toolForm("ResourcesAction")&special=upload" method="post" enctype="multipart/form-data">
+	<form name="propertyForm" id="propertyForm" action="#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=update")" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="sakai_action" value="doSavechanges" />
+		<input type="hidden" name="flow" id="flow" value="update" />
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
 		<input type="hidden" name="stateName" value = "list" />
 		<input type="hidden" name="from" value="list" />
 		<input type="hidden" name="option" id="option" value="replace" />
-		<input type="hidden" name="eventSubmit_doSavechanges" value="x" />
-		<input type="hidden" name="flow" id="flow" value="update" />
 		<input type="hidden" name="group" id="group" value="" />
 		<input type="hidden" name="ContentType" value="$item.MimeType" />
 		<input type="hidden" name="itemType" id="itemType" value="$itemType" />
@@ -508,7 +508,7 @@
 			#foreach($group in $metadataGroups)				  
 				#if ($group.isShowing())
 					<p class="discTria">
-						<a href="#" onclick="javascript: document.getElementById('flow').value='hideMetadata'; document.getElementById('group').value='$validator.escapeUrl($group.name)'; submitform('propertyForm'); return false;" title="$tlang.getString("edit.hide") $group.name">
+						<a href="#" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=hideMetadata&metadataGroup=$validator.escapeUrl($group.name)")';submitform('propertyForm');" title="$tlang.getString("edit.hide") $group.name">
 							<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") $group.name" border="0" width="15" height="15" align="top" />
 						</a>
 						$validator.escapeHtml($group.name)
@@ -577,7 +577,8 @@
 					
 				#else
 					<p class="discTria">
-						<a href="#" onclick="javascript: document.getElementById('flow').value='showMetadata'; document.getElementById('group').value='$validator.escapeUrl($group.name)'; submitform('propertyForm'); return false;" title="$tlang.getString("edit.show") $group.name">	
+						##<a href="#" onclick="javascript: document.getElementById('flow').value='showMetadata'; document.getElementById('group').value='$validator.escapeUrl($group.name)'; submitform('propertyForm'); return false;" title="$tlang.getString("edit.hide") $group.name">	
+						<a href="#" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=showMetadata&group=$validator.escapeUrl($group.name)")';submitform('propertyForm');" title="$tlang.getString("edit.show") $group.name">
 							<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("edit.show") $group.name" border="0" width="15" height="15" align="top" />
 						</a>
 						$validator.escapeHtml($group.name)
@@ -588,8 +589,8 @@
 		############################################# end of section to show metadata 
 	
 		<p class="act">
-			<input type="submit" class="active" name="eventSubmit_doSavechanges" onclick="javascript:document.getElementById('flow').value='update';return true;" value="$tlang.getString("edit.update")" />
-			<input type="submit" name="eventSubmit_doCancel" onclick="javascript:document.getElementById('flow').value='cancel';return true;" value="$tlang.getString("gen.cancel")" />
+			<input type="submit" class="active" name="eventSubmit_doSavechanges" onclick="document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=update")';submitform('propertyForm');" value="$tlang.getString("edit.update")" />
+			<input type="submit" name="eventSubmit_doCancel" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "flow=cancel")';submitform('propertyForm');" value="$tlang.getString("gen.cancel")" />
 		</p>
 		
 	</form>

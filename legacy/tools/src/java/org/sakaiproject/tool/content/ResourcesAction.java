@@ -4882,6 +4882,7 @@ public class ResourcesAction
 				if(fileitem == null)
 				{
 					// "The user submitted a file to upload but it was too big!"
+					alerts.clear();
 					alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
 					//item.setMissing("fileName");
 				}
@@ -4902,6 +4903,7 @@ public class ResourcesAction
 					
 					if(bytes.length >= max_bytes)
 					{
+						alerts.clear();
 						alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
 						// item.setMissing("fileName");					
 					}
@@ -4992,6 +4994,7 @@ public class ResourcesAction
 			if(formtype_check == null || formtype_check.equals(""))
 			{
 				alerts.add("Must select a form type");
+//				alerts.add(rb.getString("type"));
 				item.setMissing("formtype");
 			}
 			else if(formtype_check.equals(formtype))
@@ -5238,6 +5241,7 @@ public class ResourcesAction
 				if(fileitem == null)
 				{
 					// "The user submitted a file to upload but it was too big!"
+					item_alerts.clear();
 					item_alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
 					item.setMissing("fileName");
 				}
@@ -5258,6 +5262,7 @@ public class ResourcesAction
 					
 					if(bytes.length >= max_bytes)
 					{
+						item_alerts.clear();
 						item_alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
 						item.setMissing("fileName");					
 					}

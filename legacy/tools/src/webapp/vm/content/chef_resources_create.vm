@@ -590,9 +590,9 @@
 					#if ($item.isGroupShowing($group.name))
 						<p class="discTria">
 							#if("$itemType" == "$TYPE_UPLOAD")
-								<a href="#" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=hideOptional&metadataGroup=$validator.escapeUrl($group.name)&twiggleNumber=$i")';submitform('createForm');">
+								<a href="#" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=hideOptional&metadataGroup=$validator.escapeUrl($group.name)&twiggleNumber=$i")';submitform('createForm');" title="$tlang.getString("edit.hide") $group.name">
 							#else
-								<a href="#" onclick="javascript:document.getElementById('flow').value='hideOptional';document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i';submitform('createForm');">
+								<a href="#" onclick="javascript:document.getElementById('flow').value='hideOptional';document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i';submitform('createForm');" title="$tlang.getString("edit.hide") $group.name">
 							#end
 							##<a href="#" onclick="javascript: document.getElementById('flow').value='hideOptional'; document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i'; submitform('createForm'); return false;" title="$tlang.getString("edit.hide") $group.name">
 								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") $group.name" border="0" width="15" height="15" align="top" />
@@ -663,9 +663,9 @@
 					#else
 						<p class="discTria">
 							#if("$itemType" == "$TYPE_UPLOAD")
-								<a href="#" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=showOptional&metadataGroup=$validator.escapeUrl($group.name)&twiggleNumber=$i")';submitform('createForm');">
+								<a href="#" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=showOptional&metadataGroup=$validator.escapeUrl($group.name)&twiggleNumber=$i")';submitform('createForm');" title="$tlang.getString("edit.show") $group.name">
 							#else
-								<a href="#" onclick="javascript:document.getElementById('flow').value='showOptional';document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i';submitform('createForm');">
+								<a href="#" onclick="javascript:document.getElementById('flow').value='showOptional';document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i';submitform('createForm');" title="$tlang.getString("edit.show") $group.name">
 							#end
 							##<a href="#" onclick="javascript: document.getElementById('flow').value='showOptional'; document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i'; submitform('createForm'); return false;" title="$tlang.getString("edit.show") $group.name">	
 								<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("edit.show") $group.name" border="0" width="15" height="15" align="top" />
@@ -683,7 +683,7 @@
 		######################## ================ Add Button, Cancel Button ================ ########################
 		<p class="act">
 			<input type="button" class="active" name="savechanges" id="saveChanges" onclick="javascript:showNotif('submitnotif','saveChanges','createForm');document.getElementById('flow').value='create'; submitform('createForm');" value="$tlang.getString("gen.add")" />
-			<input type="button" name="cancel" onclick="javascript:document.getElementById('flow').value='cancel';document.forms.createForm.submit();" value="$tlang.getString("gen.cancel")" />
+			<input type="button" name="cancel" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "flow=cancel")';submitform('createForm');" value="$tlang.getString("gen.cancel")" />
 			<span id="submitnotif" style="visibility:hidden">$tlang.getString("gen.proces")</span>
 		</p>
 	</form>
