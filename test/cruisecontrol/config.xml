@@ -1,0 +1,46 @@
+<cruisecontrol>
+   <project name="sakai">
+      
+      <listeners>
+         <currentbuildstatuslistener file="logs/sakai/status.txt" />
+      </listeners>
+      
+      <bootstrappers>
+<!--
+          <cvsbootstrapper localWorkingCopy="projects/jakarta-commons/math" />
+-->
+      </bootstrappers>
+      
+      <modificationset quietperiod="120" >
+         <svn repositoryLocation="https://source.sakaiproject.org/svn/trunk/sakai"/>
+      </modificationset>
+      
+      <schedule interval="60" >
+         <maven mavenscript="c:/dev/maven/bin/maven.bat" 
+             projectfile="project.xml"
+             goal="cruisecontrolloop"
+             />
+      </schedule>
+      
+      <log logdir="logs/sakai" />
+
+      <publishers>
+<!--
+      	<artifactspublisher dest="artifacts" file="projects/jakarta-commons/math/target/commons-math-1.1-dev.jar"/>
+-->
+
+          <email buildresultsurl="http://141.213.247.36:8080/cruisecontrol/buildresults/sakai"
+              mailhost="smtp.itd.umich.edu"
+              returnaddress="janderse@umich.edu"
+              returnname="CruiseControl Notification"
+              subjectprefix="[CruiseControl] ">
+
+          <always address="janderse@umich.edu" />
+
+          </email>    
+
+
+      </publishers>
+      
+   </project>
+</cruisecontrol>

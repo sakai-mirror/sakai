@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+	xmlns:maven="jelly:maven">
+
+<goal name="cruisecontrolloop">
+	<attainGoal name="clean" />
+	<attainGoal name="cleanmavenrepository" />
+	<attainGoal name="download" />
+	<attainGoal name="build" />
+</goal>
+
+<goal name="cleanmavenrepository">
+	<delete dir="${maven.repo.local}/sakai" />
+	<delete dir="${maven.repo.local}/sakaiproject" />
+</goal>
+
+<goal name="download">
+	<attainGoal name="scm:checkout" />
+</goal>
+
+<goal name="build">
+	<maven:maven descriptor="target/checkout/project.xml"
+		goals="bld" />	
+</goal>
+</project>
