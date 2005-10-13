@@ -10894,32 +10894,28 @@ public class SiteAction extends PagedResourceActionII
 	
 	/**
 	* Use the AuthzGroup Provider Id to build a Site tab
+	 * @throws IdUnusedException 
 	*
 	*/
 	private String getCourseTab(SessionState state, String id)
 	{
 		StringBuffer tab = new StringBuffer();
-		String[] fields;
 		
 		try
 		{
-			// A single course with a single section; tab is course and section
-			fields = id.split(",");
-			tab.append(fields[3]); //Subject
-			tab.append(" ");
-			tab.append(fields[4]); //Catalog number
-			tab.append(" ");
-			tab.append(fields[5]); //Section
-		
-			return appendTermInSiteTitle(state, tab.toString());
+			String courseName = CourseManagementService.getCourseName(id);
+			if (courseName != null && courseName.length() > 0)
+			{
+				tab.append(courseName);
+				return appendTermInSiteTitle(state, tab.toString());
+			}
 		}
-		catch (Exception e)
+		catch (IdUnusedException ignore)
 		{
-			// if there is a problem, create a generic tab
-			Log.warn("chef", "SiteAction.getCourseTab Exception " + e.getMessage() + " " + id);
-			tab.append(id);
+			
 		}
-		return tab.toString();
+		
+		return "";
 		
 	}//  getCourseTab
 	
