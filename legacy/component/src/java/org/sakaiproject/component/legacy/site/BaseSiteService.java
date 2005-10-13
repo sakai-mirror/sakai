@@ -52,6 +52,7 @@ import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.legacy.alias.cover.AliasService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.calendar.CalendarEdit;
 import org.sakaiproject.service.legacy.calendar.cover.CalendarService;
@@ -1000,14 +1001,28 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public void join(String id) throws IdUnusedException, PermissionException
 	{
-		// TODO: fix realm to avoid this try block
-		try
+		String user = SessionManager.getCurrentSessionUserId();
+		if (user == null) throw new PermissionException(user, AuthzGroupService.SECURE_UPDATE_OWN_AUTHZ_GROUP, siteReference(id));
+
+		// get the site
+		Site site = getDefinedSite(id);
+
+		// must be joinable
+		if (!site.isJoinable())
 		{
-			AuthzGroupService.joinSite(id);
+			throw new PermissionException(user, AuthzGroupService.SECURE_UPDATE_OWN_AUTHZ_GROUP, siteReference(id));
 		}
-		catch (Throwable e)
+
+		// the role to assign
+		String roleId = site.getJoinerRole();
+		if (roleId == null)
 		{
+			m_logger.warn(this + ".join(): null site joiner role for site: " + id);
+			throw new PermissionException(user, AuthzGroupService.SECURE_UPDATE_OWN_AUTHZ_GROUP, siteReference(id));
 		}
+
+		// do the join
+		AuthzGroupService.joinGroup(siteReference(id), roleId);
 	}
 
 	/**
@@ -1015,14 +1030,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public void unjoin(String id) throws IdUnusedException, PermissionException
 	{
-		// TODO: fix realm to avoid this try block
-		try
-		{
-			AuthzGroupService.unjoinSite(id);
-		}
-		catch (Throwable e)
-		{
-		}
+		AuthzGroupService.unjoinGroup(siteReference(id));
 	}
 
 	/**
@@ -1030,7 +1038,42 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public boolean allowUnjoinSite(String id)
 	{
-		return AuthzGroupService.allowUnjoinSite(id);
+		// basic unjoin AuthzGroup test
+		if (!AuthzGroupService.allowUnjoinGroup(siteReference(id))) return false;
+		
+		// one more check - don't let a maintain role user unjoin a non-joinable site, or
+		// a joinable site that does not have the maintain role as the joiner role.
+		try
+		{
+			// get the site
+			Site site = getDefinedSite(id);
+			
+			// get the AuthGroup
+			AuthzGroup azg = AuthzGroupService.getAuthzGroup(siteReference(id));
+
+			String user = SessionManager.getCurrentSessionUserId();
+			if (user == null) return false;
+
+			if (		(StringUtil.different(site.getJoinerRole(), azg.getMaintainRole()))
+				||	(!site.isJoinable()))
+			{
+				Role role = azg.getUserRole(user);
+				if (role == null)
+				{
+					return false;
+				}
+				if (role.getId().equals(azg.getMaintainRole()))
+				{
+					return false;
+				}
+			}
+		}
+		catch (IdUnusedException e)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**

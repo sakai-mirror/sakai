@@ -54,10 +54,10 @@ public class AuthzGroupService
 
 	public static java.lang.String SERVICE_NAME = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.SERVICE_NAME;
 	public static java.lang.String REFERENCE_ROOT = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.REFERENCE_ROOT;
-	public static java.lang.String SECURE_ADD_REALM = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.SECURE_ADD_AUTHZ_GROUP;
-	public static java.lang.String SECURE_REMOVE_REALM = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.SECURE_REMOVE_AUTHZ_GROUP;
-	public static java.lang.String SECURE_UPDATE_REALM = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP;
-	public static java.lang.String SECURE_UPDATE_OWN_REALM = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.SECURE_UPDATE_OWN_AUTHZ_GROUP;
+	public static java.lang.String SECURE_ADD_AUTHZ_GROUP = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.SECURE_ADD_AUTHZ_GROUP;
+	public static java.lang.String SECURE_REMOVE_AUTHZ_GROUP = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.SECURE_REMOVE_AUTHZ_GROUP;
+	public static java.lang.String SECURE_UPDATE_AUTHZ_GROUP = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP;
+	public static java.lang.String SECURE_UPDATE_OWN_AUTHZ_GROUP = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.SECURE_UPDATE_OWN_AUTHZ_GROUP;
 	public static java.lang.String ANON_ROLE = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.ANON_ROLE;
 	public static java.lang.String AUTH_ROLE = org.sakaiproject.service.legacy.authzGroup.AuthzGroupService.AUTH_ROLE;
 
@@ -169,31 +169,40 @@ public class AuthzGroupService
 		return service.authzGroupReference(param0);
 	}
 
-	public static void joinSite(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.InUseException
+	public static void joinGroup(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
 		if (service == null)
 			return;
 
-		service.joinSite(param0);
+		service.joinGroup(param0, param1);
 	}
 
-	public static void unjoinSite(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	public static void unjoinGroup(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
 		if (service == null)
 			return;
 
-		service.unjoinSite(param0);
+		service.unjoinGroup(param0);
 	}
 	
-	public static boolean allowUnjoinSite(java.lang.String param0)
+	public static boolean allowJoinGroup(java.lang.String param0)
 	{
 		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
 		if (service == null)
 			return false;
 
-		return service.allowUnjoinSite(param0);
+		return service.allowJoinGroup(param0);
+	}
+
+	public static boolean allowUnjoinGroup(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
+		if (service == null)
+			return false;
+
+		return service.allowUnjoinGroup(param0);
 	}
 
 	public static java.util.Set getUsersIsAllowed(java.lang.String param0, java.util.Collection param1)

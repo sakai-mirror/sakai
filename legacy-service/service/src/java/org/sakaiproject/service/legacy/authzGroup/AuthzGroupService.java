@@ -33,7 +33,6 @@ import java.util.Set;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.legacy.entity.Entity;
@@ -207,39 +206,48 @@ public interface AuthzGroupService extends EntityProducer
 	String authzGroupReference(String id);
 
 	/**
-	 * Cause the current user to join the given site. Fails if site's not defined, not joinable, or does not have the proper joiner role defined. Security is just authzGroup.upd.own.
+	 * Cause the current user to join the given AuthzGroup with this role, using SECURE_UPDATE_OWN_AUTHZ_GROUP security.
 	 * 
-	 * @param siteId
-	 *        the id of the site.
+	 * @param authzGroupId
+	 *        the id of the AuthzGroup.
+	 * @param role
+	 *        the name of the Role.
 	 * @throws IdUnusedException
-	 *         if the id is not a valid site id.
-	 * @exception PermissionException
-	 *            if the current user does not have permission to join this site.
-	 * @exception InUseException
-	 *            if the site's authzGroup is otherwise being edited.
+	 *         if the authzGroupId or role are not defined.
+	 * @throws PermissionException
+	 *         if the current user does not have permission to join this AuthzGroup.
 	 */
-	void joinSite(String siteId) throws IdUnusedException, PermissionException, InUseException;
+	void joinGroup(String authzGroupId, String role) throws IdUnusedException, PermissionException;
 
 	/**
-	 * Cause the current user to unjoin the given site. Fails if site's not defined. Security is just SECURE_UPDATE_OWN_AUTHZ_GROUP.
+	 * Cause the current user to unjoin the given AuthzGroup, using SECURE_UPDATE_OWN_AUTHZ_GROUP security.
 	 * 
-	 * @param siteId
-	 *        the id of the site.
+	 * @param authzGroupId
+	 *        the id of the AuthzGroup.
 	 * @throws IdUnusedException
-	 *         if the id is not a valid site id.
-	 * @exception PermissionException
-	 *            if the current user does not have permission to unjoin this site.
+	 *         if the authzGroupId or role are not defined.
+	 * @throws PermissionException
+	 *         if the current user does not have permission to unjoin this site.
 	 */
-	void unjoinSite(String siteId) throws IdUnusedException, PermissionException;
+	void unjoinGroup(String authzGroupId) throws IdUnusedException, PermissionException;
 
 	/**
-	 * Check permissions for unjoining a site.
+	 * Check permissions for the current user joining a group.
 	 * 
 	 * @param id
-	 *        The site id.
-	 * @return true if the user is allowed to unjoin the site, false if not.
+	 *        The AuthzGroup id.
+	 * @return true if the user is allowed to join the group, false if not.
 	 */
-	public boolean allowUnjoinSite(String id);
+	boolean allowJoinGroup(String id);
+
+	/**
+	 * Check permissions for the current user unjoining a group.
+	 * 
+	 * @param id
+	 *        The AuthzGroup id.
+	 * @return true if the user is allowed to unjoin the group, false if not.
+	 */
+	boolean allowUnjoinGroup(String id);
 
 	/**
 	 * Test if this user is allowed to perform the function in the named AuthzGroup.

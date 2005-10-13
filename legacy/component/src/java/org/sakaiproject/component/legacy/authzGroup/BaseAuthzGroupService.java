@@ -45,6 +45,7 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.authzGroup.GroupProvider;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityManager;
@@ -52,11 +53,9 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
-import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
-import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.storage.StorageUser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -320,39 +319,26 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	/**
 	 * {@inheritDoc}
 	 */
-	public void joinSite(String siteId) throws IdUnusedException, PermissionException
+	public void joinGroup(String authzGroupId, String roleId) throws IdUnusedException, PermissionException
 	{
 		String user = SessionManager.getCurrentSessionUserId();
-		if (user == null) throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
-
-		// get the site
-		Site site = SiteService.getSite(siteId);
-
-		// must be joinable
-		if (!site.isJoinable())
-		{
-			throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
-		}
-
-		// the role to assign
-		String roleId = site.getJoinerRole();
-		if (roleId == null)
-		{
-			m_logger.warn(this + ".joinSite(): null site joiner role for site: " + siteId);
-			throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
-		}
-
-		// get the site's azGroup (the azGroup id is the site reference)
-		String azGroupId = SiteService.siteReference(siteId);
+		if (user == null) throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupId);
 
 		// check security (throws if not permitted)
-		unlock(SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupReference(azGroupId));
+		unlock(SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupId);
 
 		// get the AuthzGroup
-		AuthzGroup azGroup = m_storage.get(azGroupId);
+		AuthzGroup azGroup = m_storage.get(authzGroupId);
 		if (azGroup == null)
 		{
-			throw new IdUnusedException(azGroupId);
+			throw new IdUnusedException(authzGroupId);
+		}
+
+		// check the role
+		Role role = azGroup.getRole(roleId);
+		if (role == null)
+		{
+			throw new IdUnusedException(roleId);
 		}
 
 		((BaseAuthzGroup) azGroup).setEvent(SECURE_UPDATE_OWN_AUTHZ_GROUP);
@@ -378,25 +364,19 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	/**
 	 * {@inheritDoc}
 	 */
-	public void unjoinSite(String siteId) throws IdUnusedException, PermissionException
+	public void unjoinGroup(String authzGroupId) throws IdUnusedException, PermissionException
 	{
 		String user = SessionManager.getCurrentSessionUserId();
-		if (user == null) throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
-
-		// get the site
-		Site site = SiteService.getSite(siteId);
-
-		// get the site's azGroup (the azGroup id is the site reference)
-		String azGroupId = SiteService.siteReference(siteId);
+		if (user == null) throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupId);
 
 		// check security (throws if not permitted)
-		unlock(SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupReference(azGroupId));
+		unlock(SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupId);
 
 		// get the AuthzGroup
-		AuthzGroup azGroup = m_storage.get(azGroupId);
+		AuthzGroup azGroup = m_storage.get(authzGroupId);
 		if (azGroup == null)
 		{
-			throw new IdUnusedException(azGroupId);
+			throw new IdUnusedException(authzGroupId);
 		}
 
 		// if not joined (no grant), we are done
@@ -406,25 +386,13 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 			return;
 		}
 
-		// if joined with the maintain role, and the joiner role is different or the site is not joinable
-		// (so the user could not re-join as maintainer), don't allow the unjoin
-
-		// update: if joined with the maintain role, but not the only maintainer of the azGroup
-		// allow the unjoin
-
-		String maintainRole = azGroup.getMaintainRole();
-		String joinerRole = site.getJoinerRole();
-
-		if (!StringUtil.different(maintainRole, grant.getRole().getId()))
+		// if the user currently is the only maintain role user, disallow the unjoin
+		if (grant.getRole().getId().equals(azGroup.getMaintainRole()))
 		{
-			// if maintainter, check if the only maintainer
-			Set maintainers = azGroup.getUsersHasRole(maintainRole);
+			Set maintainers = azGroup.getUsersHasRole(azGroup.getMaintainRole());
 			if (maintainers.size() <= 1)
 			{
-				if (StringUtil.different(maintainRole, joinerRole) || !site.isJoinable())
-				{
-					throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
-				}
+				throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupId);
 			}
 		}
 
@@ -448,72 +416,57 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean allowUnjoinSite(String siteId)
+	public boolean allowJoinGroup(String authzGroupId)
 	{
 		String user = SessionManager.getCurrentSessionUserId();
-		try
-		{
-			if (user == null)
-			{
-				throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
-			}
-			// get the site
-			Site site = SiteService.getSite(siteId);
+		if (user == null) return false;
 
-			// get the site's azGroup (the azGroup id is the site reference)
-			String azGroupId = SiteService.siteReference(siteId);
+		// check security (throws if not permitted)
+		return unlockCheck(SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupId);
+	}
 
-			// check security (throws if not permitted)
-			unlock(SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupReference(azGroupId));
-
-			// get the azGroup
-			AuthzGroup azGroup = m_storage.get(azGroupId);
-			if (azGroup == null)
-			{
-				throw new IdUnusedException(azGroupId);
-			}
-
-			// if not joined (no grant), we are done
-			// if the grant is provider, unable to unjoin the site
-			BaseMember grant = (BaseMember) azGroup.getMember(user);
-			if (grant == null)
-			{
-				return false;
-			}
-			else if (grant.isProvided())
-			{
-				return false;
-			}
-
-			// if joined with the maintain role, and the joiner role is different or the site is not joinable
-			// (so the user could not re-join as maintainer), don't allow the unjoin
-
-			// update: if joined with the maintain role, but not the only maintainer of the azGroup
-			// allow the unjoin
-
-			String maintainRole = azGroup.getMaintainRole();
-			String joinerRole = site.getJoinerRole();
-
-			if (!StringUtil.different(maintainRole, grant.getRole().getId()))
-			{
-				// if maintainter, check if the only maintainer
-				Set maintainers = azGroup.getUsersHasRole(maintainRole);
-				if (maintainers.size() <= 1)
-				{
-					if (StringUtil.different(maintainRole, joinerRole) || !site.isJoinable())
-					{
-						throw new PermissionException(user, SECURE_UPDATE_OWN_AUTHZ_GROUP, SiteService.siteReference(siteId));
-					}
-				}
-			}
-		}
-		catch (IdUnusedException e)
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean allowUnjoinGroup(String authzGroupId)
+	{
+		String user = SessionManager.getCurrentSessionUserId();
+		if (user == null)
 		{
 			return false;
 		}
-		catch (PermissionException e)
+
+		// check security (throws if not permitted)
+		if (!unlockCheck(SECURE_UPDATE_OWN_AUTHZ_GROUP, authzGroupId)) return false;
+
+		// get the azGroup
+		AuthzGroup azGroup = m_storage.get(authzGroupId);
+		if (azGroup == null)
 		{
 			return false;
+		}
+
+		// if not joined (no grant), unable to unjoin
+		BaseMember grant = (BaseMember) azGroup.getMember(user);
+		if (grant == null)
+		{
+			return false;
+		}
+
+		// if the grant is provider, unable to unjoin
+		else if (grant.isProvided())
+		{
+			return false;
+		}
+
+		// if the user currently is the only maintain role user, disallow the unjoin
+		if (grant.getRole().getId().equals(azGroup.getMaintainRole()))
+		{
+			Set maintainers = azGroup.getUsersHasRole(azGroup.getMaintainRole());
+			if (maintainers.size() <= 1)
+			{
+				return false;
+			}
 		}
 
 		return true;
