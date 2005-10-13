@@ -1908,6 +1908,98 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 			}
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
+		public String getUserRole(String userId, String azGroupId)
+		{
+			if ((userId == null) || (azGroupId == null)) return null;
+
+			String sql = "select SRR.ROLE_NAME from SAKAI_REALM_RL_GR SRRG "
+				+ "inner join SAKAI_REALM SR on SRRG.REALM_KEY = SR.REALM_KEY "
+				+ "inner join SAKAI_REALM_ROLE SRR on SRRG.ROLE_KEY = SRR.ROLE_KEY "
+				+ "where SR.REALM_ID = ? and SRRG.USER_ID = ? and SRRG.ACTIVE = '1'";
+
+			Object[] fields = new Object[2];
+			fields[0] = azGroupId;
+			fields[1] = userId;
+
+			// read the string
+			List results = m_sql.dbRead(sql, fields, null);
+
+			// prepare the return
+			String rv = null;
+			if ((results != null) && (!results.isEmpty()))
+			{
+				rv = (String) results.get(0);
+				if (results.size() > 1)
+				{
+					m_logger.warn(this + ".getUserRole: user: " + userId + " multiple roles");
+				}
+			}
+
+			return rv;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Map getUsersRole(Collection userIds, String azGroupId)
+		{
+			if ((userIds == null) || (userIds.isEmpty()) || (azGroupId == null))
+			{
+				return new HashMap();
+			}
+
+			StringBuffer buf = new StringBuffer();
+			buf.append("(?");
+			for (int i = 1; i < userIds.size(); i++)
+			{
+				buf.append(",?");
+			}
+			buf.append(")");
+
+			String sql = "select SRRG.USER_ID, SRR.ROLE_NAME from SAKAI_REALM_RL_GR SRRG "
+				+ "inner join SAKAI_REALM SR on SRRG.REALM_KEY = SR.REALM_KEY "
+				+ "inner join SAKAI_REALM_ROLE SRR on SRRG.ROLE_KEY = SRR.ROLE_KEY "
+				+ "where SR.REALM_ID = ? and SRRG.USER_ID in " + buf.toString() + " and SRRG.ACTIVE = '1'";
+
+			Object[] fields = new Object[1 + userIds.size()];
+			fields[0] = azGroupId;
+			int pos = 1;
+			for (Iterator i = userIds.iterator(); i.hasNext();)
+			{
+				fields[pos++] = i.next();
+			}
+
+			// the return
+			final Map rv = new HashMap();
+
+			// read
+			List results = m_sql.dbRead(sql, fields, new SqlReader()
+			{
+				public Object readSqlResultRecord(ResultSet result)
+				{
+					try
+					{
+						// read the results
+						String userId = result.getString(1);
+						String role = result.getString(2);
+						
+						if ((userId != null) && (role != null))
+						{
+							rv.put(userId, role);
+						}
+					}
+					catch (Throwable t) {}
+
+					return null;
+				}
+			});
+
+			return rv;
+		}
+
 	} // DbStorage
 
 	/**

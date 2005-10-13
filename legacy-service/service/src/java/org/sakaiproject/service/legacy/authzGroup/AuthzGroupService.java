@@ -27,6 +27,7 @@ package org.sakaiproject.service.legacy.authzGroup;
 // imports
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.exception.IdInvalidException;
@@ -300,6 +301,32 @@ public interface AuthzGroupService extends EntityProducer
 	 * @return the Set (String) of functions that users with this role in these AuthzGroups are allowed to perform
 	 */
 	Set getAllowedFunctions(String role, Collection azGroups);
+
+	/**
+	 * Get the role name for this user in this AuthzGroup, if the user has membership (the membership gives the user a single role).
+	 * 
+	 * @param userId
+	 *        The user id.
+	 * @param function
+	 *        The function to open.
+	 * @param azGroupId
+	 *        The AuthzGroup id to consult, if it exists.
+	 * @return the role name for this user in this AuthzGroup, if the user has active membership, or null if not.
+	 */
+	String getUserRole(String userId, String azGroupId);
+
+	/**
+	 * Get the role name for each user in the userIds Collection in this AuthzGroup, for each of these users who have membership (membership gives the user a single role).
+	 * 
+	 * @param userIds
+	 *        The user ids as a Collection of String.
+	 * @param function
+	 *        The function to open.
+	 * @param azGroupId
+	 *        The AuthzGroup id to consult, if it exists.
+	 * @return A Map (userId (String) -> role name (String)) of role names for each user who have active membership; if the user does not, it will not be in the Map.
+	 */
+	Map getUsersRole(Collection userIds, String azGroupId);
 
 	/**
 	 * Refresh this user's AuthzGroup external definitions.

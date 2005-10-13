@@ -736,6 +736,22 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	/**
 	 * {@inheritDoc}
 	 */
+	public String getUserRole(String userId, String azGroupId)
+	{
+		return m_storage.getUserRole(userId, azGroupId);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Map getUsersRole(Collection userIds, String azGroupId)
+	{
+		return m_storage.getUsersRole(userIds, azGroupId);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void refreshUser(String userId)
 	{
 		if ((m_provider == null) || (userId == null)) return;
@@ -1104,6 +1120,32 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 		 * @return the Set (String) of AuthzGroup ids in which this user is allowed to perform this function.
 		 */
 		Set getAuthzGroupsIsAllowed(String userId, String function, Collection azGroups);
+
+		/**
+		 * Get the role name for this user in this AuthzGroup.
+		 * 
+		 * @param userId
+		 *        The user id.
+		 * @param function
+		 *        The function to open.
+		 * @param azGroupId
+		 *        The AuthzGroup id to consult, if it exists.
+		 * @return the role name for this user in this AuthzGroup, if the user has active membership, or null if not.
+		 */
+		String getUserRole(String userId, String azGroupId);
+
+		/**
+		 * Get the role name for each user in the userIds Collection in this AuthzGroup.
+		 * 
+		 * @param userId
+		 *        The user id.
+		 * @param function
+		 *        The function to open.
+		 * @param azGroupId
+		 *        The AuthzGroup id to consult, if it exists.
+		 * @return A Map (userId -> role name) of role names for each user who have active membership; if the user does not, it will not be in the Map.
+		 */
+		Map getUsersRole(Collection userIds, String azGroupId);
 
 		/**
 		 * Refresh this user's roles in any AuthzGroup that has an entry in the map; the user's new role is in the map.

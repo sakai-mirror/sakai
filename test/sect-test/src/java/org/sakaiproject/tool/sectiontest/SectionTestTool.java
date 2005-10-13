@@ -32,6 +32,8 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -156,6 +158,42 @@ public class SectionTestTool extends HttpServlet
 		{
 			// make sure to switch back to the authenticated user id
 			s.setUserId(currentUserId);
+		}
+		
+		// ok, not really a section test...
+		try
+		{
+			out.println("\n\nAuthzGroup getRole Tests");
+
+			String azg = SiteService.siteReference(siteId);
+			String role = AuthzGroupService.getUserRole(user1Id, azg);
+			out.println("getUserRole() : user: " + user1Id + " role: " + role + " in AuthzGroup: " + azg);
+			
+			Collection users = new Vector();
+			users.add(user1Id);
+			users.add(user2Id);
+			users.add("ggolden");
+			users.add(user3Id);
+			users.add(user4Id);
+			Map roles = AuthzGroupService.getUsersRole(users, azg);
+			out.println("getUsersRole()");
+			if (roles != null)
+			{
+				for (Iterator i = roles.keySet().iterator(); i.hasNext();)
+				{
+					String user = (String) i.next();
+					role = (String) roles.get(user);
+					out.println(" ** user: " + user + " role: " + role);
+				}
+			}
+			else
+			{
+				out.println("null");
+			}
+		}
+		catch (Throwable t)
+		{
+			out.println("getting channel messages: " + t);		
 		}
 	}
 

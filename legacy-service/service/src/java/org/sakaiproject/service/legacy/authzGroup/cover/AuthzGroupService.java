@@ -249,4 +249,22 @@ public class AuthzGroupService
 
 		return service.isAllowed(param0, param1, param2);
 	}
+
+	public static java.lang.String getUserRole(java.lang.String param0, java.lang.String param1)
+	{
+		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.getUserRole(param0, param1);
+	}
+
+	public static java.util.Map getUsersRole(java.util.Collection param0, java.lang.String param1)
+	{
+		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.getUsersRole(param0, param1);
+	}
 }
