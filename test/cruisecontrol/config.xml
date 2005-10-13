@@ -1,9 +1,13 @@
 <cruisecontrol>
+   <!-- <plugin name="email" classname="SakaiEmailPublisher" /> -->
+
    <project name="sakai">
-      
+       
       <listeners>
          <currentbuildstatuslistener file="logs/sakai/status.txt" />
       </listeners>
+ 
+
       
       <bootstrappers>
 <!--
@@ -16,7 +20,7 @@
       </modificationset>
       
       <schedule interval="60" >
-         <maven mavenscript="c:/dev/maven/bin/maven.bat" 
+         <maven mavenscript="/sakai/maven/bin/maven" 
              projectfile="project.xml"
              goal="cruisecontrolloop"
              />
@@ -30,9 +34,11 @@
 -->
 
           <email buildresultsurl="http://141.213.247.36:8080/cruisecontrol/buildresults/sakai"
+              reportsuccess="fixes"
+              spamwhilebroken="false"
               mailhost="smtp.itd.umich.edu"
               returnaddress="janderse@umich.edu"
-              returnname="CruiseControl Notification"
+              returnname="Sakai Continuous Build System"
               subjectprefix="[CruiseControl] ">
 
           <always address="janderse@umich.edu" />
