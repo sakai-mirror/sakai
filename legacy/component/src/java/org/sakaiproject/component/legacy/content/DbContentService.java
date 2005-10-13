@@ -550,7 +550,7 @@ public class DbContentService
 		public ContentResourceEdit editResource( String id)
 			{ return (ContentResourceEdit) m_resourceStore.editResource(id); }
 
-		public void commitResource(ContentResourceEdit edit)
+		public void commitResource(ContentResourceEdit edit) throws ServerOverloadException
 		{
 			// keep the body out of the XML
 			byte[] body = ((BaseResourceEdit) edit).m_body;
@@ -560,11 +560,16 @@ public class DbContentService
 			
 			// update the resource body
 			if (body != null)
-			{
+			{ 
 				// if we have been configured to use an external file system
 				if (m_bodyPath != null)
 				{
-					putResourceBodyFilesystem(edit, body);
+					boolean ok = putResourceBodyFilesystem(edit, body);
+					if(! ok)
+					{
+						cancelResource(edit);
+						throw new ServerOverloadException("failed to write file");
+					}
 				}
 				
 				// otherwise use the database
@@ -694,8 +699,11 @@ public class DbContentService
 		* Read the resource's body.
 		* @param resource The resource whose body is desired.
 		* @return The resources's body content as a byte array.
+		* @exception ServerOverloadException
+		* 			if the server is configured to save the resource body in the filesystem
+		* 			and an error occurs while accessing the server's filesystem.
 		*/
-		public byte[] getResourceBody(ContentResource resource)
+		public byte[] getResourceBody(ContentResource resource) throws ServerOverloadException
 		{
 			if (((BaseResourceEdit)resource).m_contentLength <= 0)
 			{
@@ -744,8 +752,10 @@ public class DbContentService
 		* Read the resource's body from the external file system.
 		* @param resource The resource whose body is desired.
 		* @return The resources's body content as a byte array.
+		* @exception ServerOverloadException
+		* 			if server is configured to store resource body in filesystem and error occurs trying to read from filesystem.
 		*/
-		protected byte[] getResourceBodyFilesystem(ContentResource resource)
+		protected byte[] getResourceBodyFilesystem(ContentResource resource) throws ServerOverloadException
 		{
 			// form the file name
 			File file = new File(externalResourceFileName(resource));
@@ -764,7 +774,8 @@ public class DbContentService
 			catch (Throwable t)
 			{
 				m_logger.warn(this + ": failed to read resource: " + resource.getId() + " len: " + ((BaseResourceEdit)resource).m_contentLength + " : " + t);
-				return null;
+				throw new ServerOverloadException("failed to read resource");
+				// return null;
 			}
 		}
 
@@ -792,7 +803,7 @@ public class DbContentService
 			}
 		}
 
-		protected InputStream streamResourceBodyFilesystem(ContentResource resource)
+		protected InputStream streamResourceBodyFilesystem(ContentResource resource) throws ServerOverloadException
 		{
 			// form the file name
 			File file = new File(externalResourceFileName(resource));
@@ -806,7 +817,8 @@ public class DbContentService
 			catch (Throwable t)
 			{
 				m_logger.warn(this + ": failed to read resource: " + resource.getId() + " len: " + ((BaseResourceEdit)resource).m_contentLength + " : " + t);
-				return null;
+				throw new ServerOverloadException("failed to read resource body");
+				// return null;
 			}
 		}
 

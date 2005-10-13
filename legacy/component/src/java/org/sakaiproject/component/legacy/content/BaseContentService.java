@@ -1273,8 +1273,11 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the user does not have permissions to remove this collection, read through any containing
 	 * @exception InconsistentException
 	 *            if the collection has members, so that the removal would leave things in an inconsistent state.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and an attempt to access the resource body 
+	 *            of any collection member fails.
 	 */
-	public void removeCollection(ContentCollectionEdit edit) throws TypeException, PermissionException, InconsistentException
+	public void removeCollection(ContentCollectionEdit edit) throws TypeException, PermissionException, InconsistentException, ServerOverloadException
 	{
 		// check for closed edit
 		if (!edit.isActiveEdit())
@@ -1337,8 +1340,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the user does not have permissions to remove this collection, read through any containing
 	 * @exception InUseException
 	 *            if the collection or a contained member is locked by someone else. collections, or remove any members of the collection.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and an attempt to access the resource body of any collection member fails.
 	 */
-	public void removeCollection(String id) throws IdUnusedException, TypeException, PermissionException, InUseException
+	public void removeCollection(String id) throws IdUnusedException, TypeException, PermissionException, InUseException, ServerOverloadException
 	{
 		// check security for remove
 		unlock(EVENT_RESOURCE_REMOVE, id);
@@ -1498,10 +1503,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the containing collection does not exist.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return a new ContentResource object.
 	 */
 	public ContentResource addResource(String id, String type, byte[] content, ResourceProperties properties, int priority)
-			throws PermissionException, IdUsedException, IdInvalidException, InconsistentException, OverQuotaException
+			throws PermissionException, IdUsedException, IdInvalidException, InconsistentException, OverQuotaException, ServerOverloadException
 	{
 		id = (String) ((Hashtable) fixTypeAndId(id, type)).get("id");
 		ContentResourceEdit edit = addResource(id);
@@ -1612,10 +1619,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the user does not have permission to add a collection, or add a member to a collection.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return a new ContentResource object.
 	 */
 	public ContentResource addAttachmentResource(String name, String type, byte[] content, ResourceProperties properties)
-			throws IdInvalidException, InconsistentException, IdUsedException, PermissionException, OverQuotaException
+			throws IdInvalidException, InconsistentException, IdUsedException, PermissionException, OverQuotaException, ServerOverloadException
 	{
 		// make sure the name is valid
 		Validator.checkResourceId(name);
@@ -1713,10 +1722,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the resource is locked by someone else.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return a new ContentResource object.
 	 */
 	public ContentResource updateResource(String id, String type, byte[] content) throws PermissionException, IdUnusedException,
-			TypeException, InUseException, OverQuotaException
+			TypeException, InUseException, OverQuotaException, ServerOverloadException
 	{
 		// find a resource that is this resource
 		ContentResourceEdit edit = editResource(id);
@@ -1906,8 +1917,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the resource is a collection.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception ServerOverloadException
+	 * 			 if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
-	public void removeResource(String id) throws PermissionException, IdUnusedException, TypeException, InUseException
+	public void removeResource(String id) throws PermissionException, IdUnusedException, TypeException, InUseException, ServerOverloadException
 	{
 		BaseResourceEdit edit = (BaseResourceEdit) editResource(id);
 		removeResource(edit);
@@ -1921,8 +1934,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *        The ContentResourceEdit object to remove.
 	 * @exception PermissionException
 	 *            if the user does not have permissions to read a containing collection, or to remove this resource.
+	 * @exception ServerOverloadException
+	 * 			 if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
-	public void removeResource(ContentResourceEdit edit) throws PermissionException
+	public void removeResource(ContentResourceEdit edit) throws PermissionException, ServerOverloadException
 	{
 		// check for closed edit
 		if (!edit.isActiveEdit())
@@ -1977,8 +1992,16 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 	} // removeResource
 
-	/** Store the resource in a separate delete table */
-	public void addResourceToDeleteTable(ContentResourceEdit edit, String uuid, String userId) throws PermissionException
+	/** 
+	 * Store the resource in a separate delete table 
+	 * @param edit
+	 * @param uuid
+	 * @param userId
+	 * @exception PermissionException 
+	 * @exception ServerOverloadException
+	 * 			 if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
+	 */
+	public void addResourceToDeleteTable(ContentResourceEdit edit, String uuid, String userId) throws PermissionException, ServerOverloadException
 	{
 		ContentResource newResource = addDeleteResource(edit.getId(), edit.getContentType(), edit.getContent(), edit
 				.getProperties(), uuid, userId, NotificationService.NOTI_OPTIONAL);
@@ -2057,8 +2080,11 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if copied item is a collection and the new id is already in use
 	 *            or if the copied item is not a collection and a unique id cannot be found
 	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
-	public String rename(String id, String new_id) throws IdUnusedException, TypeException, PermissionException, InUseException, OverQuotaException, InconsistentException, IdUsedException
+	public String rename(String id, String new_id) throws IdUnusedException, TypeException, PermissionException,
+			InUseException, OverQuotaException, InconsistentException, IdUsedException, ServerOverloadException
 	{
 		// Note - this could be implemented in this base class using a copy and a delete
 		// and then overridden in those derived classes which can support
@@ -2149,9 +2175,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if copied item is a collection and the new id is already in use
 	 *            or if the copied item is not a collection and a unique id cannot be found
 	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
 	public String copyIntoFolder(String id, String folder_id) 
-		throws PermissionException, IdUnusedException, TypeException, InUseException, OverQuotaException, IdUsedException
+		throws PermissionException, IdUnusedException, TypeException, InUseException, 
+		OverQuotaException, IdUsedException, ServerOverloadException
 	{
 		String new_id = newName(id, folder_id);
 		return copy(id, new_id);
@@ -2205,9 +2234,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if moved item is a collection and the new id is already in use
 	 *            or if the moved item is not a collection and a unique id cannot be found
 	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
 	public String moveIntoFolder(String id, String folder_id) 
-		throws PermissionException, IdUnusedException, TypeException, InUseException, OverQuotaException, IdUsedException, InconsistentException
+		throws PermissionException, IdUnusedException, TypeException, InUseException, 
+		OverQuotaException, IdUsedException, InconsistentException, ServerOverloadException
 	{
 		String new_id = newName(id, folder_id);
 		return rename(id, new_id);
@@ -2232,10 +2264,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if copied item is a collection and the new id is already in use
 	 *            or if the copied item is not a collection and a unique id cannot be found
 	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @see copyIntoFolder(String, String) method (preferred method for invocation from a tool).
 	 */
 	public String copy(String id, String new_id) 
-		throws PermissionException, IdUnusedException, TypeException, InUseException, OverQuotaException, IdUsedException
+		throws PermissionException, IdUnusedException, TypeException, InUseException, OverQuotaException, IdUsedException, ServerOverloadException
 	{
 		// Should use copyIntoFolder if possible
 		boolean isCollection = false;
@@ -2353,9 +2387,11 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 * 			 if copying the resource would exceed the quota.
 	 * @exception IdUsedException
 	 * 			 if a unique id cannot be found in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
 	public String copyResource(ContentResource resource, String new_id) throws PermissionException, IdUnusedException, TypeException,
-			InUseException, OverQuotaException, IdUsedException
+			InUseException, OverQuotaException, IdUsedException, ServerOverloadException
 	{
 		ResourceProperties properties = resource.getProperties();
 		ResourcePropertiesEdit newProps = duplicateResourceProperties(properties, resource.getId());
@@ -2490,8 +2526,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *        The ContentResourceEdit object to commit.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota (the edit is then cancled).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
-	public void commitResource(ContentResourceEdit edit) throws OverQuotaException
+	public void commitResource(ContentResourceEdit edit) throws OverQuotaException, ServerOverloadException 
 	{
 		commitResource(edit, NotificationService.NOTI_OPTIONAL);
 
@@ -2506,8 +2544,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *        The notification priority of this commit.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota (the edit is then cancled).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
-	public void commitResource(ContentResourceEdit edit, int priority) throws OverQuotaException
+	public void commitResource(ContentResourceEdit edit, int priority) throws OverQuotaException, ServerOverloadException
 	{
 
 		// check for closed edit
@@ -2543,7 +2583,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 * @param priority
 	 *        The notification priority of this commit.
 	 */
-	protected void commitResourceEdit(ContentResourceEdit edit, int priority)
+	protected void commitResourceEdit(ContentResourceEdit edit, int priority) throws ServerOverloadException
 	{
 		// check for closed edit
 		if (!edit.isActiveEdit())
@@ -2697,10 +2737,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if any property requested cannot be set (it may be live).
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return the ResourceProperties object for this resource.
 	 */
 	public ResourceProperties addProperty(String id, String name, String value) throws PermissionException, IdUnusedException,
-			TypeException, InUseException
+			TypeException, InUseException, ServerOverloadException
 	{
 		checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_WRITE, id);
@@ -2770,10 +2812,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the property named cannot be removed.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return the ResourceProperties object for this resource.
 	 */
 	public ResourceProperties removeProperty(String id, String name) throws PermissionException, IdUnusedException, TypeException,
-			InUseException
+			InUseException, ServerOverloadException
 	{
 		checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_WRITE, id);
@@ -3544,6 +3588,9 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 						catch (InconsistentException e)
 						{
 						}
+						catch(ServerOverloadException e)
+						{
+						}
 					} // if
 				} // if
 			} // for
@@ -3756,9 +3803,18 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	protected String archiveResource(ContentResource resource, Document doc, Stack stack, String storagePath,
 			String siteCollectionId)
 	{
-		// get the content bytes
-		byte[] content = resource.getContent();
-
+		byte[] content = null;
+		try
+		{
+			// get the content bytes
+			content = resource.getContent();
+		}
+		catch(ServerOverloadException e)
+		{
+			m_logger.warn(this + ".archiveResource(): while reading body for: " + resource.getId() + " : " + e);
+			// return "failed to archive resource: " + resource.getId() + " body temporarily unavailable due to server error\n"
+		}
+		
 		// form the xml
 		Element el = resource.toXml(doc, stack);
 
@@ -3850,10 +3906,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the id is not valid.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return a new ContentResource object, or null if it was not created.
 	 */
 	protected ContentResource mergeResource(Element element) throws PermissionException, InconsistentException, IdInvalidException,
-			OverQuotaException
+			OverQuotaException, ServerOverloadException
 	{
 		return mergeResource(element, null);
 
@@ -3877,7 +3935,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 * @return a new ContentResource object, or null if it was not created.
 	 */
 	protected ContentResource mergeResource(Element element, byte[] body) throws PermissionException, InconsistentException,
-			IdInvalidException, OverQuotaException
+			IdInvalidException, OverQuotaException, ServerOverloadException
 	{
 		// make the resource object
 		BaseResourceEdit resourceFromXml = new BaseResourceEdit(element);
@@ -4720,7 +4778,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		/**
 		 * Clear all the members of the collection, all the way down. Security has already been checked!
 		 */
-		protected void clear() throws IdUnusedException, PermissionException, InconsistentException, TypeException, InUseException
+		protected void clear() throws IdUnusedException, PermissionException, InconsistentException, TypeException, InUseException, ServerOverloadException
 		{
 			// get this collection's members
 			List mbrs = getMemberResources();
@@ -5114,8 +5172,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		 * Access the content bytes of the resource.
 		 * 
 		 * @return An array containing the bytes of the resource's content.
+		 * @exception ServerOverloadException
+		 * 			 if server is configured to store resource body in filesystem and error occurs trying to read from filesystem.
 		 */
-		public byte[] getContent()
+		public byte[] getContent() throws ServerOverloadException
 		{
 			// return the body bytes
 			byte[] rv = m_body;
@@ -5450,7 +5510,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		/**
 		 * Commit a resource edit.
 		 */
-		public void commitResource(ContentResourceEdit edit);
+		public void commitResource(ContentResourceEdit edit) throws ServerOverloadException;
 
 		/**
 		 * Cancel a resource edit.
@@ -5464,11 +5524,17 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 		/**
 		 * Read the resource's body.
+		 * @exception ServerOverloadException
+		 * 			if server is configured to save resource body in filesystem and an error occurs while 
+		 * 			trying to access the filesystem.
 		 */
-		public byte[] getResourceBody(ContentResource resource);
+		public byte[] getResourceBody(ContentResource resource) throws ServerOverloadException;
 
 		/**
 		 * Stream the resource's body.
+		 * @exception ServerOverloadException
+		 * 			if server is configured to save resource body in filesystem and an error occurs while 
+		 * 			trying to access the filesystem.
 		 */
 		public InputStream streamResourceBody(ContentResource resource) throws ServerOverloadException;
 

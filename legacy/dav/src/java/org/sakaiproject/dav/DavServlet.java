@@ -136,6 +136,7 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.cover.Log;
@@ -1899,6 +1900,12 @@ public class DavServlet
 				resp.sendError(SakaidavStatus.SC_FORBIDDEN);
 				return;
 	}
+	catch (ServerOverloadException e)
+	{
+		Log.warn("sakai", "SAKAIDavServlet.doMkcol() - ServerOverloadException " + path);
+		resp.sendError(SakaidavStatus.SC_SERVICE_UNAVAILABLE);
+		return;
+	}
 
 	// Add the collection
 							
@@ -2064,6 +2071,12 @@ public class DavServlet
 			resp.sendError(SakaidavStatus.SC_FORBIDDEN);
 			    return;
 	}
+	catch (ServerOverloadException e)
+	{
+		Log.warn("sakai", "SAKAIDavServlet.doMkcol() - ServerOverloadException " + path);
+		resp.sendError(SakaidavStatus.SC_SERVICE_UNAVAILABLE);
+	    return;
+	}
 
 	// Add the resource
 
@@ -2180,6 +2193,12 @@ public class DavServlet
 		Log.warn("sakai","SAKAIDavServlet.doPut() InconsistentException:" + e.getMessage());
 	   	     	resp.sendError(HttpServletResponse.SC_CONFLICT);
 			    return;
+	}
+	catch (ServerOverloadException e)
+	{
+		Log.warn("sakai","SAKAIDavServlet.doPut() ServerOverloadException:" + e.getMessage());
+		resp.setStatus(SakaidavStatus.SC_SERVICE_UNAVAILABLE);
+		return;
 	}
 		resp.setStatus(HttpServletResponse.SC_CREATED);
 
@@ -3262,6 +3281,11 @@ public class DavServlet
 			Log.warn("sakai","SAKAIDavServlet.copyResource() - TypeException "+source);
 			return false;
 		}
+		catch (ServerOverloadException e)
+		{
+			Log.warn("sakai","SAKAIDavServlet.copyResource() ServerOverloadException:" + source);
+			return false;
+		}
 
 		// We did not have an error
 		errorList.clear();
@@ -3355,6 +3379,11 @@ public class DavServlet
 	{
 		Log.warn("sakai","SAKAIDavServlet.deleteResource() - TypeException "+path);
 				return false;
+	}
+	catch (ServerOverloadException e)
+	{
+		Log.warn("sakai", "SAKAIDavServlet.deleteResource() - ServerOverloadException " + path);
+		return false;
 	}
 	return true;
 

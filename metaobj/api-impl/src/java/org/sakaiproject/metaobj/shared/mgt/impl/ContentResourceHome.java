@@ -33,6 +33,7 @@ import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.exception.EmptyException;
+import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.jdom.Element;
 import org.jdom.Document;
@@ -133,7 +134,15 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
       Element data = new Element("structuredData");
       Element baseElement = null;
 
-      byte[] bytes = artifact.getBase().getContent();
+	  byte[]  bytes = null;
+      try
+	  {
+		 bytes = artifact.getBase().getContent();
+	  }
+	  catch(ServerOverloadException e)
+	  {
+		  throw new RuntimeException(e);
+	  }
       SAXBuilder builder = new SAXBuilder();
       Document doc = null;
 

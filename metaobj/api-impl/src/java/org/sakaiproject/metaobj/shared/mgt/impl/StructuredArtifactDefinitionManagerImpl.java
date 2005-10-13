@@ -39,6 +39,7 @@ import org.jdom.JDOMException;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
@@ -274,7 +275,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    protected SchemaNode loadNode(StructuredArtifactDefinitionBean sad)
-         throws TypeException, IdUnusedException, PermissionException {
+         throws TypeException, IdUnusedException, PermissionException, ServerOverloadException {
       if (sad.getSchemaFile() != null) {
          ContentResource resource = getContentHosting().getResource(sad.getSchemaFile().getValue());
          sad.setSchema(resource.getContent());

@@ -37,6 +37,7 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
@@ -283,8 +284,11 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the user does not have permissions to remove this collection, read through any containing
 	 * @exception InUseException
 	 *            if the collection or a contained member is locked by someone else. collections, or remove any members of the collection.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and an attempt to access the resource body 
+	 *            of any collection member fails.
 	 */
-	public void removeCollection(String id) throws IdUnusedException, TypeException, PermissionException, InUseException;
+	public void removeCollection(String id) throws IdUnusedException, TypeException, PermissionException, InUseException, ServerOverloadException;
 
 	/**
 	 * Remove just a collection. It must be empty.
@@ -297,8 +301,11 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the user does not have permissions to remove this collection, read through any containing
 	 * @exception InconsistentException
 	 *            if the collection has members, so that the removal would leave things in an inconsistent state.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and an attempt to access the resource body 
+	 *            of any collection member fails.
 	 */
-	public void removeCollection(ContentCollectionEdit edit) throws TypeException, PermissionException, InconsistentException;
+	public void removeCollection(ContentCollectionEdit edit) throws TypeException, PermissionException, InconsistentException, ServerOverloadException;
 
 	/**
 	 * Commit the changes made, and release the lock. The Object is disabled, and not to be used after this call.
@@ -350,10 +357,12 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the containing collection does not exist.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return a new ContentResource object.
 	 */
 	public ContentResource addResource(String id, String type, byte[] content, ResourceProperties properties, int priority)
-			throws PermissionException, IdUsedException, IdInvalidException, InconsistentException, OverQuotaException;
+			throws PermissionException, IdUsedException, IdInvalidException, InconsistentException, OverQuotaException, ServerOverloadException;
 
 	/**
 	 * Create a new resource with the given resource id, locked for update. Must commitResource() to make official, or cancelResource() when done!
@@ -368,10 +377,12 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the resource id is invalid.
 	 * @exception InconsistentException
 	 *            if the containing collection does not exist.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return a new ContentResource object.
 	 */
 	public ContentResourceEdit addResource(String id) throws PermissionException, IdUsedException, IdInvalidException,
-			InconsistentException;
+			InconsistentException, ServerOverloadException;
 
 	/**
 	 * check permissions for addAttachmentResource().
@@ -402,10 +413,12 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the user does not have permission to add a collection, or add a member to a collection.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return a new ContentResource object.
 	 */
 	public ContentResource addAttachmentResource(String name, String type, byte[] content, ResourceProperties properties)
-			throws IdInvalidException, InconsistentException, IdUsedException, PermissionException, OverQuotaException;
+			throws IdInvalidException, InconsistentException, IdUsedException, PermissionException, OverQuotaException, ServerOverloadException;
 
 	/**
 	 * Create a new resource as an attachment to some other resource in the system, locked for update. Must commitResource() to make official, or cancelResource() when done! The new resource will be placed into a newly created collecion in the attachment
@@ -421,10 +434,12 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the containing collection (or it's containing collection...) does not exist.
 	 * @exception PermissionException
 	 *            if the user does not have permission to add a collection, or add a member to a collection.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return a new ContentResource object.
 	 */
 	public ContentResourceEdit addAttachmentResource(String name) throws IdInvalidException, InconsistentException,
-			IdUsedException, PermissionException;
+			IdUsedException, PermissionException, ServerOverloadException;
 
 	/**
 	 * check permissions for updateResource().
@@ -454,10 +469,12 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the resource is locked by someone else.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return a new ContentResource object.
 	 */
 	public ContentResource updateResource(String id, String type, byte[] content) throws PermissionException, IdUnusedException,
-			TypeException, InUseException, OverQuotaException;
+			TypeException, InUseException, OverQuotaException, ServerOverloadException;
 
 	/**
 	 * Access the resource with this resource id, locked for update. For non-collection resources only. Must commitEdit() to make official, or cancelEdit() when done! The resource content and properties are accessible from the returned Resource object.
@@ -536,8 +553,10 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the resource is a collection.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception ServerOverloadException
+	 * 			 if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
-	public void removeResource(String id) throws PermissionException, IdUnusedException, TypeException, InUseException;
+	public void removeResource(String id) throws PermissionException, IdUnusedException, TypeException, InUseException, ServerOverloadException;
 
 	/**
 	 * Remove a resource that is locked for update.
@@ -546,8 +565,10 @@ public interface ContentHostingService extends EntityProducer
 	 *        The ContentResourceEdit object to remove.
 	 * @exception PermissionException
 	 *            if the user does not have permissions to read a containing collection, or to remove this resource.
+	 * @exception ServerOverloadException
+	 * 			 if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
-	public void removeResource(ContentResourceEdit edit) throws PermissionException;
+	public void removeResource(ContentResourceEdit edit) throws PermissionException, ServerOverloadException;
 
 	/**
 	 * check permissions for rename().
@@ -578,8 +599,11 @@ public interface ContentHostingService extends EntityProducer
 	 *            if copied item is a collection and the new id is already in use
 	 *            or if the copied item is not a collection and a unique id cannot be found
 	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
-	public String rename(String id, String new_id) throws PermissionException, IdUnusedException, TypeException, InUseException, OverQuotaException, InconsistentException, IdUsedException;
+	public String rename(String id, String new_id) throws PermissionException, IdUnusedException, TypeException, 
+			InUseException, OverQuotaException, InconsistentException, IdUsedException, ServerOverloadException;
 
 	/**
 	 * check permissions for copy().
@@ -612,9 +636,11 @@ public interface ContentHostingService extends EntityProducer
 	 *            if copied item is a collection and the new id is already in use
 	 *            or if the copied item is not a collection and a unique id cannot be found
 	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
 	public String copy(String id, String new_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
-			OverQuotaException, IdUsedException;
+			OverQuotaException, IdUsedException, ServerOverloadException;
 
 	/**
 	 * Copy a resource to a folder.
@@ -632,9 +658,11 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the resource is a collection.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
 	public String copyIntoFolder(String id, String folder_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
-			OverQuotaException, IdUsedException;
+			OverQuotaException, IdUsedException, ServerOverloadException;
 
 	/**
 	 * Move a resource to a folder.
@@ -654,9 +682,11 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the resource is locked by someone else.
 	 * @exception InconsistentException
 	 *            if the containing collection does not exist.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
 	public String moveIntoFolder(String id, String folder_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
-			OverQuotaException, IdUsedException, InconsistentException;
+			OverQuotaException, IdUsedException, InconsistentException, ServerOverloadException;
 
 	/**
 	 * Commit the changes made, and release the lock. The Object is disabled, and not to be used after this call.
@@ -665,8 +695,10 @@ public interface ContentHostingService extends EntityProducer
 	 *        The ContentResourceEdit object to commit.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota (the edit is then cancled).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
-	public void commitResource(ContentResourceEdit edit) throws OverQuotaException;
+	public void commitResource(ContentResourceEdit edit) throws OverQuotaException, ServerOverloadException;
 
 	/**
 	 * Commit the changes made, and release the lock. The Object is disabled, and not to be used after this call.
@@ -677,8 +709,10 @@ public interface ContentHostingService extends EntityProducer
 	 *        The notification priority of this commit.
 	 * @exception OverQuotaException
 	 *            if this would result in being over quota (the edit is then cancled).
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
-	public void commitResource(ContentResourceEdit edit, int priority) throws OverQuotaException;
+	public void commitResource(ContentResourceEdit edit, int priority) throws OverQuotaException, ServerOverloadException;
 
 	/**
 	 * Cancel the changes made object, and release the lock. The Object is disabled, and not to be used after this call.
@@ -738,10 +772,12 @@ public interface ContentHostingService extends EntityProducer
 	 *            if any property requested cannot be set (it may be live).
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return the ResourceProperties object for this resource.
 	 */
 	public ResourceProperties addProperty(String id, String name, String value) throws PermissionException, IdUnusedException,
-			TypeException, InUseException;
+			TypeException, InUseException, ServerOverloadException;
 
 	/**
 	 * check permissions for removeProperty().
@@ -767,10 +803,12 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the property named cannot be removed.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return the ResourceProperties object for this resource.
 	 */
 	public ResourceProperties removeProperty(String id, String name) throws PermissionException, IdUnusedException, TypeException,
-			InUseException;
+			InUseException, ServerOverloadException;
 
 	/**
 	 * Access an iterator (Strings) on the names of all properties used in the hosted resources and collections.

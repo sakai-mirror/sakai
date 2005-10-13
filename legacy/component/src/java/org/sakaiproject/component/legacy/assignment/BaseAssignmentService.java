@@ -52,6 +52,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
@@ -2513,6 +2514,10 @@ public abstract class BaseAssignmentService
 										catch (IOException e)
 										{
 											m_logger.debug(this + ": getSubmissionsZip--IOException: Problem in creating the attachment file: submittersName=" + submittersName + " attachment reference=" + r);
+										}
+										catch (ServerOverloadException e)
+										{
+											m_logger.debug(this + ": getSubmissionsZip--ServerOverloadException: submittersName=" + submittersName + " attachment reference=" + r);
 										}
 									}	// for
 	

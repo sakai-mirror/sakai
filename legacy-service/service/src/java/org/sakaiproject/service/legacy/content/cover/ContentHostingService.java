@@ -169,7 +169,7 @@ public class ContentHostingService
 		return service.allowRemoveCollection(param0);
 	}
 
-	public static void removeCollection(org.sakaiproject.service.legacy.content.ContentCollectionEdit param0) throws org.sakaiproject.exception.TypeException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.InconsistentException
+	public static void removeCollection(org.sakaiproject.service.legacy.content.ContentCollectionEdit param0) throws org.sakaiproject.exception.TypeException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -178,7 +178,7 @@ public class ContentHostingService
 		service.removeCollection(param0);
 	}
 
-	public static void removeCollection(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.InUseException
+	public static void removeCollection(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -214,7 +214,7 @@ public class ContentHostingService
 		return service.allowAddResource(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.content.ContentResource addResource(java.lang.String param0, java.lang.String param1, byte[] param2, org.sakaiproject.service.legacy.entity.ResourceProperties param3, int param4) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.OverQuotaException
+	public static org.sakaiproject.service.legacy.content.ContentResource addResource(java.lang.String param0, java.lang.String param1, byte[] param2, org.sakaiproject.service.legacy.entity.ResourceProperties param3, int param4) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -223,7 +223,7 @@ public class ContentHostingService
 		return service.addResource(param0, param1, param2, param3, param4);
 	}
 
-	public static org.sakaiproject.service.legacy.content.ContentResourceEdit addResource(java.lang.String param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException
+	public static org.sakaiproject.service.legacy.content.ContentResourceEdit addResource(java.lang.String param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -241,7 +241,7 @@ public class ContentHostingService
 		return service.allowAddAttachmentResource();
 	}
 
-	public static org.sakaiproject.service.legacy.content.ContentResource addAttachmentResource(java.lang.String param0, java.lang.String param1, byte[] param2, org.sakaiproject.service.legacy.entity.ResourceProperties param3) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.OverQuotaException
+	public static org.sakaiproject.service.legacy.content.ContentResource addAttachmentResource(java.lang.String param0, java.lang.String param1, byte[] param2, org.sakaiproject.service.legacy.entity.ResourceProperties param3) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -250,7 +250,7 @@ public class ContentHostingService
 		return service.addAttachmentResource(param0, param1, param2, param3);
 	}
 
-	public static org.sakaiproject.service.legacy.content.ContentResourceEdit addAttachmentResource(java.lang.String param0) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException
+	public static org.sakaiproject.service.legacy.content.ContentResourceEdit addAttachmentResource(java.lang.String param0) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -268,7 +268,7 @@ public class ContentHostingService
 		return service.allowUpdateResource(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.content.ContentResource updateResource(java.lang.String param0, java.lang.String param1, byte[] param2) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException
+	public static org.sakaiproject.service.legacy.content.ContentResource updateResource(java.lang.String param0, java.lang.String param1, byte[] param2) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -304,7 +304,7 @@ public class ContentHostingService
 		return service.allowRemoveResource(param0);
 	}
 
-	public static void removeResource(org.sakaiproject.service.legacy.content.ContentResourceEdit param0) throws org.sakaiproject.exception.PermissionException
+	public static void removeResource(org.sakaiproject.service.legacy.content.ContentResourceEdit param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -313,7 +313,7 @@ public class ContentHostingService
 		service.removeResource(param0);
 	}
 
-	public static void removeResource(java.lang.String param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException
+	public static void removeResource(java.lang.String param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -340,7 +340,7 @@ public class ContentHostingService
 		return service.allowCopy(param0, param1);
 	}
 
-	public static void commitResource(org.sakaiproject.service.legacy.content.ContentResourceEdit param0) throws org.sakaiproject.exception.OverQuotaException
+	public static void commitResource(org.sakaiproject.service.legacy.content.ContentResourceEdit param0) throws org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -349,7 +349,7 @@ public class ContentHostingService
 		service.commitResource(param0);
 	}
 
-	public static void commitResource(org.sakaiproject.service.legacy.content.ContentResourceEdit param0, int param1) throws org.sakaiproject.exception.OverQuotaException
+	public static void commitResource(org.sakaiproject.service.legacy.content.ContentResourceEdit param0, int param1) throws org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -385,7 +385,7 @@ public class ContentHostingService
 		return service.allowAddProperty(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.entity.ResourceProperties addProperty(java.lang.String param0, java.lang.String param1, java.lang.String param2) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException
+	public static org.sakaiproject.service.legacy.entity.ResourceProperties addProperty(java.lang.String param0, java.lang.String param1, java.lang.String param2) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -403,7 +403,7 @@ public class ContentHostingService
 		return service.allowRemoveProperty(param0);
 	}
 
-	public static org.sakaiproject.service.legacy.entity.ResourceProperties removeProperty(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException
+	public static org.sakaiproject.service.legacy.entity.ResourceProperties removeProperty(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -475,7 +475,7 @@ public class ContentHostingService
 		return service.getProperties(param0);
 	}
 
-	public static String copy(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException
+	public static String copy(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -485,7 +485,7 @@ public class ContentHostingService
 	}
 	
 	public static String copyIntoFolder(java.lang.String param0, java.lang.String param1) 
-		throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException
+		throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -495,7 +495,7 @@ public class ContentHostingService
 	}
 
 	public static void moveIntoFolder(java.lang.String param0, java.lang.String param1) 
-		throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.InconsistentException
+		throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -504,7 +504,7 @@ public class ContentHostingService
 		service.moveIntoFolder(param0, param1);
 	}
 
-	public static void rename(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.IdUsedException
+	public static void rename(java.lang.String param0, java.lang.String param1) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)

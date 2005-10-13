@@ -56,8 +56,11 @@ public interface ContentResource
 	/**
 	* Access an array of the bytes of the resource.
 	* @return An array containing the bytes of the resource's content.
+	* @exception ServerOverloadException
+	* 			if server is configured to save resource body in filesystem and an error occurs while 
+	* 			trying to access the filesystem.
 	*/
-	public byte[] getContent();
+	public byte[] getContent() throws ServerOverloadException;
 
 	/**
 	 * Access the content as a stream.

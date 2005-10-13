@@ -72,6 +72,7 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.control.SchemaBean;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
@@ -1289,9 +1290,19 @@ public class ResourcesAction
 					ContentResource moreResource = service.getResource (id);
 					// read the body
 					String body = "";
-					if (moreResource.getContent () != null)
+					byte[] content = null;
+					try
 					{
-						body = new String (moreResource.getContent ());
+						content = moreResource.getContent();
+						if (content != null)
+						{
+							body = new String(content);
+						}
+					}
+					catch(ServerOverloadException e) 
+					{
+						// this represents server's file system is temporarily unavailable
+						// report problem to user? log problem?
 					}
 					context.put ("content", body);
 				}	// if
@@ -1425,9 +1436,19 @@ public class ResourcesAction
 					ContentResource propertiesResource = service.getResource (id);
 					// read the body
 					String body = "";
-					if (propertiesResource.getContent () != null)
+					byte[] content = null;
+					try
 					{
-						body = new String (propertiesResource.getContent ());
+						content = propertiesResource.getContent();
+						if (content != null)
+						{
+							body = new String (content);
+						}
+					}
+					catch(ServerOverloadException e) 
+					{
+						// this represents server's file system is temporarily unavailable
+						// report problem to user? log problem?
 					}
 					context.put ("content", body);
 				}
@@ -2635,6 +2656,10 @@ public class ResourcesAction
 				{
 					alerts.add(RESOURCE_INVALID_TITLE_STRING);
 				}
+				catch (ServerOverloadException e)
+				{
+					alerts.add(rb.getString("failed"));
+				}
 				catch(OverQuotaException e)
 				{
 					alerts.add(rb.getString("overquota"));
@@ -2983,6 +3008,10 @@ public class ResourcesAction
 				catch(IdInvalidException e)
 				{
 					alerts.add(rb.getString("title") + " " + e.getMessage ());
+				}
+				catch (ServerOverloadException e)
+				{
+					alerts.add(rb.getString("failed"));
 				}
 				catch(InconsistentException e)
 				{
@@ -3333,6 +3362,10 @@ public class ResourcesAction
 				{
 					addAlert(state, rb.getString("deleteres") + " " + item.getName() + " " + rb.getString("wrongtype"));
 				}	
+				catch (ServerOverloadException e)
+				{
+					addAlert(state, rb.getString("failed"));
+				}
 				catch (InUseException e)
 				{
 					addAlert(state, rb.getString("deleteres") + " " + item.getName() + " " + rb.getString("locked"));
@@ -3478,6 +3511,12 @@ public class ResourcesAction
 						{
 							addAlert(state, rb.getString("title") + " " + e.getMessage ());
 						}
+						catch(ServerOverloadException e)
+						{
+							// this represents temporary unavailability of server's filesystem 
+							// for server configured to save resource body in filesystem 
+							addAlert(state, rb.getString("failed"));
+						}
 						catch (IdUsedException e)
 						{	
 							// cut and paste to the same collection; stop adding new resource
@@ -3524,6 +3563,10 @@ public class ResourcesAction
 				catch (IdUnusedException e)
 				{
 					addAlert(state,RESOURCE_NOT_EXIST_STRING);
+				}
+				catch (ServerOverloadException e)
+				{
+					addAlert(state, rb.getString("failed"));
 				}
 				catch (TypeException e)
 				{
@@ -3595,6 +3638,10 @@ public class ResourcesAction
 						catch (OverQuotaException e)
 						{
 							addAlert(state, rb.getString("overquota"));
+						}
+						catch (ServerOverloadException e)
+						{
+							addAlert(state, rb.getString("failed"));
 						}
 						catch (IdUsedException e)
 						{
@@ -3747,6 +3794,10 @@ public class ResourcesAction
 						catch (IdInvalidException e)
 						{
 							addAlert(state, rb.getString("title") + " " + e.getMessage ());
+						}
+						catch (ServerOverloadException e)
+						{
+							addAlert(state, rb.getString("failed"));
 						}
 						catch (IdUsedException e)
 						{
@@ -4090,6 +4141,13 @@ public class ResourcesAction
 		{
 			addAlert(state," " + rb.getString("typeex") + " "  + id);
 		}
+		catch(ServerOverloadException e)
+		{
+			// this represents temporary unavailability of server's filesystem 
+			// for server configured to save resource body in filesystem 
+			addAlert(state, rb.getString("failed"));
+		}
+		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
 			// got resource and sucessfully populated item with values
@@ -4851,6 +4909,10 @@ public class ResourcesAction
 			catch (InUseException e)
 			{
 				addAlert(state, rb.getString("someone") + " " + id + ". ");
+			}
+			catch (ServerOverloadException e)
+			{
+				addAlert(state, rb.getString("failed"));
 			}
 			catch (OverQuotaException e)
 			{
@@ -5978,6 +6040,10 @@ public class ResourcesAction
 			{
 				alerts.add(rb.getString("someone") + " " + item.getId());
 				// addAlert(state, rb.getString("someone") + " " + item.getId() + ". ");
+			}
+			catch (ServerOverloadException e)
+			{
+				alerts.add(rb.getString("failed"));
 			}
 			catch (OverQuotaException e)
 			{
@@ -7905,6 +7971,10 @@ public class ResourcesAction
 			{
 				addAlert(state, rb.getString("toomany"));
 			}
+			catch(ServerOverloadException e)
+			{
+				addAlert(state, rb.getString("failed"));
+			}
 			catch (OverQuotaException e)
 			{
 				addAlert(state, rb.getString("overquota"));
@@ -8016,6 +8086,10 @@ public class ResourcesAction
 			catch(IdUsedException e)
 			{
 				addAlert(state, rb.getString("toomany"));
+			}
+			catch(ServerOverloadException e)
+			{
+				addAlert(state, rb.getString("failed"));
 			}
 			catch (OverQuotaException e)
 			{
@@ -8157,6 +8231,12 @@ public class ResourcesAction
 					catch (IdInvalidException e)
 					{
 						addAlert(state,rb.getString("title") + " " + e.getMessage ());
+					}
+					catch(ServerOverloadException e)
+					{
+						// this represents temporary unavailability of server's filesystem 
+						// for server configured to save resource body in filesystem 
+						addAlert(state, rb.getString("failed"));
 					}
 					catch (OverQuotaException e)
 					{
