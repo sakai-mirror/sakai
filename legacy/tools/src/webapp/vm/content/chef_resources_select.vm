@@ -29,7 +29,8 @@
 		<input type="hidden" name="from" value="list" />
 		#if($attached.isEmpty())
 		#else
-			<table class="listHier lines" cellspacing="0" cellpadding="0">
+			<table class="listHier lines" cellspacing="0" cellpadding="0" summary="$tlang.getString("att.sellistsum")">
+				<caption class="skip" style="display:none">$tlang.getString("att.sellistcap")</caption>
 				<tr>
 					<th id="item">
 						$tlang.getString("att.items")
@@ -54,7 +55,6 @@
 						</tr>
 					#end
 			</table>
-##		<hr class="itemSeparator"  />	
 		#end	
 		######################  Page Title / Breadcrumbs  ##############
 		<h3>
@@ -79,8 +79,9 @@
 			</span>		
 		</h3>
 		######################  Heirarchical list of resource folders/items  ##############
-		<table class="listHier lines" cellspacing="0" border="0">
+		<table class="listHier lines" cellspacing="0" border="0" summary="$tlang.getString("att.listsum")">
 			######################  Column labels, sort controls, expand/collapse all  ##############
+			<caption class="skip" " style="display:none">$tlang.getString("att.listcap")</caption>
 			<tr>
 				<th id="title">
 					#if ($expandallflag && "$expandallflag" == "$TRUE")
