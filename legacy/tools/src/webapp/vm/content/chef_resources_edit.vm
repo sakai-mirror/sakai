@@ -225,7 +225,7 @@
 	</p>
 	<div class ="chefBreadCrumb">
 		$tlang.getString("gen.location")
-		<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" />
+		<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="" />
 		#foreach ($element in $collectionPath)
 			#if ($dropboxMode && $element.id==$homeCollectionId)
 				$siteTitle $tlang.getString("gen.drop")
@@ -274,7 +274,7 @@
 				<p class="shorttext">
 					<label for="intent">$tlang.getString("gen.content")</label>
 					<select name="intent" id="intent" onchange="javascript: document.getElementById('flow').value='intentChanged'; submitform('propertyForm');">
-						<option id="intent-revise" value="revise"#if("$intent" == "$REVISE") selected="selected"#end>Revise document contents below</option><br />
+						<option id="intent-revise" value="revise"#if("$intent" == "$REVISE") selected="selected"#end>Revise document contents below</option>
 						<option id="intent-replace" value="replace"#if("$intent" == "$REPLACE") selected="selected"#end>Replace with document from my computer</option>
 					</select>
 				</p>
@@ -417,7 +417,7 @@
 					$tlang.getString("gen.quota") ($tlang.getString("gen.kb")):
 				</label>	
 				<input type="hidden" name="setQuota" value="true" />
-				<input type="checkbox" name="hasQuota" id="hasQuota" value="true"#if($item.hasQuota()) checked="checked" #end />
+				<input type="checkbox" name="hasQuota" id="hasQuota" value="true"#if($item.hasQuota()) checked="checked" #end style="border:none" />
 				<input type="text" size="10" name="quota" id="quota" value="$!item.quota" />
 			</p>	
 		#end

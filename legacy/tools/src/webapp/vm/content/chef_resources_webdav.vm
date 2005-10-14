@@ -24,11 +24,11 @@
 	#if($menu)#toolbar($menu)#end
 	<h3>$tlang.getString("dav.webdav")</h3>
 	<ul class="attchList">
-		<li><a href="#desc">$tlang.getString("dav.hd1")</a></li><br />
-		<li><a href="#site">$tlang.getString("dav.hd2")</a></li><br />
-		<li><a href="#win">$tlang.getString("dav.hd3")</a></li><br />
-		<li><a href="#osx">$tlang.getString("dav.hd4")</a></li><br />
- <li><a href="#osxx">$tlang.getString("dav.hd5")</a></li><br />
+		<li><a href="#desc">$tlang.getString("dav.hd1")</a></li>
+		<li><a href="#site">$tlang.getString("dav.hd2")</a></li>
+		<li><a href="#win">$tlang.getString("dav.hd3")</a></li>
+		<li><a href="#osx">$tlang.getString("dav.hd4")</a></li>
+ <li><a href="#osxx">$tlang.getString("dav.hd5")</a></li>
 	</ul>
 
 	<a name="desc"></a>
@@ -47,29 +47,27 @@
 	<ol>
 		<li>$tlang.getString("dav.win1")</li>
 		<li>$tlang.getString("dav.win2")</li>
-		<ol type="a">
-			<li>$tlang.getString("dav.win2a")</li>
-			<li>$tlang.getString("dav.win2b")</li>
-			<li>$tlang.getString("dav.win2c")</li>
-		</ol>
+		<li>$tlang.getString("dav.win2a")</li>
+		<li>$tlang.getString("dav.win2b")</li>
+		<li>$tlang.getString("dav.win2c")</li>
 		<li>$tlang.getString("dav.win3")<br />
 		#if("$!inMyWorkspace" == "true")
 			<code>${server_url}${dav_user}$user_id</code>
 		#else
 			<code>${server_url}${dav_group}$site_id</code>
 		#end
+		<img src="${server_url}/library/content/netwkplace.jpg" width="423" height="345" style="clear:both;display:block;margin:1em 0 " alt="" />
 		</li>
-		<img src="${server_url}/library/content/netwkplace.jpg" width="423" height="345" style="clear:both;display:block">
-
 		<li>$tlang.getString("dav.win4")<br />
 			$tlang.getString("dav.win4note")</li>
 		<li>$tlang.getString("dav.win5")</li>
-		<ol type="a">
-			<li>$tlang.getString("dav.win5a")</li>
-			<li>$tlang.getString("dav.win5b")</li>
-		</ol>
-		<li>$tlang.getString("dav.win6")</li>
-		<img src="${server_url}/library/content/name.jpg" width="423" height="345" />
+		<li>$tlang.getString("dav.win5a")</li>
+		<li>$tlang.getString("dav.win5b")</li>
+		<li>
+			$tlang.getString("dav.win6")
+			<img src="${server_url}/library/content/name.jpg" width="423" height="345" alt="" style="clear:both;display:block;margin:1em 0" />
+		</li>
+		
 		<li>$tlang.getString("dav.win7")</li>
 		<li>$tlang.getString("dav.win8")</li>
 		<li>$tlang.getString("dav.win9")</li>
@@ -81,11 +79,13 @@
       <p>$tlang.getString("dav.graf41")</p>
 	<ol>
 		<li>$tlang.getString("dav.osx1")<br />
-			<a href="http://www.webdav.org/goliath/#download" target="_blank"><code>http://www.webdav.org/goliath/#download</code></a>
+			<span class="skip">[$tlang.getString("gen.newwin")]</span><a href="http://www.webdav.org/goliath/#download" target="_blank"><code>http://www.webdav.org/goliath/#download</code></a>
 		</li>
 		<li>$tlang.getString("dav.osx2")</li>
-		<li>$tlang.getString("dav.osx3")</li>
-		<img src="${server_url}/library/content/goliath.jpg" width="241" height="311"> 
+		<li>$tlang.getString("dav.osx3")
+		<img src="${server_url}/library/content/goliath.jpg" width="241" height="311" alt="" style="clear:both;display:block;margin:1em 0" />
+		</li>
+		  
 		<li>$tlang.getString("dav.osx4")</li>
 		<li>$tlang.getString("dav.osx5")<br />
 		#if("$!inMyWorkspace" == "true")
