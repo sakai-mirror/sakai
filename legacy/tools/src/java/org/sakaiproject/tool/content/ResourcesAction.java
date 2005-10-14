@@ -1692,11 +1692,11 @@ public class ResourcesAction
 		String mode = (String) state.getAttribute(STATE_MODE);
 		if(MODE_HELPER.equals(mode))
 		{
-			state.setAttribute (STATE_MODE, MODE_LIST);
+			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
 		}
 		else
 		{
-			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+			state.setAttribute (STATE_MODE, MODE_LIST);
 		}
 
 	}	// doNavigate

@@ -65,12 +65,12 @@
 					#if($item.isLast())
 						$validator.escapeHtml("$item.name")
 						#if($upOneLevel)
-							<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($upOneLevel.id)&navRoot=$validator.escapeUrl($upOneLevel.root)")" title= "$tlang.getString('sh.one')">
+							<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($upOneLevel.id)&navRoot=$validator.escapeUrl($upOneLevel.root)&navRoot=$validator.escapeUrl($upOneLevel.root)")" title= "$tlang.getString('sh.one')">
 								<img src="/library/image/sakai/onelevelup.gif" border="0" alt ="$tlang.getString('sh.one')"/>
 							</a>
 						#end
 					#else
-						<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($item.id)&navRoot=$validator.escapeUrl($item.root)")" title ="$tlang.getString('sh.go')">
+						<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=$validator.escapeUrl($item.id)&navRoot=$validator.escapeUrl($item.root)&navRoot=$validator.escapeUrl($item.root)")" title ="$tlang.getString('sh.go')">
 							$validator.escapeHtml("$item.name")
 						</a> /
 						#set($upOneLevel = $item)
@@ -126,7 +126,7 @@
 											<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 										</a>
 									#end
-									<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('sh.go')">
+									<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${root.id})}&navRoot=$validator.escapeUrl($root.root)")" title="$tlang.getString('sh.go')">
 										$validator.escapeHtml(${root.name})
 									</a>
 								#else
@@ -205,7 +205,7 @@
 												<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 											</a>
 										#end
-										<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('sh.go')">
+										<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}&navRoot=$validator.escapeUrl($member.root)")" title="$tlang.getString('sh.go')">
 											$validator.escapeHtml(${member.name})
 										</a>
 									#else
@@ -403,7 +403,7 @@
 															<img src = "#imageLink("sakai/dir_openminus.gif")" border="0" title="$tlang.getString('sh.close')" alt="$tlang.getString('sh.close')" />
 														</a>
 													#end
-													<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('sh.go')">
+													<a href="#toolLinkParam("ResourcesAction" "doNavigate" "collectionId=${validator.escapeUrl(${member.id})}&navRoot=$validator.escapeUrl($member.root)")" title="$tlang.getString('sh.go')">
 														$validator.escapeHtml(${member.name})
 													</a>
 												#else
