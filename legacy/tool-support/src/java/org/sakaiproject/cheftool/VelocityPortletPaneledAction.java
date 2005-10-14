@@ -855,6 +855,12 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 		ToolSession session = SessionManager.getCurrentToolSession();
 		if (session != null)
 		{
+			if (session.getAttribute(ATTR_TOP_REFRESH) != null)
+			{
+				setVmReference("topRefresh", Boolean.TRUE, request);
+				session.removeAttribute(ATTR_TOP_REFRESH);
+			}
+			
 			Set ids = (Set) session.getAttribute(ATTR_FRAME_REFRESH);
 			if (ids != null)
 			{
@@ -930,10 +936,27 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 
 	/** Tool session attribute name used to schedule a peer frame refresh. */
 	public static final String ATTR_FRAME_REFRESH = "sakai.vppa.frame.refresh";
+	
+	/** Tool session attribute name used to schedule a whole page refresh. */
+	public static final String ATTR_TOP_REFRESH = "sakai.vppa.top.refresh";
 
 	/** Tool session attribute name used to schedule a focus change. */
 	public static final String ATTR_FRAME_FOCUS = "sakai.vppa.frame.focus";
 
+	/**
+	 * Schedule a refresh for whole page
+	 */
+	protected void scheduleTopRefresh()
+	{
+		ToolSession session = SessionManager.getCurrentToolSession();
+
+		// add to (or create) our set of ids to refresh
+		if (session.getAttribute(ATTR_TOP_REFRESH) == null)
+		{
+			session.setAttribute(ATTR_TOP_REFRESH, Boolean.TRUE);
+		}
+	}
+	
 	/**
 	 * Schedule a refresh for a peer frame.
 	 * 

@@ -158,6 +158,11 @@
 	</script>
 	#end
 #end
+#if ($topRefresh)
+	<script type="text/javascript" language="JavaScript">
+		parent.location.replace(parent.location);
+	</script>
+#end
 #if ($focusChange)
 	<script type="text/javascript" language="JavaScript">
 	try

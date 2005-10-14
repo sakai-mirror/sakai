@@ -5902,8 +5902,9 @@ public class SiteAction extends PagedResourceActionII
 
 			state.setAttribute(STATE_TEMPLATE_INDEX, params.getString ("continue"));
 		}
-		// TODO: hard coding this frame id is fragile, portal dependent, and needs to be fixed -ggolden
-		schedulePeerFrameRefresh("sitenav");
+		
+		// refresh the whole page
+		scheduleTopRefresh();
 				
 	}	// doSave_revised_features
 
