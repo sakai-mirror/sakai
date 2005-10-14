@@ -20,7 +20,7 @@
       </modificationset>
       
       <schedule interval="60" >
-         <maven mavenscript="/sakai/maven/bin/maven" 
+         <maven mavenscript="/dev/maven/bin/maven.bat" 
              projectfile="project.xml"
              goal="cruisecontrolloop"
              />
@@ -41,8 +41,18 @@
               returnaddress="janderse@umich.edu"
               returnname="Sakai Continuous Build System"
               subjectprefix="[CruiseControl] ">
+          </email>    
 
-          <always address="janderse@umich.edu" />
+          <email buildresultsurl="http://localhost:8080/cruisecontrol/buildresults/${project.name}"
+              skipusers="true"
+              reportsuccess="always"
+              spamwhilebroken="true"
+              mailhost="smtp.itd.umich.edu"
+              returnaddress="janderse@umich.edu"
+              returnname="Sakai Continuous Build System"
+              subjectprefix="[CruiseControl-sysadmin] ">
+
+              <always address="janderse@umich.edu" />
 
           </email>    
 
