@@ -9151,7 +9151,7 @@ public class ResourcesAction
 			m_metadataGroupsShowing = new HashSet();
 			m_mimetype = type;
 			m_content = null;
-			m_notification = NotificationService.NOTI_OPTIONAL;
+			m_notification = NotificationService.NOTI_NONE;
 			m_hasQuota = false;
 			m_canSetQuota = false;
 			m_formtype = "";
