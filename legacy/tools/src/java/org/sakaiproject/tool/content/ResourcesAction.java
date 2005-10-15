@@ -2210,6 +2210,7 @@ public class ResourcesAction
 								{
 									foundUnusedId = true;
 								}
+								// TODO: should these be here?
 								catch (PermissionException ee)
 								{
 									foundUnusedId = true;
@@ -2223,18 +2224,27 @@ public class ResourcesAction
 						catch(PermissionException e)
 						{
 							alerts.add(rb.getString("notpermis12"));
+							tryingToAddItem = false;
 						}
 						catch(IdInvalidException e)
 						{
 							alerts.add(rb.getString("title") + " " + e.getMessage ());
+							tryingToAddItem = false;
 						}
 						catch(InconsistentException e)
 						{
 							alerts.add(RESOURCE_INVALID_TITLE_STRING);
+							tryingToAddItem = false;
 						}
 						catch(OverQuotaException e)
 						{
 							alerts.add(rb.getString("overquota"));
+							tryingToAddItem = false;
+						}
+						catch(ServerOverloadException e)
+						{
+							alerts.add(rb.getString("failed"));
+							tryingToAddItem = false;
 						}
 					}
 				}
@@ -2634,12 +2644,15 @@ public class ResourcesAction
 						{
 							foundUnusedId = true;
 						}
+						// TODO: should these be here? Or should these be caught outside the for-loop?
 						catch (PermissionException ee)
 						{
+							// TODO: is this really an unused ID?
 							foundUnusedId = true;
 						}
 						catch (TypeException ee)
 						{
+							// TODO: is this really an unused ID?
 							foundUnusedId = true;
 						}
 					}
@@ -2647,22 +2660,27 @@ public class ResourcesAction
 				catch(PermissionException e)
 				{
 					alerts.add(rb.getString("notpermis12"));
+					tryingToAddItem = false;
 				}
 				catch(IdInvalidException e)
 				{
 					alerts.add(rb.getString("title") + " " + e.getMessage ());
+					tryingToAddItem = false;
 				}
 				catch(InconsistentException e)
 				{
 					alerts.add(RESOURCE_INVALID_TITLE_STRING);
+					tryingToAddItem = false;
 				}
 				catch (ServerOverloadException e)
 				{
 					alerts.add(rb.getString("failed"));
+					tryingToAddItem = false;
 				}
 				catch(OverQuotaException e)
 				{
 					alerts.add(rb.getString("overquota"));
+					tryingToAddItem = false;
 				}
 			}
 			HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
@@ -2991,12 +3009,15 @@ public class ResourcesAction
 						{
 							foundUnusedId = true;
 						}
+						// TODO: should these be here? Or should these be caught outside the for-loop?
 						catch (PermissionException ee)
 						{
+							// TODO: does this really mean it's an unused ID?
 							foundUnusedId = true;
 						}
 						catch (TypeException ee)
 						{
+							// TODO: does this really mean it's an unused ID?
 							foundUnusedId = true;
 						}
 					}
@@ -3004,22 +3025,27 @@ public class ResourcesAction
 				catch(PermissionException e)
 				{
 					alerts.add(rb.getString("notpermis13"));
+					tryingToAddItem = false;
 				}
 				catch(IdInvalidException e)
 				{
 					alerts.add(rb.getString("title") + " " + e.getMessage ());
+					tryingToAddItem = false;
 				}
 				catch (ServerOverloadException e)
 				{
 					alerts.add(rb.getString("failed"));
+					tryingToAddItem = false;
 				}
 				catch(InconsistentException e)
 				{
 					alerts.add(RESOURCE_INVALID_TITLE_STRING);
+					tryingToAddItem = false;
 				}
 				catch(OverQuotaException e)
 				{
 					alerts.add(rb.getString("overquota"));
+					tryingToAddItem = false;
 				}
 			}
 		}
@@ -7875,80 +7901,6 @@ public class ResourcesAction
 					{
 						attachItem(id, state);
 					}
-					/*
-					// paste the resource
-					ContentResource resource = ContentHostingService.getResource (itemId);
-					ResourceProperties p = ContentHostingService.getProperties(itemId);
-					String displayName = p.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
-	
-					ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-	
-					// add the properties of the pasted item
-					Iterator propertyNames = properties.getPropertyNames ();
-					while ( propertyNames.hasNext ())
-					{
-						String propertyName = (String) propertyNames.next ();
-						if (!properties.isLiveProperty (propertyName))
-						{
-							if (propertyName.equals (ResourceProperties.PROP_DISPLAY_NAME)&&(displayName.length ()>0))
-							{
-								resourceProperties.addProperty (propertyName, displayName);
-							}
-							else
-							{
-								resourceProperties.addProperty (propertyName, properties.getProperty (propertyName));
-							}
-						}
-					}
-	
-					String newDisplayName = resourceProperties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
-					String base = displayName;
-					String ext = "";
-					int index = displayName.lastIndexOf(".");
-					if(index >= 0)
-					{
-						base = displayName.substring(0, index);
-						ext = displayName.substring(index);
-					}
-					
-					boolean copy_completed = false;
-					int num_tries = 0;
-					while(! copy_completed && num_tries < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
-					{
-						String id = collectionId + Validator.escapeResourceName(displayName);
-						try
-						{
-							// paste the copied resource to the new collection
-							ContentResource newResource = ContentHostingService.addResource (id, resource.getContentType (), resource.getContent (), resourceProperties, NotificationService.NOTI_NONE);
-							
-							String mode = (String) state.getAttribute(STATE_MODE);
-							if(MODE_HELPER.equals(mode))
-							{
-								attachItem(id, state);
-							}
-							copy_completed = true;
-						}
-						catch (IdUsedException e)
-						{
-							num_tries++;
-							displayName = base + "-" + num_tries + ext;
-							resourceProperties.addProperty(ResourceProperties.PROP_DISPLAY_NAME, newDisplayName + " (" + num_tries + ")");
-						}
-						catch (InconsistentException e)
-						{
-							addAlert(state,RESOURCE_INVALID_TITLE_STRING);
-						}
-						catch (IdInvalidException e)
-						{
-							addAlert(state,rb.getString("title") + " " + e.getMessage ());
-						}
-						catch (OverQuotaException e)
-						{
-							addAlert(state, rb.getString("overquota"));
-						}	// try-catch
-						
-					}	// while
-					*/
 				}	// if-else
 			}
 			catch (PermissionException e)
