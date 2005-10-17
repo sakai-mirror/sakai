@@ -370,7 +370,7 @@
 							#end
 						</select>
 						#if ($!fairuseurl)
-							(<a href="$fairuseurl" target="_blank">$tlang.getString("edit.fairuse")</a>)
+							(<a href="$fairuseurl" title="[$tlang.getString('gen.newwin')]"  target="_blank">$tlang.getString("edit.fairuse")</a>)
 						#end
 					</p>
 					<p class="shorttext">
@@ -389,7 +389,7 @@
 							<td style="vertical-align:top">
 								<input type="checkbox" name="copyrightAlert" id ="copyrightAlert" value="true" #if($item.hasCopyrightAlert())checked="checked"#end style="border:none" />
 								$tlang.getString("edit.display1")
-								<a href="#" onclick="javascript:openSampleCopyrightWindow();">$tlang.getString("edit.display2")</a>
+								<a href="#" onclick="javascript:openSampleCopyrightWindow();"  onkeypress="javascript:openSampleCopyrightWindow();"  title="[$tlang.getString('gen.newwin')]">$tlang.getString("edit.display2")</a>
 								$tlang.getString("edit.display3")
 							</td>
 						</tr>
@@ -464,7 +464,7 @@
 						<label>$tlang.getString("gen.stored")</label>
 					</td>
 					<td>
-						<a href="$item.url" target="_blank">$item.url</a>
+						<a href="$item.url" target="_blank"   title="[$tlang.getString('gen.newwin')]">$item.url</a>
 					</td>
 				</tr>
 				<tr> 
@@ -509,7 +509,7 @@
 				#if ($group.isShowing())
 					<p class="discTria">
 						<a href="#" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=hideMetadata&metadataGroup=$validator.escapeUrl($group.name)")';submitform('propertyForm');" title="$tlang.getString("edit.hide") $group.name">
-							<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") $group.name" border="0" width="15" height="15" align="top" />
+							<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") $group.name" border="0" width="13" height="13" align="top" />
 						</a>
 						$validator.escapeHtml($group.name)
 					</p>

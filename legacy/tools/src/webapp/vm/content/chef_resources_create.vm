@@ -529,7 +529,7 @@
 								<td style="vertical-align:top">
 									<input type="checkbox" name="copyrightAlert$i" id ="copyrightAlert$i" value="true" #if($item.hasCopyrightAlert())checked="checked"#end style="border:none" />
 									$tlang.getString("edit.display1")
-									<a href="#" onclick="javascript:openSampleCopyrightWindow();" onkeypress="javascript:openSampleCopyrightWindow();"><span class="skip">[$tlang.getString('gen.newwin')]</span>$tlang.getString("edit.display2")</a>
+									<a href="#" onclick="javascript:openSampleCopyrightWindow();" onkeypress="javascript:openSampleCopyrightWindow();"   title="[$tlang.getString('gen.newwin')]"><span class="skip">[$tlang.getString('gen.newwin')]</span>$tlang.getString("edit.display2")</a>
 									$tlang.getString("edit.display3")
 								</td>
 							</tr>
@@ -595,7 +595,7 @@
 								<a href="#" onclick="javascript:document.getElementById('flow').value='hideOptional';document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i';submitform('createForm');" onkeypress="javascript:document.getElementById('flow').value='hideOptional';document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i';submitform('createForm');"  title="$tlang.getString("edit.hide") $group.name">
 							#end
 							##<a href="#" onclick="javascript: document.getElementById('flow').value='hideOptional'; document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; document.getElementById('twiggleNumber').value='$i'; submitform('createForm'); return false;" title="$tlang.getString("edit.hide") $group.name">
-								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") $group.name" border="0" width="15" height="15" align="top" />
+								<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("edit.hide") $group.name" border="0" width="13" height="13" align="top" />
 							</a>
 							$validator.escapeHtml($group.name)
 						</p>
