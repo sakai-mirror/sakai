@@ -29,9 +29,7 @@
       <log logdir="logs/sakai" />
 
       <publishers>
-<!--
-      	<artifactspublisher dest="artifacts" file="projects/jakarta-commons/math/target/commons-math-1.1-dev.jar"/>
--->
+      	<artifactspublisher dest="artifacts/sakai" file="target/checkout/sakai-demo.zip" />
 
           <email buildresultsurl="http://localhost:8080/cruisecontrol/buildresults/${project.name}"
               skipusers="true"
