@@ -1334,9 +1334,9 @@ public class ThreadedDiscussionIIAction
                         {
                         		replyTo = topic.getDiscussionHeader().getReplyTo();
                         		topic = channel.getDiscussionMessage(replyTo);
-                        		messagePath.insert(0, Validator.escapeHtml(topic.getDiscussionHeader().getSubject() + ">"));
+                        		messagePath.insert(0, Validator.escapeHtml(topic.getDiscussionHeader().getSubject() + " > "));
                         }
-                        messagePath.insert(0, Validator.escapeHtml(topic.getDiscussionHeader().getCategory() + ">"));
+                        messagePath.insert(0, Validator.escapeHtml(topic.getDiscussionHeader().getCategory() + " > "));
                         context.put("messagePath", messagePath.toString());
                         context.put("topic", topic);
                         context.put("style", topic.getProperties().getProperty(ResourceProperties.PROP_REPLY_STYLE));
@@ -1711,9 +1711,9 @@ public class ThreadedDiscussionIIAction
 				{
 					replyTo = topic.getDiscussionHeader().getReplyTo();
 					topic = channel.getDiscussionMessage(replyTo);
-					replyPath.insert(0, Validator.escapeHtml(topic.getDiscussionHeader().getSubject() + ">"));
+					replyPath.insert(0, Validator.escapeHtml(topic.getDiscussionHeader().getSubject() + " > "));
 				}
-				replyPath.insert(0, Validator.escapeHtml(topic.getDiscussionHeader().getCategory() + ">"));
+				replyPath.insert(0, Validator.escapeHtml(topic.getDiscussionHeader().getCategory() + " > "));
 				context.put("replyPath", replyPath.toString());
 				context.put("topic", topic);
 			}
