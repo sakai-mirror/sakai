@@ -788,7 +788,7 @@ HTMLArea.prototype.generate = function () {
 			if (editor.config.baseURL)
 				html += '<base href="' + editor.config.baseURL + '" />';
 			html += "<style>" + editor.config.pageStyle +
-				" html,body { border: 0px; }</style>\n";
+				" html,body {font-family:Arial;font-size:10pt; border: 0px; }</style>\n";
 			html += "</head>\n";
 			html += "<body>\n";
 			html += editor._textArea.value;
