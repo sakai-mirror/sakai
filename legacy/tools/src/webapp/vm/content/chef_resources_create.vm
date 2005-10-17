@@ -484,7 +484,7 @@
 				#else
 					<p class="shorttext">
 				#end
-					<span class="reqStar">*</span>
+					##<span class="reqStar">*</span>
 					<label for="name$i">
 						$tlang.getString("gen.title") 
 					</label>
