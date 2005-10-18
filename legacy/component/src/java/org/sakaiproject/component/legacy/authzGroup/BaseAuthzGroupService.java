@@ -485,15 +485,36 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	 */
 	public void save(AuthzGroup azGroup) throws IdUnusedException, PermissionException
 	{
+		saveUsingSecurity(azGroup, SECURE_UPDATE_AUTHZ_GROUP);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void saveUsingSecurity(AuthzGroup azGroup, String securityFunction) throws IdUnusedException, PermissionException
+	{
 		if (azGroup.getId() == null) throw new IdUnusedException("<null>");
 
 		// check security (throws if not permitted)
-		unlock(SECURE_UPDATE_AUTHZ_GROUP, authzGroupReference(azGroup.getId()));
+		unlock(securityFunction, authzGroupReference(azGroup.getId()));
 
-		// check for existance
+		// make sure it's in storage
 		if (!m_storage.check(azGroup.getId()))
 		{
-			throw new IdUnusedException(azGroup.getId());
+			// if this was new, create it in storage
+			if (((BaseAuthzGroup) azGroup).m_isNew)
+			{
+				// reserve an AuthzGroup with this id from the info store - if it's in use, this will return null
+				AuthzGroup newAzg = m_storage.put(azGroup.getId());
+				if (newAzg == null)
+				{
+					m_logger.warn(this + ".saveUsingSecurity, storage.put for a new returns null");
+				}
+			}
+			else
+			{
+				throw new IdUnusedException(azGroup.getId());
+			}
 		}
 
 		// complete the save
@@ -575,6 +596,32 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 
 		// save the changes
 		m_storage.save(azGroup);
+
+		return azGroup;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public AuthzGroup newAuthzGroup(String id, AuthzGroup other, String userId) throws IdUsedException
+	{
+		// make the new AuthzGroup
+		BaseAuthzGroup azGroup = new BaseAuthzGroup(id);
+		azGroup.m_isNew = true;
+
+		// move in the values from the old AuthzGroup (this includes the id, which we restore)
+		if (other != null)
+		{
+			azGroup.set(other);
+			azGroup.m_id = id;
+		}
+
+		// give the user the "maintain" role
+		String roleName = azGroup.getMaintainRole();
+		if ((roleName != null) && (userId != null))
+		{
+			azGroup.addMember(userId, roleName, true, false);
+		}
 
 		return azGroup;
 	}
@@ -768,7 +815,7 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	{
 		// Special code for the site service
 		Reference ref = m_entityManager.newReference(azGroup.getId());
-		if (SiteService.SERVICE_NAME.equals(ref.getType()))
+		if (SiteService.SERVICE_NAME.equals(ref.getType()) && SiteService.SITE_SUBTYPE.equals(ref.getSubType()))
 		{
 			// collect the users
 			Set updUsers = azGroup.getUsersIsAllowed(SiteService.SECURE_UPDATE_SITE);

@@ -329,6 +329,8 @@ public interface SiteService extends EntityProducer
 	 * 
 	 * @param id
 	 *        The site id.
+	 * @param type
+	 *        The site type.
 	 * @return The new site object.
 	 * @exception IdInvalidException
 	 *            if the site id is invalid.
@@ -337,7 +339,7 @@ public interface SiteService extends EntityProducer
 	 * @exception PermissionException
 	 *            if the current user does not have permission to add a site.
 	 */
-	Site addSite(String id) throws IdInvalidException, IdUsedException, PermissionException;
+	Site addSite(String id, String type) throws IdInvalidException, IdUsedException, PermissionException;
 
 	/**
 	 * Add a new site. Will be structured just like <other>.

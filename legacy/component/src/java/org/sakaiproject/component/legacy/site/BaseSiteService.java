@@ -522,7 +522,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 					// copy in the template
 					site.set(template, false);
 
-					save(site);
+					doSave(site, true);
 
 					return site;
 				}
@@ -574,19 +574,90 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	/**
 	 * @inheritDoc
 	 */
-	public void save(Site site)
+	public void save(Site site) throws IdUnusedException, PermissionException
 	{
-		// update the properties
-		addLiveUpdateProperties(((BaseSite) site));
+		// TODO: check permission and valid id!
+		if (site.getId() == null) throw new IdUnusedException("<null>");
 
-		// sync up with all other services
-		enableRelated((BaseSite) site);
+		// check security (throws if not permitted)
+		unlock(SECURE_UPDATE_SITE, site.getReference());
+
+		// check for existance
+		if (!m_storage.check(site.getId()))
+		{
+			throw new IdUnusedException(site.getId());
+		}
+
+		doSave((BaseSite) site, false);
+	}
+
+	/**
+	 * Comlete the save process.
+	 * @param site The site to save.
+	 */
+	protected void doSave(BaseSite site, boolean isNew)
+	{
+		if (isNew)
+		{
+			addLiveProperties(site);
+		}
+
+		// update the properties
+		addLiveUpdateProperties(site);
 
 		// complete the edit
 		m_storage.save(site);
 
+		// save any modified sections
+		saveAzgs(site);
+
+		// sync up with all other services
+		enableRelated(site);
+
 		// track it
-		EventTrackingService.post(EventTrackingService.newEvent(((BaseSite) site).getEvent(), site.getReference(), true));
+		String event = site.getEvent();
+		if (event == null) event = SECURE_UPDATE_SITE;
+		EventTrackingService.post(EventTrackingService.newEvent(event, site.getReference(), true));
+
+		// clear the event for next time
+		site.setEvent(null);
+	}
+
+	/**
+	 * Save any azg that a section or the site has modified.
+	 * @param site The site to save.
+	 */
+	protected void saveAzgs(Site site)
+	{
+		if (((BaseSite) site).m_azgChanged)
+		{
+			try
+			{
+				AuthzGroupService.saveUsingSecurity(((BaseSite) site).m_azg, SECURE_UPDATE_SITE);
+			}
+			catch (Throwable t)
+			{
+				m_logger.warn(this + ".saveAzgs - site: " + t);
+			}
+			((BaseSite) site).m_azgChanged = false;
+		}
+
+		for (Iterator i = site.getSections().iterator(); i.hasNext();)
+		{
+			BaseSection section = (BaseSection) i.next();
+			if (section.m_azgChanged)
+			{
+				try
+				{
+					AuthzGroupService.saveUsingSecurity(section.m_azg, SECURE_UPDATE_SITE);
+				}
+				catch (Throwable t)
+				{
+					m_logger.warn(this + ".saveAzgs - section: " + section.getTitle() + " : " + t);
+				}
+				section.m_azgChanged = false;
+			}
+		}
 	}
 
 	/**
@@ -627,7 +698,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	/**
 	 * @inheritDoc
 	 */
-	public Site addSite(String id) throws IdInvalidException, IdUsedException, PermissionException
+	public Site addSite(String id, String type) throws IdInvalidException, IdUsedException, PermissionException
 	{
 		// check for a valid site name
 		Validator.checkResourceId(id);
@@ -644,7 +715,15 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			throw new IdUsedException(id);
 		}
 
+		// set the type before we enable related, since the azg template for the site depends on type
+		if (type != null)
+		{
+			site.setType(type);
+		}
+		
 		((BaseSite) site).setEvent(SECURE_ADD_SITE);
+
+		doSave((BaseSite) site, true);
 
 		return site;
 	}
@@ -676,8 +755,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			throw new IdUsedException(id);
 		}
 
-		((BaseSite) site).setEvent(SECURE_ADD_SITE);
-
 		// make this site a copy of other, but with new ids (not an exact copy)
 		((BaseSite) site).set((BaseSite) other, false);
 
@@ -701,11 +778,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// clear the site's notification id in properties
 		site.getPropertiesEdit().removeProperty(ResourceProperties.PROP_SITE_EMAIL_NOTIFICATION_ID);
 
-		// give it new properties
-		addLiveProperties(((BaseSite) site));
+		((BaseSite) site).setEvent(SECURE_ADD_SITE);
 
-		// save the new info
-		m_storage.save(site);
+		doSave((BaseSite) site, true);
+
+		// TODO: make sure the sections are copied, and their azg's are copied; enableRelated? -ggolden
 
 		return site;
 	}
@@ -1438,22 +1515,37 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		String siteAzgTemplate = siteAzgTemplate(site);
 
 		// try the site created-by user for the maintain role in the site
-		String userId = null;
-		if (site.getCreatedBy() != null)
+		String userId = site.getCreatedBy().getId();
+		if (userId != null)
 		{
-			userId = site.getCreatedBy().getId();
+			// make sure it's valid
+			try
+			{
+				UserDirectoryService.getUser(userId);
+			}
+			catch (IdUnusedException e1)
+			{
+				userId = null;
+			}
+		}
+		
+		// use the current user if needed
+		if (userId == null)
+		{
+			User user = UserDirectoryService.getCurrentUser();
+			userId = user.getId();
 		}
 
 		enableAuthorizationGroup(site.getReference(), siteAzgTemplate, userId, "!site.template");
 
-		// figure the secton authorization group template
+		// figure the section authorization group template
 		String sectionAzgTemplate = sectionAzgTemplate(site);
 
-		// enable a realm for each section: use the same template as for the site
+		// enable a realm for each section: use the same template as for the site, but don't assign a user maintain in the section's azg
 		for (Iterator iSections = site.getSections().iterator(); iSections.hasNext();)
 		{
 			Section section = (Section) iSections.next();
-			enableAuthorizationGroup(section.getReference(), sectionAzgTemplate, userId, "!section.template");
+			enableAuthorizationGroup(section.getReference(), sectionAzgTemplate, null, "!section.template");
 		}
 
 		// disable the authorization groups for any sections deleted in this edit
@@ -1635,27 +1727,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				}
 			}
 
-			// who is "the user" to get maintain in the realm
-			User user = null;
-			if (userId != null)
-			{
-				try
-				{
-					user = UserDirectoryService.getUser(userId);
-				}
-				catch (IdUnusedException e1)
-				{
-					m_logger.warn(this + ".enableRealm: cannot find user for new user site: " + userId);
-
-					// try some user, at least!
-					user = UserDirectoryService.getCurrentUser();
-				}
-			}
-			else
-			{
-				user = UserDirectoryService.getCurrentUser();
-			}
-
 			// add the realm
 			try
 			{
@@ -1667,26 +1738,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				}
 				else
 				{
-					realm = AuthzGroupService.addAuthzGroup(ref, template, user.getId());
+					realm = AuthzGroupService.addAuthzGroup(ref, template, userId);
 				}
-
-				// if there's not a maintain role, then the user will not have any realm access to the new realm, so will not be able to proceed...
-//				// make sure there's a maintain role, creating it if needed
-//				Role role = realm.getRole(realm.getMaintainRole());
-//				if (role == null)
-//				{
-//					role = realm.addRole(realm.getMaintainRole());
-//					role.allowFunction(SECURE_UPDATE_SITE);
-//					role.allowFunction(SITE_VISIT);
-//					role.allowFunction(SITE_VISIT_UNPUBLISHED);
-//				}
-//
-//				if (!realm.hasRole(user.getId(), role.getId()))
-//				{
-//					realm.addMember(user.getId(), role.getId(), true, false);
-//				}
-//
-//				AuthzGroupService.save(realm);
 			}
 			catch (Exception e)
 			{
@@ -2641,6 +2694,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			{
 				// reserve a site with this id from the info store - if it's in use, this will return null
 				// check security (throws if not permitted)
+				// TODO: why security on add_user_site? -ggolden
 				unlock(SECURE_ADD_USER_SITE, siteReference(siteId));
 
 				// reserve a site with this id from the info store - if it's in use, this will return null
@@ -2660,7 +2714,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				// assign source site's attributes to the target site
 				((BaseSite) site).set(new BaseSite(el), false);
 
-				save(site);
+				try
+				{
+					save(site);					
+				}
+				catch (Throwable t)
+				{
+					m_logger.warn(this + ".merge: " + t);
+				}
 			}
 			catch (PermissionException ignore)
 			{

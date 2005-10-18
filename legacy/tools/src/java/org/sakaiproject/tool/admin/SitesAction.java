@@ -975,7 +975,7 @@ public class SitesAction
 		{
 			try
 			{
-				site = SiteService.addSite(id);
+				site = SiteService.addSite(id, type);
 				
 				// put the site in the state
 				state.setAttribute("site", site);

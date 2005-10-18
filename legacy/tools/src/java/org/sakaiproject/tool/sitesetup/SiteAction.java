@@ -10838,9 +10838,9 @@ public class SiteAction extends PagedResourceActionII
 		{		
 			try
 			{
-				Site site = SiteService.addSite(id);
-				
 				siteInfo = (SiteInfo) state.getAttribute(STATE_SITE_INFO);
+
+				Site site = SiteService.addSite(id, siteInfo.site_type);				
 				
 				String title = StringUtil.trimToNull(siteInfo.title);
 				String description = siteInfo.description;

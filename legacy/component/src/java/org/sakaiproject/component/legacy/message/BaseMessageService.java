@@ -371,6 +371,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		buf.replace(pos, pos + REF_TYPE_CHANNEL.length(), REF_TYPE_MESSAGE);
 
 		// add the id
+		buf.append(Entity.SEPARATOR);
 		buf.append(id);
 
 		return buf.toString();

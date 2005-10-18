@@ -106,6 +106,15 @@ public class AuthzGroupService
 		service.save(param0);
 	}
 
+	public static void saveUsingSecurity(org.sakaiproject.service.legacy.authzGroup.AuthzGroup param0, java.lang.String param1) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	{
+		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
+		if (service == null)
+			return;
+
+		service.saveUsingSecurity(param0, param1);
+	}
+
 	public static boolean allowAdd(java.lang.String param0)
 	{
 		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
@@ -131,6 +140,15 @@ public class AuthzGroupService
 			return null;
 
 		return service.addAuthzGroup(param0, param1, param2);
+	}
+
+	public static org.sakaiproject.service.legacy.authzGroup.AuthzGroup newAuthzGroup(java.lang.String param0, org.sakaiproject.service.legacy.authzGroup.AuthzGroup param1, java.lang.String param2) throws org.sakaiproject.exception.IdUsedException
+	{
+		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.newAuthzGroup(param0, param1, param2);
 	}
 
 	public static boolean allowRemove(java.lang.String param0)

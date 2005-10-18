@@ -26,11 +26,18 @@ package org.sakaiproject.component.legacy.site;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Member;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
@@ -139,6 +146,12 @@ public class BaseSite implements Site
 
 	/** Set true while the sections have not yet been read in for a site. */
 	protected boolean m_sectionsLazy = false;
+
+	/** The azg from the AuthzGroupService that is my AuthzGroup impl. */
+	protected AuthzGroup m_azg = null;
+
+	/** Set to true if we have changed our azg, so it need to be written back on save. */
+	protected boolean m_azgChanged = false;
 
 	/**
 	 * Construct.
@@ -1207,5 +1220,196 @@ public class BaseSite implements Site
 
 		// track so we can clean up related on commit
 		m_deletedSections.add(section);
+	}
+
+	/**
+	 * Access (find if needed) the azg from the AuthzGroupService that implements my grouping.
+	 * @return My azg.
+	 */
+	protected AuthzGroup getAzg()
+	{
+		if (m_azg == null)
+		{
+			try
+			{
+				m_azg = AuthzGroupService.getAuthzGroup(getReference());
+			}
+			catch (IdUnusedException e)
+			{
+				try
+				{
+					// create the site's azg, but don't store it yet (that happens if save is called)
+	
+					// try the site created-by user for the maintain role in the site
+					String userId = getCreatedBy().getId();
+					if (userId != null)
+					{
+						// make sure it's valid
+						try
+						{
+							UserDirectoryService.getUser(userId);
+						}
+						catch (IdUnusedException e1)
+						{
+							userId = null;
+						}
+					}
+					
+					// use the current user if needed
+					if (userId == null)
+					{
+						User user = UserDirectoryService.getCurrentUser();
+						userId = user.getId();
+					}
+
+					// find the template for the new azg
+					String sectionAzgTemplate = ((BaseSiteService) (SiteService.getInstance())).siteAzgTemplate(this);
+					AuthzGroup template = null;
+					try
+					{
+						template = AuthzGroupService.getAuthzGroup(sectionAzgTemplate);
+					}
+					catch (Exception e1)
+					{
+						try
+						{
+							// if the template is not defined, try the fall back template
+							template = AuthzGroupService.getAuthzGroup("!site.template");
+						}
+						catch (Exception e2)
+						{
+						}
+					}
+
+					m_azg = AuthzGroupService.newAuthzGroup(getReference(), template, userId);
+					m_azgChanged = true;
+				}
+				catch (Throwable t)
+				{
+					M_log.warn("getAzg: " + t);
+				}
+			}
+		}
+		
+		return m_azg;
+	}
+
+	public void addMember(String userId, String roleId, boolean active, boolean provided)
+	{
+		m_azgChanged = true;
+		getAzg().addMember(userId, roleId, active, provided);
+	}
+
+	public Role addRole(String id) throws IdUsedException
+	{
+		m_azgChanged = true;
+		return getAzg().addRole(id);
+	}
+
+	public Role addRole(String id, Role other) throws IdUsedException
+	{
+		m_azgChanged = true;
+		return getAzg().addRole(id, other);
+	}
+
+	public String getMaintainRole()
+	{
+		return getAzg().getMaintainRole();
+	}
+
+	public Member getMember(String userId)
+	{
+		return getAzg().getMember(userId);
+	}
+
+	public Set getMembers()
+	{
+		return getAzg().getMembers();
+	}
+
+	public String getProviderGroupId()
+	{
+		return getAzg().getProviderGroupId();
+	}
+
+	public Role getRole(String id)
+	{
+		return getAzg().getRole(id);
+	}
+
+	public Set getRoles()
+	{
+		return getAzg().getRoles();
+	}
+
+	public Role getUserRole(String userId)
+	{
+		return getAzg().getUserRole(userId);
+	}
+
+	public Set getUsers()
+	{
+		return getAzg().getUsers();
+	}
+
+	public Set getUsersHasRole(String role)
+	{
+		return getAzg().getUsersHasRole(role);
+	}
+
+	public Set getUsersIsAllowed(String function)
+	{
+		return getAzg().getUsersIsAllowed(function);
+	}
+
+	public boolean hasRole(String userId, String role)
+	{
+		return getAzg().hasRole(userId, role);
+	}
+
+	public boolean isAllowed(String userId, String function)
+	{
+		return getAzg().isAllowed(userId, function);
+	}
+
+	public boolean isEmpty()
+	{
+		return getAzg().isEmpty();
+	}
+
+	public void removeMember(String userId)
+	{
+		m_azgChanged = true;
+		getAzg().removeMember(userId);
+	}
+
+	public void removeMembers()
+	{
+		m_azgChanged = true;
+		getAzg().removeMembers();
+	}
+
+	public void removeRole(String role)
+	{
+		m_azgChanged = true;
+		getAzg().removeRole(role);
+	}
+
+	public void removeRoles()
+	{
+		m_azgChanged = true;
+		getAzg().removeRoles();
+	}
+
+	public void setMaintainRole(String role)
+	{
+		m_azgChanged = true;
+		getAzg().setMaintainRole(role);
+	}
+
+	public void setProviderGroupId(String id)
+	{
+		m_azgChanged = true;
+		getAzg().setProviderGroupId(id);
 	}
 }

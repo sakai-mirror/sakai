@@ -124,6 +124,18 @@ public interface AuthzGroupService extends EntityProducer
 	void save(AuthzGroup azGroup) throws IdUnusedException, PermissionException;
 
 	/**
+	 * Save the changes made to the AuthzGroup. The AuthzGroup must already exist, and the user must have permission to update based on the provided function, rather than normal SECURE_UPDATE_AUTHZ_GROUP.
+	 * 
+	 * @param azGroup
+	 *        The AuthzGroup to save.
+	 * @exception IdUnusedException
+	 *            if the AuthzGroup id is not defined.
+	 * @exception PermissionException
+	 *            if the current user does not have permission to update the AuthzGroup.
+	 */
+	void saveUsingSecurity(AuthzGroup azGroup, String securityFunction) throws IdUnusedException, PermissionException;
+
+	/**
 	 * Check permissions for adding an AuthzGroup.
 	 * 
 	 * @param id
@@ -343,4 +355,19 @@ public interface AuthzGroupService extends EntityProducer
 	 *        The user id.
 	 */
 	void refreshUser(String userId);
+
+	/**
+	 * Create a new AuthzGroup, as a copy of another AuthzGroup (except for id), and give a user "maintain" access based on the other's definition of "maintain", but do not store - it can be saved with a save() call
+	 * 
+	 * @param id
+	 *        The id.
+	 * @param other
+	 *        The AuthzGroup to copy into this new AuthzGroup (or null if none).
+	 * @param maintainUserId
+	 *        Optional user id to get "maintain" access, or null if none.
+	 * @return The new AuthzGroup object.
+	 * @exception IdUsedException
+	 *            if the id is already used.
+	 */
+	AuthzGroup newAuthzGroup(String id, AuthzGroup other, String maintainUserId) throws IdUsedException;
 }

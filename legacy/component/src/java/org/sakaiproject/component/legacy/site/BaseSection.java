@@ -23,16 +23,25 @@
 
 package org.sakaiproject.component.legacy.site;
 
+import java.util.Set;
 import java.util.Stack;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Member;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.id.cover.IdService;
 import org.sakaiproject.service.legacy.site.Section;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.time.Time;
+import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.util.resource.BaseResourceProperties;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.w3c.dom.Document;
@@ -70,6 +79,12 @@ public class BaseSection implements Section, Identifiable
 
 	/** The site id I belong to, in case I have no m_site. */
 	protected String m_siteId = null;
+
+	/** The azg from the AuthzGroupService that is my AuthzGroup impl. */
+	protected AuthzGroup m_azg = null;
+
+	/** Set to true if we have changed our azg, so it need to be written back on save. */
+	protected boolean m_azgChanged = false;
 
 	/**
 	 * Construct. Auto-generate the id.
@@ -257,5 +272,245 @@ public class BaseSection implements Section, Identifiable
 	public String toString()
 	{
 		return m_title + " (" + m_id + ")";
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public boolean equals(Object obj)
+	{
+		if (obj instanceof Section)
+		{
+			return ((Section) obj).getId().equals(getId());
+		}
+
+		// compare to strings as id
+		if (obj instanceof String)
+		{
+			return ((String) obj).equals(getId());
+		}
+
+		return false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public int hashCode()
+	{
+		return getId().hashCode();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public int compareTo(Object obj)
+	{
+		if (!(obj instanceof Section)) throw new ClassCastException();
+
+		// if the object are the same, say so
+		if (obj == this) return 0;
+
+		// start the compare by comparing their title
+		int compare = getTitle().compareTo(((Site) obj).getTitle());
+
+		// if these are the same
+		if (compare == 0)
+		{
+			// sort based on (unique) id
+			compare = getId().compareTo(((Section) obj).getId());
+		}
+
+		return compare;
+	}
+
+	/**
+	 * Access (find if needed) the azg from the AuthzGroupService that implements my grouping.
+	 * @return My azg.
+	 */
+	protected AuthzGroup getAzg()
+	{
+		if (m_azg == null)
+		{
+			try
+			{
+				m_azg = AuthzGroupService.getAuthzGroup(getReference());
+			}
+			catch (IdUnusedException e)
+			{
+				try
+				{
+					// create the section's azg, but don't store it yet (that happens if save is called)
+					// use a template, but assign no user any maintain role
+
+					// find the template for the new azg
+					String sectionAzgTemplate = ((BaseSiteService) (SiteService.getInstance())).sectionAzgTemplate(m_site);
+					AuthzGroup template = null;
+					try
+					{
+						template = AuthzGroupService.getAuthzGroup(sectionAzgTemplate);
+					}
+					catch (Exception e1)
+					{
+						try
+						{
+							// if the template is not defined, try the fall back template
+							template = AuthzGroupService.getAuthzGroup("!section.template");
+						}
+						catch (Exception e2)
+						{
+						}
+					}
+
+					m_azg = AuthzGroupService.newAuthzGroup(getReference(), template, null);
+					m_azgChanged = true;
+				}
+				catch (Throwable t)
+				{
+					M_log.warn("getAzg: " + t);
+				}
+			}
+		}
+		
+		return m_azg;
+	}
+
+	public void addMember(String userId, String roleId, boolean active, boolean provided)
+	{
+		m_azgChanged = true;
+		getAzg().addMember(userId, roleId, active, provided);
+	}
+
+	public Role addRole(String id) throws IdUsedException
+	{
+		m_azgChanged = true;
+		return getAzg().addRole(id);
+	}
+
+	public Role addRole(String id, Role other) throws IdUsedException
+	{
+		m_azgChanged = true;
+		return getAzg().addRole(id, other);
+	}
+
+	public User getCreatedBy()
+	{
+		return getAzg().getCreatedBy();
+	}
+
+	public Time getCreatedTime()
+	{
+		return getAzg().getCreatedTime();
+	}
+
+	public String getMaintainRole()
+	{
+		return getAzg().getMaintainRole();
+	}
+
+	public Member getMember(String userId)
+	{
+		return getAzg().getMember(userId);
+	}
+
+	public Set getMembers()
+	{
+		return getAzg().getMembers();
+	}
+
+	public User getModifiedBy()
+	{
+		return getAzg().getModifiedBy();
+	}
+
+	public Time getModifiedTime()
+	{
+		return getAzg().getModifiedTime();
+	}
+
+	public String getProviderGroupId()
+	{
+		return getAzg().getProviderGroupId();
+	}
+
+	public Role getRole(String id)
+	{
+		return getAzg().getRole(id);
+	}
+
+	public Set getRoles()
+	{
+		return getAzg().getRoles();
+	}
+
+	public Role getUserRole(String userId)
+	{
+		return getAzg().getUserRole(userId);
+	}
+
+	public Set getUsers()
+	{
+		return getAzg().getUsers();
+	}
+
+	public Set getUsersHasRole(String role)
+	{
+		return getAzg().getUsersHasRole(role);
+	}
+
+	public Set getUsersIsAllowed(String function)
+	{
+		return getAzg().getUsersIsAllowed(function);
+	}
+
+	public boolean hasRole(String userId, String role)
+	{
+		return getAzg().hasRole(userId, role);
+	}
+
+	public boolean isAllowed(String userId, String function)
+	{
+		return getAzg().isAllowed(userId, function);
+	}
+
+	public boolean isEmpty()
+	{
+		return getAzg().isEmpty();
+	}
+
+	public void removeMember(String userId)
+	{
+		m_azgChanged = true;
+		getAzg().removeMember(userId);
+	}
+
+	public void removeMembers()
+	{
+		m_azgChanged = true;
+		getAzg().removeMembers();
+	}
+
+	public void removeRole(String role)
+	{
+		m_azgChanged = true;
+		getAzg().removeRole(role);
+	}
+
+	public void removeRoles()
+	{
+		m_azgChanged = true;
+		getAzg().removeRoles();
+	}
+
+	public void setMaintainRole(String role)
+	{
+		m_azgChanged = true;
+		getAzg().setMaintainRole(role);
+	}
+
+	public void setProviderGroupId(String id)
+	{
+		m_azgChanged = true;
+		getAzg().setProviderGroupId(id);
 	}
 }

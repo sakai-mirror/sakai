@@ -26,6 +26,7 @@ package org.sakaiproject.service.legacy.site;
 
 import java.io.Serializable;
 
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.entity.Edit;
 
 /**
@@ -35,7 +36,7 @@ import org.sakaiproject.service.legacy.entity.Edit;
  * 
  * @author Sakai Software Development Team
  */
-public interface Section extends Edit, Serializable
+public interface Section extends Edit, Serializable, AuthzGroup
 {
 	/** @return a human readable short title of this section. */
 	String getTitle();

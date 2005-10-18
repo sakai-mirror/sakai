@@ -111,6 +111,9 @@ public class BaseAuthzGroup implements AuthzGroup
 	/** Active flag. */
 	protected boolean m_active = false;
 
+	/** True if created by the "new" call rather than "add" - it has not yet been stored. */
+	protected boolean m_isNew = false;
+
 	/**
 	 * Construct.
 	 * 

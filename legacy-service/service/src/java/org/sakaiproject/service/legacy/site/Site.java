@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.user.User;
@@ -40,7 +41,7 @@ import org.sakaiproject.service.legacy.user.User;
  * 
  * @author Sakai Software Development Team
  */
-public interface Site extends Edit, Comparable, Serializable
+public interface Site extends Edit, Comparable, Serializable, AuthzGroup
 {
 	/**
 	 * @return the user who created this.
