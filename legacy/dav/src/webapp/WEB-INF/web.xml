@@ -54,6 +54,7 @@
 			<web-resource-name>The Sakai DAV Access Point</web-resource-name>
 			<url-pattern>/*</url-pattern>
 			<http-method>GET</http-method>
+			<http-method>HEAD</http-method>
 			<http-method>OPTIONS</http-method>
 			<http-method>PROPFIND</http-method>
 			<http-method>DELETE</http-method>
