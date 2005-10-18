@@ -3481,6 +3481,7 @@ public class ResourcesAction
 					ResourceProperties properties = ContentHostingService.getProperties (currentPasteCutItem);
 
 					originalDisplayName = properties.getPropertyFormatted (ResourceProperties.PROP_DISPLAY_NAME);
+					/*
 					if (Boolean.TRUE.toString().equals(properties.getProperty (ResourceProperties.PROP_IS_COLLECTION)))
 					{
 						String alert = (String) state.getAttribute(STATE_MESSAGE);
@@ -3491,6 +3492,7 @@ public class ResourcesAction
 					}
 					else
 					{
+					*/
 						// paste the resource
 						ContentResource resource = ContentHostingService.getResource (currentPasteCutItem);
 						ResourceProperties p = ContentHostingService.getProperties(currentPasteCutItem);
@@ -3576,7 +3578,7 @@ public class ResourcesAction
 							ContentHostingService.removeResource (currentPasteCutItem);
 						}
 							
-					}	// if-else
+					// }	// if-else
 				}
 				catch (InUseException e)
 				{
@@ -6578,6 +6580,7 @@ public class ResourcesAction
 				try
 				{
 					ResourceProperties properties = ContentHostingService.getProperties (copyId);
+					/*
 					if (properties.getProperty (ResourceProperties.PROP_IS_COLLECTION).equals (Boolean.TRUE.toString()))
 					{
 						String alert = (String) state.getAttribute(STATE_MESSAGE);
@@ -6586,6 +6589,7 @@ public class ResourcesAction
 							addAlert(state, RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING);
 						}
 					}
+					*/
 				}
 				catch (PermissionException e)
 				{
@@ -6655,6 +6659,7 @@ public class ResourcesAction
 				try
 				{
 					ResourceProperties properties = ContentHostingService.getProperties (moveId);
+					/*
 					if (properties.getProperty (ResourceProperties.PROP_IS_COLLECTION).equals (Boolean.TRUE.toString()))
 					{
 						String alert = (String) state.getAttribute(STATE_MESSAGE);
@@ -6663,6 +6668,7 @@ public class ResourcesAction
 							addAlert(state, RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING);
 						}
 					}
+					*/
 				}
 				catch (PermissionException e)
 				{
@@ -7830,6 +7836,7 @@ public class ResourcesAction
 			try
 			{
 				ResourceProperties properties = ContentHostingService.getProperties (itemId);
+				/*
 				if (properties.getProperty (ResourceProperties.PROP_IS_COLLECTION).equals (Boolean.TRUE.toString()))
 				{
 					String alert = (String) state.getAttribute(STATE_MESSAGE);
@@ -7838,6 +7845,7 @@ public class ResourcesAction
 						addAlert(state, RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING);
 					}
 				}
+				*/
 			}
 			catch (PermissionException e)
 			{
@@ -7881,27 +7889,12 @@ public class ResourcesAction
 	
 			try
 			{
-				ResourceProperties properties = ContentHostingService.getProperties (itemId);
-				originalDisplayName = properties.getPropertyFormatted (ResourceProperties.PROP_DISPLAY_NAME);
-	
-				// copy, cut and paste not operated on collections
-				if (properties.getProperty (ResourceProperties.PROP_IS_COLLECTION).equals (Boolean.TRUE.toString()))
+				String id = ContentHostingService.copyIntoFolder(itemId, collectionId);
+				String mode = (String) state.getAttribute(STATE_MODE);
+				if(MODE_HELPER.equals(mode))
 				{
-					String alert = (String) state.getAttribute(STATE_MESSAGE);
-					if (alert == null || ((alert != null) && (alert.indexOf(RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING) == -1)))
-					{
-						addAlert(state, RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING);
-					}
+					attachItem(id, state);
 				}
-				else
-				{
-					String id = ContentHostingService.copyIntoFolder(itemId, collectionId);
-					String mode = (String) state.getAttribute(STATE_MODE);
-					if(MODE_HELPER.equals(mode))
-					{
-						attachItem(id, state);
-					}
-				}	// if-else
 			}
 			catch (PermissionException e)
 			{
@@ -7926,6 +7919,10 @@ public class ResourcesAction
 			catch(ServerOverloadException e)
 			{
 				addAlert(state, rb.getString("failed"));
+			}
+			catch(InconsistentException e)
+			{
+				addAlert(state, rb.getString("recursive") + " " + itemId);
 			}
 			catch (OverQuotaException e)
 			{
@@ -7998,6 +7995,7 @@ public class ResourcesAction
 	
 			try
 			{
+				/*
 				ResourceProperties properties = ContentHostingService.getProperties (itemId);
 				originalDisplayName = properties.getPropertyFormatted (ResourceProperties.PROP_DISPLAY_NAME);
 	
@@ -8011,6 +8009,7 @@ public class ResourcesAction
 					}
 				}
 				else
+				*/
 				{
 					ContentHostingService.moveIntoFolder(itemId, collectionId);
 				}	// if-else
@@ -8033,7 +8032,7 @@ public class ResourcesAction
 			}
 			catch (InconsistentException e)
 			{
-				addAlert(state,RESOURCE_INVALID_TITLE_STRING);
+				addAlert(state, rb.getString("recursive") + " " + itemId);
 			}
 			catch(IdUsedException e)
 			{

@@ -2156,7 +2156,9 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	}
 	
 	/**
-	 * Copy a resource to a folder.
+	 * Copy a collection or resource from one location to another.  Creates a new collection with an id 
+	 * similar to new_folder_id and recursively copies all nested collections and resources within thisCollection
+	 * to the new collection. 
 	 * 
 	 * @param id
 	 *        The id of the resource.
@@ -2171,19 +2173,58 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the resource is a collection.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception InconsistentException
+	 *            if the destination folder (folder_id) is contained within the source folder (id).
 	 * @exception IdUsedException
-	 *            if copied item is a collection and the new id is already in use
-	 *            or if the copied item is not a collection and a unique id cannot be found
-	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 *            if a unique resource id cannot be found after some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
 	 * @exception ServerOverloadException
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
 	public String copyIntoFolder(String id, String folder_id) 
 		throws PermissionException, IdUnusedException, TypeException, InUseException, 
-		OverQuotaException, IdUsedException, ServerOverloadException
+		OverQuotaException, InconsistentException, IdUsedException, ServerOverloadException
 	{
+		if(folder_id.startsWith(id))
+		{
+			throw new InconsistentException(id + " is contained within " + folder_id);
+		}
 		String new_id = newName(id, folder_id);
-		return copy(id, new_id);
+		// Should use copyIntoFolder if possible
+		boolean isCollection = false;
+		boolean isRootCollection = false;
+		ContentResource thisResource = null;
+
+		if (m_logger.isDebugEnabled()) m_logger.debug(this + ".copy(" + id + "," + new_id + ")");
+
+		// find the collection
+		ContentCollection thisCollection = findCollection(id);
+		if (thisCollection != null)
+		{
+			isCollection = true;
+			if (isRootCollection(id))
+			{
+				throw new PermissionException(null, null);
+			}
+		}
+		else
+		{
+			thisResource = findResource(id);
+		}
+
+		if (thisResource == null && thisCollection == null)
+		{
+			throw new IdUnusedException(id);
+		}
+
+		if (isCollection)
+		{
+			new_id = deepcopyCollection(thisCollection, new_id);
+		}
+		else
+		{
+			new_id = copyResource(thisResource, new_id);
+		}
+		return new_id;
 	}
 
 	/**
@@ -2213,10 +2254,14 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	}
 	
 	/**
-	 * Move a resource to a folder.
+	 * Move a resource or collection to a (different) folder. This may be accomplished by renaming the resource or 
+	 * by recursively renaming the collection and all enclosed members (no matter how deep) to effectively change
+	 * their locations. Alternatively, it may be accomplished by copying the resource and recursively copying 
+	 * collections from their existing collection to the new collection and ultimately deleting the original
+	 * resource(s) and/or collections(s).
 	 * 
 	 * @param id
-	 *        The id of the resource.
+	 *        The id of the resource or collection to be moved.
 	 * @param folder_id
 	 *        The id of the folder to which the resource should be moved.
 	 * @return The full id of the resource after the move is completed.
@@ -2230,10 +2275,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the resource is locked by someone else.
 	 * @exception InconsistentException
 	 *            if the containing collection does not exist.
+	 * @exception InconsistentException
+	 *            if the destination folder (folder_id) is contained within the source folder (id).
 	 * @exception IdUsedException
-	 *            if moved item is a collection and the new id is already in use
-	 *            or if the moved item is not a collection and a unique id cannot be found
-	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 *            if a unique resource id cannot be found after some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
 	 * @exception ServerOverloadException
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
@@ -2241,10 +2286,244 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		throws PermissionException, IdUnusedException, TypeException, InUseException, 
 		OverQuotaException, IdUsedException, InconsistentException, ServerOverloadException
 	{
+		if(folder_id.startsWith(id))
+		{
+			throw new InconsistentException(id + " is contained within " + folder_id);
+		}
 		String new_id = newName(id, folder_id);
-		return rename(id, new_id);
-	}
-	
+		
+		// check security for delete existing resource
+		unlock(EVENT_RESOURCE_REMOVE, id);
+		
+		// check security for read existing resource
+		unlock(EVENT_RESOURCE_READ, id);
+		
+		// check security for add new resource
+		unlock(EVENT_RESOURCE_ADD, new_id);
+		
+		boolean isCollection = false;
+		boolean isRootCollection = false;
+		ContentResourceEdit thisResource = null;
+		ContentCollectionEdit thisCollection = null;
+
+		if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveIntoFolder(" + id + "," + new_id + ")");
+
+		if(m_storage.checkCollection(id))
+		{
+			isCollection = true;
+			// find the collection
+			thisCollection = editCollection(id);
+			if(isRootCollection(id))
+			{
+				cancelCollection(thisCollection);
+				throw new PermissionException(UsageSessionService.getSessionUserId(), null, null);
+			}
+		}
+		else
+		{
+			thisResource = editResource(id);
+		}
+
+		if(thisResource == null && thisCollection == null)
+		{
+			throw new IdUnusedException(id);
+		}
+
+		if(isCollection)
+		{
+			new_id = moveCollection(thisCollection, new_id);
+		}
+		else
+		{
+			new_id = moveResource(thisResource, new_id);
+		}
+		return new_id;
+
+	} // moveIntoFolder
+
+	/**
+	 * Move a collection to a new folder.  Moves the existing collection or creates a new collection with an id 
+	 * similar to the new_folder_id (in which case the original collection is removed) and recursively moves all 
+	 * nested collections and resources within thisCollection to the new collection.  When finished, thisCollection 
+	 * no longer exists, but the collection identified by the return value has the same structure and all of the 
+	 * members the original had (or copies of them). 
+	 * 
+	 * @param thisCollection
+	 *        The collection to be copied
+	 * @param new_folder_id
+	 *        The desired id of the collection after it is moved.
+	 * @return The full id of the moved collection.
+	 * @exception PermissionException
+	 *            if the user does not have permissions to perform the operations
+	 * @exception IdUnusedException
+	 *            if the collection id is not found.
+	 * @exception TypeException
+	 *            if the resource is not a collection.
+	 * @exception InUseException
+	 *            if the collection is locked by someone else.
+	 * @exception IdUsedException
+	 *            if a unique resource id cannot be found after some arbitrary number of attempts to find
+	 *            a unique variation of the new_id (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 * @exception ServerOverloadException
+	 * 			 if the server is configured to save content bodies in the server's filesystem and an error occurs
+	 *            trying to access the filesystem.
+	 */
+	protected String moveCollection(ContentCollectionEdit thisCollection, String new_folder_id) 
+		throws PermissionException, IdUnusedException, TypeException, InUseException, OverQuotaException, IdUsedException, ServerOverloadException
+	{
+		String name = isolateName(new_folder_id);
+
+		ResourceProperties properties = thisCollection.getProperties();
+		ResourcePropertiesEdit newProps = duplicateResourceProperties(properties, thisCollection.getId());
+		newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+
+		if (m_logger.isDebugEnabled()) m_logger.debug(this + ".copyCollection adding colletion=" + new_folder_id + " name=" + name);
+		
+		String base_id = new_folder_id + "-";
+		boolean still_trying = true;
+		int attempt = 0;
+		try
+		{
+			while(still_trying && attempt < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+			{
+				try
+				{
+					ContentCollection newCollection = addCollection(new_folder_id, newProps);
+				
+					if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveCollection successful");
+					still_trying = false;
+				}
+				catch (IdUsedException e)
+				{
+					attempt++;
+					if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+					{
+						throw e;
+					}
+					new_folder_id = base_id + attempt;
+					newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name + "-" + attempt);
+				}
+			}
+			
+			List members = thisCollection.getMembers();
+			
+			if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveCollection size=" + members.size());
+
+			Iterator memberIt = members.iterator();
+			while(memberIt.hasNext())
+			{
+				String member_id = (String) memberIt.next();
+				moveIntoFolder(member_id, new_folder_id);
+			}
+			
+			removeCollection(thisCollection);
+		}
+		catch (InconsistentException e)
+		{
+			throw new TypeException(new_folder_id);
+		}
+		catch (IdInvalidException e)
+		{
+			throw new TypeException(new_folder_id);
+		}
+		
+		return new_folder_id;
+		
+	}	// moveCollection
+
+	/**
+	 * Move a resource to a new folder.  Either creates a new resource with an id similar to the new_folder_id and 
+	 * and removes the original resource, or renames the resource with an id similar to the new id, which effectively
+	 * moves the resource to a new location. 
+	 * 
+	 * @param thisResource
+	 *        The resource to be copied
+	 * @param new_id
+	 *        The desired id of the resource after it is moved.
+	 * @return The full id of the moved resource (which may be a variation on the new_id to ensure uniqueness 
+	 *         within the new folder.
+	 * @exception PermissionException
+	 *            if the user does not have permissions to perform the operations
+	 * @exception IdUnusedException
+	 *            if the resource id is not found.
+	 * @exception TypeException
+	 *            if the resource is a collection.
+	 * @exception InUseException
+	 *            if the resource is locked by someone else.
+	 * @exception IdUsedException
+	 *            if a unique resource id cannot be found after some arbitrary number of attempts to find
+	 *            a unique variation of the new_id (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 * @exception ServerOverloadException
+	 * 			 if the server is configured to save content bodies in the server's filesystem and an error occurs
+	 *            trying to access the filesystem.
+	 */
+	protected String moveResource(ContentResourceEdit thisResource, String new_id) 
+		throws PermissionException, IdUnusedException, TypeException, InUseException, OverQuotaException, IdUsedException, ServerOverloadException
+	{
+		ResourceProperties properties = thisResource.getProperties();
+		ResourcePropertiesEdit newProps = duplicateResourceProperties(properties, thisResource.getId());
+
+		String displayName = newProps.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+		String fileName = isolateName(new_id);
+		String folderId = isolateContainingId(new_id);
+
+		if (displayName == null && fileName != null)
+		{
+			newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, fileName);
+			displayName = fileName;
+		}
+
+		if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveResource displayname=" + displayName + " fileName=" + fileName);
+		
+		String basename = fileName;
+		String extension = "";
+		int index = fileName.lastIndexOf(".");
+		if(index >= 0)
+		{
+			basename = fileName.substring(0, index);
+			extension = fileName.substring(index);
+		}
+		
+		boolean still_trying = true;
+		int attempt = 0;
+
+		while(still_trying && attempt < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+		{
+			// copy the resource to the new location
+			try
+			{
+				ContentResource newResource = addResource(new_id, thisResource.getContentType(), thisResource.getContent(), newProps,
+						NotificationService.NOTI_NONE);
+				
+				if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveResource successful");
+				still_trying = false;
+			}
+			catch (InconsistentException e)
+			{
+				throw new TypeException(new_id);
+			}
+			catch (IdInvalidException e)
+			{
+				throw new TypeException(new_id);
+			}
+			catch (IdUsedException e)
+			{
+				if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+				{
+					throw e;
+				}
+				attempt++;
+				new_id = folderId + basename + "-" + attempt + extension;
+				newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, displayName + "-" + attempt);
+			}
+		}
+		
+		removeResource(thisResource);
+				
+		return new_id;
+		
+	}	// moveResource
+
 	/**
 	 * Copy a resource or collection.  
 	 * 
@@ -2518,6 +2797,92 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		return new_id;
 
 	} // copyCollection
+
+	/**
+	 * Make a deep copy of a collection.  Creates a new collection with an id similar to new_folder_id and recursively 
+	 * copies all nested collections and resources within thisCollection to the new collection. 
+	 * 
+	 * @param thisCollection
+	 *        The collection to be copied
+	 * @param new_folder_id
+	 *        The desired id of the new collection.
+	 * @return The full id of the copied collection (which may be a slight variation on the desired id to ensure uniqueness).
+	 * @exception PermissionException
+	 *            if the user does not have permissions to perform the operations
+	 * @exception IdUnusedException
+	 *            if the collection id is not found. ???
+	 * @exception TypeException
+	 *            if the resource is not a collection.
+	 * @exception InUseException
+	 *            if the collection is locked by someone else.
+	 * @exception IdUsedException
+	 *            if a unique id cannot be found for the new collection after some arbitrary number of attempts to find
+	 *            a unique variation of the new_folder_id (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 * @exception ServerOverloadException
+	 * 			 if the server is configured to save content bodies in the server's filesystem and an error occurs
+	 *            trying to access the filesystem.
+	 */
+	protected String deepcopyCollection(ContentCollection thisCollection, String new_folder_id) 
+		throws PermissionException, IdUnusedException, TypeException, InUseException, OverQuotaException, IdUsedException, ServerOverloadException
+	{
+		String name = isolateName(new_folder_id);
+
+		ResourceProperties properties = thisCollection.getProperties();
+		ResourcePropertiesEdit newProps = duplicateResourceProperties(properties, thisCollection.getId());
+		newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+
+		if (m_logger.isDebugEnabled()) m_logger.debug(this + ".copyCollection adding colletion=" + new_folder_id + " name=" + name);
+		
+		String base_id = new_folder_id + "-";
+		boolean still_trying = true;
+		int attempt = 0;
+		try
+		{
+			while(still_trying && attempt < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+			{
+				try
+				{
+					ContentCollection newCollection = addCollection(new_folder_id, newProps);
+				
+					if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveCollection successful");
+					still_trying = false;
+				}
+				catch (IdUsedException e)
+				{
+					attempt++;
+					if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+					{
+						throw e;
+					}
+					new_folder_id = base_id + attempt;
+					newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name + "-" + attempt);
+				}
+			}
+			
+			List members = thisCollection.getMembers();
+			
+			if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveCollection size=" + members.size());
+
+			Iterator memberIt = members.iterator();
+			while(memberIt.hasNext())
+			{
+				String member_id = (String) memberIt.next();
+				copyIntoFolder(member_id, new_folder_id);
+			}
+			
+		}
+		catch (InconsistentException e)
+		{
+			throw new TypeException(new_folder_id);
+		}
+		catch (IdInvalidException e)
+		{
+			throw new TypeException(new_folder_id);
+		}
+		
+		return new_folder_id;
+		
+	}	// deepcopyCollection
 
 	/**
 	 * Commit the changes made, and release the lock. The Object is disabled, and not to be used after this call.

@@ -643,7 +643,9 @@ public interface ContentHostingService extends EntityProducer
 			OverQuotaException, IdUsedException, ServerOverloadException;
 
 	/**
-	 * Copy a resource to a folder.
+	 * Copy a collection or resource from one location to another.  Creates a new collection with an id 
+	 * similar to new_folder_id and recursively copies all nested collections and resources within thisCollection
+	 * to the new collection. 
 	 * 
 	 * @param id
 	 *        The id of the resource.
@@ -658,17 +660,25 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the resource is a collection.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception InconsistentException
+	 *            if the destination folder (folder_id) is contained within the source folder (id).
+	 * @exception IdUsedException
+	 *            if a unique resource id cannot be found after some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
 	 * @exception ServerOverloadException
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
 	public String copyIntoFolder(String id, String folder_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
-			OverQuotaException, IdUsedException, ServerOverloadException;
+			OverQuotaException, IdUsedException, ServerOverloadException, InconsistentException;
 
 	/**
-	 * Move a resource to a folder.
+	 * Move a resource or collection to a (different) folder. This may be accomplished by renaming the resource or 
+	 * by recursively renaming the collection and all enclosed members (no matter how deep) to effectively change
+	 * their locations. Alternatively, it may be accomplished by copying the resource and recursively copying 
+	 * collections from their existing collection to the new collection and ultimately deleting the original
+	 * resource(s) and/or collections(s).
 	 * 
 	 * @param id
-	 *        The id of the resource.
+	 *        The id of the resource or collection to be moved.
 	 * @param folder_id
 	 *        The id of the folder to which the resource should be moved.
 	 * @return The full id of the resource after the move is completed.
@@ -682,6 +692,10 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the resource is locked by someone else.
 	 * @exception InconsistentException
 	 *            if the containing collection does not exist.
+	 * @exception InconsistentException
+	 *            if the destination folder (folder_id) is contained within the source folder (id).
+	 * @exception IdUsedException
+	 *            if a unique resource id cannot be found after some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
 	 * @exception ServerOverloadException
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
