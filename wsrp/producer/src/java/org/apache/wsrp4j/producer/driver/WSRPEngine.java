@@ -830,6 +830,36 @@ public class WSRPEngine
             {
                 interactionResponse.getUpdateResponse().setPortletContext(newPortletContext);
             }
+            // check if template processing is supported
+            Boolean templateProcessing = portletDescription.getDoesUrlTemplateProcessing();
+            if (templateProcessing == null)
+            {
+                // TODO get default
+                templateProcessing = Boolean.FALSE;
+            }
+
+            if (templateProcessing.booleanValue())
+            {
+                // consumer has to provide templates
+                try
+                {
+                    paramCheck.check(request.getRuntimeContext().getTemplates());
+                } catch (MissingParametersFault e)
+                {
+                    templateProcessing = Boolean.FALSE;
+                }
+            }
+
+            // TODO: Check if markup requires rewriting.
+            //        For now: If no template processing supported set requiresRewriting=true
+            if (!templateProcessing.booleanValue())
+            {
+                interactionResponse.getUpdateResponse().getMarkupContext().setRequiresUrlRewriting(Boolean.TRUE);
+            } else
+            {
+                interactionResponse.getUpdateResponse().getMarkupContext().setRequiresUrlRewriting(Boolean.TRUE);
+            }
+
         } catch (WSRPException e)
         {
             WSRPXHelper.handleWSRPException(e);
