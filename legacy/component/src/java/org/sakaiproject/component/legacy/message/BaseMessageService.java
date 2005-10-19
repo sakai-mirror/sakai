@@ -1095,7 +1095,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 		// for MessageService messages:
 		// if access set to CHANNEL (or PUBLIC), use the message, channel and site authzGroups.
-		// if access set to SECTIONED, use the message, and the sections, but not the channel or site authzGroups.
+		// if access set to GROUPED, use the message, and the groups, but not the channel or site authzGroups.
 		// for Channels, use the channel and site authzGroups.
 		try
 		{
@@ -1105,10 +1105,10 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				// message
 				rv.add(ref.getReference());
 
-				// get the channel to get the message to get section information
+				// get the channel to get the message to get group information
 				// TODO: check for efficiency, cache and thread local caching usage -ggolden
-				boolean sectioned = false;
-				Collection sections = null;
+				boolean grouped = false;
+				Collection groups = null;
 				String channelRef = channelReference(ref.getContext(), ref.getContainer());
 				MessageChannel c = findChannel(channelRef);
 				if (c != null)
@@ -1116,18 +1116,18 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 					Message m = ((BaseMessageChannelEdit) c).findMessage(ref.getId());
 					if (m != null)
 					{
-						sectioned = MessageHeader.MessageAccess.GROUPED == m.getHeader().getAccess();
-						sections = m.getHeader().getGroups();
+						grouped = MessageHeader.MessageAccess.GROUPED == m.getHeader().getAccess();
+						groups = m.getHeader().getGroups();
 					}
 				}
 
-				if (sectioned)
+				if (grouped)
 				{
-					// sections
-					rv.addAll(sections);
+					// groups
+					rv.addAll(groups);
 				}
 
-				// not sectioned
+				// not grouped
 				else
 				{
 					// channel
@@ -1724,7 +1724,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		 */
 		public Collection getGroupsAllowGetMessage()
 		{
-			return getSectionsAllowFunction(SECURE_READ);
+			return getGroupsAllowFunction(SECURE_READ);
 		}
 
 		/**
@@ -1939,7 +1939,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		 */
 		public Collection getGroupsAllowAddMessage()
 		{
-			return getSectionsAllowFunction(SECURE_ADD);
+			return getGroupsAllowFunction(SECURE_ADD);
 		}
 
 		/**
@@ -1991,12 +1991,12 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			// transfer from the XML read object to the Edit
 			((BaseMessageEdit) msg).set(msgFromXml);
 			
-			// clear the sections and mark the message as channel
+			// clear the groups and mark the message as channel
 			// TODO: might be better done in merge(), but easier here -ggolden
 			if (MessageHeader.MessageAccess.GROUPED == msg.getHeader().getAccess())
 			{
 				msg.getHeaderEdit().setAccess(MessageHeader.MessageAccess.CHANNEL);
-				((BaseMessageHeaderEdit) msg.getHeaderEdit()).m_sections = new Vector();
+				((BaseMessageHeaderEdit) msg.getHeaderEdit()).m_groups = new Vector();
 			}
 
 			((BaseMessageEdit) msg).setEvent(SECURE_ADD);
@@ -2352,27 +2352,27 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			// filter out
 			List filtered = new Vector();
 			
-			// check for the allowed sections of the current end use if we need it, and only once
-			Collection allowedSections = null;
+			// check for the allowed groups of the current end use if we need it, and only once
+			Collection allowedGroups = null;
 
 			for (int i = 0; i < msgs.size(); i++)
 			{
 				Message msg = (Message) msgs.get(i);
 				
-				// if sectioned, check that the end user has get access to any of this message's sections; reject if not
+				// if grouped, check that the end user has get access to any of this message's groups; reject if not
 				if (msg.getHeader().getAccess() == MessageHeader.MessageAccess.GROUPED)
 				{
-					// check the message's sections to the allowed (get) sections for the current user
-					Collection msgSections = msg.getHeader().getGroups();
+					// check the message's groups to the allowed (get) groups for the current user
+					Collection msgGroups = msg.getHeader().getGroups();
 	
-					// we need the allowed sections, so get it if we have not done so yet
-					if (allowedSections == null)
+					// we need the allowed groups, so get it if we have not done so yet
+					if (allowedGroups == null)
 					{
-						allowedSections = getGroupsAllowGetMessage();
+						allowedGroups = getGroupsAllowGetMessage();
 					}
 
 					// reject if there is no intersection
-					if (!isIntersectionSectionRefsToSections(msgSections, allowedSections)) continue;
+					if (!isIntersectionGroupRefsToGroups(msgGroups, allowedGroups)) continue;
 				}
 
 				// reject if the filter rejects
@@ -2387,20 +2387,20 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		} // findFilterMessages
 
 		/**
-		 * See if the collection of section reference strings has at least one section that is in the collection of Section objects.
-		 * @param sectionRefs The collection (String) of section references.
-		 * @param sections The collection (Section) of section objects.
+		 * See if the collection of group reference strings has at least one group that is in the collection of Group objects.
+		 * @param groupRefs The collection (String) of group references.
+		 * @param groups The collection (Group) of group objects.
 		 * @return true if there is interesection, false if not.
 		 */
-		protected boolean isIntersectionSectionRefsToSections(Collection sectionRefs, Collection sections)
+		protected boolean isIntersectionGroupRefsToGroups(Collection groupRefs, Collection groups)
 		{
-			for (Iterator iRefs = sectionRefs.iterator(); iRefs.hasNext();)
+			for (Iterator iRefs = groupRefs.iterator(); iRefs.hasNext();)
 			{
-				String findThisSectionRef = (String) iRefs.next();
-				for (Iterator iSections = sections.iterator(); iSections.hasNext();)
+				String findThisGroupRef = (String) iRefs.next();
+				for (Iterator iGroups = groups.iterator(); iGroups.hasNext();)
 				{
-					String thisSectionRef = ((Group) iSections.next()).getReference();
-					if (thisSectionRef.equals(findThisSectionRef))
+					String thisGroupRef = ((Group) iGroups.next()).getReference();
+					if (thisGroupRef.equals(findThisGroupRef))
 					{
 						return true;
 					}
@@ -2467,37 +2467,37 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		} // closeEdit
 
 		/**
-		 * Get the sections of this channel's contex-site that the end user has permission to "function" in.
+		 * Get the groups of this channel's contex-site that the end user has permission to "function" in.
 		 * @param function The function to check
 		 */
-		protected Collection getSectionsAllowFunction(String function)
+		protected Collection getGroupsAllowFunction(String function)
 		{
 			Collection rv = new Vector();
 
 			try
 			{
-				// get the channel's site's sections
+				// get the channel's site's groups
 				Site site = SiteService.getSite(m_context);
-				Collection sections = site.getGroups();
+				Collection groups = site.getGroups();
 				
-				// get a list of the section refs, which are authzGroup ids
-				Collection sectionRefs = new Vector();
-				for (Iterator i = sections.iterator(); i.hasNext();)
+				// get a list of the group refs, which are authzGroup ids
+				Collection groupRefs = new Vector();
+				for (Iterator i = groups.iterator(); i.hasNext();)
 				{
-					Group section = (Group) i.next();
-					sectionRefs.add(section.getReference());
+					Group group = (Group) i.next();
+					groupRefs.add(group.getReference());
 				}
 			
 				// ask the authzGroup service to filter them down based on function
-				sectionRefs = AuthzGroupService.getAuthzGroupsIsAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(function), sectionRefs);
+				groupRefs = AuthzGroupService.getAuthzGroupsIsAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(function), groupRefs);
 				
-				// pick the Section objects from the site's sections to return, those that are in the sectionRefs list
-				for (Iterator i = sections.iterator(); i.hasNext();)
+				// pick the G objects from the site's groups to return, those that are in the groupRefs list
+				for (Iterator i = groups.iterator(); i.hasNext();)
 				{
-					Group section = (Group) i.next();
-					if (sectionRefs.contains(section.getReference()))
+					Group group = (Group) i.next();
+					if (groupRefs.contains(group.getReference()))
 					{
-						rv.add(section);
+						rv.add(group);
 					}
 				}
 			}
@@ -2947,8 +2947,8 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		/** The draft status for the message. */
 		protected boolean m_draft = false;
 
-		/** The Collection of sections (authorization group id strings). */
-		protected Collection m_sections = new Vector();
+		/** The Collection of groups (authorization group id strings). */
+		protected Collection m_groups = new Vector();
 
 		/** The message access. */
 		protected MessageAccess m_access = MessageAccess.CHANNEL;
@@ -2990,7 +2990,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			m_attachments = m_entityManager.newReferenceList();
 			replaceAttachments(other.getAttachments());
 
-			m_sections = new Vector(other.getGroups());
+			m_groups = new Vector(other.getGroups());
 
 		} // BaseMessageHeaderEdit
 
@@ -3018,7 +3018,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			{
 			}
 
-			// attachments and sections
+			// attachments and groups
 			m_attachments = m_entityManager.newReferenceList();
 
 			NodeList children = el.getChildNodes();
@@ -3036,10 +3036,10 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 						m_attachments.add(m_entityManager.newReference(element.getAttribute("relative-url")));
 					}
 
-					// look for an section
-					else	 if (element.getTagName().equals("section"))
+					// look for an group
+					else	 if (element.getTagName().equals("group"))
 					{
-						m_sections.add(element.getAttribute("authzGroup"));
+						m_groups.add(element.getAttribute("authzGroup"));
 					}
 				}
 			}
@@ -3108,39 +3108,39 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public Collection getGroups()
 		{
-			return new Vector(m_sections);
+			return new Vector(m_groups);
 		}
 
 		/**
 		* @inheritDoc
 		*/
-		public void addGroup(Group section) throws PermissionException
+		public void addGroup(Group group) throws PermissionException
 		{
-			if (section == null) throw new PermissionException(eventId(SECURE_ADD), "null");
+			if (group == null) throw new PermissionException(eventId(SECURE_ADD), "null");
 
-			// does the current user have ADD permission in this section's authorization group?
-			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(SECURE_ADD), section.getReference()))
+			// does the current user have ADD permission in this group's authorization group?
+			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(SECURE_ADD), group.getReference()))
 			{
-				throw new PermissionException(eventId(SECURE_ADD), section.getReference());
+				throw new PermissionException(eventId(SECURE_ADD), group.getReference());
 			}
 
-			if (!m_sections.contains(section.getReference())) m_sections.add(section.getReference());
+			if (!m_groups.contains(group.getReference())) m_groups.add(group.getReference());
 		}
 
 		/**
 		* @inheritDoc
 		*/
-		public void removeGroup(Group section) throws PermissionException
+		public void removeGroup(Group group) throws PermissionException
 		{
-			if (section == null) throw new PermissionException(eventId(SECURE_ADD), "null");
+			if (group == null) throw new PermissionException(eventId(SECURE_ADD), "null");
 
-			// does the current user have ADD permission in this section's authorization group?
-			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(SECURE_ADD), section.getReference()))
+			// does the current user have ADD permission in this group's authorization group?
+			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(SECURE_ADD), group.getReference()))
 			{
-				throw new PermissionException(eventId(SECURE_ADD), section.getReference());
+				throw new PermissionException(eventId(SECURE_ADD), group.getReference());
 			}
 
-			if (m_sections.contains(section.getReference())) m_sections.remove(section.getReference());
+			if (m_groups.contains(group.getReference())) m_groups.remove(group.getReference());
 		}
 
 		/**
@@ -3183,15 +3183,15 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				}
 			}
 
-			// add sections
-			if ((m_sections != null) && (m_sections.size() > 0))
+			// add groups
+			if ((m_groups != null) && (m_groups.size() > 0))
 			{
-				for (Iterator i = m_sections.iterator(); i.hasNext();)
+				for (Iterator i = m_groups.iterator(); i.hasNext();)
 				{
-					String section = (String) i.next();
-					Element sect = doc.createElement("section");
+					String group = (String) i.next();
+					Element sect = doc.createElement("group");
 					header.appendChild(sect);
-					sect.setAttribute("authzGroup", section);
+					sect.setAttribute("authzGroup", group);
 				}
 			}
 
