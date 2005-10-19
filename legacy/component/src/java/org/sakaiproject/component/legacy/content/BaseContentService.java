@@ -4787,6 +4787,11 @@ public abstract class BaseContentService implements ContentHostingService, Cache
       return CollectionUtil.getCollectionMap();
    }
 
+   public void eliminateDuplicates(Collection resourceIds)
+   {
+	   // TODO: do something!
+   }
+   
    /**
     * get all the resources under a given directory.
     * @param parentId
