@@ -21,6 +21,7 @@
 
 package org.apache.wsrp4j.producer.provider.driver;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import oasis.names.tc.wsrp.v1.types.PortletContext;
@@ -460,7 +461,13 @@ public class URLComposerImpl implements URLComposer
         if (url != null && url.length() > 0)
         {
             resultURL.append(Constants.NEXT_PARAM_AMP);
-            resultURL.append(appendNameValuePair(Constants.URL, URLEncoder.encode(url)));
+            String encodedURL = url;
+            try { 
+                encodedURL = URLEncoder.encode(url, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                logger.text(Logger.ERROR, "createRewriteURL", e, "UTF-8 MUST be supported by all JVM implementations");
+            }
+            resultURL.append(appendNameValuePair(Constants.URL, encodedURL));
         }
 
         // rewriteResource
@@ -478,11 +485,6 @@ public class URLComposerImpl implements URLComposer
         }
 
         resultURL.append(Constants.REWRITE_END);
-
-        if (logger.isLogging(Logger.TRACE_HIGH))
-        {
-            logger.exit(Logger.TRACE_HIGH, MN);
-        }
 
         String result = resultURL.toString();
 
