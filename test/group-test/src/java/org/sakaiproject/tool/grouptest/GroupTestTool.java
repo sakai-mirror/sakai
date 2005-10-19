@@ -21,7 +21,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.tool.sectiontest;
+package org.sakaiproject.tool.grouptest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -65,7 +65,7 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
  * 
  * @author Sakai Software Development Team
  */
-public class SectionTestTool extends HttpServlet
+public class GroupTestTool extends HttpServlet
 {
 
 	protected static final String siteId = "xxx-group-test";
