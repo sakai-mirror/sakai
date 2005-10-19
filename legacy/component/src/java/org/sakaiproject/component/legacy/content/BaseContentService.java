@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import org.apache.xerces.impl.dv.util.Base64;
@@ -4800,6 +4801,49 @@ public abstract class BaseContentService implements ContentHostingService, Cache
    protected List getFlatResources(String parentId) {
       return getAllResources(parentId);
    }
+   
+   /**
+    * Eliminate from the collection any duplicates as well as any items that are contained within 
+    * another item whose resource-id is in the collection.
+	* @param resourceIds A collection of strings (possibly empty) identifying items and/or collections. 
+	*/
+   public void eliminateDuplicates(Collection resourceIds)
+   {
+	   Collection dups = new Vector();
+	   
+	   // eliminate exact duplicates
+	   Set others = new TreeSet(resourceIds);
+	   
+	   // eliminate items contained in other items
+	   Iterator itemIt = resourceIds.iterator();
+	   while(itemIt.hasNext())
+	   {
+		   String item = (String) itemIt.next();
+		   Iterator otherIt = others.iterator();
+		   while(otherIt.hasNext())
+		   {
+			   String other = (String) otherIt.next();
+			   if(other.startsWith(item))
+			   {
+				   if(item.equals(other))
+				   {
+					   continue;
+				   }
+				   
+				   // item contains other
+				   otherIt.remove();
+			   }
+		   }
+	   }
+	   
+	   // if any items have been removed, update the original collection
+	   if(resourceIds.size() > others.size())
+	   {
+		   resourceIds.clear();
+		   resourceIds.addAll(others);
+	   }
+   }
+
 
    protected List filterArtifacts(List artifacts, String type, String primaryMimeType, String subMimeType) {
       for (Iterator i = artifacts.iterator();i.hasNext();) {
