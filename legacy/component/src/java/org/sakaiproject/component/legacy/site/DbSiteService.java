@@ -1264,7 +1264,7 @@ public class DbSiteService extends BaseSiteService
 						String siteId = result.getString(4);
 
 						// make the group
-						BaseSection group = new BaseSection(groupId, title, description, siteId);
+						BaseGroup group = new BaseGroup(groupId, title, description, siteId);
 
 						return group;
 					}
@@ -1756,7 +1756,7 @@ public class DbSiteService extends BaseSiteService
 			readSiteGroupProperties((BaseSite) site);
 			for (Iterator i = site.getGroups().iterator(); i.hasNext();)
 			{
-				BaseSection group = (BaseSection) i.next();
+				BaseGroup group = (BaseGroup) i.next();
 				((BaseResourcePropertiesEdit) group.m_properties).setLazy(false);
 			}
 		}
@@ -1872,7 +1872,7 @@ public class DbSiteService extends BaseSiteService
 						String value = result.getString(3);
 
 						// get the group
-						BaseSection group = (BaseSection) site.getGroup(groupId);
+						BaseGroup group = (BaseGroup) site.getGroup(groupId);
 						if (group != null)
 						{
 							group.m_properties.addProperty(name, value);
@@ -2089,7 +2089,7 @@ public class DbSiteService extends BaseSiteService
 						String description = result.getString(3);
 
 						// make the group
-						BaseSection group = new BaseSection(groupId, title, description, site);
+						BaseGroup group = new BaseGroup(groupId, title, description, site);
 
 						// add it to the groups
 						groups.add(group);

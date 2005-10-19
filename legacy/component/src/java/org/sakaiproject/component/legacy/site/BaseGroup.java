@@ -49,15 +49,15 @@ import org.w3c.dom.Element;
 
 /**
  * <p>
- * BaseSection is an implementation of the Site API Section.
+ * BaseGroup is an implementation of the Site API Group.
  * </p>
  * 
  * @author Sakai Software Development Team
  */
-public class BaseSection implements Group, Identifiable
+public class BaseGroup implements Group, Identifiable
 {
 	/** Our log (commons). */
-	private static Log M_log = LogFactory.getLog(BaseSection.class);
+	private static Log M_log = LogFactory.getLog(BaseGroup.class);
 
 	/** A fixed class serian number. */
 	private static final long serialVersionUID = 1L;
@@ -92,14 +92,14 @@ public class BaseSection implements Group, Identifiable
 	 * @param site
 	 *        The site in which this page lives.
 	 */
-	protected BaseSection(Site site)
+	protected BaseGroup(Site site)
 	{
 		m_site = site;
 		m_id = IdService.getUniqueId();
 		m_properties = new BaseResourcePropertiesEdit();
 	}
 
-	protected BaseSection(String id, String title, String description, Site site)
+	protected BaseGroup(String id, String title, String description, Site site)
 	{
 		m_id = id;
 		m_title = title;
@@ -108,7 +108,7 @@ public class BaseSection implements Group, Identifiable
 		m_properties = new BaseResourcePropertiesEdit();
 	}
 
-	protected BaseSection(String id, String title, String description, String siteId)
+	protected BaseGroup(String id, String title, String description, String siteId)
 	{
 		m_id = id;
 		m_title = title;
@@ -127,9 +127,9 @@ public class BaseSection implements Group, Identifiable
 	 * @param exact
 	 *        If true, we copy id - else we generate a new one.
 	 */
-	protected BaseSection(Group other, Site site, boolean exact)
+	protected BaseGroup(Group other, Site site, boolean exact)
 	{
-		BaseSection bOther = (BaseSection) other;
+		BaseGroup bOther = (BaseGroup) other;
 
 		m_site = (Site) site;
 		m_siteId = bOther.m_siteId;

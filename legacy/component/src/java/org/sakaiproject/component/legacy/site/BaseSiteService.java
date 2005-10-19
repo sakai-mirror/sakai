@@ -644,7 +644,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		for (Iterator i = site.getGroups().iterator(); i.hasNext();)
 		{
-			BaseSection group = (BaseSection) i.next();
+			BaseGroup group = (BaseGroup) i.next();
 			if (group.m_azgChanged)
 			{
 				try
@@ -2762,7 +2762,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 				if (rv != null)
 				{
 					// make a copy from the cache
-					rv = new BaseSection(rv, rv.getContainingSite(), true);
+					rv = new BaseGroup(rv, rv.getContainingSite(), true);
 				}
 
 				else

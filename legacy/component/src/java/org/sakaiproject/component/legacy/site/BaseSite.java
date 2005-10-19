@@ -523,7 +523,7 @@ public class BaseSite implements Site
 		for (Iterator iGroups = other.getGroups().iterator(); iGroups.hasNext();)
 		{
 			Group group = (Group) iGroups.next();
-			m_groups.add(new BaseSection(group, this, exact));
+			m_groups.add(new BaseGroup(group, this, exact));
 		}
 		m_groupsLazy = other.m_groupsLazy;
 	}
@@ -1204,7 +1204,7 @@ public class BaseSite implements Site
 	 */
 	public Group addGroup()
 	{
-		Group rv = new BaseSection(this);
+		Group rv = new BaseGroup(this);
 		m_groups.add(rv);
 
 		return rv;
