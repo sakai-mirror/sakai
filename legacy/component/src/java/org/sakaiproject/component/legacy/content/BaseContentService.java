@@ -4785,6 +4785,15 @@ public abstract class BaseContentService implements ContentHostingService, Cache
    }
 
    /**
+    * Return a map of Worksite collections roots that the user has access to.
+    * @return Map of worksite title (String) to worksite resource root id (String)
+    */
+   public Map getCollectionMap() 
+   {
+      return CollectionUtil.getCollectionMap();
+   }
+
+   /**
     * get all the resources under a given directory.
     * @param parentId
     * @return List of all the ContentResource objects under this directory.
@@ -4833,7 +4842,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		   resourceIds.clear();
 		   resourceIds.addAll(others);
 	   }
-   }
+	   
+   }		// eliminate duplicates
 
 
    protected List filterArtifacts(List artifacts, String type, String primaryMimeType, String subMimeType) {
