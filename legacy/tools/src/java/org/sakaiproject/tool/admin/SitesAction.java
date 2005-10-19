@@ -56,7 +56,7 @@ import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.coursemanagement.cover.CourseManagementService;
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
@@ -218,17 +218,17 @@ public class SitesAction
 			template = buildEditPageContext(state, context);
 		}
 
-		else if (mode.equals("sections"))
+		else if (mode.equals("groups"))
 		{
-			template = buildSectionsContext(state, context);
+			template = buildGroupsContext(state, context);
 		}
-		else if (mode.equals("newSection"))
+		else if (mode.equals("newGroup"))
 		{
-			template = buildNewSectionContext(state, context);
+			template = buildNewGroupContext(state, context);
 		}
-		else if (mode.equals("editSection"))
+		else if (mode.equals("editGroup"))
 		{
-			template = buildEditSectionContext(state, context);
+			template = buildEditGroupContext(state, context);
 		}
 
 		else if (mode.equals("tools"))
@@ -489,70 +489,70 @@ public class SitesAction
 	}	// buildEditPageContext
 
 	/**
-	* Build the context for the sections display in edit mode.
+	* Build the context for the groups display in edit mode.
 	*/
-	private String buildSectionsContext(SessionState state, Context context)
+	private String buildGroupsContext(SessionState state, Context context)
 	{
 		context.put("tlang",rb);
 		// get the site to edit
 		Site site = (Site) state.getAttribute("site");
 		context.put("site", site);
 
-		// put all site's sections into the context
-		Collection sections = site.getSections();
-		context.put("sections", sections);
+		// put all site's groups into the context
+		Collection groups = site.getGroups();
+		context.put("groups", groups);
 
 		// build the menu
 		Menu bar = new Menu();
-		bar.add( new MenuEntry(rb.getString("sitact.newsec"), "doNew_section") );
+		bar.add( new MenuEntry(rb.getString("sitact.newgrp"), "doNew_group") );
 		context.put(Menu.CONTEXT_MENU, bar);
 
-		return "_sections";
+		return "_groups";
 
-	}	// buildSectionsContext
+	}	// buildGroupsContext
 
 	/**
-	* Build the context for the new section mode.
+	* Build the context for the new group mode.
 	*/
-	private String buildNewSectionContext(SessionState state, Context context)
+	private String buildNewGroupContext(SessionState state, Context context)
 	{
 		context.put("tlang",rb);
 		// name the html form for user edit fields
 		context.put("form-name", "page-form");
 
 		Site site = (Site) state.getAttribute("site");
-		Section section = (Section) state.getAttribute("section");
+		Group group = (Group) state.getAttribute("group");
 
 		context.put("site", site);
-		context.put("section", section);
+		context.put("group", group);
 
-		return "_edit_section";
+		return "_edit_group";
 
-	}	// buildNewSectionContext
+	}	// buildNewGroupContext
 
 	/**
-	* Build the context for the edit section mode.
+	* Build the context for the edit group mode.
 	*/
-	private String buildEditSectionContext(SessionState state, Context context)
+	private String buildEditGroupContext(SessionState state, Context context)
 	{
 		context.put("tlang",rb);
 		// name the html form for user edit fields
-		context.put("form-name", "section-form");
+		context.put("form-name", "group-form");
 
 		Site site = (Site) state.getAttribute("site");
-		Section section = (Section) state.getAttribute("section");
+		Group group = (Group) state.getAttribute("group");
 
 		context.put("site", site);
-		context.put("section", section);
+		context.put("group", group);
 
 		// build the menu
 		Menu bar = new Menu();
-		bar.add( new MenuEntry(rb.getString("sitact.remsec"), null, true, MenuItem.CHECKED_NA, "doRemove_section") );
+		bar.add( new MenuEntry(rb.getString("sitact.remgrp"), null, true, MenuItem.CHECKED_NA, "doRemove_group") );
 		context.put(Menu.CONTEXT_MENU, bar);
 
-		return "_edit_section";
+		return "_edit_group";
 
-	}	// buildEditSectionContext
+	}	// buildEditGroupContext
 
 	/**
 	* Build the context for the tools display in edit mode.
@@ -1246,136 +1246,136 @@ public class SitesAction
 	}	// doRemove_page
 
 	/**
-	* Switch to section display mode within a site edit.
+	* Switch to group display mode within a site edit.
 	*/
-	public void doSections(RunData data, Context context)
+	public void doGroups(RunData data, Context context)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		// read the form - if rejected, leave things as they are
 		if (!readSiteForm(data, state)) return;
 
-		state.setAttribute("mode", "sections");
+		state.setAttribute("mode", "groups");
 
-	}	// doSections
+	}	// doGroups
 
 	/**
-	* Edit an existing section.
+	* Edit an existing group.
 	*/
-	public void doEdit_section(RunData data, Context context)
+	public void doEdit_group(RunData data, Context context)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
-		state.setAttribute("mode", "editSection");
+		state.setAttribute("mode", "editGroup");
 
 		String id = data.getParameters().getString("id");
 
-		// get the section
+		// get the group
 		Site site = (Site) state.getAttribute("site");
-		Section section = site.getSection(id);
-		state.setAttribute("section", section);
+		Group group = site.getGroup(id);
+		state.setAttribute("group", group);
 
-	}	// doEdit_section
+	}	// doEdit_group
 
 	/**
-	* save the section edited, and save the site edit
+	* save the group edited, and save the site edit
 	*/
-	public void doSave_section(RunData data, Context context)
+	public void doSave_group(RunData data, Context context)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		// read the form - if rejected, leave things as they are
-		if (!readSectionForm(data, state)) return;
+		if (!readGroupForm(data, state)) return;
 
-		// done with the section
-		state.removeAttribute("section");
+		// done with the group
+		state.removeAttribute("group");
 
 		// commit the entire site edit
 		doSave_edit(data, context);
 
-	}	// doSave_section
+	}	// doSave_group
 
 	/**
-	* save the section edited, and return to the sections mode
+	* save the group edited, and return to the groups mode
 	*/
-	public void doDone_section(RunData data, Context context)
+	public void doDone_group(RunData data, Context context)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		// read the form - if rejected, leave things as they are
-		if (!readSectionForm(data, state)) return;
+		if (!readGroupForm(data, state)) return;
 
-		// done with the section
-		state.removeAttribute("section");
+		// done with the group
+		state.removeAttribute("group");
 
 		// return to main mode
-		state.setAttribute("mode", "sections");
+		state.setAttribute("mode", "groups");
 
-	}	// doDone_section
+	}	// doDone_group
 
 	/**
-	* cancel a section edit, return to the sections list
+	* cancel a group edit, return to the groups list
 	*/
-	public void doCancel_section(RunData data, Context context)
+	public void doCancel_group(RunData data, Context context)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		Site site = (Site) state.getAttribute("site");
-		Section section = (Section) state.getAttribute("section");
+		Group group = (Group) state.getAttribute("group");
 
 		// if the page was new, remove it
-		if ("true".equals(state.getAttribute("newSection")))
+		if ("true".equals(state.getAttribute("newGroup")))
 		{
-			site.removeSection(section);
+			site.removeGroup(group);
 		}
 
-		// %%% do we need the old section around for a restore; did we already modify it? - ggolden
+		// %%% do we need the old group around for a restore; did we already modify it? - ggolden
 
-		// done with the section
-		state.removeAttribute("section");
+		// done with the group
+		state.removeAttribute("group");
 
 		// return to main mode
-		state.setAttribute("mode", "sections");
+		state.setAttribute("mode", "groups");
 
-	}	// doCancel_section
+	}	// doCancel_group
 
 	/**
-	* Handle a request to remove the section being edited.
+	* Handle a request to remove the group being edited.
 	*/
-	public void doRemove_section(RunData data, Context context)
+	public void doRemove_group(RunData data, Context context)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 
 		Site site = (Site) state.getAttribute("site");
-		Section section = (Section) state.getAttribute("section");
+		Group group = (Group) state.getAttribute("group");
 
 		// remove the page (no confirm)
-		site.removeSection(section);
+		site.removeGroup(group);
 
 		// done with the page
-		state.removeAttribute("section");
+		state.removeAttribute("group");
 
 		// return to pages mode
-		state.setAttribute("mode", "sections");
+		state.setAttribute("mode", "groups");
 
-	}	// doRemove_section
+	}	// doRemove_group
 
 	/**
-	* Handle a request to create a new section in the site edit.
+	* Handle a request to create a new group in the site edit.
 	*/
-	public void doNew_section(RunData data, Context context)
+	public void doNew_group(RunData data, Context context)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
-		state.setAttribute("mode", "newSection");
+		state.setAttribute("mode", "newGroup");
 
 		// make the page so we have the id
 		Site site = (Site) state.getAttribute("site");
-		Section section = site.addSection();
-		state.setAttribute("section", section);
+		Group group = site.addGroup();
+		state.setAttribute("group", group);
 
 		// mark the site as new, so on cancel it can be deleted
-		state.setAttribute("newSection", "true");
+		state.setAttribute("newGroup", "true");
 
-	}	// doNew_section
+	}	// doRemove_group
 
 	/**
 	* Switch back to edit main info mode from another edit mode (like pages).
@@ -1422,24 +1422,24 @@ public class SitesAction
 	}	// readPageForm
 
 	/**
-	* Read the section form and update the site in state.
+	* Read the group form and update the site in state.
 	* @return true if the form is accepted, false if there's a validation error (an alertMessage will be set)
 	*/
-	private boolean readSectionForm(RunData data, SessionState state)
+	private boolean readGroupForm(RunData data, SessionState state)
 	{
-		// get the section - it's there
-		Section section = (Section) state.getAttribute("section");
+		// get the group - it's there
+		Group group = (Group) state.getAttribute("group");
 
 		// read the form
 		String title = StringUtil.trimToNull(data.getParameters().getString("title"));
-		section.setTitle(title);
+		group.setTitle(title);
 
 		String description = StringUtil.trimToNull(data.getParameters().getString("description"));
-		section.setDescription(description);
+		group.setDescription(description);
 
 		if (title == null)
 		{
-			addAlert(state, rb.getString("sitsec.plespe"));
+			addAlert(state, rb.getString("sitgrp.plespe"));
 			return false;
 		}
 		else
@@ -1447,7 +1447,7 @@ public class SitesAction
 			return true;
 		}
 
-	}	// readSectionForm
+	}	// readGroupForm
 
 	/**
 	* Switch to tools display mode within a site edit.

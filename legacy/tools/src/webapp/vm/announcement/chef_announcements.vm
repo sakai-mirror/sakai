@@ -38,8 +38,8 @@
 				<select id="view" name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
 					<option value="$!tlang.getString('view.all')" #if ($!view == "$!tlang.getString('view.all')")selected="selected"#end >$!tlang.getString('view.all')</option>
 					<option value="$!tlang.getString('view.public')"  #if ($!view == "$!tlang.getString('view.public')")selected="selected"#end >$!tlang.getString('view.public')</option>
-					#if ($!sections)
-						<option value="$!tlang.getString('view.bysection')" #if ($!view == "$!tlang.getString('view.bysection')")selected="selected"#end >$!tlang.getString('view.bysection')</option>
+					#if ($!groups)
+						<option value="$!tlang.getString('view.bygroup')" #if ($!view == "$!tlang.getString('view.bygroup')")selected="selected"#end >$!tlang.getString('view.bygroup')</option>
 					#end 
 				</select>
 			</form>
@@ -297,8 +297,8 @@
 								<select id="view" name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
 									<option value="$!tlang.getString('view.all')" #if ($!view == "$!tlang.getString('view.all')")selected="selected"#end >$!tlang.getString('view.all')</option>
 									<option value="$!tlang.getString('view.public')"  #if ($!view == "$!tlang.getString('view.public')")selected="selected"#end >$!tlang.getString('view.public')</option>
-									#if ($!sections)
-										<option value="$!tlang.getString('view.bysection')" #if ($!view == "$!tlang.getString('view.bysection')")selected="selected"#end >$!tlang.getString('view.bysection')</option>
+									#if ($!groups)
+										<option value="$!tlang.getString('view.bygroup')" #if ($!view == "$!tlang.getString('view.bygroup')")selected="selected"#end >$!tlang.getString('view.bygroup')</option>
 									#end 
 				</select>
 							</form>
@@ -431,7 +431,7 @@
 										#end
 									#end
 								</th>
-								#if ($!view != $!tlang.getString('view.bysection'))
+								#if ($!view != $!tlang.getString('view.bygroup'))
 									#if ($allow_delete)
 										<th>
 											$tlang.getString("gen.remove_question")
@@ -492,7 +492,7 @@
 									<td headers="date" style="white-space:nowrap;padding-bottom:0">
 										$ann_item.Header.Date.toStringLocalFull()
 									</td>
-									#if ($!view != $!tlang.getString('view.bysection'))
+									#if ($!view != $!tlang.getString('view.bygroup'))
 										#if ($channel.allowRemoveMessage($ann_item.Message))
 											<td valign="top" headers="checkbox" style="text-align:center; padding-bottom:0">
 												<label for ="check-$rowCount" class="skip">$tlang.getString("gen.selectremove")</label>

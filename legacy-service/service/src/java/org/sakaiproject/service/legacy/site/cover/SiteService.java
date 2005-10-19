@@ -68,7 +68,7 @@ public class SiteService
 	public static java.lang.String URL_ERROR = org.sakaiproject.service.legacy.site.SiteService.URL_ERROR;
 
 	public static java.lang.String SITE_SUBTYPE = org.sakaiproject.service.legacy.site.SiteService.SITE_SUBTYPE;
-	public static java.lang.String SECTION_SUBTYPE = org.sakaiproject.service.legacy.site.SiteService.SECTION_SUBTYPE;
+	public static java.lang.String GROUP_SUBTYPE = org.sakaiproject.service.legacy.site.SiteService.GROUP_SUBTYPE;
 	public static java.lang.String PAGE_SUBTYPE = org.sakaiproject.service.legacy.site.SiteService.PAGE_SUBTYPE;
 	public static java.lang.String TOOL_SUBTYPE = org.sakaiproject.service.legacy.site.SiteService.TOOL_SUBTYPE;
 
@@ -198,13 +198,13 @@ public class SiteService
 		return service.siteToolReference(param0, param1);
 	}
 
-	public static java.lang.String siteSectionReference(java.lang.String param0, java.lang.String param1)
+	public static java.lang.String siteGroupReference(java.lang.String param0, java.lang.String param1)
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
 		if (service == null)
 			return null;
 
-		return service.siteSectionReference(param0, param1);
+		return service.siteGroupReference(param0, param1);
 	}
 
 	public static boolean isUserSite(java.lang.String param0)
@@ -387,12 +387,12 @@ public class SiteService
 		return service.merge(param0, param1, param2);
 	}
 
-	public static org.sakaiproject.service.legacy.site.Section findSection(java.lang.String param0)
+	public static org.sakaiproject.service.legacy.site.Group findGroup(java.lang.String param0)
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
 		if (service == null)
 			return null;
 		
-		return service.findSection(param0);
+		return service.findGroup(param0);
 	}
 }

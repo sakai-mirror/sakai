@@ -45,7 +45,7 @@ public interface MessageHeader extends AttachmentContainer
 {
 	/**
 	 * <p>
-	 * MessageAccess enumerates different access modes for the message: public, site, sectioned.
+	 * MessageAccess enumerates different access modes for the message: channel-wide or grouped.
 	 * </p>
 	 */
 	public class MessageAccess
@@ -66,7 +66,7 @@ public interface MessageHeader extends AttachmentContainer
 		{
 			// if (PUBLIC.m_id.equals(access)) return PUBLIC;
 			if (CHANNEL.m_id.equals(access)) return CHANNEL;
-			if (SECTIONED.m_id.equals(access)) return SECTIONED;
+			if (GROUPED.m_id.equals(access)) return GROUPED;
 			return null;
 		}
 
@@ -76,8 +76,8 @@ public interface MessageHeader extends AttachmentContainer
 		/** channel (site) level access to the message */
 		public static final MessageAccess CHANNEL = new MessageAccess("channel");
 
-		/** sectioned access; only members of the getSection() sections (authorization groups) have access */
-		public static final MessageAccess SECTIONED = new MessageAccess("sectioned");
+		/** grouped access; only members of the getGroup() groups (authorization groups) have access */
+		public static final MessageAccess GROUPED = new MessageAccess("grouped");
 	}
 
 	/**
@@ -109,11 +109,11 @@ public interface MessageHeader extends AttachmentContainer
 	boolean getDraft();
 
 	/**
-	 * Access the sections defined for this message.
+	 * Access the groups defined for this message.
 	 * 
-	 * @return A Collection (String) of section refs (authorization group ids) defined for this message; empty if none are defined.
+	 * @return A Collection (String) of group refs (authorization group ids) defined for this message; empty if none are defined.
 	 */
-	Collection getSections();
+	Collection getGroups();
 
 	/**
 	 * Access the access mode for the message - how we compute who has access to the message.

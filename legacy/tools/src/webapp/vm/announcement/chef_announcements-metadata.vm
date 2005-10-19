@@ -45,7 +45,7 @@
 		</tr>
 		#if ($!range)
 			<tr>
-				<th class="chefLabel">$tlang.getString("meta.sections")</th>
+				<th class="chefLabel">$tlang.getString("meta.groups")</th>
 				<td>$!range</td>
 			</tr>
 		#end

@@ -1,50 +1,50 @@
 -- Site related tables added in Sakai 2.1
 -----------------------------------------------------------------------------
--- SAKAI_SITE_SECTION
+-- SAKAI_SITE_GROUP
 -----------------------------------------------------------------------------
 
-CREATE TABLE SAKAI_SITE_SECTION (
-       SECTION_ID           VARCHAR (99) NOT NULL,
+CREATE TABLE SAKAI_SITE_GROUP (
+       GROUP_ID             VARCHAR (99) NOT NULL,
        SITE_ID              VARCHAR (99) NOT NULL,
        TITLE                VARCHAR (99) NULL,
        DESCRIPTION          LONGTEXT NULL
 );
 
-ALTER TABLE SAKAI_SITE_SECTION
-       ADD  ( PRIMARY KEY (SECTION_ID) ) ;
+ALTER TABLE SAKAI_SITE_GROUP
+       ADD  ( PRIMARY KEY (GROUP_ID) ) ;
 
-ALTER TABLE SAKAI_SITE_SECTION
+ALTER TABLE SAKAI_SITE_GROUP
        ADD  ( FOREIGN KEY (SITE_ID)
                              REFERENCES SAKAI_SITE ) ;
 
-CREATE INDEX IE_SAKAI_SITE_SECT_SITE ON SAKAI_SITE_SECTION
+CREATE INDEX IE_SAKAI_SITE_GRP_SITE ON SAKAI_SITE_GROUP
 (
        SITE_ID                       ASC
 );
 
 -----------------------------------------------------------------------------
--- SAKAI_SITE_SECTION_PROPERTY
+-- SAKAI_SITE_GROUP_PROPERTY
 -----------------------------------------------------------------------------
 
-CREATE TABLE SAKAI_SITE_SECTION_PROPERTY (
+CREATE TABLE SAKAI_SITE_GROUP_PROPERTY (
        SITE_ID              VARCHAR (99) NOT NULL,
-       SECTION_ID           VARCHAR (99) NOT NULL,
+       GROUP_ID             VARCHAR (99) NOT NULL,
        NAME                 VARCHAR (99) NOT NULL,
        VALUE                LONGTEXT NULL
 );
 
-ALTER TABLE SAKAI_SITE_SECTION_PROPERTY
+ALTER TABLE SAKAI_SITE_GROUP_PROPERTY
        ADD  ( PRIMARY KEY (SITE_ID, NAME) ) ;
 
-ALTER TABLE SAKAI_SITE_SECTION_PROPERTY
-       ADD  ( FOREIGN KEY (SECTION_ID)
-                             REFERENCES SAKAI_SITE_SECTION ) ;
+ALTER TABLE SAKAI_SITE_GROUP_PROPERTY
+       ADD  ( FOREIGN KEY (GROUP_ID)
+                             REFERENCES SAKAI_SITE_GROUP ) ;
 
-ALTER TABLE SAKAI_SITE_SECTION_PROPERTY
+ALTER TABLE SAKAI_SITE_GROUP_PROPERTY
        ADD  ( FOREIGN KEY (SITE_ID)
                              REFERENCES SAKAI_SITE ) ;
 
-CREATE INDEX IE_SAKAI_SITE_SECT_PROP_SITE ON SAKAI_SITE_SECTION_PROPERTY
+CREATE INDEX IE_SAKAI_SITE_GRP_PROP_SITE ON SAKAI_SITE_GROUP_PROPERTY
 (
        SITE_ID                       ASC
 );

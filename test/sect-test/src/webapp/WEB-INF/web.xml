@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <display-name>sakai-sect-test</display-name>
-    <description>Sakai 2 component test</description>
+    <description>Sakai 2 site group test</description>
 
 	<!-- Sakai request filter -->
     <filter>
@@ -21,7 +21,7 @@
 
     <servlet>
         <servlet-name>
-           sakai.test.section
+           sakai.test.group
         </servlet-name>
         <servlet-class>
             org.sakaiproject.tool.sectiontest.SectionTestTool

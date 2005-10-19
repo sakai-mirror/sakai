@@ -29,7 +29,7 @@ import java.util.Map;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.SiteCache;
 import org.sakaiproject.service.legacy.event.EventTrackingService;
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
@@ -102,9 +102,9 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 			}
 			
 			// add the sections to the cache
-			for (Iterator sections = site.getSections().iterator(); sections.hasNext();)
+			for (Iterator sections = site.getGroups().iterator(); sections.hasNext();)
 			{
-				Section section = (Section) sections.next();
+				Group section = (Group) sections.next();
 				m_sections.put(section.getId(), section);
 			}
 		}
@@ -157,9 +157,9 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 				}
 			}
 
-			for (Iterator sections = site.getSections().iterator(); sections.hasNext();)
+			for (Iterator sections = site.getGroups().iterator(); sections.hasNext();)
 			{
-				Section section = (Section) sections.next();
+				Group section = (Group) sections.next();
 				m_sections.remove(section.getId());
 			}
 		}
@@ -184,8 +184,8 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 	/**
 	 * @inheritDoc
 	 */
-	public Section getSection(String sectionId)
+	public Group getGroup(String sectionId)
 	{
-		return (Section) m_sections.get(sectionId);
+		return (Group) m_sections.get(sectionId);
 	}
 }

@@ -223,9 +223,9 @@
 		<div class="act">
 			<input type="submit" name="eventSubmit_doPages" value="$tlang.getString("sitedi.pag")" />
 		</div>
-		Add/edit sections
+		Add/edit groups
 		<div class="act">
-			<input type="submit" name="eventSubmit_doSections" value="$tlang.getString("sitedi.sec")" />
+			<input type="submit" name="eventSubmit_doGroups" value="$tlang.getString("sitedi.grp")" />
 		</div>
 		$tlang.getString("sitedi.specon")
 		<div class="chefAlertBox">$tlang.getString("sitedi.sitcre")</div>

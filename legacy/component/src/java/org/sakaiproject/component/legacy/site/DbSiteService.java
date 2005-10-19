@@ -41,7 +41,7 @@ import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
@@ -140,7 +140,7 @@ public class DbSiteService extends BaseSiteService
 				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_site");
 
 				// also load the 2.1 new site database tables
-				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_site_section");
+				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_site_group");
 			}
 
 			super.init();
@@ -273,10 +273,10 @@ public class DbSiteService extends BaseSiteService
 				statement = "delete from SAKAI_SITE_PAGE where SITE_ID = ?";
 				m_sql.dbWrite(connection, statement, fields);
 
-				statement = "delete from SAKAI_SITE_SECTION_PROPERTY where SITE_ID = ?";
+				statement = "delete from SAKAI_SITE_GROUP_PROPERTY where SITE_ID = ?";
 				m_sql.dbWrite(connection, statement, fields);
 
-				statement = "delete from SAKAI_SITE_SECTION where SITE_ID = ?";
+				statement = "delete from SAKAI_SITE_GROUP where SITE_ID = ?";
 				m_sql.dbWrite(connection, statement, fields);
 
 				// since we've already deleted the old values, don't delete them again.
@@ -329,24 +329,24 @@ public class DbSiteService extends BaseSiteService
 					}
 				}
 
-				// add each section
-				for (Iterator iSections = edit.getSections().iterator(); iSections.hasNext();)
+				// add each group
+				for (Iterator iGroups = edit.getGroups().iterator(); iGroups.hasNext();)
 				{
-					Section section = (Section) iSections.next();
+					Group group = (Group) iGroups.next();
 
-					// write the section
-					statement = "insert into SAKAI_SITE_SECTION (SECTION_ID, SITE_ID, TITLE, DESCRIPTION)" + " values (?,?,?,?)";
+					// write the group
+					statement = "insert into SAKAI_SITE_GROUP (GROUP_ID, SITE_ID, TITLE, DESCRIPTION)" + " values (?,?,?,?)";
 
 					fields = new Object[4];
-					fields[0] = section.getId();
+					fields[0] = group.getId();
 					fields[1] = caseId(edit.getId());
-					fields[2] = section.getTitle();
-					fields[3] = section.getDescription();
+					fields[2] = group.getTitle();
+					fields[3] = group.getDescription();
 					m_sql.dbWrite(connection, statement, fields);
 
-					// write the section's properties
-					writeProperties(connection, "SAKAI_SITE_SECTION_PROPERTY", "SECTION_ID", section.getId(), "SITE_ID",
-							caseId(edit.getId()), section.getProperties(), deleteAgain);
+					// write the group's properties
+					writeProperties(connection, "SAKAI_SITE_GROUP_PROPERTY", "GROUP_ID", group.getId(), "SITE_ID",
+							caseId(edit.getId()), group.getProperties(), deleteAgain);
 				}
 
 				// write the site and properties, releasing the lock
@@ -525,10 +525,10 @@ public class DbSiteService extends BaseSiteService
 				statement = "delete from SAKAI_SITE_USER where SITE_ID = ?";
 				m_sql.dbWrite(connection, statement, fields);
 
-				statement = "delete from SAKAI_SITE_SECTION_PROPERTY where SITE_ID = ?";
+				statement = "delete from SAKAI_SITE_GROUP_PROPERTY where SITE_ID = ?";
 				m_sql.dbWrite(connection, statement, fields);
 
-				statement = "delete from SAKAI_SITE_SECTION where SITE_ID = ?";
+				statement = "delete from SAKAI_SITE_GROUP where SITE_ID = ?";
 				m_sql.dbWrite(connection, statement, fields);
 
 				// delete the site and properties
@@ -1243,10 +1243,10 @@ public class DbSiteService extends BaseSiteService
 		/**
 		 * {@inheritDoc}
 		 */
-		public Section findSection(final String id)
+		public Group findGroup(final String id)
 		{
-			String sql = "select SS.SECTION_ID, SS.TITLE, SS.DESCRIPTION, SS.SITE_ID "
-					+ "from SAKAI_SITE_SECTION SS where SS.SECTION_ID = ?";
+			String sql = "select SS.GROUP_ID, SS.TITLE, SS.DESCRIPTION, SS.SITE_ID "
+					+ "from SAKAI_SITE_GROUP SS where SS.GROUP_ID = ?";
 
 			Object fields[] = new Object[1];
 			fields[0] = id;
@@ -1258,15 +1258,15 @@ public class DbSiteService extends BaseSiteService
 					try
 					{
 						// get the fields
-						String sectionId = result.getString(1);
+						String groupId = result.getString(1);
 						String title = result.getString(2);
 						String description = result.getString(3);
 						String siteId = result.getString(4);
 
-						// make the section
-						BaseSection section = new BaseSection(sectionId, title, description, siteId);
+						// make the group
+						BaseSection group = new BaseSection(groupId, title, description, siteId);
 
-						return section;
+						return group;
 					}
 					catch (SQLException e)
 					{
@@ -1281,10 +1281,10 @@ public class DbSiteService extends BaseSiteService
 				m_logger.warn(this + ".findPage: multiple results for page id: " + id);
 			}
 
-			Section rv = null;
+			Group rv = null;
 			if (found.size() > 0)
 			{
-				rv = (Section) found.get(0);
+				rv = (Group) found.get(0);
 			}
 
 			return rv;
@@ -1293,9 +1293,9 @@ public class DbSiteService extends BaseSiteService
 		/**
 		 * {@inheritDoc}
 		 */
-		public String findSectionSiteId(String id)
+		public String findGroupSiteId(String id)
 		{
-			String sql = "select SS.SITE_ID from SAKAI_SITE_SECTION SS where SS.SECTION_ID = ?";
+			String sql = "select SS.SITE_ID from SAKAI_SITE_GROUP SS where SS.GROUP_ID = ?";
 			Object fields[] = new Object[1];
 			fields[0] = id;
 
@@ -1303,7 +1303,7 @@ public class DbSiteService extends BaseSiteService
 
 			if (found.size() > 1)
 			{
-				m_logger.warn(this + ".findSectionSiteId: multiple results for page id: " + id);
+				m_logger.warn(this + ".findGroupSiteId: multiple results for page id: " + id);
 			}
 
 			String rv = null;
@@ -1752,12 +1752,12 @@ public class DbSiteService extends BaseSiteService
 				}
 			}
 
-			// read and unlazy the section properties for the entire site
-			readSiteSectionProperties((BaseSite) site);
-			for (Iterator i = site.getSections().iterator(); i.hasNext();)
+			// read and unlazy the group properties for the entire site
+			readSiteGroupProperties((BaseSite) site);
+			for (Iterator i = site.getGroups().iterator(); i.hasNext();)
 			{
-				BaseSection section = (BaseSection) i.next();
-				((BaseResourcePropertiesEdit) section.m_properties).setLazy(false);
+				BaseSection group = (BaseSection) i.next();
+				((BaseResourcePropertiesEdit) group.m_properties).setLazy(false);
 			}
 		}
 
@@ -1848,15 +1848,15 @@ public class DbSiteService extends BaseSiteService
 		}
 
 		/**
-		 * Read properties for all sections in the site
+		 * Read properties for all groups in the site
 		 * 
 		 * @param site
-		 *        The site to read properties for.
+		 *        The site to read group properties for.
 		 */
-		protected void readSiteSectionProperties(final BaseSite site)
+		protected void readSiteGroupProperties(final BaseSite site)
 		{
 			// get the properties from the db for all pages in the site
-			String sql = "select SECTION_ID, NAME, VALUE from SAKAI_SITE_SECTION_PROPERTY where ( SITE_ID = ? )";
+			String sql = "select GROUP_ID, NAME, VALUE from SAKAI_SITE_GROUP_PROPERTY where ( SITE_ID = ? )";
 
 			Object fields[] = new Object[1];
 			fields[0] = site.getId();
@@ -1867,15 +1867,15 @@ public class DbSiteService extends BaseSiteService
 					try
 					{
 						// read the fields
-						String sectionId = result.getString(1);
+						String groupId = result.getString(1);
 						String name = result.getString(2);
 						String value = result.getString(3);
 
-						// get the section
-						BaseSection section = (BaseSection) site.getSection(sectionId);
-						if (section != null)
+						// get the group
+						BaseSection group = (BaseSection) site.getGroup(groupId);
+						if (group != null)
 						{
-							section.m_properties.addProperty(name, value);
+							group.m_properties.addProperty(name, value);
 						}
 
 						// nothing to return
@@ -1883,7 +1883,7 @@ public class DbSiteService extends BaseSiteService
 					}
 					catch (SQLException e)
 					{
-						m_logger.warn(this + ".readSiteSectionProperties: " + e);
+						m_logger.warn(this + ".readSiteGroupProperties: " + e);
 						return null;
 					}
 				}
@@ -1913,14 +1913,14 @@ public class DbSiteService extends BaseSiteService
 		}
 
 		/**
-		 * Read section properties from storage into the section's properties.
+		 * Read group properties from storage into the group's properties.
 		 * 
-		 * @param section
-		 *        The section for which properties are desired.
+		 * @param group
+		 *        The group for which properties are desired.
 		 */
-		public void readSectionProperties(Section section, Properties props)
+		public void readGroupProperties(Group group, Properties props)
 		{
-			super.readProperties(null, "SAKAI_SITE_SECTION_PROPERTY", "SECTION_ID", section.getId(), props);
+			super.readProperties(null, "SAKAI_SITE_GROUP_PROPERTY", "GROUP_ID", group.getId(), props);
 		}
 
 		/**
@@ -2068,10 +2068,10 @@ public class DbSiteService extends BaseSiteService
 		/**
 		 * @inheritDoc
 		 */
-		public void readSiteSections(final Site site, final Collection sections)
+		public void readSiteGroups(final Site site, final Collection groups)
 		{
-			String sql = "select SS.SECTION_ID, SS.TITLE, SS.DESCRIPTION "
-					+ "from SAKAI_SITE_SECTION SS where SS.SITE_ID = ?";
+			String sql = "select SS.GROUP_ID, SS.TITLE, SS.DESCRIPTION "
+					+ "from SAKAI_SITE_GROUP SS where SS.SITE_ID = ?";
 			// TODO: order by? title? -ggolden
 
 			Object fields[] = new Object[1];
@@ -2084,21 +2084,21 @@ public class DbSiteService extends BaseSiteService
 					try
 					{
 						// get the fields
-						String sectionId = result.getString(1);
+						String groupId = result.getString(1);
 						String title = result.getString(2);
 						String description = result.getString(3);
 
-						// make the section
-						BaseSection section = new BaseSection(sectionId, title, description, site);
+						// make the group
+						BaseSection group = new BaseSection(groupId, title, description, site);
 
-						// add it to the sections
-						sections.add(section);
+						// add it to the groups
+						groups.add(group);
 
 						return null;
 					}
 					catch (SQLException e)
 					{
-						m_logger.warn(this + ".readSiteSections: " + site.getId() + " : " + e);
+						m_logger.warn(this + ".readSiteGroups: " + site.getId() + " : " + e);
 						return null;
 					}
 				}

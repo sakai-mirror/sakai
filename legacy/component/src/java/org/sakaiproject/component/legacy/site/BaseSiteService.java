@@ -73,7 +73,7 @@ import org.sakaiproject.service.legacy.message.MessageChannel;
 import org.sakaiproject.service.legacy.message.MessageChannelEdit;
 import org.sakaiproject.service.legacy.message.MessageService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.SiteService;
@@ -608,7 +608,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// complete the edit
 		m_storage.save(site);
 
-		// save any modified sections
+		// save any modified azgs
 		saveAzgs(site);
 
 		// sync up with all other services
@@ -624,7 +624,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 
 	/**
-	 * Save any azg that a section or the site has modified.
+	 * Save any azg that a group or the site has modified.
 	 * @param site The site to save.
 	 */
 	protected void saveAzgs(Site site)
@@ -642,20 +642,20 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			((BaseSite) site).m_azgChanged = false;
 		}
 
-		for (Iterator i = site.getSections().iterator(); i.hasNext();)
+		for (Iterator i = site.getGroups().iterator(); i.hasNext();)
 		{
-			BaseSection section = (BaseSection) i.next();
-			if (section.m_azgChanged)
+			BaseSection group = (BaseSection) i.next();
+			if (group.m_azgChanged)
 			{
 				try
 				{
-					AuthzGroupService.saveUsingSecurity(section.m_azg, SECURE_UPDATE_SITE);
+					AuthzGroupService.saveUsingSecurity(group.m_azg, SECURE_UPDATE_SITE);
 				}
 				catch (Throwable t)
 				{
-					m_logger.warn(this + ".saveAzgs - section: " + section.getTitle() + " : " + t);
+					m_logger.warn(this + ".saveAzgs - group: " + group.getTitle() + " : " + t);
 				}
-				section.m_azgChanged = false;
+				group.m_azgChanged = false;
 			}
 		}
 	}
@@ -782,7 +782,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		doSave((BaseSite) site, true);
 
-		// TODO: make sure the sections are copied, and their azg's are copied; enableRelated? -ggolden
+		// TODO: make sure the groups are copied, and their azg's are copied; enableRelated? -ggolden
 
 		return site;
 	}
@@ -840,9 +840,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	/**
 	 * @inheritDoc
 	 */
-	public String siteSectionReference(String siteId, String sectionId)
+	public String siteGroupReference(String siteId, String groupId)
 	{
-		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + SECTION_SUBTYPE + Entity.SEPARATOR + sectionId;
+		return getAccessPoint(true) + Entity.SEPARATOR + siteId + Entity.SEPARATOR + GROUP_SUBTYPE + Entity.SEPARATOR + groupId;
 	}
 
 	/**
@@ -1265,7 +1265,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			String container = null;
 			String subType = SITE_SUBTYPE;
 
-			// we will get null, service, siteId, page | section | tool, page/section/tool id
+			// we will get null, service, siteId, page | group | tool, page/group/tool id
 			String[] parts = StringUtil.split(reference, Entity.SEPARATOR);
 
 			if (parts.length > 2)
@@ -1363,7 +1363,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		
 		try
 		{
-			// first, use the reference as an authzGroup (site, section, page or tool)
+			// first, use the reference as an authzGroup (site, group, page or tool)
 			rv.add(ref.getReference());
 			
 			// if this is a sub-type, add the site's reference - container is site id
@@ -1538,21 +1538,21 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		enableAuthorizationGroup(site.getReference(), siteAzgTemplate, userId, "!site.template");
 
-		// figure the section authorization group template
-		String sectionAzgTemplate = sectionAzgTemplate(site);
+		// figure the group authorization group template
+		String groupAzgTemplate = groupAzgTemplate(site);
 
-		// enable a realm for each section: use the same template as for the site, but don't assign a user maintain in the section's azg
-		for (Iterator iSections = site.getSections().iterator(); iSections.hasNext();)
+		// enable a realm for each group: use the same template as for the site, but don't assign a user maintain in the group's azg
+		for (Iterator iGroups = site.getGroups().iterator(); iGroups.hasNext();)
 		{
-			Section section = (Section) iSections.next();
-			enableAuthorizationGroup(section.getReference(), sectionAzgTemplate, null, "!section.template");
+			Group group = (Group) iGroups.next();
+			enableAuthorizationGroup(group.getReference(), groupAzgTemplate, null, "!group.template");
 		}
 
-		// disable the authorization groups for any sections deleted in this edit
-		for (Iterator iSections = site.m_deletedSections.iterator(); iSections.hasNext();)
+		// disable the authorization groups for any groups deleted in this edit
+		for (Iterator iGroups = site.m_deletedGroups.iterator(); iGroups.hasNext();)
 		{
-			Section section = (Section) iSections.next();
-			disableAuthorizationGroup(section.getReference());
+			Group group = (Group) iGroups.next();
+			disableAuthorizationGroup(group.getReference());
 		}
 
 		if (hasMailbox)
@@ -1635,23 +1635,23 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 
 	/**
-	 * Figure the authorization group template for a section of this site, based on type and if it's a user site.
+	 * Figure the authorization group template for a group of this site, based on type and if it's a user site.
 	 * 
 	 * @param site
 	 *        The site to figure the authorization group templates for.
-	 * @return the authorization group template for a section of this site, based on type and if it's a user site.
+	 * @return the authorization group template for a group of this site, based on type and if it's a user site.
 	 */
-	protected String sectionAzgTemplate(Site site)
+	protected String groupAzgTemplate(Site site)
 	{
 		String azgTemplate = null;
 		if (isUserSite(site.getId()))
 		{
-			azgTemplate = "!section.user";
+			azgTemplate = "!group.user";
 		}
 		else
 		{
 			// use the type's template, if defined
-			azgTemplate = "!section.template";
+			azgTemplate = "!group.template";
 			String type = site.getType();
 			if (type != null)
 			{
@@ -1682,11 +1682,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// disable realm last, to keep those permissions around
 		disableAuthorizationGroup(site.getReference());
 
-		// disable a realm for each section
-		for (Iterator iSections = site.getSections().iterator(); iSections.hasNext();)
+		// disable a realm for each group
+		for (Iterator iGroups = site.getGroups().iterator(); iGroups.hasNext();)
 		{
-			Section section = (Section) iSections.next();
-			disableAuthorizationGroup(section.getReference());
+			Group group = (Group) iGroups.next();
+			disableAuthorizationGroup(group.getReference());
 		}
 	}
 
@@ -2318,12 +2318,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		public void readToolProperties(ToolConfiguration tool, Properties props);
 
 		/**
-		 * Read section properties from storage into the section's properties.
+		 * Read group properties from storage into the group's properties.
 		 * 
-		 * @param section
-		 *        The section for which properties are desired.
+		 * @param groupId
+		 *        The groupId for which properties are desired.
 		 */
-		public void readSectionProperties(Section section, Properties props);
+		public void readGroupProperties(Group groupId, Properties props);
 
 		/**
 		 * Read site pages from storage into the site's pages.
@@ -2397,32 +2397,32 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		public void saveToolConfig(Connection conn, ToolConfiguration tool);
 
 		/**
-		 * Access the Section that has this id, if one is defined, else return null. The section may be in any Site.
+		 * Access the Group that has this id, if one is defined, else return null. The group may be in any Site.
 		 * 
 		 * @param id
-		 *        The id of the section.
-		 * @return The Section that has this id, if one is defined, else return null.
+		 *        The id of the group.
+		 * @return The Group that has this id, if one is defined, else return null.
 		 */
-		public Section findSection(String id);
+		public Group findGroup(String id);
 
 		/**
-		 * Access the Site id for the section with this id.
+		 * Access the Site id for the group with this id.
 		 * 
 		 * @param id
-		 *        The id of the section.
-		 * @return The Site id for the section with this id, if the section is found, else null.
+		 *        The id of the group.
+		 * @return The Site id for the group with this id, if the group is found, else null.
 		 */
-		public String findSectionSiteId(String id);
+		public String findGroupSiteId(String id);
 
 		/**
 		 * Read site pages from storage into the site's pages.
 		 * 
 		 * @param site
-		 *        The site for which pages are desired.
-		 * @param sections
+		 *        The site for which groups are desired.
+		 * @param groups
 		 *        The Collection to fill in.
 		 */
-		public void readSiteSections(Site site, Collection sections);
+		public void readSiteGroups(Site site, Collection groups);
 	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
@@ -2734,31 +2734,31 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	/**
 	 * @inheritDoc
 	 */
-	public Section findSection(String sectionRefOrId)
+	public Group findGroup(String refOrId)
 	{
-		Section rv = null;
+		Group rv = null;
 
 		// parse the reference or id
-		Reference ref = m_entityManager.newReference(sectionRefOrId);
+		Reference ref = m_entityManager.newReference(refOrId);
 
-		// for ref, get the site from the cache, or cache it and get the section from the site
+		// for ref, get the site from the cache, or cache it and get the group from the site
 		if (SERVICE_NAME.equals(ref.getType()))
 		{
 			try
 			{
 				Site site = getDefinedSite(ref.getContainer());	
-				rv = site.getSection(ref.getId());
+				rv = site.getGroup(ref.getId());
 			}
 			catch (IdUnusedException e) {}
 		}
 
-		// for id, check the cache or get the section from storage
+		// for id, check the cache or get the group from storage
 		else
 		{
 			// check the site cache
 			if (m_siteCache != null)
 			{
-				rv = m_siteCache.getSection(sectionRefOrId);
+				rv = m_siteCache.getGroup(refOrId);
 				if (rv != null)
 				{
 					// make a copy from the cache
@@ -2767,8 +2767,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 				else
 				{
-					// if not, get the section's site id, cache the site, and try again
-					String siteId = m_storage.findSectionSiteId(sectionRefOrId);
+					// if not, get the group's site id, cache the site, and try again
+					String siteId = m_storage.findGroupSiteId(refOrId);
 					if (siteId != null)
 					{
 						try
@@ -2777,7 +2777,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 							Site site = getDefinedSite(siteId);
 	
 							// find in the copy we get from the cache
-							rv = site.getSection(sectionRefOrId);
+							rv = site.getGroup(refOrId);
 						}
 						catch (IdUnusedException e) {}
 					}
@@ -2786,7 +2786,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 			else
 			{
-				rv = m_storage.findSection(sectionRefOrId);
+				rv = m_storage.findGroup(refOrId);
 			}
 		}
 

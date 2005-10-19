@@ -76,7 +76,7 @@ import org.sakaiproject.service.legacy.message.MessageHeader;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
@@ -84,7 +84,6 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.tool.content.ResourcesAction;
 import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
-//import org.sakaiproject.tool.section.jsf.JsfUtil;
 import org.sakaiproject.util.Filter;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.MergedList;
@@ -567,26 +566,26 @@ extends PagedResourceActionII
 		}
 		else if (a.getAnnouncementHeader().getAccess().equals(MessageHeader.MessageAccess.CHANNEL))
 		{
-			return rb.getString("range.allsections");
+			return rb.getString("range.allgroups");
 		}
 		else
 		{
 			int count = 0;
-			String allSectionString="";
+			String allGroupString="";
 			try
 			{
 				Site site = SiteService.getSite(EntityManager.newReference(a.getReference()).getContext());
-				for (Iterator i= a.getAnnouncementHeader().getSections().iterator(); i.hasNext();)
+				for (Iterator i= a.getAnnouncementHeader().getGroups().iterator(); i.hasNext();)
 				{
-					Section aSection = site.getSection((String) i.next());
+					Group aGroup = site.getGroup((String) i.next());
 					count++;
 					if (count > 1)
 					{
-						allSectionString = allSectionString.concat(", ").concat(aSection.getTitle());
+						allGroupString = allGroupString.concat(", ").concat(aGroup.getTitle());
 					}
 					else
 					{
-						allSectionString = aSection.getTitle();
+						allGroupString = aGroup.getTitle();
 					}
 				}
 			}
@@ -594,7 +593,7 @@ extends PagedResourceActionII
 			{
 				// No site available.
 			}
-			return allSectionString;
+			return allGroupString;
 		}
 	}
 
@@ -744,9 +743,9 @@ extends PagedResourceActionII
 			}
 		}
 		
-		// section realted variables
+		// group realted variables
 		context.put("channelAccess", MessageHeader.MessageAccess.CHANNEL);
-		context.put("sectionAccess", MessageHeader.MessageAccess.SECTIONED);
+		context.put("groupAccess", MessageHeader.MessageAccess.GROUPED);
 		//********* for site column display ********
 		Site site = null;
 		try
@@ -819,8 +818,8 @@ extends PagedResourceActionII
 					
 					if (!menu_new)
 					{
-						// whether user can add to any sections?
-						menu_new = channel.getSectionsAllowAddMessage() != null;
+						// whether user can add to any groups?
+						menu_new = channel.getGroupsAllowAddMessage() != null;
 					}
 					
 					List messages = null;
@@ -833,9 +832,9 @@ extends PagedResourceActionII
 						{
 							messages = getMessages(channel, null, true, state, portlet);
 						}
-						else if (view.equals(rb.getString("view.bysection")))
+						else if (view.equals(rb.getString("view.bygroup")))
 						{
-							messages = getMessagesBySections(site, channel, null, true, state, portlet);
+							messages = getMessagesByGroups(site, channel, null, true, state, portlet);
 						}
 						else if (view.equals(rb.getString("view.public")))
 						{
@@ -988,11 +987,11 @@ extends PagedResourceActionII
 		String toolId = tool.getId();
 		context.put("toolId", toolId);
 		
-		// show all the sections in this channal that user has get message in
-		Collection sections = channel.getSectionsAllowGetMessage();
-		if (sections != null && sections.size() > 0)
+		// show all the groups in this channal that user has get message in
+		Collection groups = channel.getGroupsAllowGetMessage();
+		if (groups != null && groups.size() > 0)
 		{
-			context.put("sections", sections);
+			context.put("groups", groups);
 		}
 		
 		if (sstate.getAttribute(STATE_SELECTED_VIEW) != null)
@@ -1381,10 +1380,10 @@ extends PagedResourceActionII
 	}
 	
 	/**
-	 * This get the whole list of announcement, find their sections, and list them based on section attribute
+	 * This get the whole list of announcement, find their groups, and list them based on group attribute
 	 * @throws PermissionException
 	 */
-	private List getMessagesBySections(
+	private List getMessagesByGroups(
 		Site site,
 		AnnouncementChannel defaultChannel,
 		Filter filter,
@@ -1411,15 +1410,15 @@ extends PagedResourceActionII
 				if (aMessage.getAnnouncementHeader().getAccess().equals(MessageHeader.MessageAccess.CHANNEL))
 				{
 					//site announcements
-					aMessage.setRange(rb.getString("range.allsections"));
+					aMessage.setRange(rb.getString("range.allgroups"));
 					rv.add(new AnnouncementWrapper(aMessage));
 				}
 				else
 				{
-					for (Iterator k = aMessage.getAnnouncementHeader().getSections().iterator(); k.hasNext();)
+					for (Iterator k = aMessage.getAnnouncementHeader().getGroups().iterator(); k.hasNext();)
 					{
-						// announcement by section
-						aMessage.setRange(site.getSection((String) k.next()).getTitle());
+						// announcement by group
+						aMessage.setRange(site.getGroup((String) k.next()).getTitle());
 						rv.add(new AnnouncementWrapper(aMessage));
 					}
 				}
@@ -1429,10 +1428,10 @@ extends PagedResourceActionII
 		
 		return rv;
 		
-	}	// getMessagesBySections
+	}	// getMessagesByGroups
 	
 	/**
-	 * This get the whole list of announcement, find their sections, and list them based on section attribute
+	 * This get the whole list of announcement, find their groups, and list them based on group attribute
 	 * @throws PermissionException
 	 */
 	private List getMessagesPublic(
@@ -1578,16 +1577,16 @@ extends PagedResourceActionII
 				}
 				else
 				{
-					// section list which user can add message to
-					Collection sections = channel.getSectionsAllowAddMessage();
-					if (sections != null && sections.size() > 0)
+					// group list which user can add message to
+					Collection groups = channel.getGroupsAllowAddMessage();
+					if (groups != null && groups.size() > 0)
 					{
-						context.put("sections", sections);
+						context.put("groups", groups);
 						// if this a new annoucement, get the subject and body from temparory record
 						if (state.getIsNewAnnouncement())
 						{
-							// default to make section selections
-							context.put("announceTo", "sections");
+							// default to make group selections
+							context.put("announceTo", "groups");
 						}
 					}
 					else
@@ -1714,9 +1713,9 @@ extends PagedResourceActionII
 			context.put("pubviewset", Boolean.FALSE);
 			context.put("pubview", Boolean.valueOf(message.getProperties().getProperty(ResourceProperties.PROP_PUBVIEW) != null));
 			
-			// show all the sections in this channal that user has get message in
-			Collection sections = channel.getSectionsAllowGetMessage();
-			if (sections != null)
+			// show all the groups in this channal that user has get message in
+			Collection groups = channel.getGroupsAllowGetMessage();
+			if (groups != null)
 			{
 				context.put("range", getAnnouncementRange(message));
 			}	
@@ -2065,12 +2064,12 @@ extends PagedResourceActionII
 		// announce to public?
 		String announceTo = rundata.getParameters().getString("announceTo");
 		state.setTempAnnounceTo(announceTo);
-		if (announceTo.equals("sections"))
+		if (announceTo.equals("groups"))
 		{
-			String[] sectionChoice = rundata.getParameters().getStrings("selectedSections");
-			if (sectionChoice== null || sectionChoice.length == 0)
+			String[] groupChoice = rundata.getParameters().getStrings("selectedGroups");
+			if (groupChoice== null || groupChoice.length == 0)
 			{
-				addAlert(sstate,rb.getString("java.alert.youchoosesection"));
+				addAlert(sstate,rb.getString("java.alert.youchoosegroup"));
 			}
 		}
 		
@@ -2162,11 +2161,11 @@ extends PagedResourceActionII
 						// any setting of this property indicates pubview
 						msg.getPropertiesEdit().addProperty(ResourceProperties.PROP_PUBVIEW,Boolean.TRUE.toString());
 						header.setAccess(MessageHeader.MessageAccess.CHANNEL);
-						for (Iterator s = header.getSections().iterator(); s.hasNext(); )
+						for (Iterator s = header.getGroups().iterator(); s.hasNext(); )
 						{
 							try
 							{
-								header.removeSection(site.getSection((String) s.next()));
+								header.removeGroup(site.getGroup((String) s.next()));
 							}
 							catch (PermissionException e)
 							{
@@ -2184,11 +2183,11 @@ extends PagedResourceActionII
 					if (announceTo.equals("site"))
 					{
 						header.setAccess(MessageHeader.MessageAccess.CHANNEL);
-						for (Iterator s = header.getSections().iterator(); s.hasNext(); )
+						for (Iterator s = header.getGroups().iterator(); s.hasNext(); )
 						{
 							try
 							{
-								header.removeSection(site.getSection((String) s.next()));
+								header.removeGroup(site.getGroup((String) s.next()));
 							}
 							catch (PermissionException e)
 							{
@@ -2196,19 +2195,19 @@ extends PagedResourceActionII
 							}
 						}
 					}
-					else if (announceTo.equals("sections"))
+					else if (announceTo.equals("groups"))
 					{
-						String[] sectionChoice = rundata.getParameters().getStrings("selectedSections");
+						String[] groupChoice = rundata.getParameters().getStrings("selectedGroups");
 						
 					
-						// if section has been dropped, remove it from announcement header
-						for (Iterator oSIterator=header.getSections().iterator(); oSIterator.hasNext();)
+						// if group has been dropped, remove it from announcement header
+						for (Iterator oSIterator=header.getGroups().iterator(); oSIterator.hasNext();)
 						{
-							Reference oSRef = EntityManager.newReference((String) oSIterator.next());
+							Reference oGRef = EntityManager.newReference((String) oSIterator.next());
 							boolean selected = false;
-							for(int k = 0; k<sectionChoice.length && !selected; k++)
+							for(int k = 0; k<groupChoice.length && !selected; k++)
 							{
-								if (oSRef.getId().equals(sectionChoice[k]))
+								if (oGRef.getId().equals(groupChoice[k]))
 								{
 									selected = true;
 								}
@@ -2217,30 +2216,30 @@ extends PagedResourceActionII
 							{
 								try
 								{
-									header.removeSection(site.getSection(oSRef.getId()));
+									header.removeGroup(site.getGroup(oGRef.getId()));
 								}
 								catch (Exception ignore)
 								{
 									if (Log.getLogger("chef").isDebugEnabled())
-										Log.debug("chef", this +"doPost(): cannot remove section " + oSRef.getId());
+										Log.debug("chef", this +"doPost(): cannot remove group " + oGRef.getId());
 								}
 							}
 						}
 						
-						// add section to announcement header
-						if (sectionChoice != null )
+						// add group to announcement header
+						if (groupChoice != null )
 						{
-							header.setAccess(MessageHeader.MessageAccess.SECTIONED);
-							for(int k = 0; k<sectionChoice.length; k++)
+							header.setAccess(MessageHeader.MessageAccess.GROUPED);
+							for(int k = 0; k<groupChoice.length; k++)
 							{
 								try
 								{
-									header.addSection(site.getSection(sectionChoice[k]));
+									header.addGroup(site.getGroup(groupChoice[k]));
 								}
 								catch (Exception eIgnore)
 								{
 									if (Log.getLogger("chef").isDebugEnabled())
-										Log.debug("chef", this +"doPost(): cannot add section " + sectionChoice[k]);
+										Log.debug("chef", this +"doPost(): cannot add group " + groupChoice[k]);
 								}
 							}
 						}
@@ -3099,12 +3098,12 @@ extends PagedResourceActionII
 		// announce to public?
 		String announceTo = rundata.getParameters().getString("announceTo");
 		state.setTempAnnounceTo(announceTo);
-		if (announceTo.equals("sections"))
+		if (announceTo.equals("groups"))
 		{
-			String[] sectionChoice = rundata.getParameters().getStrings("selectedSections");
-			if (sectionChoice== null || sectionChoice.length == 0)
+			String[] groupChoice = rundata.getParameters().getStrings("selectedGroups");
+			if (groupChoice== null || groupChoice.length == 0)
 			{
-				addAlert(sstate,rb.getString("java.alert.youchoosesection"));
+				addAlert(sstate,rb.getString("java.alert.youchoosegroup"));
 			}
 		}
 
@@ -3200,11 +3199,11 @@ extends PagedResourceActionII
 						// any setting of this property indicates pubview
 						msg.getPropertiesEdit().addProperty(ResourceProperties.PROP_PUBVIEW,Boolean.TRUE.toString());
 						header.setAccess(MessageHeader.MessageAccess.CHANNEL);
-						for (Iterator s = header.getSections().iterator(); s.hasNext(); )
+						for (Iterator s = header.getGroups().iterator(); s.hasNext(); )
 						{
 							try
 							{
-								header.removeSection(site.getSection((String) s.next()));
+								header.removeGroup(site.getGroup((String) s.next()));
 							}
 							catch (PermissionException e)
 							{
@@ -3222,11 +3221,11 @@ extends PagedResourceActionII
 					if (announceTo.equals("site"))
 					{
 						header.setAccess(MessageHeader.MessageAccess.CHANNEL);
-						for (Iterator s = header.getSections().iterator(); s.hasNext(); )
+						for (Iterator s = header.getGroups().iterator(); s.hasNext(); )
 						{
 							try
 							{
-								header.removeSection(site.getSection((String) s.next()));
+								header.removeGroup(site.getGroup((String) s.next()));
 							}
 							catch (PermissionException e)
 							{
@@ -3234,19 +3233,19 @@ extends PagedResourceActionII
 							}
 						}
 					}
-					else if (announceTo.equals("sections"))
+					else if (announceTo.equals("groups"))
 					{
-						String[] sectionChoice = rundata.getParameters().getStrings("selectedSections");
+						String[] groupChoice = rundata.getParameters().getStrings("selectedGroups");
 						
 					
-						// if section has been dropped, remove it from announcement header
-						for (Iterator oSIterator=header.getSections().iterator(); oSIterator.hasNext();)
+						// if group has been dropped, remove it from announcement header
+						for (Iterator oGIterator=header.getGroups().iterator(); oGIterator.hasNext();)
 						{
-							Reference oSRef = EntityManager.newReference((String) oSIterator.next());
+							Reference oGRef = EntityManager.newReference((String) oGIterator.next());
 							boolean selected = false;
-							for(int k = 0; k<sectionChoice.length && !selected; k++)
+							for(int k = 0; k<groupChoice.length && !selected; k++)
 							{
-								if (oSRef.getId().equals(sectionChoice[k]))
+								if (oGRef.getId().equals(groupChoice[k]))
 								{
 									selected = true;
 								}
@@ -3255,30 +3254,30 @@ extends PagedResourceActionII
 							{
 								try
 								{
-									header.removeSection(site.getSection(oSRef.getId()));
+									header.removeGroup(site.getGroup(oGRef.getId()));
 								}
 								catch (Exception ignore)
 								{
 									if (Log.getLogger("chef").isDebugEnabled())
-										Log.debug("chef", this +"doPost(): cannot remove section " + oSRef.getId());
+										Log.debug("chef", this +"doPost(): cannot remove group " + oGRef.getId());
 								}
 							}
 						}
 						
-						// add section to announcement header
-						if (sectionChoice != null )
+						// add group to announcement header
+						if (groupChoice != null )
 						{
-							header.setAccess(MessageHeader.MessageAccess.SECTIONED);
-							for(int k = 0; k<sectionChoice.length; k++)
+							header.setAccess(MessageHeader.MessageAccess.GROUPED);
+							for(int k = 0; k<groupChoice.length; k++)
 							{
 								try
 								{
-									header.addSection(site.getSection(sectionChoice[k]));
+									header.addGroup(site.getGroup(groupChoice[k]));
 								}
 								catch (Exception eIgnore)
 								{
 									if (Log.getLogger("chef").isDebugEnabled())
-										Log.debug("chef", this +"doPost(): cannot add section " + sectionChoice[k]);
+										Log.debug("chef", this +"doPost(): cannot add group " + groupChoice[k]);
 								}
 							}
 						}
@@ -3413,7 +3412,7 @@ extends PagedResourceActionII
 	} // doSortbydate
 
 	/**
-	 * Do sort by for - section/site/public
+	 * Do sort by for - grouop/site/public
 	 */
 	public void doSortbyfor(RunData rundata, Context context)
 	{
@@ -4204,12 +4203,12 @@ extends PagedResourceActionII
 		{
 			
 		}
-		else if (viewMode.equalsIgnoreCase(rb.getString("view.bysection")))
+		else if (viewMode.equalsIgnoreCase(rb.getString("view.bygroup")))
 		{
 			state.setAttribute(STATE_CURRENT_SORTED_BY, SORT_FOR);
 			state.setAttribute(STATE_CURRENT_SORT_ASC, Boolean.TRUE);
 		}
-		else if (viewMode.equalsIgnoreCase(rb.getString("view.mysections")))
+		else if (viewMode.equalsIgnoreCase(rb.getString("view.mygroups")))
 		{
 			
 		}

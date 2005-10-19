@@ -73,7 +73,7 @@ import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 import org.sakaiproject.service.legacy.message.MessageService;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
@@ -1116,8 +1116,8 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 					Message m = ((BaseMessageChannelEdit) c).findMessage(ref.getId());
 					if (m != null)
 					{
-						sectioned = MessageHeader.MessageAccess.SECTIONED == m.getHeader().getAccess();
-						sections = m.getHeader().getSections();
+						sectioned = MessageHeader.MessageAccess.GROUPED == m.getHeader().getAccess();
+						sections = m.getHeader().getGroups();
 					}
 				}
 
@@ -1722,7 +1722,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		/**
 		 * @inheritDoc
 		 */
-		public Collection getSectionsAllowGetMessage()
+		public Collection getGroupsAllowGetMessage()
 		{
 			return getSectionsAllowFunction(SECURE_READ);
 		}
@@ -1937,7 +1937,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		/**
 		 * @inheritDoc
 		 */
-		public Collection getSectionsAllowAddMessage()
+		public Collection getGroupsAllowAddMessage()
 		{
 			return getSectionsAllowFunction(SECURE_ADD);
 		}
@@ -1993,7 +1993,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			
 			// clear the sections and mark the message as channel
 			// TODO: might be better done in merge(), but easier here -ggolden
-			if (MessageHeader.MessageAccess.SECTIONED == msg.getHeader().getAccess())
+			if (MessageHeader.MessageAccess.GROUPED == msg.getHeader().getAccess())
 			{
 				msg.getHeaderEdit().setAccess(MessageHeader.MessageAccess.CHANNEL);
 				((BaseMessageHeaderEdit) msg.getHeaderEdit()).m_sections = new Vector();
@@ -2360,15 +2360,15 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				Message msg = (Message) msgs.get(i);
 				
 				// if sectioned, check that the end user has get access to any of this message's sections; reject if not
-				if (msg.getHeader().getAccess() == MessageHeader.MessageAccess.SECTIONED)
+				if (msg.getHeader().getAccess() == MessageHeader.MessageAccess.GROUPED)
 				{
 					// check the message's sections to the allowed (get) sections for the current user
-					Collection msgSections = msg.getHeader().getSections();
+					Collection msgSections = msg.getHeader().getGroups();
 	
 					// we need the allowed sections, so get it if we have not done so yet
 					if (allowedSections == null)
 					{
-						allowedSections = getSectionsAllowGetMessage();
+						allowedSections = getGroupsAllowGetMessage();
 					}
 
 					// reject if there is no intersection
@@ -2399,7 +2399,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				String findThisSectionRef = (String) iRefs.next();
 				for (Iterator iSections = sections.iterator(); iSections.hasNext();)
 				{
-					String thisSectionRef = ((Section) iSections.next()).getReference();
+					String thisSectionRef = ((Group) iSections.next()).getReference();
 					if (thisSectionRef.equals(findThisSectionRef))
 					{
 						return true;
@@ -2478,13 +2478,13 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			{
 				// get the channel's site's sections
 				Site site = SiteService.getSite(m_context);
-				Collection sections = site.getSections();
+				Collection sections = site.getGroups();
 				
 				// get a list of the section refs, which are authzGroup ids
 				Collection sectionRefs = new Vector();
 				for (Iterator i = sections.iterator(); i.hasNext();)
 				{
-					Section section = (Section) i.next();
+					Group section = (Group) i.next();
 					sectionRefs.add(section.getReference());
 				}
 			
@@ -2494,7 +2494,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				// pick the Section objects from the site's sections to return, those that are in the sectionRefs list
 				for (Iterator i = sections.iterator(); i.hasNext();)
 				{
-					Section section = (Section) i.next();
+					Group section = (Group) i.next();
 					if (sectionRefs.contains(section.getReference()))
 					{
 						rv.add(section);
@@ -2990,7 +2990,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			m_attachments = m_entityManager.newReferenceList();
 			replaceAttachments(other.getAttachments());
 
-			m_sections = new Vector(other.getSections());
+			m_sections = new Vector(other.getGroups());
 
 		} // BaseMessageHeaderEdit
 
@@ -3106,7 +3106,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		/**
 		* @inheritDoc
 		*/
-		public Collection getSections()
+		public Collection getGroups()
 		{
 			return new Vector(m_sections);
 		}
@@ -3114,7 +3114,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		/**
 		* @inheritDoc
 		*/
-		public void addSection(Section section) throws PermissionException
+		public void addGroup(Group section) throws PermissionException
 		{
 			if (section == null) throw new PermissionException(eventId(SECURE_ADD), "null");
 
@@ -3130,7 +3130,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		/**
 		* @inheritDoc
 		*/
-		public void removeSection(Section section) throws PermissionException
+		public void removeGroup(Group section) throws PermissionException
 		{
 			if (section == null) throw new PermissionException(eventId(SECURE_ADD), "null");
 

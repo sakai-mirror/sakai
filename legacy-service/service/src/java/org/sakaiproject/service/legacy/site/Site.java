@@ -97,7 +97,7 @@ public interface Site extends Edit, Comparable, Serializable, AuthzGroup
 	List getPages();
 
 	/**
-	 * Make sure pages and tools, sections and properties are loaded, not lazy
+	 * Make sure pages and tools, groups and properties are loaded, not lazy
 	 */
 	void loadAll();
 
@@ -149,27 +149,27 @@ public interface Site extends Edit, Comparable, Serializable, AuthzGroup
 	boolean isPubView();
 
 	/**
-	 * Get a site section
+	 * Get a site group
 	 * 
 	 * @param id
-	 *        The section id (or reference).
-	 * @return The Section object if found, or null if not found.
+	 *        The group id (or reference).
+	 * @return The Group object if found, or null if not found.
 	 */
-	Section getSection(String id);
+	Group getGroup(String id);
 
 	/**
-	 * Get a collection of the sections in a Site.
+	 * Get a collection of the groups in a Site.
 	 * 
-	 * @return A collection (Section) of sections defined in the site, empty if there are none.
+	 * @return A collection (Group) of groups defined in the site, empty if there are none.
 	 */
-	Collection getSections();
+	Collection getGroups();
 
 	/**
-	 * Does the site have any sections defined?
+	 * Does the site have any groups defined?
 	 * 
-	 * @return true if the site and has any sections, false if not.
+	 * @return true if the site and has any groups, false if not.
 	 */
-	boolean hasSections();
+	boolean hasGroups();
 
 	/**
 	 * Set the human readable Title of the site.
@@ -280,15 +280,15 @@ public interface Site extends Edit, Comparable, Serializable, AuthzGroup
 	void setPubView(boolean pubView);
 
 	/**
-	 * Add a new section. The Id is generated, the rest of the fields can be set using calls to the Section object returned.
+	 * Add a new group. The Id is generated, the rest of the fields can be set using calls to the Group object returned.
 	 */
-	Section addSection();
+	Group addGroup();
 
 	/**
-	 * Remove this section from the sections for this site.
+	 * Remove this group from the groups for this site.
 	 * 
-	 * @param section
-	 *        The section to remove.
+	 * @param group
+	 *        The group to remove.
 	 */
-	void removeSection(Section section);
+	void removeGroup(Group group);
 }

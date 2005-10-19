@@ -23,7 +23,7 @@
 
 package org.sakaiproject.service.framework.memory;
 
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 
@@ -55,11 +55,11 @@ public interface SiteCache extends Cache
 	SitePage getPage(String pageId);
 
 	/**
-	 * Access the section that is part of a cached site, by section Id.
+	 * Access the group that is part of a cached site, by group Id.
 	 * 
-	 * @param sectionId
-	 *        The section's id.
-	 * @return The Section that has this id, from a cached site.
+	 * @param id
+	 *        The group id.
+	 * @return The Group that has this id, from a cached site.
 	 */
-	Section getSection(String sectionId);
+	Group getGroup(String id);
 }

@@ -31,31 +31,31 @@ import org.sakaiproject.service.legacy.entity.Edit;
 
 /**
  * <p>
- * A Site Section is a way to divide up a Site into separate units, each with its own authorization group and descriptive information.
+ * A Site Group is a way to divide up a Site into separate units, each with its own authorization group and descriptive information.
  * </p>
  * 
  * @author Sakai Software Development Team
  */
-public interface Section extends Edit, Serializable, AuthzGroup
+public interface Group extends Edit, Serializable, AuthzGroup
 {
-	/** @return a human readable short title of this section. */
+	/** @return a human readable short title of this group. */
 	String getTitle();
 
-	/** @return a text describing the section. */
+	/** @return a text describing the group. */
 	String getDescription();
 
 	/**
-	 * Access the site in which this section lives.
+	 * Access the site in which this group lives.
 	 * 
-	 * @return the site in which this section lives.
+	 * @return the site in which this group lives.
 	 */
 	public Site getContainingSite();
 
-	/** @return the site id for this page. */
+	/** @return the site id for this group. */
 	public String getSiteId();
 
 	/**
-	 * Set the human readable short title of this section.
+	 * Set the human readable short title of this group.
 	 * 
 	 * @param title
 	 *        The new title.
@@ -63,7 +63,7 @@ public interface Section extends Edit, Serializable, AuthzGroup
 	void setTitle(String title);
 
 	/**
-	 * Set the text describing this section.
+	 * Set the text describing this group.
 	 * 
 	 * @param description
 	 *        The new description.

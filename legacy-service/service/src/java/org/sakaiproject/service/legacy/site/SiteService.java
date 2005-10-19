@@ -54,8 +54,8 @@ public interface SiteService extends EntityProducer
 	/** The Entity Reference sub-type for Site references. */
 	static final String SITE_SUBTYPE = "site";
 
-	/** The Entity Reference sub-type for Section references. */
-	static final String SECTION_SUBTYPE = "section";
+	/** The Entity Reference sub-type for Group references. */
+	static final String GROUP_SUBTYPE = "group";
 
 	/** The Entity Reference sub-type for Page references. */
 	static final String PAGE_SUBTYPE = "page";
@@ -409,15 +409,15 @@ public interface SiteService extends EntityProducer
 	String siteToolReference(String siteId, String toolId);
 
 	/**
-	 * Access the internal reference which can be used to access the site section from within the system.
+	 * Access the internal reference which can be used to access the site group from within the system.
 	 * 
 	 * @param siteId
 	 *        The site id.
-	 * @param sectionId
-	 *        The section id.
-	 * @return The the internal reference which can be used to access the site section from within the system.
+	 * @param groupId
+	 *        The group id.
+	 * @return The the internal reference which can be used to access the site group from within the system.
 	 */
-	String siteSectionReference(String siteId, String sectionId);
+	String siteGroupReference(String siteId, String groupId);
 
 	/**
 	 * Is this site (id or reference) a user site?
@@ -640,11 +640,11 @@ public interface SiteService extends EntityProducer
 	String merge(String toSiteId, Element e, String creatorId);
 
 	/**
-	 * Access a Section object, given a reference string or id.
+	 * Access a Group object, given a reference string or id.
 	 * 
-	 * @param sectionRefOrId
-	 *        The section reference or id string.
-	 * @return The Section object if found, or null if not.
+	 * @param refOrId
+	 *        The group reference or id string.
+	 * @return The Group object if found, or null if not.
 	 */
-	Section findSection(String sectionRefOrId);
+	Group findGroup(String refOrId);
 }

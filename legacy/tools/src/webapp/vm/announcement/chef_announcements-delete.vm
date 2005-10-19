@@ -28,20 +28,20 @@
 						#if ($!publicProperty && $publicProperty.equals("true"))
 							$tlang.getString("gen.public");
 						#elseif ($delete_item.getAnnouncementHeader().getAccess().equals("channelAccess"))
-							$tlang.getString("range.allsections");
+							$tlang.getString("range.allgroups");
 						#else
 							#set($count = 0)
-							#set($allSectionString="")
-							#foreach ($aSectionRef in $delete_item.getAnnouncementHeader().getSections())
-								#set($aSection=$!site.getSection($aSectionRef))
+							#set($allGroupString="")
+							#foreach ($aGroupRef in $delete_item.getAnnouncementHeader().getGroups())
+								#set($aGroup=$!site.getGroup($aGroupRef))
 								#set($count=$count+1)
 								#if ($count > 1)
-									#set($allSectionString = $allSectionString.concat(", ").concat($aSection.getTitle()))
+									#set($allGroupString = $allGroupString.concat(", ").concat($aGroup.getTitle()))
 								#else
-									#set($allSectionString = $aSection.getTitle())
+									#set($allGroupString = $aGroup.getTitle())
 								#end
 							#end
-							$allSectionString
+							$allGroupString
 						#end
 					</td>
 				</tr>

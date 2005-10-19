@@ -42,7 +42,7 @@ import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
@@ -81,8 +81,8 @@ public class BaseSite implements Site
 	/** Active flag. */
 	protected boolean m_active = false;
 
-	/** List of sections deleted in this edit pass. */
-	protected Collection m_deletedSections = new Vector();
+	/** List of groups deleted in this edit pass. */
+	protected Collection m_deletedGroups = new Vector();
 
 	/** The site id. */
 	protected String m_id = null;
@@ -141,11 +141,11 @@ public class BaseSite implements Site
 	/** The time last modified. */
 	protected Time m_lastModifiedTime = null;
 
-	/** The list of site sections for this site. */
-	protected ResourceVector m_sections = null;
+	/** The list of site groups for this site. */
+	protected ResourceVector m_groups = null;
 
-	/** Set true while the sections have not yet been read in for a site. */
-	protected boolean m_sectionsLazy = false;
+	/** Set true while the groups have not yet been read in for a site. */
+	protected boolean m_groupsLazy = false;
 
 	/** The azg from the AuthzGroupService that is my AuthzGroup impl. */
 	protected AuthzGroup m_azg = null;
@@ -169,8 +169,8 @@ public class BaseSite implements Site
 		// set up the page list
 		m_pages = new ResourceVector();
 
-		// set up the sections collection
-		m_sections = new ResourceVector();
+		// set up the groups collection
+		m_groups = new ResourceVector();
 
 		// if the id is not null (a new site, rather than a reconstruction)
 		// add the automatic (live) properties
@@ -219,8 +219,8 @@ public class BaseSite implements Site
 		// setup for page list
 		m_pages = new ResourceVector();
 
-		// setup for the sections list
-		m_sections = new ResourceVector();
+		// setup for the groups list
+		m_groups = new ResourceVector();
 
 		m_id = el.getAttribute("id");
 		m_title = StringUtil.trimToNull(el.getAttribute("title"));
@@ -381,7 +381,7 @@ public class BaseSite implements Site
 					m_pages.add(page);
 				}
 
-				// TODO: else if ( "sections")
+				// TODO: else if ( "groups")
 			}
 		}
 
@@ -431,8 +431,8 @@ public class BaseSite implements Site
 		// set up the page list
 		m_pages = new ResourceVector();
 
-		// set up the sections collection
-		m_sections = new ResourceVector();
+		// set up the groups collection
+		m_groups = new ResourceVector();
 
 		m_id = id;
 		m_title = title;
@@ -457,7 +457,7 @@ public class BaseSite implements Site
 		((BaseResourcePropertiesEdit) m_properties).setLazy(true);
 
 		m_pagesLazy = true;
-		m_sectionsLazy = true;
+		m_groupsLazy = true;
 	}
 
 	/**
@@ -518,14 +518,14 @@ public class BaseSite implements Site
 		}
 		m_pagesLazy = other.m_pagesLazy;
 
-		// deep copy the sections
-		m_sections = new ResourceVector();
-		for (Iterator iSections = other.getSections().iterator(); iSections.hasNext();)
+		// deep copy the groups
+		m_groups = new ResourceVector();
+		for (Iterator iGroups = other.getGroups().iterator(); iGroups.hasNext();)
 		{
-			Section section = (Section) iSections.next();
-			m_sections.add(new BaseSection(section, this, exact));
+			Group group = (Group) iGroups.next();
+			m_groups.add(new BaseSection(group, this, exact));
 		}
-		m_sectionsLazy = other.m_sectionsLazy;
+		m_groupsLazy = other.m_groupsLazy;
 	}
 
 	/**
@@ -725,24 +725,24 @@ public class BaseSite implements Site
 	/**
 	 * {@inheritDoc}
 	 */
-	public Collection getSections()
+	public Collection getGroups()
 	{
-		if (m_sectionsLazy)
+		if (m_groupsLazy)
 		{
-			((BaseSiteService) (SiteService.getInstance())).m_storage.readSiteSections(this, m_sections);
-			m_sectionsLazy = false;
+			((BaseSiteService) (SiteService.getInstance())).m_storage.readSiteGroups(this, m_groups);
+			m_groupsLazy = false;
 		}
 
-		return m_sections;
+		return m_groups;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean hasSections()
+	public boolean hasGroups()
 	{
-		Collection sections = getSections();
-		return !sections.isEmpty();
+		Collection groups = getGroups();
+		return !groups.isEmpty();
 	}
 
 	/**
@@ -756,8 +756,8 @@ public class BaseSite implements Site
 		// next, tools from all pages, all at once
 		((BaseSiteService) (SiteService.getInstance())).m_storage.readSiteTools(this);
 
-		// get sections, all at once
-		getSections();
+		// get groups, all at once
+		getGroups();
 
 		// now all properties
 		((BaseSiteService) (SiteService.getInstance())).m_storage.readAllSiteProperties(this);
@@ -835,24 +835,24 @@ public class BaseSite implements Site
 	/**
 	 * {@inheritDoc}
 	 */
-	public Section getSection(String id)
+	public Group getGroup(String id)
 	{
 		if (id == null) return null;
 
-		// if this is a reference, starting with a "/", parse it, make sure it's a section, in this site, and pull the id
+		// if this is a reference, starting with a "/", parse it, make sure it's a group, in this site, and pull the id
 		if (id.startsWith(Entity.SEPARATOR))
 		{
 			Reference ref = ((BaseSiteService) (SiteService.getInstance())).m_entityManager.newReference(id);
-			if ((SiteService.SERVICE_NAME.equals(ref.getType())) && (SiteService.SECTION_SUBTYPE.equals(ref.getSubType()))
+			if ((SiteService.SERVICE_NAME.equals(ref.getType())) && (SiteService.GROUP_SUBTYPE.equals(ref.getSubType()))
 					&& (m_id.equals(ref.getContainer())))
 			{
-				return (Section) ((ResourceVector) getSections()).getById(ref.getId());
+				return (Group) ((ResourceVector) getGroups()).getById(ref.getId());
 			}
 
 			return null;
 		}
 
-		return (Section) ((ResourceVector) getSections()).getById(id);
+		return (Group) ((ResourceVector) getGroups()).getById(id);
 	}
 
 	/**
@@ -1009,7 +1009,7 @@ public class BaseSite implements Site
 		}
 		stack.pop();
 
-		// TODO: site sections
+		// TODO: site groups
 
 		return site;
 	}
@@ -1202,10 +1202,10 @@ public class BaseSite implements Site
 	/**
 	 * {@inheritDoc}
 	 */
-	public Section addSection()
+	public Group addGroup()
 	{
-		Section rv = new BaseSection(this);
-		m_sections.add(rv);
+		Group rv = new BaseSection(this);
+		m_groups.add(rv);
 
 		return rv;
 	}
@@ -1213,13 +1213,13 @@ public class BaseSite implements Site
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeSection(Section section)
+	public void removeGroup(Group group)
 	{
 		// remove it
-		m_sections.remove(section);
+		m_groups.remove(group);
 
 		// track so we can clean up related on commit
-		m_deletedSections.add(section);
+		m_deletedGroups.add(group);
 	}
 
 	/**
@@ -1263,11 +1263,11 @@ public class BaseSite implements Site
 					}
 
 					// find the template for the new azg
-					String sectionAzgTemplate = ((BaseSiteService) (SiteService.getInstance())).siteAzgTemplate(this);
+					String groupAzgTemplate = ((BaseSiteService) (SiteService.getInstance())).siteAzgTemplate(this);
 					AuthzGroup template = null;
 					try
 					{
-						template = AuthzGroupService.getAuthzGroup(sectionAzgTemplate);
+						template = AuthzGroupService.getAuthzGroup(groupAzgTemplate);
 					}
 					catch (Exception e1)
 					{

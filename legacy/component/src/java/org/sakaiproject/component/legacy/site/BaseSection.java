@@ -37,7 +37,7 @@ import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.id.cover.IdService;
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
@@ -54,7 +54,7 @@ import org.w3c.dom.Element;
  * 
  * @author Sakai Software Development Team
  */
-public class BaseSection implements Section, Identifiable
+public class BaseSection implements Group, Identifiable
 {
 	/** Our log (commons). */
 	private static Log M_log = LogFactory.getLog(BaseSection.class);
@@ -123,11 +123,11 @@ public class BaseSection implements Section, Identifiable
 	 * @param other
 	 *        The other to copy.
 	 * @param site
-	 *        The site in which this section lives.
+	 *        The site in which this group lives.
 	 * @param exact
 	 *        If true, we copy id - else we generate a new one.
 	 */
-	protected BaseSection(Section other, Site site, boolean exact)
+	protected BaseSection(Group other, Site site, boolean exact)
 	{
 		BaseSection bOther = (BaseSection) other;
 
@@ -219,10 +219,10 @@ public class BaseSection implements Section, Identifiable
 	{
 		if (m_site != null)
 		{
-			return ((BaseSiteService) (SiteService.getInstance())).siteSectionReference(m_site.getId(), getId());
+			return ((BaseSiteService) (SiteService.getInstance())).siteGroupReference(m_site.getId(), getId());
 		}
 
-		return ((BaseSiteService) (SiteService.getInstance())).siteSectionReference(m_siteId, getId());
+		return ((BaseSiteService) (SiteService.getInstance())).siteGroupReference(m_siteId, getId());
 	}
 
 	/**
@@ -279,9 +279,9 @@ public class BaseSection implements Section, Identifiable
 	 */
 	public boolean equals(Object obj)
 	{
-		if (obj instanceof Section)
+		if (obj instanceof Group)
 		{
-			return ((Section) obj).getId().equals(getId());
+			return ((Group) obj).getId().equals(getId());
 		}
 
 		// compare to strings as id
@@ -306,7 +306,7 @@ public class BaseSection implements Section, Identifiable
 	 */
 	public int compareTo(Object obj)
 	{
-		if (!(obj instanceof Section)) throw new ClassCastException();
+		if (!(obj instanceof Group)) throw new ClassCastException();
 
 		// if the object are the same, say so
 		if (obj == this) return 0;
@@ -318,7 +318,7 @@ public class BaseSection implements Section, Identifiable
 		if (compare == 0)
 		{
 			// sort based on (unique) id
-			compare = getId().compareTo(((Section) obj).getId());
+			compare = getId().compareTo(((Group) obj).getId());
 		}
 
 		return compare;
@@ -340,22 +340,22 @@ public class BaseSection implements Section, Identifiable
 			{
 				try
 				{
-					// create the section's azg, but don't store it yet (that happens if save is called)
+					// create the group's azg, but don't store it yet (that happens if save is called)
 					// use a template, but assign no user any maintain role
 
 					// find the template for the new azg
-					String sectionAzgTemplate = ((BaseSiteService) (SiteService.getInstance())).sectionAzgTemplate(m_site);
+					String groupAzgTemplate = ((BaseSiteService) (SiteService.getInstance())).groupAzgTemplate(m_site);
 					AuthzGroup template = null;
 					try
 					{
-						template = AuthzGroupService.getAuthzGroup(sectionAzgTemplate);
+						template = AuthzGroupService.getAuthzGroup(groupAzgTemplate);
 					}
 					catch (Exception e1)
 					{
 						try
 						{
 							// if the template is not defined, try the fall back template
-							template = AuthzGroupService.getAuthzGroup("!section.template");
+							template = AuthzGroupService.getAuthzGroup("!group.template");
 						}
 						catch (Exception e2)
 						{

@@ -233,16 +233,16 @@ public interface MessageChannel extends Entity
 	MessageEdit mergeMessage(Element el) throws PermissionException, IdUsedException;
 
 	/**
-	 * Get the collection of Sections defined for the context of this channel that the end user has add message permissions in.
+	 * Get the collection of Groups defined for the context of this channel that the end user has add message permissions in.
 	 * 
-	 * @return The Collection (Section) of sections defined for the context of this channel that the end user has add message permissions in.
+	 * @return The Collection (Group) of groups defined for the context of this channel that the end user has add message permissions in.
 	 */
-	Collection getSectionsAllowAddMessage();
+	Collection getGroupsAllowAddMessage();
 
 	/**
-	 * Get the collection of Sections defined for the context of this channel that the end user has get message permissions in.
+	 * Get the collection of Group defined for the context of this channel that the end user has get message permissions in.
 	 * 
-	 * @return The Collection (Section) of sections defined for the context of this channel that the end user has get message permissions in.
+	 * @return The Collection (Group) of groups defined for the context of this channel that the end user has get message permissions in.
 	 */
-	Collection getSectionsAllowGetMessage();
+	Collection getGroupsAllowGetMessage();
 }

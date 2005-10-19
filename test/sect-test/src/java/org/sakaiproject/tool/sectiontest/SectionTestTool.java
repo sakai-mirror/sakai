@@ -53,7 +53,7 @@ import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.message.MessageChannel;
 import org.sakaiproject.service.legacy.message.MessageEdit;
 import org.sakaiproject.service.legacy.message.MessageHeader;
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
@@ -68,17 +68,17 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 public class SectionTestTool extends HttpServlet
 {
 
-	protected static final String siteId = "xxx-section-test";
+	protected static final String siteId = "xxx-group-test";
 
-	protected static final String user1Id = "xxx-section-test-user-1";
+	protected static final String user1Id = "xxx-group-test-user-1";
 
-	protected static final String user2Id = "xxx-section-test-user-2";
+	protected static final String user2Id = "xxx-group-test-user-2";
 
-	protected static final String user3Id = "xxx-section-test-user-3";
+	protected static final String user3Id = "xxx-group-test-user-3";
 
-	protected static final String user4Id = "xxx-section-test-user-4";
+	protected static final String user4Id = "xxx-group-test-user-4";
 
-	protected static final String siteIdNs = "xxx-section-test-ns";
+	protected static final String siteIdNg = "xxx-group-test-ng";
 
 	/**
 	 * Access the Servlet's information display.
@@ -87,7 +87,7 @@ public class SectionTestTool extends HttpServlet
 	 */
 	public String getServletInfo()
 	{
-		return "Sakai Section Test Servlet";
+		return "Sakai Site Group and Group Aware Test Servlet";
 	}
 
 	/**
@@ -137,10 +137,10 @@ public class SectionTestTool extends HttpServlet
 
 		try
 		{
-			out.println("\n\nSectioned Site Tests\n");
+			out.println("\n\nGrouped Site Tests\n");
 			test(out, siteId);
 
-			out.println("\n\nSite / Section serialization Tests\n");
+			out.println("\n\nSite / Group serialization Tests\n");
 			checkSerialization(siteId, out);
 		}
 		finally
@@ -151,8 +151,8 @@ public class SectionTestTool extends HttpServlet
 
 		try
 		{
-			out.println("\n\nNon-Sectioned Site Tests\n");
-			test(out, siteIdNs);
+			out.println("\n\nNon-Grouped Site Tests\n");
+			test(out, siteIdNg);
 		}
 		finally
 		{
@@ -160,7 +160,7 @@ public class SectionTestTool extends HttpServlet
 			s.setUserId(currentUserId);
 		}
 
-		// ok, not really a section test...
+		// ok, not really a group test...
 		try
 		{
 			out.println("\n\nAuthzGroup getRole Tests");
@@ -198,23 +198,23 @@ public class SectionTestTool extends HttpServlet
 	}
 
 	/**
-	 * Check the section access lists for the current user.
+	 * Check the group access lists for the current user.
 	 * 
 	 * @param channel
 	 * @param out
 	 */
 	protected void checkAccess(MessageChannel channel, PrintWriter out)
 	{
-		// check the message service's section / permission access
-		Collection c = channel.getSectionsAllowAddMessage();
-		out.println("sections with add permission:");
+		// check the message service's group / permission access
+		Collection c = channel.getGroupsAllowAddMessage();
+		out.println("groups with add permission:");
 		for (Iterator i = c.iterator(); i.hasNext();)
 		{
 			out.println("  - " + i.next());
 		}
 
-		c = channel.getSectionsAllowGetMessage();
-		out.println("sections with get permission:");
+		c = channel.getGroupsAllowGetMessage();
+		out.println("groups with get permission:");
 		for (Iterator i = c.iterator(); i.hasNext();)
 		{
 			out.println("  - " + i.next());
@@ -238,35 +238,35 @@ public class SectionTestTool extends HttpServlet
 		}
 	}
 
-	protected void checkSectionManip(Section section, PrintWriter out)
+	protected void checkGroupManip(Group group, PrintWriter out)
 	{
 		// mods via the authz group service
 		try
 		{
-			// edit the section1 azg
-			AuthzGroup azg = AuthzGroupService.getAuthzGroup(section.getReference());
+			// edit the group azg
+			AuthzGroup azg = AuthzGroupService.getAuthzGroup(group.getReference());
 			azg.addMember(user1Id, "maintain", true, false);
 
 			AuthzGroupService.save(azg);
-			out.println(" ** section azg modified via azg");
+			out.println(" ** group azg modified via azg");
 		}
 		catch (Throwable t)
 		{
-			out.println(" *** section azg modified via azg: " + t);
+			out.println(" *** group azg modified via azg: " + t);
 		}
 
-		// mods directly with the section
+		// mods directly with the group
 		try
 		{
-			// edit the section1 azg
-			section.addMember(user1Id, "maintain", true, false);
+			// edit the group1 azg
+			group.addMember(user1Id, "maintain", true, false);
 
-			SiteService.save(section.getContainingSite());
-			out.println(" ** section azg modified via site");
+			SiteService.save(group.getContainingSite());
+			out.println(" ** group azg modified via site");
 		}
 		catch (Throwable t)
 		{
-			out.println(" *** section azg modified via site: " + t);
+			out.println(" *** group azg modified via site: " + t);
 		}
 	}
 
@@ -275,13 +275,13 @@ public class SectionTestTool extends HttpServlet
 		try
 		{
 			Site site = SiteService.getSite(sid);
-			Section section = (Section) site.getSections().iterator().next();
+			Group group = (Group) site.getGroups().iterator().next();
 
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(bos);
 
 			oos.writeObject(site);
-			oos.writeObject(section);
+			oos.writeObject(group);
 
 			oos.close();
 			out.println(" ** serialization done");
@@ -290,7 +290,7 @@ public class SectionTestTool extends HttpServlet
 			ObjectInputStream ois = new ObjectInputStream(bis);
 
 			Site site2 = (Site) ois.readObject();
-			Section section2 = (Section) ois.readObject();
+			Group group2 = (Group) ois.readObject();
 
 			out.print(" ** restoration done");
 		}
@@ -314,7 +314,7 @@ public class SectionTestTool extends HttpServlet
 			UserDirectoryService.addUser(user4Id, "four", "user", "", "", "maintain", null);
 
 			// to test that someone other than admin can do this, lets be user1
-			// create a site w/ sections
+			// create a site w/ groups
 			s.setUserId(user1Id);
 			out.println(" ** creating as: " + user1Id);
 
@@ -324,27 +324,27 @@ public class SectionTestTool extends HttpServlet
 			site.getProperties().addProperty("test", "site");
 			site.getProperties().addProperty("test2", "site-2");
 
-			// make a section
-			Section section1 = site.addSection();
-			section1.setTitle("section one");
-			section1.setDescription("this is section one");
-			section1.getProperties().addProperty("test-section1", "in section one");
-			section1.getProperties().addProperty("test-section1-2", "in section one, again");
-			section1.addMember(user1Id, "maintain", true, false);
-			section1.addMember(user2Id, "access", true, false);
+			// make a group
+			Group group1 = site.addGroup();
+			group1.setTitle("group one");
+			group1.setDescription("this is group one");
+			group1.getProperties().addProperty("test-group1", "in group one");
+			group1.getProperties().addProperty("test-group1-2", "in group one, again");
+			group1.addMember(user1Id, "maintain", true, false);
+			group1.addMember(user2Id, "access", true, false);
 
-			String section1Id = section1.getId();
+			String group1Id = group1.getId();
 
-			// make another section
-			Section section2 = site.addSection();
-			section2.setTitle("section two");
-			section2.setDescription("this is section two");
-			section2.getProperties().addProperty("test-section2", "in section two");
-			section2.getProperties().addProperty("test-section2-2", "in section two, again");
-			section2.addMember(user1Id, "maintain", true, false);
-			section2.addMember(user3Id, "access", true, false);
+			// make another group
+			Group group2 = site.addGroup();
+			group2.setTitle("group two");
+			group2.setDescription("this is group two");
+			group2.getProperties().addProperty("test-group2", "in group two");
+			group2.getProperties().addProperty("test-group2-2", "in group two, again");
+			group2.addMember(user1Id, "maintain", true, false);
+			group2.addMember(user3Id, "access", true, false);
 
-			String section2Id = section2.getId();
+			String group2Id = group2.getId();
 
 			// Note: creating as user1Id, this is not need: azg.addMember(user1Id, "maintain", true, false);
 			site.addMember(user4Id, "maintain", true, false);
@@ -361,150 +361,151 @@ public class SectionTestTool extends HttpServlet
 
 			AnnouncementMessage msg = channel.addAnnouncementMessage("subject", false, null, "this is an announcement");
 
-			// make a message for each section
+			// make a message for each group
 			try
 			{
 				msg = channel.addAnnouncementMessage("subject-1", false, null, "this is an announcement");
 				MessageEdit edit = channel.editMessage(msg.getId());
-				edit.getHeaderEdit().setAccess(MessageHeader.MessageAccess.SECTIONED);
-				edit.getHeaderEdit().addSection(section1);
+				edit.getHeaderEdit().setAccess(MessageHeader.MessageAccess.GROUPED);
+				edit.getHeaderEdit().addGroup(group1);
 				channel.commitMessage(edit);
 			}
 			catch (Throwable t)
 			{
-				out.println(" ** trouble with annc section 1: " + t);
+				out.println(" ** trouble with annc group 1: " + t);
 			}
 
 			try
 			{
 				msg = channel.addAnnouncementMessage("subject-2", false, null, "this is an announcement");
 				MessageEdit edit = channel.editMessage(msg.getId());
-				edit.getHeaderEdit().setAccess(MessageHeader.MessageAccess.SECTIONED);
-				edit.getHeaderEdit().addSection(section2);
+				edit.getHeaderEdit().setAccess(MessageHeader.MessageAccess.GROUPED);
+				edit.getHeaderEdit().addGroup(group2);
 				channel.commitMessage(edit);
 			}
 			catch (Throwable t)
 			{
-				out.println(" ** trouble annc with section 2: " + t);
+				out.println(" ** trouble annc with group 2: " + t);
 			}
 
-			// make a message for both sections
+			// make a message for both groups
 			try
 			{
 				msg = channel.addAnnouncementMessage("subject-1&2", false, null, "this is an announcement");
 				MessageEdit edit = channel.editMessage(msg.getId());
-				edit.getHeaderEdit().setAccess(MessageHeader.MessageAccess.SECTIONED);
-				edit.getHeaderEdit().addSection(section1);
-				edit.getHeaderEdit().addSection(section2);
+				edit.getHeaderEdit().setAccess(MessageHeader.MessageAccess.GROUPED);
+				edit.getHeaderEdit().addGroup(group1);
+				edit.getHeaderEdit().addGroup(group2);
 				channel.commitMessage(edit);
 			}
 			catch (Throwable t)
 			{
-				out.println(" ** trouble with annc section 1&2: " + t);
+				out.println(" ** trouble with annc group 1&2: " + t);
 			}
 
-			// have a site.maintain'er (user4) create another section
+			// have a site.maintain'er (user4) create another group
 			s.setUserId(user4Id);
 
 			site = SiteService.getSite(siteId);
-			Section section4 = site.addSection();
-			section4.setTitle("section4");
+			Group group4 = site.addGroup();
+			group4.setTitle("group4");
 			SiteService.save(site);
 
-			String section4Id = section4.getId();
+			String group4Id = group4.getId();
 
-			// and edit each section via the authzGroupService or site
+			// and edit each group via the authzGroupService or site
 			try
 			{
-				AuthzGroup sectionAzg = AuthzGroupService.getAuthzGroup(SiteService.siteSectionReference(siteId, section1Id));
-				sectionAzg.addRole("test1");
-				AuthzGroupService.save(sectionAzg);
-				out.println(" ** test1 role added to section 1 by user 4 via azg");
+				AuthzGroup groupAzg = AuthzGroupService.getAuthzGroup(SiteService.siteGroupReference(siteId, group1Id));
+				groupAzg.addRole("test1");
+				AuthzGroupService.save(groupAzg);
+				out.println(" ** test1 role added to group 1 by user 4 via azg");
 			}
 			catch (Throwable t)
 			{
-				out.println(" ** " + user4Id + " trouble with section 1 via azg: " + t);
+				out.println(" ** " + user4Id + " trouble with group 1 via azg: " + t);
 			}
 			try
 			{
 				site = SiteService.getSite(siteId);
-				Section s1 = site.getSection(section1Id);
+				Group s1 = site.getGroup(group1Id);
 				s1.addRole("test1");
 				SiteService.save(site);
-				out.println(" ** test1 role added to section 1 by user 4 via site");
+				out.println(" ** test1 role added to group 1 by user 4 via site");
 			}
 			catch (Throwable t)
 			{
-				out.println(" ** " + user4Id + " trouble with section 1 via site: " + t);
+				out.println(" ** " + user4Id + " trouble with group 1 via site: " + t);
 			}
 
 			try
 			{
 				site = SiteService.getSite(siteId);
-				Section s2 = site.getSection(section2Id);
+				Group s2 = site.getGroup(group2Id);
 				s2.addRole("test2");
 				SiteService.save(site);
-				out.println(" ** test2 role added to section 2 by user 4 via site");
+				out.println(" ** test2 role added to group 2 by user 4 via site");
 			}
 			catch (Throwable t)
 			{
-				out.println(" ** " + user4Id + " trouble with section 2 via site: " + t);
+				out.println(" ** " + user4Id + " trouble with group 2 via site: " + t);
 			}
 			try
 			{
-				AuthzGroup sectionAzg = AuthzGroupService.getAuthzGroup(SiteService.siteSectionReference(siteId, section2Id));
-				sectionAzg.addRole("test2");
-				AuthzGroupService.save(sectionAzg);
-				out.println(" ** test2 role added to section 2 by user 4 via azg");
+				AuthzGroup groupAzg = AuthzGroupService.getAuthzGroup(SiteService.siteGroupReference(siteId, group2Id));
+				groupAzg.addRole("test2");
+				AuthzGroupService.save(groupAzg);
+				out.println(" ** test2 role added to group 2 by user 4 via azg");
 			}
 			catch (Throwable t)
 			{
-				out.println(" ** " + user4Id + " trouble with section 2 via azg: " + t);
+				out.println(" ** " + user4Id + " trouble with group 2 via azg: " + t);
 			}
-			
+
 			try
 			{
-				AuthzGroup sectionAzg = AuthzGroupService.getAuthzGroup(SiteService.siteSectionReference(siteId, section4Id));
-				sectionAzg.addRole("test4");
-				AuthzGroupService.save(sectionAzg);
-				out.println(" ** test4 role added to section 4 by user 4 via azg");
+				AuthzGroup groupAzg = AuthzGroupService.getAuthzGroup(SiteService.siteGroupReference(siteId, group4Id));
+				groupAzg.addRole("test4");
+				AuthzGroupService.save(groupAzg);
+				out.println(" ** test4 role added to group 4 by user 4 via azg");
 			}
 			catch (Throwable t)
 			{
-				out.println(" ** " + user4Id + " trouble with section 4 via azg: " + t);
+				out.println(" ** " + user4Id + " trouble with group 4 via azg: " + t);
 			}
 			try
 			{
 				site = SiteService.getSite(siteId);
-				Section s4 = site.getSection(section4Id);
-				s4.addRole("test4");
+				Group g4 = site.getGroup(group4Id);
+				g4.addRole("test4");
 				SiteService.save(site);
-				out.println(" ** test4 role added to section 4 by user 4 via site");
+				out.println(" ** test4 role added to group 4 by user 4 via site");
 			}
 			catch (Throwable t)
 			{
-				out.println(" ** " + user4Id + " (unexpected) trouble with section 4 via site: " + t);
+				out.println(" ** " + user4Id + " (unexpected) trouble with group 4 via site: " + t);
 			}
 
 			// back to user 1
 			s.setUserId(user1Id);
 
-			// create a site w/o sections
-			site = SiteService.addSite(siteIdNs, (String)  null);
-			site.getProperties().addProperty("test", "site no sections");
-			site.getProperties().addProperty("test2", "site-2 no sections");
+			// create a site w/o groups
+			site = SiteService.addSite(siteIdNg, (String) null);
+			site.getProperties().addProperty("test", "site no groups");
+			site.getProperties().addProperty("test2", "site-2 no groups");
 			SiteService.save(site);
 
-			AuthzGroup azgNs = AuthzGroupService.getAuthzGroup(SiteService.siteReference(siteIdNs));
+			AuthzGroup azgNs = AuthzGroupService.getAuthzGroup(SiteService.siteReference(siteIdNg));
 			// Note: creating as user1Id, this is not need: azg.addMember(user1Id, "maintain", true, false);
 			azgNs.addMember(user4Id, "maintain", true, false);
 			azgNs.addMember(user2Id, "access", true, false);
 			azgNs.addMember(user3Id, "access", true, false);
 			AuthzGroupService.save(azgNs);
 
-			AnnouncementChannelEdit channelNs = AnnouncementService.addAnnouncementChannel(AnnouncementService.channelReference(siteIdNs, "main"));
+			AnnouncementChannelEdit channelNs = AnnouncementService.addAnnouncementChannel(AnnouncementService.channelReference(
+					siteIdNg, "main"));
 			AnnouncementService.commitChannel(channelNs);
-			AnnouncementMessage msgNs = channelNs.addAnnouncementMessage("subject NS", false, null, "this is an announcement");
+			AnnouncementMessage msgNs = channelNs.addAnnouncementMessage("subject NG", false, null, "this is an announcement");
 
 			out.println("setup complete.");
 		}
@@ -534,29 +535,29 @@ public class SectionTestTool extends HttpServlet
 				Member mbr = (Member) m.next();
 				out.println("    Member: " + mbr.getUserId() + " " + mbr.getRole().getId());
 			}
-			for (Iterator i = site.getSections().iterator(); i.hasNext();)
+			for (Iterator i = site.getGroups().iterator(); i.hasNext();)
 			{
-				Section section = (Section) i.next();
-				out.println("    Section: " + section.getId() + " " + section.getTitle());
-				azg = AuthzGroupService.getAuthzGroup(section.getReference());
+				Group group = (Group) i.next();
+				out.println("    Group: " + group.getId() + " " + group.getTitle());
+				azg = AuthzGroupService.getAuthzGroup(group.getReference());
 				for (Iterator m = azg.getMembers().iterator(); m.hasNext();)
 				{
 					Member mbr = (Member) m.next();
 					out.println("        Member: " + mbr.getUserId() + " " + mbr.getRole().getId());
 				}
 			}
-			
+
 			out.println("\n ** membership via site");
 			for (Iterator m = site.getMembers().iterator(); m.hasNext();)
 			{
 				Member mbr = (Member) m.next();
 				out.println("    Member: " + mbr.getUserId() + " " + mbr.getRole().getId());
 			}
-			for (Iterator i = site.getSections().iterator(); i.hasNext();)
+			for (Iterator i = site.getGroups().iterator(); i.hasNext();)
 			{
-				Section section = (Section) i.next();
-				out.println("    Section: " + section.getId() + " " + section.getTitle());
-				for (Iterator m = section.getMembers().iterator(); m.hasNext();)
+				Group group = (Group) i.next();
+				out.println("    Group: " + group.getId() + " " + group.getTitle());
+				for (Iterator m = group.getMembers().iterator(); m.hasNext();)
 				{
 					Member mbr = (Member) m.next();
 					out.println("        Member: " + mbr.getUserId() + " " + mbr.getRole().getId());
@@ -568,34 +569,32 @@ public class SectionTestTool extends HttpServlet
 			out.println("site display: " + t);
 		}
 
-		// try to get a section by id and ref
+		// try to get a group by id and ref
 		try
 		{
 			Site site = SiteService.getSite(sid);
-			Section section = (Section) site.getSections().iterator().next();
-			String sectionId = section.getId();
-			String sectionRef = section.getReference();
+			Group group = (Group) site.getGroups().iterator().next();
+			String groupId = group.getId();
+			String groupRef = group.getReference();
 
-			Section section2 = site.getSection(sectionId);
-			if (section2 == null) out.println(" ** error: cannot find section by id: " + sectionId + " in site: " + sid);
-			if (section2 != section)
-				out.println(" ** error: section by id: " + sectionId + " in site: " + sid + " not matching initial section by ==");
+			Group group2 = site.getGroup(groupId);
+			if (group2 == null) out.println(" ** error: cannot find group by id: " + groupId + " in site: " + sid);
+			if (group2 != group)
+				out.println(" ** error: group by id: " + groupId + " in site: " + sid + " not matching initial group by ==");
 
-			Section section3 = site.getSection(sectionRef);
-			if (section3 == null) out.println(" ** error: cannot find section by ref: " + sectionRef + " in site: " + sid);
-			if (section3 != section)
-				out
-						.println(" ** error: section by ref: " + sectionRef + " in site: " + sid
-								+ " not matching initial section by ==");
+			Group group3 = site.getGroup(groupRef);
+			if (group3 == null) out.println(" ** error: cannot find group by ref: " + groupRef + " in site: " + sid);
+			if (group3 != group)
+				out.println(" ** error: group by ref: " + groupRef + " in site: " + sid + " not matching initial group by ==");
 
-			Section section4 = site.getSection(sid);
-			if (section4 != null) out.println(" ** error: found bogus section by id: " + sid + " in site: " + sid);
+			Group group4 = site.getGroup(sid);
+			if (group4 != null) out.println(" ** error: found bogus group by id: " + sid + " in site: " + sid);
 
-			out.println("site.getSection() by id or ref working.");
+			out.println("site.getGroup() by id or ref working.");
 		}
 		catch (Throwable t)
 		{
-			out.println("Section id/ref access: " + t);
+			out.println("Group id/ref access: " + t);
 		}
 
 		// get the channel
@@ -618,7 +617,7 @@ public class SectionTestTool extends HttpServlet
 			out.println("\nfor user: " + user3Id);
 			checkAccess(channel, out);
 
-			// user 4 has site maintain, nothing in the sections
+			// user 4 has site maintain, nothing in the groups
 			s.setUserId(user4Id);
 			out.println("\nfor user: " + user4Id);
 			checkAccess(channel, out);
@@ -628,35 +627,35 @@ public class SectionTestTool extends HttpServlet
 			out.println("Annc channel/msg access: " + t);
 		}
 
-		// section manipulation tests
+		// group manipulation tests
 		try
 		{
 			s.setUserId(currentUserId);
 
 			Site site = SiteService.getSite(sid);
-			Section section = (Section) site.getSections().iterator().next();
-			
-			out.println(" ** section manip test on section: " + section.getTitle());
+			Group group = (Group) site.getGroups().iterator().next();
+
+			out.println(" ** group manip test on group: " + group.getTitle());
 
 			s.setUserId(user1Id);
 			out.println("\nfor user: " + user1Id + "(should have access)");
-			checkSectionManip(section, out);
+			checkGroupManip(group, out);
 
 			s.setUserId(user2Id);
 			out.println("\nfor user: " + user2Id + "(should not have access)");
-			checkSectionManip(section, out);
+			checkGroupManip(group, out);
 
 			s.setUserId(user3Id);
 			out.println("\nfor user: " + user3Id + "(should not have access)");
-			checkSectionManip(section, out);
+			checkGroupManip(group, out);
 
 			s.setUserId(user4Id);
 			out.println("\nfor user: " + user4Id + "(should have access)");
-			checkSectionManip(section, out);
+			checkGroupManip(group, out);
 		}
 		catch (Throwable t)
 		{
-			out.println("Section manip: " + t);
+			out.println("Group manip: " + t);
 		}
 	}
 }

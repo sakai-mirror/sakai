@@ -25,7 +25,7 @@ package org.sakaiproject.service.legacy.message;
 
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.legacy.entity.AttachmentContainerEdit;
-import org.sakaiproject.service.legacy.site.Section;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.user.User;
 
@@ -63,24 +63,24 @@ public interface MessageHeaderEdit extends MessageHeader, AttachmentContainerEdi
 	void setDraft(boolean draft);
 
 	/**
-	 * Add a Section to the list of sections for this message.
+	 * Add a Group to the list of groups for this message.
 	 * 
-	 * @param section
-	 *        The Section to add to those for this message.
+	 * @param group
+	 *        The Group to add to those for this message.
 	 * @throws PermissionException
-	 *         if the end user does not have ADD permission for the message in the section.
+	 *         if the end user does not have permission to do this.
 	 */
-	void addSection(Section section) throws PermissionException;
+	void addGroup(Group group) throws PermissionException;
 
 	/**
-	 * Remove this Section from the list of sections for this message.
+	 * Remove this Group from the list of groups for this message.
 	 * 
-	 * @param section
-	 *        The Section to remove from those for this message.
+	 * @param group
+	 *        The Group to remove from those for this message.
 	 * @throws PermissionException
-	 *         if the end user does not have ADD permission for the message in the section.
+	 *         if the end user does not have permission to do this.
 	 */
-	void removeSection(Section section) throws PermissionException;
+	void removeGroup(Group group) throws PermissionException;
 
 	/**
 	 * Set the access mode for the message - how we compute who has access to the message.
