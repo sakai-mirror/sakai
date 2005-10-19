@@ -685,5 +685,14 @@ public class ContentHostingService
 
       return service.getCollectionMap();
    }
+   
+   public static void eliminateDuplicates(java.util.Collection param) 
+   {
+	      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+	      if (service == null)
+	         return;
+
+	      service.eliminateDuplicates(param);
+   }
 
 }

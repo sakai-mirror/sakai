@@ -1007,4 +1007,12 @@ public interface ContentHostingService extends EntityProducer
     * @return Map of worksite title (String) to worksite resource root id (String)
     */
    public Map getCollectionMap();
+
+   /**
+    * Eliminate from the collection any duplicates as well as any items that are contained within 
+    * another item whose resource-id is in the collection.
+	* @param resourceIds A collection of strings (possibly empty) identifying items and/or collections. 
+	*/
+   public void eliminateDuplicates(Collection resourceIds);
+
 }

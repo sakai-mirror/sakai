@@ -636,27 +636,31 @@ public class ResourcesAction
 		boolean showMoveAction = false;
 		boolean showCopyAction = false;
 		
+		Set highlightedItems = new TreeSet();
+		
 		try
 		{
 			contentService.checkCollection (collectionId);
 			context.put ("collectionFlag", Boolean.TRUE.toString());
 
 			String copyFlag = (String) state.getAttribute (STATE_COPY_FLAG);
-			context.put ("copyFlag", copyFlag);
 			if (copyFlag.equals (Boolean.TRUE.toString()))
 			{ 
+				context.put ("copyFlag", copyFlag);
 				List copiedItems = (List) state.getAttribute(STATE_COPIED_IDS);
 				// context.put ("copiedItem", state.getAttribute (STATE_COPIED_ID));
-				context.put("copiedItems", copiedItems);
+				highlightedItems.addAll(copiedItems);
+				// context.put("copiedItems", copiedItems);
 			}
 
 			String moveFlag = (String) state.getAttribute (STATE_MOVE_FLAG);
-			context.put ("moveFlag", moveFlag);
 			if (moveFlag.equals (Boolean.TRUE.toString()))
 			{ 
+				context.put ("moveFlag", moveFlag);
 				List movedItems = (List) state.getAttribute(STATE_MOVED_IDS);
+				highlightedItems.addAll(movedItems);
 				// context.put ("copiedItem", state.getAttribute (STATE_COPIED_ID));
-				context.put("movedItems", movedItems);
+				// context.put("movedItems", movedItems);
 			}
 
 			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
@@ -667,7 +671,7 @@ public class ResourcesAction
 			
 			List all_roots = new Vector();
 			List this_site = new Vector();
-			List members = getBrowseItems(collectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, navRoot.equals(homeCollectionId), state);
+			List members = getBrowseItems(collectionId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, navRoot.equals(homeCollectionId), state);
 			if(members != null && members.size() > 0)
 			{
 				BrowseItem root = (BrowseItem) members.remove(0);
@@ -712,7 +716,7 @@ public class ResourcesAction
 				String wsCollectionId = ContentHostingService.getSiteCollection(wsId);
 				if(! collectionId.equals(wsCollectionId))
 				{
-	                	members = getBrowseItems(wsCollectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+	                	members = getBrowseItems(wsCollectionId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
 	                	if(members != null && members.size() > 0)
 				    {
 				        BrowseItem root = (BrowseItem) members.remove(0);
@@ -741,7 +745,7 @@ public class ResourcesAction
 	                  String collId = (String) othersites.get(displayName);
 	                  if(! collectionId.equals(collId) && ! wsCollectionId.equals(collId))
 	                  {
-	                      members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+	                      members = getBrowseItems(collId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
 	                      if(members != null && members.size() > 0)
 	                      {
 	                          BrowseItem root = (BrowseItem) members.remove(0);
@@ -904,7 +908,7 @@ public class ResourcesAction
 		
 		state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
 		
-		
+		Set highlightedItems = new TreeSet();
 		
 		List new_items = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
 		if(new_items == null)
@@ -1022,7 +1026,7 @@ public class ResourcesAction
 						String dbId = dropboxId + StringUtil.trimToZero(submitter.getId()) + "/";
 						ContentCollection db = ContentHostingService.getCollection(dbId);
 						expandedCollections.put(dbId, db);
-						List dbox = getBrowseItems(dbId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+						List dbox = getBrowseItems(dbId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
 						if(dbox != null && dbox.size() > 0)
 						{
 							BrowseItem root = (BrowseItem) dbox.remove(0);
@@ -1037,7 +1041,7 @@ public class ResourcesAction
 				{
 					ContentCollection db = ContentHostingService.getCollection(dropboxId);
 					expandedCollections.put(dropboxId, db);
-					List dbox = getBrowseItems(dropboxId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+					List dbox = getBrowseItems(dropboxId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
 					if(dbox != null && dbox.size() > 0)
 					{
 						BrowseItem root = (BrowseItem) dbox.remove(0);
@@ -1048,7 +1052,7 @@ public class ResourcesAction
 					}
 				}
 			}
-			List members = getBrowseItems(collectionId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, navRoot.equals(homeCollectionId), state);
+			List members = getBrowseItems(collectionId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, navRoot.equals(homeCollectionId), state);
 			if(members != null && members.size() > 0)
 			{
 				BrowseItem root = (BrowseItem) members.remove(0);
@@ -1095,7 +1099,7 @@ public class ResourcesAction
 					String collId = (String) othersites.get(displayName);
 					if(! collectionId.equals(collId))
 					{
-						members = getBrowseItems(collId, expandedCollections, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+						members = getBrowseItems(collId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
 						if(members != null && members.size() > 0)
 						{
 							BrowseItem root = (BrowseItem) members.remove(0);
@@ -6605,14 +6609,9 @@ public class ResourcesAction
 			{
 				state.setAttribute (STATE_COPY_FLAG, Boolean.TRUE.toString());
 				
-				for (int i = 0; i < copyItems.length; i++)
-				{
-					copyItemsVector.add (copyItems[i]);
-				}
-
+				copyItemsVector.addAll(Arrays.asList(copyItems));
+				ContentHostingService.eliminateDuplicates(copyItemsVector);
 				state.setAttribute (STATE_COPIED_IDS, copyItemsVector);
-				
-				//setCopyFlags(state);
 				
 			}	// if-else
 		}	// if-else
@@ -6685,6 +6684,8 @@ public class ResourcesAction
 				state.setAttribute (STATE_MOVE_FLAG, Boolean.TRUE.toString());
 				
 				moveItemsVector.addAll(Arrays.asList(moveItems));
+				
+				ContentHostingService.eliminateDuplicates(moveItemsVector);
 				
 				state.setAttribute (STATE_MOVED_IDS, moveItemsVector);
 				
@@ -7482,7 +7483,7 @@ public class ResourcesAction
 	 * @param state - The session state
 	 * @return a List of BrowseItem objects
 	 */
-	protected static List getBrowseItems(String collectionId, HashMap expandedCollections, String sortedBy, String sortedAsc, BrowseItem parent, boolean isLocal, SessionState state)
+	protected static List getBrowseItems(String collectionId, HashMap expandedCollections, Set highlightedItems, String sortedBy, String sortedAsc, BrowseItem parent, boolean isLocal, SessionState state)
 	{
 		boolean need_to_expand_all = Boolean.TRUE.toString().equals((String)state.getAttribute(STATE_NEED_TO_EXPAND_ALL));
 		
@@ -7607,6 +7608,21 @@ public class ResourcesAction
 				folder.setRoot(parent.getRoot());
 			}
 			
+			if(highlightedItems == null || highlightedItems.isEmpty())
+			{
+				// do nothing
+			}
+			else if(parent != null && parent.isHighlighted())
+			{
+				folder.setInheritsHighlight(true);
+				folder.setHighlighted(true);
+			}
+			else if(highlightedItems.contains(collectionId))
+			{
+				folder.setHighlighted(true);
+				folder.setInheritsHighlight(false);
+			}
+			
 			String containerId = contentService.getContainingCollectionId (collectionId);
 			folder.setContainer(containerId);
 			
@@ -7701,7 +7717,7 @@ public class ResourcesAction
 					
 					if(isCollection)
 					{
-						List offspring = getBrowseItems(itemId, expandedCollections, sortedBy, sortedAsc, folder, isLocal, state);
+						List offspring = getBrowseItems(itemId, expandedCollections, highlightedItems, sortedBy, sortedAsc, folder, isLocal, state);
 						if(! offspring.isEmpty())
 						{
 							BrowseItem child = (BrowseItem) offspring.get(0);
@@ -7727,6 +7743,21 @@ public class ResourcesAction
 						newItem.setCanCopy(canRead);
 						newItem.setCanAddItem(canAddItem); // true means this user can add an item in the folder containing this item (used for "duplicate") 
 						
+						if(highlightedItems == null || highlightedItems.isEmpty())
+						{
+							// do nothing
+						}
+						else if(folder.isHighlighted())
+						{
+							newItem.setInheritsHighlight(true);
+							newItem.setHighlighted(true);
+						}
+						else if(highlightedItems.contains(itemId))
+						{
+							newItem.setHighlighted(true);
+							newItem.setInheritsHighlight(false);
+						}
+
 						try
 						{
 							Time createdTime = props.getTimeProperty(ResourceProperties.PROP_CREATION_DATE);
@@ -8529,6 +8560,8 @@ public class ResourcesAction
 
 		protected List m_members;
 		protected boolean m_isEmpty;
+		protected boolean m_isHighlighted;
+		protected boolean m_inheritsHighlight;
 		protected String m_createdBy;
 		protected String m_createdTime;
 		protected String m_modifiedBy;
@@ -8581,6 +8614,9 @@ public class ResourcesAction
 			m_url = "";
 			m_target = "";
 			m_root = "";
+			
+			m_isHighlighted = false;
+			m_inheritsHighlight = false;
 			
 			m_canAddItem = false;
 			m_canAddFolder = false;
@@ -9049,6 +9085,26 @@ public class ResourcesAction
 			m_canUpdate = canUpdate;
 		}
 		
+		public void setHighlighted(boolean isHighlighted)
+		{
+			m_isHighlighted = isHighlighted;
+		}
+		
+		public boolean isHighlighted()
+		{
+			return m_isHighlighted;
+		}
+		
+		public void setInheritsHighlight(boolean inheritsHighlight)
+		{
+			m_inheritsHighlight = inheritsHighlight;
+		}
+		
+		public boolean inheritsHighlighted()
+		{
+			return m_inheritsHighlight;
+		}
+				
 	}	// inner class BrowseItem
 	
 	

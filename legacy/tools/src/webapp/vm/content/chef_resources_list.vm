@@ -253,7 +253,7 @@
 							<div class="itemAction">
 								#set ($itemsOnLine = 0)
 								####### deal with Pasting copied items 
-								#if($copyFlag && $copyFlag.equals($TRUE) && $root.canAddItem())
+								#if($copyFlag && $copyFlag.equals($TRUE) && $root.canAddItem() && ! $root.isHighlighted())
 									#if ($itemsOnLine > 0)
 										|
 									#end
@@ -261,7 +261,7 @@
 									<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 								#end
 								####### deal with Pasting moved items 
-								#if($moveFlag && $moveFlag.equals($TRUE) && $root.canAddItem())
+								#if($moveFlag && $moveFlag.equals($TRUE) && $root.canAddItem() && ! $root.isHighlighted())
 									#if ($itemsOnLine > 0)
 										|
 									#end
@@ -341,37 +341,41 @@
 						<tr
 							#set ($copy="false")
 							#set ($move="false")
-							#if($copyFlag && $copiedItems && $copiedItems.contains("${member.id}"))
+							#if($copyFlag && $member.isHighlighted())
 									class="selectedCopy"
 									 title ="$tlang.getString("list.copied")"
 									#set ($copy="true")
 							#end
-							#if($moveFlag && $movedItems && $movedItems.contains("${member.id}"))
+							#if($moveFlag && $member.isHighlighted())
 								class="selectedMove" 
 								title ="$tlang.getString("list.moved")"
 								#set ($move="true")
 							#end
 							>
 							######################  Item title and action links  ##############
-							<td headers="expansion"
-								#if ($copy=="true")
+							#if($member.inheritsHighlighted())
+								<td headers="expansion">
+								</td>
+							#elseif($copy=="true")
+								<td headers="expansion"
 									class="selected">
 									<span class="skip">
 										$tlang.getString("list.copied")
 									</span>
 									<img src="/library/image/sakai/arrowhere.gif" border="0" alt ="" style="margin-top:.2em" />
 								</td>	
-								#elseif($move=="true")
-											class="selected">
-											<span class="skip">
-												$tlang.getString("list.moved")
-											</span>
-											<img src="/library/image/sakai/arrowhere.gif" border="0" alt ="" style="margin-top:.2em" />
-									</td>		
-								#else
-									>
-									</td>
-								#end	
+							#elseif($move=="true")
+								<td headers="expansion"
+									class="selected">
+									<span class="skip">
+										$tlang.getString("list.moved")
+									</span>
+									<img src="/library/image/sakai/arrowhere.gif" border="0" alt ="" style="margin-top:.2em" />
+								</td>	
+							#else
+								<td headers="expansion">
+								</td>
+							#end	
 							
 							<td headers="checkboxes">
 								#if($member.canDelete() || $member.canRead())
@@ -480,7 +484,7 @@
 									#if($member.isFolder())
 										#set ($itemsOnLine = 0)
 										####### deal with Pasting copied items  3
-										#if($copyFlag && $copyFlag.equals($TRUE) && $member.canAddItem())
+										#if($copyFlag && $copyFlag.equals($TRUE) && $member.canAddItem() && ! $member.isHighlighted())
 											#if ($itemsOnLine > 0)
 												|
 											#end
@@ -488,7 +492,7 @@
 											<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 										#end
 										####### deal with Pasting moved items  3
-										#if($moveFlag && $moveFlag.equals($TRUE) && $member.canAddItem())
+										#if($moveFlag && $moveFlag.equals($TRUE) && $member.canAddItem() && ! $member.isHighlighted())
 											#if ($itemsOnLine > 0)
 												|
 											#end
@@ -660,7 +664,7 @@
 									<div class="itemAction">
 										#set ($itemsOnLine = 0)
 										####### deal with Pasting copied items 
-										#if($copyFlag && $copyFlag.equals($TRUE) && $root.canAddItem())
+										#if($copyFlag && $copyFlag.equals($TRUE) && $root.canAddItem() && ! $root.isHighlighted())
 											#if ($itemsOnLine > 0)
 												|
 											#end
@@ -668,7 +672,7 @@
 											<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 										#end
 										####### deal with Pasting moved items 
-										#if($moveFlag && $moveFlag.equals($TRUE) && $root.canAddItem())
+										#if($moveFlag && $moveFlag.equals($TRUE) && $root.canAddItem() && ! $root.isHighlighted())
 											#if ($itemsOnLine > 0)
 												|
 											#end
@@ -749,38 +753,42 @@
 								<tr
 									#set ($copy="false")
 									#set ($move="false")
-									#if($copyFlag && $copiedItems && $copiedItems.contains("${member.id}"))
+									#if($copyFlag && $member.isHighlighted())
 											class="selectedCopy"
 											 title ="$tlang.getString("list.copied")"
 											#set ($copy="true")
 									#end
-									#if($moveFlag && $movedItems && $movedItems.contains("${member.id}"))
+									#if($moveFlag && $member.isHighlighted())
 										class="selectedMove" 
 										title ="$tlang.getString("list.moved")"
 										#set ($move="true")
 									#end
 									>
 									######################  Item title and action links  ##############
-
-									<td headers="expansion"
-										#if ($copy=="true")
+									#if($member.inheritsHighlighted())
+										<td headers="expansion">
+										</td>
+									#elseif($copy=="true")
+										<td headers="expansion"
 											class="selected">
 											<span class="skip">
 												$tlang.getString("list.copied")
 											</span>
 											<img src="/library/image/sakai/arrowhere.gif" border="0" alt ="" style="margin-top:.2em" />
 										</td>	
-										#elseif($move=="true")
-													class="selected">
-													<span class="skip">
-														$tlang.getString("list.moved")
-													</span>
-													<img src="/library/image/sakai/arrowhere.gif" border="0" alt ="" style="margin-top:.2em" />
-											</td>		
-										#else
-											>
-											</td>
-										#end	
+									#elseif($move=="true")
+										<td headers="expansion"
+											class="selected">
+											<span class="skip">
+												$tlang.getString("list.moved")
+											</span>
+											<img src="/library/image/sakai/arrowhere.gif" border="0" alt ="" style="margin-top:.2em" />
+										</td>	
+									#else
+										<td headers="expansion">
+										</td>
+									#end	
+
 									<td headers="checkboxes">
 										#if($member.canDelete() || $member.canRead())
 											<input type="checkbox" name="selectedMembers" id="list$num" 
@@ -886,7 +894,7 @@
 											#if($member.isFolder())
 												#set ($itemsOnLine = 0)
 												####### deal with Pasting copied items  3
-												#if($copyFlag && $copyFlag.equals($TRUE) && $member.canAddItem())
+												#if($copyFlag && $copyFlag.equals($TRUE) && $member.canAddItem() && ! $member.isHighlighted())
 													#if ($itemsOnLine > 0)
 														|
 													#end
@@ -894,7 +902,7 @@
 													<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 												#end
 												####### deal with Pasting moved items 
-												#if($moveFlag && $moveFlag.equals($TRUE) && $member.canAddItem())
+												#if($moveFlag && $moveFlag.equals($TRUE) && $member.canAddItem() && ! $member.isHighlighted())
 													#if ($itemsOnLine > 0)
 														|
 													#end
