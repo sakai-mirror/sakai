@@ -1398,7 +1398,6 @@ public class SiteAction extends PagedResourceActionII
 							b.add( new MenuEntry(rb.getString("java.editsite"), "doMenu_edit_site_info"));
 						}
 						b.add( new MenuEntry(rb.getString("java.edittools"), "doMenu_edit_site_tools"));
-						b.add( new MenuEntry(rb.getString("java.group"), "doMenu_group"));
 						if (!isMyWorkspace)
 						{
 							List gradToolsSiteTypes = (List) state.getAttribute(GRADTOOLS_SITE_TYPES);
