@@ -976,7 +976,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		try
 		{
 			// if this is a channel
-			if (REF_TYPE_CHANNEL.equals(ref.getSubType()))
+			if (REF_TYPE_CHANNEL.equals(ref.getSubType()) || REF_TYPE_CHANNEL_GROUPS.equals(ref.getSubType()))
 			{
 				MessageChannel channel = getChannel(ref.getReference());
 				rv = "Channel: " + channel.getId() + " (" + channel.getContext() + ")";
@@ -1007,7 +1007,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		try
 		{
 			// if this is a channel
-			if (REF_TYPE_CHANNEL.equals(ref.getSubType()))
+			if (REF_TYPE_CHANNEL.equals(ref.getSubType()) || REF_TYPE_CHANNEL_GROUPS.equals(ref.getSubType()))
 			{
 				MessageChannel channel = getChannel(ref.getReference());
 				rv = channel.getProperties();
@@ -1053,7 +1053,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		try
 		{
 			// if this is a channel
-			if (REF_TYPE_CHANNEL.equals(ref.getSubType()))
+			if (REF_TYPE_CHANNEL.equals(ref.getSubType()) || REF_TYPE_CHANNEL_GROUPS.equals(ref.getSubType()))
 			{
 				rv = getChannel(ref.getReference());
 			}
@@ -1097,6 +1097,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		// if access set to CHANNEL (or PUBLIC), use the message, channel and site authzGroups.
 		// if access set to GROUPED, use the message, and the groups, but not the channel or site authzGroups.
 		// for Channels, use the channel and site authzGroups.
+		// for Channels-groups, use the channel, site, and also any site group in the context
 		try
 		{
 			// for message
@@ -1138,7 +1139,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				}
 			}
 			
-			// for channel
+			// for channel, or the channel+groups
 			else
 			{
 				// channel
@@ -1146,6 +1147,21 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				
 				// site
 				ref.addSiteContextAuthzGroup(rv);
+				
+				// for the specialy marked channel-group, also add any site group's azg
+				if (REF_TYPE_CHANNEL_GROUPS.equals(ref.getSubType()))
+				{
+					Site site = SiteService.getSite(ref.getContext());
+					Collection groups = site.getGroups();
+					
+					// get a list of the group refs, which are authzGroup ids
+					Collection groupRefs = new Vector();
+					for (Iterator i = groups.iterator(); i.hasNext();)
+					{
+						Group group = (Group) i.next();
+						rv.add(group.getReference());
+					}
+				}
 			}
 		}
 		catch (Throwable e)
@@ -1168,7 +1184,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		try
 		{
 			// if this is a channel
-			if (REF_TYPE_CHANNEL.equals(ref.getSubType()))
+			if (REF_TYPE_CHANNEL.equals(ref.getSubType()) || REF_TYPE_CHANNEL_GROUPS.equals(ref.getSubType()))
 			{
 				MessageChannel channel = getChannel(ref.getReference());
 				url = channel.getUrl();
@@ -1781,21 +1797,64 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			Message m = findMessage(messageId);
 			if (m == null)
 				return false;
-
-			// is this the user's own?
-			if (m.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
-			{
-				// own or any
-				return unlockCheck2(SECURE_UPDATE_OWN, SECURE_UPDATE_ANY, messageReference(getReference(), messageId));
-			}
-
-			else
-			{
-				// just any
-				return unlockCheck(SECURE_UPDATE_ANY, messageReference(getReference(), messageId));
-			}
+			
+			return allowEditMessage(m, SECURE_UPDATE_OWN, SECURE_UPDATE_ANY);
 
 		} // allowEditMessage
+
+		/**
+		* check permissions for the message, to be able to edit or save it.
+		* @param m The message.
+		* @return true if the user is allowed to update the message, false if not.
+		*/
+		protected boolean allowEditMessage(Message m, String fOwn, String fAny)
+		{
+			// if the message is not grouped, do the regular check (message, channel, site)
+			if (MessageHeader.MessageAccess.GROUPED != m.getHeader().getAccess())
+			{
+				// is this the user's own?
+				if (m.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
+				{
+					// own or any
+					return unlockCheck2(fOwn, fAny, m.getReference());
+				}
+
+				else
+				{
+					// just any
+					return unlockCheck(fAny, m.getReference());
+				}
+			
+			}
+			
+			// if grouped, check that the user has permissions in every group that the message uses
+			// TODO: make sure that the groupRef does NOT pull in the site for this check
+			else
+			{
+				for (Iterator i = m.getHeader().getGroups().iterator(); i.hasNext(); )
+				{
+					String groupRef = (String) i.next();
+
+					// is this the user's own?
+					if (m.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
+					{
+						// own or any
+						if (!unlockCheck2(fOwn, fAny, groupRef))
+							return false;
+					}
+
+					else
+					{
+						// just any
+						if (!unlockCheck(fAny, groupRef))
+							return false;
+					}
+					
+				}
+			}
+
+			return true;
+		}
 
 		/**
 		* Return a specific channel message, as specified by message name, locked for update.
@@ -1812,19 +1871,23 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			if (m == null)
 				throw new IdUnusedException(messageId);
 
-			// is this the user's own?
+			// pick the security function
 			String function = null;
 			if (m.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// own or any
-				unlock2(SECURE_UPDATE_OWN, SECURE_UPDATE_ANY, messageReference(getReference(), messageId));
 				function = SECURE_UPDATE_OWN;
 			}
 			else
 			{
 				// just any
-				unlock(SECURE_UPDATE_ANY, messageReference(getReference(), messageId));
 				function = SECURE_UPDATE_ANY;
+			}
+			
+			// security check
+			if (!allowEditMessage(messageId))
+			{
+				throw new PermissionException(eventId(function), m.getReference());
 			}
 
 			// ignore the cache - get the message with a lock from the info store
@@ -1843,7 +1906,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		* The MessageEdit is disabled, and not to be used after this call.
 		* @param user The UserEdit object to commit.
 		*/
-		public void commitMessage(MessageEdit edit)
+		public void commitMessage(MessageEdit edit) throws PermissionException
 		{
 			commitMessage(edit, NotificationService.NOTI_OPTIONAL);
 
@@ -1855,7 +1918,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		* @param user The UserEdit object to commit.
 		* @param priority The notification priority for this commit.
 		*/
-		public void commitMessage(MessageEdit edit, int priority)
+		public void commitMessage(MessageEdit edit, int priority) throws PermissionException
 		{
 			// check for closed edit
 			if (!edit.isActiveEdit())
@@ -1869,6 +1932,13 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 					m_logger.warn(this +".commitEdit(): closed MessageEdit", e);
 				}
 				return;
+			}
+
+			// check permission - this checks if the message in its current form (grouped, channel, etc) is still valid for the end user to save
+			if (!allowEditMessage(edit,SECURE_UPDATE_OWN, SECURE_UPDATE_ANY))
+			{
+				cancelMessage(edit);
+				throw new PermissionException(eventId(((BaseMessageEdit) edit).getEvent()), edit.getReference());
 			}
 
 			// update the properties
@@ -1890,7 +1960,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			notify(event);
 
 			// close the edit object
-			 ((BaseMessageEdit) edit).closeEdit();
+			((BaseMessageEdit) edit).closeEdit();
 
 		} // commitMessage
 
@@ -1929,8 +1999,20 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public boolean allowAddMessage()
 		{
+			// base the check for SECURE_ADD on the site, any of the site's groups, and the channel
+			// if the user can SECURE_ADD anywhere in that mix, they can add a message
+			// this stack is not the normal azg set for channels, so use a special refernce to get this behavior
+
+			String specialReference = getAccessPoint(true)
+						+ Entity.SEPARATOR
+						+ REF_TYPE_CHANNEL_GROUPS
+						+ Entity.SEPARATOR
+						+ m_context
+						+ Entity.SEPARATOR
+						+ m_id;
+
 			// check security on the channel (throws if not permitted)
-			return unlockCheck(SECURE_ADD, getReference());
+			return unlockCheck(SECURE_ADD, specialReference);
 
 		} // allowAddMessage
 
@@ -1950,8 +2032,11 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public MessageEdit addMessage() throws PermissionException
 		{
-			// check security on the channel (throws if not permitted)
-			unlock(SECURE_ADD, getReference());
+			// security check
+			if (!allowAddMessage())
+			{
+				throw new PermissionException(eventId(SECURE_ADD), getReference());
+			}
 
 			String id = null;
 			// allocate a new unique message id, using the CHEF Service API cover
@@ -2007,23 +2092,12 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 		/**
 		* check permissions for removeMessage().
-		* @param message The message from this channel to remove.
+		* @param m The message from this channel to remove.
 		* @return true if the user is allowed to removeMessage(...), false if not.
 		*/
-		public boolean allowRemoveMessage(Message message)
+		public boolean allowRemoveMessage(Message m)
 		{
-			// is this the user's own?
-			if (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
-			{
-				// own or any
-				return unlockCheck2(SECURE_REMOVE_OWN, SECURE_REMOVE_ANY, message.getReference());
-			}
-
-			else
-			{
-				// just any
-				return unlockCheck(SECURE_REMOVE_ANY, message.getReference());
-			}
+			return allowEditMessage(m, SECURE_REMOVE_OWN, SECURE_REMOVE_ANY);
 
 		} // allowRemoveMessage
 
@@ -2072,19 +2146,23 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				return;
 			}
 
-			// is this the user's own?
+			// pick the security function
 			String function = null;
 			if (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
 			{
 				// own or any
-				unlock2(SECURE_REMOVE_OWN, SECURE_REMOVE_ANY, message.getReference());
 				function = SECURE_REMOVE_OWN;
 			}
 			else
 			{
 				// just any
-				unlock(SECURE_REMOVE_ANY, message.getReference());
 				function = SECURE_REMOVE_ANY;
+			}
+
+			// securityCheck
+			if (!allowRemoveMessage(message))
+			{
+				throw new PermissionException(eventId(function), message.getReference());
 			}
 
 			m_storage.removeMessage(this, message);
@@ -2491,7 +2569,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				// ask the authzGroup service to filter them down based on function
 				groupRefs = AuthzGroupService.getAuthzGroupsIsAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(function), groupRefs);
 				
-				// pick the G objects from the site's groups to return, those that are in the groupRefs list
+				// pick the Group objects from the site's groups to return, those that are in the groupRefs list
 				for (Iterator i = groups.iterator(); i.hasNext();)
 				{
 					Group group = (Group) i.next();

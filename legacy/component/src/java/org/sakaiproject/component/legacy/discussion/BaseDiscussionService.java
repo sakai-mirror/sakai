@@ -362,7 +362,7 @@ public abstract class BaseDiscussionService
 			if (parts.length > 2)
 			{
 				subType = parts[2];
-				if (REF_TYPE_CHANNEL.equals(subType))
+				if (REF_TYPE_CHANNEL.equals(subType) || REF_TYPE_CHANNEL_GROUPS.equals(subType))
 				{
 					// next is the context id
 					if (parts.length > 3)

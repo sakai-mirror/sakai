@@ -70,6 +70,7 @@ public class AnnouncementService
 	public static java.lang.String SECURE_UPDATE_ANY = org.sakaiproject.service.legacy.announcement.AnnouncementService.SECURE_UPDATE_ANY;
 	public static java.lang.String SECURE_READ_DRAFT = org.sakaiproject.service.legacy.announcement.AnnouncementService.SECURE_READ_DRAFT;
 	public static java.lang.String REF_TYPE_CHANNEL = org.sakaiproject.service.legacy.announcement.AnnouncementService.REF_TYPE_CHANNEL;
+	public static java.lang.String REF_TYPE_CHANNEL_GROUPS = org.sakaiproject.service.legacy.announcement.AnnouncementService.REF_TYPE_CHANNEL_GROUPS;
 	public static java.lang.String REF_TYPE_MESSAGE = org.sakaiproject.service.legacy.announcement.AnnouncementService.REF_TYPE_MESSAGE;
 
 	public static org.sakaiproject.service.legacy.announcement.AnnouncementChannel getAnnouncementChannel(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException

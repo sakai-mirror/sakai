@@ -814,13 +814,8 @@ extends PagedResourceActionII
 
 				if (channel.allowGetMessages())
 				{
+					// this checks for any possibility of an add, channel or any site group
 					menu_new = channel.allowAddMessage();
-					
-					if (!menu_new)
-					{
-						// whether user can add to any groups?
-						menu_new = channel.getGroupsAllowAddMessage() != null;
-					}
 					
 					List messages = null;
 					
