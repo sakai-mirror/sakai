@@ -1951,18 +1951,12 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 				return new HashMap();
 			}
 
-			StringBuffer buf = new StringBuffer();
-			buf.append("(?");
-			for (int i = 1; i < userIds.size(); i++)
-			{
-				buf.append(",?");
-			}
-			buf.append(")");
+			String inClause = orInClause(userIds, "SRRG.USER_ID");
 
 			String sql = "select SRRG.USER_ID, SRR.ROLE_NAME from SAKAI_REALM_RL_GR SRRG "
 				+ "inner join SAKAI_REALM SR on SRRG.REALM_KEY = SR.REALM_KEY "
 				+ "inner join SAKAI_REALM_ROLE SRR on SRRG.ROLE_KEY = SRR.ROLE_KEY "
-				+ "where SR.REALM_ID = ? and SRRG.USER_ID in " + buf.toString() + " and SRRG.ACTIVE = '1'";
+				+ "where SR.REALM_ID = ? and " + inClause + " and SRRG.ACTIVE = '1'";
 
 			Object[] fields = new Object[1 + userIds.size()];
 			fields[0] = azGroupId;
@@ -2289,5 +2283,57 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 		}
 
 		m_logger.info(this + ".convertOld: done");
+	}
+	
+	/**
+	 * Form a SQL IN() clause, but break it up with ORs to keep the size of each IN below 100
+	 * @param c The collection site
+	 * @param field The field name
+	 * @return a SQL IN() with ORs clause this large.
+	 */
+	protected String orInClause(Collection c, String field)
+	{
+		// Note: to avoide the dreaded ORA-01795 and the like, we need to limit to <100 the items in each in(?, ?, ...) clause, connecting them with ORs -ggolden
+		int ors = c.size() / 99;
+		int leftover = c.size() - (ors * 99);
+		StringBuffer buf = new StringBuffer();
+
+		buf.append(" " + field + " in ");
+
+		// do all the full 99 '?' in/ors
+		if (ors > 0)
+		{
+			for (int i = 0; i < ors; i ++)
+			{
+				buf.append("(?");
+				for (int j = 1; j < 99; j++)
+				{
+					buf.append(",?");
+				}
+				buf.append(")");
+				
+				if (i < ors-1)
+				{
+					buf.append(" or " + field + " in ");
+				}
+			}
+		}
+		
+		// add one more for the extra
+		if (leftover > 0)
+		{
+			if (ors > 0)
+			{
+				buf.append(" or SRRG.USER_ID in ");
+			}
+			buf.append("(?");
+			for (int i = 1; i < leftover; i++)
+			{
+				buf.append(",?");
+			}
+			buf.append(")");
+		}
+	
+		return buf.toString();
 	}
 }

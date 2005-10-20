@@ -177,7 +177,7 @@ public class GroupTestTool extends HttpServlet
 			users.add(user3Id);
 			users.add(user4Id);
 			Map roles = AuthzGroupService.getUsersRole(users, azg);
-			out.println("getUsersRole()");
+			out.println("getUsersRole() w/ : " + users);
 			if (roles != null)
 			{
 				for (Iterator i = roles.keySet().iterator(); i.hasNext();)
@@ -191,6 +191,28 @@ public class GroupTestTool extends HttpServlet
 			{
 				out.println("null");
 			}
+			
+			users.clear();
+			for (int i = 0; i < 1000; i++)
+			{
+				users.add(user1Id);
+			}
+			roles = AuthzGroupService.getUsersRole(users, azg);
+			out.println("getUsersRole() w/ : " + users.size());
+			if (roles != null)
+			{
+				for (Iterator i = roles.keySet().iterator(); i.hasNext();)
+				{
+					String user = (String) i.next();
+					role = (String) roles.get(user);
+					out.println(" ** user: " + user + " role: " + role);
+				}
+			}
+			else
+			{
+				out.println("null");
+			}
+			
 		}
 		catch (Throwable t)
 		{
