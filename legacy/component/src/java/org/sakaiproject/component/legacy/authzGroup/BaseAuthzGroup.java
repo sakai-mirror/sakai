@@ -884,6 +884,23 @@ public class BaseAuthzGroup implements AuthzGroup
 		return new HashSet(m_roles.values());
 	}
 
+	public Set getRolesIsAllowed(String function)
+	{
+		if (m_lazy) ((BaseAuthzGroupService) (AuthzGroupService.getInstance())).m_storage.completeGet(this);
+
+		Set rv = new HashSet();
+		for (Iterator i = m_roles.values().iterator(); i.hasNext();)
+		{
+			Role r = (Role) i.next();
+			if (r.isAllowed(function))
+			{
+				rv.add(r.getId());
+			}
+		}
+
+		return rv;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1090,19 +1107,6 @@ public class BaseAuthzGroup implements AuthzGroup
 		// clear roles and grants (since grants grant roles)
 		m_roles.clear();
 		m_userGrants.clear();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Role getRoleEdit(String id)
-	{
-		if (m_lazy) ((BaseAuthzGroupService) (AuthzGroupService.getInstance())).m_storage.completeGet(this);
-
-		BaseRole azGroup = (BaseRole) m_roles.get(id);
-		if (azGroup != null) azGroup.activate();
-
-		return azGroup;
 	}
 
 	/**

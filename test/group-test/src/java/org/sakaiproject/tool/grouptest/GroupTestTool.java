@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.ServletConfig;
@@ -194,6 +195,30 @@ public class GroupTestTool extends HttpServlet
 		catch (Throwable t)
 		{
 			out.println("getting channel messages: " + t);
+		}
+		
+		// more not group test...
+		try
+		{
+			out.println("\n\nAZG getRolesIsAllowed tests\n");
+			Site site = SiteService.getSite(siteId);
+			Group group = (Group) site.getGroups().iterator().next();
+			
+			Set roles = site.getRolesIsAllowed("section.role.ta");
+			out.println("section.role.ta in site : " + site.getTitle() + " : " + roles);
+
+			roles = group.getRolesIsAllowed("section.role.student");
+			out.println("section.role.student in group : " + group.getTitle() + " : " + roles);
+
+			roles = group.getRolesIsAllowed(null);
+			out.println("null in group : " + group.getTitle() + " : " + roles);
+
+			roles = group.getRolesIsAllowed("nothing");
+			out.println("nothing in group : " + group.getTitle() + " : " + roles);
+		}
+		catch (Throwable t)
+		{
+			out.println("" + t);
 		}
 	}
 

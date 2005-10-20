@@ -443,6 +443,11 @@ public class BaseGroup implements Group, Identifiable
 		return getAzg().getRoles();
 	}
 
+	public Set getRolesIsAllowed(String function)
+	{
+		return getAzg().getRolesIsAllowed(function);
+	}
+
 	public Role getUserRole(String userId)
 	{
 		return getAzg().getUserRole(userId);

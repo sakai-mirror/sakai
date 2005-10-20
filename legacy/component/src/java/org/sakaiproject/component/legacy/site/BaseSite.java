@@ -1342,6 +1342,11 @@ public class BaseSite implements Site
 		return getAzg().getRoles();
 	}
 
+	public Set getRolesIsAllowed(String function)
+	{
+		return getAzg().getRolesIsAllowed(function);
+	}
+
 	public Role getUserRole(String userId)
 	{
 		return getAzg().getUserRole(userId);

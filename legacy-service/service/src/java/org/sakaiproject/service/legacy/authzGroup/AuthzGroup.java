@@ -158,6 +158,15 @@ public interface AuthzGroup extends Edit, Comparable, Serializable
 	public Set getRoles();
 
 	/**
+	 * Access all roles that have been granted permission to this function.
+	 * 
+	 * @param function
+	 *        The function to check.
+	 * @return The Set of role names (String) that have been granted permission to this function.
+	 */
+	public Set getRolesIsAllowed(String function);
+
+	/**
 	 * Access the active role for this user's membership.
 	 * 
 	 * @param userId
