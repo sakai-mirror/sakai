@@ -2016,6 +2016,19 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 		} // allowAddMessage
 
+		
+		/**
+		 * @inheritDoc
+		 */
+		public boolean allowAddChannelMessage()
+		{
+			// check for messages that will be channel-wide:
+			// base the check for SECURE_ADD on the site and the channel only (not the groups).
+
+			// check security on the channel (throws if not permitted)
+			return unlockCheck(SECURE_ADD, getReference());
+		}
+
 		/**
 		 * @inheritDoc
 		 */

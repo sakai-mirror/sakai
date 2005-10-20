@@ -188,6 +188,13 @@ public interface MessageChannel extends Entity
 	boolean allowAddMessage();
 
 	/**
+	 * Check if the user has permission to add a channel-wide (not grouped) message.
+	 * 
+	 * @return true if the user has permission to add a channel-wide (not grouped) message.
+	 */
+	boolean allowAddChannelMessage();
+
+	/**
 	 * Add a new message to this channel. Must commitEdit() to make official, or cancelEdit() when done!
 	 * 
 	 * @return The newly added message, locked for update.
