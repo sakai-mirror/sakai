@@ -80,12 +80,25 @@ I setup my TCP/IP monitor to listen on say port 80 and point my WSRP Consumer to
 The TCP/IP monitor simply forwards traffic to Sakai listening on port 8080. Use appropriate ports for your 
 setup.
 
+Authentication/Authorization
+------------------------------
+The current code trusts the WSRP consumer for having authenticated the end-user and does not require a separate 
+end-user authentication. However, the user-id of the end user should be the same in Sakai and the WSRP Consumer 
+(such as uPortal).
+
+The WSRP consumer itself is currently allowed/denied access based on its IP address that can be configured in 
+the web.xml file. HTTP Basic Authentication for the WSRP consumer (not the end-user) is a work in progress, 
+but since uPortal doesn’t yet support configuring Basic Auth credentials for accessing a WSRP producer, it 
+will not be usable right away.
+
+End-user authentication using proxy-CAS and/or WS-Security have been discussed but there is no timetable set 
+for their implementation.
+
 
 What's Working, what's Not!
 ----------------------------
 
-The current state of development allows basic tasks as listed below. There is NO Authentication or 
-authorization done currently, work is under way to fix that.
+The current state of development allows basic tasks as listed below. 
 
 1. register -- Online registration of consumer 
 
