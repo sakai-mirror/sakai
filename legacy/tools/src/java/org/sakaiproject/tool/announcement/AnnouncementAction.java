@@ -1565,6 +1565,8 @@ extends PagedResourceActionII
 				// get the channel name throught announcement service API
 				channel = AnnouncementService.getAnnouncementChannel(channelId);
 				
+				context.put("allowAddChannelMessage", new Boolean(channel.allowAddChannelMessage()));
+				
 				String announceTo =state.getTempAnnounceTo();
 				if (announceTo != null && announceTo.length() != 0)
 				{
@@ -1574,7 +1576,7 @@ extends PagedResourceActionII
 				{
 					// group list which user can add message to
 					Collection groups = channel.getGroupsAllowAddMessage();
-					if (groups != null && groups.size() > 0)
+					if (groups.size() > 0)
 					{
 						context.put("groups", groups);
 						// if this a new annoucement, get the subject and body from temparory record
