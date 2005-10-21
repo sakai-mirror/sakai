@@ -6,6 +6,14 @@
 	<display-name>sakai-wsrp-producer</display-name>
 	<description>Sakai WSRP Producer</description>
 
+	<!--
+ 		This is to provide IP Address/Host based access restriction that may be used to 
+ 		limit access to trusted WSRP consumers, in the absence of another way to secure
+ 		access to WSRP Producer.
+ 		
+ 		Alternatively, if the WSRP Consumer supports HTTP Basic Auth, you may choose to 
+ 		use that. See the security-constraint element at the end of this file.
+	-->
 	<filter>
 		<filter-name>RemoteHostFilter</filter-name>
 		<filter-class>
@@ -72,4 +80,42 @@
 		<mime-type>text/xml</mime-type>
 	</mime-mapping>
 
+	<!-- 		 
+		Uncomment this to require WSRP Consumers to present HTTP Basic Auth credentials
+		when using this Sakai Service. 
+		
+		To add trusted users, edit trusted-consumers.xml file. The role may be used to 
+		identify the codebase of the client as a hint to the flavor of the client we are dealing 
+		with.
+		
+		We only protect wsrp4j which is where all WSRP code is mapped.
+		and we only need to guard the POST method.
+		
+		GET requests are harmless for WSRP, since everything Sakai specific is always POST'ed 
+	-->
+
+<!--  
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Sakai WSRP Producer</web-resource-name>
+			<url-pattern>/wsrp4j/*</url-pattern>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>uportal</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>Sakai WSRP Producer</realm-name>
+	</login-config>
+
+	<security-role>
+		<description>
+			An example role defined in trusted-consumers.xml
+		</description>
+		<role-name>uportal</role-name>
+	</security-role>
+-->
 </web-app>

@@ -87,9 +87,13 @@ end-user authentication. However, the user-id of the end user should be the same
 (such as uPortal).
 
 The WSRP consumer itself is currently allowed/denied access based on its IP address that can be configured in 
-the web.xml file. HTTP Basic Authentication for the WSRP consumer (not the end-user) is a work in progress, 
-but since uPortal doesn’t yet support configuring Basic Auth credentials for accessing a WSRP producer, it 
-will not be usable right away.
+the web.xml file. 
+
+HTTP Basic Authentication for the WSRP consumer can be enabled by simply un-commenting the <security-constraint>
+element in web.xml and editing the username/passwords in trusted-consumers.xml. Since we aren't authenticating 
+end-users, it doesn't necessarily make sense to use a Sakai user's account for WSRP consumer authentication.
+Be aware though, that since uPortal doesn’t yet support configuring Basic Auth credentials for accessing a WSRP 
+producer, it will not be usable right away with uPortal. Other WSRP Consumers may support HTTP Basic Auth.
 
 End-user authentication using proxy-CAS and/or WS-Security have been discussed but there is no timetable set 
 for their implementation.

@@ -43,12 +43,12 @@ import org.apache.log4j.Logger;
  * <li>The request will be rejected with a "Forbidden" HTTP response.</li>
  * </ul>
  * 
- * To summarize, the pseudo-code looks like: <tt>
+ * To summarize, the pseudo-code looks like: <pre>
  *      if (explicitly denied) "Forbidden";
  *      else if (explicitly allowed) "Pass";
  *      else if (allow set is null, but deny is not) "Pass";
  *      else "Forbidden";
- * </tt>
+ * </pre>
  * 
  * <code>log-allowed</code> and <code>log-denied</code> may be specified to
  * true/false to log allowed/denied requests. <code>log-allowed</code>
