@@ -407,19 +407,17 @@
 										</th>
 									#end
 								#end
-								#if ($EnableItemCheckBoxes) ## mantain role - so show public value
-									<th id="$tlang.getString('gen.visible')">
-										#if (!$currentSortedBy.equalsIgnoreCase("$tlang.getString('gen.visible')"))
-											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" title="$tlang.getString('gen.sortbyfor')">$tlang.getString("gen.visible")</a>
+								<th id="$tlang.getString('gen.visible')">
+									#if (!$currentSortedBy.equalsIgnoreCase("$tlang.getString('gen.visible')"))
+										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" title="$tlang.getString('gen.sortbyfor')">$tlang.getString("gen.visible")</a>
+									#else
+										#if ($currentSortAsc.equals("true"))
+											 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" title="$tlang.getString('gen.sortbyforasc')">$tlang.getString("gen.visible") <img src = "#imageLink('sakai/sortascending.gif')" border="0" alt="$tlang.getString('gen.sortbyforasc')" /></a>
 										#else
-											#if ($currentSortAsc.equals("true"))
-												 <a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" title="$tlang.getString('gen.sortbyforasc')">$tlang.getString("gen.visible") <img src = "#imageLink('sakai/sortascending.gif')" border="0" alt="$tlang.getString('gen.sortbyforasc')" /></a>
-											#else
-												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" title="$tlang.getString('gen.sortbyfordesc')">$tlang.getString("gen.visible") <img src = "#imageLink('sakai/sortdescending.gif')" border="0" alt ="$tlang.getString('gen.sortbyfordesc')" /></a>
-											#end
+											<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" title="$tlang.getString('gen.sortbyfordesc')">$tlang.getString("gen.visible") <img src = "#imageLink('sakai/sortdescending.gif')" border="0" alt ="$tlang.getString('gen.sortbyfordesc')" /></a>
 										#end
-									</th>
-								#end
+									#end
+								</th>
 								<th id ="date">
 									#if (!$currentSortedBy.equals("date"))
 										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbydate")';return false;" title="$tlang.getString('gen.sortbydateasc')">$tlang.getString("gen.date")</a>
