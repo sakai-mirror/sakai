@@ -1,34 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
-           "http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
-   <web-app>
-      <display-name>wsrp4j producer</display-name>
-      
-      <servlet>
-         <servlet-name>wsrp4j</servlet-name>
-         <servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>
-      </servlet>
-      
-      <servlet-mapping>
-         <servlet-name>wsrp4j</servlet-name>
-         <url-pattern>/wsrp4j/*</url-pattern>
-      </servlet-mapping>
-      
-      <!-- To have correct axis wsdl links -->
-      <servlet-mapping>
-        <servlet-name>wsrp4j</servlet-name>
-        <url-pattern>/services/*</url-pattern>
-     </servlet-mapping>  
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-    <!-- Added to allow Tomcat to serve the CONTENT-TYPE header when serving WSDL files -->
-    <mime-mapping>
-        <extension>wsdl</extension>
-        <mime-type>text/xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xsd</extension>
-        <mime-type>text/xml</mime-type>
-    </mime-mapping>
+	<display-name>sakai-wsrp-producer</display-name>
+	<description>Sakai WSRP Producer</description>
 
-   </web-app>
+	<filter>
+		<filter-name>RemoteHostFilter</filter-name>
+		<filter-class>
+			org.sakaiproject.util.RemoteHostFilter
+		</filter-class>
+		<description>
+			Filters (allows/denies) requests based on configured
+			hostname/ip-address
+		</description>
+		<init-param>
+			<param-name>allow</param-name>
+			<!-- Allow "Private Use" IP addresses by default -->
+			<param-value>
+				localhost, 127\.0\.0\.1, 192\.168\.[0-9.]+, 10\.[0-9.]+,
+				172\.1[6-9]\.[0-9.]+, 172\.2[0-9]\.[0-9.]+,
+				172\.3[0-1]\.[0-9.]+
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>log-allowed</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>deny</param-name>
+			<!-- No Explicit Denials, implies deny unless allowed -->
+			<param-value></param-value>
+		</init-param>
+		<init-param>
+			<param-name>log-denied</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+
+	<servlet>
+		<servlet-name>wsrp4j</servlet-name>
+		<servlet-class>
+			org.apache.axis.transport.http.AxisServlet
+		</servlet-class>
+	</servlet>
+
+	<filter-mapping>
+		<filter-name>RemoteHostFilter</filter-name>
+		<servlet-name>wsrp4j</servlet-name>
+	</filter-mapping>
+
+	<servlet-mapping>
+		<servlet-name>wsrp4j</servlet-name>
+		<url-pattern>/wsrp4j/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- To have correct axis wsdl links -->
+	<servlet-mapping>
+		<servlet-name>wsrp4j</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- Added to allow Tomcat to serve the CONTENT-TYPE header when serving WSDL files -->
+	<mime-mapping>
+		<extension>wsdl</extension>
+		<mime-type>text/xml</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>xsd</extension>
+		<mime-type>text/xml</mime-type>
+	</mime-mapping>
+
+</web-app>
