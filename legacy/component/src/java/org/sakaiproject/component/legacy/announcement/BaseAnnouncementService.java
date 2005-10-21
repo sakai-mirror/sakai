@@ -28,6 +28,7 @@ package org.sakaiproject.component.legacy.announcement;
 import java.util.List;
 import java.util.Stack;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.component.legacy.message.BaseMessageService;
 import org.sakaiproject.component.legacy.notification.SiteEmailNotificationAnnc;
@@ -115,6 +116,9 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 
 			// set the action
 			edit.setAction(new SiteEmailNotificationAnnc());
+
+			// register functions
+			FunctionManager.registerFunction(eventId(SECURE_READ_DRAFT));
 
 			m_logger.info(this +".init()");
 		}

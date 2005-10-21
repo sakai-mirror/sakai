@@ -35,6 +35,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
 import org.sakaiproject.cheftool.RunData;
@@ -44,7 +45,6 @@ import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
@@ -167,24 +167,13 @@ public class PermissionsAction
 		String prefix = (String) state.getAttribute(STATE_PREFIX);
 
 		// in state is the list of abilities we will present
-		List abilities = (List) state.getAttribute(STATE_ABILITIES);
-		if (abilities == null)
+		List functions = (List) state.getAttribute(STATE_ABILITIES);
+		if (functions == null)
 		{
-			// get all abilities
-			List abilitiesAll = ServerConfigurationService.getLocks();
-	
-			// filter these for those we are interested in
-			abilities = new Vector();
-			for (Iterator iLocks = abilitiesAll.iterator(); iLocks.hasNext(); )
-			{
-				String ability = (String) iLocks.next();
-				if (ability.startsWith(prefix))
-				{
-					abilities.add(ability);
-				}
-			}
+			// get all functions prefixed with our prefix
+			functions = FunctionManager.getRegisteredFunctions(prefix);
 
-			state.setAttribute(STATE_ABILITIES, abilities);
+			state.setAttribute(STATE_ABILITIES, functions);
 		}
 
 		// in state is the description of the edit
@@ -235,7 +224,7 @@ public class PermissionsAction
 
 		context.put("realm", edit);
 		context.put("prefix", prefix);
-		context.put("abilities", abilities);
+		context.put("abilities", functions);
 		context.put("description", description);
 		if (roles.size()>0)
 		{

@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -327,6 +328,12 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 
 			// register as an entity producer
 			m_entityManager.registerEntityProducer(this);
+
+			// register functions
+			FunctionManager.registerFunction(SECURE_ADD_USER);
+			FunctionManager.registerFunction(SECURE_REMOVE_USER);
+			FunctionManager.registerFunction(SECURE_UPDATE_USER_OWN);
+			FunctionManager.registerFunction(SECURE_UPDATE_USER_ANY);
 
 			m_logger.info(this +".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()) + " - caching minutes: " + m_cacheSeconds / 60 + " - cache cleaner minutes: " + m_cacheCleanerSeconds / 60);
 		}

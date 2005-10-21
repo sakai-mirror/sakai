@@ -390,7 +390,6 @@
 			destroy-method="destroy"
 			singleton="true">
 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
- 		<property name="registrationPath"><value>registration.xml</value></property>
 		<property name="toolOrderFile"><value>toolOrder.xml</value></property>
 
 	</bean>

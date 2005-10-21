@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
@@ -210,6 +211,13 @@ public class ActiveToolComponent extends ToolComponent implements ActiveToolMana
 				tool.setKeywords(keywords);
 
 				register(tool, context);
+			}
+			
+			// for function
+			else if (rootElement.getTagName().equals("function"))
+			{
+				String function = rootElement.getAttribute("name").trim();
+				FunctionManager.registerFunction(function);
 			}
 		}
 	}

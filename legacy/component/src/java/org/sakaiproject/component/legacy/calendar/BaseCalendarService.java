@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.exception.IdInvalidException;
@@ -395,6 +396,13 @@ public abstract class BaseCalendarService
 
 		// register as an entity producer
 		m_entityManager.registerEntityProducer(this);
+		
+		// register functions
+		FunctionManager.registerFunction(EVENT_ADD_CALENDAR);
+		FunctionManager.registerFunction(EVENT_REMOVE_CALENDAR);
+		FunctionManager.registerFunction(EVENT_IMPORT_CALENDAR);
+		FunctionManager.registerFunction(EVENT_READ_CALENDAR);
+		FunctionManager.registerFunction(EVENT_MODIFY_CALENDAR);
 	}
 
 	/**

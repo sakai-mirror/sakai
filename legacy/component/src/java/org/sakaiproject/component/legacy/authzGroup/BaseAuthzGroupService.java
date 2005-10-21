@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -257,6 +258,12 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 
 			// register as an entity producer
 			m_entityManager.registerEntityProducer(this);
+
+			// register functions
+			FunctionManager.registerFunction(SECURE_ADD_AUTHZ_GROUP);
+			FunctionManager.registerFunction(SECURE_REMOVE_AUTHZ_GROUP);
+			FunctionManager.registerFunction(SECURE_UPDATE_AUTHZ_GROUP);
+			FunctionManager.registerFunction(SECURE_UPDATE_OWN_AUTHZ_GROUP);
 
 			m_logger.info(this + ".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()));
 		}

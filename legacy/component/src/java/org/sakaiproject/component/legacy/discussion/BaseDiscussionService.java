@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.component.legacy.message.BaseMessageService;
 import org.sakaiproject.exception.IdInvalidException;
@@ -86,6 +87,22 @@ public abstract class BaseDiscussionService
 	extends BaseMessageService
 	implements DiscussionService
 {
+	/*******************************************************************************
+	* Init and Destroy
+	*******************************************************************************/
+
+	/**
+	 * Final initialization, once all dependencies are set.
+	 */
+	public void init()
+	{
+		super.init();
+
+		// register functions
+		FunctionManager.registerFunction(eventId(SECURE_ADD_TOPIC));
+		FunctionManager.registerFunction(eventId(SECURE_READ_DRAFT));
+	}
+
 	/*******************************************************************************
 	* StorageUser implementation
 	*******************************************************************************/

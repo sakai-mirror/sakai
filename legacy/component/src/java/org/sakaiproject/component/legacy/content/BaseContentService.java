@@ -41,6 +41,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import org.apache.xerces.impl.dv.util.Base64;
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -328,6 +329,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 			// register as an entity producer
 			m_entityManager.registerEntityProducer(this);
+
+			// register functions
+			FunctionManager.registerFunction(EVENT_RESOURCE_ADD);
+			FunctionManager.registerFunction(EVENT_RESOURCE_READ);
+			FunctionManager.registerFunction(EVENT_RESOURCE_WRITE);
+			FunctionManager.registerFunction(EVENT_RESOURCE_REMOVE);
+			FunctionManager.registerFunction("dropbox.own");
 
 			m_logger.info(this + ".init(): site quota: " + m_siteQuota + " body path: " + m_bodyPath + " volumes: "
 					+ buf.toString());

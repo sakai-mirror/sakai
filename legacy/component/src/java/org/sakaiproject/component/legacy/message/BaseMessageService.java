@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -227,6 +228,14 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 		// register as an entity producer
 		m_entityManager.registerEntityProducer(this);
+		
+		// register functions (draft is registered by the extension services, since it's not shared by all)
+		FunctionManager.registerFunction(eventId(SECURE_READ));
+		FunctionManager.registerFunction(eventId(SECURE_ADD));
+		FunctionManager.registerFunction(eventId(SECURE_REMOVE_OWN));
+		FunctionManager.registerFunction(eventId(SECURE_REMOVE_ANY));
+		FunctionManager.registerFunction(eventId(SECURE_UPDATE_OWN));
+		FunctionManager.registerFunction(eventId(SECURE_UPDATE_ANY));
 
 	} // init
 

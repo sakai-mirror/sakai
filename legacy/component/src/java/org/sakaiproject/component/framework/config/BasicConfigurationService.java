@@ -27,7 +27,6 @@ package org.sakaiproject.component.framework.config;
 // imports
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +34,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.current.cover.CurrentService;
@@ -72,9 +72,6 @@ public class BasicConfigurationService implements ServerConfigurationService
 
 	/** File name within sakai.home for the tool order file. */
 	protected String toolOrderFile = null;
-
-	/** List of locks (functions). */
-	protected List registeredLocks = new Vector();
 
 	/** loaded tool orders - map keyed by category of List of tool id strings. */
 	protected Map m_toolOrders = new HashMap();
@@ -145,21 +142,6 @@ public class BasicConfigurationService implements ServerConfigurationService
 		catch (Throwable t)
 		{
 			m_logger.warn(this + ".init(): ", t);
-		}
-
-		// treat this as a resource to read from the class loader, a single file
-		// not: loadRegistrations(new File(registrationPath));
-		if (registrationPath != null)
-		{
-			InputStream in = getClass().getClassLoader().getResourceAsStream(registrationPath);
-			if (in != null)
-			{
-				loadRegistrationStream(in);
-			}
-			else
-			{
-				m_logger.warn(this + ".init(): can't access resource: " + registrationPath);
-			}
 		}
 		
 		// load in the tool order, if specified, from the sakai home area
@@ -423,10 +405,8 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	public List getLocks()
 	{
-		List rv = new Vector();
-		rv.addAll(registeredLocks);
-
-		return rv;
+		// this is now a kernel responsibility
+		return FunctionManager.getRegisteredFunctions();
 	}
 
 	/**
@@ -461,105 +441,6 @@ public class BasicConfigurationService implements ServerConfigurationService
 		}
 
 		return new Vector();
-	}
-
-	/**
-	 * Load root as a registration file, or if it's a directory, all the files within.
-	 * 
-	 * @param root
-	 *        The file or directory to load.
-	 */
-	protected void loadRegistrations(File root)
-	{
-		if (root.isDirectory())
-		{
-			File files[] = root.listFiles();
-			if (files != null)
-			{
-				for (int i = 0; i < files.length; i++)
-				{
-					loadRegistrations(files[i]);
-				}
-			}
-		}
-		else
-		{
-			try
-			{
-				loadRegistrationFile(root);
-			}
-			catch (Throwable t)
-			{
-				m_logger.warn(this + ".loadRegistrations: file: " + root.getAbsolutePath() + " : " + t);
-			}
-		}
-	}
-
-	/**
-	 * Load this single file as a registration file, loading tools and locks.
-	 * 
-	 * @param file
-	 *        The file to load
-	 */
-	protected void loadRegistrationFile(File file)
-	{
-		String path = file.getAbsolutePath();
-		if (!path.endsWith(".xml"))
-		{
-			m_logger.info(this + ".loadRegistrationFile: skiping file: " + path);
-			return;
-		}
-
-		try
-		{
-			InputStream in = new FileInputStream(path);
-
-			m_logger.info(this + ".loadRegistrationFile: " + path);
-			loadRegistrationStream(in);
-		}
-		catch (FileNotFoundException e)
-		{
-			m_logger.info(this + ".loadRegistrationFile: can't read file: " + path);
-		}
-	}
-
-	/**
-	 * Load this single file as a registration file, loading tools and locks.
-	 * 
-	 * @param in
-	 *        The Stream to load
-	 */
-	protected void loadRegistrationStream(InputStream in)
-	{
-		Map categories = new HashMap();
-
-		Document doc = Xml.readDocumentFromStream(in);
-		Element root = doc.getDocumentElement();
-		if (!root.getTagName().equals("registration"))
-		{
-			m_logger.info(this + ".loadRegistrationFile: invalid root element (expecting \"registration\"): " + root.getTagName());
-			return;
-		}
-
-		// read the children nodes
-		NodeList rootNodes = root.getChildNodes();
-		final int rootNodesLength = rootNodes.getLength();
-		for (int i = 0; i < rootNodesLength; i++)
-		{
-			Node rootNode = rootNodes.item(i);
-			if (rootNode.getNodeType() != Node.ELEMENT_NODE) continue;
-			Element rootElement = (Element) rootNode;
-
-			// ignore "tool" and "category" entries - these are done now with the tool manager
-			if (rootElement.getTagName().equals("function"))
-			{
-				String name = StringUtil.trimToNull(rootElement.getAttribute("name"));
-				if (name != null)
-				{
-					registeredLocks.add(name);
-				}
-			}
-		}
 	}
 
 	/**

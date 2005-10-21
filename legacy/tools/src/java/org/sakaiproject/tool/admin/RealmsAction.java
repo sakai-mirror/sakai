@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
 import org.sakaiproject.cheftool.PagedResourceActionII;
@@ -43,7 +44,6 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Member;
@@ -321,10 +321,10 @@ public class RealmsAction
 		AuthzGroup realm = (AuthzGroup) state.getAttribute("realm");
 		context.put("realm", realm);
 
-		// get all abilities
-		List allLocks = ServerConfigurationService.getLocks();
-		Collections.sort(allLocks);
-		context.put("allLocks", allLocks);
+		// get all functions
+		List allFunctions = FunctionManager.getRegisteredFunctions();
+		Collections.sort(allFunctions);
+		context.put("allLocks", allFunctions);
 
 		// get all roles
 		List allRoles = new Vector();
@@ -352,10 +352,10 @@ public class RealmsAction
 		Role role = (Role) state.getAttribute("role");
 		context.put("role", role);
 
-		// get all abilities
-		List allLocks = ServerConfigurationService.getLocks();
-		Collections.sort(allLocks);
-		context.put("allLocks", allLocks);
+		// get all functions
+		List allFunctions = FunctionManager.getRegisteredFunctions();
+		Collections.sort(allFunctions);
+		context.put("allLocks", allFunctions);
 
 		// get all roles
 		List allRoles = new Vector();
