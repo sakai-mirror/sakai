@@ -50,26 +50,29 @@ import org.sakaiproject.service.legacy.time.Time;
 public interface MessageService
 	extends EntityProducer
 {
-	/** Security lock / event for reading channel / message. */
+	/** Security function / event for reading channel / message. */
 	public static final String SECURE_READ = "read";
 
-	/** Security lock / event for adding channel / message. */
+	/** Security function / event for adding channel / message. */
 	public static final String SECURE_ADD = "new";
 
-	/** Security lock / event for removing one's own message. */
+	/** Security function / event for removing one's own message. */
 	public static final String SECURE_REMOVE_OWN = "delete.own";
 
-	/** Security lock / event for removing anyone's message or channel. */
+	/** Security function / event for removing anyone's message or channel. */
 	public static final String SECURE_REMOVE_ANY = "delete.any";
 
-	/** Security lock / event for updating one's own message or the channel. */
+	/** Security function / event for updating one's own message or the channel. */
 	public static final String SECURE_UPDATE_OWN = "revise.own";
 
-	/** Security lock / event for updating any message. */
+	/** Security function / event for updating any message. */
 	public static final String SECURE_UPDATE_ANY = "revise.any";
 
-	/** Security lock / event for accessing someone elses draft. */
+	/** Security function / event for accessing someone elses draft. */
 	public static final String SECURE_READ_DRAFT = "read.drafts";
+
+	/** Security function giving the user permission to all groups, if granted to at the channel or site level. */
+	public static final String SECURE_ALL_GROUPS = "all.groups";
 
 	/** The Reference type for a channel. */
 	public static final String REF_TYPE_CHANNEL = "channel";

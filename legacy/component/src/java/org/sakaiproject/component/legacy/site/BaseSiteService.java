@@ -643,7 +643,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			try
 			{
-				AuthzGroupService.saveUsingSecurity(((BaseSite) site).m_azg, SECURE_UPDATE_SITE);
+				AuthzGroupService.savePostSecurity(((BaseSite) site).m_azg);
 			}
 			catch (Throwable t)
 			{
@@ -659,7 +659,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			{
 				try
 				{
-					AuthzGroupService.saveUsingSecurity(group.m_azg, SECURE_UPDATE_SITE);
+					AuthzGroupService.savePostSecurity(group.m_azg);
 				}
 				catch (Throwable t)
 				{
@@ -1376,11 +1376,12 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// first, use the reference as an authzGroup (site, group, page or tool)
 			rv.add(ref.getReference());
 			
-			// if this is a sub-type, add the site's reference - container is site id
-			if (!SITE_SUBTYPE.equals(ref.getSubType()))
-			{
-				rv.add(siteReference(ref.getContainer()));
-			}
+// do NOT use the site if the reference is a group or other part
+//			// if this is a sub-type, add the site's reference - container is site id
+//			if (!SITE_SUBTYPE.equals(ref.getSubType()))
+//			{
+//				rv.add(siteReference(ref.getContainer()));
+//			}
 
 			// add the current user's realm
 			ref.addUserAuthzGroup(rv, SessionManager.getCurrentSessionUserId());

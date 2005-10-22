@@ -106,13 +106,13 @@ public class AuthzGroupService
 		service.save(param0);
 	}
 
-	public static void saveUsingSecurity(org.sakaiproject.service.legacy.authzGroup.AuthzGroup param0, java.lang.String param1) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	public static void savePostSecurity(org.sakaiproject.service.legacy.authzGroup.AuthzGroup param0) throws org.sakaiproject.exception.IdUnusedException
 	{
 		org.sakaiproject.service.legacy.authzGroup.AuthzGroupService service = getInstance();
 		if (service == null)
 			return;
 
-		service.saveUsingSecurity(param0, param1);
+		service.savePostSecurity(param0);
 	}
 
 	public static boolean allowAdd(java.lang.String param0)

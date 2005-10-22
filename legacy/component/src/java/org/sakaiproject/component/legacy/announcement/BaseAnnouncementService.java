@@ -119,7 +119,8 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 
 			// register functions
 			FunctionManager.registerFunction(eventId(SECURE_READ_DRAFT));
-
+			FunctionManager.registerFunction(eventId(SECURE_ALL_GROUPS));
+			
 			m_logger.info(this +".init()");
 		}
 		catch (Throwable t)

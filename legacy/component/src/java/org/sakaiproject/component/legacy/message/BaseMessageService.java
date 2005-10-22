@@ -558,7 +558,6 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 		if ((!m_caching) || (m_channelCache == null) || (m_channelCache.disabled()))
 		{
-			// TODO: do we really want to do this? -ggolden
 			// if we have done this already in this thread, use that
 			channel = (MessageChannel) CurrentService.getInThread(ref);
 			if (channel == null)
@@ -1818,8 +1817,16 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		protected boolean allowEditMessage(Message m, String fOwn, String fAny)
 		{
+			boolean channelCheck = MessageHeader.MessageAccess.CHANNEL == m.getHeader().getAccess();
+
+			// even if grouped, if the user has annc.allgrp for the channel, treat as channel (message, channel, site)
+			if (!channelCheck)
+			{
+				channelCheck = unlockCheck(SECURE_ALL_GROUPS, getReference());
+			}
+
 			// if the message is not grouped, do the regular check (message, channel, site)
-			if (MessageHeader.MessageAccess.GROUPED != m.getHeader().getAccess())
+			if (channelCheck)
 			{
 				// is this the user's own?
 				if (m.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
@@ -1832,12 +1839,10 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				{
 					// just any
 					return unlockCheck(fAny, m.getReference());
-				}
-			
+				}			
 			}
-			
+
 			// if grouped, check that the user has permissions in every group that the message uses
-			// TODO: make sure that the groupRef does NOT pull in the site for this check
 			else
 			{
 				for (Iterator i = m.getHeader().getGroups().iterator(); i.hasNext(); )
@@ -1858,7 +1863,6 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 						if (!unlockCheck(fAny, groupRef))
 							return false;
 					}
-					
 				}
 			}
 
@@ -2348,7 +2352,6 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		{
 			if ((!m_caching) || (m_channelCache == null) || (m_channelCache.disabled()))
 			{
-				// TODO: do we really want to do this? -ggolden
 				// if we have done this already in this thread, use that
 				List msgs = (List) CurrentService.getInThread(getReference()+".msgs");
 				if (msgs == null)
@@ -2580,6 +2583,14 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 				Site site = SiteService.getSite(m_context);
 				Collection groups = site.getGroups();
 				
+				// if the user has annc.allgrp for the channel (channel, site), and the function for the channel (channel,site), select all site groups
+				if (unlockCheck(SECURE_ALL_GROUPS, getReference()))
+				{
+					return groups;
+				}
+	
+				// otherwise, check the groups for function
+
 				// get a list of the group refs, which are authzGroup ids
 				Collection groupRefs = new Vector();
 				for (Iterator i = groups.iterator(); i.hasNext();)
