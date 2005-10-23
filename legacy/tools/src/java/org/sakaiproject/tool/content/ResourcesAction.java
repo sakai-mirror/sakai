@@ -82,6 +82,7 @@ import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.ValidationError;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
@@ -392,6 +393,7 @@ public class ResourcesAction
 	private static final String TEMPLATE_CREATE = "content/chef_resources_create";
 	private static final String TEMPLATE_DAV = "content/chef_resources_webdav";
 	private static final String TEMPLATE_SELECT = "content/chef_resources_select";
+	private static final String TEMPLATE_ATTACH = "content/chef_resources_attach";
 
 	private static final String TEMPLATE_MORE = "content/chef_resources_more";
 	private static final String TEMPLATE_DELETE_CONFIRM = "content/chef_resources_deleteConfirm";
@@ -1156,7 +1158,8 @@ public class ResourcesAction
 		// justDelivered(state);
 
 		// pick the "show" template based on the helper's template name
-		return TEMPLATE_SELECT;
+		// return TEMPLATE_SELECT;
+		return TEMPLATE_ATTACH;
 		
 	}	// buildSelectAttachmentContext
 
@@ -2785,6 +2788,111 @@ public class ResourcesAction
 
 	}
 	
+	public static void doAttachupload(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+		
+		String max_file_size_mb = (String) state.getAttribute(FILE_UPLOAD_MAX_SIZE);
+		int max_bytes = 1096 * 1096;
+		try
+		{
+			max_bytes = Integer.parseInt(max_file_size_mb) * 1096 * 1096;
+		}
+		catch(Exception e)
+		{
+			// if unable to parse an integer from the value 
+			// in the properties file, use 1 MB as a default
+			max_file_size_mb = "1";
+			max_bytes = 1096 * 1096;
+		}
+
+		FileItem fileitem = null;
+		try
+		{
+			fileitem = params.getFileItem("upload");
+		}
+		catch(Exception e)
+		{
+			
+		}
+		if(fileitem == null)
+		{
+			// "The user submitted a file to upload but it was too big!"
+			addAlert(state, rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
+		}
+		else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
+		{
+			addAlert(state, rb.getString("choosefile7"));
+		}
+		else if (fileitem.getFileName().length() > 0)
+		{
+			String filename = Validator.getFileName(fileitem.getFileName());
+			byte[] bytes = fileitem.get();
+			String contentType = fileitem.getContentType();
+			
+			if(bytes.length >= max_bytes)
+			{
+				addAlert(state, rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
+			}
+			else if(bytes.length > 0)
+			{
+				// we just want the file name part - strip off any drive and path stuff
+				String name = Validator.getFileName(filename);
+				String resourceId = Validator.escapeResourceName(name);
+
+				// make a set of properties to add for the new resource
+				ResourcePropertiesEdit props = ContentHostingService.newResourceProperties();
+				props.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+				props.addProperty(ResourceProperties.PROP_DESCRIPTION, filename);
+
+				// make an attachment resource for this URL
+				try
+				{
+					ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, contentType, bytes, props);
+		
+					List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+					if(attached == null)
+					{
+						attached = new Vector();
+					}
+					
+					String containerId = ContentHostingService.getContainingCollectionId (attachment.getId());
+					String accessUrl = ContentHostingService.getUrl(attachment.getId());
+					
+					AttachItem item = new AttachItem(attachment.getId(), filename, containerId, accessUrl);
+					item.setContentType(contentType);
+					attached.add(item);
+					state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
+					state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
+				}
+				catch (PermissionException e)
+				{
+					addAlert(state, rb.getString("notpermis4"));
+				}
+				catch(OverQuotaException e)
+				{
+					addAlert(state, rb.getString("overquota"));
+				}
+				catch(ServerOverloadException e)
+				{
+					addAlert(state, rb.getString("failed"));
+				}
+				catch(Exception ignore)
+				{
+					// other exceptions should be caught earlier
+				}
+			}
+			else 
+			{
+				addAlert(state, rb.getString("choosefile7"));
+			}
+		}
+
+		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+
+	}
+	
 	public static void doRemoveitem(RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
@@ -2898,18 +3006,44 @@ public class ResourcesAction
 		{
 			try
 			{
-				ResourceProperties props = contentService.getProperties(itemId);
-				String displayName = props.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
-				String containerId = contentService.getContainingCollectionId (itemId);
-				String accessUrl = contentService.getUrl(itemId);
-				String contentType = props.getProperty(ResourceProperties.PROP_CONTENT_TYPE);
-		
-				AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
+				ContentResource res = contentService.getResource(itemId);				
+				ResourceProperties props = res.getProperties();
+				
+				ResourcePropertiesEdit newprops = contentService.newResourceProperties();
+				newprops.set(props);
+				
+				byte[] bytes = res.getContent();
+				String contentType = res.getContentType();
+				String filename = Validator.getFileName(itemId);
+				String resourceId = Validator.escapeResourceName(filename);
+				
+				ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, contentType, bytes, props);
+				
+				String displayName = newprops.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
+				String containerId = contentService.getContainingCollectionId (attachment.getId());
+				String accessUrl = contentService.getUrl(attachment.getId());
+						
+				AttachItem item = new AttachItem(attachment.getId(), displayName, containerId, accessUrl);
 				item.setContentType(contentType);
 				attached.add(item);
 				state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
 			}
-			catch(Exception ignore) {}
+			catch (PermissionException e)
+			{
+				addAlert(state, rb.getString("notpermis4"));
+			}
+			catch(OverQuotaException e)
+			{
+				addAlert(state, rb.getString("overquota"));
+			}
+			catch(ServerOverloadException e)
+			{
+				addAlert(state, rb.getString("failed"));
+			}
+			catch(Exception ignore)
+			{
+				// other exceptions should be caught earlier
+			}
 		}
 		state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
 	}
