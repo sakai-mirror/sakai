@@ -130,11 +130,11 @@ public class OsidLoader implements java.io.Serializable {
                 String managerClassName = makeFullyQualifiedClassName(implPackageName,
                         className);
 
-System.out.println("oin " + osidInterfaceName);
+//System.out.println("oin " + osidInterfaceName);
                 Class osidInterface = Class.forName(osidInterfaceName);
 
                 if (null != osidInterface) {
-System.out.println("mcn " + managerClassName);
+//System.out.println("mcn " + managerClassName);
                     Class managerClass = Class.forName(managerClassName);
 
                     if (null != managerClass) {
@@ -155,7 +155,7 @@ System.out.println("mcn " + managerClassName);
                                 }
 
                                 try {
-System.out.println("man " + manager);
+//System.out.println("man " + manager);
                                     java.util.Properties configuration = getConfiguration(manager);
 
                                     if (null == configuration) {
@@ -163,29 +163,29 @@ System.out.println("man " + manager);
                                     }
 
                                     if (null != additionalConfiguration) {
-                                        java.util.Enumeration enum = additionalConfiguration.propertyNames();
-System.out.println("enum " + enum);
+                                        java.util.Enumeration enumer = additionalConfiguration.propertyNames();
+//System.out.println("enumer " + enumer);
 
-                                        while (enum.hasMoreElements()) {
-                                            java.io.Serializable key = (java.io.Serializable) enum.nextElement();
+                                        while (enumer.hasMoreElements()) {
+                                            java.io.Serializable key = (java.io.Serializable) enumer.nextElement();
 
-System.out.println("key "+key);
+//System.out.println("key "+key);
                                             if (null != key) {
-System.out.println("Serializing....");
+//System.out.println("Serializing....");
                                                 java.io.Serializable value = (java.io.Serializable) additionalConfiguration.get(key);
-System.out.println("Done");
+//System.out.println("Done");
 
                                                 if (null != value) {
                                                     configuration.put(key, value);
-System.out.println("put complete");
+//System.out.println("put complete");
                                                 }
                                             }
                                         }
                                     }
 
-System.out.println("assigning...");
+//System.out.println("assigning...");
                                     manager.assignConfiguration(configuration);
-System.out.println("done.");
+//System.out.println("done.");
 
                                     return manager;
                                 } catch (Exception ex) {
