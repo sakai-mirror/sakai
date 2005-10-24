@@ -20,12 +20,12 @@
 
 	<dependencies>
 		<dependency>
-		    <groupId>maven</groupId>
-		    <artifactId>maven-war-plugin</artifactId>
-	    	<version>1.6.1</version>
+			<groupId>maven</groupId>
+			<artifactId>maven-war-plugin</artifactId>
+			<version>1.6.1</version>
 			<type>plugin</type>
-	    </dependency>
-	    
+		</dependency>
+
 		<!-- servlet -->
 		<dependency>
 			<groupId>servletapi</groupId>
@@ -108,11 +108,11 @@
 			</properties>
 		</dependency>
 
-                <dependency>				     
-                        <groupId>sakaiproject</groupId>	     
-                        <artifactId>sakai-tool</artifactId> 
-                        <version>${sakai.version}</version>	     
-                </dependency>				     
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-tool</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-session</artifactId>
@@ -131,6 +131,11 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-thread_local</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-legacy-service</artifactId>
 			<version>${sakai.version}</version>
 		</dependency>
 	</dependencies>

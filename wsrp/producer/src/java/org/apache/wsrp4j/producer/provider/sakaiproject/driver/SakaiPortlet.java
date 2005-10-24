@@ -26,9 +26,13 @@ import org.apache.wsrp4j.producer.provider.PortletState;
 import org.apache.wsrp4j.producer.provider.ProducerOfferedPortlet;
 import org.apache.wsrp4j.util.Constants;
 import org.sakaiproject.api.kernel.id.cover.IdManager;
+import org.sakaiproject.api.kernel.session.ContextSession;
+import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -47,19 +51,32 @@ public abstract class SakaiPortlet implements Portlet {
     protected String portletHandle;
     
     protected ActiveTool tool;
-
+   
     // log and trace support
-    protected Logger logger = LogManager.getLogManager().getLogger(this.getClass());
+    protected static Logger logger = LogManager.getLogManager().getLogger(SakaiPortlet.class);
     
     protected PortletState state = null;
 
     public static SakaiPortlet getSakaiPortlet(String handle, ActiveTool tool)
     {       
-        if (tool.getId().equals(handle)) {
-            return new RegisteredPortlet(handle, tool);
-        } else {
-            return new ConfiguredPortlet(handle, tool);
-        }
+    	RegisteredPortlet portlet = new RegisteredPortlet(handle, tool);
+    	portlet.setRegistrationRequired(true);
+    	return portlet;
+    }
+
+    public static SakaiPortlet getSakaiPortlet(String handle, ToolConfiguration toolConfig)
+    {           	
+    	Tool tool = toolConfig.getTool();
+    	if (tool instanceof ActiveTool) {
+        	ConfiguredPortlet portlet = new ConfiguredPortlet(handle, (ActiveTool)tool);
+        	portlet.setConfiguration(toolConfig.getPlacementConfig());
+        	portlet.setPlacement(toolConfig);
+        	return portlet;
+    	}
+    	else {
+    		logger.entry(Logger.ERROR, "getSakaiPortlet", "PortletHandle: " + handle + " does not contain an ActiveTool");
+    		return null;
+    	}
     }
 
     protected SakaiPortlet(String handle, ActiveTool tool) 
@@ -116,16 +133,8 @@ public abstract class SakaiPortlet implements Portlet {
     }
 
     protected abstract Properties getConfiguration(boolean writable);
-    
-    public Placement getPlacement(String context)
-    {
-        return new org.sakaiproject.util.Placement(
-                IdManager.createUuid(), 
-                tool, 
-                getConfiguration(false), 
-                context, 
-                tool.getTitle());
-    }
+
+    public abstract Placement getPlacement(String portletInstance);
     
     /*
     public boolean equals(Object obj) {
@@ -182,6 +191,31 @@ public abstract class SakaiPortlet implements Portlet {
             portletHandle = handle;
         }
 
+        /**
+         * For a registered tool, create a new user-unique, instance-unique placement and store 
+         * it in the session
+         */
+        public Placement getPlacement(String instanceKey)
+        {
+        	String context = "mercury";
+            Session session = SessionManager.getCurrentSession();
+            ContextSession ctxSession = session.getContextSession(context);
+
+            String key = "wsrp-placement-" + portletHandle + "-" + instanceKey;
+            Placement p = (Placement) ctxSession.getAttribute(key);
+            if (p == null)
+            {
+            	p = new org.sakaiproject.util.Placement(
+                        IdManager.createUuid(), 
+                        tool, 
+                        getConfiguration(false), 
+                        context, 
+                        tool.getTitle());
+                ctxSession.setAttribute(key, p);
+            }
+            return p;
+        }
+
         protected Properties getConfiguration(boolean writable) {
             return tool.getRegisteredConfig();
         }
@@ -192,13 +226,18 @@ public abstract class SakaiPortlet implements Portlet {
     {
         private String parentHandle;
         private Properties configuration;
+        private Placement placement;
         
         public ConfiguredPortlet(String handle, ActiveTool tool) {
             super(handle, tool);
             this.parentHandle = tool.getId();
         }
 
-        public String getParentHandle() {
+        public void setPlacement(Placement placement) {
+        	this.placement = placement;
+		}
+
+		public String getParentHandle() {
             return parentHandle;
         }
 
@@ -227,6 +266,11 @@ public abstract class SakaiPortlet implements Portlet {
         protected Properties getConfiguration(boolean writable) {
             return this.configuration;
         }
+
+		public Placement getPlacement(String portletInstance) {
+			// For site-specific tools, we ignore the instance-key
+			return placement;
+		}
     }
     
     public class SakaiPortletState implements PortletState

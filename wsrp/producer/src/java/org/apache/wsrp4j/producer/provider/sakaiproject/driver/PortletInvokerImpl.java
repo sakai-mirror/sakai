@@ -253,20 +253,9 @@ public class PortletInvokerImpl implements PortletInvoker
             req.setAttribute(ToolURL.MANAGER, new SakaiURLManager(req));
             ThreadLocalManager.set(ToolURL.HTTP_SERVLET_REQUEST, req);
             
-            String context = "wsrp";
-            Session session = SessionManager.getCurrentSession();
-            ContextSession ctxSession = session.getContextSession(context);
-
             // find / make the placement id for this tool - a Placement is stored keyed by context+toolId
             String instanceKey = runtimeContext.getPortletInstanceKey();
-            String key = "wsrp-placement-" + portletID + "-" + instanceKey;
-            Placement p = (Placement) ctxSession.getAttribute(key);
-            if (p == null)
-            {
-                // If this is a consumer configured portlet, we will need to restore the placement properties
-                p = portlet.getPlacement(context);
-                ctxSession.setAttribute(key, p);
-            }
+            Placement p = portlet.getPlacement(instanceKey);
             portlet.render(req, res, p);
             
             ThreadLocalManager.set(ToolURL.HTTP_SERVLET_REQUEST, null);
