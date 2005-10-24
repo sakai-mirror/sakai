@@ -1,3 +1,8 @@
+/*
+ *   SakaiScript.jws - updated for Sakai 2.1
+ *
+ */
+ 
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,17 +12,15 @@ import java.util.Collection;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
-import org.sakaiproject.service.legacy.site.SitePageEdit;
-import org.sakaiproject.service.legacy.realm.RoleEdit;
-import org.sakaiproject.service.legacy.realm.RealmEdit;
-import org.sakaiproject.service.legacy.realm.Realm;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.api.kernel.tool.Tool;
-import org.sakaiproject.service.legacy.site.SiteEdit;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.user.UserEdit;
-import org.sakaiproject.service.legacy.realm.cover.RealmService;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
@@ -25,12 +28,14 @@ import java.util.Properties;
 import org.apache.axis.AxisFault;
 
 import org.sakaiproject.util.xml.Xml;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+//import org.w3c.dom.Document;
+//import org.w3c.dom.Element;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.NodeList;
+
 public class SakaiScript {
 	
+	/*
 	private String makeStringListDom(Collection strings)
 	{
 		Document dom = Xml.createDocument();
@@ -51,28 +56,20 @@ public class SakaiScript {
 		
 		return Xml.writeDocumentToString(dom);
 	}
+	*/
 
 public String login(String id,String pw) {
-	//System.out.println("login id="+id+" pw="+pw);
 	User user = UserDirectoryService.authenticate(id,pw);
 	if ( user != null ) {
-		//System.out.println("Have User");
 		Session s = SessionManager.startSession();
 		if (s == null)
 		{
-			//System.out.println("no session established");
 			return "sessionnull";
 		}
 		else
 		{
 			s.setUserId(id);
 			s.setUserEid(id);
-			//System.out.println("session: " + s.getId()
-			//	+ " user id: " + s.getUserId()
-			//	+ " user enterprise id: " + s.getUserEid()
-			//	+ " started: " + new Date(s.getCreationTime()).toLocaleString()
-			//	+ " accessed: " + new Date(s.getLastAccessedTime()).toLocaleString()
-			//	+ " inactive after: " + s.getMaxInactiveInterval());
 			return s.getId();
 		}
 	}
@@ -92,22 +89,13 @@ private Session establishSession(String id) throws AxisFault
 }
 
 public String checkSession(String id) {
-	//System.out.println("session id="+id);
 	Session s = SessionManager.getSession(id);
 	if (s == null)
 	{
-		//System.out.println("no session established");
 		return "null";
 	}
 	else
 	{
-		//String resp = "session: " + s.getId()
-		//	+ " user id: " + s.getUserId()
-		//	+ " user enterprise id: " + s.getUserEid()
-		//	+ " started: " + new Date(s.getCreationTime()).toLocaleString()
-		//	+ " accessed: " + new Date(s.getLastAccessedTime()).toLocaleString()
-		//	+ " inactive after: " + s.getMaxInactiveInterval();
-		//System.out.println(resp);
 		return id;
 	}
 }
@@ -240,15 +228,16 @@ public String changeUserPassword( String sessionid, String userid, String passwo
 	return "success";
 }
 
-public String addNewRealm( String sessionid, String realmid)
+//addNewRealm
+public String addNewAuthzGroup(String sessionid, String groupid)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = null;
-		realmEdit = RealmService.addRealm(realmid);
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = null;
+		authzgroup = AuthzGroupService.addAuthzGroup(groupid);
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -257,14 +246,15 @@ public String addNewRealm( String sessionid, String realmid)
 	return "success";
 }
 
-public String removeRealm( String sessionid, String realmid)
+//removeRealm
+public String removeAuthzGroup( String sessionid, String authzgroupid)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		RealmService.removeRealm(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		AuthzGroupService.removeAuthzGroup(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -273,16 +263,17 @@ public String removeRealm( String sessionid, String realmid)
 	return "success";
 }
 
-public String addNewRoleToRealm( String sessionid, String realmid, String roleid, String description)
+//addNewRoleToRealm
+public String addNewRoleToAuthzGroup( String sessionid, String authzgroupid, String roleid, String description)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		RoleEdit roleEdit = realmEdit.addRole(roleid);
-		roleEdit.setDescription(description);
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		Role role = authzgroup.addRole(roleid);
+		role.setDescription(description);
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -291,15 +282,16 @@ public String addNewRoleToRealm( String sessionid, String realmid, String roleid
 	return "success";
 }
 
-public String removeAllRolesFromRealm( String sessionid, String realmid)
+//removeAllRolesFromRealm
+public String removeAllRolesFromAuthzGroup( String sessionid, String authzgroupid)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		realmEdit.clearRoles();
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		authzgroup.removeRoles();
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -308,15 +300,16 @@ public String removeAllRolesFromRealm( String sessionid, String realmid)
 	return "success";
 }
 
-public String removeRoleFromRealm( String sessionid, String realmid, String roleid)
+//removeRolefromRealm
+public String removeRoleFromAuthzGroup( String sessionid, String authzgroupid, String roleid)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		realmEdit.removeRole(roleid);
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		authzgroup.removeRole(roleid);
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -325,16 +318,17 @@ public String removeRoleFromRealm( String sessionid, String realmid, String role
 	return "success";
 }
 
-public String addLockToRole( String sessionid, String realmid, String roleid, String lock)
+//addLockToRole
+public String allowFunctionForRole( String sessionid, String authzgroupid, String roleid, String function)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		RoleEdit roleEdit = realmEdit.getRoleEdit(roleid);
-		roleEdit.add(lock);
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		Role role = authzgroup.getRole(roleid);
+		role.allowFunction(function);
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -343,16 +337,17 @@ public String addLockToRole( String sessionid, String realmid, String roleid, St
 	return "success";
 }
 
-public String removeAllLocksFromRole( String sessionid, String realmid, String roleid)
+//removeAllLocksFromRole
+public String disallowAllFunctionsForRole( String sessionid, String authzgroupid, String roleid)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		RoleEdit roleEdit = realmEdit.getRoleEdit(roleid);
-		roleEdit.clear();
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		Role role = authzgroup.getRole(roleid);
+		role.disallowAll();
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -361,16 +356,17 @@ public String removeAllLocksFromRole( String sessionid, String realmid, String r
 	return "success";
 }
 
-public String removeLockFromRole( String sessionid, String realmid, String roleid, String lock)
+//removeLockFromRole
+public String disallowFunctionForRole( String sessionid, String authzgroupid, String roleid, String function)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		RoleEdit roleEdit = realmEdit.getRoleEdit(roleid);
-		roleEdit.remove(lock);
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		Role role = authzgroup.getRole(roleid);
+		role.disallowFunction(function);
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -379,16 +375,16 @@ public String removeLockFromRole( String sessionid, String realmid, String rolei
 	return "success";
 }
 
-public String setRoleDescription( String sessionid, String realmid, String roleid, String description)
+public String setRoleDescription( String sessionid, String authzgroupid, String roleid, String description)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		RoleEdit roleEdit = realmEdit.getRoleEdit(roleid);
-		roleEdit.setDescription(description);
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		Role role = authzgroup.getRole(roleid);
+		role.setDescription(description);
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -397,15 +393,16 @@ public String setRoleDescription( String sessionid, String realmid, String rolei
 	return "success";
 }
 
-public String addUserToRealmWithRole( String sessionid, String userid, String realmid, String roleid)
+//addUserToRealmWithRole
+public String addMemberToAuthzGroupWithRole( String sessionid, String userid, String authzgroupid, String roleid)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		realmEdit.addUserRole(userid,roleid,true,false);
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		authzgroup.addMember(userid,roleid,true,false);
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -414,15 +411,16 @@ public String addUserToRealmWithRole( String sessionid, String userid, String re
 	return "success";
 }
 
-public String removeUserFromRealm( String sessionid, String userid, String realmid)
+//removeUserFromRealm
+public String removeMemberFromAuthzGroup( String sessionid, String userid, String authzgroupid)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		realmEdit.removeUser(userid);
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		authzgroup.removeMember(userid);
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
@@ -431,15 +429,16 @@ public String removeUserFromRealm( String sessionid, String userid, String realm
 	return "success";
 }
 
-public String removeAllUsersFromRealm( String sessionid, String realmid)
+//removeAllUsersFromRealm
+public String removeAllMembersFromAuthzGroup( String sessionid, String authzgroupid)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		realmEdit.removeUsers();
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup realmEdit = AuthzGroupService.getAuthzGroup(authzgroupid);
+		realmEdit.removeMembers();
+		AuthzGroupService.save(realmEdit);
 	
 	}
 	catch (Exception e) {  
@@ -448,19 +447,35 @@ public String removeAllUsersFromRealm( String sessionid, String realmid)
 	return "success";
 }
 
-public String setRoleForRealmMaintenance( String sessionid, String realmid, String roleid)
+//setRoleForRealmMaintenance
+public String setRoleForAuthzGroupMaintenance( String sessionid, String authzgroupid, String roleid)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		RealmEdit realmEdit = RealmService.editRealm(realmid);
-		realmEdit.setMaintainRole(roleid);
-		RealmService.commitEdit(realmEdit);
+		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		authzgroup.setMaintainRole(roleid);
+		AuthzGroupService.save(authzgroup);
 	
 	}
 	catch (Exception e) {  
 	 return e.getClass().getName() + " : " + e.getMessage();
+	}
+	return "success";
+}
+
+public String addMemberToSiteWithRole(String sessionid, String siteid, String userid, String roleid)
+{
+	Session session = SessionManager.getSession(sessionid);
+	SessionManager.setCurrentSession(session);
+	try {
+		Site site = SiteService.getSite(siteid);
+		site.addMember(userid,roleid,true,false);
+		SiteService.save(site);
+	}
+	catch (Exception e) {
+		return e.getClass().getName() + " : " + e.getMessage();
 	}
 	return "success";
 }
@@ -471,8 +486,8 @@ public String addNewSite( String sessionid, String siteid, String title, String 
 	SessionManager.setCurrentSession(session);
 	try {
 
-		SiteEdit siteEdit = null;
-		siteEdit = SiteService.addSite(siteid);
+		Site siteEdit = null;
+		siteEdit = SiteService.addSite(siteid, "");
 		siteEdit.setTitle(title);
 		siteEdit.setDescription(description);
 		siteEdit.setShortDescription(shortdesc);
@@ -484,7 +499,7 @@ public String addNewSite( String sessionid, String siteid, String title, String 
 		siteEdit.setPubView(publicview);
 		siteEdit.setSkin(skin);
 		siteEdit.setType(type);
-		SiteService.commitEdit(siteEdit);
+		SiteService.save(siteEdit);
 	
 	}
 	catch (Exception e) {  
@@ -493,14 +508,15 @@ public String addNewSite( String sessionid, String siteid, String title, String 
 	return "success";
 }
 
+
 public String removeSite( String sessionid, String siteid)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		SiteEdit siteEdit = null;
-		siteEdit = SiteService.editSite(siteid);
+		Site siteEdit = null;
+		siteEdit = SiteService.getSite(siteid);
 		SiteService.removeSite(siteEdit);
 	
 	}
@@ -517,7 +533,7 @@ public String copySite( String sessionid, String siteidtocopy, String newsiteid,
 	try {
 
 		Site site = SiteService.getSite(siteidtocopy);
-		SiteEdit siteEdit = SiteService.addSite(newsiteid, site);
+		Site siteEdit = SiteService.addSite(newsiteid, site);
 		siteEdit.setTitle(title);
 		siteEdit.setDescription(description);
 		siteEdit.setShortDescription(shortdesc);
@@ -529,7 +545,7 @@ public String copySite( String sessionid, String siteidtocopy, String newsiteid,
 		siteEdit.setPubView(publicview);
 		siteEdit.setSkin(skin);
 		siteEdit.setType(type);
-		SiteService.commitEdit(siteEdit);
+		SiteService.save(siteEdit);
 	
 	}
 	catch (Exception e) {  
@@ -544,13 +560,13 @@ public String addNewPageToSite( String sessionid, String siteid, String pagetitl
 	SessionManager.setCurrentSession(session);
 	try {
 
-		SiteEdit siteEdit = null;
-		SitePageEdit sitePageEdit = null;
-		siteEdit = SiteService.editSite(siteid);
+		Site siteEdit = null;
+		SitePage sitePageEdit = null;
+		siteEdit = SiteService.getSite(siteid);
 		sitePageEdit = siteEdit.addPage();
 		sitePageEdit.setTitle(pagetitle);
 		sitePageEdit.setLayout(pagelayout);
-		SiteService.commitEdit(siteEdit);
+		SiteService.save(siteEdit);
 	
 	}
 	catch (Exception e) {  
@@ -565,16 +581,16 @@ public String removePageFromSite( String sessionid, String siteid, String pageti
 	SessionManager.setCurrentSession(session);
 	try {
 
-		SiteEdit siteEdit = null;
-		siteEdit = SiteService.editSite(siteid);
-		List pageEdits = siteEdit.getPageEdits();
+		Site siteEdit = null;
+		siteEdit = SiteService.getSite(siteid);
+		List pageEdits = siteEdit.getPages();
 		for (Iterator i = pageEdits.iterator(); i.hasNext();)
 		{
-			SitePageEdit pageEdit = (SitePageEdit) i.next();
+			SitePage pageEdit = (SitePage) i.next();
 			if (pageEdit.getTitle().equals(pagetitle))
 				siteEdit.removePage(pageEdit);
 		}
-		SiteService.commitEdit(siteEdit);
+		SiteService.save(siteEdit);
 	
 	}
 	catch (Exception e) {  
@@ -583,17 +599,19 @@ public String removePageFromSite( String sessionid, String siteid, String pageti
 	return "success";
 }
 
+
+
 public String addNewToolToPage( String sessionid, String siteid, String pagetitle, String tooltitle, String toolid, String layouthints)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		SiteEdit siteEdit = SiteService.editSite(siteid);
-		List pageEdits = siteEdit.getPageEdits();
+		Site siteEdit = SiteService.getSite(siteid);
+		List pageEdits = siteEdit.getPages();
 		for (Iterator i = pageEdits.iterator(); i.hasNext();)
 		{
-			SitePageEdit pageEdit = (SitePageEdit) i.next();
+			SitePage pageEdit = (SitePage) i.next();
 			if (pageEdit.getTitle().equals(pagetitle))
 			{
 				ToolConfiguration tool = pageEdit.addTool();
@@ -606,7 +624,7 @@ public String addNewToolToPage( String sessionid, String siteid, String pagetitl
 				//toolEdit.setLayoutHints(layouthints);
 			}
 		}
-		SiteService.commitEdit(siteEdit);
+		SiteService.save(siteEdit);
 	
 	}
 	catch (Exception e) {  
@@ -615,17 +633,19 @@ public String addNewToolToPage( String sessionid, String siteid, String pagetitl
 	return "success";
 }
 
+
+
 public String addConfigPropertyToTool( String sessionid, String siteid, String pagetitle, String tooltitle, String propname, String propvalue)
 {
 	Session session = SessionManager.getSession(sessionid);
 	SessionManager.setCurrentSession(session);
 	try {
 
-		SiteEdit siteEdit = SiteService.editSite(siteid);
-		List pageEdits = siteEdit.getPageEdits();
+		Site siteEdit = SiteService.getSite(siteid);
+		List pageEdits = siteEdit.getPages();
 		for (Iterator i = pageEdits.iterator(); i.hasNext();)
 		{
-			SitePageEdit pageEdit = (SitePageEdit) i.next();
+			SitePage pageEdit = (SitePage) i.next();
 			if (pageEdit.getTitle().equals(pagetitle))
 			{
 				List toolEdits = pageEdit.getTools();
@@ -633,32 +653,15 @@ public String addConfigPropertyToTool( String sessionid, String siteid, String p
 				{
 					ToolConfiguration tool = (ToolConfiguration) j.next();
 					Tool t = tool.getTool();
-					//System.out.println("SWG ConfigTitle: " + tool.getTitle());
-					//System.out.println("SWG ToolTitle: " + t.getTitle());
 					if (tool.getTitle().equals(tooltitle))
 					{
-						//Properties propsedit = t.getRegisteredConfig();
 						Properties propsedit = tool.getPlacementConfig();
-						//Enumeration e = propsedit.propertyNames();
-						//while(e.hasMoreElements())
-						//{
-						//	String next = (String) e.nextElement();
-						//	System.out.println("SWG PlaceProp: " + next);
-						//}
-						//System.out.println("SWG Setting ToolConfig");
 						propsedit.setProperty(propname, propvalue);
-						//t.setRegisteredConfig(propsedit);
-						//Enumeration e2 = t.getRegisteredConfig().propertyNames();
-						//while(e2.hasMoreElements())
-						//{
-						//	String next = (String) e2.nextElement();
-						//	System.out.println("SWG ToolProp: " + next);
-						//}
 					}
 				}
 			}
 		}
-		SiteService.commitEdit(siteEdit);
+		SiteService.save(siteEdit);
 	
 	}
 	catch (Exception e) {  
@@ -703,17 +706,17 @@ public boolean checkForSite(String sessionid, String siteid) throws AxisFault
 	}
 }
 
-//- checkForUserInRealmWithRole
-public boolean checkForUserInRealmWithRole(String sessionid, String userid, String realmid, String role) throws AxisFault
+//checkForUserInRealmWithRole
+public boolean checkForMemberInAuthzGroupWithRole(String sessionid, String userid, String authzgroupid, String role) throws AxisFault
 {
 	Session s = establishSession(sessionid);
 	try {
-		Realm realm = null; 
-		realm = RealmService.getRealm(realmid);
-		if (realm == null)
+		AuthzGroup authzgroup = null; 
+		authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
+		if (authzgroup == null)
 			return false;
 		else {
-			return realm.hasRole(userid, role);
+			return authzgroup.hasRole(userid, role);
 		}
 	}
 	catch (Exception e) {
@@ -721,11 +724,12 @@ public boolean checkForUserInRealmWithRole(String sessionid, String userid, Stri
 	}
 }
 
+/*
 public String getSitesUserCanAccess(String sessionid, String userid) throws AxisFault
 {
 	Session s = establishSession(sessionid);
 	try {
-		Set realms = RealmService.unlockRealms(userid, "site.visit");
+		Set realms = AuthzGroupService.isAllowed(userid, "site.visit", null);
 		if (realms == null)
 			return "<list/>";
 		
@@ -747,5 +751,6 @@ public String getSitesUserCanAccess(String sessionid, String userid) throws Axis
 		return "<exception/>";
 	}
 }
+*/
 
 }
