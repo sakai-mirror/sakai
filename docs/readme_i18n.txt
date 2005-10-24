@@ -60,8 +60,14 @@ languages, as follows:
    Contact: Michal Mosovic   salmon@salmon.sk
    Local ID: sk_SK
     
+10) Catalan
+    Status: ??
+    Translated by: n/a
+    Contact: Alex Ballesté   alex@asic.udl.es
+    Local ID: ca_ES
+    
 
-The language locale must currently be defined at boot time, by
+Currently, the language locale must be defined at boot time, by
 setting the tomcat JAVA_OPTS property as follows:
 
 -- catalina.sh -----------------------------------------------
