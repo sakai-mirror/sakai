@@ -70,6 +70,7 @@ implements org.osid.repository.RepositoryManager
     throws org.osid.repository.RepositoryException
     {
         this.configuration = configuration;
+System.out.println(this+" Configuration = "+configuration);
         try
         {
             String idImplementation = (String)configuration.get("osid_20_Id_Implementation");
@@ -92,7 +93,7 @@ implements org.osid.repository.RepositoryManager
             }
             else
             {
-                loggingManager = (org.osid.logging.LoggingManager)org.osid.OsidLoader.getManager(
+                loggingManager = (org.osid.logging.LoggingManager)org.sakaiproject.component.osid.loader.OsidLoader.getManager(
                     "org.osid.logging.LoggingManager",
                     loggingImplementation,
                     this.context,
@@ -116,7 +117,7 @@ implements org.osid.repository.RepositoryManager
                 log("no Id Implementation configuration");
                 throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.CONFIGURATION_ERROR);
             }
-            this.idManager = (org.osid.id.IdManager)org.osid.OsidLoader.getManager(
+            this.idManager = (org.osid.id.IdManager)org.sakaiproject.component.osid.loader.OsidLoader.getManager(
                 "org.osid.id.IdManager",
                 idImplementation,
                 this.context,

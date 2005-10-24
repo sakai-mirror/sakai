@@ -3,7 +3,7 @@
 <project>
 	<pomVersion>3</pomVersion>
 	<extend>../../master/project.xml</extend>
-	<name>Simple OSID Repository Using Tool</name>
+	<name>OSID Test Tool</name>
 	<groupId>sakaiproject</groupId>
 	<id>sakai-osid-repo-test</id>
 	<currentVersion>${sakai.version}</currentVersion>

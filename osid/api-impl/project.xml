@@ -45,6 +45,12 @@
                         <version>2005-10-19</version>
 		</dependency>
 
+    		<dependency>
+      			<groupId>commons-logging</groupId>
+      			<artifactId>commons-logging</artifactId>
+      			<version>1.0.4</version>
+    		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -58,7 +64,7 @@
 				<directory>${basedir}/src/bundle</directory>
 				<includes>
 					<include>**/*.properties</include>
-					<include>*.xml</include>
+					<include>**/*.xml</include>
 				</includes>
 			</resource>
 		</resources>

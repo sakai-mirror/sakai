@@ -11,7 +11,7 @@
 		<configuration name="integration.property.level" value="[level here]" />
 		<configuration name="integration.property.fn" value="file_name.txt" />
 
-		<category name="sakai.sample" />
+                <category name="sakai.test" />
 
 		<keyword name="OSIDRepository" />
 

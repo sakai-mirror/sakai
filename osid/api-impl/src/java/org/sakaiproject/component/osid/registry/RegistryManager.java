@@ -37,8 +37,6 @@ implements edu.mit.osid.registry.RegistryManager
 	private static final String ID_MANAGER_IMPLEMENTATION = "org.sakaiproject.component.osid.id";
 	private static final String FILE_NOT_FOUND_MESSAGE = "Cannot find or open ";
 	
-	private static final String ID_OSID = "org.osid.id.IdManager";
-	
 	private static final String REGISTRY_TAG = "registry";
 	private static final String PROVIDER_RECORD_TAG = "record";
 	private static final String OSID_SERVICE_TAG = "oki:osidservice";
@@ -57,53 +55,57 @@ implements edu.mit.osid.registry.RegistryManager
 	private static final String OKI_NAMESPACE_URL = "http://www.okiproject.org/registry/elements/1.0/" ;
 	private static final String DATE_FORMAT = "yyyy-MM-dd kk:mm:ss:SSS zz";
 
-    private org.osid.OsidContext passedInContext = null;
+    	private org.osid.OsidContext passedInContext = null;
 	private org.osid.OsidContext emptyContext = new org.osid.OsidContext();
-    private java.util.Properties configuration = null;
+    	private java.util.Properties configuration = null;
 	private java.util.Properties managerProperties = new java.util.Properties();
 	private org.osid.id.IdManager idManager = null;
 	
 	/**
 	 * Return the OsidContext assigned earlier.
 	 */
-    public org.osid.OsidContext getOsidContext()
+    	public org.osid.OsidContext getOsidContext()
 		throws edu.mit.osid.registry.RegistryException
-    {
-        return this.passedInContext;
-    }
+    	{
+        	return this.passedInContext;
+    	}
 
 	/**
 	 * Store away an OsidContext from the consumer.
 	 */
-    public void assignOsidContext(org.osid.OsidContext context)
+    	public void assignOsidContext(org.osid.OsidContext context)
 		throws org.osid.repository.RepositoryException
-    {
-        this.passedInContext = context;
-    }
+    	{
+    	    this.passedInContext = context;
+    	}
+
+	/**
+	 * Simple getter for IdManager with error checking
+	 */
+	private org.osid.id.IdManager getIdManager()
+	{
+		if ( this.idManager != null ) return this.idManager;
+		try {
+			this.idManager = (org.osid.id.IdManager) 
+				org.sakaiproject.service.framework.component.cover.ComponentManager.get(org.osid.id.IdManager.class);
+
+		} catch (Throwable t) {
+			log(t);
+		}
+		return this.idManager;
+	}
 
 	/**
 	 * Store the configuration from the consumer and perform other intialization.
 	 * This method should be called after assignOsidContext() and before any others.
 	 * The default OsidLoader does this automatically.
 	 */
-    public void assignConfiguration(java.util.Properties configuration)
+    	public void assignConfiguration(java.util.Properties configuration)
 		throws org.osid.repository.RepositoryException
-    {
-        this.configuration = configuration;
-
-		try {
-			if (this.idManager == null) {
-				this.idManager = (org.osid.id.IdManager)org.osid.OsidLoader.getManager(ID_OSID,
-																					   ID_MANAGER_IMPLEMENTATION,
-																					   emptyContext,
-																					   managerProperties);
-				
-			}
-		} catch (Throwable t) {
-			log(t);
-		}
+    	{
+        	this.configuration = configuration;
 	}
-	
+
 	/**
 	 * Examine the registry XML for information and maker Providers
 	 */
@@ -111,19 +113,14 @@ implements edu.mit.osid.registry.RegistryManager
 		throws edu.mit.osid.registry.RegistryException
 	{
 		java.util.Vector result = new java.util.Vector();
+
+		java.io.InputStream istream = org.sakaiproject.component.osid.loader.OsidLoader.getConfigStream(REGISTRY_XML_FILENAME,getClass());
+		if (istream == null) {
+			log(FILE_NOT_FOUND_MESSAGE +  REGISTRY_XML_FILENAME);					
+			throw new edu.mit.osid.registry.RegistryException(org.osid.OsidException.CONFIGURATION_ERROR);
+		}
+
 		try {
-			System.out.println("about to get registry XML");
-			java.io.InputStream istream = getClass().getClassLoader().getResourceAsStream(REGISTRY_XML_FILENAME);
-            if (istream == null) {
-				log(FILE_NOT_FOUND_MESSAGE + REGISTRY_XML_FILENAME);
-				
-				istream = new java.io.FileInputStream("../shared/" + REGISTRY_XML_FILENAME);
-				if (istream == null) {
-					log(FILE_NOT_FOUND_MESSAGE + "../shared/" + REGISTRY_XML_FILENAME);					
-					throw new edu.mit.osid.registry.RegistryException(org.osid.OsidException.CONFIGURATION_ERROR);
-				}
-            }
-			
 			javax.xml.parsers.DocumentBuilderFactory dbf = null;
 			javax.xml.parsers.DocumentBuilder db = null;
 			org.w3c.dom.Document document = null;
@@ -246,7 +243,7 @@ implements edu.mit.osid.registry.RegistryManager
 					}
 				}
 				
-/*				System.out.println(osidService);
+/*
 				System.out.println(osidVersion);
 				System.out.println(osidLoadKey);
 				System.out.println(title);
@@ -256,19 +253,20 @@ implements edu.mit.osid.registry.RegistryManager
 				System.out.println(registrationDate);
 				System.out.println(identifier);
 				System.out.println(rights);
-*/				
+*/
 				result.addElement(new Provider(this,
-											   osidService,
-											   osidVersion,
-											   osidLoadKey,
-											   title,
-											   description,
-											   this.idManager.getId(identifier),
-											   creator,
-											   publisher,
-											   registrationDate,
-											   rights));
-			}
+							   osidService,
+							   osidVersion,
+							   osidLoadKey,
+							   title,
+							   description,
+							   getIdManager().getId(identifier),
+							   creator,
+							   publisher,
+							   registrationDate,
+							   rights));
+System.out.println("Element Added...");
+			} // for
 		} catch (Throwable t) {
 			log(t);
 		}
@@ -481,7 +479,7 @@ implements edu.mit.osid.registry.RegistryManager
 					org.w3c.dom.Element e = (org.w3c.dom.Element)nodeList.item(k);
 					if (e.hasChildNodes()) {
 						String idString = e.getFirstChild().getNodeValue();
-						org.osid.shared.Id id = this.idManager.getId(idString);
+						org.osid.shared.Id id = getIdManager().getId(idString);
 						if (id.isEqual(providerId)) {
 							registry.removeChild(record);
 							

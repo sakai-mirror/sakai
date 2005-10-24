@@ -1,4 +1,4 @@
-package org.sakaiproject.component.osid.repository.registry;
+package org.sakaiproject.component.osid.loader;
 /**
  * OsidLoader loads a specific implementation of an Open Service Interface
  * Definition (OSID) with its getManager method. The getManager method loads
@@ -247,6 +247,50 @@ System.out.println("done.");
         return cName;
     }
 
+	/******* Utility Methods For Sakai Implementations ********/
+
+        /**
+         * Get an InputStream for a particular file name - first check the sakai.home area and then 
+         * revert to the classpath.
+	 *
+	 * This is a utility method used several places.
+         */
+        public static java.io.InputStream getConfigStream(String fileName, Class curClass)
+        {
+                String sakaiHome = System.getProperty("sakai.home");
+                String filePath = sakaiHome + fileName;
+
+                try
+                {
+                        java.io.File f = new java.io.File(filePath);
+                        if (f.exists())
+                        {
+                                return new java.io.FileInputStream(f);
+                        }
+                }
+                catch (Throwable t)
+                {
+                        // Not found in the sakai.home area
+                }
+        
+		if ( curClass == null ) return null;
+
+		// If there is a class context, load from the class context...
+                java.io.InputStream istream = null; 
+        
+                // Load from the class loader
+                istream = curClass.getClassLoader().getResourceAsStream(fileName);
+                if ( istream != null ) return istream;
+
+                // Load from the class relative
+                istream = curClass.getResourceAsStream(fileName);
+                if ( istream != null ) return istream;
+        
+                // Loading from the class at the root
+                istream = curClass.getResourceAsStream("/"+fileName);
+                return istream;
+        }
+
     private static java.util.Properties getConfiguration(
         org.osid.OsidManager manager) throws org.osid.OsidException {
         java.util.Properties properties = null;
@@ -262,8 +306,10 @@ System.out.println("done.");
                     managerClassName = managerClassName.substring(index + 1);
                 }
 
-                java.io.InputStream is = managerClass.getResourceAsStream(managerClassName +
-                        ".properties");
+		String propertyName = managerClassName + ".properties";
+		
+                // java.io.InputStream is = managerClass.getResourceAsStream(managerClassName + ".properties");
+                java.io.InputStream is = getConfigStream(propertyName,managerClass);
 
                 if (null != is) {
                     properties = new java.util.Properties();

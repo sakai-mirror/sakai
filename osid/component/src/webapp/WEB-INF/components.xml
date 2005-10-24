@@ -10,6 +10,13 @@
                 <!-- No injections yet -->
         </bean>
 
+<!--  Register Our LogManager  -->
+        <bean id="org.osid.logging.LoggingManager"
+                class="org.sakaiproject.component.osid.logging.LoggingManager"
+                singleton="true">
+                <!-- No injections yet -->
+        </bean>
+
 <!--  Register Our RepositoryManager  -->
         <bean id="org.osid.repository.RepositoryManager"
                 class="org.sakaiproject.component.osid.repository.registry.RepositoryManager"

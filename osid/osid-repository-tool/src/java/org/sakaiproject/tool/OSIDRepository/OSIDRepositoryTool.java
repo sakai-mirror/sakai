@@ -78,6 +78,24 @@ public class OSIDRepositoryTool extends HttpServlet {
 		super.destroy();
 	}
 
+	private void testStart(PrintWriter out,String theString)
+	{
+		out.println("<tr><td>&nbsp;</td></tr>\r\n");
+		out.println("<tr><td>Starting Test "+theString+"</td></tr>\r\n");
+	}
+	private void testStep(PrintWriter out,String theString)
+	{
+		out.println("<tr><td>"+theString+"</td></tr>\r\n");
+	}
+	private void testPass(PrintWriter out,String theString)
+	{
+		out.println("<tr><td><font color=green>Passed: "+theString+"</font></td></tr>\r\n");
+	}
+	private void testFail(PrintWriter out,String theString)
+	{
+		out.println("<tr><td><font color=red>Failed: "+theString+"</font></td></tr>\r\n");
+	}
+
 	/**
 	 * Respond to navigation / access requests.
 	 *
@@ -99,8 +117,51 @@ public class OSIDRepositoryTool extends HttpServlet {
 		out.println("<html>");
 		out.println("<body>");
 		out.println("<table>");
+
+		try {
+			testStart(out,"IdManager");
+			ComponentManager.getInstance();
+			Object o = ComponentManager.get("org.osid.id.IdManager");
+			if (o != null) {
+				org.osid.id.IdManager idManager = (org.osid.id.IdManager)o;
+				org.osid.shared.Id theId = idManager.createId();
+				testStep(out,"ID = "+theId.getIdString());
+				testPass(out,"IdManager");
+			} else {
+				testFail(out,"ComponentManager could not find IdManager");
+			}
+		} catch(Throwable t) {
+			testFail(out,"IdManager Exception "+t.toString());
+			// TODO: throw(t);
+		}
+
+		try {
+			testStart(out,"LoggingManager");
+			ComponentManager.getInstance();
+			Object o = ComponentManager.get("org.osid.logging.LoggingManager");
+			if (o != null) {
+				org.osid.logging.LoggingManager loggingManager = (org.osid.logging.LoggingManager)o;
+				org.osid.shared.StringIterator iter = loggingManager.getLogNamesForWriting();
+				testStep(out,"Writable Logs "+iter);
+    				org.osid.logging.WritableLog log = loggingManager.getLogForWriting("info");
+				log.appendLog("This message should go to info log");
+				log = loggingManager.getLogForWriting("trace");
+				log.appendLog("This message should go to trace log");
+				log = loggingManager.getLogForWriting("fred");
+				log.appendLog("This message should go to info log because if the log is unknown, info is assumed");
+				testPass(out,"LoggingManager");
+			} else {
+				testFail(out,"ComponentManager could not find LoggingManager");
+			}
+		} catch(Throwable t) {
+			testFail(out,"LoggingManager Exception "+t.toString());
+			// TODO: throw(t);
+		}
+
+
 		
 		try {
+			testStart(out,"RepositoryManager");
 			ComponentManager.getInstance();		
 			Object o = ComponentManager.get("org.osid.repository.RepositoryManager");
 			if (o != null) {

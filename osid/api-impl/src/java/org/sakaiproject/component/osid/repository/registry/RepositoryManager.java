@@ -37,55 +37,67 @@ package org.sakaiproject.component.osid.repository.registry;
 public class RepositoryManager
 implements org.osid.repository.RepositoryManager
 {
-    private org.osid.OsidContext context = null;
-    private java.util.Properties configurationProperties = null;
+    	private org.osid.OsidContext context = null;
+    	private java.util.Properties configurationProperties = null;
 	private java.util.Vector repositoryManagerVector = new java.util.Vector();
 	private edu.mit.osid.registry.RegistryManager registryManager = null;
 	private org.osid.id.IdManager idManager = null;
 	private static final String ADUSTER_XML_FILENAME = "RepositoryOSIDAdjuster.xml";
 	private static final String REGISTRY_OSID = "edu.mit.osid.registry.RegistryManager";
 	private static final String REGISTRY_OSID_IMPLEMENTATION = "org.sakaiproject.component.osid.registry";
-	private static final String ID_OSID ="org.osid.id.IdManager";
-	private static final String ID_OSID_IMPLEMENTATION = "org.sakaiproject.component.osid.id";
 	private org.w3c.dom.Document adjusterDocument = null;
 
 	/**
 		Simply return OsidContext set by assignOsidContext
 	*/
-    public org.osid.OsidContext getOsidContext()
-    throws org.osid.repository.RepositoryException
-    {
-        return context;
-    }
+    	public org.osid.OsidContext getOsidContext()
+    		throws org.osid.repository.RepositoryException
+    	{
+System.out.println(this + " returning the context " + context );
+        	return context;
+    	}
 
 	/**
 		Simply stores the OsidContext
 	 */
-    public void assignOsidContext(org.osid.OsidContext context)
-    throws org.osid.repository.RepositoryException
-    {
-        this.context = context;
-    }
+    	public void assignOsidContext(org.osid.OsidContext context)
+    	throws org.osid.repository.RepositoryException
+    	{
+System.out.println(this + " assigning context to be "+context);
+        	this.context = context;
+    	}
+
+        /**
+         * Simple getter for IdManager with error checking - Use Sakai Component Manager
+         */
+        private org.osid.id.IdManager getIdManager()
+        {               
+                if ( this.idManager != null ) return this.idManager;
+                try {
+                        this.idManager = (org.osid.id.IdManager) 
+                                org.sakaiproject.service.framework.component.cover.ComponentManager.get(org.osid.id.IdManager.class);
+        
+                } catch (Throwable t) {
+                        log(t);
+                }
+                return this.idManager;
+        }
 
 	/**
-		Simply stores the Configuration and then sets up to access implementations of the RegistryManager and an IdManager
+	 * Simply stores the Configuration and then sets up to access implementations of the RegistryManager and an IdManager
 	 */
-    public void assignConfiguration(java.util.Properties configurationProperties)
-    throws org.osid.repository.RepositoryException
-    {
-        this.configurationProperties = configurationProperties;
+    	public void assignConfiguration(java.util.Properties configurationProperties)
+    		throws org.osid.repository.RepositoryException
+    	{
+        	this.configurationProperties = configurationProperties;
 		
 		try {
 			if (this.registryManager == null) {
 				this.registryManager = (edu.mit.osid.registry.RegistryManager)
-                                           org.sakaiproject.component.osid.repository.registry.OsidLoader.getManager(REGISTRY_OSID,
-																										 REGISTRY_OSID_IMPLEMENTATION,
-																										 this.context,
-																										 new java.util.Properties());
-				this.idManager = (org.osid.id.IdManager)OsidLoader.getManager(ID_OSID,
-																					   ID_OSID_IMPLEMENTATION,
-																					   this.context,
-																					   new java.util.Properties());
+                                           org.sakaiproject.component.osid.loader.OsidLoader.getManager(REGISTRY_OSID,
+							 REGISTRY_OSID_IMPLEMENTATION,
+							 getOsidContext(),
+							 new java.util.Properties());
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -93,10 +105,9 @@ implements org.osid.repository.RepositoryManager
 			throw new org.osid.repository.RepositoryException(org.osid.OsidException.CONFIGURATION_ERROR);
 		}
 		
-		java.io.InputStream istream = null;
 		try {
-			istream = getClass().getClassLoader().getResourceAsStream(ADUSTER_XML_FILENAME);
-            if (istream != null) {
+                	java.io.InputStream istream = org.sakaiproject.component.osid.loader.OsidLoader.getConfigStream(ADUSTER_XML_FILENAME,getClass());
+            		if (istream != null) {
 				javax.xml.parsers.DocumentBuilderFactory dbf = null;
 				javax.xml.parsers.DocumentBuilder db = null;
 				
@@ -105,33 +116,20 @@ implements org.osid.repository.RepositoryManager
 				adjusterDocument = db.parse(istream);
 			}
 		} catch (Throwable t) {
-			// try the ../shared directory
-			try {
-				istream = getClass().getClassLoader().getResourceAsStream("../shared/" + ADUSTER_XML_FILENAME);
-				if (istream != null) {
-					javax.xml.parsers.DocumentBuilderFactory dbf = null;
-					javax.xml.parsers.DocumentBuilder db = null;
-					
-					dbf = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-					db = dbf.newDocumentBuilder();
-					adjusterDocument = db.parse(istream);
-				}				
-			}
-			catch (Throwable t1) {
-			}
+			// Missing or ill-formatted file is non-fatal
 		}
-    }
+    	}
 
 	/**
-		Unimplemented method.  We don't know to which RepositoryManager to delegate this, so we do nothing.
+	 * Unimplemented method.  We don't know to which RepositoryManager to delegate this, so we do nothing.
 	 */
-    public org.osid.repository.Repository createRepository(String displayName
+    	public org.osid.repository.Repository createRepository(String displayName
                                                          , String description
                                                          , org.osid.shared.Type repositoryType)
-    throws org.osid.repository.RepositoryException
-    {
-        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
-    }
+    	throws org.osid.repository.RepositoryException
+    	{
+        	throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
+    	}
 
 	/**
 		Unimplemented method.  We could do this by checking all managers, but this seems outside the purpose of this implementation.
@@ -463,7 +461,7 @@ implements org.osid.repository.RepositoryManager
 									for (int n=0; n < numNodes; n++) {
 										org.w3c.dom.Element node = (org.w3c.dom.Element)nodeList.item(n);
 										String idString = node.getAttribute("id");
-										org.osid.shared.Id id = idManager.getId(idString);
+										org.osid.shared.Id id = getIdManager().getId(idString);
 										if (id.isEqual(repositoryId)) {
 											String adjusterClassName = node.getAttribute("adjusterclass");
 											if (adjusterClassName.length() > 0) {
@@ -541,9 +539,9 @@ implements org.osid.repository.RepositoryManager
 		If an exception is thrown by a call to a manager, the exception is logged and processing continues.
 		This method can throw org.osid.OsidException.OPERATION_FAILED.
 	 */
-    public org.osid.shared.TypeIterator getRepositoryTypes()
-    throws org.osid.repository.RepositoryException
-    {
+    	public org.osid.shared.TypeIterator getRepositoryTypes()
+    		throws org.osid.repository.RepositoryException
+    	{
 		try {
 			// set the current list of repository managers
 			refresh();
@@ -579,15 +577,15 @@ implements org.osid.repository.RepositoryManager
 			log(t);
 		}
 		throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
-    }
+    	}
 
 	/*
 	 * A required empty implementation called by the default OsidLoader.
 	 */
-    public void osidVersion_2_0()
-    throws org.osid.repository.RepositoryException
-    {
-    }
+    	public void osidVersion_2_0()
+    		throws org.osid.repository.RepositoryException
+    	{
+    	}
 	
 	// private utility methods
 	
@@ -604,12 +602,15 @@ implements org.osid.repository.RepositoryManager
 				String version = provider.getOsidVersion();
 				String loadkey = provider.getOsidLoadKey();
 				
+				log("Loading OSID DR Implementation "+loadkey);
+
 				if ( (service.equals("org.osid.repository")) && (version.equals("2.0")) ) {
 					try {
-						this.repositoryManagerVector.addElement(org.osid.OsidLoader.getManager("org.osid.repository.RepositoryManager",
-																								loadkey,
-																								this.context,
-																								new java.util.Properties()));
+						this.repositoryManagerVector.addElement(
+ 							org.sakaiproject.component.osid.loader.OsidLoader.getManager("org.osid.repository.RepositoryManager",
+								loadkey,
+								getOsidContext(),
+								new java.util.Properties()));
 					} catch (Throwable t) {
 						log(t);
 						log("OSID Service: " + service);
