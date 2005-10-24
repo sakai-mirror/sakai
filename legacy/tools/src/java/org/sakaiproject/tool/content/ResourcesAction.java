@@ -2849,7 +2849,10 @@ public class ResourcesAction
 				// make an attachment resource for this URL
 				try
 				{
-					ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, contentType, bytes, props);
+					String siteId = PortalService.getCurrentSiteId();
+					String toolName = ToolManager.getCurrentTool().getTitle();
+					
+					ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, siteId, toolName, contentType, bytes, props);
 		
 					List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
 					if(attached == null)
@@ -2912,8 +2915,11 @@ public class ResourcesAction
 			
 			byte[] newUrl = url.getBytes();
 			String newResourceId = Validator.escapeResourceName(url);
+			
+			String siteId = PortalService.getCurrentSiteId();
+			String toolName = ToolManager.getCurrentTool().getTitle();
 		
-			ContentResource attachment = ContentHostingService.addAttachmentResource(newResourceId, ResourceProperties.TYPE_URL, newUrl, resourceProperties);
+			ContentResource attachment = ContentHostingService.addAttachmentResource(newResourceId, siteId, toolName, ResourceProperties.TYPE_URL, newUrl, resourceProperties);
 
 			List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
 			if(attached == null)
@@ -3080,7 +3086,10 @@ public class ResourcesAction
 				String filename = Validator.getFileName(itemId);
 				String resourceId = Validator.escapeResourceName(filename);
 				
-				ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, contentType, bytes, props);
+				String siteId = PortalService.getCurrentSiteId();
+				String toolName = ToolManager.getCurrentTool().getTitle();
+				
+				ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, siteId, toolName, contentType, bytes, props);
 				
 				String displayName = newprops.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
 				String containerId = contentService.getContainingCollectionId (attachment.getId());

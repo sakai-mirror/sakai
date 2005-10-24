@@ -73,7 +73,8 @@
 		</h4>
 		<p class="shorttext">
 			<label for="file">$tlang.getString("att.fil")</label>
-			<input type="file" name="upload" id="upload" class="upload" onchange="javascript:document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachupload" "special=upload")';submitform('attachForm');" />
+			<input type="file" name="upload" id="upload" class="upload" onchange="javascript:showNotif('submitnotif','addAttach','attachForm');document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachupload" "special=upload")';submitform('attachForm');" />
+			<span id="submitnotif" style="visibility:hidden">$tlang.getString("gen.proces")</span>
 		</p>	
 		<h4>
 			$tlang.getString("addi.url")
@@ -464,7 +465,7 @@
 			</table>
 		
 		<p class="act" >
-			<input type="submit" name="eventSubmit_doAddattachments" 
+			<input type="submit" name="eventSubmit_doAddattachments" id="addAttach"
 				value="$tlang.getString("att.finish")" #if($list_has_changed) class="active" #else disabled="disabled" #end />
 			<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("att.cancel")"  />
 		</p>
