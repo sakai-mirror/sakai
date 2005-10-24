@@ -3306,6 +3306,8 @@ public class ResourcesAction
 		context.put("TYPE_URL", TYPE_URL);
 		context.put("TYPE_FORM", TYPE_FORM);
 		
+		context.put("max_upload_size", state.getAttribute(FILE_UPLOAD_MAX_SIZE));
+		
 		List new_items = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		context.put("new_items", new_items);
 		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);

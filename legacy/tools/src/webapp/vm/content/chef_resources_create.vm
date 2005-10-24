@@ -686,5 +686,13 @@
 			<input type="button" name="cancel" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "flow=cancel")';submitform('createForm');" onkeypress="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "flow=cancel")';submitform('createForm');"  value="$tlang.getString("gen.cancel")" />
 			<span id="submitnotif" style="visibility:hidden">$tlang.getString("gen.proces")</span>
 		</p>
+		#if("$itemType" == "$TYPE_UPLOAD")
+			<p class="shorttext">
+				$tlang.getString("gen.note")
+				$tlang.getString("gen.onlyup1")
+				$!max_upload_size
+				$tlang.getString("gen.onlyup2")
+			</p>
+		#end
 	</form>
 </div>
