@@ -1659,6 +1659,112 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	} // addAttachmentResource
 
 	/**
+	 * Create a new resource as an attachment to some other resource in the system. The new resource will be placed into a newly created collecion in the attachment collection, with an auto-generated id, and given the specified resource name within this
+	 * collection.
+	 * 
+	 * @param name
+	 *        The name of the new resource, i.e. a partial id relative to the collection where it will live.
+	 * @param site
+	 *        The string identifier for the site where the attachment is being added.
+	 * @param tool
+	 *        The display-name for the tool through which the attachment is being added within the site's attachments collection.
+	 * @param type
+	 *        The mime type string of the resource.
+	 * @param content
+	 *        An array containing the bytes of the resource's content.
+	 * @param properties
+	 *        A ResourceProperties object with the properties to add to the new resource.
+	 * @exception IdUsedException
+	 *            if the resource name is already in use (not likely, as the containing collection is auto-generated!)
+	 * @exception IdInvalidException
+	 *            if the resource name is invalid.
+	 * @exception InconsistentException
+	 *            if the containing collection (or it's containing collection...) does not exist.
+	 * @exception PermissionException
+	 *            if the user does not have permission to add a collection, or add a member to a collection.
+	 * @exception OverQuotaException
+	 *            if this would result in being over quota.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
+	 * @return a new ContentResource object.
+	 */
+	public ContentResource addAttachmentResource(String name, String site, String tool, String type, byte[] content, ResourceProperties properties)
+			throws IdInvalidException, InconsistentException, IdUsedException, PermissionException, OverQuotaException, ServerOverloadException
+	{
+		// ignore site if it is not valid
+		if(site == null || site.trim().equals(""))
+		{
+			return addAttachmentResource(name, type, content, properties);
+		}
+		site = site.trim();
+		String siteId = Validator.escapeResourceName(site);
+		
+		// if tool is not valid, use "_anon_"
+		if(tool == null || tool.trim().equals(""))
+		{
+			tool = "_anon_";
+		}
+		tool = tool.trim();
+		String toolId = Validator.escapeResourceName(tool);
+		
+		// make sure the name is valid
+		Validator.checkResourceId(name);
+
+		// resource must also NOT end with a separator characters (we fix it)
+		if (name.endsWith(Entity.SEPARATOR))
+		{
+			name = name.substring(0, name.length() - 1);
+		}
+		
+		String siteCollection = ATTACHMENTS_COLLECTION + siteId + Entity.SEPARATOR;
+		try
+		{
+			checkCollection(siteCollection);
+		}
+		catch(Exception e)
+		{
+			// add this collection
+			ContentCollectionEdit siteEdit = addCollection(siteCollection);
+			try
+			{
+				String siteTitle = SiteService.getSite(site).getTitle();
+				siteEdit.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, siteTitle);
+			}
+			catch(Exception e1)
+			{
+				siteEdit.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, site);
+			}
+			commitCollection(siteEdit);
+		}
+
+		String toolCollection = siteCollection + toolId + Entity.SEPARATOR;
+		try
+		{
+			checkCollection(toolCollection);
+		}
+		catch(Exception e)
+		{
+			// add this collection
+			ContentCollectionEdit toolEdit = addCollection(toolCollection);
+			toolEdit.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, tool);
+			commitCollection(toolEdit);
+		}
+
+		// form a name based on the attachments collection, a unique folder id, and the given name
+		String collection = toolCollection + IdService.getUniqueId() + Entity.SEPARATOR;
+		String id = collection + name;
+
+		// add this collection
+		ContentCollectionEdit edit = addCollection(collection);
+		edit.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+		commitCollection(edit);
+
+		// and add the resource
+		return addResource(id, type, content, properties, NotificationService.NOTI_NONE);
+
+	} // addAttachmentResource
+
+	/**
 	 * Create a new resource as an attachment to some other resource in the system, locked for update. Must commitResource() to make official, or cancelResource() when done! The new resource will be placed into a newly created collecion in the attachment
 	 * collection, with an auto-generated id, and given the specified resource name within this collection.
 	 * 
