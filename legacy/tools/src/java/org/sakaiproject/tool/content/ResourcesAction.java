@@ -2891,6 +2891,69 @@ public class ResourcesAction
 
 		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
 
+	}	// doAttachupload
+	
+	public static void doAttachurl(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+		
+		String url = params.getCleanString("url");
+		
+		ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
+		resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, url);							
+		resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, url);
+
+		resourceProperties.addProperty(ResourceProperties.PROP_IS_COLLECTION, Boolean.FALSE.toString());
+
+		try
+		{
+			url = validateURL(url);
+			
+			byte[] newUrl = url.getBytes();
+			String newResourceId = Validator.escapeResourceName(url);
+		
+			ContentResource attachment = ContentHostingService.addAttachmentResource(newResourceId, ResourceProperties.TYPE_URL, newUrl, resourceProperties);
+
+			List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+			if(attached == null)
+			{
+				attached = new Vector();
+			}
+			
+			String containerId = ContentHostingService.getContainingCollectionId (attachment.getId());
+			String accessUrl = ContentHostingService.getUrl(attachment.getId());
+			
+			AttachItem item = new AttachItem(attachment.getId(), url, containerId, accessUrl);
+			item.setContentType(ResourceProperties.TYPE_URL);
+			attached.add(item);
+			state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
+			state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
+		}
+		catch(MalformedURLException e)
+		{
+			// invalid url
+			addAlert(state, rb.getString("validurl") + " \"" + url + "\" " + rb.getString("invalid"));
+		}
+		catch (PermissionException e)
+		{
+			addAlert(state, rb.getString("notpermis4"));
+		}
+		catch(OverQuotaException e)
+		{
+			addAlert(state, rb.getString("overquota"));
+		}
+		catch(ServerOverloadException e)
+		{
+			addAlert(state, rb.getString("failed"));
+		}
+		catch(Exception ignore)
+		{
+			// other exceptions should be caught earlier
+		}
+
+		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+
 	}
 	
 	public static void doRemoveitem(RunData data)
@@ -5105,6 +5168,53 @@ public class ResourcesAction
 		}	//if-else
 
 	}	// doModifyproperties
+	
+	protected static String validateURL(String url) throws MalformedURLException
+	{
+		if (url.equals (NULL_STRING))
+		{
+			// ignore the empty url field
+		}
+		else if (url.indexOf ("://") == -1)
+		{
+			// if it's missing the transport, add http://
+			url = "http://" + url;
+		}
+
+		if(!url.equals(NULL_STRING))
+		{
+			// valid protocol?
+			try
+			{
+				// test to see if the input validates as a URL. 
+				// Checks string for format only.
+				URL u = new URL(url);
+			}
+			catch (MalformedURLException e1)
+			{
+				try
+				{
+					Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
+					Matcher matcher = pattern.matcher(url);
+					if(matcher.matches())
+					{
+						// if URL has "unknown" protocol, check remaider with
+						// "http" protocol and accept input it that validates.
+						URL test = new URL("http://" + matcher.group(2));
+					}
+					else
+					{
+						throw e1;
+					}
+				}
+				catch (MalformedURLException e2)
+				{
+					throw e1;
+				}
+			}
+		}
+		return url;
+	}
 	
 	/**
 	 * Retrieve values for an item from edit context.  Edit context contains just one item at a time of a known type 

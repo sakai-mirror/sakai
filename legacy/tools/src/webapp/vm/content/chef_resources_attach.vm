@@ -73,7 +73,14 @@
 		</h4>
 		<p class="shorttext">
 			<label for="file">$tlang.getString("att.fil")</label>
-			<input type="file" name="upload" id="upload" class="upload" onchange="javascript:document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachupload" "special=upload&flow=updateDocType")';submitform('attachForm');" />
+			<input type="file" name="upload" id="upload" class="upload" onchange="javascript:document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachupload" "special=upload")';submitform('attachForm');" />
+		</p>	
+		<h4>
+			$tlang.getString("addi.url")
+		</h4>
+		<p class="shorttext">
+			<label for="file">$tlang.getString("edit.url")</label>
+			<input type="text" name="url" id="url" onchange="javascript:document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachurl" "special=upload")';submitform('attachForm');" />
 		</p>	
 
 		######################  Page Title / Breadcrumbs  ##############
