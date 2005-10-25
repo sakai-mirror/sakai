@@ -1,12 +1,12 @@
 Overview
 ---------
 Sakai's WSRP (Web Services for Remote Portlets) producer interface allows individual tools to be placed
-in a WSRP consumer portal (such as uPortal) simply by pointing to a Sakai deployment. These tools are 
-placed in a separate context, and are therefore are not currently aware of the site context. Only some
-tools will be useful in this "new context" but as work progresses to make the WSRP exposure of tools site-aware,
-the tools themselves should be feature ready to be WSRP compliant. The ability to see tools work in a 
-development context such as wsrp/mercury is a great starting point to get tools presentation be WSRP friendly, 
-which is enabled by the current progress.
+in a WSRP consumer portal (such as uPortal) simply by pointing to a Sakai deployment. 
+
+Sakai's WSRP producer interface allows individual tools to be placed in a WSRP consumer portal (such as 
+uPortal) simply by pointing to a Sakai deployment. These tools can be rendered either in a separate 
+configurable context or in any given Sakai site context. See “Choosing the portlet handle” for more details
+on how to choose the tool context.
 
 Most tools should be WSRP agnostic in the way they produce markup, as long as they are using the recommended
 APIs and practices to generate markup. For velocity templates for instance, it means using the macros correctly when 
@@ -20,6 +20,26 @@ about war:war-resources goal not being supported, please proceed to download the
 notify the author (vgoenka@sungardsct.com) that the automatic plugin download/install isn't working!
 
 Sakai WSRP Producer deploys as a war file, so the maven deploy target should take of that as well.
+
+Choosing the Portlet Handle
+----------------------------
+Sakai Tool instances are referred in WSRP using “portletHandle”. Sakai tool instances that are placed within a 
+specific site have a unique too placement-id that can be retrieved by looking at the Tool URL. For instance, 
+if you navigate to a specific tool within a given site using the Sakai default portal and view the URL of the 
+tool, you may see something like:
+	http://localhost:8080/portal/tool/92757208-f347-41a9-00b9-28ea26fdcba5?panel=Main
+
+The tool placement id for this tool is 92757208-f347-41a9-00b9-28ea26fdcba5. This value can be used as the portlet 
+handle in the WSRP Consumer to access this site specific instance of tool over WSRP.
+
+A tool can also be accessed without a specific site context by using the tool identifier as the portlet handle. 
+The tool identifiers for various tools can be seen by visiting the mercury portal at http://localhost:8080/mercury.
+For instance, the announcement tool has a tool identifier of “sakai.announcements”. When accessed in this manner, 
+a unique sakai placement is created for the user’s session and the tool is placed in a configurable context. 
+The context defaults to “mercury” so that it can be accessed through the mercury development portal as well, 
+but it can be configured by editing the following file in wsrp/producer module.
+File: src/webapp/WEB-INF/classes/WSRPServices.properties
+Property name: sakai.portlet.context.default
 
 TEST Drive (Run)
 ----------------
@@ -54,8 +74,8 @@ The URLs for Sakai WSRP producer that you will need to use are as follows (repla
        http://sakai-host:8080/sakai-wsrp-producer/wsrp4j/WSRPRegistrationService 
  
 3. Portlet Handle  
-		This should be the tool id for the tool you want to publish. For a list of available tools with their
-		ids, see the mercury portal. For instance, use 'sakai.announcements' for the Announcement Tool.
+		This should be the tool id for the tool you want to publish.  See the section above 
+		“Choosing the portlet Handle” for more information. 
 
 4.  Markup Interface URL  
        http://sakai-host:8080/sakai-wsrp-producer/wsrp4j/WSRPBaseService 

@@ -18,6 +18,7 @@ import oasis.names.tc.wsrp.v1.types.ModelDescription;
 import oasis.names.tc.wsrp.v1.types.Property;
 import oasis.names.tc.wsrp.v1.types.PropertyList;
 
+import org.apache.wsrp4j.exception.WSRPException;
 import org.apache.wsrp4j.log.LogManager;
 import org.apache.wsrp4j.log.Logger;
 import org.apache.wsrp4j.producer.provider.ConsumerConfiguredPortlet;
@@ -25,6 +26,7 @@ import org.apache.wsrp4j.producer.provider.Portlet;
 import org.apache.wsrp4j.producer.provider.PortletState;
 import org.apache.wsrp4j.producer.provider.ProducerOfferedPortlet;
 import org.apache.wsrp4j.util.Constants;
+import org.apache.wsrp4j.util.Utility;
 import org.sakaiproject.api.kernel.id.cover.IdManager;
 import org.sakaiproject.api.kernel.session.ContextSession;
 import org.sakaiproject.api.kernel.session.Session;
@@ -39,11 +41,16 @@ import org.w3c.dom.Text;
 
 
 /**
+ * This class implements a Sakai Portlet and wraps calls to the Sakai Tools as well as managed instantiation of placements for the tools.
+ * 
  * @author <a href="mailto:vgoenka@sungardsct.com">Vishal Goenka</a>
  *
  */
 public abstract class SakaiPortlet implements Portlet {
     
+    // the name of the .properties file
+    private static String WSRP_SERVICES = "WSRPServices.properties";
+	
     public static final String FRAGMENT = Tool.FRAGMENT;
 
     public static final String PORTLET = Tool.PORTLET;
@@ -57,6 +64,19 @@ public abstract class SakaiPortlet implements Portlet {
     
     protected PortletState state = null;
 
+    // Default the context to "mercury" unless something else is specified in the WSRP_SERVICES file
+    private static String defaultContext = "mercury";
+    
+    static {
+    	try {
+    		Properties sakaiProperties = Utility.loadPropertiesFromFile(WSRP_SERVICES);
+    		defaultContext = sakaiProperties.getProperty("sakai.portlet.context.default", defaultContext);    		
+    	} catch (WSRPException e)
+    	{
+    		logger.entry(Logger.ERROR, "SakaiPortlet.init", e.getMessage());
+    	}
+    }
+    
     public static SakaiPortlet getSakaiPortlet(String handle, ActiveTool tool)
     {       
     	RegisteredPortlet portlet = new RegisteredPortlet(handle, tool);
@@ -153,7 +173,7 @@ public abstract class SakaiPortlet implements Portlet {
     {
         private Set cloneHandles;
         private boolean requiresRegistration = true;
-
+        
         public RegisteredPortlet(String handle, ActiveTool tool) {
             super(handle, tool);
         }
@@ -197,9 +217,8 @@ public abstract class SakaiPortlet implements Portlet {
          */
         public Placement getPlacement(String instanceKey)
         {
-        	String context = "mercury";
             Session session = SessionManager.getCurrentSession();
-            ContextSession ctxSession = session.getContextSession(context);
+            ContextSession ctxSession = session.getContextSession(defaultContext);
 
             String key = "wsrp-placement-" + portletHandle + "-" + instanceKey;
             Placement p = (Placement) ctxSession.getAttribute(key);
@@ -209,7 +228,7 @@ public abstract class SakaiPortlet implements Portlet {
                         IdManager.createUuid(), 
                         tool, 
                         getConfiguration(false), 
-                        context, 
+                        defaultContext, 
                         tool.getTitle());
                 ctxSession.setAttribute(key, p);
             }
