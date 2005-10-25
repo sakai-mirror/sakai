@@ -10,7 +10,7 @@
 		$validator.escapeHtml($currentMessage.DiscussionHeader.Category) &gt; $topic.getDiscussionHeader().getSubject() &gt; $validator.escapeHtml($currentMessage.getDiscussionHeader().getSubject())
 	#end
 </p>	
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<table class="itemSummary" cellspacing="0" border="0" summary="$tlang.getString("premes.theposmes")">
 		#set ($starOrThread = "thread")
 		#set ($props = $topic.getProperties())

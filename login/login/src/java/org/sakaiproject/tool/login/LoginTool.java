@@ -314,7 +314,7 @@ public class LoginTool extends HttpServlet
 		String msg = (String) session.getAttribute(ATTR_MSG);
 		if (msg != null)
 		{
-			html = html.replaceAll("MSG", "<div class=\"chefAlertBox\">" + rb.getString("gen.alert") + " " + msg + "</div>");
+			html = html.replaceAll("MSG", "<div class=\"alertMessage\">" + rb.getString("gen.alert") + " " + msg + "</div>");
 			session.removeAttribute(ATTR_MSG);
 		}
 		else

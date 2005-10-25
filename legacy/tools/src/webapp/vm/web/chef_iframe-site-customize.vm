@@ -8,7 +8,7 @@
 	<h3>
 		$heading
 	</h3>
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 	<form action="#toolForm("")" method="post" name="customizeForm" >
 		<p class="shorttext indnt1">
 			<span class="reqStar">*</span>

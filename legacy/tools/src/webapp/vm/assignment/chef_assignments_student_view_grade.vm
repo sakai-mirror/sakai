@@ -5,7 +5,7 @@
 		$tlang.getString("stuviewgrad.viewass2")
 	</h3>
 
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<form action="#toolForm("AssignmentAction")" method="post" >
 			<h4>
 				$tlang.getString("gen.assig")

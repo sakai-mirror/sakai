@@ -269,7 +269,7 @@
 		#end
 	</h3>
 	
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<p class="instruction">
 		$tlang.getString("edit.instr") <span class="reqStarInline">*</span>
 	</p>

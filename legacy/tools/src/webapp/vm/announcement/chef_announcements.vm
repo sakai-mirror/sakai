@@ -28,7 +28,7 @@
 	
 	#if ($isOnWorkspaceTab.equals("true")) ##in workspace
 		<h3>Announcements</h3>
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 		<div class="leftNav">
 			<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("AssignmentAction")">
 				<input type="hidden" name="eventSubmit_doView" value="view" />
@@ -234,7 +234,7 @@
 		##in home portlet  - so reduce display to title, attach marker, body (if selected), author and date
 
 
-			#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+			#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 
 			<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post" style="margin:1em -.5em;">
 				#if (!$messageListVector.iterator().hasNext())
@@ -287,7 +287,7 @@
 
 				#if ($displayOptions.isShowAllColumns())
 					<h3>Announcements</h3>
-					#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+					#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 					<div class="leftNav">
 							<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("$action")">
 								<input type="hidden" name="eventSubmit_doView" value="view" />
@@ -534,7 +534,7 @@
 					</form>
 				#else
 					<h3>$tlang.getString("gen.announcements")</h3>
-					#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+					#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 
 						#if (!$messageListVector.iterator().hasNext())
 							<p class="instruction">

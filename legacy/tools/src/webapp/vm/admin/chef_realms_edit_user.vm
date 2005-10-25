@@ -8,7 +8,7 @@
 	#toolbar($menu)
 #end
 	
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("realm.user.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("realm.user.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<div class ="breadCrumb">
 			$tlang.getString("realm.user.edit") $validator.escapeHtml($!realm.Id)<br/$tlang.getString("realm.user.used")> $validator.escapeHtml($!realm.Description)
 		</div>

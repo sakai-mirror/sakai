@@ -4,7 +4,7 @@
 	<h3>
  		$tlang.getString("sitegen.managerol.choose")
 	</h3>
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitegen.managerol.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("sitegen.managerol.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<p class="instruction">
 			$tlang.getString("sitegen.managerol.choose1") a <span class="reqStarInline"> *</span>. 
 		</p>

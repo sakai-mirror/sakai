@@ -9,7 +9,7 @@
 	#toolbar($menu)
 #end
 	
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("realm.role.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("realm.role.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<h3>
 		$tlang.getString("realm.role.set")
 	</h3>

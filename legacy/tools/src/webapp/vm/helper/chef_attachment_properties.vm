@@ -1,6 +1,6 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/helper/chef_attachment_properties.vm,v 1.1 2005/04/13 19:20:44 ggolden.umich.edu Exp $ -->
 <div class="PortletContainer">
-		#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">Alert: $validator.escapeHtml($alertMessage)</div>#end
 <table border="0" cellspacing="0" width="100%"  class="PortletStyleClass"   style="border-color: #dddddd" bordercolor="#999999" >
 <font face="Verdana, Arial, Helvetica, sans-serif" size="-1">
 <form name="propertiesForm" action="#toolForm("$action")" method="post" onSubmit="return areTheyEmpty(document.propertiesForm.title.value)">

@@ -12,25 +12,25 @@
 		#end
 		##		$tlang.getString("deltop.deltop")
 	</h3>
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert"); $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert"); $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
 	<script type="text/javascript">
 		focus_path = [ "eventSubmit_doDelete_topiic" ];
 		if (parent) if (parent.parent) parent.parent.window.scrollTo(0,400);
 	</script>
 	#if (!$!allowRemove)
-		<div class="chefAlertBox">$tlang.getString("youarenot6")</div><div style="display:block;clear:both" />
+		<div class="alertMessage">$tlang.getString("youarenot6")</div><div style="display:block;clear:both" />
 	#else
 		#if ($message.getReplyToDepth() == 0)
 			#if ($message.hasReplies())
-				<div class="chefAlertBox">$tlang.getString("deltop.areyousure1") </div><div style="display:block;clear:both" />
+				<div class="alertMessage">$tlang.getString("deltop.areyousure1") </div><div style="display:block;clear:both" />
 			#else
-				<div class="chefAlertBox">$tlang.getString("deltop.areyousure2")</div><div style="display:block;clear:both" />
+				<div class="alertMessage">$tlang.getString("deltop.areyousure2")</div><div style="display:block;clear:both" />
 			#end
 		#else
 			#if ($message.hasReplies())
-				<div class="chefAlertBox">$tlang.getString("delmes.areyousure1") </div><div style="display:block;clear:both" />
+				<div class="alertMessage">$tlang.getString("delmes.areyousure1") </div><div style="display:block;clear:both" />
 			#else
-				<div class="chefAlertBox">$tlang.getString("delmes.areyousure2")</div><div style="display:block;clear:both" />
+				<div class="alertMessage">$tlang.getString("delmes.areyousure2")</div><div style="display:block;clear:both" />
 			#end
 		#end
 	#end

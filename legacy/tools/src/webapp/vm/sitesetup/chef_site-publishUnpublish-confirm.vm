@@ -6,7 +6,7 @@
 		$tlang.getString("pubuncon.conpub")
 	</h3>
 	<div class ="chefPortletContent">
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("pubuncon.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("pubuncon.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<form name="publishSendEmailForm" action="#toolForm("SiteAction")" method="post">
 			<div class ="chefPageviewTitle">
 				$tlang.getString("pubuncon.clifin") #if ($!publish) $tlang.getString("pubuncon.publi")  #else $tlang.getString("pubuncon.unpubli") #end.

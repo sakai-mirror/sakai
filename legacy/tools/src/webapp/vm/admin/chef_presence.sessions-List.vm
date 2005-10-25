@@ -7,7 +7,7 @@
 		$tlang.getString("presence.session.active")
 	</h3>
 
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("presence.session.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("presence.session.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<div class="instruction">$tlang.getString("presence.session.total") $total</div>
 		<table  cellspacing="0" cellpadding="3" summary ="Table holds users present" border="0">	
 #foreach ($serverName in $serverList)

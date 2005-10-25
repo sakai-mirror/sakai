@@ -2,7 +2,7 @@
 <div class="portletBody">
 #if($menu)#toolbar($menu)#end
 	
-		#if ($alertMessage)<br /><div class="chefAlertBox">$thelp.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end<br />
+		#if ($alertMessage)<br /><div class="alertMessage">$thelp.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end<br />
 		#set ($size = $attachments.size())
 	<form name="mainForm" action="#toolForm("$action")" method="post">
 		<input type="hidden" name="source" value="0" />

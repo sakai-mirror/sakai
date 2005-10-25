@@ -3,9 +3,9 @@
 	<h3>
 		$tlang.getString("realm.confirm.removing")
 	</h3>
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("realm.confirm.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("realm.confirm.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<form action="#toolForm("$action")" method="post">
-		<div class="chefAlertBox">$tlang.getString("realm.confirm.please")</div>
+		<div class="alertMessage">$tlang.getString("realm.confirm.please")</div>
 		<div class="indnt3">
 			$validator.escapeHtml($realm.Id)<br/>$tlang.getString("realm.confirm.usedfor") $validator.escapeHtml($realm.Description)
 		</div>

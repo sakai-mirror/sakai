@@ -8,7 +8,7 @@
 	</div>
 	
 
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitmanpar.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("sitmanpar.alert") $validator.escapeHtml($alertMessage)</div>#end
 		
 	<h3>$validator.escapeHtml($site.Title) $tlang.getString("sitmanpar.parlis")</h3>
 	

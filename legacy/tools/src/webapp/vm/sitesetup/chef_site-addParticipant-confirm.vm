@@ -1,7 +1,7 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/sitesetup/chef_site-addParticipant-confirm.vm,v 1.2 2005/05/28 03:04:36 ggolden.umich.edu Exp $ -->
 ## Confirming a participant to the site
 <div class ="portletBody">
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<h3 class="insColor insBak insBor">
 		$tlang.getString("addconf.confirming") $validator.escapeHtml($title)
 	</h3>

@@ -10,8 +10,8 @@
 	</h3>
 
 		#if ($alertMessage)
-##			<div class="chefAlertBox">$tlang.getString("sitmanpar.alert") $validator.escapeHtml($alertMessage)</div>
-			<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+##			<div class="alertMessage">$tlang.getString("sitmanpar.alert") $validator.escapeHtml($alertMessage)</div>
+			<div class="alertMessage">Alert: $validator.escapeHtml($alertMessage)</div>
 			<div style="display:block;clear:both"></div>
 		#end
 		<div class="instruction">

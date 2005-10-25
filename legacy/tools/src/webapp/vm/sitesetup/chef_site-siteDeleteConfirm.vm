@@ -3,10 +3,10 @@
 	<h3>
 		$tlang.getString("sitegen.sitedel.remov")
 	</h3>
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitegen.sitedel.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("sitegen.sitedel.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<form action="#toolForm("$action")" method="post">
 	#if($removals && $removals.size() != 0)
-		<div class="chefAlertBox">
+		<div class="alertMessage">
 			$tlang.getString("sitegen.sitedel.deleting")
 			#if($removals.size() == 1)
 				$tlang.getString("sitegen.sitedel.you")

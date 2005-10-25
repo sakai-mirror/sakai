@@ -8,7 +8,7 @@
 			 $validator.escapeHtml($title)...
 		</div>
 		#if ($alertMessage)
-			<div class="chefAlertBox">$tlang.getString("ediacc-glo.alert") $validator.escapeHtml($alertMessage)</div>
+			<div class="alertMessage">$tlang.getString("ediacc-glo.alert") $validator.escapeHtml($alertMessage)</div>
 			<div style="display:block;clear:both"></div>
 		#end
 		<form name="joinableForm" action="#toolForm("SiteAction")" method="post">

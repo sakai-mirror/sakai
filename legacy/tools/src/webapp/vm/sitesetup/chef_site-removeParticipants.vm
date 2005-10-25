@@ -6,7 +6,7 @@
 		$tlang.getString("sitegen.removpart.confirm") $validator.escapeHtml($title)...
 	</h3>
 	<div class ="chefPortletContent">
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitegen.removpart.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("sitegen.removpart.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<span class ="chefPageviewTitle">
 			$tlang.getString("sitegen.removpart.following")
 		</span>

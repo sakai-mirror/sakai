@@ -4,7 +4,7 @@
 	#toolbar($menu)
 #end
 	
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("alias.list.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("alias.list.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<div class="instruction">
 			$tlang.getString("alias.list.defined")
 		</div>

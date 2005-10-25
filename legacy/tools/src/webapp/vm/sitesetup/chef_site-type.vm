@@ -16,7 +16,7 @@
  	}
 </script>
 <div class ="portletBody">
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitetype.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("sitetype.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<h3>
 		$tlang.getString("sitetype.crenewsit")
 	</h3>

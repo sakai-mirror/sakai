@@ -2,7 +2,7 @@
 <div class="portletBody">
 	#if($menu)#menu($menu)#end
 		#if ($alertMessage)
-			<div class="chefAlertBox">
+			<div class="alertMessage">
 				$tlang.getString("memory.vm.alert") $validator.escapeHtml($alertMessage)
 			</div>
 			<div style="display:block;clear:both" />

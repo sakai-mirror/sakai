@@ -6,7 +6,7 @@
 	#if($menu)
 		#toolbar($menu)
 	#end
-	#if ($alertMessage)<br /><div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<br /><div class="alertMessage">Alert: $validator.escapeHtml($alertMessage)</div>#end
 	<h3>
 		Import
 	</h3>

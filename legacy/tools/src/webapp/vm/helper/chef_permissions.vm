@@ -4,7 +4,7 @@
 	#toolbar($menu)
 #end
 	
-		#if ($alertMessage)<div class="chefAlertBox">$thelp.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$thelp.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 
 	<div class="instruction">
 		$!description
@@ -49,7 +49,7 @@
 						<input type="submit" name="eventSubmit_doCancel" value="$thelp.getString("gen.can")" />
 					</div>
 			#else
-				<div class="chefAlertBox">$thelp.getString("per.alert")</div>
+				<div class="alertMessage">$thelp.getString("per.alert")</div>
 				<div class="act">
 					<input type="submit" name="eventSubmit_doCancel" value="$thelp.getString("gen.don")" />
 				</div>

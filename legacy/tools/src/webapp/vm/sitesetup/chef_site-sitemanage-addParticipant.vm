@@ -2,7 +2,7 @@
 ## Add a participant to ssite
 <div class ="portletBody">
 	#if ($alertMessage)
-		<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div>
+		<div class="alertMessage">Alert: $validator.escapeHtml($alertMessage)</div>
 		<div style="display:block;clear:both"></div>
 	#end
 	<h3>

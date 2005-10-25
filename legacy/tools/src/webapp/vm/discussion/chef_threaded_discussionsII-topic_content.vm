@@ -18,7 +18,7 @@
 		$tlang.getString("content.topcon")
 	</h3>
 
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 	<table rwidth="100%" border="0">
 		<tr>	
 			<td>

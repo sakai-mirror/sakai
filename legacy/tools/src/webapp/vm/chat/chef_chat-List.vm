@@ -22,7 +22,7 @@ doubleDeep = true;
 ## appendMessage function comes from chatscript.js
 	<script  type="text/javascript" language="JavaScript" src="#scriptLink('chatscript.js')">
 	</script>
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 		<ul id="transcript" style="margin:0; padding-left:1.2em;list-style:none;width:96%">
 			#foreach ($item in $chat_messages)
 				## new format with less space inside messages

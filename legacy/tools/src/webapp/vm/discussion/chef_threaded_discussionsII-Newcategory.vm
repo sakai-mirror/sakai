@@ -3,7 +3,7 @@
 	<h3>
 		$tlang.getString("newcat.crenewcat3")
 	</h3>
-	#if ($alertMessage)<div class="chefAlertBox">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" ></div>#end
+	#if ($alertMessage)<div class="alertMessage">Alert: $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" ></div>#end
 	<script type="text/javascript">
 			focus_path = [ "newcategory" ];
 			if (parent) if (parent.parent) parent.parent.window.scrollTo(0,400);

@@ -10,7 +10,7 @@
 		Users
 	</h3>
 
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("uselis.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("uselis.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<div class="instruction">
 			$tlang.getString("uselis.theare")
 		</div>

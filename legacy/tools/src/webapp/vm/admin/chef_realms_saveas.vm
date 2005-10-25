@@ -6,7 +6,7 @@
 	<h3>
 		$tlang.getString("reasav.savas")
 	</h3>
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("reasav.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("reasav.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<div class="instruction">
 		$tlang.getString("reasav.entnew")
 	</div>

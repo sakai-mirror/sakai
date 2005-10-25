@@ -7,7 +7,7 @@
 	$tlang.getString("presence.list1.user")
 	</h3>
 	#if ($alertMessage)
-		<div class="chefAlertBox">
+		<div class="alertMessage">
 			$tlang.getString("presence.list1.alert") $validator.escapeHtml($alertMessage)
 		</div>
 	#end

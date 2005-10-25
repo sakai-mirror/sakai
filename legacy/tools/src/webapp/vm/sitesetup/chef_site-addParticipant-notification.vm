@@ -1,7 +1,7 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/sitesetup/chef_site-addParticipant-notification.vm,v 1.1 2005/04/14 20:22:06 ggolden.umich.edu Exp $ -->
 ## Add a participant to the worksite
 <div class ="portletBody">
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<h3 class="insColor insBak insBor">
 		$tlang.getString("add.addpart") $validator.escapeHtml($title)...
 	</h3>

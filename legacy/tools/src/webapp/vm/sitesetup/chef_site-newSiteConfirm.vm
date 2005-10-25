@@ -1,6 +1,6 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/sitesetup/chef_site-newSiteConfirm.vm,v 1.3 2005/05/23 04:04:12 ggolden.umich.edu Exp $ -->
 <div class="portletBody">
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<h3 class="insColor insBak insBor">
 		$tlang.getString("newsc.confirm")
 	</h3>

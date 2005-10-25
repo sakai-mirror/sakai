@@ -4,8 +4,8 @@
 	#toolbar($menu)
 #end
 	
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("useconrem.alert") $validator.escapeHtml($alertMessage)</div>#end
-		<div class="chefAlertBox">
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("useconrem.alert") $validator.escapeHtml($alertMessage)</div>#end
+		<div class="alertMessage">
 			$tlang.getString("useconrem.areyousur")
 		</div>
 		<table class="listHier" cellspacing="0" summary ="List of Users">

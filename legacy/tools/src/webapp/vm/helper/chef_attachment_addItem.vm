@@ -1,5 +1,5 @@
 <div class="PortletContainer">
-		#if ($alertMessage)<div class="chefAlertBox">$thelp.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$thelp.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 <table cellspacing="0" height=5 >
 	<tr>
 		<td colspan=3>

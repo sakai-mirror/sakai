@@ -18,7 +18,7 @@ function LimitText(fieldObj,maxChars)
 </script>
   
 <div class="portletBody">
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitediinf.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("sitediinf.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
 	<h3>
 		$tlang.getString("sitediinf.rev") $validator.escapeHtml($title)
 	</h3>

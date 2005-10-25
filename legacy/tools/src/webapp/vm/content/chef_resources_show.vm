@@ -15,7 +15,7 @@
 <div class="chefPortletContainer">
 	#if($menu)#toolbar($menu)#end
 	<div class="chefPortletContent">
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 		#if ($collectionFlag == "true")
 			 <form name="showForm" action="#toolForm("ResourcesAction")" method="post">
 				<input type="hidden" name="source" value="0" />
@@ -305,7 +305,7 @@
 						</table>
 					#end	
 				#else
-					<div class="chefAlertBox" >
+					<div class="alertMessage" >
 						$tlang.getString("gen.youdonot")
 					</div>
 				#end

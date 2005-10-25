@@ -4,7 +4,7 @@
 		 $validator.escapeHtml($from) ... 
 	</h3>
 
-		#if ($alertMessage)<div class="chefAlertBox">$thelp.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$thelp.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<div class="instruction">
 		$thelp.getString("bro.toatt")</br>
 	</div>

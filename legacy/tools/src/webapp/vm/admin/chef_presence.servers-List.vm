@@ -6,7 +6,7 @@
 	<h3>
 		$tlang.getString("presence.list.active")
 	</h3>
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("presence.list.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("presence.list.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<div class="instruction">$tlang.getString("presence.list.total") $total</div>
 	<table class ="listHier" cellspacing="0" summary ="Table holds servers active">
 			<tr>

@@ -5,7 +5,7 @@
  		$tlang.getString("ediacccon.conglo") $validator.escapeHtml($title)
 	</h3>
 	<div class ="chefPortletContent">
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("ediacccon.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("ediacccon.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<div class="chefPageviewTitle">
 			$tlang.getString("ediacccon.youhav")
 			#if ($!form_joinable)

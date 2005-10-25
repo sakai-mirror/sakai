@@ -20,7 +20,7 @@
 		#end
 	</div>
 
-	#if ($alertMessage)<div class="chefAlertBox"><div style="display:block;clear:both" />$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage"><div style="display:block;clear:both" />$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	
 	<table class ="itemSummary">
 		<tr>

@@ -6,7 +6,7 @@
 #end
 	
 #if ($alertMessage)
-		<div class="chefAlertBox">
+		<div class="alertMessage">
 			$tlang.getString("usevie.alert") $validator.escapeHtml($alertMessage)
 		</div>
 #end

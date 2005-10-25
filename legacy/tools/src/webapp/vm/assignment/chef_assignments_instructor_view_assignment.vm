@@ -2,7 +2,7 @@
 	<h3>
 		$tlang.getString("viewassig.viewass1")
 	</h3>
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
 	<form name="viewAssignmentsForm" action="#toolForm("AssignmentAction")" method="post">
 		<input type="hidden" name="assignmentId" value="$assignment.Reference" />
 		<input type="hidden" name="assignmentContentId" value="$assignment.ContentReference" />

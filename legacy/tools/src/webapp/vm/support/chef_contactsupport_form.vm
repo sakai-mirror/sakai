@@ -4,7 +4,7 @@
 	focus_path = [ "username" ];
 </script>
 <div class="portletBody">
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<h3>$tlang.getString("form.come")</h3>
 	<form action="#toolForm("$action")" method="post">
 		<p class="instruction">$tlang.getString("form.usethi")</p>

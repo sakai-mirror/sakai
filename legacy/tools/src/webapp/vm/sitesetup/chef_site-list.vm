@@ -2,7 +2,7 @@
 ## Site list Sites list on worksite setup home page
 <div class ="portletBody">
 	#if($menu)#toolbar($menu)#end
-	#if ($alertMessage)<br /><div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<br /><div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<div style="clear:both;margin:1em 0">
 		<div class="leftNav">
 			<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("SiteAction")" style="display:inline">

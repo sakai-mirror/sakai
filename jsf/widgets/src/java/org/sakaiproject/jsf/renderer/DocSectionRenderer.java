@@ -42,7 +42,7 @@ public class DocSectionRenderer extends Renderer
 	public void encodeBegin(FacesContext context, UIComponent component) throws IOException
 	{
 		ResponseWriter writer = context.getResponseWriter();
-		writer.write("<div class=\"chefSectionMessage\"><span class=\"chefPre\">");
+		writer.write("<p>");
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class DocSectionRenderer extends Renderer
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException
 	{
 		ResponseWriter writer = context.getResponseWriter();
-		writer.write("</span></div>");
+		writer.write("</p>");
 	}
 }
 

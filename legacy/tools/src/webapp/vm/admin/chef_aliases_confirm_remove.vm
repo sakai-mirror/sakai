@@ -4,8 +4,8 @@
 	#toolbar($menu)
 #end
 
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("alias.remove.alert") $validator.escapeHtml($alertMessage)</div>#end
-	<div class="chefAlertBox">
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("alias.remove.alert") $validator.escapeHtml($alertMessage)</div>#end
+	<div class="alertMessage">
 		$tlang.getString("alias.remove.sure")
 	</div>
 	<table class="listHier" cellspacing="0" summary ="List of Users">

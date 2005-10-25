@@ -87,7 +87,7 @@ table.calendar th{background-color:#FFFFCC;font-weight:normal;text-align:center}
 
 
 /*layout*/
-.gbContent, .portletBody{padding:.3em 2em;}
+.portletBody{padding:.3em 2em;}
 table {font-size:1em;}
 a:link{color:#52698C !important;text-decoration:none}
 a:visited{color:#000077 !important;text-decoration:none}

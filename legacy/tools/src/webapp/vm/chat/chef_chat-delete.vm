@@ -3,9 +3,9 @@
 	<h3>
 		$tlang.getString("delete.delete")
 	</h3>
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
 	<div style="display:block; clear:both"></div>#end
-	<div class="chefAlertBox" style="clear:both">$tlang.getString("delete.sure")</div>
+	<div class="alertMessage" style="clear:both">$tlang.getString("delete.sure")</div>
 	<div style="display:block; clear:both"></div>
 	<form name="deleteTemplateForm" action="#toolForm("$action")" method="post">
 		<table class="itemSummary" cellspacing="0">

@@ -5,7 +5,7 @@
 		$tlang.getString("pubunp.chathe")
 	</h3>
 	<div class ="chefPortletContent">
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("pubunp.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("pubunp.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<form action="#toolForm("SiteAction")" method="post">
 			<div class ="chefPageviewTitle">
 				$tlang.getString("pubunp.pubyou")

@@ -4,7 +4,7 @@
 		$tlang.getString("rep.newrep")
 	</h3>
 	#if ($alertMessage)
-		<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
+		<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
 		<div style="display:block;clear:both"></div>
 	#end
 	#set ($starOrThread = "thread")

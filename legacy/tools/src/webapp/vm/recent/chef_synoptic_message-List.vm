@@ -25,7 +25,7 @@
 			#end
 		#end
 	#end
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 	#set($counter = 0)
 	<div style="margin:1em -1em">
 		#foreach ($item in $messages)

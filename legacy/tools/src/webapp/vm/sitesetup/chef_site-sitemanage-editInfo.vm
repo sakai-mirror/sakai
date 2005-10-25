@@ -22,7 +22,7 @@ function LimitText(fieldObj,maxChars)
 ##	<div class="chefToolBarWrapForm">
 ##	<a href="#" onclick="location='#toolLink("$action" "doSitemanage_saveas_request")';return false;" title ="Save as">Save as</a>
 ##	</div>
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitmanedi.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("sitmanedi.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<h3 class="insColor insBak insBor">
 		#if ($!isCourseSite) $tlang.getString("sitmanedi.class") #end $tlang.getString("sitmanedi.sitinf")
 	</h3>

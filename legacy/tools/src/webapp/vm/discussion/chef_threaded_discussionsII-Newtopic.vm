@@ -2,7 +2,7 @@
 	<h3>
 		$tlang.getString("newtop.crenewtop")
 	</h3>
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<div style="display:block;clear:both"></div>
 		<script type="text/javascript">
 			focus_path = [ "newcategory" ];

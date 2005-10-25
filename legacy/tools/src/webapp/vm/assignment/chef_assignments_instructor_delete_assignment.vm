@@ -8,9 +8,9 @@
 	</h3>
 
 		#if ($alertMessage)
-			<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />
+			<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />
 		#else
-			<div class="chefAlertBox">
+			<div class="alertMessage">
 				$tlang.getString("delete_assig.areyousur")
 				#if ($assignments.size() > 1)
 					$tlang.getString("delete_assig.theass")

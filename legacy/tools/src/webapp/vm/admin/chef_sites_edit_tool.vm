@@ -8,7 +8,7 @@
 #if($menu)
 	#toolbar($menu)
 #end
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("siteditoo.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("siteditoo.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<div class ="breadCrumb">
 		$tlang.getString("siteditoo.edisit") $!site.Id / $tlang.getString("siteditoo.pag") $!page.Id / $tlang.getString("siteditoo.too") $!tool.Id
 	</div>

@@ -7,7 +7,7 @@
 		$tlang.getString("sitmansav.savas")
 	</h3>
 	<div class="chefPortletContent">
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitmansav.savas") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("sitmansav.savas") $validator.escapeHtml($alertMessage)</div>#end
 		<div class="chefPageviewTitle">
 			$tlang.getString("sitmansav.entnew")
 		</div>

@@ -28,7 +28,7 @@ doubleDeep = true;
 				</div>
 			#end
 		#if ($alertMessage)
-			<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
+			<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
 			<div style="display:block;clear:both"></div>
 		#end
 		#set ( $idString = $validator.escapeJavascript($currentMessage.Id))

@@ -3,7 +3,7 @@
 	<h3 class ="insColor insBak insBor"></h3>
 	
 	<div class="chefPortletContent">
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<p class="instructions">$tlang.getString("rem.youhave") $validator.escapeHtml($site.getTitle())</p>
 			
 		<p class="validation">

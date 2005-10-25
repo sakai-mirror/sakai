@@ -6,7 +6,7 @@
 		$tlang.getString("addrc.confirming") $validator.escapeHtml($title)
 	</h3>
 		#if ($alertMessage)
-			<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
+			<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
 			<div style="display:block;clear:both"></div>
 		#end
 ## (gsilver) should check what has happened - if tools have been removed output the following block, if not not. Same with added tools (and change the language to suit)	

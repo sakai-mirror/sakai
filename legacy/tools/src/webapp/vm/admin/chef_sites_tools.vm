@@ -4,7 +4,7 @@
 	#toolbar($menu)
 #end
 	
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sittoo.alert") $validator.escapeHtml($alertMessage)</div>#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("sittoo.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<h3>
 			$tlang.getString("sittoo.edisit") $!site.Id / $tlang.getString("sittoo.pag") $!page.Id
 		</h3>

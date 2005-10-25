@@ -2,15 +2,15 @@
 	<h3>
 		$tlang.getString("delcat.delcat")
 	</h3>
-	#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
 	<script type="text/javascript">
 		focus_path = [ "eventSubmit_doDelete_category" ];
 		if (parent) if (parent.parent) parent.parent.window.scrollTo(0,400);
 	</script>
 	#if (!$delete_messages || !$delete_messages.hasNext())
-		<div class="chefAlertBox">$tlang.getString("delcat.areyousure1") $category? </div><div style="display:block;clear:both" />
+		<div class="alertMessage">$tlang.getString("delcat.areyousure1") $category? </div><div style="display:block;clear:both" />
 	#else
-		<div class="chefAlertBox">$tlang.getString("delcat.areyousure2") $category?  $tlang.getString("delcat.allmes")</div><div style="display:block;clear:both" />
+		<div class="alertMessage">$tlang.getString("delcat.areyousure2") $category?  $tlang.getString("delcat.allmes")</div><div style="display:block;clear:both" />
 		#set ($depthUnit="em")
 		<form name="forNotLetDeleteSelectedOnLoad"></form>
 			#foreach ($delete_item in $delete_messages)

@@ -21,7 +21,7 @@
 		$tlang.getString("custom.cusdis")
 	</h3>
 	<div class="chefPortletContent">
-		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 		<form action="#toolForm($action)" method="post">
 			<fieldset>
 				<legend>
@@ -30,7 +30,7 @@
 				<div class="chefSectionTitle ">
 					$tlang.getString("custom.howmanmes")
 				</div>
-				<div class="chefSectionMessage">
+				<div style="margin-left:1em">
 					<input type="text" name="$form-pagesize" id="$form-pagesize" value="$sizeValue" />
 				</div>
 			</fieldset>
@@ -41,7 +41,7 @@
 				<div class="chefSectionTitle ">
 					$tlang.getString("custom.whoaremes")
 				</div>
-				<div class="chefSectionMessage">
+				<div style="margin-left:1em">
 					<input 
 						type="radio" #if ($openValue) checked="checked" #end
 						name="${form-open}" 
@@ -68,7 +68,7 @@
 				<div class="chefSectionTitle ">
 					$tlang.getString("custom.usethisali")
 				</div>
-				<div class="chefSectionMessage">
+				<div style="margin-left:1em">
 					<input type="text" name="$form-alias" id="$form-alias" value="$aliasValue" />
 				</div>
 			</fieldset>

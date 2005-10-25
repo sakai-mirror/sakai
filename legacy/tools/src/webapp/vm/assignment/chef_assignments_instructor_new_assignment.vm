@@ -62,7 +62,7 @@
 <p class="instruction">
 	$tlang.getString("newassig.comfor")			
 </p>
-	#if ($alertMessage)<div class="chefAlertBox" style="width:80%  !important">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
+	#if ($alertMessage)<div class="alertMessage" style="width:80%  !important">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
 
 	<form name = "newAssignmentForm" action="#toolForm("AssignmentAction")" method="post">
 		<input type="hidden" name="assignmentId" value="" />
