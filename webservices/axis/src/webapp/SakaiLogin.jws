@@ -6,13 +6,23 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+
 /**
  * class to support Sakai Login headers sent in request as a string array
  */
 public class SakaiLogin {
 
     public String login(String id,String pw) {
-	System.out.println("login id="+id+" pw="+pw);
+
+	boolean allowLogin = ServerConfigurationService.getBoolean("webservices.allowlogin", false);
+
+	System.out.println("login id="+id+" pw="+pw+" allowLogin="+allowLogin));
+
+	if ( ! allowLogin ) {
+		throw new AxisFault("Web Services Login Disabled");
+	}
+
         User user = UserDirectoryService.authenticate(id,pw);
 	if ( user != null ) {
 		System.out.println("Have User");
@@ -20,7 +30,7 @@ public class SakaiLogin {
                 if (s == null)
                 {
                         System.out.println("no session established");
-			return "Session Null";
+                        throw new AxisFault("Unable to establish session");
                 }
                 else
                 {
@@ -35,6 +45,6 @@ public class SakaiLogin {
 			return s.getId();
                 }
 	}
-	return "User Null";
+        throw new AxisFault("Unable to login");
     }
 }
