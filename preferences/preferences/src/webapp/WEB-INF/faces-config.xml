@@ -5,7 +5,15 @@
   "http://java.sun.com/dtd/web-facesconfig_1_0.dtd">
 
 <faces-config>
-
+	<application>
+      <message-bundle>org.sakaiproject.tool.preferences.bundle.Messages</message-bundle>
+        <locale-config>
+            <default-locale>en</default-locale>
+            <supported-locale>de</supported-locale>
+            <supported-locale>fr</supported-locale>
+            <supported-locale>es</supported-locale>
+        </locale-config>
+    </application>
 	<navigation-rule>
 		<from-view-id>/prefs/tab.jsp</from-view-id>
 		<navigation-case>

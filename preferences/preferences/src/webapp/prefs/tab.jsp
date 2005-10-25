@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%-- Sakai JSF tag library --%>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
-
+<f:loadBundle basename="org.sakaiproject.tool.preferences.bundle.Messages" var="msgs"/>
 <f:view>
 	<sakai:view_container title="Preferences">
 	<sakai:view_content>
@@ -12,9 +12,9 @@
 				
 				<sakai:tool_bar>
 			  <%--sakai:tool_bar_item action="#{UserPrefsTool.processActionRefreshFrmEdit}" value="Refresh" /--%>
- 		    <sakai:tool_bar_item action="#{UserPrefsTool.processActionNotiFrmEdit}" value="Notifications" />
- 		    <sakai:tool_bar_item value="Customize Tabs" />
- 		    <sakai:tool_bar_item action="#{UserPrefsTool.processActionTZFrmEdit}" value="Time Zone" />
+ 		    <sakai:tool_bar_item action="#{UserPrefsTool.processActionNotiFrmEdit}" value="#{msgs.prefs_noti_title}" />
+ 		    <sakai:tool_bar_item value="#{msgs.prefs_tab_title}" />
+ 		    <sakai:tool_bar_item action="#{UserPrefsTool.processActionTZFrmEdit}" value="#{msgs.prefs_timezone_title}" />
    	  	</sakai:tool_bar>
 
 				<br />
@@ -31,10 +31,9 @@
 				
 				<sakai:messages />
 			
-				<h3>Customize Tabs</h3>
+				<h3><h:outputText value="#{msgs.prefs_tab_title}" /></h3>
 			
-				<p class="instruction">To add site or remove a site from Sites Visible in Tabs list box, select the site and use the right or left arrows to move the site.
-				To reorder sites in the Sites Visible in Tabs list box, select a site in the list and use the up and down arrows to change the order of the site.</p>
+				<p class="instruction"><h:outputText value="#{msgs.tab_inst_1}"/><h:outputText value="#{msgs.tab_inst_2}"/></p>
 
 				
 	<%-- (gsilver) 2 issues 
@@ -45,7 +44,7 @@
 			   <table cellspacing="23" cellpadding="5%">
     			  <tr>
     			    <td>
-    			      <b>Sites not visible in Tabs</b>
+    			      <b><h:outputText value="#{msgs.tab_not_vis_inst}"/></b>
     			      <br/>
     			  	  <h:selectManyListbox value="#{UserPrefsTool.selectedExcludeItems}" size="10">
 				   		<f:selectItems value="#{UserPrefsTool.prefExcludeItems}" />
@@ -53,18 +52,18 @@
 				 	</td>
 				 	
 				 	<td style="text-align: center;">
-				 	  <p class="instruction">Move selected</p>
+				 	  <p class="instruction"><h:outputText value="#{msgs.tab_move_inst}"/></p>
 <%-- (gsilver)  collapsed all next 3 lines - as jsf seems to be creating wspace that destroys alignment  --%>
-				 	  <h:commandButton id="add" value=">" action="#{UserPrefsTool.processActionAdd}"></h:commandButton><br /><h:commandButton id="remove" value="<" action="#{UserPrefsTool.processActionRemove}"></h:commandButton>
+				 	  <h:commandButton id="add" value="#{msgs.tab_move_rone}" action="#{UserPrefsTool.processActionAdd}"></h:commandButton><br /><h:commandButton id="remove" value="#{msgs.tab_move_lone}" action="#{UserPrefsTool.processActionRemove}"></h:commandButton>
 		         	  <p class="instruction">
-		         	  Move all
+		         	 <h:outputText value="#{msgs.tab_move_all_inst}"/>
 		         	  </p>
 <%-- (gsilver)  collapsed all next 3 lines - as jsf seems to be creating wspace that destroys alignment  --%>					  
-		         	  <h:commandButton id="addAll" value=">>" action="#{UserPrefsTool.processActionAddAll}"></h:commandButton><br /><h:commandButton id="removeAll" value="<<" action="#{UserPrefsTool.processActionRemoveAll}"></h:commandButton>
+		         	  <h:commandButton id="addAll" value="#{msgs.tab_move_rall}" action="#{UserPrefsTool.processActionAddAll}"></h:commandButton><br /><h:commandButton id="removeAll" value="#{msgs.tab_move_lall}" action="#{UserPrefsTool.processActionRemoveAll}"></h:commandButton>
 				 	</td>
 				 	
 				 	<td>
-				 	  <b>Sites visible in Tabs</b>
+				 	  <b><h:outputText value="#{msgs.tab_vis_inst}"/></b>
     			      <br/>
 				 	  <h:selectManyListbox value="#{UserPrefsTool.selectedOrderItems}" size="10">
 				        <f:selectItems value="#{UserPrefsTool.prefOrderItems}" />
@@ -82,8 +81,8 @@
 				</table>
 			    <br /><br />
 			    <div class="act">
-			    <h:commandButton id="submit" style="active;" value="Update Preferences" action="#{UserPrefsTool.processActionSave}"></h:commandButton>
-				 <h:commandButton id="cancel" style="active;" value="Cancel Changes" action="#{UserPrefsTool.processActionCancel}"></h:commandButton>
+			    <h:commandButton id="submit" style="active;" value="#{msgs.update_pref}" action="#{UserPrefsTool.processActionSave}"></h:commandButton>
+				 <h:commandButton id="cancel" style="active;" value="#{msgs.cancel_pref}" action="#{UserPrefsTool.processActionCancel}"></h:commandButton>
 			    </div>
 
 		 </h:form>
