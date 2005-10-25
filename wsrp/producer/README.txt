@@ -32,6 +32,15 @@ tool, you may see something like:
 The tool placement id for this tool is 92757208-f347-41a9-00b9-28ea26fdcba5. This value can be used as the portlet 
 handle in the WSRP Consumer to access this site specific instance of tool over WSRP.
 
+Note however that this will not work with uPortal 2.x (I haven’t tried uPortal 3.x yet!) because of an unresolved 
+issue in uPortal’s WSRP consumer implementation. In a nutshell, Sakai does not advertise all instances of all 
+tools in the getServiceDescription method, because that would be too overwhelming. Sakai only advertises the 
+“context-less” portlets as described below and expects a different (currently out-of-band) mechanism for configuring 
+these site-specific instances. uPortal’s WSRP consumer however will not issue a request for a portlet that is not 
+advertised in the getServiceDescription.
+
+I will be very interested to know what behavior folks are seeing in using this with other Portals.
+
 A tool can also be accessed without a specific site context by using the tool identifier as the portlet handle. 
 The tool identifiers for various tools can be seen by visiting the mercury portal at http://localhost:8080/mercury.
 For instance, the announcement tool has a tool identifier of “sakai.announcements”. When accessed in this manner, 
