@@ -1,0 +1,66 @@
+##<!-- $Header: Exp $ -->
+## Site group list
+<div class ="portletBody">
+	#if($menu)#toolbar($menu)#end
+	#if ($alertMessage)
+		<div class="chefAlertBox">$tlang.getString("ediacc.alert") $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	<form name="groupForm" id="groupForm" action="#toolForm($action)" method="post">
+			<table class ="listHier"  cellpadding="0" cellspacing="0" summary ="Table holds the information of site gropu. Column 1 holds the group title, column 2 holds the group member count. Headers hold links for sorting">
+				<tr>
+					<th id="name" colspan="2">
+						<a href="#toolLinkParam($action "doSort_sites" "criterion=$tlang.getString('group.title')")" title ="$tlang.getString("group.title")"> 
+							$tlang.getString("group.title")
+							#if ($currentSortedBy.equals($tlang.getString("group.title"))) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("sakai/sortascending.gif")" border="0" title ="$tlang.getString('group.sorttitleasc')" alt ="$tlang.getString('group.sorttitleasc')" /> 
+								#else 
+									<img src = "#imageLink("sakai/sortdescending.gif")" border="0" title ="$tlang.getString('group.sorttitledesc')" alt ="$tlang.getString('group.sorttitledesc')" /> 
+								#end 
+							#end 
+						</a>
+					</th>
+					<th id="count">
+						<a href="#toolLinkParam($action "doSort_sites" "criterion=$tlang.getString('group.number')")" title ="$tlang.getString("group.number")"> 
+							$tlang.getString("group.number")
+							#if ($currentSortedBy.equals($tlang.getString("group.number"))) 
+								#if ($currentSortAsc.equals("true")) 
+									<img src = "#imageLink("sakai/sortascending.gif")" border="0" title ="$tlang.getString('group.sortnumberasc')" alt ="$tlang.getString('group.sortnumberasc')" /> 
+								#else 
+									<img src = "#imageLink("sakai/sortdescending.gif")" border="0" title ="$tlang.getString('group.sortnumberdesc')" alt ="$tlang.getString('group.sortnumberdesc')" /> 
+								#end 
+							#end 
+						</a>
+					</th>
+					<th id="remove">
+						$tlang.getString("editgroup.remove")
+					</th>
+				</tr>
+				#foreach($group in $!groups)
+					<tr>
+						<td headers="title">
+							$group.Title
+						</td>
+						<td headers="revise">
+							<a href="#toolLinkParam("$action" "doGroup_edit" "groupId=$group.Id")" title ="$tlang.getString("editgroup.revise")">$tlang.getString("editgroup.revise")</a>
+						</td>
+						<td headers="member">
+							$!group.getMembers().size()
+						</td>
+						<td headers="remove">
+							<label class="skip" for="remove_$group.Id">Remove $group.Title</label>
+							<input type="checkbox" name="removeGroups" value="$group.Id" id="remove_$group.Id" />
+							<label for="remove_$group.Id" class="skip">$tlang.getString("editgroup.remove")</label>
+						</td>
+					</tr>
+				#end
+			</table>		
+		<input type="hidden" name="template-index" value="49" />
+		<input type="hidden" name="back" value="12" />
+		<div class ="act">
+				<input type="submit" class="active" name="eventSubmit_doGroup_remove_prep" value="$tlang.getString("editgroup.update")" />
+				<input type="submit" name="eventSubmit_doBack" value="$tlang.getString("editgroup.cancel")" />
+		</div>
+	</form>
+</div>

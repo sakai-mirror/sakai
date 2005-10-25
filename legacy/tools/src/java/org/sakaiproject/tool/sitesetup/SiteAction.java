@@ -106,6 +106,7 @@ import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.id.cover.IdService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
@@ -200,6 +201,9 @@ public class SiteAction extends PagedResourceActionII
 		"-siteInfo-importMtrlCopy", //46
 		"-siteInfo-importMtrlCopyConfirm",
 		"-siteInfo-importMtrlCopyConfirmMsg", //48
+		"-siteInfo-group", //49
+		"-siteInfo-groupedit", //50
+		"-siteInfo-groupDeleteConfirm" //51
 	};
 	
 	/** Name of state attribute for Site instance  */
@@ -427,15 +431,22 @@ public class SiteAction extends PagedResourceActionII
 	
 	//htripath : for import material from file - classic import
 	private static final String ALL_ZIP_IMPORT_SITES= "allzipImports";
-  private static final String FINAL_ZIP_IMPORT_SITES= "finalzipImports";
-  private static final String DIRECT_ZIP_IMPORT_SITES= "directzipImports";
-  private static final String CLASSIC_ZIP_FILE_NAME="classicZipFileName" ;
-  private static final String SESSION_CONTEXT_ID="sessionContextId";
+	private static final String FINAL_ZIP_IMPORT_SITES= "finalzipImports";
+	private static final String DIRECT_ZIP_IMPORT_SITES= "directzipImports";
+	private static final String CLASSIC_ZIP_FILE_NAME="classicZipFileName" ;
+	private static final String SESSION_CONTEXT_ID="sessionContextId";
   
   	// page size for worksite setup tool
   	private static final String STATE_PAGESIZE_SITESETUP = "state_pagesize_sitesetup";
   	// page size for site info tool
   	private static final String STATE_PAGESIZE_SITEINFO = "state_pagesize_siteinfo";
+  	
+  	// group info
+  	private static final String STATE_GROUP_INSTANCE = "state_group_instance";
+  	private static final String STATE_GROUP_TITLE = "state_group_title";
+  	private static final String STATE_GROUP_DESCRIPTION = "state_group_description";
+  	private static final String STATE_GROUP_MEMBERS = "state_group_members";
+  	private static final String STATE_GROUP_REMOVE = "state_group_remove";
   
 	/**
 	* Populate the state object, if needed.
@@ -1398,6 +1409,13 @@ public class SiteAction extends PagedResourceActionII
 							b.add( new MenuEntry(rb.getString("java.editsite"), "doMenu_edit_site_info"));
 						}
 						b.add( new MenuEntry(rb.getString("java.edittools"), "doMenu_edit_site_tools"));
+						
+						if (ServerConfigurationService.getString("wsetup.group.support") == "" 
+							|| ServerConfigurationService.getString("wsetup.group.support").equalsIgnoreCase(Boolean.TRUE.toString()))
+						{
+							// show the group toolbar unless configured to not support group
+							b.add( new MenuEntry(rb.getString("java.group"), "doMenu_group"));
+						}
 						if (!isMyWorkspace)
 						{
 							List gradToolsSiteTypes = (List) state.getAttribute(GRADTOOLS_SITE_TYPES);
@@ -2733,6 +2751,71 @@ public class SiteAction extends PagedResourceActionII
       */      
       context.put("finalZipSites", state.getAttribute(FINAL_ZIP_IMPORT_SITES));
       return (String)getContext(data).get("template") + TEMPLATE[48];
+    case 49:
+    		/*  buildContextForTemplate chef_siteInfo-group.vm
+    		 * 
+    		 */
+    		site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+    		context.put("site", site);
+    		bar = new Menu(portlet, data, (String) state.getAttribute(STATE_ACTION));
+		if (SiteService.allowUpdateSite(site.getId()))
+		{
+			bar.add( new MenuEntry(rb.getString("java.new"), "doGroup_new"));
+		}
+		context.put("menu", bar);
+		
+		// the group list
+		sortedBy = (String) state.getAttribute (SORTED_BY);
+		sortedAsc = (String) state.getAttribute (SORTED_ASC);
+		
+		if(sortedBy!=null) context.put ("currentSortedBy", sortedBy);
+		if(sortedAsc!=null) context.put ("currentSortAsc", sortedAsc);
+		if (sortedBy != null && sortedAsc != null)
+		{
+			context.put("groups", new SortedIterator (site.getGroups().iterator (), new SiteComparator (sortedBy, sortedAsc)));
+		}
+    		return (String)getContext(data).get("template") + TEMPLATE[49]; 
+    case 50:
+		/*  buildContextForTemplate chef_siteInfo-groupedit.vm
+		 * 
+		 */
+    		Group g = (Group) state.getAttribute(STATE_GROUP_INSTANCE);
+    		if (g != null)
+    		{
+    			context.put("group", g);
+    			context.put("newgroup", Boolean.FALSE);
+    		}
+    		else
+    		{
+    			context.put("newgroup", Boolean.TRUE);
+    		}
+		if (state.getAttribute(STATE_GROUP_TITLE) != null)
+		{
+			context.put("title", state.getAttribute(STATE_GROUP_TITLE));
+		}
+		if (state.getAttribute(STATE_GROUP_DESCRIPTION) != null)
+		{
+			context.put("description", state.getAttribute(STATE_GROUP_DESCRIPTION));
+		}
+		List siteMembers = getParticipantList(state);
+		if (siteMembers != null && siteMembers.size() > 0)
+		{
+			context.put("generalMembers", siteMembers);
+		}
+		if (state.getAttribute(STATE_GROUP_MEMBERS) != null)
+		{
+			context.put("groupMembers", state.getAttribute(STATE_GROUP_MEMBERS));
+		}
+		context.put("userDirectoryService", UserDirectoryService.getInstance());
+		return (String)getContext(data).get("template") + TEMPLATE[50];
+    case 51:
+		/*  buildContextForTemplate chef_siteInfo-groupDeleteConfirm.vm
+		 * 
+		 */
+		context.put("site", state.getAttribute(STATE_SITE_INSTANCE));
+		
+		context.put("removeGroupIds", new ArrayList(Arrays.asList((String[])state.getAttribute(STATE_GROUP_REMOVE))));
+		return (String)getContext(data).get("template") + TEMPLATE[51];
     }
     // should never be reached
     return (String)getContext(data).get("template") + TEMPLATE[0];
@@ -4361,6 +4444,296 @@ public class SiteAction extends PagedResourceActionII
 		
 		
 	}	// doSite_type
+	
+	/**
+	*  cleanEditGroupParams
+	*  clean the state parameters used by editing group process
+	* 
+	*/
+	public void cleanEditGroupParams ( SessionState state )
+	{
+		state.removeAttribute(STATE_GROUP_INSTANCE);
+		state.removeAttribute(STATE_GROUP_TITLE);
+		state.removeAttribute(STATE_GROUP_DESCRIPTION);
+		state.removeAttribute(STATE_GROUP_MEMBERS);
+		
+	}	//cleanEditGroupParams
+	
+	/**
+	*  doGroup_edit
+	* 
+	*/
+	public void doGroup_update ( RunData data )
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+
+		Group group = (Group) state.getAttribute(STATE_GROUP_INSTANCE);
+		Set gMemberSet = (Set) state.getAttribute(STATE_GROUP_MEMBERS);
+		Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+		
+		String title = StringUtil.trimToNull(params.getString(rb.getString("group.title")));
+		state.setAttribute(STATE_GROUP_TITLE, title);
+		
+		String description = StringUtil.trimToZero(params.getString(rb.getString("group.description")));
+		state.setAttribute(STATE_GROUP_DESCRIPTION, description);
+		
+		boolean found = false;
+		String option = params.getString("option");
+		
+		if (option.equals("add"))
+		{
+			// add selected members into it
+			if (params.getStrings("generallist") != null)
+			{
+				List addMemberIds = new ArrayList(Arrays.asList(params.getStrings("generallist")));
+				for (int i=0; i<addMemberIds.size(); i++)
+				{
+					String aId = (String) addMemberIds.get(i);
+					found = false;
+					for(Iterator iSet = gMemberSet.iterator(); !found && iSet.hasNext();)
+					{
+						if (((Member) iSet.next()).getUserId().equals(aId))
+						{
+							found = true;
+						}
+					}
+					if (!found)
+					{
+						gMemberSet.add(site.getMember(aId));
+					}
+				}
+			}
+			state.setAttribute(STATE_GROUP_MEMBERS, gMemberSet);
+		}
+		else if (option.equals("remove"))
+		{
+			// update the group member list by remove selected members from it
+			if (params.getStrings("grouplist") != null)
+			{
+				List removeMemberIds = new ArrayList(Arrays.asList(params.getStrings("grouplist")));
+				for (int i=0; i<removeMemberIds.size(); i++)
+				{
+					found = false;
+					for(Iterator iSet = gMemberSet.iterator(); !found && iSet.hasNext();)
+					{
+						Member mSet = (Member) iSet.next();
+						if (mSet.getUserId().equals((String) removeMemberIds.get(i)))
+						{
+							found = true;
+							gMemberSet.remove(mSet);
+						}
+					}
+				}
+			}
+			state.setAttribute(STATE_GROUP_MEMBERS, gMemberSet);
+		} 
+		else if (option.equals("cancel"))
+		{
+			// cancel from the update the group member process
+			doCancel(data);
+			cleanEditGroupParams(state);
+			
+		}
+		else if (option.equals("save"))
+		{	
+			if (title == null)
+			{
+				addAlert(state, rb.getString("editgroup.titlemissing"));
+			}
+			
+			if (state.getAttribute(STATE_MESSAGE) == null)
+			{	
+				if (group == null)
+				{
+					// adding new group
+					group = site.addGroup();
+				}
+				
+				group.setTitle(title);
+				group.setDescription(description);
+				
+				// save the modification to group members
+				String realmId = SiteService.siteReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId());
+				try
+				{
+					AuthzGroup realm = AuthzGroupService.getAuthzGroup(realmId);
+					
+					// remove those no longer included in the group
+					Set members = realm.getMembers();
+					for(Iterator iMembers = members.iterator(); iMembers.hasNext();)
+					{
+						found = false;
+						String mId = ((Member)iMembers.next()).getUserId();
+						for(Iterator iMemberSet = gMemberSet.iterator(); !found && iMemberSet.hasNext();)
+						{
+							if (mId.equals(((Member) iMemberSet.next()).getUserId()))
+							{
+								found = true;
+							}
+						
+						}
+						if (!found)
+						{
+							group.removeMember(mId);
+						}
+					}
+					
+					// add those seleted members
+					for(Iterator iMemberSet = gMemberSet.iterator(); iMemberSet.hasNext();)
+					{
+						String memberId = ((Member) iMemberSet.next()).getUserId();
+						if (group.getMember(memberId) == null)
+						{
+							Role r = realm.getUserRole(memberId);
+							Member m = realm.getMember(memberId);
+							group.addMember(memberId, r!= null?r.getId():"", m!=null?m.isActive():true, m!=null?m.isProvided():false);
+						}
+					}
+				
+					// save the change
+					try
+					{
+						AuthzGroupService.save(realm);
+					}
+					catch (IdUnusedException ee)
+					{
+						// TODO: IdUnusedException
+					}
+					catch (PermissionException ee)
+					{
+						// TODO: PermissionException
+					}
+					
+				}
+				catch (IdUnusedException e)
+				{
+				}
+				
+				state.setAttribute (STATE_TEMPLATE_INDEX, "49");
+				cleanEditGroupParams(state);
+			}
+		}
+		
+	}	// doGroup_updatemembers
+	
+	/**
+	*  doGroup_new
+	* 
+	*/
+	public void doGroup_new ( RunData data )
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		if (state.getAttribute(STATE_GROUP_TITLE) == null)
+		{
+			state.setAttribute(STATE_GROUP_TITLE, "");
+		}
+		if (state.getAttribute(STATE_GROUP_DESCRIPTION) == null)
+		{
+			state.setAttribute(STATE_GROUP_DESCRIPTION, "");
+		}
+		if (state.getAttribute(STATE_GROUP_MEMBERS) == null)
+		{
+			state.setAttribute(STATE_GROUP_MEMBERS, new HashSet());
+		}
+		state.setAttribute (STATE_TEMPLATE_INDEX, "50");
+		
+	}	// doGroup_new
+	
+	/**
+	*  doGroup_edit
+	* 
+	*/
+	public void doGroup_edit ( RunData data )
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		String groupId = data.getParameters ().getString("groupId");
+		
+		Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+		if (site != null)
+		{
+			Group g = site.getGroup(groupId);
+			if (g != null)
+			{
+				state.setAttribute(STATE_GROUP_INSTANCE, g);
+				if (state.getAttribute(STATE_GROUP_TITLE) == null)
+				{
+					state.setAttribute(STATE_GROUP_TITLE, g.getTitle());
+				}
+				if (state.getAttribute(STATE_GROUP_DESCRIPTION) == null)
+				{
+					state.setAttribute(STATE_GROUP_DESCRIPTION, g.getDescription());
+				}
+				if (state.getAttribute(STATE_GROUP_MEMBERS) == null)
+				{
+					state.setAttribute(STATE_GROUP_MEMBERS, g.getMembers());
+				}
+			}
+		}
+		state.setAttribute (STATE_TEMPLATE_INDEX, "50");
+		
+	}	// doGroup_edit
+	
+	/**
+	*  doGroup_remove_prep
+	*  Go to confirmation page before deleting group(s)
+	* 
+	*/
+	public void doGroup_remove_prep ( RunData data )
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		String[] removeGroupIds = data.getParameters ().getStrings("removeGroups");
+		
+		if (removeGroupIds.length > 0)
+		{
+			state.setAttribute(STATE_GROUP_REMOVE, removeGroupIds);
+			state.setAttribute (STATE_TEMPLATE_INDEX, "51");
+		}
+		
+	}	// doGroup_remove_prep
+	
+	/**
+	*  doGroup_remove_confirmed
+	*  Delete selected groups after confirmation
+	* 
+	*/
+	public void doGroup_remove_confirmed ( RunData data )
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		String[] removeGroupIds = (String[]) state.getAttribute(STATE_GROUP_REMOVE);
+		
+		for (int i=0; i<removeGroupIds.length; i++)
+		{
+			Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
+			if (site != null)
+			{
+				Group g = site.getGroup(removeGroupIds[i]);
+				if (g != null)
+				{
+					site.removeGroup(g);
+				}
+			}
+		}
+		state.setAttribute (STATE_TEMPLATE_INDEX, "49");
+		
+	}	// doGroup_remove_confirmed
+	
+	/**
+	*  doMenu_edit_site_info
+	*  The menu choice to enter group view
+	* 
+	*/
+	public void doMenu_group ( RunData data )
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		
+		// reset sort criteria
+		state.setAttribute(SORTED_BY, rb.getString("group.title"));
+		state.setAttribute(SORTED_ASC, Boolean.TRUE.toString());
+		
+		state.setAttribute (STATE_TEMPLATE_INDEX, "49");
+		
+	}	// doMenu_group
 	
 	/**
 	* dispatch to different functions based on the option value in the parameter
@@ -11880,6 +12253,20 @@ public class SiteAction extends PagedResourceActionII
 				{
 					result = 1;
 				}
+			}
+			else if (m_criterion.equals (rb.getString("group.title")))
+			{
+				// sorted by the group title
+				String s1 = ((Group) o1).getTitle();
+				String s2 = ((Group) o2).getTitle();
+				result =  s1.compareToIgnoreCase (s2);
+			}
+			else if (m_criterion.equals (rb.getString("group.number")))
+			{
+				// sorted by the group title
+				int n1 = ((Group) o1).getMembers().size();
+				int n2 = ((Group) o2).getMembers().size();
+				result = (n1 > n2)?1:-1;
 			}
 			
 			if(m_asc == null) m_asc = Boolean.TRUE.toString ();
