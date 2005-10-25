@@ -77,7 +77,7 @@
 			<input type="hidden" name="continue" value="24" />
 			<input type="hidden" name="back" value="18" />
 			<input type="hidden" name="template-index" value="23" />
-			<div class ="chefButtonRow">
+			<div class ="act">
 				<input type="submit" name="Continue" 
 						value="$tlang.getString("ediacc-glo.con")" 
 						onclick="document.joinableForm.option.value='continue';javascript:document.joinableForm.submit();" />

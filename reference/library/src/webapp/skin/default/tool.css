@@ -108,25 +108,25 @@ legend{font-size:110%;color:#000;padding-bottom:.3em;font-weight:normal;margin:.
 
 /*hierarchy*/
 h2{font-size: 130%;color:#52698C;padding:.3em;font-weight:normal;margin:.5em -.3em;background-color:transparent !important}
-.chefPortletToolBarMessage, h3{font-size: 130%;color:#084A87;padding:.3em;font-weight:normal;margin:.5em -.3em;background-color:transparent !important}
+h3{font-size: 130%;color:#084A87;padding:.3em;font-weight:normal;margin:.5em -.3em;background-color:transparent !important}
 h4{font-size:110%;color:#000;padding-bottom:.3em;font-weight:normal;margin:.5em 0;}
 h5{font-size:100%;color:#084A87;font-weight:normal;margin:.5em 0;background-color:transparent}
 
 /*inputs*/
-.chefButtonRow, .act {padding:1em 0}
-.chefButtonRow input, .act input{	background-color:#eee;
+.act {padding:1em 0}
+.act input{	background-color:#eee;
 	border-width:1px;
 	border-color: #90A1C6 #5A6D95 #5A6D95 #90A1C6;
 	border-style: solid;}
 
-.chefButtonRow input:hover, .act input:hover{	background-color:#DDDFE4;
+.act input:hover{	background-color:#DDDFE4;
 	border-width:1px;
 	border-color: #5A6D95 #90A1C6 #90A1C6 #5A6D95;
 	border-style: solid}
-.chefButtonRow input:active,.act input.active{border-width:2px;
+.act input.active{border-width:2px;
 	border-color: #444;
 	border-style: solid}
-.chefButtonRow input.active:hover, .act input.active:hover{border-width:2px;
+.act input.active:hover{border-width:2px;
 	border-color: #5A6D95 #90A1C6 #90A1C6 #5A6D95;
 	border-style: solid}
 

@@ -2,9 +2,9 @@
 ## Remove Participants Remove participants from the worksite
 <div class ="chefPortletContainer">
 	#if($menu)#toolbar($menu)#end
-	<div class ="chefPortletToolBarMessage">
+	<h3>
 		$tlang.getString("sitegen.removpart.confirm") $validator.escapeHtml($title)...
-	</div>
+	</h3>
 	<div class ="chefPortletContent">
 		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitegen.removpart.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<span class ="chefPageviewTitle">
@@ -77,7 +77,7 @@
 					<input type="hidden" name="continue" value="$backIndex" />
 					<input type="hidden" name="template-index" value="6" />
 					<input type="hidden" name="back" value="$backIndex" />
-				<div class ="chefButtonRow">
+				<div class ="act">
 					<input type="submit" name="eventSubmit_doContinue" value="$tlang.getString("sitegen.removpart.finish")" />
 					<input type="submit" name="eventSubmit_doBack" value="$tlang.getString("sitegen.removpart.back")" />
 					<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("sitegen.removpart.cancel")" />

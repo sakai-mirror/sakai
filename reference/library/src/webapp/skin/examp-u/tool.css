@@ -117,16 +117,16 @@ tr.selectedMove a:link,tr.selectedMove a:visited{color:#8A8A8A}
 legend{font-size:110%;color:#000;padding-bottom:.3em;font-weight:normal;margin:.5em 0;}
 /*hierarchy*/
 h2{font-size: 130%;color:#5A8A4A;padding:.3em;font-weight:normal;margin:.5em -.3em;background-color:transparent !important}
-.chefPortletToolBarMessage, h3{font-size: 130%;color:#5A8A4A;padding:.3em;font-weight:normal;margin:.5em -.3em;background-color:transparent !important}
+h3{font-size: 130%;color:#5A8A4A;padding:.3em;font-weight:normal;margin:.5em -.3em;background-color:transparent !important}
 h4{font-size:110%;color:#5A8A4A;padding-bottom:.3em;font-weight:normal;margin:.5em 0;background-color:transparent }
 h5{font-size:100%;color:#5A8A4A;font-weight:normal;margin:.5em 0;background-color:transparent}
 
 /*inputs*/
-.chefButtonRow, .act {padding:1em 0}
-.chefButtonRow input, .act input{	background-color:#eee;border:1px solid silver}
-.chefButtonRow input:hover,.act input:hover{	background-color:#BDD7B5;border-width:1px;border-color:silver gray gray silver ;border-style: solid}
-.chefButtonRow input:active,.act input.active{border:1px solid #000}
-.chefButtonRow input.active:hover,.act input.active:hover{border-width:1px;border-color:silver gray gray silver ;border-style: solid}
+.act {padding:1em 0}
+.act input{	background-color:#eee;border:1px solid silver}
+.act input:hover{	background-color:#BDD7B5;border-width:1px;border-color:silver gray gray silver ;border-style: solid}
+.act input.active{border:1px solid #000}
+.act input.active:hover{border-width:1px;border-color:silver gray gray silver ;border-style: solid}
 
 /*toolbar*/
 .navIntraTool  {background-color:#ffc;padding:.3em;margin:-.3em -2em;text-align:center;line-height:1.5em}

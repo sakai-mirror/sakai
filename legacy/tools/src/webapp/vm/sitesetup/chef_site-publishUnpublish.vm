@@ -1,9 +1,9 @@
 ##<!-- Exp $ -->
 ## Changingthe status of a worksite to publsihed or unpublished
 <div class ="chefPortletContainer">
-	<div class ="chefPortletToolBarMessage">
+	<h3>
 		$tlang.getString("pubunp.chathe")
-	</div>
+	</h3>
 	<div class ="chefPortletContent">
 		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("pubunp.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<form action="#toolForm("SiteAction")" method="post">
@@ -27,7 +27,7 @@
 			</fieldset>
 				<input type="hidden" name="back" value="$backIndex" />		
 				<input type="hidden" name="template-index" value="9" />
-			<div class ="chefButtonRow">
+			<div class ="act">
 				<input type="submit" name="eventSubmit_doContinue" value="$tlang.getString("pubunp.con")" />
 				<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("pubunp.can")" />
 			</div>

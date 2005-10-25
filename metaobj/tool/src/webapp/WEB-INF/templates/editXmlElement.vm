@@ -64,11 +64,11 @@
 
          <td>
 
-           <div class="chefButtonRow">
+           <p class="act">
 
             <input type="submit" name="updateList" alignment="center" value="Update">
 
-           </div>
+           </p>
 
   
 
@@ -416,13 +416,13 @@
 
    </table>
 
-<div class="chefButtonRow">
+<p class="act">
 
    <input type="submit" name="addButton" alignment="center" value="Add New" 
 
       onClick="this.form.childPath.value='${field.fieldNamePath}';return true">
 
-</div>
+</p>
 
    <font color="red"><c:out value="${status.errorMessage}"/></font>
 
@@ -451,7 +451,7 @@
 
 
 
-	<div class ="chefPortletToolBarMessage">
+	<h3>
 
 		Editing       
 
@@ -465,7 +465,7 @@
 
       #end
 
-	</div>
+	</h3>
 
    
 
@@ -647,7 +647,7 @@
 
 
 
-<div class="chefButtonRow">
+<p class="act">
 
 
 
@@ -693,7 +693,7 @@
 
 #end
 
-</div>
+</p>
 
   </fieldset>
 

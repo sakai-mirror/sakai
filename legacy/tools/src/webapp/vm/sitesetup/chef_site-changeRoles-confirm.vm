@@ -1,9 +1,9 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/sitesetup/chef_site-changeRoles-confirm.vm,v 1.1 2005/04/14 20:22:06 ggolden.umich.edu Exp $ -->
 ## Confirming changing roles of participant
 <div class ="chefPortletContainer">
-	<div class ="chefPortletToolBarMessage">
+	<h3>
 		$tlang.getString("chrolc.confirm") $validator.escapeHtml($siteTitle)...
-	</div>
+	</h3>
 	<div class ="chefPortletContent">
 		#if ($alertMessage)
 			<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
@@ -52,7 +52,7 @@
 			<input type="hidden" name="back" value="7" />
 			<input type="hidden" name="template-index" value="25" />
 			<input type="hidden" name="continue" value="18" />
-			<div class ="chefButtonRow">
+			<div class ="act">
 				<input type="submit" name="eventSubmit_doUpdate_participant_roles" value="$tlang.getString('gen.finish')" />
 				<input type="submit" name="eventSubmit_doBack" value="$tlang.getString('gen.back')" />
 				<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString('gen.cancel')" />

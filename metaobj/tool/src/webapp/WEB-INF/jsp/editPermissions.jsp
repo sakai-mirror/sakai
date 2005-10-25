@@ -68,10 +68,10 @@
 
   <br/>
 
-   <div class="chefButtonRow">
+   <p class="act">
       <input type="submit" value="save" />
       <input name="_cancel" type="submit" value="cancel"/>
-   </div>
+   </p>
 
 </form>
 </div>

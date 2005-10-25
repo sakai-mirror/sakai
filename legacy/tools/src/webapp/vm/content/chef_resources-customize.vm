@@ -7,17 +7,17 @@
 </script>
 
 <div class="chefPortletContainer">
-	<div class ="chefPortletToolBarMessage">
+	<h3>
 		$!description
-	</div>
+	</h3>
 	<div class="chefPortletContent">
 		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 		<form action="#toolForm($action)" method="post">
 			</fieldset>
-			<div class="chefButtonRow">
+			<p class="act">
 				<input type="submit" name="$form-submit" value="$tlang.getString("gen.save")" />
 				<input type="submit" name="$form-cancel" value="$tlang.getString("gen.cancel")" />
-			</div>
+			</p>
 		</form>
 	</div>
 </div>

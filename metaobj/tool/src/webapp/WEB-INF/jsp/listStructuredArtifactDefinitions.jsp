@@ -4,7 +4,7 @@
 <osp:authZMap prefix="metaobj." var="can" qualifier="${authZqualifier}"/>
 <!-- GUID=<c:out value="${newFormId}" /> -->
 
-<div class="chefToolBarWrap">
+<div class="navIntraTool">
 <c:if test="${can.create}">
       <a href="<osp:url value="/addStructuredArtifactDefinition.osp?new=true"/>"
           title="New..." >New...</a>
@@ -26,7 +26,7 @@
 <div class ="chefPortletContent">
 
 <osp:url var="listUrl" value="listStructuredArtifactDefinitions.osp"/>
-<osp:listScroll listUrl="${listUrl}" className="chefToolBarWrap" />
+<osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
 <c:if test="${!empty types}">
  <table class="chefFlatListViewTable" cellspacing="0" >

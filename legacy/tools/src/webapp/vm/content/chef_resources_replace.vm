@@ -4,9 +4,9 @@
 ##### deprecated -- not used in refactored resources tool #####
 ###############################################################
 <div class="chefPortletContainer">
-	<div class ="chefPortletToolBarMessage">
+	<h3>
 		$tlang.getString("rep.file")
-	</div>
+	</h3>
 	<div class="chefPortletContent">
 		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<div class ="chefBreadCrumb">
@@ -89,7 +89,7 @@
 						#end
 					#end
 				#end
-			<div class ="chefButtonRow">
+			<div class ="act">
 				#if ($replaceNumber>1)
 					#set ($buttonName = "$tlang.getString('rep.items')")
 				#else

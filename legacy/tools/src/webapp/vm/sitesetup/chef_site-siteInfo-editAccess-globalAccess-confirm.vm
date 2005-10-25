@@ -1,9 +1,9 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/sitesetup/chef_site-siteInfo-editAccess-globalAccess-confirm.vm,v 1.1 2005/04/14 20:22:06 ggolden.umich.edu Exp $ -->
 ## Confirming global access for site
 <div class ="chefPortletContainer">
-	<div class ="chefPortletToolBarMessage">
+	<h3>
  		$tlang.getString("ediacccon.conglo") $validator.escapeHtml($title)
-	</div>
+	</h3>
 	<div class ="chefPortletContent">
 		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("ediacccon.alert") $validator.escapeHtml($alertMessage)</div>#end
 		<div class="chefPageviewTitle">
@@ -26,7 +26,7 @@
 			<input type="hidden" name="back" value="23" />
 			<input type="hidden" name="cancel" value="18">
 			<input type="hidden" name="template-index" value="24" />
-			<div class ="chefButtonRow">
+			<div class ="act">
 				<input type="submit" name="eventSubmit_doSiteinfo_save_globalAccess" value="$tlang.getString("ediacccon.fin")" />
 				<input type="submit" name="eventSubmit_doBack" value="$tlang.getString("ediacccon.bac")" />
 				<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("ediacccon.can")" />

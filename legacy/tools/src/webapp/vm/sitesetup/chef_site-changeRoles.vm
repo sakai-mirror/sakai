@@ -1,9 +1,9 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/sitesetup/chef_site-changeRoles.vm,v 1.2 2005/05/19 19:55:05 gsilver.umich.edu Exp $ -->
 ## Change Roles Change the roles of participants of the worksite
 <div class ="chefPortletContainer">
-	<div class ="chefPortletToolBarMessage">
+	<h3>
 		$tlang.getString("chrol.changing") $validator.escapeHtml($siteTitle)...
-	</div>
+	</h3>
 	<div class ="chefPortletContent">
 		#if ($alertMessage)
 			<div class="chefAlertBox">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
@@ -242,7 +242,7 @@
 			<input type="hidden" name="back" value="18" />
 			<input type="hidden" name="template-index" value="7" />
 			<input type="hidden" name="continue" value="25" />
-			<div class ="chefButtonRow">
+			<div class ="act">
 				<input type="submit" name="Continue" 
 						value="$tlang.getString('gen.continue')" 
 						onclick="document.roleForm.option.value='continue';javascript:document.roleForm.submit();" />

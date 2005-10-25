@@ -3,9 +3,9 @@
   focus_path = ["id"];
 </script>
 <div class="chefPortletContainer">
-	<div class ="chefPortletToolBarMessage">
+	<h3>
 		$tlang.getString("sitmansav.savas")
-	</div>
+	</h3>
 	<div class="chefPortletContent">
 		#if ($alertMessage)<div class="chefAlertBox">$tlang.getString("sitmansav.savas") $validator.escapeHtml($alertMessage)</div>#end
 		<div class="chefPageviewTitle">
@@ -31,7 +31,7 @@
 			</fieldset>
 			<input type="hidden" name="back" value="38" />
 			<input type="hidden" name="template-index" value="41" />
-			<div class="chefButtonRow">
+			<div class="act">
 				<input type="submit" name="eventSubmit_doSitemanage_saveas" value="$tlang.getString("sitmansav.sav")" />		
 				<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("sitmansav.can")" />
 			</div>

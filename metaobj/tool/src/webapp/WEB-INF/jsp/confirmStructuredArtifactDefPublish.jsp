@@ -40,10 +40,10 @@ Are you sure you want to do this?
 <span class="error_message"><c:out value="${status.errorMessage}"/></span>
 </spring:bind>
 
-<div class="chefButtonRow">
+<p class="act">
 <input name="publish" type="submit" value="Yes"/>
 <input name="_cancel" type="submit" value="No"/>
-</div>
+</p>
 
 </form>
 

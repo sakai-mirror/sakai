@@ -132,14 +132,14 @@ Pick Transformation File</a>
     HTMLArea.replace('instruction');
 </script>
 
-<div class="chefButtonRow">
+<p class="act">
 <input name="action" type="submit" value="Save"/>
 <input name="action" id="action" type="hidden" value=""/>
 <input name="filePickerAction" id="filePickerAction" type="hidden" value="" />
 <input name="filePickerFrom" id="filePickerFrom" type="hidden" value="" />
 
 <input type="button" value="Cancel" onclick="window.document.location='<osp:url value="listStructuredArtifactDefinitions.osp"/>'">
-</div>
+</p>
 
 </form>
 
