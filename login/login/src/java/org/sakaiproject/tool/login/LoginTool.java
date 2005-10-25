@@ -174,6 +174,11 @@ public class LoginTool extends HttpServlet
 					String containerCheckPath = this.getServletConfig().getInitParameter("container");
 					String containerCheckUrl = Web.serverUrl(req) + containerCheckPath;
 
+					// support query parms in url for container auth
+					String queryString = req.getQueryString();
+					if (queryString != null)
+						 containerCheckUrl = containerCheckUrl + "?" + queryString;
+						
 					res.sendRedirect(res.encodeRedirectURL(containerCheckUrl));
 					return;
 				}
