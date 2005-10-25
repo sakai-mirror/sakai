@@ -86,7 +86,7 @@ a:link{color:#369;text-decoration:none}
 a:visited{color:#9ad;text-decoration:none}
 a:hover{color:#5168D6 !important;text-decoration:underline;background-color:transparent}
 .listHier{font-size:1em;}
-.listHier th{background-color:#DDDFE4;}
+.listHier th{background-color:#DDDFE4;text-align:left}
 .listHier td{vertical-align:top;padding:.4em !important}
 .listHier a:link,.listHier a:visited{color:#369;text-decoration:none}
 
