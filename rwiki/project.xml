@@ -2,6 +2,8 @@
 <project>
     <pomVersion>3</pomVersion>
     <name>Sakai RWiki</name>
+    <extend>../master/project.xml</extend>
+
     <groupId>sakaiproject</groupId>
     <artifactId>sakai-rwiki-multiproject</artifactId>
     <currentVersion>${sakai.version}</currentVersion>
