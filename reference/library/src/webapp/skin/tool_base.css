@@ -130,14 +130,14 @@ clear:both;
 margin-top:.5em;
  
 }
-table.listHier th,{ 
+table.listHier th{ 
 font-weight:normal; 
 text-align:left;
 white-space:nowrap; 
 margin:0px; 
 padding:.2em 
 }
-table.listHier td,{ 
+table.listHier td{ 
 
    padding:.2em 
 }
