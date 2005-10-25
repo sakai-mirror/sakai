@@ -169,19 +169,19 @@
       </properties>
     </dependency>
     <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-rwiki-diff</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
       <groupId>servletapi</groupId>
       <artifactId>servletapi</artifactId>
       <version>2.3</version>
       <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>jrcs</groupId>
-      <artifactId>diff</artifactId>
-      <version>1.0</version>
-      <type>jar</type>
-      <properties>
-	<war.bundle>true</war.bundle>
-      </properties>
     </dependency>
     <dependency>
       <groupId>jstl</groupId>
