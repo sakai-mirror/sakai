@@ -124,20 +124,20 @@ textarea  {
 /* LIST VIEW(S) */
 
 /*table and cells for displaying a list of hierarchical items*/
-table.listHier, .syllabusTable  { 
+table.listHier{ 
 width:100%; 
 clear:both;
 margin-top:.5em;
  
 }
-table.listHier th, .syllabusTable th{ 
+table.listHier th,{ 
 font-weight:normal; 
 text-align:left;
 white-space:nowrap; 
 margin:0px; 
 padding:.2em 
 }
-table.listHier td, .syllabusTable td  { 
+table.listHier td,{ 
 
    padding:.2em 
 }

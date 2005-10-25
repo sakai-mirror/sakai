@@ -92,10 +92,10 @@ table {font-size:1em;}
 a:link{color:#52698C !important;text-decoration:none}
 a:visited{color:#000077 !important;text-decoration:none}
 a:hover{color:#000077 !important;text-decoration:underline;background-color:transparent}
-.syllabusTable, .listHier{font-size:1em;}
-.syllabusTable th, .listHier th{background-color:#ddd;}
-.syllabusTable td,.listHier td{vertical-align:top;padding:.4em !important}
-.syllabusTable th h4,.listHier th h3,.listHier th h4, .listHier th h5, .listHier th h6,.syllabusTable td h4,.listHier td h3,.listHier td h4, .listHier td h5, .listHier td h6{margin:0;padding:0;font-size: 1em;background:none;font-weight:normal}
+.listHier{font-size:1em;}
+.listHier th{background-color:#ddd;}
+.listHier td{vertical-align:top;padding:.4em !important}
+.listHier th h3,.listHier th h4, .listHier th h5, .listHier th h6,.listHier td h3,.listHier td h4, .listHier td h5, .listHier td h6{margin:0;padding:0;font-size: 1em;background:none;font-weight:normal}
 table.lines tr:hover{background-color:#f8f8f8}
 table.lines{
 	border-collapse: collapse;
