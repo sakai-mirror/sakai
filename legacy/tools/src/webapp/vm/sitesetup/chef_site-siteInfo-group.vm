@@ -7,9 +7,12 @@
 		<div style="display:block;clear:both"></div>
 	#end
 	<form name="groupForm" id="groupForm" action="#toolForm($action)" method="post">
-			<table class ="listHier"  cellpadding="0" cellspacing="0" summary ="Table holds the information of site gropu. Column 1 holds the group title, column 2 holds the group member count. Headers hold links for sorting">
+		#set($hasgroup = false)
+		#if ($!groups && $!groups.hasNext())
+			#set($hasgroup = true)
+			<table class ="listHier"  cellpadding="0" cellspacing="0" summary ="Table holds the information of site gropu. Column 1 holds the group title, column 2 holds the group member count. Headers hold links for sorting" >
 				<tr>
-					<th id="name" colspan="2">
+					<th id="name">
 						<a href="#toolLinkParam($action "doSort_sites" "criterion=$tlang.getString('group.title')")" title ="$tlang.getString("group.title")"> 
 							$tlang.getString("group.title")
 							#if ($currentSortedBy.equals($tlang.getString("group.title"))) 
@@ -20,6 +23,8 @@
 								#end 
 							#end 
 						</a>
+					</th>
+					<th>
 					</th>
 					<th id="count">
 						<a href="#toolLinkParam($action "doSort_sites" "criterion=$tlang.getString('group.number')")" title ="$tlang.getString("group.number")"> 
@@ -45,21 +50,26 @@
 						<td headers="revise">
 							<a href="#toolLinkParam("$action" "doGroup_edit" "groupId=$group.Id")" title ="$tlang.getString("editgroup.revise")">$tlang.getString("editgroup.revise")</a>
 						</td>
-						<td headers="member">
+						<td headers="member" align="center">
 							$!group.getMembers().size()
 						</td>
-						<td headers="remove">
+						<td headers="remove" align="center">
 							<label class="skip" for="remove_$group.Id">Remove $group.Title</label>
 							<input type="checkbox" name="removeGroups" value="$group.Id" id="remove_$group.Id" />
 							<label for="remove_$group.Id" class="skip">$tlang.getString("editgroup.remove")</label>
 						</td>
 					</tr>
 				#end
-			</table>		
+			</table>
+		#else	
+			$tlang.getString("group.nogroup")
+		#end		
 		<input type="hidden" name="template-index" value="49" />
 		<input type="hidden" name="back" value="12" />
 		<div class ="act">
-				<input type="submit" class="active" name="eventSubmit_doGroup_remove_prep" value="$tlang.getString("editgroup.update")" />
+				#if ($hasgroup)
+					<input type="submit" class="active" name="eventSubmit_doGroup_remove_prep" value="$tlang.getString("editgroup.update")" />
+				#end
 				<input type="submit" name="eventSubmit_doBack" value="$tlang.getString("editgroup.cancel")" />
 		</div>
 	</form>

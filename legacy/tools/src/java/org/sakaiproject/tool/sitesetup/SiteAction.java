@@ -4456,6 +4456,7 @@ public class SiteAction extends PagedResourceActionII
 		state.removeAttribute(STATE_GROUP_TITLE);
 		state.removeAttribute(STATE_GROUP_DESCRIPTION);
 		state.removeAttribute(STATE_GROUP_MEMBERS);
+		state.removeAttribute(STATE_GROUP_REMOVE);
 		
 	}	//cleanEditGroupParams
 	
@@ -4554,29 +4555,24 @@ public class SiteAction extends PagedResourceActionII
 				group.setDescription(description);
 				
 				// save the modification to group members
-				String realmId = SiteService.siteReference(((Site) state.getAttribute(STATE_SITE_INSTANCE)).getId());
-				try
+				
+				// remove those no longer included in the group
+				Set members = site.getMembers();
+				for(Iterator iMembers = members.iterator(); iMembers.hasNext();)
 				{
-					AuthzGroup realm = AuthzGroupService.getAuthzGroup(realmId);
-					
-					// remove those no longer included in the group
-					Set members = realm.getMembers();
-					for(Iterator iMembers = members.iterator(); iMembers.hasNext();)
+					found = false;
+					String mId = ((Member)iMembers.next()).getUserId();
+					for(Iterator iMemberSet = gMemberSet.iterator(); !found && iMemberSet.hasNext();)
 					{
-						found = false;
-						String mId = ((Member)iMembers.next()).getUserId();
-						for(Iterator iMemberSet = gMemberSet.iterator(); !found && iMemberSet.hasNext();)
+						if (mId.equals(((Member) iMemberSet.next()).getUserId()))
 						{
-							if (mId.equals(((Member) iMemberSet.next()).getUserId()))
-							{
-								found = true;
-							}
-						
+							found = true;
 						}
-						if (!found)
-						{
-							group.removeMember(mId);
-						}
+					
+					}
+					if (!found)
+					{
+						group.removeMember(mId);
 					}
 					
 					// add those seleted members
@@ -4585,33 +4581,30 @@ public class SiteAction extends PagedResourceActionII
 						String memberId = ((Member) iMemberSet.next()).getUserId();
 						if (group.getMember(memberId) == null)
 						{
-							Role r = realm.getUserRole(memberId);
-							Member m = realm.getMember(memberId);
+							Role r = site.getUserRole(memberId);
+							Member m = site.getMember(memberId);
 							group.addMember(memberId, r!= null?r.getId():"", m!=null?m.isActive():true, m!=null?m.isProvided():false);
 						}
 					}
+				}
 				
-					// save the change
-					try
+				if (state.getAttribute(STATE_MESSAGE) == null)
+				{
+					try 
 					{
-						AuthzGroupService.save(realm);
-					}
-					catch (IdUnusedException ee)
+						SiteService.save(site);
+					} 
+					catch (IdUnusedException e) 
 					{
-						// TODO: IdUnusedException
-					}
-					catch (PermissionException ee)
+					} 
+					catch (PermissionException e) 
 					{
-						// TODO: PermissionException
 					}
 					
+					// return to group list view
+					state.setAttribute (STATE_TEMPLATE_INDEX, "49");
+					cleanEditGroupParams(state);
 				}
-				catch (IdUnusedException e)
-				{
-				}
-				
-				state.setAttribute (STATE_TEMPLATE_INDEX, "49");
-				cleanEditGroupParams(state);
 			}
 		}
 		
@@ -4702,9 +4695,9 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		String[] removeGroupIds = (String[]) state.getAttribute(STATE_GROUP_REMOVE);
 		
+		Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 		for (int i=0; i<removeGroupIds.length; i++)
 		{
-			Site site = (Site) state.getAttribute(STATE_SITE_INSTANCE);
 			if (site != null)
 			{
 				Group g = site.getGroup(removeGroupIds[i]);
@@ -4714,7 +4707,24 @@ public class SiteAction extends PagedResourceActionII
 				}
 			}
 		}
-		state.setAttribute (STATE_TEMPLATE_INDEX, "49");
+		try 
+		{
+			SiteService.save(site);
+		} 
+		catch (IdUnusedException e) 
+		{
+			addAlert(state, rb.getString("editgroup.site.notfound.alert"));
+		} 
+		catch (PermissionException e) 
+		{
+			addAlert(state, rb.getString("editgroup.site.permission.alert"));
+		}
+		
+		if (state.getAttribute(STATE_MESSAGE) == null)
+		{
+			cleanEditGroupParams(state);
+			state.setAttribute (STATE_TEMPLATE_INDEX, "49");
+		}
 		
 	}	// doGroup_remove_confirmed
 	
@@ -5785,6 +5795,8 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		ParameterParser params = data.getParameters ();
+		
+		state.removeAttribute(STATE_MESSAGE);
 		
 		String currentIndex = (String)state.getAttribute(STATE_TEMPLATE_INDEX);
 		
@@ -8693,6 +8705,13 @@ public class SiteAction extends PagedResourceActionII
 					removeAddClassContext(state);
 				}
 				
+				break;
+			case 49: 
+				if (!forward)
+				{
+					state.removeAttribute(SORTED_BY);
+					state.removeAttribute(SORTED_ASC);
+				}
 				break;
 		}
 		
