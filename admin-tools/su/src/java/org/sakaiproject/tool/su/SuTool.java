@@ -16,8 +16,6 @@ import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.legacy.user.User;
 
-// TODO: Implement the Sakai 2.1 way of refreshing the realms
-// import org.sakaiproject.service.legacy.realm.RealmProvider;
 import org.sakaiproject.service.legacy.authzGroup.GroupProvider;
 
 // java classes
@@ -30,10 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @author zach
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * @author zach.thomas@txstate.edu
  */
 public class SuTool {
 
