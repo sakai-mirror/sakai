@@ -5422,6 +5422,22 @@ public class ResourcesAction
 			}
 		}
 		
+		if(! item.isFolder() && ! item.isStructuredArtifact() && ! item.isUrl())
+		{
+			String mime_category = params.getString("mime_category");
+			String mime_subtype = params.getString("mime_subtype");
+				
+			if(mime_category != null && mime_subtype != null)
+			{
+				String mimetype = mime_category + "/" + mime_subtype;
+				if(! mimetype.equals(item.getMimeType()))
+				{
+					item.setMimeType(mimetype);
+					item.setContentTypeHasChanged(true);
+				}
+			}
+		}
+		
 		if(item.isFileUpload() || item.isHtml() || item.isPlaintext())
 		{
 			// check for copyright status
@@ -6217,6 +6233,10 @@ public class ResourcesAction
 					{
 						redit.setContentType(item.getMimeType());
 						redit.setContent(item.getContent());
+					}
+					else if(item.contentTypeHasChanged())
+					{
+						redit.setContentType(item.getMimeType());
 					}
 					
 					String copyright = StringUtil.trimToNull(params.getString ("copyright"));
@@ -9384,6 +9404,7 @@ public class ResourcesAction
 		protected String m_quota;
 		protected boolean m_isUrl;
 		protected boolean m_contentHasChanged;
+		protected boolean m_contentTypeHasChanged;
 		protected int m_notification;
 
 		protected String m_formtype;
@@ -9408,6 +9429,7 @@ public class ResourcesAction
 		{
 			super(id, name, type);
 			m_contentHasChanged = false;
+			m_contentTypeHasChanged = false;
 			m_metadata = new Hashtable();
 			m_structuredArtifact = new Hashtable();
 			m_metadataGroupsShowing = new HashSet();
@@ -9571,6 +9593,34 @@ public class ResourcesAction
 		public String getMimeType()
 		{
 			return m_mimetype;
+		}
+		
+		public String getMimeCategory()
+		{
+			if(this.m_mimetype == null || this.m_mimetype.equals(""))
+			{
+				return "";
+			}
+			int index = this.m_mimetype.indexOf("/");
+			if(index < 0)
+			{
+				return this.m_mimetype;
+			}
+			return this.m_mimetype.substring(0, index);
+		}
+		
+		public String getMimeSubtype()
+		{
+			if(this.m_mimetype == null || this.m_mimetype.equals(""))
+			{
+				return "";
+			}
+			int index = this.m_mimetype.indexOf("/");
+			if(index < 0 || index + 1 == this.m_mimetype.length())
+			{
+				return "";
+			}
+			return this.m_mimetype.substring(index + 1);
 		}
 		
 		/**
@@ -9791,6 +9841,16 @@ public class ResourcesAction
 		public void setContentHasChanged(boolean changed)
 		{
 			m_contentHasChanged = changed;
+		}
+		
+		public boolean contentTypeHasChanged()
+		{
+			return m_contentTypeHasChanged;
+		}
+		
+		public void setContentTypeHasChanged(boolean changed)
+		{
+			m_contentTypeHasChanged = changed;
 		}
 		
 		public void setNotification(int notification)

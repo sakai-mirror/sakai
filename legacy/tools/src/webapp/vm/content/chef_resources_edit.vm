@@ -208,6 +208,56 @@
 			obj_newcopyright_item.disabled=false;
 		}
 	}
+	function changeMimeType(category, subtype)
+	{
+		var mime_widget_div = document.getElementById('mime_widget');
+		var select_category = "<select name=\"mime_category\" id=\"mime_category\" onchange=\"javascript:changeMimeSubtype(this);\">\n";
+		for(var i = 0; i < mimeCategories.length; i++)
+		{
+			if(category == mimeCategories[i])
+			{
+				select_category += "<option selected=\"selected\">" + mimeCategories[i] + "</option>\n";				
+			}
+			else
+			{
+				select_category += "<option>" + mimeCategories[i] + "</option>\n";
+			}
+		}
+		select_category += "</select>\n";
+		var select_subtype = "<span id=\"mime_subtype\">\n<select name=\"mime_subtype\">\n";
+		var subtypes = mimeSubtypes[category];
+		for(var i = 0; i < subtypes.length; i++)
+		{
+			if(subtype == subtypes[i])
+			{
+				select_subtype += "<option selected=\"selected\">" + subtypes[i] + "</option>\n";				
+			}
+			else
+			{
+				select_subtype += "<option>" + subtypes[i] + "</option>\n";
+			}
+		}
+		select_subtype += "</select>\n</span>\n";
+
+		mime_widget_div.innerHTML = select_category + "/" + select_subtype;
+	}
+	function changeMimeSubtype(element)
+	{
+		var subtype_widget_div = document.getElementById("mime_subtype");
+		var category = element.value;
+		var select_subtype = "<select name=\"mime_subtype\">\n";
+		var subtypes = mimeSubtypes[category];
+		if(subtypes.length > 0)
+		{
+			select_subtype += "<option selected=\"selected\">" + subtypes[i] + "</option>\n";
+		}
+		for(var i = 1; i < subtypes.length; i++)
+		{
+			select_subtype += "<option>" + subtypes[i] + "</option>\n";
+		}
+		select_subtype += "</select>\n";
+		subtype_widget_div.innerHTML = select_subtype;
+	}
 	-->
 </script>
 <div class="portletBody">
@@ -467,14 +517,21 @@
 						<a href="$item.url" target="_blank"   title="[$tlang.getString('gen.newwin')]">$item.url</a>
 					</td>
 				</tr>
-				<tr> 
-					<td style="width:180px;padding-left:.7em"> 
-						<label>$tlang.getString("gen.type")</label>
-					</td>
-					<td>
-						$item.MimeType
-					</td>
-				</tr>
+				#if(! $item.isUrl())
+					<tr> 
+						<td style="width:180px;padding-left:.7em"> 
+							<label>$tlang.getString("gen.type")</label>
+						</td>
+						<td>
+							<span id="mime_widget">
+								$item.MimeType
+								<input type="hidden" name="mime_category" id="mime_category" value="$item.mimeCategory" />  
+								<input type="hidden" name="mime_subtype" id="mime_subtype" value="$item.mimeSubtype" />
+								<input type="button" value="Change File Type" onclick="javascript:changeMimeType('$item.mimeCategory', '$item.mimeSubtype')" />
+							</span>
+						</td>
+					</tr>
+				#end
 				<tr> 
 					<td  style="width:180px;padding-left:.7em"> 
 						<label>$tlang.getString("gen.size")</label>
@@ -595,4 +652,17 @@
 		
 	</form>
 </div>
+<script type="text/javascript">
+<!--
+#set($categories = $contentTypeImageService.MimeCategories)
+#set($lastcat = $categories.size())
+	var mimeCategories = [#foreach($category in $categories)"$category"#if($velocityCount < $lastcat), #end#end];
+	var mimeSubtypes = new Object;
+#foreach($category in $categories)
+#set($subtypes = $contentTypeImageService.getMimeSubtypes("$category"))
+#set($lasttype = $subtypes.size())
+	mimeSubtypes["$category"] = [#foreach($subtype in $subtypes)"$subtype"#if($velocityCount < $lasttype), #end#end];
+#end
+-->
+</script>
 

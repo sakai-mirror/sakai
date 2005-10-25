@@ -30,8 +30,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.StringTokenizer;
-
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.Vector;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.content.ContentTypeImageService;
 
@@ -60,6 +68,8 @@ public class BasicContentTypeImageService implements ContentTypeImageService
 
 	/** Map file extension to content type. */
 	protected Properties m_contentTypes = null;
+	
+	protected SortedMap m_mimetypes = null;
 
 	/** Default file name for unknown types. */
 	protected static final String DEFAULT_FILE = "/sakai/generic.gif";
@@ -187,6 +197,7 @@ public class BasicContentTypeImageService implements ContentTypeImageService
 			// read the content type extensions file
 			// use extension as the key
 			m_contentTypes = new Properties();
+			m_mimetypes = new TreeMap();			
 			try
 			{
 				// open the file for line reading
@@ -206,6 +217,21 @@ public class BasicContentTypeImageService implements ContentTypeImageService
 
 						// MIME type is the string before the equal sign
 						String type = line.substring(0, line.indexOf("="));
+						
+						// also update the list of mime subtypes for the mime category
+						int index = type.indexOf("/");
+						if(index > 0 && (index + 1) < type.length())
+						{
+							String category = type.substring(0, index).trim();
+							String subtype = type.substring(index + 1).trim();
+							SortedSet subtypes = (SortedSet) m_mimetypes.get(category);
+							if(subtypes == null)
+							{
+								subtypes = new TreeSet();
+							}
+							subtypes.add(subtype);
+							m_mimetypes.put(category, subtypes);
+						}
 
 						// extension string is after the equal sign
 						// parse the extension string by space 
@@ -215,11 +241,11 @@ public class BasicContentTypeImageService implements ContentTypeImageService
 						if (!st.hasMoreTokens())
 							continue;
 
-							while (st.hasMoreTokens())
-							{
-								String ext = st.nextToken();
-								m_contentTypes.put(ext, type);
-							}
+						while (st.hasMoreTokens())
+						{
+							String ext = st.nextToken();
+							m_contentTypes.put(ext, type);
+						}
 					}
 				}
 				while (line != null);
@@ -255,6 +281,9 @@ public class BasicContentTypeImageService implements ContentTypeImageService
 
 		m_contentTypes.clear();
 		m_contentTypes = null;
+		
+		m_mimetypes.clear();
+		m_mimetypes = null;
 
 		m_logger.info(this +".destroy()");
 
@@ -356,7 +385,38 @@ public class BasicContentTypeImageService implements ContentTypeImageService
 		return false;
 
 	} // isUnknownType
+	
+	/**
+	 * Access an ordered list of all mimetype categories.
+	 * @return The list of mimetype categories in alphabetic order.
+	 */
+	public List getMimeCategories()
+	{
+		List rv = new Vector();
+		Set categories = m_mimetypes.keySet();
+		if(categories != null)
+		{
+			rv.addAll(categories);
+		}
+		return rv;
+	}
 
+	/**
+	 * Access an ordered list of all mimetype subtypes for a particular category. 
+	 * @param category The category.
+	 * @return The list of mimetype subtypes in alphabetic order.
+	 */
+	public List getMimeSubtypes(String category)
+	{
+		List rv = new Vector();
+		Set subtypes = (Set) m_mimetypes.get(category);
+		if(subtypes != null)
+		{
+			rv.addAll(subtypes);
+		}
+		return rv;
+	}
+	
 } // BasicContentTypeImage
 
 
