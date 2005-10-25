@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <author email="ian@caret.cam.ac.uk">Ian Boston</author>
+        <title>RWiki Tool Changes</title>
+    </properties>
+    <body>
+        <section name="Changes" >
+            <p>Please add Changes made in a subsection to the top of this document (changes.xml)</p>
+            <subsection name="Sidebars" >
+                <p>
+                    <ul>
+                        <li>Added By ian 20051007</li>
+                        <li>Changed sidebar.jsp and RenderBean</li>
+                        <li>When a side bar wiki page exists, (eg view_right) the side bar is displayed, 
+                        When the side bar doies not exists, it is not displayed. Names of all side bars must
+                        be published</li>
+                    </ul>
+                </p>
+            </subsection>
+        </section>
+        
+    </body>
+    <!--    
+        <body>
+        <section name="Actors">
+        </section>
+        <section name="Use Case">
+        </section>
+        </body>
+    -->
+</document>
