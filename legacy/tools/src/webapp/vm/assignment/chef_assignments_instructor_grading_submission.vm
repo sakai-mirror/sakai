@@ -1,7 +1,7 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_grading_submission.vm,v 1.10 2005/06/03 15:32:15 zqian.umich.edu Exp $ -->
 ## no focus_path
 <div class="portletBody">
-	<div class="chefToolBarWrap">
+	<div class="navIntraTool">
 		#if ($allowAddAssignment)
 			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>|
 			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString("gen.liofass")</a>|

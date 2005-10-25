@@ -4,7 +4,7 @@
   focus_path = ["search"];
 </script>
 <div class="portletBody">
-	<div class="chefToolBarWrap">
+	<div class="navIntraTool">
 		#if ($allowAddAssignment)
 			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>
 			<span style="margin:.5em">$!tlang.getString("gen.liofass")</span>

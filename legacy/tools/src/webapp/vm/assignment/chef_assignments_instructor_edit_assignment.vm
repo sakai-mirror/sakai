@@ -44,7 +44,7 @@
   focus_path = ["$name_title"];
 </script>
 <div class="portletBody">
-	<div class="chefToolBarWrap">
+	<div class="navIntraTool">
 		#if ($allowAddAssignment)
 			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>|
 			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title = "$!tlang.getString('gen.liofass')">$!tlang.getString("gen.liofass")</a>|

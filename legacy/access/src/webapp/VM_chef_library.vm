@@ -14,7 +14,7 @@
 #* ------------------------------------------------------------------
 # The standard toolbar based on the $sakai_menu definition
 # Note: url type items don't support form field sending, override other settings, and go to a new window
-# CSS requirements: chefToolBarWrap chefToolBarWrapForm toolbarForm searchField
+# CSS requirements: toolbarForm searchField
 #                   portletToolBarDisabled chefToolBarSelected chefToolBarDisabled
 *# ------------------------------------------------------------------
 #macro (chef_toolbar)
@@ -24,16 +24,7 @@
 
 	## do nothing if no menu or empty menu
 	#if (($mnu) && (!$mnu.isEmpty()))
-
-		## if there are any form fields in the menu, use a different css wrap
-		#set ($toolbarClass ="chefToolBarWrap")
-		#foreach ($item in $mnu.Items)
-			#if($item.isField)
-				#set ($toolbarClass ="chefToolBarWrapForm")
-			#end	
-		#end
-
-		<div class="$toolbarClass">
+		<div class="navIntraTool">
 		#foreach ($item in $mnu.Items)
 			## figure the link
 			#set ($base=$sakai_ActionURL.reset().setParameter("sakai_action", $item.Action).toString())

@@ -129,11 +129,10 @@ h5{font-size:100%;color:#5A8A4A;font-weight:normal;margin:.5em 0;background-colo
 .chefButtonRow input.active:hover,.act input.active:hover{border-width:1px;border-color:silver gray gray silver ;border-style: solid}
 
 /*toolbar*/
-.chefToolBarWrap, .chefToolBarWrapForm  {background-color:#ffc;padding:.3em;margin:-.3em -2em;text-align:center;line-height:1.5em}
-.navIntraTool a:link, .navIntraTool a, .chefToolBarWrap a:link, .chefToolBarWrap a, .chefToolBarWrapForm a, .chefToolBarWrapForm a:link  {border:none;text-decoration:underline;margin:0 .5em}
-.navIntraTool a:hover,.chefToolBarWrap a:hover, .chefToolBarWrapForm a:hover {border:none;text-decoration:underline;color:#000}
-.navIntraTool a:visited, .chefToolBarWrap a:visited, .chefToolBarWrapForm a:visited {border:none;text-decoration:underline;background-color:transparent;color:#369}
-.navIntraTool {background-color:#ffb;padding:.3em;text-align:center;line-height:1.5em}
+.navIntraTool  {background-color:#ffc;padding:.3em;margin:-.3em -2em;text-align:center;line-height:1.5em}
+.navIntraTool a:link, .navIntraTool a {border:none;text-decoration:underline;margin:0 .5em}
+.navIntraTool a:hover{border:none;text-decoration:underline;color:#000}
+.navIntraTool a:visited{border:none;text-decoration:underline;background-color:transparent;color:#369}
 
 
 /*messages -moved to base. override as needed here */

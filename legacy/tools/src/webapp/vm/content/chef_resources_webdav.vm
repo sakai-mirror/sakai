@@ -17,7 +17,7 @@
 <![endif]--> 
 
 <div class="portletBody">
-	<div class="chefToolBarWrapForm">
+	<div class="navIntraTool">
 		<a href="#toolLink("ResourcesAction" "doCancel")">$tlang.getString("list.site")</a>
 		| $tlang.getString('dav.webdav')
 	</div>

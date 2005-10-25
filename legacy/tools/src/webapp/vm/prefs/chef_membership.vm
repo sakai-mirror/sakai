@@ -1,6 +1,6 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/prefs/chef_membership.vm,v 1.10 2005/05/28 03:04:36 ggolden.umich.edu Exp $ -->
 <div class="portletBody">
-	<div class="chefToolBarWrap">
+	<div class="navIntraTool">
 	$tlang.getString("mb.cursit")
 	|
 	<a href="#toolLink("$action" "doGoto_joinable")" title="$tlang.getString('mb.joisit')">$tlang.getString('mb.joisit')</a>

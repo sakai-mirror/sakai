@@ -1,7 +1,7 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/prefs/chef_membership_joinable.vm,v 1.13 2005/05/28 03:04:36 ggolden.umich.edu Exp $ -->
 ## TODO: G - replace all strings with res bundle correlate
 <div class="portletBody">
-	<div class="chefToolBarWrap">
+	<div class="navIntraTool">
 	<a href="#toolLink("$action" "doGoto_unjoinable")" title="$tlang.getString('mb.cursit')">$tlang.getString('mb.cursit')</a>
 	|
 	$tlang.getString("mb.joisit")

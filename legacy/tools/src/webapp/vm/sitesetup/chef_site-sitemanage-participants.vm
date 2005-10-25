@@ -3,7 +3,7 @@
 </script>
 <div class="portletBody">
 
-	<div class="chefToolBarWrap">
+	<div class="navIntraTool">
 	<a href="#" onclick="location='#toolLink("$action" "doMenu_sitemanage_addParticipant")';return false;" title ="Search">$tlang.getString("sitmanpar.addpar")</a>
 	</div>
 	

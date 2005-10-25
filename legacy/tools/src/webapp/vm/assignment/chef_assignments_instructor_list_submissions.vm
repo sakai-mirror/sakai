@@ -1,6 +1,6 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_list_submissions.vm,v 1.10 2005/06/14 16:07:00 zqian.umich.edu Exp $ -->
 <div class="portletBody">
-	<div class="chefToolBarWrap">
+	<div class="navIntraTool">
 		#if ($allowAddAssignment)
 			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>
 		#end
@@ -18,7 +18,7 @@
 			$tlang.getString("gen.theare2")
 		</p>
 	#else
-		<div class="chefToolBarWrap">
+		<div class="navIntraTool">
 			<a href="$accessPointUrl" title="$!tlang.getString('downall')">$!tlang.getString('downall')</a>
 			#if ($withGrade)<a href="#toolLinkParam("$action" "doRelease_grades" "assignmentId=$validator.escapeUrl($!assignment.Reference)")" title="$!tlang.getString('relgrad')">$!tlang.getString('relgrad')</a>#end
 		</div>

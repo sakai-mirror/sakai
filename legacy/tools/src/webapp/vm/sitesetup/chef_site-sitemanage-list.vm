@@ -3,7 +3,7 @@
 	focus_path = ["search"];
 </script>
 <div class="portletBody">
-	<div class="chefToolBarWrap">
+	<div class="navIntraTool">
 		<a href="#" onclick="location='#toolLink("$action" "doSitemanage_showsearch")';return false;" title ="Search">Search</a>
 	</div>
 	<br />

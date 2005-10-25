@@ -1,6 +1,6 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_preview_grading_submission.vm,v 1.5 2005/05/16 02:26:05 zqian.umich.edu Exp $ -->
 <div class="portletBody">
-	<div class="chefToolBarWrap">
+	<div class="navIntraTool">
 		#if ($allowAddAssignment)
 			<span style="margin:.5em">$!tlang.getString("new")</span>
 			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title = "$!tlang.getString('gen.liofass')">$!tlang.getString("gen.liofass")</a>

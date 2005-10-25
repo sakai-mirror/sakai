@@ -12,7 +12,7 @@
 	#set($itemsOnLine = 0)
 	#if ($atHome && $atHome == $TRUE)
 		#if($site.canRevise())
-			<div class="chefToolBarWrapForm">
+			<div class="navIntraTool">
 				$tlang.getString("list.site")
 				#if(!$dropboxMode)
 				| <a href="#toolLink("ResourcesAction" "doShow_webdav")" title="$tlang.getString('dav.webdav')">$tlang.getString("dav.webdav").trim()</a> 
@@ -75,7 +75,7 @@
 			</span>		
 		</h3>
 		#if($showRemoveAction || $showMoveAction || $showCopyAction)
-			<div class="navIntraTool" style="margin: .5em 0em;">
+			<div class="navIntraToolLink" style="margin: .5em 0em;">
 				#set ($itemsOnLine = 0)
 				#if($showRemoveAction)
 					#if($itemsOnLine > 0)|#end

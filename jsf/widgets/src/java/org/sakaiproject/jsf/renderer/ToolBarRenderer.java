@@ -46,7 +46,7 @@ public class ToolBarRenderer extends Renderer
   public void encodeBegin(FacesContext context, UIComponent component) throws IOException
   {
     ResponseWriter writer = context.getResponseWriter();
-    writer.write("<div class=\"chefToolBarWrap\">");
+    writer.write("<div class=\"navIntraTool\">");
 
     return;
   }

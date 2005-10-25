@@ -29,7 +29,7 @@
 		#end
 	</div>
 	*#
-	<div class="chefToolBarWrapForm">
+	<div class="navIntraTool">
 		<a href="#" onclick="location='#toolLink("$action" "doShow_simple_search")';return false;" onkeypress="location='#toolLink("$action" "doShow_simple_search")';return false;" title ="Search">$tlang.getString("list.search")</a>
 	</div>
 	<h3>$tlang.getString("list.results")</h3>
