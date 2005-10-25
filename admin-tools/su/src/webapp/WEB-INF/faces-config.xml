@@ -24,13 +24,11 @@
 		<managed-bean-name>SuTool</managed-bean-name>
 		<managed-bean-class>org.sakaiproject.tool.su.SuTool</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
-		<!-- this doesn't work in Sakai 2.1
         <managed-property>
-                       <description>Realm Provider</description>
-                       <property-name>realmProvider</property-name>
-                       <value>#{Components["org.sakaiproject.service.legacy.realm.RealmProvider"]}</value>
+                       <description>authz Group Provider</description>
+                       <property-name>groupProvider</property-name>
+                       <value>#{Components["org.sakaiproject.service.legacy.authzGroup.GroupProvider"]}</value>
         </managed-property>
-        -->
 	</managed-bean>
 
 	<navigation-rule>

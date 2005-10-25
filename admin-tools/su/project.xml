@@ -20,15 +20,72 @@
 	
 	<dependencies>
 	
-
-		<!-- Generic JSF Dependencies Below -->
+        <!-- Sakai Project Dependencies Particular to this App -->
+        <dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-session</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
 		
-		<dependency>
+        <dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-legacy-service</artifactId>
 			<version>${sakai.version}</version>
 		</dependency>
-	
+		
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util-web</artifactId>
+			<version>${sakai.version}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>        
+		</dependency>
+		
+		<!-- Generic Sakai JSF Tool Dependencies -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-jsf-tool</artifactId>
+			<version>${sakai.version}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>        
+		</dependency>
+		
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-jsf-app</artifactId>
+			<version>${sakai.version}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+		
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-jsf-widgets</artifactId>
+			<version>${sakai.version}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>        
+		</dependency>
+		
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-jsf-widgets-sun</artifactId>
+			<version>${sakai.version}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>        
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-jsf-tool</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+		
+		<!-- Generic JSF Dependencies Below -->	
 		<dependency>
 			<groupId>jsf</groupId>
 			<artifactId>jsf-impl</artifactId>
@@ -46,24 +103,6 @@
 			<war.bundle>true</war.bundle>
 		</properties>        
 		</dependency>
-
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.0</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>jspapi</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.0-20040521</version>
-		</dependency>
-
-		<dependency>
-			<groupId>servletapi</groupId>
-			<artifactId>servletapi</artifactId>
-			<version>2.3</version>
-		</dependency>
 		
 		<dependency>
 			<groupId>jstl</groupId>
@@ -75,63 +114,14 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-jsf-tool</artifactId>
-			<version>${sakai.version}</version>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.0.4</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>        
 		</dependency>
 
-		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-jsf-app</artifactId>
-			<version>${sakai.version}</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>        
-		</dependency>
-
-		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-util-web</artifactId>
-			<version>${sakai.version}</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>        
-		</dependency>
-
-		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-jsf-widgets</artifactId>
-			<version>${sakai.version}</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>        
-		</dependency>
-
-		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-jsf-widgets-sun</artifactId>
-			<version>${sakai.version}</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>        
-		</dependency>
-
-		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-tool</artifactId>
-			<version>${sakai.version}</version>
-		</dependency>  		  
-
-		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-tool-registration</artifactId>
-			<version>${sakai.version}</version>
-		</dependency>  		  
-
-<!--try for sakai tag and wysiwyg-->
 		<dependency>
 			<groupId>commons-digester</groupId>
 			<artifactId>commons-digester</artifactId>
@@ -156,6 +146,7 @@
 			</properties>        
 		</dependency>
 		
+		<!-- Also, it's nice to have logging -->
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
@@ -163,21 +154,6 @@
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>        
-		</dependency>
-
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-			<version>1.0.4</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>        
-		</dependency>
-
-		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-session</artifactId>
-			<version>${sakai.version}</version>
 		</dependency>
 
 	</dependencies>

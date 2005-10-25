@@ -76,10 +76,8 @@ developed for a future version.
 *******************
 Known Issues
 *******************
-Realm refresh is disabled until I make it work with the 2.1 framework.
-
-It's a small thing, but if you click the "View user info" button when you're 
-already viewing that user's info, for some reason it invokes "Become user."
+It's a small thing, but if you click the "View user info" button, the button 
+should then become disabled unless the id field should change.
 
 *******************
 Contact

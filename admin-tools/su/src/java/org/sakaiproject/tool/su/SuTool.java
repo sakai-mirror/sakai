@@ -9,7 +9,6 @@
 package org.sakaiproject.tool.su;
 
 // sakai classes
-import org.sakaiproject.jsf.util.JsfTool;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.SessionManager;
 import org.sakaiproject.service.legacy.security.SecurityService;
@@ -19,6 +18,7 @@ import org.sakaiproject.service.legacy.user.User;
 
 // TODO: Implement the Sakai 2.1 way of refreshing the realms
 // import org.sakaiproject.service.legacy.realm.RealmProvider;
+import org.sakaiproject.service.legacy.authzGroup.GroupProvider;
 
 // java classes
 import javax.faces.context.FacesContext;
@@ -35,20 +35,20 @@ import org.apache.commons.logging.LogFactory;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class SuTool extends JsfTool{
+public class SuTool {
 
 	private static final long serialVersionUID = 1L;
 
 	/** Our log (commons). */
-	private static Log M_log = LogFactory.getLog(JsfTool.class);
+	private static Log M_log = LogFactory.getLog(SuTool.class);
 	
-	/** the RealmProvider will be dependency-injected from the information in faces-config.xml */
-	// private RealmProvider realmProvider;
+	/** the GroupProvider will be dependency-injected from the information in faces-config.xml */
+	private GroupProvider groupProvider;
 	
-	// public void setRealmProvider ( RealmProvider realmProvider )
-    // {
-    //    this.realmProvider = realmProvider;
-    // }
+	 public void setGroupProvider ( GroupProvider groupProvider )
+     {
+        this.groupProvider = groupProvider;
+     }
 
 	// Service instance variables
 	private UserDirectoryService M_uds = org.sakaiproject.service.legacy.user.cover.UserDirectoryService.getInstance();
@@ -111,7 +111,7 @@ public class SuTool extends JsfTool{
 		sakaiSession.setUserEid( username );
 		
 		//  refesh the user's realms, so any recent changes to their site membership will take effect	
-		// realmProvider.getRealmRolesForUser( this.getUsername() );
+		groupProvider.getGroupRolesForUser( this.getUsername() );
 
 		return "redirect";
 	}
