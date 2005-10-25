@@ -154,8 +154,8 @@ label{color:#000;font-weight: normal;font-family: Arial, Helvetica, sans-serif;m
 textarea{padding:.1em .3em;border:1px solid #52AAD6;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:100%;}
 label.block{display:block}
 /*when a form needs to share hspace with other block elements*/
-.toolbarForm{margin:0px;padding:0px;display:inline}
-.toolbarForm a{border:none;background-color:transparent}
+.inlineForm{margin:0px;padding:0px;display:inline}
+.inlineForm a{border:none;background-color:transparent}
 
 
 hr  {height:0}

@@ -8,7 +8,7 @@
 	<div style="margin-top:0;">
 		<div class="leftNav">
 		<!-- drop down menu for different views -->
-			<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("CalendarAction")">
+			<form name="viewForm" class="inlineForm" method="post" action="#toolForm("CalendarAction")">
 				<input type="hidden" name="eventSubmit_doView" value="view" />
 				$tlang.getString("view.view")
 				<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">

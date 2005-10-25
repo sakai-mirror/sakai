@@ -11,7 +11,7 @@ doubleDeep = true;
 <div class="portletBody">
 	#if($menu)#toolbar($menu)#end
 	<div class="leftNav" style="margin-top:.5em">
-		<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("$action")">
+		<form name="viewForm" class="inlineForm" method="post" action="#toolForm("$action")">
 			<input type="hidden" name="eventSubmit_doChange_time_date_display" value="view" />
 			<label for="changeView">$tlang.getString("bar.view")</label>
 			<select id="changeView" name="changeView" size="1" onchange="blur();document.viewForm.submit();">
@@ -24,7 +24,7 @@ doubleDeep = true;
 				#end
 			</select>
 		</form>
-		<form name="pastForm" class="toolbarForm" method="post" action="#toolForm("$action")">
+		<form name="pastForm" class="inlineForm" method="post" action="#toolForm("$action")">
 			<input type="hidden" name="eventSubmit_doToggle_filter" value="filter" />
 ##			<label for="changePast" class="skip">$tlang.getString("bar.show")</label>
 			<label for="changePast" class="skip">Show</label>

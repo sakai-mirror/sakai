@@ -37,7 +37,7 @@
 		<form name="forNotLetDeleteSelectedOnLoad"></form>
 			<div style="margin-left:$delete_item.ReplyToDepth$depthUnit">
 				#if ($message.Header.draft)
-					<span class="alert">$tlang.getString("gen.dra") </span>
+					<span class="highlight">$tlang.getString("gen.dra") </span>
 				#end
 				$validator.escapeHtml($message.Header.subject)
 				<p class="instruction" style="font-size:.9em;margin-top:.2em;margin-left:0">$validator.escapeHtml($message.Header.From.DisplayName) - ($message.Header.Date.toStringLocalFullZ())</p>
@@ -46,7 +46,7 @@
 					#set ($depthUnit="em")
 						<div style="margin-left:$delete_item.ReplyToDepth$depthUnit">
 							#if ($delete_item.Header.draft)
-								<span class="chefAlert">$tlang.getString("gen.dra") </span>
+								<span class="highlight">$tlang.getString("gen.dra") </span>
 							#end
 							$validator.escapeHtml($delete_item.Header.subject)
 							<p class="instruction" style="font-size:.9em;margin-top:.2em;margin-left:0">$validator.escapeHtml($delete_item.Header.From.DisplayName) - ($delete_item.Header.Date.toStringLocalFullZ())

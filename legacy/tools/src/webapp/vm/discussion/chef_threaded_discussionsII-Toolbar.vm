@@ -13,7 +13,7 @@ focus_path = ["search"];
 	#if($menu)#toolbar($menu)#end
 	<div style="margin-top:.5em">
 		<div class="leftNav">
-			<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("ThreadedDiscussionIIAction")">
+			<form name="viewForm" class="inlineForm" method="post" action="#toolForm("ThreadedDiscussionIIAction")">
 				<input type="hidden" name="eventSubmit_doView" value="view" />
 				<label for="view"> $tlang.getString("toolbar.view")</label>
 				<select name="view" id="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
@@ -28,7 +28,7 @@ focus_path = ["search"];
 			</form>
 		</div>					
 		<div class="rightNav">
-			<form name="searchForm" class="toolbarForm" action="#toolForm("ThreadedDiscussionIIAction")" method="post">
+			<form name="searchForm" class="inlineForm" action="#toolForm("ThreadedDiscussionIIAction")" method="post">
 				<input type="hidden" name="eventSubmit_doSearch" value="null" />
 				<input size="20" value="$searchString" name="$form_search" id="$form_search" type="text" class="searchField" />
 				<a href="#" title="$tlang.getString("toolbar.search")" onclick="location = '#toolLink("ThreadedDiscussionIIAction" "doSearch")'+buildQueryString('searchForm');return false;">

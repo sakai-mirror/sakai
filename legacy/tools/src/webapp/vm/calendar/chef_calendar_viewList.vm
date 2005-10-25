@@ -16,7 +16,7 @@
 	#set ($counter = 1 )
 	<div style="margin-top:1em;">
 		<div class="leftNav">
-			<form name="viewForm" class="toolbarForm" action="#toolForm("$action")" method="post" style="display:inline">
+			<form name="viewForm" class="inlineForm" action="#toolForm("$action")" method="post" style="display:inline">
 				<input type="hidden" name="eventSubmit_doView" value="view" />
 				<label for="view">$tlang.getString('view.view')</label>
 				<select name="view" size="1"  onchange="blur();document.viewForm.submit();" id="view">
@@ -29,7 +29,7 @@
 					#end
 				</select>
 			</form>
-			<form name="listform2" class="toolbarForm" method="post" action="#toolForm("SiteAction")" style="display:inline">
+			<form name="listform2" class="inlineForm" method="post" action="#toolForm("SiteAction")" style="display:inline">
 				<input type="hidden" value="$tlang.getString('view.gotoday')" name="eventSubmit_doFilter" />
 				<label for="timeFilterOption">$tlang.getString('view.show')</label>
 				<select name="timeFilterOption" onchange="blur();document.listform2.submit();" id="timeFilterOption">

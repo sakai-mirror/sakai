@@ -28,7 +28,7 @@
 	#else
 	<div>
 		<div class="leftNav">
-			<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("AssignmentAction")">
+			<form name="viewForm" class="inlineForm" method="post" action="#toolForm("AssignmentAction")">
 				<input type="hidden" name="eventSubmit_doView" value="view" />
 				<label for="view">
 					$tlang.getString("gen.view2")
@@ -216,7 +216,7 @@
 							<td headers="title" nowrap="nowrap">
 								#if ($assignment.draft)
 									<a href="#toolLinkParam("$action" "doEdit_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">
-										<span class="chefAlert">$tlang.getString("gen.dra2") </span>
+										<span class="highlight">$tlang.getString("gen.dra2") </span>
 										$validator.limit($validator.escapeHtml($!assignment.getTitle()), 40)
 									</a>
 								#else
@@ -248,7 +248,7 @@
 							</td>
 							<td headers="status">
 								#if ($!assignment.Draft)
-									<span class="chefAlert">$tlang.getString("gen.dra1")</span>
+									<span class="highlight">$tlang.getString("gen.dra1")</span>
 								#else
 									#if ($!assignment.getOpenTime().after($currentTime))
 										$tlang.getString("gen.notope")

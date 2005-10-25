@@ -25,7 +25,7 @@
 	#else
 		<div>
 			<span class="leftNav">
-				<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("AssignmentAction")">
+				<form name="viewForm" class="inlineForm" method="post" action="#toolForm("AssignmentAction")">
 					<input type="hidden" name="eventSubmit_doView" value="view" />
 					$tlang.getString("gen.view2")
 					<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">

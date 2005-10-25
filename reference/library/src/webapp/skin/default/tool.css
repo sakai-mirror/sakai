@@ -197,8 +197,8 @@ label{color:#000;font-weight: bold;font-family: Arial, Helvetica, sans-serif;mar
 textarea{padding:.1em .3em;border:1px solid #90A1C6;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:100%;}
 label.block{display:block}
 /*when a form needs to share hspace with other block elements*/
-.toolbarForm{margin:0px;padding:0px;display:inline}
-.toolbarForm a{border:none;background-color:transparent}
+.inlineForm{margin:0px;padding:0px;display:inline}
+.inlineForm a{border:none;background-color:transparent}
 
 hr  {height:0}
 img {border:0px;}

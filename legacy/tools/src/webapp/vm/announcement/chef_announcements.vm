@@ -30,7 +30,7 @@
 		<h3>Announcements</h3>
 		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 		<div class="leftNav">
-			<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("AssignmentAction")">
+			<form name="viewForm" class="inlineForm" method="post" action="#toolForm("AssignmentAction")">
 				<input type="hidden" name="eventSubmit_doView" value="view" />
 				<label for="view">
 					$tlang.getString("view.label")
@@ -289,7 +289,7 @@
 					<h3>Announcements</h3>
 					#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 					<div class="leftNav">
-							<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("$action")">
+							<form name="viewForm" class="inlineForm" method="post" action="#toolForm("$action")">
 								<input type="hidden" name="eventSubmit_doView" value="view" />
 								<label for="view">
 									$tlang.getString("view.label")

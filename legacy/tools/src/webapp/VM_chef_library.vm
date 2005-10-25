@@ -14,7 +14,7 @@
 #* ------------------------------------------------------------------
 # The standard toolbar based on the $sakai_menu definition
 # Note: url type items don't support form field sending, override other settings, and go to a new window
-# CSS requirements:  toolbarForm searchField
+# CSS requirements:  navIntraTool inlineForm searchField
 #                   portletToolBarDisabled chefToolBarSelected chefToolBarDisabled
 *# ------------------------------------------------------------------
 #macro (chef_toolbar)
@@ -63,7 +63,7 @@
 
 					## here's a text field in a form for the toolbar
 					#else
-					<form name="$item.Form" action="$base" class="toolbarForm" method="post">
+					<form name="$item.Form" action="$base" class="inlineForm" method="post">
 						<input size="15" value="$item.Value" name="$item.Title" id="$item.Title" type="text" class="searchField" />
 					</form>
 					#end

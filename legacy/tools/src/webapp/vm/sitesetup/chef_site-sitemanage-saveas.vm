@@ -20,7 +20,7 @@
 					<tr>
 						<td class="chefLabel">
 							<label for="id">
-								<span class="chefAlert">*</span> $tlang.getString("sitmansav.sitid")
+								<span class="reqStarInline">*</span> $tlang.getString("sitmansav.sitid")
 							</label>
 						</td>
 						<td>
