@@ -18,7 +18,7 @@
 		</table>
 	</fieldset>
 	
-	<div class="chefButtonRow">
+	<div class="act">
 	<input type="submit" name="eventSubmit_doSave" value="$tlang.getString("opt.sav")">
 	<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("opt.can")">
 	</div>
