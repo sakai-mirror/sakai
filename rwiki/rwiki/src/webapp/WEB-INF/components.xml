@@ -152,7 +152,9 @@
 	
 	<!-- Page Population service -->
 	<bean id="populateService"
-		class="uk.ac.cam.caret.sakai.rwiki.service.impl.PopulateServiceImpl">
+		class="uk.ac.cam.caret.sakai.rwiki.service.impl.PopulateServiceImpl" 
+		>
+		
 		<property name="log"><ref bean="rwiki-logger"/></property>
 		<property name="RWikiCurrentObjectDao"><ref bean="rwikiCurrentObjectDao"/></property>
 		<property name="seedPages">
@@ -176,7 +178,8 @@
 		</property>
 	</bean>
 	<bean id="securityService"
-		class="uk.ac.cam.caret.sakai.rwiki.service.impl.RWikiSecurityServiceImpl">
+		class="uk.ac.cam.caret.sakai.rwiki.service.impl.RWikiSecurityServiceImpl"
+		 init-method="init" >
 		<property name="log"><ref bean="rwiki-logger"/></property>
 		
 		<property name="portalService"><ref

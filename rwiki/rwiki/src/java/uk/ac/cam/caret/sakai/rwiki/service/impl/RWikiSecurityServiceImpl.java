@@ -24,6 +24,7 @@ package uk.ac.cam.caret.sakai.rwiki.service.impl;
 
 import javax.servlet.ServletRequest;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.portal.PortalService;
@@ -60,6 +61,17 @@ public class RWikiSecurityServiceImpl implements RWikiSecurityService {
     public static final String SECURE_ADMIN = "rwiki.admin";
 
 
+    
+    public void init() {
+		// register the functions
+		FunctionManager.registerFunction(SECURE_CREATE);
+		FunctionManager.registerFunction(SECURE_READ);
+		FunctionManager.registerFunction(SECURE_UPDATE);
+		FunctionManager.registerFunction(SECURE_DELETE);
+		FunctionManager.registerFunction(SECURE_SUPER_ADMIN);
+		FunctionManager.registerFunction(SECURE_ADMIN);
+    }
+    
     private PortalService portalService;
     
     private SecurityService securityService;

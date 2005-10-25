@@ -77,7 +77,7 @@
 	<class 
 		name="uk.ac.cam.caret.sakai.rwiki.model.impl.RWikiHistoryObjectImpl" 
 		table="rwikihistory" >
-		<cache usage="nonstrict-read-write" />
+<!--  		<cache usage="nonstrict-read-write" />  remove for the moment, until we know if acceptable -->
 		<id name="id" unsaved-value="null">
 			<column name="id" length="36" not-null="true"/>
 			<generator class="uuid.hex"/>
@@ -123,7 +123,7 @@
 	<class name="uk.ac.cam.caret.sakai.rwiki.model.impl.RWikiCurrentObjectImpl" 
 			table="rwikiobject"
 			optimistic-lock="version">
-		<cache usage="read-write" />
+<!--		<cache usage="read-write" /> -->
 		<id name="id" unsaved-value="null">
 		<column name="id" length="36" not-null="true"/>
 		<generator class="uuid.hex"/>
