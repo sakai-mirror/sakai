@@ -143,7 +143,9 @@
 									$group.Title
 								</td>
 								<td headers="description" style="padding-bottom:0;">
-									$group.Description
+									#set($description = "")
+									#set($description = $group.Description)
+									$!description
 								</td>
 							</tr>
 						#end
