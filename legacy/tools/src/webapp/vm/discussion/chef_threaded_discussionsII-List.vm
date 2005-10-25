@@ -15,7 +15,7 @@ doubleDeep = true;
 
 <div style="margin:0;padding:0;width:100%">
 			#if ($searching)
-				<div class="chefAlert" style="background-color:#FFFFA8 !important;padding:.3em .3em">
+				<div class="highlight" style="background-color:#FFFFA8 !important;padding:.3em .3em">
 					#if ($searchResultList.size()>0)
 						#if ($searchResultList.size() == 1)
 							$tlang.getString("list.oneite")
@@ -97,14 +97,14 @@ doubleDeep = true;
 											#if ($currentMessage.Id == $message.Id)
 ## (gsilver) since this the message I am looking at, don't need a link - taking out bold as well as it makes the screen bounce
 ##												<span style="font-weight:bold">
-##													<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$message.Id")'; return false;">#if ($message.getDiscussionHeader().getDraft())<span class="chefAlert">$tlang.getString("gen.dra") </span>#end
-														#if ($message.getDiscussionHeader().getDraft())<span class="chefAlert">$tlang.getString("gen.dra") </span>#end
+##													<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$message.Id")'; return false;">#if ($message.getDiscussionHeader().getDraft())<span class="highlight">$tlang.getString("gen.dra") </span>#end
+														#if ($message.getDiscussionHeader().getDraft())<span class="highlight">$tlang.getString("gen.dra") </span>#end
 														$validator.limit($validator.escapeHtml($message.getDiscussionHeader().getSubject()), 50)
 ##													</a>
 ##												</span>
 											#else
 												<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$validator.escapeUrl($message.Id)")'; return false;">
-													#if ($message.getDiscussionHeader().getDraft())<span class="chefAlert">$tlang.getString("gen.dra") </span>#end
+													#if ($message.getDiscussionHeader().getDraft())<span class="highlight">$tlang.getString("gen.dra") </span>#end
 													$validator.limit($validator.escapeHtml($message.getDiscussionHeader().getSubject()), 50)
 												</a>
 											#end
@@ -146,7 +146,7 @@ doubleDeep = true;
 											#end
 										#else
 											<span style="font-weight:bold">
-												<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$validator.escapeUrl($message.Id)")'; return false;">#if ($message.getDiscussionHeader().getDraft())<span class="chefAlert">$tlang.getString("gen.dra") </span>#end
+												<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$validator.escapeUrl($message.Id)")'; return false;">#if ($message.getDiscussionHeader().getDraft())<span class="highlight">$tlang.getString("gen.dra") </span>#end
 													$validator.limit($validator.escapeHtml($message.getDiscussionHeader().getSubject()), 50)
 												</a>
 											</span>

@@ -23,7 +23,7 @@
 			<tr>
 				<td>
 					<label #if(!$site) for="id" #end>
-						#if(!$site)<span class="chefAlert">*</span>#end $tlang.getString("sitedi.sit2")
+						#if(!$site)<span class="reqStarInline">*</span>#end $tlang.getString("sitedi.sit2")
 					</label>
 				</td>
 				<td>

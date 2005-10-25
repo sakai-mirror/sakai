@@ -184,7 +184,7 @@
 							<td headers="subject">
 								<h4>
 									#if ($ann_item.Header.draft)
-									<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="Edit draft announcement"><span class="chefAlert">$tlang.getString("gen.draft") - </span>
+									<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="Edit draft announcement"><span class="highlight">$tlang.getString("gen.draft") - </span>
 										$validator.escapeHtml($ann_item.Header.subject)</a>
 									#else
 										<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="View announcement">
@@ -462,7 +462,7 @@
 									<td headers="subject" style="padding-bottom:0;">
 										<h4>
 											#if ($ann_item.Header.draft)
-												<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="Edit draft announcement"><span class="chefAlert">$tlang.getString("gen.draft") - </span>
+												<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="Edit draft announcement"><span class="highlight">$tlang.getString("gen.draft") - </span>
 												$validator.escapeHtml($ann_item.Header.subject)</a>
 											#else
 												<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="View announcement">
@@ -611,7 +611,7 @@
 									 <td width="50%" style="padding-bottom:0;" class="line" >
 									 	<h4>
 											#if ($ann_item.Header.draft)
-											<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.editdraft")"><span class="chefAlert">$tlang.getString("gen.draft") - </span>
+											<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.editdraft")"><span class="highlight">$tlang.getString("gen.draft") - </span>
 												$validator.escapeHtml($ann_item.Header.subject)</a>
 											#else
 												<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.viewann")">

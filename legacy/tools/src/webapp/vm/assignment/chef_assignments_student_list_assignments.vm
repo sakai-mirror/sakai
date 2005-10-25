@@ -219,7 +219,7 @@
 									#set ($deleted = false)
 									#set ($deleted = $assignment.getProperties().getProperty($assignment.getProperties().getNamePropAssignmentDeleted()))
 									#if ($!deleted.equalsIgnoreCase("true"))
-										<span class="chefAlert">$tlang.getString("stulistassig.asshasbee1")</span>
+										<span class="highlight">$tlang.getString("stulistassig.asshasbee1")</span>
 									#end
 								</td>
 								#*
@@ -230,7 +230,7 @@
 								<td headers="duedate">
 									#if ((($!assignment.getDueTime().before($currentTime)) && (!$submission)) || ($!submission.getTimeSubmitted().after($assignment.DueTime)))
 										<!--if due date passed and no started then class="chefAlert"-->
-										<span class="chefAlert">$!assignment.getDueTime().toStringLocalFull()</span>
+										<span class="highlight">$!assignment.getDueTime().toStringLocalFull()</span>
 									#else
 										$!assignment.getDueTime().toStringLocalFull()
 									#end
@@ -244,7 +244,7 @@
 												#else
 													Re-submitted $submission.TimeSubmitted.toStringLocalFull()
 													#if ($submission.getTimeSubmitted().after($assignment.DueTime))
-														<span class="chefAlert"> $tlang.getString("gen.late")</span>
+														<span class="highlight"> $tlang.getString("gen.late")</span>
 													#end
 												#end
 											#elseif ($submission.getGraded() && $submission.getGradeReleased())
@@ -256,7 +256,7 @@
 											#else
 												Submitted $submission.timeSubmitted.toStringLocalFull()
 												#if ($submission.getTimeSubmitted().after($assignment.DueTime))
-													<span class="chefAlert">$tlang.getString("gen.late2")</span>
+													<span class="highlight">$tlang.getString("gen.late2")</span>
 												#end
 											<!--missing -if saved...In progress-->
 											#end

@@ -32,7 +32,7 @@
 					<tr>
 						<td headers="title">
 							#if ($assignment.draft)
-								<span class="chefAlert">$tlang.getString("gen.dra2") </span>
+								<span class="highlight">$tlang.getString("gen.dra2") </span>
 							#end
 							$validator.escapeHtml($assignment.Title)</td>
 						<td headers="duedate">$assignment.DueTime.toStringLocalFull()</td>

@@ -43,7 +43,7 @@
 							<tr>
 								<td class="chefLabel">
 									#if ($unqualified_fields.get($i).indexOf($service.newResourceProperties().NamePropDisplayName)!=-1)
-										<span class="chefAlert">$tlang.getString("rep.thisfile")</span>
+										<span class="highlight">$tlang.getString("rep.thisfile")</span>
 									#else
 										$tlang.getString("rep.thisfile")
 									#end
@@ -61,7 +61,7 @@
 							<tr> 
 								<td class ="chefLabel">
 									#if (($titles.get($i).length()>0) && ($unqualified_fields.get($i).indexOf($titles.get($i))!=-1))
-										<span class="chefAlert">$tlang.getString("gen.title")</span>
+										<span class="highlight">$tlang.getString("gen.title")</span>
 									#else
 										$tlang.getString("gen.title")
 									#end

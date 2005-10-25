@@ -203,7 +203,7 @@
 									#else
 										Re-submitted $submission.TimeSubmitted.toStringLocalFull()
 										#if ($submission.getTimeSubmitted().after($assignment.DueTime))
-											<span class="chefAlert"> $tlang.getString("gen.late")</span>
+											<span class="highlight"> $tlang.getString("gen.late")</span>
 										#end
 									#end
 								#elseif ($submission.getGraded() && $submission.getGradeReleased())
@@ -211,7 +211,7 @@
 								#else
 									$tlang.getString("gen.subm4") $submission.timeSubmitted.toStringLocalFull()
 									#if ($submission.getTimeSubmitted().after($assignment.DueTime))
-										<span class="chefAlert">$tlang.getString("gen.late2")</span>
+										<span class="highlight">$tlang.getString("gen.late2")</span>
 									#end
 								#end
 							#else
@@ -239,10 +239,10 @@
 				#set($newAssignment=$assignment.getProperties().getProperty("newAssignment"))
 				#if ($assignment.getTimeLastModified().after($assignment.getOpenTime()) && !$!newAssignment.equalsIgnoreCase("true"))
 					<tr>
-						<th class="alert">
+						<th class="highlight">
 								$tlang.getString("gen.modbyins")
 						</th>
-						<td class="alert">
+						<td class="highlight">
 							$assignment.getTimeLastModified().toStringLocalFull()
 						</td>
 					</tr>

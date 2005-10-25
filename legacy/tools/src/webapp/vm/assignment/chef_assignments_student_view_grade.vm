@@ -61,7 +61,7 @@
 							#else
 								Re-submitted $submission.TimeSubmitted.toStringLocalFull()
 								#if ($submission.getTimeSubmitted().after($assignment.DueTime))
-									<span class="chefAlert"> $tlang.getString("gen.late")</span>
+									<span class="highlight"> $tlang.getString("gen.late")</span>
 								#end
 							#end
 						#else

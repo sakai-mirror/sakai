@@ -77,11 +77,11 @@
 		#set($newAssignment=$assignment.getProperties().getProperty("newAssignment"))
 		#if ($assignment.getTimeLastModified().after($assignment.getOpenTime()) && !$!newAssignment.equalsIgnoreCase("true"))
 			<tr>
-				<th class="alert">
+				<th class="highlight">
 						$tlang.getString("gen.modbyins")
 					</span>
 				</th>
-				<td class="alert">
+				<td class="highlight">
 						$assignment.getTimeLastModified().toStringLocalFull()
 					</span>
 				</td>

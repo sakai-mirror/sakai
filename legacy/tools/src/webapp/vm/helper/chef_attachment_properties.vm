@@ -13,9 +13,9 @@
 <!--
             <tr valign="top"> 
               <td height="27" valign="middle"><b>Attachment</b></td>
-              <td height="27" valign="middle"><div align="left"><b><span class="Alert">*</span> $thelp.getString("gen.tit")</b></div></td>
+              <td height="27" valign="middle"><div align="left"><b><span class="reqStarInline">*</span> $thelp.getString("gen.tit")</b></div></td>
               <td height="27" valign="middle"><div align="left"><b>$thelp.getString("gen.des")</b></div></td>
-              <th id="header3" valign="middle"><div align="left"><span class="Alert">*</span> $thelp.getString("gen.cop")</div></th>
+              <th id="header3" valign="middle"><div align="left"><span class="reqStarInline">*</span> $thelp.getString("gen.cop")</div></th>
             </tr>
 -->
 
@@ -67,7 +67,7 @@
 			&nbsp;
 		  </td>
  		  <td width="20%" align="right" valign="top"> 
-			<span class="Alert">*</span>$thelp.getString("gen.cop2")
+			<span class="reqStarInline">*</span>$thelp.getString("gen.cop2")
 		  </td>
 		  <td>  
 			<input type="radio" name="select$attach" value="mine" checked>

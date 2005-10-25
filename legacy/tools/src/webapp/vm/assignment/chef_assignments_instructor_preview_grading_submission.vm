@@ -53,7 +53,7 @@
 					<td>
 						$submission.TimeSubmitted.toStringLocalFull()
 						#if ($submission.getTimeSubmitted().after($assignment.DueTime))
-							<span class="chefAlert"> - late</span>
+							<span class="highlight"> - late</span>
 						#end
 					</td>
 				</tr>

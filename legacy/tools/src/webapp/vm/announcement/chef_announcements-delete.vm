@@ -17,7 +17,7 @@
 				<tr>
 					<td>
 						#if ($delete_item.Header.draft)
-							<span class="chefAlert">$tlang.getString("gen.draft") - </span>
+							<span class="highlight">$tlang.getString("gen.draft") - </span>
 						#end
 						$validator.escapeHtml($delete_item.Header.subject)
 					</td>

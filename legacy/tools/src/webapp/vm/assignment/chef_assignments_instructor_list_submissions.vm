@@ -201,7 +201,7 @@
 									#if ($!submission)
 										$submitTime.toStringLocalFull()
 										#if ($submitTime.after($assignment.DueTime))
-											<span class="chefAlert">- late</span>
+											<span class="highlight">- late</span>
 										#end
 									#else
 										$tlang.getString("listsub.nosub")
