@@ -70,7 +70,7 @@
 				#if ($hasgroup)
 					<input type="submit" class="active" name="eventSubmit_doGroup_remove_prep" value="$tlang.getString("editgroup.update")" />
 				#end
-				<input type="submit" name="eventSubmit_doBack" value="$tlang.getString("editgroup.cancel")" />
+				<input type="submit" name="eventSubmit_doBack" value="$tlang.getString('editgroup.back')" />
 		</div>
 	</form>
 </div>
