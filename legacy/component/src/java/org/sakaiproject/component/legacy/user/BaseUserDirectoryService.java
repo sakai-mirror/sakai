@@ -974,37 +974,28 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		// do we have a record for this user?
 		UserEdit user = findUser(id);
 
-		// 1. check our user record, if any, if not yet authenticated
-		if (user != null)
+		if (m_provider != null && m_provider.authenticateWithProviderFirst(id))
 		{
-			authenticated = user.checkPassword(password);
-			// m_logger.info(" *** UserDirectory.authenticate: id: " + id + " result of checkPassword: " + authenticated);
-		}
-
-		// 2. check our provider, if any, if not yet authenticated
-		if ((!authenticated) && (m_provider != null))
-		{
-			authenticated = m_provider.authenticateUser(id, user, password);
-			// m_logger.info(" *** UserDirectory.authenticate: id: " + id + " result of PUDP.authenticateUser: " + authenticated);
-
-			// some providers want to update the user record on authentication - if so, we need to save it
-			if ((authenticated) && (m_provider.updateUserAfterAuthentication()))
+			// 1. check provider
+			authenticated = authenticateViaProvider(id, user, password);
+			if (!authenticated && user != null)
 			{
-				// save user
-				BaseUserEdit edit = (BaseUserEdit) m_storage.edit(id);
-				if (edit != null)
-				{
-					edit.setAll(user);
-					edit.setEvent(SECURE_UPDATE_USER_ANY);
+				// 2. check our user record, if any, if not yet authenticated
+				authenticated = user.checkPassword(password);
+			}
+		}
+		else
+		{
+			// 1. check our user record, if any, if not yet authenticated
+			if (user != null)
+			{
+				authenticated = user.checkPassword(password);
+			}
 
-					m_storage.commit(edit);
-
-					EventTrackingService.post(EventTrackingService.newEvent(edit.getEvent(), edit.getReference(), true));
-				}
-				else
-				{
-					m_logger.warn(this +".authenticate(): could not save user after auth: " + id);
-				}
+			// 2. check our provider, if any, if not yet authenticated
+			if (!authenticated && m_provider != null)
+			{
+				authenticated = authenticateViaProvider(id, user, password);
 			}
 		}
 
@@ -1043,6 +1034,40 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		return rv;
 
 	} // authenticate
+	
+	/**
+	 * Authenticate user by provider information
+	 * @param id	The id string
+	 * @param user The UserEdit object
+	 * @param password The password string
+	 * @return
+	 */
+	protected boolean authenticateViaProvider(String id, UserEdit user, String password)
+	{
+		boolean authenticated = m_provider.authenticateUser(id, user, password);
+		// m_logger.info(" *** UserDirectory.authenticate: id: " + id + " result of PUDP.authenticateUser: " + authenticated);
+
+		// some providers want to update the user record on authentication - if so, we need to save it
+		if ((authenticated) && (m_provider.updateUserAfterAuthentication()) && user != null)
+		{
+			// save user
+			BaseUserEdit edit = (BaseUserEdit) m_storage.edit(id);
+			if (edit != null)
+			{
+				edit.setAll(user);
+				edit.setEvent(SECURE_UPDATE_USER_ANY);
+
+				m_storage.commit(edit);
+
+				EventTrackingService.post(EventTrackingService.newEvent(edit.getEvent(), edit.getReference(), true));
+			}
+			else
+			{
+				m_logger.warn(this +".authenticate(): could not save user after auth: " + id);
+			}
+		}
+		return authenticated;
+	}
 
 	/**
 	 * {@inheritDoc}
