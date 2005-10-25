@@ -83,6 +83,13 @@ public interface UserDirectoryProvider
 	 * @return true if the user object was found and information updated, false if not.
 	 */
 	boolean findUserByEmail(UserEdit edit, String email);
+	
+	/**
+	 * Whether to check provider or internal data first when authenticating a user
+	 * @return true if provider data is checked first, false if otherwise
+	 */
+	boolean authenticateWithProviderFirst(String id);
+	
 }
 
 
