@@ -1,6 +1,11 @@
 ********************
 Recent Changes
 ********************
+10/25/2005 - Reporting to you live from the Sakai project trunk. You may con-
+sider the contrib version of su-tool deprecated, but that's still where you
+will find the 2.0.1 version of the tool. Now to finish integrating with the
+new framework.
+
 10/24/2005 - I am integrating su-tool with Sakai 2.1. As of now, the trunk of su 
 is not suitable for deploying to 2.0.1; To get a release for 2.0.1, go to 
 https://source.sakaiproject.org/contrib/migration/tags/su_2-0-1
@@ -17,7 +22,7 @@ user's realms when logging in as them.
 ********************
 What is Is
 ********************
-su is a tool for Sakai 2.0.x for administrators to use to log in as another 
+su is a tool for Sakai 2.1.x for administrators to use to log in as another 
 user. It is code developed at Texas State University for their local brand of 
 Sakai called TRACS: Teaching Research and Collaboration System. It is meant to 
 be used within the Administrative Workspace. It features a simple form in which 
@@ -71,6 +76,8 @@ developed for a future version.
 *******************
 Known Issues
 *******************
+Realm refresh is disabled until I make it work with the 2.1 framework.
+
 It's a small thing, but if you click the "View user info" button when you're 
 already viewing that user's info, for some reason it invokes "Become user."
 
