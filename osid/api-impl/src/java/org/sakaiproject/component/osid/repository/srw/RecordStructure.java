@@ -98,7 +98,7 @@ implements org.osid.repository.RecordStructure
         }
     }
 
-    public RecordStructure(org.osid.id.IdManager idManager)
+    public RecordStructure(org.osid.id.IdManager idManager, org.osid.logging.WritableLog log)
     throws org.osid.repository.RepositoryException
     {
         try

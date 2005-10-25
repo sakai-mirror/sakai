@@ -123,7 +123,7 @@ implements org.osid.repository.PartStructure
     public org.osid.repository.RecordStructure getRecordStructure()
     throws org.osid.repository.RepositoryException
     {
-        return new RecordStructure(this.idManager);
+        return new RecordStructure(this.idManager,this.log);
     }
 
     public boolean validatePart(org.osid.repository.Part part)

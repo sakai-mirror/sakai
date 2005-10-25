@@ -299,14 +299,14 @@ implements org.osid.repository.Asset
     throws org.osid.repository.RepositoryException
     {
         java.util.Vector results = new java.util.Vector();
-        results.addElement(new RecordStructure(this.idManager));
+        results.addElement(new RecordStructure(this.idManager,this.log));
         return new RecordStructureIterator(results);
     }
 
     public org.osid.repository.RecordStructure getContentRecordStructure()
     throws org.osid.repository.RepositoryException
     {
-        return new RecordStructure(this.idManager);
+        return new RecordStructure(this.idManager,log);
     }
 
     public org.osid.repository.Record getRecord(org.osid.shared.Id recordId)

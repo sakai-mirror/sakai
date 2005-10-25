@@ -142,15 +142,15 @@ implements org.osid.repository.Record
         {
             if (this.recordStructureId.isEqual(this.idManager.getId("af106d4f201080006d751920168000100")))
             {
-                return new RecordStructure(this.idManager);
+                return new RecordStructure(this.idManager, this.log);
             }
             else if (this.recordStructureId.isEqual(this.idManager. getId("f6c16d4f201080006d751920168000100")))
             {
-                return new DCRecordStructure(this.idManager);
+                return new DCRecordStructure(this.idManager, this.log);
             }
             else if (this.recordStructureId.isEqual(this.idManager. getId("d5e9eea5301080006d751920168000100")))
             {
-                return new VueRecordStructure(this.idManager);
+                return new VueRecordStructure(this.idManager, this.log);
             }
             else
             {

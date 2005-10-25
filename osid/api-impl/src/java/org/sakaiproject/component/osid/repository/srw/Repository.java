@@ -225,7 +225,7 @@ implements org.osid.repository.Repository
     throws org.osid.repository.RepositoryException
     {
         java.util.Vector results = new java.util.Vector();
-        results.addElement(new RecordStructure(this.idManager));
+        results.addElement(new RecordStructure(this.idManager,this.log));
         return new RecordStructureIterator(results);
     }
 
@@ -239,7 +239,7 @@ implements org.osid.repository.Repository
         if (assetType.isEqual(this.assetType))
         {
             java.util.Vector results = new java.util.Vector();
-            results.addElement(new RecordStructure(this.idManager));
+            results.addElement(new RecordStructure(this.idManager,this.log));
             return new RecordStructureIterator(results);
         }
         throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_TYPE);
@@ -649,7 +649,7 @@ implements org.osid.repository.Repository
         {
             java.util.Vector results = new java.util.Vector();
             // don't return the content's sturcutre even if it matches, since this that is a separate and special case
-            results.addElement(new RecordStructure(this.idManager));
+            results.addElement(new RecordStructure(this.idManager,this.log));
             return new RecordStructureIterator(results);
         }
         throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_TYPE);
