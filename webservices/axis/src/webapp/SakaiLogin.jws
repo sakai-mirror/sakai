@@ -1,5 +1,8 @@
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
@@ -8,16 +11,21 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 
+import org.apache.axis.AxisFault;
+
 /**
  * class to support Sakai Login headers sent in request as a string array
  */
-public class SakaiLogin {
+public class SakaiLogin 
+{
 
-    public String login(String id,String pw) {
+    private static final Log LOG = LogFactory.getLog(SakaiLogin.class);
+
+    public String login(String id,String pw) 
+	throws AxisFault
+    {
 
 	boolean allowLogin = ServerConfigurationService.getBoolean("webservices.allowlogin", false);
-
-	System.out.println("login id="+id+" pw="+pw+" allowLogin="+allowLogin));
 
 	if ( ! allowLogin ) {
 		throw new AxisFault("Web Services Login Disabled");
@@ -25,26 +33,22 @@ public class SakaiLogin {
 
         User user = UserDirectoryService.authenticate(id,pw);
 	if ( user != null ) {
-		System.out.println("Have User");
                 Session s = SessionManager.startSession();
                 if (s == null)
                 {
-                        System.out.println("no session established");
+        		LOG.warn("Web Services Login failed to establish session for - "+id);
                         throw new AxisFault("Unable to establish session");
                 }
                 else
                 {
 			s.setUserId(id);
 			s.setUserEid(id);
-                        System.out.println("session: " + s.getId()
-                                + " user id: " + s.getUserId()
-                                + " user enterprise id: " + s.getUserEid()
-                                + " started: " + new Date(s.getCreationTime()).toLocaleString()
-                                + " accessed: " + new Date(s.getLastAccessedTime()).toLocaleString()
-                                + " inactive after: " + s.getMaxInactiveInterval());
+                	if ( LOG.isDebugEnabled() ) LOG.debug("Sakai Web Services Login " + id );
 			return s.getId();
                 }
 	}
+	// TODO: Add IP address here
+        LOG.warn("Failed Web Services Login - "+id);
         throw new AxisFault("Unable to login");
     }
 }

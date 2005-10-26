@@ -1,5 +1,8 @@
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
@@ -17,6 +20,8 @@ import org.apache.axis.AxisFault;
  * class to support Sakai Login headers sent in request as a string array
  */
 public class SakaiPortalLogin {
+
+    private static final Log LOG = LogFactory.getLog(SakaiPortalLogin.class);
 
     private User getSakaiUser(String id, String pw)
     {
@@ -36,12 +41,15 @@ public class SakaiPortalLogin {
 
     	String portalSecret = ServerConfigurationService.getString("webservice.portalsecret");
 
+	// Leave this in for a while until this is better tested
+
 	System.out.println("SakaiPortalLogin.loginAndCreate id="+id+" pw="+pw+" sec="+portalSecret);
 	System.out.println("        fn="+firstName+" ln="+lastName+" em="+eMail);
 
 	if ( portalSecret == null || pw == null || 
 	     portalSecret.equals("") || ! portalSecret.equals(pw) ) {
-                System.out.println("Throwing axis portalSecret fault");
+		// TODO: Should add IP address to this
+		LOG.info("SakaiPortalLogin secret mismatch");
                 throw new AxisFault("Failed login");
 	}
 
@@ -67,19 +75,14 @@ public class SakaiPortalLogin {
                 SessionManager.setCurrentSession(s);
                 if (s == null)
                 {
-                        System.out.println("no session established");
-			return "Session Null";
+                        // System.out.println("no session established");
+                        LOG.warn("Web Services Login failed to establish session for - "+id);
+                        throw new AxisFault("Unable to establish session");
                 }
                 else
                 {
 			s.setUserId(id);
 			s.setUserEid(id);
-                        System.out.println("session: " + s.getId()
-                                + " user id: " + s.getUserId()
-                                + " user enterprise id: " + s.getUserEid()
-                                + " started: " + new Date(s.getCreationTime()).toLocaleString()
-                                + " accessed: " + new Date(s.getLastAccessedTime()).toLocaleString()
-                                + " inactive after: " + s.getMaxInactiveInterval());
 			try {
 				String siteId = SiteService.getUserSiteId(s.getUserId());
 				System.out.println("Site exists..."+siteId);
@@ -90,7 +93,8 @@ public class SakaiPortalLogin {
 			return s.getId();
                 }
 	}
-        System.out.println("Throwing axis Non-existent user fault");
+	// TODO: Should add IP address to this
+	LOG.info("SakaiPortalLogin Failed");
         throw new AxisFault("Failed login");
     }
 
