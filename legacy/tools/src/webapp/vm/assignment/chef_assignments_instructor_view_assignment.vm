@@ -13,7 +13,7 @@
 			</a>
 			 $tlang.getString("gen.settfor") "$validator.escapeHtml($assignment.title)"
 		</p>
-		<table class="itemSummary" border="0">
+		<table class="itemSummary" border="0" summary="$tlang.getString("gen.viewasstablesummary")">
 			<tr>
 				<th>	
 					$tlang.getString("gen.creby")
@@ -114,7 +114,7 @@
 			<tr> 
 				<th>
 					$tlang.getString("gen.honple")
-				</td>
+				</th>
 				<td> 
 					#if ($assignment.getContent().HonorPledge == 1)
 						$tlang.getString("gen.no")

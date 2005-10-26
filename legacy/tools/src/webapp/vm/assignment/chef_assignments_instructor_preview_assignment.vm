@@ -26,7 +26,7 @@
 							<img src = "#imageLink("sakai/collapse.gif")" border="0" title="$tlang.getString("prevassig.hidass")" alt="$tlang.getString("prevassig.hidass")" hspace="0" /></a>
 							$tlang.getString("prevassig.hidass"): $validator.escapeHtml($value_Title)
 					</p>		
-							<table class="itemSummary" border="0">
+							<table class="itemSummary" border="0" summary="$tlang.getString("gen.viewasstablesummary")">  
 								<tr>
 								#*
 									<th>
@@ -109,7 +109,7 @@
 										#else
 											$tlang.getString("gen.no")
 										#end
-									</th>
+									</td>
 								</tr>
 								<tr>
 									<th>
@@ -141,7 +141,7 @@
 									$tlang.getString("gen.assinf")
 							</h4>
 							#if (($!value_Description) && ($value_Description.length()>0))
-								<p>$validator.escapeHtmlFormattedText($value_Description)</p>
+								<div>$validator.escapeHtmlFormattedText($value_Description)</div>
 							#end
 							#set ($size = 0)
 							#set ($props = false)

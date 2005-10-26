@@ -54,7 +54,8 @@
 			#end	
 			<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
 				<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
-				<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+				<label for="selectPageSize" class="skip">$tlang.getString("gen.view2")</label>
+				<select id="selectPageSize" name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
 					#foreach ($i in $!pagesizes)
 						<option value="$i" #if($pagesize == $i) selected="selected" #end>$tlang.getString("list.show") $i $tlang.getString("list.itemsper")</option>
 					#end

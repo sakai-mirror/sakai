@@ -144,7 +144,7 @@
 		##	$tlang.getString("gen.tit1")
 		</p>
 	 #end
-	<form name="addSubmissionForm" action="#toolForm("AssignmentAction")" method="post" onSubmit="return true;">
+	<form name="addSubmissionForm" action="#toolForm("AssignmentAction")" method="post" onsubmit="return true;">
 		<input type="hidden" name="$name_assignment_id" value="$assignment.Id" />
 		<input type="hidden" name="eventSubmit_doRead_add_submission_form" value="x" />
 		<input type="hidden" name="option" value="cancel" />
@@ -161,6 +161,7 @@
 					id="save" 
 					value="$tlang.getString("gen.savdra")"
 					onclick="showNotif('submitnotif','save','addSubmissionForm');document.addSubmissionForm.option.value='save'; document.addSubmissionForm.submit(); return false;"
+					onkeypress="showNotif('submitnotif','save','addSubmissionForm');document.addSubmissionForm.option.value='save'; document.addSubmissionForm.submit(); return false;"
 				/>
 				<input
 					type="button"
@@ -188,7 +189,7 @@
 				class="disableme" 
 				type="submit" 
 				name="revise" 
-				id="revise" 
+				id="done" 
 				value="$tlang.getString("gen.don")"
 				onclick="document.addSubmissionForm.option.value='revise'; document.addSubmissionForm.submit(); return false;"
 			/>

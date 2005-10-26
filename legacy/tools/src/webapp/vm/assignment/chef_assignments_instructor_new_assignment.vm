@@ -336,7 +336,7 @@
 				<label for="$name_GradePoints">$tlang.getString("gen.forpoi")</label>
 			</p>	
 		#end
-			<p class="longtext">
+			<div class="longtext">
 				<label for="new_assignment_instructions" class="block">
 					$tlang.getString("gen.assinf")
 				</label>
@@ -344,7 +344,7 @@
 					<textarea name="$name_Description" id="$name_Description" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($value_Description)</textarea>
 					#chef_setupformattedtextarea($name_Description)
 					</td></tr></table>
-			</p>
+			</div>
 			<p class="checkbox">
 				#if ($value_CheckAddDueDate.equals("true"))
 					<input id="$name_CheckAddDueDate" name="$name_CheckAddDueDate" type="checkbox" value="true" checked="checked" />

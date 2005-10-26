@@ -43,7 +43,7 @@
 			<p class="instruction">$tlang.getString("stuviewsubm.asshasnot")</p>	
 		#end
 	#end
-	<form name="addSubmissionForm" action="#toolForm("AssignmentAction")" method="post" onSubmit="return true;">
+	<form name="addSubmissionForm" action="#toolForm("AssignmentAction")" method="post" onsubmit="return true;">
 		<input type="hidden" name="eventSubmit_doRead_add_submission_form" value="x" />
 		<input type="hidden" name="option" value="cancel" />
 		<input type="hidden" name="$name_assignment_id" value="$assignment.Id" />
@@ -157,7 +157,7 @@
 		</h5>
 		
 		#if ($!assignment.getContent().getInstructions().length()>0)
-			<p>$validator.escapeHtmlFormattedText($!assignment.getContent().getInstructions())</p>
+			<div>$validator.escapeHtmlFormattedText($!assignment.getContent().getInstructions())</div>
 		#else
 		#end
 
@@ -228,14 +228,14 @@
 							## for returned submission, show the instructor commented text as well
 							#if ($!prevFeedbackText)
 								<h5>$tlang.getString("gradingsub.prefeetex")</h5>
-								<p>
+								<div>
 									$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackText))
-								</p>
+								</div>
 							#end
 							<h5>$tlang.getString("feedbacktext")</h5><br />
-							<p>
+							<div>
 								$cheffeedbackhelper.escapeAssignmentFeedback($submission.FeedbackText)
-							</p>
+							</div>
 							<br />	
 							<h5>$tlang.getString("stuviewsubm.entbelo")</h5>
 							<table border="0"><tr><td>
@@ -344,13 +344,13 @@
 				#if ($submission.getReturned() && $submission.TimeReturned.after($submission.TimeSubmitted))
 					#if (($!submission.FeedbackComment) && ($submission.FeedbackComment.trim().length()>0))
 						<h5>$tlang.getString("gen.addinst")</h5>
-						<p>$validator.escapeHtmlFormattedText($submission.FeedbackComment)</p>
+						<div>$validator.escapeHtmlFormattedText($submission.FeedbackComment)</div>
 					#else
 					#end
 					## for returned (not resubmitted ) submission, show the instructor feedback
 					#if ($!prevFeedbackComment && $!prevFeedbackComment.trim().length() > 0)
 						<h5>$tlang.getString("gradingsub.prefee")</h5>
-						<p>$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</p>
+						<div>$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</div>
 					#end					
 					#set ($size = 0)
 					#set ($props = false)
@@ -501,20 +501,20 @@
 						<p class="instruction">
 							$tlang.getString("gen.orisub2")
 						</p>
-						<p>$cheffeedbackhelper.escapeAssignmentFeedback($text)</p>
+						<div>$cheffeedbackhelper.escapeAssignmentFeedback($text)</div>
 						#end
 						#elseif ($!submission.submittedText && ($submission.SubmittedText.length()>0))
 							#set ($text = $submission.SubmittedText)
 							#if ($!text)
-								<p>$cheffeedbackhelper.escapeAssignmentFeedback($text)</p>
+								<div>$cheffeedbackhelper.escapeAssignmentFeedback($text)</div>
 							#end
 					#end
 					## for returned submission, show the instructor comment as well
 					#if ($!prevFeedbackText)
 						<h5>$tlang.getString("gradingsub.prefeetex")</h5>
-						<p>
+						<div>
 							$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackText))
-						</p>
+						</div>
 					#end
 					#set ($submittedAttachments = $submission.SubmittedAttachments)
 					#set ($size = 0)
@@ -552,13 +552,13 @@
 					#if ($withGrade && $submission.getGraded() && $submission.getGradeReleased())
 						#if ($submission.getGradeReleased() &&($!submission.FeedbackComment) && ($submission.FeedbackComment.trim().length()>0))
 							<h5>$tlang.getString("gen.addinst")</h5>
-							<p>$validator.escapeHtmlFormattedText($submission.FeedbackComment)</p>
+							<div>$validator.escapeHtmlFormattedText($submission.FeedbackComment)</div>
 						#else
 						#end
 						## for returned submission, show the instructor feedback
 						#if ($!prevFeedbackComment && $!prevFeedbackComment.trim().length() > 0)
 							<h5>$tlang.getString("gradingsub.prefee")</h5>
-							<p>$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</p>
+							<div>$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</div>
 						#end	
 						#set ($size = 0)
 						#set ($props = false)

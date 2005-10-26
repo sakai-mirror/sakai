@@ -83,7 +83,7 @@
 					</span>
 				</td>
 				<td align="left"> 
-					<select name="$name_Section" multiple="multiple" size="3" tabindex="3" onchange="blur()">
+					<select name="$name_Section" multiple="multiple" size="3"  onchange="blur()">
 						#foreach ($i in ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "$tlang.getString("edit_assig.all")"])
 							#if ($value_Sections.indexOf($i)!=-1)
 								<option value="$i" selected="selected">$i</option>
@@ -240,7 +240,7 @@
 				<label for="$name_SubmissionType">
 					$tlang.getString("gen.stusub2")
 				</label>
-				<select  id="$name_SubmissionType" name="$name_SubmissionType" tabindex="3" onchange="blur()">
+				<select  id="$name_SubmissionType" name="$name_SubmissionType"  onchange="blur()">
 					#foreach ($i in [1..3])
 						#if ($i == $value_SubmissionType)
 							<option value="$i" selected="selected">$submissionTypeTable.get($i)</option>
@@ -256,7 +256,7 @@
 					<label for="$name_GradeType">
 						$tlang.getString("gen.grasca")
 					</label>				
-					<select  id="$name_GradeType"  name="$name_GradeType" tabindex="3" onchange="SetMaxPoint(this, $name_GradePoints)">
+					<select  id="$name_GradeType"  name="$name_GradeType"  onchange="SetMaxPoint(this, $name_GradePoints)">
 						#foreach ($i in [1..5])
 							#if ($i == $value_GradeType)
 								<option value="$i" selected="selected">$gradeTypeTable.get($i)</option>
@@ -276,7 +276,7 @@
 					<label for="$name_GradePoints">$tlang.getString("gen.forpoi")</label>
 				</p>
 			#end
-		<p class="longtext">
+		<div class="longtext">
 			<label for="new_assignment_instructions" class="block">
 				$tlang.getString("gen.assinf")
 			</label>
@@ -284,7 +284,7 @@
 			<textarea id="$name_Description" name="$name_Description" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($value_Description)</textarea>
 			#chef_setupformattedtextarea($name_Description)
 			</td></tr></table>
-		</p>			
+		</div>			
 		<p class="checkbox">
 			#if ($value_CheckAddDueDate.equals("true"))
 				<input id="$name_CheckAddDueDate" name="$name_CheckAddDueDate" type="checkbox" value="true" checked="checked" />

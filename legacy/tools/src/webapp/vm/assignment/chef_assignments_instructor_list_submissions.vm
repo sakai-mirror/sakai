@@ -48,7 +48,8 @@
 			#end	
 			<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
 				<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
-				<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+				<label for="selectPageSize" class="skip">$tlang.getString("gen.view2")</label>
+				<select id="selectPageSize" name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
 					#foreach ($i in $!pagesizes)
 						<option value="$i" #if($pagesize == $i) selected="selected" #end>$tlang.getString("list.show") $i $tlang.getString("list.itemsper")</option>
 					#end
@@ -79,13 +80,13 @@
 			<input type="hidden" name="assignmentId" value="$assignment.Reference" />
 			## show all submissions
 			#if ($!submissions && ($submissions.size() > 0))
-				<table class="listHier" cellpadding="0" cellspacing="0">
+				<table class="listHier" cellpadding="0" cellspacing="0" summary="$tlang.getString("gen.viewassliststudentsummary")">
 					<tr> 
 						<th id="attachment">
 							&nbsp;
 						</th>
 						<th id="studentname">
-							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=lastname")'; return false;" title="$tlang.getString("gen.sorbylas")">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=lastname")'; return false;"  onkeypress="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=lastname")'; return false;" title="$tlang.getString("gen.sorbylas")">
 								$tlang.getString("gen.student")
 								#if ($sortedBy.equals("lastname")) 
 									#if ($sortedAsc.equals("true")) 
@@ -97,7 +98,7 @@
 							</a>
 						</th>
 						<th id="submitted">
-							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=submit_time")'; return false;" title="$tlang.getString("listsub.sorbysub")">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=submit_time")'; return false;" onkeypress="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=submit_time")'; return false;" title="$tlang.getString("listsub.sorbysub")">
 								$tlang.getString("gen.subm4")
 								#if ($sortedBy.equals("submit_time")) 
 									#if ($sortedAsc.equals("true")) 
@@ -109,7 +110,7 @@
 							</a>
 						</th>
 						<th id="status">
-							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=status")'; return false;" title="$tlang.getString("listsub.sorbysta")">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=status")'; return false;" onkeypress="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=status")'; return false;" title="$tlang.getString("listsub.sorbysta")">
 								$tlang.getString("gen.status")
 								#if ($sortedBy.equals("status")) 
 									#if ($sortedAsc.equals("true")) 
@@ -122,7 +123,7 @@
 						</th>
 						#if ($withGrade)
 							<th id="grade">
-								<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=submission_grade")'; return false;" title="$tlang.getString("gen.sorbygra")">
+								<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=submission_grade")'; return false;" onkeypress="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=submission_grade")'; return false;" title="$tlang.getString("gen.sorbygra")">
 									$tlang.getString("gen.gra")
 									#if ($sortedBy.equals("submission_grade")) 
 										#if ($sortedAsc.equals("true")) 
@@ -135,7 +136,7 @@
 							</th>
 						#end	
 						<th id="gradereleased">
-							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=released")'; return false;" title="$tlang.getString("listsub.sorbyrel")">
+							<a href="#" onclick="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=released")'; return false;" onkeypress="location='#toolLinkParam("AssignmentAction" "doSort_submission" "criteria=released")'; return false;" title="$tlang.getString("listsub.sorbyrel")">
 								$tlang.getString("gen.relea")
 								#if ($sortedBy.equals("released")) 
 									#if ($sortedAsc.equals("true")) 
