@@ -2392,15 +2392,17 @@ public abstract class BaseAssignmentService
 		if (m_logger.isDebugEnabled())
 					m_logger.debug(this + ": getSubmissionsZip reference=" + ref);
 		
-		String typeGradesString = new String(REF_TYPE_GRADES + Entity.SEPARATOR);
-		String context = ref.substring(ref.indexOf(typeGradesString) + typeGradesString.length());
-		if (allowGradeSubmission(context))
+		byte[] rv = null;
+		
+		try
 		{
+			Assignment a = getAssignment(assignmentReferenceFromSubmissionsZipReference(ref));
+				
 			Blob b = new Blob();
 			StringBuffer exceptionMessage = new StringBuffer();
-			try
+			
+			if (allowGradeSubmission(a.getContext()))
 			{
-				Assignment a = getAssignment(assignmentReferenceFromSubmissionsZipReference(ref));
 				try
 				{
 					ZipOutputStream out = new ZipOutputStream(b.outputStream());
@@ -2553,25 +2555,25 @@ public abstract class BaseAssignmentService
 					exceptionMessage.append("Can not establish the IO to create zip file. ");
 					m_logger.debug(this + ": getSubmissionsZip--IOException unable to create the zip file for assignment " + a.getTitle());
 				}
+				
+				//return zip file content
+				rv = b.getBytes();
 			}
-			catch (IdUnusedException e)
-			{
-				if (m_logger.isDebugEnabled())
-					m_logger.debug(this + ": getSubmissionsZip--IdUnusedException Unable to get assignment " + ref);
-				throw new IdUnusedException(ref);
-			}
-			catch (PermissionException e)
-			{
-				m_logger.debug(this + ": getSubmissionsZip--PermissionException Not permitted to get assignment " + ref);
-				throw new PermissionException(SECURE_ACCESS_ASSIGNMENT, ref);
-			}
-			
-			return b.getBytes();
 		}
-		else
+		catch (IdUnusedException e)
 		{
-			return null;
+			if (m_logger.isDebugEnabled())
+				m_logger.debug(this + ": getSubmissionsZip--IdUnusedException Unable to get assignment " + ref);
+			throw new IdUnusedException(ref);
 		}
+		catch (PermissionException e)
+		{
+			m_logger.debug(this + ": getSubmissionsZip--PermissionException Not permitted to get assignment " + ref);
+			throw new PermissionException(SECURE_ACCESS_ASSIGNMENT, ref);
+		}
+			
+		
+		return rv;
 		
 	}	// getSubmissionsZip
 	
