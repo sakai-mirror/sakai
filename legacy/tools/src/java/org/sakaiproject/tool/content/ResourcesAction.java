@@ -2729,6 +2729,12 @@ public class ResourcesAction
 					alerts.add(rb.getString("overquota"));
 					tryingToAddItem = false;
 				}
+				catch(Throwable e)
+				{
+					System.out.println("===> ResourcesAction.createFiles ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
+					e.printStackTrace(System.out);
+					System.out.println("======================");
+				}
 			}
 			HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
 			if(!currentMap.containsKey(collectionId))

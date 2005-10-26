@@ -810,9 +810,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 */
 	protected void addLiveResourceProperties(ContentResourceEdit r)
 	{
+		System.out.println("===> BaseContentService.addLiveResourceProperties edit == " + r);
 		ResourcePropertiesEdit p = r.getPropertiesEdit();
+		System.out.println("===> BaseContentService.addLiveResourceProperties props == " + p);
 
 		String current = SessionManager.getCurrentSessionUserId();
+		System.out.println("===> BaseContentService.addLiveResourceProperties current == " + current);
 		p.addProperty(ResourceProperties.PROP_CREATOR, current);
 		p.addProperty(ResourceProperties.PROP_MODIFIED_BY, current);
 
@@ -824,6 +827,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		p.addProperty(ResourceProperties.PROP_CONTENT_TYPE, r.getContentType());
 
 		p.addProperty(ResourceProperties.PROP_IS_COLLECTION, "false");
+		System.out.println("===> BaseContentService.addLiveResourceProperties done ");
 
 	} // addLiveResourceProperties
 
@@ -1524,14 +1528,20 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public ContentResource addResource(String id, String type, byte[] content, ResourceProperties properties, int priority)
 			throws PermissionException, IdUsedException, IdInvalidException, InconsistentException, OverQuotaException, ServerOverloadException
 	{
+		System.out.println("===> BaseContentService.addResource id == " + id);
 		id = (String) ((Hashtable) fixTypeAndId(id, type)).get("id");
+		System.out.println("===> BaseContentService.addResource id == " + id);
 		ContentResourceEdit edit = addResource(id);
+		System.out.println("===> BaseContentService.addResource edit == " + edit);
 		edit.setContentType(type);
 		edit.setContent(content);
+		System.out.println("===> BaseContentService.addResource adding properties");
 		addProperties(edit.getPropertiesEdit(), properties);
 
+		System.out.println("===> BaseContentService.addResource committing edit ");
 		// commit the change
 		commitResource(edit, priority);
+		System.out.println("===> BaseContentService.addResource done");
 
 		return edit;
 
@@ -1555,24 +1565,31 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public ContentResourceEdit addResource(String id) throws PermissionException, IdUsedException, IdInvalidException,
 			InconsistentException
 	{
+		System.out.println("===> BaseContentService.addResource(1param) id == " + id);
 		// check the id's validity (this may throw IdInvalidException)
 		// use only the "name" portion, separated at the end
 		String justName = isolateName(id);
+		System.out.println("===> BaseContentService.addResource(1param) justName == " + justName);
 		Validator.checkResourceId(justName);
 
+		System.out.println("===> BaseContentService.addResource(1param) checed resource id ");
 		// resource must also NOT end with a separator characters (we fix it)
 		if (id.endsWith(Entity.SEPARATOR))
 		{
 			id = id.substring(0, id.length() - 1);
 		}
+		System.out.println("===> BaseContentService.addResource(1param) id == " + id);
 
 		// check security
 		checkExplicitLock(id);
 		unlock(EVENT_RESOURCE_ADD, id);
+		System.out.println("===> BaseContentService.addResource(1param) unlocked locks ");
 
 		// make sure the containing collection exists
 		String container = isolateContainingId(id);
+		System.out.println("===> BaseContentService.addResource(1param) container == " + container);
 		ContentCollection containingCollection = m_storage.getCollection(container);
+		System.out.println("===> BaseContentService.addResource(1param) containingCollection == " + containingCollection);
 		if (containingCollection == null)
 		{
 			// make any missing collections
@@ -1582,19 +1599,24 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			containingCollection = m_storage.getCollection(container);
 			if (containingCollection == null) throw new InconsistentException(id);
 		}
+		System.out.println("===> BaseContentService.addResource(1param) containingCollection == " + containingCollection);
 
 		// reserve the resource in storage - it will fail if the id is in use
 		BaseResourceEdit edit = (BaseResourceEdit) m_storage.putResource(id);
+		System.out.println("===> BaseContentService.addResource(1param) edit == " + edit);
 		if (edit == null)
 		{
 			throw new IdUsedException(id);
 		}
+		System.out.println("===> BaseContentService.addResource(1param) adding live properties");
 
 		// add live properties
 		addLiveResourceProperties(edit);
+		System.out.println("===> BaseContentService.addResource(1param) added live properties");
 
 		// track event
 		edit.setEvent(EVENT_RESOURCE_ADD);
+		System.out.println("===> BaseContentService.addResource(1param) done ");
 
 		return edit;
 
