@@ -452,17 +452,11 @@
 	</bean>
 
 
-	<bean id="rwikiCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" >
-		
-	</bean>
-	<bean id="rwikiCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
-		<property name="cacheName"><value>rwiki-render-cache</value></property>
-		<property name="cacheManager"><ref bean="rwikiCacheManager"/></property>
-	</bean>
 	
-	<bean id="rwikiRenderCache" class="uk.ac.cam.caret.sakai.rwiki.radeox.service.impl.RenderCacheImpl" >
+	<bean id="rwikiRenderCache" class="uk.ac.cam.caret.sakai.rwiki.radeox.service.impl.RenderCacheImpl" 
+		 init-method="init" >
 		<property name="log"><ref bean="rwiki-logger"/></property>
-		<property name="cache"><ref bean="rwikiCache" /></property>
+		<property name="cacheName"><value>rwiki-render-cache</value></property>
 	</bean>
 	
 		

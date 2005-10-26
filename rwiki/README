@@ -15,57 +15,24 @@ This should build and deploy the webapp to the correct place in your local sakai
 instance.
 
 The other options are to build the following sub-projects separately: 
-radeox-1.0-BETA-2, rwiki-service, and rwiki. Their default goals should be enough.
+radeox, jrcs, rwiki-service, and rwiki. Their default goals should be enough.
 Finally you would have to install the war created by the rwiki sub-project in
 your sakai-tomcat folder as sakai-rwiki.war
-
-In all cases you will require a fairly non-standard dependency: jrcs diff-1.0.jar.
-This can be found at the caret local maven repository: 
-
-http://www2.caret.cam.ac.uk/maven/jrcs/jars/diff-1.0.jar
-
-i.e. add http://www2...../maven to your list of repositories.
-
-You can find the source for this project on saffron.caret.cam.ac.uk as the jrcs module.
-
-(Unfortunately this has not been mavenised.)
-
-
 
 Known Issues
 ------------
 
-1. You should add the following to the file registrations.xml in 
-components/sakai-legacy-components/WEB-INF/lib/sakai-legacy-component-2.0.0.jar:
-
-	<function name="rwiki.create" />
-	<function name="rwiki.read" />
-	<function name="rwiki.update" />
-	<function name="rwiki.delete" />
-	<function name="rwiki.admin" />
-	<function name="rwiki.superadmin" />
-
-These are required for permissions checking.
-
-2. To install math support you should set the init-params headerScriptSrc and
+1. To install math support you should set the init-params headerScriptSrc and
 footerScript appropriately. We recommend that you keep these as the default and
 install an appropriate library in /library/jsMath. We suggest that you use
 jsMath (http://www.math.union.edu/~dpvc/jsMath/welcome.html) but cannot
 distribute it as it is GPL.
 
-3. Subspace support is a little odd, but obeys the following rule: When
-creating a page, it's permission realm will be that of the last page you
-visited.
-
-4. Searching is restricted to the default permission realm, and doesn't check
+2. Searching is restricted to the default permission realm, and doesn't check
 that the pages returned can actually be viewed by the searcher.
 
-5. The stylesheet provided is very basic, any suggestions and improvements?
-
-6. We are currently missing functionality to provide for permission realm
+3. We are currently missing functionality to provide for permission realm
 changes to pages, and renaming of pages.
 
-7. We should also provide more default pages, eg. view_right.
-
-8. There are very few unit-tests for this code, some more should be written. A
+4. There are very few unit-tests for this code, some more should be written. A
 similar statement applies for javadoc comments.
