@@ -68,8 +68,11 @@ public class ReviewHelperBean {
                     .getParameter(HistoryBean.REVISION_PARAM));
         }
 
-        
-        mock =  rwikiObjectService.getRWikiHistoryObject(rwikiObject,interestedRevision);
+        if (interestedRevision == rwikiObject.getRevision().intValue()) {
+            mock = rwikiObject;
+        } else {
+            mock =  rwikiObjectService.getRWikiHistoryObject(rwikiObject,interestedRevision);
+        }
     }
 
     /**
