@@ -211,7 +211,7 @@
 	function changeMimeType(category, subtype)
 	{
 		var mime_widget_div = document.getElementById('mime_widget');
-		var select_category = "<select name=\"mime_category\" id=\"mime_category\" onchange=\"javascript:changeMimeSubtype(this);\">\n";
+		var select_category = "<select name=\"mime_category\" id=\"mime_category\" onchange=\"javascript:changeMimeCategory(this);\">\n";
 		for(var i = 0; i < mimeCategories.length; i++)
 		{
 			if(category == mimeCategories[i])
@@ -225,38 +225,49 @@
 		}
 		select_category += "</select>\n";
 		var select_subtype = "<span id=\"mime_subtype\">\n<select name=\"mime_subtype\">\n";
-		var subtypes = mimeSubtypes[category];
-		for(var i = 0; i < subtypes.length; i++)
+		for(var i = 0; i < mimeSubtypes[category].length; i++)
 		{
-			if(subtype == subtypes[i])
+			if(subtype == mimeSubtypes[category][i])
 			{
-				select_subtype += "<option selected=\"selected\">" + subtypes[i] + "</option>\n";				
+				select_subtype += "<option selected=\"selected\">" + mimeSubtypes[category][i] + "</option>\n";				
 			}
 			else
 			{
-				select_subtype += "<option>" + subtypes[i] + "</option>\n";
+				select_subtype += "<option>" + mimeSubtypes[category][i] + "</option>\n";
 			}
 		}
 		select_subtype += "</select>\n</span>\n";
 
 		mime_widget_div.innerHTML = select_category + "/" + select_subtype;
 	}
-	function changeMimeSubtype(element)
+	function changeMimeCategory(element)
 	{
 		var subtype_widget_div = document.getElementById("mime_subtype");
-		var category = element.value;
+		var mime_warning_div = document.getElementById("mime_warning");
+		var category = element.options[element.selectedIndex].text;
+		// var category = element.value;
 		var select_subtype = "<select name=\"mime_subtype\">\n";
-		var subtypes = mimeSubtypes[category];
-		if(subtypes.length > 0)
+		for(var i in mimeSubtypes[category])
 		{
-			select_subtype += "<option selected=\"selected\">" + subtypes[i] + "</option>\n";
-		}
-		for(var i = 1; i < subtypes.length; i++)
-		{
-			select_subtype += "<option>" + subtypes[i] + "</option>\n";
+			if(i == 0)
+			{
+				select_subtype += "<option selected=\"selected\">" + mimeSubtypes[category][i] + "</option>\n";				
+			}
+			else
+			{
+				select_subtype += "<option>" + mimeSubtypes[category][i] + "</option>\n";
+			}
 		}
 		select_subtype += "</select>\n";
 		subtype_widget_div.innerHTML = select_subtype;
+		if(category == "text")
+		{
+			mime_warning_div.innerHTML = "<div class=\"alertMessage\">$tlang.getString("gen.alert") $tlang.getString("edit.mime")</div>\n";
+		}
+		else
+		{
+			mime_warning_div.innerHTML = "";
+		}
 	}
 	-->
 </script>
@@ -523,6 +534,7 @@
 							<label>$tlang.getString("gen.type")</label>
 						</td>
 						<td>
+							<span id="mime_warning"></span>
 							<span id="mime_widget">
 								$item.MimeType
 								<input type="hidden" name="mime_category" id="mime_category" value="$item.mimeCategory" />  
@@ -654,14 +666,20 @@
 </div>
 <script type="text/javascript">
 <!--
-#set($categories = $contentTypeImageService.MimeCategories)
-#set($lastcat = $categories.size())
-	var mimeCategories = [#foreach($category in $categories)"$category"#if($velocityCount < $lastcat), #end#end];
-	var mimeSubtypes = new Object;
-#foreach($category in $categories)
-#set($subtypes = $contentTypeImageService.getMimeSubtypes("$category"))
-#set($lasttype = $subtypes.size())
-	mimeSubtypes["$category"] = [#foreach($subtype in $subtypes)"$subtype"#if($velocityCount < $lasttype), #end#end];
+	var mimeCategories = new Array();
+#set($count = 0)
+#foreach($category in $contentTypeImageService.MimeCategories)
+	mimeCategories[$count] = "$category";
+#set($count = $count + 1)
+#end
+	var mimeSubtypes = new Array();
+#foreach($category in $contentTypeImageService.MimeCategories)
+	mimeSubtypes["$category"] = new Array();
+#set($count = 0)
+#foreach($subtype in $contentTypeImageService.getMimeSubtypes("$category"))
+	mimeSubtypes["$category"][$count] = "$subtype"
+#set($count = $count + 1)
+#end
 #end
 -->
 </script>
