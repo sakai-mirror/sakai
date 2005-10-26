@@ -16,7 +16,7 @@
 </script>
 <div class ="portletBody">
 	#if ($alertMessage)
-		<div class="chefAlertBox">$tlang.getString("ediacc.alert") $validator.escapeHtml($alertMessage)</div>
+		<div class="alertMessage">$tlang.getString("ediacc.alert") $validator.escapeHtml($alertMessage)</div>
 		<div style="display:block;clear:both"></div>
 	#end
 	<h3>
@@ -39,28 +39,26 @@
 			<label for="$tlang.getString('group.description')">
 				$tlang.getString("group.description")
 			</label>
-			<textarea wrap="virtual" name="$tlang.getString('group.description')" id="$tlang.getString('group.description')"  rows="3" cols="80">$validator.escapeHtml($!description)</textarea>
+			<textarea wrap="virtual" name="$tlang.getString('group.description')" id="$tlang.getString('group.description')"  rows="3" cols="50">$validator.escapeHtml($!description)</textarea>
 		<p>
-		<p class="shorttext">
-			<label for="$tlang.getString('editgroup.membership')">
-				$tlang.getString("editgroup.membership")
-			</label>
-			</p>
-		<table cellspacing="23" cellpadding="5%" >
-<tbody>
+		<h4>
+			$tlang.getString("editgroup.membership")
+		</h4>
+<table cellspacing="0" cellpadding="0" border="0" class="sidebyside">
+	<tbody>
 			<tr>
-				<td align="left">
+				<th>
 					$tlang.getString("editgroup.generallist")
-				</td>
-				<td align="right">
+				</th>
+				<th align="right" class="act">
 						<input type="button" class="active" name="$tlang.getString('editgroup.addmember')" value="$tlang.getString('editgroup.addmember')" onclick="javascript:document.getElementById('groupForm').action='#toolLinkParam('$action' 'doGroup_update' 'option=add')';submitform('groupForm');"/>
 				</td>
-				<td align="left">
+				<th>
 					$tlang.getString("editgroup.grouplist")
-				</td>
-				<td align="right">
+				</th>
+				<th align="right" class="act">
 						<input type="button" class="active" name="$tlang.getString('editgroup.removemember')" value="$tlang.getString('editgroup.removemember')" onclick="javascript:document.getElementById('groupForm').action='#toolLinkParam('$action' 'doGroup_update' 'option=remove')';submitform('groupForm');" />
-				</td>
+				</th>
 			</tr>
 			<tr>
 				<td align="center" colspan="2">

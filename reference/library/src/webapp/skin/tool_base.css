@@ -339,7 +339,19 @@ p.validation  {
 	background-color:#CCC; 
 	padding:.3em 
 } 
-
+/*list manager - two side by side select items, children of table.sidebyside*/
+.sidebyside{ }
+.sidebyside th{
+	padding:.3em;
+	text-align: left;
+	font-weight: normal;
+}
+.sidebyside td{
+	padding:.3em;
+}
+.sidebyside select{
+	width:18em
+}
 
 /*leftover classes - not used?*/
 hr.itemSeparator  { 
