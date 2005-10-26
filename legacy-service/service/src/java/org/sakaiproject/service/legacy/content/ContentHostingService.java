@@ -113,6 +113,9 @@ public interface ContentHostingService extends EntityProducer
 	/** Name of the event when removing a resource. */
 	public static final String EVENT_RESOURCE_REMOVE = "content.delete";
 
+	/** Security ability (permission, lock, event function...) for those who may OWN a dropbox. */
+	public static final String EVENT_DROPBOX_OWN = "dropbox.own";
+
 	/**
 	 * For a given id, return its UUID (creating it if it does not already exist)
 	 */
@@ -285,10 +288,10 @@ public interface ContentHostingService extends EntityProducer
 	 * @exception InUseException
 	 *            if the collection or a contained member is locked by someone else. collections, or remove any members of the collection.
 	 * @exception ServerOverloadException
-	 *            if the server is configured to write the resource body to the filesystem and an attempt to access the resource body 
-	 *            of any collection member fails.
+	 *            if the server is configured to write the resource body to the filesystem and an attempt to access the resource body of any collection member fails.
 	 */
-	public void removeCollection(String id) throws IdUnusedException, TypeException, PermissionException, InUseException, ServerOverloadException;
+	public void removeCollection(String id) throws IdUnusedException, TypeException, PermissionException, InUseException,
+			ServerOverloadException;
 
 	/**
 	 * Remove just a collection. It must be empty.
@@ -302,10 +305,10 @@ public interface ContentHostingService extends EntityProducer
 	 * @exception InconsistentException
 	 *            if the collection has members, so that the removal would leave things in an inconsistent state.
 	 * @exception ServerOverloadException
-	 *            if the server is configured to write the resource body to the filesystem and an attempt to access the resource body 
-	 *            of any collection member fails.
+	 *            if the server is configured to write the resource body to the filesystem and an attempt to access the resource body of any collection member fails.
 	 */
-	public void removeCollection(ContentCollectionEdit edit) throws TypeException, PermissionException, InconsistentException, ServerOverloadException;
+	public void removeCollection(ContentCollectionEdit edit) throws TypeException, PermissionException, InconsistentException,
+			ServerOverloadException;
 
 	/**
 	 * Commit the changes made, and release the lock. The Object is disabled, and not to be used after this call.
@@ -362,7 +365,8 @@ public interface ContentHostingService extends EntityProducer
 	 * @return a new ContentResource object.
 	 */
 	public ContentResource addResource(String id, String type, byte[] content, ResourceProperties properties, int priority)
-			throws PermissionException, IdUsedException, IdInvalidException, InconsistentException, OverQuotaException, ServerOverloadException;
+			throws PermissionException, IdUsedException, IdInvalidException, InconsistentException, OverQuotaException,
+			ServerOverloadException;
 
 	/**
 	 * Create a new resource with the given resource id, locked for update. Must commitResource() to make official, or cancelResource() when done!
@@ -418,12 +422,12 @@ public interface ContentHostingService extends EntityProducer
 	 * @return a new ContentResource object.
 	 */
 	public ContentResource addAttachmentResource(String name, String type, byte[] content, ResourceProperties properties)
-			throws IdInvalidException, InconsistentException, IdUsedException, PermissionException, OverQuotaException, ServerOverloadException;
+			throws IdInvalidException, InconsistentException, IdUsedException, PermissionException, OverQuotaException,
+			ServerOverloadException;
 
 	/**
-	 * Create a new resource as an attachment to some other resource in the system. The new resource will be placed into a 
-	 * newly created collection in the site collection within the attachment collection. The new collection will have an 
-	 * auto-generated id, and it will be given the specified resource name within the site collection.
+	 * Create a new resource as an attachment to some other resource in the system. The new resource will be placed into a newly created collection in the site collection within the attachment collection. The new collection will have an auto-generated id,
+	 * and it will be given the specified resource name within the site collection.
 	 * 
 	 * @param name
 	 *        The name of the new resource, i.e. a partial id relative to the collection where it will live.
@@ -451,9 +455,10 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 * @return a new ContentResource object.
 	 */
-	public ContentResource addAttachmentResource(String name, String site, String tool, String type, byte[] content, ResourceProperties properties)
-			throws IdInvalidException, InconsistentException, IdUsedException, PermissionException, OverQuotaException, ServerOverloadException;
-	
+	public ContentResource addAttachmentResource(String name, String site, String tool, String type, byte[] content,
+			ResourceProperties properties) throws IdInvalidException, InconsistentException, IdUsedException, PermissionException,
+			OverQuotaException, ServerOverloadException;
+
 	/**
 	 * Create a new resource as an attachment to some other resource in the system, locked for update. Must commitResource() to make official, or cancelResource() when done! The new resource will be placed into a newly created collecion in the attachment
 	 * collection, with an auto-generated id, and given the specified resource name within this collection.
@@ -588,9 +593,10 @@ public interface ContentHostingService extends EntityProducer
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
 	 * @exception ServerOverloadException
-	 * 			 if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
+	 *            if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
-	public void removeResource(String id) throws PermissionException, IdUnusedException, TypeException, InUseException, ServerOverloadException;
+	public void removeResource(String id) throws PermissionException, IdUnusedException, TypeException, InUseException,
+			ServerOverloadException;
 
 	/**
 	 * Remove a resource that is locked for update.
@@ -600,7 +606,7 @@ public interface ContentHostingService extends EntityProducer
 	 * @exception PermissionException
 	 *            if the user does not have permissions to read a containing collection, or to remove this resource.
 	 * @exception ServerOverloadException
-	 * 			 if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
+	 *            if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
 	public void removeResource(ContentResourceEdit edit) throws PermissionException, ServerOverloadException;
 
@@ -630,14 +636,12 @@ public interface ContentHostingService extends EntityProducer
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
 	 * @exception IdUsedException
-	 *            if copied item is a collection and the new id is already in use
-	 *            or if the copied item is not a collection and a unique id cannot be found
-	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 *            if copied item is a collection and the new id is already in use or if the copied item is not a collection and a unique id cannot be found in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
 	 * @exception ServerOverloadException
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
-	public String rename(String id, String new_id) throws PermissionException, IdUnusedException, TypeException, 
-			InUseException, OverQuotaException, InconsistentException, IdUsedException, ServerOverloadException;
+	public String rename(String id, String new_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
+			OverQuotaException, InconsistentException, IdUsedException, ServerOverloadException;
 
 	/**
 	 * check permissions for copy().
@@ -667,9 +671,7 @@ public interface ContentHostingService extends EntityProducer
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
 	 * @exception IdUsedException
-	 *            if copied item is a collection and the new id is already in use
-	 *            or if the copied item is not a collection and a unique id cannot be found
-	 *            in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
+	 *            if copied item is a collection and the new id is already in use or if the copied item is not a collection and a unique id cannot be found in some arbitrary number of attempts (@see MAXIMUM_ATTEMPTS_FOR_UNIQUENESS).
 	 * @exception ServerOverloadException
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
@@ -677,9 +679,7 @@ public interface ContentHostingService extends EntityProducer
 			OverQuotaException, IdUsedException, ServerOverloadException;
 
 	/**
-	 * Copy a collection or resource from one location to another.  Creates a new collection with an id 
-	 * similar to new_folder_id and recursively copies all nested collections and resources within thisCollection
-	 * to the new collection. 
+	 * Copy a collection or resource from one location to another. Creates a new collection with an id similar to new_folder_id and recursively copies all nested collections and resources within thisCollection to the new collection.
 	 * 
 	 * @param id
 	 *        The id of the resource.
@@ -701,15 +701,12 @@ public interface ContentHostingService extends EntityProducer
 	 * @exception ServerOverloadException
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
-	public String copyIntoFolder(String id, String folder_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
-			OverQuotaException, IdUsedException, ServerOverloadException, InconsistentException;
+	public String copyIntoFolder(String id, String folder_id) throws PermissionException, IdUnusedException, TypeException,
+			InUseException, OverQuotaException, IdUsedException, ServerOverloadException, InconsistentException;
 
 	/**
-	 * Move a resource or collection to a (different) folder. This may be accomplished by renaming the resource or 
-	 * by recursively renaming the collection and all enclosed members (no matter how deep) to effectively change
-	 * their locations. Alternatively, it may be accomplished by copying the resource and recursively copying 
-	 * collections from their existing collection to the new collection and ultimately deleting the original
-	 * resource(s) and/or collections(s).
+	 * Move a resource or collection to a (different) folder. This may be accomplished by renaming the resource or by recursively renaming the collection and all enclosed members (no matter how deep) to effectively change their locations. Alternatively,
+	 * it may be accomplished by copying the resource and recursively copying collections from their existing collection to the new collection and ultimately deleting the original resource(s) and/or collections(s).
 	 * 
 	 * @param id
 	 *        The id of the resource or collection to be moved.
@@ -733,8 +730,8 @@ public interface ContentHostingService extends EntityProducer
 	 * @exception ServerOverloadException
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
-	public String moveIntoFolder(String id, String folder_id) throws PermissionException, IdUnusedException, TypeException, InUseException,
-			OverQuotaException, IdUsedException, InconsistentException, ServerOverloadException;
+	public String moveIntoFolder(String id, String folder_id) throws PermissionException, IdUnusedException, TypeException,
+			InUseException, OverQuotaException, IdUsedException, InconsistentException, ServerOverloadException;
 
 	/**
 	 * Commit the changes made, and release the lock. The Object is disabled, and not to be used after this call.
@@ -1023,30 +1020,91 @@ public interface ContentHostingService extends EntityProducer
 	 */
 	public void setPubView(String id, boolean pubview);
 
-   /**
-    * Find the resources this user has read access to from all worksites of the appropriate type.
-    *
-    * @param type this is the ResourceProperties.PROP_STRUCTOBJ_TYPE for stuctured objects or
-    * ResourceProperties.FILE_TYPE for file resources or null for all resources.
-    * @param primaryMimeType The primary mime type (ie. the "text" of "text/xml")
-    * This may be null to include all resources
-    * @param subMimeType The sub type (ie, the "xml" of "text/xml")
-    * This may be null to include all resources of the primary mime type if specified.
-    * @return List of ContentResource objects that match the search criteria
-    */
-   public List findResources(String type, String primaryMimeType, String subMimeType);
+	/**
+	 * Find the resources this user has read access to from all worksites of the appropriate type.
+	 * 
+	 * @param type
+	 *        this is the ResourceProperties.PROP_STRUCTOBJ_TYPE for stuctured objects or ResourceProperties.FILE_TYPE for file resources or null for all resources.
+	 * @param primaryMimeType
+	 *        The primary mime type (ie. the "text" of "text/xml") This may be null to include all resources
+	 * @param subMimeType
+	 *        The sub type (ie, the "xml" of "text/xml") This may be null to include all resources of the primary mime type if specified.
+	 * @return List of ContentResource objects that match the search criteria
+	 */
+	public List findResources(String type, String primaryMimeType, String subMimeType);
 
-   /**
-    * Return a map of Worksite collections roots that the user has access to.
-    * @return Map of worksite title (String) to worksite resource root id (String)
-    */
-   public Map getCollectionMap();
+	/**
+	 * Return a map of Worksite collections roots that the user has access to.
+	 * 
+	 * @return Map of worksite title (String) to worksite resource root id (String)
+	 */
+	public Map getCollectionMap();
 
-   /**
-    * Eliminate from the collection any duplicates as well as any items that are contained within 
-    * another item whose resource-id is in the collection.
-	* @param resourceIds A collection of strings (possibly empty) identifying items and/or collections. 
-	*/
-   public void eliminateDuplicates(Collection resourceIds);
+	/**
+	 * Eliminate from the collection any duplicates as well as any items that are contained within another item whose resource-id is in the collection.
+	 * 
+	 * @param resourceIds
+	 *        A collection of strings (possibly empty) identifying items and/or collections.
+	 */
+	public void eliminateDuplicates(Collection resourceIds);
 
+	/**
+	 * Create the current site's dropbox collection and one for each qualified user that the current user can make.
+	 */
+	public void createDropboxCollection();
+
+	/**
+	 * Create the site's dropbox collection and one for each qualified user that the current user can make.
+	 * 
+	 * @param siteId
+	 *        the Site id.
+	 */
+	public void createDropboxCollection(String siteId);
+
+	/**
+	 * Access the default dropbox collection id for the current request. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is returned.
+	 * 
+	 * @return The default dropbox collection id for the current request.
+	 */
+	public String getDropboxCollection();
+
+	/**
+	 * Access the default dropbox collection id for the site. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is returned.
+	 * 
+	 * @param siteId
+	 *        The site id.
+	 * @return The default dropbox collection id for the site.
+	 */
+	public String getDropboxCollection(String siteId);
+
+	/**
+	 * Determine whether the default dropbox collection id for this user in this site is the site's entire dropbox collection or just the current user's collection within the site's dropbox.
+	 * 
+	 * @return True if user sees all dropboxes in the site, false otherwise.
+	 */
+	public boolean isDropboxMaintainer();
+
+	/**
+	 * Determine whether the default dropbox collection id for this user in some site is the site's entire dropbox collection or just the current user's collection within the site's dropbox.
+	 * 
+	 * @return True if user sees all dropboxes in the site, false otherwise.
+	 */
+	public boolean isDropboxMaintainer(String siteId);
+
+	/**
+	 * Access the default dropbox collection display name for the current request. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is
+	 * returned.
+	 * 
+	 * @return The default dropbox collection display name for the current request.
+	 */
+	public String getDropboxDisplayName();
+
+	/**
+	 * Access the default dropbox collection display name for the site. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is returned.
+	 * 
+	 * @param siteId
+	 *        the Site id.
+	 * @return The default dropbox collection display name for the site.
+	 */
+	public String getDropboxDisplayName(String siteId);
 }

@@ -1007,18 +1007,18 @@ public class ResourcesAction
 			User[] submitters = (User[]) state.getAttribute(STATE_SAVE_ATTACHMENT_IN_DROPBOX);
 			if(submitters != null)
 			{
-				String dropboxId = Dropbox.getCollection();
+				String dropboxId = ContentHostingService.getDropboxCollection();
 				if(dropboxId == null)
 				{
-					Dropbox.createCollection();
-					dropboxId = Dropbox.getCollection();
+					ContentHostingService.createDropboxCollection();
+					dropboxId = ContentHostingService.getDropboxCollection();
 				}
 				
 				if(dropboxId == null)
 				{
 					// do nothing
 				}
-				else if(Dropbox.isDropboxMaintainer())
+				else if(ContentHostingService.isDropboxMaintainer())
 				{
 					for(int i = 0; i < submitters.length; i++)
 					{
@@ -1046,7 +1046,7 @@ public class ResourcesAction
 					{
 						BrowseItem root = (BrowseItem) dbox.remove(0);
 						// context.put("site", root);
-						root.setName(Dropbox.getDisplayName());
+						root.setName(ContentHostingService.getDropboxDisplayName());
 						root.addMembers(dbox);
 						this_site.add(root);
 					}
@@ -7226,15 +7226,15 @@ public class ResourcesAction
 			// no home set, see if we are in dropbox mode
 			if (resources_mode.equalsIgnoreCase (RESOURCES_MODE_DROPBOX))
 			{
-				home = Dropbox.getCollection();
+				home = ContentHostingService.getDropboxCollection();
 				
 				// if it came back null, we will pretend not to be in dropbox mode
 				if (home != null)
 				{
-					state.setAttribute(STATE_HOME_COLLECTION_DISPLAY_NAME, Dropbox.getDisplayName());
+					state.setAttribute(STATE_HOME_COLLECTION_DISPLAY_NAME, ContentHostingService.getDropboxDisplayName());
 
 					// create/update the collection of folders in the dropbox
-					Dropbox.createCollection();
+					ContentHostingService.createDropboxCollection();
 				}
 			}
 

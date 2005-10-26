@@ -66,6 +66,7 @@ import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityManager;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
@@ -73,6 +74,7 @@ import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.id.IdService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeRange;
@@ -1552,7 +1554,90 @@ public abstract class BaseCalendarService
 		}
 		
 	}	// importResources
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void syncWithSiteChange(Site site, EntityProducer.ChangeType change)
+	{
+		String[] toolIds = {"sakai.schedule"};
+
+		// for a delete, just disable
+		if (EntityProducer.ChangeType.REMOVE == change)
+		{
+			disableSchedule(site);
+		}
+		
+		// otherwise enable if we now have the mailbox tool, disable otherwise
+		else
+		{
+			// collect the site's email tool placements
+			Collection tools = site.getTools(toolIds);
+
+			// if we have a mailbox tool
+			if (!tools.isEmpty())
+			{
+				enableSchedule(site);
+			}
+			
+			// if we do not
+			else
+			{
+				disableSchedule(site);
+			}
+		}
+	}
+
+	/**
+	 * Setup a calendar for the site.
+	 * 
+	 * @param site
+	 *        The site.
+	 */
+	protected void enableSchedule(Site site)
+	{
+		// form the calendar name
+		String calRef = calendarReference(site.getId(), SiteService.MAIN_CONTAINER);
+
+		// see if there's a calendar
+		try
+		{
+			getCalendar(calRef);
+		}
+		catch (IdUnusedException un)
+		{
+			try
+			{
+				// create a calendar
+				CalendarEdit edit = addCalendar(calRef);
+				commitCalendar(edit);
+			}
+			catch (IdUsedException e)
+			{
+			}
+			catch (IdInvalidException e)
+			{
+			}
+			catch (PermissionException e)
+			{
+			}
+		}
+		catch (PermissionException e)
+		{
+		}
+	}
+
+	/**
+	 * Remove a calendar for the site.
+	 * 
+	 * @param site
+	 *        The site.
+	 */
+	protected void disableSchedule(Site site)
+	{
+		// TODO: currently we do not remove a calendar when the tool is removed from the site or the site is deleted -ggolden
+	}
+
 	/*******************************************************************************
 	* Calendar implementation
 	*******************************************************************************/

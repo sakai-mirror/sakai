@@ -25,6 +25,7 @@
 package org.sakaiproject.component.legacy.email;
 
 // import
+import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
@@ -37,6 +38,7 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.log.cover.Log;
+import org.sakaiproject.service.legacy.alias.cover.AliasService;
 import org.sakaiproject.service.legacy.email.MailArchiveChannel;
 import org.sakaiproject.service.legacy.email.MailArchiveChannelEdit;
 import org.sakaiproject.service.legacy.email.MailArchiveMessage;
@@ -46,15 +48,19 @@ import org.sakaiproject.service.legacy.email.MailArchiveMessageHeaderEdit;
 import org.sakaiproject.service.legacy.email.MailArchiveService;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.message.Message;
 import org.sakaiproject.service.legacy.message.MessageChannel;
+import org.sakaiproject.service.legacy.message.MessageChannelEdit;
 import org.sakaiproject.service.legacy.message.MessageHeader;
 import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 import org.sakaiproject.service.legacy.notification.NotificationEdit;
 import org.sakaiproject.service.legacy.notification.NotificationService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
@@ -429,6 +435,168 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 		}
 		
 		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void syncWithSiteChange(Site site, EntityProducer.ChangeType change)
+	{
+		String[] toolIds = {"sakai.mailbox"};
+
+		// for a delete, just disable
+		if (EntityProducer.ChangeType.REMOVE == change)
+		{
+			disableMailbox(site);
+		}
+		
+		// otherwise enable if we now have the tool, disable otherwise
+		else
+		{
+			// collect tools from the site
+			Collection tools = site.getTools(toolIds);
+
+			// if we have the tool
+			if (!tools.isEmpty())
+			{
+				enableMailbox(site);
+			}
+			
+			// if we do not
+			else
+			{
+				disableMailbox(site);
+			}
+		}
+	}
+
+	/**
+	 * Setup the mailbox for an active site.
+	 * 
+	 * @param site
+	 *        The site.
+	 */
+	protected void enableMailbox(Site site)
+	{
+		// form the email channel name
+		String channelRef = channelReference(site.getId(), SiteService.MAIN_CONTAINER);
+
+		// see if there's a channel
+		MessageChannel channel = null;
+		try
+		{
+			channel = getChannel(channelRef);
+		}
+		catch (IdUnusedException e)
+		{
+		}
+		catch (PermissionException e)
+		{
+		}
+
+		// if it exists, make sure it's enabled
+		if (channel != null)
+		{
+			if (channel.getProperties().getProperty(ResourceProperties.PROP_CHANNEL_ENABLED) == null)
+			{
+				try
+				{
+					MessageChannelEdit edit = (MessageChannelEdit) editChannel(channelRef);
+					edit.getPropertiesEdit().addProperty(ResourceProperties.PROP_CHANNEL_ENABLED, "true");
+					commitChannel(edit);
+					channel = edit;
+				}
+				catch (IdUnusedException ignore)
+				{
+				}
+				catch (PermissionException ignore)
+				{
+				}
+				catch (InUseException ignore)
+				{
+				}
+			}
+		}
+
+		// otherwise create it
+		else
+		{
+			try
+			{
+				// create a channel and mark it as enabled
+				MessageChannelEdit edit = addMailArchiveChannel(channelRef);
+				edit.getPropertiesEdit().addProperty(ResourceProperties.PROP_CHANNEL_ENABLED, "true");
+				commitChannel(edit);
+				channel = edit;
+			}
+			catch (IdUsedException e)
+			{
+			}
+			catch (IdInvalidException e)
+			{
+			}
+			catch (PermissionException e)
+			{
+			}
+		}
+	}
+
+	/**
+	 * Set a site's mailbox to inactive - it remains in existance, just disabled
+	 * 
+	 * @param site
+	 *        The site.
+	 */
+	protected void disableMailbox(Site site)
+	{
+		// form the email channel name
+		String channelRef = channelReference(site.getId(), SiteService.MAIN_CONTAINER);
+
+		// see if there's a channel
+		MessageChannel channel = null;
+		try
+		{
+			channel = getChannel(channelRef);
+		}
+		catch (IdUnusedException e)
+		{
+		}
+		catch (PermissionException e)
+		{
+		}
+
+		// if it exists, make sure it's disabled
+		if (channel != null)
+		{
+			if (channel.getProperties().getProperty(ResourceProperties.PROP_CHANNEL_ENABLED) != null)
+			{
+				try
+				{
+					MessageChannelEdit edit = (MessageChannelEdit) editChannel(channelRef);
+					edit.getPropertiesEdit().removeProperty(ResourceProperties.PROP_CHANNEL_ENABLED);
+					commitChannel(edit);
+					channel = edit;
+				}
+				catch (IdUnusedException ignore)
+				{
+				}
+				catch (PermissionException ignore)
+				{
+				}
+				catch (InUseException ignore)
+				{
+				}
+			}
+		}
+
+		// remove any alias
+		try
+		{
+			AliasService.removeTargetAliases(channelRef);
+		}
+		catch (PermissionException e)
+		{
+		}
 	}
 
 	/*******************************************************************************

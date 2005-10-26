@@ -26,6 +26,7 @@ package org.sakaiproject.service.legacy.site;
 
 // imports
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -66,6 +67,15 @@ public interface SitePage extends Edit, Serializable
 
 	/** @return The List (ToolConfiguration) of tools on this column (0 based) of this page. */
 	public List getTools(int col);
+
+	/**
+	 * Get all the tools placed in the site on this page that are of any of these tool ids.
+	 * 
+	 * @param tooldIds
+	 *        The tool id array (String, such as sakai.chat, not a tool configuration / placement uuid) to search for.
+	 * @return A Collection (ToolConfiguration) of all the tools placed in the site on this page that are of this tool id  (may be empty).
+	 */
+	Collection getTools(String[] toolIds);
 
 	/** @return the skin to use for this page. */
 	public String getSkin();

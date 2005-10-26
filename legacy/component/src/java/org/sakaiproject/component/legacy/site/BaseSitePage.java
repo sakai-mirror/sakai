@@ -23,6 +23,7 @@
 
 package org.sakaiproject.component.legacy.site;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
@@ -353,6 +354,33 @@ public class BaseSitePage implements SitePage, Identifiable
 
 		// TODO: need to sort by layout hint
 		return m_tools;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public Collection getTools(String[] toolIds)
+	{
+		List rv = new Vector();
+		if ((toolIds == null) || (toolIds.length == 0)) return rv;
+
+		for (Iterator iTools = getTools().iterator(); iTools.hasNext();)
+		{
+			ToolConfiguration tc = (ToolConfiguration) iTools.next();
+			Tool tool = tc.getTool();
+			if ((tool != null) && (tool.getId() != null))
+			{
+				for (int i = 0; i < toolIds.length; i++)
+				{
+					if (tool.getId().equals(toolIds[i]))
+					{
+						rv.add(tc);
+					}
+				}
+			}
+		}
+
+		return rv;
 	}
 
 	/**

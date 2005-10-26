@@ -23,7 +23,6 @@
 
 package org.sakaiproject.component.legacy.site;
 
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,42 +35,31 @@ import java.util.Vector;
 
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.component.section.cover.CourseManager;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InUseException;
-import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.SiteCache;
 import org.sakaiproject.service.framework.memory.cover.MemoryService;
-import org.sakaiproject.service.legacy.alias.cover.AliasService;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.calendar.CalendarEdit;
-import org.sakaiproject.service.legacy.calendar.cover.CalendarService;
 import org.sakaiproject.service.legacy.chat.cover.ChatService;
-import org.sakaiproject.service.legacy.content.ContentCollection;
-import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
-import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.discussion.cover.DiscussionService;
 import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityManager;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
-import org.sakaiproject.service.legacy.message.MessageChannel;
-import org.sakaiproject.service.legacy.message.MessageChannelEdit;
 import org.sakaiproject.service.legacy.message.MessageService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Group;
@@ -532,7 +520,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 					// copy in the template
 					site.set(template, false);
 
-					doSave(site, true);
+					doSave(site, true, EntityProducer.ChangeType.ADD);
 
 					return site;
 				}
@@ -586,7 +574,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	public void save(Site site) throws IdUnusedException, PermissionException
 	{
-		// TODO: check permission and valid id!
 		if (site.getId() == null) throw new IdUnusedException("<null>");
 
 		// check security (throws if not permitted)
@@ -598,14 +585,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			throw new IdUnusedException(site.getId());
 		}
 
-		doSave((BaseSite) site, false);
+		doSave((BaseSite) site, false, EntityProducer.ChangeType.UPDATE);
 	}
 
 	/**
 	 * Comlete the save process.
 	 * @param site The site to save.
 	 */
-	protected void doSave(BaseSite site, boolean isNew)
+	protected void doSave(BaseSite site, boolean isNew, EntityProducer.ChangeType change)
 	{
 		if (isNew)
 		{
@@ -622,7 +609,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		saveAzgs(site);
 
 		// sync up with all other services
-		enableRelated(site);
+		enableRelated(site, change);
 
 		// track it
 		String event = site.getEvent();
@@ -733,7 +720,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		
 		((BaseSite) site).setEvent(SECURE_ADD_SITE);
 
-		doSave((BaseSite) site, true);
+		doSave((BaseSite) site, true, EntityProducer.ChangeType.ADD);
 
 		return site;
 	}
@@ -790,9 +777,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 
 		((BaseSite) site).setEvent(SECURE_ADD_SITE);
 
-		doSave((BaseSite) site, true);
-
-		// TODO: make sure the groups are copied, and their azg's are copied; enableRelated? -ggolden
+		doSave((BaseSite) site, true, EntityProducer.ChangeType.ADD);
 
 		return site;
 	}
@@ -1429,18 +1414,24 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	{
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void syncWithSiteChange(Site site, EntityProducer.ChangeType change)
+	{
+		// we are the site, nothing to do!
+	}
+
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
-	// TODO: the following enable/disable routines are UGLY here - oh gods of the separation of concerns
-	// and modularity forgive me - I will clean this up soon -ggolden
 	/**
 	 * Sync up with all other services for a site that exists.
 	 * 
 	 * @param site
 	 *        The site.
 	 */
-	protected void enableRelated(BaseSite site)
+	protected void enableRelated(BaseSite site, EntityProducer.ChangeType change)
 	{
 		// skip if special
 		if (isSpecialSite(site.getId()))
@@ -1448,80 +1439,48 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			return;
 		}
 
-		// what features are enabled for the site?
-		boolean hasChat = false;
-		boolean hasMailbox = false;
-		boolean hasResources = false;
-		boolean hasDropbox = false;
-		boolean hasSchedule = false;
-		boolean hasAnnouncements = false;
-		boolean hasDiscussion = false;
-		boolean hasAssignment = false;
-		boolean hasDissertation = false;
-		boolean hasGradebook = false;
-		for (Iterator iPages = site.getPages().iterator(); iPages.hasNext();)
+		// take care of our AuthzGroups
+		enableAzg(site);
+
+		// offer to all EntityProducers
+		for (Iterator i = m_entityManager.getEntityProducers().iterator(); i.hasNext();)
 		{
-			SitePage page = (SitePage) iPages.next();
+			EntityProducer ep = (EntityProducer) i.next();
+			ep.syncWithSiteChange(site, change);
+		}
+	}
 
-			// for each tool
-			for (Iterator iTools = page.getTools().iterator(); iTools.hasNext();)
-			{
-				ToolConfiguration tool = (ToolConfiguration) iTools.next();
-
-				// this could happen if a tool placement was made but the tool
-				// is not in this Sakai installation
-				if (tool.getTool() == null) continue;
-
-				// check known cases
-				if ("sakai.chat".equals(tool.getTool().getId()))
-				{
-					hasChat = true;
-				}
-				else if ("sakai.mailbox".equals(tool.getTool().getId()))
-				{
-					hasMailbox = true;
-				}
-				else if ("sakai.resources".equals(tool.getTool().getId()))
-				{
-					hasResources = true;
-				}
-				else if ("sakai.dropbox".equals(tool.getTool().getId()))
-				{
-					hasDropbox = true;
-				}
-				else if ("sakai.schedule".equals(tool.getTool().getId()))
-				{
-					hasSchedule = true;
-				}
-				else if ("sakai.announcements".equals(tool.getTool().getId()))
-				{
-					hasAnnouncements = true;
-				}
-				else if ("sakai.discussion".equals(tool.getTool().getId()))
-				{
-					hasDiscussion = true;
-				}
-				else if ("sakai.assignment".equals(tool.getTool().getId()))
-				{
-					hasAssignment = true;
-				}
-				else if ("sakai.threadeddiscussion".equals(tool.getTool().getId()))
-				{
-					hasDiscussion = true;
-				}
-				else if ("sakai.dissertation".equals(tool.getTool().getId()))
-				{
-					hasDissertation = true;
-				}
-				else if ("sakai.gradebook.tool".equals(tool.getTool().getId()))
-				{
-					hasGradebook = true;
-				}
-			}
+	/**
+	 * Sync up with all other services for a site that is going away.
+	 * 
+	 * @param site
+	 *        The site.
+	 */
+	protected void disableRelated(Site site)
+	{
+		// skip if special
+		if (isSpecialSite(site.getId()))
+		{
+			return;
 		}
 
-		// enable features used, disable those not
+		// offer to all EntityProducers
+		for (Iterator i = m_entityManager.getEntityProducers().iterator(); i.hasNext();)
+		{
+			EntityProducer ep = (EntityProducer) i.next();
+			ep.syncWithSiteChange(site, EntityProducer.ChangeType.REMOVE);
+		}
 
+		// disable the azgs last, so permissions were in place for the above
+		disableAzg(site);
+	}
+
+	/**
+	 * Enable the site and site group AuthzGroups.
+	 * @param site The site.
+	 */
+	protected void enableAzg(BaseSite site)
+	{
 		// figure the site authorization group template
 		String siteAzgTemplate = siteAzgTemplate(site);
 
@@ -1565,56 +1524,23 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			Group group = (Group) iGroups.next();
 			disableAuthorizationGroup(group.getReference());
 		}
+	}
 
-		if (hasMailbox)
+	/**
+	 * Disable the site and site group azgs for a site that's being deleted.
+	 * @param site The site.
+	 */
+	protected void disableAzg(Site site)
+	{
+		// disable a realm for each group
+		for (Iterator iGroups = site.getGroups().iterator(); iGroups.hasNext();)
 		{
-			enableMailbox(site);
-		}
-		else
-		{
-			disableMailbox(site);
-		}
-
-		if (hasChat)
-		{
-			enableMessageChannel(site, ChatService.SERVICE_NAME);
-		}
-
-		if (hasAnnouncements)
-		{
-			enableMessageChannel(site, AnnouncementService.SERVICE_NAME);
+			Group group = (Group) iGroups.next();
+			disableAuthorizationGroup(group.getReference());
 		}
 
-		if (hasDiscussion)
-		{
-			enableMessageChannel(site, DiscussionService.SERVICE_NAME);
-		}
-
-		if (hasSchedule)
-		{
-			enableSchedule(site);
-		}
-
-		if (hasResources)
-		{
-			enableResources(site);
-		}
-
-		if (hasDropbox)
-		{
-			enableDropbox(site);
-		}
-
-		if (hasGradebook)
-		{
-			enableGradebook(site);
-		}
-
-		// Regardless of whether the section info tool is deployed, the tools
-		// relying on SectionAwareness will need this --jholtzman@berkeley.edu
-		enableSections(site);
-
-		// %%% others ? -ggolden
+		// disable realm last, to keep those permissions around
+		disableAuthorizationGroup(site.getReference());
 	}
 
 	/**
@@ -1671,34 +1597,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		return azgTemplate;
-	}
-
-	/**
-	 * Sync up with all other services for a site that is going away.
-	 * 
-	 * @param site
-	 *        The site.
-	 */
-	protected void disableRelated(Site site)
-	{
-		// skip if special
-		if (isSpecialSite(site.getId()))
-		{
-			return;
-		}
-
-		disableMailbox(site);
-		// others %%%
-
-		// disable realm last, to keep those permissions around
-		disableAuthorizationGroup(site.getReference());
-
-		// disable a realm for each group
-		for (Iterator iGroups = site.getGroups().iterator(); iGroups.hasNext();)
-		{
-			Group group = (Group) iGroups.next();
-			disableAuthorizationGroup(group.getReference());
-		}
 	}
 
 	/**
@@ -1774,362 +1672,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		catch (Exception e)
 		{
 			m_logger.warn(this + ".removeSite: AuthzGroup exception: " + e);
-		}
-
-		// %%% do we want to remove all the azgs associated with the site's resources? -ggolden
-	}
-
-	/**
-	 * Setup the mailbox for an active site.
-	 * 
-	 * @param site
-	 *        The site.
-	 */
-	protected void enableMailbox(Site site)
-	{
-		// form the email channel name
-		String channelRef = MailArchiveService.channelReference(site.getId(), MAIN_CONTAINER);
-
-		// see if there's a channel
-		MessageChannel channel = null;
-		try
-		{
-			channel = MailArchiveService.getChannel(channelRef);
-		}
-		catch (IdUnusedException e)
-		{
-		}
-		catch (PermissionException e)
-		{
-		}
-
-		// if it exists, make sure it's enabled
-		if (channel != null)
-		{
-			if (channel.getProperties().getProperty(ResourceProperties.PROP_CHANNEL_ENABLED) == null)
-			{
-				try
-				{
-					MessageChannelEdit edit = (MessageChannelEdit) MailArchiveService.editChannel(channelRef);
-					edit.getPropertiesEdit().addProperty(ResourceProperties.PROP_CHANNEL_ENABLED, "true");
-					MailArchiveService.commitChannel(edit);
-					channel = edit;
-				}
-				catch (IdUnusedException ignore)
-				{
-				}
-				catch (PermissionException ignore)
-				{
-				}
-				catch (InUseException ignore)
-				{
-				}
-			}
-		}
-
-		// otherwise create it
-		else
-		{
-			try
-			{
-				// create a channel and mark it as enabled
-				MessageChannelEdit edit = MailArchiveService.addMailArchiveChannel(channelRef);
-				edit.getPropertiesEdit().addProperty(ResourceProperties.PROP_CHANNEL_ENABLED, "true");
-				MailArchiveService.commitChannel(edit);
-				channel = edit;
-			}
-			catch (IdUsedException e)
-			{
-			}
-			catch (IdInvalidException e)
-			{
-			}
-			catch (PermissionException e)
-			{
-			}
-		}
-	}
-
-	/**
-	 * Set a site's mailbox to inactive - it remains in existance, just disabled
-	 * 
-	 * @param site
-	 *        The site.
-	 */
-	protected void disableMailbox(Site site)
-	{
-		// form the email channel name
-		String channelRef = MailArchiveService.channelReference(site.getId(), MAIN_CONTAINER);
-
-		// see if there's a channel
-		MessageChannel channel = null;
-		try
-		{
-			channel = MailArchiveService.getChannel(channelRef);
-		}
-		catch (IdUnusedException e)
-		{
-		}
-		catch (PermissionException e)
-		{
-		}
-
-		// if it exists, make sure it's disabled
-		if (channel != null)
-		{
-			if (channel.getProperties().getProperty(ResourceProperties.PROP_CHANNEL_ENABLED) != null)
-			{
-				try
-				{
-					MessageChannelEdit edit = (MessageChannelEdit) MailArchiveService.editChannel(channelRef);
-					edit.getPropertiesEdit().removeProperty(ResourceProperties.PROP_CHANNEL_ENABLED);
-					MailArchiveService.commitChannel(edit);
-					channel = edit;
-				}
-				catch (IdUnusedException ignore)
-				{
-				}
-				catch (PermissionException ignore)
-				{
-				}
-				catch (InUseException ignore)
-				{
-				}
-			}
-		}
-
-		// remove any alias
-		try
-		{
-			AliasService.removeTargetAliases(channelRef);
-		}
-		catch (PermissionException e)
-		{
-		}
-	}
-
-	/**
-	 * Setup a message channel.
-	 * 
-	 * @param site
-	 *        The site.
-	 * @param serviceId
-	 *        The name of the message service.
-	 */
-	protected void enableMessageChannel(Site site, String serviceId)
-	{
-		MessageService service = getMessageService(serviceId);
-
-		// form the channel name
-		String channelRef = service.channelReference(site.getId(), MAIN_CONTAINER);
-
-		// see if there's a channel
-		try
-		{
-			service.getChannel(channelRef);
-		}
-		catch (IdUnusedException un)
-		{
-			try
-			{
-				// create a channel
-				MessageChannelEdit edit = service.addChannel(channelRef);
-				service.commitChannel(edit);
-			}
-			catch (IdUsedException e)
-			{
-			}
-			catch (IdInvalidException e)
-			{
-			}
-			catch (PermissionException e)
-			{
-			}
-		}
-		catch (PermissionException e)
-		{
-		}
-	}
-
-	/**
-	 * Setup a calendar for the site.
-	 * 
-	 * @param site
-	 *        The site.
-	 */
-	protected void enableSchedule(Site site)
-	{
-		// form the calendar name
-		String calRef = CalendarService.calendarReference(site.getId(), MAIN_CONTAINER);
-
-		// see if there's a calendar
-		try
-		{
-			CalendarService.getCalendar(calRef);
-		}
-		catch (IdUnusedException un)
-		{
-			try
-			{
-				// create a calendar
-				CalendarEdit edit = CalendarService.addCalendar(calRef);
-				CalendarService.commitCalendar(edit);
-			}
-			catch (IdUsedException e)
-			{
-			}
-			catch (IdInvalidException e)
-			{
-			}
-			catch (PermissionException e)
-			{
-			}
-		}
-		catch (PermissionException e)
-		{
-		}
-	}
-
-	/**
-	 * Make sure a home in resources exists for the site.
-	 * 
-	 * @param site
-	 *        The site.
-	 */
-	protected void enableResources(Site site)
-	{
-		// it would be called
-		String id = ContentHostingService.getSiteCollection(site.getId());
-
-		// does it exist?
-		try
-		{
-			ContentCollection collection = ContentHostingService.getCollection(id);
-
-			// do we need to update the title?
-			if (!site.getTitle().equals(collection.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME)))
-			{
-				try
-				{
-					ContentCollectionEdit edit = ContentHostingService.editCollection(id);
-					edit.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, site.getTitle());
-					ContentHostingService.commitCollection(edit);
-				}
-				catch (IdUnusedException e)
-				{
-					m_logger.warn(this + ".enableResources: " + e);
-				}
-				catch (PermissionException e)
-				{
-					m_logger.warn(this + ".enableResources: " + e);
-				}
-				catch (InUseException e)
-				{
-					m_logger.warn(this + ".enableResources: " + e);
-				}
-			}
-		}
-		catch (IdUnusedException un)
-		{
-			// make it
-			try
-			{
-				ContentCollectionEdit collection = ContentHostingService.addCollection(id);
-				collection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, site.getTitle());
-				ContentHostingService.commitCollection(collection);
-			}
-			catch (IdUsedException e)
-			{
-				m_logger.warn(this + ".enableResources: " + e);
-			}
-			catch (IdInvalidException e)
-			{
-				m_logger.warn(this + ".enableResources: " + e);
-			}
-			catch (PermissionException e)
-			{
-				m_logger.warn(this + ".enableResources: " + e);
-			}
-			catch (InconsistentException e)
-			{
-				m_logger.warn(this + ".enableResources: " + e);
-			}
-		}
-		catch (TypeException e)
-		{
-			m_logger.warn(this + ".enableResources: " + e);
-		}
-		catch (PermissionException e)
-		{
-			m_logger.warn(this + ".enableResources: " + e);
-		}
-	}
-
-	/**
-	 * Make sure a home in resources for dropbox exists for the site.
-	 * 
-	 * @param site
-	 *        The site.
-	 */
-	protected void enableDropbox(Site site)
-	{
-		// create it and the user folders within
-		Dropbox.createCollection(site.getId());
-	}
-
-	/**
-	 * Setup the gradebook for an active site.
-	 * 
-	 * @param site
-	 *        The site.
-	 */
-	protected void enableGradebook(Site site)
-	{
-		// find the gradebook service
-		// org.sakaiproject.service.gradebook.shared.GradebookService service = (org.sakaiproject.service.gradebook.shared.GradebookService) ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
-		// if (service == null) return;
-		//
-		// // just to keep us from having a dependency on this optional tool, do this the hard way
-		// if (!service.gradebookExists(site.getId())) service.addGradebook(site.getId(), site.getId());
-
-		Object service = ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
-		if (service == null) return;
-
-		// the method signature
-		Class[] signature = new Class[2];
-		signature[0] = String.class;
-		signature[1] = String.class;
-
-		// the method name
-		String methodName = "addGradebook";
-
-		// find a method of this class with this name and signature
-		try
-		{
-			Method method = service.getClass().getMethod(methodName, signature);
-
-			// the parameters
-			Object[] args = new Object[2];
-			args[0] = site.getId();
-			args[1] = site.getId();
-
-			// make the call
-			method.invoke(service, args);
-		}
-		catch (Throwable t)
-		{
-			m_logger.debug(t.toString());
-		}
-	}
-
-	protected void enableSections(Site site)
-	{
-		String siteId = site.getId();
-		if (!CourseManager.courseExists(siteId))
-		{
-			String title = site.getTitle();
-			if (m_logger.isInfoEnabled()) m_logger.info("Creating a new section container for site " + siteId);
-			CourseManager.createCourse(siteId, title, false, false, false);
 		}
 	}
 

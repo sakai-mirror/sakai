@@ -59,6 +59,7 @@ import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.discussion.DiscussionChannel;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityManager;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
@@ -1560,7 +1561,65 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	public void importEntities(String fromContext, String toContext, List resourceIds)
 	{	
 	}	// importResources
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void syncWithSiteChange(Site site, EntityProducer.ChangeType change)
+	{
+		// nothing at this level, may be overriden in an extension class
+	}
+
+	/**
+	 * Setup a main message channel for a site.
+	 * 
+	 * @param site
+	 *        The site.
+	 * @param serviceId
+	 *        The name of the message service.
+	 */
+	protected void enableMessageChannel(Site site)
+	{
+		// form the channel name
+		String channelRef = channelReference(site.getId(), SiteService.MAIN_CONTAINER);
+
+		// see if there's a channel
+		try
+		{
+			getChannel(channelRef);
+		}
+		catch (IdUnusedException un)
+		{
+			try
+			{
+				// create a channel
+				MessageChannelEdit edit = addChannel(channelRef);
+				commitChannel(edit);
+			}
+			catch (IdUsedException e)
+			{
+			}
+			catch (IdInvalidException e)
+			{
+			}
+			catch (PermissionException e)
+			{
+			}
+		}
+		catch (PermissionException e)
+		{
+		}
+	}
+
+	/**
+	 * Remove the main message channel for a site.
+	 * @param site The site.
+	 */
+	protected void disableMessageChannel(Site site)
+	{
+		// TODO: we do nothing now - channels hang around after the tool is removed from the site or the site is deleted -ggolden
+	}
+
 	/*******************************************************************************
 	* MessageChannel implementation
 	*******************************************************************************/

@@ -35,6 +35,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
@@ -45,6 +46,7 @@ import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.component.legacy.notification.SiteEmailNotificationContent;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
@@ -75,6 +77,7 @@ import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityManager;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
@@ -84,9 +87,11 @@ import org.sakaiproject.service.legacy.id.cover.IdService;
 import org.sakaiproject.service.legacy.notification.NotificationEdit;
 import org.sakaiproject.service.legacy.notification.NotificationService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
+import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.Blob;
@@ -4216,6 +4221,191 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		return props;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void syncWithSiteChange(Site site, EntityProducer.ChangeType change)
+	{
+		// handle both resources and dropbox
+		syncWithSiteChangeResources(site, change);
+		syncWithSiteChangeDropbox(site, change);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void syncWithSiteChangeResources(Site site, EntityProducer.ChangeType change)
+	{
+		// TODO: perhaps we should create resources for the site even without the tool? -ggolden
+
+		String[] toolIds = {"sakai.resources"};
+
+		// for a delete, just disable
+		if (EntityProducer.ChangeType.REMOVE == change)
+		{
+			disableResources(site);
+		}
+		
+		// otherwise enable if we now have the tool, disable otherwise
+		else
+		{
+			// collect the tools from the site
+			Collection tools = site.getTools(toolIds);
+
+			// if we have the tool
+			if (!tools.isEmpty())
+			{
+				enableResources(site);
+			}
+			
+			// if we do not
+			else
+			{
+				disableResources(site);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void syncWithSiteChangeDropbox(Site site, EntityProducer.ChangeType change)
+	{
+		// TODO: perhaps we should create resources for the site even without the tool? -ggolden
+
+		String[] toolIds = {"sakai.dropbox"};
+
+		// for a delete, just disable
+		if (EntityProducer.ChangeType.REMOVE == change)
+		{
+			disableDropbox(site);
+		}
+		
+		// otherwise enable if we now have the tool, disable otherwise
+		else
+		{
+			// collect the tools from the site
+			Collection tools = site.getTools(toolIds);
+
+			// if we have the tool
+			if (!tools.isEmpty())
+			{
+				enableDropbox(site);
+			}
+			
+			// if we do not
+			else
+			{
+				disableDropbox(site);
+			}
+		}
+	}
+
+	/**
+	 * Make sure a home in resources exists for the site.
+	 * 
+	 * @param site
+	 *        The site.
+	 */
+	protected void enableResources(Site site)
+	{
+		// it would be called
+		String id = getSiteCollection(site.getId());
+
+		// does it exist?
+		try
+		{
+			ContentCollection collection = getCollection(id);
+
+			// do we need to update the title?
+			if (!site.getTitle().equals(collection.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME)))
+			{
+				try
+				{
+					ContentCollectionEdit edit = editCollection(id);
+					edit.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, site.getTitle());
+					commitCollection(edit);
+				}
+				catch (IdUnusedException e)
+				{
+					m_logger.warn(this + ".enableResources: " + e);
+				}
+				catch (PermissionException e)
+				{
+					m_logger.warn(this + ".enableResources: " + e);
+				}
+				catch (InUseException e)
+				{
+					m_logger.warn(this + ".enableResources: " + e);
+				}
+			}
+		}
+		catch (IdUnusedException un)
+		{
+			// make it
+			try
+			{
+				ContentCollectionEdit collection = addCollection(id);
+				collection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, site.getTitle());
+				commitCollection(collection);
+			}
+			catch (IdUsedException e)
+			{
+				m_logger.warn(this + ".enableResources: " + e);
+			}
+			catch (IdInvalidException e)
+			{
+				m_logger.warn(this + ".enableResources: " + e);
+			}
+			catch (PermissionException e)
+			{
+				m_logger.warn(this + ".enableResources: " + e);
+			}
+			catch (InconsistentException e)
+			{
+				m_logger.warn(this + ".enableResources: " + e);
+			}
+		}
+		catch (TypeException e)
+		{
+			m_logger.warn(this + ".enableResources: " + e);
+		}
+		catch (PermissionException e)
+		{
+			m_logger.warn(this + ".enableResources: " + e);
+		}
+	}
+
+	/**
+	 * Remove resources area for a site.
+	 * @param site The site.
+	 */
+	protected void disableResources(Site site)
+	{
+		// TODO: we do nothing now - resources hang around after the tool is removed from the site or the site is deleted -ggolden
+	}
+
+	/**
+	 * Make sure a home in resources for dropbox exists for the site.
+	 * 
+	 * @param site
+	 *        The site.
+	 */
+	protected void enableDropbox(Site site)
+	{
+		// create it and the user folders within
+		createDropboxCollection(site.getId());
+	}
+
+	/**
+	 * Remove resources area for a site.
+	 * @param site The site.
+	 */
+	protected void disableDropbox(Site site)
+	{
+		// TODO: we do nothing now - dropbox resources hang around after the tool is removed from the site or the site is deleted -ggolden
+	}
+
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * etc
 	 *********************************************************************************************************************************************************************************************************************************************************/
@@ -4998,8 +5188,268 @@ public abstract class BaseContentService implements ContentHostingService, Cache
    }
 
    /**********************************************************************************************************************************************************************************************************************************************************
-	 * ContentCollection implementation
-	 *********************************************************************************************************************************************************************************************************************************************************/
+    * Dropbox Stuff
+	*********************************************************************************************************************************************************************************************************************************************************/
+
+	private static ResourceBundle rb = ResourceBundle.getBundle("content");
+
+	/** The content root collection for dropboxes. */
+	protected static final String COLLECTION_DROPBOX = "/group-user/";
+
+ 	protected static final String PROP_MEMBER_DROPBOX_DESCRIPTION = rb.getString("use1");
+	protected static final String PROP_SITE_DROPBOX_DESCRIPTION =  rb.getString("use2");
+
+	protected static final String DROPBOX_ID = " Drop Box";
+
+	/**
+	 * Access the default dropbox collection id for the current request. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is returned.
+	 * 
+	 * @return The default dropbox collection id for the current request.
+	 */
+	public String getDropboxCollection()
+	{
+		return getDropboxCollection(ToolManager.getCurrentPlacement().getContext());
+	}
+
+	/**
+	 * Access the default dropbox collection id for the site. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is returned.
+	 * 
+	 * @param siteId
+	 *        The site id.
+	 * @return The default dropbox collection id for the site.
+	 */
+	public String getDropboxCollection(String siteId)
+	{
+		String rv = null;
+
+		// make sure we are in a worksite, not a workspace
+		if (SiteService.isUserSite(siteId) || SiteService.isSpecialSite(siteId))
+		{
+			return rv;
+		}
+
+		// form the site's dropbox collection
+		rv = COLLECTION_DROPBOX + siteId + "/";
+
+		// test if the current user has modify ability in the site's dropbox collection
+		if (allowUpdateCollection(rv))
+		{
+			// return the site's dropbox collection
+			return rv;
+		}
+
+		// if the dropbox collection exists, form the current user's dropbox collection within this site's
+		try
+		{
+			checkCollection(rv);
+			rv += StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()) + "/";
+			return rv;
+		}
+		catch (Exception ignore)
+		{
+		}
+
+		return null;
+	}
+
+	/**
+	 * Access the default dropbox collection display name for the current request. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is
+	 * returned.
+	 * 
+	 * @return The default dropbox collection display name for the current request.
+	 */
+	public String getDropboxDisplayName()
+	{
+		return getDropboxDisplayName(ToolManager.getCurrentPlacement().getContext());
+	}
+
+	/**
+	 * Access the default dropbox collection display name for the site. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is returned.
+	 * 
+	 * @param siteId
+	 *        the Site id.
+	 * @return The default dropbox collection display name for the site.
+	 */
+	public String getDropboxDisplayName(String siteId)
+	{
+		// make sure we are in a worksite, not a workspace
+		if (SiteService.isUserSite(siteId) || SiteService.isSpecialSite(siteId))
+		{
+			return null;
+		}
+
+		// form the site's dropbox collection
+		String id = COLLECTION_DROPBOX + siteId + "/";
+
+		// test if the current user has modify ability in the site's dropbox collection
+		if (allowUpdateCollection(id))
+		{
+			// return the site's dropbox collection
+			return siteId + DROPBOX_ID;
+		}
+
+		// return the current user's sort name
+		return UserDirectoryService.getCurrentUser().getSortName();
+	}
+
+	/**
+	 * Create the site's dropbox collection and one for each qualified user that the current user can make.
+	 */
+	public void createDropboxCollection()
+	{
+		createDropboxCollection(ToolManager.getCurrentPlacement().getContext());
+	}
+
+	/**
+	 * Create the site's dropbox collection and one for each qualified user that the current user can make.
+	 * 
+	 * @param siteId
+	 *        the Site id.
+	 */
+	public void createDropboxCollection(String siteId)
+	{
+		// make sure we are in a worksite, not a workspace
+		if (SiteService.isUserSite(siteId) || SiteService.isSpecialSite(siteId))
+		{
+			return;
+		}
+
+		// form the site's dropbox collection
+		String dropbox = COLLECTION_DROPBOX + siteId + "/";
+
+		// try to create if it doesn't exist
+		try
+		{
+			checkCollection(dropbox);
+		}
+		catch (IdUnusedException unused)
+		{
+			try
+			{
+				ContentCollectionEdit edit = addCollection(dropbox);
+				ResourcePropertiesEdit props = edit.getPropertiesEdit();
+				props.addProperty(ResourceProperties.PROP_DISPLAY_NAME, siteId + DROPBOX_ID);
+				props.addProperty(ResourceProperties.PROP_DESCRIPTION, PROP_SITE_DROPBOX_DESCRIPTION);
+				 commitCollection(edit);
+			}
+			catch (PermissionException permissionException)
+			{
+				return;
+			}
+			catch (IdUsedException e)
+			{
+				m_logger.warn("createDropboxCollection: IdUsedException: " + dropbox);
+				return;
+			}
+			catch (IdInvalidException e)
+			{
+				m_logger.warn("createDropboxCollection(): IdInvalidException: " + dropbox);
+				return;
+			}
+			catch (InconsistentException e)
+			{
+				m_logger.warn("createDropboxCollection(): InconsistentException: " + dropbox);
+				return;
+			}
+		}
+		catch (PermissionException e)
+		{
+			return;
+		}
+		catch (TypeException typeException)
+		{
+			m_logger.warn("createDropboxCollection(): typeException: " + dropbox);
+			return;
+		}
+
+		// The EVENT_DROPBOX_OWN is granted within the site, so we can ask for all the users who have this ability
+		// using just the dropbox collection
+		List users = SecurityService.unlockUsers(EVENT_DROPBOX_OWN, getReference(dropbox));
+		for (Iterator it = users.iterator(); it.hasNext();)
+		{
+			User user = (User) it.next();
+
+			// the folder id for this user's dropbox in this group
+			String userFolder = dropbox + user.getId() + "/";
+
+			// see if it exists
+			try
+			{
+				 checkCollection(userFolder);
+			}
+			catch (IdUnusedException unused)
+			{
+				// doesn't exist, try to create it
+				try
+				{
+					ContentCollectionEdit edit = addCollection(userFolder);
+					ResourcePropertiesEdit props = edit.getPropertiesEdit();
+					props.addProperty(ResourceProperties.PROP_DISPLAY_NAME, user.getSortName());
+					props.addProperty(ResourceProperties.PROP_DESCRIPTION, PROP_MEMBER_DROPBOX_DESCRIPTION);
+					commitCollection(edit);
+				}
+				catch (PermissionException ignore)
+				{
+				}
+				catch (IdUsedException e)
+				{
+					m_logger.warn("createDropboxCollectionn(): idUsedException: " + userFolder);
+				}
+				catch (IdInvalidException e)
+				{
+					m_logger.warn("createDropboxCollection(): IdInvalidException: " + userFolder);
+				}
+				catch (InconsistentException e)
+				{
+					m_logger.warn("createDropboxCollection(): InconsistentException: " + userFolder);
+				}
+			}
+			catch (PermissionException ignore)
+			{
+			}
+			catch (TypeException typeException)
+			{
+				m_logger.warn("createDropboxCollection(): TypeException: " + userFolder);
+			}
+		}
+	}
+
+	/**
+	* Determine whether the default dropbox collection id for this user in this site 
+	* is the site's entire dropbox collection or just the current user's collection 
+	* within the site's dropbox.	 
+	* @return True if user sees all dropboxes in the site, false otherwise.
+	*/
+	public boolean isDropboxMaintainer()
+	{
+		return isDropboxMaintainer(ToolManager.getCurrentPlacement().getContext());
+	}
+	
+	/**
+	* Determine whether the default dropbox collection id for this user in some site 
+	* is the site's entire dropbox collection or just the current user's collection 
+	* within the site's dropbox.	 
+	* @return True if user sees all dropboxes in the site, false otherwise.
+	*/
+	public boolean isDropboxMaintainer(String siteId)
+	{
+		String dropboxId = null;
+
+		// make sure we are in a worksite, not a workspace
+		if (SiteService.isUserSite(siteId) || SiteService.isSpecialSite(siteId))
+		{
+			return false;
+		}
+
+		// form the site's dropbox collection
+		dropboxId = COLLECTION_DROPBOX + siteId + "/";
+
+		return allowUpdateCollection(dropboxId);
+	}
+
+	/**********************************************************************************************************************************************************************************************************************************************************
+    * ContentCollection implementation
+	*********************************************************************************************************************************************************************************************************************************************************/
 
 	public class BaseCollectionEdit implements ContentCollectionEdit, SessionBindingListener
 	{

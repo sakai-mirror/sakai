@@ -35,7 +35,6 @@ import java.util.ResourceBundle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.component.legacy.site.Dropbox;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.cover.SqlService;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
@@ -71,7 +70,7 @@ public class CollectionUtil
         String context = result.getString("site_id");
         
         if ("sakai.dropbox".equals(registration)){
-          list.add(Dropbox.getCollection(context));
+          list.add(ContentHostingService.getDropboxCollection(context));
           list.add(result.getString("title") + " "
               + rb.getString("gen.drop"));
         }

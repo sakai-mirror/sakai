@@ -835,6 +835,24 @@ public class BaseSite implements Site
 	/**
 	 * {@inheritDoc}
 	 */
+	public Collection getTools(String[] toolIds)
+	{
+		List rv = new Vector();
+		if ((toolIds == null) || (toolIds.length == 0)) return rv;
+
+		// search the pages
+		for (Iterator iPages = getPages().iterator(); iPages.hasNext();)
+		{
+			SitePage page = (SitePage) iPages.next();
+			rv.addAll(page.getTools(toolIds));
+		}
+
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public Group getGroup(String id)
 	{
 		if (id == null) return null;

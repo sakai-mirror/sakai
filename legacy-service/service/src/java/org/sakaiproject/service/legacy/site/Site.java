@@ -126,6 +126,15 @@ public interface Site extends Edit, Comparable, Serializable, AuthzGroup
 	ToolConfiguration getTool(String id);
 
 	/**
+	 * Get all the tools placed in the site on any page that are of any of these tool ids.
+	 * 
+	 * @param toolIds
+	 *        The tool id array (String, such as sakai.chat, not a tool configuration / placement uuid) to search for.
+	 * @return A Collection (ToolConfiguration) of all the tools placed in the site on any page that are of this tool id (may be empty).
+	 */
+	Collection getTools(String[] toolIds);
+
+	/**
 	 * Access the site type.
 	 * 
 	 * @return The site type.

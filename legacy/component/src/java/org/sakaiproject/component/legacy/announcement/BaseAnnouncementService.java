@@ -25,6 +25,7 @@
 package org.sakaiproject.component.legacy.announcement;
 
 // import
+import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
@@ -49,6 +50,7 @@ import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
@@ -59,6 +61,7 @@ import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
 import org.sakaiproject.service.legacy.notification.NotificationEdit;
 import org.sakaiproject.service.legacy.notification.NotificationService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.util.Filter;
@@ -438,6 +441,39 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 		}
 		
 		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void syncWithSiteChange(Site site, EntityProducer.ChangeType change)
+	{
+		String[] toolIds = {"sakai.announcements"};
+
+		// for a delete, just disable
+		if (EntityProducer.ChangeType.REMOVE == change)
+		{
+			disableMessageChannel(site);
+		}
+		
+		// otherwise enable if we now have the tool, disable otherwise
+		else
+		{
+			// collect the tools from the site
+			Collection tools = site.getTools(toolIds);
+
+			// if we have the tool
+			if (!tools.isEmpty())
+			{
+				enableMessageChannel(site);
+			}
+			
+			// if we do not
+			else
+			{
+				disableMessageChannel(site);
+			}
+		}
 	}
 
 	/*******************************************************************************

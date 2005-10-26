@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.sakaiproject.service.legacy.site.Site;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,6 +42,33 @@ import org.w3c.dom.Element;
  */
 public interface EntityProducer
 {
+	/**
+	 * Used to indicate what sort of change is happening, currently for the site change method
+	 */
+	public class ChangeType
+	{
+		private String m_id = null;
+
+		private ChangeType(String id)
+		{
+			m_id = id;
+		}
+
+		public String toString()
+		{
+			return m_id;
+		}
+
+		/** Something added. */
+		public static final ChangeType ADD = new ChangeType("add");
+
+		/** Something updated. */
+		public static final ChangeType UPDATE = new ChangeType("update");
+
+		/** Get sites that the current user does not have read access to but are joinable (non-myWorkspace, non-special). */
+		public static final ChangeType REMOVE = new ChangeType("remove");
+	}
+
 	/**
 	 * @return a short string identifying the resources kept here, good for a file name or label.
 	 */
@@ -88,8 +116,8 @@ public interface EntityProducer
 	 *        A map of old attachment name (as found in the DOM) to new attachment name.
 	 * @return A log of status messages from the merge.
 	 */
-	String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames,
-			Map userIdTrans, Set userListAllowImport);
+	String merge(String siteId, Element root, String archivePath, String fromSiteId, Map attachmentNames, Map userIdTrans,
+			Set userListAllowImport);
 
 	/**
 	 * import Entites from the source context into the destination context
@@ -102,47 +130,70 @@ public interface EntityProducer
 	 *        when null, all entities will be imported; otherwise, only entities with those ids will be imported
 	 */
 	void importEntities(String fromContext, String toContext, List ids);
-	
+
 	/**
 	 * If the service recognizes the reference as its own, parse it and fill in the Reference
-	 * @param reference The reference string to examine.
-	 * @param ref The Reference object to set with the results of the parse from a recognized reference.
+	 * 
+	 * @param reference
+	 *        The reference string to examine.
+	 * @param ref
+	 *        The Reference object to set with the results of the parse from a recognized reference.
 	 * @return true if the reference belonged to the service, false if not.
 	 */
 	boolean parseEntityReference(String reference, Reference ref);
-	
+
 	/**
 	 * Create an entity description for the entity referenced - the entity will belong to the service.
-	 * @param ref The entity reference.
+	 * 
+	 * @param ref
+	 *        The entity reference.
 	 * @return The entity description, or null if one cannot be made.
 	 */
 	String getEntityDescription(Reference ref);
-	
+
 	/**
 	 * Access the resource properties for the referenced entity - the entity will belong to the service.
-	 * @param ref The entity reference.
+	 * 
+	 * @param ref
+	 *        The entity reference.
 	 * @return The ResourceProperties object for the entity, or null if it has none.
 	 */
 	ResourceProperties getEntityResourceProperties(Reference ref);
-	
+
 	/**
 	 * Access the referenced Entity - the entity will belong to the service.
-	 * @param ref The entity reference.
+	 * 
+	 * @param ref
+	 *        The entity reference.
 	 * @return The Entity, or null if not found.
 	 */
 	Entity getEntity(Reference ref);
 
 	/**
 	 * Access a URL for the referenced entity - the entity will belong to the service.
-	 * @param ref The entity reference.
+	 * 
+	 * @param ref
+	 *        The entity reference.
 	 * @return The entity's URL, or null if it does not have one.
 	 */
 	String getEntityUrl(Reference ref);
-	
+
 	/**
 	 * Access a collection of authorization group ids for security on the for the referenced entity - the entity will belong to the service.
-	 * @param ref The entity reference.
+	 * 
+	 * @param ref
+	 *        The entity reference.
 	 * @return The entity's collection of authorization group ids, or null if this cannot be done.
 	 */
 	Collection getEntityAuthzGroups(Reference ref);
+
+	/**
+	 * Synchronize any entities related to the Site given this change in the Site, possibly a structural change where a tool is added or removed, or the site is new, or being deleted.
+	 * 
+	 * @param site
+	 *        The site that has just changed.
+	 * @param change
+	 *        The ChangeType for the site (newly added, updated, or just removed).
+	 */
+	void syncWithSiteChange(Site site, ChangeType change);
 }

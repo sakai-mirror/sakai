@@ -25,6 +25,7 @@
 package org.sakaiproject.component.legacy.chat;
 
 // import
+import java.util.Collection;
 import java.util.List;
 
 import org.sakaiproject.component.legacy.message.BaseMessageService;
@@ -43,12 +44,14 @@ import org.sakaiproject.service.legacy.chat.ChatMessageHeaderEdit;
 import org.sakaiproject.service.legacy.chat.ChatService;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.message.Message;
 import org.sakaiproject.service.legacy.message.MessageChannel;
 import org.sakaiproject.service.legacy.message.MessageHeader;
 import org.sakaiproject.service.legacy.message.MessageHeaderEdit;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.util.java.StringUtil;
 import org.w3c.dom.Element;
@@ -374,6 +377,39 @@ public abstract class BaseChatService
 		}
 		
 		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void syncWithSiteChange(Site site, EntityProducer.ChangeType change)
+	{
+		String[] toolIds = {"sakai.chat"};
+
+		// for a delete, just disable
+		if (EntityProducer.ChangeType.REMOVE == change)
+		{
+			disableMessageChannel(site);
+		}
+		
+		// otherwise enable if we now have the tool, disable otherwise
+		else
+		{
+			// collect the tools from the site
+			Collection tools = site.getTools(toolIds);
+
+			// if we have the tool
+			if (!tools.isEmpty())
+			{
+				enableMessageChannel(site);
+			}
+			
+			// if we do not
+			else
+			{
+				disableMessageChannel(site);
+			}
+		}
 	}
 
 	/*******************************************************************************

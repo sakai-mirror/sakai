@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 * 
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -29,8 +29,7 @@ import org.sakaiproject.service.framework.component.cover.ComponentManager;
 * <p>ContentHostingService is a static Cover for the {@link org.sakaiproject.service.legacy.content.ContentHostingService ContentHostingService};
 * see that interface for usage details.</p>
 * 
-* @author University of Michigan, Sakai Software Development Team
-* @version $Revision$
+* @author Sakai Software Development Team
 */
 public class ContentHostingService
 {
@@ -50,9 +49,8 @@ public class ContentHostingService
 			return (org.sakaiproject.service.legacy.content.ContentHostingService) ComponentManager.get(org.sakaiproject.service.legacy.content.ContentHostingService.class);
 		}
 	}
+
 	private static org.sakaiproject.service.legacy.content.ContentHostingService m_instance = null;
-
-
 
 	public static java.lang.String SERVICE_NAME = org.sakaiproject.service.legacy.content.ContentHostingService.SERVICE_NAME;
 	public static java.lang.String REFERENCE_ROOT = org.sakaiproject.service.legacy.content.ContentHostingService.REFERENCE_ROOT;
@@ -60,7 +58,8 @@ public class ContentHostingService
 	public static java.lang.String EVENT_RESOURCE_READ = org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_RESOURCE_READ;
 	public static java.lang.String EVENT_RESOURCE_WRITE = org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_RESOURCE_WRITE;
 	public static java.lang.String EVENT_RESOURCE_REMOVE = org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_RESOURCE_REMOVE;
-
+	public static java.lang.String EVENT_DROPBOX_OWN = org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_DROPBOX_OWN;
+	
 	public static java.lang.String getUrl(java.lang.String param0)
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
@@ -683,25 +682,83 @@ public class ContentHostingService
       return service.findResources(type, primaryMimeType, subMimeType);
    }
 
-   /**
-    * Return a map of Worksite collections roots that the user has access to.
-    * @return Map of worksite title (String) to worksite resource root id (String)
-    */
-   public static java.util.Map getCollectionMap() {
-      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
-      if (service == null)
-         return null;
+   public static java.util.Map getCollectionMap()
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null) return null;
 
-      return service.getCollectionMap();
-   }
-   
-   public static void eliminateDuplicates(java.util.Collection param) 
-   {
-	      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
-	      if (service == null)
-	         return;
+		return service.getCollectionMap();
+	}
 
-	      service.eliminateDuplicates(param);
-   }
+	public static void eliminateDuplicates(java.util.Collection param)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null) return;
 
+		service.eliminateDuplicates(param);
+	}
+
+	public static void createDropboxCollection()
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null) return;
+
+		service.createDropboxCollection();
+	}
+
+	public static void createDropboxCollection(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null) return;
+
+		service.createDropboxCollection(param0);
+	}
+
+	public static java.lang.String getDropboxCollection()
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null) return null;
+
+		return service.getDropboxCollection();
+	}
+
+	public static java.lang.String getDropboxCollection(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null) return null;
+
+		return service.getDropboxCollection(param0);
+	}
+
+	public static boolean isDropboxMaintainer()
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null) return false;
+
+		return service.isDropboxMaintainer();
+	}
+
+	public static boolean isDropboxMaintainer(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null) return false;
+
+		return service.isDropboxMaintainer(param0);
+	}
+
+	public static java.lang.String getDropboxDisplayName()
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null) return null;
+
+		return service.getDropboxDisplayName();
+	}
+
+	public static java.lang.String getDropboxDisplayName(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null) return null;
+
+		return service.getDropboxDisplayName(param0);
+	}
 }
