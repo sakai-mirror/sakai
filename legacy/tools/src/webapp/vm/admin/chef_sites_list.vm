@@ -12,7 +12,7 @@
 		</div>
 #if ($sites.size() > 0)
 	#set ($siteCount = 0)
-		<table class="listHier" cellspacing="0" summary ="$tlang.getString("sitlis.lisofgro")">
+		<table class="listHier lines" cellspacing="0" summary ="$tlang.getString("sitlis.lisofgro")">
 			<tr>
 				<th id="Id">$tlang.getString("sitlis.sitid")</th>
 				<th id="Title">$tlang.getString("sitlis.tit")</th>
@@ -23,9 +23,8 @@
 			</tr>
 	#foreach ($site in $sites)
 ##		#set ($realm = $realms.getAuthzGroup($site.Reference))
-		#set ($siteCount=$siteCount + 1)
 			<tr>
-				<td style="border-bottom:1px dashed gray;font-size:.9em" headers="Id" #if ($siteCount > 1) class="line" #end>
+				<td headers="Id">
 					#if ($service.allowUpdateSite($site.Id))
 						<a href="#toolLinkParam("$action" "doEdit" "id=$validator.escapeUrl($site.Id)")">
 							$validator.escapeHtml($site.Id)
@@ -34,11 +33,11 @@
 						$validator.escapeHtml($site.Id)
 					#end
 				</td>
-				<td  style="border-bottom:1px dashed gray;font-size:.9em" headers="Title">$validator.escapeHtml($site.Title)</td>
-				<td  style="border-bottom:1px dashed gray;font-size:.9em" headers="Published">&nbsp;#if($site.isPublished())<img src="#imageLink("sakai/checkon.gif")" border="0" alt="$tlang.getString("sitlis.pub")" />#end</td>
-				<td  style="border-bottom:1px dashed gray;font-size:.9em" headers="Joinable">&nbsp;#if($site.isJoinable())<img src="#imageLink("sakai/checkon.gif")" border="0" alt="$tlang.getString("sitlis.joi")" />#end</td>
-				<td  style="border-bottom:1px dashed gray;font-size:.9em" headers="Type">$validator.escapeHtml($site.Type)&nbsp;</td>
-				<td  style="border-bottom:1px dashed gray;font-size:.9em" headers="Description">
+				<td headers="Title">$validator.escapeHtml($site.Title)</td>
+				<td headers="Published">&nbsp;#if($site.isPublished())<img src="#imageLink("sakai/checkon.gif")" border="0" alt="$tlang.getString("sitlis.pub")" />#end</td>
+				<td  headers="Joinable">&nbsp;#if($site.isJoinable())<img src="#imageLink("sakai/checkon.gif")" border="0" alt="$tlang.getString("sitlis.joi")" />#end</td>
+				<td headers="Type">$validator.escapeHtml($site.Type)&nbsp;</td>
+				<td headers="Description">
 					#if ($site.ShortDescription && $site.ShortDescription !="")
 						<div class="instruction">
 							$tlang.getString("sitlis.shodes")

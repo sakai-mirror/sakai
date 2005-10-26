@@ -607,8 +607,8 @@
 							 #set ($rowCount=0)
 							 #foreach ($ann_item in $showMessagesList)
 								#set ($rowCount =$rowCount + 1)
-								<tr>
-									 <td width="50%" style="padding-bottom:0;" class="line" >
+								<tr class="highLightRow">
+									 <td width="50%" style="padding-bottom:0;" >
 									 	<h4>
 											#if ($ann_item.Header.draft)
 											<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.editdraft")"><span class="highlight">$tlang.getString("gen.draft") - </span>
@@ -641,7 +641,6 @@
 										#end
 										<td style="padding-left:3em;padding-bottom:0;"
 										#if  ( ($channel.allowEditMessage($ann_item.Id)) || ($channel.allowRemoveMessage($ann_item.Message)) ) 
-											class="line"
 										#end
 										>
 										#if  ( ($channel.allowEditMessage($ann_item.Id)) && ($channel.allowRemoveMessage($ann_item.Message)) ) 
