@@ -1816,12 +1816,14 @@ public class ResourcesAction
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
 		String itemType = params.getString("itemType");
+		System.out.println("===> ResourcesAction.doCreateitem itemType == " + itemType);
 		String flow = params.getString("flow");
 		String mode = (String) state.getAttribute(STATE_MODE);
 		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		Set missing = new HashSet();
 		
+		System.out.println("===> ResourcesAction.doCreateitem flow == " + flow);
 		if(flow == null || flow.equals("cancel"))
 		{
 			if(MODE_HELPER.equals(mode))
@@ -1854,6 +1856,7 @@ public class ResourcesAction
 		}
 		else if(flow.equals("create") && TYPE_FOLDER.equals(itemType))
 		{
+			System.out.println("===> ResourcesAction.doCreateitem creating folder " + itemType);
 			// Get the items
 			captureMultipleValues(state, params, true);
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
@@ -1880,12 +1883,17 @@ public class ResourcesAction
 		}
 		else if(flow.equals("create") && TYPE_UPLOAD.equals(itemType))
 		{
+			System.out.println("===> ResourcesAction.doCreateitem uploading file == " + itemType);
 			captureMultipleValues(state, params, true);
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			System.out.println("===> ResourcesAction.doCreateitem alerts.size == " + alerts.size());
 			if(alerts.isEmpty())
 			{
+				System.out.println("===> ResourcesAction.doCreateitem calling createFiles");
 				createFiles(state);
+				System.out.println("===> ResourcesAction.doCreateitem done createFiles");
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+				System.out.println("===> ResourcesAction.doCreateitem alerts.size == " + alerts.size());
 				if(alerts.isEmpty())
 				{
 					if(MODE_HELPER.equals(mode))
@@ -1899,6 +1907,7 @@ public class ResourcesAction
 					state.removeAttribute(STATE_CREATE_ITEMS);
 				}
 			}
+			System.out.println("===> ResourcesAction.doCreateitem mode == " + mode);
 		}
 		else if(flow.equals("create") && MIME_TYPE_DOCUMENT_HTML.equals(itemType))
 		{
@@ -2070,6 +2079,7 @@ public class ResourcesAction
 		}
 		
 		alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		System.out.println("===> ResourcesAction.doCreateitem alerts.size == " + alerts.size());
 		Iterator alertIt = alerts.iterator();
 		while(alertIt.hasNext())
 		{
@@ -2553,7 +2563,7 @@ public class ResourcesAction
 		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
 		int numberOfItems = 1;
 		numberOfItems = number.intValue();
-		
+		System.out.println("===> ResourcesAction.createFiles numberOfItems == " + numberOfItems);
 		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
 			EditItem item = (EditItem) new_files.get(i);
@@ -2561,6 +2571,7 @@ public class ResourcesAction
 			{
 				continue;
 			}
+			System.out.println("===> ResourcesAction.createFiles item " + i + ",   item.getName == " + item.getName());
 			
 			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
 			
@@ -2590,6 +2601,7 @@ public class ResourcesAction
 			{
 				filename = Validator.escapeResourceName(item.getName());
 			}
+			System.out.println("===> ResourcesAction.createFiles filename == " + filename);
 			
 			resourceProperties.addProperty(ResourceProperties.PROP_ORIGINAL_FILENAME, filename);
 
@@ -2614,12 +2626,14 @@ public class ResourcesAction
 			while(tryingToAddItem)
 			{
 				
+				System.out.println("===> ResourcesAction.createFiles trying to add item == " + i);
 				try
 				{
 					ContentResource resource = ContentHostingService.addResource (newResourceId,
 																				item.getMimeType(),
 																				item.getContent(),
 																				resourceProperties, item.getNotification());
+					System.out.println("===> ResourcesAction.createFiles **DONE** trying to add item == " + i);
 					tryingToAddItem = false;
 					// ResourceProperties rp = resource.getProperties();
 					item.setAdded(true);
@@ -2638,9 +2652,11 @@ public class ResourcesAction
 					{
 						attachItem(newResourceId, state);
 					}
+					System.out.println("===> ResourcesAction.createFiles really done trying to add item == " + i);
 				}
 				catch (IdUsedException e)
 				{
+					System.out.println("===> ResourcesAction.createFiles trying to add item == " + i);
 					boolean foundUnusedId = false;
 					for(int trial = 1;!foundUnusedId && trial < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS; trial++)
 					{
@@ -2657,22 +2673,27 @@ public class ResourcesAction
 							continue outerloop;
 						}
 
+						System.out.println("===> ResourcesAction.createFiles trying to get resourceId == " + newResourceId);
 						try 
 						{
 							ContentHostingService.getResource(newResourceId);
+							System.out.println("===> ResourcesAction.createFiles found it!! " + newResourceId);
 						}
 						catch (IdUnusedException ee)
 						{
+							System.out.println("===> ResourcesAction.createFiles inner IdUnusedException \n    " + ee.getMessage());
 							foundUnusedId = true;
 						}
 						// TODO: should these be here? Or should these be caught outside the for-loop?
 						catch (PermissionException ee)
 						{
+							System.out.println("===> ResourcesAction.createFiles inner PermissionException \n    " + ee.getMessage());
 							// TODO: is this really an unused ID?
 							foundUnusedId = true;
 						}
 						catch (TypeException ee)
 						{
+							System.out.println("===> ResourcesAction.createFiles TypeException\n     " + ee.getMessage());
 							// TODO: is this really an unused ID?
 							foundUnusedId = true;
 						}
@@ -2680,26 +2701,31 @@ public class ResourcesAction
 				}
 				catch(PermissionException e)
 				{
+					System.out.println("===> ResourcesAction.createFiles outer PermissionException \n    " + e.getMessage());
 					alerts.add(rb.getString("notpermis12"));
 					tryingToAddItem = false;
 				}
 				catch(IdInvalidException e)
 				{
+					System.out.println("===> ResourcesAction.createFiles outer IdInvalidException \n    " + e.getMessage());
 					alerts.add(rb.getString("title") + " " + e.getMessage ());
 					tryingToAddItem = false;
 				}
 				catch(InconsistentException e)
 				{
+					System.out.println("===> ResourcesAction.createFiles outer InconsistentException \n    " + e.getMessage());
 					alerts.add(RESOURCE_INVALID_TITLE_STRING);
 					tryingToAddItem = false;
 				}
 				catch (ServerOverloadException e)
 				{
+					System.out.println("===> ResourcesAction.createFiles outer ServerOverloadException \n    " + e.getMessage());
 					alerts.add(rb.getString("failed"));
 					tryingToAddItem = false;
 				}
 				catch(OverQuotaException e)
 				{
+					System.out.println("===> ResourcesAction.createFiles outer OverQuotaException \n    " + e.getMessage());
 					alerts.add(rb.getString("overquota"));
 					tryingToAddItem = false;
 				}
@@ -2728,6 +2754,7 @@ public class ResourcesAction
 			state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
 				
 		}
+		System.out.println("===> ResourcesAction.createFiles alerts.size \n    " + alerts.size());
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}	// createFiles
@@ -5632,6 +5659,7 @@ public class ResourcesAction
 			item.setName(name);
 			blank_entry = false;
 		}
+		System.out.println("===> ResourcesAction.captureValues name == " + name);
 		
 		String description = params.getString("description" + index);
 		if(description == null || description.trim().equals(""))
@@ -5661,6 +5689,7 @@ public class ResourcesAction
 				max_file_size_mb = "1";
 				max_bytes = 1096 * 1096;
 			}
+			System.out.println("===> ResourcesAction.captureValues max_bytes == " + max_bytes);
 			/*
 			 // params.getContentLength() returns m_req.getContentLength()
 			if(params.getContentLength() >= max_bytes)
@@ -5678,16 +5707,19 @@ public class ResourcesAction
 				}
 				catch(Exception e)
 				{
+					System.out.println("===> ResourcesAction.captureValues caught exception " + e + "\n        " + e.getMessage());
 					// this is an error in Firefox, Mozilla and Netscape
 					// "The user didn't select a file to upload!"
 					if(item.getContent() == null || item.getContent().length <= 0)
 					{
+						System.out.println("===> ResourcesAction.captureValues file content is null");
 						item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
 						item.setMissing("fileName");
 					}
 				}
 				if(fileitem == null)
 				{
+					System.out.println("===> ResourcesAction.captureValues fileitem is null");
 					// "The user submitted a file to upload but it was too big!"
 					item_alerts.clear();
 					item_alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
@@ -5695,8 +5727,10 @@ public class ResourcesAction
 				}
 				else if (fileitem.getFileName() == null || fileitem.getFileName().length() == 0)
 				{
+					System.out.println("===> ResourcesAction.captureValues filename is null");
 					if(item.getContent() == null || item.getContent().length <= 0)
 					{
+						System.out.println("===> ResourcesAction.captureValues fileitem content is null");
 						// "The user submitted the form, but didn't select a file to upload!"
 						item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
 						item.setMissing("fileName");
@@ -5705,25 +5739,32 @@ public class ResourcesAction
 				else if (fileitem.getFileName().length() > 0)
 				{
 					String filename = Validator.getFileName(fileitem.getFileName());
+					System.out.println("===> ResourcesAction.captureValues filename == " + filename);
 					byte[] bytes = fileitem.get();
+					System.out.println("===> ResourcesAction.captureValues bytes.length == " + bytes.length);
 					String contenttype = fileitem.getContentType();
+					System.out.println("===> ResourcesAction.captureValues contenttype == " + contenttype);
 					
 					if(bytes.length >= max_bytes)
 					{
+						System.out.println("===> ResourcesAction.captureValues bytes.length == " + bytes.length + " and max_bytes == " + max_bytes);
 						item_alerts.clear();
 						item_alerts.add(rb.getString("size") + " " + max_file_size_mb + "MB " + rb.getString("exceeded2"));
 						item.setMissing("fileName");					
 					}
 					else if(bytes.length > 0)
 					{
+						System.out.println("===> ResourcesAction.captureValues bytes.length > 0 " + bytes.length);
 						item.setContent(bytes);
 						item.setContentHasChanged(true);
 						item.setMimeType(contenttype);
 						item.setFilename(filename);									
 						blank_entry = false;
+						System.out.println("===> ResourcesAction.captureValues success ");
 					}
 					else 
 					{
+						System.out.println("===> ResourcesAction.captureValues bytes.length <= 0 -- " + bytes.length);
 						item_alerts.add(rb.getString("choosefile") + " " + (index + 1) + ". ");
 						item.setMissing("fileName");
 					}
@@ -5970,7 +6011,9 @@ public class ResourcesAction
 			}
 		}
 		item.markAsBlank(blank_entry);
-		
+
+		System.out.println("===> ResourcesAction.captureValues item_alerts.size == " + item_alerts.size());
+
 		return item_alerts;
 		
 	}
@@ -5988,6 +6031,7 @@ public class ResourcesAction
 	protected static void captureMultipleValues(SessionState state, ParameterParser params, boolean markMissing)
 	{
 		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+		System.out.println("===> ResourcesAction.captureMultipleValues numberOfItems == " + numberOfItems);
 		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		int actualCount = 0;
@@ -6006,6 +6050,7 @@ public class ResourcesAction
 			max_file_size_mb = "1";
 			max_bytes = 1096 * 1096;
 		}
+		System.out.println("===> ResourcesAction.captureMultipleValues max_bytes == " + max_bytes);
 
 		/*
 		// params.getContentLength() returns m_req.getContentLength()
@@ -6020,7 +6065,9 @@ public class ResourcesAction
 		for(int i = 0; i < numberOfItems.intValue(); i++)
 		{
 			EditItem item = (EditItem) items.get(i);
+			System.out.println("===> ResourcesAction.captureMultipleValues calling captureValues ");
 			Set item_alerts = captureValues(item, i, state, params, markMissing);
+			System.out.println("===> ResourcesAction.captureMultipleValues item_alerts.size == " + item_alerts.size());
 			if(i == 0)
 			{
 				first_item_alerts = item_alerts;
@@ -6047,6 +6094,7 @@ public class ResourcesAction
 		{
 			alerts.addAll(first_item_alerts);
 		}
+		System.out.println("===> ResourcesAction.captureMultipleValues alerts.size == " + alerts.size());
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		state.setAttribute(STATE_CREATE_ACTUAL_COUNT, Integer.toString(actualCount));
 
