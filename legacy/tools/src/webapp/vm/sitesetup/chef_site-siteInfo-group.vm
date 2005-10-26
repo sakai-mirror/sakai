@@ -68,7 +68,7 @@
 		<input type="hidden" name="back" value="12" />
 		<div class ="act">
 				#if ($hasgroup)
-					<input type="submit" class="active" name="eventSubmit_doGroup_remove_prep" value="$tlang.getString("editgroup.update")" />
+					<input type="submit" class="active" name="eventSubmit_doGroup_remove_prep" value="$tlang.getString("editgroup.remove2")" />
 				#end
 				<input type="submit" name="eventSubmit_doBack" value="$tlang.getString('editgroup.back')" />
 		</div>

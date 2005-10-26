@@ -447,6 +447,7 @@ public class SiteAction extends PagedResourceActionII
   	private static final String STATE_GROUP_DESCRIPTION = "state_group_description";
   	private static final String STATE_GROUP_MEMBERS = "state_group_members";
   	private static final String STATE_GROUP_REMOVE = "state_group_remove";
+  	private static final String GROUP_PROP_WSETUP_CREATED = "group_prop_wsetup_created";
   
 	/**
 	* Populate the state object, if needed.
@@ -2770,9 +2771,22 @@ public class SiteAction extends PagedResourceActionII
 		
 		if(sortedBy!=null) context.put ("currentSortedBy", sortedBy);
 		if(sortedAsc!=null) context.put ("currentSortAsc", sortedAsc);
+		
+		// only show groups created by WSetup tool itself
+		Collection groups = (Collection) site.getGroups();
+		List groupsByWSetup = new Vector();
+		for(Iterator gIterator = groups.iterator(); gIterator.hasNext();)
+		{
+			Group gNext = (Group) gIterator.next();
+			String gProp = gNext.getProperties().getProperty(GROUP_PROP_WSETUP_CREATED);
+			if (gProp != null && gProp.equals(Boolean.TRUE.toString()))
+			{
+				groupsByWSetup.add(gNext);
+			}
+		}
 		if (sortedBy != null && sortedAsc != null)
 		{
-			context.put("groups", new SortedIterator (site.getGroups().iterator (), new SiteComparator (sortedBy, sortedAsc)));
+			context.put("groups", new SortedIterator (groupsByWSetup.iterator (), new SiteComparator (sortedBy, sortedAsc)));
 		}
     		return (String)getContext(data).get("template") + TEMPLATE[49]; 
     case 50:
@@ -4549,6 +4563,7 @@ public class SiteAction extends PagedResourceActionII
 				{
 					// adding new group
 					group = site.addGroup();
+					group.getProperties().addProperty(GROUP_PROP_WSETUP_CREATED, Boolean.TRUE.toString());
 				}
 				
 				group.setTitle(title);
