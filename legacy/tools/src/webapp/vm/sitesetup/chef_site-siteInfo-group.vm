@@ -53,7 +53,9 @@
 							$group.Title
 						</td>
 						<td headers="revise">
-							<a href="#toolLinkParam("$action" "doGroup_edit" "groupId=$group.Id")" title ="$tlang.getString("editgroup.revise")">$tlang.getString("editgroup.revise")</a>
+							<span class="itemAction">
+								<a href="#toolLinkParam("$action" "doGroup_edit" "groupId=$group.Id")" title ="$tlang.getString("editgroup.revise")">$tlang.getString("editgroup.revise")</a>
+							</span>	
 						</td>
 						<td headers="member">
 							$!group.getMembers().size()
