@@ -506,6 +506,7 @@
 				<ref bean="rwiki-data-migrate-noneTo20051017" />
 				<ref bean="rwiki-data-migrate-applyCurrentSHA1" />
 				<ref bean="rwiki-data-migrate-applyHistorySHA1" />
+				<ref bean="rwiki-data-migrate-noneTo20051026" />
 			</list>
 		</property>
 		<property name="log"><ref bean="rwiki-logger"/></property>
@@ -515,7 +516,7 @@
 	<bean id="rwikiCurrentSchemaVersion" 
 		class="uk.ac.cam.caret.sakai.rwiki.model.impl.RWikiPropertyImpl">
 		<property name="name"><value>schema-version</value></property>
-		<property name="value"><value>20051017</value></property>
+		<property name="value"><value>20051026</value></property>
 	</bean>
 	
 	<bean id="rwiki-data-migrate-noneTo20051017"
@@ -542,6 +543,18 @@
 		<property name="to"><value>20051017</value></property>
 		<property name="log"><ref bean="rwiki-logger"/></property>
 		<property name="rwikiObjectDao"><ref bean="rwikiHistoryObjectDaoImpl"/></property>
+	</bean>
+	<bean id="rwiki-data-migrate-noneTo20051026"
+		class="uk.ac.cam.caret.sakai.rwiki.model.impl.SQLScriptMigration" >
+		<property name="from"><value>20051017</value></property>
+		<property name="to"><value>20051026</value></property>
+		<property name="script">
+			<value>/uk/ac/cam/caret/sakai/rwiki/model/bundle/mysql/migrateTo20051026.sql</value>
+		</property>
+		<property name="sessionFactory"><ref
+			bean="uk.ac.cam.caret.sakai.rwiki.RWikiSessionFactory"/>
+		</property>
+		<property name="log"><ref bean="rwiki-logger"/></property>
 	</bean>
 	
 </beans>

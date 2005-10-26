@@ -97,7 +97,7 @@
 		<!-- the user that edited this page. -->
 		<!-- when versioning is on, the last entry is the last updated -->
 		<!-- the first entry is the creator -->
-		<property name="user" not-null="false" length="64" />
+		<property name="user"  column="userid" not-null="false" length="64" />
 		<property name="owner" not-null="false" length="64" />
 		<!-- access: this is a simple access control list on a page by page basis -->
 		<!-- it specifies read and or write for user, group, and public -->
@@ -147,7 +147,7 @@
 	<!-- the user that edited this page. -->
 	<!-- when versioning is on, the last entry is the last updated -->
 	<!-- the first entry is the creator -->
-	<property name="user" not-null="false" length="64" />
+	<property name="user" column="userid" not-null="false" length="64" />
 	<property name="owner" not-null="false" length="64" />
 	<!-- access: this is a simple access control list on a page by page basis -->
 	<!-- it specifies read and or write for user, group, and public -->
