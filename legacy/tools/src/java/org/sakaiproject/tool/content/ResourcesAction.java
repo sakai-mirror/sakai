@@ -2734,6 +2734,7 @@ public class ResourcesAction
 					System.out.println("===> ResourcesAction.createFiles ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
 					e.printStackTrace(System.out);
 					System.out.println("======================");
+					throw e;
 				}
 			}
 			HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
