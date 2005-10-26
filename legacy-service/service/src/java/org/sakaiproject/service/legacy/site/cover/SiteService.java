@@ -108,6 +108,24 @@ public class SiteService
 		return service.allowUpdateSite(param0);
 	}
 
+	public static boolean allowUpdateSiteMembership(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return false;
+
+		return service.allowUpdateSiteMembership(param0);
+	}
+
+	public static boolean allowUpdateGroupMembership(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return false;
+
+		return service.allowUpdateGroupMembership(param0);
+	}
+
 	public static void save(org.sakaiproject.service.legacy.site.Site param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
@@ -115,6 +133,24 @@ public class SiteService
 			return;
 
 		service.save(param0);
+	}
+
+	public static void saveSiteMembership(org.sakaiproject.service.legacy.site.Site param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return;
+
+		service.saveSiteMembership(param0);
+	}
+
+	public static void saveGroupMembership(org.sakaiproject.service.legacy.site.Site param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return;
+
+		service.saveGroupMembership(param0);
 	}
 
 	public static void saveSiteInfo(java.lang.String param0, java.lang.String param1, java.lang.String param2) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException

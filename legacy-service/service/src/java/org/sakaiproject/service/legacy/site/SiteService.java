@@ -86,6 +86,12 @@ public interface SiteService extends EntityProducer
 	/** Name for the event of updating a site. */
 	static final String SECURE_UPDATE_SITE = "site.upd";
 
+	/** Name for the event of updating a site's membership. */
+	static final String SECURE_UPDATE_SITE_MEMBERSHIP = "site.upd.site.mbrshp";
+
+	/** Name for the event of updating a site's groups' memberships. */
+	static final String SECURE_UPDATE_GROUP_MEMBERSHIP = "site.upd.grp.mbrshp";
+
 	/** Name for the event of viewing project site participants. */
 	static final String SECURE_VIEW_ROSTER = "site.viewRoster";
 
@@ -288,6 +294,24 @@ public interface SiteService extends EntityProducer
 	boolean allowUpdateSite(String id);
 
 	/**
+	 * check permissions for updating a site's membership
+	 * 
+	 * @param id
+	 *        The site id.
+	 * @return true if the site is allowed to update the site's membership, false if not.
+	 */
+	boolean allowUpdateSiteMembership(String id);
+
+	/**
+	 * check permissions for updating a site's groups' memberships
+	 * 
+	 * @param id
+	 *        The site id.
+	 * @return true if the site is allowed to update the site's groups' memberships, false if not.
+	 */
+	boolean allowUpdateGroupMembership(String id);
+
+	/**
 	 * Save any updates to this site - it must be a defined site (the id must exist) and the user must have update permissions.
 	 * 
 	 * @param site
@@ -298,6 +322,30 @@ public interface SiteService extends EntityProducer
 	 *         If the end user does not have permission to update the site.
 	 */
 	void save(Site site) throws IdUnusedException, PermissionException;
+
+	/**
+	 * Save only site membership updates to this site - it must be a defined site (the id must exist) and the user must have site membership update permissions.
+	 * 
+	 * @param site
+	 *        The site, modified, to save.
+	 * @throws IdUnusedException
+	 *         If the site's id is not a defined site id.
+	 * @throws PermissionException
+	 *         If the end user does not have permission to update the membership of the site.
+	 */
+	void saveSiteMembership(Site site) throws IdUnusedException, PermissionException;
+
+	/**
+	 * Save only site group membership updates to this site - it must be a defined site (the id must exist) and the user must have site group membership update permissions.
+	 * 
+	 * @param site
+	 *        The site, modified, to save.
+	 * @throws IdUnusedException
+	 *         If the site's id is not a defined site id.
+	 * @throws PermissionException
+	 *         If the end user does not have permission to update the membership of the site.
+	 */
+	void saveGroupMembership(Site site) throws IdUnusedException, PermissionException;
 
 	/**
 	 * Save a site's information display fields: description and info url

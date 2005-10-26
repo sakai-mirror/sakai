@@ -40,18 +40,13 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.SiteCache;
 import org.sakaiproject.service.framework.memory.cover.MemoryService;
-import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.chat.cover.ChatService;
-import org.sakaiproject.service.legacy.discussion.cover.DiscussionService;
-import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityManager;
@@ -60,7 +55,6 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
-import org.sakaiproject.service.legacy.message.MessageService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
@@ -166,6 +160,50 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		if (!unlockCheck(lock, resource))
 		{
 			throw new PermissionException(lock, resource);
+		}
+	}
+
+	/**
+	 * Check security permission.
+	 * 
+	 * @param lock1
+	 *        The lock id string.
+	 * @param lock2
+	 *        The lock id string.
+	 * @param resource
+	 *        The resource reference string, or null if no resource is involved.
+	 * @return true if either allowed, false if not
+	 */
+	protected boolean unlockCheck2(String lock1, String lock2, String resource)
+	{
+		if (!SecurityService.unlock(lock1, resource))
+		{
+			if (!SecurityService.unlock(lock2, resource))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check security permission.
+	 * 
+	 * @param lock1
+	 *        The lock id string.
+	 * @param lock2
+	 *        The lock id string.
+	 * @param resource
+	 *        The resource reference string, or null if no resource is involved.
+	 * @exception PermissionException
+	 *            Thrown if the user does not have access to either.
+	 */
+	protected void unlock2(String lock1, String lock2, String resource) throws PermissionException
+	{
+		if (!unlockCheck2(lock1, lock2, resource))
+		{
+			throw new PermissionException(lock1 + "/" + lock2, resource);
 		}
 	}
 
@@ -363,6 +401,8 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			FunctionManager.registerFunction(SECURE_REMOVE_SITE);
 			FunctionManager.registerFunction(SECURE_UPDATE_SITE);
 			FunctionManager.registerFunction(SECURE_VIEW_ROSTER);
+			FunctionManager.registerFunction(SECURE_UPDATE_SITE_MEMBERSHIP);
+			FunctionManager.registerFunction(SECURE_UPDATE_GROUP_MEMBERSHIP);
 
 			m_logger.info(this + ".init() - caching minutes: " + m_cacheSeconds / 60);
 		}
@@ -572,6 +612,22 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	/**
 	 * @inheritDoc
 	 */
+	public boolean allowUpdateSiteMembership(String id)
+	{
+		return unlockCheck2(SECURE_UPDATE_SITE, SECURE_UPDATE_SITE_MEMBERSHIP, siteReference(id));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public boolean allowUpdateGroupMembership(String id)
+	{
+		return unlockCheck2(SECURE_UPDATE_SITE, SECURE_UPDATE_GROUP_MEMBERSHIP, siteReference(id));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public void save(Site site) throws IdUnusedException, PermissionException
 	{
 		if (site.getId() == null) throw new IdUnusedException("<null>");
@@ -586,6 +642,50 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		doSave((BaseSite) site, false, EntityProducer.ChangeType.UPDATE);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public void saveSiteMembership(Site site) throws IdUnusedException, PermissionException
+	{
+		if (site.getId() == null) throw new IdUnusedException("<null>");
+
+		// check security (throws if not permitted)
+		unlock2(SECURE_UPDATE_SITE_MEMBERSHIP, SECURE_UPDATE_SITE, site.getReference());
+
+		// check for existance
+		if (!m_storage.check(site.getId()))
+		{
+			throw new IdUnusedException(site.getId());
+		}
+
+		saveSiteAzg(site);
+
+		// track it
+		EventTrackingService.post(EventTrackingService.newEvent(SECURE_UPDATE_SITE_MEMBERSHIP, site.getReference(), true));
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public void saveGroupMembership(Site site) throws IdUnusedException, PermissionException
+	{
+		if (site.getId() == null) throw new IdUnusedException("<null>");
+
+		// check security (throws if not permitted)
+		unlock2(SECURE_UPDATE_GROUP_MEMBERSHIP, SECURE_UPDATE_SITE, site.getReference());
+
+		// check for existance
+		if (!m_storage.check(site.getId()))
+		{
+			throw new IdUnusedException(site.getId());
+		}
+
+		saveGroupAzgs(site);
+
+		// track it
+		EventTrackingService.post(EventTrackingService.newEvent(SECURE_UPDATE_GROUP_MEMBERSHIP, site.getReference(), true));
 	}
 
 	/**
@@ -626,6 +726,16 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	 */
 	protected void saveAzgs(Site site)
 	{
+		saveSiteAzg(site);
+		saveGroupAzgs(site);
+	}
+
+	/**
+	 * Save the site's azg if modified.
+	 * @param site The site to save.
+	 */
+	protected void saveSiteAzg(Site site)
+	{
 		if (((BaseSite) site).m_azgChanged)
 		{
 			try
@@ -638,7 +748,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			}
 			((BaseSite) site).m_azgChanged = false;
 		}
+	}
 
+	/**
+	 * Save group azgs that are modified.
+	 * @param site The site to save.
+	 */
+	protected void saveGroupAzgs(Site site)
+	{
 		for (Iterator i = site.getGroups().iterator(); i.hasNext();)
 		{
 			BaseGroup group = (BaseGroup) i.next();
@@ -2190,26 +2307,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	public Time getDate(Entity r)
 	{
 		return null;
-	}
-
-	/**
-	 * Improves performance by returning the appropriate MessageService through the service Cover classes instead of through the ComponentManager (for certain well-known services)
-	 * 
-	 * @param ifaceName
-	 */
-	private static final MessageService getMessageService(String ifaceName)
-	{
-		if (!ComponentManager.CACHE_MESSAGE_SERVICES) return (MessageService) ComponentManager.get(ifaceName);
-		if (ifaceName.equals(ChatService.SERVICE_NAME))
-			return ChatService.getInstance();
-		else if (ifaceName.equals(AnnouncementService.SERVICE_NAME))
-			return AnnouncementService.getInstance();
-		else if (ifaceName.equals(DiscussionService.SERVICE_NAME))
-			return DiscussionService.getInstance();
-		else if (ifaceName.equals(MailArchiveService.SERVICE_NAME))
-			return MailArchiveService.getInstance();
-		else
-			return (MessageService) ComponentManager.get(ifaceName);
 	}
 
 	/**

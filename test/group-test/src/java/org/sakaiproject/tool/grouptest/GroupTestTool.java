@@ -71,6 +71,8 @@ public class GroupTestTool extends HttpServlet
 
 	protected static final String siteId = "xxx-group-test";
 
+	protected static final String siteId2 = "xxx-group-test2";
+
 	protected static final String user1Id = "xxx-group-test-user-1";
 
 	protected static final String user2Id = "xxx-group-test-user-2";
@@ -135,6 +137,9 @@ public class GroupTestTool extends HttpServlet
 
 		// create the test data
 		setup(out);
+
+		// more test
+		setup2(out);
 
 		try
 		{
@@ -555,6 +560,91 @@ public class GroupTestTool extends HttpServlet
 			AnnouncementMessage msgNs = channelNs.addAnnouncementMessage("subject NG", false, null, "this is an announcement");
 
 			out.println("setup complete.");
+		}
+		catch (Throwable t)
+		{
+			out.println(t);
+		}
+		finally
+		{
+			s.setUserId(currentUserId);
+		}
+	}
+
+	protected void setup2(PrintWriter out)
+	{
+		out.println("\n\nTesting Site membership APIs\n");
+		Session s = SessionManager.getCurrentSession();
+		String currentUserId = s.getUserId();
+
+		try
+		{
+			s.setUserId(user1Id);
+
+			// make a course site so we get ta - user2 will be ta
+			Site site = SiteService.addSite(siteId2, "course");
+			site.addMember(user2Id, "ta", true, false);
+
+			// make a group
+			Group group1 = site.addGroup();
+			group1.setTitle("group one");
+			group1.setDescription("this is group one");
+			group1.getProperties().addProperty("test-group1", "in group one");
+			group1.getProperties().addProperty("test-group1-2", "in group one, again");
+
+			// save the site
+			SiteService.save(site);
+
+			out.println(user1Id + " allowUpdate(): " + SiteService.allowUpdateSite(siteId2));
+			out.println(user1Id + " allowUpdateSiteMembership(): " + SiteService.allowUpdateSiteMembership(siteId2));
+			out.println(user1Id + " allowUpdateGroupMembership(): " + SiteService.allowUpdateGroupMembership(siteId2));
+
+			// what can user2 do?
+			s.setUserId(user2Id);
+
+			out.println(user2Id + " allowUpdate(): " + SiteService.allowUpdateSite(siteId2));
+			out.println(user2Id + " allowUpdateSiteMembership(): " + SiteService.allowUpdateSiteMembership(siteId2));
+			out.println(user2Id + " allowUpdateGroupMembership(): " + SiteService.allowUpdateGroupMembership(siteId2));
+
+			site = SiteService.getSite(siteId2);
+			
+			site.addMember(user3Id,"student",true,false);
+			group1 = (Group) site.getGroups().iterator().next();
+
+			group1.addMember(user3Id, "student", true, false);
+
+			try
+			{
+				// can user2 save?  should no be able to
+				SiteService.save(site);
+				out.println(" ** " + user2Id + " SiteService.save() worked");
+			}
+			catch (Throwable t)
+			{
+				out.println(" ** " + user2Id + " while SiteService.save(): " + t);
+			}
+			
+			try
+			{
+				// can user2 save site membership?  should not be able to
+				SiteService.saveSiteMembership(site);
+				out.println(" ** " + user2Id + " SiteService.saveSiteMembership() worked");
+			}
+			catch (Throwable t)
+			{
+				out.println(" ** " + user2Id + " while SiteService.saveSiteMembership(): " + t);
+			}
+
+			try
+			{
+				// can user2 save site membership?  should not be able to
+				SiteService.saveGroupMembership(site);
+				out.println(" ** " + user2Id + " SiteService.saveGroupMembership() worked");
+			}
+			catch (Throwable t)
+			{
+				out.println(" ** " + user2Id + " while SiteService.saveGroupMembership(): " + t);
+			}
 		}
 		catch (Throwable t)
 		{
