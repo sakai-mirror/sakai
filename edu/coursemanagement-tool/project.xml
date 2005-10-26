@@ -13,9 +13,11 @@
   </organization>
   <inceptionYear>2004</inceptionYear>
 
+<!--
   <properties>
     <deploy.type>war</deploy.type>
   </properties>
+-->
 
   <dependencies>
 
