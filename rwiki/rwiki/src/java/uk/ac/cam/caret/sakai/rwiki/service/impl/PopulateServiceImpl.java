@@ -25,20 +25,14 @@ package uk.ac.cam.caret.sakai.rwiki.service.impl;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.service.framework.log.Logger;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
-import org.sakaiproject.service.legacy.authzGroup.Role;
 
 import uk.ac.cam.caret.sakai.rwiki.dao.RWikiCurrentObjectDao;
 import uk.ac.cam.caret.sakai.rwiki.exception.PermissionException;
 import uk.ac.cam.caret.sakai.rwiki.model.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.model.RWikiCurrentObject;
-import uk.ac.cam.caret.sakai.rwiki.service.DefaultRole;
 import uk.ac.cam.caret.sakai.rwiki.service.PopulateService;
 
 /**
@@ -49,77 +43,15 @@ public class PopulateServiceImpl implements PopulateService {
 	
 	private Logger log;
 	private HashMap seenPageSpaces = new HashMap();
-	private HashMap seenGroups = new HashMap();
 	private List seedPages;
-	private List roles;
 	
 	private RWikiCurrentObjectDao dao;
-	private AuthzGroupService authz;
 	
 	/* (non-Javadoc)
 	 * @see uk.ac.cam.caret.sakai.rwiki.service.PopulateService#populateRealm(java.lang.String, java.lang.String)
 	 */
 	public void populateRealm(String user, String realm, String group)
 	throws PermissionException {
-		// FIXME: Make this work
-		synchronized (seenGroups) {
-			if (seenGroups.get(group) == null ) {
-				// configure the expected default templates
-				// groups that are referenced in current objects MUST have been setup
-				if ( dao.getPageCount(group) == 0 ) {
-					if ( roles != null ) {
-						AuthzGroup azg = null;
-						try {
-							log.warn("Loading group "+group);
-							azg = authz.getAuthzGroup(group);
-							log.warn(" Got "+azg);
-						} catch (IdUnusedException e) {
-						}
-						
-						if ( azg != null ) {
-							for ( Iterator i = roles.iterator(); i.hasNext(); ) {
-								DefaultRole dr = (DefaultRole) i.next();
-								Map enabledRoles = dr.getEnabledFunctions();
-								String roleID = dr.getRoleId();
-								
-								Role role = azg.getRole(roleID);
-								if ( role == null ) {
-									try {
-										role = azg.addRole(roleID);
-									} catch (IdUsedException e) {
-										continue;
-									}
-								}
-								for ( Iterator ir = enabledRoles.keySet().iterator(); ir.hasNext(); ) {
-									String functionName = (String) ir.next();
-									
-									
-									String enabled = (String)enabledRoles.get(functionName);
-									// FIXME: this may not be right, how do we tell if the function exists in the role
-									log.warn("Setting role "+roleID+" function "+functionName+" to "+enabled);
-									if ( "true".equalsIgnoreCase(enabled) ) {
-										role.allowFunction(functionName);
-									} else {
-										role.disallowFunction(functionName);
-									}
-								}
-							}
-							try {
-								authz.save(azg);
-							} catch (IdUnusedException e) {
-								log.warn("Unable to populate default AuthZGroup "+group+" "+e.getMessage());
-							} catch (org.sakaiproject.exception.PermissionException e) {
-								log.warn("Unable to populate default AuthZGroup "+group+" "+e.getMessage());
-							}
-						} else {
-							log.warn("Cant load default group setup into "+group);
-						}
-					}
-				}
-				seenGroups.put(group, group);
-			}
-		}
-		
 		synchronized (seenPageSpaces) {
 			if (seenPageSpaces.get(realm) == null ) {
 				for ( Iterator i = seedPages.iterator(); i.hasNext(); ) {
@@ -177,33 +109,6 @@ public class PopulateServiceImpl implements PopulateService {
 		this.dao = dao;
 	}
 	
-	/**
-	 * @return Returns the roles.
-	 */
-	public List getRoles() {
-		return roles;
-	}
-	
-	/**
-	 * @param roles The roles to set.
-	 */
-	public void setRoles(List roles) {
-		this.roles = roles;
-	}
-	
-	/**
-	 * @return Returns the authz.
-	 */
-	public AuthzGroupService getAuthz() {
-		return authz;
-	}
-	
-	/**
-	 * @param authz The authz to set.
-	 */
-	public void setAuthz(AuthzGroupService authz) {
-		this.authz = authz;
-	}
 	
 	
 	

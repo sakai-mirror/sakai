@@ -157,7 +157,6 @@
 		
 		<property name="log"><ref bean="rwiki-logger"/></property>
 		<property name="RWikiCurrentObjectDao"><ref bean="rwikiCurrentObjectDao"/></property>
-		<property name="authz"><ref bean="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService" /></property>
 		<property name="seedPages">
 			<!--
 			You can add a list of seed pages here, that are loaded into each context where they
@@ -177,52 +176,6 @@
 				<ref bean="rwiki.seedPage.EditRightPage"/>
 				<ref bean="rwiki.seedPage.DefaultTemplate"/>
 			</list>
-		</property>
-		<property name="roles">
-			<list>
-				<ref bean="rwiki.role.maintain" />
-				<ref bean="rwiki.role.access" />
-				<ref bean="rwiki.role.anon" />
-			</list>
-		</property>
-	</bean>
-	<bean id="rwiki.role.maintain" class="uk.ac.cam.caret.sakai.rwiki.service.impl.DefaultRoleImpl">
-		<property name="roleId"><value>maintain</value></property>
-		<property name="enabledFunctions">
-			<map>
-				<entry key="rwiki.create" ><value>true</value></entry>	
-				<entry key="rwiki.read" ><value>true</value></entry>
-				<entry key="rwiki.update" ><value>true</value></entry>
-				<entry key="rwiki.delete" ><value>false</value></entry>
-				<entry key="rwiki.superadmin" ><value>false</value></entry>
-				<entry key="rwiki.admin" ><value>true</value></entry>
-			</map>
-		</property>
-	</bean>
-	<bean id="rwiki.role.access" class="uk.ac.cam.caret.sakai.rwiki.service.impl.DefaultRoleImpl">
-		<property name="roleId"><value>access</value></property>
-		<property name="enabledFunctions">
-			<map>
-				<entry key="rwiki.create"	><value>true</value></entry>	
-				<entry key="rwiki.read" ><value>true</value></entry>
-				<entry key="rwiki.update" ><value>true</value></entry>
-				<entry key="rwiki.delete" ><value>false</value></entry>
-				<entry key="rwiki.superadmin" ><value>false</value></entry>
-				<entry key="rwiki.admin" ><value>false</value></entry>
-			</map>
-		</property>
-	</bean>
-	<bean id="rwiki.role.anon" class="uk.ac.cam.caret.sakai.rwiki.service.impl.DefaultRoleImpl">
-		<property name="roleId"><value>.anon</value></property>
-		<property name="enabledFunctions">
-			<map>
-				<entry key="rwiki.create"	><value>false</value></entry>
-				<entry key="rwiki.read" ><value>true</value></entry>
-				<entry key="rwiki.update" ><value>false</value></entry>
-				<entry key="rwiki.delete" ><value>false</value></entry>
-				<entry key="rwiki.superadmin" ><value>false</value></entry>
-				<entry key="rwiki.admin" ><value>false</value></entry>
-			</map>
 		</property>
 	</bean>
 	
