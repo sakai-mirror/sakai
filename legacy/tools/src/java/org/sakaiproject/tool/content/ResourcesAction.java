@@ -333,6 +333,13 @@ public class ResourcesAction
 	
 	/** The name of the state attribute indicating which dropbox(es) the items should be saved in */
 	public static final String STATE_SAVE_ATTACHMENT_IN_DROPBOX = "resources.save_attachment_in_dropbox";
+	
+	/**
+	 *  The name of the state attribute indicating that the file picker should return links to
+	 *  existing resources in an existing collection rather than copying it to the hidden attachments
+	 *  area.  If this value is not set, all attachments are to copies in the hidden attachments area.
+	 */
+	public static final String STATE_ATTACH_LINKS = "resources.attach_links";
 
 	/************** the delete context *****************************************/
 
@@ -1155,9 +1162,16 @@ public class ResourcesAction
 		// if there are pending requests to do so they can be cleared
 		// justDelivered(state);
 
-		// pick the "show" template based on the helper's template name
-		// return TEMPLATE_SELECT;
-		return TEMPLATE_ATTACH;
+		// pick the template based on whether client wants links or copies
+		String template = TEMPLATE_SELECT;
+		Object attach_links = state.getAttribute(STATE_ATTACH_LINKS);
+		if(attach_links == null)
+		{
+			// user wants copies in hidden attachments area
+			template = TEMPLATE_ATTACH;
+		}
+		
+		return template;
 		
 	}	// buildSelectAttachmentContext
 
