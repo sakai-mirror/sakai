@@ -92,4 +92,12 @@ public interface RWikiCurrentObjectDao extends RWikiObjectDao {
      */
     boolean exists(String name);
 
+    /**
+     * Count the number of pages in a group/realm 
+     * @param group
+     * @return
+     */
+	int getPageCount(String group);
+
+
 }

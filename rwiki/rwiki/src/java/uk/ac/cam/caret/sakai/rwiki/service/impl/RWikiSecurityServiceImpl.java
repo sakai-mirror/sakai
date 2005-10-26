@@ -64,6 +64,7 @@ public class RWikiSecurityServiceImpl implements RWikiSecurityService {
     
     public void init() {
 		// register the functions
+    		log.info(this.getClass()+":Registering RWiki Functions");
 		FunctionManager.registerFunction(SECURE_CREATE);
 		FunctionManager.registerFunction(SECURE_READ);
 		FunctionManager.registerFunction(SECURE_UPDATE);

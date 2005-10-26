@@ -150,6 +150,7 @@
 			    <input type="hidden" name="panel" value="Main"/>
 			    <input type="hidden" name="action" value="editRealm"/>
 			    <input type="submit" name="save" value="save"/>
+			    <input type="submit" name="save" value="cancel"/>
 			    <input type="hidden" name="realm" value="${realmEditBean.localSpace}"/>
 			  </p>
 			</div>

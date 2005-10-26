@@ -31,6 +31,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.log.Logger;
@@ -38,11 +39,13 @@ import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.authzGroup.Role;
 
-import uk.ac.cam.caret.sakai.rwiki.bean.ErrorBean;
 import uk.ac.cam.caret.sakai.rwiki.bean.AuthZGroupEditBean;
+import uk.ac.cam.caret.sakai.rwiki.bean.ErrorBean;
+import uk.ac.cam.caret.sakai.rwiki.bean.ViewBean;
 import uk.ac.cam.caret.sakai.rwiki.bean.helper.ViewParamsHelperBean;
 import uk.ac.cam.caret.sakai.rwiki.service.HttpCommand;
 import uk.ac.cam.caret.sakai.rwiki.service.impl.RWikiSecurityServiceImpl;
+import uk.ac.cam.caret.sakai.rwiki.tool.RWikiServlet;
 import uk.ac.cam.caret.sakai.rwiki.tool.RequestScopeSuperBean;
 
 /**
@@ -118,6 +121,14 @@ public class EditAuthZGroupCommand implements HttpCommand {
 				//realmService.cancelEdit(realmEdit);
 				realmEditBean.setRealmEdit(null);
 				cancelDispatch(request, response);
+
+	            String pageName = vphb.getGlobalName();
+	            String realm = vphb.getLocalSpace();
+	            ViewBean vb = new ViewBean(pageName, realm);
+	            String requestURL = request.getRequestURL().toString();
+	            SessionManager.getCurrentToolSession().setAttribute(RWikiServlet.SAVED_REQUEST_URL,requestURL+vb.getInfoUrl());
+
+
 				return;
 			} else if (saveType.equals(AuthZGroupEditBean.SAVE_VALUE)) {
 				// complete a realmEdit...
@@ -131,6 +142,14 @@ public class EditAuthZGroupCommand implements HttpCommand {
 				realmService.save(realmEdit);                
 				realmEditBean.setRealmEdit(null);
 				successfulDispatch(request, response);
+				
+
+	            String pageName = vphb.getGlobalName();
+	            String realm = vphb.getLocalSpace();
+	            ViewBean vb = new ViewBean(pageName, realm);
+	            String requestURL = request.getRequestURL().toString();
+	            SessionManager.getCurrentToolSession().setAttribute(RWikiServlet.SAVED_REQUEST_URL,requestURL+vb.getInfoUrl());
+
 			}
 		} catch (IdUnusedException e) {
 			realmEditBean.setRealmEdit(null);

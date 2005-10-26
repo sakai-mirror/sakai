@@ -34,7 +34,6 @@ import org.radeox.api.engine.context.RenderContext;
 import uk.ac.cam.caret.sakai.rwiki.model.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.service.PageLinkRenderer;
 import uk.ac.cam.caret.sakai.rwiki.service.RWikiObjectService;
-import uk.ac.cam.caret.sakai.rwiki.service.impl.PageLinkRendererImpl;
 
 /**
  * @author andrew

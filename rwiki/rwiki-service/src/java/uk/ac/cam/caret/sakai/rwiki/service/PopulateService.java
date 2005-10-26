@@ -25,5 +25,5 @@ package uk.ac.cam.caret.sakai.rwiki.service;
 import uk.ac.cam.caret.sakai.rwiki.exception.PermissionException;
 
 public interface PopulateService {
-    void populateRealm(String user, String realm) throws PermissionException;
+    void populateRealm(String user, String space, String group) throws PermissionException;
 }

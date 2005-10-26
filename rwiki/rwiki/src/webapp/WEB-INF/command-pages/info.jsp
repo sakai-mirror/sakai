@@ -175,10 +175,10 @@
 		  					<c:choose>
 		  						<c:when test="${currentRWikiObject.groupRead}">
 		  							<input type="checkbox" name="groupRead" checked="checked" 
-		  								onClick="setPermissionDisplay(1,checked,'rwiki_info_secure_granted','rwiki_info_secure_denied',false,groupRead.checked,groupWrite.checked,groupAdmin.checked,false);"/>
+				  onClick="setPermissionDisplay('rwiki_info_secure_granted','rwiki_info_secure_denied',groupRead.checked,groupWrite.checked,groupAdmin.checked);"/>
 		  						</c:when>
 		  						<c:otherwise>
-		  							<input type="checkbox" name="groupRead" onClick="setPermissionDisplay(1,checked,'rwiki_info_secure_granted','rwiki_info_secure_denied',false,groupRead.checked,groupWrite.checked,groupAdmin.checked,false);"/>
+				<input type="checkbox" name="groupRead" onClick="setPermissionDisplay('rwiki_info_secure_granted','rwiki_info_secure_denied',groupRead.checked,groupWrite.checked,groupAdmin.checked);"/>
 		  						</c:otherwise>
 		  					</c:choose>
 		  				</td>
@@ -186,20 +186,20 @@
 		  					<c:choose>
 		  						<c:when test="${currentRWikiObject.groupWrite}">
 		  							<input type="checkbox" name="groupWrite" checked="checked" 
-		  								onClick="setPermissionDisplay(2,checked,'rwiki_info_secure_granted','rwiki_info_secure_denied',false,groupRead.checked,groupWrite.checked,groupAdmin.checked,false);}" />
+				  onClick="setPermissionDisplay('rwiki_info_secure_granted','rwiki_info_secure_denied',groupRead.checked,groupWrite.checked,groupAdmin.checked);" />
 		  						</c:when>
 		  						<c:otherwise>
-		  							<input type="checkbox" name="groupWrite" onClick="setPermissionDisplay(2,checked,'rwiki_info_secure_granted','rwiki_info_secure_denied',false,groupRead.checked,groupWrite.checked,groupAdmin.checked,false);" />
+				<input type="checkbox" name="groupWrite" onClick="setPermissionDisplay('rwiki_info_secure_granted','rwiki_info_secure_denied',groupRead.checked,groupWrite.checked,groupAdmin.checked);" />
 		  						</c:otherwise>
 		  					</c:choose>
 		  				</td>
 		  				<td>
 		  					<c:choose>
 		  						<c:when test="${currentRWikiObject.groupAdmin}">
-		  							<input type="checkbox" name="groupAdmin" checked="checked" onClick="setPermissionDisplay(3,checked,'rwiki_info_secure_granted','rwiki_info_secure_denied',false,groupRead.checked,groupWrite.checked,groupAdmin.checked,false);"/>
+				<input type="checkbox" name="groupAdmin" checked="checked" onClick="setPermissionDisplay('rwiki_info_secure_granted','rwiki_info_secure_denied',groupRead.checked,groupWrite.checked,groupAdmin.checked);"/>
 		  						</c:when>
 		  						<c:otherwise>
-		  							<input type="checkbox" name="groupAdmin" onClick="setPermissionDisplay(3,checked,'rwiki_info_secure_granted','rwiki_info_secure_denied',false,groupRead.checked,groupWrite.checked,groupAdmin.checked,false);"/>
+				<input type="checkbox" name="groupAdmin" onClick="setPermissionDisplay('rwiki_info_secure_granted','rwiki_info_secure_denied',groupRead.checked,groupWrite.checked,groupAdmin.checked);"/>
 		  						</c:otherwise>
 		  					</c:choose>
 		  				</td>
@@ -348,51 +348,59 @@
 		  		</c:otherwise>
 		  	</c:choose>  			  	
 		  	<script type="text/javascript" >
+		      <![CDATA[
+		      var NUMBER_OF_PERMISSIONS =0;
+		      var CREATE = NUMBER_OF_PERMISSIONS++;
+		      var READ = NUMBER_OF_PERMISSIONS++;
+		      var UPDATE = NUMBER_OF_PERMISSIONS++;
+		      var ADMIN = NUMBER_OF_PERMISSIONS++;
+		      var SUPERADMIN = NUMBER_OF_PERMISSIONS++;
 		  		var permissionsMatrix = new Array();
 		  		var permissionsMatriNCols = 5;
 		  		var permissionsStem = "permissions_";
-		  		function setPermissionDisplay(column,enabled,enabledClass,disabledClass,s0,s1,s2,s3,s4) {
+
+		      function setPermissionDisplay(enabledClass,disabledClass,readSwitch,updateSwitch,adminSwitch) {
 		  			// bit of good old vector processing !
 		  			var switches = new Array();
-		  			switches[0] = s0;
-		  			switches[1] = s1;
-		  			switches[2] = s2;
-		  			switches[3] = s3;
-		  			switches[4] = s4;
 		  		
-		  			for ( i = column; i &lt; permissionsMatrix.length; i += permissionsMatriNCols ) {
-		  				var elName = permissionsStem+i;
-		  				if ( enabled ) {
-					  		permissionsMatrix[i][2]++;
-		  					if ( permissionsMatrix[i][2] &gt;= 1 ) setClassName(elName,enabledClass);
-		  				} else {
-					  		permissionsMatrix[i][2]--;
-		  					if ( permissionsMatrix[i][2] &lt;= 0 ) setClassName(elName,disabledClass);
+			// lets try something a bit more magical...
+			switches[CREATE] = true;
+			switches[READ] = readSwitch;
+			switches[UPDATE] = updateSwitch;
+			switches[ADMIN] = adminSwitch;
+			switches[SUPERADMIN] = true;
+
+			// for each role row
+			for ( rowStart = 0; rowStart < permissionsMatrix.length;  rowStart += NUMBER_OF_PERMISSIONS ) {
+			  // determine if each permission should be set:
+			  for ( j = 0; j < NUMBER_OF_PERMISSIONS; j++) {
+			     permissionNumber = rowStart + j;
+
+			     permissionArray = permissionsMatrix[permissionNumber];
+			     var enabled = false;
+			     // By checking if the switch is set and the lock is set.
+			     for (i = 0; i < NUMBER_OF_PERMISSIONS; i++) {
+			       enabled = enabled || (permissionArray[1].charAt(i) == 'x' && permissionsMatrix[rowStart + i][0] && switches[i]);
 		  				}
-		  				if ( permissionsMatrix[i][0] ) {
-		  					for ( k = 0; k &lt; permissionsMatriNCols; k++ ) {
-		  						j = i-column+k
 		  						
-		  						if ( permissionsMatrix[j][1].charAt(column) == "x" ) {
-		  				 			elName = permissionsStem+j;
-		  				 			if ( enabled ) {
-		  				 				permissionsMatrix[j][2]++;
-		  								if ( permissionsMatrix[j][2] &gt;= 1 ) setClassName(elName,enabledClass);
-		  				 			} else {
-		  				 				permissionsMatrix[j][2]--;
-								  		if ( permissionsMatrix[j][2] &lt;= 0 ) setClassName(elName,disabledClass);
+			     setEnabledElement(permissionsStem + permissionNumber, enabled);
+			     
 		  							}
 		  				 		}
 		  					}
+
+		      function setEnabledElement(elId, enabled) {
+		      	var el = null;
+			if ( document.all ) {
+			  el = document.all[elId];
+			} else {
+			  el = document.getElementById(elId);
 		  				}
+			if (el != null) {
+			  el.innerHTML = enabled ? "yes" : "no";
 		  			} 
+		      }
 		  			
-		  			//s = "";
-		  			//for ( i = 0; i &lt; permissionsMatrix.length; i++ ) {
-		  			//	s = s + " " + permissionsMatrix[i][2];
-		  			//}
-		  			//alert(" Counters "+s);
-		  		}
 		  		function setClassName(elId,className) {
 		  			
 			  		var el = null;
@@ -406,48 +414,31 @@
 		  			}
 		  		}
 		  		var pmi=0;
-		  		var row
+		      ]]>
 		  		<c:forEach var="role" items="${realmBean.roles}">
 		  			var x = new Array(); 
 					x[0] = <c:out value="${role.secureCreate}" />;
-		  			x[1] = "----x";
-		  			x[2] = 0;
-		  			if ( <c:out value="${role.secureCreate}" />) x[2]++;
-		  			if ( <c:out value="${role.secureSuperAdmin}" />) x[2]++;
+			x[1] = "x---x";
 		  			permissionsMatrix[pmi] = x;
 		  			pmi++;
 		  			x = new Array(); 
 		  			x[0] = <c:out value="${role.secureRead}" />;
-		  			x[1] = "--xxx";
-		  			x[2] = 0;
-		  			if ( <c:out value="${role.secureRead and currentRWikiObject.groupRead}" />   ) x[2]++;
-		  			if ( <c:out value="${role.secureUpdate and currentRWikiObject.groupWrite}" />  ) x[2]++;
-		  			if ( <c:out value="${role.secureAdmin and currentRWikiObject.groupAdmin}" />  ) x[2]++;
-		  			if ( <c:out value="${role.secureSuperAdmin}" />) x[2]++;
+			x[1] = "-xxxx";
 		  			permissionsMatrix[pmi] = x;
 		  			pmi++;
 		  			x = new Array(); 
 		  			x[0] = <c:out value="${role.secureUpdate}" />;
-		  			x[1] = "---xx";
-		  			x[2] = 0;
-		  			if ( <c:out value="${role.secureUpdate and currentRWikiObject.groupWrite}" />  ) x[2]++;
-		  			if ( <c:out value="${role.secureAdmin and currentRWikiObject.groupAdmin}" />  ) x[2]++;
-		  			if ( <c:out value="${role.secureSuperAdmin}" />) x[2]++;
+			x[1] = "--xxx";
 		  			permissionsMatrix[pmi] = x;
 		  			pmi++;
 		  			x = new Array(); 
 		  			x[0] = <c:out value="${role.secureAdmin}" />;
-		  			x[1] = "----x";
-		  			x[2] = 0;
-		  			if ( <c:out value="${role.secureAdmin and currentRWikiObject.groupAdmin}" />  ) x[2]++;
-		  			if ( <c:out value="${role.secureSuperAdmin}" />) x[2]++;
+			x[1] = "---xx";
 		  			permissionsMatrix[pmi] = x;
 		  			pmi++;
 		  			x = new Array(); 
 		  			x[0] = <c:out value="${role.secureSuperAdmin}" />;
-		  			x[1] = "-----";
-		  			x[2] = 0;
-		  			if ( <c:out value="${role.secureSuperAdmin}" />) x[2]++;
+			x[1] = "----x";
 		  			permissionsMatrix[pmi] = x;
 		  			pmi++;
 		  		</c:forEach>
@@ -595,6 +586,9 @@
 		    		</td>
 		    	</tr>
 		    </c:forEach>
+		    <script type="text/javascript">
+		      setPermissionDisplay('rwiki_info_secure_granted','rwiki_info_secure_denied',<c:out value="${currentRWikiObject.groupRead}, ${currentRWikiObject.groupWrite}, ${currentRWikiObject.groupAdmin}"/>);
+		    </script>
 		    <c:if test="${permissionsBean.adminAllowed}">
 		      <tr>
 			<td colspan="7">
@@ -607,7 +601,7 @@
 			      <input type="submit" name="updatePermissions" value="save"/>
 			      <input type="hidden" name="realm" value="${currentRWikiObject.realm }"/>
 			      <c:if test="${realmBean.siteUpdateAllowed}">
-				In addition to editing the page permission you may <a href="${realmBean.editRealmUrl}">edit site permissions</a>
+				In addition to editing the page permissions you may <a href="${realmBean.editRealmUrl}">edit site permissions</a>
 			      </c:if>
 			      <!--<c:if test="${updatePermissionsBean.updatePermissionsMethod ne null}">-->
 				<!--<input type="submit" name="updatePermissions" value="overwrite"/>-->

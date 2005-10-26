@@ -37,6 +37,8 @@ public class PrePopulateBean {
     private PopulateService populateService;
 
     private String currentPageRealm;
+    
+    private String currentGroup;
 
     private String currentUser;
 
@@ -50,7 +52,7 @@ public class PrePopulateBean {
                 + " pre-populating realm " + currentPageRealm);
 
         // Populate the realm...
-        populateService.populateRealm(currentUser, currentPageRealm);
+        populateService.populateRealm(currentUser, currentPageRealm, currentGroup);
     }
 
     /**
@@ -116,5 +118,19 @@ public class PrePopulateBean {
     public void setPopulateService(PopulateService populateService) {
         this.populateService = populateService;
     }
+
+	/**
+	 * @return Returns the currentGroup.
+	 */
+	public String getCurrentGroup() {
+		return currentGroup;
+	}
+
+	/**
+	 * @param currentGroup The currentGroup to set.
+	 */
+	public void setCurrentGroup(String currentGroup) {
+		this.currentGroup = currentGroup;
+	}
 
 }

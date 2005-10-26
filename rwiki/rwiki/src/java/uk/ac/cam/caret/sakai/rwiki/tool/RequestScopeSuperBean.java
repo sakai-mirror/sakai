@@ -287,6 +287,7 @@ public class RequestScopeSuperBean {
         if (map.get(key) == null) {
             PrePopulateBean ppb = new PrePopulateBean();
             ppb.setPopulateService(populateService);
+            ppb.setCurrentGroup(getCurrentDefaultRealm());
             ppb.setCurrentPageRealm(getCurrentPageSpace());
             ppb.setCurrentUser(getCurrentUser());
             ppb.setLog(logger);

@@ -64,7 +64,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 	private RenderService renderService;
 	
-	public String createTemplatePageName = "default_page";
+	public String createTemplatePageName = "default_template";
 
 	/*
 	 * (non-Javadoc)
@@ -82,15 +82,15 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			}
 
 			// May throw Permission Exception...
-			// if we don't have the correct permissions...
-			String globalName = NameHelper.globaliseName(name, realm);
+			// only globalise if not already
+			name = NameHelper.globaliseName(name, realm);
 			long start2 = System.currentTimeMillis();
 			RWikiCurrentObject returnable;
 			try {
-				returnable = cdao.findByGlobalName(globalName);
+				returnable = cdao.findByGlobalName(name);
 			} finally {
 				long finish = System.currentTimeMillis();
-				RWikiServlet.printTimer("dao.findByGlobalName: " + globalName,
+				RWikiServlet.printTimer("dao.findByGlobalName: " + name,
 						start2, finish);
 			}
 
@@ -99,8 +99,10 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 					throw new CreatePermissionException("User: " + user
 							+ " cannot create pages in realm: " + realm);
 				}
-				returnable = cdao.createRWikiObject(name,realm);				
-				String defTemplate = NameHelper.globaliseName(createTemplatePageName,realm);
+				returnable = cdao.createRWikiObject(name,realm);		
+				// zero in on the correct space.
+				String pageSpace = NameHelper.localizeSpace(name,realm);
+				String defTemplate = NameHelper.globaliseName(createTemplatePageName,pageSpace);
 				RWikiCurrentObject template = cdao.findByGlobalName(defTemplate);
 				if ( template != null ) {
 					returnable.setContent(template.getContent());
