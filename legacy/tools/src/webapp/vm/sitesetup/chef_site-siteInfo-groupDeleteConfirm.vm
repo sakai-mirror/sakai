@@ -3,18 +3,15 @@
 	<h3>
 		$tlang.getString("editgroup.removegroups")
 	</h3>
-	<div class="chefAlertBox">$tlang.getString("editgroup.groupdel.alert") #if ($alertMessage)$validator.escapeHtml($alertMessage)#end</div>
+	<div class="alertMessage">$tlang.getString("editgroup.groupdel.alert") #if ($alertMessage)$validator.escapeHtml($alertMessage)#end</div>
 	<form action="#toolForm("$action")" method="post">
 		#if($removeGroupIds && $removeGroupIds.size() != 0)
-		<div class="chefAlertBox">
-			$tlang.getString("group.title")
-			<ul>
+			<ul class="attachList">
 				#foreach($groupId in $removeGroupIds)
 					<li>	$validator.escapeHtml($!site.getGroup($groupId).getTitle()) <br />
 					</li>
 				#end
 			</ul>
-		</div>
 	#end
 		<input type="hidden" name="template-index" value="51" />
 		<input type="hidden" name="back" value="49" />
