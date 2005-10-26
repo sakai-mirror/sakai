@@ -7,6 +7,50 @@
 	  window.open(theURL,winName,winSettings);
 	  return false;
 	}
+	function setFrameHeight(frame)
+	{
+		var doc = frame.contentWindow.document;
+		//alert("doc == " + doc)
+		var height; 
+		
+		var scrollH = doc.body.scrollHeight;
+		var offsetH = doc.body.offsetHeight;
+		var clientH = doc.body.clientHeight;
+		var innerDocScrollH = null;
+
+		if (typeof(frame.contentDocument) != 'undefined' || typeof(frame.contentWindow) != 'undefined')
+		{
+			// very special way to get the height from IE on Windows!
+			// note that the above special way of testing for undefined variables is necessary for older browsers
+			// (IE 5.5 Mac) to not choke on the undefined variables.
+ 			var innerDoc = (frame.contentDocument) ? frame.contentDocument : frame.contentWindow.document;
+			innerDocScrollH = (innerDoc != null) ? innerDoc.body.scrollHeight : null;
+		}
+		//alert("After innerDocScrollH");
+		
+		if (document.all && innerDocScrollH != null)
+		{
+			// IE on Windows only
+			height = innerDocScrollH;
+		}
+		else
+		{
+			// every other browser!
+			height = offsetH;
+		}
+
+		// here we fudge to get a little bigger
+		var newHeight = height + 50;
+		
+		// no need to be smaller than...
+		//if (height < 200) height = 200;
+		frame.height=newHeight + "px";
+		
+		
+		//var s = " scrollH: " + scrollH + " offsetH: " + offsetH + " clientH: " + clientH + " innerDocScrollH: " + innerDocScrollH + " Read height: " + height + " Set height to: " + newHeight;
+//		window.status = s;
+		//alert(s);
+	}
 //-->
 </script>
 ## to prevent horiz scroll on IE
@@ -23,102 +67,14 @@
 	</div>
 	#if($menu)#toolbar($menu)#end
 	<h3>$tlang.getString("dav.webdav")</h3>
-	<ul class="attchList">
-		<li><a href="#desc">$tlang.getString("dav.hd1")</a></li>
-		<li><a href="#site">$tlang.getString("dav.hd2")</a></li>
-		<li><a href="#win">$tlang.getString("dav.hd3")</a></li>
-		<li><a href="#osx">$tlang.getString("dav.hd4")</a></li>
- <li><a href="#osxx">$tlang.getString("dav.hd5")</a></li>
-	</ul>
-
-	<a name="desc"></a>
-	<h4>$tlang.getString("dav.hd1")</h4>
-	<p>$tlang.getString("dav.graf10")</p>
-	<p>$tlang.getString("dav.graf11")</p>
-	
-	<a name="site"></a>
 	<h4>$tlang.getString("dav.hd2")</h4>
 	<p>$tlang.getString("dav.graf20a") <strong>${site_title}</strong>. $tlang.getString("dav.graf20b") <strong>#if("$!inMyWorkspace" == "true")${user_id}#else${site_id}#end</strong>.</p>
 	<p>$tlang.getString("dav.graf21")</p>
 	
-	<a name="win"></a>
-	<h4>$tlang.getString("dav.hd3")</h4>
-	<p>$tlang.getString("dav.graf30")</p>
-	<ol>
-		<li>$tlang.getString("dav.win1")</li>
-		<li>$tlang.getString("dav.win2")</li>
-		<li>$tlang.getString("dav.win2a")</li>
-		<li>$tlang.getString("dav.win2b")</li>
-		<li>$tlang.getString("dav.win2c")</li>
-		<li>$tlang.getString("dav.win3")<br />
-		#if("$!inMyWorkspace" == "true")
-			<code>${server_url}${dav_user}$user_id</code>
-		#else
-			<code>${server_url}${dav_group}$site_id</code>
-		#end
-		<img src="${server_url}/library/content/netwkplace.jpg" width="423" height="345" style="clear:both;display:block;margin:1em 0 " alt="" />
-		</li>
-		<li>$tlang.getString("dav.win4")<br />
-			$tlang.getString("dav.win4note")</li>
-		<li>$tlang.getString("dav.win5")</li>
-		<li>$tlang.getString("dav.win5a")</li>
-		<li>$tlang.getString("dav.win5b")</li>
-		<li>
-			$tlang.getString("dav.win6")
-			<img src="${server_url}/library/content/name.jpg" width="423" height="345" alt="" style="clear:both;display:block;margin:1em 0" />
-		</li>
-		
-		<li>$tlang.getString("dav.win7")</li>
-		<li>$tlang.getString("dav.win8")</li>
-		<li>$tlang.getString("dav.win9")</li>
-	</ol>
-
-	<a name="osx"></a>
-	<h4>$tlang.getString("dav.hd4")</h4>
-	<p>$tlang.getString("dav.graf40")</p>
-      <p>$tlang.getString("dav.graf41")</p>
-	<ol>
-		<li>$tlang.getString("dav.osx1")<br />
-			<span class="skip">[$tlang.getString("gen.newwin")]</span><a href="http://www.webdav.org/goliath/#download" target="_blank"><code>http://www.webdav.org/goliath/#download</code></a>
-		</li>
-		<li>$tlang.getString("dav.osx2")</li>
-		<li>$tlang.getString("dav.osx3")
-		<img src="${server_url}/library/content/goliath.jpg" width="241" height="311" alt="" style="clear:both;display:block;margin:1em 0" />
-		</li>
-		  
-		<li>$tlang.getString("dav.osx4")</li>
-		<li>$tlang.getString("dav.osx5")<br />
-		#if("$!inMyWorkspace" == "true")
-			<code>${server_url}${dav_user}$user_id</code>
-		#else
-			<code>${server_url}${dav_group}$site_id</code>
-		#end
-		</li>
-		<li>$tlang.getString("dav.osx6")</li>
-		<li>$tlang.getString("dav.osx7")</li>
-		<li>$tlang.getString("dav.osx8")</li>
-		<li>$tlang.getString("dav.osx9")</li>
-	</ol>
-
-<a name="osxx"></a>
-	<h4>$tlang.getString("dav.hd5")</h4>
-	<p>$tlang.getString("dav.graf50")</p>
-	<ol>
-		<li>$tlang.getString("dav.osxx1")</li>
-		<li>$tlang.getString("dav.osxx2")<br />
-		#if("$!inMyWorkspace" == "true")
-			<code>${server_url}${dav_user}$user_id</code>
-		#else
-			<code>${server_url}${dav_group}$site_id</code>
-		#end
-		</li>
-		<li>$tlang.getString("dav.osxx3")</li>
-		<li>$tlang.getString("dav.osxx4")</li>
-		<li>$tlang.getString("dav.osxx5")</li>
-		<li>$tlang.getString("dav.osxx6")</li>
-	</ol>
-
-	
+	<iframe src="$webdav_instructions"
+		width="96%" frameborder="0"
+		onload="javascript:setFrameHeight(this);">
+	</iframe>
 	<div style="margin:2em .3em .3em .3em;text-align:left">
 		<a href="#toolLink("ResourcesAction" "doCancel")" style="background-color:#DDDCD7;border:1px solid #4A5573;color:#4A5573;padding:1px 3px 1px 3px;text-decoration:none">$tlang.getString("dav.cancel")</a>
 	</div>

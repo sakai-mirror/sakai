@@ -1195,6 +1195,8 @@ public class ResourcesAction
 		context.put("user_id", UserDirectoryService.getCurrentUser().getId());
 		context.put ("dav_group", "/dav/group/");
 		context.put ("dav_user", "/dav/user/");
+		String webdav_instructions = ServerConfigurationService.getString("webdav.instructions.url");
+		context.put("webdav_instructions" ,webdav_instructions);
 
 		return TEMPLATE_DAV;
 

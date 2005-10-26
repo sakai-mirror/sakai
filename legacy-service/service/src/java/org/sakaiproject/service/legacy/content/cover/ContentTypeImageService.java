@@ -100,6 +100,24 @@ public class ContentTypeImageService
 
 		return service.getContentType(param0);
 	}
+	
+	public static java.util.List getMimeCategories()
+	{
+		org.sakaiproject.service.legacy.content.ContentTypeImageService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.getMimeCategories();
+	}
+	
+	public static java.util.List getMimeSubtypes(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.content.ContentTypeImageService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.getMimeSubtypes(param0);
+	}
 }
 
 

@@ -24,6 +24,8 @@
 // package
 package org.sakaiproject.service.legacy.content;
 
+import java.util.List;
+
 // imports
 
 /**
@@ -71,6 +73,19 @@ public interface ContentTypeImageService
 	* @return true if the type is a type used for unknown file types, false if not.
 	*/
 	public boolean isUnknownType(String contentType);
+	
+	/**
+	* Access an ordered list of all mimetype categories.
+	* @return The list of mimetype categories in alphabetic order.
+	*/
+	public List getMimeCategories();
+
+	/**
+	* Access an ordered list of all mimetype subtypes for a particular category. 
+	* @param category The category.
+	* @return The list of mimetype subtypes in alphabetic order.
+	*/
+	public List getMimeSubtypes(String category);
 
 }	// ContentTypeImageService
 
