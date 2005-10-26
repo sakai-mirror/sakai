@@ -19,7 +19,7 @@
 					</a>
 				## here's a text field in a form for the toolbar
 				#else
-				<form name="$item.Form" action="$base" class="toolbarForm" method="post">
+				<form name="$item.Form" action="$base" class="inlineForm" method="post">
 					<input size="15" value="$item.Value" name="$item.Title" id="$item.Title" type="text" class="searchField" />
 				</form>
 				#end
