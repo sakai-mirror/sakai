@@ -6,7 +6,7 @@
 		<div class="alertMessage">$tlang.getString("ediacc.alert") $validator.escapeHtml($alertMessage)</div>
 		<div style="display:block;clear:both"></div>
 	#end
-	#if ($!siteEdit)
+	#if ($!site)
 		<h3>
 			$tlang.getString("ediacc.chaacc") $validator.escapeHtml($site.Title)
 		</h3>
@@ -26,7 +26,7 @@
 			$tlang.getString("ediacc.pubyousit")
 		</p>
 		<p class="checkbox indnt1">
-			#if ($!siteEdit)
+			#if ($!site)
 				<input type="checkbox" name="publishunpublish" id="publishunpublish" value="publish" #if ($site.isPublished())checked="checked"#end />	
 			#else
 				<input type="checkbox" name="publishunpublish" id="publishunpublish" value="publish" #if ($!published)checked="checked"#end />	
@@ -93,7 +93,7 @@
 		<input type="hidden" name="template-index" value="18" />
 		<input type="hidden" name="back" value="$!back" />
 		<div class ="act">
-			#if($!siteEdit)
+			#if($!site)
 				<input type="submit" class="active" name="eventSubmit_doUpdate_site_access" value="$tlang.getString("ediacc.upd")" />
 				<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("ediacc.bac")" />
 #else
@@ -104,4 +104,3 @@
 		</div>
 	</form>
 </div>
-
