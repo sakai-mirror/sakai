@@ -1842,6 +1842,9 @@ public class ThreadedDiscussionIIAction
 				postMessage.getDiscussionHeaderEdit().setDraft(false);
 				postMessage.getDiscussionHeaderEdit().replaceAttachments((List) state.getAttribute(ATTACHMENTS));
 				
+				//update time
+				postMessage.getDiscussionHeaderEdit().setDate(TimeService.newTime());
+				
 				channel.commitMessage(postMessage);
 				state.setAttribute(STATE_DISPLAY_MESSAGE, new DisplayMessage(postMessage.getId()));
 			}
@@ -1914,6 +1917,9 @@ public class ThreadedDiscussionIIAction
 				}           
 				postMessage.getDiscussionHeaderEdit().setDraft(true);
 				postMessage.getDiscussionHeaderEdit().replaceAttachments((List) state.getAttribute(ATTACHMENTS));
+				
+				//update time
+				postMessage.getDiscussionHeaderEdit().setDate(TimeService.newTime());
 				
 				channel.commitMessage(postMessage);
 				state.setAttribute(STATE_DISPLAY_MESSAGE, new DisplayMessage(postMessage.getId()));
@@ -2088,6 +2094,10 @@ public class ThreadedDiscussionIIAction
 							
 							ResourcePropertiesEdit pEdit = addedMessageEdit.getPropertiesEdit();
 							pEdit.addProperty(ResourceProperties.PROP_REPLY_STYLE, style);
+							
+							//update time
+							hEdit.setDate(TimeService.newTime());
+							
 							channel.commitMessage(addedMessageEdit);
 
 							// if the category is newly added

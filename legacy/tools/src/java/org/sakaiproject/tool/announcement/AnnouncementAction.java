@@ -2247,6 +2247,9 @@ extends PagedResourceActionII
 					// No site available.
 				}
 
+				// update time
+				header.setDate(TimeService.newTime());
+				
 				channel.commitMessage(msg, noti);
 
 				if (!state.getIsNewAnnouncement())
@@ -3285,6 +3288,9 @@ extends PagedResourceActionII
 					// No site available.
 				}
 
+				// update time
+				header.setDate(TimeService.newTime());
+				
 				channel.commitMessage(msg, noti);
 				
 				if (!state.getIsNewAnnouncement())
