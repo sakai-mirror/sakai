@@ -45,7 +45,7 @@
 					} else {
 				</jsp:scriptlet>
 				<h3>The Action encountered a problem.</h3>
-				<p>Please report this problem to <a href="http://bugs.sakaiproject.org/jira/browse/RWIKI" >JIRA</a></p>
+				<p>Please report this problem to <a href="http://bugs.sakaiproject.org/jira/browse/SAK" >JIRA</a></p>
 				<pre>
     					<jsp:scriptlet>
     						out.write(" URL:"+request.getRequestURL()+"?"+request.getQueryString()+"\n");

@@ -179,7 +179,7 @@ public class RWikiServlet extends HttpServlet {
     			log.info("Wiki Page Response "+(finish - start)+" ms URL "+request.getRequestURL()+"?"+request.getQueryString());
         }
         request.removeAttribute(Tool.NATIVE_URL);
-        log.info("=====================Page End=============");
+        log.debug("=====================Page End=============");
     }
 
     public void prePopulateRealm(HttpServletRequest request) {

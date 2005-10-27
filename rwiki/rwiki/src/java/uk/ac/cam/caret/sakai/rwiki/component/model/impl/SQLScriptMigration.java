@@ -118,15 +118,15 @@ public class SQLScriptMigration implements DataMigrationAgent{
 						if ( sql[i].startsWith("message") ) {
 							log.info("Data Migration "+sql[i]);
 						} else {
-							log.info("Executing data migration statement: " + sql[i]);
+							log.debug("Executing data migration statement: " + sql[i]);
 							try {
 								long start = System.currentTimeMillis();
 								int l = stmt.executeUpdate(sql[i]);
-								log.info("   Done "+l+" rows in "+(System.currentTimeMillis()-start)+" ms");
+								log.debug("   Done "+l+" rows in "+(System.currentTimeMillis()-start)+" ms");
 							}
 							catch (SQLException ex) {
-								log.warn("Unsuccessful data migration statement: " + sql[i]);
-								log.warn("Cause: "+ex.getMessage());
+								log.debug("Unsuccessful data migration statement: " + sql[i]);
+								log.debug("Cause: "+ex.getMessage());
 							}
 						}
 					}
