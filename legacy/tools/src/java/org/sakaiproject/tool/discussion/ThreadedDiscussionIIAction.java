@@ -1444,6 +1444,7 @@ public class ThreadedDiscussionIIAction
 		}
 
 		context.put ("action", (String) state.getAttribute(STATE_ACTION));
+		context.put ("contentTypeImageService", state.getAttribute(STATE_CONTENT_TYPE_IMAGE_SERVICE));
 		return (String)getContext(rundata).get("template") + "-topic_content";
 		
 	}	// buildContentContext

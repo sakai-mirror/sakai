@@ -43,6 +43,44 @@
 				$validator.escapeHtmlFormattedText($topic.Body)
 			</td>
 		</tr>
+			#set ($size = 0)
+			#set ($props = false)
+			#foreach ($attachment in $topic.Header.Attachments) 
+				#set ($props = $attachment.Properties) 
+				#if ($!props)
+					#set ($size = $size + 1)
+				#end
+			#end
+			#if ($size != 0)
+				<tr>
+					<td>
+						$tlang.getString("control.att2")
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<ul class="attachList">
+							#foreach ($attachment in $topic.Header.Attachments) 
+								#set ($props = false)
+								#set ($props = $attachment.Properties) 
+								#if ($!props)
+									<li>
+										#if ($props.getBooleanProperty($props.NamePropIsCollection))
+											<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString("genl.folatt")" />
+										#else
+											<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
+										#end
+										<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+										#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+											($props.getPropertyFormatted($props.NamePropContentLength))
+										#end
+									</li>
+								#end
+							#end
+						</ul>
+					</td>
+				</tr>
+			#end
 	</table>
 		#set($thread = $channel.getThread($topic))
 		#foreach ($message in $thread)
@@ -76,6 +114,43 @@
 						$validator.escapeHtmlFormattedText($message.Body)
 				</td>
 			</tr>
+			#set ($size = 0)
+			#set ($props = false)
+			#foreach ($attachment in $message.Header.Attachments) 
+				#set ($props = $attachment.Properties) 
+				#if ($!props)
+					#set ($size = $size + 1)
+				#end
+			#end
+			#if ($size != 0)
+				<tr>
+					<td>
+					</td>
+					<td>
+						$tlang.getString("control.att2")
+						<br />
+						<ul class="attachList">
+							#foreach ($attachment in $message.Header.Attachments) 
+								#set ($props = false)
+								#set ($props = $attachment.Properties) 
+								#if ($!props)
+									<li>
+										#if ($props.getBooleanProperty($props.NamePropIsCollection))
+											<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="$tlang.getString("genl.folatt")" />
+										#else
+											<img src = "#imageLink($contentTypeImageService.getContentTypeImage($props.getProperty($props.NamePropContentType)))" border="0" alt="$tlang.getString("gen.filatt")" />
+										#end
+										<a href="$attachment.Url" target="_blank">$validator.escapeHtml($props.getPropertyFormatted($props.NamePropDisplayName))</a>						
+										#if (!$props.getBooleanProperty($props.NamePropIsCollection))
+											($props.getPropertyFormatted($props.NamePropContentLength))
+										#end
+									</li>
+								#end
+							#end
+						</ul>
+					</td>
+				</tr>	
+			#end		
 		</table>	
 		#end
 		<p class="rightNav">
