@@ -240,7 +240,7 @@ public class ContentHostingService
 		return service.allowAddAttachmentResource();
 	}
 	
-	public boolean isAttachmentResource(java.lang.String param0)
+	public static boolean isAttachmentResource(java.lang.String param0)
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
