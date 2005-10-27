@@ -290,6 +290,8 @@ span.abc a, span.abc a:link  {
 p.validation  { 
 	padding:20px 30px 
 } 
+.error{}
+.fatalerror{}
 
 /* UI COMPONENTS */
 
