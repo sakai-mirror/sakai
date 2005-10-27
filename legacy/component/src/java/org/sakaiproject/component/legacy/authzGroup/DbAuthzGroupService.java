@@ -493,10 +493,24 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 			}
 
 			// read the roles and role functions
-			String sql = "select "
+			String sql = null;
+                        if ("mysql".equals(m_sqlService.getVendor()))
+			{
+				sql = "SELECT SAKAI_REALM_ROLE.ROLE_NAME, SAKAI_REALM_FUNCTION.FUNCTION_NAME FROM SAKAI_REALM_ROLE, "
+					+ " SAKAI_REALM_FUNCTION,SAKAI_REALM_RL_FN,SAKAI_REALM WHERE SAKAI_REALM.REALM_ID = ? AND "
+					+ "SAKAI_REALM.REALM_KEY = SAKAI_REALM_RL_FN.REALM_KEY and "
+					+ "SAKAI_REALM_ROLE.ROLE_KEY = SAKAI_REALM_RL_FN.ROLE_KEY and  "
+					+ "SAKAI_REALM_FUNCTION.FUNCTION_KEY = SAKAI_REALM_RL_FN.FUNCTION_KEY";
+			}
+			else // oracle and hsql
+			{
+				sql = "select "
 					+ "(select ROLE_NAME from SAKAI_REALM_ROLE where SAKAI_REALM_ROLE.ROLE_KEY = SAKAI_REALM_RL_FN.ROLE_KEY), "
 					+ "(select FUNCTION_NAME from SAKAI_REALM_FUNCTION where SAKAI_REALM_FUNCTION.FUNCTION_KEY = SAKAI_REALM_RL_FN.FUNCTION_KEY) "
 					+ "from SAKAI_REALM_RL_FN where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID = ?)";
+			}
+
+
 			Object fields[] = new Object[1];
 			fields[0] = realm.getId();
 			List all = m_sql.dbRead(conn, sql, fields, new SqlReader()
@@ -1229,10 +1243,22 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 			}
 			buf.append(")");
 
-			String statement = "select count(1) from SAKAI_REALM_RL_FN " +
+			String statement = null;
+
 			// any of the grant or role realms
-					"where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() + ") "
-					+ "and FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) "
+                        if ("mysql".equals(m_sqlService.getVendor())) 
+                        {
+				statement = "select count(1) from SAKAI_REALM_RL_FN,SAKAI_REALM force index "
+					+"(AK_SAKAI_REALM_ID) where SAKAI_REALM_RL_FN.REALM_KEY = SAKAI_REALM.REALM_KEY "
+					+"and SAKAI_REALM.REALM_ID in " +  buf.toString() ;
+			}
+			else // oracle and hsql
+			{
+				statement = "select count(1) from SAKAI_REALM_RL_FN " 
+					+ "where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in "
+					+ buf.toString() + ") ";
+			}
+			statement = statement + "and FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) "
 					+ "and (ROLE_KEY in " + "(select ROLE_KEY from SAKAI_REALM_RL_GR where ACTIVE = '1' and USER_ID = ? " +
 					// granted in any of the grant or role realms
 					"and REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() + ")) "
@@ -1384,14 +1410,28 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 			sqlBuf = new StringBuffer();
 			sqlBuf.append("select SRRG.USER_ID ");
 			sqlBuf.append("from SAKAI_REALM_RL_GR SRRG ");
-			sqlBuf.append("inner join SAKAI_REALM SR ON SRRG.REALM_KEY = SR.REALM_KEY ");
+			if ("mysql".equals(m_sqlService.getVendor())) 
+			{
+				sqlBuf.append("inner join SAKAI_REALM SR force index (AK_SAKAI_REALM_ID) ON SRRG.REALM_KEY = SR.REALM_KEY ");
+			}
+			else // oracle and hsql
+			{
+				sqlBuf.append("inner join SAKAI_REALM SR ON SRRG.REALM_KEY = SR.REALM_KEY ");
+			}
 			sqlBuf.append("where SR.REALM_ID in " + sqlParam + " ");
 			sqlBuf.append("and SRRG.ACTIVE = '1' ");
 			sqlBuf.append("and SRRG.ROLE_KEY in ");
 			sqlBuf.append("(select SRRF.ROLE_KEY ");
 			sqlBuf.append("from SAKAI_REALM_RL_FN SRRF ");
 			sqlBuf.append("inner join SAKAI_REALM_FUNCTION SRF ON SRRF.FUNCTION_KEY = SRF.FUNCTION_KEY ");
-			sqlBuf.append("inner join SAKAI_REALM SR1 ON SRRF.REALM_KEY = SR1.REALM_KEY ");
+			if ("mysql".equals(m_sqlService.getVendor())) 
+			{
+				sqlBuf.append("inner join SAKAI_REALM SR1 force index (AK_SAKAI_REALM_ID) ON SRRF.REALM_KEY = SR1.REALM_KEY ");
+			}
+			else // oracle and hsql
+			{
+				sqlBuf.append("inner join SAKAI_REALM SR1 ON SRRF.REALM_KEY = SR1.REALM_KEY ");
+			}
 			sqlBuf.append("where SRF.FUNCTION_NAME = ? ");
 			sqlBuf.append("and SR1.REALM_ID in  " + sqlParam + ")");
 			sql = sqlBuf.toString();
