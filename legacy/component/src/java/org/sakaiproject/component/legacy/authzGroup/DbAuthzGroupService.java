@@ -1250,15 +1250,15 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
                         {
 				statement = "select count(1) from SAKAI_REALM_RL_FN,SAKAI_REALM force index "
 					+"(AK_SAKAI_REALM_ID) where SAKAI_REALM_RL_FN.REALM_KEY = SAKAI_REALM.REALM_KEY "
-					+"and SAKAI_REALM.REALM_ID in " +  buf.toString() ;
+					+"and SAKAI_REALM.REALM_ID in " +  buf.toString();
 			}
 			else // oracle and hsql
 			{
 				statement = "select count(1) from SAKAI_REALM_RL_FN " 
 					+ "where REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in "
-					+ buf.toString() + ") ";
+					+ buf.toString() + ")";
 			}
-			statement = statement + "and FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) "
+			statement = statement + " and FUNCTION_KEY in (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = ?) "
 					+ "and (ROLE_KEY in " + "(select ROLE_KEY from SAKAI_REALM_RL_GR where ACTIVE = '1' and USER_ID = ? " +
 					// granted in any of the grant or role realms
 					"and REALM_KEY in (select REALM_KEY from SAKAI_REALM where REALM_ID in " + buf.toString() + ")) "
