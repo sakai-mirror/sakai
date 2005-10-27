@@ -73,7 +73,7 @@
 	<p>
 		$tlang.getString("dav.graf22")
 	</p>
-	<p>
+	<p class="indnt3">
 		#if("$!inMyWorkspace" == "true")
 			<strong>${server_url}${dav_user}$user_id</strong>
 		#else
