@@ -137,6 +137,7 @@ white-space:nowrap;
 margin:0px; 
 padding:.2em 
 }
+table.listHier th.row{background:transparent}
 table.listHier td{ 
 
    padding:.2em 
