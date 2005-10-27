@@ -1,60 +1,26 @@
-/*NOTE: This file is linked to after the tool_base.css file inside of tools. It provides for skinning.*/
-
-/*PART 1:GENERIC SELECTORS - need a way to resolve the legacy use of body so that there is no conflict with the body in the tool_base  */
-body{font-family:Verdana,Arial,Helvetica,sans-serif;font-size:80%;}
-
+/*NOTE:This file is linked to after the tool_base.css file inside of tools. It provides for skinning.*/
+/*PART 1:GENERIC SELECTORS*/
+body{font-family:Verdana,Arial,Helvetica,sans-serif;font-size:80%}
+a:link{color:#52698C !important;text-decoration:none}
+a:visited{color:#000077 !important;text-decoration:none}
+a:hover{color:#000077 !important;text-decoration:underline;background-color:transparent}
+hr{height:0}
+img{border:0px}
+fieldset{border:none;padding:0px;margin-top:1em}
 /*PART 2:TOOL TITLE SELECTORS and other PORTAL THINGS*/
 .toolTitle{width:100%}
-/*for ie: dumb b. does not understand negative margins very well*/
-.portletBody table.toolTitle{
-	position:relative;
-	left:-2em;
-	top:-.3em;
-	right:-2em;
-	margin:-.3em -2em;
-	}
-	/*for moz*/
-html>body .portletBody table.toolTitle{
-	left:0;
-	top:0;
-	margin:-.3em -2em;
-}
-
-/*jsf creates form node as first child, ie puts margins on forms unless...*/
-.portletBody form{margin-top:0}
-.toolTitle td.title{
-background-color:#BACCDD;
-color:#336699;
-padding:4px 4px 2px 4px;
-background-image:url(images/topleft.gif);
-background-position:top left;
-background-repeat:no-repeat;
-font:1em;
-border-bottom:3px solid #BACCDD;
-}
-.toolTitle td.title h2{font: normal bold .9em Verdana, sans-serif;margin:0;padding:0;display:inline}
-.toolTitle td.action{
-background-image:url(images/topright.gif);
-background-position:top right;
-background-repeat:no-repeat;
-background-color:#BACCDD;
-color:#336699;
-padding:4px 4px 2px 2px;
-text-align:right;
-vertical-align:top
-}
-.toolTitle td.title img{margin:0;vertical-align: text-bottom;/*border:1px solid red;*/width:16px !important;}
-.toolTitle td.title a {background:url(images/reload.gif) top left no-repeat;}
-.toolTitle td.title a:hover{background:url(images/reload_h.gif) top left no-repeat;}
-.toolTitle td.action img{margin:0;vertical-align: text-bottom;/*border:1px solid red;*/width:16px !important;}
-.toolTitle td.action a {background:url(images/help.gif) top right no-repeat;}
-.toolTitle td.action a:hover{background:url(images/help_h.gif) top right no-repeat;}
-
-.chefPresenceListItem{font-size:.8em;margin-left:3px;white-space:nowrap;}
+.toolTitle td.title{background-color:#BACCDD;color:#336699;padding:4px 4px 2px 4px;background-image:url(images/topleft.gif);background-position:top left;background-repeat:no-repeat;font-size:1em;border-bottom:3px solid #BACCDD}
+.toolTitle td.title h2{font:normal bold .9em Verdana,sans-serif;margin:0;padding:0;display:inline}
+.toolTitle td.action{background-image:url(images/topright.gif);background-position:top right;background-repeat:no-repeat;background-color:#BACCDD;color:#336699;padding:4px 4px 2px 2px;text-align:right;vertical-align:top}
+.toolTitle td.title img{margin:0;vertical-align:text-bottom;width:16px !important}
+.toolTitle td.title a{background:url(images/reload.gif) top left no-repeat}
+.toolTitle td.title a:hover{background:url(images/reload_h.gif) top left no-repeat}
+.toolTitle td.action img{margin:0;vertical-align:text-bottom;width:16px !important}
+.toolTitle td.action a{background:url(images/help.gif) top right no-repeat}
+.toolTitle td.action a:hover{background:url(images/help_h.gif) top right no-repeat}
+.chefPresenceListItem{font-size:.8em;margin-left:3px;white-space:nowrap}
 .presenceList{background-color:#fff;border-top:1em solid #fff;border-bottom:1em solid #fff}
-
-/*calendar selectors*/
-table.calendar{}
+/*PART 3:CALENDAR SELECTORS*/
 table.calendar th{background-color:#FFFFCC;font-weight:normal;text-align:center}
 .bgActivity{background-color:#FFFFCA;border:1px solid #dadada;text-align:right}
 .bgWithoutActivity{background-color:#fff;border:1px solid #dadada;text-align:right}
@@ -84,121 +50,60 @@ table.calendar th{background-color:#FFFFCC;font-weight:normal;text-align:center}
 .borderGrayTodayEmptyRightBottom,.borderGrayTodayEmptyRightCenter{background-color:white;border-left:1px solid #dadada;border-right:1px solid #000;border-top:1px solid #dadada}
 .borderGrayTodayMiddleBottom,.borderFullGray,.borderGrayMonth{border:1px solid #dadada}
 .borderTodayBottom,.borderGrayTodayBottom,.borderOnlyLeftTodayBottom{border-bottom:1px solid #000;border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #dadada}
-
-
 /*layout*/
-.portletBody{padding:.3em 2em;}
-table {font-size:1em;}
-a:link{color:#52698C !important;text-decoration:none}
-a:visited{color:#000077 !important;text-decoration:none}
-a:hover{color:#000077 !important;text-decoration:underline;background-color:transparent}
-.listHier{font-size:1em;}
-.listHier th{background-color:#ddd;}
+.portletBody{padding:.3em 2em}
+table{font-size:1em}
+.listHier{font-size:1em}
+.listHier th{background-color:#ddd}
 .listHier td{vertical-align:top;padding:.4em !important}
-.listHier th h3,.listHier th h4, .listHier th h5, .listHier th h6,.listHier td h3,.listHier td h4, .listHier td h5, .listHier td h6{margin:0;padding:0;font-size: 1em;background:none;font-weight:normal}
+.listHier th h3,.listHier th h4,.listHier th h5,.listHier th h6,.listHier td h3,.listHier td h4,.listHier td h5,.listHier td h6{margin:0;padding:0;font-size:1em;background:none;font-weight:normal}
 table.lines tr:hover{background-color:#def}
-
-table.lines{
-	border-collapse: collapse;
-}
-table.lines td{
-/*	no lines in table for this skin*/
-	/*border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7*/
-	}
-tr.selectedCopy {background:#ffe;border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7}
-tr.selectedMove {color:#8A8A8A;background:#F8F8F8;border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7}
+table.lines{border-collapse:collapse}
+table.lines td{}
+tr.selectedCopy{background:#ffe;border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7}
+tr.selectedMove{color:#8A8A8A;background:#F8F8F8;border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7}
 tr.selectedMove a:link,tr.selectedMove a:visited{color:#8A8A8A}
-tr.highLightRow {background:#DDDFE4}
-.listHier td .itemAction  a {text-decoration:underline !important}
-
-/*a table that emulates the layout of the label-input pairs when tabular info and inputs are mixed int he view*/
-.chefEditItem, .itemSummaryForm {margin-left:.7em}
-.chefEditItem th,.itemSummaryForm th{color:#000;font-weight: normal !important ;font-family: Arial, Helvetica, sans-serif;width:15.3em;text-align:left}
-.chefEditItem td, .itemSummaryForm td{padding:.5em 0;vertical-align:top}	
-legend{font-size:110%;color:#000;padding-bottom:.3em;font-weight:normal;margin:.5em 0;}
-/*hierarchy*/
-h2{font-size: 130%;color:#52698C;padding:.3em;font-weight:normal;margin:.5em -.3em;background-color:transparent !important}
-h3{font-size: 130%;color:#52698C;padding:.3em;font-weight:normal;margin:.5em -.3em;background-color:transparent !important}
-h4{font-size:110%;color:#52698C;padding-bottom:.3em;font-weight:normal;margin:.5em 0;}
+tr.highLightRow{background:#DDDFE4}
+.currentSort{font-weight:bold;text-decoration:none}
+.notCurrentSort{font-weight:normal;text-decoration:none}
+.listHier td .itemAction  a{text-decoration:underline !important}
+.chefEditItem,.itemSummaryForm{margin-left:.7em}
+.chefEditItem th,.itemSummaryForm th{color:#000;font-weight:normal !important;font-family:Arial,Helvetica,sans-serif;width:15.3em;text-align:left}
+.chefEditItem td,.itemSummaryForm td{padding:.5em 0;vertical-align:top}
+legend{font-size:110%;color:#000;padding-bottom:.3em;font-weight:normal;margin:.5em 0}
+/*PART 5:HIERARCHY*/
+h2{font-size:130%;color:#52698C;padding:.3em;font-weight:normal;margin:.5em -.3em;background-color:transparent !important}
+h3{font-size:130%;color:#52698C;padding:.3em;font-weight:normal;margin:.5em -.3em;background-color:transparent !important}
+h4{font-size:110%;color:#52698C;padding-bottom:.3em;font-weight:normal;margin:.5em 0}
 h5{font-size:100%;color:#52698C;font-weight:normal;margin:.5em 0;background-color:transparent}
-
-/*inputs*/
-.act {padding:1em 0}
-.act input{	background-color:#eee;border:1px solid silver}
-.act input:hover{	background-color:#BCD;border-width:1px;border-color:silver gray gray silver ;border-style: solid}
+h6{font-size:100%;color:#52698C;font-weight:normal;margin:.5em 0;background-color:transparent}
+/*PART 6:INPUTS*/
+.act{padding:1em 0}
+.act input{background-color:#eee;border:1px solid silver}
+.act input:hover{background-color:#BCD;border-width:1px;border-color:silver gray gray silver;border-style:solid}
 .act input.active{border:1px solid #000}
-.act input.active:hover{border-width:1px;border-color:silver gray gray silver ;border-style: solid}
-
-/*toolbar*/
-.navIntraTool  {background-color:#ffc;padding:.3em;margin:-.3em -2em;text-align:center;line-height:1.5em}
-.navIntraTool a:link, .navIntraTool a{border:none;text-decoration:underline;margin:0 .5em}
-.navIntraTool a:hover {border:none;text-decoration:underline;color:#000}
-.navIntraTool a:visited{border:none;text-decoration:underline;background-color:transparent;color:#369}
-
-.navIntraToolLink input{
-	padding:0;
-	border:none;
-	background:transparent;
-}
-.navIntraToolLink input.disabled{
-	padding-bottom:1px;
-}
-.navIntraToolLink input.enabled{
-	color:#0E0046;
-	border-bottom:1px solid #0E0046;	
-}
-
-/*messages -moved to base. override as needed here */
-
-/*navigation*/
+.act input.active:hover{border-width:1px;border-color:silver gray gray silver;border-style:solid}
 .leftNav{font-size:1em}
 .leftNav form{display:inline}
-.rightNav  {font-size:1em}
+.rightNav{font-size:1em}
 .righNav form{display:inline}
-.rightNav span.instruction  {display:block;padding-bottom:.5em;}
-.rightNav input[type="submit"]{font-size:90%;padding:.3em;}
-.rightNav input[type="button"]{font-size:90%;padding:.3em;}
-.rightNav input{}
-
-
-/*label input pair selectors that are overriding base for this skin*/
-label{color:#000;font-weight: normal;font-family: Arial, Helvetica, sans-serif;margin-top:.3em}
-.shorttext .reqStar{color:#c00;width:auto;margin:0 0 0 -1em;font-weight:bold;font-size:1em;padding:0;}
+.rightNav span.instruction{display:block;padding-bottom:.5em}
+.rightNav input[type="submit"]{font-size:90%;padding:.3em}
+.rightNav input[type="button"]{font-size:90%;padding:.3em}
+label{color:#000;font-weight:normal;font-family:Arial,Helvetica,sans-serif;margin-top:.3em}
+.shorttext .reqStar{color:#c00;width:auto;margin:0 0 0 -1em;font-weight:bold;font-size:1em;padding:0}
 .labelindnt{font-size:1em;margin:0 0 0 15.5em}
 .shorttext input{padding:.1em .3em;border:1px solid #52AAD6}
-textarea{padding:.1em .3em;border:1px solid #52AAD6;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:100%;}
+textarea{padding:.1em .3em;border:1px solid #52AAD6;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:100%}
 label.block{display:block}
-/*when a form needs to share hspace with other block elements*/
 .inlineForm{margin:0px;padding:0px;display:inline}
 .inlineForm a{border:none;background-color:transparent}
-
-
-hr  {height:0}
-img {border:0px;}
-fieldset  {
-	border:none;
-	padding:0px;
-	margin-top:1em;
-}
-legend  {}
-fieldset table {}
-fieldset p {}
-/*
-	If the current view is in the application menu, highlight it.
-*/
-.currentView {font-weight:normal}
-/*
-	Make the currently sorted column header text bold, and make all sort headers
-	not underlined
-*/
-.currentSort {
-    font-weight:bold;
-    text-decoration:none;
-}
-
-.notCurrentSort {
-	font-weight:normal;
-    text-decoration:none;
-}
-
-.login td.logo{background:url(images/logo_inst.gif) no-repeat top left;width:13em}
+/*PART 7:TOOLBAR*/
+.navIntraTool{background-color:#ffc;padding:.3em;margin:-.3em -2em;text-align:center;line-height:1.5em}
+.navIntraTool a:link,.navIntraTool a{border:none;text-decoration:underline;margin:0 .5em}
+.navIntraTool a:hover{border:none;text-decoration:underline;color:#000}
+.navIntraTool a:visited{border:none;text-decoration:underline;background-color:transparent;color:#369}
+.navIntraToolLink input{padding:0;border:none;background:transparent}
+.navIntraToolLink input.disabled{padding-bottom:1px}
+.navIntraToolLink input.enabled{color:#0E0046;border-bottom:1px solid #0E0046}
+.currentView{font-weight:normal}
