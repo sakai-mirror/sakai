@@ -1821,7 +1821,11 @@ public class ThreadedDiscussionIIAction
 		}
 		String body = params.getCleanString ("body");
 		body = processFormattedTextFromBrowser(state, body);
+		state.setAttribute(DRAFT_MESSAGE_BODY, body);
+		
+		
 		String style = params.getString ("style");
+		state.setAttribute(DRAFT_MESSAGE_REPLY_STYLE, style);
 
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
@@ -2171,6 +2175,12 @@ public class ThreadedDiscussionIIAction
 
 		String subject = StringUtil.trimToNull((String) params.getString ("subject"));
 		state.setAttribute(RESPOND_SUBJECT, subject);
+		
+		//get info from input
+		String body = params.getCleanString ("body");
+		body = processFormattedTextFromBrowser(state, body);
+		state.setAttribute(RESPOND_BODY, body);
+		
 		if (subject == null)
 		{
 			addAlert(state,rb.getString("plespe1"));
@@ -2189,11 +2199,6 @@ public class ThreadedDiscussionIIAction
 			{
 				replyToId = params.getString("topicId");
 			}
-			
-			//get info from input
-			String body = params.getCleanString ("body");
-			body = processFormattedTextFromBrowser(state, body);
-			state.setAttribute(RESPOND_BODY, body);
 		
 			if (state.getAttribute(STATE_MESSAGE) == null)
 			{

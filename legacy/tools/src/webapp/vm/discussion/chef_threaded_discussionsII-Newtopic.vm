@@ -77,7 +77,7 @@
 				</h4>
 				#if ($!newtopicreplystyle.equals("star"))
 					<p class="checkbox"><input type="radio" name="style" value="thread" id="styleThread" /><label for="styleThread">$tlang.getString("newtop.allrep1")</label></p>
-					<p class="checkbox"><input type="radio" name="style" value="star" id="styleStar" /><label for="styleStar">$tlang.getString("newtop.allrep2")</label></p>
+					<p class="checkbox"><input type="radio" name="style" value="star" id="styleStar" checked="checked" /><label for="styleStar">$tlang.getString("newtop.allrep2")</label></p>
 				#else
 					<p class="checkbox"><input type="radio" name="style" value="thread" checked="checked" id="styleThread" /><label for="styleThread">$tlang.getString("newtop.allrep1")</label></p>
 					<p class="checkbox"><input type="radio" name="style" value="star" id="styleStar" /><label for="styleStar">$tlang.getString("newtop.allrep2")</label></p>
