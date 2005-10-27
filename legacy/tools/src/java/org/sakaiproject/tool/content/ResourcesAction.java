@@ -83,6 +83,8 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
+import org.sakaiproject.service.framework.session.UsageSession;
+import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
@@ -1211,6 +1213,12 @@ public class ResourcesAction
 		context.put ("dav_user", "/dav/user/");
 		String webdav_instructions = ServerConfigurationService.getString("webdav.instructions.url");
 		context.put("webdav_instructions" ,webdav_instructions);
+		
+		String browserID = UsageSessionService.getSession().getBrowserId();
+		if(browserID.equals(UsageSession.WIN_IE))
+		{
+			context.put("isWinIEBrowser", Boolean.TRUE.toString());
+		}
 
 		return TEMPLATE_DAV;
 
