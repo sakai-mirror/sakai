@@ -13,7 +13,7 @@
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
 		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
-  		<property name="autoDdl"><value>${auto.ddl}</value></property>
+ 		<property name="autoDdl"><value>${auto.ddl}</value></property>
 	</bean>
 
 	<bean id="org.sakaiproject.service.legacy.announcement.AnnouncementService"
@@ -130,8 +130,7 @@
 		<property name="bodyPath"><null/></property>
 		<property name="bodyVolumes"><null/></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
- 		<property name="siteQuota"><value>1048576</value></property>
- 		
+ 		<property name="siteQuota"><value>262144</value></property>
 	</bean>
 
 	<bean id="org.sakaiproject.service.legacy.content.ContentTypeImageService"
@@ -214,7 +213,7 @@
 			init-method="init"
 			destroy-method="destroy"
 			singleton="true">
-		<property name="smtp"><null/></property>
+		<property name="smtp"><value>mail-relay.iu.edu</value></property>
 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
 	</bean>
 
@@ -375,14 +374,16 @@
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
 	</bean>
 
+    <!-- Use OSPI's proxy SecurityService instead of Sakai's
 	<bean id="org.sakaiproject.service.legacy.security.SecurityService"
 			class="org.sakaiproject.component.legacy.security.SakaiSecurity"
 			init-method="init"
 			destroy-method="destroy"
 			singleton="true">
 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
- 		<property name="cacheMinutes"><value>3</value></property>
+ 		<property name="cacheMinutes"><value>0</value></property>
 	</bean>
+    -->
 
 	<bean id="org.sakaiproject.service.framework.config.ServerConfigurationService"
 			class="org.sakaiproject.component.framework.config.BasicConfigurationService"
