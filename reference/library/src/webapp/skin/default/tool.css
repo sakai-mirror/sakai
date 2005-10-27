@@ -162,19 +162,19 @@ h5{font-size:100%;color:#084A87;font-weight:normal;margin:.5em 0;background-colo
 	text-decoration:none;
 }
 
-.navIntraTool input{
+.navIntraToolLink input{
 	padding:0;
 	border:none;
 	background:transparent;
 }
-.navIntraTool input.disabled{
+.navIntraToolLink input.disabled{
 	padding-bottom:1px;
 }
-.navIntraTool input.enabled{
+.navIntraToolLink input.enabled{
 	color:#000;
 	border-bottom:1px dashed #90A1C6;	
 }
-.navIntraTool input.enabled:hover{
+.navIntraToolLink input.enabled:hover{
 	border-bottom:1px solid #fff;
 	color:#084A87
 }
