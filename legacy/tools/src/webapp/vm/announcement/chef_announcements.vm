@@ -50,9 +50,9 @@
 				</p>
 			#else
 				<div class="rightNav">
-					<span class="instruction">
+					<p class="instruction">
 						Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items
-					</span>
+					</p>
 					#if ($pagesize != 0)
 						#if ($goFPButton == "true")
 							<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
@@ -311,7 +311,7 @@
 						</form>
 					#else
 						<div class="rightNav">
-							<span class="instruction" style="margin-bottom:.3em">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</span>
+							<p class="instruction" style="margin-bottom:.3em">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</p>
 					 			#if ($pagesize != 0)
 									#if ($goFPButton == "true")
 										<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
@@ -543,10 +543,10 @@
 						#else
 						
 							<div class="rightNav">
-								<span class="instruction">
+								<p class="instruction">
 									##$tlang.getString("gen.viewing") $topMsgPos - $btmMsgPos / $allMsgNumber $tlang.getString("gen.items")
 									  $tlang.getString("gen.viewing") $topMsgPos - $btmMsgPos $tlang.getString("gen.separator") $allMsgNumber $tlang.getString("gen.items")
-								</span>
+								</p>
 								#if ($pagesize != 0)
 									#if ($goFPButton == "true")
 										<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">

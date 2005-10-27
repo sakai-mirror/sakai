@@ -15,8 +15,9 @@
 						#end
 					</p>
 					<p class="shorttext">
+						<span class ="reqStar">*</span>
 						<label for="title">
-							<span class ="alert">*</span>$tlang.getString("sitdup.sitti")
+							$tlang.getString("sitdup.sitti")
 						</label>
 						<input type="text" name="title" id="title" maxlength="20" size="20" value="" />
 					</p>	

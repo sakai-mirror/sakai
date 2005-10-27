@@ -22,7 +22,7 @@
         <span class="instruction">$tlang.getString("sitmanpar.view") $topMsgPos - $btmMsgPos $tlang.getString("sitmanpar.of") $allMsgNumber $tlang.getString("sitmanpar.par")</span>
         #if ($pagesize != 0)
 			#if ($goPPButton == "true")
-				<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action") class="toolbarForm">
+				<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action") class="inlineForm">
 				<input type="submit" name="eventSubmit_doList_prev" value="$tlang.getString("sitmanpar.prev") $pagesize" />
 				</form>
 			#end

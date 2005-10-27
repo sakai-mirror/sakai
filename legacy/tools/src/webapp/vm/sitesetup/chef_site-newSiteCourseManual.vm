@@ -56,14 +56,14 @@
 				<table  border="0" cellpadding="4" summary="Table for manual input of course information.">
 					<tr>
 						<th id="subject" style="font-weight:normal">	
-							<span class ="alert">*</span>$tlang.getString("man.subject")
+							<span class ="reqStarInline">*</span>$tlang.getString("man.subject")
 						</th>
 						<th id="course" style="font-weight:normal">	
-							<span class ="alert">*</span>$tlang.getString("man.class")
+							<span class ="reqStarInline">*</span>$tlang.getString("man.class")
 						</th>
 						<th id="sections" style="font-weight:normal">
 							#if (!$!isFutureTerm)
-								<span class ="alert">*</span>
+								<span class ="reqStarInline">*</span>
 							#end
 							$tlang.getString("man.sect")
 						</th>

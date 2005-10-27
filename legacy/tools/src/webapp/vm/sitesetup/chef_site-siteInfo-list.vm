@@ -8,7 +8,7 @@
 		<div style="display:block;clear:both"></div>
 	#end
 	#if ($fromWSetup)
-		<form name="siteForm" id="siteForm" class="toolbarForm" action="#toolForm("SiteAction")" method="post">
+		<form name="siteForm" id="siteForm" class="inlineForm" action="#toolForm("SiteAction")" method="post">
 			<input type="hidden" name="option" value="x" />
 			<input type="hidden" name="eventSubmit_doNavigate_to_site" value="x" />
 			<p class="rightNav">

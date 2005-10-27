@@ -5,7 +5,7 @@
 	#if ($alertMessage)<br /><div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<div style="clear:both;margin:1em 0">
 		<div class="leftNav">
-			<form name="viewForm" class="toolbarForm" method="post" action="#toolForm("SiteAction")" style="display:inline">
+			<form name="viewForm" class="inlineForm" method="post" action="#toolForm("SiteAction")" style="display:inline">
 				<input type="hidden" name="eventSubmit_doView_sites" value="view" />
 				<label for="view">$tlang.getString("list.view")</label>
 				<select id="view" name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
@@ -20,7 +20,7 @@
 		<div class="rightNav">
 			#if ($!superUser || (!$!superUser && $viewSelected != $tlang.getString("java.my")))
 				## hide search form when in normal user login and in my workspace sites view
-				<form name="searchForm" class="toolbarForm" action="#toolForm("SiteAction")" method="post" style="display:inline">
+				<form name="searchForm" class="inlineForm" action="#toolForm("SiteAction")" method="post" style="display:inline">
 					<input type="hidden" name="eventSubmit_doSite_search" value="null" />
 					<label for="$form_search" class="skip">Search</label>
 					<input size="20" value="$!searchString" name="$form_search" id="$form_search" type="text" class="searchField" style="background-color:#fff;width:10em;color:#000" />
