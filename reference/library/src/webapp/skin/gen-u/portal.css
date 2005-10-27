@@ -104,7 +104,7 @@ color:#24496F
 }
 /* GROUP 3 - content and channels */
 /*the middle layer - tool menu and content*/
-#divLogo {text-align:center;}
+#divLogo {text-align:center;margin:0 .2em .5em .2em;width:8em;overflow: hidden;}
 #siteType{text-transform:capitalize;font-size:normal}
 #siteStatus{text-transform:capitalize;	background:url(images/warn.gif) 3px 3px no-repeat #fff;
 	border:1px solid  #536377;

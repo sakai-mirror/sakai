@@ -77,7 +77,7 @@ input{
 	color:#1D97C2}
 /* GROUP 3 - tool menu  */
 
-#divLogo {text-align:center;}
+#divLogo {text-align:center;margin:0 .2em .5em .2em;width:8em;overflow: hidden;}
 #siteType{text-transform:capitalize;font-size:.8em}
 #siteStatus{text-transform:capitalize;	background:url(images/warn.gif) 3px 3px no-repeat #fff;
 	border:1px solid  #536377;

@@ -95,7 +95,7 @@ input{
 }
 /* GROUP 3 - tool menu  */
 
-#divLogo {text-align:center;margin:1em 0}
+#divLogo {text-align:center;margin:0 .2em .5em .2em;width:8em;overflow: hidden;}
 #siteType {display: none;}
 #siteStatus{text-transform:capitalize;	background:url(images/warn.gif) 3px 3px no-repeat #fff;
 	border:1px solid  #536377;
