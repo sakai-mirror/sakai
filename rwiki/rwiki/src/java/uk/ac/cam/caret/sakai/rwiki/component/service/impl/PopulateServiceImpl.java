@@ -65,20 +65,20 @@ public class PopulateServiceImpl implements PopulateService {
 					RWikiCurrentObject seed = (RWikiCurrentObject) i.next();
 					
 					String name = NameHelper.globaliseName(seed.getName(), realm);
-					log.	warn("Populating Realm with "+seed.getName());
+					log.	debug("Populating Realm with "+seed.getName());
 					if (dao.findByGlobalName(name) == null) {
 						if (log.isDebugEnabled()) {
 							log.debug("Creating Page: " + name);
 						}
-						log.warn("Creating Page :"+name);
+						log.debug("Creating Page :"+name);
 						RWikiCurrentObject rwo = dao.createRWikiObject(name, realm);
 						seed.copyTo(rwo);
 						rwo.setName(name);
 						rwo.setRealm(realm);
 						dao.update(rwo,null);
-						log.warn("Page Created ");
+						log.debug("Page Created ");
 					} else {
-						log.warn("Page Already exists ");
+						log.debug("Page Already exists ");
 					}
 				}
 				seenPageSpaces.put(realm, realm);
