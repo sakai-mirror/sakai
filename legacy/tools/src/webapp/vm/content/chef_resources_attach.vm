@@ -81,7 +81,10 @@
 		</h4>
 		<p class="shorttext">
 			<label for="file">$tlang.getString("edit.url")</label>
-			<input type="text" name="url" id="url" onchange="javascript:document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachurl" "special=upload")';submitform('attachForm');" />
+			<input type="text" size="40" name="url" id="url" onkeypress="javascript:document.getElementById('add_url').disabled=false;" onchange="javascript:document.getElementById('add_url').disabled=true;document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachurl" "special=upload")';submitform('attachForm');" />
+			<span class="act">
+				<input type="button" name="add_url" id="add_url" value="$tlang.getString("gen.add")" onclick="javascript:document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachurl" "special=upload")';submitform('attachForm');" disabled="disabled" />
+			</span>
 		</p>	
 
 		######################  Page Title / Breadcrumbs  ##############
