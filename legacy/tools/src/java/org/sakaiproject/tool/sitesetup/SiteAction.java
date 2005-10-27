@@ -10078,8 +10078,6 @@ public class SiteAction extends PagedResourceActionII
 						
 					} // Other features
 				}
-				//import
-				importToolIntoSite(chosenList, importTools, site);
 				
 				// booleans for synoptic views
 				if (toolId.equals("sakai.announcements"))
@@ -10096,6 +10094,9 @@ public class SiteAction extends PagedResourceActionII
 				}
 				 
 			}	// for
+			
+			//import
+			importToolIntoSite(chosenList, importTools, site);
 			
 			// add home tool
 			if (hasHome)
