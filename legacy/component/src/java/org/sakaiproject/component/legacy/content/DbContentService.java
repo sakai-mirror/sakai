@@ -552,25 +552,18 @@ public class DbContentService
 
 		public void commitResource(ContentResourceEdit edit) throws ServerOverloadException
 		{
-			System.out.println("---> DbContentService.commitResource edit == " + edit);
 			// keep the body out of the XML
 			byte[] body = ((BaseResourceEdit) edit).m_body;
-			System.out.println("---> DbContentService.commitResource body.length == " + body.length);
 			((BaseResourceEdit) edit).m_body = null;
-
-			System.out.println("---> DbContentService.commitResource m_resourceStore == " + m_resourceStore);
 			m_resourceStore.commitResource(edit);
-			System.out.println("---> DbContentService.commitResource edit committed");
 
 			// update the resource body
 			if (body != null)
-			{ 
-				System.out.println("---> DbContentService.commitResource m_bodyPath == " + m_bodyPath);
+			{
 				// if we have been configured to use an external file system
 				if (m_bodyPath != null)
 				{
 					boolean ok = putResourceBodyFilesystem(edit, body);
-					System.out.println("---> DbContentService.commitResource ok == " + ok);
 				if(! ok)
 					{
 						cancelResource(edit);
@@ -584,7 +577,6 @@ public class DbContentService
 					putResourceBodyDb(edit, body);
 				}
 			}
-			System.out.println("---> DbContentService.commitResource done");
 		}
 
 		//htripath - start
@@ -887,12 +879,10 @@ public class DbContentService
 		*/
 		protected boolean putResourceBodyFilesystem(ContentResourceEdit resource, byte[] body)
 		{
-			System.out.println("---> DbContentService.putResourceBodyFilesystem body.length == " + body.length);
 			if ((body == null) || (body.length == 0)) return false;
 
 			// form the file name
 			File file = new File(externalResourceFileName(resource));
-			System.out.println("---> DbContentService.putResourceBodyFilesystem file == " + file);
 
 			// delete the old
 			if (file.exists())
@@ -912,14 +902,11 @@ public class DbContentService
 
 				// write the file
 				FileOutputStream out = new FileOutputStream(file);
-				System.out.println("---> DbContentService.putResourceBodyFilesystem out == " + out);
 				out.write(body);
 				out.close();
-				System.out.println("---> DbContentService.putResourceBodyFilesystem wrote file ");
 			}
 			catch (Throwable t)
 			{
-				System.out.println("---> DbContentService.putResourceBodyFilesystem failed to write file");
 				m_logger.warn(this + ": failed to write resource: " + resource.getId() + " : " + t);
 				return false;
 			}
