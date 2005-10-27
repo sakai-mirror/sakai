@@ -1,7 +1,7 @@
 package uk.ac.cam.caret.sakai.rwiki.bean.test;
 
 import junit.framework.TestCase;
-import uk.ac.cam.caret.sakai.rwiki.bean.ViewBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
 
 public class ViewBeanTest extends TestCase {
 
@@ -18,7 +18,7 @@ public class ViewBeanTest extends TestCase {
     }
     
     /*
-     * Test method for 'uk.ac.cam.caret.sakai.rwiki.bean.ViewBean.getViewUrl()'
+     * Test method for 'uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean.getViewUrl()'
      */
     public void testGetViewUrl() {
         ViewBean vb = new ViewBean(localPageName, realm);
@@ -27,7 +27,7 @@ public class ViewBeanTest extends TestCase {
     }
 
     /*
-     * Test method for 'uk.ac.cam.caret.sakai.rwiki.bean.ViewBean.getEditUrl()'
+     * Test method for 'uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean.getEditUrl()'
      */
     public void testGetEditUrl() {
         ViewBean vb = new ViewBean(localPageName, realm);
@@ -35,7 +35,7 @@ public class ViewBeanTest extends TestCase {
     }
 
     /*
-     * Test method for 'uk.ac.cam.caret.sakai.rwiki.bean.ViewBean.getInfoUrl()'
+     * Test method for 'uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean.getInfoUrl()'
      */
     public void testGetInfoUrl() {
         
@@ -45,7 +45,7 @@ public class ViewBeanTest extends TestCase {
     }
 
     /*
-     * Test method for 'uk.ac.cam.caret.sakai.rwiki.bean.ViewBean.setPageName(String)'
+     * Test method for 'uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean.setPageName(String)'
      */
     public void testPageName() {
         ViewBean vb = new ViewBean(localPageName, realm);
@@ -56,7 +56,7 @@ public class ViewBeanTest extends TestCase {
     }
 
     /*
-     * Test method for 'uk.ac.cam.caret.sakai.rwiki.bean.ViewBean.getLocalRealm()'
+     * Test method for 'uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean.getLocalRealm()'
      */
     public void testGetLocalRealm() {
         ViewBean vb = new ViewBean(localPageName, realm);
@@ -66,7 +66,7 @@ public class ViewBeanTest extends TestCase {
     }
 
     /*
-     * Test method for 'uk.ac.cam.caret.sakai.rwiki.bean.ViewBean.getPageRealm()'
+     * Test method for 'uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean.getPageRealm()'
      */
     public void testGetPageRealm() {
         ViewBean vb = new ViewBean(localPageName, realm);
@@ -77,7 +77,7 @@ public class ViewBeanTest extends TestCase {
     }
 
     /*
-     * Test method for 'uk.ac.cam.caret.sakai.rwiki.bean.ViewBean.setAnchor(String)'
+     * Test method for 'uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean.setAnchor(String)'
      */
     public void testSetAnchor() {
         ViewBean vb = new ViewBean(localPageName, realm);

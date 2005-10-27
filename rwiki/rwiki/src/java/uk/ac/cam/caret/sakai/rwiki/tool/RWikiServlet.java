@@ -38,19 +38,20 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import uk.ac.cam.caret.sakai.rwiki.bean.PrePopulateBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.ViewBean;
-import uk.ac.cam.caret.sakai.rwiki.service.HttpCommand;
+import uk.ac.cam.caret.sakai.rwiki.component.util.TimeLogger;
+import uk.ac.cam.caret.sakai.rwiki.tool.api.HttpCommand;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.PrePopulateBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
 
 /**
  * @author andrew
  * 
  */
-public class RWikiServlet extends HttpServlet {
-    private static Logger log;
+//FIXME: Tool
 
-    private static boolean logResponse = false;
-    private static boolean logFullResponse = false;
+public class RWikiServlet extends HttpServlet {
+    public static Logger log;
+
        /**
      * Required for serialization... also to stop eclipse from giving me a warning!
      */
@@ -66,15 +67,6 @@ public class RWikiServlet extends HttpServlet {
     
     
     
-    public static void printTimer(String name, long start, long end) {
-    		if ( log != null ) {
-    			if ( logFullResponse )
-        			log.info("TIMER:"+name+";"+(end-start)+";"+end+";");
-    			else 
-    				log.debug("TIMER:"+name+";"+(end-start)+";"+end+";");
-    		}
-    }
-
     public void init(ServletConfig servletConfig) throws ServletException {
 
         super.init(servletConfig);
@@ -90,12 +82,14 @@ public class RWikiServlet extends HttpServlet {
         headerScriptSource = servletConfig.getInitParameter("headerScriptSource");
         footerScript = servletConfig.getInitParameter("footerScript");
         try {
-        		logResponse = "true".equalsIgnoreCase(servletConfig.getInitParameter("log-response"));
+        		boolean logResponse = "true".equalsIgnoreCase(servletConfig.getInitParameter("log-response"));
+             TimeLogger.setLogResponse(logResponse);
         } catch ( Exception ex ) {
         	  
         }
         try {
-    			logFullResponse = "true".equalsIgnoreCase(servletConfig.getInitParameter("log-full-response"));
+    			boolean logFullResponse = "true".equalsIgnoreCase(servletConfig.getInitParameter("log-full-response"));
+             TimeLogger.setLogFullResponse(logFullResponse);
         } catch ( Exception ex ) {
     	  
         }
@@ -116,7 +110,7 @@ public class RWikiServlet extends HttpServlet {
             throws ServletException, IOException {
         long finish = System.currentTimeMillis();
         long start = System.currentTimeMillis();
-        RWikiServlet.printTimer("Response Start Marker",start,finish);
+        TimeLogger.printTimer("Response Start Marker",start,finish);
         
         if (wac == null) {
             wac = WebApplicationContextUtils.getRequiredWebApplicationContext(this.getServletContext());
@@ -173,15 +167,15 @@ public class RWikiServlet extends HttpServlet {
         HttpCommand command = helper.getCommandForRequest(request);
 
         finish = System.currentTimeMillis();
-        RWikiServlet.printTimer("Response Preamble Complete",start,finish);
+        TimeLogger.printTimer("Response Preamble Complete",start,finish);
         start = System.currentTimeMillis();
         command.execute(request, response);
         finish = System.currentTimeMillis();
 
-        RWikiServlet.printTimer("Response Complete",start,finish);
+        TimeLogger.printTimer("Response Complete",start,finish);
         if ( (finish - start) > 500 ) {
         		log.warn("Slow Wiki Page "+(finish - start)+" ms URL "+request.getRequestURL()+"?"+request.getQueryString());
-        } else if ( logResponse ) {
+        } else if ( TimeLogger.getLogResponse() ) {
     			log.info("Wiki Page Response "+(finish - start)+" ms URL "+request.getRequestURL()+"?"+request.getQueryString());
         }
         request.removeAttribute(Tool.NATIVE_URL);
@@ -192,6 +186,7 @@ public class RWikiServlet extends HttpServlet {
         RequestScopeSuperBean rssb = RequestScopeSuperBean.createAndAttach(request, wac);
         
         PrePopulateBean ppBean = rssb.getPrePopulateBean();
+        
         ppBean.doPrepopulate();
     }
     
@@ -247,8 +242,5 @@ public class RWikiServlet extends HttpServlet {
     		return false;
     }
 
-	public static boolean isLogResponse() {
-		return logResponse;
-	}
 
 }

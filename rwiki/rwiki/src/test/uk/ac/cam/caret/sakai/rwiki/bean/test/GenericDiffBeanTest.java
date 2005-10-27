@@ -5,7 +5,7 @@ import org.apache.commons.jrcs.diff.DifferentiationFailedException;
 import org.apache.commons.jrcs.diff.Revision;
 import org.apache.commons.jrcs.diff.myers.MyersDiff;
 
-import uk.ac.cam.caret.sakai.rwiki.bean.GenericDiffBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.GenericDiffBean;
 
 import junit.framework.TestCase;
 

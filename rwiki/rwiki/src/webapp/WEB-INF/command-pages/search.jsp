@@ -52,7 +52,7 @@
 	<h3>Search: <c:out value="${searchBean.search}"/></h3>
 
 	<c:set var="searchResults" value="${searchBean.searchResults}"/>
-	<jsp:useBean id="searchViewBean" class="uk.ac.cam.caret.sakai.rwiki.bean.ViewBean"/>
+	<jsp:useBean id="searchViewBean" class="uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean"/>
 	<jsp:setProperty name="searchViewBean" value="${currentLocalSpace}" property="localSpace"/>
       	<div id="${rwikiContentStyle}" >
       		<p>

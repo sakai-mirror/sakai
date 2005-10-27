@@ -16,40 +16,40 @@
   <c:set var="viewBean" value="${requestScope.rsacMap.viewBean}"/>
   <jsp:scriptlet>
 	  	long finish = System.currentTimeMillis();
-    uk.ac.cam.caret.sakai.rwiki.tool.RWikiServlet.printTimer("get ViewBean:",start,finish);
+    uk.ac.cam.caret.sakai.rwiki.component.util.TimeLogger.printTimer("get ViewBean:",start,finish);
         start = System.currentTimeMillis();
   </jsp:scriptlet>
   
   <c:set var="renderBean" value="${requestScope.rsacMap.renderBean}"/>
   <jsp:scriptlet>
     finish = System.currentTimeMillis();
-    uk.ac.cam.caret.sakai.rwiki.tool.RWikiServlet.printTimer("RenderBean",start,finish);
+    uk.ac.cam.caret.sakai.rwiki.component.util.TimeLogger.printTimer("RenderBean",start,finish);
     start = System.currentTimeMillis();
   </jsp:scriptlet>
   <c:set var="rightRenderBean" value="${requestScope.rsacMap.viewRightRenderBean}"/>
     <jsp:scriptlet>
       finish = System.currentTimeMillis();
-      uk.ac.cam.caret.sakai.rwiki.tool.RWikiServlet.printTimer("get RightRenderBean:",start,finish);
+      uk.ac.cam.caret.sakai.rwiki.component.util.TimeLogger.printTimer("get RightRenderBean:",start,finish);
       start = System.currentTimeMillis();
   </jsp:scriptlet>
   
   <c:set var="permissionsBean" value="${requestScope.rsacMap.permissionsBean}"/>
       <jsp:scriptlet>
         finish = System.currentTimeMillis();
-        uk.ac.cam.caret.sakai.rwiki.tool.RWikiServlet.printTimer("get permissionsBean:",start,finish);
+        uk.ac.cam.caret.sakai.rwiki.component.util.TimeLogger.printTimer("get permissionsBean:",start,finish);
         start = System.currentTimeMillis();
   </jsp:scriptlet>
   
   <c:set var="homeBean" value="${requestScope.rsacMap.homeBean}"/>
       <jsp:scriptlet>
         finish = System.currentTimeMillis();
-        uk.ac.cam.caret.sakai.rwiki.tool.RWikiServlet.printTimer("get homeBean:",start,finish);
+        uk.ac.cam.caret.sakai.rwiki.component.util.TimeLogger.printTimer("get homeBean:",start,finish);
         start = System.currentTimeMillis();
   </jsp:scriptlet>
   <c:set var="recentlyVisitedBean" value="${requestScope.rsacMap.recentlyVisitedBean }"/>
       <jsp:scriptlet>
         finish = System.currentTimeMillis();
-        uk.ac.cam.caret.sakai.rwiki.tool.RWikiServlet.printTimer("get recentlyVisitedBean:",start,finish);
+        uk.ac.cam.caret.sakai.rwiki.component.util.TimeLogger.printTimer("get recentlyVisitedBean:",start,finish);
         start = System.currentTimeMillis();
   </jsp:scriptlet>
   

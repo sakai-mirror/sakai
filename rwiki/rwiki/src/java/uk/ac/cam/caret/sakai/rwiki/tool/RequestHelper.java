@@ -26,9 +26,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.sakaiproject.service.framework.log.Logger;
 
-import uk.ac.cam.caret.sakai.rwiki.service.CommandService;
-import uk.ac.cam.caret.sakai.rwiki.service.HttpCommand;
+import uk.ac.cam.caret.sakai.rwiki.tool.api.CommandService;
+import uk.ac.cam.caret.sakai.rwiki.tool.api.HttpCommand;
 
+// FIXME: Tool
 public class RequestHelper {
 
 	  private Logger log;

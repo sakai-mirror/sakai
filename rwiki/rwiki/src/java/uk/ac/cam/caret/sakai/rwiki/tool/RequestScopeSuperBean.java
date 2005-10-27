@@ -30,35 +30,35 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.springframework.context.ApplicationContext;
 
-import uk.ac.cam.caret.sakai.rwiki.bean.DiffBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.EditBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.ErrorBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.HistoryBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.HomeBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.PermissionsBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.PrePopulateBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.AuthZGroupBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.AuthZGroupEditBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.RecentlyVisitedBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.ReferencesBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.RenderBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.SearchBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.UpdatePermissionsBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.ViewBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.helper.DiffHelperBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.helper.AuthZGroupBeanHelper;
-import uk.ac.cam.caret.sakai.rwiki.bean.helper.AuthZGroupEditBeanHelper;
-import uk.ac.cam.caret.sakai.rwiki.bean.helper.RecentlyVisitedHelperBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.helper.ReverseHistoryHelperBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.helper.ReviewHelperBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.helper.UpdatePermissionsBeanHelper;
-import uk.ac.cam.caret.sakai.rwiki.bean.helper.UserHelperBean;
-import uk.ac.cam.caret.sakai.rwiki.bean.helper.ViewParamsHelperBean;
-import uk.ac.cam.caret.sakai.rwiki.model.RWikiObject;
-import uk.ac.cam.caret.sakai.rwiki.service.PopulateService;
-import uk.ac.cam.caret.sakai.rwiki.service.RWikiObjectService;
-import uk.ac.cam.caret.sakai.rwiki.service.RWikiSecurityService;
-import uk.ac.cam.caret.sakai.rwiki.service.RenderService;
+import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
+import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService;
+import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
+import uk.ac.cam.caret.sakai.rwiki.tool.api.PopulateService;
+import uk.ac.cam.caret.sakai.rwiki.tool.api.ToolRenderService;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupEditBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.DiffBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.EditBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.ErrorBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.HistoryBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.HomeBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.PermissionsBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.PrePopulateBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.RecentlyVisitedBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.ReferencesBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.RenderBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.SearchBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.UpdatePermissionsBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.AuthZGroupBeanHelper;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.AuthZGroupEditBeanHelper;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.DiffHelperBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.RecentlyVisitedHelperBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ReverseHistoryHelperBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ReviewHelperBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.UpdatePermissionsBeanHelper;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.UserHelperBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ViewParamsHelperBean;
 
 /**
  * This is a replacement for the RequestScopeApplicationContext which turned out
@@ -71,6 +71,8 @@ import uk.ac.cam.caret.sakai.rwiki.service.RenderService;
  * @author andrew
  * 
  */
+//FIXME: Tool
+
 public class RequestScopeSuperBean {
 
     public static final String REQUEST_ATTRIBUTE = "rsacMap";
@@ -87,7 +89,7 @@ public class RequestScopeSuperBean {
 
     private Logger logger;
 
-    private RenderService renderService;
+    private ToolRenderService toolRenderService;
 
     private PopulateService populateService;
 
@@ -115,7 +117,7 @@ public class RequestScopeSuperBean {
                 .getBean("securityService");
         objectService = (RWikiObjectService) context.getBean("objectService");
         logger = (Logger) context.getBean("rwiki-logger");
-        renderService = (RenderService) context.getBean("renderService");
+        toolRenderService = (ToolRenderService) context.getBean("toolRenderService");
         populateService = (PopulateService) context.getBean("populateService");
         realmService = (AuthzGroupService) context.getBean(AuthzGroupService.class.getName());
     }
@@ -242,7 +244,7 @@ public class RequestScopeSuperBean {
         String key = "renderBean";
         if (map.get(key) == null) {
             RenderBean rb = new RenderBean(getCurrentRWikiObject(),
-                    getCurrentUser(), renderService, objectService);
+                    getCurrentUser(), toolRenderService, objectService);
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);
@@ -355,7 +357,7 @@ public class RequestScopeSuperBean {
         String key = "reviewRenderBean";
         if (map.get(key) == null) {
             RenderBean rb = new RenderBean(getReviewHelperBean().getMock(),
-                    getCurrentUser(), renderService, objectService);
+                    getCurrentUser(), toolRenderService, objectService);
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);
@@ -367,7 +369,7 @@ public class RequestScopeSuperBean {
         if (map.get(key) == null) {
             String pageName = "view_right";
             RenderBean rb = new RenderBean(pageName, getCurrentUser(),
-                    getCurrentDefaultRealm(), renderService, objectService);
+                    getCurrentDefaultRealm(), toolRenderService, objectService);
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);
@@ -378,7 +380,7 @@ public class RequestScopeSuperBean {
         if (map.get(key) == null) {
             String pageName = "edit_right";
             RenderBean rb = new RenderBean(pageName, getCurrentUser(),
-                    getCurrentDefaultRealm(), renderService, objectService);
+                    getCurrentDefaultRealm(), toolRenderService, objectService);
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);
@@ -389,7 +391,7 @@ public class RequestScopeSuperBean {
         if (map.get(key) == null) {
             String pageName = "info_right";
             RenderBean rb = new RenderBean(pageName, getCurrentUser(),
-                    getCurrentDefaultRealm(), renderService, objectService);
+                    getCurrentDefaultRealm(), toolRenderService, objectService);
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);
@@ -400,7 +402,7 @@ public class RequestScopeSuperBean {
         if (map.get(key) == null) {
             String pageName = "review_right";
             RenderBean rb = new RenderBean(pageName, getCurrentUser(),
-                    getCurrentDefaultRealm(), renderService, objectService);
+                    getCurrentDefaultRealm(), toolRenderService, objectService);
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);
@@ -411,7 +413,7 @@ public class RequestScopeSuperBean {
         if (map.get(key) == null) {
             String pageName = "diff_right";
             RenderBean rb = new RenderBean(pageName, getCurrentUser(),
-                    getCurrentDefaultRealm(), renderService, objectService);
+                    getCurrentDefaultRealm(), toolRenderService, objectService);
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);
@@ -422,7 +424,7 @@ public class RequestScopeSuperBean {
         if (map.get(key) == null) {
             String pageName = "search_right";
             RenderBean rb = new RenderBean(pageName, getCurrentUser(),
-                    getCurrentDefaultRealm(), renderService, objectService);
+                    getCurrentDefaultRealm(), toolRenderService, objectService);
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);
@@ -433,7 +435,7 @@ public class RequestScopeSuperBean {
         if (map.get(key) == null) {
             String pageName = "preview_right";
             RenderBean rb = new RenderBean(pageName, getCurrentUser(),
-                    getCurrentDefaultRealm(), renderService, objectService);
+                    getCurrentDefaultRealm(), toolRenderService, objectService);
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);

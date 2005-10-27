@@ -15,7 +15,7 @@
 	<c:if test="${!permissionsBean.updateAllowed}">
 	<jsp:scriptlet>
 		if ( true ) {
-			throw new uk.ac.cam.caret.sakai.rwiki.exception.UpdatePermissionException("You are not allowed to edit this page");
+			throw new uk.ac.cam.caret.sakai.rwiki.service.exception.UpdatePermissionException("You are not allowed to edit this page");
 		}
 	</jsp:scriptlet>
 	</c:if>

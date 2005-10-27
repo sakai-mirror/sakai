@@ -4,11 +4,10 @@ import junit.framework.TestCase;
 
 import org.easymock.MockControl;
 
-import uk.ac.cam.caret.sakai.rwiki.bean.RenderBean;
-import uk.ac.cam.caret.sakai.rwiki.exception.PermissionException;
-import uk.ac.cam.caret.sakai.rwiki.model.RWikiObject;
-import uk.ac.cam.caret.sakai.rwiki.service.RWikiObjectService;
-import uk.ac.cam.caret.sakai.rwiki.service.RenderService;
+import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
+import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
+import uk.ac.cam.caret.sakai.rwiki.tool.api.ToolRenderService;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.RenderBean;
 
 public class RenderBeanTest extends TestCase {
 
@@ -19,7 +18,7 @@ public class RenderBeanTest extends TestCase {
     String user = "user";
     String value = "value";
 
-    RenderService mockRenderService;
+    ToolRenderService mockToolRenderService;
     RWikiObjectService mockObjectService;
     RWikiObject mockObject;
     RenderBean rb;
@@ -33,27 +32,27 @@ public class RenderBeanTest extends TestCase {
     
     protected void setUp() throws Exception {
         super.setUp();
-        renderServiceControl = MockControl.createControl(RenderService.class);
+        renderServiceControl = MockControl.createControl(ToolRenderService.class);
         objectServiceControl = MockControl.createControl(RWikiObjectService.class);
         rwikiObjectControl = MockControl.createControl(RWikiObject.class);
         
-        mockRenderService = (RenderService) renderServiceControl.getMock();
+        mockToolRenderService = (ToolRenderService) renderServiceControl.getMock();
         mockObjectService = (RWikiObjectService) objectServiceControl.getMock();
         mockObject = (RWikiObject) rwikiObjectControl.getMock();
         //mockObject = new RWikiObjectImpl();
         
         
-        rb = new RenderBean(mockObject,user, mockRenderService, mockObjectService); 
+        rb = new RenderBean(mockObject,user, mockToolRenderService, mockObjectService); 
         
     }
 
 
 
     /*
-     * Test method for 'uk.ac.cam.caret.sakai.rwiki.bean.RenderBean.renderPage()'
+     * Test method for 'uk.ac.cam.caret.sakai.rwiki.tool.bean.RenderBean.renderPage()'
      */
     public void testRenderPage() {
-        mockRenderService.renderPage(mockObject, user);
+        mockToolRenderService.renderPage(mockObject, user);
         renderServiceControl.setReturnValue(value);
         objectServiceControl.replay();
         rwikiObjectControl.replay();
@@ -66,7 +65,7 @@ public class RenderBeanTest extends TestCase {
     }
 
     /*
-     * Test method for 'uk.ac.cam.caret.sakai.rwiki.bean.RenderBean.renderPage(String, String)'
+     * Test method for 'uk.ac.cam.caret.sakai.rwiki.tool.bean.RenderBean.renderPage(String, String)'
      */
     public void testRenderPageStringString() {
     		return;

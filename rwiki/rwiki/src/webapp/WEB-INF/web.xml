@@ -30,7 +30,7 @@
 	</listener>
 	
 	<listener>
-		<listener-class>uk.ac.cam.caret.sakai.rwiki.model.impl.ModelMigrationContextListener</listener-class>
+		<listener-class>uk.ac.cam.caret.sakai.rwiki.tool.ModelMigrationContextListener</listener-class>
 	</listener>
 	
 	<!-- 

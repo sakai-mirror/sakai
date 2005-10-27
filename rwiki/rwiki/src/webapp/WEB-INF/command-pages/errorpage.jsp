@@ -37,7 +37,7 @@
 					    }
 					}
 				
-					if ( exception instanceof uk.ac.cam.caret.sakai.rwiki.exception.PermissionException ) {
+					if ( exception instanceof uk.ac.cam.caret.sakai.rwiki.service.exception.PermissionException ) {
 				</jsp:scriptlet>
 	<h3>Permission Denied</h3>
 	<p>You do not have the correct permissions.</p>
