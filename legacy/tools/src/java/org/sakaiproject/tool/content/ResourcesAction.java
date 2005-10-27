@@ -3044,6 +3044,17 @@ public class ResourcesAction
 		if(found && item != null)
 		{
 			attached.remove(item);
+			try
+			{
+				ContentResourceEdit edit = ContentHostingService.editResource(item.getId());
+				ContentHostingService.removeResource(edit);
+				ContentCollectionEdit coll = ContentHostingService.editCollection(item.getCollectionId());
+				ContentHostingService.removeCollection(coll);
+			}
+			catch(Exception ignore)
+			{
+				// log failure
+			}
 			state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
 		}
 
