@@ -223,8 +223,7 @@ public interface SqlService
 	GregorianCalendar getCal();
 	
 	/** 
-	 * Return a string indicating the database vendor - "oracle" or "mysql".
-	 *  For now the only possible values are "oracle", "mysql". 
+	 * @return a string indicating the database vendor - "oracle" or "mysql" or "hsqldb".
 	 */
 	String getVendor();
 
