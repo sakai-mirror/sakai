@@ -239,7 +239,16 @@ public class ContentHostingService
 
 		return service.allowAddAttachmentResource();
 	}
+	
+	public boolean isAttachmentResource(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null)
+			return false;
 
+		return service.isAttachmentResource(param0);
+	}
+	
 	public static org.sakaiproject.service.legacy.content.ContentResource addAttachmentResource(java.lang.String param0, java.lang.String param1, byte[] param2, org.sakaiproject.service.legacy.entity.ResourceProperties param3) throws org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();

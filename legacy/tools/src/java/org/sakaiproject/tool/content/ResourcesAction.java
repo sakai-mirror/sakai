@@ -3044,12 +3044,16 @@ public class ResourcesAction
 		if(found && item != null)
 		{
 			attached.remove(item);
+			
 			try
 			{
-				ContentResourceEdit edit = ContentHostingService.editResource(item.getId());
-				ContentHostingService.removeResource(edit);
-				ContentCollectionEdit coll = ContentHostingService.editCollection(item.getCollectionId());
-				ContentHostingService.removeCollection(coll);
+				if(ContentHostingService.isAttachmentResource(item.getId()))
+				{
+					ContentResourceEdit edit = ContentHostingService.editResource(item.getId());
+					ContentHostingService.removeResource(edit);
+					ContentCollectionEdit coll = ContentHostingService.editCollection(item.getCollectionId());
+					ContentHostingService.removeCollection(coll);
+				}
 			}
 			catch(Exception ignore)
 			{

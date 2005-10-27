@@ -394,6 +394,17 @@ public interface ContentHostingService extends EntityProducer
 	 * @return true if the user is allowed to addAttachmentResource(), false if not.
 	 */
 	public boolean allowAddAttachmentResource();
+	
+	/**
+	 * Check whether a resource id or collection id references an entity in the attachments collection. 
+	 * This method makes no guarantees that a resource actually exists with this id.
+	 * @param id	Assumed to be a valid resource id or collection id.
+	 * @return	true if the id (assuming it is a valid id for an existing resource or collection) 
+	 * references an entity in the hidden attachments area created through one of this class's 
+	 * addAttachmentResource methods. 
+	 */
+	public boolean isAttachmentResource(String id);
+
 
 	/**
 	 * Create a new resource as an attachment to some other resource in the system. The new resource will be placed into a newly created collecion in the attachment collection, with an auto-generated id, and given the specified resource name within this
