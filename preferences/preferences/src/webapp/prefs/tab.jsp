@@ -33,7 +33,7 @@
 			
 				<h3><h:outputText value="#{msgs.prefs_tab_title}" /></h3>
 			
-				<p class="instruction"><h:outputText value="#{msgs.tab_inst_1}"/><h:outputText value="#{msgs.tab_inst_2}"/></p>
+				<p class="instruction"><h:outputText value="#{msgs.tab_inst_1}"/><br><br><h:outputText value="#{msgs.tab_inst_2}"/></p>
 
 				
 	<%-- (gsilver) 2 issues 
