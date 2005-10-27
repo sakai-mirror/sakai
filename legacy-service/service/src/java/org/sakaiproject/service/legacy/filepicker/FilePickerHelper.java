@@ -25,4 +25,11 @@ public interface FilePickerHelper {
     **/
    public static final String FILE_PICKER_FROM_TEXT = "sakaiproject.filepicker.from";
 
+   /**
+	 *  The name of the state attribute indicating that the file picker should return links to
+	 *  existing resources in an existing collection rather than copying it to the hidden attachments
+	 *  area.  If this value is not set, all attachments are to copies in the hidden attachments area.
+	 */
+   public static final String FILE_PICKER_ATTACH_LINKS = "sakaiproject.filepicker.attachLinks";
+
 }

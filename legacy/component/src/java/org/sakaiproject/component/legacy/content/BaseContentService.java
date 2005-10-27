@@ -5083,6 +5083,14 @@ public abstract class BaseContentService implements ContentHostingService, Cache
          globalList.addAll(filterArtifacts(artifacts, type, primaryMimeType, subMimeType));
       }
 
+      User user = UserDirectoryService.getCurrentUser();
+      String userId = user.getId();
+      String wsId = SiteService.getUserSiteId(userId);
+      String wsCollectionId = getSiteCollection(wsId);
+
+      List wsResources = getFlatResources(wsCollectionId);
+      globalList.addAll(filterArtifacts(wsResources, type, primaryMimeType, subMimeType));
+
       return globalList;
    }
 

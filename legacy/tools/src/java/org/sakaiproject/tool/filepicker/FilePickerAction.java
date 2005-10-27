@@ -79,12 +79,19 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
    {
       // if we are in edit attachments...
       String mode = (String) sstate.getAttribute(ResourcesAction.STATE_MODE);
+      ToolSession toolSession = SessionManager.getCurrentToolSession();
 
       if (mode == null) {
          initPicker(portlet, context, rundata, sstate);
          sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
          sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
          sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
+
+         if (toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS) != null) {
+            sstate.setAttribute(ResourcesAction.STATE_ATTACH_LINKS,
+               toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS));
+            toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS);
+         }
 
          mode = ResourcesAction.MODE_HELPER;
       }
