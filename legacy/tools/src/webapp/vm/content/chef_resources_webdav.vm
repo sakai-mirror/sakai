@@ -40,7 +40,7 @@
 		}
 
 		// here we fudge to get a little bigger
-		var newHeight = height + 50;
+		var newHeight = height + 100;
 		
 		// no need to be smaller than...
 		//if (height < 200) height = 200;
@@ -67,12 +67,25 @@
 	</div>
 	#if($menu)#toolbar($menu)#end
 	<h3>$tlang.getString("dav.webdav")</h3>
-	<h4>$tlang.getString("dav.hd2")</h4>
+	<h4>$tlang.getString("dav.url")</h4>
 	<p>$tlang.getString("dav.graf20a") <strong>${site_title}</strong>. $tlang.getString("dav.graf20b") <strong>#if("$!inMyWorkspace" == "true")${user_id}#else${site_id}#end</strong>.</p>
 	<p>$tlang.getString("dav.graf21")</p>
+	<p>
+		$tlang.getString("dav.graf22")
+	</p>
+	<p>
+		#if("$!inMyWorkspace" == "true")
+			<strong>${server_url}${dav_user}$user_id</strong>
+		#else
+			<strong>${server_url}${dav_group}$site_id</strong>
+		#end
+	</p>
 	
+	<h4>$tlang.getString("dav.setup")</h4>
 	<iframe src="$webdav_instructions"
-		width="96%" frameborder="0"
+		width="100%"
+		height="400px"
+		frameborder="0"
 		onload="javascript:setFrameHeight(this);">
 	</iframe>
 	<div style="margin:2em .3em .3em .3em;text-align:left">
