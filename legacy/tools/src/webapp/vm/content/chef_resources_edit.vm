@@ -269,6 +269,30 @@
 			mime_warning_div.innerHTML = "";
 		}
 	}
+	function updateCopyright(element)
+	{
+		var cr_div = document.getElementById("copyright_status");
+		var new_value = element.value;
+		var cr_element = document.getElementById("newcopyright");
+		var cr_value = cr_element.value;
+		
+		var inner_html = "";
+		if(new_value == "$USE_THIS_COPYRIGHT")
+		{
+			inner_html = "<p class=\"shorttext\">\n<label for=\"newcopyright\">\n$tlang.getString("edit.cinfo")\n</label>\n"
+						+ "<textarea name=\"newcopyright\" id=\"newcopyright\" rows=\"2\" cols=\"40\" wrap=\"virtual\" ></textarea>\n</p>\n";	
+		}
+		else
+		{
+			inner_html = "<input type=\"hidden\" name=\"newcopyright\" id=\"newcopyright\" value=\"\" />";
+		}
+		cr_div.innerHTML = inner_html;
+		cr_element = document.getElementById("newcopyright");
+		cr_element.value = cr_value;
+		cr_element.select();
+		setMainFrameHeight('$validator.escapeJavascript("Main$pid")');	
+		
+	}
 	-->
 </script>
 <div class="portletBody">
@@ -425,7 +449,7 @@
 						<label for="copyright">
 							$tlang.getString("edit.cstatus")
 						</label>	
-						<select name="copyright" id ="copyright">
+						<select name="copyright" id ="copyright" onchange="javascript:updateCopyright(this);">
 							#foreach ($copyright in $copyrightTypes)
 								<option value="$copyright"#if($item.copyrightStatus == $copyright) selected="selected"#end>$copyright</option>
 							#end
@@ -434,12 +458,18 @@
 							(<a href="$fairuseurl" title="[$tlang.getString('gen.newwin')]"  target="_blank">$tlang.getString("edit.fairuse")</a>)
 						#end
 					</p>
-					<p class="shorttext">
-						<label for="newcopyright">
-							$tlang.getString("edit.cinfo")
-						</label>	
-						<textarea name="newcopyright" id="newcopyright" rows="2" cols="40" wrap="virtual" >$validator.escapeHtmlTextarea("$!item.copyrightInfo")</textarea>
-					</p>	
+					<div id="copyright_status">
+						#if($item.copyrightStatus == $USE_THIS_COPYRIGHT)
+							<p class="shorttext">
+								<label for="newcopyright">
+									$tlang.getString("edit.cinfo")
+								</label>	
+								<textarea name="newcopyright" id="newcopyright" rows="2" cols="40" wrap="virtual" >$validator.escapeHtmlTextarea("$!item.copyrightInfo")</textarea>
+							</p>	
+						#else
+							<input type="hidden" name="newcopyright" id="newcopyright" value="$!item.copyrightInfo" />
+						#end
+					</div>
 					<table border="0">
 						<tr>
 							<td class="shorttext" style="padding-left:.7em;vertical-align:top">

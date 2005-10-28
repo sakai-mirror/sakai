@@ -8853,9 +8853,9 @@ public class ResourcesAction
 		{
 			List copyrightTypes = (List) state.getAttribute(COPYRIGHT_TYPES);
 			context.put("copyrightTypes", copyrightTypes);
-			context.put("copyrightTypesSize", new Integer(copyrightTypes.size()-1));
+			context.put("copyrightTypesSize", new Integer(copyrightTypes.size() - 1));
+			context.put("USE_THIS_COPYRIGHT", copyrightTypes.get(copyrightTypes.size() - 1));
 		}
-
 		
 	}	// copyrightChoicesIntoContext
 
