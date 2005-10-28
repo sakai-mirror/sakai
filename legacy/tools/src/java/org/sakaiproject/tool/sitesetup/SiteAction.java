@@ -942,8 +942,19 @@ public class SiteAction extends PagedResourceActionII
 				{
 					context.put("withDissertation", Boolean.FALSE);
 				}
-				context.put("siteTypes", state.getAttribute(STATE_SITE_TYPES));
-				context.put("typeSelected", siteInfo.site_type);
+				
+				List types = (List) state.getAttribute(STATE_SITE_TYPES);
+				context.put("siteTypes", types);
+				
+				// put selected/default site type into context
+				if (siteInfo.site_type != null && siteInfo.site_type.length() >0)
+				{
+					context.put("typeSelected", siteInfo.site_type);
+				}
+				else if (types.size() > 0)
+				{
+					context.put("typeSelected", types.get(0));
+				}
 				List terms = CourseManagementService.getTerms();
 				if (terms != null && terms.size() >0)
 				{
@@ -2561,7 +2572,7 @@ public class SiteAction extends PagedResourceActionII
 			context.put("menu", bar);
 			context.put("title", state.getAttribute(FORM_SITEINFO_TITLE));
 			
-			List types = SiteService.getSiteTypes();
+			types = SiteService.getSiteTypes();
 			context.put("types", types);
 			context.put("siteType", state.getAttribute("siteType"));
 			
