@@ -436,6 +436,9 @@ public class ResourcesAction
 
 	/** The default value for whether to show all sites in dropbox (used if global value can't be read from server config service) */
 	private static final boolean SHOW_ALL_SITES_IN_DROPBOX = false;
+	
+	/** The number of members for a collection at which this tool should refuse to expand the collection */
+	protected static final int EXPANDABLE_FOLDER_SIZE_LIMIT = 256;
 
 
 
@@ -2280,7 +2283,7 @@ public class ResourcesAction
 						}
 						catch(RuntimeException e)
 						{
-							
+							logger.error("ResourcesAction.createStructuredArtifacts ***** Unknown Exception ***** " + e.getMessage());
 							alerts.add(rb.getString("failed"));
 							tryingToAddItem = false;
 						}
@@ -2288,6 +2291,7 @@ public class ResourcesAction
 				}
 				catch(RuntimeException e)
 				{			
+					logger.error("ResourcesAction.createStructuredArtifacts ***** Unknown Exception ***** " + e.getMessage());
 					alerts.add(rb.getString("failed"));
 				}
 			}
@@ -2719,10 +2723,7 @@ public class ResourcesAction
 				}
 				catch(RuntimeException e)
 				{
-					System.out.println("===> ResourcesAction.createFiles ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
-					e.printStackTrace(System.out);
-					System.out.println("======================");
-					
+					logger.error("ResourcesAction.createFiles ***** Unknown Exception ***** " + e.getMessage());
 					alerts.add(rb.getString("failed"));
 					tryingToAddItem = false;
 				}
@@ -2932,10 +2933,7 @@ public class ResourcesAction
 				}
 				catch(RuntimeException e)
 				{
-					System.out.println("===> ResourcesAction.doAttachupload ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
-					e.printStackTrace(System.out);
-					System.out.println("======================");
-					
+					logger.error("ResourcesAction.doAttachupload ***** Unknown Exception ***** " + e.getMessage());
 					addAlert(state, rb.getString("failed"));
 				}
 			}
@@ -3021,10 +3019,6 @@ public class ResourcesAction
 		catch(RuntimeException e)
 		{
 			logger.error("ResourcesAction.doAttachurl ***** Unknown Exception ***** " + e.getMessage());
-			// System.out.println("===> ResourcesAction.doAttachurl ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
-			// e.printStackTrace(System.out);
-			//System.out.println("======================");
-			
 			addAlert(state, rb.getString("failed"));
 		}
 
@@ -3219,10 +3213,7 @@ public class ResourcesAction
 			}
 			catch(RuntimeException e)
 			{
-				System.out.println("===> ResourcesAction.attachItem ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
-				e.printStackTrace(System.out);
-				System.out.println("======================");
-				
+				logger.error("ResourcesAction.attachItem ***** Unknown Exception ***** " + e.getMessage());
 				addAlert(state, rb.getString("failed"));
 			}
 		}
@@ -3368,10 +3359,7 @@ public class ResourcesAction
 				}
 				catch(RuntimeException e)
 				{
-					System.out.println("===> ResourcesAction.createUrls ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
-					e.printStackTrace(System.out);
-					System.out.println("======================");
-					
+					logger.error("ResourcesAction.createUrls ***** Unknown Exception ***** " + e.getMessage());
 					alerts.add(rb.getString("failed"));
 					tryingToAddItem = false;
 				}
@@ -3728,6 +3716,7 @@ public class ResourcesAction
 				}// try - catch
 				catch(RuntimeException e)
 				{
+					logger.error("ResourcesAction.doDelete ***** Unknown Exception ***** " + e.getMessage());
 					addAlert(state, rb.getString("failed"));
 				}
 			}	// for
@@ -3907,6 +3896,7 @@ public class ResourcesAction
 						}	// try-catch
 						catch(RuntimeException e)
 						{
+							logger.error("ResourcesAction.doHandlepaste ***** Unknown Exception ***** " + e.getMessage());
 							addAlert(state, rb.getString("failed"));
 						}
 
@@ -3940,6 +3930,7 @@ public class ResourcesAction
 				}	// try-catch
 				catch(RuntimeException e)
 				{
+					logger.error("ResourcesAction.doHandlepaste ***** Unknown Exception ***** " + e.getMessage());
 					addAlert(state, rb.getString("failed"));
 				}
 
@@ -4033,6 +4024,7 @@ public class ResourcesAction
 						}	// try-catch
 						catch(RuntimeException e)
 						{
+							logger.error("ResourcesAction.doHandlepaste ***** Unknown Exception ***** " + e.getMessage());
 							addAlert(state, rb.getString("failed"));
 						}
 
@@ -4185,6 +4177,7 @@ public class ResourcesAction
 						}	// try-catch
 						catch(RuntimeException e)
 						{
+							logger.error("ResourcesAction.doHandlepasteshortcut ***** Unknown Exception ***** " + e.getMessage());
 							addAlert(state, rb.getString("failed"));
 						}
 					}	// if-else
@@ -4527,6 +4520,7 @@ public class ResourcesAction
 		}
 		catch(RuntimeException e)
 		{
+			logger.error("ResourcesAction.doEdit ***** Unknown Exception ***** " + e.getMessage());
 			addAlert(state, rb.getString("failed"));
 		}
 		
@@ -5302,6 +5296,7 @@ public class ResourcesAction
 			}
 			catch(RuntimeException e)
 			{
+				logger.error("ResourcesAction.doModifyproperties ***** Unknown Exception ***** " + e.getMessage());
 				addAlert(state, rb.getString("failed"));
 			}
 		}	// if - else
@@ -6505,6 +6500,7 @@ public class ResourcesAction
 			}
 			catch(RuntimeException e)
 			{
+				logger.error("ResourcesAction.doSavechanges ***** Unknown Exception ***** " + e.getMessage());
 				alerts.add(rb.getString("failed"));
 			}
 		}	// if - else
@@ -8107,10 +8103,12 @@ public class ResourcesAction
 			{
 				int collection_size = contentService.getCollectionSize(collectionId);
 				folder.setIsEmpty(collection_size < 1);
+				folder.setIsTooBig(collection_size > EXPANDABLE_FOLDER_SIZE_LIMIT);
 			}
 			catch(RuntimeException e)
 			{
 				folder.setIsEmpty(true);
+				folder.setIsTooBig(false);
 			}
 			folder.setDepth(depth);
 			newItems.add(folder);
@@ -8386,6 +8384,7 @@ public class ResourcesAction
 			}	// try-catch
 			catch(RuntimeException e)
 			{
+				logger.error("ResourcesAction.doPasteitems ***** Unknown Exception ***** " + e.getMessage());
 				addAlert(state, rb.getString("failed"));
 			}
 				
@@ -8508,6 +8507,7 @@ public class ResourcesAction
 			}	// try-catch
 			catch(RuntimeException e)
 			{
+				logger.error("ResourcesAction.doMoveitems ***** Unknown Exception ***** " + e.getMessage());
 				addAlert(state, rb.getString("failed"));
 			}
 				
@@ -8659,6 +8659,7 @@ public class ResourcesAction
 					}	// try-catch
 					catch(RuntimeException e)
 					{
+						logger.error("ResourcesAction.doPasteitem ***** Unknown Exception ***** " + e.getMessage());
 						addAlert(state, rb.getString("failed"));
 					}
 					
@@ -9016,6 +9017,7 @@ public class ResourcesAction
 		protected boolean m_isAttached;
 		private boolean m_isMoved;
 		private boolean m_canUpdate;
+		private boolean m_toobig;
 		
 				
 		/**
@@ -9036,6 +9038,7 @@ public class ResourcesAction
 			m_canDelete = false;
 			m_canCopy = false;
 			m_isEmpty = true;
+			m_toobig = false;
 			m_isCopied = false;
 			m_isMoved = false;
 			m_isAttached = false;
@@ -9060,6 +9063,16 @@ public class ResourcesAction
 			m_canUpdate = false;
 		}
 		
+		public void setIsTooBig(boolean toobig) 
+		{
+			m_toobig = toobig;
+		}
+		
+		public boolean isTooBig()
+		{
+			return m_toobig;
+		}
+
 		/**
 		 * @param name
 		 */
