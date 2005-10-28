@@ -2276,6 +2276,7 @@ extends PagedResourceActionII
 			state.setDeleteMessages(null);
 			state.setStatus(POST_STATUS);
 			state.setMessageReference("");
+			state.setTempAnnounceTo(null);
 
 			// make sure auto-updates are enabled
 			enableObservers(sstate);
@@ -2989,6 +2990,7 @@ extends PagedResourceActionII
 		state.setSelectedAttachments(null);
 		state.setDeleteMessages(null);
 		state.setStatus(CANCEL_STATUS);
+		state.setTempAnnounceTo(null);
 		
 		// we are done with customization... back to the main (list) mode
 		sstate.removeAttribute(STATE_MODE);
@@ -3314,7 +3316,8 @@ extends PagedResourceActionII
 			state.setStatus(CANCEL_STATUS);
 			state.setAttachments(null);
 			state.setIsListVM(true);
-
+			state.setTempAnnounceTo(null);
+			
 			// make sure auto-updates are enabled
 			enableObservers(sstate);
 		}

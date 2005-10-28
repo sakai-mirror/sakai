@@ -641,7 +641,7 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 	public void setTempAnnounceTo(String tempAnnounceTo)
 	{
 		// if there's a change
-		if (!tempAnnounceTo.equals(m_tempAnnounceTo))
+		if (tempAnnounceTo == null || !tempAnnounceTo.equals(m_tempAnnounceTo))
 		{
 			// remember the new
 			m_tempAnnounceTo = tempAnnounceTo;
