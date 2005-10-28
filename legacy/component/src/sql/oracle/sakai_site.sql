@@ -338,7 +338,7 @@ INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!user', '!user-710', 'include-passw
 
 -- Create the !worksite site.
 
-INSERT INTO SAKAI_SITE VALUES('!worksite', 'worksite', null, null, null, '', 'l', null, 0, 0, 0, 'access', null, null, null, null, 1, 0 );
+INSERT INTO SAKAI_SITE VALUES('!worksite', 'worksite', null, null, null, '', '', null, 0, 0, 0, 'access', null, null, null, null, 1, 0 );
 UPDATE SAKAI_SITE SET CREATEDBY='admin' WHERE SITE_ID = '!worksite';
 UPDATE SAKAI_SITE SET MODIFIEDBY='admin' WHERE SITE_ID = '!worksite';
 UPDATE SAKAI_SITE SET MODIFIEDON=TO_TIMESTAMP('20030624121053597','YYYYMMDDHHMISSFF3') WHERE SITE_ID = '!worksite';
