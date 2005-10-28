@@ -1,3 +1,5 @@
+Switch User,sakai.su
+R Wiki,sakai.rwiki
 AdminPrefs,sakai.admin.prefs
 Admin:Alias Editor,sakai.aliases
 Announcments,sakai.announcements
