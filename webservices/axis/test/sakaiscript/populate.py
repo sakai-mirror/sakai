@@ -5,10 +5,19 @@ from SOAPpy import WSDL
 siteid = "trythemall"
 username = "admin"
 password = "admin"
-script_url = "http://localhost:8080/sakai-axis/SakaiScript.jws?wsdl"
+
+server_url = "http://localhost:8080"
+
+login_url = server_url + "/sakai-axis/SakaiLogin.jws?wsdl"
+script_url = server_url + "/sakai-axis/SakaiScript.jws?wsdl"
+
+login_proxy = WSDL.SOAPProxy(login_url)
+script_proxy = WSDL.SOAPProxy(script_url)
+
+loginsoap = WSDL.SOAPProxy(login_url)
+sessionid = loginsoap.login(username, password)
 
 scriptsoap = WSDL.SOAPProxy(script_url)
-sessionid = scriptsoap.login(username, password)
 
 usersfile = open("nobel_laureates.txt")
 lines = usersfile.readlines()
