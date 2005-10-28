@@ -36,6 +36,7 @@ import javax.xml.transform.TransformerException;
 
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
@@ -45,6 +46,7 @@ import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
+import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactDefinition;
@@ -79,7 +81,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    private ContentHostingService contentHosting;
 
    public StructuredArtifactDefinitionManagerImpl() {
-      int blah = 1;
    }
 
    public Map getHomes() {
@@ -486,6 +487,15 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public void setContentHosting(ContentHostingService contentHosting) {
       this.contentHosting = contentHosting;
+   }
+
+   protected void init() throws Exception {
+       // register functions
+      FunctionManager.registerFunction(SharedFunctionConstants.CREATE_ARTIFACT_DEF);
+      FunctionManager.registerFunction(SharedFunctionConstants.COPY_ARTIFACT_DEF);
+      FunctionManager.registerFunction(SharedFunctionConstants.EDIT_ARTIFACT_DEF);
+      FunctionManager.registerFunction(SharedFunctionConstants.PUBLISH_ARTIFACT_DEF);
+      FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
    }
 
 }

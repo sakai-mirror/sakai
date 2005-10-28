@@ -85,6 +85,7 @@
 
    <bean id="structuredArtifactDefinitionManagerTarget"
       class="org.sakaiproject.metaobj.shared.mgt.impl.StructuredArtifactDefinitionManagerImpl"
+      init-method="init"
       singleton="true">
       <property name="sessionFactory">
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
