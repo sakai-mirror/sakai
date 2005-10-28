@@ -52,6 +52,8 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
@@ -132,6 +134,8 @@ public class ResourcesAction
 {
 	/** Resource bundle using current language locale */
     private static ResourceBundle rb = ResourceBundle.getBundle("content");
+    
+    private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory.getLog(ResourcesAction.class);
     
 	/** the maximun size for file upload */
 	private static final String FILE_UPLOAD_MAX_SIZE = "file_upload_max_size";
@@ -2276,6 +2280,7 @@ public class ResourcesAction
 						}
 						catch(RuntimeException e)
 						{
+							
 							alerts.add(rb.getString("failed"));
 							tryingToAddItem = false;
 						}
@@ -2283,7 +2288,7 @@ public class ResourcesAction
 				}
 				catch(RuntimeException e)
 				{			
-
+					alerts.add(rb.getString("failed"));
 				}
 			}
 			else
@@ -2913,12 +2918,18 @@ public class ResourcesAction
 				{
 					addAlert(state, rb.getString("failed"));
 				}
-				/*
-				catch(Exception ignore)
+				catch(IdInvalidException ignore)
 				{
 					// other exceptions should be caught earlier
 				}
-				*/
+				catch(InconsistentException ignore)
+				{
+					// other exceptions should be caught earlier
+				}
+				catch(IdUsedException ignore)
+				{
+					// other exceptions should be caught earlier
+				}
 				catch(RuntimeException e)
 				{
 					System.out.println("===> ResourcesAction.doAttachupload ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
@@ -2995,17 +3006,24 @@ public class ResourcesAction
 		{
 			addAlert(state, rb.getString("failed"));
 		}
-		/*
-		catch(Exception ignore)
+		catch(IdInvalidException ignore)
 		{
 			// other exceptions should be caught earlier
 		}
-		*/
+		catch(IdUsedException ignore)
+		{
+			// other exceptions should be caught earlier
+		}
+		catch(InconsistentException ignore)
+		{
+			// other exceptions should be caught earlier
+		}
 		catch(RuntimeException e)
 		{
-			System.out.println("===> ResourcesAction.doAttachurl ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
-			e.printStackTrace(System.out);
-			System.out.println("======================");
+			logger.error("ResourcesAction.doAttachurl ***** Unknown Exception ***** " + e.getMessage());
+			// System.out.println("===> ResourcesAction.doAttachurl ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
+			// e.printStackTrace(System.out);
+			//System.out.println("======================");
 			
 			addAlert(state, rb.getString("failed"));
 		}
@@ -3179,12 +3197,26 @@ public class ResourcesAction
 			{
 				addAlert(state, rb.getString("failed"));
 			}
-			/*
-			catch(Exception ignore)
+			catch(IdInvalidException ignore)
 			{
 				// other exceptions should be caught earlier
 			}
-			*/
+			catch(TypeException ignore)
+			{
+				// other exceptions should be caught earlier
+			}
+			catch(IdUnusedException ignore)
+			{
+				// other exceptions should be caught earlier
+			}
+			catch(IdUsedException ignore)
+			{
+				// other exceptions should be caught earlier
+			}
+			catch(InconsistentException ignore)
+			{
+				// other exceptions should be caught earlier
+			}
 			catch(RuntimeException e)
 			{
 				System.out.println("===> ResourcesAction.attachItem ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
