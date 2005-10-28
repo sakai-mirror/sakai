@@ -975,6 +975,29 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 
 		// do we have a record for this user?
 		UserEdit user = findUser(id);
+		
+		if (user == null)
+		{
+			if (m_provider != null && m_provider.createUserRecord(id))
+			{
+				try 
+				{
+					user = addUser(id);
+				} 
+				catch (IdInvalidException e) 
+				{
+					m_logger.debug(this +".authenticate(): Id invalid: " + id);
+				} 
+				catch (IdUsedException e) 
+				{
+					m_logger.debug(this +".authenticate(): Id used: " + id);
+				} 
+				catch (PermissionException e) 
+				{
+					m_logger.debug(this +".authenticate(): PermissionException for adding user " + id);
+				}
+			}
+		}
 
 		if (m_provider != null && m_provider.authenticateWithProviderFirst(id))
 		{
