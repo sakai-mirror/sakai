@@ -328,6 +328,9 @@ extends PagedResourceActionII
 	/** The student view of graded submission	 */
 	private static final String MODE_STUDENT_VIEW_GRADE = "Assignment.mode_student_view_grade";
 	
+	/** The student view of assignments*/
+	private static final String MODE_STUDENT_VIEW_ASSIGNMENT = "Assignment.mode_student_view_assignment";
+	
 	/** The instructor view of owned assignments	 */
 	private static final String MODE_INSTRUCTOR_LIST_ASSIGNMENTS = rb.getString("lisofass1");
 	
@@ -364,6 +367,9 @@ extends PagedResourceActionII
 	/*************************** vm names ***************************/
 	/** The student list view of assignments */
 	private static final String TEMPLATE_STUDENT_LIST_ASSIGNMENTS = "_student_list_assignments";
+	
+	/** The student view of assignment */
+	private static final String TEMPLATE_STUDENT_VIEW_ASSIGNMENT = "_student_view_assignment";
 	
 	/** The student view of showing an assignment submission */
 	private static final String TEMPLATE_STUDENT_VIEW_SUBMISSION = "_student_view_submission";
@@ -540,6 +546,11 @@ extends PagedResourceActionII
 
 			// build the context for the student assignment view
 			template = build_student_list_assignments_context (portlet, context, data, state);
+		}
+		else if (mode.equals (MODE_STUDENT_VIEW_ASSIGNMENT))
+		{
+			// the student view of assignment		
+			template = build_student_view_assignment_context (portlet, context, data, state);
 		}
 		else if (mode.equals (MODE_STUDENT_VIEW_SUBMISSION))
 		{
@@ -818,6 +829,42 @@ extends PagedResourceActionII
 		
 		String template = (String) getContext(data).get("template");
 		return template + TEMPLATE_STUDENT_VIEW_SUBMISSION;
+		
+	}	// build_student_view_submission_context
+	
+	/**
+	 * build the student view of assignment
+	 */
+	protected String build_student_view_assignment_context (VelocityPortlet portlet,
+															Context context,
+															RunData data,
+															SessionState state)
+	{
+		context.put("tlang",rb);
+		
+		context.put ("context", (String) state.getAttribute (STATE_CONTEXT_STRING));
+		
+		String aId = (String) state.getAttribute (VIEW_ASSIGNMENT_ID);
+		try
+		{
+			Assignment currentAssignment = AssignmentService.getAssignment(aId);
+			context.put ("assignment", currentAssignment);
+		}
+		catch (IdUnusedException e)
+		{
+			addAlert(state, "Cannot find the assignment.");
+		}
+		catch (PermissionException e)
+		{
+			addAlert(state, rb.getString("youarenot14"));
+		}
+		
+		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
+		context.put ("gradeTypeTable", gradeTypeTable ());
+		context.put ("userDirectoryService", UserDirectoryService.getInstance());
+		
+		String template = (String) getContext(data).get("template");
+		return template + TEMPLATE_STUDENT_VIEW_ASSIGNMENT;
 		
 	}	// build_student_view_submission_context
 	
@@ -1990,6 +2037,21 @@ extends PagedResourceActionII
 		state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_EDIT_ASSIGNMENT);
 		
 	}	//doDone_preview_edit_assignment
+	
+	/**
+	 *	Action is to end the user view assignment process and redirect him to the assignment list view 
+	 */
+	public void doCancel_student_view_assignment(RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		
+		// reset the view assignment
+		state.setAttribute (VIEW_ASSIGNMENT_ID, "");
+		
+		// back to the student list view of assignments
+		state.setAttribute (STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
+		
+	}	// doCancel_student_view_assignment
 	
 	/**
 	 * Action is to end the show submission process
@@ -4002,6 +4064,26 @@ extends PagedResourceActionII
 		}
 		
 	}	//doView_Assignment
+	
+	/**
+	 * Action is for student to view one assignment content
+	 **/
+	public void doView_assignment_as_student (RunData data, Context context)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+		
+		String assignmentId = params.getString ("assignmentId");
+		state.setAttribute (VIEW_ASSIGNMENT_ID, assignmentId);
+		
+		
+		if (state.getAttribute(STATE_MESSAGE) == null)
+		{
+			state.setAttribute (STATE_MODE, MODE_STUDENT_VIEW_ASSIGNMENT);
+		}
+		
+	}	//doView_assignment_as_student
+	
 	
 	/**
 	 * Action is to show the edit assignment screen

@@ -205,17 +205,21 @@
 												</a>
 											#end
 										#end
-									#elseif($!allowSubmit)
-										#if ($!submission)
-											#if (($!submission.returned && $submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true")) || !$!submission.submitted)
-												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
+									#else
+										#if($!allowSubmit)
+											#if ($!submission)
+												#if (($!submission.returned && $submission.getProperties().getProperty("grade_submission_allow_resubmit").equalsIgnoreCase("true")) || !$!submission.submitted)
+													<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
+												#else
+													<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">
+												#end
 											#else
-												<a href="#toolLinkParam("AssignmentAction" "doView_grade" "submissionId=$validator.escapeUrl($submission.Reference)")">
+												<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
 											#end
+											$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)</a>
 										#else
-											<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
+											<a href="#toolLinkParam("AssignmentAction" "doView_assignment_as_student" "assignmentId=$assignment.Reference")">$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)</a>
 										#end
-										$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)</a>
 									#end
 									#set ($deleted = false)
 									#set ($deleted = $assignment.getProperties().getProperty($assignment.getProperties().getNamePropAssignmentDeleted()))
