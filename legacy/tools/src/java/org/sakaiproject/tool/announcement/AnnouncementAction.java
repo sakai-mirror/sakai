@@ -1853,11 +1853,11 @@ extends PagedResourceActionII
 		}
 		catch (IdUnusedException e)
 		{
-			addAlert(sstate, rb.getString("cannotfin1"));
+			addAlert(sstate, rb.getString("java.alert.cannotfindann"));
 		}
 		catch (PermissionException e)
 		{
-			addAlert(sstate, rb.getString("yodonot2"));
+			addAlert(sstate, rb.getString("java.alert.youacc"));
 		}
 	}
 	
@@ -3089,11 +3089,11 @@ extends PagedResourceActionII
 
 				if (subject.length() == 0)
 				{
-					addAlert(sstate, rb.getString("java.youneed"));//"You need to fill in the subject!");
+					addAlert(sstate, rb.getString("java.alert.youneed"));//"You need to fill in the subject!");
 				}
 				else if (body.length() == 0)
 				{
-					addAlert(sstate, rb.getString("java.youfill"));//"You need to fill in the body of the announcement!");
+					addAlert(sstate, rb.getString("java.alert.youfill"));//"You need to fill in the body of the announcement!");
 				}
 			}
 		
