@@ -90,6 +90,10 @@ public interface UserDirectoryProvider
 	 */
 	boolean authenticateWithProviderFirst(String id);
 	
+	/**
+	 * If user record cannot be found in by UserDirectoryService, can the service create the user record?
+	 */
+	boolean createUserRecord(String id);
 }
 
 
