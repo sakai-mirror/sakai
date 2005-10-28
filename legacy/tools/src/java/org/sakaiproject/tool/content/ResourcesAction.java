@@ -2274,14 +2274,14 @@ public class ResourcesAction
 							alerts.add(rb.getString("failed"));
 							tryingToAddItem = false;
 						}
-						catch(Throwable e)
+						catch(RuntimeException e)
 						{
 							alerts.add(rb.getString("failed"));
 							tryingToAddItem = false;
 						}
 					}
 				}
-				catch(Throwable e)
+				catch(RuntimeException e)
 				{			
 
 				}
@@ -2712,7 +2712,7 @@ public class ResourcesAction
 					alerts.add(rb.getString("overquota"));
 					tryingToAddItem = false;
 				}
-				catch(Throwable e)
+				catch(RuntimeException e)
 				{
 					System.out.println("===> ResourcesAction.createFiles ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
 					e.printStackTrace(System.out);
@@ -2919,7 +2919,7 @@ public class ResourcesAction
 					// other exceptions should be caught earlier
 				}
 				*/
-				catch(Throwable e)
+				catch(RuntimeException e)
 				{
 					System.out.println("===> ResourcesAction.doAttachupload ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
 					e.printStackTrace(System.out);
@@ -3001,7 +3001,7 @@ public class ResourcesAction
 			// other exceptions should be caught earlier
 		}
 		*/
-		catch(Throwable e)
+		catch(RuntimeException e)
 		{
 			System.out.println("===> ResourcesAction.doAttachurl ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
 			e.printStackTrace(System.out);
@@ -3185,7 +3185,7 @@ public class ResourcesAction
 				// other exceptions should be caught earlier
 			}
 			*/
-			catch(Throwable e)
+			catch(RuntimeException e)
 			{
 				System.out.println("===> ResourcesAction.attachItem ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
 				e.printStackTrace(System.out);
@@ -3334,7 +3334,7 @@ public class ResourcesAction
 					alerts.add(rb.getString("overquota"));
 					tryingToAddItem = false;
 				}
-				catch(Throwable e)
+				catch(RuntimeException e)
 				{
 					System.out.println("===> ResourcesAction.createUrls ***** Unknown Exception *****\n    " + e.getMessage() + "\n======================");
 					e.printStackTrace(System.out);
@@ -3694,7 +3694,7 @@ public class ResourcesAction
 				{
 					addAlert(state, rb.getString("deleteres") + " " + item.getName() + " " + rb.getString("locked"));
 				}// try - catch
-				catch(Throwable e)
+				catch(RuntimeException e)
 				{
 					addAlert(state, rb.getString("failed"));
 				}
@@ -3873,7 +3873,7 @@ public class ResourcesAction
 								*/
 							}
 						}	// try-catch
-						catch(Throwable e)
+						catch(RuntimeException e)
 						{
 							addAlert(state, rb.getString("failed"));
 						}
@@ -3906,7 +3906,7 @@ public class ResourcesAction
 				{
 					addAlert(state, rb.getString("pasteitem") + " " + originalDisplayName + " " + rb.getString("mismatch"));
 				}	// try-catch
-				catch(Throwable e)
+				catch(RuntimeException e)
 				{
 					addAlert(state, rb.getString("failed"));
 				}
@@ -3999,7 +3999,7 @@ public class ResourcesAction
 							countNumber++;
 							*/
 						}	// try-catch
-						catch(Throwable e)
+						catch(RuntimeException e)
 						{
 							addAlert(state, rb.getString("failed"));
 						}
@@ -4151,7 +4151,7 @@ public class ResourcesAction
 							countNumber++;
 							*/
 						}	// try-catch
-						catch(Throwable e)
+						catch(RuntimeException e)
 						{
 							addAlert(state, rb.getString("failed"));
 						}
@@ -4493,7 +4493,7 @@ public class ResourcesAction
 			// for server configured to save resource body in filesystem 
 			addAlert(state, rb.getString("failed"));
 		}
-		catch(Throwable e)
+		catch(RuntimeException e)
 		{
 			addAlert(state, rb.getString("failed"));
 		}
@@ -5268,7 +5268,7 @@ public class ResourcesAction
 			{
 				addAlert(state, rb.getString("changing1") + " " + id + " " + rb.getString("changing2"));
 			}
-			catch(Throwable e)
+			catch(RuntimeException e)
 			{
 				addAlert(state, rb.getString("failed"));
 			}
@@ -6471,7 +6471,7 @@ public class ResourcesAction
 				alerts.add(rb.getString("changing1") + " " + item.getId() + " " + rb.getString("changing2"));
 				// addAlert(state, rb.getString("changing1") + " " + item.getId() + " " + rb.getString("changing2"));
 			}
-			catch(Throwable e)
+			catch(RuntimeException e)
 			{
 				alerts.add(rb.getString("failed"));
 			}
@@ -8076,7 +8076,7 @@ public class ResourcesAction
 				int collection_size = contentService.getCollectionSize(collectionId);
 				folder.setIsEmpty(collection_size < 1);
 			}
-			catch(Throwable e)
+			catch(RuntimeException e)
 			{
 				folder.setIsEmpty(true);
 			}
@@ -8352,7 +8352,7 @@ public class ResourcesAction
 			{
 				addAlert(state, rb.getString("overquota"));
 			}	// try-catch
-			catch(Throwable e)
+			catch(RuntimeException e)
 			{
 				addAlert(state, rb.getString("failed"));
 			}
@@ -8474,7 +8474,7 @@ public class ResourcesAction
 			{
 				addAlert(state, rb.getString("overquota"));
 			}	// try-catch
-			catch(Throwable e)
+			catch(RuntimeException e)
 			{
 				addAlert(state, rb.getString("failed"));
 			}
@@ -8625,7 +8625,7 @@ public class ResourcesAction
 					{
 						addAlert(state, rb.getString("overquota"));
 					}	// try-catch
-					catch(Throwable e)
+					catch(RuntimeException e)
 					{
 						addAlert(state, rb.getString("failed"));
 					}
