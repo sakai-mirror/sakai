@@ -87,11 +87,12 @@ public String login(String id,String pw) {
 private Session establishSession(String id) throws AxisFault 
 {
 	Session s = SessionManager.getSession(id);
-
+	
 	if (s == null)
 	{
 		throw new AxisFault("Session "+id+" is not active");
 	}
+	s.setActive();
 	SessionManager.setCurrentSession(s);
 	return s;
 }
@@ -110,8 +111,7 @@ public String checkSession(String id) {
 
 public String addNewUser( String sessionid, String userid, String firstname, String lastname, String email, String type, String password) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
 	
 	if (!SecurityService.isSuperUser())
 	{
@@ -130,10 +130,10 @@ public String addNewUser( String sessionid, String userid, String firstname, Str
 	return "success";
 }
 
-public String removeUser( String sessionid, String userid)
+public String removeUser( String sessionid, String userid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		UserEdit userEdit = null;
@@ -147,10 +147,10 @@ public String removeUser( String sessionid, String userid)
 	return "success";
 }
 
-public String changeUserInfo( String sessionid, String userid, String firstname, String lastname, String email, String type, String password)
+public String changeUserInfo( String sessionid, String userid, String firstname, String lastname, String email, String type, String password) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		UserEdit userEdit = null;
@@ -169,10 +169,10 @@ public String changeUserInfo( String sessionid, String userid, String firstname,
 	return "success";
 }
 
-public String changeUserName( String sessionid, String userid, String firstname, String lastname)
+public String changeUserName( String sessionid, String userid, String firstname, String lastname) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		UserEdit userEdit = null;
@@ -188,10 +188,10 @@ public String changeUserName( String sessionid, String userid, String firstname,
 	return "success";
 }
 
-public String changeUserEmail( String sessionid, String userid, String email)
+public String changeUserEmail( String sessionid, String userid, String email) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		UserEdit userEdit = null;
@@ -206,10 +206,10 @@ public String changeUserEmail( String sessionid, String userid, String email)
 	return "success";
 }
 
-public String changeUserType( String sessionid, String userid, String type)
+public String changeUserType( String sessionid, String userid, String type) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		UserEdit userEdit = null;
@@ -224,10 +224,10 @@ public String changeUserType( String sessionid, String userid, String type)
 	return "success";
 }
 
-public String changeUserPassword( String sessionid, String userid, String password)
+public String changeUserPassword( String sessionid, String userid, String password) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		UserEdit userEdit = null;
@@ -243,10 +243,10 @@ public String changeUserPassword( String sessionid, String userid, String passwo
 }
 
 //addNewRealm
-public String addNewAuthzGroup(String sessionid, String groupid)
+public String addNewAuthzGroup(String sessionid, String groupid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = null;
@@ -261,10 +261,10 @@ public String addNewAuthzGroup(String sessionid, String groupid)
 }
 
 //removeRealm
-public String removeAuthzGroup( String sessionid, String authzgroupid)
+public String removeAuthzGroup( String sessionid, String authzgroupid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -278,10 +278,10 @@ public String removeAuthzGroup( String sessionid, String authzgroupid)
 }
 
 //addNewRoleToRealm
-public String addNewRoleToAuthzGroup( String sessionid, String authzgroupid, String roleid, String description)
+public String addNewRoleToAuthzGroup( String sessionid, String authzgroupid, String roleid, String description) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -297,10 +297,10 @@ public String addNewRoleToAuthzGroup( String sessionid, String authzgroupid, Str
 }
 
 //removeAllRolesFromRealm
-public String removeAllRolesFromAuthzGroup( String sessionid, String authzgroupid)
+public String removeAllRolesFromAuthzGroup( String sessionid, String authzgroupid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -315,10 +315,10 @@ public String removeAllRolesFromAuthzGroup( String sessionid, String authzgroupi
 }
 
 //removeRolefromRealm
-public String removeRoleFromAuthzGroup( String sessionid, String authzgroupid, String roleid)
+public String removeRoleFromAuthzGroup( String sessionid, String authzgroupid, String roleid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -333,10 +333,10 @@ public String removeRoleFromAuthzGroup( String sessionid, String authzgroupid, S
 }
 
 //addLockToRole
-public String allowFunctionForRole( String sessionid, String authzgroupid, String roleid, String function)
+public String allowFunctionForRole( String sessionid, String authzgroupid, String roleid, String function) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -352,10 +352,10 @@ public String allowFunctionForRole( String sessionid, String authzgroupid, Strin
 }
 
 //removeAllLocksFromRole
-public String disallowAllFunctionsForRole( String sessionid, String authzgroupid, String roleid)
+public String disallowAllFunctionsForRole( String sessionid, String authzgroupid, String roleid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -371,10 +371,10 @@ public String disallowAllFunctionsForRole( String sessionid, String authzgroupid
 }
 
 //removeLockFromRole
-public String disallowFunctionForRole( String sessionid, String authzgroupid, String roleid, String function)
+public String disallowFunctionForRole( String sessionid, String authzgroupid, String roleid, String function) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -389,10 +389,10 @@ public String disallowFunctionForRole( String sessionid, String authzgroupid, St
 	return "success";
 }
 
-public String setRoleDescription( String sessionid, String authzgroupid, String roleid, String description)
+public String setRoleDescription( String sessionid, String authzgroupid, String roleid, String description) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -408,10 +408,10 @@ public String setRoleDescription( String sessionid, String authzgroupid, String 
 }
 
 //addUserToRealmWithRole
-public String addMemberToAuthzGroupWithRole( String sessionid, String userid, String authzgroupid, String roleid)
+public String addMemberToAuthzGroupWithRole( String sessionid, String userid, String authzgroupid, String roleid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -426,10 +426,10 @@ public String addMemberToAuthzGroupWithRole( String sessionid, String userid, St
 }
 
 //removeUserFromRealm
-public String removeMemberFromAuthzGroup( String sessionid, String userid, String authzgroupid)
+public String removeMemberFromAuthzGroup( String sessionid, String userid, String authzgroupid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -444,10 +444,10 @@ public String removeMemberFromAuthzGroup( String sessionid, String userid, Strin
 }
 
 //removeAllUsersFromRealm
-public String removeAllMembersFromAuthzGroup( String sessionid, String authzgroupid)
+public String removeAllMembersFromAuthzGroup( String sessionid, String authzgroupid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup realmEdit = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -462,10 +462,10 @@ public String removeAllMembersFromAuthzGroup( String sessionid, String authzgrou
 }
 
 //setRoleForRealmMaintenance
-public String setRoleForAuthzGroupMaintenance( String sessionid, String authzgroupid, String roleid)
+public String setRoleForAuthzGroupMaintenance( String sessionid, String authzgroupid, String roleid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		AuthzGroup authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
@@ -479,10 +479,10 @@ public String setRoleForAuthzGroupMaintenance( String sessionid, String authzgro
 	return "success";
 }
 
-public String addMemberToSiteWithRole(String sessionid, String siteid, String userid, String roleid)
+public String addMemberToSiteWithRole(String sessionid, String siteid, String userid, String roleid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 		Site site = SiteService.getSite(siteid);
 		site.addMember(userid,roleid,true,false);
@@ -494,10 +494,10 @@ public String addMemberToSiteWithRole(String sessionid, String siteid, String us
 	return "success";
 }
 
-public String addNewSite( String sessionid, String siteid, String title, String description, String shortdesc, String iconurl, String infourl, boolean joinable, String joinerrole, boolean published, boolean publicview, String skin, String type)
+public String addNewSite( String sessionid, String siteid, String title, String description, String shortdesc, String iconurl, String infourl, boolean joinable, String joinerrole, boolean published, boolean publicview, String skin, String type) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		Site siteEdit = null;
@@ -523,10 +523,10 @@ public String addNewSite( String sessionid, String siteid, String title, String 
 }
 
 
-public String removeSite( String sessionid, String siteid)
+public String removeSite( String sessionid, String siteid) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		Site siteEdit = null;
@@ -540,10 +540,10 @@ public String removeSite( String sessionid, String siteid)
 	return "success";
 }
 
-public String copySite( String sessionid, String siteidtocopy, String newsiteid, String title, String description, String shortdesc, String iconurl, String infourl, boolean joinable, String joinerrole, boolean published, boolean publicview, String skin, String type)
+public String copySite( String sessionid, String siteidtocopy, String newsiteid, String title, String description, String shortdesc, String iconurl, String infourl, boolean joinable, String joinerrole, boolean published, boolean publicview, String skin, String type) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		Site site = SiteService.getSite(siteidtocopy);
@@ -568,10 +568,10 @@ public String copySite( String sessionid, String siteidtocopy, String newsiteid,
 	return "success";
 }
 
-public String addNewPageToSite( String sessionid, String siteid, String pagetitle, int pagelayout)
+public String addNewPageToSite( String sessionid, String siteid, String pagetitle, int pagelayout) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		Site siteEdit = null;
@@ -589,10 +589,10 @@ public String addNewPageToSite( String sessionid, String siteid, String pagetitl
 	return "success";
 }
 
-public String removePageFromSite( String sessionid, String siteid, String pagetitle)
+public String removePageFromSite( String sessionid, String siteid, String pagetitle) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		Site siteEdit = null;
@@ -615,10 +615,10 @@ public String removePageFromSite( String sessionid, String siteid, String pageti
 
 
 
-public String addNewToolToPage( String sessionid, String siteid, String pagetitle, String tooltitle, String toolid, String layouthints)
+public String addNewToolToPage( String sessionid, String siteid, String pagetitle, String tooltitle, String toolid, String layouthints) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		Site siteEdit = SiteService.getSite(siteid);
@@ -649,10 +649,10 @@ public String addNewToolToPage( String sessionid, String siteid, String pagetitl
 
 
 
-public String addConfigPropertyToTool( String sessionid, String siteid, String pagetitle, String tooltitle, String propname, String propvalue)
+public String addConfigPropertyToTool( String sessionid, String siteid, String pagetitle, String tooltitle, String propname, String propvalue) throws AxisFault
 {
-	Session session = SessionManager.getSession(sessionid);
-	SessionManager.setCurrentSession(session);
+	Session session = establishSession(sessionid);
+	
 	try {
 
 		Site siteEdit = SiteService.getSite(siteid);
@@ -688,6 +688,7 @@ public String addConfigPropertyToTool( String sessionid, String siteid, String p
 public boolean checkForUser(String sessionid, String userid) throws AxisFault
 {
 	Session s = establishSession(sessionid);
+	
 	try {
 		User u = null; 
 		u = UserDirectoryService.getUser(userid);
@@ -706,6 +707,7 @@ public boolean checkForUser(String sessionid, String userid) throws AxisFault
 public boolean checkForSite(String sessionid, String siteid) throws AxisFault
 {
 	Session s = establishSession(sessionid);
+	
 	try {
 		Site site = null;
 		site = SiteService.getSite(siteid);
@@ -724,6 +726,7 @@ public boolean checkForSite(String sessionid, String siteid) throws AxisFault
 public boolean checkForMemberInAuthzGroupWithRole(String sessionid, String userid, String authzgroupid, String role) throws AxisFault
 {
 	Session s = establishSession(sessionid);
+	
 	try {
 		AuthzGroup authzgroup = null; 
 		authzgroup = AuthzGroupService.getAuthzGroup(authzgroupid);
