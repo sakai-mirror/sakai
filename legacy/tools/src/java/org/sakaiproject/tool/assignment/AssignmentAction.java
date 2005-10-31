@@ -525,6 +525,9 @@ extends PagedResourceActionII
 		boolean allowGradeSubmission = AssignmentService.allowGradeSubmission(contextString);
 		context.put("allowGradeSubmission", Boolean.valueOf(allowGradeSubmission));
 		
+		// allow update site?
+		context.put("allowUpdateSite", Boolean.valueOf(SiteService.allowUpdateSite(PortalService.getCurrentSiteId())));
+		
 		// grading option
 		context.put("withGrade", state.getAttribute(WITH_GRADES));
 		
