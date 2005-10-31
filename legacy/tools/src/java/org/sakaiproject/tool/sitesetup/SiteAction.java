@@ -244,6 +244,7 @@ public class SiteAction extends PagedResourceActionII
 	private static final String SORTED_BY_PARTICIPANT_ID = "participant_id";
 	private static final String SORTED_BY_PARTICIPANT_COURSE = "participant_course";
 	private static final String SORTED_BY_PARTICIPANT_CREDITS = "participant_credits";
+	private static final String SORTED_BY_MEMBER_NAME = "member_name";
 			
 	/** Name of the state attribute holding the site list column to sort by */
 	private static final String SORTED_ASC = "site.sort.asc";
@@ -2829,7 +2830,7 @@ public class SiteAction extends PagedResourceActionII
 		}
 		if (state.getAttribute(STATE_GROUP_MEMBERS) != null)
 		{
-			context.put("groupMembers", state.getAttribute(STATE_GROUP_MEMBERS));
+			context.put("groupMembers", new SortedIterator(((Set) state.getAttribute(STATE_GROUP_MEMBERS)).iterator(), new SiteComparator (SORTED_BY_MEMBER_NAME, Boolean.TRUE.toString())));
 		}
 		context.put("userDirectoryService", UserDirectoryService.getInstance());
 		return (String)getContext(data).get("template") + TEMPLATE[50];
@@ -12319,6 +12320,31 @@ public class SiteAction extends PagedResourceActionII
 				int n1 = ((Group) o1).getMembers().size();
 				int n2 = ((Group) o2).getMembers().size();
 				result = (n1 > n2)?1:-1;
+			}
+			else if (m_criterion.equals (SORTED_BY_MEMBER_NAME))
+			{
+				// sorted by the member name
+				String s1 = "";
+				String s2 = "";
+				
+				try
+				{
+					s1 = UserDirectoryService.getUser(((Member) o1).getUserId()).getSortName();
+				}
+				catch(Exception ignore)
+				{
+					
+				}
+				
+				try
+				{
+					s2 = UserDirectoryService.getUser(((Member) o2).getUserId()).getSortName();
+				}
+				catch (Exception ignore)
+				{
+					
+				}
+				result =  s1.compareToIgnoreCase (s2);
 			}
 			
 			if(m_asc == null) m_asc = Boolean.TRUE.toString ();

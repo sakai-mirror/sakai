@@ -74,7 +74,7 @@
     		#foreach ($gmember in $groupMembers)
     			#set($gUser = $!userDirectoryService.getUser($gmember.UserId))
 			#if ($!gUser)
-    				<option style="" value="$gmember.UserId" >$!gUser.LastName,$!gUser.FirstName</option>
+    				<option style="" value="$gmember.UserId" >$gUser.SortName</option>
 			#end
     		#end
     	</select>
