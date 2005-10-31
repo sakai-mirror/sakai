@@ -488,11 +488,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    public void setContentHosting(ContentHostingService contentHosting) {
       this.contentHosting = contentHosting;
    }
-
+                                                   
    protected void init() throws Exception {
        // register functions
       FunctionManager.registerFunction(SharedFunctionConstants.CREATE_ARTIFACT_DEF);
-      FunctionManager.registerFunction(SharedFunctionConstants.COPY_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.EDIT_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.PUBLISH_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
