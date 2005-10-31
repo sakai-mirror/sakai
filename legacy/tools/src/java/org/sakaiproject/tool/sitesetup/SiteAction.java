@@ -2822,8 +2822,8 @@ public class SiteAction extends PagedResourceActionII
 		{
 			context.put("description", state.getAttribute(STATE_GROUP_DESCRIPTION));
 		}
-		List siteMembers = getParticipantList(state);
-		if (siteMembers != null && siteMembers.size() > 0)
+		Iterator siteMembers = new SortedIterator (getParticipantList(state).iterator (), new SiteComparator (SORTED_BY_PARTICIPANT_NAME, Boolean.TRUE.toString()));
+		if (siteMembers != null && siteMembers.hasNext())
 		{
 			context.put("generalMembers", siteMembers);
 		}
