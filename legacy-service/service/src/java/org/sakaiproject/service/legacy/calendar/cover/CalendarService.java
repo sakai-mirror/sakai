@@ -62,12 +62,18 @@ public class CalendarService
 	public static java.lang.String EVENT_READ_CALENDAR = org.sakaiproject.service.legacy.calendar.CalendarService.EVENT_READ_CALENDAR;
 	public static java.lang.String EVENT_MODIFY_CALENDAR = org.sakaiproject.service.legacy.calendar.CalendarService.EVENT_MODIFY_CALENDAR;
 	public static java.lang.String REF_TYPE_CALENDAR = org.sakaiproject.service.legacy.calendar.CalendarService.REF_TYPE_CALENDAR;
+	public static java.lang.String REF_TYPE_CALENDAR_PDF = org.sakaiproject.service.legacy.calendar.CalendarService.REF_TYPE_CALENDAR_PDF;
 	public static java.lang.String REF_TYPE_EVENT = org.sakaiproject.service.legacy.calendar.CalendarService.REF_TYPE_EVENT;
 	public static int MOD_NA = org.sakaiproject.service.legacy.calendar.CalendarService.MOD_NA;
 	public static int MOD_THIS = org.sakaiproject.service.legacy.calendar.CalendarService.MOD_THIS;
 	public static int MOD_ALL = org.sakaiproject.service.legacy.calendar.CalendarService.MOD_ALL;
 	public static int MOD_REST = org.sakaiproject.service.legacy.calendar.CalendarService.MOD_REST;
 	public static int MOD_PRIOR = org.sakaiproject.service.legacy.calendar.CalendarService.MOD_PRIOR;
+	public static int UNKNOWN_VIEW = org.sakaiproject.service.legacy.calendar.CalendarService.UNKNOWN_VIEW;
+	public static int DAY_VIEW = org.sakaiproject.service.legacy.calendar.CalendarService.DAY_VIEW;
+	public static int WEEK_VIEW = org.sakaiproject.service.legacy.calendar.CalendarService.WEEK_VIEW;
+	public static int MONTH_VIEW = org.sakaiproject.service.legacy.calendar.CalendarService.MONTH_VIEW;
+	public static int LIST_VIEW = org.sakaiproject.service.legacy.calendar.CalendarService.LIST_VIEW;
 
 	public static java.lang.String calendarReference(java.lang.String param0, java.lang.String param1)
 	{
@@ -76,6 +82,16 @@ public class CalendarService
 			return null;
 
 		return service.calendarReference(param0, param1);
+	}
+
+	public static java.lang.String calendarPdfReference(java.lang.String param0, java.lang.String param1,
+			int param2, java.util.List param3, java.lang.String param4, java.lang.String param5, org.sakaiproject.service.legacy.time.TimeRange param6)
+	{
+		org.sakaiproject.service.legacy.calendar.CalendarService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.calendarPdfReference(param0, param1, param2, param3, param4, param5, param6);
 	}
 
 	public static java.util.List getCalendars()

@@ -25,9 +25,15 @@
 package org.sakaiproject.component.legacy.announcement;
 
 // import
+import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Stack;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -38,6 +44,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannel;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannelEdit;
@@ -51,6 +58,7 @@ import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
+import org.sakaiproject.service.legacy.entity.HttpAccess;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
@@ -65,6 +73,7 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.util.Filter;
+import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -474,6 +483,61 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 				disableMessageChannel(site);
 			}
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public HttpAccess getHttpAccess()
+	{
+		return new HttpAccess()
+		{
+			public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref, Collection copyrightAcceptedRefs) throws PermissionException, IdUnusedException, ServerOverloadException
+			{
+				/** Resource bundle using current language locale */
+			    final ResourceBundle rb = ResourceBundle.getBundle("access");
+
+				// check security on the message (throws if not permitted)
+				unlock(SECURE_READ, ref.getReference());
+
+			    try
+				{
+					AnnouncementMessage msg = (AnnouncementMessage) ref.getEntity();
+					AnnouncementMessageHeader hdr = (AnnouncementMessageHeader) msg.getAnnouncementHeader();
+
+					res.setContentType("text/html; charset=UTF-8");
+					PrintWriter out = res.getWriter();
+					out.println("<html><head><style type=" + "\"" + "text/css" + "\"" + ">body{margin:	0px;padding:1em;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:80%;}</style></head><body>");
+
+					// header
+					out.println("<p>"+rb.getString("java.from") +" " + Validator.escapeHtml(hdr.getFrom().getDisplayName()) + "<br />");
+					out.println(rb.getString("java.date")+" " + Validator.escapeHtml(hdr.getDate().toStringLocalFull()) + "<br />");
+					out.println(rb.getString("java.subject")+" " + Validator.escapeHtml(hdr.getSubject()) + "</p>");
+
+					// body
+					out.println("<p>" + Validator.escapeHtmlFormattedText(msg.getBody()) + "</p>");
+
+					// attachments
+					List attachments = hdr.getAttachments();
+					if (attachments.size() > 0)
+					{
+						out.println("<p>"+rb.getString("java.attach")+"</p><p>");
+						for (Iterator iAttachments = attachments.iterator(); iAttachments.hasNext(); )
+						{
+							Reference attachment = (Reference) iAttachments.next();
+							out.println("<a href=\"" + Validator.escapeHtml(attachment.getUrl()) + "\">" + Validator.escapeHtml(attachment.getUrl()) + "</a><br />");
+						}
+						out.println("</p>");
+					}
+
+					out.println("</body></html>");
+				}
+				catch (Throwable t)
+				{
+					throw new IdUnusedException(ref.getReference());
+				}
+			}
+		};
 	}
 
 	/*******************************************************************************

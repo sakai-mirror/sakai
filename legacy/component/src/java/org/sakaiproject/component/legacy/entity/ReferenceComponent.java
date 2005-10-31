@@ -417,6 +417,14 @@ public class ReferenceComponent
 		return true;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public EntityProducer getEntityProducer()
+	{
+		return m_service;
+	}
+
 	/*
 	 * Parse the reference
 	 */

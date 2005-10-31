@@ -135,7 +135,7 @@ public class ResourcesAction
 	/** Resource bundle using current language locale */
     private static ResourceBundle rb = ResourceBundle.getBundle("content");
     
-    private static final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory.getLog(ResourcesAction.class);
+    private static final Log logger = LogFactory.getLog(ResourcesAction.class);
     
 	/** the maximun size for file upload */
 	private static final String FILE_UPLOAD_MAX_SIZE = "file_upload_max_size";

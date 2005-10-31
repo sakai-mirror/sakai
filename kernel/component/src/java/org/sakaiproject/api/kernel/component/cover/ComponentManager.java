@@ -53,6 +53,8 @@ public class ComponentManager
 	/** If true, covers will cache the components they find once - good for production, bad for some unit testing. */
 	public static final boolean CACHE_COMPONENTS = true;
 
+	public static java.lang.String SAKAI_COMPONENTS_ROOT_SYS_PROP = org.sakaiproject.api.kernel.component.ComponentManager.SAKAI_COMPONENTS_ROOT_SYS_PROP;
+
 	/**
 	 * Access the component manager of the single instance.
 	 * 

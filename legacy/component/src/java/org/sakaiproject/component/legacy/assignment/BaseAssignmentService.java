@@ -27,6 +27,7 @@ package org.sakaiproject.component.legacy.assignment;
 // import
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +37,9 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -77,6 +81,7 @@ import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
+import org.sakaiproject.service.legacy.entity.HttpAccess;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
@@ -2652,6 +2657,108 @@ public abstract class BaseAssignmentService
 	/**
 	 * {@inheritDoc}
 	 */
+	public HttpAccess getHttpAccess()
+	{
+		return new HttpAccess()
+		{
+			public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref, Collection copyrightAcceptedRefs) throws PermissionException,
+					IdUnusedException, ServerOverloadException
+			{
+				// need update permission for any of these accesses
+				if (!allowUpdateAssignment(ref.getReference())) throw new PermissionException(SECURE_UPDATE_ASSIGNMENT, ref.getReference());
+
+				try
+				{
+					if (REF_TYPE_SUBMISSIONS.equals(ref.getSubType()))
+					{
+						// get the submissions zip blob
+						byte[] zip = getSubmissionsZip(ref.getReference());
+						
+						if (zip != null)
+						{
+							res.setContentType("application/zip");
+							res.setHeader("Content-Disposition", "attachment; filename = bulk_download.zip");
+					
+							OutputStream out = null;
+							try
+							{
+								out = res.getOutputStream();
+								out.write(zip);
+								out.flush();
+								out.close();
+							}
+							catch (Throwable ignore)
+							{
+							}
+							finally
+							{
+								if (out != null)
+								{
+									try
+									{
+										out.close();
+									}
+									catch (Throwable ignore)
+									{
+									}
+								}
+							}
+						}
+					}
+					
+					else if (REF_TYPE_GRADES.equals(ref.getSubType()))
+					{
+						// get the grades spreadsheet blob
+						byte[] spreadsheet = getGradesSpreadsheet(ref.getReference());
+						
+						if (spreadsheet != null)
+						{
+							res.setContentType("application/vnd.ms-excel");
+							res.setHeader("Content-Disposition", "attachment; filename = export_grades_file.xls");
+					
+							OutputStream out = null;
+							try
+							{
+								out = res.getOutputStream();
+								out.write(spreadsheet);
+								out.flush();
+								out.close();
+							}
+							catch (Throwable ignore)
+							{
+							}
+							finally
+							{
+								if (out != null)
+								{
+									try
+									{
+										out.close();
+									}
+									catch (Throwable ignore)
+									{
+									}
+								}
+							}
+						}
+					}
+					
+					else
+					{
+						throw new IdUnusedException(ref.getReference());
+					}
+				}
+				catch (Throwable t)
+				{
+					throw new IdUnusedException(ref.getReference());
+				}
+			}
+		};
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean parseEntityReference(String reference, Reference ref)
 	{
 		if (reference.startsWith(REFERENCE_ROOT))
@@ -4382,7 +4489,7 @@ public abstract class BaseAssignmentService
 		{
 			return m_properties;
 		}
-		
+
 		/*******************************************************************************
 		* AttachmentContainer Implementation
 		*******************************************************************************/
@@ -5438,8 +5545,6 @@ public abstract class BaseAssignmentService
 		{
 			return m_properties;
 		}
-
-
 
 		/*******************************************************************************
 		* AssignmentSubmission implementation

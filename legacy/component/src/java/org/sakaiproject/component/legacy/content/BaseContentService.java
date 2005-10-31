@@ -29,6 +29,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -41,6 +42,9 @@ import java.util.Stack;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.xerces.impl.dv.util.Base64;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
@@ -48,6 +52,7 @@ import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.component.legacy.notification.SiteEmailNotificationContent;
+import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -78,6 +83,7 @@ import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
+import org.sakaiproject.service.legacy.entity.HttpAccess;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
@@ -3496,6 +3502,223 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		return true;
 	}
 
+	/** stream content requests if true, read all into memory and send if false. */
+	protected static final boolean STREAM_CONTENT = true;
+
+	/** The chunk size used when streaming (100k). */
+	protected static final int STREAM_BUFFER_SIZE = 102400;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public HttpAccess getHttpAccess()
+	{
+		return new HttpAccess()
+		{
+			public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref, Collection copyrightAcceptedRefs) throws PermissionException,
+					IdUnusedException, ServerOverloadException, CopyrightException
+			{
+				// we only access resources, not collections
+				if (ref.getId().endsWith(Entity.SEPARATOR)) throw new IdUnusedException(ref.getReference());
+
+				// need read permission
+				if (!allowGetResource(ref.getId())) throw new PermissionException(EVENT_RESOURCE_READ, ref.getReference());
+
+				BaseResourceEdit resource = null;
+				try
+				{
+					resource = (BaseResourceEdit) getResource(ref.getId());
+				}
+				catch (TypeException e)
+				{
+					throw new IdUnusedException(ref.getReference());
+				}
+
+				// if this entity requires a copyright agreement, and has not yet been set, get one
+				if (resource.requiresCopyrightAgreement() && !copyrightAcceptedRefs.contains(ref.getReference()))
+				{
+					throw new CopyrightException();
+				}
+
+				try
+				{
+					ResourceProperties properties = resource.getProperties();
+
+					// changed to int from long because res.setContentLength won't take long param -- JE
+					int len = resource.getContentLength();
+					String contentType = resource.getContentType();
+			
+					// for url content type, encode a redirect to the body URL
+					if (contentType.equalsIgnoreCase(ResourceProperties.TYPE_URL))
+					{		
+						byte[] content = resource.getContent();
+						if ((content == null) || (content.length == 0))
+						{
+							throw new IdUnusedException(ref.getReference()	);
+						}
+
+						String one = new String(content);
+						String two = "";
+						for (int i=0; i < one.length(); i++)
+						{
+							if (one.charAt(i) == '+')
+							{
+								two += "%2b";
+							}
+							else
+							{
+								two += one.charAt(i);
+							}
+						}
+						res.sendRedirect(two);
+					}
+			
+					else
+					{
+						// use the last part, the file name part of the id, for the download file name
+						String fileName = Validator.getFileName(ref.getId());
+						fileName = Validator.escapeResourceName(fileName);
+			
+						String disposition = null;
+						if (Validator.letBrowserInline(contentType))
+						{
+							disposition = "inline; filename=\"" + fileName+"\"";
+						}
+						else
+						{
+							disposition = "attachment; filename=\"" + fileName +"\"";
+						}
+			
+						// NOTE:  Only set the encoding on the content we have to.
+						// Files uploaded by the user may have been created with different encodings, such as ISO-8859-1;
+						// rather than (sometimes wrongly) saying its UTF-8, let the browser auto-detect the encoding.
+						// If the content was created through the WYSIWYG editor, the encoding does need to be set (UTF-8).
+						String encoding = resource.getProperties().getProperty(ResourceProperties.PROP_CONTENT_ENCODING);
+						if (encoding != null && encoding.length() > 0)
+						{
+							contentType = contentType + "; charset="+encoding;
+						}
+						
+						// stream the content using a small buffer to keep memory managed
+						if (STREAM_CONTENT)
+						{
+							InputStream content = null;
+							OutputStream out = null;
+			
+							try
+							{
+								content = resource.streamContent();
+								if (content == null)
+								{
+									throw new IdUnusedException(ref.getReference());
+								}
+			
+								res.setContentType(contentType);
+								res.addHeader("Content-Disposition", disposition);
+								res.setContentLength(len);
+			
+								// set the buffer of the response to match what we are reading from the request
+								if (len < STREAM_BUFFER_SIZE)
+								{						
+									res.setBufferSize(len);
+								}
+								else
+								{
+									res.setBufferSize(STREAM_BUFFER_SIZE);
+								}
+			
+								out = res.getOutputStream();
+			
+								// chunk
+								byte[] chunk = new byte[STREAM_BUFFER_SIZE];
+								int lenRead;
+								while ((lenRead = content.read(chunk)) != -1)
+								{
+									out.write(chunk, 0, lenRead);					
+								}
+							}
+							catch (ServerOverloadException e)
+							{
+								throw e;
+							}
+							catch (Throwable ignore)
+							{
+							}
+							finally
+							{
+								// be a good little program and close the stream - freeing up valuable system resources
+								if (content != null)
+								{
+									content.close();
+								}
+			
+								if (out != null)
+								{
+									try
+									{
+										out.close();
+									}
+									catch (Throwable ignore)
+									{
+									}
+								}
+							}
+						}
+			
+						// read the entire content into memory and send it from there
+						else
+						{
+							byte[] content = resource.getContent();
+							if (content == null)
+							{
+								throw new IdUnusedException(ref.getReference());
+							}
+			
+							res.setContentType(contentType);
+							res.addHeader("Content-Disposition", disposition);
+							res.setContentLength(len);
+			
+							// Increase the buffer size for more speed. - don't - we don't want a 20 meg buffer size,right? -ggolden
+							//res.setBufferSize(len);
+			
+							OutputStream out = null;
+							try
+							{
+								out = res.getOutputStream();
+								out.write(content);
+								out.flush();
+								out.close();
+							}
+							catch (Throwable ignore)
+							{
+							}
+							finally
+							{
+								if (out != null)
+								{
+									try
+									{
+										out.close();
+									}
+									catch (Throwable ignore)
+									{
+									}
+								}
+							}
+						}
+					}
+
+					// track event
+					EventTrackingService.post(EventTrackingService.newEvent(EVENT_RESOURCE_READ, resource.getReference(), false));
+				}
+				catch (Throwable t)
+				{
+					throw new IdUnusedException(ref.getReference());
+				}
+			}
+		};
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -6129,6 +6352,15 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			return getAccessPoint(true) + m_id;
 
 		} // getReference
+
+		/**
+		 * @inheritDoc
+		 */
+		protected boolean requiresCopyrightAgreement()
+		{
+			// check my properties
+			return m_properties.getProperty(ResourceProperties.PROP_COPYRIGHT_ALERT) != null;
+		}
 
 		/**
 		 * Access the id of the resource.

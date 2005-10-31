@@ -230,10 +230,6 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 			buf.append("©");
 		}
 		buf.append(" " + url);
-		if (copyrightAlert)
-		{
-			buf.append("&copyrightAlertEmail");
-		}
 		buf.append("\n");
 
 		return buf.toString();

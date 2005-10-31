@@ -421,7 +421,7 @@ public class SpringCompMgr implements ComponentManager
 		{
 			// locate the components root
 			// if we have our system property set, use it
-			String componentsRoot = System.getProperty("sakai.components.root");
+			String componentsRoot = System.getProperty(SAKAI_COMPONENTS_ROOT_SYS_PROP);
 			if (componentsRoot == null)
 			{
 				// if we are in Catalina, place it at ${catalina.home}/components/
@@ -437,6 +437,9 @@ public class SpringCompMgr implements ComponentManager
 				M_log.warn("loadComponents: cannot estabish a root directory for the components packages");
 				return;
 			}
+			
+			// make sure this is set
+			System.setProperty(SAKAI_COMPONENTS_ROOT_SYS_PROP, componentsRoot);
 
 			// load components
 			loader.load(this, componentsRoot);

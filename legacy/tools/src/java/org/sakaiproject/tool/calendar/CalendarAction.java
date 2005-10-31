@@ -85,7 +85,6 @@ import org.sakaiproject.util.MergedList;
 import org.sakaiproject.util.MergedListEntryProviderBase;
 import org.sakaiproject.util.MergedListEntryProviderFixedListWrapper;
 import org.sakaiproject.util.ParameterParser;
-import org.sakaiproject.util.PrintFileGenerator;
 import org.sakaiproject.util.java.StringUtil;
 
 
@@ -6334,7 +6333,7 @@ extends VelocityPortletStateAction
 		|| stateName.equals("week")
 		|| stateName.equals("list"))
 		{
-			int printType = PrintFileGenerator.UNKNOWN_VIEW;
+			int printType = CalendarService.UNKNOWN_VIEW;
 			String timeRangeString = "";
 			
 			TimeRange dailyStartTime = null;
@@ -6417,13 +6416,13 @@ extends VelocityPortletStateAction
 			
 			if (stateName.equals("month"))
 			{
-				printType = PrintFileGenerator.MONTH_VIEW;
+				printType = CalendarService.MONTH_VIEW;
 				timeRangeString = getMonthTimeRange(calObj).toString();
 			}
 			else
 				if (stateName.equals("day"))
 				{
-					printType = PrintFileGenerator.DAY_VIEW;
+					printType = CalendarService.DAY_VIEW;
 					
 					timeRangeString =
 					getDayTimeRange(
@@ -6435,13 +6434,13 @@ extends VelocityPortletStateAction
 				else
 					if (stateName.equals("week"))
 					{
-						printType = PrintFileGenerator.WEEK_VIEW;
+						printType = CalendarService.WEEK_VIEW;
 						timeRangeString = getWeekTimeRange(calObj).toString();
 					}
 					else
 						if (stateName.equals("list"))
 						{
-							printType = PrintFileGenerator.LIST_VIEW;
+							printType = CalendarService.LIST_VIEW;
 							
 							timeRangeString =
 								TimeService
@@ -6451,9 +6450,10 @@ extends VelocityPortletStateAction
 									.toString();
 						}
 			
-			String accessPointUrl =
-			(ServerConfigurationService.getAccessUrl()).concat(
-			PrintFileGenerator.submissionsPrintingReference(
+			Reference calendarRef = EntityManager.newReference(state.getPrimaryCalendarReference());
+
+			String accessPointUrl = ServerConfigurationService.getAccessUrl()
+					+ CalendarService.calendarPdfReference(calendarRef.getContext(), calendarRef.getId(),
 			printType,
 			getCalendarReferenceList(
 			portlet,
@@ -6461,7 +6461,7 @@ extends VelocityPortletStateAction
 			isOnWorkspaceTab()),
 			timeRangeString,
 			UserDirectoryService.getCurrentUser().getDisplayName(),
-			dailyStartTime));
+			dailyStartTime);
 			
 			bar_PDF.add(new MenuEntry(rb.getString("java.print"), "").setUrl(accessPointUrl));
 		}

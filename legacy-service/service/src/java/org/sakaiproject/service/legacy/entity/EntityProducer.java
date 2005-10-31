@@ -196,4 +196,10 @@ public interface EntityProducer
 	 *        The ChangeType for the site (newly added, updated, or just removed).
 	 */
 	void syncWithSiteChange(Site site, ChangeType change);
+	
+	/**
+	 * Get the HttpAccess object that supports entity access via the access servlet for my entities.
+	 * @return The HttpAccess object for my entities, or null if I do not support access.
+	 */
+	HttpAccess getHttpAccess();
 }

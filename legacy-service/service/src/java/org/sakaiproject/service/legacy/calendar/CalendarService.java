@@ -71,6 +71,9 @@ public interface CalendarService
 	/** The Reference type for a calendar. */
 	public static final String REF_TYPE_CALENDAR = "calendar";
 
+	/** The Reference type for a calendar pdf. */
+	public static final String REF_TYPE_CALENDAR_PDF = "calpdf";
+
 	/** The Reference type for an event. */
 	public static final String REF_TYPE_EVENT = "event";
 
@@ -88,6 +91,14 @@ public interface CalendarService
 
 	/** Recurring event modification intention: this and prior. */
 	public static final int MOD_PRIOR = 4;
+
+	/** Calendar Printing Views. */
+	public static final int UNKNOWN_VIEW = -1;
+	public static final int DAY_VIEW = 0;
+	public static final int WEEK_VIEW = 2;
+	public static final int MONTH_VIEW = 3;
+	public static final int LIST_VIEW = 5;
+
 
 	/**
 	* Return a List of all the defined calendars.
@@ -195,12 +206,25 @@ public interface CalendarService
 	public String calendarReference(String context, String id);
 
 	/**
-	* Access the internal reference which can be used to access the event from within the system.
+	* Access the internal reference which can be used to access the calendar-in-pdf format from within the system.
 	* @param context The context.
-	* @param calendarlId The channel id.
-	* @param id The event id.
-	* @return The the internal reference which can be used to access the event from within the system.
+	* @param id The calendar id.
+	* @return The the internal reference which can be used to access the calendar-in-pdf format from within the system.
 	*/
+	public String calendarPdfReference(String context, String id, int scheduleType, List calendars, String timeRangeString,
+			String userName, TimeRange dailyTimeRange);
+
+	/**
+	 * Access the internal reference which can be used to access the event from within the system.
+	 * 
+	 * @param context
+	 *        The context.
+	 * @param calendarlId
+	 *        The channel id.
+	 * @param id
+	 *        The event id.
+	 * @return The the internal reference which can be used to access the event from within the system.
+	 */
 	public String eventReference(String context, String calendarId, String id);
 
 	/**

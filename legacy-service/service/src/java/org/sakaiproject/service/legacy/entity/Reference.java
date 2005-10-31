@@ -162,4 +162,10 @@ public interface Reference
 	 * @return true if settings are accepted, false if not.
 	 */
 	boolean set(String type, String subType, String id, String container, String context);
+	
+	/**
+	 * Access the entity producer responsible for the referenced entity.
+	 * @return The EntityProducer responsible for the referenced entity, or null if there is none.
+	 */
+	EntityProducer getEntityProducer();
 }

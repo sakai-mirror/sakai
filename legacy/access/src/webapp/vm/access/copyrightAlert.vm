@@ -41,7 +41,7 @@
 					$tlang.getString("gen.cancel")
 				</a> 
 			#else
-				<a href="$resourceUrl" style="background-color:#DDDCD7;border:1px solid #4A5573;color:#4A5573;padding:1px 3px 1px 3px;text-decoration:none">
+				<a href="$accept" style="background-color:#DDDCD7;border:1px solid #4A5573;color:#4A5573;padding:1px 3px 1px 3px;text-decoration:none">
 					$tlang.getString("gen.iagree")
 				</a>
 				#if (!$!accessedFromEmail)
