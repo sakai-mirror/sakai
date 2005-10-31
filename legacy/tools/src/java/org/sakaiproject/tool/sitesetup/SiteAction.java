@@ -5631,8 +5631,8 @@ public class SiteAction extends PagedResourceActionII
 							buf.append(rb.getString("java.course")+"\t" + courses.get(i) + "\n");
 							buf.append(rb.getString("java.section")+"\t" + sections.get(i) + "\n\n");	
 						}
-						buf.append("\n"+rb.getString("java.according")+" " + sessionUserName + " "+rb.getString("java.record")+"\n");
-						buf.append(rb.getString("java.canyou")+" "  + sessionUserName + " "+ rb.getString("java.assoc")+"\n");
+						buf.append("\n"+rb.getString("java.according")+" " + sessionUserName + " "+rb.getString("java.record"));
+						buf.append(" " + rb.getString("java.canyou")+" "  + sessionUserName + " "+ rb.getString("java.assoc")+"\n\n");
 						buf.append(rb.getString("java.respond")+" " + sessionUserName + rb.getString("java.appoint")+"\n\n");
 						buf.append(rb.getString("java.thanks")+"\n");
 						buf.append(productionSiteName + " "+rb.getString("java.support"));
