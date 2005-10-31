@@ -7,10 +7,13 @@
 		if(obj_option.value==3)
 		{ 
 			obj_textfield.disabled = false;
+			obj_textfield.style.backgroundColor = 'white';
+			document.forms[0].new_assignment_grade_points.focus()
 		}
 		else
 		{ 
 			obj_textfield.disabled = true;
+			obj_textfield.style.backgroundColor = '#eee';
 		}
 	}
 
@@ -331,7 +334,7 @@
 				#if ($value_GradeType == 3)
 					<input name="$name_GradePoints" id="$name_GradePoints" value="$!value_GradePoints" type="text" size="5" maxlength="20"/>
 				#else
-					<input name="$name_GradePoints" value="$!value_GradePoints" type="text" size="5" maxlength="20" disabled="disabled" />
+					<input name="$name_GradePoints" value="$!value_GradePoints" type="text" size="5" maxlength="20" disabled="disabled" style="background-color:#eee;border:1px solid gray"/>
 				#end
 				<label for="$name_GradePoints">$tlang.getString("gen.forpoi")</label>
 			</p>	
@@ -424,4 +427,3 @@
 		</div>
 	</form>
 </div>
-
