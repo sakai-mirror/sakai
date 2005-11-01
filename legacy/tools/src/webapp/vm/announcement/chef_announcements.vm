@@ -29,6 +29,7 @@
 	#if ($isOnWorkspaceTab.equals("true")) ##in workspace
 		<h3>Announcements</h3>
 		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
+		#if ($messageListVector.iterator().hasNext())
 		<div class="leftNav">
 			<form name="viewForm" class="inlineForm" method="post" action="#toolForm("AssignmentAction")">
 				<input type="hidden" name="eventSubmit_doView" value="view" />
@@ -44,6 +45,7 @@
 				</select>
 			</form>
 		</div>
+		#end
 			#if (!$messageListVector.iterator().hasNext())
 				<p class="instruction">
 					$tlang.getString("gen.thereare")
@@ -288,21 +290,23 @@
 				#if ($displayOptions.isShowAllColumns())
 					<h3>Announcements</h3>
 					#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
-					<div class="leftNav">
-							<form name="viewForm" class="inlineForm" method="post" action="#toolForm("$action")">
-								<input type="hidden" name="eventSubmit_doView" value="view" />
-								<label for="view">
-									$tlang.getString("view.label")
-								</label>
-								<select id="view" name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
-									<option value="$!tlang.getString('view.all')" #if ($!view == "$!tlang.getString('view.all')")selected="selected"#end >$!tlang.getString('view.all')</option>
-									<option value="$!tlang.getString('view.public')"  #if ($!view == "$!tlang.getString('view.public')")selected="selected"#end >$!tlang.getString('view.public')</option>
-									#if ($!groups)
-										<option value="$!tlang.getString('view.bygroup')" #if ($!view == "$!tlang.getString('view.bygroup')")selected="selected"#end >$!tlang.getString('view.bygroup')</option>
-									#end 
-				</select>
-							</form>
-						</div>
+					#if ($messageListVector.iterator().hasNext())
+						<div class="leftNav">
+								<form name="viewForm" class="inlineForm" method="post" action="#toolForm("$action")">
+									<input type="hidden" name="eventSubmit_doView" value="view" />
+									<label for="view">
+										$tlang.getString("view.label")
+									</label>
+									<select id="view" name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+										<option value="$!tlang.getString('view.all')" #if ($!view == "$!tlang.getString('view.all')")selected="selected"#end >$!tlang.getString('view.all')</option>
+										<option value="$!tlang.getString('view.public')"  #if ($!view == "$!tlang.getString('view.public')")selected="selected"#end >$!tlang.getString('view.public')</option>
+										#if ($!groups)
+											<option value="$!tlang.getString('view.bygroup')" #if ($!view == "$!tlang.getString('view.bygroup')")selected="selected"#end >$!tlang.getString('view.bygroup')</option>
+										#end 
+									</select>
+								</form>
+							</div>
+					#end		
 					#if (!$messageListVector.iterator().hasNext())
 						<p class="instruction">
 							$tlang.getString("gen.thereare")
