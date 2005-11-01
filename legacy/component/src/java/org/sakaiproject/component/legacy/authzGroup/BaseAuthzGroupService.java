@@ -573,6 +573,12 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 
 		((BaseAuthzGroup) azGroup).setEvent(SECURE_ADD_AUTHZ_GROUP);
 
+		// update the properties
+		addLiveProperties((BaseAuthzGroup) azGroup);
+
+		// save
+		completeSave(azGroup);
+
 		return azGroup;
 	}
 
@@ -596,8 +602,11 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 			azGroup.addMember(userId, roleName, true, false);
 		}
 
-		// save the changes
-		m_storage.save(azGroup);
+		// update the properties
+		addLiveProperties((BaseAuthzGroup) azGroup);
+
+		// save
+		completeSave(azGroup);
 
 		return azGroup;
 	}
