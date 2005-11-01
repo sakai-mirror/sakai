@@ -20,7 +20,6 @@
 			$tlang.getString("custom.display")
 		</h4>
 		<h5 class="indnt2">Announcement Display</h5>
-## (bundle edit - gsilver)	<h5 class="indnt2">$tlang.getString("custom.display2")</h5>
 		
 	#if ($toolId == "sakai.announcements")
 		

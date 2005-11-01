@@ -39,7 +39,7 @@
 							id="${show_subject_form}-subject" 
 							value="true" /> 
 						<label for="${show_subject_form}-subject">
-							$tlang.getString("gen.show") $one_item $tlang.getString("gen.sub")
+							$tlang.getString("gen.show") <span style="text-transform:lowercase">$one_item $tlang.getString("gen.sub")</span>
 						</label>
 					</p>
 					<p class="checkbox indnt1">
@@ -51,7 +51,7 @@
 							id="${show_subject_form}-body" 
 							value="false"	/> 
 						<label for="${show_subject_form}-body">
-							$tlang.getString("gen.show") $one_item $tlang.getString("gen.bod")
+							$tlang.getString("gen.show") <span style="text-transform:lowercase">$one_item $tlang.getString("gen.bod")</span>
 						</label>
 					</p>
 				
@@ -66,7 +66,7 @@
 								id="$show_body_form" 
 								value="true" /> 
 							<label for="$show_body_form">
-								$tlang.getString("gen.show") $one_item $tlang.getString("gen.bod")
+								$tlang.getString("gen.show") <span style="text-transform:lowercase"> $one_item $tlang.getString("gen.bod")</span>
 							</label>
 						</p>
 					#end
@@ -118,13 +118,13 @@
 				
 				<p class="shorttext">
 					<label for="$days_form">
-						$tlang.getString("cus.numpas") 
+						$tlang.getString("cus.numpas")
 					</label>
 					<input type="text" id="$days_form"  name="$days_form" value="$days" />
 				</p>
 				<p class="shorttext">
 					<label for="$items_form">
-						$tlang.getString("cus.numof")  $all_items: 
+						$tlang.getString("cus.numof")  <span style="text-transform:capitalize">$all_items</span>
 					</label>
 					<input type="text" id="$items_form" name="$items_form" value="$items" />
 				</p>
@@ -174,13 +174,13 @@
 				</p>
 				<p class="shorttext">
 					<label for="$items_form">
-						$tlang.getString("cus.numof")  $all_items: 
+						$tlang.getString("cus.numof")  <span style="text-transform:capitalize">$all_items</span>
 					</label>
 					<input type="text" id="$items_form" name="$items_form" value="$items" size="2"  />
 				</p>
 				<p class="shorttext">
 					<label for="$items_form">
-						$tlang.getString("cus.numof2") $one_item: 
+						$tlang.getString("cus.numof2") <span style="text-transform:capitalize">$one_item</span>
 					</label>
 					<input type="text" id="$length_form" name="$length_form" value="$length" size="2" />
 				</p>
