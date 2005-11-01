@@ -61,6 +61,7 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
+import org.sakaiproject.service.legacy.security.SecurityAdvisor;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
@@ -666,7 +667,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			throw new IdUnusedException(site.getId());
 		}
 
+		enableAzgSecurityAdvisor();
 		saveSiteAzg(site);
+		SecurityService.clearAdvisors();
 
 		// track it
 		EventTrackingService.post(EventTrackingService.newEvent(SECURE_UPDATE_SITE_MEMBERSHIP, site.getReference(), true));
@@ -688,7 +691,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			throw new IdUnusedException(site.getId());
 		}
 
+		enableAzgSecurityAdvisor();
 		saveGroupAzgs(site);
+		SecurityService.clearAdvisors();
 
 		// track it
 		EventTrackingService.post(EventTrackingService.newEvent(SECURE_UPDATE_GROUP_MEMBERSHIP, site.getReference(), true));
@@ -712,9 +717,13 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		m_storage.save(site);
 
 		// save any modified azgs
-		saveAzgs(site);
+		enableAzgSecurityAdvisor();
+		saveSiteAzg(site);
+		saveGroupAzgs(site);		
+		SecurityService.clearAdvisors();
 
 		// sync up with all other services
+		// TODO: do this under the security advisor, too, so we don't need all the various service security on site creation? -ggolden
 		enableRelated(site, change);
 
 		// track it
@@ -727,18 +736,26 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	}
 
 	/**
-	 * Save any azg that a group or the site has modified.
-	 * @param site The site to save.
+	 * Establish a security advisor to allow the "embedded" azg work to occur with no need for additional security permissions.
 	 */
-	protected void saveAzgs(Site site)
+	protected void enableAzgSecurityAdvisor()
 	{
-		saveSiteAzg(site);
-		saveGroupAzgs(site);
+		// put in a security advisor so we can do our azg work without need of further permissions
+		// TODO: could make this more specific to the AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP permission -ggolden
+		SecurityService.pushAdvisor(new SecurityAdvisor()
+		{
+			public SecurityAdvice isAllowed(String userId, String function, String reference)
+			{
+				return SecurityAdvice.ALLOWED;
+			}
+		});
 	}
 
 	/**
 	 * Save the site's azg if modified.
-	 * @param site The site to save.
+	 * 
+	 * @param site
+	 *        The site to save.
 	 */
 	protected void saveSiteAzg(Site site)
 	{
@@ -746,7 +763,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			try
 			{
-				AuthzGroupService.savePostSecurity(((BaseSite) site).m_azg);
+				AuthzGroupService.save(((BaseSite) site).m_azg);
 			}
 			catch (Throwable t)
 			{
@@ -769,7 +786,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			{
 				try
 				{
-					AuthzGroupService.savePostSecurity(group.m_azg);
+					AuthzGroupService.save(group.m_azg);
 				}
 				catch (Throwable t)
 				{
@@ -1603,7 +1620,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		// take care of our AuthzGroups
+		enableAzgSecurityAdvisor();
 		enableAzg(site);
+		SecurityService.clearAdvisors();
 
 		// offer to all EntityProducers
 		for (Iterator i = m_entityManager.getEntityProducers().iterator(); i.hasNext();)
@@ -1635,7 +1654,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		// disable the azgs last, so permissions were in place for the above
+		enableAzgSecurityAdvisor();
 		disableAzg(site);
+		SecurityService.clearAdvisors();
 	}
 
 	/**

@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 * 
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -30,21 +30,9 @@ import java.util.List;
 import org.sakaiproject.service.legacy.user.User;
 
 /**
-* <p>SecurityService is the interface for CHEF security services.</p>
-* <p>Each service component that provides this interface handles the CHEF security model as described
-* <a href="http://chef.si.umich.edu/chef_docs/specs/concepts/chef_security.html" target="_blank">here</a></p>
-* <p>A security service also maintains a security context for each thread.  The context
-* has all the information needed to check security (such as the user id).  Because this
-* information is related to the current thread, security identification information need
-* not be passed around; security calls can make use of the current thread to get at it.</p>
-* <p>The service must be properly installed; as each new request thread is started, the
-* security information must be made available to the service to setup the context.</p>
-* <p>Services Used:<ul>
-* <li>none</li></ul></p>
+* <p>SecurityService is the interface for Sakai security services.</p>
 * 
-* @author University of Michigan, CHEF Software Development Team
-* @version $Revision$
-* @see org.chefproject.core.User
+* @author Sakai Software Development Team
 */
 public interface SecurityService
 {
@@ -102,7 +90,26 @@ public interface SecurityService
 	*/
 	public void removeKey(String userOrGroup, String lockOrRole, String resourceOrGroup, boolean allow);
 
-}	// SecurityService
+	/**
+	 * Establish a new SecurityAdvisor for this thread, at the top of the stack (it gets first dibs on the answer).
+	 * @param advisor The advisor to establish
+	 */
+	void pushAdvisor(SecurityAdvisor advisor);
 
-
-
+	/**
+	 * Remove one SecurityAdvisor from the stack for this thread, if any exist.
+	 * @return advisor The advisor popped of, or null if the stack is empty.
+	 */
+	SecurityAdvisor popAdvisor();
+	
+	/**
+	 * Check if there are any security advisors stacked for this thread.
+	 * @return true if some advisors are defined, false if not.
+	 */
+	boolean hasAdvisors();
+	
+	/**
+	 * Remove any SecurityAdvisors from this thread.
+	 */
+	void clearAdvisors();
+}

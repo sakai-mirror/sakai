@@ -107,6 +107,42 @@ public class SecurityService
 
 		return service.unlock(param0, param1, param2);
 	}
+
+	public static void pushAdvisor(org.sakaiproject.service.legacy.security.SecurityAdvisor param0)
+	{
+		org.sakaiproject.service.legacy.security.SecurityService service = getInstance();
+		if (service == null)
+			return;
+
+		service.pushAdvisor(param0);
+	}
+
+	public static org.sakaiproject.service.legacy.security.SecurityAdvisor popAdvisor()
+	{
+		org.sakaiproject.service.legacy.security.SecurityService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.popAdvisor();
+	}
+	
+	public static boolean hasAdvisors()
+	{
+		org.sakaiproject.service.legacy.security.SecurityService service = getInstance();
+		if (service == null)
+			return false;
+
+		return service.hasAdvisors();
+	}
+	
+	public static void clearAdvisors()
+	{
+		org.sakaiproject.service.legacy.security.SecurityService service = getInstance();
+		if (service == null)
+			return;
+
+		service.clearAdvisors();
+	}
 }
 
 

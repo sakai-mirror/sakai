@@ -28,8 +28,10 @@ package org.sakaiproject.component.legacy.security;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.thread_local.ThreadLocalManager;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
@@ -38,6 +40,7 @@ import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.service.legacy.security.SecurityAdvisor;
 import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;
@@ -54,11 +57,14 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 public class SakaiSecurity implements SecurityService, CacheRefresher
 {
 	/** Current service key for the super user status of the current user. */
-	protected final String M_curUserSuperKey = getClass().getName() + ".super";
+	//protected final String M_curUserSuperKey = getClass().getName() + ".super";
 
 	/** A cache of calls to the service and the results. */
 	protected Cache m_callCache = null;
 
+	/** ThreadLocalManager key for our SecurityAdvisor Stack. */
+	protected final static String ADVISOR_STACK = "SakaiSecurity.advisor.stack";
+	
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Dependencies, configuration, and their setter methods
 	 *********************************************************************************************************************************************************************************************************************************************************/
@@ -75,6 +81,20 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 	public void setLogger(Logger service)
 	{
 		m_logger = service;
+	}
+
+	/** Dependency: the current manager. */
+	protected ThreadLocalManager m_threadLocalManager = null;
+
+	/**
+	 * Dependency - set the current manager.
+	 * 
+	 * @param value
+	 *        The current manager.
+	 */
+	public void setThreadLocalManager(ThreadLocalManager manager)
+	{
+		m_threadLocalManager = manager;
 	}
 
 	/** The # minutes to cache the security answers. 0 disables the cache. */
@@ -139,12 +159,13 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 	{
 		if (user == null) return false;
 
+		// TODO: this cache must be sensitive to changes in the /site/!admin azg -ggolden
+
 		// check the cache
 		String command = "super@" + user.getId();
 		if ((m_callCache != null) && (m_callCache.containsKey(command)))
 		{
 			boolean rv = ((Boolean) m_callCache.get(command)).booleanValue();
-			// m_logger.info("security super hit: " + user.getId() + " " + rv);
 			return rv;
 		}
 
@@ -171,7 +192,6 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 		}
 
 		// cache
-		// m_logger.info("security super miss: " + user.getId() + " " + rv);
 		if (m_callCache != null) m_callCache.put(command, Boolean.valueOf(rv), m_cacheMinutes * 60);
 
 		return rv;
@@ -189,7 +209,7 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean unlock(User u, String lock, String resource)
+	public boolean unlock(User u, String function, String entityRef)
 	{
 		// pick up the current user if needed
 		User user = u;
@@ -197,10 +217,11 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 		{
 			user = UserDirectoryService.getCurrentUser();
 		}
-
-		if (user == null || lock == null || resource == null)
+		
+		// make sure we have complete parameters
+		if (user == null || function == null || entityRef == null)
 		{
-			m_logger.warn(this + ".unlock(): null: " + user + " " + lock + " " + resource);
+			m_logger.warn(this + ".unlock(): null: " + user + " " + function + " " + entityRef);
 			return false;
 		}
 
@@ -210,34 +231,52 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 			return true;
 		}
 
+		// let the advisors have a crack at it, if we have any
+		// Note: this cannot be cached without taking into consideration the exact advisor configuration -ggolden
+		if (hasAdvisors())
+		{
+			SecurityAdvisor.SecurityAdvice advice = adviseIsAllowed(user.getId(), function, entityRef);
+			if (advice != SecurityAdvisor.SecurityAdvice.PASS)
+			{
+				return advice == SecurityAdvisor.SecurityAdvice.ALLOWED;
+			}
+		}
+
+		// check with the AuthzGroups appropriate for this entity
+		return checkAuthzGroups(user.getId(), function, entityRef);
+	}
+
+	/**
+	 * Check the appropriate AuthzGroups for the answer - this may be cached
+	 * @param userId The user id.
+	 * @param function The security function.
+	 * @param entityRef The entity reference string.
+	 * @return true if allowed, false if not.
+	 */
+	protected boolean checkAuthzGroups(String userId, String function, String entityRef)
+	{
+		// TODO: this cache must be made responsive to changed, first in any of the realms involved, and also in the entity -ggolden
+
 		// check the cache
-		String command = "unlock@" + user.getId() + "@" + lock + "@" + resource;
+		String command = "unlock@" + userId + "@" + function + "@" + entityRef;
 		if ((m_callCache != null) && (m_callCache.containsKey(command)))
 		{
 			boolean rv = ((Boolean) m_callCache.get(command)).booleanValue();
-			// m_logger.info("security unlock hit: " + user.getId() + " " + lock + " " + resource + " " + rv);
 			return rv;
 		}
 
-		//	make a reference for the resource
-		Reference ref = EntityManager.newReference(resource);
+		//	make a reference for the entity
+		Reference ref = EntityManager.newReference(entityRef);
 
-		// get this resource's Realms
-		Collection realms = ref.getRealms();
-		boolean rv = AuthzGroupService.isAllowed(user.getId(), lock, realms);
-
-		if (m_logger.isDebugEnabled())
-		{
-			m_logger.debug(this + ".unlock(): " + user.getId() + " @ " + lock + " @ " + resource + " = " + rv);
-		}
+		// get this entity's AuthzGroups
+		Collection azgs = ref.getRealms();
+		boolean rv = AuthzGroupService.isAllowed(userId, function, azgs);
 
 		// cache
-		// m_logger.info("security unlock miss: " + user.getId() + " " + lock + " " + resource + " " + rv);
 		if (m_callCache != null) m_callCache.put(command, Boolean.valueOf(rv), m_cacheMinutes * 60);
 
 		return rv;
-
-	} // unlock
+	}
 
 	/**
 	 * Access the List the Users who can unlock the lock for use with this resource.
@@ -333,7 +372,110 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 		return null;
 
 	} // refresh
+
+	/**********************************************************************************************************************************************************************************************************************************************************
+	 * SecurityAdvisor Support
+	 *********************************************************************************************************************************************************************************************************************************************************/
+
+	/**
+	 * Get the thread-local security advisor stack, possibly creating it
+	 * @param force if true, create if missing
+	 */
+	protected Stack getAdvisorStack(boolean force)
+	{
+		Stack advisors = (Stack) m_threadLocalManager.get(ADVISOR_STACK);
+		if ((advisors == null) && force)
+		{
+			advisors = new Stack();
+			m_threadLocalManager.set(ADVISOR_STACK, advisors);
+		}
+
+		return advisors;
+	}
+
+	/**
+	 * Remove the thread-local security advisor stack
+	 */
+	protected void dropAdvisorStack()
+	{
+		m_threadLocalManager.set(ADVISOR_STACK, null);
+	}
+
+	/**
+	 * Check the advisor stack - if anyone declares ALLOWED or NOT_ALLOWED, stop and return that, else, while they PASS, keep checking.
+	 * @param userId The user id.
+	 * @param function The security function.
+	 * @param reference The Entity reference.
+	 * @return ALLOWED or NOT_ALLOWED if an advisor makes a decision, or PASS if there are no advisors or they cannot make a decision.
+	 */
+	protected SecurityAdvisor.SecurityAdvice adviseIsAllowed(String userId, String function, String reference)
+	{
+		Stack advisors = getAdvisorStack(false);
+		if ((advisors == null) || (advisors.isEmpty())) return SecurityAdvisor.SecurityAdvice.PASS;
+
+		// a Stack grows to the right - process from top to bottom
+		for (int i = advisors.size()-1; i >= 0; i--)
+		{
+			SecurityAdvisor advisor = (SecurityAdvisor) advisors.elementAt(i);
+
+			SecurityAdvisor.SecurityAdvice advice = advisor.isAllowed(userId, function, reference);
+			if (advice != SecurityAdvisor.SecurityAdvice.PASS)
+			{
+				return advice;
+			}
+		}
+
+		return SecurityAdvisor.SecurityAdvice.PASS;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public void pushAdvisor(SecurityAdvisor advisor)
+	{
+		Stack advisors = getAdvisorStack(true);
+		advisors.push(advisor);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public SecurityAdvisor popAdvisor()
+	{
+		Stack advisors = getAdvisorStack(false);
+		if (advisors == null) return null;
+		
+		SecurityAdvisor rv = null;
+
+		if (advisors.size() > 0)
+		{
+			rv = (SecurityAdvisor) advisors.pop();
+		}
+		
+		if (advisors.isEmpty())
+		{
+			dropAdvisorStack();
+		}
+
+		return rv;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public boolean hasAdvisors()
+	{
+		Stack advisors = getAdvisorStack(false);
+		if (advisors == null) return false;
+
+		return !advisors.isEmpty();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public void clearAdvisors()
+	{
+		dropAdvisorStack();
+	}
 }
-
-
-

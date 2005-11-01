@@ -382,6 +382,7 @@
 			destroy-method="destroy"
 			singleton="true">
 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
+		<property name="threadLocalManager"><ref bean="org.sakaiproject.api.kernel.thread_local.ThreadLocalManager"/></property>
  		<property name="cacheMinutes"><value>3</value></property>
 	</bean>
 

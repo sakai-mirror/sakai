@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.legacy.security.SecurityAdvisor;
 import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
@@ -197,6 +198,24 @@ public class NoSecurity
 		return id;
 
 	}	// getUserId
+
+	public void pushAdvisor(SecurityAdvisor advisor)
+	{
+	}
+
+	public SecurityAdvisor popAdvisor()
+	{
+		return null;
+	}
+
+	public boolean hasAdvisors()
+	{
+		return false;
+	}
+
+	public void clearAdvisors()
+	{
+	}
 		
 }	// NoSecurity
 

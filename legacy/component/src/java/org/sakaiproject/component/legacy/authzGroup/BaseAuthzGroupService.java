@@ -495,20 +495,10 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 	 */
 	public void save(AuthzGroup azGroup) throws IdUnusedException, PermissionException
 	{
-		// check security (throws if not permitted)
-		unlock(SECURE_UPDATE_AUTHZ_GROUP, authzGroupReference(azGroup.getId()));
-
-		savePostSecurity(azGroup);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void savePostSecurity(AuthzGroup azGroup) throws IdUnusedException
-	{
 		if (azGroup.getId() == null) throw new IdUnusedException("<null>");
 
-		// Note: no security check
+		// check security (throws if not permitted)
+		unlock(SECURE_UPDATE_AUTHZ_GROUP, authzGroupReference(azGroup.getId()));
 
 		// make sure it's in storage
 		if (!m_storage.check(azGroup.getId()))
