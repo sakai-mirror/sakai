@@ -13,7 +13,7 @@
 	<tool
 		id="sakai.rwiki"
 		title="Wiki"
-		description="Wiki Tool">
+		description="For collaborative editing of pages and content">
 		
 		<category name="course" />
 		<category name="project" />
