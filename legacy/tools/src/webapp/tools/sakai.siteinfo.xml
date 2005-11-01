@@ -5,7 +5,7 @@
 	<tool
 			id="sakai.siteinfo"
 			title="Site Info"
-			description="For showing worksite information and site participants">
+			description="For showing worksite information and site participants.">
 
 		<!-- types are seperated by , don't forget to put corresponding type_categories.xml into the reg folder-->
 		<configuration name="siteTypes" value="course,project" />
