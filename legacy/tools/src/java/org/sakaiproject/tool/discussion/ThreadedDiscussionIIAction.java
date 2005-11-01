@@ -25,7 +25,6 @@
 package org.sakaiproject.tool.discussion;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -65,7 +64,6 @@ import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.tool.content.ResourcesAction;
-import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ParameterParser;
@@ -94,22 +92,11 @@ public class ThreadedDiscussionIIAction
 	/** channel exist */
 	private static final String CHANNEL_EXIST = "channel_exist";
 	
-	/** the String used to seperate the categories inside the configration **/
-	private static final String CATEGORY_SEPERATOR_STRING = ",";
-	
-	private static final String FORM_THREAD_OR_NOT = "thread_or_not";
-	
 	/** the attachments***/
 	private static final String ATTACHMENTS = "threadeddiscussionII.attachments";
 
 	/** the channel id ***/
 	private static final String STATE_CHANNEL_REF = "threadeddiscussionII.channel_id";
-
-	/** the category ***/
-	private static final String STATE_CURRENT_CATEGORY = "threadeddiscussionII.current_category";
-
-	/** the initialized flag ***/
-	private static final String STATE_INITIALIZED_FLAG = "threadeddiscussionII.initialized_flag";
 
 	/** the state mode ***/
 	private static final String STATE_MODE = "threadeddiscussionII.state_mode";    
@@ -120,17 +107,8 @@ public class ThreadedDiscussionIIAction
 	/** the sorted by ***/
 	private static final String STATE_SORTED_BY = "threadeddiscussionII.state_sorted_by";
 	
-	/** sorted by last posted date **/
-	private static final String STATE_SORTED_BY_LASTPOSTEDDATE = "lastposteddate";
-	
-	/** sorted by last posted by **/
-	private static final String STATE_SORTED_BY_LASTPOSTEDBY = "lastpostedby";
-	
 	/** sorted by topic **/
 	private static final String STATE_SORTED_BY_TOPIC = "topic";
-
-	/** sorted by subject **/
-	private static final String STATE_SORTED_BY_SUBJECT = "subject";
 
 	/** sorted by author **/
 	private static final String STATE_SORTED_BY_AUTHOR = "author";
@@ -140,10 +118,6 @@ public class ThreadedDiscussionIIAction
 	
 	/** sorted by category alphabetically **/
 	private static final String STATE_SORTED_BY_CATEGORY_ALPHA = "category";
-	/** sorted by category lasted posted by **/
-	private static final String STATE_SORTED_BY_CATEGORY_LASTPOSTEDBY = "category_lastpostedby";
-    /** sorted by category last posted date**/
-	private static final String STATE_SORTED_BY_CATEGORY_LASTPOSTEDDATE = "category_lastposteddate";
 	
 	/** the sorted ascending **/
 	private static final String STATE_SORTED_ASC = "threadeddiscussionII.state_sorted_asc";
@@ -157,9 +131,6 @@ public class ThreadedDiscussionIIAction
 	/** the expand category list **/
 	private static final String STATE_EXPAND_CATEGORY_LIST = "threadeddiscussionII.state_expand_category_list";  
 
-	/** the show message list **/
-	private static final String STATE_SHOW_MESSAGE_LIST = "threadeddiscussionII.state_show_message_list";    
-	
 	/** The content type image lookup service in the State. */
 	private static final String STATE_CONTENT_TYPE_IMAGE_SERVICE = "attachment.content_type_image_service";
 
@@ -192,18 +163,6 @@ public class ThreadedDiscussionIIAction
     /** the draft message reply style */
     private static final String DRAFT_MESSAGE_REPLY_STYLE = "threadeddiscussionII.draft_message_reply_style";
 
-	/** the previous topic id */
-	private static final String STATE_PREVIOUS_TOPIC_ID = "threadeddiscussionII.previous_topic_id";
-
-	/** the next topic id */
-	private static final String STATE_NEXT_TOPIC_ID = "threadeddiscussionII.next_topic_id";
-
-	/** the previous message id */
-	private static final String STATE_PREVIOUS_MESSAGE_ID = "threadeddiscussionII.previous_message_id";
-
-	/** the next message id */
-	private static final String STATE_NEXT_MESSAGE_ID = "threadeddiscussionII.next_message_id";
-
 	/*********** the respond context *********************/
 	/** the respond message body */
 	private static final String RESPOND_BODY = "threadeddiscussionII.respond_body";
@@ -216,9 +175,6 @@ public class ThreadedDiscussionIIAction
 
 	/** the respond attachment */
 	private static final String RESPOND_ATTACHMENT = "threadeddiscussionII.respond_attachment";
-
-	/** The null/empty string */
-	private static final String NULL_STRING = "";
 	
 	/** The permission alert message eader */
 	/*private static final String PERMISSION_HEADER_STRING = "You are not allowed to ";*/
@@ -229,17 +185,10 @@ public class ThreadedDiscussionIIAction
 	private static final String DELETE_MESSAGE_ID = "threadeddiscussionII.delete_message_id";
 	private static final String DELETE_WARNING = "delete_message_warning";
 	
-	/** Modes. */
-	private static final String MODE_NORMAL_VIEW = "frameView";
-	
 	/** portlet configuration parameter names. */
 	private static final String PARAM_CHANNEL = "channel";
 	private static final String PARAM_ASCENDING = "ascending";
-	private static final String PARAM_ACTION = "action";
-	private static final String PARAM_DISPLAY_DATE = "display-date";
-	private static final String PARAM_DISPLAY_TIME = "display-time";
-	private static final String PARAM_DISPLAY_USER = "display-user";
-
+	
 	/** Configure form field names. */
 	private static final String FORM_CHANNEL = "channel";
 	private static final String FORM_ASCENDING = "ascending";
@@ -257,16 +206,9 @@ public class ThreadedDiscussionIIAction
 	private static final String STATE_ASCENDING = "ascending";
 	private static final String STATE_ERROR = "error";	
 	private static final String STATE_UPDATE = "update";
-	private static final String STATE_CHANNEL_PROBLEM = "channel-problem";
 	
-    /** channel problem messages */
-	private static final String CHANNEL_MISSING = rb.getString("thisdis");
-	private static final String CHANNEL_PERMISSION = rb.getString("youdonot6");
-	private static final String CHANNEL_CREATE_PERMISSION = rb.getString("youdonot4");
-
 	/** UI messages. */
 	private static final String PERMISSION_POST_MESSAGE = rb.getString("youdonot5");
-	private static final String POST_PROBLEM_MESSAGE = rb.getString("thewaspro");
 	private static final String STATE_DISPLAY_MESSAGE = "display_message";
 	private static final String STATE_LIST_PANNEL_UPDATED = "state_list_pannel_updated";
 	
@@ -389,7 +331,6 @@ public class ThreadedDiscussionIIAction
 //					for (int i = 0; i < configCategories.length; i++)
 //					{					
 //						addCategory(state, channel, configCategories[i]);
-//					}
 //				}
 
 				if (state.getAttribute(STATE_CATEGORIES_SHOW_LIST) == null)
@@ -525,11 +466,7 @@ public class ThreadedDiscussionIIAction
 		// setup... we'll use the attachment action's mode
 //chen - SAK-1624 (use new file picker)    state.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 		String subject = params.getString("subject");
-		String stateFromText = rb.getString("thedissit");
-		if (subject != null && subject.length() > 0)
-		{
-			stateFromText = rb.getString("disite") +" " + '"' + subject + '"';
-		}
+
 //chen - SAK-1624 (use new file picker)		state.setAttribute(AttachmentAction.STATE_FROM_TEXT, stateFromText);
 
 		String mode = (String) state.getAttribute(STATE_MODE);
@@ -545,7 +482,6 @@ public class ThreadedDiscussionIIAction
 			String style = params.getString ("style");
 			state.setAttribute(NEW_TOPIC_REPLY_STYLE, style);
 			
-			boolean newCategory = true;
 			String category = ((String) params.getString ("newcategory")).trim();		
 			if (category.length()==0)
 			{
@@ -563,21 +499,13 @@ public class ThreadedDiscussionIIAction
 		}
 		else if (mode!=null && mode.equals(MODE_REPLY))
 		{
-		  try
-		  {
-		    DiscussionChannel channel = DiscussionService.getDiscussionChannel((String) state.getAttribute(STATE_CHANNEL_REF));
-		    
-		    // save the input infos for the respond message
+			// save the input infos for the respond message
 		    subject = ((String) params.getString ("subject")).trim();
 		    state.setAttribute(RESPOND_SUBJECT, subject);
 		    
 		    String body = params.getCleanString ("body");
 		    body = processFormattedTextFromBrowser(state, body);
 		    state.setAttribute(RESPOND_BODY, body);
-		  }
-		  catch (Exception e)
-		  {
-		  }
 		}
 		
 		Vector attachments = (Vector) state.getAttribute(ATTACHMENTS);
@@ -757,32 +685,6 @@ public class ThreadedDiscussionIIAction
 	}   // buildMainPanelContext
 	
 	/** 
-	* build the context for the Layout / view panel
-	* @return (optional) template name for this panel
-	*/
-	private String buildLayoutAttachContext(VelocityPortlet portlet, 
-												Context context,
-												JetspeedRunData rundata,
-												SessionState state)
-	{
-		ParameterParser params = rundata.getParameters ();
-		context.put("tlang",rb);
-
-		// setup... we'll use the attachment action's mode
-		state.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
-		state.setAttribute(AttachmentAction.STATE_FROM_TEXT, "ThreadedDiscussion item " + "\"" + params.getString ("subject") + "\"");
-		
-		Vector attachments = (Vector) state.getAttribute(ATTACHMENTS);
-		if (attachments!=null)
-		{
-			state.setAttribute(AttachmentAction.STATE_ATTACHMENTS, attachments.clone());
-		}		
-		return (String)getContext(rundata).get("template") +"-List";
-		
-	}   // buildLayoutAttachContext
-	
-	
-	/** 
 	* build the context for the menu panel
 	* @return (optional) template name for this panel
 	*/
@@ -791,13 +693,8 @@ public class ThreadedDiscussionIIAction
 											RunData data,
 											SessionState state)
 	{
-		String 	form = "";
-		boolean outlineFlag = true;
-		
 		boolean allowNewTopic = false;
 		boolean allowNewCategory = false;
-		boolean allowViewContent = false;
-		
 		boolean hasPrevious = false;		
 		boolean hasNext = false;
 		
@@ -836,13 +733,11 @@ public class ThreadedDiscussionIIAction
 			{			
 				allowNewTopic =channel.allowAddTopicMessage();
 				allowNewCategory = channel.allowAddTopicMessage();
-				allowViewContent = channel.allowGetMessages();
 			}			
 			else
 			{
 				allowNewTopic = DiscussionService.allowAddChannel(channelId);
 				allowNewCategory = DiscussionService.allowAddChannel(channelId);
-				allowViewContent = DiscussionService.allowGetChannel(channelId);
 			}
 		}
 		catch (IdUnusedException e)
@@ -899,50 +794,7 @@ public class ThreadedDiscussionIIAction
 		
 		return null;
 		
-	}	// buildControlMenu
-	
-	/** 
-	* build the context for the menu panel
-	* @return (optional) template name for this panel
-	*/
-	public void buildControlMenu(	VelocityPortlet portlet,
-	Context context,
-											RunData data,
-											SessionState state,
-											DiscussionChannel channel,
-											String channelId)
-	{
-		//context.put("tlang",rb);
-		String 	form = "";
-		boolean outlineFlag = true;
-		String expandFunction = NULL_STRING;
-		String collapseFunction = NULL_STRING;
-			
-		boolean allowNewTopic = false;		
-		// is this user going to be able to post?
-		boolean allowSend = false;
-
-		// detect whether channel is existed
-		if (channel!=null)
-		{			
-			allowNewTopic =channel.allowAddTopicMessage(); 
-		}
-		else
-		{
-			allowNewTopic = DiscussionService.allowAddChannel(channelId);
-		}
-
-		// if no channel, we can check the user's allow add discussion Channel(channelId)
-		if (channel != null)
-		{
-			allowSend = channel.allowAddMessage();
-		}
-		else
-		{
-			allowSend = DiscussionService.allowAddChannel(channelId);
-		}
-		
-	}	// buildcontrolmenu
+	}	// buildToolbarPanelContext
 	
 	/** 
 	* build the context for the List panel
@@ -983,8 +835,7 @@ public class ThreadedDiscussionIIAction
 		context.put ("currentSortedBy", sortedBy);
 		context.put ("currentSortAsc", sortedAsc);
 		
-		boolean allowNewTopic = false;		
-		boolean allowViewContent = false;
+		boolean allowNewTopic = false;
 		boolean allowRemoveCategory = false;
 		try
 		{
@@ -994,8 +845,7 @@ public class ThreadedDiscussionIIAction
 			// detect whether channel is existed
 			if (channel!=null)
 			{			
-				allowNewTopic =channel.allowAddTopicMessage(); 
-				allowViewContent = channel.allowGetMessages();
+				allowNewTopic =channel.allowAddTopicMessage();
 				allowRemoveCategory = channel.allowRemoveCategory();
 				context.put ("channel", channel);
 
@@ -1181,7 +1031,6 @@ public class ThreadedDiscussionIIAction
 			else
 			{
 				allowNewTopic = DiscussionService.allowAddChannel(channelId);
-				allowViewContent = DiscussionService.allowGetChannel(channelId);
 			}
 
 			if (state.getAttribute(STATE_DISPLAY_MESSAGE) != null)
@@ -1251,9 +1100,6 @@ public class ThreadedDiscussionIIAction
 											RunData rundata,
 											SessionState state)
 	{
-		boolean allowNewTopic = false;		
-		boolean allowViewContent = false;
-
 		context.put("tlang",rb);
 		String channelId = (String) state.getAttribute(STATE_CHANNEL_REF);
 		DiscussionChannel channel = null;
@@ -1357,17 +1203,6 @@ public class ThreadedDiscussionIIAction
             addAlert(state, rb.getString("youdonot1"));
         }
 		
-		// detect whether channel is existed
-		if (channel!=null)
-		{			
-			allowNewTopic =channel.allowAddTopicMessage(); 
-			allowViewContent = channel.allowGetMessages();
-		}
-		else
-		{
-			allowNewTopic = DiscussionService.allowAddChannel(channelId);
-			allowViewContent=DiscussionService.allowGetChannel(channelId);
-		}
 		context.put("panel-target", CONTROL_PANEL);
 
 		// put this pannel's name for the return url
@@ -1387,8 +1222,6 @@ public class ThreadedDiscussionIIAction
 
 		context.put ("action", (String) state.getAttribute(STATE_ACTION));
 		
-		
-		buildControlMenu(portlet, context, rundata, state, channel, channelId);
 		return null;
 
 	}   // buildControlPanelContext
@@ -1576,7 +1409,6 @@ public class ThreadedDiscussionIIAction
 											RunData rundata,
 											SessionState state)
 	{
-		String currentMessageId = ((DisplayMessage) state.getAttribute(STATE_DISPLAY_MESSAGE)).getId();
 		String channelId = (String) state.getAttribute(STATE_CHANNEL_REF);
 		context.put("tlang",rb);
 		
@@ -2714,8 +2546,6 @@ public class ThreadedDiscussionIIAction
 	 */
 	public void doShow ( RunData data, Context context )
 	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
-
 		ParameterParser params = data.getParameters();
 		
 		// set current message id
@@ -2969,24 +2799,6 @@ public class ThreadedDiscussionIIAction
 		// %%% clear or change mode to something like list to leave the options mode
 
 	}   // doUpdate
-	
-	/**
-	 * parse the category String
-	 */
-	private String[] parseCategoryString (String categories)
-	{
-		if ((categories == null) || (categories.trim().length() == 0)) return null;
-
-		if (categories.indexOf(CATEGORY_SEPERATOR_STRING) == -1)
-		{
-			String[] rv = new String[1];
-			rv[0] = categories;
-			return rv;
-		}
-
-		return StringUtil.split(categories, CATEGORY_SEPERATOR_STRING);
-		
-	}	// parseCategoryString
 	
 	/**
 	 * get the categories sorted under the sorting criteria
@@ -3476,246 +3288,6 @@ public class ThreadedDiscussionIIAction
 
 	}	// doCollapse_category
 	
-	private class DiscussionComparator
-	implements Comparator
-	{
-		/**
-		 * the criteria
-		 */
-		String m_criteria = null;
-
-		/**
-		 * the criteria
-		 */
-		String m_asc = null;
-
-		/**
-		 * constructor
-		 * @param criteria The sort criteria string
-		 * @param asc The sort order string. "true" if ascending; "false" otherwise.
-		 */
-		public DiscussionComparator (String criteria, String asc)
-		{
-			m_criteria = criteria;
-			m_asc = asc;
-
-		}	// constructor
-
-		/**
-		 * 	implementing the compare function
-		 * @param o1 The first object
-		 * @param o2 The second object
-		 * @return The compare result. 1 is o1 < o2; -1 otherwise
-		 */
-		public int compare ( Object o1, Object o2)
-		{
-			int result = -1;
-
-			if ((m_criteria.equals (STATE_SORTED_BY_TOPIC))||(m_criteria.equals (STATE_SORTED_BY_SUBJECT)))
-			{
-				// sorted by the discussion message subject
-				result =  ((DiscussionMessage) o1).getDiscussionHeader ().getSubject ().
-				compareToIgnoreCase (((DiscussionMessage)o2).getDiscussionHeader ().getSubject ());
-			}
-			else if (m_criteria.equals (STATE_SORTED_BY_DATE))
-			{
-				// sorted by the discussion message date
-				if (((DiscussionMessage) o1).getDiscussionHeader ().getDate ().
-				before (((DiscussionMessage)o2).getDiscussionHeader ().getDate ()))
-				{
-					result = -1;
-				}
-				else
-				{
-					result = 1;
-				}
-			}
-			else if (m_criteria.equals (STATE_SORTED_BY_LASTPOSTEDDATE))
-			{
-				// sorted by the discussion message date
-				DiscussionMessage m1 = null;
-				DiscussionMessage m2 = null;
-
-				if (((DiscussionMessage) o1).getLatestReply ()!= null)
-				{
-					m1 = ((DiscussionMessage) o1).getLatestReply ();
-				}
-				else
-				{
-					m1 = (DiscussionMessage) o1;
-				}
-
-				if (((DiscussionMessage) o2).getLatestReply ()!= null)
-				{
-					m2 = ((DiscussionMessage) o2).getLatestReply ();
-				}
-				else
-				{
-					m2 = (DiscussionMessage) o2;
-				}
-
-				if (((DiscussionMessage) m1).getDiscussionHeader ().getDate ().
-				before (((DiscussionMessage)m2).getDiscussionHeader ().getDate ()))
-				{
-					result = -1;
-				}
-				else
-				{
-					result = 1;
-				}
-			}
-			else if (m_criteria.equals (STATE_SORTED_BY_LASTPOSTEDBY))
-			{
-				// sorted by the discussion message date
-				DiscussionMessage m1 = null;
-				DiscussionMessage m2 = null;
-
-				if (((DiscussionMessage) o1).getLatestReply ()!= null)
-				{
-					m1 = ((DiscussionMessage) o1).getLatestReply ();
-				}
-				else
-				{
-					m1 = (DiscussionMessage) o1;
-				}
-
-				if (((DiscussionMessage) o2).getLatestReply ()!= null)
-				{
-					m2 = ((DiscussionMessage) o2).getLatestReply ();
-				}
-				else
-				{
-					m2 = (DiscussionMessage) o2;
-				}
-				result =  ((DiscussionMessage) m1).getDiscussionHeader ().getFrom ().getSortName ().
-				compareToIgnoreCase (((DiscussionMessage) m2).getDiscussionHeader ().getFrom ().getSortName ());
-			}
-			else if (m_criteria.equals (STATE_SORTED_BY_AUTHOR))
-			{
-				// sorted by the discussion message subject
-				result =  ((DiscussionMessage) o1).getDiscussionHeader ().getFrom ().getSortName ().
-				compareToIgnoreCase (((DiscussionMessage)o2).getDiscussionHeader ().getFrom ().getSortName ());
-			}
-			// category alpha a-z or z-a sorting
-			else if (m_criteria.equals (STATE_SORTED_BY_CATEGORY_ALPHA))
-			{
-				// alpha sort by category name
-				return result =  ((String) o1).compareToIgnoreCase ((String) o2);
-			}
-            // category last posted by sorting
-			else if (m_criteria.equals (STATE_SORTED_BY_CATEGORY_LASTPOSTEDBY))
-			{
-                DiscussionMessage m1 =((CategoryLastReply) o1).getLastReply();
-                DiscussionMessage m2 =((CategoryLastReply) o2).getLastReply();
-                
-                if ( m1 == null )
-                {
-                    result = -1;
-                }
-                else if ( m2 == null )
-                {
-                    result = 1;
-                }
-                else
-                {
-                    result = m1.getDiscussionHeader().getFrom().getSortName().compareToIgnoreCase(m2.getDiscussionHeader().getFrom().getSortName());
-                }
-			}
-     		// category last posted date sorting
-			else if (m_criteria.equals (STATE_SORTED_BY_CATEGORY_LASTPOSTEDDATE))
-			{
-                DiscussionMessage m1 =((CategoryLastReply) o1).getLastReply();
-                DiscussionMessage m2 =((CategoryLastReply) o2).getLastReply();
-                if ( m1==null )
-                {
-                    result = -1;
-                }
-                else if ( m2 == null)
-                {
-                    result = 1;
-                }
-                else
-                {
-                    if (m1.getDiscussionHeader().getDate()
-                    .before(m2.getDiscussionHeader().getDate()))
-                    {
-                        result = -1;
-                    }
-                    else
-                    {
-                        result = 1;
-                    }
-                }
-			}
-
-			// sort ascending or descending
-			if (m_asc.equals (Boolean.FALSE.toString()))
-			{
-				result = -result;
-			}
-			return result;
-		}	// compare
-	}	// DiscussionComparator
-	
-    /**
-     * The object contains the category and its last replied 
-     */
-    private class CategoryLastReply
-    {
-        // the category attribute
-        String m_category;
-        
-        // the DiscussionMessage attribute
-        DiscussionMessage m_lastReply;
-        
-        /**
-         *  constructor
-         */
-        public CategoryLastReply(String category, DiscussionMessage lastReply)
-        {
-            m_category = category;
-            m_lastReply = lastReply;
-           
-        }   // constructor
-        
-        /**
-         * get the category
-         */
-        public String getCategory()
-        {
-            return m_category;
-            
-        }   // getCategory
-        
-        /**
-         * set the category
-         */
-        public void setCategory(String category)
-        {
-            m_category = category;
-            
-        }   // setCategor
-        
-        /**
-         * get the last DiscussionMessage object inside the category
-         */
-        public DiscussionMessage getLastReply()
-        {
-            return m_lastReply;
-            
-        }   // getLastReply
-        
-        /**
-         * set the last DiscussionMessage object inside the category
-         */ 
-        public void setLastReply(DiscussionMessage lastReply)
-        {
-            m_lastReply = lastReply;
-            
-        }   // setLastReply 
-        
-    }   // class CategoryLastReply
-	
 	/**
 	 *	the class which is using by one of the iFrames to show the content of selected message
 	 */
@@ -3750,7 +3322,7 @@ public class ThreadedDiscussionIIAction
     {
     		try
 		{
-    			boolean a = channel.addCategory(category);
+    			channel.addCategory(category);
     			
     			HashSet expandedCategories = (HashSet) state.getAttribute(STATE_EXPAND_CATEGORY_LIST);
 			expandedCategories.add(category);
@@ -3798,7 +3370,6 @@ public class ThreadedDiscussionIIAction
 
 		// schedule a main refresh
 		String toolId = PortalService.getCurrentToolId();
-		String address = clientWindowId(state, toolId);
 		String mainPanelId = mainPanelUpdateId(toolId);
 		schedulePeerFrameRefresh(mainPanelId);
 
