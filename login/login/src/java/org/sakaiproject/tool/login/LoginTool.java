@@ -216,7 +216,6 @@ public class LoginTool extends HttpServlet
 		final String tailHtml = "</body></html>";
 
 		final String loginHtml = "<table class=\"login\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">"
-				+ "	<tr>"
 				+ "		<tr>"
 				+ "			<th colspan=\"2\">"
 				+ "				Login Required"
