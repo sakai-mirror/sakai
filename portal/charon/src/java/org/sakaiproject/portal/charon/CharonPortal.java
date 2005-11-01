@@ -561,14 +561,14 @@ public class CharonPortal extends HttpServlet
 		{
 		    out.write("\t\t<a href=\""
 		            +resetActionUrl
-		            +"\" title=\"Reset\"><img src=\"/library/image/transparent.gif\" alt=\"Reset\" border=\"1\"></a>"
+		            +"\" title=\"Reset\"><img src=\"/library/image/transparent.gif\" alt=\"Reset\" border=\"1\" /></a>"
             );
 		}
 		out.write("<h2>"+toolTitle+"\n"+"\t</h2></td>\n");
 		out.write("\t<td class=\"action\">\n");
 		if (showHelpButton)
 		{
-		    out.write("\t\t<a href=\"javascript:;\" onclick=\"window.open('"+helpActionUrl+"','Help','resizable=0,toolbar=no,scrollbars=yes, width=800,height=600')\" onkeypress=\"window.open('"+helpActionUrl+"','Help','resizable=0,toolbar=no,scrollbars=yes, width=800,height=600')\"><img src=\"/library/image/transparent.gif\" alt=\"Help\" border=\"0\"></a>\n");
+		    out.write("\t\t<a href=\"javascript:;\" onclick=\"window.open('"+helpActionUrl+"','Help','resizable=0,toolbar=no,scrollbars=yes, width=800,height=600')\" onkeypress=\"window.open('"+helpActionUrl+"','Help','resizable=0,toolbar=no,scrollbars=yes, width=800,height=600')\"><img src=\"/library/image/transparent.gif\" alt=\"Help\" border=\"0\" /></a>\n");
 		}
 		out.write("\t</td>\n");
 		out.write("</tr>\n");
@@ -1324,12 +1324,12 @@ public class CharonPortal extends HttpServlet
 		// put out the links version
 		if (!topLogin)
 		{
-			out.println("			<a href=\"" + logInOutUrl + "\" target=\"_parent\" alt=\"" + message + "\">"
+			out.println("			<a href=\"" + logInOutUrl + "\" target=\"_parent\" title=\"" + message + "\">"
 					+ ((image1 == null) ? message : "<img src=\"" + image1 + "\"/>") + "</a>");
 			if (logInOutUrl2 != null)
 			{
-				out.println("			<a href=\"" + logInOutUrl2 + "\" target=\"_parent\" alt=\"" + message2 + "\">"
-						+ ((image2 == null) ? message2 : "<img src=\"" + image2 + "\"/>") + "</a>");
+				out.println("			<a href=\"" + logInOutUrl2 + "\" target=\"_parent\" title=\"" + message2 + "\">"
+						+ ((image2 == null) ? message2 : "<img alt=\"" + message2 + "\" src=\"" + image2 + "\"/>") + "</a>");
 			}
 		}
 
@@ -1513,7 +1513,7 @@ public class CharonPortal extends HttpServlet
 // gsilver - target of "jump to content" link and header for content
 
 		out.println("	<h1 class=\"skip\">" + Web.escapeHtml(rb.getString("sit.contentshead")) +  "</h1>");
-		out.println("	<a id=\"tocontent\" class=\"skip\" name=\"content\"></a>");
+		out.println("	<a id=\"tocontent\" class=\"skip\" name=\"tocontent\"></a>");
 
 	}
 
