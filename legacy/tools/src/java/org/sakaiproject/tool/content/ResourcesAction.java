@@ -2215,7 +2215,14 @@ public class ResourcesAction
 							String mode = (String) state.getAttribute(STATE_MODE);
 							if(MODE_HELPER.equals(mode))
 							{
-								attachItem(newResourceId, state);
+								if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+								{
+									attachItem(newResourceId, state);
+								}
+								else
+								{
+									attachLink(newResourceId, state);
+								}
 							}
 						}
 						catch (IdUsedException e)
@@ -2655,7 +2662,14 @@ public class ResourcesAction
 					String mode = (String) state.getAttribute(STATE_MODE);
 					if(MODE_HELPER.equals(mode))
 					{
-						attachItem(newResourceId, state);
+						if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+						{
+							attachItem(newResourceId, state);
+						}
+						else
+						{
+							attachLink(newResourceId, state);
+						}
 					}
 				}
 				catch (IdUsedException e)
@@ -2820,7 +2834,15 @@ public class ResourcesAction
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
 		String itemId = params.getString("itemId");
-		attachItem(itemId, state);
+		
+		if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+		{
+			attachItem(itemId, state);
+		}
+		else
+		{
+			attachLink(itemId, state);
+		}
 
 		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
 
@@ -3220,6 +3242,70 @@ public class ResourcesAction
 		state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
 	}
 	
+	public static void attachLink(String itemId, SessionState state)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
+		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+		if(attached == null)
+		{
+			attached = new Vector();
+		}
+		
+		boolean found = false;
+		Iterator it = attached.iterator();
+		while(!found && it.hasNext())
+		{
+			AttachItem item = (AttachItem) it.next();
+			if(item.getId().equals(itemId))
+			{
+				found = true;
+			}
+		}
+		
+		if(!found)
+		{
+			try
+			{
+				ContentResource res = contentService.getResource(itemId);				
+				ResourceProperties props = res.getProperties();
+				
+				String contentType = res.getContentType();
+				String filename = Validator.getFileName(itemId);
+				String resourceId = Validator.escapeResourceName(filename);
+				
+				String siteId = PortalService.getCurrentSiteId();
+				String toolName = ToolManager.getCurrentTool().getTitle();
+				
+				String displayName = props.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
+				String containerId = contentService.getContainingCollectionId (itemId);
+				String accessUrl = contentService.getUrl(itemId);
+						
+				AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
+				item.setContentType(contentType);
+				attached.add(item);
+				state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
+			}
+			catch (PermissionException e)
+			{
+				addAlert(state, rb.getString("notpermis4"));
+			}
+			catch(TypeException ignore)
+			{
+				// other exceptions should be caught earlier
+			}
+			catch(IdUnusedException ignore)
+			{
+				// other exceptions should be caught earlier
+			}
+			catch(RuntimeException e)
+			{
+				logger.error("ResourcesAction.attachItem ***** Unknown Exception ***** " + e.getMessage());
+				addAlert(state, rb.getString("failed"));
+			}
+		}
+		state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
+	}
+	
 	/**
 	 * Add a new URL to ContentHosting for each EditItem in the state attribute named STATE_CREATE_ITEMS.  
 	 * The number of items to be added is indicated by the state attribute named STATE_CREATE_NUMBER, and
@@ -3289,7 +3375,14 @@ public class ResourcesAction
 					String mode = (String) state.getAttribute(STATE_MODE);
 					if(MODE_HELPER.equals(mode))
 					{
-						attachItem(newResourceId, state);
+						if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+						{
+							attachItem(newResourceId, state);
+						}
+						else
+						{
+							attachLink(newResourceId, state);
+						}
 					}
 					
 				}
@@ -8347,7 +8440,14 @@ public class ResourcesAction
 				String mode = (String) state.getAttribute(STATE_MODE);
 				if(MODE_HELPER.equals(mode))
 				{
-					attachItem(id, state);
+					if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+					{
+						attachItem(id, state);
+					}
+					else
+					{
+						attachLink(id, state);
+					}
 				}
 			}
 			catch (PermissionException e)
