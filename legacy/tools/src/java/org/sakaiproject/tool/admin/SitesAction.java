@@ -43,7 +43,9 @@ import org.sakaiproject.cheftool.PagedResourceActionII;
 import org.sakaiproject.cheftool.RunData;
 import org.sakaiproject.cheftool.VelocityPortlet;
 import org.sakaiproject.cheftool.menu.Menu;
+import org.sakaiproject.cheftool.menu.MenuDivider;
 import org.sakaiproject.cheftool.menu.MenuEntry;
+import org.sakaiproject.cheftool.menu.MenuField;
 import org.sakaiproject.cheftool.menu.MenuItem;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -73,12 +75,17 @@ import org.sakaiproject.util.java.StringUtil;
 public class SitesAction
 	extends PagedResourceActionII
 {
-	/** Helper tool for realm editing. */
-	protected static final String REALM_HELPER = "sakai.realms";
+	/** State holding the site id for site id search. */
+	protected static final String STATE_SEARCH_SITE_ID = "search_site";
 
-	/** A Boolean indicating if we are to search only user sites (True) or non-user sites (False). */
-	protected static String STATE_SEARCH_USER = "search.user";
+	/** State holding the user id for user id search. */
+	protected static final String STATE_SEARCH_USER_ID = "search_user";
+
+	protected static final String FORM_SEARCH_SITEID = "search_site";
+	protected static final String FORM_SEARCH_USERID = "search_user";
+
 	private static ResourceBundle rb = ResourceBundle.getBundle("admin");
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,29 +93,55 @@ public class SitesAction
 	{
 		// search?
 		String search = StringUtil.trimToNull((String) state.getAttribute(STATE_SEARCH));
-		Boolean userOnly = (Boolean) state.getAttribute(STATE_SEARCH_USER);
+		String siteId = StringUtil.trimToNull((String) state.getAttribute(STATE_SEARCH_SITE_ID));
+		String userId = StringUtil.trimToNull((String) state.getAttribute(STATE_SEARCH_USER_ID));
+
+		//Boolean userOnly = (Boolean) state.getAttribute(STATE_SEARCH_USER);
+
+		// if site id specified, use that
+		if (siteId != null)
+		{
+			List rv = new Vector();
+			try
+			{
+				Site site = SiteService.getSite(siteId);
+				rv.add(site);
+			}
+			catch (IdUnusedException e) {}
+
+			return rv;
+		}
+		
+		// if userId specified, use that
+		else if (userId != null)
+		{
+			List rv = new Vector();
+			try
+			{
+				Site userSite = SiteService.getSite(SiteService.getUserSiteId(userId));
+				rv.add(userSite);
+			}
+			catch (IdUnusedException e) {}
+
+			return rv;
+		}
 
 		// search for non-user sites, using the criteria
-		if ((userOnly == null) || (userOnly.booleanValue() == false) || (search == null))
+		else if (search != null)
 		{
 			return SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.NON_USER,
 					null, search, null,
 					org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC,
 					new PagingPosition(first, last));
 		}
-
-		// search for a specific user site for the particular user id in the criteria - exact match only
+		
+		// otherwise just show a page of all
 		else
 		{
-			List rv = new Vector();
-			try
-			{
-				Site userSite = SiteService.getSite(SiteService.getUserSiteId(search));
-				rv.add(userSite);
-			}
-			catch (IdUnusedException e) {}
-
-			return rv;
+			return SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ANY,
+					null, search, null,
+					org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC,
+					new PagingPosition(first, last));
 		}
 	}
 
@@ -119,26 +152,44 @@ public class SitesAction
 	{
 		// search?
 		String search = StringUtil.trimToNull((String) state.getAttribute(STATE_SEARCH));
-		Boolean userOnly = (Boolean) state.getAttribute(STATE_SEARCH_USER);
+		String siteId = StringUtil.trimToNull((String) state.getAttribute(STATE_SEARCH_SITE_ID));
+		String userId = StringUtil.trimToNull((String) state.getAttribute(STATE_SEARCH_USER_ID));
 
 		// search for non-user sites, using the criteria
-		if ((userOnly == null) || (userOnly.booleanValue() == false) || (search == null))
-		{
-			return SiteService.countSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.NON_USER,
-					null, search, null);
-		}
-
-		// search for a specific user site for the particular user id in the criteria - exact match only
-		else
+		if (siteId != null)
 		{
 			try
 			{
-				Site userSite = SiteService.getSite(SiteService.getUserSiteId(search));
+				Site site = SiteService.getSite(siteId);
 				return 1;
 			}
 			catch (IdUnusedException e) {}
 
 			return 0;
+		}
+		
+		else if (userId != null)
+		{
+			try
+			{
+				Site userSite = SiteService.getSite(SiteService.getUserSiteId(userId));
+				return 1;
+			}
+			catch (IdUnusedException e) {}
+
+			return 0;
+		}
+
+		else if (search != null)
+		{
+			return SiteService.countSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.NON_USER,
+					null, search, null);
+		}
+		
+		else
+		{
+			return SiteService.countSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ANY,
+					null, search, null);
 		}
 	}
 
@@ -286,15 +337,22 @@ public class SitesAction
 
 		// add the search commands
 		addSearchMenus(bar, state);
-		Boolean userSearchB = ((Boolean)state.getAttribute(STATE_SEARCH_USER));
-		boolean userSearch = false;
-		if (userSearchB != null)
+		
+		// more search
+		bar.add( new MenuDivider());
+		bar.add( new MenuField(FORM_SEARCH_SITEID, "toolbar2", "doSearch_site_id", (String) state.getAttribute(STATE_SEARCH_SITE_ID)));
+		bar.add( new MenuEntry(rb.getString("sitlis.sid"), null, true, MenuItem.CHECKED_NA, "doSearch_site_id", "toolbar2"));
+		if (state.getAttribute(STATE_SEARCH_SITE_ID) != null)
 		{
-			userSearch = userSearchB.booleanValue();
+			bar.add( new MenuEntry(rb_praII.getString("sea.cleasea"), "doSearch_clear"));
 		}
-		bar.add( new MenuEntry((userSearch ? rb.getString("sitact.usermy") : rb.getString("sitact.nonuser")), null, true,
-				(userSearch ? MenuItem.CHECKED_TRUE : MenuItem.CHECKED_FALSE),
-				"doToggle_user_search") );
+		bar.add( new MenuDivider());
+		bar.add( new MenuField(FORM_SEARCH_USERID, "toolbar3", "doSearch_user_id", (String) state.getAttribute(STATE_SEARCH_USER_ID)));
+		bar.add( new MenuEntry(rb.getString("sitlis.uid"), null, true, MenuItem.CHECKED_NA, "doSearch_user_id", "toolbar3"));
+		if (state.getAttribute(STATE_SEARCH_USER_ID) != null)
+		{
+			bar.add( new MenuEntry(rb_praII.getString("sea.cleasea"), "doSearch_clear"));
+		}
 
 		// add the refresh commands
 		addRefreshMenus(bar, state);
@@ -1662,40 +1720,97 @@ public class SitesAction
 	}
 
 	/** 
-	* Handle a user clicking on the view-user menu.
+	* Handle a Search request.
 	**/	
-	public void doToggle_user_search(RunData runData, Context context)
-	{
-		toggleState(runData, STATE_SEARCH_USER);
-
-	}	// doToggle_user_display
-
-	/** 
-	* Toggle the state attribute
-	* @param stateName The name of the state attribute to toggle
-	**/	
-	private void toggleState(RunData runData, String stateName)
+	public void doSearch(RunData runData, Context context)
 	{
 		// access the portlet element id to find our state
-		// %%% use CHEF api instead of Jetspeed to get state
 		String peid = ((JetspeedRunData)runData).getJs_peid();
 		SessionState state = ((JetspeedRunData)runData).getPortletSessionState(peid);
-		
-		// toggle the state setting
-		boolean newValue = false;
-		Boolean oldValue = (Boolean) state.getAttribute(stateName);
-		if (oldValue == null)
+
+		// clear the search(s)
+		state.removeAttribute(STATE_SEARCH);
+		state.removeAttribute(STATE_SEARCH_SITE_ID);
+		state.removeAttribute(STATE_SEARCH_USER_ID);
+
+		super.doSearch(runData,context);
+
+	}	// doSearch
+
+	/** 
+	* Handle a Search request - for site id
+	**/	
+	public void doSearch_site_id(RunData runData, Context context)
+	{
+		// access the portlet element id to find our state
+		String peid = ((JetspeedRunData)runData).getJs_peid();
+		SessionState state = ((JetspeedRunData)runData).getPortletSessionState(peid);
+
+		// clear the search(s)
+		state.removeAttribute(STATE_SEARCH);
+		state.removeAttribute(STATE_SEARCH_SITE_ID);
+		state.removeAttribute(STATE_SEARCH_USER_ID);
+
+		// read the search form field into the state object
+		String search = StringUtil.trimToNull(runData.getParameters().getString(FORM_SEARCH_SITEID));
+
+		// set the flag to go to the prev page on the next list
+		if (search != null)
 		{
-			newValue = true;
-		}
-		else
-		{
-			newValue = ! oldValue.booleanValue();
+			state.setAttribute(STATE_SEARCH_SITE_ID, search);
 		}
 
-		state.setAttribute(stateName, new Boolean(newValue));
+	}	// doSearch_site_id
 
-	}	// toggleState
+	/** 
+	* Handle a Search request - for user my workspace
+	**/	
+	public void doSearch_user_id(RunData runData, Context context)
+	{
+		// access the portlet element id to find our state
+		String peid = ((JetspeedRunData)runData).getJs_peid();
+		SessionState state = ((JetspeedRunData)runData).getPortletSessionState(peid);
+
+		// clear the search(s)
+		state.removeAttribute(STATE_SEARCH);
+		state.removeAttribute(STATE_SEARCH_SITE_ID);
+		state.removeAttribute(STATE_SEARCH_USER_ID);
+
+		// read the search form field into the state object
+		String search = StringUtil.trimToNull(runData.getParameters().getString(FORM_SEARCH_USERID));
+
+		// set the flag to go to the prev page on the next list
+		if (search != null)
+		{
+			state.setAttribute(STATE_SEARCH_USER_ID, search);
+		}
+
+		// start paging again from the top of the list
+		resetPaging(state);
+
+	}	// doSearch_user_id
+
+	/** 
+	* Handle a Search Clear request.
+	**/	
+	public void doSearch_clear(RunData runData, Context context)
+	{
+		// access the portlet element id to find our state
+		String peid = ((JetspeedRunData)runData).getJs_peid();
+		SessionState state = ((JetspeedRunData)runData).getPortletSessionState(peid);
+
+		// clear the search(s)
+		state.removeAttribute(STATE_SEARCH);
+		state.removeAttribute(STATE_SEARCH_SITE_ID);
+		state.removeAttribute(STATE_SEARCH_USER_ID);
+
+		// start paging again from the top of the list
+		resetPaging(state);
+
+		// turn on auto refresh
+		enableObserver(state);
+
+	}	// doSearch_clear
 
 	/**
 	* Read the tool form and update the site in state.
@@ -1799,6 +1914,11 @@ public class SitesAction
 		state.removeAttribute("new");
 		state.removeAttribute("newPage");
 		state.removeAttribute("newTool");
+		
+		// clear the search, so after an edit or delete, the search is not automatically re-run
+		state.removeAttribute(STATE_SEARCH);
+		state.removeAttribute(STATE_SEARCH_SITE_ID);
+		state.removeAttribute(STATE_SEARCH_USER_ID);
 
 	}	// cleanState
 

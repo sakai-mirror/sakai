@@ -447,7 +447,7 @@ public class BaseDbFlatStorage
 	public int countSelectedResources(String where, Object[] values, String join)
 	{
 		// read all resources from the db with a where
-		String sql = "select count(1) from " + m_resourceTableName + ((join == null) ? "" : ("," + join)) + " where " + where;
+		String sql = "select count(1) from " + m_resourceTableName + ((join == null) ? "" : ("," + join)) + (((where != null) && (where.length() > 0)) ? (" where " + where) : "");
 
 		List results = m_sql.dbRead(sql, values, new SqlReader()
 		{
@@ -540,7 +540,8 @@ public class BaseDbFlatStorage
 			sql = "select " + /* fieldList(m_resourceTableReadFields, null) */"*" + " from" + " (select "
 					+ fieldList(m_resourceTableReadFields, null) + " ,RANK() OVER" + " (order by " + order + ","
 					+ m_resourceTableName + "." + m_resourceTableIdField + ") as rank" + " from " + m_resourceTableName
-					+ ((join == null) ? "" : ("," + join)) + " where " + where + " order by " + order + "," + m_resourceTableName
+					+ ((join == null) ? "" : ("," + join)) + (((where != null) && (where.length() > 0)) ? (" where " + where) : "")
+					+ " order by " + order + "," + m_resourceTableName
 					+ "." + m_resourceTableIdField + " )" + " where rank between ? and ?";
 			fields[fields.length - 2] = new Long(first);
 			fields[fields.length - 1] = new Long(last);
@@ -550,7 +551,8 @@ public class BaseDbFlatStorage
 			fields = values;
 			// use MySQL LIMIT clause
 			sql = "select " + fieldList(m_resourceTableReadFields, null) + " from " + m_resourceTableName
-					+ ((join == null) ? "" : ("," + join)) + " where " + where + " order by " + order + "," + m_resourceTableName
+					+ ((join == null) ? "" : ("," + join)) + (((where != null) && (where.length() > 0)) ? (" where " + where) : "")
+					+ " order by " + order + "," + m_resourceTableName
 					+ "." + m_resourceTableSortField1
 					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2)
 					+ " limit " + (last - first + 1) + " offset " + (first - 1);
@@ -561,7 +563,7 @@ public class BaseDbFlatStorage
 			// use SQL2000 LIMIT clause
 			fields = values;
 			sql = "select " + "limit " + (first - 1) + " " + (last - first + 1) + " " + fieldList(m_resourceTableReadFields, null)
-					+ " from " + m_resourceTableName + ((join == null) ? "" : ("," + join)) + " where " + where + " order by "
+					+ " from " + m_resourceTableName + ((join == null) ? "" : ("," + join)) + (((where != null) && (where.length() > 0)) ? (" where " + where) : "") + " order by "
 					+ order + "," + m_resourceTableName + "." + m_resourceTableSortField1
 					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2);
 		}

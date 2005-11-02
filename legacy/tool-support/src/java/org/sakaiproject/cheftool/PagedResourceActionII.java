@@ -47,7 +47,7 @@ import org.sakaiproject.util.courier.ObservingCourier;
 public abstract class PagedResourceActionII
 	extends VelocityPortletPaneledAction
 {
-	private static ResourceBundle rb = ResourceBundle.getBundle("pagedresourceaction");
+	protected static ResourceBundle rb_praII = ResourceBundle.getBundle("pagedresourceaction");
    
 	/** The default number of messages per page. */
 	protected final static int DEFAULT_PAGE_SIZE = 20;
@@ -159,8 +159,8 @@ public abstract class PagedResourceActionII
 	*/
 	protected void addViewPagingMenus(Menu bar, SessionState state)
 	{
-		bar.add( new MenuEntry(rb.getString("viepag.prev"), (state.getAttribute(STATE_PREV_EXISTS) != null), "doView_prev"));
-		bar.add( new MenuEntry(rb.getString("viepag.next"), (state.getAttribute(STATE_NEXT_EXISTS) != null), "doView_next"));
+		bar.add( new MenuEntry(rb_praII.getString("viepag.prev"), (state.getAttribute(STATE_PREV_EXISTS) != null), "doView_prev"));
+		bar.add( new MenuEntry(rb_praII.getString("viepag.next"), (state.getAttribute(STATE_NEXT_EXISTS) != null), "doView_next"));
 
 	}   // addViewPagingMenus
 
@@ -169,13 +169,13 @@ public abstract class PagedResourceActionII
 	*/
 	protected void addListPagingMenus(Menu bar, SessionState state)
 	{
-		bar.add( new MenuEntry(rb.getString("lispag.first"), (state.getAttribute(STATE_PREV_PAGE_EXISTS) != null),
+		bar.add( new MenuEntry(rb_praII.getString("lispag.first"), (state.getAttribute(STATE_PREV_PAGE_EXISTS) != null),
 					"doList_first"));
-		bar.add( new MenuEntry(rb.getString("lispag.prev"), (state.getAttribute(STATE_PREV_PAGE_EXISTS) != null),
+		bar.add( new MenuEntry(rb_praII.getString("lispag.prev"), (state.getAttribute(STATE_PREV_PAGE_EXISTS) != null),
 					"doList_prev"));
-		bar.add( new MenuEntry(rb.getString("lispag.next"), (state.getAttribute(STATE_NEXT_PAGE_EXISTS) != null),
+		bar.add( new MenuEntry(rb_praII.getString("lispag.next"), (state.getAttribute(STATE_NEXT_PAGE_EXISTS) != null),
 					"doList_next"));
-		bar.add( new MenuEntry(rb.getString("lispag.last"), (state.getAttribute(STATE_NEXT_PAGE_EXISTS) != null),
+		bar.add( new MenuEntry(rb_praII.getString("lispag.last"), (state.getAttribute(STATE_NEXT_PAGE_EXISTS) != null),
 					"doList_last"));
 
 	}   // addListPagingMenus
@@ -187,10 +187,10 @@ public abstract class PagedResourceActionII
 	{
 		bar.add( new MenuDivider());
 		bar.add( new MenuField(FORM_SEARCH, "toolbar", "doSearch", (String) state.getAttribute(STATE_SEARCH)));
-		bar.add( new MenuEntry(rb.getString("sea.sea"), null, true, MenuItem.CHECKED_NA, "doSearch", "toolbar"));
+		bar.add( new MenuEntry(rb_praII.getString("sea.sea"), null, true, MenuItem.CHECKED_NA, "doSearch", "toolbar"));
 		if (state.getAttribute(STATE_SEARCH) != null)
 		{
-			bar.add( new MenuEntry(rb.getString("sea.cleasea"), "doSearch_clear"));
+			bar.add( new MenuEntry(rb_praII.getString("sea.cleasea"), "doSearch_clear"));
 		}
 
 	}   // addSearchMenus
@@ -205,10 +205,10 @@ public abstract class PagedResourceActionII
 		if (observer == null) return;
 
 		bar.add( new MenuDivider());
-		bar.add( new MenuEntry((observer.getEnabled() ? rb.getString("ref.manref") : rb.getString("ref.autoref")), "doAuto"));
+		bar.add( new MenuEntry((observer.getEnabled() ? rb_praII.getString("ref.manref") : rb_praII.getString("ref.autoref")), "doAuto"));
 		if (!observer.getEnabled())
 		{
-			bar.add( new MenuEntry(rb.getString("ref.refresh"), "doRefresh"));		
+			bar.add( new MenuEntry(rb_praII.getString("ref.refresh"), "doRefresh"));		
 		}
 		
 	}	// addRefreshMenus
