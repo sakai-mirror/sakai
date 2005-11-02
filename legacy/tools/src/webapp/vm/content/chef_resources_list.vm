@@ -1076,20 +1076,26 @@
 			{
 				caller.title = "$tlang.getString("list.unselect")";
 				document.getElementById("removeButton").disabled = false;
+				document.getElementById("removeButton").className = 'enabled';
 				document.getElementById("removeCount").value = "$removeCount";
 				document.getElementById("moveButton").disabled = false;
+				document.getElementById("moveButton").className = 'enabled';
 				document.getElementById("moveCount").value = "$moveCount";
 				document.getElementById("copyButton").disabled = false;
+				document.getElementById("copyButton").className='enabled';
 				document.getElementById("copyCount").value = "$copyCount";
 			}
 			else
 			{
 				caller.title = "$tlang.getString("list.select")";
 				document.getElementById("removeButton").disabled = true;
+				document.getElementById("removeButton").className = 'disabled';
 				document.getElementById("removeCount").value = "0";
 				document.getElementById("moveButton").disabled = true;
+				document.getElementById("moveButton").className = 'disabled';
 				document.getElementById("moveCount").value = "0";
 				document.getElementById("copyButton").disabled = true;
+				document.getElementById("copyButton").className = 'disabled';
 				document.getElementById("copyCount").value = "0";
 			}
 		}
