@@ -54,23 +54,6 @@ public class RenderServiceImpl implements RenderService {
 	public void setRenderCache(RenderCache renderCache) {
 		this.renderCache = renderCache;
 	}
-
-
-
-    
- 
-
-  
-
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RenderService#renderPage(uk.ac.cam.caret.sakai.rwiki.tool.service.RWikiObject, uk.ac.cam.caret.sakai.rwiki.service.api.PageLinkRenderer)
-     */
-    public String renderPage(RWikiObject rwo, String user, PageLinkRenderer plr) {
-
-        return renderPage(rwo, user, rwo.getRealm(), plr);
-        
-    }
-
     
     public String renderPage(RWikiObject rwo, String user, String pageSpace, PageLinkRenderer plr) {
         

@@ -50,9 +50,9 @@ public class RenderEngineFactoryImpl implements RenderEngineFactory {
      * @see uk.ac.cam.caret.sakai.rwiki.service.api.RenderEngineFactory#getRenderEngine(java.lang.String,
      *      uk.ac.cam.caret.sakai.rwiki.service.api.PageLinkRenderer)
      */
-    public RenderEngine getRenderEngine(String realm, PageLinkRenderer plr) {
+    public RenderEngine getRenderEngine(String space, PageLinkRenderer plr) {
         SpecializedRenderEngine renderEngine = new SpecializedRenderEngine(
-                deligate, objectService, plr, realm, externalImageLink);
+                deligate, objectService, plr, space, externalImageLink);
         return renderEngine;
     }
 

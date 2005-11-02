@@ -41,10 +41,10 @@ public interface ToolRenderService {
      * Renders a public view of the page
      * @param rwo The RWikiObject representing the page
      * @param user The user making the request
-     * @param pageSpace The realm owning the page
+     * @param realm The default realm to render in
      * @return an string representing the rendered content
      */
-    String renderPublicPage(RWikiObject rwo, String user, String pageSpace);
+    String renderPublicPage(RWikiObject rwo, String user, String realm);
 	/**
 	 * Renders a view of the page
 	 * @param rwo the RWiki object
@@ -56,10 +56,10 @@ public interface ToolRenderService {
      * Renders a view of the page
      * @param rwo The RWikiObject representing the page
      * @param user The user making the request
-     * @param pageSpace The realm owning the page
+     * @param defaultRealm The default realm to render in
      * @return an string representing the rendered content
      */
-    String renderPage(RWikiObject rwo, String user, String pageSpace);
+    String renderPage(RWikiObject rwo, String user, String defaultRealm);
  
 	String renderPage(RWikiObject rwo, String user, boolean b);
 }

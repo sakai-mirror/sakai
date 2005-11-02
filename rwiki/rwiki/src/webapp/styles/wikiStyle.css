@@ -117,7 +117,6 @@
 .rwiki_info #permissions th{
     font-size: small;
 	border-bottom: 0px dashed #ccc;
-	padding-bottom: 10px;
 }
 .rwiki_info #permissionsOwner td{
     font-size: small;
@@ -127,6 +126,19 @@
     font-size: small;
 	border-bottom: 0px dashed #ccc;
 	padding-left: 5px;
+}
+
+.rwiki_info #permissionsOwner td{
+  font-size: small;
+  border-bottom: 0px;
+}
+.rwiki_info #permissionsAdditional td{
+  font-size: small;
+  border-bottom: 0px;
+}
+.rwiki_info #permissionsAdditional th {
+  font-size: small;
+  border-bottom: 0px dashed #ccc;
 }
 .rwiki_info .permissionsGroupRole td{
     font-size: small;
@@ -139,11 +151,9 @@
 }
 .rwiki_info #permissionsGroup td{
     font-size: small;
-  border-bottom:0px;
 }
 .rwiki_info #permissionsGroup th{
     font-size: small;
-	border-bottom: 0px dashed #ccc;
 	padding-left: 5px;
 }
 .rwiki_info #permissionsPublic td{

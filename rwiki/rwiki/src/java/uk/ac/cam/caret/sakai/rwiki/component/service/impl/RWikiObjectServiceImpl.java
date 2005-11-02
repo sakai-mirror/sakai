@@ -410,25 +410,27 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 			// render to get a list of links
 			final HashSet referenced = new HashSet();
-			final String currentRealm = rwo.getRealm();
+            
+            // Links should be globalised against the page space!			
+            final String currentSpace = NameHelper.localizeSpace(rwo.getName(), rwo.getRealm());
 
 			PageLinkRenderer plr = new PageLinkRenderer() {
 				public void appendLink(StringBuffer buffer, String name,
 						String view) {
 					referenced
-							.add(NameHelper.globaliseName(name, currentRealm));
+							.add(NameHelper.globaliseName(name, currentSpace));
 				}
 
 				public void appendLink(StringBuffer buffer, String name,
 						String view, String anchor) {
 					referenced
-							.add(NameHelper.globaliseName(name, currentRealm));
+							.add(NameHelper.globaliseName(name, currentSpace));
 				}
 
 				public void appendCreateLink(StringBuffer buffer, String name,
 						String view) {
 					referenced
-							.add(NameHelper.globaliseName(name, currentRealm));
+							.add(NameHelper.globaliseName(name, currentSpace));
 				}
 
 				public boolean isCachable() {
@@ -447,7 +449,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 			};
 
-			renderService.renderPage(rwo, user, plr);
+			renderService.renderPage(rwo, user, currentSpace, plr);
 
 			// process the references
 			StringBuffer sb = new StringBuffer();
@@ -464,10 +466,11 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 	}
 
-	public boolean exists(String name, String realm) {
+	public boolean exists(String name, String space) {
 		long start = System.currentTimeMillis();
 		try {
-			String globalName = NameHelper.globaliseName(name, realm);
+            
+			String globalName = NameHelper.globaliseName(name, space);
 
 			return cdao.exists(globalName);
 

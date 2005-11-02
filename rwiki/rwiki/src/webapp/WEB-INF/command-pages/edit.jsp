@@ -85,7 +85,7 @@
 			</c:if>
 
 		<p class="longtext"><label for="submittedContent">Submitted Content</label>
-		  <jsp:element name="input">
+		  <jsp:element name="input" id="submittedContent" >
 		    <jsp:attribute name="type">hidden</jsp:attribute>
 		    <jsp:attribute name="name">submittedContent</jsp:attribute>
 		    <jsp:attribute name="value"><c:out value="${editBean.previousContent }"/></jsp:attribute>
@@ -109,10 +109,11 @@
 		</pre>
 		
 	      </c:if>
-	      <p class="longtext"><label for="content" class="block">New Content</label>
+	   <div class="longtext">
+	      <label for="content" class="block">New Content</label>
 		<div id="textarea_outer_sizing_div">
 		  <div id="textarea_inner_sizing_div">
-		    <textarea cols="60" rows="15" name="content" >
+		    <textarea cols="60" rows="25" name="content" id="content" >
 		      <c:choose>
 			<c:when test="${editBean.saveType eq 'preview'}">
 			  <c:out value="${editBean.previousContent}"/>
@@ -129,8 +130,8 @@
 		<input type="hidden" name="version" value="${editBean.saveType eq 'preview' ? editBean.previousVersion : currentRWikiObject.version.time}"/>
 		<input type="hidden" name="pageName" value="${currentRWikiObject.name}" />
 		<input type="hidden" name="realm" value="${currentRWikiObject.realm }"/>
-	      </p>
-	      <div class="rwiki_editControl">
+	    </div>
+	    <div class="rwiki_editControl">
 		<p class="act">
 		  <input type="submit" name="save" value="save" />
 		  <c:if test="${(editBean.saveType eq 'preview' and nameHelperBean.submittedContent != null) or (editBean.saveType ne null and editBean.saveType ne 'preview')}">

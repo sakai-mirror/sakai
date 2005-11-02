@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0"
 ><jsp:directive.page isErrorPage="true" language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
-/><jsp:text
+/><jsp:scriptlet>{ response.reset(); }</jsp:scriptlet><jsp:text
 ><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>]]>
 	</jsp:text>
 	<jsp:text>
@@ -48,9 +48,10 @@
 				<p>Please report this problem to <a href="http://bugs.sakaiproject.org/jira/browse/SAK" >JIRA</a></p>
 				<pre>
     					<jsp:scriptlet>
+    					    
     						out.write(" URL:"+request.getRequestURL()+"?"+request.getQueryString()+"\n");
     						java.util.Enumeration e = request.getParameterNames();
-    						while( e.hasMoreElements() ) {
+    						while(  e.hasMoreElements() ) {
     							String name = (String)e.nextElement();
     							String[] vals = request.getParameterValues(name);
     							out.write(name+" : "+vals[0]+"\n");
@@ -58,15 +59,30 @@
     							  	out.write("    :"+vals[ie]+"\n"); 
     							}
     						}
-    						exception.printStackTrace();
+    						if ( exception != null ) { 
+    							exception.printStackTrace();
+    						}
 						out.write("Error: ");
-						out.write(exception.getClass().getName());
+						try { 
+							out.write(exception.getClass().getName()); 
+						} catch ( Exception ex ) { 
+							out.write("Unknown Exception Class");
+						}
 					    	out.write("\n");
     						out.write("     : ");
-						out.write(exception.getMessage());
+						try { 
+							out.write(exception.getMessage()); 
+						} catch ( Exception ex ) { 
+							out.write("Unknown Message"); 
+						}
     						out.write("\n");
     						java.io.PrintWriter pw = new java.io.PrintWriter(out);
-    						exception.printStackTrace(pw);
+						try { 
+							exception.printStackTrace(pw);
+						} catch ( Exception ex ) { 
+							out.write("Unknown Stack Trace");
+						}
+    						
 					</jsp:scriptlet>						
 					
 				</pre>

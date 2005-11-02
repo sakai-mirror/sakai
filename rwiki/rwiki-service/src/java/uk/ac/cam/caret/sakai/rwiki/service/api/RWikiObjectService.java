@@ -144,12 +144,12 @@ public interface RWikiObjectService {
 	/**
 	 * Does the page exist
 	 * 
-	 * @param name
-	 * @param realm
+	 * @param name A possibly non-globalised page name
+	 * @param space Default space to globalise to
 	 * @return
 	 */
-	boolean exists(String name, String realm);
-
+	boolean exists(String name, String space);
+    // SAK-2519
 	/**
 	 * A list of pages that have changed since (current versions)
 	 * 

@@ -27,17 +27,7 @@ import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 //FIXME: Service
 
 public interface RenderService {
-	
-
-    /**
-     * Renders a view of the page in the same page space as the realm
-     * @param rwo the RWiki Object
-     * @param user the user requesting the render
-     * @param plr the page link rendere to be used for rendering links
-     * @return an string representing the rendered content
-     */
-    String renderPage(RWikiObject rwo, String user, PageLinkRenderer plr);
-    /**
+	/**
      * 
      * @param rwo
      * @param user
@@ -46,5 +36,5 @@ public interface RenderService {
      * @return
      */
     String renderPage(RWikiObject rwo, String user, String pageSpace, PageLinkRenderer plr);
-    
+    // SAK-2519
 }

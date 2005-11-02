@@ -30,6 +30,6 @@ import uk.ac.cam.caret.sakai.rwiki.service.api.PageLinkRenderer;
 
 public interface RenderEngineFactory {
 
-    RenderEngine getRenderEngine(String realm, PageLinkRenderer plr);
-
+    RenderEngine getRenderEngine(String defaultSpace, PageLinkRenderer plr);
+//SAK-2519
 }

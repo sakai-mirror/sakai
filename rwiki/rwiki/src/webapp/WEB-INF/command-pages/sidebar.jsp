@@ -15,7 +15,7 @@
   <core:set var="permissionsBeanObject" value="${permissionsBeanRight.rwikiObject}"/>
   <core:choose>
   <core:when test="${rightRenderBean.hasContent}" >
-    <div id="rwiki_sidebar" xmlns="http://www.w3.org/1999/xhtml">
+    <div id="rwiki_sidebar" >
       <div class="rwiki_renderedContent">
       <core:out value="${rightRenderBean.renderedPage}" escapeXml="false"/>
     </div>

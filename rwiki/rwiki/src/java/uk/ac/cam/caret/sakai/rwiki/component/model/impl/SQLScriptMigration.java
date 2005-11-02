@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import net.sf.hibernate.Session;
 import net.sf.hibernate.SessionFactory;
 
 import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.framework.sql.cover.SqlService;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.HibernateTemplate;
@@ -47,7 +49,7 @@ import uk.ac.cam.caret.sakai.rwiki.service.api.model.DataMigrationAgent;
 public class SQLScriptMigration implements DataMigrationAgent{
 	private String from;
 	private String to;
-	private String script;
+    private String scriptPattern;
 	private SessionFactory sessionFactory;
 	private Logger log;
 	public String migrate(String current, String target) throws Exception {
@@ -56,12 +58,17 @@ public class SQLScriptMigration implements DataMigrationAgent{
 				log.info("Skipping Migration for "+from+" to "+to);
 			return current;
 		}
+        String targetScript = null;
+        String targetDialect = SqlService.getVendor();
+        if ( targetDialect == null || targetDialect.length() == 0 )
+                targetDialect = "hsqldb";
+        targetScript = MessageFormat.format(scriptPattern,new Object[] {targetDialect});
 		// to matches
 		// perform the migration
-		log.info("Migrating database schema from "+from+" to "+to+" using "+script);
-		InputStream inStream = getClass().getResourceAsStream(script);
+		log.info("Migrating database schema from "+from+" to "+to+" using "+targetScript);
+		InputStream inStream = getClass().getResourceAsStream(targetScript);
 		if ( inStream == null ) {
-			log.warn("Migration Script "+script+" was not found ");
+			log.warn("Migration Script "+targetScript+" was not found ");
 			return current;
 		}
 			
@@ -125,7 +132,7 @@ public class SQLScriptMigration implements DataMigrationAgent{
 								log.debug("   Done "+l+" rows in "+(System.currentTimeMillis()-start)+" ms");
 							}
 							catch (SQLException ex) {
-								log.debug("Unsuccessful data migration statement: " + sql[i]);
+								log.warn("Unsuccessful data migration statement: " + sql[i]);
 								log.debug("Cause: "+ex.getMessage());
 							}
 						}
@@ -168,18 +175,6 @@ public class SQLScriptMigration implements DataMigrationAgent{
 		this.log = log;
 	}
 	/**
-	 * @return Returns the script.
-	 */
-	public String getScript() {
-		return script;
-	}
-	/**
-	 * @param script The script to set.
-	 */
-	public void setScript(String script) {
-		this.script = script;
-	}
-	/**
 	 * @return Returns the sessionFactory.
 	 */
 	public SessionFactory getSessionFactory() {
@@ -203,6 +198,21 @@ public class SQLScriptMigration implements DataMigrationAgent{
 	public void setTo(String to) {
 		this.to = to;
 	}
+
+    /**
+     * @return Returns the scriptPattern.
+     */
+    public String getScriptPattern() {
+        return scriptPattern;
+    }
+
+    /**
+     * @param scriptPattern The scriptPattern to set.
+     */
+    public void setScriptPattern(String scriptPattern) {
+        this.scriptPattern = scriptPattern;
+    }
+
 
 	
 

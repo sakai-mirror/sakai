@@ -31,7 +31,6 @@ import org.radeox.api.engine.RenderEngine;
 import org.radeox.api.engine.WikiRenderEngine;
 import org.radeox.api.engine.context.RenderContext;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.service.api.PageLinkRenderer;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 
@@ -48,13 +47,13 @@ public class SpecializedRenderEngine implements ImageRenderEngine, WikiRenderEng
     private RenderEngine renderEngine;
     private RWikiObjectService objectService;
     private PageLinkRenderer plr;
-    private String realm;
+    private String space;
     private String externalImageLink;
 
-    public SpecializedRenderEngine(RenderEngine renderEngine, RWikiObjectService objectService, PageLinkRenderer plr, String realm, String externalImageLink) {
+    public SpecializedRenderEngine(RenderEngine renderEngine, RWikiObjectService objectService, PageLinkRenderer plr, String space, String externalImageLink) {
         this.externalImageLink = externalImageLink;
         this.plr = plr;
-        this.realm = realm;
+        this.space = space;
         this.objectService = objectService;
         this.renderEngine = renderEngine;
     }
@@ -73,7 +72,7 @@ public class SpecializedRenderEngine implements ImageRenderEngine, WikiRenderEng
     }
 
     public boolean exists(String name) {
-        return (objectService.exists(NameHelper.globaliseName(name, realm), realm));
+        return (objectService.exists(name, space));
     }
 
     public boolean showCreate() {

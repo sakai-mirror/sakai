@@ -74,9 +74,8 @@ public class PublicPageLinkRendererImpl implements PageLinkRenderer {
      * Generates a create link
      */
     public void appendCreateLink(StringBuffer buffer, String name, String view) {
-    	    cachable = false;
-        name = NameHelper.globaliseName(name, localSpace);
-        ViewBean vb = new ViewBean(name, localRealm);
+   	    cachable = false;
+
         // In public view, pages that dont exist are not links
         buffer.append(XmlEscaper.xmlEscape(view));
     }

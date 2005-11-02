@@ -15,7 +15,7 @@
     </jspii:text>
 -->
     <cii:set var="recentlyVisitedBean" value="${requestScope.rsacMap.recentlyVisitedBean}"/>
-<p class="breadcrumb" xmlns="http://www.w3.org/1999/xhtml">
+<p class="breadcrumb" >
 	<cii:set var="links" value="${recentlyVisitedBean.breadcrumbLinks}"/>
 
 	<cii:choose>

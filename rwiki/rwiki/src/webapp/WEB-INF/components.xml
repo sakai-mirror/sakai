@@ -157,6 +157,9 @@
 		
 		<property name="log"><ref bean="rwiki-logger"/></property>
 		<property name="RWikiCurrentObjectDao"><ref bean="rwikiCurrentObjectDao"/></property>
+		<property name="siteService"><ref bean="org.sakaiproject.service.legacy.site.SiteService" /></property>
+		<property name="portalService"><ref bean="org.sakaiproject.service.framework.portal.PortalService" /></property>
+		<property name="renderService"><ref bean="renderService" /></property>
 		<property name="seedPages">
 			<!--
 			You can add a list of seed pages here, that are loaded into each context where they
@@ -195,12 +198,14 @@
 			</property>
 	</bean>
 	
+	<!-- A Wrapper for the Render Component used at tool level -->
 	<bean id="toolRenderService"
 		class="uk.ac.cam.caret.sakai.rwiki.tool.service.impl.ToolRenderServiceImpl">
 		<property name="log"><ref bean="rwiki-logger"/></property>
 		<property name="renderService"><ref bean="renderService"/></property>
 	</bean>
 
+     <!-- The component level Render service -->
 	<bean id="renderService"
 		class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.RenderServiceImpl">
 		<property name="log"><ref bean="rwiki-logger"/></property>
@@ -213,6 +218,7 @@
 		<property name="renderCache"><ref bean="rwikiRenderCache"/></property>
 	</bean>
 	
+	<!-- The RWiki Object service, component level -->
 	<bean id="objectService"
 		class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.RWikiObjectServiceImpl">
 		<property name="log"><ref bean="rwiki-logger"/></property>
@@ -222,6 +228,7 @@
 		<property name="securityService"><ref bean="securityService"/></property>
 	</bean>
 	
+	<!-- Tool request processor -->
 	<bean id="uk.ac.cam.caret.sakai.rwiki.tool.RequestHelper"
 		class="uk.ac.cam.caret.sakai.rwiki.tool.RequestHelper">
 		<property name="log"><ref bean="rwiki-logger"/></property>
@@ -229,6 +236,7 @@
 		<property name="commandService"><ref bean="commandService"/></property>
 	</bean>
 	
+	<!-- Save command -->
 	<bean id="saveCommand"
 		class="uk.ac.cam.caret.sakai.rwiki.tool.command.SaveCommand">
 		<property name="log"><ref bean="rwiki-logger"/></property>
@@ -244,12 +252,16 @@
 			<value>/WEB-INF/command-pages/view.jsp</value></property>
 		<property name="objectService"><ref bean="objectService"/></property>		
 	</bean>
+	
+	<!-- Update permissions command -->
 	<bean id="updatePermissionsCommand" class="uk.ac.cam.caret.sakai.rwiki.tool.command.UpdatePermissionsCommand">
 		<property name="noUpdatePath"><value>/WEB-INF/command-pages/permission.jsp</value></property>
 		<property name="contentChangedPath"><value>/WEB-INF/command-pages/info.jsp</value></property>
 		<property name="successfulPath"><value>/WEB-INF/command-pages/info.jsp</value></property>
 		<property name="objectService"><ref bean="objectService"/></property>
 	</bean>
+	
+	<!-- revert command -->
 	<bean id="revertCommand"
 		class="uk.ac.cam.caret.sakai.rwiki.tool.command.RevertCommand">
 		<property name="log"><ref bean="rwiki-logger"/></property>
@@ -261,6 +273,8 @@
 			</property>
 		<property name="objectService"><ref bean="objectService"/></property>
 	</bean>
+	
+	<!-- Real/AuthZgroups edit command -->
 	<bean id="editRealmCommand"
 		class="uk.ac.cam.caret.sakai.rwiki.tool.command.EditAuthZGroupCommand">
 		<property name="log"><ref bean="rwiki-logger"/></property>
@@ -282,13 +296,22 @@
 	<property name="userHelper"><ref bean="userHelper"/></property>
 	</bean>-->
 	
-	<!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+	<!-- The RWiki Transaction Manager, using the RWiki Session factory -->
 	<bean id="uk.ac.cam.caret.sakai.rwiki.RWikiTransactionManager"
 		class="org.springframework.orm.hibernate.HibernateTransactionManager">
 		<property name="sessionFactory"><ref
 				bean="uk.ac.cam.caret.sakai.rwiki.RWikiSessionFactory"/>
 			</property>
 	</bean>
+	
+	<!-- 
+	Pre populated pages,
+	These are loaded into each space as it starts.
+	You may add your own pages or edit the exiting pages.
+	THe files are contain Wiki format pages
+	The paths are in the classpath
+	
+	 -->
 	
 	<bean id="rwiki.seedPage.HelpPage"
 		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiCurrentObjectImpl"
@@ -310,6 +333,8 @@
 		
 		<property name="rwikiObjectContentDao"><ref bean="rwikiCurrentObjectContentDaoImpl"/></property>
 	</bean>
+	
+	<!-- Second help page -->
 	<bean id="rwiki.seedPage.HelpPagetwo"
 		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiCurrentObjectImpl"
 		init-method="init" singleton="true">
@@ -351,6 +376,8 @@
 		<property name="rwikiObjectContentDao"><ref bean="rwikiCurrentObjectContentDaoImpl"/></property>
 		
 	</bean>
+	
+	<!-- Page containing recent changes macro -->
 	<bean id="rwiki.seedPage.RecentChangesPage"
 		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiCurrentObjectImpl"
 		init-method="init" singleton="true">
@@ -371,6 +398,7 @@
 		<property name="rwikiObjectContentDao"><ref bean="rwikiCurrentObjectContentDaoImpl"/></property>
 		
 	</bean>
+	<!-- Right side bar on the edit page -->
 		<bean id="rwiki.seedPage.EditRightPage"
 			class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiCurrentObjectImpl"
 		init-method="init" singleton="true">
@@ -391,27 +419,17 @@
 		<property name="rwikiObjectContentDao"><ref bean="rwikiCurrentObjectContentDaoImpl"/></property>
 			
 	</bean>
-	<!--
-	<bean id="baseRenderEngine"
-		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-		<property name="transactionManager"><ref
-				bean="uk.ac.cam.caret.sakai.rwiki.RWikiTransactionManager"/>
-			</property>
-		<property name="transactionAttributes">
-			<props>
-				<prop key="render*">PROPAGATION_REQUIRED,readOnly</prop>
-			</props>
-		</property>
-		<property name="target"><ref bean="baseRenderEngineImpl"/></property>
-	</bean>
-	-->
+
+	<!-- The base level radeox render engine -->
 
 	<bean id="baseRenderEngine" class="uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.RWikiBaseRenderEngine" init-method="init">
 		<property name="log"><ref bean="rwiki-logger"/></property>
 	</bean>
 
 
-	
+		
+		<!-- The Rendered content cache, impl uses ehcache which is initialised on first use, if cache fails
+		it is re-initialised -->
 	<bean id="rwikiRenderCache" class="uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.RenderCacheImpl" 
 		 init-method="init" >
 		<property name="log"><ref bean="rwiki-logger"/></property>
@@ -419,6 +437,7 @@
 	</bean>
 	
 		
+		<!-- Database storage for properties site wide -->
 	<bean id="rwikiPropertyDao"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager"><ref
@@ -443,7 +462,7 @@
 	</bean>
 	
 	
-	
+	<!-- Data migration access proxy -->
 	<bean id="rwikiDataMigration"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager"><ref
@@ -457,6 +476,7 @@
 		<property name="target"><ref bean="rwikiDataMigrationImpl"/></property>
 	</bean>
 	
+	<!-- Data migration sepecification, containing the steps to get the target schema -->
 	<bean id="rwikiDataMigrationImpl" 
 		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.DataMigrationSpecification" >
 		<property name="targetVersion"  ><ref bean="rwikiCurrentSchemaVersion" /></property>
@@ -472,23 +492,27 @@
 		<property name="propertyDao"><ref bean="rwikiPropertyDaoImpl" /></property>
 	</bean>
 	
+	<!-- propery prototype for the target schema version -->
 	<bean id="rwikiCurrentSchemaVersion" 
 		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiPropertyImpl">
 		<property name="name"><value>schema-version</value></property>
 		<property name="value"><value>20051026</value></property>
 	</bean>
 	
+	<!-- data migration step from null to version 20051017 step 1, split of current and history ojects, and explicit content lazy load -->
 	<bean id="rwiki-data-migrate-noneTo20051017"
 		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.SQLScriptMigration" >
 		<property name="to"><value>20051017-S1</value></property>
-		<property name="script">
-			<value>/uk/ac/cam/caret/sakai/rwiki/model/bundle/mysql/migrateTo20051017.sql</value>
+		<property name="scriptPattern">
+			<value>/uk/ac/cam/caret/sakai/rwiki/model/bundle/{0}/migrateTo20051017.sql</value>			
 		</property>
 		<property name="sessionFactory"><ref
 			bean="uk.ac.cam.caret.sakai.rwiki.RWikiSessionFactory"/>
 		</property>
 		<property name="log"><ref bean="rwiki-logger"/></property>
 	</bean>
+	
+	<!-- computation for the current objects, migrates from 20051017-S1 to 20051017-S2 -->
 	<bean id="rwiki-data-migrate-applyCurrentSHA1"
 		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.SHAHashMigration" >
 		<property name="from"><value>20051017-S1</value></property>
@@ -496,6 +520,7 @@
 		<property name="log"><ref bean="rwiki-logger"/></property>
 		<property name="rwikiObjectDao"><ref bean="rwikiCurrentObjectDaoImpl"/></property>
 	</bean>
+	<!-- computation for the current objects, migrates from 20051017-S2 to 20051017 -->
 	<bean id="rwiki-data-migrate-applyHistorySHA1"
 		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.SHAHashMigration" >
 		<property name="from"><value>20051017-S2</value></property>
@@ -503,12 +528,13 @@
 		<property name="log"><ref bean="rwiki-logger"/></property>
 		<property name="rwikiObjectDao"><ref bean="rwikiHistoryObjectDaoImpl"/></property>
 	</bean>
+	<!-- schema migration 20051017 to 20051026, oracle user to userid -->
 	<bean id="rwiki-data-migrate-noneTo20051026"
 		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.SQLScriptMigration" >
 		<property name="from"><value>20051017</value></property>
 		<property name="to"><value>20051026</value></property>
-		<property name="script">
-			<value>/uk/ac/cam/caret/sakai/rwiki/model/bundle/mysql/migrateTo20051026.sql</value>
+		<property name="scriptPattern">
+			<value>/uk/ac/cam/caret/sakai/rwiki/model/bundle/{0}/migrateTo20051026.sql</value>			
 		</property>
 		<property name="sessionFactory"><ref
 			bean="uk.ac.cam.caret.sakai.rwiki.RWikiSessionFactory"/>

@@ -185,24 +185,23 @@ public class RenderBean {
      * 
      * @param name
      *            a possible non-globalised name
-     * @param realm
+     * @param defaultRealm
      *            the default realm of that should be globalised against
      * @return XHTML as a String representing the content of the RWikiObject
      */
-    public String renderPage(String name, String realm) {
-        String pageName = NameHelper.globaliseName(name, realm);
-        String linkRealm = realm;
-        String pageRealm = NameHelper.localizeSpace(pageName, realm);
+    public String renderPage(String name, String defaultRealm) {
+        String pageName = NameHelper.globaliseName(name, defaultRealm);
+        String pageRealm = NameHelper.localizeSpace(pageName, defaultRealm);
 
         try {
             RWikiObject page = objectService.getRWikiObject(pageName, user,
                     pageRealm);
-            return toolRenderService.renderPage(page, user, linkRealm);
+            return toolRenderService.renderPage(page, user, defaultRealm);
         } catch (PermissionException e) {
             RWikiObjectImpl page = new RWikiCurrentObjectImpl();
             page.setName(pageName);
             page.setContent(PERMISSION_PROBLEM);
-            return toolRenderService.renderPage(page, user, linkRealm);
+            return toolRenderService.renderPage(page, user, defaultRealm);
         }
 
     }
@@ -211,24 +210,23 @@ public class RenderBean {
      * 
      * @param name
      *            a possible non-globalised name
-     * @param realm
-     *            the default realm of that should be globalised against
+     * @param defaultRealm
+     *            the default space of that should be globalised against
      * @return XHTML as a String representing the content of the RWikiObject
      */
-    public String publicRenderPage(String name, String realm) {
-        String pageName = NameHelper.globaliseName(name, realm);
-        String linkRealm = realm;
-        String pageRealm = NameHelper.localizeSpace(pageName, realm);
+    public String publicRenderPage(String name, String defaultRealm) {
+        String pageName = NameHelper.globaliseName(name, defaultRealm);
+        String pageSpace = NameHelper.localizeSpace(pageName, defaultRealm);
 
         try {
             RWikiObject page = objectService.getRWikiObject(pageName, user,
-                    pageRealm);
-            return toolRenderService.renderPublicPage(page, user, linkRealm);
+                    pageSpace);
+            return toolRenderService.renderPublicPage(page, user, defaultRealm);
         } catch (PermissionException e) {
             RWikiObjectImpl page = new RWikiCurrentObjectImpl();
             page.setName(pageName);
             page.setContent(PERMISSION_PROBLEM);
-            return toolRenderService.renderPublicPage(page, user, linkRealm);
+            return toolRenderService.renderPublicPage(page, user, defaultRealm);
         }
 
     }

@@ -4,5 +4,5 @@
   >
   <jsph:directive.page language="java"
     contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
-  <script xmlns="http://www.w3.org/1999/xhtml"  src="${requestScope.headerScriptSource}"> <!-- don't reduce this! --></script>
+  <script  type="text/javascript" src="${requestScope.headerScriptSource}"> <!-- don't reduce this! --></script>
 </jsph:root>

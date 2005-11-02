@@ -54,6 +54,9 @@ public class RWikiObjectContentImpl implements RWikiObjectContent {
 
 	public void setContent(String content) {
 		this.content = content;
+        // SAK-2470
+        if ( this.content == null)
+            this.content = "";
 	}
 
 }

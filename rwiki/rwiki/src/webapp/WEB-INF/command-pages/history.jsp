@@ -30,6 +30,76 @@
     <jsp:element name="body">
       <jsp:attribute name="onload"><jsp:expression>request.getAttribute("sakai.html.body.onload")</jsp:expression>parent.updCourier(doubleDeep,ignoreCourier);</jsp:attribute>
       <jsp:directive.include file="header.jsp"/>
+        	<div id="versionhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden;" 
+  		class="rwiki_help_popup" >
+  		<h3>Versions</h3>
+  		Each change in the page generates a new version.
+  		Versions start at version 0, when the page is
+  		first created and then increase by one each time
+  		the page is edited
+  		
+  	</div>
+  	<div id="userhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden;" 
+  		class="rwiki_help_popup" >
+  		<h3>User</h3>
+  		When a page is changed, either the content 
+  		or any of the other information associated
+  		with the page (eg permissions). The user
+  		that made the change is recorded against
+  		the version.
+  	</div>
+  	<div id="datehelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden;" 
+  		class="rwiki_help_popup" >
+  		<h3>Date</h3>
+  		This the date of the modification  		
+  	</div>
+  	<div id="changeshelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden;" 
+  		class="rwiki_help_popup" >
+  		<h3>Changes</h3>
+  		By clicking on the To Current or To Previous link,
+  		you will be shown the changes to the previous version or
+  		to the current version
+  	</div>
+  	<div id="reverthelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden;" 
+  		class="rwiki_help_popup" >
+  		<h3>Revert</h3>
+  		By clicking the revert link against the version in question
+  		the version in question will be used to create a new version 
+  		the result is, the current page will contain the content and
+  		permissions of the version in question.
+  	</div>
+  	<div id="changedhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden;" 
+  		class="rwiki_help_popup" >
+  		<h3>Changed</h3>
+  		If the content was not changed between version
+  		this column will indicate that the content was not changed
+  		This will be because the permissions, owner or realm where
+  		changed in the version.
+  		
+  	</div>
+  	<div id="permissionshelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden;" 
+  	     class="rwiki_help_popup" >
+  		<pre>o--- s--- p-- = all disabled
+orwa srwa prw = all enabled
+|||| |||| ||Public Write granted
+|||| |||| |Public Read granted
+|||| |||| Public page permissions group
+|||| |||| 
+|||| |||Admin Role Permissions enabled
+|||| ||Write Role Permissions enabled
+|||| |Read Role Permissions enabled
+|||| Site Roler Permissions group
+||||
+|||Owner admin granted
+||Owner Write granted
+|Owner Read granted
+Page Owner Permissions Group
+ 
+- means permssion denied
+
+  		</pre>
+  	</div>
+      
       <div id="rwiki_container">
       	<div class="portletBody">
       		
@@ -177,74 +247,5 @@
       </div>
       <jsp:directive.include file="footer.jsp"/>
     </jsp:element>
-  	<div id="versionhelp" style=" position: absolute; visibility: hidden;" 
-  		class="rwiki_help_popup" >
-  		<h3>Versions</h3>
-  		Each change in the page generates a new version.
-  		Versions start at version 0, when the page is
-  		first created and then increase by one each time
-  		the page is edited
-  		
-  	</div>
-  	<div id="userhelp" style=" position: absolute; visibility: hidden;" 
-  		class="rwiki_help_popup" >
-  		<h3>User</h3>
-  		When a page is changed, either the content 
-  		or any of the other information associated
-  		with the page (eg permissions). The user
-  		that made the change is recorded against
-  		the version.
-  	</div>
-  	<div id="datehelp" style=" position: absolute; visibility: hidden;" 
-  		class="rwiki_help_popup" >
-  		<h3>Date</h3>
-  		This the date of the modification  		
-  	</div>
-  	<div id="changeshelp" style=" position: absolute; visibility: hidden;" 
-  		class="rwiki_help_popup" >
-  		<h3>Changes</h3>
-  		By clicking on the To Current or To Previous link,
-  		you will be shown the changes to the previous version or
-  		to the current version
-  	</div>
-  	<div id="reverthelp" style=" position: absolute; visibility: hidden;" 
-  		class="rwiki_help_popup" >
-  		<h3>Revert</h3>
-  		By clicking the revert link against the version in question
-  		the version in question will be used to create a new version 
-  		the result is, the current page will contain the content and
-  		permissions of the version in question.
-  	</div>
-  	<div id="changedhelp" style=" position: absolute; visibility: hidden;" 
-  		class="rwiki_help_popup" >
-  		<h3>Changed</h3>
-  		If the content was not changed between version
-  		this column will indicate that the content was not changed
-  		This will be because the permissions, owner or realm where
-  		changed in the version.
-  		
-  	</div>
-  	<div id="permissionshelp" style=" position: absolute; visibility: hidden;" 
-  	     class="rwiki_help_popup" >
-  		<pre>o--- s--- p-- = all disabled
-orwa srwa prw = all enabled
-|||| |||| ||Public Write granted
-|||| |||| |Public Read granted
-|||| |||| Public page permissions group
-|||| |||| 
-|||| |||Admin Role Permissions enabled
-|||| ||Write Role Permissions enabled
-|||| |Read Role Permissions enabled
-|||| Site Roler Permissions group
-||||
-|||Owner admin granted
-||Owner Write granted
-|Owner Read granted
-Page Owner Permissions Group
- 
-- means permssion denied
-
-  		</pre>
-  	</div>
   </html>
 </jsp:root>

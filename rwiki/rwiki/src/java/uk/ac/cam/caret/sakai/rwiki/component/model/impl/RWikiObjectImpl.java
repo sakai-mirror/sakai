@@ -263,6 +263,9 @@ public abstract class RWikiObjectImpl implements RWikiObject
 	 */
 	public void setReferenced(String referenced) {
 		m_referenced = referenced;
+        // SAK-2470
+        if ( m_referenced == null )
+            m_referenced = "";
 	}
 
 
@@ -557,7 +560,10 @@ public abstract class RWikiObjectImpl implements RWikiObject
 	}
 
 	public void setRevision(Integer revision) {
-		this.m_revision = revision;		
+		this.m_revision = revision;
+        // SAK-2470
+        if ( m_revision == null )
+            m_revision = new Integer(0);
 	}
      
 	/*
