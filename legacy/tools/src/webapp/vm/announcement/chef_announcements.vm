@@ -534,8 +534,8 @@
 									#end
 								#end
 							#end
-						#end
-					</form>
+						</form>
+					#end
 				#else
 					<h3>$tlang.getString("gen.announcements")</h3>
 					#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
