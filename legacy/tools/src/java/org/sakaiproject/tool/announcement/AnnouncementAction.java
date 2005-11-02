@@ -982,11 +982,14 @@ extends PagedResourceActionII
 		String toolId = tool.getId();
 		context.put("toolId", toolId);
 		
-		// show all the groups in this channal that user has get message in
-		Collection groups = channel.getGroupsAllowGetMessage();
-		if (groups != null && groups.size() > 0)
+		if (channel != null)
 		{
-			context.put("groups", groups);
+			// show all the groups in this channal that user has get message in
+			Collection groups = channel.getGroupsAllowGetMessage();
+			if (groups != null && groups.size() > 0)
+			{
+				context.put("groups", groups);
+			}
 		}
 		
 		if (sstate.getAttribute(STATE_SELECTED_VIEW) != null)
