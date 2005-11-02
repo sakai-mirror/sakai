@@ -963,9 +963,22 @@ public class SiteAction extends PagedResourceActionII
 					context.put("typeSelected", types.get(0));
 				}
 				List terms = CourseManagementService.getTerms();
+				List termsForSiteCreation = new Vector();
 				if (terms != null && terms.size() >0)
 				{
-					context.put("termList", terms);
+					for (int i=0; i<terms.size();i++)
+					{
+						Term t = (Term) terms.get(i);
+						if (!t.getEndTime().before(TimeService.newTime()))
+						{
+							// don't show those terms which have ended already
+							termsForSiteCreation.add(t);
+						}
+					}
+				}
+				if (termsForSiteCreation.size() > 0)
+				{
+					context.put("termList", termsForSiteCreation);
 				}
 				if (state.getAttribute(STATE_TERM_SELECTED) != null)
 				{
