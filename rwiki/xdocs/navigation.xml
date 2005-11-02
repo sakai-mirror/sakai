@@ -16,17 +16,19 @@
                 </item>
         </menu>
         <menu name="Specification" >
-            <item name="Specification" href="srs.html" />
             <item name="Use Cases" href="usecases.html" >
                 <item name="Creating a Grant Proposal" href="usecase1.html"/>
                 <item name="Collaborative writing exercise in an undergraduate course" href="usecase2.html"/>
                 <item name="Role playing in an undergraduate course" href="usecase4.html" />
             </item>
+            <item name="Functional Specification" href="frs.html" />
+            <item name="Software Specification" href="srs.html" />
             <item name="Design Documents" >
                 <item name="Design Notes" href="design.html" />
                 <item name="ER Diagram" href="entitymodel.pdf" />
-                <item name="Permissions" href="permissions.html" />
+			   <item name="Subspaces" href="subscpaces.html" />
             </item>
+            <item name="Acceptance Test Matrix" href="testing.html" />
             
         </menu>
         

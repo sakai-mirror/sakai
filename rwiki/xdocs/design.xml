@@ -5,6 +5,43 @@
         <title>RWiki Design Issues</title>
     </properties>
     <body>
+        <section name="Component Preparation" >
+            <p>
+                When the code was added to the 2.1 Sakai release, it became apparent that
+                it would be difficult to extract a clean component/service/api layered structure.
+                If we use any hibernate based components that are loaded from the component, shared
+                or server class loaders in the request cycle it will become necessary to complete this
+                refactor.
+            </p>
+            <subsection name=" Package Sub Tree: uk.ac.cam.caret.sakai.rwiki.service" >
+                <p>
+                    All packages in this subtree are pure API, that can be placed in the shared area. 
+                    They do not depend on components or tool.
+                </p>
+            </subsection>
+            <subsection name=" Package Sub Tree: uk.ac.cam.caret.sakai.rwiki.component" >
+                <p>
+                    All packages in this subtree are pure Component. They depend on the service
+                    api. They are used by the tool. It is expected that this super component will
+                    be deployed under the components class loaded in the future. All Hibernate DAO's and related
+                    POJO implementations are at this level. There is nothing specific to the tool at this
+                    level.
+                </p>
+            </subsection>
+            <subsection name=" Package Sub Tree: uk.ac.cam.caret.sakai.rwiki.tool" >
+                <p>
+                    The tool implementation is located in this package, which will in the future be
+                    deployed in the war.
+                </p>
+            </subsection>
+            <subsection name="Status" >
+                <p>
+                    Currently this code is only available under the Sakai 2.1 local branch which mirrors 
+                    the main Sakai 2.1 Trunk work. We have not separated the deployment descriptors, so the
+                    application is still stove pipe in nature.
+                </p>
+            </subsection>
+        </section>
         <section name="Model Implementation">
             <subsection name="Seperated History">
                 <p>
@@ -145,10 +182,28 @@
             </subsection>
             <subsection name="Diagrams" >
                 <p>
+                    Info Page
+                </p>
+                
                     <ul>
                         <li><a href="infopagewireframe.pdf" >Info Page Wireframe</a></li>
+                        <li><a href="infopage2.png" >Info Page Wireframe v2</a></li>
                     </ul>
+                <p>
+                    Permissions Rules Diagrams
                 </p>
+                    <ul>
+                        <li><a href="canadminaction.pdf" >Can Admin a page</a></li>
+                        <li><a href="cancreateaction.pdf" >Can Create a page</a></li>
+                        <li><a href="canreadaction.pdf" >Can Read a page</a></li>
+                        <li><a href="canwriteaction.pdf" >Can Update a page</a></li>
+                    </ul>
+                <p>
+                    Code Sequence
+                </p>
+                <ul>
+                    <li><a href="requestprocessing.pdf" >Request Processing sequence</a></li>
+                </ul>
             </subsection>
         </section>
     </body>

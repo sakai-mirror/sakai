@@ -23,10 +23,6 @@
                 <item name="Collaborative writing exercise in an undergraduate course" href="../../usecase2.html"/>
                 <item name="Role playing in an undergraduate course" href="../../usecase4.html" />
             </item>
-        </menu>
-        <menu name="Implementation Notes" >
-            <item name="Changes" href="changes.html" />
-        </menu>
-        
+        </menu>        
     </body>
 </project>

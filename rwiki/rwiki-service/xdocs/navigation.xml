@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Sakai Radeox">
-    <title>Sakai Radeox</title>
+<project name="Sakai RWiki">
+    <title>Sakai RWiki Service API</title>
     <body>
         <breadcrumbs>
             <item name="Sakai Project" href="http://www.sakaiproject.org"/>
             <item name="Sakai RWiki" href="../../index.html"/>
-            <item name="Sakai Radeox" href="index.html"/>
+            <item name="Sakai RWiki Service API" href="index.html"/>
         </breadcrumbs>
         <menu name="Overview">
             <item name="Sakai Project" href="http://www.sakaiproject.org"/>
@@ -23,6 +23,6 @@
                 <item name="Collaborative writing exercise in an undergraduate course" href="../../usecase2.html"/>
                 <item name="Role playing in an undergraduate course" href="../../usecase4.html" />
             </item>
-        </menu>
+        </menu>        
     </body>
 </project>
