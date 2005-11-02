@@ -180,7 +180,7 @@
 			theForm.submit();
 		}
 	}
-	function seedValue(obj_seed, id)
+	function seedValue(obj_seed, id, trim)
 	{
 		var theElement = document.getElementById(id);
 		if(theElement && obj_seed && obj_seed.value)
@@ -188,15 +188,18 @@
 			var nonWhitespaceChar = /\S/;
 			if(theElement.value.search(nonWhitespaceChar))
 			{
-				var delimiters = new Array('/', '\\', ':');
 				var filename = obj_seed.value;
-				
-				for(var i = 0; i < delimiters.length; i++)
+				if(trim)
 				{
-					var delimiter = delimiters[i];
-					if(filename.lastIndexOf(delimiter) > -1)
+					var delimiters = new Array('/', '\\', ':');
+					
+					for(var i = 0; i < delimiters.length; i++)
 					{
-						filename = filename.substring(filename.lastIndexOf(delimiter) + 1);
+						var delimiter = delimiters[i];
+						if(filename.lastIndexOf(delimiter) > -1)
+						{
+							filename = filename.substring(filename.lastIndexOf(delimiter) + 1);
+						}
 					}
 				}
 				theElement.value = filename;
@@ -426,7 +429,7 @@
 						<span class="reqStar">*</span>
 				#end
 					<label for="Url$i">$tlang.getString("gen.url")</label>
-					<input type="text" name="Url$i" id="Url$i" size="60" value="$!validator.escapeHtml("$!item.filename")" />
+					<input type="text" name="Url$i" id="Url$i" size="60" value="$!validator.escapeHtml("$!item.filename")" onchange="javascript:seedValue(this, 'name$i', false);" />
 				</p>
 			#elseif ($item.isPlaintext()) 
 				#if($!{item.isMissing("content")})
@@ -484,7 +487,7 @@
 					#end
 						<span class="reqStar">*</span>
 						<label for="fileName$i">$tlang.getString("gen.choose") $tlang.getString("add.afile")</label>
-						<input type="file" name="fileName$i" id="fileName$i"  class ="upload" onchange="javascript:seedValue(this, 'name$i')" />
+						<input type="file" name="fileName$i" id="fileName$i"  class ="upload" onchange="javascript:seedValue(this, 'name$i', true)" />
 					</p>
 				#else
 					<p class="shorttext">
@@ -507,7 +510,7 @@
 				#else
 					<p class="shorttext">
 				#end
-					##<span class="reqStar">*</span>
+					<span class="reqStar">*</span>
 					<label for="name$i">
 						$tlang.getString("gen.title") 
 					</label>
