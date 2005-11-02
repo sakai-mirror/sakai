@@ -295,8 +295,9 @@
 									<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
 								#end
 								####### deal with site/folder permissions
-								#if($root.canUpdate() && "$!inMyWorkspace" == "false")
-									#if (!$atHome || ($atHome && $atHome != $TRUE))
+								#if($showPermissions && "$!inMyWorkspace" == "false")
+								##if($root.canUpdate() && "$!inMyWorkspace" == "false")
+									#if ("$!atHome" != "$!TRUE")
 										#if ($itemsOnLine > 0)
 											|
 										#end
@@ -518,7 +519,8 @@
 											<a href="#toolLinkParam("ResourcesAction" "doMore" "from=list&id=$validator.escapeUrl($member.id)&collectionId=$validator.escapeUrl($member.container)")" title="$tlang.getString('list.props')">$tlang.getString("list.props").trim()</a>
 										#end
 										####### deal with folder permissions
-										#if($member.canUpdate() && "$!inMyWorkspace" == "false")
+										#if($showPermissions && "$!inMyWorkspace" == "false")
+										##if($member.canUpdate() && "$!inMyWorkspace" == "false")
 											#if ($itemsOnLine > 0)
 												|
 											#end
@@ -709,6 +711,7 @@
 											#set ($itemsOnLine = $itemsOnLine + 1)
 											<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('list.add')">$tlang.getString("list.add").trim()</a>
 										#end
+										#*
 										####### deal with site/folder permissions
 										#if($root.canUpdate() && "$!inMyWorkspace" == "false")
 											#if (!$atHome || ($atHome && $atHome != $TRUE))
@@ -719,6 +722,7 @@
 												<a href="#toolLinkParam("ResourcesAction" "doFolder_permissions" "collectionId=$validator.escapeUrl(${root.id})")" title="$tlang.getString('list.fPerm')">$tlang.getString("list.fPerm").trim()</a>
 											#end
 										#end
+										*#
 									</div>
 								#end
 								######################  End of Add Items/Folders at Top Level  ##############
@@ -941,6 +945,7 @@
 													<a href="#toolLinkParam("ResourcesAction" "doDeleteconfirm" "from=list&selectedMembers=$validator.escapeUrl($member.id)")" title="$tlang.getString('list.del')">$tlang.getString("list.del").trim()</a>
 												#end		
 												*#
+												#*
 												####### deal with folder permissions
 												#if($member.canUpdate() && "$!inMyWorkspace" == "false")
 													#if ($itemsOnLine > 0)
@@ -949,6 +954,7 @@
 													#set ($itemsOnLine = $itemsOnLine + 1)
 													<a href="#toolLinkParam("ResourcesAction" "doFolder_permissions" "collectionId=$validator.escapeUrl(${member.id})")" title="$tlang.getString('list.fPerm')">$tlang.getString("list.fPerm").trim()</a>
 												#end
+												*#
 												####### deal with adding item/folder
 												#if($member.canAddItem())
 													#if ($itemsOnLine > 0)
