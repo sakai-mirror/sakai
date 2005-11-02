@@ -190,7 +190,7 @@ public class PresenceTool extends HttpServlet
 			out.println("<span class=\"chefPresenceListItem\">" + Web.escapeHtml(u.getDisplayName()) + "</span><br/>");
 		}
 
-		out.println("</div");
+		out.println("</div>");
 	}
 
 	/**
