@@ -173,8 +173,8 @@
 			as these will be overwritten when the page is injected.
 			-->
 			<list>
+				<ref bean="rwiki.seedPage.HomePage"/>
 				<ref bean="rwiki.seedPage.HelpPage"/>
-				<ref bean="rwiki.seedPage.HelpPagetwo"/>
 				<ref bean="rwiki.seedPage.RecentChangesPage"/>
 				<ref bean="rwiki.seedPage.EditRightPage"/>
 				<ref bean="rwiki.seedPage.DefaultTemplate"/>
@@ -320,6 +320,27 @@
 		
 		<property name="source">
 			<value>/uk/ac/cam/caret/sakai/rwiki/tool/bundle/HelpPage.txt</value>
+		</property>
+		
+		<property name="ownerAdmin"><value>true</value></property>
+		<property name="ownerRead"><value>true</value></property>
+		<property name="ownerWrite"><value>true</value></property>
+		<property name="groupAdmin"><value>false</value></property>
+		<property name="groupRead"><value>true</value></property>
+		<property name="groupWrite"><value>false</value></property>
+		<property name="publicRead"><value>false</value></property>
+		<property name="publicWrite"><value>false</value></property>
+		
+		<property name="rwikiObjectContentDao"><ref bean="rwikiCurrentObjectContentDaoImpl"/></property>
+	</bean>
+	
+	<bean id="rwiki.seedPage.HomePage"
+		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiCurrentObjectImpl"
+		init-method="init" singleton="true">
+		<property name="name"><value>Home</value></property>
+		
+		<property name="source">
+			<value>/uk/ac/cam/caret/sakai/rwiki/tool/bundle/HomePage.txt</value>
 		</property>
 		
 		<property name="ownerAdmin"><value>true</value></property>
