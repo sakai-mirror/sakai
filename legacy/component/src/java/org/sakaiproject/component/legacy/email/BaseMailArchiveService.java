@@ -334,9 +334,9 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param id The message Id.
 	* @return The new message header.
 	*/
-	protected MessageHeaderEdit newMessageHeader(String id)
+	protected MessageHeaderEdit newMessageHeader(Message msg, String id)
 	{
-		return new BaseMailArchiveMessageHeaderEdit(id);
+		return new BaseMailArchiveMessageHeaderEdit(msg, id);
 
 	} // newMessageHeader
 
@@ -345,9 +345,9 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param el The XML DOM element that has the header information.
 	* @return The new message header.
 	*/
-	protected MessageHeaderEdit newMessageHeader(Element el)
+	protected MessageHeaderEdit newMessageHeader(Message msg, Element el)
 	{
-		return new BaseMailArchiveMessageHeaderEdit(el);
+		return new BaseMailArchiveMessageHeaderEdit(msg, el);
 
 	} // newMessageHeader
 
@@ -356,9 +356,9 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 	* @param other The other header to copy.
 	* @return The new message header.
 	*/
-	protected MessageHeaderEdit newMessageHeader(MessageHeader other)
+	protected MessageHeaderEdit newMessageHeader(Message msg, MessageHeader other)
 	{
-		return new BaseMailArchiveMessageHeaderEdit(other);
+		return new BaseMailArchiveMessageHeaderEdit(msg, other);
 
 	} // newMessageHeader
 
@@ -930,9 +930,9 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 		* @param from The User who sent the message to the channel.
 		* @param attachments The message header attachments, a vector of Reference objects.
 		*/
-		public BaseMailArchiveMessageHeaderEdit(String id)
+		public BaseMailArchiveMessageHeaderEdit(Message msg, String id)
 		{
-			super(id);
+			super(msg, id);
 
 		} // BaseMailArchiveMessageHeaderEdit
 
@@ -940,9 +940,9 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 		* Construct, from an already existing XML DOM element.
 		* @param el The header in XML in a DOM element.
 		*/
-		public BaseMailArchiveMessageHeaderEdit(Element el)
+		public BaseMailArchiveMessageHeaderEdit(Message msg, Element el)
 		{
-			super(el);
+			super(msg, el);
 
 			// now extract the subject, from address, date sent
 			m_subject = el.getAttribute("subject");
@@ -972,9 +972,9 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 		* Construct as a copy of another header.
 		* @param other The other message header to copy.
 		*/
-		public BaseMailArchiveMessageHeaderEdit(MessageHeader other)
+		public BaseMailArchiveMessageHeaderEdit(Message msg, MessageHeader other)
 		{
-			super(other);
+			super(msg, other);
 
 			m_subject = ((MailArchiveMessageHeader) other).getSubject();
 			m_fromAddress = ((MailArchiveMessageHeader) other).getFromAddress();

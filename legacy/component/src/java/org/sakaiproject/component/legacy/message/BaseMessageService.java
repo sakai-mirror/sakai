@@ -278,24 +278,27 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 	/**
 	* Construct a new message header from XML in a DOM element.
+	* @param msg The message to own this header.
 	* @param id The message Id.
 	* @return The new message header.
 	*/
-	protected abstract MessageHeaderEdit newMessageHeader(String id);
+	protected abstract MessageHeaderEdit newMessageHeader(Message msg, String id);
 
 	/**
 	* Construct a new message header from XML in a DOM element.
+	* @param msg The message to own this header.
 	* @param el The XML DOM element that has the header information.
 	* @return The new message header.
 	*/
-	protected abstract MessageHeaderEdit newMessageHeader(Element el);
+	protected abstract MessageHeaderEdit newMessageHeader(Message msg, Element el);
 
 	/**
 	* Construct a new message header as a copy of another.
+	* @param msg The message to own this header.
 	* @param other The other header to copy.
 	* @return The new message header.
 	*/
-	protected abstract MessageHeaderEdit newMessageHeader(MessageHeader other);
+	protected abstract MessageHeaderEdit newMessageHeader(Message msg, MessageHeader other);
 
 	/**
 	* Form a tracking event string based on a security function string.
@@ -2742,7 +2745,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			m_channel = channel;
 
 			// store the id in a new (appropriate typed) header
-			m_header = newMessageHeader(id);
+			m_header = newMessageHeader(this, id);
 
 			// setup for properties
 			m_properties = new BaseResourcePropertiesEdit();
@@ -2787,7 +2790,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 					if (element.getTagName().equals("header"))
 					{
 						// re-create a header
-						m_header = newMessageHeader(element);
+						m_header = newMessageHeader(this, element);
 					}
 
 					// or look for a body (old style of encoding)
@@ -2823,7 +2826,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		protected void setAll(Message other)
 		{
 			// copy the header
-			m_header = newMessageHeader(other.getHeader());
+			m_header = newMessageHeader(this, other.getHeader());
 
 			// body
 			m_body = other.getBody();
@@ -3132,12 +3135,16 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		/** The message access. */
 		protected MessageAccess m_access = MessageAccess.CHANNEL;
 
+		/** A transient backpointer to the message. */
+		protected Message m_message = null;
+
 		/**
 		* Construct.  Time and From set automatically.
 		* @param id The message id.
 		*/
-		public BaseMessageHeaderEdit(String id)
+		public BaseMessageHeaderEdit(Message msg, String id)
 		{
+			m_message = msg;
 			m_id = id;
 			m_date = TimeService.newTime();
 			try
@@ -3158,8 +3165,9 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		* Construct as a copy of another header.
 		* @param other The other message header to copy.
 		*/
-		public BaseMessageHeaderEdit(MessageHeader other)
+		public BaseMessageHeaderEdit(Message msg, MessageHeader other)
 		{
+			m_message = msg;
 			m_id = other.getId();
 			m_date = TimeService.newTime(other.getDate().getTime());
 			m_from = other.getFrom();
@@ -3177,8 +3185,9 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		* Construct, from an already existing XML DOM element.
 		* @param el The header in XML in a DOM element.
 		*/
-		public BaseMessageHeaderEdit(Element el)
+		public BaseMessageHeaderEdit(Message msg, Element el)
 		{
+			m_message = msg;
 			m_id = el.getAttribute("id");
 			try
 			{
@@ -3297,10 +3306,13 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		{
 			if (group == null) throw new PermissionException(eventId(SECURE_ADD), "null");
 
-			// does the current user have ADD permission in this group's authorization group?
-			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(SECURE_ADD), group.getReference()))
+			// does the current user have SECURE_ADD permission in this group's authorization group, or SECURE_ALL_GROUPS in the channel?
+			if (!unlockCheck(SECURE_ADD, group.getReference()))
 			{
-				throw new PermissionException(eventId(SECURE_ADD), group.getReference());
+				if (!unlockCheck(SECURE_ALL_GROUPS, ((BaseMessageEdit) m_message).m_channel.getReference()))
+				{
+					throw new PermissionException(eventId(SECURE_ADD), group.getReference());					
+				}
 			}
 
 			if (!m_groups.contains(group.getReference())) m_groups.add(group.getReference());
@@ -3313,10 +3325,13 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		{
 			if (group == null) throw new PermissionException(eventId(SECURE_ADD), "null");
 
-			// does the current user have ADD permission in this group's authorization group?
-			if (!AuthzGroupService.isAllowed(UserDirectoryService.getCurrentUser().getId(), eventId(SECURE_ADD), group.getReference()))
+			// does the current user have SECURE_ADD permission in this group's authorization group, or SECURE_ALL_GROUPS in the channel?
+			if (!unlockCheck(SECURE_ADD, group.getReference()))
 			{
-				throw new PermissionException(eventId(SECURE_ADD), group.getReference());
+				if (!unlockCheck(SECURE_ALL_GROUPS, ((BaseMessageEdit) m_message).m_channel.getReference()))
+				{
+					throw new PermissionException(eventId(SECURE_ADD),  group.getReference());					
+				}
 			}
 
 			if (m_groups.contains(group.getReference())) m_groups.remove(group.getReference());

@@ -349,9 +349,9 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param id The message Id.
 	* @return The new message header.
 	*/
-	protected MessageHeaderEdit newMessageHeader(String id)
+	protected MessageHeaderEdit newMessageHeader(Message msg, String id)
 	{
-		return new BaseAnnouncementMessageHeaderEdit(id);
+		return new BaseAnnouncementMessageHeaderEdit(msg, id);
 
 	} // newMessageHeader
 
@@ -360,9 +360,9 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param el The XML DOM element that has the header information.
 	* @return The new message header.
 	*/
-	protected MessageHeaderEdit newMessageHeader(Element el)
+	protected MessageHeaderEdit newMessageHeader(Message msg, Element el)
 	{
-		return new BaseAnnouncementMessageHeaderEdit(el);
+		return new BaseAnnouncementMessageHeaderEdit(msg, el);
 
 	} // newMessageHeader
 
@@ -371,9 +371,9 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 	* @param other The other header to copy.
 	* @return The new message header.
 	*/
-	protected MessageHeaderEdit newMessageHeader(MessageHeader other)
+	protected MessageHeaderEdit newMessageHeader(Message msg, MessageHeader other)
 	{
-		return new BaseAnnouncementMessageHeaderEdit(other);
+		return new BaseAnnouncementMessageHeaderEdit(msg, other);
 
 	} // newMessageHeader
 
@@ -934,9 +934,9 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 		* @param from The User who sent the message to the channel.
 		* @param attachments The message header attachments, a vector of Reference objects.
 		*/
-		public BaseAnnouncementMessageHeaderEdit(String id)
+		public BaseAnnouncementMessageHeaderEdit(Message msg, String id)
 		{
-			super(id);
+			super(msg, id);
 
 		} // BaseAnnouncementMessageHeaderEdit
 
@@ -944,9 +944,9 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 		* Construct, from an already existing XML DOM element.
 		* @param el The header in XML in a DOM element.
 		*/
-		public BaseAnnouncementMessageHeaderEdit(Element el)
+		public BaseAnnouncementMessageHeaderEdit(Message msg, Element el)
 		{
-			super(el);
+			super(msg, el);
 
 			// extract the subject
 			m_subject = el.getAttribute("subject");
@@ -957,9 +957,9 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 		* Construct as a copy of another header.
 		* @param other The other message header to copy.
 		*/
-		public BaseAnnouncementMessageHeaderEdit(MessageHeader other)
+		public BaseAnnouncementMessageHeaderEdit(Message msg, MessageHeader other)
 		{
-			super(other);
+			super(msg, other);
 
 			m_subject = ((AnnouncementMessageHeader) other).getSubject();
 

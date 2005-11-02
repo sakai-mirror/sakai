@@ -315,9 +315,9 @@ public abstract class BaseDiscussionService
 	* @param id The message Id.
 	* @return The new message header.
 	*/
-	protected MessageHeaderEdit newMessageHeader(String id)
+	protected MessageHeaderEdit newMessageHeader(Message msg, String id)
 	{
-		return new BaseDiscussionMessageHeaderEdit(id);
+		return new BaseDiscussionMessageHeaderEdit(msg, id);
 
 	}	// newMessageHeader
 
@@ -326,9 +326,9 @@ public abstract class BaseDiscussionService
 	* @param el The XML DOM element that has the header information.
 	* @return The new message header.
 	*/
-	protected MessageHeaderEdit newMessageHeader(Element el)
+	protected MessageHeaderEdit newMessageHeader(Message msg, Element el)
 	{
-		return new BaseDiscussionMessageHeaderEdit(el);
+		return new BaseDiscussionMessageHeaderEdit(msg, el);
 
 	}	// newMessageHeader
 
@@ -337,9 +337,9 @@ public abstract class BaseDiscussionService
 	* @param other The other header to copy.
 	* @return The new message header.
 	*/
-	protected MessageHeaderEdit newMessageHeader(MessageHeader other)
+	protected MessageHeaderEdit newMessageHeader(Message msg, MessageHeader other)
 	{
-		return new BaseDiscussionMessageHeaderEdit(other);
+		return new BaseDiscussionMessageHeaderEdit(msg, other);
 
 	}	// newMessageHeader
 
@@ -1588,9 +1588,9 @@ public abstract class BaseDiscussionService
 		* @param from The User who sent the message to the channel.
 		* @param attachments The message header attachments, a vector of Reference objects.
 		*/
-		public BaseDiscussionMessageHeaderEdit(String id)
+		public BaseDiscussionMessageHeaderEdit(Message msg, String id)
 		{
-			super(id);
+			super(msg, id);
 
 		}	// BaseDiscussionMessageHeaderEdit
 
@@ -1598,9 +1598,9 @@ public abstract class BaseDiscussionService
 		* Construct, from an already existing XML DOM element.
 		* @param el The header in XML in a DOM element.
 		*/
-		public BaseDiscussionMessageHeaderEdit(Element el)
+		public BaseDiscussionMessageHeaderEdit(Message msg, Element el)
 		{
-			super(el);
+			super(msg, el);
 			
 			// now extract the subject, draft, category and replyTo
 			m_subject = el.getAttribute("subject");
@@ -1613,9 +1613,9 @@ public abstract class BaseDiscussionService
 		* Construct as a copy of another header.
 		* @param other The other message header to copy.
 		*/
-		public BaseDiscussionMessageHeaderEdit(MessageHeader other)
+		public BaseDiscussionMessageHeaderEdit(Message msg, MessageHeader other)
 		{
-			super(other);
+			super(msg, other);
 			
 			m_subject = ((DiscussionMessageHeader) other).getSubject();
 			m_category = ((DiscussionMessageHeader) other).getCategory();
