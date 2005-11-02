@@ -6838,7 +6838,7 @@ public class ResourcesAction
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
 			// sort sucessful
-			state.setAttribute (STATE_MODE, MODE_LIST);
+			// state.setAttribute (STATE_MODE, MODE_LIST);
 
 		}	// if-else
 
