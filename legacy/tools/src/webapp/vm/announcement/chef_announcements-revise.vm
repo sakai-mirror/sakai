@@ -70,10 +70,14 @@
 			#end
 			*#
 			#if ($allowAddChannelMessage)
-				<input type="radio" name="announceTo" id="pubview" value="pubview" #if($!announceTo == "pubview" || $!pubview)checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'none';" />
-				<label for="pubview">$tlang.getString("displayto.public")</label> <br />
-				<input type="radio" name="announceTo" id="site" value="site" #if(!$!pubview && ($!announceTo == "site" || $!message.AnnouncementHeader.Access == $channelAccess))checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'none';" />
-				<label for="site">$tlang.getString("displayto.site")</label> <br />
+				<p class="checkbox">
+					<input type="radio" name="announceTo" id="pubview" value="pubview" #if($!announceTo == "pubview" || $!pubview)checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'none';" onkeypress="document.getElementById('groupTable').style.display = 'none';" />
+					<label for="pubview">$tlang.getString("displayto.public")</label>
+				</p>
+				<p class="checkbox">
+					<input type="radio" name="announceTo" id="site" value="site" #if(!$!pubview && ($!announceTo == "site" || $!message.AnnouncementHeader.Access == $channelAccess))checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'none';" onkeypress="document.getElementById('groupTable').style.display = 'none';"/>
+					<label for="site">$tlang.getString("displayto.site")</label>
+				</p>	
 			#else
 				#if ($!groups.size() >1)
 					<label for="$tlang.getString('groups')">$tlang.getString("groups")</label>
@@ -84,8 +88,10 @@
 			#if ($!groups)
 				## added group awareness
 				#if ($allowAddChannelMessage)
-					<input type="radio" name="announceTo" id="groups" value="groups" #if(!$!pubview && ($!announceTo == "groups" || $!message.AnnouncementHeader.Access == $groupAccess))checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'block';" />
-					<label for="groups">$tlang.getString("displayto.selected")</label> <br />
+					<p class="checkbox">
+						<input type="radio" name="announceTo" id="groups" value="groups" #if(!$!pubview && ($!announceTo == "groups" || $!message.AnnouncementHeader.Access == $groupAccess))checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'block';document.getElementById('groupTable').style.width = '80%';" onkeypress="document.getElementById('groupTable').style.display = 'block';" />
+						<label for="groups">$tlang.getString("displayto.selected")</label>
+					</p>	
 				#else
 					<input type="hidden" name="announceTo" id="groups" value="groups"/>
 				#end
@@ -93,32 +99,33 @@
 				#if (!(!$!pubview && ($!announceTo == "groups" || $!message.AnnouncementHeader.Access == $groupAccess)))
 					<div style="display:block">
 				#end
-					<table id="groupTable" class="listHier" border="0" cellspacing="0" summary="Table contains list of announcements. First column may contain checkboxes, second will contain the title, third the author, fourth the date. Headers can be used to sort." width="100%">
+					<table id="groupTable" style="margin-left:3em;width:80%" class="listHier lines" border="0" cellspacing="0" summary="Table contains list of announcements. First column may contain checkboxes, second will contain the title, third the author, fourth the date. Headers can be used to sort.">
+					<caption class="skip" style="display:none">$tlang.getString("displayto.selected")</caption>
 						<tr>
 							#if ($!groups.size() > 1)					 			
-								<th id ="selectAllGroups">
-									<input type="checkbox" name="selectall" id="selectall" title="toggle select all" onclick="javascript:toggleSelectAll(this, 'selectedGroups')" />
+								<th id ="selectAllGroups" style="width:2em;padding-left:.4em">
+									<input type="checkbox" name="selectall" id="selectall" title="toggle select all" onclick="javascript:toggleSelectAll(this, 'selectedGroups')" onkeypress="javascript:toggleSelectAll(this, 'selectedGroups')" />
 								</th>
 							#end
-					 		<th id ="Name">
+					 		<th id ="name">
 								#if (!$currentSortedBy.equals("name"))
-									<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupname")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbygroupname")';return false;" title ="Sort by group name">Name</a>
+									<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupname")';return false;" title ="Sort by group name">Name</a>
 								#else
 									#if ($currentSortAsc.equals("true"))
-										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupname")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbygroupname")';return false;" title ="Sort by group name">Name <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by group name ascending" /></a>
+										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupname")';return false;" title ="Sort by group name">Name <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by group name ascending" /></a>
 									#else
-										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupname")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbygroupname")';return false;" title ="Sort by group name">Name <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by group name descending"/></a>
+										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupname")';return false;" title ="Sort by group name">Name <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by group name descending"/></a>
 									#end
 								#end
 							</th>
-							<th id ="Date">
+							<th id ="description">
 								#if (!$currentSortedBy.equals("description"))
-									<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupdescription")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbygroupdescription")';return false;" title ="Sort by group description">Description</a>
+									<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupdescription")';return false;" title ="Sort by group description">Description</a>
 								#else
 									#if ($currentSortAsc.equals("true"))
-										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupdescription")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbygroupdescription")';return false;" title ="Sort by group description">Description <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by group description ascending" /></a>
+										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupdescription")';return false;" title ="Sort by group description">Description <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by group description ascending" /></a>
 									#else
-										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupdescription")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbygroupdescription")';return false;" title ="Sort by group description">Description <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by group description descending"/></a>
+										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupdescription")';return false;" title ="Sort by group description">Description <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by group description descending"/></a>
 									#end
 								#end
 							</th>
@@ -126,7 +133,7 @@
 						#foreach ($group in $!groups)
 							<tr>
 								#if ($!groups.size() > 1)
-									<td headers="selected" style="padding-bottom:0;">
+									<td headers="selected" style="padding-bottom:0;" style="width:2em">
 										#set($selected=false)
 										#foreach($aGroupRef in $message.AnnouncementHeader.Groups)
 											#set($aGroup = $!site.getGroup($!aGroupRef))
@@ -139,10 +146,12 @@
 								#else
 									<input type="hidden" name="selectedGroups" id="$group.Id" title="$group.Id" value="$group.Id" />
 								#end
-								<td headers="name" style="padding-bottom:0;">
-									$group.Title
+								<td headers="name" style="padding-bottom:0;" class="checkbox">
+									<label for="$group.Id">
+										$group.Title
+									</label>	
 								</td>
-								<td headers="description" style="padding-bottom:0;">
+								<td headers="description" width="100%"> ##mozilla does not resize table children dynamically , so set here
 									#set($description = "")
 									#set($description = $group.Description)
 									$!description
