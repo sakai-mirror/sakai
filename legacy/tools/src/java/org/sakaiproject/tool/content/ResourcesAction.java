@@ -8586,84 +8586,12 @@ public class ResourcesAction
 				ResourceProperties p = ContentHostingService.getProperties(itemId);
 				String displayName = DUPLICATE_STRING + p.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 
-				// cut-paste to the same collection?
-				boolean cutPasteSameCollection = false;
-
-				int countNumber = 1;
-
-				ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-
-				// add the properties of the pasted item
-				Iterator propertyNames = properties.getPropertyNames ();
-				while ( propertyNames.hasNext ())
-				{
-					String propertyName = (String) propertyNames.next ();
-					if (!properties.isLiveProperty (propertyName))
-					{
-						if (propertyName.equals (ResourceProperties.PROP_DISPLAY_NAME)&&(displayName.length ()>0))
-						{
-							resourceProperties.addProperty (propertyName, displayName);
-						}
-						else
-						{
-							resourceProperties.addProperty (propertyName, properties.getProperty (propertyName));
-						}
-					}
-				}
-
-				String newDisplayName = resourceProperties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
-				int index = displayName.lastIndexOf(".");
-				String base = displayName.substring(0, index);
-				String ext = displayName.substring(index);
+				String newItemId = ContentHostingService.copyIntoFolder(itemId, collectionId);
 				
-				boolean copy_completed = false;
-				int num_tries = 0;
-				while(! copy_completed && num_tries < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
-				{
-					String id = collectionId + Validator.escapeResourceName(displayName);
-					try
-					{
-						// paste the copied resource to the new collection
-						ContentResource newResource = ContentHostingService.addResource (id, resource.getContentType (), resource.getContent (), resourceProperties, NotificationService.NOTI_NONE);
-						
-						String mode = (String) state.getAttribute(STATE_MODE);
-						if(MODE_HELPER.equals(mode))
-						{
-							attachItem(id, state);
-						}
-						copy_completed = true;
-					}
-					catch (IdUsedException e)
-					{
-						num_tries++;
-						displayName = base + "-" + num_tries + ext;
-						resourceProperties.addProperty(ResourceProperties.PROP_DISPLAY_NAME, newDisplayName + " (" + num_tries + ")");
-					}
-					catch (InconsistentException e)
-					{
-						addAlert(state,RESOURCE_INVALID_TITLE_STRING);
-					}
-					catch (IdInvalidException e)
-					{
-						addAlert(state,rb.getString("title") + " " + e.getMessage ());
-					}
-					catch(ServerOverloadException e)
-					{
-						// this represents temporary unavailability of server's filesystem 
-						// for server configured to save resource body in filesystem 
-						addAlert(state, rb.getString("failed"));
-					}
-					catch (OverQuotaException e)
-					{
-						addAlert(state, rb.getString("overquota"));
-					}	// try-catch
-					catch(RuntimeException e)
-					{
-						logger.error("ResourcesAction.doPasteitem ***** Unknown Exception ***** " + e.getMessage());
-						addAlert(state, rb.getString("failed"));
-					}
-					
-				}	// while
+				ContentResourceEdit copy = ContentHostingService.editResource(newItemId);
+				ResourcePropertiesEdit pedit = copy.getPropertiesEdit();
+				pedit.addProperty(ResourceProperties.PROP_DISPLAY_NAME, displayName);
+				ContentHostingService.commitResource(copy);
 
 			}	// if-else
 		}
@@ -8674,6 +8602,28 @@ public class ResourcesAction
 		catch (IdUnusedException e)
 		{
 			addAlert(state,RESOURCE_NOT_EXIST_STRING);
+		}
+		catch (IdUsedException e)
+		{
+			addAlert(state, rb.getString("notaddreso") + " " + originalDisplayName + " " + rb.getString("used2"));
+		}
+		catch (InconsistentException ee)
+		{
+			addAlert(state, RESOURCE_INVALID_TITLE_STRING);
+		}
+		catch(InUseException e)
+		{
+			addAlert(state, rb.getString("someone") + " " + originalDisplayName + ". ");
+		}
+		catch(OverQuotaException e)
+		{
+			addAlert(state, rb.getString("overquota"));
+		}
+		catch(ServerOverloadException e)
+		{
+			// this represents temporary unavailability of server's filesystem 
+			// for server configured to save resource body in filesystem 
+			addAlert(state, rb.getString("failed"));
 		}
 		catch (TypeException e)
 		{
