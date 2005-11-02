@@ -264,7 +264,6 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		}
 
 		
-		
 		if (securityService.checkSuperAdminPermission(user, rwo.getRealm())) {
 			if (log.isDebugEnabled()) {
 				log

@@ -730,6 +730,17 @@ both pages are identical. Any change in the page, will change the digest on the 
 			  <td></td>
 			  <td></td>
 			</tr>
+			<tr>
+			  <td colspan="7">
+			    <div class="rwiki_editControl">
+			      <p class="act">
+				<c:if test="${realmBean.siteUpdateAllowed}">
+				  You may <a href="${realmBean.editRealmUrl}">edit site permissions</a>
+				</c:if>
+			      </p>
+			    </div>
+			  </td>
+			</tr>
 		      </c:otherwise>
 		    </c:choose>
 		    <tr id="incommingStart" >
