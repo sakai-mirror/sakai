@@ -39,6 +39,7 @@ html>body #tabNavigation{margin:0 0 -1px 3px;}
 #tabNavigation .selectedTab a,#tabNavigation .selectedTab a:link,#tabNavigation .selectedTab a:visited,
 	#tabNavigation .selectedTab a:hover{
 	color:#C4D6F0;
+	cursor: text;
 	font-weight: bold;
 	padding:3px 5px 5px 5px}
 /*various hacks for this and that browser*/
@@ -130,16 +131,16 @@ html #siteStatus/* */{background-position:3px center/* - adj for ie - */}
 #leftnavlozenge li a.selected,#leftnavlozenge li a:hover{
 	display: block;
 	text-decoration: none;
-	background: #E7EAF1 url(images/linksel.gif) no-repeat right;
-	color: #5A6D95;
+	background: #084A87 url(images/linkover.gif) no-repeat right;
+	color: #FFF;
 	padding: 2px 0px 2px 4px;
 	}
 	
 #leftnavlozenge li a:hover {
 	display: block;
 	text-decoration: none;
-	background: #084A87 url(images/linkover.gif) no-repeat right;
-	color: #FFF;
+	background: #E7EAF1 url(images/linksel.gif) no-repeat right;
+	color: #5A6D95;
 	padding: 2px 0px 2px 4px;
 	}
 
