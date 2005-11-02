@@ -9,8 +9,8 @@
 		<div class="leftNav">
 		<form name="viewForm"  method="post" action="#toolForm("CalendarAction")">
 				<input type="hidden" name="eventSubmit_doView" value="view" />
-				$tlang.getString("view.view")
-				<select name="view" size="1" onchange="blur();document.viewForm.submit(this);">
+				<label for="view">$tlang.getString("view.view")</label>
+				<select name="view" id="view" size="1" onchange="blur();document.viewForm.submit(this);">
 					#foreach ($view in ["$tlang.getString('java.byday')", "$tlang.getString('java.byweek')", "$tlang.getString('java.bymonth')", "$tlang.getString('java.byyear')", "$tlang.getString('java.listeve')"])
 						#if ($selectedView.equals($view))
 							<option value="$view" selected="selected" >$view</option>
