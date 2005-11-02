@@ -216,7 +216,9 @@
 									<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 									$validator.escapeHtml(${root.name})
 								#elseif ($root.canRead())
-									#if (!$expandedCollections.containsKey($root.Id))
+									#if($root.isTooBig())
+										<img src = "#imageLink("sakai/dir_unexpand.gif")" border="0" title="$tlang.getString('list.toobig')" alt="$tlang.getString('list.toobig')" />
+									#elseif (!$expandedCollections.containsKey($root.Id))
 										<a href="#"
 											onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$root.Id';document.getElementById('showForm').submit();"
 											onkeypress="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$root.Id';document.getElementById('showForm').submit();"
@@ -408,7 +410,9 @@
 											<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 											$validator.escapeHtml(${member.name})
 										#elseif ($member.canRead())
-											#if (!$expandedCollections.containsKey($member.Id))
+											#if($member.isTooBig())
+												<img src = "#imageLink("sakai/dir_unexpand.gif")" border="0" title="$tlang.getString('list.toobig')" alt="$tlang.getString('list.toobig')" />
+											#elseif (!$expandedCollections.containsKey($member.Id))
 												<a href="#"
 													onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$member.Id';document.getElementById('showForm').submit();"
 													onkeypress="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$member.Id';document.getElementById('showForm').submit();"
@@ -627,7 +631,9 @@
 											<img src = "#imageLink("sakai/dir_closed.gif")" border="0"  alt="folder" />
 											$validator.escapeHtml(${root.name})
 										#elseif ($root.canRead())
-											#if (!$expandedCollections.containsKey($root.Id))
+											#if($root.isTooBig())
+												<img src = "#imageLink("sakai/dir_unexpand.gif")" border="0" title="$tlang.getString('list.toobig')" alt="$tlang.getString('list.toobig')" />
+											#elseif (!$expandedCollections.containsKey($root.Id))
 												<a href="#"
 													onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$root.Id';document.getElementById('showForm').submit();"
 													onkeypress="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$root.Id';document.getElementById('showForm').submit();"
@@ -820,7 +826,9 @@
 													<img src = "#imageLink("sakai/dir_closed.gif")" border="0" alt="folder" />
 													$validator.escapeHtml(${member.name})
 												#elseif ($member.canRead())
-													#if (!$expandedCollections.containsKey($member.Id))
+													#if($member.isTooBig())
+														<img src = "#imageLink("sakai/dir_unexpand.gif")" border="0" title="$tlang.getString('list.toobig')" alt="$tlang.getString('list.toobig')" />
+													#elseif(!$expandedCollections.containsKey($member.Id))
 														<a href="#"
 															onclick="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$member.Id';document.getElementById('showForm').submit();"
 															onkeypress="javascript:document.getElementById('sakai_action').value='doExpand_collection';document.getElementById('collectionId').value='$member.Id';document.getElementById('showForm').submit();"
