@@ -11,7 +11,7 @@
 <div class="portletBody">
 	#set($itemsOnLine = 0)
 	#if ($atHome && $atHome == $TRUE)
-		#if($site.canRevise())
+		#if($site.canRevise() || $showPermissions)
 			<div class="navIntraTool">
 				$tlang.getString("list.site")
 				#if(!$dropboxMode)
