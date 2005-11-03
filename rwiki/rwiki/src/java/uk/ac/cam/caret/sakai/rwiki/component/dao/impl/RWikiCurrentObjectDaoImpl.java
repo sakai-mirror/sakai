@@ -134,8 +134,8 @@ RWikiCurrentObjectDao, ObjectProxy {
 		final StringBuffer expression = new StringBuffer();
 		final List criteriaList = new ArrayList();
 		criteriaList.add(realm);
-		criteriaList.add("%"+criteria+"%");
-		criteriaList.add("%"+criteria+"%");
+		criteriaList.add("%"+criteria.toLowerCase()+"%");
+		criteriaList.add("%"+criteria.toLowerCase()+"%");
 		
 		
 		// WARNING: In MySQL like does not produce a case sensitive search so this is Ok
@@ -144,12 +144,12 @@ RWikiCurrentObjectDao, ObjectProxy {
 		
 		for (int i = 0; i < criterias.length; i++) {
 			if (!criterias[i].equals("")) {
-				expression.append(" or c.content like ? ");
-				criteriaList.add("%"+criterias[i]+"%");
+				expression.append(" or lower(c.content) like ? ");
+				criteriaList.add("%"+criterias[i].toLowerCase()+"%");
 			}
 		}
 		if (criteria.equals("")) {
-			expression.append(" or c.content like ? ");
+			expression.append(" or lower(c.content) like ? ");
 			criteriaList.add("%%");
 		}
 		final Type[] types = new Type[criteriaList.size()];
@@ -167,9 +167,9 @@ RWikiCurrentObjectDao, ObjectProxy {
 						"		from RWikiCurrentObjectImpl as r, " +
 						"			RWikiCurrentObjectContentImpl as c " +
 						"   where " +
-						"r.realm = ? and (" +
-						"r.name like ? or " +
-						"          c.content like ? " +
+						" r.realm = ? and (" +
+						" lower(r.name) like ? or " +
+						"          lower(c.content) like ? " +
 						expression.toString() +
 						" ) and " +
 						"			r.id = c.rwikiid " +
