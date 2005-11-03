@@ -43,46 +43,46 @@
     		<h3>Create Page Site Permission</h3>
     		This is a site member permission, independant of the page,
     		that allows a user who has been granted it the ability to 
-    		create a page. To change you must use the role permissions editor. 
-    		If you have permission, you can tick the checkbox to grant
-    		If you do not have permission, you will see the state of the permission
+    		create a page. To change it you must use the role permissions editor. 
+    		If you have permission, you can tick the checkbox to grant that permission.
+    		If you do not have permission, you will see the state of the permission.
     		
     	</div>
     	<div id="readhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
     		class="rwiki_help_popup" >
     		<h3>Read Page Permission</h3>
     		Once granted, a user may read this page.
-    		If you have permission, you can tick the checkbox to grant
-    		If you do not have permission, you will see the state of the permission
+    		If you have permission, you can tick the checkbox to grant that permission.
+    		If you do not have permission, you will see the state of the permission.
     	</div>
     	<div id="updatehelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
     		class="rwiki_help_popup" >
     		<h3>Update Page Permission</h3>
     		Once granted, a user may edit the content of this page.
-    		If you have permission, you can tick the checkbox to grant
-    		If you do not have permission, you will see the state of the permission
+    		If you have permission, you can tick the checkbox to grant that permission.
+    		If you do not have permission, you will see the state of the permission.
     	</div>
     	<div id="deletehelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
     		class="rwiki_help_popup" >
     		<h3>Delete Page Permission</h3>
     		Once granted, a user may delete this page.
-    		If you have permission, you can tick the checkbox to grant
-    		If you do not have permission, you will see the state of the permission
+    		If you have permission, you can tick the checkbox to grant that permission.
+    		If you do not have permission, you will see the state of the permission.
     	</div>
     	<div id="adminhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
     		class="rwiki_help_popup" >
     		<h3>Admin</h3>
     		Once granted, a user may edit the permissions of the page, and restore 
-    		older versions. Granting admin permission alos grants read permission.    		
-    		If you have permission, you can tick the checkbox to grant
-    		If you do not have permission, you will see the state of the permission
+    		older versions. Granting admin permission also grants read permission.    		
+    		If you have permission, you can tick the checkbox to grant that permission.
+    		If you do not have permission, you will see the state of the permission.
     	</div>
     	<div id="superadminhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
     		class="rwiki_help_popup" >
     		<h3>Super Admin Site Permission</h3>
     		A use that has Super Admin permission in their worksite role is allowed 
     		to do anything to any page.
-    		If you have permission, you can tick the checkbox to grant
+    		If you have permission, you can tick the checkbox to grant that permission.
     		If you do not have permission, you will see the state of the permission
     	</div>
     	<div id="pageownerhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
@@ -129,12 +129,12 @@
     	</div>
     	<div id="incomminghelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
     		class="rwiki_help_popup" >
-    		<h3>Incomming Pages</h3>
+    		<h3>Incoming Pages</h3>
 This is  a list of pages that reference or link to this page.    		
     	</div>
     	<div id="outgoinghelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
     		class="rwiki_help_popup" >
-    		<h3>Outgoign Pages</h3>
+    		<h3>Outgoing Pages</h3>
 This is a list of pages which this page references or links to.    		
     	</div>
     	<div id="ownerhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
@@ -144,9 +144,9 @@ Each page has an owner; this is normally the user who create the page.
     	</div>
     	<div id="realmhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
     		class="rwiki_help_popup" >
-    		<h3>Page Section</h3>
+    		<h3>Permission Section</h3>
     		This is the site permissions realm that is used to determin site permissions
-    		on this page. Normally the realm is the default realm for the site contianing
+    		on this page. Normally the realm is the default realm for the site containing
     		the page.    		
     	</div>
     	<div id="idhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
@@ -158,7 +158,7 @@ Each page has an owner; this is normally the user who create the page.
     		class="rwiki_help_popup" >
     		<h3>Page Name</h3>
     		Every page has a name, this name is used in the wiki links. If pages between 
-    		differnt worksites is to be referenced, the full page name should be used.
+    		different worksites are to be used, the full page name should be used in the link.
     	</div>
     	
     	<div id="lastedithelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden;" 
