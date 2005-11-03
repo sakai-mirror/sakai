@@ -95,7 +95,12 @@
 				#else
 					<input type="hidden" name="announceTo" id="groups" value="groups"/>
 				#end
-					<table id="groupTable" style="margin-left:3em;width:80%" class="listHier lines" border="0" cellspacing="0" summary="Table contains list of announcements. First column may contain checkboxes, second will contain the title, third the author, fourth the date. Headers can be used to sort.">
+				#if(!$!pubview && ($!announceTo == "groups" || $!message.AnnouncementHeader.Access == $groupAccess))
+					#set ($listDisplay="block")
+				#else
+					#set ($listDisplay="none")
+				#end
+					<table id="groupTable" style="margin-left:3em;width:80%;display:$listDisplay" class="listHier lines" border="0" cellspacing="0" summary="Table contains list of groups. First will  contain checkboxes, second will contain the group name, third the group description. Header links can be used to sort.">
 					<caption class="skip" style="display:none">$tlang.getString("displayto.selected")</caption>
 						<tr>
 							<th id ="selectAllGroups" style="width:2em;padding-left:.4em">
@@ -134,7 +139,7 @@
 											#set($selected = true)
 										#end
 									#end
-									<input type="checkbox" name="selectedGroups" id="selectedGroups" title="$group.Id" value="$group.Id" #if($selected) checked="checked"#end />
+									<input type="checkbox" name="selectedGroups" id="$group.Id" title="$group.Id" value="$group.Id" #if($selected) checked="checked"#end />
 								</td>
 								<td headers="name" style="padding-bottom:0;" class="checkbox">
 									<label for="$group.Id">
