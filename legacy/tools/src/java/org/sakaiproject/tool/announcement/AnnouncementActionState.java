@@ -24,6 +24,7 @@
 package org.sakaiproject.tool.announcement;
 
 // imports
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -588,6 +589,8 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 	private String m_tempBody;
 	//temporary storage for announce to selection
 	private String m_tempAnnounceTo;
+	//temporary storage for announce to groups selection
+	private Collection m_tempAnnounceToGroups;
 	// temporary storage for local file inputStream, contentType and display name
 	private HashMap m_fileProperties = new HashMap();
 	// temporary storage for attachment properties: title, description, and copyright
@@ -646,6 +649,25 @@ public class AnnouncementActionState extends ControllerState implements SessionB
 			// remember the new
 			m_tempAnnounceTo = tempAnnounceTo;
 		}
+
+	}	// setTempAnnounceTo()
+	
+	/**
+	 * Get 
+	 */
+	public Collection getTempAnnounceToGroups()
+	{
+		return m_tempAnnounceToGroups;
+
+	}	// getTempAnnounceToGroups()
+	
+	
+	/**
+	 * set 
+	 */
+	public void setTempAnnounceToGroups(Collection tempAnnounceToGroups)
+	{
+		m_tempAnnounceToGroups = tempAnnounceToGroups;
 
 	}	// setTempAnnounceTo()
 	

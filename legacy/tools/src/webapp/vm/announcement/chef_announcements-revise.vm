@@ -20,7 +20,7 @@
 				#end
 		</p>
 	</div>	
-		<form name="reviseForm" action="#toolForm("AnnouncementAction")" method="post" onload="showtable('groupTable');">
+		<form name="reviseForm" action="#toolForm("AnnouncementAction")" method="post" >
 			<div class="indnt1">
 			<input type="hidden" name="fromInterface" value="revise" />
 			<p class="shorttext">
@@ -95,18 +95,12 @@
 				#else
 					<input type="hidden" name="announceTo" id="groups" value="groups"/>
 				#end
-				## show group list
-				#if (!(!$!pubview && ($!announceTo == "groups" || $!message.AnnouncementHeader.Access == $groupAccess)))
-					<div style="display:block">
-				#end
 					<table id="groupTable" style="margin-left:3em;width:80%" class="listHier lines" border="0" cellspacing="0" summary="Table contains list of announcements. First column may contain checkboxes, second will contain the title, third the author, fourth the date. Headers can be used to sort.">
 					<caption class="skip" style="display:none">$tlang.getString("displayto.selected")</caption>
 						<tr>
-							#if ($!groups.size() > 1)					 			
-								<th id ="selectAllGroups" style="width:2em;padding-left:.4em">
-									<input type="checkbox" name="selectall" id="selectall" title="toggle select all" onclick="javascript:toggleSelectAll(this, 'selectedGroups')" onkeypress="javascript:toggleSelectAll(this, 'selectedGroups')" />
-								</th>
-							#end
+							<th id ="selectAllGroups" style="width:2em;padding-left:.4em">
+								<input type="checkbox" name="selectall" id="selectall" title="toggle select all" onclick="javascript:toggleSelectAll(this, 'selectedGroups')" onkeypress="javascript:toggleSelectAll(this, 'selectedGroups')" />
+							</th>
 					 		<th id ="name">
 								#if (!$currentSortedBy.equals("name"))
 									<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupname")';return false;" title ="Sort by group name">Name</a>
@@ -132,20 +126,16 @@
 						</tr>
 						#foreach ($group in $!groups)
 							<tr>
-								#if ($!groups.size() > 1)
-									<td headers="selected" style="padding-bottom:0;" style="width:2em">
-										#set($selected=false)
-										#foreach($aGroupRef in $message.AnnouncementHeader.Groups)
-											#set($aGroup = $!site.getGroup($!aGroupRef))
-											#if ($!group.Id == $!aGroup.Id)
-												#set($selected = true)
-											#end
+								<td headers="selected" style="padding-bottom:0;" style="width:2em">
+									#set($selected=false)
+									#foreach($aGroupRef in $announceToGroups)
+										#set($aGroup = $!site.getGroup($!aGroupRef))
+										#if ($!group.Id == $!aGroup.Id)
+											#set($selected = true)
 										#end
-										<input type="checkbox" name="selectedGroups" id="$group.Id" title="$group.Id" value="$group.Id" #if($selected) checked="checked"#end />
-									</td>
-								#else
-									<input type="hidden" name="selectedGroups" id="$group.Id" title="$group.Id" value="$group.Id" />
-								#end
+									#end
+									<input type="checkbox" name="selectedGroups" id="selectedGroups" title="$group.Id" value="$group.Id" #if($selected) checked="checked"#end />
+								</td>
 								<td headers="name" style="padding-bottom:0;" class="checkbox">
 									<label for="$group.Id">
 										$group.Title
@@ -159,9 +149,6 @@
 							</tr>
 						#end
 					</table>
-				#if (!(!$!pubview && ($!announceTo == "groups" || $!message.AnnouncementHeader.Access == $groupAccess)))
-						</div>
-					#end
 			#end
 			<p class="shorttext">
 				<h4>
@@ -246,20 +233,6 @@
 				{
 					elements[i].checked = newValue;
 				}
-			}
-		}
-
-		function showTable(tableName)
-		{
-			var element = document.getElementByName("groupChoice");alert(element);
-			
-			if (!element && element.value.equals("selectedGroups"))
-			{
-				document.getElementById("groupTable").style.display = "block";
-			}
-			else
-			{
-				document.getElementById("groupTable").style.display = "none";
 			}
 		}
 	-->

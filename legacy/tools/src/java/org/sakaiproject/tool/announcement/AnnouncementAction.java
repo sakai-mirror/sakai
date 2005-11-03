@@ -26,6 +26,7 @@ package org.sakaiproject.tool.announcement;
 
 // imports
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1577,26 +1578,17 @@ extends PagedResourceActionII
 				}
 				else
 				{
-					// group list which user can add message to
-					Collection groups = channel.getGroupsAllowAddMessage();
-					if (groups.size() > 0)
+					if (state.getIsNewAnnouncement())
 					{
-						context.put("groups", groups);
-						// if this a new annoucement, get the subject and body from temparory record
-						if (state.getIsNewAnnouncement())
-						{
-							// default to make group selections
-							context.put("announceTo", "groups");
-						}
+						// default to make site selection
+						context.put("announceTo", "site");
 					}
-					else
-					{
-						if (state.getIsNewAnnouncement())
-						{
-							// default to make site selection
-							context.put("announceTo", "site");
-						}
-					}
+				}
+				// group list which user can add message to
+				Collection groups = channel.getGroupsAllowAddMessage();
+				if (groups.size() > 0)
+				{
+					context.put("groups", groups);
 				}
 			}
 		}
@@ -1628,6 +1620,7 @@ extends PagedResourceActionII
 			String notification = (String)sstate.getAttribute(SSTATE_NOTI_VALUE);;
 			// "r", "o" or "n"
 			context.put("noti", notification);
+			
 		}
 		// if this is an existing one
 		else
@@ -1668,6 +1661,8 @@ extends PagedResourceActionII
 
 		context.put("attachments", attachments);
 		context.put("newAnn", (state.getIsNewAnnouncement()) ? "true" : "else");
+		
+		context.put("announceToGroups", state.getTempAnnounceToGroups());
 		
 		String template = (String) getContext(rundata).get("template");
 		return template + "-revise";
@@ -2067,10 +2062,20 @@ extends PagedResourceActionII
 		if (announceTo.equals("groups"))
 		{
 			String[] groupChoice = rundata.getParameters().getStrings("selectedGroups");
+			if (groupChoice != null)
+			{
+				state.setTempAnnounceToGroups(new ArrayList(Arrays.asList(groupChoice)));
+			}
+			
 			if (groupChoice== null || groupChoice.length == 0)
 			{
+				state.setTempAnnounceToGroups(null);
 				addAlert(sstate,rb.getString("java.alert.youchoosegroup"));
 			}
+		}
+		else
+		{
+			state.setTempAnnounceToGroups(null);
 		}
 		
 		// there is any error message caused by empty subject or body
@@ -2280,6 +2285,7 @@ extends PagedResourceActionII
 			state.setStatus(POST_STATUS);
 			state.setMessageReference("");
 			state.setTempAnnounceTo(null);
+			state.setTempAnnounceToGroups(null);
 
 			// make sure auto-updates are enabled
 			enableObservers(sstate);
@@ -2622,6 +2628,8 @@ extends PagedResourceActionII
 				channel.editAnnouncementMessage(
 					this.getMessageIDFromReference(messageReference));
 			state.setEdit(edit);
+			
+			state.setTempAnnounceToGroups(edit.getAnnouncementHeader().getGroups());
 
 			//ReferenceVector attachmentList = (message.getHeader()).getAttachments();
 			List attachmentList =
@@ -2950,6 +2958,22 @@ extends PagedResourceActionII
 		body = processFormattedTextFromBrowser(state, body);
 		String announceTo = data.getParameters().getString("announceTo");
 		myState.setTempAnnounceTo(announceTo);
+		if (announceTo.equals("groups"))
+		{
+			String[] groupChoice = data.getParameters().getStrings("selectedGroups");
+			if (groupChoice != null)
+			{
+				myState.setTempAnnounceToGroups(new ArrayList(Arrays.asList(groupChoice)));
+			}
+			else
+			{
+				myState.setTempAnnounceToGroups(null);
+			}
+		}
+		else
+		{
+			myState.setTempAnnounceToGroups(null);
+		}
 		myState.setTempSubject(subject);
 		myState.setTempBody(body);
 		myState.setStatus("backToReviseAnnouncement");
@@ -2994,6 +3018,7 @@ extends PagedResourceActionII
 		state.setDeleteMessages(null);
 		state.setStatus(CANCEL_STATUS);
 		state.setTempAnnounceTo(null);
+		state.setTempAnnounceToGroups(null);
 		
 		// we are done with customization... back to the main (list) mode
 		sstate.removeAttribute(STATE_MODE);
@@ -3106,10 +3131,19 @@ extends PagedResourceActionII
 		if (announceTo.equals("groups"))
 		{
 			String[] groupChoice = rundata.getParameters().getStrings("selectedGroups");
+			if (groupChoice != null)
+			{
+				state.setTempAnnounceToGroups(new ArrayList(Arrays.asList(groupChoice)));
+			}
 			if (groupChoice== null || groupChoice.length == 0)
 			{
+				state.setTempAnnounceToGroups(null);
 				addAlert(sstate,rb.getString("java.alert.youchoosegroup"));
 			}
+		}
+		else
+		{
+			state.setTempAnnounceToGroups(null);
 		}
 
 		// there is any error message caused by empty subject or boy
@@ -3320,6 +3354,7 @@ extends PagedResourceActionII
 			state.setAttachments(null);
 			state.setIsListVM(true);
 			state.setTempAnnounceTo(null);
+			state.setTempAnnounceToGroups(null);
 			
 			// make sure auto-updates are enabled
 			enableObservers(sstate);
