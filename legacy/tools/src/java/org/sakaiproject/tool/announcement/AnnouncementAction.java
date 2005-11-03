@@ -1414,12 +1414,14 @@ extends PagedResourceActionII
 				}
 				else
 				{
+					String range = "";
 					for (Iterator k = aMessage.getAnnouncementHeader().getGroups().iterator(); k.hasNext();)
 					{
-						// announcement by group
-						aMessage.setRange(site.getGroup((String) k.next()).getTitle());
-						rv.add(new AnnouncementWrapper(aMessage));
+						range = range.concat(site.getGroup((String) k.next()).getTitle());
 					}
+					// announcement by group
+					aMessage.setRange(range);
+					rv.add(new AnnouncementWrapper(aMessage));
 				}
 				
 			}
