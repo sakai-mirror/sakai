@@ -49,10 +49,9 @@
 
 			#if ($show_newlines)
 				#if ($toolId=="sakai.synoptic.chat")
-					<h4 style="margin:1em 0 .4em 0;background:none;font-size:1em">$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}</h4>
+					<h4 style="margin:.4em 0;background:none;font-size:1em">$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}</h4>
 				#else
-					<h4 style="padding:.2em .2em .2em 1em;background:none;font-size:1em">$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}</h4>
-					##<span style="display:block;padding-left:1em">$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}</span>
+					<p style="margin:0;background:none;font-size:1em">$!{validator.escapeHtmlFormattedText($validator.limitFormattedText($text,$length))}</p>
 				#end
 			#else
 				$!{validator.escapeHtmlFormattedTextSupressNewlines($validator.limitFormattedText($text,$length))}
@@ -87,8 +86,7 @@
 					</ul>
 				#end
 			#end
-			
-			<span style="display:block;margin-left:1em;font-size:smaller"> ($!{validator.escapeHtml($item.Header.From.DisplayName)} - $!{item.Header.Date.toStringLocalFull()})</span>
+			<p style="margin:0 1em;font-size:smaller"> ($!{validator.escapeHtml($item.Header.From.DisplayName)} - $!{item.Header.Date.toStringLocalFull()})</p>
 		#end
 	</div>	
 
