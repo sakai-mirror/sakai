@@ -153,22 +153,6 @@
 				<th id="actions">
 					$tlang.getString("gen.actions")
 				</th>
-				<th id="modified">
-					<a href="#"
-						onclick="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$collectionId';document.getElementById('criteria').value='last modified';document.getElementById('showForm').submit();"
-						onkeypress="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$collectionId';document.getElementById('criteria').value='last modified';document.getElementById('showForm').submit();"
-						title= "$tlang.getString('sh.sortdate')">
-					##<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=last%20modified&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortdate')"> 
-						$tlang.getString("gen.last1")
-						#if ($currentSortedBy.equals($resourceProperties.NamePropModifiedDate)) 
-							#if ($currentSortAsc.equals("true")) 
-								<img src = "#imageLink("sakai/sortascending.gif")" border="0"  title ="$tlang.getString('sh.sortdateas')"  alt ="$tlang.getString('sh.sortdateas')" /> 
-							#else 
-								<img src = "#imageLink("sakai/sortdescending.gif")" border="0" title ="$tlang.getString('sh.sortdatedesc')"  alt ="$tlang.getString('sh.sortdatedesc')" /> 
-							#end 
-						#end 
-					</a>
-				</th>
 				<th id="creator">
 					##<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=created%20by&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortcrea')"> 
 					<a href="#"
@@ -181,6 +165,22 @@
 								<img src = "#imageLink("sakai/sortascending.gif")" border="0"  title ="$tlang.getString('sh.sortcreaas')"  alt ="$tlang.getString('sh.sortdateas')" /> 
 							#else 
 								<img src = "#imageLink("sakai/sortdescending.gif")" border="0" title ="$tlang.getString('sh.sortcreadesc')"  alt ="$tlang.getString('sh.sortdatedesc')" /> 
+							#end 
+						#end 
+					</a>
+				</th>
+				<th id="modified">
+					<a href="#"
+						onclick="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$collectionId';document.getElementById('criteria').value='last modified';document.getElementById('showForm').submit();"
+						onkeypress="javascript:document.getElementById('sakai_action').value='doSort';document.getElementById('collectionId').value='$collectionId';document.getElementById('criteria').value='last modified';document.getElementById('showForm').submit();"
+						title= "$tlang.getString('sh.sortdate')">
+					##<a href="#toolLinkParam("ResourcesAction" "doSort" "criteria=last%20modified&collectionId=$validator.escapeUrl($collectionId)")" title ="$tlang.getString('sh.sortdate')"> 
+						$tlang.getString("gen.last1")
+						#if ($currentSortedBy.equals($resourceProperties.NamePropModifiedDate)) 
+							#if ($currentSortAsc.equals("true")) 
+								<img src = "#imageLink("sakai/sortascending.gif")" border="0"  title ="$tlang.getString('sh.sortdateas')"  alt ="$tlang.getString('sh.sortdateas')" /> 
+							#else 
+								<img src = "#imageLink("sakai/sortdescending.gif")" border="0" title ="$tlang.getString('sh.sortdatedesc')"  alt ="$tlang.getString('sh.sortdatedesc')" /> 
 							#end 
 						#end 
 					</a>
@@ -587,11 +587,11 @@
 								</div>
 							</td>
 							######################  Item/folder modification date  ##############
-							<td headers="modified">
-								$member.ModifiedTime
-							</td>
 							<td headers="creator">
 								$member.createdBy
+							</td>
+							<td headers="modified">
+								$member.ModifiedTime
 							</td>
 							<td headers="size">
 								$member.size
@@ -1015,11 +1015,11 @@
 										</div>
 									</td>
 									######################  Item/folder modification date  ##############
-									<td headers="modified">
-										$member.ModifiedTime
-									</td>
 									<td headers="creator">
 										$member.createdBy
+									</td>
+									<td headers="modified">
+										$member.ModifiedTime
 									</td>
 									<td headers="size">
 										$member.size
