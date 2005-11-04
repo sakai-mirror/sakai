@@ -80,7 +80,7 @@ CREATE TABLE SAKAI_SITE_PAGE (
        LAYOUT               CHAR(1) NULL,
        SITE_ORDER           INTEGER NOT NULL,
        POPUP                CHAR(1) NULL
-                                   CHECK (POPUP IN (1, 0)),
+                                   CHECK (POPUP IN (1, 0))
 );
 
 ALTER TABLE SAKAI_SITE_PAGE
