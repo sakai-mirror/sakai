@@ -36,6 +36,7 @@
 #end
 
 	#if ($showPopup)
+		##replace with tableless layout when time (gsilver)
 		<table cellspacing="0" cellpadding="0" style="margin-left:1em;width:auto">
 			<tr>
 				<td style="width:14em">
