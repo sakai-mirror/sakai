@@ -119,6 +119,14 @@ public interface SitePage extends Edit, Serializable
 	public void setLayout(int layout);
 
 	/**
+	 * Set the popup status for this page.
+	 * 
+	 * @param popup
+	 *        The new popup status.
+	 */
+	public void setPopup(boolean popup);
+
+	/**
 	 * Add a new tool to the page.
 	 * 
 	 * @return the ToolConfigurationEdit object for the new tool.

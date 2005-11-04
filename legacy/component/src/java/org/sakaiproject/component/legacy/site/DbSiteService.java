@@ -141,6 +141,9 @@ public class DbSiteService extends BaseSiteService
 
 				// also load the 2.1 new site database tables
 				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_site_group");
+
+				// also load the 2.1.0.003 field insertion
+				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_site_2_1_0_003");
 			}
 
 			super.init();
@@ -289,14 +292,15 @@ public class DbSiteService extends BaseSiteService
 					SitePage page = (SitePage) iPages.next();
 
 					// write the page
-					statement = "insert into SAKAI_SITE_PAGE (PAGE_ID, SITE_ID, TITLE, LAYOUT, SITE_ORDER)" + " values (?,?,?,?,?)";
+					statement = "insert into SAKAI_SITE_PAGE (PAGE_ID, SITE_ID, TITLE, LAYOUT, POPUP, SITE_ORDER)" + " values (?,?,?,?,?,?)";
 
-					fields = new Object[5];
+					fields = new Object[6];
 					fields[0] = page.getId();
 					fields[1] = caseId(edit.getId());
 					fields[2] = page.getTitle();
 					fields[3] = Integer.toString(page.getLayout());
-					fields[4] = new Integer(pageOrder++);
+					fields[4] = ((((BaseSitePage) page).m_popup) ? "1" : "0");
+					fields[5] = new Integer(pageOrder++);
 					m_sql.dbWrite(connection, statement, fields);
 
 					// write the page's properties
@@ -1147,7 +1151,7 @@ public class DbSiteService extends BaseSiteService
 		 */
 		public SitePage findPage(final String id)
 		{
-			String sql = "select PAGE_ID, SAKAI_SITE_PAGE.TITLE, LAYOUT, SAKAI_SITE_PAGE.SITE_ID, SKIN, PUBLISHED "
+			String sql = "select PAGE_ID, SAKAI_SITE_PAGE.TITLE, LAYOUT, SAKAI_SITE_PAGE.SITE_ID, SKIN, PUBLISHED, POPUP"
 					+ "from SAKAI_SITE_PAGE, SAKAI_SITE where SAKAI_SITE_PAGE.SITE_ID = SAKAI_SITE.SITE_ID " + "and PAGE_ID = ?";
 
 			Object fields[] = new Object[1];
@@ -1166,12 +1170,13 @@ public class DbSiteService extends BaseSiteService
 						String siteId = result.getString(4);
 						String skin = result.getString(5);
 						int published = result.getInt(6);
+						boolean popup = "1".equals(result.getString(7)) ? true : false;
 
 						// adjust the skin value
 						skin = m_service.adjustSkin(skin, (published == 1));
 
 						// make the page
-						BaseSitePage page = new BaseSitePage(pageId, title, layout, siteId, skin);
+						BaseSitePage page = new BaseSitePage(pageId, title, layout, popup, siteId, skin);
 
 						return page;
 					}
@@ -1918,7 +1923,7 @@ public class DbSiteService extends BaseSiteService
 		public void readSitePages(final Site site, final ResourceVector pages)
 		{
 			// read all resources from the db with a where
-			String sql = "select PAGE_ID, TITLE, LAYOUT from SAKAI_SITE_PAGE" + " where SITE_ID = ?" + " order by SITE_ORDER ASC";
+			String sql = "select PAGE_ID, TITLE, LAYOUT, POPUP from SAKAI_SITE_PAGE" + " where SITE_ID = ?" + " order by SITE_ORDER ASC";
 
 			Object fields[] = new Object[1];
 			fields[0] = site.getId();
@@ -1933,9 +1938,10 @@ public class DbSiteService extends BaseSiteService
 						String id = result.getString(1);
 						String title = result.getString(2);
 						String layout = result.getString(3);
+						boolean popup = "1".equals(result.getString(4)) ? true : false;
 
 						// make the page
-						BaseSitePage page = new BaseSitePage(site, id, title, layout);
+						BaseSitePage page = new BaseSitePage(site, id, title, layout, popup);
 
 						// add it to the pages
 						pages.add(page);

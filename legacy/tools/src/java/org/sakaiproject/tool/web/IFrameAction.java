@@ -36,12 +36,12 @@ import org.sakaiproject.cheftool.RunData;
 import org.sakaiproject.cheftool.VelocityPortlet;
 import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
+import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
 
@@ -193,7 +193,6 @@ public class IFrameAction extends VelocityPortletPaneledAction
 		else if (SPECIAL_WORKSITE.equals(special))
 		{
 			// set the url to the site of this request's config'ed url
-			String siteId = PortalService.getCurrentSiteId();
 			try
 			{
 				// get the site's info URL, if defined
@@ -351,6 +350,26 @@ public class IFrameAction extends VelocityPortletPaneledAction
 		context.put("doUpdate", BUTTON + "doConfigure_update");
 		context.put("doCancel", BUTTON + "doCancel");
 
+		// if we are part of a site, and the only tool on the page, offer the popup to edit
+		Placement placement = ToolManager.getCurrentPlacement();
+		ToolConfiguration toolConfig = SiteService.findTool(placement.getId());
+		if ((state.getAttribute(SPECIAL) == null) && (toolConfig != null))
+		{
+			try
+			{
+				Site site = SiteService.getSite(toolConfig.getSiteId());
+				SitePage page = site.getPage(toolConfig.getPageId());
+	
+				// if this is the only tool on that page, update the page's title also
+				if ((page.getTools() != null) && (page.getTools().size() == 1))
+				{
+					context.put("showPopup", Boolean.TRUE);
+					context.put("popup", Boolean.valueOf(page.isPopUp()));
+				}
+			}
+			catch (Throwable e) {}
+		}
+
 		// pick the "-customize" template based on the standard template name
 		String template = (String) getContext(data).get("template");
 		
@@ -378,6 +397,9 @@ public class IFrameAction extends VelocityPortletPaneledAction
 		SessionState state = ((JetspeedRunData) data).getPortletSessionState(peid);
 
 		Placement placement = ToolManager.getCurrentPlacement();
+		
+		// get the site toolConfiguration, if this is part of a site.
+		ToolConfiguration toolConfig = SiteService.findTool(placement.getId());
 
 		// read source if we are not special
 		if (state.getAttribute(SPECIAL) == null)
@@ -420,37 +442,45 @@ public class IFrameAction extends VelocityPortletPaneledAction
 		//state.setAttribute(TITLE, title);
 		placement.setTitle(title);
 
-		if (state.getAttribute(SPECIAL) == null)
+		// for web content tool, if it is a site page tool, and the only tool on the page, update the page title / popup.
+		if ((state.getAttribute(SPECIAL) == null) && (toolConfig != null))
 		{
-			// for web content tool, if it is the only tool on the page, update the page title also.
-			SitePage p = SiteService.findPage(PortalService.getCurrentSitePageId());
-			if (p.getTools() != null && p.getTools().size() == 1)
+			try
 			{
+				Site site = SiteService.getSite(toolConfig.getSiteId());
+				SitePage page = site.getPage(toolConfig.getPageId());
+	
 				// if this is the only tool on that page, update the page's title also
-				try
+				if ((page.getTools() != null) && (page.getTools().size() == 1))
 				{
 					// TODO: save site page title? -ggolden
-					Site sEdit = SiteService.getSite(PortalService.getCurrentSiteId());
-					SitePage pEdit = sEdit.getPage(p.getId());
-					pEdit.setTitle(title);
-					SiteService.save(sEdit);
-				}
-				catch (Exception ignore)
-				{
+					page.setTitle(title);
+					
+					// popup
+					boolean popup = data.getParameters().getBoolean("popup");
+					page.setPopup(popup);
+
+					SiteService.save(site);
 				}
 			}
-		
+			catch (Exception ignore)
+			{
+			}
 		}
 
 		// save
+		// TODO: we might have just saved the entire site, so this would not be needed -ggolden
 		placement.save();
 
 		// we are done with customization... back to the main mode
 		state.removeAttribute(STATE_MODE);
 
 		// deliver an update to the title panel (to show the new title)
-		String titleId = titlePanelUpdateId(peid);
-		schedulePeerFrameRefresh(titleId);
+//		String titleId = titlePanelUpdateId(peid);
+//		schedulePeerFrameRefresh(titleId);
+		
+		// refresh the whole page, since popup and title may have changed
+		scheduleTopRefresh();
 	}
 
 	/**

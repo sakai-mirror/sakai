@@ -1467,6 +1467,9 @@ public class SitesAction
 		}
 		catch (Exception e) { Log.warn("chef", this + ".readPageForm(): reading layout: " + e); }
 
+		boolean popup = data.getParameters().getBoolean("popup");
+		page.setPopup(popup);
+
 		if (title == null)
 		{
 			addAlert(state, rb.getString("sitact.plespe"));

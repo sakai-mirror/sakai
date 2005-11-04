@@ -909,7 +909,7 @@ public class CharonPortal extends HttpServlet
 		SitePage page = site.getPage(pageId);
 		if (page == null)
 		{
-			List pages = site.getPages();
+			List pages = site.getOrderedPages();
 			if (!pages.isEmpty())
 			{
 				page = (SitePage) site.getPages().get(0);
@@ -1413,6 +1413,7 @@ public class CharonPortal extends HttpServlet
 	{
 		String presenceUrl = Web.returnUrl(req, "/presence/" + Web.escapeUrl(site.getId()));
 		String pageUrl = Web.returnUrl(req, "/" + portalPrefix + "/" + Web.escapeUrl(site.getId()) + "/page/");
+		String pagePopupUrl = Web.returnUrl(req, "/page/");
 		boolean showPresence = ServerConfigurationService.getBoolean("display.users.present", true);
 		boolean loggedIn = session.getUserId() != null;
 		String iconUrl = site.getIconUrlFull();
@@ -1438,10 +1439,9 @@ public class CharonPortal extends HttpServlet
 		}
 		out.println("	</div>");
 
-// gsilver - target of "jump to tools" link, header
-
+		// gsilver - target of "jump to tools" link, header
 		out.println("	<a id=\"toolmenu\" class=\"skip\" name=\"toolmenu\"></a>");
-		out.println("	<h1 class=\"skip\">" + Web.escapeHtml(rb.getString("sit.toolshead")) +  "</h1>");
+		out.println("	<h1 class=\"skip\">" + Web.escapeHtml(rb.getString("sit.toolshead")) + "</h1>");
 
 		out.println("	<div id=\"leftnavlozenge\">");
 		out.println("		<ul>");
@@ -1449,44 +1449,44 @@ public class CharonPortal extends HttpServlet
 		// order the pages based on their tools and the tool order for the site type
 		List pages = site.getOrderedPages();
 
-// gsilver - counter for tool accesskey attributes of <a>
+		// gsilver - counter for tool accesskey attributes of <a>
+		int count = 0;
 
-			int count =0;
-
-			for (Iterator i = pages.iterator(); i.hasNext();)
+		for (Iterator i = pages.iterator(); i.hasNext();)
+		{
+			SitePage p = (SitePage) i.next();
+			if (p.getId().equals(page.getId()) && !p.isPopUp())
 			{
-				SitePage p = (SitePage) i.next();
-				if (p.getId().equals(page.getId()))
+				// show as current
+				out.println("			<li><a class=\"selected\" href=\"#\">" + Web.escapeHtml(p.getTitle()) + "</a></li>");
+			}
+			else
+			{
+				// show as option
+				if (p.isPopUp())
 				{
-					// show as current
-					out.println("			<li><a class=\"selected\" href=\"#\">" +  Web.escapeHtml(p.getTitle()) + "</a></li>");
+					out.println("			<li><a  accesskey=\"" +  count + "\" href=\"javascript:;\" " + "onclick=\"window.open('" + pagePopupUrl + Web.escapeUrl(p.getId()) + "'"
+							+ ",'" + Web.escapeHtml(p.getTitle()) + "','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\">" + Web.escapeHtml(p.getTitle())
+							+ "</a></li>");
 				}
 				else
 				{
-					// show as option
-					if (count==0)
-					{
-						out.println("			<li><a accesskey=\"" + "0" + "\" href=\"" + pageUrl + Web.escapeUrl(p.getId()) + "\">" + Web.escapeHtml(p.getTitle())
-							+ "</a></li>");
-					}
-					else
-					{
-						out.println("			<li><a accesskey=\"" + count + "\" href=\"" + pageUrl + Web.escapeUrl(p.getId()) + "\">" + Web.escapeHtml(p.getTitle())
-							+ "</a></li>");
-					}
-
+					out.println("			<li><a accesskey=\"" + count + "\" href=\"" + pageUrl + Web.escapeUrl(p.getId()) + "\">"
+							+ Web.escapeHtml(p.getTitle()) + "</a></li>");
 				}
-				count++;
+
 			}
+			count++;
+		}
 
 		String helpUrl = ServerConfigurationService.getHelpUrl(null);
 		out.println("			<li>");
 
-//gsilver Help gets its own accesskey - h
-
-		out.println("				<a  accesskey=\"h\" href=\"javascript:;\" " +  "onclick=\"window.open('" + helpUrl + "'"
-				+ ",'Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\" onkeypress=\"window.open('" + helpUrl + "'"
-				+ ",'Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\">" + rb.getString("sit.help") +"</a>");
+		// gsilver Help gets its own accesskey - h
+		out.println("				<a  accesskey=\"h\" href=\"javascript:;\" " + "onclick=\"window.open('" + helpUrl + "'"
+				+ ",'Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\" onkeypress=\"window.open('" + helpUrl
+				+ "'" + ",'Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\">" + rb.getString("sit.help")
+				+ "</a>");
 		out.println("			</li>");
 
 		out.println("		</ul>");
@@ -1494,7 +1494,7 @@ public class CharonPortal extends HttpServlet
 		if (showPresence && loggedIn)
 		{
 			out.println("	<div class=\"sideBarText\"  id=\"pres_title\">");
-			out.println(		Web.escapeHtml(rb.getString("sit.presencetitle")));
+			out.println(Web.escapeHtml(rb.getString("sit.presencetitle")));
 			out.println("	</div>");
 			out.println("	<iframe ");
 			out.println("		name=\"presence\"");
@@ -1510,9 +1510,9 @@ public class CharonPortal extends HttpServlet
 		}
 		out.println("</div>");
 
-// gsilver - target of "jump to content" link and header for content
+		// gsilver - target of "jump to content" link and header for content
 
-		out.println("	<h1 class=\"skip\">" + Web.escapeHtml(rb.getString("sit.contentshead")) +  "</h1>");
+		out.println("	<h1 class=\"skip\">" + Web.escapeHtml(rb.getString("sit.contentshead")) + "</h1>");
 		out.println("	<a id=\"tocontent\" class=\"skip\" name=\"tocontent\"></a>");
 
 	}

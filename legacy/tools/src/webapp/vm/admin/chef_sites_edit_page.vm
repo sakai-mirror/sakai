@@ -44,9 +44,20 @@
 					</td>
 					<td>
 						#foreach ($layout in $layouts)
-							<input type="radio" name="layout" id="layout$velocityCount" value="$velocityCount" #if($velocityCount==($page.LayoutWithPopup+1))checked="checked"#end />
+							<input type="radio" name="layout" id="layout$velocityCount" value="$velocityCount" #if($velocityCount==($page.Layout+1))checked="checked"#end />
 							<label for="layout$velocityCount">$layout</label> <br />
 						#end							
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for="popup">
+							$tlang.getString("sitedipag.pop")
+						</label>
+					</td>
+					<td>
+						<input type="radio" value="true" name="popup" id="opentrue" #if ($page.isPopUp()) checked="checked" #end /><label for="opentrue"> $tlang.getString("sitedi.yes") </label>
+						<input type="radio" value="false" name="popup" id="openfalse" #if (!$page || !$page.isPopUp()) checked="checked" #end /><label for="openfalse"> $tlang.getString("sitedi.no")</label>
 					</td>
 				</tr>
 			</table>

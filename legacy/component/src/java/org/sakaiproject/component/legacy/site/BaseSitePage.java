@@ -68,6 +68,9 @@ public class BaseSitePage implements SitePage, Identifiable
 	/** The layout. */
 	protected int m_layout = LAYOUT_SINGLE_COL;
 
+	/** The popup setting. */
+	protected boolean m_popup = false;
+
 	/** The site id. */
 	protected String m_id = null;
 
@@ -117,8 +120,10 @@ public class BaseSitePage implements SitePage, Identifiable
 	 *        The page title.
 	 * @param layout
 	 *        The layout as a string ("0" or not currently supported).
+	 * @param popup
+	 *        The page popup setting.
 	 */
-	protected BaseSitePage(Site site, String id, String title, String layout)
+	protected BaseSitePage(Site site, String id, String title, String layout, boolean popup)
 	{
 		m_site = site;
 		m_id = id;
@@ -132,26 +137,38 @@ public class BaseSitePage implements SitePage, Identifiable
 		m_title = title;
 
 		if (layout.equals(String.valueOf(LAYOUT_SINGLE_COL)))
+		{
 			m_layout = LAYOUT_SINGLE_COL;
-		else if (layout.equals(String.valueOf(LAYOUT_DOUBLE_COL))) m_layout = LAYOUT_DOUBLE_COL;
+		}
+		else if (layout.equals(String.valueOf(LAYOUT_DOUBLE_COL)))
+		{
+			m_layout = LAYOUT_DOUBLE_COL;
+		}
+
+		m_popup = popup;
 	}
 
 	/**
 	 * ReConstruct - if we don't have a site to follow up to get to certain site info.
 	 * 
-	 * @param site
-	 *        The site in which this page lives.
-	 * @param id
+	 * @param pageId
 	 *        The page id.
 	 * @param title
 	 *        The page title.
 	 * @param layout
 	 *        The layout as a string ("0" or not currently supported).
+	 * @param popup
+	 *        The page popup setting.
+	 * @param siteId
+	 *        The page's site's id.
+	 * @param skin
+	 *        The page's site's skin.
 	 */
-	protected BaseSitePage(String pageId, String title, String layout, String siteId, String skin)
+	protected BaseSitePage(String pageId, String title, String layout, boolean popup, String siteId, String skin)
 	{
 		m_site = null;
 		m_id = pageId;
+		m_popup = popup;
 
 		m_properties = new BaseResourcePropertiesEdit();
 		((BaseResourcePropertiesEdit) m_properties).setLazy(true);
@@ -162,8 +179,15 @@ public class BaseSitePage implements SitePage, Identifiable
 		m_title = title;
 
 		if (layout.equals(String.valueOf(LAYOUT_SINGLE_COL)))
+		{
 			m_layout = LAYOUT_SINGLE_COL;
-		else if (layout.equals(String.valueOf(LAYOUT_DOUBLE_COL))) m_layout = LAYOUT_DOUBLE_COL;
+		}
+		else if (layout.equals(String.valueOf(LAYOUT_DOUBLE_COL)))
+		{
+			m_layout = LAYOUT_DOUBLE_COL;
+		}
+
+		m_popup = popup;
 
 		m_siteId = siteId;
 		m_skin = skin;
@@ -195,6 +219,7 @@ public class BaseSitePage implements SitePage, Identifiable
 		}
 		m_title = bOther.m_title;
 		m_layout = bOther.m_layout;
+		m_popup = bOther.m_popup;
 
 		m_properties = new BaseResourcePropertiesEdit();
 		ResourceProperties pOther = other.getProperties();
@@ -243,6 +268,14 @@ public class BaseSitePage implements SitePage, Identifiable
 		try
 		{
 			m_layout = Integer.parseInt(StringUtil.trimToNull(el.getAttribute("layout")));
+		}
+		catch (Exception e)
+		{
+		}
+
+		try
+		{
+			m_popup = Boolean.valueOf(el.getAttribute("popup")).booleanValue();
 		}
 		catch (Exception e)
 		{
@@ -329,8 +362,7 @@ public class BaseSitePage implements SitePage, Identifiable
 	 */
 	public boolean isPopUp()
 	{
-		// TODO:
-		return false;
+		return m_popup;
 	}
 
 	/**
@@ -438,6 +470,14 @@ public class BaseSitePage implements SitePage, Identifiable
 		}
 		else
 			M_log.warn("setLayout(): set to invalid value: " + layout);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public void setPopup(boolean popup)
+	{
+		m_popup = popup;
 	}
 
 	/**
@@ -598,6 +638,7 @@ public class BaseSitePage implements SitePage, Identifiable
 		page.setAttribute("id", getId());
 		if (m_title != null) page.setAttribute("title", m_title);
 		page.setAttribute("layout", Integer.toString(m_layout));
+		page.setAttribute("popup", Boolean.valueOf(m_popup).toString());
 
 		// properties
 		stack.push(page);
