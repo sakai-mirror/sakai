@@ -1455,27 +1455,33 @@ public class CharonPortal extends HttpServlet
 		for (Iterator i = pages.iterator(); i.hasNext();)
 		{
 			SitePage p = (SitePage) i.next();
-			if (p.getId().equals(page.getId()) && !p.isPopUp())
+			boolean current = (p.getId().equals(page.getId()) && !p.isPopUp());
+
+			out.print("			<li><a ");
+			if (count < 10)
 			{
-				// show as current
-				out.println("			<li><a class=\"selected\" href=\"#\">" + Web.escapeHtml(p.getTitle()) + "</a></li>");
+				out.print("accesskey=\"" +  count + "\" ");
+			}
+			if (current)
+			{
+				out.print("class=\"selected\" ");
+			}
+			out.print("href=\"");
+			if (current)
+			{
+				out.print("\"#\"");
+			}
+			else if (p.isPopUp())
+			{
+				out.print("javascript:;\" " + "onclick=\"window.open('" + pagePopupUrl + Web.escapeUrl(p.getId()) + "'"
+						+ ",'" + Web.escapeJavascript(p.getTitle()) + "','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')");
 			}
 			else
 			{
-				// show as option
-				if (p.isPopUp())
-				{
-					out.println("			<li><a  accesskey=\"" +  count + "\" href=\"javascript:;\" " + "onclick=\"window.open('" + pagePopupUrl + Web.escapeUrl(p.getId()) + "'"
-							+ ",'" + Web.escapeHtml(p.getTitle()) + "','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')\">" + Web.escapeHtml(p.getTitle())
-							+ "</a></li>");
-				}
-				else
-				{
-					out.println("			<li><a accesskey=\"" + count + "\" href=\"" + pageUrl + Web.escapeUrl(p.getId()) + "\">"
-							+ Web.escapeHtml(p.getTitle()) + "</a></li>");
-				}
-
+				out.print(pageUrl + Web.escapeUrl(p.getId()));
 			}
+			out.println("\">" + Web.escapeHtml(p.getTitle()) + "</a></li>");				
+
 			count++;
 		}
 
