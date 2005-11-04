@@ -47,7 +47,7 @@
 						<input type="radio" value="true" name="popup" id="opentrue" #if ($popup) checked="checked" #end /><label for="opentrue">$tlang.getString("gen.info.yes")</label>
 					</span>        
 					<span class="checkbox">
-						<input type="radio" value="true" name="popup" id="opentrue" #if ($popup) checked="checked" #end /><label for="opentrue">$tlang.getString("gen.info.yes")</label>
+						<input type="radio" value="false" name="popup" id="openfalse" #if (!$popup) checked="checked" #end /><label for="openfalse">$tlang.getString("gen.info.no")</label>
 					</span>
 				</td>
 			</tr>
