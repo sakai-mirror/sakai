@@ -392,8 +392,10 @@ public interface ContentHostingService extends EntityProducer
 	 *        The notification priority for this commit.
 	 * @exception PermissionException
 	 *            if the user does not have permission to add a resource to the containing collection.
-	 * @exception IdUsedException
-	 *            if the resource id is already in use.
+	 * @exception IdUniquenessException
+	 *            if a unique resource id cannot be found before the limit on the number of attempts is reached.
+	 * @exception IdLengthException
+	 *            if the resource id exceeds the maximum number of characters for a valid resource id.
 	 * @exception IdInvalidException
 	 *            if the resource id is invalid.
 	 * @exception InconsistentException

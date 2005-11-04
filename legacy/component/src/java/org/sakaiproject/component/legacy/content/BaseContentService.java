@@ -1559,7 +1559,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 * @param collectionId
 	 *        The id of the collection to which the resource should be added.
 	 * @param limit
-	 *        The maximum number of attempts at finding a unique id based on the given id.
+	 *        The maximum number of attempts at finding a unique id based on the given name.
 	 * @param type
 	 *        The mime type string of the resource.
 	 * @param content
@@ -1570,8 +1570,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *        The notification priority for this commit.
 	 * @exception PermissionException
 	 *            if the user does not have permission to add a resource to the containing collection.
-	 * @exception IdUsedException
-	 *            if the resource id is already in use.
+	 * @exception IdUniquenessException
+	 *            if a unique resource id cannot be found before the limit on the number of attempts is reached.
+	 * @exception IdLengthException
+	 *            if the resource id exceeds the maximum number of characters for a valid resource id.
 	 * @exception IdInvalidException
 	 *            if the resource id is invalid.
 	 * @exception InconsistentException
