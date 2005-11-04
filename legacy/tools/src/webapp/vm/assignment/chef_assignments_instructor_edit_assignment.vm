@@ -47,12 +47,12 @@
 	<div class="navIntraTool">
 		#if ($allowAddAssignment)
 			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>|
-			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title = "$!tlang.getString('gen.liofass')">$!tlang.getString("gen.liofass")</a>|
+			<a href="#" title = "$!tlang.getString('gen.liofass')" onclick="javascript:document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.liofass')';document.editForm.submit();return false;">$!tlang.getString("gen.liofass")</a>
 			#if ($withGrade && $!allowGradeSubmission)
-				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>|
+				<a href="#" title="$!tlang.getString('gen.grarep')" onclick="javascript:document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.grarep')';document.editForm.submit();return false;">$!tlang.getString("gen.grarep")</a>
 			#end
-			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>|
-			<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
+			<a href="#" title="$!tlang.getString('gen.stuvie')" onclick="javascript:document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.stuvie')';document.editForm.submit();return false;">$!tlang.getString("gen.stuvie")</a>
+			<a href="#" title="$tlang.getString('permis')" onclick="javascript:document.getElementById('option').value='permissions';document.editForm.submit();return false;">$tlang.getString('permis')</a>
 		#end
 	</div>
 	<h3>
@@ -67,6 +67,9 @@
 	<form name="editForm" action="#toolForm("AssignmentAction")" method="post" >    
 		<input type="hidden" name="assignmentId" value="$assignment.Reference" />
 		<input type="hidden" name="assignmentContentId" value="$assignment.ContentReference" />
+		<input type="hidden" name="eventSubmit_doAssignment_form" value="" />
+		<input type="hidden" name="option" id="option" value="" />
+		<input type="hidden" name="view" id="view" value="" />
 		<h4>$tlang.getString("gen.assig")</h4>
 			<p class="shorttext">
 				<span class="reqStar">*</span>
@@ -351,20 +354,20 @@
 			#end							
 			<div class="act">
 				#if ($size == 0)
-					<input type="submit" name="eventSubmit_doAttachments" value="$tlang.getString("gen.addatt")" accesskey="a" />
+					<input type="submit" name="attach" value="$tlang.getString('gen.addatt')" onclick="javascript:document.getElementById('option').value='attach';document.editForm.submit();return false;" accesskey="a"/>
 				#else
-					<input type="submit" name="eventSubmit_doAttachments" value="$tlang.getString("gen.adddroatt2")" accesskey="a" />
+					<input type="submit" name="attach" value="$tlang.getString('gen.adddroatt2')" onclick="javascript:document.getElementById('option').value='attach';document.editForm.submit();return false;" accesskey="a"/>
 				#end
 			</div>
 			<p class="act">
-				<input type="submit" name="eventSubmit_doPreview_assignment" value="$tlang.getString("gen.pre")" />
+				<input type="submit" name="preview" value="$tlang.getString("gen.pre")" onclick="javascript:document.getElementById('option').value='preview';document.editForm.submit();return false;" />
 				#if (!$assignment.draft)
-					<input type="submit" name = "eventSubmit_doPost_assignment" value="$tlang.getString("gen.pos")" />
+					<input type="submit" class="active" name="post" value="$tlang.getString("gen.pos")" onclick="javascriptdocument.getElementById('option').value='post';document.editForm.submit();return false;" />
 				#else
-					<input type="submit" name = "eventSubmit_doPost_assignment" value="$tlang.getString("gen.pos")" />
-					<input type="submit" name = "eventSubmit_doSave_assignment" value="$tlang.getString("gen.savdra")" />
+					<input type="submit" class="active" name="post" value="$tlang.getString("gen.pos")" onclick="javascript:document.getElementById('option').value='post';document.editForm.submit();return false;" />
+					<input type="submit" name="save" value="$tlang.getString("gen.savdra")" onclick="javascript:document.getElementById('option').value='save';document.editForm.submit();return false;" />
 				#end
-				<input type="submit" name="eventSubmit_doCancel_edit_assignment" value="$tlang.getString("gen.can")" />
+				<input type="submit" name="cancel" value="$tlang.getString("gen.can")" onclick="javascript:document.getElementById('option').value='canceledit';document.editForm.submit();return false;" />
 			</p>									
 	</form>
 </div>

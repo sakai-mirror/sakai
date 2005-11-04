@@ -1796,7 +1796,7 @@ extends PagedResourceActionII
 	/**
 	 * Go to the instructor view
 	 **/
-	public void doView_instructor (RunData data, Context context)
+	public void doView_instructor (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -1809,7 +1809,7 @@ extends PagedResourceActionII
 	/**
 	 * Go to the student view
 	 **/
-	public void doView_student (RunData data, Context context)
+	public void doView_student (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -1822,7 +1822,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to view the content of one specific assignment submission
 	 **/
-	public void doView_submission (RunData data, Context context)
+	public void doView_submission (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -1907,7 +1907,7 @@ extends PagedResourceActionII
 	/**
 	 * Preview of the grading of submission
 	 **/
-	public void doPreview_grade_submission (RunData data, Context context)
+	public void doPreview_grade_submission (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -2008,7 +2008,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to end the view assignment process
 	 **/
-	public void doDone_view_assignment (RunData data, Context context)
+	public void doDone_view_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -2020,7 +2020,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to end the preview new assignment process
 	 **/
-	public void doDone_preview_new_assignment (RunData data, Context context)
+	public void doDone_preview_new_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -2032,7 +2032,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to end the preview edit assignment process
 	 **/
-	public void doDone_preview_edit_assignment (RunData data, Context context)
+	public void doDone_preview_edit_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -2074,7 +2074,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to cancel the delete assignment process
 	 **/
-	public void doCancel_delete_assignment (RunData data, Context context)
+	public void doCancel_delete_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -2089,7 +2089,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to end the show submission process
 	 **/
-	public void  doCancel_edit_assignment (RunData data, Context context)
+	public void  doCancel_edit_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -2101,7 +2101,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to end the show submission process
 	 **/
-	public void doCancel_new_assignment (RunData data, Context context)
+	public void doCancel_new_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -2116,7 +2116,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to cancel the grade submission process
 	 **/
-	public void doCancel_grade_submission (RunData data, Context context)
+	public void doCancel_grade_submission (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -2131,7 +2131,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to cancel the preview grade process
 	 **/
-	public void doCancel_preview_grade_submission (RunData data, Context context)
+	public void doCancel_preview_grade_submission (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -2143,7 +2143,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to return to the view of list assignments
 	 **/
-	public void doList_assignments (RunData data, Context context)
+	public void doList_assignments (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -2156,7 +2156,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to cancel the student view grade process
 	 **/
-	public void doCancel_view_grade (RunData data, Context context)
+	public void doCancel_view_grade (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -2171,7 +2171,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to save the grade to submission
 	 **/
-	public void doSave_grade_submission (RunData data, Context context)
+	public void doSave_grade_submission (RunData data)
 	{
 		grade_submission_option(data, "save");
 		
@@ -2180,7 +2180,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to release the grade to submission
 	 **/
-	public void doRelease_grade_submission (RunData data, Context context)
+	public void doRelease_grade_submission (RunData data)
 	{
 		grade_submission_option(data, "release");
 		
@@ -2189,7 +2189,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to return submission with or without grade
 	 **/
-	public void doReturn_grade_submission (RunData data, Context context)
+	public void doReturn_grade_submission (RunData data)
 	{
 		grade_submission_option(data, "return");
 		
@@ -2791,7 +2791,7 @@ extends PagedResourceActionII
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
-		if (!alertGlobalNavigation(state))
+		if (!alertGlobalNavigation(state, data))
 		{
 			if (AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)))
 			{
@@ -3016,7 +3016,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to hide the preview assignment student view
 	 **/
-	public void doHide_submission_assignment_instruction (RunData data, Context context)
+	public void doHide_submission_assignment_instruction (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (GRADE_SUBMISSION_ASSIGNMENT_EXPAND_FLAG, new Boolean (false));
@@ -3026,7 +3026,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the preview assignment student view
 	 **/
-	public void doShow_submission_assignment_instruction (RunData data, Context context)
+	public void doShow_submission_assignment_instruction (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (GRADE_SUBMISSION_ASSIGNMENT_EXPAND_FLAG, new Boolean (true));
@@ -3036,7 +3036,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to hide the preview assignment student view
 	 **/
-	public void doHide_preview_assignment_student_view (RunData data, Context context)
+	public void doHide_preview_assignment_student_view (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (PREVIEW_ASSIGNMENT_STUDENT_VIEW_HIDE_FLAG, new Boolean (true));
@@ -3046,7 +3046,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the preview assignment student view
 	 **/
-	public void doShow_preview_assignment_student_view (RunData data, Context context)
+	public void doShow_preview_assignment_student_view (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (PREVIEW_ASSIGNMENT_STUDENT_VIEW_HIDE_FLAG, new Boolean (false));
@@ -3056,7 +3056,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to hide the preview assignment assignment infos
 	 **/
-	public void doHide_preview_assignment_assignment (RunData data, Context context)
+	public void doHide_preview_assignment_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (PREVIEW_ASSIGNMENT_ASSIGNMENT_HIDE_FLAG, new Boolean (true));
@@ -3066,7 +3066,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the preview assignment assignment info
 	 **/
-	public void doShow_preview_assignment_assignment (RunData data, Context context)
+	public void doShow_preview_assignment_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (PREVIEW_ASSIGNMENT_ASSIGNMENT_HIDE_FLAG, new Boolean (false));
@@ -3076,7 +3076,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to hide the assignment option
 	 **/
-	public void doHide_assignment_option (RunData data, Context context)
+	public void doHide_assignment_option (RunData data)
 	{
 		setNewAssignmentParameters(data, false);
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
@@ -3088,7 +3088,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the assignment option
 	 **/
-	public void doShow_assignment_option (RunData data, Context context)
+	public void doShow_assignment_option (RunData data)
 	{
 		setNewAssignmentParameters(data, false);
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
@@ -3100,7 +3100,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to hide the assignment content in the view assignment page
 	 **/
-	public void doHide_view_assignment (RunData data, Context context)
+	public void doHide_view_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (VIEW_ASSIGNMENT_HIDE_ASSIGNMENT_FLAG, new Boolean (true));
@@ -3110,7 +3110,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the assignment content in the view assignment page
 	 **/
-	public void doShow_view_assignment (RunData data, Context context)
+	public void doShow_view_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (VIEW_ASSIGNMENT_HIDE_ASSIGNMENT_FLAG, new Boolean (false));
@@ -3120,7 +3120,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to hide the student view in the view assignment page
 	 **/
-	public void doHide_view_student_view (RunData data, Context context)
+	public void doHide_view_student_view (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (VIEW_ASSIGNMENT_HIDE_STUDENT_VIEW_FLAG, new Boolean (true));
@@ -3130,7 +3130,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the student view in the view assignment page
 	 **/
-	public void doShow_view_student_view (RunData data, Context context)
+	public void doShow_view_student_view (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (VIEW_ASSIGNMENT_HIDE_STUDENT_VIEW_FLAG, new Boolean (false));
@@ -3140,7 +3140,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to post draft assignment
 	 **/
-	public void doPost_draft_assignment (RunData data, Context context)
+	public void doPost_draft_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -3244,7 +3244,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to post assignment
 	 **/
-	public void doPost_assignment (RunData data, Context context)
+	public void doPost_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
@@ -3728,7 +3728,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to post new assignment
 	 **/
-	public void doSave_assignment (RunData data, Context context)
+	public void doSave_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
@@ -4011,7 +4011,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to preview the selected assignment
 	 **/
-	public void doPreview_assignment (RunData data, Context context)
+	public void doPreview_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
@@ -4035,7 +4035,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to view the selected assignment
 	 **/
-	public void doView_assignment (RunData data, Context context)
+	public void doView_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -4071,7 +4071,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is for student to view one assignment content
 	 **/
-	public void doView_assignment_as_student (RunData data, Context context)
+	public void doView_assignment_as_student (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -4091,7 +4091,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the edit assignment screen
 	 **/
-	public void doEdit_assignment (RunData data, Context context)
+	public void doEdit_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -4228,7 +4228,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the delete assigment confirmation screen
 	 **/
-	public void doDelete_confirm_assignment (RunData data, Context context)
+	public void doDelete_confirm_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -4280,7 +4280,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to delete the confirmed assignments
 	 **/
-	public void doDelete_assignment (RunData data, Context context)
+	public void doDelete_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -4392,7 +4392,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to delete the assignment and also the related AssignmentSubmission
 	 **/
-	public void doDeep_delete_assignment (RunData data, Context context)
+	public void doDeep_delete_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -4437,7 +4437,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the duplicate assignment screen
 	 **/
-	public void doDuplicate_assignment (RunData data, Context context)
+	public void doDuplicate_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -4485,7 +4485,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the grade submission screen
 	 **/
-	public void doGrade_submission (RunData data, Context context)
+	public void doGrade_submission (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -4539,7 +4539,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to release all the grades of the submission
 	 **/
-	public void doRelease_grades (RunData data, Context context)
+	public void doRelease_grades (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -4585,7 +4585,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the assignment in grading page
 	 **/
-	public void doExpand_grade_assignment (RunData data, Context context)
+	public void doExpand_grade_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (GRADE_ASSIGNMENT_EXPAND_FLAG, new Boolean (true));
@@ -4595,7 +4595,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to hide the assignment in grading page
 	 **/
-	public void doCollapse_grade_assignment (RunData data, Context context)
+	public void doCollapse_grade_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (GRADE_ASSIGNMENT_EXPAND_FLAG, new Boolean (false));
@@ -4605,7 +4605,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the submissions in grading page
 	 **/
-	public void doExpand_grade_submission (RunData data, Context context)
+	public void doExpand_grade_submission (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (GRADE_SUBMISSION_EXPAND_FLAG, new Boolean (true));
@@ -4615,7 +4615,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to hide the submissions in grading page
 	 **/
-	public void doCollapse_grade_submission (RunData data, Context context)
+	public void doCollapse_grade_submission (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (GRADE_SUBMISSION_EXPAND_FLAG, new Boolean (false));
@@ -4625,7 +4625,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the grade assignment
 	 **/
-	public void doGrade_assignment (RunData data, Context context)
+	public void doGrade_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -4659,7 +4659,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the grade assignment
 	 **/
-	public void doGrade_assignment_from (RunData data, Context context)
+	public void doGrade_assignment_from (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -4689,7 +4689,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the View Students assignment screen
 	 **/
-	public void doView_students_assignment (RunData data, Context context)
+	public void doView_students_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();		
@@ -4700,7 +4700,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the student submissions
 	 */
-	public void doShow_student_submission (RunData data, Context context)
+	public void doShow_student_submission (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		Hashtable t = (Hashtable) state.getAttribute (STUDENT_LIST_SHOW_TABLE);
@@ -4717,7 +4717,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to hide the student submissions
 	 */
-	public void doHide_student_submission (RunData data, Context context)
+	public void doHide_student_submission (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		Hashtable t = (Hashtable) state.getAttribute (STUDENT_LIST_SHOW_TABLE);
@@ -4734,7 +4734,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the graded assignment submission
 	 **/
-	public void doView_grade (RunData data, Context context)
+	public void doView_grade (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -4749,7 +4749,7 @@ extends PagedResourceActionII
 	/**
 	 * Action is to show the student submissions
 	 */
-	public void doReport_submissions (RunData data, Context context)
+	public void doReport_submissions (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
@@ -4757,6 +4757,82 @@ extends PagedResourceActionII
 		state.setAttribute(SORTED_BY, SORTED_SUBMISSION_BY_LASTNAME);
 		
 	}	// doReport_submissions
+	
+	/**
+	 * 
+	 * 
+	 */
+	public void doAssignment_form (RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		ParameterParser params = data.getParameters ();
+
+		String option = (String) params.getString("option");
+		if (option != null)
+		{
+			if (option.equals("post"))
+			{
+				// post assignment
+				doPost_assignment(data);
+			}
+			else if (option.equals("save"))
+			{
+				// save assignment
+				doSave_assignment(data);
+			}
+			else if (option.equals("preview"))
+			{
+				// preview assignment
+				doPreview_assignment(data);
+			}
+			else if (option.equals("cancel"))
+			{
+				// cancel creating assignment
+				doCancel_new_assignment(data);
+			}
+			else if (option.equals("canceledit"))
+			{
+				// cancel editing assignment
+				doCancel_edit_assignment(data);
+			}
+			else if (option.equals("attach"))
+			{
+				// attachments
+				doAttachments(data);
+			}
+			else if (option.equals("view"))
+			{
+				// view
+				doView(data);
+			}
+			else if (option.equals("permissions"))
+			{
+				// permissions
+				doPermissions(data);
+			}
+			else if (option.equals("returngrade"))
+			{
+				// return grading
+				doReturn_grade_submission(data);
+			}
+			else if (option.equals("savegrade"))
+			{
+				// save grading
+				doSave_grade_submission(data);
+			}
+			else if (option.equals("previewgrade"))
+			{
+				// preview grading
+				doPreview_grade_submission(data);
+			}
+			else if (option.equals("cancelgrade"))
+			{
+				// cancel grading
+				doCancel_grade_submission(data);
+			}
+			
+		}
+	}
 	
 	/**
 	 * Action is to use when doAattchmentsadding requested,
@@ -4809,36 +4885,8 @@ extends PagedResourceActionII
 		}
 		else if (mode.equals (MODE_INSTRUCTOR_GRADE_SUBMISSION))
 		{
-			boolean checkForFormattingErrors = false; // so that grading isn't held up by formatting errors
-			String feedbackComment = processFormattedTextFromBrowser(state, params.getCleanString (GRADE_SUBMISSION_FEEDBACK_COMMENT), checkForFormattingErrors);
-			state.setAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT, feedbackComment);
-			String feedbackText = processAssignmentFeedbackFromBrowser(state, params.getCleanString (GRADE_SUBMISSION_FEEDBACK_TEXT));
-			state.setAttribute (GRADE_SUBMISSION_FEEDBACK_TEXT, feedbackText);
-			state.setAttribute (GRADE_SUBMISSION_FEEDBACK_ATTACHMENT,  params.getString (GRADE_SUBMISSION_FEEDBACK_ATTACHMENT));
-			String grade = params.getString (GRADE_SUBMISSION_GRADE);
-			try
-			{
-				Assignment a = AssignmentService.getAssignment ((String) state.getAttribute (GRADE_SUBMISSION_ASSIGNMENT_ID));
+			readGradeForm(data, state);
 			
-				if (a.getContent().getTypeOfGrade() == 3)
-				{
-					// for point grades, scale the point grade by 10
-					state.setAttribute (GRADE_SUBMISSION_GRADE,  scalePointGrade(state, grade));
-				}
-				else
-				{
-					// for other grade type, do not scale.
-					state.setAttribute (GRADE_SUBMISSION_GRADE, grade );
-				}
-			}
-			catch (IdUnusedException e )
-			{
-				addAlert(state, rb.getString("cannotfin3"));
-			}
-			catch (PermissionException e)
-			{
-				addAlert(state, rb.getString("youarenot14"));
-			}
 			try
 			{
 				AssignmentSubmission s = AssignmentService.getSubmission ((String) state.getAttribute (GRADE_SUBMISSION_SUBMISSION_ID));
@@ -4941,7 +4989,69 @@ extends PagedResourceActionII
 				addAlert(state, rb.getString("youarenot14"));
 			}
 		}
-	}	//doAttachments	
+	}	//doAttachments
+	
+	/**
+	 * readGradeForm
+	 */
+	public void readGradeForm(RunData data, SessionState state)
+	{
+		ParameterParser params = data.getParameters();
+		boolean checkForFormattingErrors = false; // so that grading isn't held up by formatting errors
+		String feedbackComment = processFormattedTextFromBrowser(state, params.getCleanString (GRADE_SUBMISSION_FEEDBACK_COMMENT), checkForFormattingErrors);
+		state.setAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT, feedbackComment);
+		String feedbackText = processAssignmentFeedbackFromBrowser(state, params.getCleanString (GRADE_SUBMISSION_FEEDBACK_TEXT));
+		state.setAttribute (GRADE_SUBMISSION_FEEDBACK_TEXT, feedbackText);
+		state.setAttribute (GRADE_SUBMISSION_FEEDBACK_ATTACHMENT,  params.getString (GRADE_SUBMISSION_FEEDBACK_ATTACHMENT));
+		
+		if (params.getString("allowResubmit") != null)
+		{
+			state.setAttribute (GRADE_SUBMISSION_ALLOW_RESUBMIT, Boolean.TRUE);
+		}
+		else
+		{
+			state.setAttribute (GRADE_SUBMISSION_ALLOW_RESUBMIT, Boolean.FALSE);
+		}
+		
+		String grade = params.getString (GRADE_SUBMISSION_GRADE);
+		state.setAttribute (GRADE_SUBMISSION_GRADE, grade);
+		try
+		{
+			Assignment a = AssignmentService.getAssignment ((String) state.getAttribute (GRADE_SUBMISSION_ASSIGNMENT_ID));
+		
+			if (a.getContent().getTypeOfGrade() == 3)
+			{
+				// for point grades, scale the point grade by 10
+				state.setAttribute (GRADE_SUBMISSION_GRADE,  scalePointGrade(state, grade));
+			}
+			else
+			{
+				// for other grade type, do not scale.
+				state.setAttribute (GRADE_SUBMISSION_GRADE, grade );
+			}
+		}
+		catch (IdUnusedException e )
+		{
+			addAlert(state, rb.getString("cannotfin3"));
+		}
+		catch (PermissionException e)
+		{
+			addAlert(state, rb.getString("youarenot14"));
+		}
+		
+		try
+		{
+			AssignmentSubmission s = AssignmentService.getSubmission ((String) state.getAttribute (GRADE_SUBMISSION_SUBMISSION_ID));
+			if (s != null)
+			{
+				User[] users = s.getSubmitters();
+				state.setAttribute(ResourcesAction.STATE_SAVE_ATTACHMENT_IN_DROPBOX, users);
+			}
+		}
+		catch(Exception ignore)
+		{
+		}
+	}
 	
 	/**
 	* Populate the state object, if needed - override to do something!
@@ -5385,7 +5495,7 @@ extends PagedResourceActionII
 	/**
 	 * Sort based on the given property
 	 */
-	public void doSort ( RunData data, Context context)
+	public void doSort (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -5427,7 +5537,7 @@ extends PagedResourceActionII
 	/**
 	 * Sort submission based on the given property
 	 */
-	public void doSort_submission ( RunData data, Context context)
+	public void doSort_submission (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
@@ -5998,31 +6108,46 @@ extends PagedResourceActionII
 	/**
 	* Fire up the permissions editor
 	*/
-	public void doPermissions(RunData data, Context context)
+	public void doPermissions(RunData data)
 	{
-		if (SiteService.allowUpdateSite(PortalService.getCurrentSiteId()))
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
+		if (!alertGlobalNavigation(state, data))
 		{
-			SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
-	
-			String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);
-			String siteRef = SiteService.siteReference(contextString);
-	
-			// setup for editing the permissions of the site for this tool, using the roles of this site, too
-			state.setAttribute(PermissionsAction.STATE_REALM_ID, siteRef);
-			state.setAttribute(PermissionsAction.STATE_REALM_ROLES_ID, siteRef);
-	
-			// ... with this description
-			state.setAttribute(PermissionsAction.STATE_DESCRIPTION, rb.getString("setperfor") + " "
-					+ SiteService.getSiteDisplay(contextString));
-	
-			// ... showing only locks that are prpefixed with this
-			state.setAttribute(PermissionsAction.STATE_PREFIX, "asn.");
+			// we are changing the view, so start with first page again. 
+			resetPaging(state);
+		
+			// clear search form
+			doSearch_clear(data, null);
 			
-			// disable auto-updates while leaving the list view
-			justDelivered(state);
-					
-			// start the helper
-			state.setAttribute(PermissionsAction.STATE_MODE, PermissionsAction.MODE_MAIN);
+			if (SiteService.allowUpdateSite(PortalService.getCurrentSiteId()))
+			{
+				String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);
+				String siteRef = SiteService.siteReference(contextString);
+		
+				// setup for editing the permissions of the site for this tool, using the roles of this site, too
+				state.setAttribute(PermissionsAction.STATE_REALM_ID, siteRef);
+				state.setAttribute(PermissionsAction.STATE_REALM_ROLES_ID, siteRef);
+		
+				// ... with this description
+				state.setAttribute(PermissionsAction.STATE_DESCRIPTION, rb.getString("setperfor") + " "
+						+ SiteService.getSiteDisplay(contextString));
+		
+				// ... showing only locks that are prpefixed with this
+				state.setAttribute(PermissionsAction.STATE_PREFIX, "asn.");
+				
+				// disable auto-updates while leaving the list view
+				justDelivered(state);
+						
+				// start the helper
+				state.setAttribute(PermissionsAction.STATE_MODE, PermissionsAction.MODE_MAIN);
+			}
+			state.setAttribute(STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+			
+			// reset the global navigaion alert flag
+			if (state.getAttribute(ALERT_GLOBAL_NAVIGATION) != null)
+			{
+				state.removeAttribute(ALERT_GLOBAL_NAVIGATION);
+			}
 		}
 
 	}	// doPermissions
@@ -6523,35 +6648,35 @@ extends PagedResourceActionII
 		return size;
 	}
 	
-	public void doView (RunData data, Context context)
+	public void doView (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		if (!alertGlobalNavigation(state))
+		if (!alertGlobalNavigation(state, data))
 		{
 			// we are changing the view, so start with first page again. 
 			resetPaging(state);
 		
 			// clear search form
-			doSearch_clear(data, context);
+			doSearch_clear(data, null);
 			
 			String viewMode = data.getParameters ().getString("view");
 			state.setAttribute(STATE_SELECTED_VIEW, viewMode);
 			
 			if (viewMode.equalsIgnoreCase(rb.getString("lisofass1")))
 			{
-				doList_assignments(data, context);
+				doList_assignments(data);
 			}
 			else if (viewMode.equalsIgnoreCase(rb.getString("lisofass2")))
 			{
-				doView_students_assignment(data, context);
+				doView_students_assignment(data);
 			}
 			else if (viewMode.equalsIgnoreCase(rb.getString("grad4")))
 			{
-				doReport_submissions(data, context);
+				doReport_submissions(data);
 			}
 			else if (viewMode.equalsIgnoreCase(rb.getString("stuvie")))
 			{
-				doView_student(data, context);
+				doView_student(data);
 			}
 			
 			// reset the global navigaion alert flag
@@ -6904,9 +7029,11 @@ extends PagedResourceActionII
 		
 	}	//showPrevFeedback
 	
-	private boolean alertGlobalNavigation(SessionState state)
-	{
+	private boolean alertGlobalNavigation(SessionState state, RunData data)
+	{	
 		String mode = (String)state.getAttribute (STATE_MODE);
+		ParameterParser params = data.getParameters();
+		
 		if (mode.equals (MODE_STUDENT_VIEW_SUBMISSION)
 			|| mode.equals (MODE_STUDENT_PREVIEW_SUBMISSION)
 			|| mode.equals (MODE_STUDENT_VIEW_GRADE)
@@ -6922,6 +7049,35 @@ extends PagedResourceActionII
 			{
 				addAlert(state, rb.getString("alert.globalNavi"));
 				state.setAttribute(ALERT_GLOBAL_NAVIGATION, Boolean.TRUE);
+				
+				if (mode.equals (MODE_STUDENT_VIEW_SUBMISSION))
+				{
+					// retrieve the submission text (as formatted text)
+					boolean checkForFormattingErrors = true; // the student is submitting something - so check for errors
+					String text = processFormattedTextFromBrowser(state, params.getCleanString(VIEW_SUBMISSION_TEXT), checkForFormattingErrors);
+					
+					state.setAttribute (VIEW_SUBMISSION_TEXT, text);
+					if (params.getString (VIEW_SUBMISSION_HONOR_PLEDGE_YES)!=null)
+					{
+						state.setAttribute (VIEW_SUBMISSION_HONOR_PLEDGE_YES,"true");
+					}
+					state.setAttribute(AttachmentAction.STATE_FROM_TEXT, rb.getString("thenewass"));
+					User[] users = {UserDirectoryService.getCurrentUser()};
+					state.setAttribute(ResourcesAction.STATE_SAVE_ATTACHMENT_IN_DROPBOX, users);
+				}
+				else if (mode.equals (MODE_INSTRUCTOR_NEW_ASSIGNMENT))
+				{
+					setNewAssignmentParameters(data, false);
+				}
+				else if (mode.equals (MODE_INSTRUCTOR_EDIT_ASSIGNMENT))
+				{
+					setNewAssignmentParameters(data, false);
+				}
+				else if (mode.equals (MODE_INSTRUCTOR_GRADE_SUBMISSION))
+				{
+					readGradeForm(data, state);
+				}
+				
 				return true;
 			}
 		}
