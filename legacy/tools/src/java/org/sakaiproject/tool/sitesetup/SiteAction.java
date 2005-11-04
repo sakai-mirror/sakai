@@ -443,7 +443,7 @@ public class SiteAction extends PagedResourceActionII
   	private static final String STATE_PAGESIZE_SITEINFO = "state_pagesize_siteinfo";
   	
   	// group info
-  	private static final String STATE_GROUP_INSTANCE = "state_group_instance";
+  	private static final String STATE_GROUP_INSTANCE_ID = "state_group_instance_id";
   	private static final String STATE_GROUP_TITLE = "state_group_title";
   	private static final String STATE_GROUP_DESCRIPTION = "state_group_description";
   	private static final String STATE_GROUP_MEMBERS = "state_group_members";
@@ -2809,7 +2809,7 @@ public class SiteAction extends PagedResourceActionII
 		/*  buildContextForTemplate chef_siteInfo-groupedit.vm
 		 * 
 		 */
-    		Group g = (Group) state.getAttribute(STATE_GROUP_INSTANCE);
+    		Group g = getStateGroup(state);
     		if (g != null)
     		{
     			context.put("group", g);
@@ -4260,6 +4260,29 @@ public class SiteAction extends PagedResourceActionII
 		return site;
 		
 	}	// getStateSite
+	
+	/**
+	 * get the Group object based on SessionState attribute values
+	 * @return Group object related to current state; null if no such Group object could be found
+	 */
+	protected Group getStateGroup(SessionState state)
+	{
+		Group group = null;
+		Site site = getStateSite(state);
+		
+		if (site != null && state.getAttribute(STATE_GROUP_INSTANCE_ID) != null)
+		{
+			try
+			{
+				group = site.getGroup((String) state.getAttribute(STATE_GROUP_INSTANCE_ID));
+			}
+			catch (Exception ignore)
+			{
+			}
+		}
+		return group;
+		
+	}	// getStateGroup
 		
 	/**
 	* do called when "eventSubmit_do" is in the request parameters to c
@@ -4502,7 +4525,7 @@ public class SiteAction extends PagedResourceActionII
 	*/
 	public void cleanEditGroupParams ( SessionState state )
 	{
-		state.removeAttribute(STATE_GROUP_INSTANCE);
+		state.removeAttribute(STATE_GROUP_INSTANCE_ID);
 		state.removeAttribute(STATE_GROUP_TITLE);
 		state.removeAttribute(STATE_GROUP_DESCRIPTION);
 		state.removeAttribute(STATE_GROUP_MEMBERS);
@@ -4519,7 +4542,6 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 
-		Group group = (Group) state.getAttribute(STATE_GROUP_INSTANCE);
 		Set gMemberSet = (Set) state.getAttribute(STATE_GROUP_MEMBERS);
 		Site site = getStateSite(state);
 		
@@ -4588,6 +4610,18 @@ public class SiteAction extends PagedResourceActionII
 		}
 		else if (option.equals("save"))
 		{	
+			Group group = null;
+			if (site != null && state.getAttribute(STATE_GROUP_INSTANCE_ID) != null)
+			{
+				try
+				{
+					group = site.getGroup((String) state.getAttribute(STATE_GROUP_INSTANCE_ID));
+				}
+				catch (Exception ignore)
+				{
+				}
+			}
+			
 			if (title == null)
 			{
 				addAlert(state, rb.getString("editgroup.titlemissing"));
@@ -4602,59 +4636,62 @@ public class SiteAction extends PagedResourceActionII
 					group.getProperties().addProperty(GROUP_PROP_WSETUP_CREATED, Boolean.TRUE.toString());
 				}
 				
-				group.setTitle(title);
-				group.setDescription(description);
-				
-				// save the modification to group members
-				
-				// remove those no longer included in the group
-				Set members = site.getMembers();
-				for(Iterator iMembers = members.iterator(); iMembers.hasNext();)
+				if (group != null)
 				{
-					found = false;
-					String mId = ((Member)iMembers.next()).getUserId();
-					for(Iterator iMemberSet = gMemberSet.iterator(); !found && iMemberSet.hasNext();)
+					group.setTitle(title);
+					group.setDescription(description);
+					
+					// save the modification to group members
+					
+					// remove those no longer included in the group
+					Set members = group.getMembers();
+					for(Iterator iMembers = members.iterator(); iMembers.hasNext();)
 					{
-						if (mId.equals(((Member) iMemberSet.next()).getUserId()))
+						found = false;
+						String mId = ((Member)iMembers.next()).getUserId();
+						for(Iterator iMemberSet = gMemberSet.iterator(); !found && iMemberSet.hasNext();)
 						{
-							found = true;
+							if (mId.equals(((Member) iMemberSet.next()).getUserId()))
+							{
+								found = true;
+							}
+						
 						}
-					
+						if (!found)
+						{
+							group.removeMember(mId);
+						}
 					}
-					if (!found)
-					{
-						group.removeMember(mId);
-					}
-					
+						
 					// add those seleted members
 					for(Iterator iMemberSet = gMemberSet.iterator(); iMemberSet.hasNext();)
 					{
 						String memberId = ((Member) iMemberSet.next()).getUserId();
-						if (group.getMember(memberId) == null)
+						if (group.getUserRole(memberId) == null)
 						{
 							Role r = site.getUserRole(memberId);
 							Member m = site.getMember(memberId);
 							group.addMember(memberId, r!= null?r.getId():"", m!=null?m.isActive():true, m!=null?m.isProvided():false);
 						}
 					}
-				}
-				
-				if (state.getAttribute(STATE_MESSAGE) == null)
-				{
-					try 
-					{
-						SiteService.save(site);
-					} 
-					catch (IdUnusedException e) 
-					{
-					} 
-					catch (PermissionException e) 
-					{
-					}
 					
-					// return to group list view
-					state.setAttribute (STATE_TEMPLATE_INDEX, "49");
-					cleanEditGroupParams(state);
+					if (state.getAttribute(STATE_MESSAGE) == null)
+					{
+						try 
+						{
+							SiteService.save(site);
+						} 
+						catch (IdUnusedException e) 
+						{
+						} 
+						catch (PermissionException e) 
+						{
+						}
+						
+						// return to group list view
+						state.setAttribute (STATE_TEMPLATE_INDEX, "49");
+						cleanEditGroupParams(state);
+					}
 				}
 			}
 		}
@@ -4692,6 +4729,7 @@ public class SiteAction extends PagedResourceActionII
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		String groupId = data.getParameters ().getString("groupId");
+		state.setAttribute(STATE_GROUP_INSTANCE_ID, groupId);
 		
 		Site site = getStateSite(state);
 		if (site != null)
@@ -4699,7 +4737,6 @@ public class SiteAction extends PagedResourceActionII
 			Group g = site.getGroup(groupId);
 			if (g != null)
 			{
-				state.setAttribute(STATE_GROUP_INSTANCE, g);
 				if (state.getAttribute(STATE_GROUP_TITLE) == null)
 				{
 					state.setAttribute(STATE_GROUP_TITLE, g.getTitle());
