@@ -6597,7 +6597,7 @@ public class ResourcesAction
 	public static void doHide_metadata(RunData data)
 	{
 		ParameterParser params = data.getParameters ();
-		String name = params.getString("group");
+		String name = params.getString("metadataGroup");
 		
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
@@ -6625,7 +6625,7 @@ public class ResourcesAction
 	public void doShow_metadata(RunData data)
 	{
 		ParameterParser params = data.getParameters ();
-		String name = params.getString("group");
+		String name = params.getString("metadataGroup");
 		
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);

@@ -331,7 +331,7 @@
 		<input type="hidden" name="stateName" value = "list" />
 		<input type="hidden" name="from" value="list" />
 		<input type="hidden" name="option" id="option" value="replace" />
-		<input type="hidden" name="group" id="group" value="" />
+		<input type="hidden" name="metadataGroup" id="metadataGroup" value="" />
 		<input type="hidden" name="ContentType" value="$item.MimeType" />
 		<input type="hidden" name="itemType" id="itemType" value="$itemType" />
 		<input type="hidden" name="field"  id="field" value="no value" />
@@ -676,8 +676,8 @@
 					
 				#else
 					<p class="discTria">
-						##<a href="#" onclick="javascript: document.getElementById('flow').value='showMetadata'; document.getElementById('group').value='$validator.escapeUrl($group.name)'; submitform('propertyForm'); return false;" title="$tlang.getString("edit.hide") $group.name">	
-						<a href="#" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=showMetadata&group=$validator.escapeUrl($group.name)")';submitform('propertyForm');" title="$tlang.getString("edit.show") $group.name">
+						##<a href="#" onclick="javascript: document.getElementById('flow').value='showMetadata'; document.getElementById('metadataGroup').value='$validator.escapeUrl($group.name)'; submitform('propertyForm'); return false;" title="$tlang.getString("edit.hide") $metadataGroup.name">	
+						<a href="#" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=showMetadata&metadataGroup=$validator.escapeUrl($group.name)")';submitform('propertyForm');" title="$tlang.getString("edit.show") $group.name">
 							<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("edit.show") $group.name" border="0" width="15" height="15" align="top" />
 						</a>
 						$validator.escapeHtml($group.name)
