@@ -31,6 +31,8 @@ import java.util.Stack;
 import java.util.Map;
 
 import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.IdLengthException;
+import org.sakaiproject.exception.IdUniquenessException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
@@ -366,6 +368,44 @@ public interface ContentHostingService extends EntityProducer
 	 */
 	public ContentResource addResource(String id, String type, byte[] content, ResourceProperties properties, int priority)
 			throws PermissionException, IdUsedException, IdInvalidException, InconsistentException, OverQuotaException,
+			ServerOverloadException;
+
+	/**
+	 * Create a new resource with the given resource name used as a resource id within the
+	 * specified collection or (if that id is already in use) with a resource id based on
+	 * a variation on the name to achieve a unique id, provided a unique id can be found 
+	 * before a limit is reached on the number of attempts to achieve uniqueness.
+	 * 
+	 * @param name
+	 *        The name of the new resource (such as a filename).
+	 * @param collectionId
+	 *        The id of the collection to which the resource should be added.
+	 * @param limit
+	 *        The maximum number of attempts at finding a unique id based on the given id.
+	 * @param type
+	 *        The mime type string of the resource.
+	 * @param content
+	 *        An array containing the bytes of the resource's content.
+	 * @param properties
+	 *        A ResourceProperties object with the properties to add to the new resource.
+	 * @param priority
+	 *        The notification priority for this commit.
+	 * @exception PermissionException
+	 *            if the user does not have permission to add a resource to the containing collection.
+	 * @exception IdUsedException
+	 *            if the resource id is already in use.
+	 * @exception IdInvalidException
+	 *            if the resource id is invalid.
+	 * @exception InconsistentException
+	 *            if the containing collection does not exist.
+	 * @exception OverQuotaException
+	 *            if this would result in being over quota.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
+	 * @return a new ContentResource object.
+	 */
+	public ContentResource addResource(String name, String collectionId, int limit, String type, byte[] content, ResourceProperties properties, int priority)
+			throws PermissionException, IdUniquenessException, IdLengthException, IdInvalidException, InconsistentException, IdLengthException, OverQuotaException,
 			ServerOverloadException;
 
 	/**

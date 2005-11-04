@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.Stack;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -55,6 +56,8 @@ import org.sakaiproject.component.legacy.notification.SiteEmailNotificationConte
 import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.IdLengthException;
+import org.sakaiproject.exception.IdUniquenessException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
@@ -124,7 +127,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	protected static final String ATTACHMENTS_COLLECTION = "/attachment/";
 
 	/** Number of times to attempt to find a unique resource id when copying or moving a resource */
-	protected static final int MAXIMUM_ATTEMPTS_FOR_UNIQUENESS = 1024;
+	protected static final int MAXIMUM_ATTEMPTS_FOR_UNIQUENESS = 100;
+	
+	/** Maximum number of characters in a valid resource-id */
+	protected static final int MAXIMUM_RESOURCE_ID_LENGTH = 255;
 	
 	/** The initial portion of a relative access point URL. */
 	protected String m_relativeAccessPoint = null;
@@ -1541,6 +1547,152 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		return edit;
 
 	} // addResource
+	
+	/**
+	 * Create a new resource with the given resource name used as a resource id within the
+	 * specified collection or (if that id is already in use) with a resource id based on
+	 * a variation on the name to achieve a unique id, provided a unique id can be found 
+	 * before a limit is reached on the number of attempts to achieve uniqueness.
+	 * 
+	 * @param name
+	 *        The name of the new resource (such as a filename).
+	 * @param collectionId
+	 *        The id of the collection to which the resource should be added.
+	 * @param limit
+	 *        The maximum number of attempts at finding a unique id based on the given id.
+	 * @param type
+	 *        The mime type string of the resource.
+	 * @param content
+	 *        An array containing the bytes of the resource's content.
+	 * @param properties
+	 *        A ResourceProperties object with the properties to add to the new resource.
+	 * @param priority
+	 *        The notification priority for this commit.
+	 * @exception PermissionException
+	 *            if the user does not have permission to add a resource to the containing collection.
+	 * @exception IdUsedException
+	 *            if the resource id is already in use.
+	 * @exception IdInvalidException
+	 *            if the resource id is invalid.
+	 * @exception InconsistentException
+	 *            if the containing collection does not exist.
+	 * @exception OverQuotaException
+	 *            if this would result in being over quota.
+	 * @exception ServerOverloadException
+	 *            if the server is configured to write the resource body to the filesystem and the save fails.
+	 * @return a new ContentResource object.
+	 */
+	public ContentResource addResource(String name, String collectionId, int limit, String type, byte[] content, ResourceProperties properties, int priority)
+			throws PermissionException, IdUniquenessException, IdLengthException, IdInvalidException, InconsistentException, OverQuotaException,
+			ServerOverloadException
+	{
+		try
+		{
+			collectionId = collectionId.trim();
+			name = Validator.escapeResourceName(name.trim());
+			checkCollection(collectionId);
+		}
+		catch(IdUnusedException e)
+		{
+			throw new InconsistentException(collectionId);
+		}
+		catch(TypeException e)
+		{
+			throw new InconsistentException(collectionId);
+		}
+		
+		String id = collectionId + name;
+		id = (String) ((Hashtable) fixTypeAndId(id, type)).get("id");
+		if(id.length() > MAXIMUM_RESOURCE_ID_LENGTH)
+		{
+			throw new IdLengthException(id);
+		}
+
+		ContentResourceEdit edit = null;
+		
+		try
+		{
+			edit = addResource(id);
+			edit.setContentType(type);
+			edit.setContent(content);
+			addProperties(edit.getPropertiesEdit(), properties);
+			// commit the change
+			commitResource(edit, priority);
+		}
+		catch(IdUsedException e)
+		{
+			try
+			{
+				checkResource(id);
+			}
+			catch(IdUnusedException inner_e)
+			{
+				// TODO: What does this condition actually represent?  What exception should be thrown?
+				throw new IdUniquenessException(id);
+			}
+			catch(TypeException inner_e)
+			{
+				throw new InconsistentException(id);
+			}
+			
+			SortedSet siblings = new TreeSet();
+			try
+			{
+				ContentCollection collection = findCollection(collectionId);
+				siblings.addAll(collection.getMembers());
+			}
+			catch(TypeException inner_e)
+			{
+				throw new InconsistentException(collectionId);
+			}
+			
+			int index = name.lastIndexOf(".");
+			String base = name;
+			String ext = "";
+			if(index > 0 && ! "Url".equalsIgnoreCase(type))
+			{
+				base = name.substring(0, index);
+				ext = name.substring(index);
+			}
+			boolean trying = true;
+			int attempts = 1;
+			while(trying) 	// see end of loop for condition that enforces attempts <= limit)
+			{
+				String new_id = collectionId + base + "-" + attempts + ext;
+				if(new_id.length() > MAXIMUM_RESOURCE_ID_LENGTH)
+				{
+					throw new IdLengthException(new_id);
+				}
+				if(! siblings.contains(new_id))
+				{
+					try
+					{
+						edit = addResource(new_id);
+						edit.setContentType(type);
+						edit.setContent(content);
+						addProperties(edit.getPropertiesEdit(), properties);
+						// commit the change
+						commitResource(edit, priority);
+						
+						trying = false;
+					}
+					catch(IdUsedException ignore)
+					{
+						// try again
+					}
+				}
+				attempts++;
+				if(attempts > limit)
+				{
+					throw new IdUniquenessException(new_id);
+				}
+			}
+		}
+		return edit;
+		
+	}
+
+
 
 	/**
 	 * Create a new resource with the given resource id, locked for update. Must commitResource() to make official, or cancelResource() when done!
@@ -2533,6 +2685,14 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 				}
 				catch (IdUsedException e)
 				{
+					try
+					{
+						ContentCollection test_for_exists = getCollection(new_folder_id);
+					}
+					catch(Exception ee)
+					{
+						throw e;
+					}
 					attempt++;
 					if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
 					{
@@ -2646,6 +2806,14 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			}
 			catch (IdUsedException e)
 			{
+				try
+				{
+					ContentResource test_for_exists = getResource(new_id);
+				}
+				catch(Exception ee)
+				{
+					throw e;
+				}
 				if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
 				{
 					throw e;
@@ -2857,6 +3025,14 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			}
 			catch (IdUsedException e)
 			{
+				try
+				{
+					ContentResource test_for_exists = getResource(new_id);
+				}
+				catch(Exception ee)
+				{
+					throw e;
+				}
 				if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
 				{
 					throw e;
@@ -2987,6 +3163,14 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 				}
 				catch (IdUsedException e)
 				{
+					try
+					{
+						checkCollection(new_folder_id);
+					}
+					catch(Exception ee)
+					{
+						throw e;
+					}
 					attempt++;
 					if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
 					{

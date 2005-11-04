@@ -222,6 +222,15 @@ public class ContentHostingService
 		return service.addResource(param0, param1, param2, param3, param4);
 	}
 
+	public static org.sakaiproject.service.legacy.content.ContentResource addResource(java.lang.String param0, java.lang.String param1, int param2, java.lang.String param3, byte[] param4, org.sakaiproject.service.legacy.entity.ResourceProperties param5, int param6) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.ServerOverloadException, org.sakaiproject.exception.IdUniquenessException, org.sakaiproject.exception.IdLengthException
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.addResource(param0, param1, param2, param3, param4, param5, param6);
+	}
+
 	public static org.sakaiproject.service.legacy.content.ContentResourceEdit addResource(java.lang.String param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.IdInvalidException, org.sakaiproject.exception.InconsistentException, org.sakaiproject.exception.ServerOverloadException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();

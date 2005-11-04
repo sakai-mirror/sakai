@@ -67,6 +67,8 @@ import org.sakaiproject.cheftool.menu.Menu;
 import org.sakaiproject.cheftool.menu.MenuEntry;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.IdLengthException;
+import org.sakaiproject.exception.IdUniquenessException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
@@ -426,7 +428,7 @@ public class ResourcesAction
 	private static final String COPYRIGHT_NEW_COPYRIGHT = rb.getString("cpright3");
 	private static final String COPYRIGHT_ALERT_URL = ServerConfigurationService.getAccessUrl() + COPYRIGHT_PATH;
 
-	private static final int MAXIMUM_ATTEMPTS_FOR_UNIQUENESS = 1000;
+	private static final int MAXIMUM_ATTEMPTS_FOR_UNIQUENESS = 100;
 
 	/** The default value for whether to show all sites in file-picker (used if global value can't be read from server config service) */
 	static public final boolean SHOW_ALL_SITES_IN_FILE_PICKER = false;
@@ -2164,136 +2166,72 @@ public class ResourcesAction
 						continue outerloop;
 					}
 
-					boolean tryingToAddItem = true;
-					while(tryingToAddItem)
+					try
 					{
+						ContentResource resource = ContentHostingService.addResource (filename + extension,
+																					collectionId,
+																					MAXIMUM_ATTEMPTS_FOR_UNIQUENESS,
+																					MIME_TYPE_STRUCTOBJ,
+																					item.getContent(),
+																					resourceProperties, 
+																					item.getNotification());
+
+						if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+						{
+							// deal with pubview when in resource mode//%%%
+							if (! item.isPubviewset())
+							{
+								ContentHostingService.setPubView(resource.getId(), item.isPubview());
+							}
+						}
 						
-						try
+						String mode = (String) state.getAttribute(STATE_MODE);
+						if(MODE_HELPER.equals(mode))
 						{
-							ContentResource resource = ContentHostingService.addResource (newResourceId,
-																						MIME_TYPE_STRUCTOBJ,
-																						item.getContent(),
-																						resourceProperties, 
-																						item.getNotification());
-							tryingToAddItem = false;
-							// ResourceProperties rp = resource.getProperties();
-							// item.setAdded(true);
-							
-
-							if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+							if(state.getAttribute(STATE_ATTACH_LINKS) == null)
 							{
-								// deal with pubview when in resource mode//%%%
-								if (! item.isPubviewset())
-								{
-									ContentHostingService.setPubView(resource.getId(), item.isPubview());
-								}
+								attachItem(resource.getId(), state);
 							}
-							
-							HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
-							if(!currentMap.containsKey(collectionId))
+							else
 							{
-								try
-								{
-									currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
-									state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
-					
-									// add this folder id into the set to be event-observed
-									addObservingPattern(collectionId, state);
-								}
-								catch (IdUnusedException ignore)
-								{
-								}
-								catch (TypeException ignore)
-								{
-								}
-								catch (PermissionException ignore)
-								{
-								} 
-							}
-							state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
-							
-							String mode = (String) state.getAttribute(STATE_MODE);
-							if(MODE_HELPER.equals(mode))
-							{
-								if(state.getAttribute(STATE_ATTACH_LINKS) == null)
-								{
-									attachItem(newResourceId, state);
-								}
-								else
-								{
-									attachLink(newResourceId, state);
-								}
+								attachLink(resource.getId(), state);
 							}
 						}
-						catch (IdUsedException e)
-						{
-							boolean foundUnusedId = false;
-							for(int trial = 1;!foundUnusedId && trial < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS; trial++)
-							{
-								attemptNum++;
-								attemptStr = Integer.toString(attemptNum);
-							
-
-								// add extension if there was one
-								newResourceId = collectionId + filename + "-" + attemptStr + extension;
-								
-								if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
-								{
-									alerts.add(rb.getString("toolong") + " " + newResourceId);
-									state.setAttribute(STATE_CREATE_ALERTS, alerts);
-									return;
-								}
-								
-								try 
-								{
-									ContentHostingService.getResource(newResourceId);
-								}
-								catch (IdUnusedException ee)
-								{
-									foundUnusedId = true;
-								}
-								// TODO: should these be here?
-								catch (PermissionException ee)
-								{
-									foundUnusedId = true;
-								}
-								catch (TypeException ee)
-								{
-									foundUnusedId = true;
-								}
-							}
-						}
-						catch(PermissionException e)
-						{
-							alerts.add(rb.getString("notpermis12"));
-							tryingToAddItem = false;
-						}
-						catch(IdInvalidException e)
-						{
-							alerts.add(rb.getString("title") + " " + e.getMessage ());
-							tryingToAddItem = false;
-						}
-						catch(InconsistentException e)
-						{
-							alerts.add(RESOURCE_INVALID_TITLE_STRING);
-							tryingToAddItem = false;
-						}
-						catch(OverQuotaException e)
-						{
-							alerts.add(rb.getString("overquota"));
-							tryingToAddItem = false;
-						}
-						catch(ServerOverloadException e)
-						{
-							alerts.add(rb.getString("failed"));
-							tryingToAddItem = false;
-						}
-						catch(RuntimeException e)
-						{
-							logger.error("ResourcesAction.createStructuredArtifacts ***** Unknown Exception ***** " + e.getMessage());
-							alerts.add(rb.getString("failed"));
-							tryingToAddItem = false;
-						}
+					}
+					catch(PermissionException e)
+					{
+						alerts.add(rb.getString("notpermis12"));
+						continue outerloop;
+					}
+					catch(IdInvalidException e)
+					{
+						alerts.add(rb.getString("title") + " " + e.getMessage ());
+						continue outerloop;
+					}
+					catch(IdLengthException e)
+					{
+						alerts.add(rb.getString("toolong") + " " + e.getMessage());
+						continue outerloop;
+					}
+					catch(IdUniquenessException e)
+					{
+						alerts.add("Could not add this item to this folder");
+						continue outerloop;
+					}
+					catch(InconsistentException e)
+					{
+						alerts.add(RESOURCE_INVALID_TITLE_STRING);
+						continue outerloop;
+					}
+					catch(OverQuotaException e)
+					{
+						alerts.add(rb.getString("overquota"));
+						continue outerloop;
+					}
+					catch(ServerOverloadException e)
+					{
+						alerts.add(rb.getString("failed"));
+						continue outerloop;
 					}
 				}
 				catch(RuntimeException e)
@@ -2301,6 +2239,29 @@ public class ResourcesAction
 					logger.error("ResourcesAction.createStructuredArtifacts ***** Unknown Exception ***** " + e.getMessage());
 					alerts.add(rb.getString("failed"));
 				}
+				
+				HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
+				if(!currentMap.containsKey(collectionId))
+				{
+					try
+					{
+						currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
+						state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+		
+						// add this folder id into the set to be event-observed
+						addObservingPattern(collectionId, state);
+					}
+					catch (IdUnusedException ignore)
+					{
+					}
+					catch (TypeException ignore)
+					{
+					}
+					catch (PermissionException ignore)
+					{
+					} 
+				}
+				state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
 			}
 			else
 			{
@@ -2618,154 +2579,109 @@ public class ResourcesAction
 				filename = Validator.escapeResourceName(item.getName());
 			}
 			
+			
 			resourceProperties.addProperty(ResourceProperties.PROP_ORIGINAL_FILENAME, filename);
 
-			int extensionIndex = filename.lastIndexOf (".");
-			String extension = "";
-			if (extensionIndex > 0)
+			try
 			{
-				extension = filename.substring (extensionIndex);
-				filename = filename.substring(0, extensionIndex);
-			}
-			int attemptNum = 0;
-			String attempt = "";
-			String newResourceId = collectionId + filename + attempt + extension;
+				ContentResource resource = ContentHostingService.addResource (filename,
+																			collectionId,
+																			MAXIMUM_ATTEMPTS_FOR_UNIQUENESS,
+																			item.getMimeType(),
+																			item.getContent(),
+																			resourceProperties, item.getNotification());
+				
+				item.setAdded(true);
+				
 
-			if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
+				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+				{
+					// deal with pubview when in resource mode//%%%
+					if (! item.isPubviewset())
+					{
+						ContentHostingService.setPubView(resource.getId(), item.isPubview());
+					}
+				}
+				
+				String mode = (String) state.getAttribute(STATE_MODE);
+				if(MODE_HELPER.equals(mode))
+				{
+					if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+					{
+						attachItem(resource.getId(), state);
+					}
+					else
+					{
+						attachLink(resource.getId(), state);
+					}
+				}
+				
+			}
+			catch(PermissionException e)
 			{
-				alerts.add(rb.getString("toolong") + " " + newResourceId);
+				alerts.add(rb.getString("notpermis12"));
 				continue outerloop;
 			}
-			
-			boolean tryingToAddItem = true;
-			while(tryingToAddItem)
+			catch(IdInvalidException e)
 			{
-				try
-				{
-					ContentResource resource = ContentHostingService.addResource (newResourceId,
-																				item.getMimeType(),
-																				item.getContent(),
-																				resourceProperties, item.getNotification());
-					tryingToAddItem = false;
-					// ResourceProperties rp = resource.getProperties();
-					item.setAdded(true);
-					
-
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						// deal with pubview when in resource mode//%%%
-						if (! item.isPubviewset())
-						{
-							ContentHostingService.setPubView(resource.getId(), item.isPubview());
-						}
-					}
-					String mode = (String) state.getAttribute(STATE_MODE);
-					if(MODE_HELPER.equals(mode))
-					{
-						if(state.getAttribute(STATE_ATTACH_LINKS) == null)
-						{
-							attachItem(newResourceId, state);
-						}
-						else
-						{
-							attachLink(newResourceId, state);
-						}
-					}
-				}
-				catch (IdUsedException e)
-				{
-					boolean foundUnusedId = false;
-					for(int trial = 1;!foundUnusedId && trial < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS; trial++)
-					{
-						attemptNum++;
-						attempt = Integer.toString(attemptNum);
-					
-
-						// add extension if there was one
-						newResourceId = collectionId + filename + "-" + attempt + extension;
-						
-						if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
-						{
-							alerts.add(rb.getString("toolong") + " " + newResourceId);
-							continue outerloop;
-						}
-						try 
-						{
-							ContentHostingService.getResource(newResourceId);
-						}
-						catch (IdUnusedException ee)
-						{
-							foundUnusedId = true;
-						}
-						// TODO: should these be here? Or should these be caught outside the for-loop?
-						catch (PermissionException ee)
-						{
-							// TODO: is this really an unused ID?
-							foundUnusedId = true;
-						}
-						catch (TypeException ee)
-						{
-							// TODO: is this really an unused ID?
-							foundUnusedId = true;
-						}
-					}
-				}
-				catch(PermissionException e)
-				{
-					alerts.add(rb.getString("notpermis12"));
-					tryingToAddItem = false;
-				}
-				catch(IdInvalidException e)
-				{
-					alerts.add(rb.getString("title") + " " + e.getMessage ());
-					tryingToAddItem = false;
-				}
-				catch(InconsistentException e)
-				{
-					alerts.add(RESOURCE_INVALID_TITLE_STRING);
-					tryingToAddItem = false;
-				}
-				catch (ServerOverloadException e)
-				{
-					alerts.add(rb.getString("failed"));
-					tryingToAddItem = false;
-				}
-				catch(OverQuotaException e)
-				{
-					alerts.add(rb.getString("overquota"));
-					tryingToAddItem = false;
-				}
-				catch(RuntimeException e)
-				{
-					logger.error("ResourcesAction.createFiles ***** Unknown Exception ***** " + e.getMessage());
-					alerts.add(rb.getString("failed"));
-					tryingToAddItem = false;
-				}
+				alerts.add(rb.getString("title") + " " + e.getMessage ());
+				continue outerloop;
 			}
-			HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
-			if(!currentMap.containsKey(collectionId))
+			catch(IdLengthException e)
 			{
-				try
-				{
-					currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
-					state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
-	
-					// add this folder id into the set to be event-observed
-					addObservingPattern(collectionId, state);
-				}
-				catch (IdUnusedException ignore)
-				{
-				}
-				catch (TypeException ignore)
-				{
-				}
-				catch (PermissionException ignore)
-				{
-				} 
+				alerts.add(rb.getString("toolong") + " " + e.getMessage());
+				continue outerloop;
 			}
-			state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+			catch(IdUniquenessException e)
+			{
+				alerts.add("Could not add this item to this folder");
+				continue outerloop;
+			}
+			catch(InconsistentException e)
+			{
+				alerts.add(RESOURCE_INVALID_TITLE_STRING);
+				continue outerloop;
+			}
+			catch(OverQuotaException e)
+			{
+				alerts.add(rb.getString("overquota"));
+				continue outerloop;
+			}
+			catch(ServerOverloadException e)
+			{
+				alerts.add(rb.getString("failed"));
+				continue outerloop;
+			}
+			catch(RuntimeException e)
+			{
+				logger.error("ResourcesAction.createFiles ***** Unknown Exception ***** " + e.getMessage());
+				alerts.add(rb.getString("failed"));
+				continue outerloop;
+			}
 				
 		}
+		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
+		if(!currentMap.containsKey(collectionId))
+		{
+			try
+			{
+				currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
+				state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+
+				// add this folder id into the set to be event-observed
+				addObservingPattern(collectionId, state);
+			}
+			catch (IdUnusedException ignore)
+			{
+			}
+			catch (TypeException ignore)
+			{
+			}
+			catch (PermissionException ignore)
+			{
+			} 
+		}
+		state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}	// createFiles
@@ -3338,124 +3254,83 @@ public class ResourcesAction
 			saveMetadata(resourceProperties, metadataGroups, item);
 
 			byte[] newUrl = item.getFilename().getBytes();
-			String baseId = Validator.escapeResourceName(item.getName());
-			int attemptNum = 0;
-			String attemptStr = "";
-			String newResourceId = collectionId + baseId + attemptStr;
+			String name = Validator.escapeResourceName(item.getName());
 		
-			if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
+			try
 			{
-				alerts.add(rb.getString("toolong") + " " + newResourceId);
+				ContentResource resource = ContentHostingService.addResource (name,
+																			collectionId,
+																			MAXIMUM_ATTEMPTS_FOR_UNIQUENESS,
+																			item.getMimeType(),
+																			item.getContent(),
+																			resourceProperties, item.getNotification());
+				
+				item.setAdded(true);
+				
+
+				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+				{
+					// deal with pubview when in resource mode//%%%
+					if (! item.isPubviewset())
+					{
+						ContentHostingService.setPubView(resource.getId(), item.isPubview());
+					}
+				}
+				
+				String mode = (String) state.getAttribute(STATE_MODE);
+				if(MODE_HELPER.equals(mode))
+				{
+					if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+					{
+						attachItem(resource.getId(), state);
+					}
+					else
+					{
+						attachLink(resource.getId(), state);
+					}
+				}
+				
+			}
+			catch(PermissionException e)
+			{
+				alerts.add(rb.getString("notpermis12"));
 				continue outerloop;
 			}
-			
-			boolean tryingToAddItem = true;
-
-			while(tryingToAddItem)
+			catch(IdInvalidException e)
 			{
-				try
-				{
-					ContentResource resource = ContentHostingService.addResource (newResourceId,
-																				ResourceProperties.TYPE_URL,
-																				newUrl,
-																				resourceProperties, item.getNotification());
-					tryingToAddItem = false;
-					// ResourceProperties rp = resource.getProperties();
-					item.setAdded(true);
-					
-
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						// deal with pubview when in resource mode//%%%
-						if (! item.isPubviewset())
-						{
-							ContentHostingService.setPubView(resource.getId(), item.isPubview());
-						}
-					}
-					String mode = (String) state.getAttribute(STATE_MODE);
-					if(MODE_HELPER.equals(mode))
-					{
-						if(state.getAttribute(STATE_ATTACH_LINKS) == null)
-						{
-							attachItem(newResourceId, state);
-						}
-						else
-						{
-							attachLink(newResourceId, state);
-						}
-					}
-					
-				}
-				catch (IdUsedException e)
-				{
-					boolean foundUnusedId = false;
-					for(int trial = 1;!foundUnusedId && trial < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS; trial++)
-					{
-						attemptNum++;
-						attemptStr = "-" + Integer.toString(attemptNum);
-					
-
-						// add attempt number if there was one
-						newResourceId = collectionId + baseId + attemptStr;
-						
-						if(newResourceId.length() > RESOURCE_ID_MAX_LENGTH)
-						{
-							alerts.add(rb.getString("toolong") + " " + newResourceId);
-							continue outerloop;
-						}
-						
-						try 
-						{
-							ContentHostingService.getResource(newResourceId);
-						}
-						catch (IdUnusedException ee)
-						{
-							foundUnusedId = true;
-						}
-						// TODO: should these be here? Or should these be caught outside the for-loop?
-						catch (PermissionException ee)
-						{
-							// TODO: does this really mean it's an unused ID?
-							foundUnusedId = true;
-						}
-						catch (TypeException ee)
-						{
-							// TODO: does this really mean it's an unused ID?
-							foundUnusedId = true;
-						}
-					}
-				}
-				catch(PermissionException e)
-				{
-					alerts.add(rb.getString("notpermis13"));
-					tryingToAddItem = false;
-				}
-				catch(IdInvalidException e)
-				{
-					alerts.add(rb.getString("title") + " " + e.getMessage ());
-					tryingToAddItem = false;
-				}
-				catch (ServerOverloadException e)
-				{
-					alerts.add(rb.getString("failed"));
-					tryingToAddItem = false;
-				}
-				catch(InconsistentException e)
-				{
-					alerts.add(RESOURCE_INVALID_TITLE_STRING);
-					tryingToAddItem = false;
-				}
-				catch(OverQuotaException e)
-				{
-					alerts.add(rb.getString("overquota"));
-					tryingToAddItem = false;
-				}
-				catch(RuntimeException e)
-				{
-					logger.error("ResourcesAction.createUrls ***** Unknown Exception ***** " + e.getMessage());
-					alerts.add(rb.getString("failed"));
-					tryingToAddItem = false;
-				}
+				alerts.add(rb.getString("title") + " " + e.getMessage ());
+				continue outerloop;
+			}
+			catch(IdLengthException e)
+			{
+				alerts.add(rb.getString("toolong") + " " + e.getMessage());
+				continue outerloop;
+			}
+			catch(IdUniquenessException e)
+			{
+				alerts.add("Could not add this item to this folder");
+				continue outerloop;
+			}
+			catch(InconsistentException e)
+			{
+				alerts.add(RESOURCE_INVALID_TITLE_STRING);
+				continue outerloop;
+			}
+			catch(OverQuotaException e)
+			{
+				alerts.add(rb.getString("overquota"));
+				continue outerloop;
+			}
+			catch(ServerOverloadException e)
+			{
+				alerts.add(rb.getString("failed"));
+				continue outerloop;
+			}
+			catch(RuntimeException e)
+			{
+				logger.error("ResourcesAction.createFiles ***** Unknown Exception ***** " + e.getMessage());
+				alerts.add(rb.getString("failed"));
+				continue outerloop;
 			}
 		}
 		
