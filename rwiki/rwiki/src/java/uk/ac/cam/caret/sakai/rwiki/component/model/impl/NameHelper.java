@@ -22,59 +22,81 @@
  **********************************************************************************/
 package uk.ac.cam.caret.sakai.rwiki.component.model.impl;
 
-
-//FIXME: Component
+// FIXME: Component
 
 public class NameHelper {
-    
+
     public static final char SPACE_SEPARATOR = '.';
 
     public static String globaliseName(String name, String defaultSpace) {
         if (name == null || name.length() == 0)
             return defaultSpace + SPACE_SEPARATOR + "Home";
-            //return "Home" + REALM_SEPARATOR + defaultRealm;
-        
+        // return "Home" + REALM_SEPARATOR + defaultRealm;
+
         // Need to normalize this...
         if (name.indexOf(SPACE_SEPARATOR) == -1) {
             return defaultSpace + SPACE_SEPARATOR + normalizeName(name);
-            //return normalizeName(name) + REALM_SEPARATOR + defaultRealm;
+            // return normalizeName(name) + REALM_SEPARATOR + defaultRealm;
         } else {
             String space = name.substring(0, name.indexOf(SPACE_SEPARATOR));
             name = name.substring(name.indexOf(SPACE_SEPARATOR) + 1);
-            
-            return  space + SPACE_SEPARATOR + normalizeName(name);
+
+            return space + SPACE_SEPARATOR + normalizeName(name);
         }
     }
 
     public static String localizeName(String pageName, String space) {
-        
+
         if (pageName == null || pageName.length() == 0)
             return "Home";
-        
+
         int index = pageName.indexOf(SPACE_SEPARATOR);
-        
+
         if (index > -1 && pageName.substring(0, index).equals(space)) {
             return pageName.substring(index + 1);
         }
-            
+
         return pageName;
     }
 
     public static String normalizeName(String pageName) {
-        String[] words = pageName.split(" ");
-        StringBuffer normalized = new StringBuffer();
-        for (int i=0; i<words.length; i++) {
-            normalized.append(Character.toTitleCase(words[i].charAt(0)));
-            normalized.append(words[i].substring(1));
-            if (i < words.length - 1) 
-                normalized.append(' ');
+        // Get the page name as an array which we will alter
+        char[] chars = pageName.toCharArray();
+
+        // Means capitalise next character that isn't whitespace, and do not add
+        // any whitespace characters
+        boolean lastWasWhitespace = true;
+
+        int j = 0;
+
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (Character.isWhitespace(c)) {
+                if (!lastWasWhitespace) {
+                    chars[j++] = ' ';
+                    lastWasWhitespace = true;
+                }
+            } else {
+                if (lastWasWhitespace) {
+                    chars[j++] = Character.toUpperCase(c);
+                    lastWasWhitespace = false;
+                } else {
+                    chars[j++] = c;
+                }
+            }
         }
-        return normalized.toString();
+
+        if (j > 0) {
+            return new String(chars, 0, j);
+        } else {
+            return "";
+        }
     }
 
     public static String localizeSpace(String pageName, String defaultSpace) {
-        if (pageName.indexOf(SPACE_SEPARATOR) > -1) {
-            return pageName.substring(0, pageName.indexOf(SPACE_SEPARATOR));
+        int index = pageName.indexOf(SPACE_SEPARATOR);
+        if (index > -1) {
+            return pageName.substring(0, index);
         }
         return defaultSpace;
     }
