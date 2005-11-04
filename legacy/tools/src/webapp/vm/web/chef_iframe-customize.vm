@@ -35,17 +35,23 @@
 		</p>
 #end
 
-#if ($showPopup)
-		<p class="shorttext indnt1">
-			<label for="popup">$tlang.getString("gen.info.pop")</label>
-		</p>
-		<p class="checkbox labelindnt">
-			<input type="radio" value="true" name="popup" id="opentrue" #if ($popup) checked="checked" #end /><label for="opentrue">$tlang.getString("gen.info.yes")</label>
-		</p>        
-		<p class="checkbox labelindnt">
-			<input type="radio" value="false" name="popup" id="openfalse" #if (!$popup) checked="checked" #end /><label for="openfalse">$tlang.getString("gen.info.no")</label>
-		</p>
-#end
+	#if ($showPopup)
+		<table cellspacing="0" cellpadding="0" style="margin-left:1em;width:auto">
+			<tr>
+				<td style="width:14em">
+					<label for="popup">$tlang.getString("gen.info.pop")</label>
+				</td>
+				<td>
+					<span class="checkbox">
+						<input type="radio" value="true" name="popup" id="opentrue" #if ($popup) checked="checked" #end /><label for="opentrue">$tlang.getString("gen.info.yes")</label>
+					</span>        
+					<span class="checkbox">
+						<input type="radio" value="true" name="popup" id="opentrue" #if ($popup) checked="checked" #end /><label for="opentrue">$tlang.getString("gen.info.yes")</label>
+					</span>
+				</td>
+			</tr>
+		</table>
+	#end
 
 		<p class="act">
 			<input type="submit" class="active" name="$doUpdate" value="$tlang.getString('gen.save')" />
