@@ -1234,56 +1234,6 @@ public class DbSiteService extends BaseSiteService
 		/**
 		 * {@inheritDoc}
 		 */
-		public Group findGroup(final String id)
-		{
-			String sql = "select SS.GROUP_ID, SS.TITLE, SS.DESCRIPTION, SS.SITE_ID "
-					+ "from SAKAI_SITE_GROUP SS where SS.GROUP_ID = ?";
-
-			Object fields[] = new Object[1];
-			fields[0] = id;
-
-			List found = m_sql.dbRead(sql, fields, new SqlReader()
-			{
-				public Object readSqlResultRecord(ResultSet result)
-				{
-					try
-					{
-						// get the fields
-						String groupId = result.getString(1);
-						String title = result.getString(2);
-						String description = result.getString(3);
-						String siteId = result.getString(4);
-
-						// make the group
-						BaseGroup group = new BaseGroup(groupId, title, description, siteId);
-
-						return group;
-					}
-					catch (SQLException e)
-					{
-						m_logger.warn(this + ".findPage: " + id + " : " + e);
-						return null;
-					}
-				}
-			});
-
-			if (found.size() > 1)
-			{
-				m_logger.warn(this + ".findPage: multiple results for page id: " + id);
-			}
-
-			Group rv = null;
-			if (found.size() > 0)
-			{
-				rv = (Group) found.get(0);
-			}
-
-			return rv;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
 		public String findGroupSiteId(String id)
 		{
 			String sql = "select SS.SITE_ID from SAKAI_SITE_GROUP SS where SS.GROUP_ID = ?";

@@ -77,9 +77,6 @@ public class BaseGroup implements Group, Identifiable
 	/** The site I belong to. */
 	protected Site m_site = null;
 
-	/** The site id I belong to, in case I have no m_site. */
-	protected String m_siteId = null;
-
 	/** The azg from the AuthzGroupService that is my AuthzGroup impl. */
 	protected AuthzGroup m_azg = null;
 
@@ -94,6 +91,8 @@ public class BaseGroup implements Group, Identifiable
 	 */
 	protected BaseGroup(Site site)
 	{
+		if (site == null) M_log.warn("BaseGroup(site) created with null site");
+
 		m_site = site;
 		m_id = IdService.getUniqueId();
 		m_properties = new BaseResourcePropertiesEdit();
@@ -101,19 +100,12 @@ public class BaseGroup implements Group, Identifiable
 
 	protected BaseGroup(String id, String title, String description, Site site)
 	{
+		if (site == null) M_log.warn("BaseGroup(..., site) created with null site");
+
 		m_id = id;
 		m_title = title;
 		m_description = description;
 		m_site = site;
-		m_properties = new BaseResourcePropertiesEdit();
-	}
-
-	protected BaseGroup(String id, String title, String description, String siteId)
-	{
-		m_id = id;
-		m_title = title;
-		m_description = description;
-		m_siteId = siteId;
 		m_properties = new BaseResourcePropertiesEdit();
 	}
 
@@ -129,10 +121,11 @@ public class BaseGroup implements Group, Identifiable
 	 */
 	protected BaseGroup(Group other, Site site, boolean exact)
 	{
+		if (site == null) M_log.warn("BaseGroup(other, site...) created with null site");
+
 		BaseGroup bOther = (BaseGroup) other;
 
 		m_site = (Site) site;
-		m_siteId = bOther.m_siteId;
 
 		if (exact)
 		{
@@ -178,19 +171,6 @@ public class BaseGroup implements Group, Identifiable
 	/**
 	 * @inheritDoc
 	 */
-	public String getSiteId()
-	{
-		if (m_site != null)
-		{
-			return m_site.getId();
-		}
-
-		return m_siteId;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	public void setTitle(String title)
 	{
 		m_title = title;
@@ -217,12 +197,7 @@ public class BaseGroup implements Group, Identifiable
 	 */
 	public String getReference()
 	{
-		if (m_site != null)
-		{
-			return ((BaseSiteService) (SiteService.getInstance())).siteGroupReference(m_site.getId(), getId());
-		}
-
-		return ((BaseSiteService) (SiteService.getInstance())).siteGroupReference(m_siteId, getId());
+		return ((BaseSiteService) (SiteService.getInstance())).siteGroupReference(m_site.getId(), getId());
 	}
 
 	/**

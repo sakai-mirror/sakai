@@ -50,8 +50,8 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 	/** Map of a page id to a cached site's SitePage instance. */
 	protected Map m_pages = new ConcurrentReaderHashMap();
 
-	/** Map of a section id to a cached site's Section instance. */
-	protected Map m_sections = new ConcurrentReaderHashMap();
+	/** Map of a group id to a cached site's Group instance. */
+	protected Map m_groups = new ConcurrentReaderHashMap();
 
 	/**
 	 * Construct the Cache.  No automatic refresh: expire only, from time and events.
@@ -86,7 +86,7 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 		{
 			Site site = (Site) payload;
 			
-			// get the pages and tools, sections and propeties all loaded efficiently
+			// get the pages and tools, groups and propeties all loaded efficiently
 			site.loadAll();
 			
 			// add the pages and tools to the cache
@@ -101,11 +101,11 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 				}
 			}
 			
-			// add the sections to the cache
-			for (Iterator sections = site.getGroups().iterator(); sections.hasNext();)
+			// add the groups to the cache
+			for (Iterator groups = site.getGroups().iterator(); groups.hasNext();)
 			{
-				Group section = (Group) sections.next();
-				m_sections.put(section.getId(), section);
+				Group group = (Group) groups.next();
+				m_groups.put(group.getId(), group);
 			}
 		}
 	}
@@ -122,6 +122,9 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 		
 		// clear the pages
 		m_pages.clear();
+		
+		// clear the groups
+		m_groups.clear();
 	}
 
 	/**
@@ -157,10 +160,10 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 				}
 			}
 
-			for (Iterator sections = site.getGroups().iterator(); sections.hasNext();)
+			for (Iterator groups = site.getGroups().iterator(); groups.hasNext();)
 			{
-				Group section = (Group) sections.next();
-				m_sections.remove(section.getId());
+				Group group = (Group) groups.next();
+				m_groups.remove(group.getId());
 			}
 		}
 	}
@@ -184,8 +187,8 @@ public class SiteCacheImpl extends MemCache implements SiteCache
 	/**
 	 * @inheritDoc
 	 */
-	public Group getGroup(String sectionId)
+	public Group getGroup(String groupId)
 	{
-		return (Group) m_sections.get(sectionId);
+		return (Group) m_groups.get(groupId);
 	}
 }

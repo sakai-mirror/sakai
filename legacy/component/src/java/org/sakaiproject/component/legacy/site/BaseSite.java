@@ -739,6 +739,46 @@ public class BaseSite implements Site
 	/**
 	 * {@inheritDoc}
 	 */
+	public Collection getGroupsWithMember(String userId)
+	{
+		Collection groups = getGroups();
+		Collection rv = new Vector();
+		for (Iterator i = groups.iterator(); i.hasNext();)
+		{
+			Group g = (Group) i.next();
+			Member m = g.getMember(userId);
+			if ((m != null) && (m.isActive()))
+			{
+				rv.add(g);
+			}
+		}
+		
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Collection getGroupsWithMemberHasRole(String userId, String role)
+	{
+		Collection groups = getGroups();
+		Collection rv = new Vector();
+		for (Iterator i = groups.iterator(); i.hasNext();)
+		{
+			Group g = (Group) i.next();
+			Member m = g.getMember(userId);
+			if ((m != null) && (m.isActive()) && (m.getRole().getId().equals(role)))
+			{
+				rv.add(g);
+			}
+		}
+		
+		return rv;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean hasGroups()
 	{
 		Collection groups = getGroups();

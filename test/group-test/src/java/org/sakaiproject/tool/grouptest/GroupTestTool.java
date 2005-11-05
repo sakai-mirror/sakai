@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannel;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannelEdit;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessage;
@@ -164,6 +165,91 @@ public class GroupTestTool extends HttpServlet
 		{
 			// make sure to switch back to the authenticated user id
 			s.setUserId(currentUserId);
+		}
+
+		try
+		{
+			out.println("\n\nGroup Containment Tests\n");
+
+			// test that a Group is reall in the containing site
+			Site site = SiteService.getSite(siteId);
+			
+			// by Site
+			for (Iterator i = site.getGroups().iterator(); i.hasNext();)
+			{
+				Group group = (Group) i.next();
+				if (group.getContainingSite() == null)
+				{
+					out.println("group containing site null: " + group.getTitle());
+				}
+				else
+				{
+					Site containingSite = group.getContainingSite();
+					if (containingSite != site)
+					{
+						out.println("group containing site not the site we got it from: " + group.getTitle());						
+					}
+
+					Group containedGroup = containingSite.getGroup(group.getId());
+					if (group != containedGroup)
+					{
+						out.println("group and contained site's group don't match: " + group.getTitle());
+					}
+				}
+			}
+
+			// clear all caches, so that the first findGroup will be when no sites are cached (the other findGroups in the loop will have that first one cached)
+			MemoryService.resetCachers();
+
+			// by SiteService- reference
+			for (Iterator i = site.getGroups().iterator(); i.hasNext();)
+			{
+				Group group = (Group) i.next();
+				
+				Group foundGroup = SiteService.findGroup(group.getReference());
+				if (foundGroup == null)
+				{
+					out.println("group not found: " + group.getTitle());
+				}
+				else
+				{
+					Site containingSite = foundGroup.getContainingSite();
+					Group containedGroup = containingSite.getGroup(foundGroup.getId());
+					if (foundGroup != containedGroup)
+					{
+						out.println("found group and contained site's group don't match: " + foundGroup.getTitle());
+					}	
+				}
+			}
+
+			// clear all caches, so that the first findGroup will be when no sites are cached (the other findGroups in the loop will have that first one cached)
+			MemoryService.resetCachers();
+
+			// by SiteService- id
+			for (Iterator i = site.getGroups().iterator(); i.hasNext();)
+			{
+				Group group = (Group) i.next();
+				
+				Group foundGroup = SiteService.findGroup(group.getId());
+				if (foundGroup == null)
+				{
+					out.println("group not found: " + group.getTitle());
+				}
+				else
+				{
+					Site containingSite = foundGroup.getContainingSite();
+					Group containedGroup = containingSite.getGroup(foundGroup.getId());
+					if (foundGroup != containedGroup)
+					{
+						out.println("found group and contained site's group don't match: " + foundGroup.getTitle());
+					}	
+				}
+			}
+
+		}
+		catch (Throwable t)
+		{
+			out.println("testing group containment: " + t);
 		}
 
 		// ok, not really a group test...

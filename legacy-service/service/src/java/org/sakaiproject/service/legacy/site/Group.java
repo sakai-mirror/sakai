@@ -51,9 +51,6 @@ public interface Group extends Edit, Serializable, AuthzGroup
 	 */
 	public Site getContainingSite();
 
-	/** @return the site id for this group. */
-	public String getSiteId();
-
 	/**
 	 * Set the human readable short title of this group.
 	 * 

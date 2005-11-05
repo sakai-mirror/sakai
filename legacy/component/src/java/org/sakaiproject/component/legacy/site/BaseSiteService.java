@@ -2134,15 +2134,6 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		public void saveToolConfig(Connection conn, ToolConfiguration tool);
 
 		/**
-		 * Access the Group that has this id, if one is defined, else return null. The group may be in any Site.
-		 * 
-		 * @param id
-		 *        The id of the group.
-		 * @return The Group that has this id, if one is defined, else return null.
-		 */
-		public Group findGroup(String id);
-
-		/**
 		 * Access the Site id for the group with this id.
 		 * 
 		 * @param id
@@ -2463,47 +2454,53 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		{
 			try
 			{
+				// here we return the group from the site, so the group's containing site is really the site that contains it.
 				Site site = getDefinedSite(ref.getContainer());	
 				rv = site.getGroup(ref.getId());
 			}
+			// we can ignore a site not found exception, just returning a null Group
 			catch (IdUnusedException e) {}
 		}
 
-		// for id, check the cache or get the group from storage
+		// for id, check the cache or get the site from storage, then get the group from the site
 		else
 		{
 			// check the site cache
 			if (m_siteCache != null)
 			{
-				rv = m_siteCache.getGroup(refOrId);
-				if (rv != null)
+				// this lets us find the group from an alredy cached site directly, by group id
+				Group group = m_siteCache.getGroup(refOrId);
+				if (group != null)
 				{
-					// make a copy from the cache
-					rv = new BaseGroup(rv, rv.getContainingSite(), true);
-				}
+					// Here we need to make a copy of the site, and pull the group from there,
+					// so that the group's containing site really contains the group we return.
+					// The group we get from the siteCache is a group from the actual cached site, so it's containing site is the actual cached site.
 
-				else
-				{
-					// if not, get the group's site id, cache the site, and try again
-					String siteId = m_storage.findGroupSiteId(refOrId);
-					if (siteId != null)
-					{
-						try
-						{
-							// read and cache the site, pages, tools
-							Site site = getDefinedSite(siteId);
-	
-							// find in the copy we get from the cache
-							rv = site.getGroup(refOrId);
-						}
-						catch (IdUnusedException e) {}
-					}
+					// get a copy of the site from the cache
+					Site site = new BaseSite(group.getContainingSite(), true);
+					
+					// get the group from there
+					rv = site.getGroup(refOrId);
 				}
 			}
 
-			else
+			// if we don't have it yet, get the group's site, and the group from there
+			if (rv == null)
 			{
-				rv = m_storage.findGroup(refOrId);
+				String siteId = m_storage.findGroupSiteId(refOrId);
+				if (siteId != null)
+				{
+					try
+					{
+						// read (and cache if enabled) the full site
+						Site site = getDefinedSite(siteId);
+
+						// here we return the group from the site, so the group's containing site is really the site that contains it.
+						rv = site.getGroup(refOrId);
+					}
+					// we can ignore a site not found exception, just returning a null Group
+					catch (IdUnusedException e) {}
+				}
 			}
 		}
 
