@@ -103,7 +103,6 @@ public abstract class BaseDiscussionService
 
 		// register functions
 		FunctionManager.registerFunction(eventId(SECURE_ADD_TOPIC));
-		FunctionManager.registerFunction(eventId(SECURE_READ_DRAFT));
 	}
 
 	/*******************************************************************************
@@ -835,11 +834,10 @@ public abstract class BaseDiscussionService
 		{
 			DiscussionMessage msg = (DiscussionMessage) getMessage(messageId);
 
-			// filter out drafts not by this user (unless this user is a super user or has access_draft ability)
+			// filter out drafts not by this user (unless this user is a super user)
 			if (	(msg.getDiscussionHeader()).getDraft()
 				&&	(!SecurityService.isSuperUser())
-				&&	(!msg.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
-				&&	(!unlockCheck(SECURE_READ_DRAFT, msg.getReference())))
+				&&	(!msg.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId())))
 			{
 				throw new PermissionException(SECURE_READ, msg.getReference());
 			}
@@ -1147,7 +1145,6 @@ public abstract class BaseDiscussionService
 							&&	( 	(!message.getDiscussionHeader().getDraft())
 									|| (SecurityService.isSuperUser())
 									|| (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
-									|| (unlockCheck(SECURE_READ_DRAFT, message.getReference()))
 								)
 							)
 						{
@@ -1181,7 +1178,6 @@ public abstract class BaseDiscussionService
 							&&	( 	(!message.getDiscussionHeader().getDraft())
 									|| (SecurityService.isSuperUser())
 									|| (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
-									|| (unlockCheck(SECURE_READ_DRAFT, message.getReference()))
 								)
 							)
 						{
@@ -1446,7 +1442,6 @@ public abstract class BaseDiscussionService
 							&&	( 	(!message.getDiscussionHeader().getDraft())
 									|| (SecurityService.isSuperUser())
 									|| (message.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
-									|| (unlockCheck(SECURE_READ_DRAFT, message.getReference()))
 								)
 							)
 						{
@@ -1747,8 +1742,7 @@ public abstract class BaseDiscussionService
 
 				if (	(msg.getDiscussionHeader()).getDraft()
 					&&	(!SecurityService.isSuperUser())
-					&&	(!msg.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId()))
-					&&	(!unlockCheck(SECURE_READ_DRAFT, msg.getReference())))
+					&&	(!msg.getHeader().getFrom().getId().equals(SessionManager.getCurrentSessionUserId())))
 				{
 					return false;
 				}
