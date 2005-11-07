@@ -276,7 +276,7 @@
 						</a>	
 					</th>
 					#if ($allowUpdate)
-						#if ($!activeInactiveUser)
+						#if ($!activeInactiveUser && !$!isMyWorkspace)
 							<th id="status">
 								$tlang.getString("sitegen.siteinfolist.status")
 							</th>
@@ -338,7 +338,7 @@
 							#end
 						</td>
 						#if ($allowUpdate)
-							#if ($!activeInactiveUser)
+							#if ($!activeInactiveUser && !$!isMyWorkspace)
 								<td>
 								 #set($grant="")
 									#set($grant = $realm.getMember($uniqname))
