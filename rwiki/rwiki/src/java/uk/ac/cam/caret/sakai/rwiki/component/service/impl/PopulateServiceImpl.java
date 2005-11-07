@@ -143,8 +143,10 @@ public class PopulateServiceImpl implements PopulateService {
             }
             return false;
         } else {
-            String type = s.getType().toLowerCase();
-            log.info("Checking Site "+type);
+            String type = s.getType();
+            if ( type == null ) type = "";
+            type = type.toLowerCase();
+            log.debug("Checking Site "+type);
             // each line is anded together and each line is ored with other lines
             for( Iterator i = targetTypes.iterator(); i.hasNext(); ) {
                 String ttype = (String) i.next();
@@ -153,10 +155,10 @@ public class PopulateServiceImpl implements PopulateService {
                 for ( int j = 0; j < ttypeGroup.length; j++ ) {
                     if ( ttypeGroup[j].startsWith("!") ) {
                         bline = bline & ( !type.startsWith(ttype.substring(1).toLowerCase()) );
-                        log.info("Checking not "+ttypeGroup[j]+" was "+bline);
+                        log.debug("Checking not "+ttypeGroup[j]+" was "+bline);
                     } else {
                         bline = bline & ( type.startsWith(ttype.toLowerCase()) );
-                        log.info("Checking "+ttypeGroup[j]+" was "+bline);
+                        log.debug("Checking "+ttypeGroup[j]+" was "+bline);
                     }
                 }
                 if ( bline ) return false;
