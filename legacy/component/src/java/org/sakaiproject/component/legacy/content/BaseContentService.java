@@ -3013,7 +3013,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			try
 			{
 				ContentResource newResource = addResource(new_id, resource.getContentType(), resource.getContent(), newProps,
-						NotificationService.NOTI_OPTIONAL);
+						NotificationService.NOTI_NONE);
 				if (m_logger.isDebugEnabled()) m_logger.debug(this + ".copyResource successful");
 				still_trying = false;
 			}
