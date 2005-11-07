@@ -22,83 +22,198 @@
  **********************************************************************************/
 package uk.ac.cam.caret.sakai.rwiki.component.model.impl;
 
+import java.nio.CharBuffer;
+
 // FIXME: Component
 
 public class NameHelper {
 
-    public static final char SPACE_SEPARATOR = '.';
+    public static final char SPACE_SEPARATOR = '/';
 
-    public static String globaliseName(String name, String defaultSpace) {
-        if (name == null || name.length() == 0)
-            return defaultSpace + SPACE_SEPARATOR + "Home";
-        // return "Home" + REALM_SEPARATOR + defaultRealm;
+    public static final String DEFAULT_PAGE = "home";
 
-        // Need to normalize this...
-        if (name.indexOf(SPACE_SEPARATOR) == -1) {
-            return defaultSpace + SPACE_SEPARATOR + normalizeName(name);
-            // return normalizeName(name) + REALM_SEPARATOR + defaultRealm;
-        } else {
-            String space = name.substring(0, name.indexOf(SPACE_SEPARATOR));
-            name = name.substring(name.indexOf(SPACE_SEPARATOR) + 1);
-
-            return space + SPACE_SEPARATOR + normalizeName(name);
-        }
-    }
-
-    public static String localizeName(String pageName, String space) {
-
-        if (pageName == null || pageName.length() == 0)
-            return "Home";
-
-        int index = pageName.indexOf(SPACE_SEPARATOR);
-
-        if (index > -1 && pageName.substring(0, index).equals(space)) {
-            return pageName.substring(index + 1);
+    public static boolean isGlobalised(final String name) {
+        
+        // This should be a RE
+        
+        if (name == null) {
+            return false;
         }
 
-        return pageName;
-    }
+        char[] chars = name.toCharArray();
+        boolean allowedSpaceOrSeparator = false;
 
-    public static String normalizeName(String pageName) {
-        // Get the page name as an array which we will alter
-        char[] chars = pageName.toCharArray();
+        if (chars[0] != SPACE_SEPARATOR) {
+            return false;
+        }
 
-        // Means capitalise next character that isn't whitespace, and do not add
-        // any whitespace characters
-        boolean lastWasWhitespace = true;
-
-        int j = 0;
-
-        for (int i = 0; i < chars.length; i++) {
-            char c = chars[i];
-            if (Character.isWhitespace(c)) {
-                if (!lastWasWhitespace) {
-                    chars[j++] = ' ';
-                    lastWasWhitespace = true;
-                }
-            } else {
-                if (lastWasWhitespace) {
-                    chars[j++] = Character.toUpperCase(c);
-                    lastWasWhitespace = false;
+        for (int i = 1; i < chars.length; i++) {
+            if (chars[i] == ' ' || chars[i] == SPACE_SEPARATOR) {
+                if (!allowedSpaceOrSeparator) {
+                    return false;
                 } else {
-                    chars[j++] = c;
+                    allowedSpaceOrSeparator = false;
                 }
+            } else if (Character.isUpperCase(chars[i])
+                    || Character.isWhitespace(chars[i])) {
+                return false;
+            } else {
+                allowedSpaceOrSeparator = true;
             }
         }
 
-        if (j > 0) {
-            return new String(chars, 0, j);
+        return allowedSpaceOrSeparator;
+    }
+
+    public static String globaliseName(final String name,
+            final String defaultSpace) {
+
+        if (name == null || name.length() == 0) {
+            return normalizeName(defaultSpace + SPACE_SEPARATOR + DEFAULT_PAGE);
+        }
+
+        if (name.charAt(0) != SPACE_SEPARATOR) {
+            return normalizeName(defaultSpace + SPACE_SEPARATOR + name);
         } else {
-            return "";
+            return normalizeName(name);
         }
     }
 
-    public static String localizeSpace(String pageName, String defaultSpace) {
-        int index = pageName.indexOf(SPACE_SEPARATOR);
-        if (index > -1) {
-            return pageName.substring(0, index);
+    /**
+     * Takes a globalised page name and a space name and localises that page
+     * name within that space.
+     * 
+     * @param pageName
+     *            Globalised page name
+     * @param space
+     *            Globalised space name to localise within
+     * @return localised page name
+     */
+    public static String localizeName(final String pageName, final String space) {
+        if (!isGlobalised(space))
+            throw new IllegalArgumentException("Space is not global: " + space);
+        
+        if (pageName == null || pageName.length() == 0) {
+            return DEFAULT_PAGE;
         }
-        return defaultSpace;
+
+        int nameLength = pageName.length();
+        int spaceLength = space.length();
+
+        String name = pageName;
+
+        if (pageName.charAt(nameLength - 1) == '/') {
+            name = name + DEFAULT_PAGE;
+            nameLength += DEFAULT_PAGE.length();
+        }
+
+        char[] chars = name.toCharArray();
+        int lastSeparator = findLastSeparator(chars, nameLength);
+        
+        boolean capitalise = true;
+        for (int i = lastSeparator; i < nameLength; i++) {
+            if (chars[i] == SPACE_SEPARATOR || chars[i] == ' ') {
+                capitalise = true;
+            } else if (capitalise) {
+                chars[i] = Character.toUpperCase(chars[i]);
+                capitalise = false;
+            }
+        }
+        
+        if (nameLength <= spaceLength + 1) {
+            return new String(chars);
+        }
+
+        char[] spaceChars = space.toCharArray();
+        for (int i = 0; i < spaceLength; i++) {
+            if (chars[i] != spaceChars[i]) {
+                return new String(chars);
+            }
+        }
+        
+        if (chars[spaceLength] != SPACE_SEPARATOR) {
+            return new String(chars);
+        } else {
+            return new String(chars, spaceLength + 1, nameLength - spaceLength - 1);
+          }
+    }
+
+    private static int findLastSeparator(char[] chars, int nameLength) {
+        for (int  i = nameLength - 1 ; i >= 0; i--) {
+            if (chars[i] == SPACE_SEPARATOR) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private static String normalizeName(final String pageName) {
+        char[] chars = pageName.toCharArray();
+        CharBuffer name = CharBuffer.allocate(chars.length + DEFAULT_PAGE.length() + 1);
+        
+        int wordStart = 0;
+
+        boolean addSeparator = true;
+        boolean addWhiteSpaceOrSeparator = true;
+        
+        for (int i = 0; i < chars.length; i++ ) {
+            char c = chars[i];
+            
+            if (c == SPACE_SEPARATOR) {
+                if (!addWhiteSpaceOrSeparator) {
+                    name.put(chars, wordStart, i - wordStart);                  
+                } 
+                addSeparator = true;
+                addWhiteSpaceOrSeparator = true;
+            } else if (Character.isWhitespace(c)) {
+                if (!addWhiteSpaceOrSeparator) {
+                    name.put(chars, wordStart, i - wordStart);
+                    
+                }
+                addWhiteSpaceOrSeparator = true;
+            } else if (addSeparator) {
+                name.put(SPACE_SEPARATOR);
+                chars[i] = Character.toLowerCase(c);
+                wordStart = i;
+                addSeparator = false;
+                addWhiteSpaceOrSeparator = false;
+            } else if (addWhiteSpaceOrSeparator)  {
+                addWhiteSpaceOrSeparator = false;
+                wordStart = i;
+                name.put(' ');
+                chars[i] = Character.toLowerCase(c);            
+            } else {
+                chars[i] = Character.toLowerCase(c);
+            }
+            
+        }
+        
+        if (addSeparator) {
+            name.put(SPACE_SEPARATOR);
+            name.put(DEFAULT_PAGE);
+        } else if (!addWhiteSpaceOrSeparator) {
+            name.put(chars, wordStart, chars.length - wordStart);
+        }
+        
+        int position = name.position();
+        name.position(0);
+        name.limit(position);
+        
+        return name.toString();
+    }
+
+    /**
+     * 
+     * @param pageName
+     * @param defaultSpace
+     * @return
+     */
+    public static String localizeSpace(final String pageName,
+            final String defaultSpace) {
+        String globalName = globaliseName(pageName, defaultSpace);
+
+        int index = globalName.lastIndexOf(SPACE_SEPARATOR);
+        return globalName.substring(0, index);
     }
 
 }

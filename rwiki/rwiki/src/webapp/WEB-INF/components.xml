@@ -578,6 +578,7 @@
 				<ref bean="rwiki-data-migrate-applyCurrentSHA1" />
 				<ref bean="rwiki-data-migrate-applyHistorySHA1" />
 				<ref bean="rwiki-data-migrate-noneTo20051026" />
+				<ref bean="rwiki-data-migrate-20051026To20051107" />
 			</list>
 		</property>
 		<property name="log"><ref bean="rwiki-logger"/></property>
@@ -588,7 +589,7 @@
 	<bean id="rwikiCurrentSchemaVersion" 
 		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiPropertyImpl">
 		<property name="name"><value>schema-version</value></property>
-		<property name="value"><value>20051026</value></property>
+		<property name="value"><value>20051107</value></property>
 	</bean>
 	
 	<!-- data migration step from null to version 20051017 step 1, split of current and history ojects, and explicit content lazy load -->
@@ -633,5 +634,17 @@
 		</property>
 		<property name="log"><ref bean="rwiki-logger"/></property>
 	</bean>
-	
+	<!-- schema migration 20051026 to 20051107, change the subspace separator to / -->
+	<bean id="rwiki-data-migrate-20051026To20051107"
+		class="uk.ac.cam.caret.sakai.rwiki.component.model.impl.SQLScriptMigration" >
+		<property name="from"><value>20051026</value></property>
+		<property name="to"><value>20051107</value></property>
+		<property name="scriptPattern">
+			<value>/uk/ac/cam/caret/sakai/rwiki/model/bundle/{0}/migrateTo20051107.sql</value>			
+		</property>
+		<property name="sessionFactory"><ref
+			bean="uk.ac.cam.caret.sakai.rwiki.RWikiSessionFactory"/>
+		</property>
+		<property name="log"><ref bean="rwiki-logger"/></property>
+	</bean>
 </beans>
