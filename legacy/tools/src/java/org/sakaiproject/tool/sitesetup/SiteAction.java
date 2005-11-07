@@ -1639,6 +1639,7 @@ public class SiteAction extends PagedResourceActionII
 					context.put("activeInactiveUser", Boolean.FALSE);
 				}
 				
+				context.put("groupsWithMember", site.getGroupsWithMember(UserDirectoryService.getCurrentUser().getId()));
 				return (String)getContext(data).get("template") + TEMPLATE[12];		
 			case 13:
 				/*  buildContextForTemplate chef_site-siteInfo-editInfo.vm

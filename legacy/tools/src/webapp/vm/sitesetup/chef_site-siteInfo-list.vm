@@ -130,6 +130,43 @@
 			</td>
 		#end
 		</tr>
+		#if (!$!allowUpdate && $!groupsWithMember.size() >0)
+			<tr>
+				<th>
+					$tlang.getString("group.membership")
+				</th>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<table id="groupTable" style="margin-left:3em;width:80%" class="listHier lines" border="0" cellspacing="0" summary="Table contains list of announcements. First column may contain checkboxes, second will contain the title, third the author, fourth the date. Headers can be used to sort.">
+						<tr>
+					 		<th id ="name">
+									$tlang.getString('group.title')
+								</th>
+								<th id ="description">
+									$tlang.getString('group.description')
+								</th>
+							</tr>
+								#foreach ($g in $!groupsWithMember)
+								<tr>
+									<td headers="name" style="padding-bottom:0;">
+										<label for="$group.Id">
+											$g.Title
+										</label>	
+									</td>
+									<td headers="description" width="100%"> ##mozilla does not resize table children dynamically , so set here
+										#set($description = "")
+										#set($description = $g.Description)
+										$!description
+									</td>
+								</tr>
+							#end
+						</table>
+				</td>
+			</tr>
+		#end
 	</table>	
 	#if ($!allowUpdate || $!viewRoster)
 		<h4>		
