@@ -61,7 +61,6 @@ public class DiscussionService
 	public static java.lang.String SECURE_REMOVE_ANY = org.sakaiproject.service.legacy.discussion.DiscussionService.SECURE_REMOVE_ANY;
 	public static java.lang.String SECURE_UPDATE_OWN = org.sakaiproject.service.legacy.discussion.DiscussionService.SECURE_UPDATE_OWN;
 	public static java.lang.String SECURE_UPDATE_ANY = org.sakaiproject.service.legacy.discussion.DiscussionService.SECURE_UPDATE_ANY;
-	public static java.lang.String SECURE_READ_DRAFT = org.sakaiproject.service.legacy.discussion.DiscussionService.SECURE_READ_DRAFT;
 	public static java.lang.String REF_TYPE_CHANNEL = org.sakaiproject.service.legacy.discussion.DiscussionService.REF_TYPE_CHANNEL;
 	public static java.lang.String REF_TYPE_CHANNEL_GROUPS = org.sakaiproject.service.legacy.discussion.DiscussionService.REF_TYPE_CHANNEL_GROUPS;
 	public static java.lang.String REF_TYPE_MESSAGE = org.sakaiproject.service.legacy.discussion.DiscussionService.REF_TYPE_MESSAGE;
