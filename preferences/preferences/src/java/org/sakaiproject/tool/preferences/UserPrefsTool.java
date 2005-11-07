@@ -352,7 +352,10 @@ public class UserPrefsTool
    */
   public void setSelectedTimeZone(String selectedTimeZone)
   {
-    m_timeZone = TimeZone.getTimeZone( selectedTimeZone );
+     if ( selectedTimeZone != null )
+        m_timeZone = TimeZone.getTimeZone( selectedTimeZone );
+     else
+        LOG.warn(this+"setSelctedTimeZone() has null TimeZone");
   }
 
   /**
