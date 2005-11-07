@@ -58,6 +58,15 @@
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
     <unitTest>
       <includes>**/*Test</includes>
+      <resources>
+	<resource>
+	  <directory>${basedir}/src/testBundle</directory>
+	  <includes>
+	    <include>**/*.*</include>
+	  </includes>
+	  <filtering>false</filtering>
+	</resource>
+      </resources>
     </unitTest>
     <defaultGoal>war:install</defaultGoal>
     <!-- other resources for the jar - the message bundles -->

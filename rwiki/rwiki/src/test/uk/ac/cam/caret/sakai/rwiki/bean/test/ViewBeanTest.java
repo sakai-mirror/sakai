@@ -6,12 +6,12 @@ import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
 public class ViewBeanTest extends TestCase {
 
     String localPageName = "Foo";
-    String globalPageName = "bar.Foo";
-    String realm = "bar";
-    String otherRealm = "realm";
-    String viewUrl = "?pageName=bar.Foo&action=view&panel=Main&realm=bar";
-    String editUrl = "?pageName=bar.Foo&action=edit&panel=Main&realm=bar";
-    String infoUrl = "?pageName=bar.Foo&action=info&panel=Main&realm=bar";
+    String globalPageName = "/bar/foo";
+    String realm = "/bar";
+    String otherRealm = "/realm";
+    String viewUrl = "?pageName=%2Fbar%2Ffoo&action=view&panel=Main&realm=%2Fbar";
+    String editUrl = "?pageName=%2Fbar%2Ffoo&action=edit&panel=Main&realm=%2Fbar";
+    String infoUrl = "?pageName=%2Fbar%2Ffoo&action=info&panel=Main&realm=%2Fbar";
     
     public ViewBeanTest(String test) {
         super(test);
@@ -22,7 +22,7 @@ public class ViewBeanTest extends TestCase {
      */
     public void testGetViewUrl() {
         ViewBean vb = new ViewBean(localPageName, realm);
-        
+        System.out.println(vb.getViewUrl());
         assertTrue("ViewBean doesn't create ViewUrls properly.",viewUrl.equals(vb.getViewUrl()));
     }
 
