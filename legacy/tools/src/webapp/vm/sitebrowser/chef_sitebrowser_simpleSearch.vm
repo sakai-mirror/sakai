@@ -8,12 +8,7 @@
 		<p class="instruction">$tlang.getString("se.complete")</p>
 	
 		<form action="#toolForm("$action")" method="post">		
-		<fieldset>
-			<legend class="radio">$tlang.getString("se.type")</legend>
-			<div class="checkbox indnt1">
-				<input type="radio" name="siteType" id="siteType" value="Any" checked="checked" />
-				<label for="siteType">$tlang.getString("se.any")</label>
-			</div>
+		<h4>$tlang.getString("se.type")</h4>
 			#if ($siteTypes.size() > 0 )
 				#set($siteTypeCount=0)
 				#foreach ($type in $siteTypes)
@@ -21,12 +16,12 @@
 					#if ($type == $termSearchSiteType)
 						<input type="hidden" name="ClassSiteFromSystem" value="true" />
 						<div class="checkbox indnt1">
-							<input  type="radio" name="siteType" id="siteType" value="$type" />
+							<input  type="radio" name="siteType" id="classSite" value="$type" />
 							<label for="classSite">$tlang.getString("se.course")</label>
 						</div>
 						<div class="indnt3">
-							$tlang.getString("se.term")
-							<select name="selectTerm">
+							<label for="selectTerm">$tlang.getString("se.term")</label>
+							<select name="selectTerm" id="selectTerm">
 							<option value="Any">$tlang.getString("se.any")</option>
 							#foreach ($term in $terms)
 							<option value="$term.Id">$term.Id</option>
@@ -41,11 +36,15 @@
 					#end
 				#end
 			#end
-		</fieldset>
-
+		
+			<div class="checkbox indnt1">
+				<input type="radio" name="siteType" id="siteTypeAny" value="Any" checked="checked" />
+				<label for="siteTypeAny">$tlang.getString("se.any")</label>
+			</div>
+			<p class="instruction indnt1">$tlang.getString("se.instruction")</p>
 		<p class="shorttext indnt1">
 			<label for="searchbox">$tlang.getString("se.search1") </label>
-			<input type="text" name="search" id="searchbox" size="32" maxlength="50" value="" onkeypress="formSubmitOnEnter(this, event)" />
+			<input type="text" name="search" id="searchbox" size="20" maxlength="50" value="" onkeypress="formSubmitOnEnter(this, event)" />
 			<input type="hidden" name="eventSubmit_doSearch" id="eventSubmit_doSearch" value="Search for Sites" />
 		</p>
 		
