@@ -835,8 +835,11 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			throw new IdUnusedException(ref.getReference());
 		}
 
-		// check security on the message (throws if not permitted)
-		unlock(SECURE_READ, ref.getReference());
+		// check security on the message
+		if (!allowGetMessage(channelReference(ref.getContext(), ref.getContainer()), ref.getReference()))
+		{
+			throw new PermissionException(eventId(SECURE_READ), ref.getReference());
+		}
 
 		// get the channel, no security check
 		MessageChannel c = findChannel(channelReference(ref.getContext(), ref.getContainer()));
@@ -851,6 +854,25 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		return m;
 
 	} // getMessage
+
+	/**
+	 * Check the message read permission for the message
+	 * @param ref The Reference (assumed to be to a message).
+	 * @return True if the end user has permission to read the message, or permission to all messages in the channel, false if not.
+	 */
+	protected boolean allowGetMessage(String channelRef, String msgRef)
+	{
+		// Assume this reference is for a message
+
+		// if the use has all_message permission for the channel/site, allow it
+		if (unlockCheck(SECURE_ALL_GROUPS, channelRef))
+		{
+			return true;
+		}
+
+		// check the message
+		return unlockCheck(SECURE_READ, msgRef);
+	}
 
 	/**
 	* Cancel the changes made to a MessageEdit object, and release the lock.
@@ -1851,8 +1873,11 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		*/
 		public Message getMessage(String messageId) throws IdUnusedException, PermissionException
 		{
-			// check security on the message (throws if not permitted)
-			unlock(SECURE_READ, messageReference(getReference(), messageId));
+			// check security on the message
+			if (!allowGetMessage(getReference(), messageReference(getReference(), messageId)))
+			{
+				throw new PermissionException(eventId(SECURE_READ), messageReference(getReference(), messageId));
+			}
 
 			Message m = findMessage(messageId);
 
@@ -1890,10 +1915,10 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		{
 			boolean channelCheck = MessageHeader.MessageAccess.CHANNEL == m.getHeader().getAccess();
 
-			// even if grouped, if the user has annc.allgrp for the channel, treat as channel (message, channel, site)
-			if (!channelCheck)
+			// if the use has all_message permission for the channel/site, allow it
+			if (unlockCheck(SECURE_ALL_GROUPS, getReference()))
 			{
-				channelCheck = unlockCheck(SECURE_ALL_GROUPS, getReference());
+				return true;
 			}
 
 			// if the message is not grouped, do the regular check (message, channel, site)
