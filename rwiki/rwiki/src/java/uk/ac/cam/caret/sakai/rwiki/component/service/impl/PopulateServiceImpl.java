@@ -33,6 +33,7 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteService;
 
 import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
+import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiCurrentObjectImpl;
 import uk.ac.cam.caret.sakai.rwiki.service.api.PageLinkRenderer;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RenderService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.dao.RWikiCurrentObjectDao;
@@ -67,12 +68,33 @@ public class PopulateServiceImpl implements PopulateService {
 	throws PermissionException {
 		synchronized (seenPageSpaces) {
 			if (seenPageSpaces.get(space) == null ) {
+                String owner = user;
+                Site s = null;
+                try {
+                    s = siteService.getSite(portalService.getCurrentSiteId());
+                    owner =  s.getCreatedBy().getId();
+                } catch (Exception e) {
+                    log.warn("Cant find who created this site, defaulting to current user for prepopulate ownership :"+owner);
+                }
+                if ( s == null ) {
+                    log.error("Cant Locate current site, will populate only global pages with no restrictions");
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("Populating space: " + space);
+                }
 				for ( Iterator i = seedPages.iterator(); i.hasNext(); ) {
-					if (log.isDebugEnabled()) {
-						log.debug("Populating space: " + space);
-					}
-					
+                    
+                    
 					RWikiCurrentObject seed = (RWikiCurrentObject) i.next();
+                     if ( seed instanceof RWikiCurrentObjectImpl ) {
+                         RWikiCurrentObjectImpl seedimpl = (RWikiCurrentObjectImpl)seed;
+                         List targetTypes = seedimpl.getTargetSiteTypes();
+                         if ( ignoreSeedPage(s,targetTypes) ) {
+                             log.debug("Ignoring Seed page "+seed.getName());
+                             continue;
+                         }
+                     }
+                    
 					
 					String name = NameHelper.globaliseName(seed.getName(), space);
 					log.	debug("Populating Space with "+seed.getName());
@@ -86,13 +108,6 @@ public class PopulateServiceImpl implements PopulateService {
 						seed.copyTo(rwo);
                          // SAK-2513
                     
-                        String owner = user;
-                        try {
-                            Site s = siteService.getSite(portalService.getCurrentSiteId());
-                            owner =  s.getCreatedBy().getId();
-                        } catch (Exception e) {
-                            log.warn("Cant find who created this site, defaulting to current user for prepopulate ownership :"+owner);
-                        }
                          log.debug("Populate with Owner "+owner);
                          rwo.setUser(owner);
                          rwo.setOwner(owner);
@@ -109,6 +124,47 @@ public class PopulateServiceImpl implements PopulateService {
 			}
 		}
 	}
+    /**
+     * returns true if the the page should be ignored
+     * @param s the site
+     * @param targetTypes a list of lines that specify which site matches
+     * @return
+     */
+    private boolean ignoreSeedPage(Site s, List targetTypes) {
+        if ( targetTypes == null || targetTypes.size() == 0 ) return false;
+        if ( s == null ) {
+            // if all the types are not, then dont ignore
+            for ( Iterator i = targetTypes.iterator(); i.hasNext(); ) {
+                String ttype = (String)i.next();
+                String[] ttypeGroup = ttype.split(",");
+                for ( int j = 0; j < ttypeGroup.length; j++ ) {
+                    if ( !ttypeGroup[j].startsWith("!") ) return true;
+                }
+            }
+            return false;
+        } else {
+            String type = s.getType().toLowerCase();
+            log.info("Checking Site "+type);
+            // each line is anded together and each line is ored with other lines
+            for( Iterator i = targetTypes.iterator(); i.hasNext(); ) {
+                String ttype = (String) i.next();
+                String[] ttypeGroup = ttype.split(",");
+                boolean bline = true;
+                for ( int j = 0; j < ttypeGroup.length; j++ ) {
+                    if ( ttypeGroup[j].startsWith("!") ) {
+                        bline = bline & ( !type.startsWith(ttype.substring(1).toLowerCase()) );
+                        log.info("Checking not "+ttypeGroup[j]+" was "+bline);
+                    } else {
+                        bline = bline & ( type.startsWith(ttype.toLowerCase()) );
+                        log.info("Checking "+ttypeGroup[j]+" was "+bline);
+                    }
+                }
+                if ( bline ) return false;
+            }
+            return true;
+       }
+        
+    }
 	
     // SAK-2470
     private void updateReferences(RWikiCurrentObject rwo, String user, String space) {

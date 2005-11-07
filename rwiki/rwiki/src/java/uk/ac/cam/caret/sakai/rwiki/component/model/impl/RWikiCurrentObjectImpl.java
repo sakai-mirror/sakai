@@ -22,6 +22,8 @@
  **********************************************************************************/
 package uk.ac.cam.caret.sakai.rwiki.component.model.impl;
 
+import java.util.List;
+
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiCurrentObject;
 
 
@@ -34,11 +36,24 @@ import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiCurrentObject;
 public class RWikiCurrentObjectImpl extends RWikiObjectImpl implements RWikiCurrentObject  {
 	
 	
-	
+	List targetSiteTypes = null;
+    
 	public void setRwikiobjectid(String rwikiobjectid) {
 		throw new RuntimeException("It is not possible to set the RWikiObject ID on the current version, it is the ID ");
 	}
 	public String getRwikiobjectid() {
 		return getId();
 	}
+    /**
+     * @return Returns the targetSiteTypes.
+     */
+    public List getTargetSiteTypes() {
+        return targetSiteTypes;
+    }
+    /**
+     * @param targetSiteTypes The targetSiteTypes to set.
+     */
+    public void setTargetSiteTypes(List targetSiteTypes) {
+        this.targetSiteTypes = targetSiteTypes;
+    }
 }
