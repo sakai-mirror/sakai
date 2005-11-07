@@ -409,7 +409,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	} // unlockCheck
 
 	/**
-	* Check security permission.
+	* Check security permission, for either of two locks/
 	* @param lock1 The lock id string.
 	* @param lock2 The lock id string.
 	* @param resource The resource reference string, or null if no resource is involved.
@@ -417,15 +417,13 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	*/
 	protected boolean unlockCheck2(String lock1, String lock2, String resource)
 	{
-		if (!SecurityService.unlock(eventId(lock1), resource))
-		{
-			if (!SecurityService.unlock(eventId(lock2), resource))
-			{
-				return false;
-			}
-		}
+		// check the first lock
+		if (SecurityService.unlock(eventId(lock1), resource)) return true;
 
-		return true;
+		// if the second is different, check that
+		if ((lock1 != lock2) && (SecurityService.unlock(eventId(lock2), resource))) return true;
+
+		return false;
 
 	} // unlockCheck2
 
@@ -2044,7 +2042,9 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			}
 
 			// check permission - this checks if the message in its current form (grouped, channel, etc) is still valid for the end user to save
-			if (!allowEditMessage(edit,SECURE_UPDATE_OWN, SECURE_UPDATE_ANY))
+			String ownSecurityFunction = (((BaseMessageEdit) edit).getEvent().equals(SECURE_ADD) ?  SECURE_ADD : SECURE_UPDATE_OWN);
+			String anySecurityFunction = (((BaseMessageEdit) edit).getEvent().equals(SECURE_ADD) ?  SECURE_ADD : SECURE_UPDATE_ANY);
+			if (!allowEditMessage(edit, ownSecurityFunction, anySecurityFunction))
 			{
 				cancelMessage(edit);
 				throw new PermissionException(eventId(((BaseMessageEdit) edit).getEvent()), edit.getReference());
@@ -2096,9 +2096,15 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 
 			// release the edit lock
 			m_storage.cancelMessage(this, edit);
+			
+			// if an add, remove the message
+			if (SECURE_ADD.equals(((BaseMessageEdit) edit).getEvent()))
+			{
+				m_storage.removeMessage(this, edit);
+			}
 
 			// close the edit object
-			 ((BaseMessageEdit) edit).closeEdit();
+			((BaseMessageEdit) edit).closeEdit();
 
 		} // cancelMessage
 
