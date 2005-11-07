@@ -1440,8 +1440,9 @@ public class SiteAction extends PagedResourceActionII
 						}
 						b.add( new MenuEntry(rb.getString("java.edittools"), "doMenu_edit_site_tools"));
 						
-						if (ServerConfigurationService.getString("wsetup.group.support") == "" 
-							|| ServerConfigurationService.getString("wsetup.group.support").equalsIgnoreCase(Boolean.TRUE.toString()))
+						if (!isMyWorkspace
+								&& (ServerConfigurationService.getString("wsetup.group.support") == "" 
+									|| ServerConfigurationService.getString("wsetup.group.support").equalsIgnoreCase(Boolean.TRUE.toString())))
 						{
 							// show the group toolbar unless configured to not support group
 							b.add( new MenuEntry(rb.getString("java.group"), "doMenu_group"));
