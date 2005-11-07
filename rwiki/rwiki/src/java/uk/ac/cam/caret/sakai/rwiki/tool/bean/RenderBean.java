@@ -47,6 +47,8 @@ public class RenderBean {
     private String user;
 
     private RWikiObject rwo;
+    
+    private boolean withBreadcrumbs = true;
 
     // FIXME internationalise this!
     private static final String PERMISSION_PROBLEM = 
@@ -65,11 +67,12 @@ public class RenderBean {
      *            the RWikiObjectService
      */
     public RenderBean(RWikiObject rwo, String user,
-            ToolRenderService toolRenderService, RWikiObjectService objectService) {
+            ToolRenderService toolRenderService, RWikiObjectService objectService, boolean withBreadcrumbs) {
         this.user = user;
         this.rwo = rwo;
         this.toolRenderService = toolRenderService;
         this.objectService = objectService;
+        this.withBreadcrumbs = withBreadcrumbs;
     }
 
     /**
@@ -87,10 +90,11 @@ public class RenderBean {
      *            the RWikiObjectService
      */
     public RenderBean(String name, String user, String defaultRealm,
-            ToolRenderService toolRenderService, RWikiObjectService objectService) {
+            ToolRenderService toolRenderService, RWikiObjectService objectService, boolean withBreadcrumbs) {
         this.objectService = objectService;
         this.toolRenderService = toolRenderService;
         this.user = user;
+        this.withBreadcrumbs = withBreadcrumbs;
         String pageName = NameHelper.globaliseName(name, defaultRealm);
         String pageRealm = defaultRealm;
         try {
@@ -159,7 +163,7 @@ public class RenderBean {
      * RWikiObject
      */
     public String getPublicRenderedPage() {
-    		return toolRenderService.renderPublicPage(rwo,user);
+    		return toolRenderService.renderPublicPage(rwo,user,withBreadcrumbs);
     }
 
     /**
@@ -177,7 +181,7 @@ public class RenderBean {
      * RWikiObject
      */
     public String publicRenderedPage() {
-    		return toolRenderService.renderPublicPage(rwo,user);
+    		return toolRenderService.renderPublicPage(rwo,user,withBreadcrumbs);
     }
 
     /**
@@ -214,19 +218,19 @@ public class RenderBean {
      *            the default space of that should be globalised against
      * @return XHTML as a String representing the content of the RWikiObject
      */
-    public String publicRenderPage(String name, String defaultRealm) {
+    public String publicRenderPage(String name, String defaultRealm, boolean withBreadcrumbs) {
         String pageName = NameHelper.globaliseName(name, defaultRealm);
         String pageSpace = NameHelper.localizeSpace(pageName, defaultRealm);
 
         try {
             RWikiObject page = objectService.getRWikiObject(pageName, user,
                     pageSpace);
-            return toolRenderService.renderPublicPage(page, user, defaultRealm);
+            return toolRenderService.renderPublicPage(page, user, defaultRealm, withBreadcrumbs);
         } catch (PermissionException e) {
             RWikiObjectImpl page = new RWikiCurrentObjectImpl();
             page.setName(pageName);
             page.setContent(PERMISSION_PROBLEM);
-            return toolRenderService.renderPublicPage(page, user, defaultRealm);
+            return toolRenderService.renderPublicPage(page, user, defaultRealm, withBreadcrumbs);
         }
 
     }

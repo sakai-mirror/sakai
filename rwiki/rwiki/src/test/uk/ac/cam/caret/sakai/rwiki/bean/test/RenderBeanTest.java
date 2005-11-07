@@ -42,7 +42,7 @@ public class RenderBeanTest extends TestCase {
         //mockObject = new RWikiObjectImpl();
         
         
-        rb = new RenderBean(mockObject,user, mockToolRenderService, mockObjectService); 
+        rb = new RenderBean(mockObject,user, mockToolRenderService, mockObjectService,true); 
         
     }
 

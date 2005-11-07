@@ -88,6 +88,11 @@ public class ViewParamsHelperBean {
      * the submitted save type
      */
     private String saveType;
+    
+    /**
+     * breadcrumbs
+     */
+    private String withBreadcrumbs;
 
     /**
      * Initializes the bean, gets the parameters out of the request
@@ -114,6 +119,8 @@ public class ViewParamsHelperBean {
         submittedVersion = request.getParameter(EditBean.VERSION_PARAM);
         
         saveType = request.getParameter(EditBean.SAVE_PARAM);
+        
+        withBreadcrumbs = request.getParameter(ViewBean.PARAM_BREADCRUMB_NAME);
     }
 
     /**
@@ -291,6 +298,20 @@ public class ViewParamsHelperBean {
      */
     public void setSaveType(String saveType) {
         this.saveType = saveType;
+    }
+
+    /**
+     * @return Returns the withBreadcrumbs.
+     */
+    public String getWithBreadcrumbs() {
+        return withBreadcrumbs;
+    }
+
+    /**
+     * @param withBreadcrumbs The withBreadcrumbs to set.
+     */
+    public void setWithBreadcrumbs(String withBreadcrumbs) {
+        this.withBreadcrumbs = withBreadcrumbs;
     }
 
     

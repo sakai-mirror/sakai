@@ -58,12 +58,22 @@ public class ViewBean {
      */
     public static final String PAGE_NAME_PARAM = "pageName";
 
+    /**
+     * Parameter name for the paramater indicating which pageName to view, edit
+     * etc.
+     */
+    public static final String PARAM_BREADCRUMB_NAME = "breadcrumb";
+    
+    
     /*
      * These are urlencoded variants of constants from files that actually do
      * the work...
      */
     protected static final String PAGENAME_URL_ENCODED = 
         urlEncode(PAGE_NAME_PARAM);
+    
+    protected static final String DISBLE_BREADCRUMBS_ENCODED = 
+        urlEncode(PARAM_BREADCRUMB_NAME)+"=0";
 
     protected static final String ACTION_URL_ENCODED = 
         urlEncode(ACTION_PARAM);
@@ -129,14 +139,22 @@ public class ViewBean {
         }
         return "";
     }
+    
+    /**
+     * Returns a public view URL with no breadcrumbs
+     * @return
+     */
+    public String getPublicViewUrl() {
+        return getPublicViewUrl(false);
+    }
 
     /**
      * Returns a string representation of an url to perma view the current page
      * 
      * @return url as string
      */
-    public String getPublicViewUrl() {
-        return getPageUrl(pageName, WikiPageAction.PUBLICVIEW_ACTION.getName());
+    public String getPublicViewUrl(boolean withBreadcrumbs) {
+        return getPageUrl(pageName, WikiPageAction.PUBLICVIEW_ACTION.getName(), withBreadcrumbs);
     }
     /**
      * Returns a string representation of an url to view the current page
@@ -223,13 +241,38 @@ public class ViewBean {
      * @return url as string
      */
     protected String getPageUrl(String pageName, String action) {
-        return getAnchorString() + "?" + PAGENAME_URL_ENCODED + "="
-                + urlEncode(pageName) + "&" + ACTION_URL_ENCODED + "="
-                + urlEncode(action) + "&" + PANEL_URL_ENCODED + "="
-                + MAIN_URL_ENCODED + "&" + REALM_URL_ENCODED + "="
-                + urlEncode(localSpace);
+        return getPageUrl(pageName,action,true);
     }
 
+    /**
+     * Given a page name and an action return an url that represents it.
+     * 
+     * @param pageName
+     *            globalised pagename to perform action on
+     * @param action
+     *            name of action to perform
+     * @param withBreadcrumbs
+     *            if false, breadcrumb disable is propagated
+     * @return url as string
+     */
+    protected String getPageUrl(String pageName, String action, boolean withBreadcrumbs) {
+        if ( withBreadcrumbs ) {
+        return getAnchorString() + 
+                "?" + PAGENAME_URL_ENCODED + "=" + urlEncode(pageName) + 
+                "&" + ACTION_URL_ENCODED + "=" + urlEncode(action) + 
+                "&" + PANEL_URL_ENCODED + "=" + MAIN_URL_ENCODED + 
+                "&" + REALM_URL_ENCODED + "=" + urlEncode(localSpace);
+        } else {
+            return getAnchorString() + 
+            "?" + PAGENAME_URL_ENCODED + "=" + urlEncode(pageName) + 
+            "&" + ACTION_URL_ENCODED + "=" + urlEncode(action) + 
+            "&" + PANEL_URL_ENCODED + "=" + MAIN_URL_ENCODED + 
+            "&" + DISBLE_BREADCRUMBS_ENCODED +
+            "&" + REALM_URL_ENCODED + "=" + urlEncode(localSpace);
+        }
+        
+    }
+   
     /**
      * Creates an appropriate url for searching for the given criteria.
      * 

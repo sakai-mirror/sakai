@@ -43,18 +43,18 @@ public class ToolRenderServiceImpl implements ToolRenderService {
      *  (non-Javadoc)
      * @see uk.ac.cam.caret.sakai.rwiki.service.api.RenderService#publicRenderPage(uk.ac.cam.caret.sakai.rwiki.service.api.api.model.RWikiObject, java.lang.String)
      */
-	public String renderPublicPage(RWikiObject rwo, String user) {
-		return renderPublicPage(rwo, user, rwo.getRealm());
+	public String renderPublicPage(RWikiObject rwo, String user, boolean withBreadCrumbs) {
+		return renderPublicPage(rwo, user, rwo.getRealm(), withBreadCrumbs);
 	}
 
 	/*
 	 *  (non-Javadoc)
 	 * @see uk.ac.cam.caret.sakai.rwiki.service.api.RenderService#publicRenderPage(uk.ac.cam.caret.sakai.rwiki.service.api.api.model.RWikiObject, java.lang.String, java.lang.String)
 	 */
-	public String renderPublicPage(RWikiObject rwo, String user, String defaultRealm) {
+	public String renderPublicPage(RWikiObject rwo, String user, String defaultRealm, boolean withBreadCrumbs) {
 	    // SAK-2519
         String localSpace = NameHelper.localizeSpace(rwo.getName(), defaultRealm);
-		PublicPageLinkRendererImpl plr = new PublicPageLinkRendererImpl(localSpace, defaultRealm);
+		PublicPageLinkRendererImpl plr = new PublicPageLinkRendererImpl(localSpace, defaultRealm, withBreadCrumbs);
 		return renderService.renderPage(rwo,user, localSpace, plr);
 	}
     

@@ -98,7 +98,7 @@ public class RecentlyVisitedHelperBean {
         } catch (ClassCastException e) {
             log.warn("Session contains object at " + RECENT_VISIT_ATTR
                     + " which is not a valid breadcrumb bean\n" + "Object is: "
-                    + session.getAttribute(RECENT_VISIT_ATTR).toString(), e);
+                    + session.getAttribute(RECENT_VISIT_ATTR).toString());
         }
 
         if (bean == null) {

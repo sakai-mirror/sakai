@@ -41,16 +41,18 @@ public class PublicPageLinkRendererImpl implements PageLinkRenderer {
 	 */
 	private boolean cachable = true;
 	private boolean useCache = true;
+    private boolean withBreadcrumb = true;
     public String localRealm;
     public String localSpace;
     
-    public PublicPageLinkRendererImpl(String localRealm) {
-        this(localRealm, localRealm);
+    public PublicPageLinkRendererImpl(String localRealm, boolean withBreadcrumb) {
+        this(localRealm, localRealm, withBreadcrumb);
     }
     
-    public PublicPageLinkRendererImpl(String localSpace, String localRealm) {
+    public PublicPageLinkRendererImpl(String localSpace, String localRealm, boolean withBreadcrumb ) {
         this.localSpace = localSpace;
         this.localRealm = localRealm;
+        this.withBreadcrumb = withBreadcrumb;
     }
     /**
      * Generates a publiv navigation link
@@ -59,7 +61,7 @@ public class PublicPageLinkRendererImpl implements PageLinkRenderer {
         name = NameHelper.globaliseName(name, localSpace);
         ViewBean vb = new ViewBean(name, localRealm);
         
-        buffer.append("<a href=\"" + XmlEscaper.xmlEscape(vb.getPublicViewUrl()) + "\">" + XmlEscaper.xmlEscape(view) + "</a>");
+        buffer.append("<a href=\"" + XmlEscaper.xmlEscape(vb.getPublicViewUrl(withBreadcrumb)) + "\">" + XmlEscaper.xmlEscape(view) + "</a>");
     }
     /**
      * Generated a public navigation link
@@ -68,7 +70,7 @@ public class PublicPageLinkRendererImpl implements PageLinkRenderer {
         name = NameHelper.globaliseName(name, localSpace);
         ViewBean vb = new ViewBean(name, localRealm);
         vb.setAnchor(anchor);       
-        buffer.append("<a href=\"" + XmlEscaper.xmlEscape(vb.getPublicViewUrl()) + "\">" + XmlEscaper.xmlEscape(view) + "</a>");
+        buffer.append("<a href=\"" + XmlEscaper.xmlEscape(vb.getPublicViewUrl(withBreadcrumb)) + "\">" + XmlEscaper.xmlEscape(view) + "</a>");
     }
     /**
      * Generates a create link

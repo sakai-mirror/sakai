@@ -102,7 +102,7 @@ public class RecentlyVisitedBean {
             viewBean.setLocalSpace(realm);
             viewBean.setPageName(page);
             return "<a href=\""
-                    + XmlEscaper.xmlEscape(viewBean.getPublicViewUrl())
+                    + XmlEscaper.xmlEscape(viewBean.getPublicViewUrl(true))
                     + "\">"
                     + XmlEscaper.xmlEscape(NameHelper.localizeName(viewBean
                             .getPageName(), defaultSpace)) + "</a>";

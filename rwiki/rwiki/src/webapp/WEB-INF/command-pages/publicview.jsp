@@ -53,7 +53,9 @@
         start = System.currentTimeMillis();
   </jsp:scriptlet>
   
-  <c:set target="${recentlyVisitedBean}" property="viewPage" value="${viewBean }"/>
+  <c:if test="${requestScope.rsacMap.withBreadcrumbs}">
+  		<c:set target="${recentlyVisitedBean}" property="viewPage" value="${viewBean }"/>
+  </c:if>
   
   <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
     <head>
@@ -66,7 +68,9 @@
       <jsp:directive.include file="header.jsp"/>
       <div id="rwiki_container">
 	<div class="portletBody">
-	  <jsp:directive.include file="publicbreadcrumb.jsp"/>
+	  <c:if test="${requestScope.rsacMap.withBreadcrumbs}">
+	  	<jsp:directive.include file="publicbreadcrumb.jsp"/>
+	  </c:if>
 	  <!-- Creates the right hand sidebar -->
 	  <!-- Main page -->
 	  <div id="rwiki_content">

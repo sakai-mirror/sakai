@@ -35,7 +35,7 @@ public interface ToolRenderService {
 	 * @param user The user 
 	 * @return and string containing the rendered content
 	 */
-    String renderPublicPage(RWikiObject rwo, String user);
+    String renderPublicPage(RWikiObject rwo, String user, boolean withBreadcrumbs);
     
     /**
      * Renders a public view of the page
@@ -44,7 +44,7 @@ public interface ToolRenderService {
      * @param realm The default realm to render in
      * @return an string representing the rendered content
      */
-    String renderPublicPage(RWikiObject rwo, String user, String realm);
+    String renderPublicPage(RWikiObject rwo, String user, String realm, boolean withBreadcrumbs);
 	/**
 	 * Renders a view of the page
 	 * @param rwo the RWiki object
