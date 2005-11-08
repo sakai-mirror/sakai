@@ -144,7 +144,8 @@ public class RecentChangesMacro extends BaseMacro {
 
 			}
 
-			writer.write("</div>");
+            // SAK-2696
+			writer.write("\n</div>");
 		} catch (PermissionException e) {
 			writer.write("You do not have permission to search.");
 			writer.write(e.toString());
