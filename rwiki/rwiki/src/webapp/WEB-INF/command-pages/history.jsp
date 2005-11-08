@@ -64,14 +64,14 @@
   		class="rwiki_help_popup" >
   		<h3>Revert</h3>
   		By clicking the revert link against a past version of the page, the version
-  		 in question will be used to create a new version. The result is that the
-  		  current page will contain the content and permissions of the version in
-  		   question. 
+  		 in question will be used to create a new version. The result is that the 
+  		 current page will contain the content and permissions of the version in 
+  		 question. 
   	</div>
   	<div id="changedhelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden;" 
   		class="rwiki_help_popup" >
   		<h3>Content</h3>
-  		If the content was not changed between version
+  		If the content was not changed between versions
   		this column will indicate that the content was not changed
   		This will be because the permissions, owner or realm were
   		changed in the version.

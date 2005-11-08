@@ -102,10 +102,16 @@
     	<div id="siteenablehelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
     		class="rwiki_help_popup" >
     		<h3>Site Enable Page permissions</h3>
-    		When a site enabled page permission is granted, the worksite roles
-    		are consulted to see if a user has permission to perform the action. 
-    		Where the specific site enable page permission is not granted, the 
-    		role permissions are not enabled for this page.
+    		When a site enabled page permission is granted, the worksite roles are 
+    		consulted to see if a user has permission to perform the action. Where 
+    		the specific site enabled page permission is not granted, the role 
+    		permissions are not granted for this page.
+    		<br/>
+		When a page permission is granted using the checkboxes, worksite roles 
+		are consulted to see whether that role has permission to perform the 
+		action. If that worksite role does not have permission to perform the 
+		action, it cannot be granted at a page level.  Page permissions cascade 
+		downwards, so roles with admin permissions will also have read permissions.
     	</div>
     	<div id="pageownerdisphelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
     		class="rwiki_help_popup" >
