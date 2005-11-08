@@ -33,9 +33,9 @@ public class NameHelper {
     public static final String DEFAULT_PAGE = "home";
 
     public static boolean isGlobalised(final String name) {
-        
+
         // This should be a RE
-        
+
         if (name == null) {
             return false;
         }
@@ -69,13 +69,14 @@ public class NameHelper {
             final String defaultSpace) {
 
         if (name == null || name.length() == 0) {
-            return normalizeName(defaultSpace + SPACE_SEPARATOR + DEFAULT_PAGE);
+            return normalize(defaultSpace + SPACE_SEPARATOR + DEFAULT_PAGE,
+                    false);
         }
 
         if (name.charAt(0) != SPACE_SEPARATOR) {
-            return normalizeName(defaultSpace + SPACE_SEPARATOR + name);
+            return normalize(defaultSpace + SPACE_SEPARATOR + name, true);
         } else {
-            return normalizeName(name);
+            return normalize(name, true);
         }
     }
 
@@ -90,26 +91,17 @@ public class NameHelper {
      * @return localised page name
      */
     public static String localizeName(final String pageName, final String space) {
-        if (!isGlobalised(space))
-            throw new IllegalArgumentException("Space is not global: " + space);
-        
-        if (pageName == null || pageName.length() == 0) {
-            return DEFAULT_PAGE;
-        }
+        // Space may not be normalized SAK-2697, and may aswell globalise the
+        // pageName whilst we are at it.
+        String normalSpace = normalize(space, false);
+        String name = globaliseName(pageName, normalSpace);
 
-        int nameLength = pageName.length();
-        int spaceLength = space.length();
-
-        String name = pageName;
-
-        if (pageName.charAt(nameLength - 1) == '/') {
-            name = name + DEFAULT_PAGE;
-            nameLength += DEFAULT_PAGE.length();
-        }
+        int nameLength = name.length();
+        int spaceLength = normalSpace.length();
 
         char[] chars = name.toCharArray();
         int lastSeparator = findLastSeparator(chars, nameLength);
-        
+
         boolean capitalise = true;
         for (int i = lastSeparator; i < nameLength; i++) {
             if (chars[i] == SPACE_SEPARATOR || chars[i] == ' ') {
@@ -119,27 +111,28 @@ public class NameHelper {
                 capitalise = false;
             }
         }
-        
+
         if (nameLength <= spaceLength + 1) {
             return new String(chars);
         }
 
-        char[] spaceChars = space.toCharArray();
+        char[] spaceChars = normalSpace.toCharArray();
         for (int i = 0; i < spaceLength; i++) {
             if (chars[i] != spaceChars[i]) {
                 return new String(chars);
             }
         }
-        
+
         if (chars[spaceLength] != SPACE_SEPARATOR) {
             return new String(chars);
         } else {
-            return new String(chars, spaceLength + 1, nameLength - spaceLength - 1);
-          }
+            return new String(chars, spaceLength + 1, nameLength - spaceLength
+                    - 1);
+        }
     }
 
     private static int findLastSeparator(char[] chars, int nameLength) {
-        for (int  i = nameLength - 1 ; i >= 0; i--) {
+        for (int i = nameLength - 1; i >= 0; i--) {
             if (chars[i] == SPACE_SEPARATOR) {
                 return i;
             }
@@ -147,28 +140,31 @@ public class NameHelper {
         return 0;
     }
 
-    private static String normalizeName(final String pageName) {
-        char[] chars = pageName.toCharArray();
-        CharBuffer name = CharBuffer.allocate(chars.length + DEFAULT_PAGE.length() + 1);
-        
+    private static String normalize(final String nameToNormalize,
+            final boolean isPageName) {
+        char[] chars = nameToNormalize.toCharArray();
+        int charBufferLength = chars.length + 1
+                + (isPageName ? DEFAULT_PAGE.length() : 0);
+        CharBuffer name = CharBuffer.allocate(charBufferLength);
+
         int wordStart = 0;
 
         boolean addSeparator = true;
         boolean addWhiteSpaceOrSeparator = true;
-        
-        for (int i = 0; i < chars.length; i++ ) {
+
+        for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
-            
+
             if (c == SPACE_SEPARATOR) {
                 if (!addWhiteSpaceOrSeparator) {
-                    name.put(chars, wordStart, i - wordStart);                  
-                } 
+                    name.put(chars, wordStart, i - wordStart);
+                }
                 addSeparator = true;
                 addWhiteSpaceOrSeparator = true;
             } else if (Character.isWhitespace(c)) {
                 if (!addWhiteSpaceOrSeparator) {
                     name.put(chars, wordStart, i - wordStart);
-                    
+
                 }
                 addWhiteSpaceOrSeparator = true;
             } else if (addSeparator) {
@@ -177,28 +173,28 @@ public class NameHelper {
                 wordStart = i;
                 addSeparator = false;
                 addWhiteSpaceOrSeparator = false;
-            } else if (addWhiteSpaceOrSeparator)  {
+            } else if (addWhiteSpaceOrSeparator) {
                 addWhiteSpaceOrSeparator = false;
                 wordStart = i;
                 name.put(' ');
-                chars[i] = Character.toLowerCase(c);            
+                chars[i] = Character.toLowerCase(c);
             } else {
                 chars[i] = Character.toLowerCase(c);
             }
-            
+
         }
-        
-        if (addSeparator) {
+
+        if (addSeparator && isPageName) {
             name.put(SPACE_SEPARATOR);
             name.put(DEFAULT_PAGE);
         } else if (!addWhiteSpaceOrSeparator) {
             name.put(chars, wordStart, chars.length - wordStart);
         }
-        
+
         int position = name.position();
         name.position(0);
         name.limit(position);
-        
+
         return name.toString();
     }
 
