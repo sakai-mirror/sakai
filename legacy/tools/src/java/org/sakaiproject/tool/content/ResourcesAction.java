@@ -3262,7 +3262,7 @@ public class ResourcesAction
 																			collectionId,
 																			MAXIMUM_ATTEMPTS_FOR_UNIQUENESS,
 																			item.getMimeType(),
-																			item.getContent(),
+																			newUrl,
 																			resourceProperties, item.getNotification());
 				
 				item.setAdded(true);
@@ -5858,6 +5858,7 @@ public class ResourcesAction
 		}
 		else if(item.isUrl())
 		{
+			item.setMimeType(ResourceProperties.TYPE_URL);
 			String url = params.getString("Url" + index);
 			if(url == null || url.trim().equals(""))
 			{
@@ -5891,7 +5892,7 @@ public class ResourcesAction
 						{
 							url = "http://" + url;
 							URL test = new URL(url);
-							item.setFilename(url);					
+							item.setFilename(url);
 						}
 					}
 					catch (MalformedURLException e2)
