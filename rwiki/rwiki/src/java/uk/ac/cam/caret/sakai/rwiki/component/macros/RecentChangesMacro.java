@@ -83,9 +83,11 @@ public class RecentChangesMacro extends BaseMacro {
         String realm = context.getRWikiObject().getRealm();
         
         SpecializedRenderEngine spRe = (SpecializedRenderEngine)context.getRenderEngine();
+        
         PageLinkRenderer plr = spRe.getPageLinkRenderer();
         plr.setCachable(false);
-	    
+        //SAK-2671 We need to know the local render space
+	    String localRenderSpace = spRe.getSpace();
         
 	    GregorianCalendar cal = new GregorianCalendar();
     		cal.add(GregorianCalendar.DATE, -30);
@@ -133,19 +135,8 @@ public class RecentChangesMacro extends BaseMacro {
 			Iterator iterator = wikiObjects.iterator();
 			while (iterator.hasNext()) {
 				RWikiObject object = (RWikiObject) iterator.next();
-				// there is an issue with this, if it is camel case, then 
-				// this will get interpreted and converted into a double href.
-				// hence we either need to change the CammelCase regular expression
-				// or we need to fix the way this works.
-				// The added difficulty is that the name within the link is also
-				// camel case, hence that will get converted. It may be better
-				// just to use link processing and let the macro expand or abandon
-				// camel case altogether as it just confuses.
-				
-				//writer.write("<li><a href=\"" + object.getName() + "\">");
-				//writer.write(object.getName() + "</a>");
-				// FIXME!
-				writer.write("\n* [" + NameHelper.localizeName(object.getName(), realm) + "]");
+				//SAK-2671 We should localize against the renderspace not the object's realm!
+				writer.write("\n* [" + NameHelper.localizeName(object.getName(), localRenderSpace) + "]");
 
 				writer.write(" was last modified "
 						+ object.getVersion().toString());

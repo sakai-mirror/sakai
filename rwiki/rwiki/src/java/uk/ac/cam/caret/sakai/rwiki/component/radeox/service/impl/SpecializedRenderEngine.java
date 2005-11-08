@@ -71,6 +71,11 @@ public class SpecializedRenderEngine implements ImageRenderEngine, WikiRenderEng
         plr.appendCreateLink(buffer, name, view);
     }
 
+    // SAK-2671: We need to know the Local Render Space to localize within 
+    public String getSpace() {
+        return space;
+    }
+    
     public boolean exists(String name) {
         return (objectService.exists(name, space));
     }
