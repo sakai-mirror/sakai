@@ -37,6 +37,7 @@ import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.Cacher;
 import org.sakaiproject.service.framework.memory.MemoryService;
+import org.sakaiproject.service.framework.memory.MultiRefCache;
 import org.sakaiproject.service.framework.memory.SiteCache;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.event.Event;
@@ -291,6 +292,14 @@ public class BasicMemoryService implements MemoryService, Observer
 	public SiteCache newSiteCache(long sleep, String pattern)
 	{
 		return new SiteCacheImpl(this, m_eventTrackingService, m_logger, sleep, pattern);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public MultiRefCache newMultiRefCache(long sleep)
+	{
+		return new MultiRefCacheImpl(this, m_eventTrackingService, m_logger, sleep);
 	}
 
 	/*******************************************************************************

@@ -33,12 +33,10 @@ import java.util.Vector;
 
 import org.sakaiproject.api.kernel.thread_local.ThreadLocalManager;
 import org.sakaiproject.service.framework.log.Logger;
-import org.sakaiproject.service.framework.memory.Cache;
-import org.sakaiproject.service.framework.memory.CacheRefresher;
+import org.sakaiproject.service.framework.memory.MultiRefCache;
 import org.sakaiproject.service.framework.memory.cover.MemoryService;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.security.SecurityAdvisor;
 import org.sakaiproject.service.legacy.security.SecurityService;
@@ -54,13 +52,13 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
  * @author University of Michigan, Sakai Software Development Team
  * @version $Revision$
  */
-public class SakaiSecurity implements SecurityService, CacheRefresher
+public class SakaiSecurity implements SecurityService
 {
 	/** Current service key for the super user status of the current user. */
 	//protected final String M_curUserSuperKey = getClass().getName() + ".super";
 
 	/** A cache of calls to the service and the results. */
-	protected Cache m_callCache = null;
+	protected MultiRefCache m_callCache = null;
 
 	/** ThreadLocalManager key for our SecurityAdvisor Stack. */
 	protected final static String ADVISOR_STACK = "SakaiSecurity.advisor.stack";
@@ -124,7 +122,7 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 		if (m_cacheMinutes > 0)
 		{
 			// build a synchronized map for the call cache, automatiaclly checking for expiration every 15 mins.
-			m_callCache = MemoryService.newHardCache(this, 15 * 60);
+			m_callCache = MemoryService.newMultiRefCache(15 * 60);
 		}
 
 		m_logger.info(this + ".init() - caching minutes: " + m_cacheMinutes);
@@ -157,9 +155,8 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 	 */
 	protected boolean isSuperUser(User user)
 	{
-		if (user == null) return false;
-
-		// TODO: this cache must be sensitive to changes in the /site/!admin azg -ggolden
+		// if no user or the no-id user (i.e. the anon user)
+		if ((user == null) || (user.getId().length() == 0)) return false;
 
 		// check the cache
 		String command = "super@" + user.getId();
@@ -192,7 +189,12 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 		}
 
 		// cache
-		if (m_callCache != null) m_callCache.put(command, Boolean.valueOf(rv), m_cacheMinutes * 60);
+		if (m_callCache != null)
+		{
+			Collection azgIds = new Vector();
+			azgIds.add("/site/!admin");
+			m_callCache.put(command, Boolean.valueOf(rv), m_cacheMinutes * 60, null, azgIds);
+		}
 
 		return rv;
 
@@ -255,8 +257,6 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 	 */
 	protected boolean checkAuthzGroups(String userId, String function, String entityRef)
 	{
-		// TODO: this cache must be made responsive to changed, first in any of the realms involved, and also in the entity -ggolden
-
 		// check the cache
 		String command = "unlock@" + userId + "@" + function + "@" + entityRef;
 		if ((m_callCache != null) && (m_callCache.containsKey(command)))
@@ -273,7 +273,7 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 		boolean rv = AuthzGroupService.isAllowed(userId, function, azgs);
 
 		// cache
-		if (m_callCache != null) m_callCache.put(command, Boolean.valueOf(rv), m_cacheMinutes * 60);
+		if (m_callCache != null) m_callCache.put(command, Boolean.valueOf(rv), m_cacheMinutes * 60, entityRef, azgs);
 
 		return rv;
 	}
@@ -350,28 +350,6 @@ public class SakaiSecurity implements SecurityService, CacheRefresher
 				+ resourceOrGroup + " allow: " + allow);
 
 	} // removeKey
-
-	/**********************************************************************************************************************************************************************************************************************************************************
-	 * CacheRefresher implementation
-	 *********************************************************************************************************************************************************************************************************************************************************/
-
-	/**
-	 * Get a new value for this key whose value has already expired in the cache.
-	 * 
-	 * @param key
-	 *        The key whose value has expired and needs to be refreshed.
-	 * @param oldValue
-	 *        The old exipred value of the key.
-	 * @param event
-	 *        The event which triggered this refresh.
-	 * @return a new value for use in the cache for this key; if null, the entry will be removed.
-	 */
-	public Object refresh(Object key, Object oldValue, Event event)
-	{
-		// instead of refreshing when an entry expires, let it go and we'll get it again if needed -ggolden
-		return null;
-
-	} // refresh
 
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * SecurityAdvisor Support

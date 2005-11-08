@@ -115,6 +115,12 @@ public interface MemoryService
 	SiteCache newSiteCache(long sleep, String pattern);
 	
 	/**
+	 * Construct a multi-ref Cache.  No automatic refresh: expire only, from time and events.
+	 * @param sleep The number of seconds to sleep between expiration checks.
+	 */
+	MultiRefCache newMultiRefCache(long sleep);
+
+	/**
 	 * Get a status report of memory users.
 	 * @return A status report of memory users.
 	 */

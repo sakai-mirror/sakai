@@ -162,6 +162,15 @@ public class MemoryService
 		return service.newSiteCache(param0, param1);
 	}
 
+	public static org.sakaiproject.service.framework.memory.MultiRefCache newMultiRefCache(long param0)
+	{
+		org.sakaiproject.service.framework.memory.MemoryService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.newMultiRefCache(param0);
+	}
+
 	public static java.lang.String getStatus()
 	{
 		org.sakaiproject.service.framework.memory.MemoryService service = getInstance();

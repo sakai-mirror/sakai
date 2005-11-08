@@ -347,8 +347,8 @@ public class ReferenceComponent
 	{
 		if (id == null) id = "";
 
-		// the user's realm
-		rv.add(UserDirectoryService.userReference(id));
+		// the user's realm (unless it's anon)
+		if (id.length() > 0) rv.add(UserDirectoryService.userReference(id));
 
 		addUserTemplateAuthzGroup(rv, id);
 	}
