@@ -135,6 +135,7 @@ extends PagedResourceActionII
 	private static final String SORT_SUBJECT = "subject";
 	private static final String SORT_CHANNEL = "channel";
 	private static final String SORT_FOR = "for";
+	private static final String SORT_GROUP = "group";
 	
 	private static final String CONTEXT_VAR_DISPLAY_OPTIONS = "displayOptions";
 	private static final String VELOCITY_DISPLAY_OPTIONS = CONTEXT_VAR_DISPLAY_OPTIONS;
@@ -1590,7 +1591,7 @@ extends PagedResourceActionII
 				Collection groups = channel.getGroupsAllowAddMessage();
 				if (groups.size() > 0)
 				{
-					context.put("groups", groups);
+					context.put("groups", new SortedIterator(groups.iterator(), new AnnouncementComparator(SORT_GROUP, Boolean.TRUE.booleanValue())));
 				}
 			}
 		}
@@ -3573,6 +3574,14 @@ extends PagedResourceActionII
 									String factor2 = ((AnnouncementWrapper) o2).getRange();
 									result = factor1.compareToIgnoreCase(factor2);
 								}
+								else
+									if (m_criteria.equals(SORT_GROUP))
+									{
+										// sorted by the group title
+										String factor1 = ((Group) o1).getTitle();
+										String factor2 = ((Group) o2).getTitle();
+										result = factor1.compareToIgnoreCase(factor2);
+									}
 
 			// sort ascending or descending
 			if (!m_asc)
