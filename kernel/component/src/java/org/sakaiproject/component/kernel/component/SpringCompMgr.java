@@ -50,8 +50,7 @@ import org.springframework.core.io.ClassPathResource;
  * See the {@link org.sakaiproject.api.kernel.component.ComponentManager}interface for details.
  * </p>
  * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
+ * @author Sakai Software Development Team
  */
 public class SpringCompMgr implements ComponentManager
 {
@@ -104,16 +103,16 @@ public class SpringCompMgr implements ComponentManager
 			String catalina = getCatalina();
 			if (catalina != null)
 			{
-				sakaiHomePath = catalina + "/sakai/";
+				sakaiHomePath = catalina + File.separatorChar + "sakai" + File.separatorChar;
 			}
 		}
 
 		// strange case...
 		if (sakaiHomePath == null)
 		{
-			sakaiHomePath = "/usr/local/sakai/";
+			sakaiHomePath = File.separatorChar + "usr" + File.separatorChar + "local" + File.separatorChar + "sakai" + File.separatorChar;
 		}
-		if (!sakaiHomePath.endsWith("/")) sakaiHomePath = sakaiHomePath + "/";
+		if (!sakaiHomePath.endsWith(File.separator)) sakaiHomePath = sakaiHomePath + File.separatorChar;
 
 		// make sure it's set properly
 		System.setProperty("sakai.home", sakaiHomePath);
@@ -123,7 +122,7 @@ public class SpringCompMgr implements ComponentManager
 		if (securityPath != null)
 		{
 			// make sure it's properly slashed
-			if (!securityPath.endsWith("/")) securityPath = securityPath + "/";
+			if (!securityPath.endsWith(File.separator)) securityPath = securityPath + File.separatorChar;
 			System.setProperty("sakai.security", securityPath);
 		}
 
@@ -428,7 +427,7 @@ public class SpringCompMgr implements ComponentManager
 				String catalina = getCatalina();
 				if (catalina != null)
 				{
-					componentsRoot = catalina + "/components/";
+					componentsRoot = catalina + File.separatorChar + "components" + File.separatorChar;
 				}
 			}
 
