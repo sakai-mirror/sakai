@@ -5657,10 +5657,10 @@ public class SiteAction extends PagedResourceActionII
 			}
 			
 			// there is no offical instructor for future term sites
+			String requestId = (String) state.getAttribute(STATE_SITE_QUEST_UNIQNAME);
 			if (!isFutureTerm)
 			{
 				//To site quest account - the instructor of record's
-				String requestId = (String) state.getAttribute(STATE_SITE_QUEST_UNIQNAME);
 				if (requestId != null)
 				{
 					try
@@ -5765,11 +5765,11 @@ public class SiteAction extends PagedResourceActionII
 			{
 				if (sendEmailToRequestee)
 				{
-					buf.append(rb.getString("java.authoriz")+" " + noEmailInIdAccountName + " "+rb.getString("java.asreq"));
+					buf.append(rb.getString("java.authoriz")+" " + requestId + " "+rb.getString("java.asreq"));
 				}
 				else
 				{
-					buf.append(rb.getString("java.thesiteemail")+" " + noEmailInIdAccountName + " "+rb.getString("java.asreq"));
+					buf.append(rb.getString("java.thesiteemail")+" " + requestId + " "+rb.getString("java.asreq"));
 				}
 			}
 			content = buf.toString();
