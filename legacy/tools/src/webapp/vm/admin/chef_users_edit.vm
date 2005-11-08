@@ -111,7 +111,11 @@
 			</table>
 #end
 			<div class="act">
-				<input type="submit" name="eventSubmit_doSave" value="$tlang.getString("useedi.sav")" />
+				#if($user)
+					<input type="submit" name="eventSubmit_doSave" value="$tlang.getString("useedi.sav")" />
+				#else
+					<input type="submit" name="eventSubmit_doSave" value="$tlang.getString("useedi.sav2")" />
+				#end					
 				<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("useedi.can")" />
 			</div>
 		</form>
