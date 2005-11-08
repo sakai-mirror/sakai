@@ -33,23 +33,6 @@ implements org.osid.repository.Repository
     private org.osid.id.IdManager idManager = null;
     private org.osid.logging.WritableLog log = null;
     private org.osid.shared.Id id = null;
-    private org.osid.shared.Id recordStructureId = null;
-    private org.osid.shared.Id vueRecordStructureId = null;
-    private org.osid.shared.Id dcRecordStructureId = null;
-    private org.osid.shared.Id CREATOR_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id SUBJECT_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id PUBLISHER_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id CONTRIBUTOR_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id DATE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id TYPE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id FORMAT_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id SOURCE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id LANGUAGE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id RELATION_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id COVERAGE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id RIGHTS_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id XML_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id VUE_SPEC_PART_STRUCTURE_ID = null;
     private String idString = null;
     private String displayName = null;
     private String description = null;
@@ -95,23 +78,6 @@ implements org.osid.repository.Repository
         try
         {
             this.id = idManager.getId(this.idString);
-            this.recordStructureId = idManager.getId("af106d4f201080006d751920168000100");
-            this.dcRecordStructureId = idManager.getId("f6c16d4f201080006d751920168000100");
-            this.vueRecordStructureId = idManager.getId("d5e9eea5301080006d751920168000100");
-            this.CREATOR_PART_STRUCTURE_ID = idManager.getId("b5ae441f201080006d751920168000100");
-            this.SUBJECT_PART_STRUCTURE_ID = idManager.getId("a8a1541f201080006d751920168000100");
-            this.PUBLISHER_PART_STRUCTURE_ID = idManager.getId("0bd5374f201080006d751920168000100");
-            this.CONTRIBUTOR_PART_STRUCTURE_ID = idManager.getId("18a4541f201080006d751920168000100");
-            this.DATE_PART_STRUCTURE_ID = idManager.getId("b197541f201080006d751920168000100");
-            this.TYPE_PART_STRUCTURE_ID = idManager.getId("0a3a541f201080006d751920168000100");
-            this.FORMAT_PART_STRUCTURE_ID = idManager.getId("e46d541f201080006d751920168000100");
-            this.SOURCE_PART_STRUCTURE_ID = idManager.getId("e350641f201080006d751920168000100");
-            this.LANGUAGE_PART_STRUCTURE_ID = idManager.getId("1c74641f201080006d751920168000100");
-            this.RELATION_PART_STRUCTURE_ID = idManager.getId("6597641f201080006d751920168000100");
-            this.COVERAGE_PART_STRUCTURE_ID = idManager.getId("e0ff641f201080006d751920168000100");
-            this.RIGHTS_PART_STRUCTURE_ID = idManager.getId("5492741f201080006d751920168000100");
-            this.XML_PART_STRUCTURE_ID = idManager.getId("dfef451f201080006d751920168000100");
-            this.VUE_SPEC_PART_STRUCTURE_ID = idManager.getId("c928eea5301080006d751920168000100");
         }
         catch (Throwable t)
         {
@@ -128,11 +94,7 @@ implements org.osid.repository.Repository
     public void updateDisplayName(String displayName)
     throws org.osid.repository.RepositoryException
     {
-        if (displayName == null)
-        {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
-        }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public String getDescription()
@@ -144,11 +106,7 @@ implements org.osid.repository.Repository
     public void updateDescription(String description)
     throws org.osid.repository.RepositoryException
     {
-        if (description == null)
-        {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
-        }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public org.osid.shared.Id getId()
@@ -170,13 +128,13 @@ implements org.osid.repository.Repository
     {
         if ( (displayName == null ) || (description == null) || (assetType == null) )
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         if (!assetType.isEqual(this.assetType))
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_TYPE);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_TYPE);
         }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public void deleteAsset(org.osid.shared.Id assetId)
@@ -184,15 +142,15 @@ implements org.osid.repository.Repository
     {
         if (assetId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public org.osid.repository.AssetIterator getAssets()
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public org.osid.repository.AssetIterator getAssetsByType(org.osid.shared.Type assetType)
@@ -200,9 +158,9 @@ implements org.osid.repository.Repository
     {
         if (assetType == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public org.osid.shared.TypeIterator getAssetTypes()
@@ -217,7 +175,7 @@ implements org.osid.repository.Repository
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -225,7 +183,7 @@ implements org.osid.repository.Repository
     throws org.osid.repository.RepositoryException
     {
         java.util.Vector results = new java.util.Vector();
-        results.addElement(new RecordStructure(this.idManager,this.log));
+        results.addElement(RecordStructure.getInstance());
         return new RecordStructureIterator(results);
     }
 
@@ -234,15 +192,15 @@ implements org.osid.repository.Repository
     {
         if (assetType == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         if (assetType.isEqual(this.assetType))
         {
             java.util.Vector results = new java.util.Vector();
-            results.addElement(new RecordStructure(this.idManager,this.log));
+            results.addElement(RecordStructure.getInstance());
             return new RecordStructureIterator(results);
         }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_TYPE);
+        throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_TYPE);
     }
 
     public org.osid.shared.TypeIterator getSearchTypes()
@@ -256,7 +214,7 @@ implements org.osid.repository.Repository
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -272,7 +230,7 @@ implements org.osid.repository.Repository
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -291,7 +249,7 @@ implements org.osid.repository.Repository
     public void invalidateAsset(org.osid.shared.Id assetId)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public org.osid.repository.Asset getAsset(org.osid.shared.Id assetId)
@@ -299,22 +257,22 @@ implements org.osid.repository.Repository
     {
         if (assetId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public org.osid.repository.Asset getAssetByDate(org.osid.shared.Id assetId
                                                   , long date)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public org.osid.shared.LongValueIterator getAssetDates(org.osid.shared.Id assetId)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public org.osid.repository.AssetIterator getAssetsBySearch(java.io.Serializable searchCriteria
@@ -324,17 +282,17 @@ implements org.osid.repository.Repository
     {
         if (searchCriteria == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         if (searchType == null) 
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         if (!(searchCriteria instanceof String))
         {
             // maybe change this to a new exception message
             log("invalid criteria");
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
 
         java.util.Vector results = new java.util.Vector();
@@ -357,30 +315,6 @@ implements org.osid.repository.Repository
 					query = query.replaceAll("CRITERIA",criteria);
                     System.out.println("SRW Query: " + query);
 					
-					// Create a trust manager that does not validate certificate chains
-					javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[]{
-						new javax.net.ssl.X509TrustManager() {
-							public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-								return null;
-							}
-							public void checkClientTrusted(
-								java.security.cert.X509Certificate[] certs, String authType) {
-							}
-							public void checkServerTrusted(
-								java.security.cert.X509Certificate[] certs, String authType) {
-							}
-						}
-					};
-    
-					// Install the all-trusting trust manager
-					try {
-						javax.net.ssl.SSLContext sc = javax.net.ssl.SSLContext.getInstance("SSL");
-						sc.init(null, trustAllCerts, new java.security.SecureRandom());
-						javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-					} catch (Exception e) {
-					}
-    
-					// Now you can access an https URL without having the certificate in the truststore
                     java.net.URL url = new java.net.URL(query);
                     java.net.URLConnection connection = url.openConnection();
                     java.net.HttpURLConnection http = (java.net.HttpURLConnection)connection;
@@ -398,224 +332,14 @@ implements org.osid.repository.Repository
                     catch (Throwable t) {}
 //                    System.out.println("xml " + xml);
 
-                    javax.xml.parsers.DocumentBuilderFactory dbf = null;
-                    javax.xml.parsers.DocumentBuilder db = null;
-                    org.w3c.dom.Document document = null;
-
-                    dbf = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-                    db = dbf.newDocumentBuilder();
-                    document = db.parse(new java.io.ByteArrayInputStream(xml.toString().getBytes()));
-                    // for each DOC (maps 1-to-1 with Asset)
-                    org.w3c.dom.NodeList docs = document.getElementsByTagName("record");
-                    int numDocs = docs.getLength();
-                    for (int i=0; i < numDocs; i++)
-                    {
-                        String assetTitle = null;
-                        String assetDescription = "";
-                        String assetId = null;
-                        org.osid.repository.Asset asset = null;
-                        org.osid.repository.Record record = null;
-
-                        org.w3c.dom.Element doc = (org.w3c.dom.Element)docs.item(i);
-                        org.w3c.dom.NodeList dcs = doc.getElementsByTagName("dc:title");
-                        int numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                    assetTitle = dc.getFirstChild().getNodeValue();
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:description");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                assetDescription = dc.getFirstChild().getNodeValue();
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:identifier.uri");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                assetId = dc.getFirstChild().getNodeValue();
-                            }
-                        }
-
-                        if ((assetTitle != null) && (assetId != null))
-                        {
-                            asset = new Asset(assetTitle,assetDescription,assetId,this.idManager,this.log,this.id);
-                            results.addElement(asset);
-                        }
-                        
-                        dcs = doc.getElementsByTagName("dc:creator");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.CREATOR_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:subject");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.SUBJECT_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:publisher");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.PUBLISHER_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:contributor");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.CONTRIBUTOR_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:date");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.DATE_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:type");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.TYPE_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:format");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.FORMAT_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:source");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.SOURCE_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:language");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.LANGUAGE_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:relation");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.RELATION_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:coverage");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) record = asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.COVERAGE_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        dcs = doc.getElementsByTagName("dc:rights");
-                        numDCs = dcs.getLength();
-                        for (int k=0; k < numDCs; k++)
-                        {
-                            org.w3c.dom.Element dc = (org.w3c.dom.Element)dcs.item(k);
-                            if (dc.hasChildNodes()) 
-                            {
-                                if ((asset != null) && (record == null)) asset.createRecord(this.recordStructureId);
-                                if ((asset != null) && (record != null)) record.createPart(this.RIGHTS_PART_STRUCTURE_ID,dc.getFirstChild().getNodeValue());
-                            }
-                        }
-                        if ((xml.length() > 0) && (asset != null))
-                        {
-                            org.osid.repository.Record r = asset.createRecord(this.dcRecordStructureId);
-                            r.createPart(this.XML_PART_STRUCTURE_ID,xml);
-                        }
-                        // VUE integration
-                        if ((asset != null) && (record != null))
-                        {
-                            //System.out.println("creating VUE integration record");
-                            org.osid.repository.Record r = asset.createRecord(this.vueRecordStructureId);
-                            org.osid.repository.PartIterator partIterator = record.getParts();
-                            while (partIterator.hasNextPart())
-                            {
-                                org.osid.repository.Part part = partIterator.nextPart();
-                                r.createPart(part.getPartStructure().getId(),part.getValue());
-                            }
-                            //System.out.println("setting spec in rep merge " + this. VUE_SPEC_PART_STRUCTURE_ID.getIdString() + " " + assetId);
-                            r.createPart(this.VUE_SPEC_PART_STRUCTURE_ID,assetId);
-/*                            
-                            System.out.println("reading record back");
-                            org.osid.repository.PartIterator p = r.getParts();
-                            while (p.hasNextPart())
-                            {
-                                org.osid.repository.Part p1 = p.nextPart();
-                                org.osid.repository.PartStructure ps = p1.getPartStructure();
-                                System.out.println("next part name " + ps.getDisplayName());
-                            }
-*/
-                        }
-                    }
+					try
+					{
+						return new AssetIterator(xml,this.log,this.id);
+					}
+					catch (Throwable t)
+					{
+						// just ignore
+					}
                 }
             }
         }
@@ -623,11 +347,11 @@ implements org.osid.repository.Repository
         {
             t.printStackTrace();
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
         if (!knownType)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_TYPE);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_TYPE);
         }
         return new AssetIterator(results);
     }
@@ -635,7 +359,7 @@ implements org.osid.repository.Repository
     public org.osid.shared.Id copyAsset(org.osid.repository.Asset asset)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public org.osid.repository.RecordStructureIterator getRecordStructuresByType(org.osid.shared.Type recordStructureType)
@@ -643,16 +367,16 @@ implements org.osid.repository.Repository
     {
         if (recordStructureType == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         if (recordStructureType.isEqual(new Type("mit.edu","recordStructure","wellFormed")))
         {
             java.util.Vector results = new java.util.Vector();
             // don't return the content's sturcutre even if it matches, since this that is a separate and special case
-            results.addElement(new RecordStructure(this.idManager,this.log));
+            results.addElement(RecordStructure.getInstance());
             return new RecordStructureIterator(results);
         }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_TYPE);
+        throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_TYPE);
     }
 
     public org.osid.shared.PropertiesIterator getProperties()
@@ -665,7 +389,7 @@ implements org.osid.repository.Repository
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }        
     }
 
@@ -674,7 +398,7 @@ implements org.osid.repository.Repository
     {
         if (propertiesType == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         return new Properties();
     }
@@ -689,7 +413,7 @@ implements org.osid.repository.Repository
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }        
     }
 

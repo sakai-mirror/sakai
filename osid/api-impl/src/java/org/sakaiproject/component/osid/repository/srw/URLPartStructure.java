@@ -26,36 +26,23 @@ package org.sakaiproject.component.osid.repository.srw;
  * @author Massachusetts Institute of Techbology, Sakai Software Development Team
  * @version
  */
-public class RecordStructure
-implements org.osid.repository.RecordStructure
+public class URLPartStructure
+implements org.osid.repository.PartStructure
 {
-    private String idString = "af106d4f201080006d751920168000100";
-    private String displayName = "Library Content";
-    private String description = "Holds metadata for an asset of no particular kind";
-    private String format = "";
-    private String schema = "";
-    private org.osid.shared.Type type = new Type("mit.edu","repository","library_content");
+    private org.osid.shared.Id URL_PART_STRUCTURE_ID = null;
+    private org.osid.shared.Type type = new Type("mit.edu","partStructure","URL");
+    private String displayName = "URL";
+    private String description = "Link to content.";
+    private boolean mandatory = false;
+    private boolean populatedByRepository = false;
     private boolean repeatable = false;
-	private static RecordStructure recordStructure = new RecordStructure();
-    private org.osid.shared.Id id = null;
+	private static URLPartStructure urlPartStructure = new URLPartStructure();
 	
-	protected static RecordStructure getInstance()
+	protected static URLPartStructure getInstance()
 	{
-		return recordStructure;
+		return urlPartStructure;
 	}
 	
-    protected RecordStructure()
-    {
-        try
-		{
-			this.id = Managers.getInstance().getIdManager().getId(this.idString);
-		}
-		catch (Throwable t)
-		{
-			System.out.println(t.getMessage());
-		}
-	}
-
     public String getDisplayName()
     throws org.osid.repository.RepositoryException
     {
@@ -68,22 +55,16 @@ implements org.osid.repository.RecordStructure
         return this.description;
     }
 
-    public String getFormat()
+    public boolean isMandatory()
     throws org.osid.repository.RepositoryException
     {
-        return this.format;
+        return this.mandatory;
     }
 
-    public String getSchema()
+    public boolean isPopulatedByRepository()
     throws org.osid.repository.RepositoryException
     {
-        return this.schema;
-    }
-
-    public org.osid.shared.Type getType()
-    throws org.osid.repository.RepositoryException
-    {
-        return this.type;
+        return this.populatedByRepository;
     }
 
     public boolean isRepeatable()
@@ -92,10 +73,15 @@ implements org.osid.repository.RecordStructure
         return this.repeatable;
     }
 
-    public org.osid.shared.Id getId()
-    throws org.osid.repository.RepositoryException
+    protected URLPartStructure()
     {
-        return this.id;
+        try
+        {
+            this.URL_PART_STRUCTURE_ID = Managers.getIdManager().getId("92afe2b670108000f4689e10000102");
+        }
+        catch (Throwable t)
+        {
+        }        
     }
 
     public void updateDisplayName(String displayName)
@@ -104,35 +90,33 @@ implements org.osid.repository.RecordStructure
         throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
-    public org.osid.repository.PartStructureIterator getPartStructures()
+    public org.osid.shared.Id getId()
     throws org.osid.repository.RepositoryException
     {
-        java.util.Vector results = new java.util.Vector();
-        try
-        {
-            results.addElement(new CreatorPartStructure());
-            results.addElement(new SubjectPartStructure());
-            results.addElement(new PublisherPartStructure());
-            results.addElement(new ContributorPartStructure());
-            results.addElement(new DatePartStructure());
-            results.addElement(new TypePartStructure());
-            results.addElement(new FormatPartStructure());
-            results.addElement(new SourcePartStructure());
-            results.addElement(new LanguagePartStructure());
-            results.addElement(new RelationPartStructure());
-            results.addElement(new CoveragePartStructure());
-            results.addElement(new RightsPartStructure());
-        }
-        catch (Throwable t)
-        {
-            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
-        }
-        return new PartStructureIterator(results);
+        return this.URL_PART_STRUCTURE_ID;
     }
 
-    public boolean validateRecord(org.osid.repository.Record record)
+    public org.osid.shared.Type getType()
+    throws org.osid.repository.RepositoryException
+    {
+        return this.type;
+    }
+
+    public org.osid.repository.RecordStructure getRecordStructure()
+    throws org.osid.repository.RepositoryException
+    {
+        return RecordStructure.getInstance();
+    }
+
+    public boolean validatePart(org.osid.repository.Part part)
     throws org.osid.repository.RepositoryException
     {
         return true;
+    }
+
+    public org.osid.repository.PartStructureIterator getPartStructures()
+    throws org.osid.repository.RepositoryException
+    {
+        return new PartStructureIterator(new java.util.Vector());
     }
 }

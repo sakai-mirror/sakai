@@ -29,8 +29,6 @@ package org.sakaiproject.component.osid.repository.srw;
 public class XmlPartStructure
 implements org.osid.repository.PartStructure
 {
-    private org.osid.id.IdManager idManager = null;
-    private org.osid.logging.WritableLog log = null;
     private org.osid.shared.Id XML_PART_STRUCTURE_ID = null;
     private org.osid.shared.Type type = new Type("mit.edu","partStructure","dublinCoreXML");
     private String displayName = "XML";
@@ -38,7 +36,13 @@ implements org.osid.repository.PartStructure
     private boolean mandatory = false;
     private boolean populatedByRepository = false;
     private boolean repeatable = true;
-
+	private static XmlPartStructure xmlPartStructure = new XmlPartStructure();
+	
+	protected static XmlPartStructure getInstance()
+	{
+		return xmlPartStructure;
+	}
+	
     public String getDisplayName()
     throws org.osid.repository.RepositoryException
     {
@@ -69,35 +73,14 @@ implements org.osid.repository.PartStructure
         return this.repeatable;
     }
 
-    private void log(String entry)
-    throws org.osid.repository.RepositoryException
+    protected XmlPartStructure()
     {
-        if (log != null)
-        {
-            try
-            {
-                log.appendLog(entry);
-            }
-            catch (org.osid.logging.LoggingException lex) 
-            {
-                // swallow exception since logging is a best attempt to log an exception anyway
-            }   
-        }
-    }
-
-    protected XmlPartStructure(org.osid.id.IdManager idManager
-                             , org.osid.logging.WritableLog log)
-    throws org.osid.repository.RepositoryException
-    {
-        this.idManager = idManager;
-        this.log = log;
         try
         {
-            this.XML_PART_STRUCTURE_ID = idManager.getId("dfef451f201080006d751920168000100");
+            this.XML_PART_STRUCTURE_ID = Managers.getIdManager().getId("dfef451f201080006d751920168000100");
         }
         catch (Throwable t)
         {
-            log(t.getMessage());
         }        
     }
 
@@ -122,7 +105,7 @@ implements org.osid.repository.PartStructure
     public org.osid.repository.RecordStructure getRecordStructure()
     throws org.osid.repository.RepositoryException
     {
-        return new RecordStructure(this.idManager,this.log);
+        return RecordStructure.getInstance();
     }
 
     public boolean validatePart(org.osid.repository.Part part)

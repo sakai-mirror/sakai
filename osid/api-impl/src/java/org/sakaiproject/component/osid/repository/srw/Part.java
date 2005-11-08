@@ -34,20 +34,6 @@ implements org.osid.repository.Part
     private java.io.Serializable value = null;
     private org.osid.id.IdManager idManager = null;
     private org.osid.logging.WritableLog log = null;
-    private org.osid.shared.Id CREATOR_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id SUBJECT_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id PUBLISHER_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id CONTRIBUTOR_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id DATE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id TYPE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id FORMAT_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id SOURCE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id LANGUAGE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id RELATION_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id COVERAGE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id RIGHTS_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id XML_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id VUE_SPEC_PART_STRUCTURE_ID = null;
     private String displayName = null;
     private org.osid.shared.Id id = null;
 
@@ -88,24 +74,42 @@ implements org.osid.repository.Part
         this.idManager = idManager;
         this.log = log;
         this.partStructureId = partStructureId;
+		
         this.value = value;
         try
         {
             this.id = this.idManager.createId();
-            this.CREATOR_PART_STRUCTURE_ID = idManager.getId("b5ae441f201080006d751920168000100");
-            this.SUBJECT_PART_STRUCTURE_ID = idManager.getId("a8a1541f201080006d751920168000100");
-            this.PUBLISHER_PART_STRUCTURE_ID = idManager.getId("0bd5374f201080006d751920168000100");
-            this.CONTRIBUTOR_PART_STRUCTURE_ID = idManager.getId("18a4541f201080006d751920168000100");
-            this.DATE_PART_STRUCTURE_ID = idManager.getId("b197541f201080006d751920168000100");
-            this.TYPE_PART_STRUCTURE_ID = idManager.getId("0a3a541f201080006d751920168000100");
-            this.FORMAT_PART_STRUCTURE_ID = idManager.getId("e46d541f201080006d751920168000100");
-            this.SOURCE_PART_STRUCTURE_ID = idManager.getId("e350641f201080006d751920168000100");
-            this.LANGUAGE_PART_STRUCTURE_ID = idManager.getId("1c74641f201080006d751920168000100");
-            this.RELATION_PART_STRUCTURE_ID = idManager.getId("6597641f201080006d751920168000100");
-            this.COVERAGE_PART_STRUCTURE_ID = idManager.getId("e0ff641f201080006d751920168000100");
-            this.RIGHTS_PART_STRUCTURE_ID = idManager.getId("5492741f201080006d751920168000100");
-            this.XML_PART_STRUCTURE_ID = idManager.getId("dfef451f201080006d751920168000100");
-            this.VUE_SPEC_PART_STRUCTURE_ID = idManager.getId("c928eea5301080006d751920168000100");
+			if (partStructureId.isEqual(ContributorPartStructure.getInstance().getId())) {
+				this.partStructure = ContributorPartStructure.getInstance();
+			} else if (partStructureId.isEqual(CoveragePartStructure.getInstance().getId())) {
+				this.partStructure = CoveragePartStructure.getInstance();
+			} else if (partStructureId.isEqual(CreatorPartStructure.getInstance().getId())) {
+				this.partStructure = CreatorPartStructure.getInstance();
+			} else if (partStructureId.isEqual(DatePartStructure.getInstance().getId())) {
+				this.partStructure = DatePartStructure.getInstance();
+			} else if (partStructureId.isEqual(FormatPartStructure.getInstance().getId())) {
+				this.partStructure = FormatPartStructure.getInstance();
+			} else if (partStructureId.isEqual(LanguagePartStructure.getInstance().getId())) {
+				this.partStructure = LanguagePartStructure.getInstance();
+			} else if (partStructureId.isEqual(PublisherPartStructure.getInstance().getId())) {
+				this.partStructure = PublisherPartStructure.getInstance();
+			} else if (partStructureId.isEqual(RelationPartStructure.getInstance().getId())) {
+				this.partStructure = RelationPartStructure.getInstance();
+			} else if (partStructureId.isEqual(RightsPartStructure.getInstance().getId())) {
+				this.partStructure = RightsPartStructure.getInstance();
+			} else if (partStructureId.isEqual(SourcePartStructure.getInstance().getId())) {
+				this.partStructure = SourcePartStructure.getInstance();
+			} else if (partStructureId.isEqual(SubjectPartStructure.getInstance().getId())) {
+				this.partStructure = SubjectPartStructure.getInstance();
+			} else if (partStructureId.isEqual(TypePartStructure.getInstance().getId())) {
+				this.partStructure = TypePartStructure.getInstance();
+			} else if (partStructureId.isEqual(VueSpecPartStructure.getInstance().getId())) {
+				this.partStructure = VueSpecPartStructure.getInstance();
+			} else if (partStructureId.isEqual(XmlPartStructure.getInstance().getId())) {
+				this.partStructure = XmlPartStructure.getInstance();
+			} else if (partStructureId.isEqual(URLPartStructure.getInstance().getId())) {
+				this.partStructure = URLPartStructure.getInstance();
+			}
         }
         catch (Throwable t)
         {
@@ -142,29 +146,7 @@ implements org.osid.repository.Part
     public org.osid.repository.PartStructure getPartStructure()
     throws org.osid.repository.RepositoryException
     {
-        try
-        {
-            if (this.partStructureId.isEqual(this.CREATOR_PART_STRUCTURE_ID)) return new CreatorPartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.SUBJECT_PART_STRUCTURE_ID)) return new SubjectPartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.PUBLISHER_PART_STRUCTURE_ID)) return new PublisherPartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.CONTRIBUTOR_PART_STRUCTURE_ID)) return new ContributorPartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.DATE_PART_STRUCTURE_ID)) return new DatePartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.TYPE_PART_STRUCTURE_ID)) return new TypePartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.FORMAT_PART_STRUCTURE_ID)) return new FormatPartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.SOURCE_PART_STRUCTURE_ID)) return new SourcePartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.LANGUAGE_PART_STRUCTURE_ID)) return new LanguagePartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.RELATION_PART_STRUCTURE_ID)) return new RelationPartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.COVERAGE_PART_STRUCTURE_ID)) return new CoveragePartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.RIGHTS_PART_STRUCTURE_ID)) return new RightsPartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.XML_PART_STRUCTURE_ID)) return new XmlPartStructure(this.idManager,this.log);
-            else if (this.partStructureId.isEqual(this.VUE_SPEC_PART_STRUCTURE_ID)) return new VueSpecPartStructure(this.idManager,this.log);
-        }
-        catch (Throwable t)
-        {
-            log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
-        }
-        return null;
+		return this.partStructure;
     }
 
     public java.io.Serializable getValue()

@@ -26,31 +26,26 @@ package org.sakaiproject.component.osid.repository.srw;
  * @author Massachusetts Institute of Techbology, Sakai Software Development Team
  * @version
  */
-public class RepositoryIterator
-implements org.osid.repository.RepositoryIterator
-{
-    private java.util.Vector vector = new java.util.Vector();
-    private int i = 0;
+ 
+ public class Managers
+ {
+	 private static Managers managers = new Managers();
+	 private static org.osid.id.IdManager idManager = null;
+	 
+	 protected static Managers getInstance()
+	 {
+		 return managers;
+	 }
 
-    public RepositoryIterator(java.util.Vector vector)
-    throws org.osid.repository.RepositoryException
-    {
-        this.vector = vector;
-    }
+	 public static void setIdManager(org.osid.id.IdManager manager)
+	 {
+		 idManager = manager;
+	 }
 
-    public boolean hasNextRepository()
-    throws org.osid.repository.RepositoryException
-    {
-        return (i < vector.size());
-    }
-
-    public org.osid.repository.Repository nextRepository()
-    throws org.osid.repository.RepositoryException
-    {
-        if (i >= vector.size())
-        {
-            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NO_MORE_ITERATOR_ELEMENTS);
-        }
-        return (org.osid.repository.Repository)vector.elementAt(i++);
-    }
-}
+	 public static org.osid.id.IdManager getIdManager()
+	 {
+		 return idManager;
+	 }
+ }
+	 
+	 

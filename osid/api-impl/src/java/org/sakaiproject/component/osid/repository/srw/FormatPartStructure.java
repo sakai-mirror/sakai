@@ -29,17 +29,20 @@ package org.sakaiproject.component.osid.repository.srw;
 public class FormatPartStructure
 implements org.osid.repository.PartStructure
 {
-    private org.osid.id.IdManager idManager = null;
-    private org.osid.logging.WritableLog log = null;
     private org.osid.shared.Id FORMAT_PART_STRUCTURE_ID = null;
-    // private org.osid.shared.Type type = new FormatPartStructureType("mit.edu","partStructure","format");
     private org.osid.shared.Type type = new Type("mit.edu","partStructure","format");
     private String displayName = "Format";
     private String description = "Typically, Format may include the media-type or dimensions of the resource. Format may be used to identify the software, hardware, or other equipment needed to display or operate the resource. Examples of dimensions include size and duration.";
     private boolean mandatory = false;
     private boolean populatedByRepository = false;
     private boolean repeatable = true;
-
+	private static FormatPartStructure formatPartStructure = new FormatPartStructure();
+	
+	protected static FormatPartStructure getInstance()
+	{
+		return formatPartStructure;
+	}
+	
     public String getDisplayName()
     throws org.osid.repository.RepositoryException
     {
@@ -70,35 +73,14 @@ implements org.osid.repository.PartStructure
         return this.repeatable;
     }
 
-    private void log(String entry)
-    throws org.osid.repository.RepositoryException
+    protected FormatPartStructure()
     {
-        if (log != null)
-        {
-            try
-            {
-                log.appendLog(entry);
-            }
-            catch (org.osid.logging.LoggingException lex) 
-            {
-                // swallow exception since logging is a best attempt to log an exception anyway
-            }   
-        }
-    }
-
-    protected FormatPartStructure(org.osid.id.IdManager idManager
-                                , org.osid.logging.WritableLog log)
-    throws org.osid.repository.RepositoryException
-    {
-        this.idManager = idManager;
-        this.log = log;
         try
         {
-            this.FORMAT_PART_STRUCTURE_ID = idManager.getId("e46d541f201080006d751920168000100");
+            this.FORMAT_PART_STRUCTURE_ID = Managers.getInstance().getIdManager().getId("e46d541f201080006d751920168000100");
         }
         catch (Throwable t)
         {
-            log(t.getMessage());
         }        
     }
 
@@ -123,7 +105,7 @@ implements org.osid.repository.PartStructure
     public org.osid.repository.RecordStructure getRecordStructure()
     throws org.osid.repository.RepositoryException
     {
-        return new RecordStructure(this.idManager,this.log);
+        return RecordStructure.getInstance();
     }
 
     public boolean validatePart(org.osid.repository.Part part)

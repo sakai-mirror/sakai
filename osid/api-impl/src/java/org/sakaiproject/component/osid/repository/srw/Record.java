@@ -79,7 +79,7 @@ implements org.osid.repository.Record
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -96,7 +96,7 @@ implements org.osid.repository.Record
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -114,12 +114,12 @@ implements org.osid.repository.Record
                     return;
                 }
             }
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_ID);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_ID);
         }
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -140,17 +140,17 @@ implements org.osid.repository.Record
     {
         try
         {
-            if (this.recordStructureId.isEqual(this.idManager.getId("af106d4f201080006d751920168000100")))
+            if (this.recordStructureId.isEqual(RecordStructure.getInstance().getId()))
             {
-                return new RecordStructure(this.idManager, this.log);
+                return new RecordStructure();
             }
-            else if (this.recordStructureId.isEqual(this.idManager. getId("f6c16d4f201080006d751920168000100")))
+            else if (this.recordStructureId.isEqual(DCRecordStructure.getInstance().getId()))
             {
-                return new DCRecordStructure(this.idManager, this.log);
+                return new DCRecordStructure();
             }
-            else if (this.recordStructureId.isEqual(this.idManager. getId("d5e9eea5301080006d751920168000100")))
+            else if (this.recordStructureId.isEqual(VueRecordStructure.getInstance().getId()))
             {
-                return new VueRecordStructure(this.idManager, this.log);
+                return new VueRecordStructure();
             }
             else
             {
@@ -160,7 +160,7 @@ implements org.osid.repository.Record
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 

@@ -45,6 +45,6 @@ implements org.osid.shared.Properties
     public org.osid.shared.Type getType()
     throws org.osid.shared.SharedException
     {
-        return new Type("mit.edu","properties","general");
+        return new Type("edu.mit","properties","general");
     }
 }

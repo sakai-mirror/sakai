@@ -49,7 +49,7 @@ implements org.osid.repository.RecordStructureIterator
     {
         if (i >= vector.size())
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NO_MORE_ITERATOR_ELEMENTS);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NO_MORE_ITERATOR_ELEMENTS);
         }
         return (org.osid.repository.RecordStructure)vector.elementAt(i++);
     }

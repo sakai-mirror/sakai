@@ -29,7 +29,7 @@ package org.sakaiproject.component.osid.repository.srw;
 public class Asset
 implements org.osid.repository.Asset
 {
-    private org.osid.id.IdManager idManager = null;
+    private org.osid.id.IdManager idManager = Managers.getInstance().getIdManager();
     private org.osid.logging.WritableLog log = null;
     private org.osid.shared.Type assetType = new Type("mit.edu","asset","library_content");
     private org.osid.shared.Type recordStructureType = new Type("mit.edu","recordStructure","library_content");
@@ -43,23 +43,6 @@ implements org.osid.repository.Asset
     private org.osid.shared.Type type = null;
     private java.util.Vector recordVector = new java.util.Vector();
     private String content = null;
-    private org.osid.shared.Id recordStructureId = null;
-    private org.osid.shared.Id vueRecordStructureId = null;
-    private org.osid.shared.Id dcRecordStructureId = null;
-    private org.osid.shared.Id CREATOR_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id SUBJECT_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id PUBLISHER_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id CONTRIBUTOR_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id DATE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id TYPE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id FORMAT_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id SOURCE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id LANGUAGE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id RELATION_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id COVERAGE_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id RIGHTS_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id XML_PART_STRUCTURE_ID = null;
-    private org.osid.shared.Id VUE_SPEC_PART_STRUCTURE_ID = null;
 
     private void log(String entry)
     throws org.osid.repository.RepositoryException
@@ -80,45 +63,26 @@ implements org.osid.repository.Asset
     protected Asset(String displayName
                   , String description
                   , String idString
-                  , org.osid.id.IdManager idManager
                   , org.osid.logging.WritableLog log
                   , org.osid.shared.Id repositoryId)
     throws org.osid.repository.RepositoryException
     {
         this.displayName = displayName;
         this.description = description;
-        this.idManager = idManager;
         this.log = log;
         this.repositoryId = repositoryId;
         this.type = new Type("mit.edu","asset","library_content");
         try
         {
             this.id = idManager.getId(idString);
-            this.recordStructureId = idManager.getId("6c2b441f201080006d751920168000100");
-            this.dcRecordStructureId = idManager.getId("f6c16d4f201080006d751920168000100");
-            this.vueRecordStructureId = idManager.getId("d5e9eea5301080006d751920168000100");
-            this.CREATOR_PART_STRUCTURE_ID = idManager.getId("b5ae441f201080006d751920168000100");
-            this.SUBJECT_PART_STRUCTURE_ID = idManager.getId("a8a1541f201080006d751920168000100");
-            this.PUBLISHER_PART_STRUCTURE_ID = idManager.getId("0bd5374f201080006d751920168000100");
-            this.CONTRIBUTOR_PART_STRUCTURE_ID = idManager.getId("18a4541f201080006d751920168000100");
-            this.DATE_PART_STRUCTURE_ID = idManager.getId("b197541f201080006d751920168000100");
-            this.TYPE_PART_STRUCTURE_ID = idManager.getId("0a3a541f201080006d751920168000100");
-            this.FORMAT_PART_STRUCTURE_ID = idManager.getId("e46d541f201080006d751920168000100");
-            this.SOURCE_PART_STRUCTURE_ID = idManager.getId("e350641f201080006d751920168000100");
-            this.LANGUAGE_PART_STRUCTURE_ID = idManager.getId("1c74641f201080006d751920168000100");
-            this.RELATION_PART_STRUCTURE_ID = idManager.getId("6597641f201080006d751920168000100");
-            this.COVERAGE_PART_STRUCTURE_ID = idManager.getId("e0ff641f201080006d751920168000100");
-            this.RIGHTS_PART_STRUCTURE_ID = idManager.getId("5492741f201080006d751920168000100");
-            this.XML_PART_STRUCTURE_ID = idManager.getId("dfef451f201080006d751920168000100");
-            this.VUE_SPEC_PART_STRUCTURE_ID = idManager.getId("c928eea5301080006d751920168000100");
-        }
+         }
         catch (Throwable t)
         {
             log(t.getMessage());
         }
         
     }
-
+	
     public String getDisplayName()
     throws org.osid.repository.RepositoryException
     {
@@ -128,12 +92,8 @@ implements org.osid.repository.Asset
     public void updateDisplayName(String displayName)
     throws org.osid.repository.RepositoryException
     {
-        if (displayName == null)
-        {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
-        }
-        this.displayName = displayName;
-    }
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
+	}
 
     public String getDescription()
     throws org.osid.repository.RepositoryException
@@ -144,11 +104,7 @@ implements org.osid.repository.Asset
     public void updateDescription(String description)
     throws org.osid.repository.RepositoryException
     {
-        if (description == null)
-        {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
-        }
-        this.description = description;
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
     }
 
     public org.osid.shared.Id getId()
@@ -172,20 +128,20 @@ implements org.osid.repository.Asset
     public void updateContent(java.io.Serializable content)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
     }
 
     public void addAsset(org.osid.shared.Id assetId)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
     }
 
     public void removeAsset(org.osid.shared.Id assetId
                           , boolean includeChildren)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
     }
 
     public org.osid.repository.AssetIterator getAssets()
@@ -199,7 +155,7 @@ implements org.osid.repository.Asset
     {
         if (assetType == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         return new AssetIterator(new java.util.Vector());
     }
@@ -209,7 +165,7 @@ implements org.osid.repository.Asset
     {
         if (recordStructureId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -220,7 +176,7 @@ implements org.osid.repository.Asset
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -228,14 +184,14 @@ implements org.osid.repository.Asset
                                      , org.osid.shared.Id recordStructureId)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
     }
 
     public void copyRecordStructure(org.osid.shared.Id assetId
                                   , org.osid.shared.Id recordStructureId)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
     }
 
     public void deleteRecord(org.osid.shared.Id recordId)
@@ -243,7 +199,7 @@ implements org.osid.repository.Asset
     {
         if (recordId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -256,12 +212,12 @@ implements org.osid.repository.Asset
                     return;
                 }
             }
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_ID);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_ID);
         }
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -276,7 +232,7 @@ implements org.osid.repository.Asset
     {
         if (recordStructureId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -285,7 +241,7 @@ implements org.osid.repository.Asset
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -299,14 +255,14 @@ implements org.osid.repository.Asset
     throws org.osid.repository.RepositoryException
     {
         java.util.Vector results = new java.util.Vector();
-        results.addElement(new RecordStructure(this.idManager,this.log));
+        results.addElement(new RecordStructure());
         return new RecordStructureIterator(results);
     }
 
     public org.osid.repository.RecordStructure getContentRecordStructure()
     throws org.osid.repository.RepositoryException
     {
-        return new RecordStructure(this.idManager,log);
+        return new RecordStructure();
     }
 
     public org.osid.repository.Record getRecord(org.osid.shared.Id recordId)
@@ -314,7 +270,7 @@ implements org.osid.repository.Asset
     {
         if (recordId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -326,12 +282,12 @@ implements org.osid.repository.Asset
                     return record;
                 }
             }
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_ID);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_ID);
         }
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -340,7 +296,7 @@ implements org.osid.repository.Asset
     {
         if (partId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -357,12 +313,12 @@ implements org.osid.repository.Asset
                     }
                 }
             }
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_ID);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_ID);
         }
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -378,7 +334,7 @@ implements org.osid.repository.Asset
     {
         if (partStructureId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -401,7 +357,7 @@ implements org.osid.repository.Asset
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -421,32 +377,32 @@ implements org.osid.repository.Asset
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
     public long getEffectiveDate()
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
     }
 
     public void updateEffectiveDate(long effectiveDate)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
     }
 
     public long getExpirationDate()
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
     }
 
     public void updateExpirationDate(long expirationDate)
     throws org.osid.repository.RepositoryException
     {
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+		throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);    
     }
 
     public org.osid.shared.ObjectIterator getPartValuesByPartStructure(org.osid.shared.Id partStructureId)
@@ -454,7 +410,7 @@ implements org.osid.repository.Asset
     {
         if (partStructureId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -470,7 +426,7 @@ implements org.osid.repository.Asset
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -479,7 +435,7 @@ implements org.osid.repository.Asset
     {
         if (partStructureId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -503,7 +459,7 @@ implements org.osid.repository.Asset
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -512,14 +468,14 @@ implements org.osid.repository.Asset
     {
         if (recordStructureType == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
 
         if ( (!recordStructureType.isEqual(this.recordStructureType)) &&
              (!recordStructureType.isEqual(this.dcRecordStructureType)) &&
              (!recordStructureType.isEqual(this.vueRecordStructureType)) )
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_TYPE);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_TYPE);
         }
 
         java.util.Vector results = new java.util.Vector();

@@ -30,8 +30,6 @@ public class VueRecordStructure
 implements org.osid.repository.RecordStructure
 {
     private String idString = "d5e9eea5301080006d751920168000100";
-    private org.osid.id.IdManager idManager = null;
-    private org.osid.logging.WritableLog log = null;
     private String displayName = "VUE Integration Record";
     private String description = "Holds object properties for display in Tufts Visual Understanding Environment (VUE)";
     private String format = "";
@@ -39,7 +37,13 @@ implements org.osid.repository.RecordStructure
     private org.osid.shared.Type type = new Type("tufts.edu","recordStructure","vue");
     private boolean repeatable = false;
     private org.osid.shared.Id id = null;
-
+	private static VueRecordStructure vueRecordStructure = new VueRecordStructure();
+	
+	protected static VueRecordStructure getInstance()
+	{
+		return vueRecordStructure;
+	}
+	
     public String getDisplayName()
     throws org.osid.repository.RepositoryException
     {
@@ -82,35 +86,14 @@ implements org.osid.repository.RecordStructure
         return this.id;
     }
 
-    private void log(String entry)
-    throws org.osid.repository.RepositoryException
-    {
-        if (log != null)
-        {
-            try
-            {
-                log.appendLog(entry);
-            }
-            catch (org.osid.logging.LoggingException lex) 
-            {
-                // swallow exception since logging is a best attempt to log an exception anyway
-            }   
-        }
-    }
-
-    public VueRecordStructure(org.osid.id.IdManager idManager, org.osid.logging.WritableLog log)
-    throws org.osid.repository.RepositoryException
+    public VueRecordStructure()
     {
         try
         {
-            this.idManager = idManager;
-            this.id = this.idManager.getId(this.idString);
-            this.log = log;
+            this.id = Managers.getInstance().getIdManager().getId(this.idString);
         }
         catch (Throwable t)
         {
-            log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
         }
     }
 
@@ -126,22 +109,21 @@ implements org.osid.repository.RecordStructure
         java.util.Vector results = new java.util.Vector();
         try
         {
-            results.addElement(new CreatorPartStructure(this.idManager,this.log));
-            results.addElement(new SubjectPartStructure(this.idManager,this.log));
-            results.addElement(new PublisherPartStructure(this.idManager,this.log));
-            results.addElement(new ContributorPartStructure(this.idManager,this.log));
-            results.addElement(new DatePartStructure(this.idManager,this.log));
-            results.addElement(new TypePartStructure(this.idManager,this.log));
-            results.addElement(new FormatPartStructure(this.idManager,this.log));
-            results.addElement(new SourcePartStructure(this.idManager,this.log));
-            results.addElement(new LanguagePartStructure(this.idManager,this.log));
-            results.addElement(new RelationPartStructure(this.idManager,this.log));
-            results.addElement(new CoveragePartStructure(this.idManager,this.log));
-            results.addElement(new RightsPartStructure(this.idManager,this.log));
+            results.addElement(CreatorPartStructure.getInstance());
+            results.addElement(SubjectPartStructure.getInstance());
+            results.addElement(PublisherPartStructure.getInstance());
+            results.addElement(ContributorPartStructure.getInstance());
+            results.addElement(DatePartStructure.getInstance());
+            results.addElement(TypePartStructure.getInstance());
+            results.addElement(FormatPartStructure.getInstance());
+            results.addElement(SourcePartStructure.getInstance());
+            results.addElement(LanguagePartStructure.getInstance());
+            results.addElement(RelationPartStructure.getInstance());
+            results.addElement(CoveragePartStructure.getInstance());
+            results.addElement(RightsPartStructure.getInstance());
         }
         catch (Throwable t)
         {
-            log(t.getMessage());
             throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
         }
         return new PartStructureIterator(results);

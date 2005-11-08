@@ -30,8 +30,6 @@ public class DCRecordStructure
 implements org.osid.repository.RecordStructure
 {
     private String idString = "f6c16d4f201080006d751920168000100";
-    private org.osid.id.IdManager idManager = null;
-    private org.osid.logging.WritableLog log = null;
     private String displayName = "Dublin Core XML";
     private String description = "Holds metadata for an asset of no particular kind";
     private String format = "XML";
@@ -39,7 +37,13 @@ implements org.osid.repository.RecordStructure
     private org.osid.shared.Type type = new Type("mit.edu","recordStructure","dublinCore");
     private boolean repeatable = false;
     private org.osid.shared.Id id = null;
-
+	private static DCRecordStructure dcRecordStructure = new DCRecordStructure();
+	
+	protected static DCRecordStructure getInstance()
+	{
+		return dcRecordStructure;
+	}
+	
     public String getDisplayName()
     throws org.osid.repository.RepositoryException
     {
@@ -82,35 +86,14 @@ implements org.osid.repository.RecordStructure
         return this.id;
     }
 
-    private void log(String entry)
-    throws org.osid.repository.RepositoryException
-    {
-        if (log != null)
-        {
-            try
-            {
-                log.appendLog(entry);
-            }
-            catch (org.osid.logging.LoggingException lex) 
-            {
-                // swallow exception since logging is a best attempt to log an exception anyway
-            }   
-        }
-    }
-
-    public DCRecordStructure(org.osid.id.IdManager idManager, org.osid.logging.WritableLog log)
-    throws org.osid.repository.RepositoryException
+    public DCRecordStructure()
     {
         try
         {
-            this.idManager = idManager;
-            this.id = this.idManager.getId(this.idString);
-            this.log = log;
+            this.id = Managers.getInstance().getIdManager().getId(this.idString);
         }
         catch (Throwable t)
         {
-            log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
         }
     }
 
@@ -126,12 +109,10 @@ implements org.osid.repository.RecordStructure
         java.util.Vector results = new java.util.Vector();
         try
         {
-            results.addElement(new XmlPartStructure(this.idManager,this.log));
+            results.addElement(XmlPartStructure.getInstance());
         }
         catch (Throwable t)
         {
-            log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
         }
         return new PartStructureIterator(results);
     }

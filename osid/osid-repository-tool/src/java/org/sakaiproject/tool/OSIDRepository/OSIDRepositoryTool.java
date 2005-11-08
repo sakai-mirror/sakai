@@ -38,15 +38,21 @@ import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
+import org.w3c.dom.*;
+import org.w3c.dom.html.*;
+
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 /**
  * A servlet to illustrate use of the RepositoryManager interface.
  * @author Massachusetts Institute of Technology
- * @version $Id: PresenceTool.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
+ * @version $Id: OSIDRepositortyTool.java 632 2005-07-14 21:22:50Z jeffkahn@mit.edu $
  *
  */
 public class OSIDRepositoryTool extends HttpServlet {
-
+	
+	// have a place to store Repositories for later use in a search
+	java.util.Vector _repositoryVector = new java.util.Vector();
+	
 	/**
 	 * Access the Servlet's information display.
 	 *
@@ -82,7 +88,7 @@ public class OSIDRepositoryTool extends HttpServlet {
 	{
 		out.println("<tr><td>&nbsp;</td></tr>\r\n");
 		out.println("<tr><td>Starting Test "+theString+"</td></tr>\r\n");
-	}
+	}	
 	private void testStep(PrintWriter out,String theString)
 	{
 		out.println("<tr><td>"+theString+"</td></tr>\r\n");
@@ -117,57 +123,11 @@ public class OSIDRepositoryTool extends HttpServlet {
 		out.println("<html>");
 		out.println("<body>");
 		out.println("<table>");
-
-		try {
-			testStart(out,"IdManager");
-			ComponentManager.getInstance();
-			Object o = ComponentManager.get("org.osid.id.IdManager");
-			if (o != null) {
-				org.osid.id.IdManager idManager = (org.osid.id.IdManager)o;
-				org.osid.shared.Id theId = idManager.createId();
-				testStep(out,"ID = "+theId.getIdString());
-				testPass(out,"IdManager");
-			} else {
-				testFail(out,"ComponentManager could not find IdManager");
-			}
-		} catch(Throwable t) {
-			testFail(out,"IdManager Exception "+t.toString());
-			// TODO: throw(t);
-		}
-
-		try {
-			testStart(out,"LoggingManager");
-			ComponentManager.getInstance();
-			Object o = ComponentManager.get("org.osid.logging.LoggingManager");
-			if (o != null) {
-				org.osid.logging.LoggingManager loggingManager = (org.osid.logging.LoggingManager)o;
-				org.osid.shared.StringIterator iter = loggingManager.getLogNamesForWriting();
-				testStep(out,"Writable Logs "+iter);
-    				org.osid.logging.WritableLog log = loggingManager.getLogForWriting("info");
-				log.appendLog("This message should go to info log");
-				log = loggingManager.getLogForWriting("trace");
-				log.appendLog("This message should go to trace log");
-				log = loggingManager.getLogForWriting("fred");
-				log.appendLog("This message should go to info log because if the log is unknown, info is assumed");
-				testPass(out,"LoggingManager");
-			} else {
-				testFail(out,"ComponentManager could not find LoggingManager");
-			}
-		} catch(Throwable t) {
-			testFail(out,"LoggingManager Exception "+t.toString());
-			// TODO: throw(t);
-		}
-
-
 		
 		try {
-			testStart(out,"RepositoryManager");
 			ComponentManager.getInstance();		
 			Object o = ComponentManager.get("org.osid.repository.RepositoryManager");
 			if (o != null) {
-				// have a place to store Repositories for later use in a search
-				java.util.Vector repositoryVector = new java.util.Vector();
-				
 				// initialize the repository manager and get its repositories
 				org.osid.repository.RepositoryManager repositoryManager = (org.osid.repository.RepositoryManager)o;
 				repositoryManager.assignOsidContext(new org.osid.OsidContext());
@@ -178,59 +138,21 @@ public class OSIDRepositoryTool extends HttpServlet {
 					// display each repository name in a line and store away the repository for a search
 					org.osid.repository.Repository nextRepository = repositoryIterator.nextRepository();
 					out.println("<tr><td>" + nextRepository.getDisplayName() + "</td></tr>");
-					repositoryVector.addElement(nextRepository);
+					_repositoryVector.addElement(nextRepository);
 				}
-				
-				// perform a search if a criteria was passed
-				String criteria = req.getParameter("criteria");
-				org.osid.shared.Type thumbnailType = new Type("mit.edu","partStructure","thumbnail");
-				org.osid.shared.Type urlType = new Type("mit.edu","partStructure","URL");
-				
-				if (criteria != null) {
-					// convert a vector of repositories to an array which the method call requires
-					int size = repositoryVector.size();
-					org.osid.repository.Repository repositories[] = new org.osid.repository.Repository[size];
-					for (int i = 0; i < size; i++) {
-						repositories[i] = (org.osid.repository.Repository)repositoryVector.elementAt(i);
-					}
-					
-					// perform the search
-					out.println("<tr><td>Results of searching all repositories for " + criteria + "</td></tr>");
-					org.osid.repository.AssetIterator assetIterator = repositoryManager.getAssetsBySearch(repositories,
-																										  criteria,
-																										  new Type("mit.edu","search","keyword"),
-																										  null);
-					while (assetIterator.hasNextAsset()) {
-						// show the name of the asset that was found
-						org.osid.repository.Asset asset = assetIterator.nextAsset();
-						out.println("<tr><td>Asset is " + asset.getDisplayName() + "</td></tr>");
-						
-						// look for a thumbnail or url part and show any
-						org.osid.repository.RecordIterator recordIterator = asset.getRecords();
-						while (recordIterator.hasNextRecord()) {
-							org.osid.repository.PartIterator partIterator = recordIterator.nextRecord().getParts();
-							while (partIterator.hasNextPart()) {
-								org.osid.repository.Part part = partIterator.nextPart();
-								org.osid.shared.Type partStructureType = part.getPartStructure().getType();
-								if (partStructureType.isEqual(thumbnailType)) {
-									out.println("<tr><td>Thumbnail is " + part.getValue() + "</td></tr>");
-								} else if (partStructureType.isEqual(urlType)) {
-									out.println("<tr><td>URL is " + part.getValue() + "</td></tr>");
-								}
-							}
-						}
-					}
-				}
-				
-			}		
+			}
+		} catch(Throwable t) {
+			testFail(out,"RepositoryManager Exception "+t.toString());
+			// TODO: throw(t);
 		}
-		catch (Throwable t) {
-			t.printStackTrace();
-		}
-
+				
 		out.println("</table>");
+		out.println("<form name\"search\" method=\"post\">");
+		out.println("Criteria: <input type=\"text\" name=\"criteria\" id=\"criteria\">");
+		out.println("<input type=\"submit\">");
+		out.println("</form>");
 		out.println("</body>");
-		out.println("</html>");
+		out.println("</html>");		
 	}
 
 
@@ -249,7 +171,60 @@ public class OSIDRepositoryTool extends HttpServlet {
 		res.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = res.getWriter();
 
-		out.println("<h1>Test</h1>");
+		out.println("<table>");
+		
+		try {
+			// perform a search if a criteria was passed
+			//				String criteria = req.getParameter("criteria");
+			String criteria = req.getParameter("criteria");
+			org.osid.shared.Type thumbnailType = new Type("mit.edu","partStructure","thumbnail");
+			org.osid.shared.Type urlType = new Type("mit.edu","partStructure","URL");
+			
+			if (criteria != null) {
+				// perform the search - note for now we search them all
+				int size = _repositoryVector.size();
+				for (int i = 0; i < size; i++) {	
+					out.println("<tr><td>Results of searching all repositories for " + criteria + "</td></tr>");
+					org.osid.repository.AssetIterator assetIterator = 
+						((org.osid.repository.Repository)_repositoryVector.elementAt(i)).getAssetsBySearch(criteria,
+																										   new Type("mit.edu","search","title"),
+																										   null);
+					while (assetIterator.hasNextAsset()) {
+						// show the name of the asset that was found
+						org.osid.repository.Asset asset = assetIterator.nextAsset();
+						out.println("<tr><td>" + asset.getDisplayName() + "</td></tr>");
+						
+						// Look for a thumbnail or url part and show any.  We only want one and their might be more than one in
+						// different records.  To minimize what we know about the data source, we don't want to limit which record types we search.
+						boolean foundThumbnail = false;
+						boolean foundURL = false;
+						org.osid.repository.RecordIterator recordIterator = asset.getRecords();
+						while (recordIterator.hasNextRecord()) {
+							org.osid.repository.PartIterator partIterator = recordIterator.nextRecord().getParts();
+							while (partIterator.hasNextPart()) {
+								org.osid.repository.Part part = partIterator.nextPart();
+								org.osid.shared.Type partStructureType = part.getPartStructure().getType();
+								if ( (!foundThumbnail) && (partStructureType.isEqual(thumbnailType)) ) {
+									out.println("<tr><td>Thumbnail is " + part.getValue() + "</td></tr>");
+									foundThumbnail = true;
+								} else if ( (!foundURL) && (partStructureType.isEqual(urlType)) ) {
+									out.println("<tr><td><a href=\"" + part.getValue() + "\">" + part.getValue() + "</a></td></tr>");
+									foundURL = true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		catch (Throwable t) {
+			testFail(out,"RepositoryManager Exception "+t.toString());
+			// TODO: throw(t);
+		}
+		
+		out.println("</table>");
+		out.println("</body>");
+		out.println("</html>");
 	}
 
 }

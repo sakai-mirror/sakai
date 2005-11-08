@@ -70,7 +70,7 @@ implements org.osid.repository.RepositoryManager
     throws org.osid.repository.RepositoryException
     {
         this.configuration = configuration;
-System.out.println(this+" Configuration = "+configuration);
+		//System.out.println(this+" Configuration = "+configuration);
         try
         {
             String idImplementation = (String)configuration.get("osid_20_Id_Implementation");
@@ -89,7 +89,7 @@ System.out.println(this+" Configuration = "+configuration);
                  (loggingPriorityTypeKeyword == null) )                  
             {
                 throw new org.osid.repository.RepositoryException(
-                    org.osid.repository.RepositoryException.CONFIGURATION_ERROR);
+                    org.osid.OsidException.CONFIGURATION_ERROR);
             }
             else
             {
@@ -115,13 +115,15 @@ System.out.println(this+" Configuration = "+configuration);
             if (idImplementation == null)
             {
                 log("no Id Implementation configuration");
-                throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.CONFIGURATION_ERROR);
+                throw new org.osid.repository.RepositoryException(org.osid.OsidException.CONFIGURATION_ERROR);
             }
             this.idManager = (org.osid.id.IdManager)org.sakaiproject.component.osid.loader.OsidLoader.getManager(
                 "org.osid.id.IdManager",
                 idImplementation,
                 this.context,
                 new java.util.Properties());
+			
+			Managers.getInstance().setIdManager(this.idManager);
 
             // load repositories from configuration
             int repositoryNum = 0;
@@ -173,7 +175,7 @@ System.out.println(this+" Configuration = "+configuration);
             }
             else
             {                
-                throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+                throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
             }
         }                
     }
@@ -191,7 +193,7 @@ System.out.println(this+" Configuration = "+configuration);
     {
         if (repositoryId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
@@ -207,7 +209,7 @@ System.out.println(this+" Configuration = "+configuration);
     {
         if (repositoryType == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         java.util.Vector result = new java.util.Vector();
         org.osid.repository.RepositoryIterator repositoryIterator = getRepositories();
@@ -227,7 +229,7 @@ System.out.println(this+" Configuration = "+configuration);
     {
         if (repositoryId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -240,12 +242,12 @@ System.out.println(this+" Configuration = "+configuration);
                     return nextRepository;
                 }
             }
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_ID);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_ID);
         }
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -254,7 +256,7 @@ System.out.println(this+" Configuration = "+configuration);
     {
         if (assetId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -273,9 +275,9 @@ System.out.println(this+" Configuration = "+configuration);
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_ID);
+        throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_ID);
     }
 
     public org.osid.repository.Asset getAssetByDate(org.osid.shared.Id assetId
@@ -284,7 +286,7 @@ System.out.println(this+" Configuration = "+configuration);
     {
         if (assetId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -303,9 +305,9 @@ System.out.println(this+" Configuration = "+configuration);
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNKNOWN_ID);
+        throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.UNKNOWN_ID);
     }
 
     public org.osid.shared.LongValueIterator getAssetDates(org.osid.shared.Id assetId)
@@ -313,7 +315,7 @@ System.out.println(this+" Configuration = "+configuration);
     {
         if (assetId == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         java.util.Vector result = new java.util.Vector();
         try
@@ -333,7 +335,7 @@ System.out.println(this+" Configuration = "+configuration);
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -345,7 +347,7 @@ System.out.println(this+" Configuration = "+configuration);
     {
         if (repositories == null)
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
         try
         {
@@ -374,7 +376,7 @@ System.out.println(this+" Configuration = "+configuration);
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
@@ -384,9 +386,9 @@ System.out.println(this+" Configuration = "+configuration);
     {
         if ((repository == null) || (assetId == null))
         {
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.NULL_ARGUMENT);
+            throw new org.osid.repository.RepositoryException(org.osid.shared.SharedException.NULL_ARGUMENT);
         }
-        throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.UNIMPLEMENTED);
+        throw new org.osid.repository.RepositoryException(org.osid.OsidException.UNIMPLEMENTED);
     }
 
     public org.osid.shared.TypeIterator getRepositoryTypes()
@@ -401,7 +403,7 @@ System.out.println(this+" Configuration = "+configuration);
         catch (Throwable t)
         {
             log(t.getMessage());
-            throw new org.osid.repository.RepositoryException(org.osid.repository.RepositoryException.OPERATION_FAILED);
+            throw new org.osid.repository.RepositoryException(org.osid.OsidException.OPERATION_FAILED);
         }
     }
 
