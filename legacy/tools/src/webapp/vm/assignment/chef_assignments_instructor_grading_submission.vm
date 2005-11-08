@@ -4,14 +4,14 @@
 	<div class="navIntraTool">
 		#if ($allowAddAssignment)
 			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>|
-			<a href="#" title = "$!tlang.getString('gen.liofass')" onclick="javascript:document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.liofass')';document.gradeForm.submit();return false;">$!tlang.getString("gen.liofass")</a>
+			<a href="#" title = "$!tlang.getString('gen.liofass')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.liofass')';document.gradeForm.submit();return false;">$!tlang.getString("gen.liofass")</a>
 		#end
 		#if ($withGrade && $!allowGradeSubmission)
-			<a href="#" title="$!tlang.getString('gen.grarep')" onclick="javascript:document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.grarep')';document.gradeForm.submit();return false;">$!tlang.getString("gen.grarep")</a>
+			<a href="#" title="$!tlang.getString('gen.grarep')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.grarep')';document.gradeForm.submit();return false;">$!tlang.getString("gen.grarep")</a>
 		#end
 		#if ($allowAddAssignment)
-			<a href="#" title="$!tlang.getString('gen.stuvie')" onclick="javascript:document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.stuvie')';document.gradeForm.submit();return false;">$!tlang.getString("gen.stuvie")</a>
-			<a href="#" title="$tlang.getString('permis')" onclick="javascript:document.getElementById('option').value='permissions';document.gradeForm.submit();return false;">$tlang.getString('permis')</a>
+			<a href="#" title="$!tlang.getString('gen.stuvie')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.stuvie')';document.gradeForm.submit();return false;">$!tlang.getString("gen.stuvie")</a>
+			<a href="#" title="$tlang.getString('permis')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='permissions';document.gradeForm.submit();return false;">$tlang.getString('permis')</a>
 		#end
 	</div>
 	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
@@ -154,7 +154,7 @@
 					</ul>
 				#end	
 		#end	## show the assignment content
-		<form name="gradeForm" action="#toolForm("AssignmentAction")" method="post" >
+		<form name="gradeForm" id="gradeForm" action="#toolForm("AssignmentAction")" method="post" >
 			<input type="hidden" name="eventSubmit_doAssignment_form" value="" />
 			<input type="hidden" name="option" id="option" value="" />
 			<input type="hidden" name="view" id="view" value="" />
@@ -273,9 +273,9 @@
 							#end			
 							<p class="act">
 								#if ($!props)
-									<input type="submit" name="attach" value="$tlang.getString('gen.adddroatt')" onclick="javascript:document.getElementById('option').value='attach';document.gradeForm.submit();return false;" accesskey="a"/>
+									<input type="submit" name="attach" value="$tlang.getString('gen.adddroatt')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='attach';document.gradeForm.submit();return false;" accesskey="a"/>
 								#else
-									<input type="submit" name="attach" value="$tlang.getString('gen.addatt')" onclick="javascript:document.getElementById('option').value='attach';document.gradeForm.submit();return false;" accesskey="a"/>
+									<input type="submit" name="attach" value="$tlang.getString('gen.addatt')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='attach';document.gradeForm.submit();return false;" accesskey="a"/>
 								#end
 							</p>
 #*					<!-- Grade types
@@ -331,10 +331,10 @@
 				<input type="checkbox" name="allowResubmit"  id="allowResubmit" #if($!value_allowResubmit) checked="checked" #end /><label for="allowResubmit">$tlang.getString("allowResubmit")</label>
 			</p>	
 			<p class="act">
-				<input type="submit" class="active" name="return" value="$tlang.getString('gen.retu')" onclick="javascript:document.getElementById('option').value='returngrade';document.gradeForm.submit();return false;" />
-				<input type="submit" name="save" value="$tlang.getString('gen.sav')" onclick="javascript:document.getElementById('option').value='savegrade';document.gradeForm.submit();return false;" />
-				<input type="submit" name="preview" value="$tlang.getString('gen.pre')" onclick="javascript:document.getElementById('option').value='previewgrade';document.gradeForm.submit();return false;" />
-				<input type="submit" name="cancel" value="$tlang.getString('gen.can')" onclick="javascript:document.getElementById('option').value='cancelgrade';document.gradeForm.submit();return false;" />
+				<input type="submit" class="active" name="return" value="$tlang.getString('gen.retu')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='returngrade';document.gradeForm.submit();return false;" />
+				<input type="submit" name="save" value="$tlang.getString('gen.sav')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='savegrade';document.gradeForm.submit();return false;" />
+				<input type="submit" name="preview" value="$tlang.getString('gen.pre')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='previewgrade';document.gradeForm.submit();return false;" />
+				<input type="submit" name="cancel" value="$tlang.getString('gen.can')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='cancelgrade';document.gradeForm.submit();return false;" />
 			</p>
 	</form>
 </div>

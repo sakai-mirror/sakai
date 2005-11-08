@@ -50,12 +50,12 @@
 	<div class="navIntraTool">
 		#if ($allowAddAssignment)
 			<span class="margin:.5em">$!tlang.getString("new")</span>
-			<a href="#" title = "$!tlang.getString('gen.liofass')" onclick="javascript:document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.liofass')';document.newAssignmentForm.submit();return false;">$!tlang.getString("gen.liofass")</a>
+			<a href="#" title = "$!tlang.getString('gen.liofass')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.liofass')';document.newAssignmentForm.submit();return false;">$!tlang.getString("gen.liofass")</a>
 			#if ($withGrade && $!allowGradeSubmission)
-				<a href="#" title="$!tlang.getString('gen.grarep')" onclick="javascript:document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.grarep')';document.newAssignmentForm.submit();return false;">$!tlang.getString("gen.grarep")</a>
+				<a href="#" title="$!tlang.getString('gen.grarep')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.grarep')';document.newAssignmentForm.submit();return false;">$!tlang.getString("gen.grarep")</a>
 			#end
-			<a href="#" title="$!tlang.getString('gen.stuvie')" onclick="javascript:document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.stuvie')';document.newAssignmentForm.submit();return false;">$!tlang.getString("gen.stuvie")</a>
-			<a href="#" title="$tlang.getString('permis')" onclick="javascript:document.getElementById('option').value='permissions';document.newAssignmentForm.submit();return false;">$tlang.getString('permis')</a>
+			<a href="#" title="$!tlang.getString('gen.stuvie')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.stuvie')';document.newAssignmentForm.submit();return false;">$!tlang.getString("gen.stuvie")</a>
+			<a href="#" title="$tlang.getString('permis')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='permissions';document.newAssignmentForm.submit();return false;">$tlang.getString('permis')</a>
 		#end
 	</div>
 	<h3>
@@ -396,7 +396,7 @@
 				$tlang.getString("gen.noatt")
 
 				<div class="act">
-					<input type="submit" name="attach" value="$tlang.getString('gen.addatt')" onclick="javascript:document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;"/>
+					<input type="submit" name="attach" value="$tlang.getString('gen.addatt')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;"/>
 				</div>
 			#else
 				<ul class="attachList">
@@ -419,14 +419,14 @@
 					#end
 				</ul>
 				<div class="act">
-					<input type="submit" name="attach" value="$tlang.getString('gen.adddroatt2')" onclick="javascript:document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;" />
+					<input type="submit" name="attach" value="$tlang.getString('gen.adddroatt2')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;" />
 				</div>
 			#end	
 		<div class="act">
-			<input type="submit" class="active" name="post" value="$tlang.getString("gen.pos")" onclick="javascript:document.getElementById('option').value='post';document.newAssignmentForm.submit();return false;" />
-			<input type="submit" name="preview" value="$tlang.getString("gen.pre")" onclick="javascript:document.getElementById('option').value='preview';document.newAssignmentForm.submit();return false;" />
-			<input type="submit" name="save" value="$tlang.getString("gen.savdra")" onclick="javascript:document.getElementById('option').value='save';document.newAssignmentForm.submit();return false;" />
-			<input type="submit" name="cancel" value="$tlang.getString("gen.can")" onclick="javascript:document.getElementById('option').value='cancel';document.newAssignmentForm.submit();return false;" />
+			<input type="submit" class="active" name="post" value="$tlang.getString("gen.pos")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='post';document.newAssignmentForm.submit();return false;" />
+			<input type="submit" name="preview" value="$tlang.getString("gen.pre")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='preview';document.newAssignmentForm.submit();return false;" />
+			<input type="submit" name="save" value="$tlang.getString("gen.savdra")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='save';document.newAssignmentForm.submit();return false;" />
+			<input type="submit" name="cancel" value="$tlang.getString("gen.can")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='cancel';document.newAssignmentForm.submit();return false;" />
 		</div>
 	</form>
 </div>
