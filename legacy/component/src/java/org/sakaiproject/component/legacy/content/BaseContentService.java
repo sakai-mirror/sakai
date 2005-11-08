@@ -2465,6 +2465,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the resource is a collection.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception IdLengthException
+	 *            if the new id of the copied item (or any nested item) is longer than the maximum length of an id.
 	 * @exception InconsistentException
 	 *            if the destination folder (folder_id) is contained within the source folder (id).
 	 * @exception IdUsedException
@@ -2473,7 +2475,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
 	public String copyIntoFolder(String id, String folder_id) 
-		throws PermissionException, IdUnusedException, TypeException, InUseException, 
+		throws PermissionException, IdUnusedException, TypeException, InUseException, IdLengthException, IdUniquenessException,
 		OverQuotaException, InconsistentException, IdUsedException, ServerOverloadException
 	{
 		if(folder_id.startsWith(id))
@@ -2481,6 +2483,11 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			throw new InconsistentException(id + " is contained within " + folder_id);
 		}
 		String new_id = newName(id, folder_id);
+		if(new_id.length() >= MAXIMUM_RESOURCE_ID_LENGTH)
+		{
+			throw new IdLengthException(new_id);
+		}
+		
 		// Should use copyIntoFolder if possible
 		boolean isCollection = false;
 		boolean isRootCollection = false;
@@ -3139,7 +3146,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            trying to access the filesystem.
 	 */
 	protected String deepcopyCollection(ContentCollection thisCollection, String new_folder_id) 
-		throws PermissionException, IdUnusedException, TypeException, InUseException, OverQuotaException, IdUsedException, ServerOverloadException
+		throws PermissionException, IdUnusedException, TypeException, InUseException, IdLengthException, IdUniquenessException, OverQuotaException, IdUsedException, ServerOverloadException
 	{
 		String name = isolateName(new_folder_id);
 
@@ -3152,34 +3159,52 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		String base_id = new_folder_id + "-";
 		boolean still_trying = true;
 		int attempt = 0;
+		ContentCollection newCollection = null;
 		try
 		{
-			while(still_trying && attempt < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+			try
+			{
+				newCollection = addCollection(new_folder_id, newProps);
+			
+				if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveCollection successful");
+				still_trying = false;
+			}
+			catch (IdUsedException e)
 			{
 				try
 				{
-					ContentCollection newCollection = addCollection(new_folder_id, newProps);
-				
-					if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveCollection successful");
-					still_trying = false;
+					checkCollection(new_folder_id);
 				}
-				catch (IdUsedException e)
+				catch(Exception ee)
 				{
+					throw new IdUniquenessException(new_folder_id);
+				}
+			}
+			String containerId = this.isolateContainingId(new_folder_id);
+			ContentCollection containingCollection = findCollection(containerId);
+			SortedSet siblings = new TreeSet();
+			siblings.addAll(containingCollection.getMembers());
+			
+			while(still_trying)
+			{
+				attempt++;
+				if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+				{
+					throw new IdUniquenessException(new_folder_id);
+				}
+				new_folder_id = base_id + attempt;
+				if(! siblings.contains(new_folder_id))
+				{
+					newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name + "-" + attempt);
 					try
 					{
-						checkCollection(new_folder_id);
+						newCollection = addCollection(new_folder_id, newProps);
+						still_trying = false;
 					}
-					catch(Exception ee)
+					catch(IdUsedException inner_e)
 					{
-						throw e;
+						// try again
 					}
-					attempt++;
-					if(attempt >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
-					{
-						throw e;
-					}
-					new_folder_id = base_id + attempt;
-					newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name + "-" + attempt);
 				}
 			}
 			

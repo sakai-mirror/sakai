@@ -511,7 +511,7 @@ public class ContentHostingService
 	}
 	
 	public static String copyIntoFolder(java.lang.String param0, java.lang.String param1) 
-		throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.ServerOverloadException, org.sakaiproject.exception.InconsistentException
+		throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.IdLengthException, org.sakaiproject.exception.IdUniquenessException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.OverQuotaException, org.sakaiproject.exception.IdUsedException, org.sakaiproject.exception.ServerOverloadException, org.sakaiproject.exception.InconsistentException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)

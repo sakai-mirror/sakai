@@ -747,6 +747,10 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the resource is a collection.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
+	 * @exception IdLengthException
+	 *            if the new id of the copied item (or any nested item) is longer than the maximum length of an id.
+	 * @exception IdUniquenessException
+	 *            if a unique id cannot be found in the new folder.
 	 * @exception InconsistentException
 	 *            if the destination folder (folder_id) is contained within the source folder (id).
 	 * @exception IdUsedException
@@ -755,7 +759,7 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the server is configured to write the resource body to the filesystem and the save fails.
 	 */
 	public String copyIntoFolder(String id, String folder_id) throws PermissionException, IdUnusedException, TypeException,
-			InUseException, OverQuotaException, IdUsedException, ServerOverloadException, InconsistentException;
+			InUseException, OverQuotaException, IdUsedException, ServerOverloadException, InconsistentException, IdLengthException, IdUniquenessException;
 
 	/**
 	 * Move a resource or collection to a (different) folder. This may be accomplished by renaming the resource or by recursively renaming the collection and all enclosed members (no matter how deep) to effectively change their locations. Alternatively,

@@ -8345,6 +8345,14 @@ public class ResourcesAction
 			{
 				addAlert(state, rb.getString("toomany"));
 			}
+			catch(IdLengthException e)
+			{
+				addAlert(state, rb.getString("toolong") + " " + e.getMessage());
+			}
+			catch(IdUniquenessException e)
+			{
+				addAlert(state, "Could not add this item to this folder");
+			}
 			catch(ServerOverloadException e)
 			{
 				addAlert(state, rb.getString("failed"));
@@ -8581,6 +8589,14 @@ public class ResourcesAction
 		catch (IdUsedException e)
 		{
 			addAlert(state, rb.getString("notaddreso") + " " + originalDisplayName + " " + rb.getString("used2"));
+		}
+		catch(IdLengthException e)
+		{
+			addAlert(state, rb.getString("toolong") + " " + e.getMessage());
+		}
+		catch(IdUniquenessException e)
+		{
+			addAlert(state, "Could not add this item to this folder");
 		}
 		catch (InconsistentException ee)
 		{
