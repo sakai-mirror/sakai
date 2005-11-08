@@ -95,8 +95,8 @@
                                     <td height="$heightPct%" rowspan="1" colspan="1" align="left" class="borderGrayToday$LeftRight$BottomCenter">                                    
                                     <div style="position: relative; overflow: hidden; height: 18px; border-style: solid; border-width: 0; background-color: white">
                             #else  
-                                    <td height="$heightPct%" rowspan="$rowspan" colspan="1" align="left" class="borderGrayToday$LeftRight$BottomCenter" bgcolor="#ffff99">
-                                    <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: #ffff99">
+                                    <td height="$heightPct%" rowspan="$rowspan" colspan="1" align="left" class="borderGrayToday$LeftRight$BottomCenter event">
+                                    <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0;">
                             #end
                             #if ($hm.put($n, $tempCol)) #end
                         #else ## if ($n==$todayIndex) -> n != today
@@ -110,7 +110,7 @@
                                 #set ($heightPct = 5 * $rowspan)
                                 #set ($divHeight = 18 * $rowspan)
                                 <td height="$heightPct%" rowspan="$rowspan" colspan="$colspan" align="center" class="borderGrayBackground">
-                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: #ffff99">
+                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: transparent">
                             #end
                             #set ($tempCol = $hm.get($n) + $colspan)
                             #if ($hm.put($n, $tempCol)) #end
@@ -171,7 +171,7 @@
                                                 #rowspans($event)
                                                 #set ($heightPct = 5 * $rowspan)
                                                 <td height="$heightPct%" rowspan="$rowspan" colspan="1" align="center">
-                                                <div style="position: relative; overflow: hidden; top: 0px; left: 0px; height: 18px; border-style: solid; border-width: 0; background-color: #ffff99">&nbsp;</td>
+                                                <div style="position: relative; overflow: hidden; top: 0px; left: 0px; height: 18px; border-style: solid; border-width: 0; background-color: transparent">&nbsp;</td>
                                             #end  ## if ($event.getRange().isSingleTime())
                                         #else   
                                             ## no cell to be rendered, because of the above rowspan. but counter++
@@ -197,7 +197,7 @@
                                                 #set ($heightPct = 5 * $rowspan)
                                                 <td height="$heightPct%" rowspan="$rowspan" colspan="1" align="center">
                                                 #set ($divHeight = 18 * $rowspan)
-                                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: #ffff99">&nbsp;</td>
+                                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: transparent">&nbsp;</td>
                                             #end  ## if ($event.getRange().isSingleTime())
                                         #else
                                             ## no cell rendered, but counter++
@@ -252,8 +252,8 @@
                                     #rowspans($event)
                                     #set ($heightPct = 5 * $rowspan)
                                     #set ($divHeight = 18 * $rowspan)
-                                    <td height="$heightPct%" rowspan="$rowspan" colspan="$colspan" align="left" class="borderGrayToday$LeftRight$BottomCenter" bgcolor="#ffff99">
-                                    <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: #ffff99">
+                                    <td height="$heightPct%" rowspan="$rowspan" colspan="$colspan" align="left" class="borderGrayToday$LeftRight$BottomCenter event">
+                                    <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: transparent">
                             #end
 
                         #else
@@ -266,7 +266,7 @@
                                 #set ($heightPct = 5 * $rowspan)
                                 #set ($divHeight = 18 * $rowspan)
                                 <td height="$heightPct%" rowspan="$rowspan" colspan="$colspan" align="center" class="borderGrayBackground">
-                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: #ffff99">
+                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: transparent">
                             #end
                         #end
                         #if ($hm.put($n, $tempCol)) #end
@@ -605,8 +605,8 @@
                                     <td height="$heightPct%" rowspan="1" colspan="1" align="left" class="borderGrayToday$LeftRight$BottomCenter">                                    
                                     <div style="position: relative; overflow: hidden; height: 18px; border-style: solid; border-width: 0; background-color: white">
                             #else  
-                                    <td height="$heightPct%" rowspan="$rowspan" colspan="1" align="left" class="borderGrayToday$LeftRight$BottomCenter" bgcolor="#ffff99">
-                                    <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: #ffff99">
+                                    <td height="$heightPct%" rowspan="$rowspan" colspan="1" align="left" class="borderGrayToday$LeftRight$BottomCenter event">
+                                    <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: transparent">
                             #end
                             #if ($hm.put($n, $tempCol)) #end
                         #else ## if ($n==$todayIndex) -> n != today
@@ -620,7 +620,7 @@
                                 #set ($heightPct = 5 * $rowspan)
                                 #set ($divHeight = 18 * $rowspan)
                                 <td height="$heightPct%" rowspan="$rowspan" colspan="$colspan" align="center" class="borderGrayBackground">
-                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: #ffff99">
+                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: transparent">
                             #end
                             #set ($tempCol = $hm.get($n) + $colspan)
                             #if ($hm.put($n, $tempCol)) #end
@@ -681,7 +681,7 @@
                                                 #rowspans($event)
                                                 #set ($heightPct = 5 * $rowspan)
                                                 <td height="$heightPct%" rowspan="$rowspan" colspan="1" align="center">
-                                                <div style="position: relative; overflow: hidden; top: 0px; left: 0px; height: 18px; border-style: solid; border-width: 0; background-color: #ffff99">&nbsp;</td>
+                                                <div style="position: relative; overflow: hidden; top: 0px; left: 0px; height: 18px; border-style: solid; border-width: 0; background-color: transparent">&nbsp;</td>
                                             #end  ## if ($event.getRange().isSingleTime())
                                         #else   
                                             ## no cell to be rendered, because of the above rowspan. but counter++
@@ -707,7 +707,7 @@
                                                 #set ($heightPct = 5 * $rowspan)
                                                 <td height="$heightPct%" rowspan="$rowspan" colspan="1" align="center">
                                                 #set ($divHeight = 18 * $rowspan)
-                                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: #ffff99">&nbsp;</td>
+                                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: transparent">&nbsp;</td>
                                             #end  ## if ($event.getRange().isSingleTime())
                                         #else
                                             ## no cell rendered, but counter++
@@ -762,8 +762,8 @@
                                     #rowspans($event)
                                     #set ($heightPct = 5 * $rowspan)
                                     #set ($divHeight = 18 * $rowspan)
-                                    <td height="$heightPct%" rowspan="$rowspan" colspan="$colspan" align="left" class="borderGrayToday$LeftRight$BottomCenter" bgcolor="#ffff99">
-                                    <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: #ffff99">
+                                    <td height="$heightPct%" rowspan="$rowspan" colspan="$colspan" align="left" class="borderGrayToday$LeftRight$BottomCenter event">
+                                    <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: transparent">
                             #end
 
                         #else
@@ -777,7 +777,7 @@
                                 #set ($divHeight = 18 * $rowspan)
                                 <td height="$heightPct%" rowspan="$rowspan" colspan="$colspan" align="center" class="borderGrayBackground">
                                 ##<td height="$heightPct%" rowspan="$rowspan" colspan="1" align="center" class="borderGrayBackground">
-                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: #ffff99">
+                                <div style="position: relative; overflow: hidden; height: ${divHeight}px; border-style: solid; border-width: 0; background-color: transparent">
                             #end
                         #end
                         #if ($hm.put($n, $tempCol)) #end
