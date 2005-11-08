@@ -49,8 +49,8 @@ public class CollectionUtil
    * MySql supports n arguments while Oracle, HSQLDB suport only 2 arg version
    */
   private static final String sql = "select ss.site_id, ss.title, sstool.registration "
-      + "from sakai_site_tool sstool, sakai_site_user ssuser, "
-      + "sakai_site ss "
+      + "from SAKAI_SITE_TOOL sstool, SAKAI_SITE_USER ssuser, "
+      + "SAKAI_SITE ss "
       + "where (sstool.registration = 'sakai.resources' "
       + "or sstool.registration = 'sakai.dropbox') "
       + "and sstool.site_id = ssuser.site_id "
