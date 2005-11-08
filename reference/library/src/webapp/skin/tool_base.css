@@ -60,6 +60,9 @@ legend  {
 	padding-left:0 
 } 
 
+/* IE gives forms a top margin unless told not to
+this affects jsf based tools*/
+.portletBody form{margin-top:0}
 /* ITEM SUMMARY VIEW
  -mB should we rename this view "item detail"? it seems more appropriate, just an idea*/
 
