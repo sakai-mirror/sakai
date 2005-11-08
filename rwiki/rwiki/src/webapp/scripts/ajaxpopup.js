@@ -176,8 +176,13 @@ function showPopupHere(el,divid) {
 		}
 }
 function hidePopup(divid) {
-    var targetdiv = document.getElementById(divid);
-    if ( targetdiv != null ) {
+    var targetdiv;
+        if ( document.all ) {
+            targetdiv = document.all[divid];
+		} else {
+		    targetdiv = document.getElementById(divid);
+		}    
+	if ( targetdiv != null ) {
         targetdiv.style.visibility = "hidden";		
      }
 } 

@@ -67,3 +67,51 @@ function onload() {
   }
 
 }
+
+function addMarkup(textareaid, contentMU, startMU, endMU) {
+    var textarea;
+        if ( document.all ) {
+            textarea = document.all[textareaid];
+		} else {
+		    textarea = document.getElementById(textareaid);
+		}    
+
+	// Can a text range be created?
+	if (typeof(textarea.caretPos) != "undefined" && textarea.createTextRange)
+	{
+		var caretPos = textarea.caretPos, repText = caretPos.text, temp_length = caretPos.text.length;
+		if ( temp_length == 0 )
+		    repText = contentMU;
+
+		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? startMU + repText + endMU + ' ' : startMU + repText + endMU;
+
+		textarea.focus(caretPos);
+	}
+	// Mozilla text range wrap.
+	else if (typeof(textarea.selectionStart) != "undefined")
+	{
+		var begin = textarea.value.substr(0, textarea.selectionStart);
+		var selection = textarea.value.substr(textarea.selectionStart, textarea.selectionEnd - textarea.selectionStart);
+		var end = textarea.value.substr(textarea.selectionEnd);
+		var newCursorPos = textarea.selectionStart;
+		var scrollPos = textarea.scrollTop;
+		if ( selection.length == 0 )
+		    selection = contentMU;
+
+		textarea.value = begin + startMU + selection + endMU + end;
+
+		if (textarea.setSelectionRange)
+		{
+			textarea.setSelectionRange(newCursorPos + startMU.length, newCursorPos + startMU.length + selection.length);
+			textarea.focus();
+		}
+		textarea.scrollTop = scrollPos;
+	}
+	// Just put them on the end, then.
+	else
+	{
+		textarea.value += startMU + contentMU + endMU;
+		textarea.focus(textarea.value.length - 1);
+	}
+}
+
