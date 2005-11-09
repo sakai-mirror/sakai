@@ -154,7 +154,7 @@
 					</ul>
 				#end	
 		#end	## show the assignment content
-		<form name="gradeForm" id="gradeForm" action="#toolForm("AssignmentAction")" method="post" >
+		<form name="gradeForm" id="gradeForm" action="#toolForm("AssignmentAction")" method="post" onsubmit="return true;">
 			<input type="hidden" name="eventSubmit_doAssignment_form" value="" />
 			<input type="hidden" name="option" id="option" value="" />
 			<input type="hidden" name="view" id="view" value="" />

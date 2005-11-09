@@ -67,7 +67,7 @@
 </p>
 	#if ($alertMessage)<div class="alertMessage" style="width:80%  !important">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
 
-	<form name = "newAssignmentForm" action="#toolForm("AssignmentAction")" method="post">
+	<form name = "newAssignmentForm" action="#toolForm("AssignmentAction")" method="post" onsubmit="return true;">
 		<input type="hidden" name="assignmentId" value="" />
 		<input type="hidden" name="assignmentContentId" value="" />
 		<input type="hidden" name="eventSubmit_doAssignment_form" value="" />
