@@ -6076,7 +6076,7 @@ extends PagedResourceActionII
 			else if (gradeType == 1)
 			{
 				// Ungraded grade type
-				maxGrade = rb.getString("notgra");
+				maxGrade = rb.getString("nogra");
 			}
 			else if (gradeType == 2)
 			{
