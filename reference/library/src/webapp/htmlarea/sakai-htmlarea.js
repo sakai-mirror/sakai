@@ -17,7 +17,10 @@
 // be called like:
 // <script type="text/javascript" defer="1">chef_setupformattedtextarea("MyTextareaID", 640, 480);</script>
 
-
+// ######### TWIN PEAKS SWITCH ######### 
+// this is a temporary way to turn twin peaks on or off.
+// set to true if the button should show, false otherwise.
+var showTwinPeaks = true;
 
 // a warning message to display to the user if their browser doesn't support
 // the formatted text editing widget.
@@ -88,12 +91,21 @@ else
 	{
 		document.htmlareas = new Array();
 	
+		// [start twin peaks]
+		if(showTwinPeaks)
+		{
+			document.htmlarea_plugins = ["ResourceSearch"];
+		}
+		// [end twin peaks]
+
 		// This section will only be included ONCE per HTML document that contains formatted text editing widget(s)
 		_editor_url = "/library/htmlarea/";
 		_editor_lang = "en";
 		
 		// funky way to include the HTMLArea JavaScript library, from within JavaScript
 		document.write('<script type="text/javascript" src="/library/htmlarea/htmlarea.js"></script>');
+		
+		document.write('<script type="text/javascript">HTMLArea.loadPlugin("ResourceSearch");</script>');
 	
 		//if (fulldocumentediting)
 		//{
@@ -102,6 +114,42 @@ else
 	}
 }
 
+// [start twin peaks]
+//
+// Load any plugins: chef_loadPlugins();
+//
+function chef_loadplugins()
+{
+	if (typeof document.htmlarea_plugins == "undefined")
+	{
+		return;
+	}
+
+	for (var i in document.htmlarea_plugins)
+	{
+			HTMLArea.loadPlugin(document.htmlarea_plugins[i]);
+	}
+}
+
+// Register all available plugins for each instance of the HTMLArea editor
+//		chef_registerplugins(HTMLArea-editor-instance);
+//
+function chef_registerplugins(editor)
+{
+	if (typeof document.htmlarea_plugins == "undefined")
+	{
+		return;
+	}
+
+	for (var i in document.htmlarea_plugins)
+	{
+		try
+		{
+			editor.registerPlugin(document.htmlarea_plugins[i]);
+		} catch (exception) { }
+	}
+}
+// [end twin peaks]
 
 // textarea_id - The HTML id of the HTML textarea 
 // that should be turned into a fancy formatted text editing widget
@@ -180,7 +228,16 @@ function chef_setupformattedtext(textarea_id, width, height, toolbar_num_button_
 	// instantiate the widget
 	var ta = HTMLArea.getElementById("textarea", textarea_id);
 	var editor = new HTMLArea(ta, config);
-	
+		
+	// [start twin peaks]
+	// Register plugins
+	if(showTwinPeaks)
+	{
+		editor.registerPlugin(ResourceSearch);
+	}
+	// chef_registerplugins(editor, document.htmlarea_plugins);
+	// [end twin peaks]
+
 	if (fulldocumentediting)
 	{
 		// register the TableOperations plugin
