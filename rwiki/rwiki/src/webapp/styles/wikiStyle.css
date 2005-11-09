@@ -191,39 +191,67 @@ a:hover.rwiki_help_popup_link, a:active.rwiki_help_popup_link    {
   line-height: 100%;
 }
 
-.rwikiCommentBody_1 {
-  font-size: 110%;
-  background-color: #ffffcc;
-  margin: 0px 0px 0px 0px;
+
+.rwikicommentbody_1{
+	font-size: 85%;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	margin: .25em;
+	margin-left: 10px;
 }
-.rwikiCommentBody_2 {
-  font-size: 110%;
-  background-color: #ffffcc;
-  margin: 0px  0px 0px 10px; 
+
+.rwikicommentbody_2{
+	margin: .25em;
+	margin-left: 30px;
+	font-size: 85%;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
 }
-.rwikiCommentBody_3 {
-  font-size: 110%;
-  background-color: #ffffcc;
-  margin: 0px  0px 0px 20px;
+
+.rwikicommentbody_3{
+	margin: .25em;
+	margin-left: 50px;
+	font-size: 85%;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
 }
-.rwikiCommentBody_4 {
-  font-size: 110%;
-  background-color: #ffffcc;
-  margin: 0px  0px 0px 30px;
+
+.rwikicommentbody_4{
+	margin: .25em;
+	margin-left: 70px;
+	font-size: 85%;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
 }
-.rwikiCommentBody_5 {
-  font-size: 110%;
-  background-color: #ffffcc;
-  margin: 0px  0px 0px 40px;
+
+.rwikicommentbody_5{
+	margin: .25em;
+	margin-left: 90px;
+	font-size: 85%;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
 }
-.rwikiCommentsHeader {
-  width: 600px;
-  font-size: 85%;
-  color: inherit;
-  background-color: #eeeeee;
-  border: 1px dotted #003366;
-  line-height: 100%;
+
+
+.rwikicommentheader{
+	border-bottom: 1px solid #ccc;
+	font-size: 75%;
+	padding: .5em;
+	background-color: #FFFFCC;
+	-moz-border-radius-topleft: 10px;
 }
+
+.rwikicommenttext{
+	padding: .5em;
+	background-color: #FFFFEC;
+}
+
+.rwiki_comments {
+   border-top: 1px solid #ccc;
+   border-bottom: 1px solid #ccc;
+}
+
+
 .rwiki_info_page_granted {
 }
 .rwiki_info_page_denied {
