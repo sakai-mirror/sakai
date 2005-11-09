@@ -1234,6 +1234,12 @@ public class DbAuthzGroupService extends BaseAuthzGroupService
 
 			// TODO: pre-compute some fields arrays and statements for common roleRealms sizes for efficiency? -ggolden
 
+			if ( realms == null || realms.size() < 1 )
+			{
+				m_logger.warn(this + ".iallowed(): called with no realms l:" + lock + "u:"+userId);
+				return false;
+			}
+
 			// make (?, ?, ?...) for realms size
 			StringBuffer buf = new StringBuffer();
 			buf.append("(?");
