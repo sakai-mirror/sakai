@@ -4,12 +4,37 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta http-equiv="Content-Style-Type" content="text/css" />
 		<title>Upload-Download Multiple Resources</title>
+		<script language="JavaScript" type="text/JavaScript">
+			var i, a, href
+			for(i=0; (a = top.document.getElementsByTagName("link")[i]); i++) 
+			{
+				if(a.getAttribute("rel").indexOf("style") != -1)
+				{
+					if(a.getAttribute("href").indexOf("portal") != -1)
+					{
+						//normal - top is portal
+						document.write ('<link href=\"');
+						document.write (a.getAttribute("href").substring(0,a.getAttribute("href").indexOf("portal")));
+						document.write ('tool.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />');
+						document.write ('<link href=\"');
+						document.write (a.getAttribute("href").substring(0,(a.getAttribute("href").indexOf("skin") + 5 )));
+						document.write ('tool_base.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />');
+					}
+					else
+					{
+						//not normal - top is something else - use it's stylesheets
+						document.write ('<link href=\"');
+						document.write (a.getAttribute("href"));
+						document.write ('" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />');
+					}
+				}
+			}
+		</script>
 	</head>
-	<body>
+	<body style="width:97%;padding:1em">
 		<div>
-	
 			<h3>Upload-Download Multiple Resources</h3>
-			<ul class="attchList">
+			<ul class="attachList">
 				<li><a href="#desc">Description</a></li>
 				<li><a href="#site">Your SiteID</a></li>
 				<li><a href="#win">Setting up WebDAV for Windows</a></li>
