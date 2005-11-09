@@ -1221,6 +1221,11 @@ public class CharonPortal extends HttpServlet
 		}
 
 // gsilver - jump to links
+		String accessibilityURL = ServerConfigurationService.getString("accessibility.url");
+		if (accessibilityURL != null && accessibilityURL != "")
+		{	
+		out.println("<a href=\"" + accessibilityURL + "\" class=\"skip\" title=\"" + Web.escapeHtml(rb.getString("sit.accessibility")) + "\" accesskey=\"a\">" + Web.escapeHtml(rb.getString("sit.accessibility")) + "</a>");
+		}
 		out.println("<a href=\"#tocontent\"  class=\"skip\" title=\"" + Web.escapeHtml(rb.getString("sit.jumpcontent")) + "\" accesskey=\"c\">" + Web.escapeHtml(rb.getString("sit.jumpcontent")) + "</a>");
 		out.println("<a href=\"#toolmenu\"  class=\"skip\" title=\"" + Web.escapeHtml(rb.getString("sit.jumptools")) + "\" accesskey=\"l\">" + Web.escapeHtml(rb.getString("sit.jumptools")) + "</a>");
 		out.println("<a href=\"#sitetabs\" class=\"skip\" title=\""+ Web.escapeHtml(rb.getString("sit.jumpworksite")) + "\" accesskey=\"w\">" + Web.escapeHtml(rb.getString("sit.jumpworksite")) + "</a>");
@@ -1545,11 +1550,17 @@ public class CharonPortal extends HttpServlet
 			siteNavClass = "sitenav-log";
 		}
 
-//gsilver - jump to links
+		//gsilver - jump to links
+		
+		String accessibilityURL = ServerConfigurationService.getString("accessibility.url");
+		if (accessibilityURL != null && accessibilityURL != "")
+		{	
+			out.println("<a href=\"" + accessibilityURL + "\" class=\"skip\" title=\"" + Web.escapeHtml(rb.getString("sit.accessibility")) + "\" accesskey=\"a\">" + Web.escapeHtml(rb.getString("sit.accessibility")) + "</a>");
+		}
+		out.println("<a href=\"#tocontent\"  class=\"skip\" title=\"" + Web.escapeHtml(rb.getString("sit.jumpcontent")) + "\" accesskey=\"c\">" + Web.escapeHtml(rb.getString("sit.jumpcontent")) + "</a>");
+		out.println("<a href=\"#toolmenu\"  class=\"skip\" title=\"" + Web.escapeHtml(rb.getString("sit.jumptools")) + "\" accesskey=\"l\">" + Web.escapeHtml(rb.getString("sit.jumptools")) + "</a>");
+		out.println("<a href=\"#sitetabs\" class=\"skip\" title=\""+ Web.escapeHtml(rb.getString("sit.jumpworksite")) + "\" accesskey=\"w\">" + Web.escapeHtml(rb.getString("sit.jumpworksite")) + "</a>");
 
-		out.println("<a href=\"#tocontent\"  class=\"skip\" title=\"jump to content\" accesskey=\"c\">jump to content</a>");
-		out.println("<a href=\"#toolmenu\" class=\"skip\"  title=\"jump to tools list\" accesskey=\"l\">jump to tools list</a>");
-		out.println("<a href=\"#sitetabs\" class=\"skip\" title=\"jump to worksite list\" accesskey=\"w\">jump to worksite list</a>");
 
 
 		out.println("<iframe");
