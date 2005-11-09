@@ -37,7 +37,7 @@ import org.radeox.macro.parameter.MacroParameter;
 //FIXME: Component
 public class MathMacro extends BaseMacro {
 
-    private static final String description = "This is a basic macro that places span/div tags with an appropriate class around the math text";
+    private static final String description = "This is a basic macro that places span/div tags with an appropriate class around the math text. \nThe contents of this macro are pre-escaped, however you cannot put {math} in the contents of this macro, place {{}math} instead.";
     
     private static final String[] paramDescription = { "1: put \"display\" here for the maths to be placed in a div" };
     

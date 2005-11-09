@@ -19,3 +19,4 @@ org.radeox.filter.LinkTestFilter
 #org.radeox.filter.WikiLinkFilter
 #Should be called first, done with before()
 org.radeox.filter.EscapeFilter
+uk.ac.cam.caret.sakai.rwiki.component.filter.PreEscapeMathFilter
