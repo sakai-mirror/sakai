@@ -98,6 +98,10 @@ function addMarkup(textareaid, contentMU, startMU, endMU) {
 		if ( selection.length == 0 )
 		    selection = contentMU;
 
+        if ( selection.length > 0 && selection.charAt(selection.length-1) == ' ' ) {
+            selection = selection.substr(0,selection.length-1);
+            end = " " + end;
+        }
 		textarea.value = begin + startMU + selection + endMU + end;
 
 		if (textarea.setSelectionRange)
