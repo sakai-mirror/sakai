@@ -22,6 +22,7 @@
  **********************************************************************************/
 package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -76,6 +77,17 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public RWikiCurrentObject getRWikiObject(String name, String user,
 			String realm) throws PermissionException {
+        return getRWikiObject(name,user,realm,createTemplatePageName);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService#getRWikiObject(java.lang.String,
+     *      java.lang.String, java.lang.String, java.lang.String)
+     */
+    public RWikiCurrentObject getRWikiObject(String name, String user,
+            String realm, String templatePage) throws PermissionException {
 		long start = System.currentTimeMillis();
 		try {
 			if (log.isDebugEnabled()) {
@@ -104,7 +116,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 				returnable = cdao.createRWikiObject(name,realm);		
 				// zero in on the correct space.
 				String pageSpace = NameHelper.localizeSpace(name,realm);
-				String defTemplate = NameHelper.globaliseName(createTemplatePageName,pageSpace);
+				String defTemplate = NameHelper.globaliseName(templatePage,pageSpace);
 				RWikiCurrentObject template = cdao.findByGlobalName(defTemplate);
 				if ( template != null ) {
 					returnable.setContent(template.getContent());
@@ -555,5 +567,39 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	public void setCreateTemplatePageName(String createTemplatePageName) {
 		this.createTemplatePageName = createTemplatePageName;
 	}
+
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService#findRWikiSubPages(java.lang.String)
+     */
+    public List findRWikiSubPages(String globalParentPageName) {
+        return cdao.findRWikiSubPages(globalParentPageName);
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService#updateNewComment(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.lang.String)
+     */
+    public void updateNewComment(String name, String user, String realm, Date version, String content) throws PermissionException, VersionException {
+        int retries = 0;
+        while ( retries < 5 ) { 
+            try {
+                RWikiObject lastComment = cdao.findLastRWikiSubPage(name);
+                int cnum = 0;
+                if ( lastComment != null ) {
+                    String lastCommentName = lastComment.getName();
+                    int lastp = lastCommentName.lastIndexOf(".");
+                    if ( lastp >= 0 ) {
+                        cnum = Integer.parseInt(lastCommentName.substring(lastp+1))+1;
+                    }
+                }
+                String newCommentName = MessageFormat.format("{0}.{1,number,000}", new Object[] { name, new Integer(cnum) });
+                update(newCommentName,user,realm,version,content);
+                break;
+            } catch (VersionException e) {
+                if ( retries >= 5 ) throw e;
+                retries++;
+            }
+        }
+    }
+
 
 }

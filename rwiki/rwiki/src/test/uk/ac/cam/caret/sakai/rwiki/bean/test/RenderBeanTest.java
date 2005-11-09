@@ -40,6 +40,10 @@ public class RenderBeanTest extends TestCase {
         mockObjectService = (RWikiObjectService) objectServiceControl.getMock();
         mockObject = (RWikiObject) rwikiObjectControl.getMock();
         //mockObject = new RWikiObjectImpl();
+
+        mockObjectService.checkUpdate(mockObject,user);
+        objectServiceControl.setReturnValue(false);
+        objectServiceControl.replay();
         
         
         rb = new RenderBean(mockObject,user, mockToolRenderService, mockObjectService,true); 
@@ -54,7 +58,6 @@ public class RenderBeanTest extends TestCase {
     public void testRenderPage() {
         mockToolRenderService.renderPage(mockObject, user);
         renderServiceControl.setReturnValue(value);
-        objectServiceControl.replay();
         rwikiObjectControl.replay();
         renderServiceControl.replay();
         

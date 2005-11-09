@@ -398,5 +398,13 @@ public class ViewBean {
     public void setSearch(String search) {
         this.search = search;
     }
+    
+    public String getNewCommentURL() {
+        return getPageUrl(pageName,WikiPageAction.NEWCOMMENT_ACTION.getName());
+        
+    }
+    public String getEditCommentURL() {
+        return getPageUrl(pageName,WikiPageAction.EDITCOMMENT_ACTION.getName());
+    }
 
 }

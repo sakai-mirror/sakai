@@ -47,6 +47,18 @@ public interface RWikiObjectService {
 	 */
 	RWikiCurrentObject getRWikiObject(String name, String user, String realm)
 			throws PermissionException;
+    /**
+     * Gets the current object using a named template if it does not exist
+     * 
+     * @param name
+     * @param user
+     * @param realm
+     * @param templateName
+     * @return
+     * @throws PermissionException
+     */
+    RWikiCurrentObject getRWikiObject(String name, String user, String realm, String templateName)
+            throws PermissionException;
 
 	/**
 	 * Gets the object based on the ID. This
@@ -126,6 +138,7 @@ public interface RWikiObjectService {
 	void update(String name, String user, String realm, Date version,
 			String content) throws PermissionException, VersionException;
 
+    
 	/**
 	 * Update the name page's permissions
 	 * 
@@ -199,4 +212,28 @@ public interface RWikiObjectService {
 	 * @return
 	 */
 	List findRWikiHistoryObjects(RWikiObject reference);
+    
+    /**
+     * get list of subpages of the supplied page. The list will be alphabetiallcy sorted
+     * @param globalParentPageName is the page on which we want to find sub pages. THIS IS A GLOBAL NAME. DONT CONFUSE WITH A LOCAL NAME
+     * @return a list of pages sorted by name alphabetically.
+     */
+    List findRWikiSubPages(String globalParentPageName);
+    
+    /**
+     * Updates and creates a new comment on the page
+     * 
+     * @param name
+     * @param user
+     * @param realm
+     * @param version
+     * @param content
+     * @throws PermissionException
+     * @throws VersionException
+     */
+    void updateNewComment(String name, String user, String realm, Date version,
+            String content) throws PermissionException, VersionException;
+
+    
+    
 }

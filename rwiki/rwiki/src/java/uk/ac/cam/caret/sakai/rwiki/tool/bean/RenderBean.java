@@ -22,10 +22,15 @@
  **********************************************************************************/
 package uk.ac.cam.caret.sakai.rwiki.tool.bean;
 
+import java.text.MessageFormat;
+import java.util.List;
+
+import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.ListProxy;
 import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiCurrentObjectImpl;
 import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiObjectImpl;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
+import uk.ac.cam.caret.sakai.rwiki.service.api.dao.ObjectProxy;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.service.exception.PermissionException;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.ToolRenderService;
@@ -49,10 +54,15 @@ public class RenderBean {
     private RWikiObject rwo;
     
     private boolean withBreadcrumbs = true;
+    
+    private boolean canEdit = false;
+    
 
     // FIXME internationalise this!
     private static final String PERMISSION_PROBLEM = 
         "You do not have permission to view this page";
+
+ 
 
     /**
      * Create new RenderBean from given RWikiObject
@@ -73,6 +83,7 @@ public class RenderBean {
         this.toolRenderService = toolRenderService;
         this.objectService = objectService;
         this.withBreadcrumbs = withBreadcrumbs;
+        this.canEdit = objectService.checkUpdate(rwo,user);
     }
 
     /**
@@ -99,6 +110,7 @@ public class RenderBean {
         String pageRealm = defaultRealm;
         try {
             this.rwo = objectService.getRWikiObject(pageName, user, pageRealm);
+            this.canEdit = objectService.checkUpdate(rwo,user);
         } catch (PermissionException e) {
             this.rwo = new RWikiCurrentObjectImpl();
             rwo.setName(pageName);
@@ -278,5 +290,64 @@ public class RenderBean {
     		String content = rwo.getContent();
     		return (content != null && content.trim().length() > 0 );
     }
+    
+    /**
+     * returns a list of comments that are render beans
+     * @return
+     */
+    public List getComments() {
+        List commentsList = objectService.findRWikiSubPages(rwo.getName()+".");
+        ObjectProxy lop = new ObjectProxy() {
+            public Object proxyObject(Object o) {
+                if ( o instanceof RWikiObject ) {
+                    RenderBean rb = new RenderBean((RWikiObject)o,user,toolRenderService,objectService,withBreadcrumbs);
+                    
+                    return rb;
+                }
+                if ( o instanceof RenderBean ) {
+                    return o;
+                }
+                throw new RuntimeException("Proxied list does not contain expected object type, found:"+o);
+            }            
+        };
+        return new ListProxy(commentsList,lop);
+    }
+
+    /**
+     * @return Returns the canEdit.
+     */
+    public boolean getCanEdit() {
+        return canEdit;
+    }
+
+    /**
+     * @param canEdit The canEdit to set.
+     */
+    public void setCanEdit(boolean canEdit) {
+        this.canEdit = canEdit;
+    }
+    
+    public String getNewCommentURL() {
+        ViewBean vb = new ViewBean(rwo.getName(),NameHelper.localizeSpace(rwo.getName(),rwo.getRealm()));
+        return vb.getNewCommentURL();
+    }
+    public String getEditCommentURL() {
+        ViewBean vb = new ViewBean(rwo.getName(),NameHelper.localizeSpace(rwo.getName(),rwo.getRealm()));
+        return vb.getEditCommentURL();
+    }
+    
+    public String getCommentLevel() {
+        String localName = NameHelper.localizeName(rwo.getName(),NameHelper.localizeSpace(rwo.getName(),rwo.getRealm()));
+        int p = localName.indexOf(".",0);
+        int i = 1;
+        while ( p > 0 && i <= 5) {
+            i++;
+            p = localName.indexOf(".",p+1);
+        }
+        return String.valueOf(i);
+    }
+    
+
+   
 
 }

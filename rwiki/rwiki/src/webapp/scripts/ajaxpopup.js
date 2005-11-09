@@ -1,4 +1,5 @@
 var popupDivStack = new Array();
+var frameHeightStack = new Array();
 var popupDivID = "popupDIV";
 var popupFocus = null;
 var lastPopupFocus = null;
@@ -6,10 +7,11 @@ var popupURL = null;
 var popupLoader = null;
 var lastPopupURL = null;
 var popupWaitingDiv = null;
-var popupWiatingDivID = "popupwaitingdiv";
+var popupWaitingDivID = "popupwaitingdiv";
 var popupindex = 0;
 var asyncLoad = false;
 var progressiveLoad = false;
+var hasresize = false;
 				
 function popupCallback(responsestring) {
 	if ( popupDivStack[popupindex] != null ) 
@@ -17,9 +19,115 @@ function popupCallback(responsestring) {
 		//log("popupcallback "+responsestring);
 		popupDivStack[popupindex].innerHTML = responsestring;
 		popupDivStack[popupindex].style.visibility = "visible";
+		popupDivStack[popupindex].style.zIndex="100";
+		sizeFrame(popupindex);
 	}
 }
+function sizeFrame(istack) {
+		    var frame = getFrame(placementid);
+		    
+		    if ( frame != null ) {
+		    
+                var height;
+                var objToResize = (frame.style) ? frame.style : frame;
 
+                var scrollH = document.body.scrollHeight;
+                var offsetH = document.body.offsetHeight;
+                var clientH = document.body.clientHeight;
+                var innerDocScrollH = null;
+
+                if (typeof(frame.contentDocument) != 'undefined' || typeof(frame.contentWindow) != 'undefined')
+                {
+                        // very special way to get the height from IE on Windows!
+                        // note that the above special way of testing for undefined variables is necessary for older browsers
+                        // (IE 5.5 Mac) to not choke on the undefined variables.
+                        var innerDoc = (frame.contentDocument) ? frame.contentDocument : frame.contentWindow.document;
+                        innerDocScrollH = (innerDoc != null) ? innerDoc.body.scrollHeight : null;
+                }
+
+//              alert("After innerDocScrollH");
+
+                if (document.all && innerDocScrollH != null)
+                {
+                        // IE on Windows only
+                        height = innerDocScrollH;
+                }
+                else
+                {
+                        // every other browser!
+                        height = offsetH;
+                }
+                var tl = getAbsolutePos(popupDivStack[istack]);
+                var sh = popupDivStack[istack].scrollHeight;
+                var oh = popupDivStack[istack].offsetHeight;
+                var ch = popupDivStack[istack].clientHeight;
+                var bottom = tl.y + sh;
+ 
+                // here we fudge to get a little bigger
+                var newHeight = mmax(mmax(mmax(mmax(height,scrollH),clientH),innerDocScrollH),bottom) + 50;
+
+                // no need to be smaller than...
+                //if (height < 200) height = 200;
+                objToResize.height=newHeight + "px";
+		    
+                var s = " scrollH: " + scrollH + " offsetH: " + offsetH + " clientH: " + 
+                clientH + " innerDocScrollH: " + innerDocScrollH + " Read height: " + height + " bottom "+ bottom+
+                " sh "+ sh +
+                " oh "+oh+
+                " ch "+ch+
+                " Set height to: " + newHeight;
+//              window.status = s;
+              //alert(s);
+		     }
+}
+function mmax(n1,n2) {
+    if ( n1 ) {
+        if ( n2 ) {
+            if ( n1 > n2 ) return n1;
+            else return n2;
+        } else {
+            return n1;
+        }
+    } else {
+        return n2;
+    }
+}
+function saveSize(istack) {
+		    var f = getFrameStyle(placementid);
+		    if ( f != null ) frameHeightStack[istack] = f.height;
+		    else frameHeightStack[istack] = 0;
+		    //alert("Saved "+frameHeightStack[istack]);
+}
+function resizeFrame(istack) {
+		var frameHeight = frameHeightStack[istack];
+        //alert("Size "+istack+" frameHeight "+frameHeight);
+		if ( frameHeight != 0 ) {
+		    var f = getFrameStyle(placementid);
+		    if ( f != null ) {
+		        f.height = frameHeight;
+		        //alert("Frame restored "+f.height);
+		    }
+		}
+}
+function getFrame(id){        
+    if (typeof window.name != "undefined" && id != window.name) return 0;        
+    var frame = parent.document.getElementById(id);        
+    if (frame)        
+    {            
+        return frame;    
+    }
+    return null;
+ }
+function getFrameStyle(id){        
+    if (typeof window.name != "undefined" && id != window.name) return 0;        
+    var frame = parent.document.getElementById(id);        
+    if (frame)        
+    {                
+                var objToResize = (frame.style) ? frame.style : frame;
+                return objToResize;
+    }
+    return null;
+ }
 
 function popupShowWaiting() {
 	if ( popupWaitingDiv == null ) 
@@ -42,6 +150,7 @@ function updatePopupFocus() {
 					}
 					if ( popupDivStack[popupindex] == null ) 
 					{
+					    saveSize(popupindex);
 						popupDivStack[popupindex]=document.createElement("DIV");
     					    popupDivStack[popupindex].style.visibility="hidden";
     					    popupDivStack[popupindex].style.position="absolute";
@@ -86,7 +195,7 @@ function updatePopupFocus() {
 						//log("popupFocus reload URL "+url);
 						lastPopupURL = url;
 						popupShowWaiting();
-						popupLoader.loadXMLDoc(url,"popupCallback");
+						popupLoader.loadXMLDoc(url,"popupCallback"); 
 					}
 					
 					
@@ -102,7 +211,13 @@ function popupClose(downTo) {
 	{
 		if ( popupDivStack[i] != null )
 		{
+		//	popupDivStack[i].style.left="-1000";
+    		//    popupDivStack[i].style.top="-1000";
 			popupDivStack[i].style.visibility="hidden";
+			document.body.removeChild(popupDivStack[i]);
+			popupDivStack[i] = null;
+			resizeFrame(i);
+			
 		}
 		lastPopupURL = null;
 	}
@@ -185,4 +300,4 @@ function hidePopup(divid) {
 	if ( targetdiv != null ) {
         targetdiv.style.visibility = "hidden";		
      }
-} 
+}

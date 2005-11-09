@@ -145,6 +145,8 @@
 				<entry key="revert"><ref bean="revertCommand"/></entry>
 				<entry key="updatePermissions"><ref bean="updatePermissionsCommand"/></entry>
 				<entry key="editRealm"><ref bean="editRealmCommand"/></entry>
+				<entry key="commenteditsave"><ref bean="commentSaveCommand"/></entry>
+				<entry key="commentnewsave"><ref bean="commentNewCommand"/></entry>
 				<!--<entry key=""><ref bean="Command"/></entry>-->
 			</map>
 		</property>
@@ -248,6 +250,36 @@
 			</property>
 		<property name="successfulPath"><value>/WEB-INF/command-pages/view.jsp</value>
 			</property>
+		<property name="previewPath">
+			<value>/WEB-INF/command-pages/edit.jsp</value></property>
+		<property name="cancelPath">
+			<value>/WEB-INF/command-pages/view.jsp</value></property>
+		<property name="objectService"><ref bean="objectService"/></property>		
+	</bean>
+	<bean id="commentSaveCommand"
+		class="uk.ac.cam.caret.sakai.rwiki.tool.command.CommentSaveCommand">
+		<property name="log"><ref bean="rwiki-logger"/></property>
+		<property name="noUpdatePath"><value>/WEB-INF/command-pages/permission.jsp</value>
+		</property>
+		<property name="contentChangedPath"><value>/WEB-INF/command-pages/edit.jsp</value>
+		</property>
+		<property name="successfulPath"><value>/WEB-INF/command-pages/view.jsp</value>
+		</property>
+		<property name="previewPath">
+			<value>/WEB-INF/command-pages/edit.jsp</value></property>
+		<property name="cancelPath">
+			<value>/WEB-INF/command-pages/view.jsp</value></property>
+		<property name="objectService"><ref bean="objectService"/></property>		
+	</bean>
+	<bean id="commentNewCommand"
+		class="uk.ac.cam.caret.sakai.rwiki.tool.command.CommentNewCommand">
+		<property name="log"><ref bean="rwiki-logger"/></property>
+		<property name="noUpdatePath"><value>/WEB-INF/command-pages/permission.jsp</value>
+		</property>
+		<property name="contentChangedPath"><value>/WEB-INF/command-pages/edit.jsp</value>
+		</property>
+		<property name="successfulPath"><value>/WEB-INF/command-pages/view.jsp</value>
+		</property>
 		<property name="previewPath">
 			<value>/WEB-INF/command-pages/edit.jsp</value></property>
 		<property name="cancelPath">

@@ -364,5 +364,38 @@ RWikiCurrentObjectDao, ObjectProxy {
 			TimeLogger.printTimer("RWikiObjectDaoImpl.getPageCount: " + group,start,finish);
 		}
 	}
+
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.dao.RWikiCurrentObjectDao#findRWikiSubPages(java.lang.String)
+     */
+    public List findRWikiSubPages(final String globalParentPageName) {
+        HibernateCallback callback = new HibernateCallback() {
+            public Object doInHibernate(Session session)
+            throws HibernateException {
+                return session.createCriteria(RWikiCurrentObject.class).add(
+                        Expression.like("name", globalParentPageName+"%" )).addOrder(
+                                        Order.asc("name")).list();
+            }
+        };
+        return new ListProxy((List) getHibernateTemplate().execute(callback), this);
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.dao.RWikiCurrentObjectDao#findLastRWikiSubPage(java.lang.String)
+     */
+    public RWikiObject findLastRWikiSubPage(final String globalParentPageName) {
+        HibernateCallback callback = new HibernateCallback() {
+            public Object doInHibernate(Session session)
+            throws HibernateException {
+                return session.createCriteria(RWikiCurrentObject.class).add(
+                        Expression.like("name", globalParentPageName+"%" )).addOrder(
+                                        Order.desc("name")).list();
+            }
+        };
+        List l = (List)getHibernateTemplate().execute(callback);
+        if ( l == null || l.size() == 0 ) return null;
+        return (RWikiObject) l.get(0);
+    }
+    
 }
 

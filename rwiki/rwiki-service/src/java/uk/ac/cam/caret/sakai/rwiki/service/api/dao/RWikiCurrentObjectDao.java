@@ -100,5 +100,18 @@ public interface RWikiCurrentObjectDao extends RWikiObjectDao {
      */
 	int getPageCount(String group);
 
+    /**
+     * Find a list of subpages based on the parent page name
+     * @param globalParentPageName
+     * @return
+     */
+    List findRWikiSubPages(String globalParentPageName);
 
+    /**
+     * Finds the last comment on the supplied page name, if not comment has
+     * been made, it will return null.
+     * @param globalParentPageName
+     * @return
+     */
+    RWikiObject findLastRWikiSubPage(String globalParentPageName);
 }

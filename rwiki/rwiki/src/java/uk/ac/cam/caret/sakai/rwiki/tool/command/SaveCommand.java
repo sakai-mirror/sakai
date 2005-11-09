@@ -53,7 +53,7 @@ import uk.ac.cam.caret.sakai.rwiki.tool.command.helper.ErrorBeanHelper;
 
 public class SaveCommand implements HttpCommand {
 
-    private RWikiObjectService objectService;
+    protected RWikiObjectService objectService;
 
     private Logger log;
 
@@ -104,7 +104,7 @@ public class SaveCommand implements HttpCommand {
         Date versionDate = new Date(Long.parseLong(version));
 
         try {
-            objectService.update(name, user, realm, versionDate, content);
+            doUpdate(name,user,realm,versionDate,content);
         } catch (VersionException e) {
             // The page has changed underneath us...
 
@@ -124,6 +124,10 @@ public class SaveCommand implements HttpCommand {
         return;
 
     }
+    
+    protected void doUpdate(String name, String user, String realm, Date versionDate, String content) {
+        objectService.update(name, user, realm, versionDate, content);
+    }
 
     private void cancelDispatch(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
@@ -137,7 +141,7 @@ public class SaveCommand implements HttpCommand {
         rd.forward(request, response);
     }
 
-    private void successfulUpdateDispatch(HttpServletRequest request,
+    protected void successfulUpdateDispatch(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher(successfulPath);
         rd.forward(request, response);

@@ -190,6 +190,40 @@ a:hover.rwiki_help_popup_link, a:active.rwiki_help_popup_link    {
   border: 1px dotted #003366;
   line-height: 100%;
 }
+
+.rwikiCommentBody_1 {
+  font-size: 110%;
+  background-color: #ffffcc;
+  margin: 0px 0px 0px 0px;
+}
+.rwikiCommentBody_2 {
+  font-size: 110%;
+  background-color: #ffffcc;
+  margin: 0px  0px 0px 10px; 
+}
+.rwikiCommentBody_3 {
+  font-size: 110%;
+  background-color: #ffffcc;
+  margin: 0px  0px 0px 20px;
+}
+.rwikiCommentBody_4 {
+  font-size: 110%;
+  background-color: #ffffcc;
+  margin: 0px  0px 0px 30px;
+}
+.rwikiCommentBody_5 {
+  font-size: 110%;
+  background-color: #ffffcc;
+  margin: 0px  0px 0px 40px;
+}
+.rwikiCommentsHeader {
+  width: 600px;
+  font-size: 85%;
+  color: inherit;
+  background-color: #eeeeee;
+  border: 1px dotted #003366;
+  line-height: 100%;
+}
 .rwiki_info_page_granted {
 }
 .rwiki_info_page_denied {

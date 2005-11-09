@@ -53,7 +53,7 @@
 			start = System.currentTimeMillis();
   </jsp:scriptlet>
   
-  <c:set target="${recentlyVisitedBean}" property="viewPage" value="${viewBean }"/>
+  <c:set target="${recentlyVisitedBean}" property="viewPage" value="${viewBean}"/>
   
   <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
     <head>
@@ -111,6 +111,7 @@
 		--></jsp:element>
 	</div>
       </div>
+      <jsp:directive.include file="comments.jsp"/>
       <jsp:directive.include file="footer.jsp"/>
     </jsp:element>
   </html>

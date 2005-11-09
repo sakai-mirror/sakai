@@ -57,6 +57,14 @@ public class WikiPageAction {
     
     public static final WikiPageAction EDIT_REALM_ACTION = new WikiPageAction("editRealm");
 
+    public static final WikiPageAction NEWCOMMENT_ACTION = new WikiPageAction("commentnew");
+    
+    public static final WikiPageAction EDITCOMMENT_ACTION = new WikiPageAction("commentedit");
+
+    public static final WikiPageAction NEWCOMMENT_SAVE_ACTION = new WikiPageAction("commentnewsave");
+    
+    public static final WikiPageAction EDITCOMMENT_SAVE_ACTION = new WikiPageAction("commenteditsave");
+
     private String name;
     
     private WikiPageAction(String name) {
