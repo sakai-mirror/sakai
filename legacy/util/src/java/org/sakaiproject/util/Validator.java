@@ -41,7 +41,7 @@ import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 public class Validator
 {
 	/** These characters are not allowed in a resource id */
-	protected static final String INVALID_CHARS_IN_RESOURCE_ID = "^/\\%*?#&=\n\r\t\b\f‚Ÿ‰ŠˆŒ‘•”“€ƒ¾®™š˜Ø…†¢£´P?‡’—œ–„§???£Á¢£?´¤©»Â¨ø¡±?«µ¦À";
+	protected static final String INVALID_CHARS_IN_RESOURCE_ID = "^/\\{}[]()@%*?#&=\n\r\t\b\f";
 	
 	/** These characters are allowed; but if escapeResourceName() is called, they are escaped (actually, removed) 
 	 * Certain characters cause problems with filenames in certain OSes - so get rid of these characters in filenames
@@ -155,6 +155,7 @@ public class Validator
 	public static String escapeUrl(String id)
 	{
 		if (id == null) return "";
+		id = id.trim();
 		try
 		{
 			// convert the string to bytes in UTF-8
@@ -204,13 +205,22 @@ public class Validator
 	public static String escapeResourceName(String id)
 	{
 		if (id == null) return "";
+		id = id.trim();
 		try
 		{
 			StringBuffer buf = new StringBuffer();
 			for (int i = 0; i < id.length(); i++)
 			{
 				char c = id.charAt(i);
-				if (INVALID_CHARS_IN_RESOURCE_ID.indexOf(c) != -1 || ESCAPE_CHARS_IN_RESOURCE_ID.indexOf(c) != -1)
+				while(c > '\176')
+				{
+					c = (char) (c - '\117');
+				}
+				while(c < '\040')
+				{
+					c = (char) (c + '\040');
+				}
+				if (INVALID_CHARS_IN_RESOURCE_ID.indexOf(c) >= 0 || ESCAPE_CHARS_IN_RESOURCE_ID.indexOf(c) >= 0)
 				{
 					buf.append('_');
 				}

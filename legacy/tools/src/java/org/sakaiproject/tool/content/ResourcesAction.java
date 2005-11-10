@@ -2573,10 +2573,10 @@ public class ResourcesAction
 			}
 			List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
 			saveMetadata(resourceProperties, metadataGroups, item);
-			String filename = Validator.escapeResourceName(item.getFilename()).trim();
+			String filename = Validator.escapeResourceName(item.getFilename().trim());
 			if("".equals(filename))
 			{
-				filename = Validator.escapeResourceName(item.getName());
+				filename = Validator.escapeResourceName(item.getName().trim());
 			}
 			
 			
