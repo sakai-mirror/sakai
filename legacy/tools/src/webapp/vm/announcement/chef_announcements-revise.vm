@@ -89,14 +89,10 @@
 			#end
 			#if ($!groups)
 				## added group awareness
-				#if ($allowAddChannelMessage)
-					<p class="checkbox">
-						<input type="radio" name="announceTo" id="groups" value="groups" #if(!$!pubview && ($!announceTo == "groups" || $!message.AnnouncementHeader.Access == $groupAccess))checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'block';document.getElementById('groupTable').style.width = '80%';" onkeypress="document.getElementById('groupTable').style.display = 'block';" />
-						<label for="groups">$tlang.getString("displayto.selected")</label>
-					</p>	
-				#else
-					<input type="hidden" name="announceTo" id="groups" value="groups"/>
-				#end
+				<p class="checkbox">
+					<input type="radio" name="announceTo" id="groups" value="groups" #if(!$!pubview && ($!announceTo == "groups" || $!message.AnnouncementHeader.Access == $groupAccess))checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'block';document.getElementById('groupTable').style.width = '80%';" onkeypress="document.getElementById('groupTable').style.display = 'block';" />
+					<label for="groups">$tlang.getString("displayto.selected")</label>
+				</p>	
 				#if(!$!pubview && ($!announceTo == "groups" || $!message.AnnouncementHeader.Access == $groupAccess))
 					#set ($listDisplay="block")
 				#else

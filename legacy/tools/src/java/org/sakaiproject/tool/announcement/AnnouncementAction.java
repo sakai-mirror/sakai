@@ -1589,12 +1589,12 @@ extends PagedResourceActionII
 				{
 					if (state.getIsNewAnnouncement() )
 					{
-						if (channel.allowAddMessage())
+						if (channel.allowAddChannelMessage())
 						{
 							// default to make site selection
 							context.put("announceTo", "site");
 						}
-						else
+						else if (channel.getGroupsAllowAddMessage().size() > 0)
 						{
 							// to group otherwise
 							context.put("announceTo", "groups");
