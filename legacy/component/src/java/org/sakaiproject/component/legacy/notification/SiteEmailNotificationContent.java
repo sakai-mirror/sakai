@@ -37,6 +37,9 @@ import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -235,6 +238,17 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 		return buf.toString();
 
 	} // getMessage
+
+	/** Returns the To: field */
+	public List getAdditionalHeaders(Event e)
+	{
+		List ret = new ArrayList(1);
+
+		// and the To: field
+		ret.add("To: " + getSiteTo(e));
+
+		return ret;
+	}
 
 	/**
 	 * Form a "Bread Crumb" style path showing the folders in which this referenced resource lives.

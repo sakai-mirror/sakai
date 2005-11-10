@@ -139,7 +139,7 @@ public class SiteEmailNotification
 	* @param event The event that matched criteria to cause the notification.
 	* @return the to: header for the email.
 	*/
-	protected String getTo(Event event)
+	protected String getSiteTo(Event event)
 	{
 		// get the resource reference
 		Reference ref = EntityManager.newReference(event.getResource());
@@ -170,7 +170,7 @@ public class SiteEmailNotification
 
 		return siteMailId + " <" + siteMailId + "@" + ServerConfigurationService.getServerName() + ">";
 
-	}	// getTo
+	}	// getSiteTo
 
 }   // SiteEmailNotification
 

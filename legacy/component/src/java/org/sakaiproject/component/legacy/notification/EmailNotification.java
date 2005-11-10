@@ -152,8 +152,6 @@ public class EmailNotification
 		// get the email elements
 		String message = getMessage(event);
 		String from = getFrom(event);
-		String headerTo = getTo(event);
-		String replyTo = getReplyTo(event);
 		String subject = getSubject(event);
 		List additionalHeaders = getAdditionalHeaders(event);
 		boolean isBodyHTML = isBodyHTML(event);
@@ -202,7 +200,7 @@ public class EmailNotification
 					if ((email != null) && (email.length() > 0))
 					{
 						// email = user.getDisplayName() + "<" + user.getEmail() + ">";
-					    EmailService.send(from, email, subject, messageForImmediates, headerTo, replyTo, additionalHeaders);
+					    EmailService.send(from, email, subject, messageForImmediates, null, null, additionalHeaders);
 					}
 				}
 			}
@@ -212,11 +210,28 @@ public class EmailNotification
 		if (digest.size() > 0)
 		{
 			// modify the message to add missing parts (no tag - this is added at the end of the digest)
-			String messageForDigest = "From: " + from + "\n"
-					+ "Date: " + TimeService.newTime().toStringLocalFullZ() + "\n"
-					+ "To: " + headerTo + "\n"
-					+ "Subject: " + subject + "\n"
-					+ "\n" + message;
+			// date, subject, to, all may be in the additionalHeaders
+			String messageForDigest = "From: " + from + "\n";
+			String item = findHeader("Date", additionalHeaders);
+			if (item != null)
+			{
+				messageForDigest += item;
+			}
+			else
+			{
+				messageForDigest += "Date: " + TimeService.newTime().toStringLocalFullZ() + "\n";
+			}
+			
+			item = findHeader("To", additionalHeaders);
+			if (item != null) messageForDigest += item;
+
+			item = findHeader("Cc", additionalHeaders);
+			if (item != null) messageForDigest += item;
+
+			item = findHeader("Subject", additionalHeaders);
+			if (item != null) messageForDigest += item;
+
+			messageForDigest += "\n" + message;
 
 			for (Iterator iDigests = digest.iterator(); iDigests.hasNext();)
 			{
@@ -285,29 +300,6 @@ public class EmailNotification
 	{
 	    return false;
 	}
-
-	/**
-	* Get the to: header string for the email - the real recipients will be getTo(), but this will show up
-	* in the message.
-	* @param event The event that matched criteria to cause the notification.
-	* @return the to: header for the email.
-	*/
-	protected String getTo(Event event)
-	{
-		return null;
-
-	}	// getTo
-
-	/**
-	* Get the reply-to: header string for the email.
-	* @param event The event that matched criteria to cause the notification.
-	* @return the reply-to: header string for the email.
-	*/
-	protected String getReplyTo(Event event)
-	{
-		return null;
-
-	}	// getReplyTo
 
 	/**
 	* Get the list of User objects who are eligible to receive the notification email.
@@ -496,6 +488,23 @@ public class EmailNotification
 		return NotificationService.PREF_NONE;
 
 	}	// getOption
+
+	/**
+	 * Find the header line that begins with the header parameter
+	 * @param header The header to find.
+	 * @param headers The list of full header lines.
+	 * @return The header line found or null if not found.
+	 */
+	protected String findHeader(String header, List headers)
+	{
+		for (Iterator i = headers.iterator(); i.hasNext();)
+		{
+			String h = (String) i.next();
+			if (h.startsWith(header)) return h;
+		}
+		
+		return null;
+	}
 
 }   // EmailNotification
 

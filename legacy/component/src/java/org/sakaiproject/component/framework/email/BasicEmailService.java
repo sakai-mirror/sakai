@@ -185,6 +185,24 @@ public class BasicEmailService implements EmailService
 			return;
 		}
 
+		if (from == null)
+		{
+			m_logger.warn(this + ".sendMail: null from");
+			return;
+		}
+
+		if (to == null)
+		{
+			m_logger.warn(this + ".sendMail: null to");
+			return;
+		}
+
+		if (content == null)
+		{
+			m_logger.warn(this + ".sendMail: null content");
+			return;
+		}
+
 		Properties props = new Properties();
 
 		// set the server host
@@ -208,14 +226,11 @@ public class BasicEmailService implements EmailService
 			buf.append(from);
 			buf.append(" subject: ");
 			buf.append(subject);
-			if (to != null)
+			buf.append(" to:");
+			for (int i = 0; i < to.length; i++)
 			{
-				buf.append(" to:");
-				for (int i = 0; i < to.length; i++)
-				{
-					buf.append(" ");
-					buf.append(to[i]);
-				}
+				buf.append(" ");
+				buf.append(to[i]);
 			}
 			if (headerTo != null)
 			{
@@ -284,18 +299,20 @@ public class BasicEmailService implements EmailService
 
 			msg.setFrom(from);
 
-			if (headerTo != null)
+			if (msg.getHeader("To") == null)
 			{
-				msg.setRecipients(Message.RecipientType.TO, headerTo);
-			}
-			else
-			{
-				msg.setRecipients(Message.RecipientType.TO, to);
+				if (headerTo != null)
+				{
+					msg.setRecipients(Message.RecipientType.TO, headerTo);
+				}
 			}
 
-			msg.setSubject(subject);
+			if ((subject != null) && (msg.getHeader("Subject") == null))
+			{
+				msg.setSubject(subject);
+			}
 
-			if (replyTo != null)
+			if ((replyTo != null) && (msg.getHeader("Reply-To") == null))
 			{
 				msg.setReplyTo(replyTo);
 			}
@@ -348,14 +365,7 @@ public class BasicEmailService implements EmailService
 				msg.addHeaderLine(contentType);
 			}
 
-			if (headerTo != null)
-			{
-				Transport.send(msg, to);
-			}
-			else
-			{
-				Transport.send(msg);
-			}
+			Transport.send(msg, to);
 		}
 		catch (MessagingException e)
 		{
@@ -382,6 +392,24 @@ public class BasicEmailService implements EmailService
 	public void send(String fromStr, String toStr, String subject, String content, String headerToStr, String replyToStr,
 			List additionalHeaders)
 	{
+		if (fromStr == null)
+		{
+			m_logger.warn(this + ".send: null fromStr");
+			return;
+		}
+
+		if (toStr == null)
+		{
+			m_logger.warn(this + ".send: null toStr");
+			return;
+		}
+
+		if (content == null)
+		{
+			m_logger.warn(this + ".send: null content");
+			return;
+		}
+
 		try
 		{
 			InternetAddress from = new InternetAddress(fromStr);

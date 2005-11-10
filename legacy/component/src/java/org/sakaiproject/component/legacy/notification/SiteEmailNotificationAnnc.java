@@ -207,10 +207,14 @@ public class SiteEmailNotificationAnnc
 	/** Returns "Content-Type: text/html" - Announcements are sent as HTML formatted email messages */
 	public List getAdditionalHeaders(Event e)
 	{
-	    // Set the content type of the message body to HTML
-	    List ret = new ArrayList(1);
-	    ret.add("Content-Type: text/html");
-	    return ret;
+		// Set the content type of the message body to HTML
+		List ret = new ArrayList(2);
+		ret.add("Content-Type: text/html");
+
+		// and the To: field
+		ret.add("To: " + getSiteTo(e));
+
+		return ret;
 	}
 	
 	/** Returns true - Announcements are sent as HTML formatted email messages */

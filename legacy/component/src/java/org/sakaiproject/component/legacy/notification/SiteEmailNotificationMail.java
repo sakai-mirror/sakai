@@ -106,23 +106,6 @@ public class SiteEmailNotificationMail
 	}	// getFrom
 
 	/**
-	* Get the subject for the email.
-	* @param event The event that matched criteria to cause the notification.
-	* @return the subject for the email.
-	*/
-	public String getSubject(Event event)
-	{
-		// get the message
-		Reference ref = EntityManager.newReference(event.getResource());
-		MailArchiveMessage msg = (MailArchiveMessage) ref.getEntity();
-		MailArchiveMessageHeader hdr = (MailArchiveMessageHeader) msg.getMailArchiveHeader();
-
-		// use the message's subject
-		return hdr.getSubject();
-
-	}	// getSubject
-
-	/**
 	* Get the message for the email.
 	* @param event The event that matched criteria to cause the notification.
 	* @return the message for the email.
@@ -196,11 +179,8 @@ public class SiteEmailNotificationMail
 		{
 			String headerStr = (String) headers.get(i);
 			
-			// let the date and message-id pass through to the reflected message
 			if (
 					headerStr.startsWith("From") ||
-					headerStr.startsWith("Subject") ||
-					headerStr.startsWith("To") ||
 					headerStr.startsWith("Return-Path") ||
 					headerStr.startsWith("Mime-Version") ||
 					headerStr.startsWith("Content-Transfer-Encoding")
