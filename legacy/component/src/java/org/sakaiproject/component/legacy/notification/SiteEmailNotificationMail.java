@@ -195,13 +195,13 @@ public class SiteEmailNotificationMail
 		for (int i=0; i<headers.size(); i++)
 		{
 			String headerStr = (String) headers.get(i);
+			
+			// let the date and message-id pass through to the reflected message
 			if (
 					headerStr.startsWith("From") ||
 					headerStr.startsWith("Subject") ||
-					headerStr.startsWith("Date") ||
 					headerStr.startsWith("To") ||
 					headerStr.startsWith("Return-Path") ||
-					headerStr.startsWith("Message-Id") ||
 					headerStr.startsWith("Mime-Version") ||
 					headerStr.startsWith("Content-Transfer-Encoding")
 				)

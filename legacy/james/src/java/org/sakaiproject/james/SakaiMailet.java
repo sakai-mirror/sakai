@@ -374,16 +374,21 @@ public class SakaiMailet extends GenericMailet
 				}
 				catch (IdUnusedException goOn)
 				{
-					if (Logger.isInfoEnabled()) Logger.info(this + ": " + id + " : mail rejected: " + goOn.toString());
+					// if this is to the postmaster, and there's no site, channel or alias for the postmaster, then quietly eat the message
+					if (POSTMASTER.equals(mailId))
+					{
+						mail.setState(Mail.GHOST);
+						continue;
+					}
 
 					if (from.startsWith(POSTMASTER + "@"))
 					{
 						mail.setState(Mail.GHOST);
+						continue;
 					}
-					else
-					{
-						mail.setErrorMessage(errorMsg_III);
-					}
+
+					if (Logger.isInfoEnabled()) Logger.info(this + ": " + id + " : mail rejected: " + goOn.toString());
+					mail.setErrorMessage(errorMsg_III);
 				}
 				catch (PermissionException e)
 				{
