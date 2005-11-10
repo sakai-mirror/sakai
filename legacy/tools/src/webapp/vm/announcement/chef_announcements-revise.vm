@@ -20,7 +20,9 @@
 				#end
 		</p>
 	</div>	
-		<form name="reviseForm" action="#toolForm("AnnouncementAction")" method="post" >
+		<form name="reviseForm" action="#toolForm("AnnouncementAction")" method="post" onsubmit="return true;" >
+				<input type="hidden" name="eventSubmit_doAnnouncement_form" value="" />
+				<input type="hidden" name="option" id="option" value="" />
 			<div class="indnt1">
 			<input type="hidden" name="fromInterface" value="revise" />
 			<p class="shorttext">
@@ -106,25 +108,25 @@
 							<th id ="selectAllGroups" style="width:2em;padding-left:.4em">
 								<input type="checkbox" name="selectall" id="selectall" title="toggle select all" onclick="javascript:toggleSelectAll(this, 'selectedGroups')" onkeypress="javascript:toggleSelectAll(this, 'selectedGroups')" />
 							</th>
-					 		<th id ="name">
-								#if (!$currentSortedBy.equals("name"))
-									<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupname")';return false;" title ="Sort by group name">Name</a>
+					 		<th id ="groupname">
+								#if (!$currentSortedBy.equals("grouptitle"))
+									<a href="#" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='sortbygrouptitle';document.reviseForm.submit();return false;" title ="Sort by group title">Title</a>
 								#else
 									#if ($currentSortAsc.equals("true"))
-										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupname")';return false;" title ="Sort by group name">Name <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by group name ascending" /></a>
+										<a href="#" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='sortbygrouptitle';document.reviseForm.submit();return false;" title ="Sort by group title">Title <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by group title ascending" /></a>
 									#else
-										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupname")';return false;" title ="Sort by group name">Name <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by group name descending"/></a>
+										<a href="#" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='sortbygrouptitle';document.reviseForm.submit();return false;" title ="Sort by group title">Title <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by group title descending"/></a>
 									#end
 								#end
 							</th>
-							<th id ="description">
-								#if (!$currentSortedBy.equals("description"))
-									<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupdescription")';return false;" title ="Sort by group description">Description</a>
+							<th id ="groupdescription">
+								#if (!$currentSortedBy.equals("groupdescription"))
+									<a href="#" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='sortbygroupdescription';document.reviseForm.submit();return false;" title ="Sort by group description">Description</a>
 								#else
 									#if ($currentSortAsc.equals("true"))
-										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupdescription")';return false;" title ="Sort by group description">Description <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by group description ascending" /></a>
+										<a href="#" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='sortbygroupdescription';document.reviseForm.submit();return false;" title ="Sort by group description">Description <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by group description ascending" /></a>
 									#else
-										<a href="#" onclick="location='#toolLink("$!action" "doSortbygroupdescription")';return false;" title ="Sort by group description">Description <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by group description descending"/></a>
+										<a href="#" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='sortbygroupdescription';document.reviseForm.submit();return false;" title ="Sort by group description">Description <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by group description descending"/></a>
 									#end
 								#end
 							</th>
@@ -190,11 +192,11 @@
 			</p>
 			#if ($size == 0) <p class="instruction" style="display:block;clear:both;margin:1.3em 0 .3em 0">$tlang.getString("revise.noattach")</p>
 				<div class="act">
-					 <input type="submit" name="eventSubmit_doAttachments" value="$tlang.getString("revise.addatt")" />
+					 <input type="submit" name="attach" value="$tlang.getString("revise.addatt")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='attach';document.reviseForm.submit();return false;" />
 				</div>
 			#else
 				<div class="act">
-					 <input type="submit" name="eventSubmit_doAttachments" value="$tlang.getString("revise.addrem")" />
+					 <input type="submit" name="attach" value="$tlang.getString("revise.addrem")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='attach';document.reviseForm.submit();return false;" />
 				</div>
 			#end
 			#if ($notification)
@@ -218,10 +220,10 @@
 			#end
 		</div>	
 		<p class="act">
-				<input type="submit" class="active" name="eventSubmit_doPost" value="$tlang.getString("revise.add")" />
-				<input type="submit" name="eventSubmit_doRevisepreview" value="$tlang.getString("revise.preview")" />
-				<input type="submit" name="eventSubmit_doSavedraft" value="$tlang.getString("revise.savedraft")" />
-				<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("gen.cancel")" />     
+				<input type="submit" class="active" name="post" value="$tlang.getString("revise.add")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='post';document.reviseForm.submit();return false;" />
+				<input type="submit" name="preview" value="$tlang.getString("revise.preview")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='preview';document.reviseForm.submit();return false;" />
+				<input type="submit" name="save" value="$tlang.getString("revise.savedraft")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='save';document.reviseForm.submit();return false;" />
+				<input type="submit" name="cancel" value="$tlang.getString("gen.cancel")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='cancel';document.reviseForm.submit();return false;" />   
 		</p>
 	</form>
 </div>

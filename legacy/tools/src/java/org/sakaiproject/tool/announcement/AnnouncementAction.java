@@ -135,7 +135,8 @@ extends PagedResourceActionII
 	private static final String SORT_SUBJECT = "subject";
 	private static final String SORT_CHANNEL = "channel";
 	private static final String SORT_FOR = "for";
-	private static final String SORT_GROUP = "group";
+	private static final String SORT_GROUPTITLE = "grouptitle";
+	private static final String SORT_GROUPDESCRIPTION = "groupdescription";
 	
 	private static final String CONTEXT_VAR_DISPLAY_OPTIONS = "displayOptions";
 	private static final String VELOCITY_DISPLAY_OPTIONS = CONTEXT_VAR_DISPLAY_OPTIONS;
@@ -814,7 +815,7 @@ extends PagedResourceActionII
 				// get the channel name throught announcement service API
 				channel = AnnouncementService.getAnnouncementChannel(channelId);
 
-				if (channel.allowGetMessages())
+				if (channel.allowGetMessages() && !state.getCurrentSortedBy().equals(SORT_GROUPTITLE) && !state.getCurrentSortedBy().equals(SORT_GROUPDESCRIPTION))
 				{
 					// this checks for any possibility of an add, channel or any site group
 					menu_new = channel.allowAddMessage();
@@ -957,13 +958,18 @@ extends PagedResourceActionII
 			if (channel.allowGetMessages()
 				&& isOkayToDisplayMessageMenu(state))
 			{
-				context.put("currentSortedBy", state.getCurrentSortedBy());
+				String currentSortedBy = state.getCurrentSortedBy();
+				context.put("currentSortedBy", currentSortedBy);
 				if (state.getCurrentSortAsc())
 					context.put("currentSortAsc", "true");
 				else
 					context.put("currentSortAsc", "false");
 
-				buildSortedContext(portlet, context, rundata, sstate);
+				if (currentSortedBy != null && !currentSortedBy.equals(SORT_GROUPTITLE) && !currentSortedBy.equals(SORT_GROUPDESCRIPTION))
+				{
+					// sort in announcement list view	
+					buildSortedContext(portlet, context, rundata, sstate);
+				}
 				
 			} // if allowGetMessages()
 		}
@@ -1581,17 +1587,34 @@ extends PagedResourceActionII
 				}
 				else
 				{
-					if (state.getIsNewAnnouncement())
+					if (state.getIsNewAnnouncement() )
 					{
-						// default to make site selection
-						context.put("announceTo", "site");
+						if (channel.allowAddMessage())
+						{
+							// default to make site selection
+							context.put("announceTo", "site");
+						}
+						else
+						{
+							// to group otherwise
+							context.put("announceTo", "groups");
+						}
 					}
 				}
 				// group list which user can add message to
 				Collection groups = channel.getGroupsAllowAddMessage();
 				if (groups.size() > 0)
 				{
-					context.put("groups", new SortedIterator(groups.iterator(), new AnnouncementComparator(SORT_GROUP, Boolean.TRUE.booleanValue())));
+					String sort = (String) sstate.getAttribute(STATE_CURRENT_SORTED_BY);
+					boolean asc = sstate.getAttribute(STATE_CURRENT_SORT_ASC)!=null?((Boolean) sstate.getAttribute(STATE_CURRENT_SORT_ASC)).booleanValue():true;;
+					if (sort == null || (!sort.equals(SORT_GROUPTITLE) && !sort.equals(SORT_GROUPDESCRIPTION)))
+					{
+						sort = SORT_GROUPTITLE;
+						sstate.setAttribute(STATE_CURRENT_SORTED_BY, sort);
+						state.setCurrentSortedBy(sort);
+						state.setCurrentSortAsc(Boolean.TRUE.booleanValue());
+					}
+					context.put("groups", new SortedIterator(groups.iterator(), new AnnouncementComparator(sort, asc)));
 				}
 			}
 		}
@@ -2015,10 +2038,66 @@ extends PagedResourceActionII
 	} // doNewannouncement
 
 	/**
-	 * Action is to use when doPost requested,
-	 * corresponding to chef_announcements-revise or -preview "eventSubmit_doPost"
-	 **/
-	public void doPost(RunData rundata, Context context)
+	 * Dispatcher function for various actions on add/revise announcement page
+	 */
+	public void doAnnouncement_form(RunData data, Context context)
+	{
+		
+		ParameterParser params = data.getParameters ();
+
+		String option = (String) params.getString("option");
+		if (option != null)
+		{
+			if (option.equals("post"))
+			{
+				// post announcement
+				readAnnouncementForm(data, context, true);
+				doPost(data, context);
+			}
+			else if (option.equals("preview"))
+			{
+				// preview announcement
+				readAnnouncementForm(data, context, true);
+				doRevisepreview(data, context);
+			}
+			else if (option.equals("save"))
+			{
+				// save announcement as draft
+				readAnnouncementForm(data, context, true);
+				doSavedraft(data, context);
+			}
+			else if (option.equals("cancel"))
+			{
+				// cancel
+				doCancel(data, context);
+			}
+			else if (option.equals("attach"))
+			{
+				// attach
+				readAnnouncementForm(data, context, true);
+				doAttachments(data, context);
+			}
+			else if (option.equals("sortbygrouptitle"))
+			{
+				// sort group by title
+				readAnnouncementForm(data, context, false);
+				doSortbygrouptitle(data, context);
+			}
+			else if (option.equals("sortbygroupdescription"))
+			{
+				// sort group by description
+				readAnnouncementForm(data, context, false);
+				doSortbygroupdescription(data, context);
+			}
+		}
+	}	// doAnnouncement_form
+	
+	/**
+	 * Read user inputs in announcement form
+	 * @param data
+	 * @param checkForm need to check form data or not
+	 */
+	protected void readAnnouncementForm(RunData rundata, Context context, boolean checkForm)
 	{
 		// retrieve the state from state object
 		AnnouncementActionState state =
@@ -2030,34 +2109,28 @@ extends PagedResourceActionII
 		SessionState sstate =
 			((JetspeedRunData) rundata).getPortletSessionState(peid);
 
-		// get the channel and message id information from state object
-		String channelId = state.getChannelId();
-
 		// *** make sure the subject and body won't be empty
-		String from = rundata.getParameters().getString("fromInterface");
-		if (from != null)
-			if (from.equals("revise"))
+		// read in the subject input from announcements-new.vm
+		String subject = rundata.getParameters().getString("subject");
+		// read in the body input
+		String body = rundata.getParameters().getString("body");
+		body = processFormattedTextFromBrowser(sstate, body);
+
+		state.setTempSubject(subject);
+		state.setTempBody(body);
+
+		if (checkForm)
+		{
+			if (subject.length() == 0)
 			{
-				// read in the subject input from announcements-new.vm
-				String subject = rundata.getParameters().getString("subject");
-				// read in the body input
-				String body = rundata.getParameters().getString("body");
-				body = processFormattedTextFromBrowser(sstate, body);
-
-				state.setTempSubject(subject);
-				state.setTempBody(body);
-
-				if (subject.length() == 0)
-				{
-					//addAlert(sstate, "You need to fill in the subject!");
-					addAlert(sstate,rb.getString("java.alert.youneed"));
-				}
-				else
-					if (body.length() == 0)
-					{
-						addAlert(sstate,rb.getString("java.alert.youfill"));//"You need to fill in the body of the announcement!");
-					}
+				//addAlert(sstate, "You need to fill in the subject!");
+				addAlert(sstate,rb.getString("java.alert.youneed"));
 			}
+			else if (body.length() == 0)
+			{
+				addAlert(sstate,rb.getString("java.alert.youfill"));//"You need to fill in the body of the announcement!");
+			}
+		}
 		
 		// announce to public?
 		String announceTo = rundata.getParameters().getString("announceTo");
@@ -2073,7 +2146,10 @@ extends PagedResourceActionII
 			if (groupChoice== null || groupChoice.length == 0)
 			{
 				state.setTempAnnounceToGroups(null);
-				addAlert(sstate,rb.getString("java.alert.youchoosegroup"));
+				if (checkForm)
+				{
+					addAlert(sstate,rb.getString("java.alert.youchoosegroup"));
+				}
 			}
 		}
 		else
@@ -2081,18 +2157,53 @@ extends PagedResourceActionII
 			state.setTempAnnounceToGroups(null);
 		}
 		
+		// read the public view setting and save it in session state
+		String publicView = rundata.getParameters().getString("pubview");
+		if (publicView == null) publicView = "false";	
+		sstate.setAttribute(AnnouncementAction.SSTATE_PUBLICVIEW_VALUE, publicView);
+		
+		// read the notification options & save it in session state
+		String notification = rundata.getParameters().getString("notify");
+		sstate.setAttribute(AnnouncementAction.SSTATE_NOTI_VALUE, notification);
+		
+	}	// readAnnouncementForm
+	
+	/**
+	 * Action is to use when doPost requested,
+	 * corresponding to chef_announcements-revise or -preview "eventSubmit_doPost"
+	 **/
+	public void doPost(RunData rundata, Context context)
+	{
+		postOrSaveDraft(rundata, context, true);
+	}	// doPost
+	
+	/**
+	 * post or save draft of a message?
+	 */
+	protected void postOrSaveDraft(RunData rundata, Context context, boolean post)
+	{
+		// retrieve the state from state object
+		AnnouncementActionState state =
+			(AnnouncementActionState) getState(context,
+				rundata,
+				AnnouncementActionState.class);
+
+		String peid = ((JetspeedRunData) rundata).getJs_peid();
+		SessionState sstate =
+			((JetspeedRunData) rundata).getPortletSessionState(peid);
+
+		// get the channel and message id information from state object
+		String channelId = state.getChannelId();
+
+		String subject = state.getTempSubject();
+		String body = state.getTempBody();
+		
+		// announce to public?
+		String announceTo = state.getTempAnnounceTo();
+		
 		// there is any error message caused by empty subject or body
 		if (sstate.getAttribute(STATE_MESSAGE) != null)
 		{
-			// read the public view setting and save it in session state
-			String publicView = rundata.getParameters().getString("pubview");
-			if (publicView == null) publicView = "false";	
-			sstate.setAttribute(AnnouncementAction.SSTATE_PUBLICVIEW_VALUE, publicView);
-			
-			// read the notification options & save it in session state
-			String notification = rundata.getParameters().getString("notify");
-			sstate.setAttribute(AnnouncementAction.SSTATE_NOTI_VALUE, notification);
-
 			state.setIsListVM(false);
 			state.setStatus("stayAtRevise");
 
@@ -2101,24 +2212,9 @@ extends PagedResourceActionII
 		}
 		else
 		{
-			// read in the subject input from announcements-new.vm
-			String subject = rundata.getParameters().getString("subject");
-			// read in the body input
-			String body = rundata.getParameters().getString("body");
-			body = processFormattedTextFromBrowser(sstate, body);
-			// if no input, which means coming from attachment editing
-			if ((subject == null) || (body == null))
-			{
-				// get the string value from state object
-				subject = state.getTempSubject();
-				body = state.getTempBody();
-			}
 
 			// read the notification options
-			String notification = rundata.getParameters().getString("notify");
-			// if from the post button of preview page
-			if (notification == null)
-				notification = (String)sstate.getAttribute(AnnouncementAction.SSTATE_NOTI_VALUE);
+			String notification = (String)sstate.getAttribute(AnnouncementAction.SSTATE_NOTI_VALUE);
 			
 			int noti = NotificationService.NOTI_OPTIONAL;
 			if ("r".equals(notification))
@@ -2156,7 +2252,7 @@ extends PagedResourceActionII
 				AnnouncementMessageHeaderEdit header =
 					msg.getAnnouncementHeaderEdit();
 				header.setSubject(subject);
-				header.setDraft(false);
+				header.setDraft(!post);
 				header.replaceAttachments(state.getAttachments());
 					
 				// announce to?
@@ -2205,7 +2301,7 @@ extends PagedResourceActionII
 					}
 					else if (announceTo.equals("groups"))
 					{
-						String[] groupChoice = rundata.getParameters().getStrings("selectedGroups");
+						Collection groupChoice = state.getTempAnnounceToGroups();
 						
 					
 						// if group has been dropped, remove it from announcement header
@@ -2213,9 +2309,9 @@ extends PagedResourceActionII
 						{
 							Reference oGRef = EntityManager.newReference((String) oSIterator.next());
 							boolean selected = false;
-							for(int k = 0; k<groupChoice.length && !selected; k++)
+							for(Iterator gIterator = groupChoice.iterator(); gIterator.hasNext() && !selected; )
 							{
-								if (oGRef.getId().equals(groupChoice[k]))
+								if (oGRef.getId().equals((String) gIterator.next()))
 								{
 									selected = true;
 								}
@@ -2238,16 +2334,17 @@ extends PagedResourceActionII
 						if (groupChoice != null )
 						{
 							header.setAccess(MessageHeader.MessageAccess.GROUPED);
-							for(int k = 0; k<groupChoice.length; k++)
+							for(Iterator gIterator2=groupChoice.iterator(); gIterator2.hasNext(); )
 							{
+								String gString = (String) gIterator2.next();
 								try
 								{
-									header.addGroup(site.getGroup(groupChoice[k]));
+									header.addGroup(site.getGroup(gString));
 								}
 								catch (Exception eIgnore)
 								{
 									if (Log.getLogger("chef").isDebugEnabled())
-										Log.debug("chef", this +"doPost(): cannot add group " + groupChoice[k]);
+										Log.debug("chef", this +"doPost(): cannot add group " + gString);
 								}
 							}
 						}
@@ -2289,11 +2386,15 @@ extends PagedResourceActionII
 			state.setMessageReference("");
 			state.setTempAnnounceTo(null);
 			state.setTempAnnounceToGroups(null);
-
+			state.setCurrentSortedBy(SORT_DATE);
+			state.setCurrentSortAsc(Boolean.TRUE.booleanValue());
+			sstate.setAttribute(STATE_CURRENT_SORTED_BY, SORT_DATE);
+			sstate.setAttribute(STATE_CURRENT_SORT_ASC, Boolean.TRUE);
+			
 			// make sure auto-updates are enabled
 			enableObservers(sstate);
 		}
-	} //	doPost
+	} //	postOrSaveDraf
 
 	/**
 	 * Action is to use when doPreviewrevise requested from preview status
@@ -2854,39 +2955,6 @@ extends PagedResourceActionII
 		SessionState sstate =
 			((JetspeedRunData) rundata).getPortletSessionState(peid);
 
-		// *** make sure the subject and body won't be empty
-		//String from = rundata.getParameters().getString("fromInterface");
-		//if (from.equals("revise"))
-		//{
-			// read in the subject input from announcements-new.vm
-			String subject = rundata.getParameters().getString("subject");
-			// read in the body input
-			String body = rundata.getParameters().getString("body");
-			body = processFormattedTextFromBrowser(sstate, body);
-
-			state.setTempSubject(subject);
-			state.setTempBody(body);
-
-			if (subject.length() == 0)
-			{
-				addAlert(sstate, rb.getString("java.alert.youneed"));//"You need to fill in the subject!");
-			}
-			else
-				if (body.length() == 0)
-				{
-				addAlert(sstate, rb.getString("java.alert.youfill"));//"You need to fill in the body of the announcement!");
-				}
-		//} // if (from.equals("revise"))
-
-		// read the public view setting and save it in session state
-		String publicView = rundata.getParameters().getString("pubview");
-		if (publicView == null) publicView = "false";
-		sstate.setAttribute(SSTATE_PUBLICVIEW_VALUE, publicView);
-		
-		// read the notification options & save it in session state
-		String notification = rundata.getParameters().getString("notify");
-		sstate.setAttribute(SSTATE_NOTI_VALUE, notification);
-
 		// there is any error message caused by empty subject or boy
 		if (sstate.getAttribute(STATE_MESSAGE) != null)
 		{
@@ -2895,15 +2963,6 @@ extends PagedResourceActionII
 		}
 		else
 		{
-			// read in the subject input from announcements-new.vm
-			subject = rundata.getParameters().getString("subject");
-			state.setTempSubject(subject);
-
-			// read in the body input
-			body = rundata.getParameters().getString("body");
-			body = processFormattedTextFromBrowser(sstate, body);
-			state.setTempBody(body);
-
 			state.setStatus("revisePreviw");
 		} // if-else
 
@@ -2917,6 +2976,10 @@ extends PagedResourceActionII
 		SessionState state =
 			((JetspeedRunData) data).getPortletSessionState(
 				((JetspeedRunData) data).getJs_peid());
+		AnnouncementActionState myState =
+			(AnnouncementActionState) getState(context,
+				data,
+				AnnouncementActionState.class);
 
 		// setup... we'll use the ResourcesAction's mode
 		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
@@ -2927,7 +2990,7 @@ extends PagedResourceActionII
 		/** This attribute indicates whether "Other Sites" twiggle should be open */
 		state.setAttribute(ResourcesAction.STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
 		
-		String subject = data.getParameters().getString("subject");
+		String subject = myState.getTempSubject();
 		String stateFromText = rb.getString("java.theann");//"the announcement";
 		if (subject != null && subject.length() > 0)
 		{
@@ -2936,11 +2999,6 @@ extends PagedResourceActionII
 		}
 		state.setAttribute(AttachmentAction.STATE_FROM_TEXT, stateFromText);
 
-		// load the attachment editor's STATE_ATTACHMENTS with a copy of our attachment vector
-		AnnouncementActionState myState =
-			(AnnouncementActionState) getState(context,
-				data,
-				AnnouncementActionState.class);
 		List attachments = myState.getAttachments();
 		// whether there is alread an attachment //%%%zqian
 		if (attachments.size() > 0)
@@ -2955,40 +3013,7 @@ extends PagedResourceActionII
 			ResourcesAction.STATE_ATTACHMENTS,
 			EntityManager.newReferenceList(attachments));
 
-		// read in the input of subject and body
-		subject = data.getParameters().getString("subject");
-		String body = data.getParameters().getString("body");
-		body = processFormattedTextFromBrowser(state, body);
-		String announceTo = data.getParameters().getString("announceTo");
-		myState.setTempAnnounceTo(announceTo);
-		if (announceTo.equals("groups"))
-		{
-			String[] groupChoice = data.getParameters().getStrings("selectedGroups");
-			if (groupChoice != null)
-			{
-				myState.setTempAnnounceToGroups(new ArrayList(Arrays.asList(groupChoice)));
-			}
-			else
-			{
-				myState.setTempAnnounceToGroups(null);
-			}
-		}
-		else
-		{
-			myState.setTempAnnounceToGroups(null);
-		}
-		myState.setTempSubject(subject);
-		myState.setTempBody(body);
 		myState.setStatus("backToReviseAnnouncement");
-
-		// read the public view setting and save it in session state
-		String publicView = data.getParameters().getString("pubview");
-		state.setAttribute(AnnouncementAction.SSTATE_PUBLICVIEW_VALUE, publicView);
-		
-		// read the notification options & save it in session state
-		String notification = data.getParameters().getString("notify");
-		state.setAttribute(AnnouncementAction.SSTATE_NOTI_VALUE, notification);
-
 	} // doAttachments
 
 	/**
@@ -3022,6 +3047,8 @@ extends PagedResourceActionII
 		state.setStatus(CANCEL_STATUS);
 		state.setTempAnnounceTo(null);
 		state.setTempAnnounceToGroups(null);
+		sstate.setAttribute(STATE_CURRENT_SORTED_BY, SORT_DATE);
+		sstate.setAttribute(STATE_CURRENT_SORT_ASC, Boolean.TRUE);
 		
 		// we are done with customization... back to the main (list) mode
 		sstate.removeAttribute(STATE_MODE);
@@ -3094,274 +3121,8 @@ extends PagedResourceActionII
 	 */
 	public void doSavedraft(RunData rundata, Context context)
 	{
-		// retrieve the state from state object
-		AnnouncementActionState state = (AnnouncementActionState)getState( context, rundata, AnnouncementActionState.class );
-
-		String peid = ((JetspeedRunData) rundata).getJs_peid();
-		SessionState sstate= ((JetspeedRunData)rundata).getPortletSessionState(peid);
-
-		// get the channel id information from state object
-		String channelId = state.getChannelId();
-		String subject = "";
-
-		// *** make sure the subject and body won't be empty
-		String from = rundata.getParameters().getString("fromInterface");
-		if (from != null)
-			if (from.equals("revise"))
-			{
-				// read in the subject input from announcements-new.vm
-				subject = rundata.getParameters().getString("subject");
-				// read in the body input
-				String body = rundata.getParameters().getString("body");
-				body = processFormattedTextFromBrowser(sstate, body);
-
-				state.setTempSubject(subject);
-				state.setTempBody(body);
-
-				if (subject.length() == 0)
-				{
-					addAlert(sstate, rb.getString("java.alert.youneed"));//"You need to fill in the subject!");
-				}
-				else if (body.length() == 0)
-				{
-					addAlert(sstate, rb.getString("java.alert.youfill"));//"You need to fill in the body of the announcement!");
-				}
-			}
+		postOrSaveDraft(rundata, context, false);
 		
-		// announce to public?
-		String announceTo = rundata.getParameters().getString("announceTo");
-		state.setTempAnnounceTo(announceTo);
-		if (announceTo.equals("groups"))
-		{
-			String[] groupChoice = rundata.getParameters().getStrings("selectedGroups");
-			if (groupChoice != null)
-			{
-				state.setTempAnnounceToGroups(new ArrayList(Arrays.asList(groupChoice)));
-			}
-			if (groupChoice== null || groupChoice.length == 0)
-			{
-				state.setTempAnnounceToGroups(null);
-				addAlert(sstate,rb.getString("java.alert.youchoosegroup"));
-			}
-		}
-		else
-		{
-			state.setTempAnnounceToGroups(null);
-		}
-
-		// there is any error message caused by empty subject or boy
-		if (sstate.getAttribute(STATE_MESSAGE) != null)
-		{
-			// read the public view setting and save it in session state
-			String publicView = rundata.getParameters().getString("pubview");
-			if (publicView == null) publicView = "false";
-			sstate.setAttribute(SSTATE_PUBLICVIEW_VALUE, publicView);
-			
-			// read the notification options & save it in session state
-			String notification = rundata.getParameters().getString("notify");
-			sstate.setAttribute(SSTATE_NOTI_VALUE, notification);
-
-			state.setIsListVM(false);
-			state.setStatus("stayAtRevise");
-
-			// disable auto-updates while in view mode
-			disableObservers(sstate);
-
-		}
-		else
-		{
-			try
-			{
-				// read in the subject input from announcements-new.vm
-				subject = rundata.getParameters().getString("subject");
-				// read in the body input
-				String body = rundata.getParameters().getString("body");
-				body = processFormattedTextFromBrowser(sstate, body);
-
-				// if no input, which means coming from revise
-				if ((subject == null) || (body == null))
-				{
-					// get the string value from state object
-					subject = state.getTempSubject();
-					body = state.getTempBody();
-				}
-
-				// read the notification options
-				String notification = rundata.getParameters().getString("notify");
-				
-				// if from the post button of preview page
-				if (notification == null)
-					notification = (String)sstate.getAttribute(AnnouncementAction.SSTATE_NOTI_VALUE);
-
-				int noti = NotificationService.NOTI_OPTIONAL;
-				if ("r".equals(notification))
-				{
-					noti = NotificationService.NOTI_REQUIRED;
-				}
-				else if ("n".equals(notification))
-				{
-					noti = NotificationService.NOTI_NONE;
-				}
-			
-				AnnouncementChannel channel = null;
-				AnnouncementMessageEdit msg = null;
-				if (state.getIsNewAnnouncement())
-				{
-					// get the channel id throught announcement service
-					channel = AnnouncementService.getAnnouncementChannel(channelId);
-					msg = channel.addAnnouncementMessage();
-				}
-				else
-				{
-					if (subject.length() > 0)
-					{
-					// get the message object through service
-					//AnnouncementMessageEdit msg = channel.editAnnouncementMessage( messageId );
-					msg = state.getEdit();
-
-					// get the channel id throught announcement service
-					channel = AnnouncementService.getAnnouncementChannel(this.getChannelIdFromReference(msg.getReference()));
-					}
-				}
-				
-				msg.setBody(body);
-				AnnouncementMessageHeaderEdit header =
-					msg.getAnnouncementHeaderEdit();
-				header.setSubject(subject);
-				header.setDraft(true);
-				header.replaceAttachments(state.getAttachments());
-
-				// announce to?
-				try
-				{
-					Site site = SiteService.getSite(channel.getContext());
-					
-					if (announceTo.equals("pubview") || Boolean.valueOf((String) sstate.getAttribute(AnnouncementAction.SSTATE_PUBLICVIEW_VALUE)).booleanValue()) // if from the post in preview, get the setting from sstate object
-					{
-						// any setting of this property indicates pubview
-						msg.getPropertiesEdit().addProperty(ResourceProperties.PROP_PUBVIEW,Boolean.TRUE.toString());
-						header.setAccess(MessageHeader.MessageAccess.CHANNEL);
-						for (Iterator s = header.getGroups().iterator(); s.hasNext(); )
-						{
-							try
-							{
-								header.removeGroup(site.getGroup((String) s.next()));
-							}
-							catch (PermissionException e)
-							{
-								
-							}
-						}
-					}
-					else
-					{
-						// remove the property to indicate no pubview
-						msg.getPropertiesEdit().removeProperty(ResourceProperties.PROP_PUBVIEW);
-					}
-	
-					// announce to site?
-					if (announceTo.equals("site"))
-					{
-						header.setAccess(MessageHeader.MessageAccess.CHANNEL);
-						for (Iterator s = header.getGroups().iterator(); s.hasNext(); )
-						{
-							try
-							{
-								header.removeGroup(site.getGroup((String) s.next()));
-							}
-							catch (PermissionException e)
-							{
-								
-							}
-						}
-					}
-					else if (announceTo.equals("groups"))
-					{
-						String[] groupChoice = rundata.getParameters().getStrings("selectedGroups");
-						
-					
-						// if group has been dropped, remove it from announcement header
-						for (Iterator oGIterator=header.getGroups().iterator(); oGIterator.hasNext();)
-						{
-							Reference oGRef = EntityManager.newReference((String) oGIterator.next());
-							boolean selected = false;
-							for(int k = 0; k<groupChoice.length && !selected; k++)
-							{
-								if (oGRef.getId().equals(groupChoice[k]))
-								{
-									selected = true;
-								}
-							}
-							if (!selected)
-							{
-								try
-								{
-									header.removeGroup(site.getGroup(oGRef.getId()));
-								}
-								catch (Exception ignore)
-								{
-									if (Log.getLogger("chef").isDebugEnabled())
-										Log.debug("chef", this +"doPost(): cannot remove group " + oGRef.getId());
-								}
-							}
-						}
-						
-						// add group to announcement header
-						if (groupChoice != null )
-						{
-							header.setAccess(MessageHeader.MessageAccess.GROUPED);
-							for(int k = 0; k<groupChoice.length; k++)
-							{
-								try
-								{
-									header.addGroup(site.getGroup(groupChoice[k]));
-								}
-								catch (Exception eIgnore)
-								{
-									if (Log.getLogger("chef").isDebugEnabled())
-										Log.debug("chef", this +"doPost(): cannot add group " + groupChoice[k]);
-								}
-							}
-						}
-					}
-				}
-				catch (Exception ignore)
-				{
-					// No site available.
-				}
-
-				// update time
-				header.setDate(TimeService.newTime());
-				
-				channel.commitMessage(msg, noti);
-				
-				if (!state.getIsNewAnnouncement())
-				{
-					state.setEdit(null);
-				}
-			}
-			catch (IdUnusedException e)
-			{
-				if (Log.getLogger("chef").isDebugEnabled())
-					Log.debug("chef", this +"doSavedraft()" + e);
-			}
-			catch (PermissionException e)
-			{
-				addAlert(sstate, rb.getString("java.alert.youcreate")//"you don't have permissions to create this announcement -"
-						+ subject);
-				if (Log.getLogger("chef").isDebugEnabled())
-					Log.debug("chef", this +"doSavedraft()" + e);
-			} // try-catch
-
-			state.setStatus(CANCEL_STATUS);
-			state.setAttachments(null);
-			state.setIsListVM(true);
-			state.setTempAnnounceTo(null);
-			state.setTempAnnounceToGroups(null);
-			
-			// make sure auto-updates are enabled
-			enableObservers(sstate);
-		}
 	} //doSavedraft
 
 	// ********* starting for sorting *********
@@ -3467,7 +3228,31 @@ extends PagedResourceActionII
 			Log.debug("chef", "AnnouncementAction.doSortbyfrom get Called");
 
 		setupSort(rundata, context, SORT_FOR);
-	} // doSortbyfrom
+	} // doSortbyfor
+	
+	/**
+	 * Do sort by group title
+	 */
+	public void doSortbygrouptitle(RunData rundata, Context context)
+	{
+		if (Log.getLogger("chef").isDebugEnabled())
+			Log.debug("chef", "AnnouncementAction.doSortbyfrom get Called");
+
+		setupSort(rundata, context, SORT_GROUPTITLE);
+	} // doSortbygrouptitle
+	
+	/**
+	 * Do sort by group description
+	 */
+	public void doSortbygroupdescription(RunData rundata, Context context)
+	{
+		if (Log.getLogger("chef").isDebugEnabled())
+			Log.debug("chef", "AnnouncementAction.doSortbyfrom get Called");
+
+		setupSort(rundata, context, SORT_GROUPDESCRIPTION);
+	} // doSortbygroupdescription
+	
+	
 	
 	private class AnnouncementComparator implements Comparator
 	{
@@ -3575,13 +3360,29 @@ extends PagedResourceActionII
 									result = factor1.compareToIgnoreCase(factor2);
 								}
 								else
-									if (m_criteria.equals(SORT_GROUP))
+									if (m_criteria.equals(SORT_GROUPTITLE))
 									{
 										// sorted by the group title
 										String factor1 = ((Group) o1).getTitle();
 										String factor2 = ((Group) o2).getTitle();
 										result = factor1.compareToIgnoreCase(factor2);
 									}
+									else
+										if (m_criteria.equals(SORT_GROUPDESCRIPTION))
+										{
+											// sorted by the group title
+											String factor1 = ((Group) o1).getDescription();
+											String factor2 = ((Group) o2).getDescription();
+											if (factor1 == null)
+											{
+												factor1 = "";
+											}
+											if (factor2 == null)
+											{
+												factor2 = "";
+											}
+											result = factor1.compareToIgnoreCase(factor2);
+										}
 
 			// sort ascending or descending
 			if (!m_asc)
