@@ -90,7 +90,7 @@ implements org.osid.repository.RecordStructure
     {
         try
         {
-            this.id = Managers.getInstance().getIdManager().getId(this.idString);
+            this.id = Managers.getIdManager().getId(this.idString);
         }
         catch (Throwable t)
         {

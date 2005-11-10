@@ -123,7 +123,7 @@ implements org.osid.repository.RepositoryManager
                 this.context,
                 new java.util.Properties());
 			
-			Managers.getInstance().setIdManager(this.idManager);
+			Managers.setIdManager(this.idManager);
 
             // load repositories from configuration
             int repositoryNum = 0;

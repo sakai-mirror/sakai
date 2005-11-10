@@ -29,7 +29,7 @@ package org.sakaiproject.component.osid.repository.srw;
 public class Asset
 implements org.osid.repository.Asset
 {
-    private org.osid.id.IdManager idManager = Managers.getInstance().getIdManager();
+    private org.osid.id.IdManager idManager = Managers.getIdManager();
     private org.osid.logging.WritableLog log = null;
     private org.osid.shared.Type assetType = new Type("mit.edu","asset","library_content");
     private org.osid.shared.Type recordStructureType = new Type("mit.edu","recordStructure","library_content");

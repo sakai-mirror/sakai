@@ -77,7 +77,7 @@ implements org.osid.repository.PartStructure
     {
         try
         {
-            this.COVERAGE_PART_STRUCTURE_ID = Managers.getInstance().getIdManager().getId("e0ff641f201080006d751920168000100");
+            this.COVERAGE_PART_STRUCTURE_ID = Managers.getIdManager().getId("e0ff641f201080006d751920168000100");
         }
         catch (Throwable t)
         {

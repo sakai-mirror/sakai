@@ -77,7 +77,7 @@ implements org.osid.repository.PartStructure
     {
         try
         {
-            this.SUBJECT_PART_STRUCTURE_ID = Managers.getInstance().getIdManager().getId("a8a1541f201080006d751920168000100");
+            this.SUBJECT_PART_STRUCTURE_ID = Managers.getIdManager().getId("a8a1541f201080006d751920168000100");
         }
         catch (Throwable t)
         {
