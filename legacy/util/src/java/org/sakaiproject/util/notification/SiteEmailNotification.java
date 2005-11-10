@@ -22,7 +22,7 @@
 **********************************************************************************/
 
 // package
-package org.sakaiproject.component.legacy.notification;
+package org.sakaiproject.util.notification;
 
 // imports
 import java.util.List;

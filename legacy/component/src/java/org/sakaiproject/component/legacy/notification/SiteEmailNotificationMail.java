@@ -40,6 +40,7 @@ import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.notification.SiteEmailNotification;
 
 /**
 * <p>SiteEmailNotificationMail fills the notification message with details from the email message that triggered

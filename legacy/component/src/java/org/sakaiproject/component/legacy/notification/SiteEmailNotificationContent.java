@@ -25,6 +25,10 @@
 package org.sakaiproject.component.legacy.notification;
 
 // imports
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
@@ -37,10 +41,7 @@ import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import org.sakaiproject.util.notification.SiteEmailNotification;
 
 /**
 * <p>SiteEmailNotificationContent fills the notification message with details from the content change that triggered
