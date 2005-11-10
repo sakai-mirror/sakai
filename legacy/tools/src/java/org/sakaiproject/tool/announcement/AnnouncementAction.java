@@ -581,14 +581,17 @@ extends PagedResourceActionII
 				for (Iterator i= a.getAnnouncementHeader().getGroups().iterator(); i.hasNext();)
 				{
 					Group aGroup = site.getGroup((String) i.next());
-					count++;
-					if (count > 1)
+					if (aGroup != null)
 					{
-						allGroupString = allGroupString.concat(", ").concat(aGroup.getTitle());
-					}
-					else
-					{
-						allGroupString = aGroup.getTitle();
+						count++;
+						if (count > 1)
+						{
+							allGroupString = allGroupString.concat(", ").concat(aGroup.getTitle());
+						}
+						else
+						{
+							allGroupString = aGroup.getTitle();
+						}
 					}
 				}
 			}
