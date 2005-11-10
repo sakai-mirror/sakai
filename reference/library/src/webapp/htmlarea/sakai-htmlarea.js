@@ -233,7 +233,7 @@ function chef_setupformattedtext(textarea_id, width, height, toolbar_num_button_
 	// Register plugins
 	if(showTwinPeaks)
 	{
-		editor.registerPlugin(ResourceSearch);
+		editor.registerPlugin("ResourceSearch");
 	}
 	// chef_registerplugins(editor, document.htmlarea_plugins);
 	// [end twin peaks]
