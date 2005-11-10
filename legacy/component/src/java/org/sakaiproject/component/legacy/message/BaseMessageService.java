@@ -896,6 +896,11 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			unlock(SECURE_READ, channelRef);
 		}
 		
+		// get the channel, no security check
+		MessageChannel c = findChannel(channelRef);
+		if (c == null)
+			return new Vector();
+
 		// null - no drafts, "*", all drafts, <userId> drafts created by user id only
 		String draftsForId = null;
 		if (includeDrafts)
@@ -913,7 +918,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		if ((!m_caching) || (m_channelCache == null) || (m_channelCache.disabled()))
 		{
 			// get messages filtered by date and count and drafts, in descending (latest first) order
-			List rv = m_storage.getMessages(channelRef, afterDate, limitedToLatest, draftsForId, pubViewOnly);
+			List rv = m_storage.getMessages(c, afterDate, limitedToLatest, draftsForId, pubViewOnly);
 		
 			// if ascending, reverse
 			if (ascending)
@@ -925,11 +930,6 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		}
 
 		// use the cache
-
-		// get the channel, no security check
-		MessageChannel c = findChannel(channelRef);
-		if (c == null)
-			return new Vector();
 
 		// get the messages
 		List msgs = ((BaseMessageChannelEdit) c).findFilterMessages(new MessageSelectionFilter(afterDate, draftsForId, pubViewOnly), ascending);
@@ -3579,11 +3579,6 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		public Message getMessage(MessageChannel channel, String messageId);
 
 		/**
-		 * Get a message from a channel (by reference).
-		 */
-		public Message getMessage(String channelRef, String messgeId);
-
-		/**
 		* Get a message from a channel locked for update
 		*/
 		public MessageEdit editMessage(MessageChannel channel, String messageId);
@@ -3627,7 +3622,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		 * @param pubViewOnly if true, include only messages marked pubview, else include any.
 		 * @return A list of Message objects that meet the criteria; may be empty
 		 */
-		public List getMessages(String channelRef, Time afterDate, int limitedToLatest, String draftsForId, boolean pubViewOnly);
+		public List getMessages(MessageChannel channel, Time afterDate, int limitedToLatest, String draftsForId, boolean pubViewOnly);
 
 		/**
 		 * Access a list of channel ids from channels with refs that start with (match) context.

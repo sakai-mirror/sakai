@@ -236,9 +236,6 @@ public class DbMailArchiveService
 		public Message getMessage(MessageChannel channel, String id)
 			{ return (Message) super.getResource(channel, id); }
 
-		public Message getMessage(String channelRef, String id)
-			{ return (Message) super.getResource(channelRef, id); }
-
 		public List getMessages(MessageChannel channel) { return super.getAllResources(channel); }
 
 		public MessageEdit putMessage(MessageChannel channel,String id)
@@ -256,8 +253,8 @@ public class DbMailArchiveService
 		public void removeMessage(MessageChannel channel, MessageEdit edit)
 			{ super.removeResource(channel, edit); }
 
-		public List getMessages(String channelRef, Time afterDate, int limitedToLatest, String draftsForId, boolean pubViewOnly)
-			{ return super.getResources(channelRef, afterDate, limitedToLatest, draftsForId, pubViewOnly); }
+		public List getMessages(MessageChannel channel, Time afterDate, int limitedToLatest, String draftsForId, boolean pubViewOnly)
+			{ return super.getResources(channel, afterDate, limitedToLatest, draftsForId, pubViewOnly); }
 
 	}   // DbStorage
 

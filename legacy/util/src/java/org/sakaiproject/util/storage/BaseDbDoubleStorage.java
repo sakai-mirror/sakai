@@ -706,52 +706,6 @@ public class BaseDbDoubleStorage
 	}   // getResource
 
 	/**
-	* Get the Resource with this id, or null if not found.
-	* @param containerRef The container reference for this resource.
-	* @param id The id.
-	* @return The Resource with this id, or null if not found.
-	*/
-	public Entity getResource(String containerRef, String id)
-	{
-		// TODO: we may need the real container here... -ggolden
-		final Entity container = null;
-
-		// get the user from the db
-		String sql =
-				"select XML from " + m_resourceTableName
-			+	" where (" + m_resourceTableContainerIdField + " = ?"
-			+   " and " + m_resourceTableIdField + " = ?)";
-
-		Object fields[] = new Object[2];
-		fields[0] = containerRef;
-		fields[1] = id;
-
-		List all = m_sql.dbRead(sql, fields,
-			new SqlReader()
-			{
-				public Object readSqlResultRecord(ResultSet result)
-				{
-					try
-					{
-						// create the Resource from the db xml
-						String xml = result.getString(1);
-						Entity entry = readResource(container, xml);
-						return entry;
-					}
-					catch (SQLException ignore) { return null;}
-				}
-			} );
-
-		if (!all.isEmpty())
-		{
-			return (Entity) all.get(0);
-		}
-
-		return null;
-
-	}   // getResource
-
-	/**
 	* Get all Resources.
 	* @param container The container for this resource.
 	* @return The list (Resource) of all Resources.
@@ -1210,7 +1164,7 @@ public class BaseDbDoubleStorage
 	 * @param pubViewOnly if true, include only messages marked pubview, else include any.
 	 * @return A list of Message objects that meet the criteria; may be empty
 	 */
-	public List getResources(String channelRef, Time afterDate, int limitedToLatest, String draftsForId, boolean pubViewOnly)
+	public List getResources(final Entity container, Time afterDate, int limitedToLatest, String draftsForId, boolean pubViewOnly)
 	{
 		// if we are limiting, and are filtering out drafts or doing pubview, and don't have draft/owner/pubview support, filter here after
 		boolean canLimit = true;
@@ -1224,9 +1178,6 @@ public class BaseDbDoubleStorage
 			canLimit = false;
 			filterAfter = true;
 		}
-
-		// TODO: we may need the real container here... -ggolden
-		final Entity container = null;
 
 		StringBuffer buf = new StringBuffer();
 		int numFields = 1;
@@ -1317,7 +1268,7 @@ public class BaseDbDoubleStorage
 
 		// build up the fields
 		Object fields[] = new Object[numFields];
-		fields[0] = channelRef;
+		fields[0] = container.getReference();
 		int pos = 1;
 		if ((m_resourceTableOrderField != null) && (afterDate != null))
 		{
