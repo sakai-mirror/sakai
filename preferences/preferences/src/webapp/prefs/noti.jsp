@@ -8,6 +8,7 @@
 <f:view>
 	<sakai:view_container title="Preferences">
 	<sakai:view_content>
+	
 		<h:form id="options_form">
 
 				
@@ -47,26 +48,26 @@
 				<p class="instruction"><h:outputText value="#{msgs.noti_inst_second}"/></p>
 				<h4><h:outputText value="#{msgs.noti_ann}"/></h4>
 				<h:selectOneRadio value="#{UserPrefsTool.selectedAnnItem}" layout="pageDirection" style="margin:0 2em">
-    			<f:selectItem itemValue="3" itemLabel="Send me each notification separately"/><br />
-    			<f:selectItem itemValue="2" itemLabel="Send me one email per day summarizing all low priority announcements"/><br />
-    			<f:selectItem itemValue="1" itemLabel="Do not send me low priority announcements"/>
+    			<f:selectItem itemValue="3" itemLabel="#{UserPrefsTool.msgNotiAnn3}"/><br />
+    			<f:selectItem itemValue="2" itemLabel="#{UserPrefsTool.msgNotiAnn2}"/><br />
+    			<f:selectItem itemValue="1" itemLabel="#{UserPrefsTool.msgNotiAnn1}"/>
   			</h:selectOneRadio>
   			<h4><h:outputText value="#{msgs.noti_mail}"/></h4>
 				<h:selectOneRadio value="#{UserPrefsTool.selectedMailItem}" layout="pageDirection" style="margin:0 2em">
-    			<f:selectItem itemValue="3" itemLabel="Send me each mail sent to site separately"/><br />
-    			<f:selectItem itemValue="2" itemLabel="Send me one email per day summarizing all emails"/><br />
-    			<f:selectItem itemValue="1" itemLabel="Do not send me emails sent to the site"/>
+    			<f:selectItem itemValue="3" itemLabel="#{UserPrefsTool.msgNotiMail3}"/><br />
+    			<f:selectItem itemValue="2" itemLabel="#{UserPrefsTool.msgNotiMail2}"/><br />
+    			<f:selectItem itemValue="1" itemLabel="#{UserPrefsTool.msgNotiMail1}"/>
   			</h:selectOneRadio>
   			<h4><h:outputText value="#{msgs.noti_rsrc}"/></h4>
 				<h:selectOneRadio value="#{UserPrefsTool.selectedRsrcItem}" layout="pageDirection" style="margin:0 2em">
-    			<f:selectItem itemValue="3" itemLabel="Send me each resource separately"/><br />
-    			<f:selectItem itemValue="2" itemLabel="Send me one email per day summarizing all low priority resource notifications"/><br />
-    			<f:selectItem itemValue="1" itemLabel="Do not send me low priority resource notifications"/>
+    			<f:selectItem itemValue="3" itemLabel="#{UserPrefsTool.msgNotiRsrc3}"/><br />
+    			<f:selectItem itemValue="2" itemLabel="#{UserPrefsTool.msgNotiRsrc2}"/><br />
+    			<f:selectItem itemValue="1" itemLabel="#{UserPrefsTool.msgNotiRsrc1}"/>
   			</h:selectOneRadio>
   			<h4><h:outputText value="#{msgs.noti_syll}"/></h4>
 				<h:selectOneRadio value="#{UserPrefsTool.selectedSyllItem}" layout="pageDirection" style="margin:0 2em">
-    			<f:selectItem itemValue="2" itemLabel="Send me each notification separately"/><br />
-    			<f:selectItem itemValue="1" itemLabel="Do not send me low priority Syllabus items"/>
+    			<f:selectItem itemValue="2" itemLabel="#{UserPrefsTool.msgNotiSyll2}"/><br />
+    			<f:selectItem itemValue="1" itemLabel="#{UserPrefsTool.msgNotiSyll1}"/>
   			</h:selectOneRadio>  			
   				
 				<p class="act">

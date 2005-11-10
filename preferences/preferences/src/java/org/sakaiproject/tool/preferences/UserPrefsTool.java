@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.Vector;
+import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -181,6 +182,9 @@ public class UserPrefsTool
   /** Our log (commons). */
   private static final Log LOG = LogFactory.getLog(UserPrefsTool.class);
 
+  /*** Resource bundle messages */
+  ResourceBundle msgs = ResourceBundle.getBundle("org.sakaiproject.tool.preferences.bundle.Messages");
+	
   /** The PreferencesEdit being worked on. */
   protected PreferencesEdit m_edit = null;
 
@@ -212,6 +216,56 @@ public class UserPrefsTool
   private String userId = "";
   
   //////////////////////////////////		PROPERTY GETTER AND SETTER		////////////////////////////////////////////	
+  /**
+   * @return Returns the ResourceBundle value.
+	* 
+	* Note: workaround for <f:selectItem> element, which doesn't like using the <f:loadBundle> map variable 
+   */
+  public String getMsgNotiAnn1()
+  {
+     return msgs.getString( "noti_ann_1" );
+  }
+  public String getMsgNotiAnn2()
+  {
+     return msgs.getString( "noti_ann_2" );
+  }
+  public String getMsgNotiAnn3()
+  {
+     return msgs.getString( "noti_ann_3" );
+  }
+  public String getMsgNotiMail1()
+  {
+     return msgs.getString( "noti_mail_1" );
+  }
+  public String getMsgNotiMail2()
+  {
+     return msgs.getString( "noti_mail_2" );
+  }
+  public String getMsgNotiMail3()
+  {
+     return msgs.getString( "noti_mail_3" );
+  }
+  public String getMsgNotiRsrc1()
+  {
+     return msgs.getString( "noti_rsrc_1" );
+  }
+  public String getMsgNotiRsrc2()
+  {
+     return msgs.getString( "noti_rsrc_2" );
+  }
+  public String getMsgNotiRsrc3()
+  {
+     return msgs.getString( "noti_rsrc_3" );
+  }
+  public String getMsgNotiSyll1()
+  {
+     return msgs.getString( "noti_syll_1" );
+  }
+  public String getMsgNotiSyll2()
+  {
+     return msgs.getString( "noti_syll_2" );
+  }
+
   /**
    * @return Returns the prefExcludeItems.
    */
