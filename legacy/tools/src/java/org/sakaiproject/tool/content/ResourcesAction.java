@@ -4253,6 +4253,12 @@ public class ResourcesAction
 
 			EditItem item = new EditItem(id, itemName, itemType);
 			
+			String encoding = data.getRequest().getCharacterEncoding();
+			if(encoding != null)
+			{
+				item.setEncoding(encoding);
+			}
+			
 			if(content != null)
 			{
 				item.setContent(content);
@@ -9513,6 +9519,8 @@ public class ResourcesAction
 		protected boolean m_pubviewset;
 		protected String m_filename;
 		protected byte[] m_content;
+		protected String m_encoding;
+
 		protected String m_mimetype;
 		protected String m_description;
 		protected Map m_metadata;
@@ -9553,6 +9561,7 @@ public class ResourcesAction
 			m_metadataGroupsShowing = new HashSet();
 			m_mimetype = type;
 			m_content = null;
+			m_encoding = "UTF-8";
 			m_notification = NotificationService.NOTI_NONE;
 			m_hasQuota = false;
 			m_canSetQuota = false;
@@ -9563,6 +9572,16 @@ public class ResourcesAction
 			m_properties = new Vector();
 			m_isBlank = true;
 			
+		}
+		
+		public void setEncoding(String encoding)
+		{
+			m_encoding = encoding;
+		}
+		
+		public String getEncoding()
+		{
+			return m_encoding;
 		}
 		
 		/**
@@ -9865,7 +9884,7 @@ public class ResourcesAction
 			{
 				try
 				{
-					rv = new String( m_content, "UTF-8" );
+					rv = new String( m_content, m_encoding );
 				}
 				catch(UnsupportedEncodingException e)
 				{
@@ -9886,7 +9905,7 @@ public class ResourcesAction
 		public void setContent(String content) {
 			try
 			{
-				m_content = content.getBytes("UTF-8");
+				m_content = content.getBytes(m_encoding);
 			}
 			catch(UnsupportedEncodingException e)
 			{
