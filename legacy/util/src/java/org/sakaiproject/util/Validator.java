@@ -43,6 +43,18 @@ public class Validator
 	/** These characters are not allowed in a resource id */
 	protected static final String INVALID_CHARS_IN_RESOURCE_ID = "^/\\{}[]()@%*?#&=\n\r\t\b\f";
 	
+	protected static final String MAP_TO_A = "‰ŠˆŒ€‡‡";
+	protected static final String MAP_TO_B = "§§";
+	protected static final String MAP_TO_C = "‚¢¢";
+	protected static final String MAP_TO_E = "‘ƒ¾®®";
+	protected static final String MAP_TO_I = "•”“’’";
+	protected static final String MAP_TO_L = "££";
+	protected static final String MAP_TO_N = "–„„";
+	protected static final String MAP_TO_O = "™š˜…——";
+	protected static final String MAP_TO_U = "Ÿ†œœ";
+	protected static final String MAP_TO_Y = "Ø´??";
+	protected static final String MAP_TO_X = "???¤©»¨±?«µ¦À?";
+
 	/** These characters are allowed; but if escapeResourceName() is called, they are escaped (actually, removed) 
 	 * Certain characters cause problems with filenames in certain OSes - so get rid of these characters in filenames
 	 * 
@@ -212,21 +224,68 @@ public class Validator
 			for (int i = 0; i < id.length(); i++)
 			{
 				char c = id.charAt(i);
-				while(c > '\176')
+				if(MAP_TO_A.indexOf(c) >= 0)
 				{
-					c = (char) (c - '\117');
+					buf.append('a');
 				}
-				while(c < '\040')
+				else if(MAP_TO_E.indexOf(c) >= 0)
 				{
-					c = (char) (c + '\040');
+					buf.append('e');
 				}
-				if (INVALID_CHARS_IN_RESOURCE_ID.indexOf(c) >= 0 || ESCAPE_CHARS_IN_RESOURCE_ID.indexOf(c) >= 0)
+				else if(MAP_TO_I.indexOf(c) >= 0)
 				{
-					buf.append('_');
+					buf.append('i');
+				}
+				else if(MAP_TO_O.indexOf(c) >= 0)
+				{
+					buf.append('o');
+				}
+				else if(MAP_TO_U.indexOf(c) >= 0)
+				{
+					buf.append('u');
+				}
+				else if(MAP_TO_Y.indexOf(c) >= 0)
+				{
+					buf.append('y');
+				}
+				else if(MAP_TO_N.indexOf(c) >= 0)
+				{
+					buf.append('n');
+				}
+				else if(MAP_TO_B.indexOf(c) >= 0)
+				{
+					buf.append('b');
+				}
+				else if(MAP_TO_C.indexOf(c) >= 0)
+				{
+					buf.append('c');
+				}
+				else if(MAP_TO_L.indexOf(c) >= 0)
+				{
+					buf.append('l');
+				}
+				else if(MAP_TO_X.indexOf(c) >= 0)
+				{
+					buf.append('x');
 				}
 				else
 				{
-					buf.append(c);
+					while(c > '\176')
+					{
+						c = (char) (c - '\117');
+					}
+					while(c < '\040')
+					{
+						c = (char) (c + '\040');
+					}
+					if (INVALID_CHARS_IN_RESOURCE_ID.indexOf(c) >= 0 || ESCAPE_CHARS_IN_RESOURCE_ID.indexOf(c) >= 0)
+					{
+						buf.append('_');
+					}
+					else
+					{
+						buf.append(c);
+					}
 				}
 			}
 
