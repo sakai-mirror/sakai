@@ -2341,31 +2341,19 @@ extends PagedResourceActionII
 						state.removeAttribute(GRADE_SUBMISSION_ALLOW_RESUBMIT);
 					}
 				}
-		
-				// store the feedback from instructor
-				String feedbackUserString = UserDirectoryService.getCurrentUser().getDisplayName() + " " + TimeService.newTime().toStringLocalFull() + ":";
 				
 				// the instructor comment
 				String feedbackCommentString = StringUtil.trimToNull((String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_COMMENT));
 				if (feedbackCommentString != null)
 				{
-					sEdit.setFeedbackComment (feedbackUserString + "\n" + feedbackCommentString);
+					sEdit.setFeedbackComment (feedbackCommentString);
 				}
 				
 				// the instructor inline feedback
 				String feedbackTextString = (String) state.getAttribute (GRADE_SUBMISSION_FEEDBACK_TEXT);
 				if (feedbackTextString != null)
 				{
-					StringBuffer text = new StringBuffer();
-					int index = feedbackTextString.indexOf(COMMENT_OPEN);
-					while (index != -1)
-					{
-						text.append(feedbackTextString.substring(0, index)).append(COMMENT_OPEN).append(feedbackUserString);
-						feedbackTextString = feedbackTextString.substring(index + COMMENT_OPEN.length());
-						index = feedbackTextString.indexOf(COMMENT_OPEN);
-					}
-					text.append(feedbackTextString);
-					sEdit.setFeedbackText (text.toString());
+					sEdit.setFeedbackText (feedbackTextString);
 				}
 				
 				List v = (List) state.getAttribute(GRADE_SUBMISSION_FEEDBACK_ATTACHMENT);
@@ -6942,12 +6930,12 @@ extends PagedResourceActionII
 		
 		while ((pos = buf.indexOf("{{")) != -1)
 		{
-			buf.replace(pos, pos+"{{".length(), "<span class=\"alert comment\">(<span class=\"skip\">Comments by </span>");
+			buf.replace(pos, pos+"{{".length(), "<span class='highlight'>");
 		}	
 		
 		while ((pos = buf.indexOf("}}")) != -1)
 		{
-			buf.replace(pos, pos+"}}".length(), ")</span>");
+			buf.replace(pos, pos+"}}".length(), "</span>");
 		}
 		
 		return FormattedText.escapeHtmlFormattedText(buf.toString());
