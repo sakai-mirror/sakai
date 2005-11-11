@@ -1798,7 +1798,7 @@ public class ResourcesAction
 		List new_items = new Vector();
 		for(int i = 0; i < CREATE_MAX_ITEMS; i++)
 		{
-			EditItem item = new EditItem(itemType)
+			EditItem item = new EditItem(itemType);
 			if(encoding != null)
 			{
 				item.setEncoding(encoding);
