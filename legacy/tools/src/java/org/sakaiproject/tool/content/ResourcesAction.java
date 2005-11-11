@@ -9863,7 +9863,14 @@ public class ResourcesAction
 			String rv = "";
 			if(m_content != null && m_content.length > 0)
 			{
-				rv = new String( m_content );
+				try
+				{
+					rv = new String( m_content, "UTF-8" );
+				}
+				catch(UnsupportedEncodingException e)
+				{
+					rv = new String( m_content );	
+				}
 			}
 			return rv;
 		}
