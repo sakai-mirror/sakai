@@ -1793,10 +1793,17 @@ public class ResourcesAction
 			itemType = TYPE_UPLOAD;
 		}
 		
+		String encoding = data.getRequest().getCharacterEncoding();
+		
 		List new_items = new Vector();
 		for(int i = 0; i < CREATE_MAX_ITEMS; i++)
 		{
-			new_items.add(new EditItem(itemType));
+			EditItem item = new EditItem(itemType)
+			if(encoding != null)
+			{
+				item.setEncoding(encoding);
+			}
+			new_items.add(item);
 		}
 		state.setAttribute(STATE_CREATE_ITEMS, new_items);
 		state.setAttribute(STATE_CREATE_NUMBER, new Integer(1));
@@ -9574,11 +9581,21 @@ public class ResourcesAction
 			
 		}
 		
+		/**
+		 * Set the character encoding type that will be used when converting content body between strings and byte arrays.
+		 * Default is "UTF-8".
+		 * @param encoding A valid name for a character set encoding scheme (@see java.lang.Charset)
+		 */
 		public void setEncoding(String encoding)
 		{
 			m_encoding = encoding;
 		}
 		
+		/**
+		 * Get the character encoding type that is used when converting content body between strings and byte arrays.
+		 * Default is "UTF-8".
+		 * @return The name of the character set encoding scheme (@see java.lang.Charset)
+		 */
 		public String getEncoding()
 		{
 			return m_encoding;
