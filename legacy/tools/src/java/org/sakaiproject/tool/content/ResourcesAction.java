@@ -9545,6 +9545,7 @@ public class ResourcesAction
 		public EditItem(String id, String name, String type) 
 		{
 			super(id, name, type);
+			m_filename = "";
 			m_contentHasChanged = false;
 			m_contentTypeHasChanged = false;
 			m_metadata = new Hashtable();
