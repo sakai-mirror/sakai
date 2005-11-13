@@ -5,226 +5,376 @@
 *
 * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
+*
 * Licensed under the Educational Community License Version 1.0 (the "License");
 * By obtaining, using and/or copying this Original Work, you agree that you have read,
 * understand, and will comply with the terms and conditions of the Educational Community License.
 * You may obtain a copy of the License at:
-* 
+*
 *      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
+*
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
 * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
 * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
 package org.sakaiproject.tool.OSIDRepository;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import org.sakaiproject.tool.net.*;
+import org.sakaiproject.tool.search.*;
+import org.sakaiproject.tool.util.*;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.*;
+import java.lang.*;
+import java.util.*;
 
-import java.util.Set;
-import java.util.Iterator;
-
-import org.sakaiproject.api.kernel.session.Session;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import javax.net.ssl.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
 import org.w3c.dom.html.*;
+import org.xml.sax.*;
 
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-/**
- * A servlet to illustrate use of the RepositoryManager interface.
- * @author Massachusetts Institute of Technology
- * @version $Id: OSIDRepositortyTool.java 632 2005-07-14 21:22:50Z jeffkahn@mit.edu $
- *
+/*
+ * public class Search extends ComponentServlet {
  */
 public class OSIDRepositoryTool extends HttpServlet {
-	
-	// have a place to store Repositories for later use in a search
-	java.util.Vector _repositoryVector = new java.util.Vector();
-	
-	/**
-	 * Access the Servlet's information display.
-	 *
-	 * @return servlet information.
-	 */
-	public String getServletInfo()
-	{
-		return "Sakai Portal1";
-	}
+  /**
+   * Servlet context
+   */
+  protected ServletContext    _context;
 
 	/**
-	 * Initialize the servlet.
-	 *
-	 * @param config
-	 *        The servlet config.
-	 * @throws ServletException
-	 */
-	public void init(ServletConfig config) throws ServletException
-	{
-		super.init(config);
+   * Cleanup
+   */
+  public void destroy() {
+    super.destroy();
+  }
 
-	}
+  /**
+   * Initialize
+   */
+  public void init(ServletConfig servletConfig) throws ServletException {
+		String resource;
 
-	/**
-	 * Shutdown the servlet.
-	 */
-	public void destroy()
-	{
-		super.destroy();
-	}
+    super.init(servletConfig);
+    _context = servletConfig.getServletContext();
 
-	private void testStart(PrintWriter out,String theString)
-	{
-		out.println("<tr><td>&nbsp;</td></tr>\r\n");
-		out.println("<tr><td>Starting Test "+theString+"</td></tr>\r\n");
-	}	
-	private void testStep(PrintWriter out,String theString)
-	{
-		out.println("<tr><td>"+theString+"</td></tr>\r\n");
-	}
-	private void testPass(PrintWriter out,String theString)
-	{
-		out.println("<tr><td><font color=green>Passed: "+theString+"</font></td></tr>\r\n");
-	}
-	private void testFail(PrintWriter out,String theString)
-	{
-		out.println("<tr><td><font color=red>Failed: "+theString+"</font></td></tr>\r\n");
-	}
-
-	/**
-	 * Respond to navigation / access requests.
-	 *
-	 * @param req
-	 *        The servlet request.
-	 * @param res
-	 *        The servlet response.
-	 * @throws ServletException.
-	 * @throws IOException.
-	 *
-	 * Get an instance of the Sakai OSID RepositoryManager using the Component Manager.
-	 * Given the manager, get a list of registered repositories.
-	 */
-	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		// start the response
-		res.setContentType("text/html; charset=UTF-8");
-		PrintWriter out = res.getWriter();
-
-		out.println("<html>");
-		out.println("<body>");
-		out.println("<table>");
-		
 		try {
-			ComponentManager.getInstance();		
-			Object o = ComponentManager.get("org.osid.repository.RepositoryManager");
-			if (o != null) {
-				// initialize the repository manager and get its repositories
-				org.osid.repository.RepositoryManager repositoryManager = (org.osid.repository.RepositoryManager)o;
-				repositoryManager.assignOsidContext(new org.osid.OsidContext());
-				repositoryManager.assignConfiguration(new java.util.Properties());
-				org.osid.repository.RepositoryIterator repositoryIterator = repositoryManager.getRepositories();
-				out.println("<tr><td>List of OSID Repositories</td></tr>");
-				while (repositoryIterator.hasNextRepository()) {
-					// display each repository name in a line and store away the repository for a search
-					org.osid.repository.Repository nextRepository = repositoryIterator.nextRepository();
-					out.println("<tr><td>" + nextRepository.getDisplayName() + "</td></tr>");
-					_repositoryVector.addElement(nextRepository);
-				}
-			}
-		} catch(Throwable t) {
-			testFail(out,"RepositoryManager Exception "+t.toString());
-			// TODO: throw(t);
+	    /*
+	     * Get our search source configuration (mandatory)
+	     */
+	    resource = "WEB-INF/" + getInitParameter("source-configuration-file");
+	    SearchSource.populate(_context.getResourceAsStream(resource));
+	    /*
+	     * Configure [optional] security support
+	     */
+	    resource = "WEB-INF/" + getInitParameter("security-configuration-file");
+	    SecuritySetup.initialize(_context.getResourceAsStream(resource));
+
+	  } catch (Exception exception) {
+	  	throw new ServletException(exception.toString());
+	  }
+  }
+
+  /**
+   * Service a GET request
+   * @param request Standard HTTP request object
+   * @param response Standard HTTP response
+   */
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
+                                       throws ServletException, IOException {
+    doPost(request, response);
+  }
+
+  /**
+   * Service a POST request
+   * @param request Standard HTTP request object
+   * @param response Standard HTTP response
+   */
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
+                                        throws ServletException, IOException 
+  {
+
+//    String				cssFile			= request.getParameter("cssFile");
+	String				cssFile			= request.getParameter("style.css");
+	String				db				= request.getParameter("database");
+    String				initialQuery	= request.getParameter("initialQuery");
+    HTMLDocument		document		= null;
+    QueryBase			query			= null;
+    SearchResultBase	searchResult	= null;
+
+	SessionContext		sessionContext;
+    PrintWriter			writer;
+
+	try 
+	{
+		System.out.println("in OSIDRepositoryTool");
+		if (cssFile == null) 
+		{
+//			throw new IllegalArgumentException("Missing styesheet");
 		}
-				
-		out.println("</table>");
-		out.println("<form name\"search\" method=\"post\">");
-		out.println("Criteria: <input type=\"text\" name=\"criteria\" id=\"criteria\">");
-		out.println("<input type=\"submit\">");
-		out.println("</form>");
-		out.println("</body>");
-		out.println("</html>");		
-	}
-
-
-	/**
-	 * Respond to data posting requests.
-	 *
-	 * @param req
-	 *        The servlet request.
-	 * @param res
-	 *        The servlet response.
-	 * @throws ServletException.
-	 * @throws IOException.
-	 */
-	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		// start the response
-		res.setContentType("text/html; charset=UTF-8");
-		PrintWriter out = res.getWriter();
-
-		out.println("<table>");
-		
-		try {
-			// perform a search if a criteria was passed
-			//				String criteria = req.getParameter("criteria");
-			String criteria = req.getParameter("criteria");
-			org.osid.shared.Type thumbnailType = new Type("mit.edu","partStructure","thumbnail");
-			org.osid.shared.Type urlType = new Type("mit.edu","partStructure","URL");
 			
-			if (criteria != null) {
-				// perform the search - note for now we search them all
-				int size = _repositoryVector.size();
-				for (int i = 0; i < size; i++) {	
-					out.println("<tr><td>Results of searching all repositories for " + criteria + "</td></tr>");
-					org.osid.repository.AssetIterator assetIterator = 
-						((org.osid.repository.Repository)_repositoryVector.elementAt(i)).getAssetsBySearch(criteria,
-																										   new Type("mit.edu","search","title"),
-																										   null);
-					while (assetIterator.hasNextAsset()) {
-						// show the name of the asset that was found
-						org.osid.repository.Asset asset = assetIterator.nextAsset();
-						out.println("<tr><td>" + asset.getDisplayName() + "</td></tr>");
-						
-						// Look for a thumbnail or url part and show any.  We only want one and their might be more than one in
-						// different records.  To minimize what we know about the data source, we don't want to limit which record types we search.
-						boolean foundThumbnail = false;
-						boolean foundURL = false;
-						org.osid.repository.RecordIterator recordIterator = asset.getRecords();
-						while (recordIterator.hasNextRecord()) {
-							org.osid.repository.PartIterator partIterator = recordIterator.nextRecord().getParts();
-							while (partIterator.hasNextPart()) {
-								org.osid.repository.Part part = partIterator.nextPart();
-								org.osid.shared.Type partStructureType = part.getPartStructure().getType();
-								if ( (!foundThumbnail) && (partStructureType.isEqual(thumbnailType)) ) {
-									out.println("<tr><td>Thumbnail is " + part.getValue() + "</td></tr>");
-									foundThumbnail = true;
-								} else if ( (!foundURL) && (partStructureType.isEqual(urlType)) ) {
-									out.println("<tr><td><a href=\"" + part.getValue() + "\">" + part.getValue() + "</a></td></tr>");
-									foundURL = true;
-								}
-							}
+		if (initialQuery != null) 
+		{
+			System.out.println("in OSIDRepositoryTool initial query");
+			/*
+			* Initial request - render the "blank" search page (search form only)
+			*/
+			document = formatInitialQuery(db, cssFile);
+		}
+		else
+		{
+			System.out.println("in OSIDRepositoryTool - not initial query");
+			String				database[]		= request.getParameterValues("database");
+			int numDatabases = database.length;
+			
+			System.out.println("databases " + database);
+
+			if (numDatabases > 1)
+			{
+				// There is more than one selection so we are going to accumulate results					
+				query = null;
+				
+				java.util.Vector itemsVector = new java.util.Vector();
+				
+				for (int i=0; i < numDatabases; i++)
+				{
+					sessionContext 	= SessionContext.getInstance(getHttpSession(request));
+					System.out.println("Searching " + database[i]);
+					query = doQuery(request, sessionContext, database[i]);
+					searchResult = parseResponse(query,database[i]);
+					
+					// capture what is in this searches set of results
+					MatchItem items[] = searchResult.toArray();
+					
+					// add all that came before
+					for (int j=0, size = itemsVector.size(); j < size; j++)
+					{
+						searchResult.addItem( (MatchItem)itemsVector.elementAt(j) );
+					}
+					
+					// keep running total, unless we are on the last search
+					if (i < (numDatabases-1))
+					{
+						for (int j=0; j < items.length; j++)
+						{
+							itemsVector.addElement(items[j]);
 						}
 					}
-				}
+				}				
+				document = formatResultDocument(query, searchResult);
+			}
+			else 
+			{				
+				query = null;
+				sessionContext 	= SessionContext.getInstance(getHttpSession(request));
+				query			= doQuery(request, sessionContext, database[0]);
+				searchResult	= parseResponse(query,database[0]);
+				document 		= formatResultDocument(query, searchResult);
 			}
 		}
-		catch (Throwable t) {
-			testFail(out,"RepositoryManager Exception "+t.toString());
-			// TODO: throw(t);
-		}
-		
-		out.println("</table>");
-		out.println("</body>");
-		out.println("</html>");
+    } 
+	catch (Exception exception) 
+	{
+    	document = formatErrorMessage(exception.getMessage(), cssFile, db);
+    }
+		/*
+		 * In every case, render the result document back to the browser
+		 */
+    response.setContentType("text/html; charset=" + DomUtils.ENCODING);
+    writer = response.getWriter();
+
+    try {
+      DomUtils.serializeHtml(document, writer);
+
+    } catch (DomException exception) {
+      throw new ServletException(exception.toString());
+
+    } finally {
+      try { writer.flush(); } catch (Exception ignore) { }
+      try { writer.close(); } catch (Exception ignore) { }
+    }
+  }
+
+	/**
+	 * Get our session context object
+	 * @return HttpSession object
+	 */
+  private HttpSession getHttpSession(HttpServletRequest request) {
+  	HttpSession session;
+
+		session = request.getSession(true);
+		System.out.println("HTTP SESSION = " + session);
+		return session;
 	}
 
+  /**
+   * Execute the query for a "standard" search operation
+   * @param request The servlet request block for this transaction
+   * @param sessionContext Session context for this user
+   * @param database Database name
+   */
+  private QueryBase doQuery(HttpServletRequest 	request,
+  													SessionContext 			sessionContext,
+  													String 							database) throws ServletException {
+  	QueryBase	query;
+
+		query = selectQueryHandler(sessionContext, database);
+		query.parseRequest(HttpTransactionUtils.getAttributesAsMap(request));
+    query.doQuery();
+
+    return query;
+  }
+
+  /**
+   * Parse the search engine response
+   * @param query Query handler
+   */
+  private SearchResultBase parseResponse(QueryBase query, String database)
+                                         throws ServletException {
+
+    SearchResultBase searchResult;
+
+    searchResult = selectSearchResultHandler(database);
+
+    searchResult.initialize(query);
+    searchResult.doParse();
+
+    return searchResult;
+  }
+
+  /**
+   * Generate the result HTML page(s)
+   * @param query Query handler
+   * @param searchResult Encapsulated search results
+   */
+  private HTMLDocument formatResultDocument(QueryBase query, SearchResultBase searchResult)
+                                            throws ServletException {
+
+    ResultPageBase result;
+
+    result = selectResultPageHandler(query.getRequestParameter("database"));
+
+    result.initialize(query, searchResult);
+    result.doResultPageHeader();
+    result.doResultPageBody();
+    result.doResultPageFooter();
+
+    return result.getRenderedResponseDocument();
+  }
+
+  /**
+   * Generate the initial search form.  This is the standard, simple
+   * form with no ancillary result data displayed.
+   * @param database Page type
+   * @param cssFile The stylesheet to use for this page
+   */
+  private HTMLDocument formatInitialQuery(String database, String cssFile)
+  																			  throws ServletException {
+    String					db;
+    ResultPageBase  result;
+    Element					body;
+
+	db = database;
+	if (StringUtils.isNull(database)) {
+    	db	= SearchSource.getDefaultSourceName();
+    }
+
+    result = selectResultPageHandler(db);
+
+	try{
+		result.initialize(db, cssFile);
+		result.doResultPageHeader();
+		body = result.doInitialQueryBody();
+		result.doSearchForm(body);
+		result.doResultPageFooter();
+	} catch (Throwable t) {
+		t.printStackTrace();
+	}
+
+    return result.getRenderedResponseDocument();
+  }
+
+  /**
+   * Generate an error page
+   * @param text The error text
+   * @param cssFile The stylesheet to use for this page
+   * @param database Page type
+   */
+  private HTMLDocument formatErrorMessage(String text,
+                                   				String cssFile,
+                                   				String database) throws ServletException {
+
+    ResultPageBase  result = new ResultPageBase();
+
+	  result.initialize(database, cssFile);
+    result.doResultPageHeader();
+    result.doResultPageErrorBody(text);
+    result.doResultPageFooter();
+
+    return result.getRenderedResponseDocument();
+  }
+
+  /**
+   * Select a query handler for the requested database
+   * @param sessionContext Session context
+   * @param name Database name (eg ERIC)
+   * @return Query handler
+   */
+  private QueryBase selectQueryHandler(SessionContext sessionContext,
+  																		 String 				name) {
+    SearchSource	source 	= SearchSource.getSourceByName(name);
+		QueryBase			handler;
+
+		try {
+			handler = source.getQueryHandler();
+		} catch (Exception exception) {
+			throw new SearchException(exception.toString());
+		}
+    /*
+     * Initialize and return the query handler
+     */
+    handler.initialize(sessionContext);
+    return handler;
+  }
+
+  /**
+   * Select a search result handler for this source
+   * @param name Source name/form type
+   * @return Search result handler
+   */
+  private SearchResultBase selectSearchResultHandler(String name) {
+    SearchSource			source = SearchSource.getSourceByName(name);
+		SearchResultBase	handler;
+
+		try {
+			handler = source.getSearchResultHandler();
+		} catch (Exception exception) {
+			throw new SearchException(exception.toString());
+		}
+		return handler;
+  }
+
+	/**
+   * Select a result page generator for the requested search engine
+   * @param name Database name (eg ERIC)
+   * @return Result handler
+   */
+  private ResultPageBase selectResultPageHandler(String name) {
+    SearchSource		source = SearchSource.getSourceByName(name);
+		ResultPageBase	handler;
+
+		try {
+			handler = source.getResultPageHandler();
+		} catch (Exception exception) {
+			throw new SearchException(exception.toString());
+		}
+		return handler;
+  }
 }

@@ -28,7 +28,7 @@ package org.sakaiproject.component.osid.registry;
  * </p>
  * 
  * @author Massachusetts Institute of Technology
- * @version $Id: PresenceTool.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
+ * @version $Id: PresenceTool.java 632 2005-07-14 21:22:50Z jeffkahn@mit.edu $
  */
 public class RegistryManager
 implements edu.mit.osid.registry.RegistryManager
@@ -265,8 +265,8 @@ implements edu.mit.osid.registry.RegistryManager
 							   publisher,
 							   registrationDate,
 							   rights));
-System.out.println("Element Added...");
-			} // for
+				//System.out.println("Element Added...");
+			}
 		} catch (Throwable t) {
 			log(t);
 		}

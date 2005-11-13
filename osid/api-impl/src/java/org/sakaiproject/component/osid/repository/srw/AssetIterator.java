@@ -285,6 +285,7 @@ implements org.osid.repository.AssetIterator
 		}
 		catch (Throwable t)
 		{
+			t.printStackTrace();
 			if (log != null)
 			{
 				try

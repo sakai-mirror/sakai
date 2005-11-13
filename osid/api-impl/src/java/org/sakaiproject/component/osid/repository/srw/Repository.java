@@ -330,7 +330,7 @@ implements org.osid.repository.Repository
                         }
                     }
                     catch (Throwable t) {}
-//                    System.out.println("xml " + xml);
+                    //System.out.println("xml " + xml);
 
 					try
 					{
