@@ -1149,9 +1149,9 @@ public class ThreadedDiscussionIIAction
                         if (mHeader.getDraft())
                         {
                             // a draft message
-                            context.put("draftCategory", state.getAttribute(DRAFT_MESSAGE_CATEGORY));
-                            context.put("draftBody", state.getAttribute(DRAFT_MESSAGE_BODY));
-                            context.put("draftSubject", state.getAttribute(DRAFT_MESSAGE_SUBJECT));
+                            context.put("draftCategory", state.getAttribute(DRAFT_MESSAGE_CATEGORY)!=null?state.getAttribute(DRAFT_MESSAGE_CATEGORY):mHeader.getCategory());
+                            context.put("draftBody", state.getAttribute(DRAFT_MESSAGE_BODY)!=null?state.getAttribute(DRAFT_MESSAGE_BODY):m.getBody());
+                            context.put("draftSubject", state.getAttribute(DRAFT_MESSAGE_SUBJECT)!=null?state.getAttribute(DRAFT_MESSAGE_SUBJECT):mHeader.getSubject());
                             if (m.getReplyToDepth() == 0)
                             {
                                 String style = (String) state.getAttribute(DRAFT_MESSAGE_REPLY_STYLE);
@@ -2046,7 +2046,7 @@ public class ThreadedDiscussionIIAction
 						String category = originalMessage.getDiscussionHeader().getCategory();
 						Vector v = (Vector) ((Hashtable) state.getAttribute(STATE_CATEGORIES_SHOW_LIST)).get(category);
 						int index = v.indexOf (originalMessage.getId());
-						Iterator l = channel.getThread(originalMessage);
+						Iterator l = originalMessage.getReplies();
 	
 						// insert the response message
 						DiscussionMessage addedMessage = channel.addDiscussionMessage (category, subject, draft, replyToId, (List) state.getAttribute(ATTACHMENTS), body);
@@ -2070,13 +2070,23 @@ public class ThreadedDiscussionIIAction
 							{
 								// if the new message is not a draft message, add to the bottom of non-drafts
 								int finalIndexOfShownThread = index;
+								int finalDraftIndex = 0;
 								while (l.hasNext ())
 								{
-									int newIndex = v.indexOf (((DiscussionMessage) l.next ()).getId());
-									if (newIndex!=-1)
+									DiscussionMessage next = (DiscussionMessage) l.next ();
+									if (!next.getHeader().getDraft())
 									{
-										finalIndexOfShownThread = newIndex;
+										finalIndexOfShownThread = v.indexOf (next.getId());
 									}
+									else
+									{
+										finalDraftIndex = v.indexOf (next.getId());
+									}
+								}
+								if (finalIndexOfShownThread == index)
+								{
+									// if there is no post yet
+									finalIndexOfShownThread = finalDraftIndex;
 								}
 								v.add(finalIndexOfShownThread+1, addedMessage.getId());
 								setCategoryShowList(state, category, v);
@@ -2179,7 +2189,7 @@ public class ThreadedDiscussionIIAction
 						String category = originalMessage.getDiscussionHeader().getCategory();
 						Vector v = (Vector) ((Hashtable) state.getAttribute(STATE_CATEGORIES_SHOW_LIST)).get(category);
 						int index = v.indexOf (originalMessage.getId());
-						Iterator l = channel.getThread(originalMessage);
+						Iterator l = originalMessage.getReplies();
 	
 						// insert the response message
 						DiscussionMessage addedMessage = channel.addDiscussionMessage (category, subject, draft, replyToId, (List) state.getAttribute(ATTACHMENTS), body);
@@ -2202,20 +2212,24 @@ public class ThreadedDiscussionIIAction
 								// the replied to message has already been expanded				
 								// if the new message is a draft message, add to the bottom of drafts
 								int firstNondraftIndex = -1;
-								while (l.hasNext () && (firstNondraftIndex == -1))
+								while (l.hasNext ())
 								{
 									DiscussionMessage next = (DiscussionMessage) l.next ();
-									index = index + 1;
-									if (!next.getDiscussionHeader().getDraft())
+									if (next.getDiscussionHeader().getDraft())
 									{
-										firstNondraftIndex = index;
+										firstNondraftIndex = v.indexOf(next.getId());
 									}								
 								}
 		
-								// all are drafts for now
 								if (firstNondraftIndex == -1)
 								{
+									// no draft till now
 									firstNondraftIndex = index + 1; 
+								}
+								else
+								{
+									// otherwise
+									firstNondraftIndex++;
 								}
 								v.add (firstNondraftIndex, addedMessage.getId());
 								setCategoryShowList(state, category, v);
