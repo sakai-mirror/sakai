@@ -29,6 +29,7 @@ import java.util.List;
 
 import javax.mail.internet.InternetAddress;
 
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.email.EmailService;
 import org.sakaiproject.service.framework.log.Logger;
 
@@ -43,6 +44,7 @@ public class TestEmailService implements EmailService
 {
 	/*******************************************************************************
 	* Dependencies and their setter methods
+	* Note: keep these in sync with the BasidEmailService, to make switching between them easier -ggolden
 	*******************************************************************************/
 
 	/** Dependency: logging service. */
@@ -55,6 +57,62 @@ public class TestEmailService implements EmailService
 	public void setLogger(Logger service)
 	{
 		m_logger = service;
+	}
+
+	/** Dependency: ServerConfigurationService. */
+	protected ServerConfigurationService m_serverConfigurationService = null;
+
+	/**
+	 * Dependency: ServerConfigurationService.
+	 * 
+	 * @param service
+	 *        The ServerConfigurationService.
+	 */
+	public void setServerConfigurationService(ServerConfigurationService service)
+	{
+		m_serverConfigurationService = service;
+	}
+
+	/** Configuration: smtp server to use. */
+	protected String m_smtp = null;
+
+	/**
+	 * Configuration: smtp server to use.
+	 * 
+	 * @param value
+	 *        The smtp server string.
+	 */
+	public void setSmtp(String value)
+	{
+		m_smtp = value;
+	}
+
+	/** Configuration: smtp server port to use. */
+	protected String m_smtpPort = null;
+
+	/**
+	 * Configuration: smtp server port to use.
+	 * 
+	 * @param value
+	 *        The smtp server port string.
+	 */
+	public void setSmtpPort(String value)
+	{
+		m_smtpPort = value;
+	}
+
+	/** Configuration: optional smtp mail envelope return address. */
+	protected String m_smtpFrom = null;
+
+	/**
+	 * Configuration: smtp mail envelope return address.
+	 * 
+	 * @param value
+	 *        The smtp mail from address string.
+	 */
+	public void setSmtpFrom(String value)
+	{
+		m_smtpFrom = value;
 	}
 
 	/*******************************************************************************

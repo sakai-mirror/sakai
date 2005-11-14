@@ -228,6 +228,9 @@
 			init-method="init"
 			destroy-method="destroy"
 			singleton="true">
+		<property name="smtp"><null/></property>
+		<property name="smtpPort"><null/></property>
+		<property name="smtpFrom"><null/></property>
 		<property name="logger"><ref bean="org.sakaiproject.service.framework.log.Logger"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
 	</bean>
