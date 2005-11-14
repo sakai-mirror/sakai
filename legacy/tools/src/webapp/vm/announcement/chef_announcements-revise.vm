@@ -216,7 +216,13 @@
 			#end
 		</div>	
 		<p class="act">
-				<input type="submit" class="active" name="post" value="$tlang.getString("revise.add")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='post';document.reviseForm.submit();return false;" />
+				<input type="submit" class="active" name="post" value=
+					#if ( $newAnn =="true")				
+						"$tlang.getString("revise.add")"
+					#else
+						"$tlang.getString("revise.savechanges")"
+					#end
+				 onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='post';document.reviseForm.submit();return false;" />
 				<input type="submit" name="preview" value="$tlang.getString("revise.preview")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='preview';document.reviseForm.submit();return false;" />
 				<input type="submit" name="save" value="$tlang.getString("revise.savedraft")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='save';document.reviseForm.submit();return false;" />
 				<input type="submit" name="cancel" value="$tlang.getString("gen.cancel")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='cancel';document.reviseForm.submit();return false;" />   
