@@ -2028,7 +2028,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		edit.setContent(content);
 
 		// commit the change
-		commitResource(edit);
+		commitResource(edit, NotificationService.NOTI_NONE);
 
 		return edit;
 

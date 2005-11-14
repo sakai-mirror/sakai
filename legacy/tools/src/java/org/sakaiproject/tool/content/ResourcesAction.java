@@ -8588,7 +8588,7 @@ public class ResourcesAction
 				ContentResourceEdit copy = ContentHostingService.editResource(newItemId);
 				ResourcePropertiesEdit pedit = copy.getPropertiesEdit();
 				pedit.addProperty(ResourceProperties.PROP_DISPLAY_NAME, displayName);
-				ContentHostingService.commitResource(copy);
+				ContentHostingService.commitResource(copy, NotificationService.NOTI_NONE);
 
 			}	// if-else
 		}
