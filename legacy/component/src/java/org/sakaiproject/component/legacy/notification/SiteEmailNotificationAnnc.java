@@ -1,35 +1,34 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ * 
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ * 
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 
-// package
 package org.sakaiproject.component.legacy.notification;
 
-// imports
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessage;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessageHeader;
 import org.sakaiproject.service.legacy.announcement.cover.AnnouncementService;
@@ -44,37 +43,33 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.notification.SiteEmailNotification;
 
 /**
-* <p>SiteEmailNotificationAnnc fills the notification message with details from the announcement message that triggered
-* the notification event.</p>
-* 
-* @author University of Michigan, Sakai Software Development Team
-* @version $Revision$
-*/
-
-
-public class SiteEmailNotificationAnnc
-	extends SiteEmailNotification
+ * <p>
+ * SiteEmailNotificationAnnc fills the notification message and headers with details from the announcement message that triggered the notification event.
+ * </p>
+ * 
+ * @author Sakai Software Development Team
+ */
+public class SiteEmailNotificationAnnc extends SiteEmailNotification
 {
 	private static ResourceBundle rb = ResourceBundle.getBundle("siteemaanc");
-	
-	/**
-	* Construct.
-	*/
-	public SiteEmailNotificationAnnc() {}
 
 	/**
-	* Construct.
-	*/
+	 * Construct.
+	 */
+	public SiteEmailNotificationAnnc()
+	{
+	}
+
+	/**
+	 * Construct.
+	 */
 	public SiteEmailNotificationAnnc(String siteId)
 	{
 		super(siteId);
-
-	}	// SiteEmailNotificationAnnc
+	}
 
 	/**
-	 * Get the additional permission function ability string needed for the resource that is the target of the
-	 * notification - users who get notified need to have this ability with this resource, too.
-	 * @return The additional ability string needed for a user to receive notification.
+	 * @inheritDoc
 	 */
 	protected String getResourceAbility()
 	{
@@ -82,23 +77,19 @@ public class SiteEmailNotificationAnnc
 	}
 
 	/**
-	* Make a new one like me.
-	* @return A new action just like me.
-	*/
+	 * @inheritDoc
+	 */
 	public NotificationAction getClone()
 	{
 		SiteEmailNotificationAnnc clone = new SiteEmailNotificationAnnc();
 		clone.set(this);
 
 		return clone;
-
-	}	// getClone
+	}
 
 	/**
-	* Do the notification.
-	* @param notification The notification responding to the event.
-	* @param event The event that matched criteria to cause the notification.
-	*/
+	 * @inheritDoc
+	 */
 	public void notify(Notification notification, Event event)
 	{
 		// get the message
@@ -110,64 +101,16 @@ public class SiteEmailNotificationAnnc
 		if (hdr.getDraft()) return;
 
 		super.notify(notification, event);
-
-	}	// notify
-
-	/**
-	* Get the from address for the email.
-	* @param event The event that matched criteria to cause the notification.
-	* @return the from address for the email.
-	*/
-	protected String getFrom(Event event)
-	{
-		// get the message
-		Reference ref = EntityManager.newReference(event.getResource());
-		AnnouncementMessage msg = (AnnouncementMessage) ref.getEntity();
-		AnnouncementMessageHeader hdr = (AnnouncementMessageHeader) msg.getAnnouncementHeader();
-
-		// make it from the message's creator
-		return hdr.getFrom().getEmail();
-		// return "" + hdr.getFrom().getDisplayName() + "<" + hdr.getFrom().getEmail() + ">";
-	}	// getFrom
+	}
 
 	/**
-	* Get the subject for the email.
-	* @param event The event that matched criteria to cause the notification.
-	* @return the subject for the email.
-	*/
-	public String getSubject(Event event)
-	{
-		// get the message
-		Reference ref = EntityManager.newReference(event.getResource());
-		AnnouncementMessage msg = (AnnouncementMessage) ref.getEntity();
-		AnnouncementMessageHeader hdr = (AnnouncementMessageHeader) msg.getAnnouncementHeader();
-
-		// use either the configured site, or if not configured, the site (context) of the resource
-		String siteId = (getSite() != null) ? getSite() : ref.getContext();
-
-		// get a site title
-		String title = siteId;
-		try
-		{
-			Site site = SiteService.getSite(siteId);
-			title = site.getTitle();
-		}
-		catch (Exception ignore) {}
-
-		// use the message's subject
-		return "[ " + title + " - " + rb.getString("ann") + " ]   " + hdr.getSubject();
-
-	}	// getSubject
-
-	/**
-	* Get the message for the email - the HTML text of the announcement.
-	* @param event The event that matched criteria to cause the notification.
-	* @return the message for the email.
-	*/
+	 * @inheritDoc
+	 */
 	protected String getMessage(Event event)
 	{
 		StringBuffer buf = new StringBuffer();
 		String newline = "<br />\n";
+
 		// get the message
 		Reference ref = EntityManager.newReference(event.getResource());
 		AnnouncementMessage msg = (AnnouncementMessage) ref.getEntity();
@@ -183,17 +126,57 @@ public class SiteEmailNotificationAnnc
 			Site site = SiteService.getSite(siteId);
 			title = site.getTitle();
 		}
-		catch (Exception ignore) {}
+		catch (Exception ignore)
+		{
+		}
 
-		// use the message's body as HTML
-		buf.append(msg.getBody() + newline);
+		// Now build up the message text.
+		buf.append(rb.getString("An_announcement_has_been"));
+		if (AnnouncementService.SECURE_ANNC_ADD.equals(event.getEvent()))
+		{
+			buf.append(" " + rb.getString("added"));
+		}
+		else
+		{
+			buf.append(" " + rb.getString("updated"));
+		}
+		buf.append(" " + rb.getString("in_the") + " \"");
+		buf.append(title);
+		buf.append("\" " + rb.getString("site_at"));
+		buf.append(" " + ServerConfigurationService.getString("ui.service", "Sakai"));
+		buf.append(" (<a href=\"");
+		buf.append(ServerConfigurationService.getPortalUrl());
+		buf.append("\">");
+		buf.append(ServerConfigurationService.getPortalUrl());
+		buf.append("</a>)");
+		buf.append(newline);
+		buf.append(newline);
+		buf.append(newline);
+		buf.append(rb.getString("Subject") + ": ");
+		buf.append(hdr.getSubject());
+		buf.append(newline);
+		buf.append(newline);
+		buf.append(rb.getString("From") + ": ");
+		buf.append(hdr.getFrom().getDisplayName());
+		buf.append(newline);
+		buf.append(newline);
+		buf.append(rb.getString("Date") + ": ");
+		buf.append(hdr.getDate().toStringLocalFull());
+		buf.append(newline);
+		buf.append(newline);
+		buf.append(" --- " + rb.getString("Message") + " ---");
+		buf.append(newline);
+		buf.append(newline);
+		buf.append(msg.getBody());
+		buf.append(newline);
+		buf.append(newline);
 
 		// add any attachments
 		List attachments = hdr.getAttachments();
 		if (attachments.size() > 0)
 		{
-			buf.append(newline + rb.getString("att") + newline);
-			for (Iterator iAttachments = attachments.iterator(); iAttachments.hasNext(); )
+			buf.append(newline + rb.getString("Attachments") + newline);
+			for (Iterator iAttachments = attachments.iterator(); iAttachments.hasNext();)
 			{
 				Reference attachment = (Reference) iAttachments.next();
 				String attachmentTitle = attachment.getProperties().getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
@@ -202,29 +185,74 @@ public class SiteEmailNotificationAnnc
 		}
 
 		return buf.toString();
+	}
 
-	}	// getMessage
-
-	/** Returns "Content-Type: text/html" - Announcements are sent as HTML formatted email messages */
-	public List getAdditionalHeaders(Event e)
+	/**
+	 * @inheritDoc
+	 */
+	protected List getHeaders(Event e)
 	{
+		List rv = new ArrayList(2);
+
 		// Set the content type of the message body to HTML
-		List ret = new ArrayList(2);
-		ret.add("Content-Type: text/html");
+		rv.add("Content-Type: text/html");
 
-		// and the To: field
-		ret.add("To: " + getSiteTo(e));
+		// set the subject
+		rv.add("Subject: " + getSubject(e));
 
-		return ret;
+		return rv;
 	}
-	
-	/** Returns true - Announcements are sent as HTML formatted email messages */
-	public boolean isBodyHTML(Event e)
+
+	/**
+	 * @inheritDoc
+	 */
+	protected String getTag(String newline, String title)
 	{
-	    return true;
+		// tag the message
+		String rv = newline + rb.getString("separator") + newline + rb.getString("this") + " "
+				+ ServerConfigurationService.getString("ui.service", "Sakai") + " ("
+				+ ServerConfigurationService.getServerUrl() + ") " + rb.getString("forthe") + " " + title
+				+ " " + rb.getString("site") + newline + rb.getString("youcan") + newline;
+		return rv;
 	}
-	
-}   // SiteEmailNotificationAnnc
 
+	/**
+	 * @inheritDoc
+	 */
+	protected boolean isBodyHTML(Event e)
+	{
+		return true;
+	}
 
+	/**
+	 * Format the announcement notification subject line.
+	 * 
+	 * @param event
+	 *        The event that matched criteria to cause the notification.
+	 * @return the announcement notification subject line.
+	 */
+	protected String getSubject(Event event)
+	{
+		// get the message
+		Reference ref = EntityManager.newReference(event.getResource());
+		AnnouncementMessage msg = (AnnouncementMessage) ref.getEntity();
+		AnnouncementMessageHeader hdr = (AnnouncementMessageHeader) msg.getAnnouncementHeader();
 
+		// use either the configured site, or if not configured, the site (context) of the resource
+		String siteId = (getSite() != null) ? getSite() : ref.getContext();
+
+		// get a site title
+		String title = siteId;
+		try
+		{
+			Site site = SiteService.getSite(siteId);
+			title = site.getTitle();
+		}
+		catch (Exception ignore)
+		{
+		}
+
+		// use the message's subject
+		return "[ " + title + " - " + rb.getString("Announcement") + " ]   " + hdr.getSubject();
+	}
+}

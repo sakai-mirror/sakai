@@ -1,30 +1,28 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ * 
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ * 
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 
-// package
 package org.sakaiproject.util.notification;
 
-// imports
 import java.util.List;
 import java.util.Vector;
 
@@ -41,58 +39,61 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 
 /**
-* <p>SiteEmailNotification sends email to the portal access permitted users of a site.
-* The mail header to: field will show the site's best email address, as will the reply-to header.</p>
-* 
-* @author University of Michigan, Sakai Software Development Team
-* @version $Revision$
-*/
-public class SiteEmailNotification
-	extends EmailNotification
+ * <p>
+ * SiteEmailNotification is an EmailNotification that selects the site's participants (based on site access) as the recipients of the notification.
+ * </p>
+ * <p>
+ * getRecipients() is satisified here, but you can refine it by implementing getResourceAbility()
+ * </p>
+ * Although these are not abstract, the following still need be specified to extend the class:
+ * <ul>
+ * <li>getMessage()</li>
+ * <li>getHeaders()</li>
+ * <li>getTag()</li>
+ * <li>isBodyHTML()</li>
+ * <li>headerToRecipient</li>
+ * </ul>
+ * </p>
+ * <p>
+ * getClone() should also be extended to clone the proper type of object.
+ * </p>
+ * 
+ * @author Sakai Software Development Team
+ */
+public class SiteEmailNotification extends EmailNotification
 {
 	/**
-	* Construct.
-	*/
-	public SiteEmailNotification() {}
-
-	/**
-	* Construct.
-	* @param siteId The id of the site whose users will get a mailing.
-	*/
-	public SiteEmailNotification(String siteId)
-	{
-		super(siteId);
-
-	}	// SiteEmailNotification
-
-	/**
-	 * Get the additional permission function ability string needed for the resource that is the target of the
-	 * notification - users who get notified need to have this ability with this resource, too.
-	 * @return The additional ability string needed for a user to receive notification.
+	 * Construct.
 	 */
-	protected String getResourceAbility()
+	public SiteEmailNotification()
 	{
-		return null;
 	}
 
 	/**
-	* Make a new one like me.
-	* @return A new action just like me.
-	*/
+	 * Construct.
+	 * 
+	 * @param siteId
+	 *        The id of the site whose users will get a mailing.
+	 */
+	public SiteEmailNotification(String siteId)
+	{
+		super(siteId);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public NotificationAction getClone()
 	{
 		SiteEmailNotification clone = new SiteEmailNotification();
 		clone.set(this);
 
 		return clone;
-
-	}	// getClone
+	}
 
 	/**
-	* Get the list of User objects who are eligible to receive the notification email.
-	* @param event The event that matched criteria to cause the notification.
-	* @return the list of User objects who are eligible to receive the notification email.
-	*/
+	 * @inheritDoc
+	 */
 	protected List getRecipients(Event event)
 	{
 		// get the resource reference
@@ -130,15 +131,15 @@ public class SiteEmailNotification
 		{
 			return new Vector();
 		}
-
-	}	// getRecipients
+	}
 
 	/**
-	* Get the to: header string for the email - the real recipients will be getTo(), but this will show up
-	* in the message.
-	* @param event The event that matched criteria to cause the notification.
-	* @return the to: header for the email.
-	*/
+	 * Format a To: header value for the site.
+	 * 
+	 * @param event
+	 *        The event that matched criteria to cause the notification.
+	 * @return the to: header for the email.
+	 */
 	protected String getSiteTo(Event event)
 	{
 		// get the resource reference
@@ -148,11 +149,11 @@ public class SiteEmailNotification
 		String siteId = (getSite() != null) ? getSite() : ref.getContext();
 
 		// make the to: field look like the email address of the site
-		
+
 		// select the site's main mail channel alias, or the site's alias, or the site id
 		String siteMailId = siteId;
 
-		// first check aliases for the site's main email channel		
+		// first check aliases for the site's main email channel
 		String channelRef = MailArchiveService.channelReference(siteId, SiteService.MAIN_CONTAINER);
 		List aliases = AliasService.getAliases(channelRef, 1, 1);
 		if (aliases.isEmpty())
@@ -161,7 +162,7 @@ public class SiteEmailNotification
 			String siteRef = SiteService.siteReference(siteId);
 			aliases = AliasService.getAliases(siteRef, 1, 1);
 		}
-		
+
 		// if there was an alias
 		if (!aliases.isEmpty())
 		{
@@ -169,10 +170,16 @@ public class SiteEmailNotification
 		}
 
 		return siteMailId + " <" + siteMailId + "@" + ServerConfigurationService.getServerName() + ">";
+	}
 
-	}	// getSiteTo
-
-}   // SiteEmailNotification
-
-
-
+	/**
+	 * Get the additional security function string needed for the resource that is the target of the notification <br />
+	 * users who get notified need to have this ability with this resource, too.
+	 * 
+	 * @return The additional ability string needed for a user to receive notification.
+	 */
+	protected String getResourceAbility()
+	{
+		return null;
+	}
+}

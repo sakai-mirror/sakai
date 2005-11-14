@@ -233,6 +233,13 @@ public class SakaiMailet extends GenericMailet
 
 					// the recipient's mail id
 					mailId = recipient.getUser();
+					
+					// eat the no-reply
+					if ("no-reply".equalsIgnoreCase(mailId))
+					{
+						mail.setState(Mail.GHOST);
+						continue;
+					}
 
 					// find the channel (mailbox) that this is adressed to
 					// for now, check only for it being a site or alias to a site.
