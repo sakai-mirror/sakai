@@ -67,9 +67,8 @@ public class Result extends ResultPageBase {
 		/*
 		 * Render each image
 		 */
-		System.out.println("about to render items");
    	for (Iterator iterator = searchResult.iterator(); iterator.hasNext(); ) {
-      renderElement = doCitationTable(renderElement,
+      renderElement = doImageTable(renderElement,
       														 recordNumber++,
       														 (MatchItem) iterator.next());
     }

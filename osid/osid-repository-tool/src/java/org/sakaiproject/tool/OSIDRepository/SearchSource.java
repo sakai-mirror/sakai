@@ -289,7 +289,8 @@ public class SearchSource {
    * combined to create one list with the alternate form sources at the end.
    * @param xmlStream Configuration file as an InputStream
    */
-  public static void populate(InputStream xmlStream) throws DomException, SearchException {
+//  public static void populate(InputStream xmlStream) throws DomException, SearchException {
+	  public static void populate() throws SearchException {
 		SearchSource 	source;
 		ArrayList			alternateList;
 		NodeList			sourceNodeList;
@@ -303,6 +304,7 @@ public class SearchSource {
 			if (_sourceList != null) {
 				return;
 			}
+
 			/*
 			 * Establish an empty search source list
 			 */
@@ -326,6 +328,7 @@ public class SearchSource {
 					}
 				}
 			} catch(Throwable t) {
+				t.printStackTrace();
 				// TODO: throw(t);
 			}		
 			

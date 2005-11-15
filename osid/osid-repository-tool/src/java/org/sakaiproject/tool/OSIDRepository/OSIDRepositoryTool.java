@@ -69,8 +69,9 @@ public class OSIDRepositoryTool extends HttpServlet {
 	    /*
 	     * Get our search source configuration (mandatory)
 	     */
-	    resource = "WEB-INF/" + getInitParameter("source-configuration-file");
-	    SearchSource.populate(_context.getResourceAsStream(resource));
+	    //resource = "WEB-INF/" + getInitParameter("source-configuration-file");
+	    //SearchSource.populate(_context.getResourceAsStream(resource));
+	    SearchSource.populate();
 	    /*
 	     * Configure [optional] security support
 	     */
@@ -114,7 +115,6 @@ public class OSIDRepositoryTool extends HttpServlet {
 
 	try 
 	{
-		System.out.println("in OSIDRepositoryTool");
 		if (cssFile == null) 
 		{
 //			throw new IllegalArgumentException("Missing styesheet");
@@ -134,9 +134,9 @@ public class OSIDRepositoryTool extends HttpServlet {
 			String				database[]		= request.getParameterValues("database");
 			int numDatabases = database.length;
 			
-			System.out.println("databases " + database);
+			System.out.println("databases " + database[0]);
 
-			if (numDatabases > 1)
+			if (numDatabases > 0)
 			{
 				// There is more than one selection so we are going to accumulate results					
 				query = null;
@@ -170,14 +170,23 @@ public class OSIDRepositoryTool extends HttpServlet {
 				}				
 				document = formatResultDocument(query, searchResult);
 			}
-			else 
+/*
+ else 
 			{				
 				query = null;
 				sessionContext 	= SessionContext.getInstance(getHttpSession(request));
 				query			= doQuery(request, sessionContext, database[0]);
 				searchResult	= parseResponse(query,database[0]);
+
+				// capture what is in this searches set of results
+				MatchItem items[] = searchResult.toArray();
+				for (int j=0; j < items.length; j++)
+				{
+					searchResult.addItem(items[j]);
+				}
 				document 		= formatResultDocument(query, searchResult);
 			}
+*/
 		}
     } 
 	catch (Exception exception) 
@@ -244,7 +253,7 @@ public class OSIDRepositoryTool extends HttpServlet {
     searchResult = selectSearchResultHandler(database);
 
     searchResult.initialize(query);
-    searchResult.doParse();
+    searchResult.doParse(database);
 
     return searchResult;
   }

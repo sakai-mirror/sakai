@@ -61,7 +61,7 @@ public abstract class SearchResultBase implements SearchResultInterface {
 	/**
 	 * Populate the search result list (each subclass should implement this)
 	 */
-	public abstract void doParse();
+	public abstract void doParse(String database);
 
 	/*
 	 * Interface methods

@@ -422,9 +422,11 @@ public class ResultPageBase implements ResultPageInterface {
 	  select = DomUtils.createElement(parent, "SELECT");
 	  select.setAttribute("name", "database");
 	  select.setAttribute("multiple","true");
+	  
 	  /*
 	   * This is all we can do if the search source list was never populated
 	   */
+	  SearchSource.populate();
 	  if (!SearchSource.isSourceListPopulated()) {
 		  return;
 	  }
@@ -691,7 +693,7 @@ public class ResultPageBase implements ResultPageInterface {
     image = DomUtils.createElement(anchor, "IMG");
     image.setAttribute("src", item.getPreviewImage());
     image.setAttribute("border", "0");
-    image.setAttribute("alt", anchorText);
+    image.setAttribute("alt", ((item.getPreviewImage()==null) ? "No Preview" : anchorText) );
     image.setAttribute("title", "Click for enlarged image and details");
 		image.setAttribute("style", "margin-left: auto; margin-right: auto; display: block;");
 		/*

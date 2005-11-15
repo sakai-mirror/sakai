@@ -63,7 +63,7 @@ public class Response extends SearchResultBase
   /**
    * Parse the response
    */
-    public void doParse() 
+    public void doParse(String database) 
     {
         try
         {
@@ -79,54 +79,56 @@ public class Response extends SearchResultBase
 				repositoryManager.assignConfiguration(new java.util.Properties());
 				org.osid.repository.RepositoryIterator repositoryIterator = repositoryManager.getRepositories();
 				while (repositoryIterator.hasNextRepository()) {
-					org.osid.repository.AssetIterator assetIterator = repositoryIterator.nextRepository().getAssetsBySearch(
-																															this.criteria,
-																															new Type("mit.edu","search","keyword"),
-																															new SharedProperties());
-					System.out.println("Query complete");
-					while (assetIterator.hasNextAsset())
-					{
-						org.osid.repository.Asset asset = assetIterator.nextAsset();
-						MatchItem item = new MatchItem();
-						String displayName = asset.getDisplayName();
-						String description = asset.getDescription();
-						String content = null;
-						try {
-							content = (String)asset.getContent();
-							item.setPreviewUrl(content);
-							item.setPersistentUrl(content);
-						} catch (Throwable th) {
-							// ignore
-						}
-                    
-						// Look for a thumbnail or url part and show any.  We only want one and their might be more than one in
-						// different records.  To minimize what we know about the data source, we don't want to limit which record types we search.
-						boolean foundThumbnail = false;
-						boolean foundURL = false;
-						org.osid.repository.RecordIterator recordIterator = asset.getRecords();
-						while (recordIterator.hasNextRecord()) {
-							org.osid.repository.PartIterator partIterator = recordIterator.nextRecord().getParts();
-							while (partIterator.hasNextPart()) {
-								org.osid.repository.Part part = partIterator.nextPart();
-								org.osid.shared.Type partStructureType = part.getPartStructure().getType();
-								if ( (!foundThumbnail) && (partStructureType.isEqual(thumbnailType)) ) {
-									item.setPreviewUrl((String)part.getValue());
-									foundThumbnail = true;
-								} else if ( (!foundURL) && (partStructureType.isEqual(urlType)) ) {
-									item.setPersistentUrl((String)part.getValue());
-									foundURL = true;
+					
+					// only search the Repository (database) asked for
+					org.osid.repository.Repository nextRepository = repositoryIterator.nextRepository();
+					//System.out.println("testing " + nextRepository.getDisplayName() + " vs " + database);
+					if (nextRepository.getDisplayName().equals(database)) {
+						org.osid.repository.AssetIterator assetIterator = nextRepository.getAssetsBySearch(this.criteria,
+																										   new Type("mit.edu","search","keyword"),
+																										   new SharedProperties());
+						System.out.println("Query complete");
+						while (assetIterator.hasNextAsset())
+						{
+							org.osid.repository.Asset asset = assetIterator.nextAsset();
+							MatchItem item = new MatchItem();
+							String displayName = asset.getDisplayName();
+							String description = asset.getDescription();
+							String content = null;
+							try {
+								content = (String)asset.getContent();
+								item.setPreviewUrl(content);
+								item.setPersistentUrl(content);
+							} catch (Throwable th) {
+								// ignore
+							}
+							
+							// Look for a thumbnail or url part and show any.  We only want one and their might be more than one in
+							// different records.  To minimize what we know about the data source, we don't want to limit which record types we search.
+							boolean foundThumbnail = false;
+							boolean foundURL = false;
+							org.osid.repository.RecordIterator recordIterator = asset.getRecords();
+							while (recordIterator.hasNextRecord()) {
+								org.osid.repository.PartIterator partIterator = recordIterator.nextRecord().getParts();
+								while (partIterator.hasNextPart()) {
+									org.osid.repository.Part part = partIterator.nextPart();
+									org.osid.shared.Type partStructureType = part.getPartStructure().getType();
+									if ( (!foundThumbnail) && (partStructureType.isEqual(thumbnailType)) ) {
+										item.setPreviewUrl((String)part.getValue());
+										item.setPreviewImage((String)part.getValue());
+										foundThumbnail = true;
+									} else if ( (!foundURL) && (partStructureType.isEqual(urlType)) ) {
+										item.setPersistentUrl((String)part.getValue());
+										foundURL = true;
+									}
 								}
 							}
+							item.setPreviewText(displayName);
+							item.setDescription(description);
+							item.setPersistentText(displayName);
+							addItem(item);
 						}
-						item.setPreviewText(displayName);
-						item.setDescription(description);
-						item.setPersistentText(displayName);
-						addItem(item);
-						
-						if ((item.getPreviewUrl() == null) && (item.getPersistentUrl() != null)) {
-							item.setPreviewUrl(item.getPersistentUrl());
-						}
-					}
+					}					
 				}
             }
         }

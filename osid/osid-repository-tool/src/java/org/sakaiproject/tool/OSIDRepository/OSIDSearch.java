@@ -56,21 +56,16 @@ public class OSIDSearch extends HttpServlet {
   /**
    * Initialize
    */
+  /*
   public void init(ServletConfig servletConfig) throws ServletException {
 		String resource;
 
     super.init(servletConfig);
     _context = servletConfig.getServletContext();
 
-		try {
-	    /*
-	     * Get our search source configuration (mandatory)
-	     */
+ try {
 	    resource = "WEB-INF/" + getInitParameter("source-configuration-file");
-	    SearchSource.populate(_context.getResourceAsStream(resource));
-	    /*
-	     * Configure [optional] security support
-	     */
+//	    SearchSource.populate(_context.getResourceAsStream(resource));
 	    resource = "WEB-INF/" + getInitParameter("security-configuration-file");
 	    SecuritySetup.initialize(_context.getResourceAsStream(resource));
 
@@ -78,6 +73,7 @@ public class OSIDSearch extends HttpServlet {
 	  	throw new ServletException(exception.toString());
 	  }
   }
+   */
 
   /**
    * Service a GET request
@@ -115,53 +111,3 @@ public class OSIDSearch extends HttpServlet {
     }
 }
 
-/*
-        {
-/*
-            org.osid.repository.RepositoryManager repositoryManager = org.osid.OsidLoader.getManager(
-                "org.osid.repository.RepositoryManager",
-                "com.harvestroad.osid.repository",
-                new org.osid.OsidContext(),
-                new java.util.Properties());
-            org.osid.repository.RepositoryIterator repositoryIterator = repositoryManager.getRepositories();
-            if (repositoryIterator.hasNextRepository())
-            {
-                org.osid.repository.AssetIterator assetIterator = repositoryIterator.nextRepository().getAssetsBySearch(
-                    getRequestParameter("searchString"),
-                    new org.osid.types.mit.KeywordSearchType(),
-                    new SharedProperties()
-                );
-                if (assetIterator.hasNextAsset())
-                {
-                    org.osid.repository.Asset asset = assetIterator.nextAsset();
-                    String displayName = asset.getDisplayName();
-                    String description = asset.getDescription();
-                    String content = asset.getContent();
-                    org.osid.repository.RecordIterator recordIterator = asset.getRecords();
-                    while (recordIterator.hasNextRecord)
-                    {
-                        org.osid.repository.PartIterator partIterator = asset.getParts();
-                        while (partIterator.hasNextPart())
-                        {
-                            org.osid.repository.Part part = partIterator.nextPart();
-                            if (part.getPartStructure().getType().isEqual(thumbnailPart))
-                            {
-                                String thumbnail = (String)part.getValue();
-                                String displayName = "foo";
-                                String content = "/Users/jeffreyk/desktop/Y0044_YokohamaPort_sm.jpg";
-                                String thumbnail = "/Users/jeffreyk/desktop/Y0044_YokohamaPort_sm.jpg";
-                                
-
-                                MatchItem item = new MatchItem();
-                                item.setPreviewUrl(content);
-                                item.setPreviewText(displayName);
-                                item.setPreviewImage(thumbnail);
-                                item.setPersistentUrl(content);
-                                item.setPersistentText(displayName);
-                                addItem(item);
-                            }
-                        }
-                    }
-                }
-            }
-*/
