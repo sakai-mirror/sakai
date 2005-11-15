@@ -122,11 +122,10 @@
 				<label for="body" class="block">
 					$tlang.getString("gen.mes2")
 				</label>
-				## really need this table?
-				##<table border="0" style="margin:.3em 1em"><tr><td>
+				<table border="0" style="margin:.3em 1em"><tr><td>
 				<textarea name="body" id="body" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea("$!body")</textarea>
 				#chef_setupformattedtextarea("body")
-				##</td></tr></table>
+				</td></tr></table>
 			</p>	
 				<h4>$tlang.getString("gen.att")</h4>
 
