@@ -28,6 +28,7 @@ package org.sakaiproject.component.legacy.user;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -452,34 +453,34 @@ public class DbUserService
 		/**
 		 * {@inheritDoc}
 		 */
-		public UserEdit findUserByEmail(String email)
+		public Collection findUsersByEmail(String email)
 		{
-			UserEdit edit = null;
+			Collection rv = null;
 
 			// check old if needed
 			if (m_checkOld)
 			{
-				edit = m_oldStorage.findUserByEmail(email);
+				rv = m_oldStorage.findUsersByEmail(email);
 			}
 			
-			if (edit == null)
+			if (rv == null)
 			{
+				// adjust the search string to normalize the case
+				email = normalizeEmailAddress(email);
+
+				rv = new Vector();
+
 				// search for it
 				Object[] fields = new Object[1];
 				fields[0] = email;
-				List rv = super.getSelectedResources("UPPER(EMAIL) = UPPER(?)", fields);
-				if ((rv != null) && (rv.size() > 0))
+				List users = super.getSelectedResources("EMAIL = ?", fields);
+				if (users != null)
 				{
-					if (rv.size() > 1)
-					{
-						m_logger.info("Email with multiple users: " + email);
-					}
-
-					edit = (UserEdit) rv.get(0);
+					rv.addAll(users);
 				}
 			}
 
-			return edit;
+			return rv;
 		}
 
 		/**
@@ -698,20 +699,25 @@ public class DbUserService
 		/**
 		 * {@inheritDoc}
 		 */
-		public UserEdit findUserByEmail(String email)
+		public Collection findUsersByEmail(String email)
 		{
+			// adjust email search string to normalize the case
+			email = normalizeEmailAddress(email);
+
+			Collection rv = new Vector();
+
 			// check internal users
 			List users = getUsers();
 			for (Iterator iUsers = users.iterator(); iUsers.hasNext();)
 			{
 				UserEdit user = (UserEdit) iUsers.next();
-				if (user.getEmail().equalsIgnoreCase(email))
+				if (email.equals(user.getEmail()))
 				{
-					return user;
+					rv.add(user);
 				}
 			}
 			
-			return null;
+			return rv;
 		}
 
 		/**

@@ -104,13 +104,13 @@ public class UserDirectoryService
 		return service.getCurrentUser();
 	}
 
-	public static org.sakaiproject.service.legacy.user.User findUserByEmail(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException
+	public static java.util.Collection findUsersByEmail(java.lang.String param0)
 	{
 		org.sakaiproject.service.legacy.user.UserDirectoryService service = getInstance();
 		if (service == null)
 			return null;
 
-		return service.findUserByEmail(param0);
+		return service.findUsersByEmail(param0);
 	}
 
 	public static boolean allowUpdateUser(java.lang.String param0)
@@ -265,6 +265,16 @@ public class UserDirectoryService
 
 		return service.userReference(param0);
 	}
+
+	public static java.lang.String normalizeEmailAddress(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.user.UserDirectoryService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.normalizeEmailAddress(param0);
+	}
+
 }
 
 

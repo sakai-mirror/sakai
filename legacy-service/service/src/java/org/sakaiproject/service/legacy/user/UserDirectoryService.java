@@ -96,13 +96,11 @@ public interface UserDirectoryService
 	public User getCurrentUser();
 
 	/**
-	* Find a user object who has this email address.
+	* Find the user objects which have this email address.
 	* @param email The email address string.
-	* @return A user object containing the user information
-	* @exception IdUnusedException if not found
+	* @return A Collection (User) of user objects which have this email address (may be empty).
 	*/
-	public User findUserByEmail(String email)
-		throws IdUnusedException;
+	public Collection findUsersByEmail(String email);
 
 	/**
 	* check permissions for editUser()
@@ -261,6 +259,13 @@ public interface UserDirectoryService
 	* @return The the internal reference which can be used to access the resource from within the system.
 	*/
 	public String userReference(String id);
+
+	/**
+	 * Adjust an email so that the user case is preserved, but the domain case is lowered
+	 * @param email The email address to adjust.
+	 * @return The adjusted email address.
+	 */
+	public String normalizeEmailAddress(String email);
 
 }	// UserDirectoryService
 

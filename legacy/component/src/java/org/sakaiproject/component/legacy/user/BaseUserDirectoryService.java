@@ -65,6 +65,8 @@ import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.UserDirectoryProvider;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.service.legacy.user.UserEdit;
+import org.sakaiproject.service.legacy.user.UserFactory;
+import org.sakaiproject.service.legacy.user.UsersShareEmailUDP;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.resource.BaseResourceProperties;
@@ -82,7 +84,7 @@ import org.w3c.dom.NodeList;
 * @version $Revision$
 * @see org.chefproject.core.User
 */
-public abstract class BaseUserDirectoryService implements UserDirectoryService, StorageUser
+public abstract class BaseUserDirectoryService implements UserDirectoryService, StorageUser, UserFactory
 {
 	/** Storage manager for this service. */
 	protected Storage m_storage = null;
@@ -442,7 +444,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	 */
 	public List getUsers(Collection ids)
 	{
-		// TODO: make this more efficient
+		// TODO: make this more efficient? -ggolden
 		
 		// User objects to return
 		List rv = new Vector();
@@ -741,35 +743,37 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	}
 
 	/**
-	* Find a user object who has this email address.
-	* @param email The email address string.
-	* @return A user object containing the user information
-	* @exception IdUnusedException if not found
-	*/
-	public User findUserByEmail(String email) throws IdUnusedException
+	 * {@inheritDoc}
+	 */
+	public Collection findUsersByEmail(String email)
 	{
 		// check internal users
-		User user = m_storage.findUserByEmail(email);
-		if (user != null)
-		{
-			return user;
-		}
-		
-		// if not there, check our provider
+		Collection users = m_storage.findUsersByEmail(email);
+
+		// add in provider users
 		if (m_provider != null)
 		{
-			// make a new edit to hold the provider's info
-			UserEdit edit = new BaseUserEdit((String) null);
-			if (m_provider.findUserByEmail(edit, email))
+			// support UDP that has multiple users per email
+			if (m_provider instanceof UsersShareEmailUDP)
 			{
-				return edit;
+				Collection udpUsers = ((UsersShareEmailUDP) m_provider).findUsersByEmail(email, this);
+				if (udpUsers != null) users.addAll(udpUsers);
+			}
+
+			// check for one
+			else
+			{
+				// make a new edit to hold the provider's info
+				UserEdit edit = new BaseUserEdit((String) null);
+				if (m_provider.findUserByEmail(edit, email))
+				{
+					users.add((edit));
+				}
 			}
 		}
 
-		// not found
-		throw new IdUnusedException(email);
-
-	} // findUserByEmail
+		return users;
+	}
 
 	/**
 	* Access the anonymous user object.
@@ -1108,6 +1112,23 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	}
 
 	/**
+	 * Adjust an email so that the user case is preserved, but the domain case is lowered
+	 * @param email The email address to adjust.
+	 * @return The adjusted email address.
+	 */
+	public String normalizeEmailAddress(String email)
+	{
+		if ((email == null) || (email.length() == 0)) return email;
+
+		// [0] is case preserved user, [1] is case to-be-lowered domain
+		String[] parts = StringUtil.splitFirst(email,"@");
+		if ((parts == null) || (parts.length != 2)) return email;
+		
+		String normalized = parts[0] + "@" + parts[1].toLowerCase();
+		return normalized;
+	}
+
+	/**
 	* Find the user object, in cache or storage (only - no provider check).
 	* @param id The user id.
 	* @return The user object found in cache or storage, or null if not found.
@@ -1316,13 +1337,25 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	}
 
 	/*******************************************************************************
+	* UserFactory implementation
+	*******************************************************************************/
+
+	/**
+	 * Create a new User (UserEdit) object.
+	 * 
+	 * @return a new UserEdit object.
+	 */
+	public UserEdit newUser()
+	{
+		return new BaseUserEdit((String) null);
+	}
+
+	/*******************************************************************************
 	* UserEdit implementation
 	*******************************************************************************/
 
 	/**
 	* <p>BaseUserEdit is an implementation of the CHEF UserEdit object.</p>
-	* 
-	* @author University of Michigan, CHEF Software Development Team
 	*/
 	public class BaseUserEdit implements UserEdit, SessionBindingListener
 	{
@@ -1407,7 +1440,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			m_id = StringUtil.trimToNullLower(el.getAttribute("id"));
 			m_firstName = StringUtil.trimToNull(el.getAttribute("first-name"));
 			m_lastName = StringUtil.trimToNull(el.getAttribute("last-name"));
-			m_email = StringUtil.trimToNull(el.getAttribute("email"));
+			setEmail(StringUtil.trimToNull(el.getAttribute("email")));
 			m_pw = el.getAttribute("pw");
 			m_type = StringUtil.trimToNull(el.getAttribute("type"));
 			m_createdUserId = StringUtil.trimToNull(el.getAttribute("created-id"));
@@ -1495,7 +1528,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			m_firstName = firstName;
 			m_lastName = lastName;
 			m_type = type;
-			m_email = email;
+			setEmail(email);
 			m_pw = pw;
 			m_createdUserId = createdBy;
 			m_lastModifiedUserId = modifiedBy;
@@ -1518,7 +1551,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			m_firstName = user.getFirstName();
 			m_lastName = user.getLastName();
 			m_type = user.getType();
-			m_email = user.getEmail();
+			setEmail(user.getEmail());
 			m_pw = ((BaseUserEdit) user).m_pw;
 			m_createdUserId = ((BaseUserEdit) user).m_createdUserId;
 			m_lastModifiedUserId = ((BaseUserEdit) user).m_lastModifiedUserId;
@@ -1883,6 +1916,12 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		public void setEmail(String email)
 		{
 			m_email = email;
+			
+			if (m_email != null)
+			{
+				// normalize the case
+				m_email = normalizeEmailAddress(m_email);
+			}
 
 		} // setEmail
 
@@ -2052,11 +2091,11 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		public UserEdit get(String id);
 
 		/**
-		* Get the user with this email, or null if not found.
+		* Get the users with this email, or return empty if none found.
 		* @param id The user email.
-		* @return The user with this email, or null if not found.
+		* @return The Collection (User) of users with this email, or an empty collection if none found.
 		*/
-		public UserEdit findUserByEmail(String email);
+		public Collection findUsersByEmail(String email);
 
 		/**
 		* Get all users.

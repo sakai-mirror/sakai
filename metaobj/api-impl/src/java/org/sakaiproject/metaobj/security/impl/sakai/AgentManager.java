@@ -245,14 +245,14 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
          }
       }
       if (type.equals("email")){
-         try {
-            List users = new ArrayList();
-            users.add(morphAgent(getDirectoryService().findUserByEmail((String) object)));
-            return users;
-         } catch (IdUnusedException e) {
-            // user not found, return null
-            return null;
-         }
+        List users = new ArrayList();
+        Collection directoryUsers = getDirectoryService().findUsersByEmail((String) object);
+        if ((directoryUsers == null) || (directoryUsers.isEmpty())) return null;
+        for (Iterator i = directoryUsers.iterator(); i.hasNext();) {
+          User u = (User) i.next();
+          users.add(morphAgent(u));
+        }
+        return users;
       }
       return null;
    }

@@ -65,6 +65,7 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
@@ -86,32 +87,21 @@ public class SakaiMailet extends GenericMailet
 	/** The user name of the postmaster user - the one who posts incoming mail. */
 	public static final String POSTMASTER = "postmaster";
 
-	// Condition:The site doesn't have an email archive turned on
+	// Condition: The site doesn't have an email archive turned on
 	public final String errorMsg_I = "Your message cannot be delivered because the site you are emailing"
 			+ " does not have the email feature turned on. Please contact the site"
 			+ " owner to ask about enabling this feature on the site." + "\n\n"
 			+ "If you have further questions about this feature, please email "
 			+ ServerConfigurationService.getString("mail.support", "");
 
-	// Condition:You don't have a Sakai account - you aren't in the system at all.
-	public final String errorMsg_II = "Your message cannot be delivered because "
-			+ ServerConfigurationService.getString("ui.service", "Sakai")
-			+ " does not recognize your email address and the site is not configured to accept email "
-			+ "from non-participants. Most sites accept email from site participants only. If you are "
-			+ "a site participant, be sure you are using the email address associated with your account" + " on the system. "
-			+ "\n\n" + "If you believe your email should be accepted, please contact the site owner and have them "
-			+ "check the settings for the email archive tool under 'options' for that tool. If you have "
-			+ "further questions about this feature, please contact " + ServerConfigurationService.getString("mail.support", "");
-
 	// Condition: The site is not existing.
 	public final String errorMsg_III = "Your message cannot be delivered because the address is unknown. " + "\n\n"
 			+ "If you have further questions about this feature, please email "
 			+ ServerConfigurationService.getString("mail.support", "");
 
-	// Condition: The sender doesn't have permission to send to the system
-	// (you are not a participant in the site, or you are a participant w/o the right permission)
+	// Condition: The from email was not matched to a user with permission to send to the system
 	public final String errorMsg_IV = "Your message cannot be delivered because you are not a member of the site, or you are a member "
-			+ "but don't have the permission to send email to the site. "
+			+ "but don't have the permission to send email to the site, or because you are registered with a different email address. "
 			+ "If you are sending email from the correct email address, and you believe your email should be accepted "
 			+ "at the site please contact the site owner and have them check the permission settings for the email "
 			+ "archive tool under 'Permissions' for that tool. "
@@ -310,30 +300,13 @@ public class SakaiMailet extends GenericMailet
 					// for non-open channels, make sure the from is a member
 					if (!channel.getOpen())
 					{
-						// find the user with this email address
-						try
+						// see if our fromAddr is the email address of any of the users who are permitted to add messages to the channel.
+						if (!fromValidUser(fromAddr, channel))
 						{
-							User user = UserDirectoryService.findUserByEmail(fromAddr);
-							boolean allowed = channel.allowAddMessage(user);
-
-							// does this use have the ability to send messages to the channel?
-							if (!allowed)
-							{
-								if (Logger.isInfoEnabled())
-									Logger.info(this + ": " + id + " : mail rejected: from: " + fromAddr + " user id: "
-											+ user.getId() + " not authorized for site: " + mailId);
-
-								mail.setErrorMessage(errorMsg_IV);
-								continue;
-							}
-						}
-						catch (IdUnusedException e)
-						{
-							// we don't know this user, skip it
 							if (Logger.isInfoEnabled())
-								Logger.info(this + ": " + id + " : mail rejected: unknown from: " + fromAddr);
+								Logger.info(this + ": " + id + " : mail rejected: from: " + fromAddr + " not authorized for site: " + mailId);
 
-							mail.setErrorMessage(errorMsg_II);
+							mail.setErrorMessage(errorMsg_IV);
 							continue;
 						}
 					}
@@ -408,6 +381,59 @@ public class SakaiMailet extends GenericMailet
 			// clear out any current current bindings
 			ThreadLocalManager.clear();
 		}
+	}
+
+	// Note: This is an alternate way to validate the email, one that does not rely on the findByEmail, but does call into memory all the users of the site... -ggolden
+	/**
+	 * Check if the fromAddr email address belongs to any user who has permission to add to the channel.
+	 * @param fromAddr The email address to check.
+	 * @param channel The mail archive channel.
+	 * @return True if the email address is from a user who is authorized to add mail, false if not.
+	 */
+	protected boolean fromValidUserALTERNATE(String fromAddr, MailArchiveChannel channel)
+	{
+		if ((fromAddr == null) || (fromAddr.length() == 0)) return false;
+		
+		// normalize the case of the email address for searching
+		fromAddr = UserDirectoryService.normalizeEmailAddress(fromAddr);
+
+		// get all users permitted to send mail to the channel
+		List users = SecurityService.unlockUsers(MailArchiveService.SECURE_MAIL_READ, channel.getReference());
+		
+		// scan the list for the email address
+		for (Iterator i = users.iterator(); i.hasNext();)
+		{
+			User user = (User) i.next();
+			if (fromAddr.equals(user.getEmail())) return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if the fromAddr email address is recognized as belonging to a user who has permission to add to the channel.
+	 * @param fromAddr The email address to check.
+	 * @param channel The mail archive channel.
+	 * @return True if the email address is from a user who is authorized to add mail, false if not.
+	 */
+	protected boolean fromValidUser(String fromAddr, MailArchiveChannel channel)
+	{
+		if ((fromAddr == null) || (fromAddr.length() == 0)) return false;
+
+		// find the users with this email address
+		Collection users = UserDirectoryService.findUsersByEmail(fromAddr);
+
+		// if none found
+		if ((users == null) || (users.isEmpty())) return false;
+
+		// see if any of them are allowed to add
+		for (Iterator i = users.iterator(); i.hasNext();)
+		{
+			User u = (User) i.next();
+			if (channel.allowAddMessage(u)) return true;
+		}
+
+		return false;
 	}
 
 	/**
