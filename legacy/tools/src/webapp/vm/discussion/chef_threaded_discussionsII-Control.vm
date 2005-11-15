@@ -107,15 +107,14 @@
 								<span class="reqStar">*</span>
 									$tlang.getString("gen.mes")
 								</label>
-								##not sure we need this table
-								##<table style="margin:.3em 1em" border="1">
-									##<tr>
-										##<td>
+								<table style="margin:.3em 1em" border="0">
+									<tr>
+										<td>
 											<textarea name = "body" id = "body" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($draftBody)</textarea>
 											#chef_setupformattedtextarea("body")
-										##</td>
-									##</tr>
-								##</table>
+										</td>
+									</tr>
+								</table>
 							</p>	
 							<h4>$tlang.getString("control.att2")</h4>
 								#set ($size = 0)
