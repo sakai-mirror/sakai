@@ -34,7 +34,7 @@
 		<input type="hidden" name="sakai_action" id="sakai_action" value="" />
 		######################  Page Title / Breadcrumbs  ##############
 		<h3>
-			<span class ="chefBreadCrumb">
+			<span class ="breadCrumb specialLink">
 				$tlang.getString("gen.location")
 				<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0"  alt="folder" />
 				#foreach ($item in $collectionPath)
@@ -209,7 +209,7 @@
 					</td>
 					<td headers="checkboxes">
 					</td>
-					<td headers="title">
+					<td headers="title" class="specialLink">
 						<h3> 
 							#if ($root.isFolder())
 								#if ($root.canRead())
@@ -403,7 +403,7 @@
 									#end
 								#end
 							</td>
-							<td headers="title" style="text-indent:$width">
+							<td headers="title" style="text-indent:$width" class="specialLink">
 								<h$headerDepth>
 									#if ($member.isFolder())
 										#if ($member.canRead())

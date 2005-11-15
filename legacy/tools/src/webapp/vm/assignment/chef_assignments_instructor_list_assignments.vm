@@ -271,7 +271,7 @@
 								$!assignment.dueTime.toStringLocalFull()
 							</td>
 							#if ($withGrade)
-								<td headers="num_submissions">
+								<td headers="num_submissions" class="specialLink">
 									#set ($totalSubmission = $service.getSubmissions($assignment))
 									#set ($totalNumber = 0)
 									#set ($ungradedNumber = 0)
