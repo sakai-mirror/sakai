@@ -805,6 +805,26 @@ public class BasicArchiveService
 		try
 		{
 		byte[] decoded = Base64.decode(desc);
+		byte[] filteredDecoded = decoded;
+		for(int i=0; i<decoded.length;i++)
+		{
+			byte b = decoded[i];
+			if (b == (byte) -109 || b == (byte) -108)
+			{
+				// smart quotes, open/close double quote
+				filteredDecoded[i] = (byte) 34;
+			}
+			else if (b == (byte) -111 || b == (byte) -110)
+			{
+				// smart quotes, open/close double quote
+				filteredDecoded[i] = (byte) 39;
+			}
+			else if (b == (byte) -106)
+			{
+				// dash
+				filteredDecoded[i] = (byte) 45;
+			}
+		}
 		desc = new String(decoded, "UTF-8");
 		}
 		catch(Exception any)
