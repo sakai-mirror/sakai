@@ -9,7 +9,7 @@ import org.radeox.regex.MatchResult;
 public class PreEscapeMathFilter extends RegexTokenFilter implements CacheFilter {
 
     public PreEscapeMathFilter() {
-        super("(?<!\\\\)(\\{[^:}]+(?::[^}]*)?\\})(.*?)\\{math}", SINGLELINE);
+        super("(?<!\\\\)(\\{math(?::[^}]*)?\\})(.*?)\\{math}", SINGLELINE);
     }
 
     public void handleMatch(StringBuffer buffer, MatchResult result,
