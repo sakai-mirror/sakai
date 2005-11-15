@@ -25,6 +25,7 @@
 package org.sakaiproject.util;
 
 import java.util.Stack;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.sakaiproject.service.framework.log.cover.Log;
@@ -43,6 +44,7 @@ import org.w3c.dom.Element;
 */
 public class FormattedText
 {
+	//TODO a single merged legacy and util FormattedText
 	
 	/** This list of good and evil tags was extracted from:
 	 * @link http://www.blooberry.com/indexdot/html/tagindex/all.htm
@@ -52,6 +54,8 @@ public class FormattedText
 											"kbd", "li", "marquee", "menu", "nobr", "ol", "p", "pre", "q", "rt", "ruby", "rbc", "rb", "rtc", "rp",
 											"s", "samp", "small", "span", "strike", "strong", "sub", "sup", "tt", "u", "ul", "var", "xmp" 
 											};
+	
+
 	
 	/** These evil HTML tags are disallowed when the user inputs formatted text; this protects
 	 * the system from broken pages as well as Cross-Site Scripting (XSS) attacks.
@@ -71,11 +75,19 @@ public class FormattedText
 	/** An array of regular expression pattern-matchers, that will match the tags given in M_evilTags */
 	private static Pattern[] M_evilTagsPatterns;
 	
+	/** An array of regular expression pattern-matchers, that will match the tags given in M_goodTags */
+	private static Pattern[] M_goodTagsPatterns;
+	
+	/** An array of regular expression pattern-matchers, that will match the tags given in M_goodCloseTags */
+	private static Pattern[] M_goodCloseTagsPatterns;
+	
 	static { init(); }
 	
 	private static void init()
 	{
 		M_evilTagsPatterns = new Pattern[M_evilTags.length];
+		M_goodTagsPatterns = new Pattern[M_goodTags.length];
+		M_goodCloseTagsPatterns = new Pattern[M_goodTags.length];
 		for (int i=0; i<M_evilTags.length; i++)
 		{
 			// matches the start of the particular evil tag "<" followed by whitespace, 
@@ -83,12 +95,26 @@ public class FormattedText
 			// allowed to match over multiple lines.
 			M_evilTagsPatterns[i] = Pattern.compile(".*<\\s*" + M_evilTags[i] + ".*>.*", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
 		}
+		for (int i=0; i<M_goodTags.length; i++)
+		{
+			// matches the start of the particular good tag "<" followed by optional whitespace, 
+			// followed by the tag name, followed by anything or nothing, followed by ">", case insensitive, 
+			// allowed to match over multiple lines.
+			M_goodTagsPatterns[i] = Pattern.compile("<\\s*" + M_goodTags[i] + "(\\s.*>|>)", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
+			// matches the start of the particular good close tag "<" followed by optional whitespace, 
+			// followed by the tag name, followed by anything or nothing, followed by ">", case insensitive, 
+			// allowed to match over multiple lines.
+			M_goodCloseTagsPatterns[i] = Pattern.compile("<\\s*/\\s*" + M_goodTags[i] + "(\\s.*>|>)", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
+		}
 	}
 
 	private static String MSG_NO_HTML_COMMENTS = "HTML-style comments like <!-- comment --> are not allowed in formatted text.";
 		
 	/** Matches HTML-style line breaks like &lt;br&gt; */
 	private static Pattern M_patternTagBr = Pattern.compile("<\\s*br\\s+?[^<>]*?>\\s*", Pattern.CASE_INSENSITIVE);
+	
+	/** Matches HTML-style line breaks like &lt;br/&gt; */
+	private static Pattern M_patternTagBrSlash = Pattern.compile("<\\s*br\\s*/(\\s*>|>)", Pattern.CASE_INSENSITIVE);
 
 	/** Matches HTML paragraph tags */
 	private static Pattern M_patternTagP = Pattern.compile("<\\s*p\\s+?[^<>]*?>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
@@ -98,7 +124,7 @@ public class FormattedText
 
 	/** Matches any HTML-style tag, like &lt;anything&gt; */
 	private static Pattern M_patternTag = Pattern.compile("<.*?>", Pattern.DOTALL);
-	
+
 	/** Matches newlines */
 	private static Pattern M_patternNewline = Pattern.compile("\\n");
 	
@@ -116,9 +142,15 @@ public class FormattedText
 	 * See escapeHtmlFormattedText() 
 	 */
 	private static Pattern M_patternAnchorTag = Pattern.compile("([<]a\\s[^<>]*?)(\\s+href[^<>\\s]*=[^<>\\s]*?)?+([^<>]*?)[>]", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+	
+	/** Matches all close anchor tags. */
+	private static Pattern M_patternCloseAnchorTag = Pattern.compile("[<]\\s[^<>]*?/\\s[^<>]*?a\\s[^<>]*?[>]", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
 	/** Matches all anchor tags that have a target attribute. */
 	private static Pattern M_patternAnchorTagWithTarget = Pattern.compile("([<]a\\s[^<>]*?)target=[^<>\\s]*([^<>]*?)[>]", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+
+	/** Matches href attribute */
+	private static Pattern M_patternHref = Pattern.compile("href\\s*=\\s*\"?\\s*[\\S]+(\\s|>)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 	
 	/**
 	 * Processes and validates user-entered HTML received from the web browser (from the WYSIWYG editor).
@@ -409,7 +441,220 @@ public class FormattedText
 		Xml.encodeAttribute(element, baseAttributeName, convertFormattedTextToPlaintext(value));
 	}
 	
+	/**
+	 * Returns a String with characters above 128 as entity references.
+	 * @param value The text to encode.
+	 * @return The encoded text.
+	 */
+	public static String encodeUnicode(String value)
+	{
+		//TODO call method in each process routine
+		if (value == null) return "";
+
+		try
+		{
+			// lazily allocate the StringBuffer 
+			// only if changes are actually made; otherwise
+		    // just return the given string without changing it.
+			StringBuffer buf = (LAZY_CONSTRUCTION) ? null : new StringBuffer();
+			final int len = value.length();
+			for (int i = 0; i < len; i++)
+			{
+				char c = value.charAt(i);
+				if (c < 128)
+				{
+					if (buf != null) buf.append(c);
+				}
+				else
+				{
+				    // escape higher Unicode characters using an
+				    // HTML numeric character entity reference like "&#15672;"
+					if (buf == null) buf = new StringBuffer(value.substring(0, i));
+					buf.append("&#");
+					buf.append(Integer.toString((int)c));
+					buf.append(";");
+				}
+			}	// for
+
+			return (buf == null) ? value : buf.toString();
+		}
+		catch (Exception e)
+		{
+			Log.warn("chef", "Validator.escapeHtml: ", e);
+			return value;
+		}
+	}
 	
+	/**
+	 * Returns a String with HTML entity references converted
+	 * to characters suitable for processing as formatted text.
+	 * @param value The text containing entity references (e.g., 
+	 * a News item description).
+	 * @return The HTML, ready for processing.
+	 */
+	public static String unEscapeHtml(String value)
+	{
+		if(value == null)
+			return "";
+		if(value.equals(""))
+			return "";
+		value.replaceAll("&lt;","<");
+		value.replaceAll("&gt;",">");
+		value.replaceAll("&amp;","&");
+		value.replaceAll("&quot;","\"");
+		return value;
+	}
+	
+	/**
+	 * Returns a String with HTML anchor normalized to include only
+	 * href and target="_blank" for safe display by a browser.
+	 * @param anchor The anchor tag to be normalized.
+	 * @return The anchor tag containing only href and target="_blank".
+	 */
+	public static String processAnchor(String anchor)
+	{
+		String newAnchor = "";
+		String href = null;
+
+		//get href
+		try
+		{
+			Matcher matcher = M_patternHref.matcher(anchor);
+			if(matcher.find())
+				href = matcher.group();
+		}
+		catch(Exception e)
+		{
+			Log.warn("chef", "FormattedText.processAnchor ", e);
+		}
+		
+		//open in a new window
+		if(href != null)
+		{
+			href = href.replaceAll("\"","");
+			href = href.replaceAll(">","");
+			href = href.replaceAll("http","\"http");
+			href = href.replaceAll("https","\"https");
+			newAnchor = "<a " + href + "\" target=\"_blank\">";
+		}
+		else
+			Log.warn("chef", "FormattedText.processAnchor href == null");
+		return newAnchor;
+	}
+	
+	/**
+	 * Processes and validates character data as HTML.
+	 * Disallows dangerous stuff such as &lt;SCRIPT&gt; JavaScript tags.  Encodes the text
+	 * according to the formatted text specification, for the rest of the system to use.
+	 * @param source The escaped HTML (e.g., from the News service)
+	 * @return The validated processed formatted text, ready for use by the system.
+	 */
+	public static String processEscapedHtml(final String source)
+	{
+		if(source == null)
+			return "";
+		if(source.equals(""))
+			return "";
+		
+		String Html = null;
+		try
+		{
+			//TODO call encodeUnicode in other process routine
+			Html = encodeUnicode(source);
+		}
+		catch(Exception e)
+		{
+			Log.warn("chef", "FormattedText.processEscapedHtml encodeUnicode(source):", e);
+		}
+		try
+		{
+			//to use the FormattedText functions
+			Html = unEscapeHtml(Html);
+		}
+		catch(Exception e)
+		{
+			Log.warn("chef", "FormattedText.processEscapedHtml unEscapeHtml(Html):", e);
+		}
+		
+		//normalize all variants of the "<br>" HTML tag to be "<br />\n"
+		//TODO call a method to do this in each process routine
+		Html = M_patternTagBr.matcher(Html).replaceAll("<br />\n");
+		
+		//process text and tags
+		StringBuffer buf = new StringBuffer();
+		if(Html != null)
+		{
+			//TODO LAZY ALLOCATION
+			try
+			{
+				int start = 0;
+				Matcher m = M_patternTag.matcher(Html);
+				
+				//if there are no tags, return as is
+				if(!m.find())
+					return Html;
+				m.reset(Html);
+				
+				//if there are tags, make sure they are safe
+				while (m.find())
+				{
+					boolean escape = true;
+					
+					//append text that isn't part of a tag
+					if(m.start() > start)
+						buf.append(Html.substring(start, m.start()));
+					start = m.end();
+					
+					//if it's a good open tag, don't escape the HTML
+					for (int i=0; i<M_goodTags.length; i++)
+					{
+						if (M_goodTagsPatterns[i].matcher(m.group()).matches())
+						{
+							if(M_patternAnchorTag.matcher(m.group()).matches()
+									&& !M_patternCloseAnchorTag.matcher(m.group()).matches())
+							{
+								//if it's an anchor tag, sanitize it
+								buf.append(processAnchor(m.group()));
+								escape = false;
+							}
+							else
+							{
+								//otherwise just include it
+								buf.append(m.group());
+								escape = false;
+							}
+						}
+						else if(M_goodCloseTagsPatterns[i].matcher(m.group()).matches())
+						{
+							//if it's a good close tag, don't escape the HTML
+							buf.append(m.group());
+							escape = false;
+						}
+					}
+					if(M_patternTagBrSlash.matcher(m.group()).matches())
+					{
+						//or if it's a good br tag, don't escape HTML characters
+						buf.append(m.group());
+						escape = false;
+					}
+					
+					//otherwise escape tag
+					if(escape)
+						buf.append((String)escapeHtml(m.group(), false));
+				}
+				
+				//tail
+				if(Html.length() > start)
+					buf.append(Html.substring((start)));
+			}
+			catch(Exception e)
+			{
+				Log.warn("chef", "FormattedText.processEscapedHtml M_patternTag.matcher(Html):", e);
+			}
+		}
+		return new String(buf.toString());
+	}
+
 	/**
 	 * Retrieves a formatted text attribute from an XML element; converts from 
 	 * older forms of formatted text or plaintext, if found.  For example, if the 
@@ -473,7 +718,6 @@ public class FormattedText
 			if (value.indexOf(ref) >= 0)
 			{
 				val = M_htmlCharacterEntityReferencesUnicode[i];
-				//System.out.println("REPLACING "+ref+" WITH UNICODE CHARACTER #"+val+" WHICH IN JAVA IS "+Character.toString(val));
 				value = value.replaceAll(ref, Character.toString(val));
 			}
 		}
@@ -1209,7 +1453,6 @@ private static final char[] M_htmlCharacterEntityReferencesUnicode =
 	8250,
 	8364
 };
-
 
 }	// class FormattedText
 

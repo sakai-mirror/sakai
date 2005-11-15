@@ -42,6 +42,7 @@ import org.sakaiproject.service.legacy.news.NewsFormatException;
 import org.sakaiproject.service.legacy.news.NewsItem;
 import org.sakaiproject.service.legacy.news.NewsService;
 import org.sakaiproject.util.Filter;
+import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.Validator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -60,7 +61,7 @@ public class BasicNewsService implements NewsService
 {
 	// default expiration is 10 minutes (expressed in seconds)
 	protected static int DEFAULT_EXPIRATION = 10 * 60;
-
+	
 	// The cache in which channels and news-items are held
 	protected Cache m_storage = null;
 
@@ -70,7 +71,7 @@ public class BasicNewsService implements NewsService
 
 	/** Dependency: logging service */
 	protected Logger m_logger = null;
-
+	
 	/**
 	 * Dependency: logging service.
 	 * 
@@ -128,7 +129,35 @@ public class BasicNewsService implements NewsService
 
 		m_logger.info(this + ".destroy()");
 	}
-
+	
+	/**
+	 * <p>
+	 *  Permits safe tags but escapes other tags.
+	 * </p>
+	 * 
+	 * @param in 
+	 *        The String to process.
+	 * @return text 
+	 *         that is safe to display in a browser window.
+	 */
+	protected String getSafeHtml(String in)
+	{
+		String safeHtml = "";
+		if(in == null)
+			return safeHtml;
+		if(in.equals(""))
+			return safeHtml;
+		try
+		{
+			safeHtml = FormattedText.processEscapedHtml(in);
+		}
+		catch(Exception e)
+		{
+			m_logger.warn(this + ".getSafeHtml() " + e);
+		}
+		return safeHtml;
+	}
+	
 	/**
 	 * <p>
 	 * Checks whether channel is cached. If not or if it's expired, retrieve the feed and update the cache
@@ -399,7 +428,7 @@ public class BasicNewsService implements NewsService
 				insource.setEncoding("UTF-8");
 
 				// if insource is not XML, parser may print error message to console
-				// before throwing exception -- Needs to be fixed %%%%%%%%%
+				// before throwing exception -- Needs to be fi6xed %%%%%%%%%
 				document = parser.parse(insource);
 			}
 			catch (MalformedURLException e)
@@ -506,8 +535,9 @@ public class BasicNewsService implements NewsService
 				iTitle = Validator.stripAllNewlines(iTitle);
 
 				String iDescription = getNodeValue(items.item(i), "description", null);
+				iDescription = getSafeHtml(iDescription);
 				iDescription = Validator.stripAllNewlines(iDescription);
-
+		
 				String iLink = getNodeValue(items.item(i), "link", null);
 				iLink = Validator.stripAllNewlines(iLink);
 
@@ -849,7 +879,7 @@ public class BasicNewsService implements NewsService
 		// %%%%%
 		return true;
 	}
-
+	
 	/**
 	 * Retrieves a list of URLs for NewsChannel objects currently indexed by the service.
 	 * 
