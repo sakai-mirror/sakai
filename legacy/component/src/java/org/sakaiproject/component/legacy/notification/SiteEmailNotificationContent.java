@@ -146,7 +146,7 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 		buf.append("\n" + rb.getString("locsit") + " \"" + title + "\" > " + rb.getString("reso") + " " + path + " > " + resourceName);
 		if (copyrightAlert)
 		{
-			buf.append("(c)");
+			buf.append(" (c)");
 		}
 		buf.append("\n");
 
@@ -161,7 +161,7 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 		buf.append("\n" + rb.getString("resour") + " " + resourceName);
 		if (copyrightAlert)
 		{
-			buf.append("(c)");
+			buf.append(" (c)");
 		}
 		buf.append(" " + url);
 		buf.append("\n");
