@@ -4339,11 +4339,11 @@ extends PagedResourceActionII
 							}
 							catch (PermissionException ee)
 							{
-								addAlert(state, rb.getString("cannotrem") + " " + title + ". ");
+								// ignore exception
 							}
 							catch (InUseException ee)
 							{
-								addAlert(state, INUSE_ERROR_MESSAGE + rb.getString("calen"));
+								// ignore exception
 							}
 						}
 					}					
