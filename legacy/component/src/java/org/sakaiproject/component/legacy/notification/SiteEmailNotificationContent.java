@@ -146,7 +146,7 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 		buf.append("\n" + rb.getString("locsit") + " \"" + title + "\" > " + rb.getString("reso") + " " + path + " > " + resourceName);
 		if (copyrightAlert)
 		{
-			buf.append("©");
+			buf.append("(c)");
 		}
 		buf.append("\n");
 
@@ -161,7 +161,7 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 		buf.append("\n" + rb.getString("resour") + " " + resourceName);
 		if (copyrightAlert)
 		{
-			buf.append("©");
+			buf.append("(c)");
 		}
 		buf.append(" " + url);
 		buf.append("\n");
@@ -190,7 +190,7 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 		// tag the message
 		String rv = newline + rb.getString("separator") + newline + rb.getString("this") + " "
 				+ ServerConfigurationService.getString("ui.service", "Sakai") + " ("
-				+ ServerConfigurationService.getServerUrl() + ") " + rb.getString("forthe") + " " + title
+				+ ServerConfigurationService.getPortalUrl() + ") " + rb.getString("forthe") + " " + title
 				+ " " + rb.getString("site") + newline + rb.getString("youcan") + newline;
 		return rv;
 	}

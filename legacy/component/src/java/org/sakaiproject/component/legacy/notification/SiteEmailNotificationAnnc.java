@@ -164,7 +164,7 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 		buf.append(hdr.getDate().toStringLocalFull());
 		buf.append(newline);
 		buf.append(newline);
-		buf.append(" --- " + rb.getString("Message") + " ---");
+		buf.append(rb.getString("Message") + ": ");
 		buf.append(newline);
 		buf.append(newline);
 		buf.append(msg.getBody());
@@ -211,7 +211,7 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 		// tag the message
 		String rv = newline + rb.getString("separator") + newline + rb.getString("this") + " "
 				+ ServerConfigurationService.getString("ui.service", "Sakai") + " ("
-				+ ServerConfigurationService.getServerUrl() + ") " + rb.getString("forthe") + " " + title
+				+ ServerConfigurationService.getPortalUrl() + ") " + rb.getString("forthe") + " " + title
 				+ " " + rb.getString("site") + newline + rb.getString("youcan") + newline;
 		return rv;
 	}

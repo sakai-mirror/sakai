@@ -199,7 +199,7 @@ public class SiteEmailNotificationMail extends SiteEmailNotification
 		// tag the message
 		String rv = newline + rb.getString("separator") + newline + rb.getString("this") + " "
 				+ ServerConfigurationService.getString("ui.service", "Sakai") + " ("
-				+ ServerConfigurationService.getServerUrl() + ") " + rb.getString("forthe") + " " + title
+				+ ServerConfigurationService.getPortalUrl() + ") " + rb.getString("forthe") + " " + title
 				+ " " + rb.getString("site") + newline + rb.getString("youcan") + newline;
 		return rv;
 	}
