@@ -268,4 +268,11 @@ public interface AuthzGroup extends Edit, Comparable, Serializable
 	 *        The external group id for the GroupProvider, or null if there is to be none.
 	 */
 	void setProviderGroupId(String id);
+	
+	/**
+	 * Adjust membership so that active members are all active in other, and inactive members are all defined in other
+	 * @param other The other azg to adjust to.
+	 * @return true if any changes were made, false if not.
+	 */
+	boolean keepIntersection(AuthzGroup other);
 }

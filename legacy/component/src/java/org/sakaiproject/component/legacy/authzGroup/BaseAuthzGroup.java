@@ -1157,6 +1157,47 @@ public class BaseAuthzGroup implements AuthzGroup
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public boolean keepIntersection(AuthzGroup other)
+	{
+		if (other == null) return false;
+		
+		boolean rv = false;
+		
+		// get un-lazy
+		if (m_lazy) ((BaseAuthzGroupService) (AuthzGroupService.getInstance())).m_storage.completeGet(this);
+
+		// for each member
+		for (Iterator it = m_userGrants.entrySet().iterator(); it.hasNext();)
+		{
+			Map.Entry entry = (Map.Entry) it.next();
+			Member grant = (Member) entry.getValue();
+			
+			Member otherMember = other.getMember(grant.getUserId());
+			
+			// remove our member if the other has no member
+			if (otherMember == null)
+			{
+				it.remove();
+				rv = true;
+			}
+
+			// make sure we are just as active as other
+			else
+			{
+				if (grant.isActive() != otherMember.isActive())
+				{
+					grant.setActive(otherMember.isActive());
+					rv = true;
+				}
+			}
+		}
+		
+		return rv;
+	}
+
+	/**
 	 * Enable editing.
 	 */
 	protected void activate()

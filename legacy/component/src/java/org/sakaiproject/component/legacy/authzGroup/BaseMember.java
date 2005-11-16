@@ -91,6 +91,14 @@ public class BaseMember implements Member
 	/**
 	 * {@inheritDoc}
 	 */
+	public void setActive(boolean active)
+	{
+		this.active = active;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public int compareTo(Object obj)
 	{
 		if (!(obj instanceof Member)) throw new ClassCastException();

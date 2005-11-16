@@ -61,4 +61,10 @@ public interface Member extends Comparable, Serializable
 	 * @return true if the membership is active, false if not.
 	 */
 	boolean isActive();
+
+	/**
+	 * Set the active value.
+	 * @param active The new active value.
+	 */
+	void setActive(boolean active);
 }

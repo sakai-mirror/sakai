@@ -1475,4 +1475,11 @@ public class BaseSite implements Site
 		m_azgChanged = true;
 		getAzg().setProviderGroupId(id);
 	}
+
+	public boolean keepIntersection(AuthzGroup other)
+	{
+		boolean changed = getAzg().keepIntersection(other);
+		if (changed) m_azgChanged = true;
+		return changed;
+	}
 }

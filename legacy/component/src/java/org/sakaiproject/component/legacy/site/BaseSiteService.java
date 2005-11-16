@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.api.kernel.thread_local.cover.ThreadLocalManager;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -719,7 +720,7 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		// save any modified azgs
 		enableAzgSecurityAdvisor();
 		saveSiteAzg(site);
-		saveGroupAzgs(site);		
+		saveGroupAzgs(site);
 		SecurityService.clearAdvisors();
 
 		// sync up with all other services
@@ -1350,6 +1351,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	public void setSiteSecurity(String siteId, Set updateUsers, Set visitUnpUsers, Set visitUsers)
 	{
 		m_storage.setSiteSecurity(siteId, updateUsers, visitUnpUsers, visitUsers);
+		
+		// the site's azg may have just been updated, so enforce site group subset membership
+		enforceGroupSubMembership(siteId);
 	}
 
 	/**
@@ -2505,5 +2509,42 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		return rv;
+	}
+	
+	/**
+	 * Adjust any site groups for this site so that the group membership is a subset of the site's membership.
+	 * @param siteId The site to adjust.
+	 */
+	protected void enforceGroupSubMembership(String siteId)
+	{
+		// just being paranoid, but lets make sure we don't get stuck in a loop here -ggolden
+		if (ThreadLocalManager.get("enforceGroupSubMembership") != null)
+		{
+			m_logger.warn(this + ".enforceGroupSubMembership: recursion avoided!: " + siteId);
+			return;
+		}
+		ThreadLocalManager.set("enforceGroupSubMembership", siteId);
+
+		try
+		{
+			Site site = getDefinedSite(siteId);
+			for (Iterator i = site.getGroups().iterator(); i.hasNext();)
+			{
+				Group group = (Group) i.next();
+				group.keepIntersection(site);
+			}
+
+			// save any changed group azg
+			enableAzgSecurityAdvisor();
+			saveGroupAzgs(site);
+			SecurityService.clearAdvisors();
+		}
+		catch (IdUnusedException e)
+		{
+			// site not found?
+			m_logger.warn(this + ".enforceGroupSubMembership: site not found: " + siteId);
+		}
+		
+		ThreadLocalManager.set("enforceGroupSubMembership", null);
 	}
 }
