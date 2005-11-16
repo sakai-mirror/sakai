@@ -52,9 +52,9 @@
 				</p>
 			#else
 				<div class="rightNav">
-					<p class="instruction">
+					<span class="instruction">
 						Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items
-					</p>
+					</span>
 					#if ($pagesize != 0)
 						#if ($goFPButton == "true")
 							<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
@@ -240,7 +240,7 @@
 
 			<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post" style="margin:1em -.5em;">
 				#if (!$messageListVector.iterator().hasNext())
-					<p class="instruction"><br />
+					<p class="instruction">
       					$tlang.getString("gen.thereare")
 					</p>
 				#else
@@ -315,7 +315,7 @@
 						</form>
 					#else
 						<div class="rightNav">
-							<p class="instruction" style="margin-bottom:.3em">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</p>
+							<span class="instruction" style="margin-bottom:.3em">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</span>
 					 			#if ($pagesize != 0)
 									#if ($goFPButton == "true")
 										<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
@@ -411,7 +411,7 @@
 										</th>
 									#end
 								#end
-								<th id="$tlang.getString('gen.visible')">
+								<th id="channel">
 									#if (!$currentSortedBy.equalsIgnoreCase("$tlang.getString('gen.visible')"))
 										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbyfor")';return false;" title="$tlang.getString('gen.sortbyfor')">$tlang.getString("gen.visible")</a>
 									#else
@@ -547,10 +547,10 @@
 						#else
 						
 							<div class="rightNav">
-								<p class="instruction">
+								<span class="instruction">
 									##$tlang.getString("gen.viewing") $topMsgPos - $btmMsgPos / $allMsgNumber $tlang.getString("gen.items")
 									  $tlang.getString("gen.viewing") $topMsgPos - $btmMsgPos $tlang.getString("gen.separator") $allMsgNumber $tlang.getString("gen.items")
-								</p>
+								</span>
 								#if ($pagesize != 0)
 									#if ($goFPButton == "true")
 										<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
