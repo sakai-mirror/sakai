@@ -49,6 +49,8 @@ import org.sakaiproject.service.framework.config.cover.ServerConfigurationServic
 import org.sakaiproject.service.framework.log.cover.Logger;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
+import org.sakaiproject.service.framework.session.UsageSession;
+import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
@@ -316,6 +318,24 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 		// set the "pid"
 		context.put("param_pid", ActionURL.PARAM_PID);
 		context.put("pid", getPid(req));
+
+		// indicate which version of WYSIWYG editor to use in legacy tools
+		String twinpeaks = ServerConfigurationService.getString("wysiwyg.twinpeaks");
+		if(Boolean.TRUE.toString().equalsIgnoreCase(twinpeaks))
+		{
+			context.put("twinpeaks", "true");
+		}
+		
+		UsageSession session = UsageSessionService.getSession();
+		if(session != null)
+		{
+			String browserId = session.getBrowserId();
+			if(UsageSession.WIN_IE.equals(browserId) || UsageSession.WIN_MZ.equals(browserId) || UsageSession.WIN_NN.equals(browserId) 
+					|| UsageSession.MAC_MZ.equals(browserId) || UsageSession.MAC_NN.equals(browserId) )
+			{
+				context.put("wysiwyg", "true");
+			}
+		}
 
 		try
 		{

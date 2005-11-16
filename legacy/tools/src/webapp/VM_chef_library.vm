@@ -124,6 +124,14 @@
     <meta http-equiv="Content-Style-Type" content="text/css" />
     <title>$!{toolTitle}</title>
     $!sakai_head
+	## setup wysiwyg editor
+	#if($wysiwyg)
+	    <script type="text/javascript" language="JavaScript">
+    			var _editor_url = "#libraryLink("htmlarea/")"
+    		</script>
+    		<script type="text/javascript" language="JavaScript" src="#libraryLink('htmlarea/htmlarea.js')">
+    		</script>
+    	#end
 #if ($frameRefresh)
 	#foreach ($id in $frameRefresh)
 	<script type="text/javascript" language="JavaScript">
@@ -326,19 +334,31 @@
 *# ------------------------------------------------------------------
 #macro (chef_setupformattedtextarea $textarea_id)
 
-	## Everything is in our own external JavaScript library
-	<script type="text/javascript" src="#libraryLink('htmlarea/sakai-htmlarea.js')"></script>
-	## Call a JavaScript function from within the library to do setup
-	<script type="text/javascript" defer="1">chef_setupformattedtextarea('$textarea_id');</script>
+	#if($wysiwyg)
+		## Everything is in our own external JavaScript libraries, one with support for twinpeaks and one without
+		#if($twinpeaks)
+			<script type="text/javascript" src="#libraryLink('htmlarea/sakai_htmlarea_twinpeaks.js')"></script>
+		#else
+			<script type="text/javascript" src="#libraryLink('htmlarea/sakai-htmlarea.js')"></script>
+		#end
+		## Call a JavaScript function from within the library to do setup
+		<script type="text/javascript" defer="1">chef_setupformattedtextarea('$textarea_id');</script>
+	#end
 #end
 
 
 #macro (chef_setuphtmldocumenttextarea $textarea_id)
 	
-	## Everything is in our own external JavaScript library
-	<script type="text/javascript" src="#libraryLink('htmlarea/sakai-htmlarea.js')"></script>
-	## Call a JavaScript function from within the library to do setup
-	<script type="text/javascript" defer="1">chef_setuphtmldocumenttextarea('$textarea_id');</script>
+	#if($wysiwyg)
+		## Everything is in our own external JavaScript libraries, one with support for twinpeaks and one without
+		#if($twinpeaks)
+			<script type="text/javascript" src="#libraryLink('htmlarea/sakai_htmlarea_twinpeaks.js')"></script>
+		#else
+			<script type="text/javascript" src="#libraryLink('htmlarea/sakai-htmlarea.js')"></script>
+		#end
+		## Call a JavaScript function from within the library to do setup
+		<script type="text/javascript" defer="1">chef_setuphtmldocumenttextarea('$textarea_id');</script>
+	#end
 #end
 
 #macro (sakai_courier)

@@ -8,7 +8,7 @@
 
 //formatted text editing widget within Sakai
 //
-// This Sakai-specific JavaScript does setup for using the HTMLArea JavaScript library.
+// This Sakai-specific JavaScript does setup for using the HTMLArea JavaScript library with specific support for the TwinPeaks plug-in.
 //
 // Usage: 
 //
@@ -86,12 +86,16 @@ else
 	{
 		document.htmlareas = new Array();
 	
+		// [start twin peaks]
+		document.htmlarea_plugins = ["ResourceSearch"];
+		// [end twin peaks]
+
 		// This section will only be included ONCE per HTML document that contains formatted text editing widget(s)
 		_editor_url = "/library/htmlarea/";
 		_editor_lang = "en";
 		
 		// funky way to include the HTMLArea JavaScript library, from within JavaScript
-		// document.write('<script type="text/javascript" src="/library/htmlarea/htmlarea.js"></script>');
+		document.write('<script type="text/javascript" src="/library/htmlarea/htmlarea.js"></script>');
 		
 		document.write('<script type="text/javascript">HTMLArea.loadPlugin("ResourceSearch");</script>');
 	
@@ -101,6 +105,43 @@ else
 		//}
 	}
 }
+
+// [start twin peaks]
+//
+// Load any plugins: chef_loadPlugins();
+//
+function chef_loadplugins()
+{
+	if (typeof document.htmlarea_plugins == "undefined")
+	{
+		return;
+	}
+
+	for (var i in document.htmlarea_plugins)
+	{
+			HTMLArea.loadPlugin(document.htmlarea_plugins[i]);
+	}
+}
+
+// Register all available plugins for each instance of the HTMLArea editor
+//		chef_registerplugins(HTMLArea-editor-instance);
+//
+function chef_registerplugins(editor)
+{
+	if (typeof document.htmlarea_plugins == "undefined")
+	{
+		return;
+	}
+
+	for (var i in document.htmlarea_plugins)
+	{
+		try
+		{
+			editor.registerPlugin(document.htmlarea_plugins[i]);
+		} catch (exception) { }
+	}
+}
+// [end twin peaks]
 
 // textarea_id - The HTML id of the HTML textarea 
 // that should be turned into a fancy formatted text editing widget
@@ -180,6 +221,12 @@ function chef_setupformattedtext(textarea_id, width, height, toolbar_num_button_
 	var ta = HTMLArea.getElementById("textarea", textarea_id);
 	var editor = new HTMLArea(ta, config);
 		
+	// [start twin peaks]
+	// Register plugins
+	editor.registerPlugin("ResourceSearch");
+	// chef_registerplugins(editor, document.htmlarea_plugins);
+	// [end twin peaks]
+
 	if (fulldocumentediting)
 	{
 		// register the TableOperations plugin
