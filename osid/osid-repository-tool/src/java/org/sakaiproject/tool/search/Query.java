@@ -39,7 +39,7 @@ public class Query extends HttpTransactionQueryBase {
 	 * Base URL for query
 	 */
 	public static final String BASE_URL	=
-															 "http://localhost:8080/OSIDRepository/OSIDsearch";
+															 "http://localhost:8080/sakai-osid-repo-test/OSIDRepository/OSIDsearch";
 	/**
    * Query parameters (tack on the URLEncoded search string)
    */

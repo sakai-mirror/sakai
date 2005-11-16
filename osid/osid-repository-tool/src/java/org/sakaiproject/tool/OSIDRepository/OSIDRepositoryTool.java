@@ -131,10 +131,23 @@ public class OSIDRepositoryTool extends HttpServlet {
 		else
 		{
 			System.out.println("in OSIDRepositoryTool - not initial query");
-			String				database[]		= request.getParameterValues("database");
-			int numDatabases = database.length;
+			String database[];
+			int numDatabases = 0;
 			
-			System.out.println("databases " + database[0]);
+			try 
+			{
+					database = request.getParameterValues("database");
+					numDatabases = database.length;
+			} 
+			catch (Throwable t) 
+			{
+				throw new IllegalArgumentException("No database selected");
+			}
+
+			if (request.getParameter("searchString").trim().equals("")) 
+			{
+				throw new IllegalArgumentException("Nothing to find");
+			}
 
 			if (numDatabases > 0)
 			{
@@ -170,23 +183,6 @@ public class OSIDRepositoryTool extends HttpServlet {
 				}				
 				document = formatResultDocument(query, searchResult);
 			}
-/*
- else 
-			{				
-				query = null;
-				sessionContext 	= SessionContext.getInstance(getHttpSession(request));
-				query			= doQuery(request, sessionContext, database[0]);
-				searchResult	= parseResponse(query,database[0]);
-
-				// capture what is in this searches set of results
-				MatchItem items[] = searchResult.toArray();
-				for (int j=0; j < items.length; j++)
-				{
-					searchResult.addItem(items[j]);
-				}
-				document 		= formatResultDocument(query, searchResult);
-			}
-*/
 		}
     } 
 	catch (Exception exception) 
