@@ -621,7 +621,7 @@
 							</td>
 							<td headers="checkboxes">
 							</td>
-							<td headers="title">
+							<td headers="title" class="specialLink">
 								<h3>
 									#if ($root.isFolder())
 										#if ($root.canRead())
@@ -814,7 +814,7 @@
 											#end
 										#end
 									</td>
-									<td headers="title" style="text-indent:$width">
+									<td headers="title" style="text-indent:$width" class="specialLink">
 										<h$headerDepth>
 										#if ($member.isFolder())
 												#if ($member.canRead())
