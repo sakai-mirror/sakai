@@ -53,7 +53,7 @@ public abstract class HttpTransactionQueryBase
 	 */
 	private static final String	QUERYFORM  = "QueryForm";
 
-  private HttpTransaction	_transaction;
+  public HttpTransaction	_transaction;
   private boolean     		_followRedirects;
   private int		 	    		_redirectBehavior;
   private String					_method;

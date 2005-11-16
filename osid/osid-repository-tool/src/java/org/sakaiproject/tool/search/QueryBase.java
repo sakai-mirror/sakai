@@ -44,7 +44,7 @@ public abstract class QueryBase implements QueryInterface {
 	/**
 	 * Do a query - there is no base implementation.
 	 */
-  public abstract void doQuery();
+  public abstract void doQuery(String baseURL);
 
 	/**
 	 * Populate user request parameters

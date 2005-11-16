@@ -36,15 +36,9 @@ import org.xml.sax.*;
  */
 public class Query extends HttpTransactionQueryBase {
 	/**
-	 * Base URL for query
-	 */
-	public static final String BASE_URL	=
-															 "http://localhost:8080/sakai-osid-repo-test/OSIDRepository/OSIDsearch";
-	/**
    * Query parameters (tack on the URLEncoded search string)
    */
-   public static final String QUERY_URL	= BASE_URL
-															+ "?criteria=";
+   public static final String QUERY_URL	= "/OSIDSearch?criteria=";
 	/**
 	 * Image count parameter (request a specific number of images)
 	 */
@@ -60,18 +54,20 @@ public class Query extends HttpTransactionQueryBase {
 	/**
 	 * Search for images
 	 */
-        public void doQuery() 
+        public void doQuery(String base) 
         {
+			
     /*
      * URLConnection handles redirects, query with GET, expect UTF-8 response
      */
-    setRedirectBehavior(REDIRECT_AUTOMATIC);
+			
+			setRedirectBehavior(REDIRECT_AUTOMATIC);
     setQueryMethod(METHOD_GET);
     setDefaultCharacterSet("UTF-8");
     /*
      * Set up the URL (for GET), submit query
      */
-		setUrl(QUERY_URL
+			setUrl(base + QUERY_URL
 				+  URLEncoder.encode(getRequestParameter("searchString"))
 				+  IMAGECOUNT_PARAMETER
 				+  getImageCount());
