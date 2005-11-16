@@ -22,21 +22,21 @@
 				## hide search form when in normal user login and in my workspace sites view
 				<form name="searchForm" class="inlineForm" action="#toolForm("SiteAction")" method="post" style="display:inline">
 					<input type="hidden" name="eventSubmit_doSite_search" value="null" />
-					<label for="$form_search" class="skip">Search</label>
+					<label for="$form_search" class="skip">$tlang.getString('list.search')</label>
 					<input size="20" value="$!searchString" name="$form_search" id="$form_search" type="text" class="searchField" style="background-color:#fff;width:10em;color:#000" />
 					<a href="#" title="$tlang.getString('list.search')" onclick="location = '#toolLink($action "doSite_search")'+buildQueryString('searchForm');return false;">
-						$tlang.getString("list.search")
+						<input type="button" class="button" value="$tlang.getString('list.search')" />
 					</a>
 					#if (($!searchString) && (!$searchString.equals("")))
 						<a href="#" title="$tlang.getString('list.cls')" onclick="location = '#toolLink($action "doSite_search_clear")'+buildQueryString('searchForm');return false;">
-							$tlang.getString("list.cls")
+							<input type="button" class="button" value="$tlang.getString("list.cls")" />
 						</a>
 					#end
 				</form>
 			#end
 		</div>
 	</div>	
-	<div style="clear:both;margin:1em 0">
+	<div style="clear:both;margin:0">
 		#if ($sites.size() > 0)
 			#if ($!superUser || (!$!superUser && $viewSelected != $tlang.getString("java.my")))
 				<div class="leftNav">
@@ -44,9 +44,13 @@
 						#if($!allMsgNumber == "1") $tlang.getString("list.onesite")#else $allMsgNumber $tlang.getString("list.sites")#end $tlang.getString("list.found") "$!searchString" $tlang.getString("list.inthe") "$!viewSelected".
 						#end
 				</div>
+				#if ($sites.size() > 0)
+					<div class ="leftNav">
+						<br /><span class="instruction">$tlang.getString("list.check")</span>
+					</div>
+				#end
 				<div class="rightNav">
-				
-					<span class="instruction" style="margin-bottom:.3em">$tlang.getString("list.viewing") $topMsgPos - $btmMsgPos $tlang.getString("import.of") $allMsgNumber $tlang.getString("list.items")</span>
+					<span class="instruction">$tlang.getString("list.viewing") $topMsgPos - $btmMsgPos $tlang.getString("import.of") $allMsgNumber $tlang.getString("list.items")</span>
 					#if ($pagesize != 0)
 						#if ($goPPButton == "true")
 							<form name="nextpageForm" style="display:inline;" method="post" action="#toolForm("$action")">
@@ -79,9 +83,6 @@
 		</div>	
 	#end
 	#if ($sites.size() > 0)
-		<p class ="instruction" style="clear:both;margin:1.5em  0 0 0">
-			$tlang.getString("list.check")
-		</p>
 		<form name="sitesForm" action="#toolForm("SiteAction")" method="post">
 			<table class ="listHier" cellspacing="0" summary ="List of sites">
 				<tr>
@@ -215,10 +216,12 @@
 			</table>
 		</form>
 	#else
-		$tlang.getString("list.nosites")
-		#if ($!searchString && !$searchString.equals(""))
-			$tlang.getString("list.thatmatch") "$!searchString"
-		#end
-		$tlang.getString("list.inthe") "$!viewSelected".
+		<p class="instruction">
+			$tlang.getString("list.nosites") 
+			#if ($!searchString && !$searchString.equals(""))
+				$tlang.getString("list.thatmatch") "$!searchString"
+			#end
+			$tlang.getString("list.inthe") "$!viewSelected".
+		</p>	
 	#end
 </div>
