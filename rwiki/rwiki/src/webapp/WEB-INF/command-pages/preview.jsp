@@ -28,8 +28,8 @@
       	<div class="portletBody">
       		<div class="navIntraTool">
 	  <form action="?#" method="get" class="rwiki_searchForm">
-	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.viewUrl}"/></jsp:attribute>view</jsp:element>
-	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.infoUrl}"/></jsp:attribute>info</jsp:element>
+	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.viewUrl}"/></jsp:attribute>View</jsp:element>
+	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.infoUrl}"/></jsp:attribute>Info</jsp:element>
 	    Search:	<input type="hidden" name="action" value="search" />
 	    <input type="hidden" name="panel" value="Main" />
 	    <input type="text" name="search" />

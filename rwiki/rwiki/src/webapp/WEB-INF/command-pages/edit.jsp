@@ -41,13 +41,13 @@
 	      <!-- Home Link -->
 	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${homeBean.homeLinkUrl}"/></jsp:attribute><c:out value="${homeBean.homeLinkValue}"/></jsp:element>
 	      <!-- View Link -->
-	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.viewUrl}"/></jsp:attribute>view</jsp:element>
+	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.viewUrl}"/></jsp:attribute>View</jsp:element>
 	      <!-- Edit Link -->
-	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.editUrl}"/></jsp:attribute><jsp:attribute name="class">rwiki_currentPage</jsp:attribute>edit</jsp:element>
+	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.editUrl}"/></jsp:attribute><jsp:attribute name="class">rwiki_currentPage</jsp:attribute>Edit</jsp:element>
 	      <!-- Info Link -->
-	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.infoUrl}"/></jsp:attribute>info</jsp:element>
+	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.infoUrl}"/></jsp:attribute>Info</jsp:element>
 	      <!-- History Link -->
-	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.historyUrl}"/></jsp:attribute>history</jsp:element>
+	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.historyUrl}"/></jsp:attribute>History</jsp:element>
 	    </span>
 	    <span class="rwiki_searchBox">
 	      Search:	<input type="hidden" name="action" value="search" />

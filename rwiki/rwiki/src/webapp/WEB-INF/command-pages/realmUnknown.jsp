@@ -30,9 +30,9 @@
 		<!-- Home Link -->
 		<!--<jsp:element name="a"><jsp:attribute name="href"><c:out value="${homeBean.homeLinkUrl}"/></jsp:attribute><c:out value="${homeBean.homeLinkValue}"/></jsp:element>-->
 		<!-- View Link -->
-		<!--<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmEditBean.viewUrl}"/></jsp:attribute>view</jsp:element>-->
+		<!--<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmEditBean.viewUrl}"/></jsp:attribute>View</jsp:element>-->
 		<!-- Info Link -->
-		<!--<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmEditBean.infoUrl}"/></jsp:attribute><jsp:attribute name="class">rwiki_currentPage</jsp:attribute>info</jsp:element>-->
+		<!--<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmEditBean.infoUrl}"/></jsp:attribute><jsp:attribute name="class">rwiki_currentPage</jsp:attribute>Info</jsp:element>-->
 		<!--</span>-->
 	      <!--<span class="rwiki_searchBox">-->
 		<!--Search:	<input type="hidden" name="action" value="search" />-->

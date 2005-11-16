@@ -3,8 +3,8 @@
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   ><jsp:directive.page language="java"
 		contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
-		errorPage="/WEB-INF/command-pages/errorpage.jsp" 
-	/><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> ]]>
+		errorPage="/WEB-INF/command-pages/errorpage.jsp"
+	/><jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> ]]>
   </jsp:text>
   <c:set var="historyBean" value="${requestScope.rsacMap.historyBean}"/>
   <c:set var="currentRWikiObject" value="${requestScope.rsacMap.currentRWikiObject}"/>
@@ -26,8 +26,8 @@
 	    <span class="rwiki_pageLinks">
 	      <!-- Home Link -->
 	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${homeBean.homeLinkUrl}"/></jsp:attribute><c:out value="${homeBean.homeLinkValue}"/></jsp:element>
-	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${historyBean.viewUrl}"/></jsp:attribute>view current</jsp:element>
-	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${historyBean.historyUrl}"/></jsp:attribute>history</jsp:element>
+	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${historyBean.viewUrl}"/></jsp:attribute>View Current</jsp:element>
+	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${historyBean.historyUrl}"/></jsp:attribute>History</jsp:element>
 	    </span>
 	    <span class="rwiki_searchBox">
 	    Search:	<input type="hidden" name="action" value="search" />

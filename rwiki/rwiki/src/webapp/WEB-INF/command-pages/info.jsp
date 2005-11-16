@@ -5,7 +5,7 @@
   ><jsp:directive.page language="java"
 		contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 		errorPage="/WEB-INF/command-pages/errorpage.jsp"
-	/><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> ]]>
+	/><jsp:text><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> ]]>
   </jsp:text>
   <c:set var="renderBean" value="${requestScope.rsacMap.renderBean}" />
   <c:set var="rightRenderBean"
@@ -182,13 +182,13 @@ both pages are identical. Any change in the page, will change the digest on the 
 		<!-- Home Link -->
 		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${homeBean.homeLinkUrl}"/></jsp:attribute><c:out value="${homeBean.homeLinkValue}"/></jsp:element>
 		<!-- View Link -->
-		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmBean.viewUrl}"/></jsp:attribute>view</jsp:element>
+		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmBean.viewUrl}"/></jsp:attribute>View</jsp:element>
 		<!-- Edit Link -->
-		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmBean.editUrl}"/></jsp:attribute>edit</jsp:element>
+		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmBean.editUrl}"/></jsp:attribute>Edit</jsp:element>
 		<!-- Info Link -->
-		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmBean.infoUrl}"/></jsp:attribute><jsp:attribute name="class">rwiki_currentPage</jsp:attribute>info</jsp:element>
+		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmBean.infoUrl}"/></jsp:attribute><jsp:attribute name="class">rwiki_currentPage</jsp:attribute>Info</jsp:element>
 		<!-- History Link -->
-		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmBean.historyUrl}"/></jsp:attribute>history</jsp:element>
+		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmBean.historyUrl}"/></jsp:attribute>History</jsp:element>
 	      </span>
 	      <span class="rwiki_searchBox">
 		Search:	<input type="hidden" name="action" value="search" />

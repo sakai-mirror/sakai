@@ -48,11 +48,7 @@ public class HomeBean {
     
     public void setHomeLinkValue(String homeLinkValue) {
        if (homeLinkValue != null) {
-           char[] value = homeLinkValue.toCharArray();
-           if (value.length > 0) {
-               value[0] = Character.toLowerCase(value[0]);
-           }
-           this.homeLinkValue = String.valueOf(value);
+           this.homeLinkValue = homeLinkValue;
        }   
         
     }   
