@@ -268,7 +268,8 @@ function setMainFrameHeight(id)
 		}
 
 		// here we fudge to get a little bigger
-		var newHeight = height + 50;
+		//gsilver: changing this from 50 to 1, and adding extra bottom padding to the portletBody
+		var newHeight = height + 1;
 		
 		// no need to be smaller than...
 		//if (height < 200) height = 200;

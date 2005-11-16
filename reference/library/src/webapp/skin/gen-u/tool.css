@@ -52,7 +52,7 @@ table.calendar th{background-color:#FFFFCC;font-weight:normal;text-align:center}
 .borderTodayBottom,.borderGrayTodayBottom,.borderOnlyLeftTodayBottom{border-bottom:1px solid #000;border-left:1px solid #000;border-right:1px solid #000;border-top:1px solid #dadada}
 table.calendar .event{background-color:#FFFF99}
 /*layout*/
-.portletBody{padding:.3em 2em}
+.portletBody{padding:.3em 2em 1em 2em}
 table{font-size:1em}
 .listHier{font-size:1em}
 .listHier th{background-color:#ddd}
