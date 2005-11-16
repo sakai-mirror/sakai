@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" 
   xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
   ><jsp:directive.page language="java"
 		contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 		errorPage="/WEB-INF/command-pages/errorpage.jsp"
@@ -56,7 +57,7 @@
 		      Version <c:out value="${diffBean.left.revision}"/>
 		    </jsp:element>
 		    <br/>
-		    (modified: <c:out value="${diffBean.left.version}"/> by <c:out value="${diffBean.left.user}"/>)
+		    (modified: <fmt:formatDate type="both" value="${diffBean.left.version}"/> by <c:out value="${diffBean.left.user}"/>)
 		  </td>
 		  <td class="pageRight">
 		    <jsp:setProperty name="historyBean" property="interestedRevision" value="${diffBean.right.revision}"/>
@@ -65,7 +66,7 @@
 		      Version <c:out value="${diffBean.right.revision}"/>
 		    </jsp:element>
 		    <br/>
-		    (modified: <c:out value="${diffBean.right.version}"/> by <c:out value="${diffBean.right.user}"/>)
+		    (modified: <fmt:formatDate type="both" value="${diffBean.right.version}"/> by <c:out value="${diffBean.right.user}"/>)
 		  </td>
 		</tr>
 		<c:out value="${diffBean.genericDiffBean.colorDiffTable}" escapeXml="false"/>

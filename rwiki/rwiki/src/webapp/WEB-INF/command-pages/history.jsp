@@ -2,6 +2,7 @@
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
   ><jsp:directive.page language="java"
 		contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 		errorPage="/WEB-INF/command-pages/errorpage.jsp" 
@@ -187,7 +188,7 @@ Page Owner Permissions Group
 		      </jsp:element>
 		    </td>
 		    <td><c:out value="${historyObject.user}" /></td>
-		    <td><c:out value="${historyObject.version}" /></td>
+		    <td><fmt:formatDate type="both" value="${historyObject.version}" /></td>
 		    <td>
 		      <jsp:element name="a">
 			<jsp:attribute name="href">

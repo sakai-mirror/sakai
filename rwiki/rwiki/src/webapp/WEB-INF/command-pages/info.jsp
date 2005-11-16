@@ -2,6 +2,7 @@
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
   ><jsp:directive.page language="java"
 		contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 		errorPage="/WEB-INF/command-pages/errorpage.jsp"
@@ -798,7 +799,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 		    <tr>
 		    	<th>Last Edited<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'lastedithelp'); return false;"
 		    		onMouseOut="hidePopup('lastedithelp');" >?</a></th>
-		      <td colspan="6"><c:out value="${currentRWikiObject.version}"/> by <c:out value="${currentRWikiObject.user}"/></td>
+		      <td colspan="6"><fmt:formatDate type="both" value="${currentRWikiObject.version}"/> by <c:out value="${currentRWikiObject.user}"/></td>
 		    </tr>
 		    <tr>
 		    	<th>SHA-1<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'digesthelp'); return false;"

@@ -26,6 +26,7 @@ package uk.ac.cam.caret.sakai.rwiki.component.macros;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -73,6 +74,8 @@ public class RecentChangesMacro extends BaseMacro {
 	
 	public void execute(Writer writer, MacroParameter params)
 			throws IllegalArgumentException, IOException {
+        
+        DateFormat dateFormat = DateFormat.getDateTimeInstance();
 		
 	    SpecializedRenderContext context = (SpecializedRenderContext) params.getContext();	    
 	    	    
@@ -122,7 +125,7 @@ public class RecentChangesMacro extends BaseMacro {
 	    		}
 	    }
 		writer.write("<span class=\"error\"> Changes since " 
-				+ since.toString() 
+				+ dateFormat.format(since) 
 				+ "  </span>");
 	    
     	try {
@@ -139,7 +142,7 @@ public class RecentChangesMacro extends BaseMacro {
 				writer.write("\n* [" + NameHelper.localizeName(object.getName(), localRenderSpace) + "]");
 
 				writer.write(" was last modified "
-						+ object.getVersion().toString());
+						+ dateFormat.format(object.getVersion()));
 				writer.write(" by " + object.getUser());
 
 			}

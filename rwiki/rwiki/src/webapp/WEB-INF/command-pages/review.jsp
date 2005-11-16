@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" 
   xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
   ><jsp:directive.page language="java"
 		contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 		errorPage="/WEB-INF/command-pages/errorpage.jsp" 
@@ -53,13 +54,13 @@
 
 	    <p class="alert">
 	      You are viewing version <c:out value="${interestedRevision}"/>
-	      of this page, updated <c:out value="${reviewRenderBean.rwikiObject.version}"/>. The current 
+	      of this page, updated <fmt:formatDate type="both" value="${reviewRenderBean.rwikiObject.version}"/>. The current 
 	      version is 
 	      <jsp:element name="a">
 		<jsp:attribute name="href"><c:out value="${historyBean.viewUrl}"/></jsp:attribute>
 		version <c:out value="${currentRWikiObject.revision}"/> 
 	      </jsp:element>, updated 
-	      <c:out value="${currentRWikiObject.version}"/>
+	      <fmt:formatDate type="both" value="${currentRWikiObject.version}"/>
 	    </p>
 	    <div class="rwikiRenderBody">
 	      <div class="rwikiRenderedContent">
