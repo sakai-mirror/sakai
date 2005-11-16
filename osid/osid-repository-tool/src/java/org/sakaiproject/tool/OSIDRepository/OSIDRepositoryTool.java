@@ -102,7 +102,6 @@ public class OSIDRepositoryTool extends HttpServlet {
                                         throws ServletException, IOException 
   {
 
-//    String				cssFile			= request.getParameter("cssFile");
 	String				cssFile			= request.getParameter("style.css");
 	String				db				= request.getParameter("database");
     String				initialQuery	= request.getParameter("initialQuery");
@@ -122,7 +121,6 @@ public class OSIDRepositoryTool extends HttpServlet {
 			
 		if (initialQuery != null) 
 		{
-			System.out.println("in OSIDRepositoryTool initial query");
 			/*
 			* Initial request - render the "blank" search page (search form only)
 			*/
@@ -130,8 +128,7 @@ public class OSIDRepositoryTool extends HttpServlet {
 		}
 		else
 		{
-			System.out.println("in OSIDRepositoryTool - not initial query");
-			String database[];
+			String	database[];
 			int numDatabases = 0;
 			
 			try 
@@ -232,7 +229,14 @@ public class OSIDRepositoryTool extends HttpServlet {
 
 		query = selectQueryHandler(sessionContext, database);
 		query.parseRequest(HttpTransactionUtils.getAttributesAsMap(request));
-    query.doQuery();
+		
+		String host = "http://" + request.getServerName() + ":" + request.getServerPort();
+		String path = request.getPathInfo();
+		String uri = request.getRequestURI();
+		String middle = uri.substring(0,uri.indexOf(path));
+		String base = host + middle + "/OSIDRepository";
+		
+		query.doQuery(base);
 
     return query;
   }
