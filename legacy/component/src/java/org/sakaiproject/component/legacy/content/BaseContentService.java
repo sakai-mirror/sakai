@@ -352,7 +352,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			FunctionManager.registerFunction(EVENT_RESOURCE_READ);
 			FunctionManager.registerFunction(EVENT_RESOURCE_WRITE);
 			FunctionManager.registerFunction(EVENT_RESOURCE_REMOVE);
-			FunctionManager.registerFunction("dropbox.own");
+			FunctionManager.registerFunction(EVENT_DROPBOX_OWN);
+			FunctionManager.registerFunction(EVENT_DROPBOX_MAINTAIN);
 
 			m_logger.info(this + ".init(): site quota: " + m_siteQuota + " body path: " + m_bodyPath + " volumes: "
 					+ buf.toString());
@@ -667,7 +668,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	} // getAccessPoint
 
 	/**
-	 * If the id is for a resource in a dropbox, and we are checking for read, change the check to a dropbox check, which is to check for write. You have full or no access to a dropbox, there is no just read access.
+	 * If the id is for a resource in a dropbox, change the function to a dropbox check, which is to check for write.<br />
+	 * You have full or no access to a dropbox.
 	 * 
 	 * @param lock
 	 *        The lock we are checking.
@@ -677,13 +679,14 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 */
 	protected String convertLockIfDropbox(String lock, String id)
 	{
-		if (id.startsWith("/group-user") && EVENT_RESOURCE_READ.equals(lock))
+		// if this resource is a dropbox, you need dropbox maintain permission
+		if (id.startsWith("/group-user"))
 		{
-			// only for /group-user/SIDEID/USERID/ refs.
+			// only for /group-user/SITEID/USERID/ refs.
 			String[] parts = StringUtil.split(id, "/");
 			if (parts.length >= 4)
 			{
-				return EVENT_RESOURCE_WRITE;
+				return EVENT_DROPBOX_MAINTAIN;
 			}
 		}
 
@@ -5656,9 +5659,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	protected static final String DROPBOX_ID = " Drop Box";
 
 	/**
-	 * Access the default dropbox collection id for the current request. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is returned.
-	 * 
-	 * @return The default dropbox collection id for the current request.
+	 * @inheritDoc
 	 */
 	public String getDropboxCollection()
 	{
@@ -5666,11 +5667,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	}
 
 	/**
-	 * Access the default dropbox collection id for the site. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is returned.
-	 * 
-	 * @param siteId
-	 *        The site id.
-	 * @return The default dropbox collection id for the site.
+	 * @inheritDoc
 	 */
 	public String getDropboxCollection(String siteId)
 	{
@@ -5685,25 +5682,16 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// form the site's dropbox collection
 		rv = COLLECTION_DROPBOX + siteId + "/";
 
-		// test if the current user has modify ability in the site's dropbox collection
-		if (allowUpdateCollection(rv))
+		// for maintainers, use the site level
+		if (isDropboxMaintainer(siteId))
 		{
 			// return the site's dropbox collection
 			return rv;
 		}
 
-		// if the dropbox collection exists, form the current user's dropbox collection within this site's
-		try
-		{
-			checkCollection(rv);
-			rv += StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()) + "/";
-			return rv;
-		}
-		catch (Exception ignore)
-		{
-		}
-
-		return null;
+		// form the current user's dropbox collection within this site's
+		rv += StringUtil.trimToZero(SessionManager.getCurrentSessionUserId()) + "/";
+		return rv;
 	}
 
 	/**
@@ -5735,8 +5723,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// form the site's dropbox collection
 		String id = COLLECTION_DROPBOX + siteId + "/";
 
-		// test if the current user has modify ability in the site's dropbox collection
-		if (allowUpdateCollection(id))
+		// for maintainers, use the site level dropbox
+		if (isDropboxMaintainer(siteId))
 		{
 			// return the site's dropbox collection
 			return siteId + DROPBOX_ID;
@@ -5784,7 +5772,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 				ResourcePropertiesEdit props = edit.getPropertiesEdit();
 				props.addProperty(ResourceProperties.PROP_DISPLAY_NAME, siteId + DROPBOX_ID);
 				props.addProperty(ResourceProperties.PROP_DESCRIPTION, PROP_SITE_DROPBOX_DESCRIPTION);
-				 commitCollection(edit);
+				commitCollection(edit);
 			}
 			catch (PermissionException permissionException)
 			{
@@ -5895,14 +5883,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			return false;
 		}
 
-		// form the site's dropbox collection
-		dropboxId = COLLECTION_DROPBOX + siteId + "/";
-
-		return allowUpdateCollection(dropboxId);
+		// if the user has dropbox maintain in the site, they are the dropbox maintainer
+		// (dropbox maintain in their myWorkspace just gives them access to their own dropbox)
+		return SecurityService.unlock(EVENT_DROPBOX_MAINTAIN, SiteService.siteReference(siteId));
 	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
-    * ContentCollection implementation
+	* ContentCollection implementation
 	*********************************************************************************************************************************************************************************************************************************************************/
 
 	public class BaseCollectionEdit implements ContentCollectionEdit, SessionBindingListener

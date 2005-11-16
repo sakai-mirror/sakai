@@ -115,8 +115,11 @@ public interface ContentHostingService extends EntityProducer
 	/** Name of the event when removing a resource. */
 	public static final String EVENT_RESOURCE_REMOVE = "content.delete";
 
-	/** Security ability (permission, lock, event function...) for those who may OWN a dropbox. */
+	/** Security function for those who may OWN a dropbox. */
 	public static final String EVENT_DROPBOX_OWN = "dropbox.own";
+
+	/** Security function for those who may maintain dropboxes. */
+	public static final String EVENT_DROPBOX_MAINTAIN = "dropbox.maintain";
 
 	/**
 	 * For a given id, return its UUID (creating it if it does not already exist)
@@ -1119,14 +1122,18 @@ public interface ContentHostingService extends EntityProducer
 	public void createDropboxCollection(String siteId);
 
 	/**
-	 * Access the default dropbox collection id for the current request. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is returned.
+	 * Access the default dropbox collection id for the current request.<br />
+	 * If the current user is a dropbox maintainer for the current site, return the site's dropbox area.<br />
+	 * Otherwis return the current user's collection within the site's dropbox.
 	 * 
 	 * @return The default dropbox collection id for the current request.
 	 */
 	public String getDropboxCollection();
 
 	/**
-	 * Access the default dropbox collection id for the site. If the current user has permission to modify the site's dropbox collection, this is returned. Otherwise, the current user's collection within the site's dropbox is returned.
+	 * Access the default dropbox collection id for the current request.<br />
+	 * If the current user is a dropbox maintainer for the current site, return the site's dropbox area.<br />
+	 * Otherwis return the current user's collection within the site's dropbox.
 	 * 
 	 * @param siteId
 	 *        The site id.

@@ -59,6 +59,7 @@ public class ContentHostingService
 	public static java.lang.String EVENT_RESOURCE_WRITE = org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_RESOURCE_WRITE;
 	public static java.lang.String EVENT_RESOURCE_REMOVE = org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_RESOURCE_REMOVE;
 	public static java.lang.String EVENT_DROPBOX_OWN = org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_DROPBOX_OWN;
+	public static java.lang.String EVENT_DROPBOX_MAINTAIN = org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_DROPBOX_MAINTAIN;
 	
 	public static java.lang.String getUrl(java.lang.String param0)
 	{

@@ -6446,10 +6446,17 @@ public class ResourcesAction
 				
 				// need to refresh collection containing current edit item make changes show up 
 				String containerId = ContentHostingService.getContainingCollectionId(item.getId());
-				ContentCollection container = ContentHostingService.getCollection(containerId);
 				Map expandedCollections = (Map) state.getAttribute(EXPANDED_COLLECTIONS);
-				expandedCollections.remove(containerId);
-				expandedCollections.put(containerId, container);
+				Object old = expandedCollections.remove(containerId);
+				if (old != null)
+				{
+					try
+					{
+						ContentCollection container = ContentHostingService.getCollection(containerId);
+						expandedCollections.put(containerId, container);
+					}
+					catch (Throwable ignore){}
+				}
 			}
 			catch (TypeException e)
 			{
