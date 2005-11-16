@@ -130,9 +130,15 @@ public abstract class BaseAnnouncementService extends BaseMessageService impleme
 			edit.setAction(new SiteEmailNotificationAnnc());
 
 			// register functions
+			FunctionManager.registerFunction(eventId(SECURE_READ));
+			FunctionManager.registerFunction(eventId(SECURE_ADD));
+			FunctionManager.registerFunction(eventId(SECURE_REMOVE_ANY));
+			FunctionManager.registerFunction(eventId(SECURE_REMOVE_OWN));
+			FunctionManager.registerFunction(eventId(SECURE_UPDATE_ANY));
+			FunctionManager.registerFunction(eventId(SECURE_UPDATE_OWN));
 			FunctionManager.registerFunction(eventId(SECURE_READ_DRAFT));
 			FunctionManager.registerFunction(eventId(SECURE_ALL_GROUPS));
-			
+
 			m_logger.info(this +".init()");
 		}
 		catch (Throwable t)

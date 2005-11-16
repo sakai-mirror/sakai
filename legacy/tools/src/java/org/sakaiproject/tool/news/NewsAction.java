@@ -439,6 +439,9 @@ public class NewsAction
 		// commit the change
 		saveOptions();
 
+		// refresh the whole page, title may have changed
+		scheduleTopRefresh();
+
 	}   // doUpdate
 
 	/**

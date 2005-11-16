@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.component.legacy.message.BaseMessageService;
 import org.sakaiproject.component.legacy.notification.SiteEmailNotificationMail;
 import org.sakaiproject.exception.IdInvalidException;
@@ -118,6 +119,11 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 
 			// set the action
 			edit.setAction(new SiteEmailNotificationMail());
+
+			// register functions
+			FunctionManager.registerFunction(eventId(SECURE_READ));
+			FunctionManager.registerFunction(eventId(SECURE_ADD));
+			FunctionManager.registerFunction(eventId(SECURE_REMOVE_ANY));
 
 			m_logger.debug(this +".init()");
 		}

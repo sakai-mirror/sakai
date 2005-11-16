@@ -176,8 +176,7 @@ public abstract class BaseAliasService
 	protected boolean unlockTargetCheck(String target)
 	{
 		// check the target for modify access.
-		// %%% Note: this is setup only for sites and mail archive channels,
-		// we need a Reference based generic "allowModify()" -ggolden.
+		// TODO: this is setup only for sites and mail archive channels, we need an Entity Model based generic "allowModify()" -ggolden.
 		Reference ref = m_entityManager.newReference(target);
 		if (ref.getType().equals(SiteService.SERVICE_NAME))
 		{
@@ -186,7 +185,8 @@ public abstract class BaseAliasService
 		
 		else if (ref.getType().equals(MailArchiveService.SERVICE_NAME))
 		{
-			return MailArchiveService.allowEditChannel(target);
+			// base this on site update, too
+			return SiteService.allowUpdateSite(ref.getContext());
 		}
 
 		return false;

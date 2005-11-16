@@ -38,7 +38,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
-import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -231,13 +230,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		// register as an entity producer
 		m_entityManager.registerEntityProducer(this);
 		
-		// register functions (draft is registered by the extension services, since it's not shared by all)
-		FunctionManager.registerFunction(eventId(SECURE_READ));
-		FunctionManager.registerFunction(eventId(SECURE_ADD));
-		FunctionManager.registerFunction(eventId(SECURE_REMOVE_OWN));
-		FunctionManager.registerFunction(eventId(SECURE_REMOVE_ANY));
-		FunctionManager.registerFunction(eventId(SECURE_UPDATE_OWN));
-		FunctionManager.registerFunction(eventId(SECURE_UPDATE_ANY));
+		// Functions are registered in the extension services
 
 	} // init
 
@@ -428,6 +421,28 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	} // unlockCheck2
 
 	/**
+	* Check security permission, for either of two locks/
+	* @param lock1 The lock id string.
+	* @param lock2 The lock id string.
+	* @param resource The resource reference string, or null if no resource is involved.
+	* @return true if either allowed, false if not
+	*/
+	protected boolean unlockCheck3(String lock1, String lock2, String lock3, String resource)
+	{
+		// check the first lock
+		if (SecurityService.unlock(eventId(lock1), resource)) return true;
+
+		// if the second is different, check that
+		if ((lock1 != lock2) && (SecurityService.unlock(eventId(lock2), resource))) return true;
+
+		// if the third is different, check that
+		if ((lock1 != lock3) && (lock2 != lock3) && (SecurityService.unlock(eventId(lock3), resource))) return true;
+
+		return false;
+
+	} // unlockCheck3
+
+	/**
 	* Check security permission.
 	* @param lock The lock id string.
 	* @param resource The resource reference string, or null if no resource is involved.
@@ -453,10 +468,27 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	{
 		if (!unlockCheck2(lock1, lock2, resource))
 		{
-			throw new PermissionException(eventId(lock1) + "/" + eventId(lock2), resource);
+			throw new PermissionException(eventId(lock1) + "|" + eventId(lock2), resource);
 		}
 
 	} // unlock2
+
+	/**
+	* Check security permission.
+	* @param lock1 The lock id string.
+	* @param lock2 The lock id string.
+	* @param lock3 The lock id string.
+	* @param resource The resource reference string, or null if no resource is involved.
+	* @exception PermissionException Thrown if the user does not have access to either.
+	*/
+	protected void unlock3(String lock1, String lock2, String lock3, String resource) throws PermissionException
+	{
+		if (!unlockCheck3(lock1, lock2, lock3, resource))
+		{
+			throw new PermissionException(eventId(lock1) + "|" + eventId(lock2) + "|" + eventId(lock3), resource);
+		}
+
+	} // unlock3
 
 	/**
 	* Return a list of all the defined channels.
@@ -649,7 +681,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 	public boolean allowEditChannel(String ref)
 	{
 		// check security (throws if not permitted)
-		return unlockCheck2(SECURE_UPDATE_ANY, SECURE_UPDATE_OWN, ref);
+		return unlockCheck3(SECURE_ADD, SECURE_UPDATE_ANY, SECURE_UPDATE_OWN, ref);
 
 	} // allowEditChannel
 
@@ -671,7 +703,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		}
 
 		// check security (throws if not permitted)
-		unlock2(SECURE_UPDATE_ANY, SECURE_UPDATE_OWN, ref);
+		unlock3(SECURE_ADD, SECURE_UPDATE_ANY, SECURE_UPDATE_OWN, ref);
 
 		// ignore the cache - get the channel with a lock from the info store
 		MessageChannelEdit edit = m_storage.editChannel(ref);
@@ -2290,6 +2322,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			// securityCheck
 			if (!allowRemoveMessage(message))
 			{
+				cancelMessage(message);
 				throw new PermissionException(eventId(function), message.getReference());
 			}
 

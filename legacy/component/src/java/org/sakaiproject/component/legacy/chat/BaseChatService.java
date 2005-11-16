@@ -28,6 +28,7 @@ package org.sakaiproject.component.legacy.chat;
 import java.util.Collection;
 import java.util.List;
 
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.component.legacy.message.BaseMessageService;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -70,6 +71,24 @@ public abstract class BaseChatService
 	extends BaseMessageService
 	implements ChatService
 {
+	/*******************************************************************************
+	* Init and Destroy
+	*******************************************************************************/
+
+	/**
+	 * Final initialization, once all dependencies are set.
+	 */
+	public void init()
+	{
+		super.init();
+
+		// register functions
+		FunctionManager.registerFunction(eventId(SECURE_READ));
+		FunctionManager.registerFunction(eventId(SECURE_ADD));
+		FunctionManager.registerFunction(eventId(SECURE_REMOVE_ANY));
+		FunctionManager.registerFunction(eventId(SECURE_REMOVE_OWN));
+	}
+
 	/*******************************************************************************
 	* StorageUser implementation
 	*******************************************************************************/

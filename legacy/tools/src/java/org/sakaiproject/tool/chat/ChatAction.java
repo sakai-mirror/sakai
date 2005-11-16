@@ -61,7 +61,6 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
-import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.Validator;
@@ -390,7 +389,7 @@ public class ChatAction
 			}
 			catch(Exception e)
 			{
-				Log.warn("chef", this + ".updateMessageFilters() invalid param: " );
+				// Log.warn("chef", this + ".updateMessageFilters() invalid param: " );
 			}
 			state.setAttribute(STATE_FILTER_PARAM, String.valueOf(number));
 			state.setAttribute(STATE_FEWER_MESSAGES_FILTER, new SelectMessagesByNumber(number));
@@ -410,7 +409,7 @@ public class ChatAction
 			}
 			catch(Exception e)
 			{
-				Log.warn("chef", this + ".updateMessageFilters() invalid param: " );
+				// Log.warn("chef", this + ".updateMessageFilters() invalid param: " );
 			}
 			state.setAttribute(STATE_FILTER_PARAM, String.valueOf(number));
 			state.setAttribute(STATE_FEWER_MESSAGES_FILTER, new SelectMessagesByTime(number));
@@ -1261,18 +1260,9 @@ public class ChatAction
 		// find the message and delete it now!
 		try
 		{
-			// TODO: don't really need to read the channel to delete -ggolden
 			String messageid = (String) state.getAttribute("messageid");
 			ChatChannel channel = ChatService.getChatChannel((String) state.getAttribute(STATE_CHANNEL_REF));
-			ChatMessageEdit message = channel.editChatMessage(messageid);
-			// replace the text of the message with an indication that it has been deleted
-			message.setBody(rb.getString("chatmesdel") + " " + UserDirectoryService.getCurrentUser().getDisplayName() + " " + rb.getString("on") + " " + (TimeService.newTime()).toStringLocalFull());
-			// flag the message as deleted (but don't actually hard delete the message)
-			message.getPropertiesEdit().addProperty(PROPERTY_MESSAGE_DELETED, "true");
-			
-			// FOR NOW, remove the message totally!
-			channel.removeMessage(message);
-			//channel.commitMessage(message);
+			channel.removeMessage(messageid);
 		}
 		catch (PermissionException e)
 		{
@@ -1283,8 +1273,7 @@ public class ChatAction
 		{
 			Log.warn("chef", this + ".doDeleteMessage()", e);
 		}
-		
-		
+
 		state.removeAttribute("messageid");
 		state.removeAttribute(STATE_MODE);
 	}

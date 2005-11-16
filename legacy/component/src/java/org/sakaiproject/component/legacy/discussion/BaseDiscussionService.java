@@ -102,7 +102,13 @@ public abstract class BaseDiscussionService
 		super.init();
 
 		// register functions
+		FunctionManager.registerFunction(eventId(SECURE_READ));
+		FunctionManager.registerFunction(eventId(SECURE_ADD));
 		FunctionManager.registerFunction(eventId(SECURE_ADD_TOPIC));
+		FunctionManager.registerFunction(eventId(SECURE_REMOVE_ANY));
+		FunctionManager.registerFunction(eventId(SECURE_REMOVE_OWN));
+		FunctionManager.registerFunction(eventId(SECURE_UPDATE_ANY));
+		FunctionManager.registerFunction(eventId(SECURE_UPDATE_OWN));
 	}
 
 	/*******************************************************************************
