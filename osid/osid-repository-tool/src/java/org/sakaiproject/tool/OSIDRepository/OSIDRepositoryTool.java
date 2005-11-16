@@ -102,7 +102,7 @@ public class OSIDRepositoryTool extends HttpServlet {
                                         throws ServletException, IOException 
   {
 
-	String				cssFile			= request.getParameter("style.css");
+    String				cssFile			= request.getParameter("cssFile");
 	String				db				= request.getParameter("database");
     String				initialQuery	= request.getParameter("initialQuery");
     HTMLDocument		document		= null;
@@ -116,6 +116,7 @@ public class OSIDRepositoryTool extends HttpServlet {
 	{
 		if (cssFile == null) 
 		{
+			cssFile = ResultPageBase.COMMONCSS;
 //			throw new IllegalArgumentException("Missing styesheet");
 		}
 			

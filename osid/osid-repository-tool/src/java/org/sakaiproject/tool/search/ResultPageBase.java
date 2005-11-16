@@ -42,7 +42,7 @@ public class ResultPageBase implements ResultPageInterface {
   private static final String COMMONJS = "/library/resource-search/SearchResultCommon.js";
   
   /** default css file for results */
-  private static final String COMMONCSS = "/library/skin/default/tool.css";
+  public static final String COMMONCSS = "/library/skin/tool_base.css";
 	/**
 	 * Default image count (we'd like to place this many on a page)
 	 */
@@ -176,6 +176,7 @@ public class ResultPageBase implements ResultPageInterface {
 
     body = DomUtils.createElement(renderedDocument.getDocumentElement(), "BODY");
     doSearchHeading(body);
+    doSearchParagraph(body);
     doSearchForm(body);
 
     return body;
@@ -205,6 +206,7 @@ public class ResultPageBase implements ResultPageInterface {
 
     body = DomUtils.createElement(renderedDocument.getDocumentElement(), "BODY");
 		doSearchHeading(body);
+		doSearchParagraph(body);
     return body;
   }
 
@@ -212,8 +214,18 @@ public class ResultPageBase implements ResultPageInterface {
    * Render page heading
 	 * @param parent Add heading to this HTML element
    */
-  public void doSearchHeading(Element parent) {
-    doSearchHeading(parent, "Search Library Resources - Note this is a example servlet intented to illustrate the use of the O.K.I. Repository OSID as the Sakai service for accessing data sources.");
+  public void doSearchHeading(Element parent) 
+  {
+    doSearchHeading(parent, "Search Library Resources");
+  }
+
+  /**
+   * Render page heading
+	 * @param parent Add heading to this HTML element
+   */
+  public void doSearchParagraph(Element parent) 
+  {
+	  doSearchParagraph(parent, "This is an example servlet intended to illustrate the use of the O.K.I. Repository OSID as the Sakai service for accessing data sources.");
   }
 
   /**
@@ -226,6 +238,18 @@ public class ResultPageBase implements ResultPageInterface {
 
     element = DomUtils.createElement(parent, "H4");
     DomUtils.addText(element, heading);
+  }
+
+  /**
+   * Render page heading
+	 * @param parent Add heading to this HTML element
+	 * @param heading Heading text
+   */
+  public void doSearchParagraph(Element parent, String paragraph) {
+    Element element;
+
+    element = DomUtils.createElement(parent, "P");
+    DomUtils.addText(element, paragraph);
   }
 
   /**
