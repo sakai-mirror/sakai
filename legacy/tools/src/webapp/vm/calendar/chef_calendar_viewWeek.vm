@@ -31,7 +31,7 @@
 		</div>
 	</div>
 	<div style="display:block; clear:both" />
-	<div class="navIntraTool" style="margin:.5em 1.5em;padding:0">
+	<div style="margin:.5em 1.5em;padding:0">
 		#toolbar($menu_PDF)
 	</div>	
 	## the same part in 3 pages for calendar rendering
