@@ -91,10 +91,11 @@ else
 		_editor_lang = "en";
 		
 		// funky way to include the HTMLArea JavaScript library, from within JavaScript
-		// document.write('<script type="text/javascript" src="/library/htmlarea/htmlarea.js"></script>');
-		
-		document.write('<script type="text/javascript">HTMLArea.loadPlugin("ResourceSearch");</script>');
-	
+		if(typeof HTMLArea == "undefined")
+		{
+			document.write('<script type="text/javascript" src="/library/htmlarea/htmlarea.js"></script>');
+		}
+			
 		//if (fulldocumentediting)
 		//{
 		//	  document.write('<script type="text/javascript">HTMLArea.loadPlugin("TableOperations");</script>');
