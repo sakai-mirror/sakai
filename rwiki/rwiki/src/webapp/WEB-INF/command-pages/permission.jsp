@@ -14,7 +14,7 @@
 	</head>
 	<jsp:element name="body">
 		<jsp:attribute name="onload">
-			<jsp:expression>request.getAttribute("sakai.html.body.onload")</jsp:expression>parent.updCourier(doubleDeep,ignoreCourier);</jsp:attribute>
+			<jsp:expression>request.getAttribute("sakai.html.body.onload")</jsp:expression>parent.updCourier(doubleDeep,ignoreCourier); callAllLoaders();</jsp:attribute>
 		<div id="rwiki_container">
 			<div class="portletBody">
 					<div class="navIntraTool">

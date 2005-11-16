@@ -365,16 +365,12 @@ RWikiCurrentObjectDao, ObjectProxy {
 		}
 	}
 
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.api.dao.RWikiCurrentObjectDao#findRWikiSubPages(java.lang.String)
-     */
     public List findRWikiSubPages(final String globalParentPageName) {
         HibernateCallback callback = new HibernateCallback() {
             public Object doInHibernate(Session session)
             throws HibernateException {
-                return session.createCriteria(RWikiCurrentObject.class).add(
-                        Expression.like("name", globalParentPageName+"%" )).addOrder(
-                                        Order.asc("name")).list();
+                String search = globalParentPageName.replaceAll("([A%_])", "A$1");
+                return session.find("from RWikiCurrentObjectImpl as r where r.name like concat(?,'%') escape 'A' order by name asc", search, Hibernate.STRING);
             }
         };
         return new ListProxy((List) getHibernateTemplate().execute(callback), this);
@@ -387,15 +383,14 @@ RWikiCurrentObjectDao, ObjectProxy {
         HibernateCallback callback = new HibernateCallback() {
             public Object doInHibernate(Session session)
             throws HibernateException {
-                return session.createCriteria(RWikiCurrentObject.class).add(
-                        Expression.like("name", globalParentPageName+"%" )).addOrder(
-                                        Order.desc("name")).list();
+                String search = globalParentPageName.replaceAll("([A%_])", "A$1");
+                return session.find("from RWikiCurrentObjectImpl as r where r.name like concat(?,'%') escape 'A' order by name desc", search, Hibernate.STRING);
             }
         };
         List l = (List)getHibernateTemplate().execute(callback);
         if ( l == null || l.size() == 0 ) return null;
         return (RWikiObject) l.get(0);
     }
-    
+  
 }
 
