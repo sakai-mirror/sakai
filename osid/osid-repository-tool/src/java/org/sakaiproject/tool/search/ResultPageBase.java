@@ -39,7 +39,10 @@ public class ResultPageBase implements ResultPageInterface {
 	/**
 	 * Common "resource-search" javascript
 	 */
-  private static final String COMMONJS = "SearchResultCommon.js";
+  private static final String COMMONJS = "/library/resource-search/SearchResultCommon.js";
+  
+  /** default css file for results */
+  private static final String COMMONCSS = "/library/skin/default/tool.css";
 	/**
 	 * Default image count (we'd like to place this many on a page)
 	 */
@@ -49,7 +52,7 @@ public class ResultPageBase implements ResultPageInterface {
 	 */
 	public static final String FORMNAME = "SEARCHFORM";
 
-  protected String						_css;
+  protected String						_css = COMMONCSS;
   protected String  					_database;
   protected String  					_searchQuery;
   protected String						_searchResponseString;
