@@ -15,10 +15,10 @@
 			title="Wiki"
 		description="For collaborative editing of pages and content">
 			
-		<category name="course" />
+<!--		<category name="course" />
          <category name="project" />
          <category name="myworkspace" />
-		
+-->		
 
 	</tool>
 
