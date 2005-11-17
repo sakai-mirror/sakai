@@ -222,7 +222,7 @@
 				</form>
 				
 				<form name="navigatorform" action="#toolForm("$action")" method="post">
-				<div class="rightNav">
+				<div class="rightNav" style="text-align:right;float:none">
 					#if ($!prevAct)
 					<input type="submit" name="eventSubmit_doPrev_activity" value="$tlang.getString('det.lasact')" />
 					#else
