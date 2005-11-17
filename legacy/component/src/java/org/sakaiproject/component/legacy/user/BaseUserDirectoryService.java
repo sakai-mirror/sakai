@@ -1112,23 +1112,6 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	}
 
 	/**
-	 * Adjust an email so that the user case is preserved, but the domain case is lowered
-	 * @param email The email address to adjust.
-	 * @return The adjusted email address.
-	 */
-	public String normalizeEmailAddress(String email)
-	{
-		if ((email == null) || (email.length() == 0)) return email;
-
-		// [0] is case preserved user, [1] is case to-be-lowered domain
-		String[] parts = StringUtil.splitFirst(email,"@");
-		if ((parts == null) || (parts.length != 2)) return email;
-		
-		String normalized = parts[0] + "@" + parts[1].toLowerCase();
-		return normalized;
-	}
-
-	/**
 	* Find the user object, in cache or storage (only - no provider check).
 	* @param id The user id.
 	* @return The user object found in cache or storage, or null if not found.
@@ -1916,12 +1899,6 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		public void setEmail(String email)
 		{
 			m_email = email;
-			
-			if (m_email != null)
-			{
-				// normalize the case
-				m_email = normalizeEmailAddress(m_email);
-			}
 
 		} // setEmail
 

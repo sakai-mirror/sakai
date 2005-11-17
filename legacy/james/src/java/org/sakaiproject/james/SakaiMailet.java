@@ -393,9 +393,6 @@ public class SakaiMailet extends GenericMailet
 	protected boolean fromValidUserALTERNATE(String fromAddr, MailArchiveChannel channel)
 	{
 		if ((fromAddr == null) || (fromAddr.length() == 0)) return false;
-		
-		// normalize the case of the email address for searching
-		fromAddr = UserDirectoryService.normalizeEmailAddress(fromAddr);
 
 		// get all users permitted to send mail to the channel
 		List users = SecurityService.unlockUsers(MailArchiveService.SECURE_MAIL_READ, channel.getReference());
@@ -404,7 +401,7 @@ public class SakaiMailet extends GenericMailet
 		for (Iterator i = users.iterator(); i.hasNext();)
 		{
 			User user = (User) i.next();
-			if (fromAddr.equals(user.getEmail())) return true;
+			if (fromAddr.equalsIgnoreCase(user.getEmail())) return true;
 		}
 
 		return false;

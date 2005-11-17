@@ -265,16 +265,6 @@ public class UserDirectoryService
 
 		return service.userReference(param0);
 	}
-
-	public static java.lang.String normalizeEmailAddress(java.lang.String param0)
-	{
-		org.sakaiproject.service.legacy.user.UserDirectoryService service = getInstance();
-		if (service == null)
-			return null;
-
-		return service.normalizeEmailAddress(param0);
-	}
-
 }
 
 

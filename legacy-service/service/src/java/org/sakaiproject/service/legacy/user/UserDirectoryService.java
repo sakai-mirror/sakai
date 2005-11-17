@@ -260,13 +260,6 @@ public interface UserDirectoryService
 	*/
 	public String userReference(String id);
 
-	/**
-	 * Adjust an email so that the user case is preserved, but the domain case is lowered
-	 * @param email The email address to adjust.
-	 * @return The adjusted email address.
-	 */
-	public String normalizeEmailAddress(String email);
-
 }	// UserDirectoryService
 
 

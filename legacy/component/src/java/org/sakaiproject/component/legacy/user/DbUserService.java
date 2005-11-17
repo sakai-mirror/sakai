@@ -77,7 +77,7 @@ public class DbUserService
 	protected String m_sortField2 = "FIRST_NAME";
 
 	/** All fields. */
-	protected String[] m_fieldNames = {"USER_ID","EMAIL","FIRST_NAME","LAST_NAME","TYPE","PW","CREATEDBY", "MODIFIEDBY", "CREATEDON", "MODIFIEDON"};
+	protected String[] m_fieldNames = {"USER_ID","EMAIL","EMAIL_LC","FIRST_NAME","LAST_NAME","TYPE","PW","CREATEDBY", "MODIFIEDBY", "CREATEDON", "MODIFIEDON"};
 
 	/*******************************************************************************
 	* Constructors, Dependencies and their setter methods
@@ -169,6 +169,9 @@ public class DbUserService
 			if (m_autoDdl)
 			{
 				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_user");
+
+				// also load the 2.1.0.004 email_lc conversion
+				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_user_2_1_0_004");
 			}
 
 			super.init();
@@ -410,12 +413,13 @@ public class DbUserService
 				return rv;
 			}
 
+			String search = "%" + criteria + "%";
 			Object[] fields = new Object[4];
-			fields[0] = "%" + criteria + "%";
-			fields[1] = fields[0];
-			fields[2] = fields[0];
-			fields[3] = fields[0];
-			List rv = super.getSelectedResources("UPPER(USER_ID) LIKE UPPER(?) OR UPPER(EMAIL) LIKE UPPER(?) OR UPPER(FIRST_NAME) LIKE UPPER(?) OR UPPER(LAST_NAME) LIKE UPPER(?)", fields);
+			fields[0] = search;
+			fields[1] = search.toLowerCase();
+			fields[2] = search;
+			fields[3] = search;
+			List rv = super.getSelectedResources("UPPER(USER_ID) LIKE UPPER(?) OR EMAIL_LC LIKE ? OR UPPER(FIRST_NAME) LIKE UPPER(?) OR UPPER(LAST_NAME) LIKE UPPER(?)", fields);
 
 			return rv;
 		}
@@ -440,12 +444,13 @@ public class DbUserService
 				return rv.size();
 			}
 
+			String search = "%" + criteria + "%";
 			Object[] fields = new Object[4];
-			fields[0] = "%" + criteria + "%";
-			fields[1] = fields[0];
-			fields[2] = fields[0];
-			fields[3] = fields[0];
-			int rv = super.countSelectedResources("UPPER(USER_ID) LIKE UPPER(?) OR UPPER(EMAIL) LIKE UPPER(?) OR UPPER(FIRST_NAME) LIKE UPPER(?) OR UPPER(LAST_NAME) LIKE UPPER(?)", fields);
+			fields[0] = search;
+			fields[1] = search.toLowerCase();
+			fields[2] = search;
+			fields[3] = search;
+			int rv = super.countSelectedResources("UPPER(USER_ID) LIKE UPPER(?) OR EMAIL_LC LIKE ? OR UPPER(FIRST_NAME) LIKE UPPER(?) OR UPPER(LAST_NAME) LIKE UPPER(?)", fields);
 
 			return rv;
 		}
@@ -465,15 +470,12 @@ public class DbUserService
 			
 			if (rv == null)
 			{
-				// adjust the search string to normalize the case
-				email = normalizeEmailAddress(email);
-
 				rv = new Vector();
 
 				// search for it
 				Object[] fields = new Object[1];
-				fields[0] = email;
-				List users = super.getSelectedResources("EMAIL = ?", fields);
+				fields[0] = email.toLowerCase();
+				List users = super.getSelectedResources("EMAIL_LC = ?", fields);
 				if (users != null)
 				{
 					rv.addAll(users);
@@ -501,11 +503,11 @@ public class DbUserService
 		 */
 		protected Object[] fields(String id, UserEdit edit, boolean idAgain)
 		{
-			Object[] rv = new Object[idAgain ? 11 : 10];
+			Object[] rv = new Object[idAgain ? 12 : 11];
 			rv[0] = caseId(id);
 			if (idAgain)
 			{
-				rv[10] = rv[0];
+				rv[11] = rv[0];
 			}
 
 			if (edit == null)
@@ -521,34 +523,36 @@ public class DbUserService
 				rv[3] = "";
 				rv[4] = "";
 				rv[5] = "";
-				rv[6] = attribUser;
+				rv[6] = "";
 				rv[7] = attribUser;
-				rv[8] = now;
+				rv[8] = attribUser;
 				rv[9] = now;
+				rv[10] = now;
 			}
 
 			else
 			{
 				rv[1] = StringUtil.trimToZero(edit.getEmail());
-				rv[2] = StringUtil.trimToZero(edit.getFirstName());
-				rv[3] = StringUtil.trimToZero(edit.getLastName());
-				rv[4] = StringUtil.trimToZero(edit.getType());
-				rv[5] = StringUtil.trimToZero(((BaseUserEdit) edit).m_pw);
+				rv[2] = StringUtil.trimToZero(edit.getEmail().toLowerCase());
+				rv[3] = StringUtil.trimToZero(edit.getFirstName());
+				rv[4] = StringUtil.trimToZero(edit.getLastName());
+				rv[5] = StringUtil.trimToZero(edit.getType());
+				rv[6] = StringUtil.trimToZero(((BaseUserEdit) edit).m_pw);
 
 				// for creator and modified by, if null, make it the id
-				rv[6] = StringUtil.trimToNull(((BaseUserEdit) edit).m_createdUserId);
-				if (rv[6] == null)
-				{
-					rv[6] = rv[0];
-				}
-				rv[7] = StringUtil.trimToNull(((BaseUserEdit) edit).m_lastModifiedUserId);
+				rv[7] = StringUtil.trimToNull(((BaseUserEdit) edit).m_createdUserId);
 				if (rv[7] == null)
 				{
 					rv[7] = rv[0];
 				}
+				rv[8] = StringUtil.trimToNull(((BaseUserEdit) edit).m_lastModifiedUserId);
+				if (rv[8] == null)
+				{
+					rv[8] = rv[0];
+				}
 
-				rv[8] = edit.getCreatedTime();
-				rv[9] = edit.getModifiedTime();
+				rv[9] = edit.getCreatedTime();
+				rv[10] = edit.getModifiedTime();
 			}
 
 			return rv;
@@ -565,16 +569,17 @@ public class DbUserService
 			{
 				String id = result.getString(1);
 				String email = result.getString(2);
-				String firstName = result.getString(3);
-				String lastName = result.getString(4);
-				String type = result.getString(5);
-				String pw = result.getString(6);
-				String createdBy = result.getString(7);
-				String modifiedBy = result.getString(8);
+				String email_lc = result.getString(3);
+				String firstName = result.getString(4);
+				String lastName = result.getString(5);
+				String type = result.getString(6);
+				String pw = result.getString(7);
+				String createdBy = result.getString(8);
+				String modifiedBy = result.getString(9);
 				Time createdOn = TimeService.newTime(
-						result.getTimestamp(9, m_sqlService.getCal()).getTime());
-				Time modifiedOn = TimeService.newTime(
 						result.getTimestamp(10, m_sqlService.getCal()).getTime());
+				Time modifiedOn = TimeService.newTime(
+						result.getTimestamp(11, m_sqlService.getCal()).getTime());
 
 				// create the Resource from these fields
 				return new BaseUserEdit(id, email, firstName, lastName, type, pw, createdBy, createdOn, modifiedBy, modifiedOn);
@@ -701,9 +706,6 @@ public class DbUserService
 		 */
 		public Collection findUsersByEmail(String email)
 		{
-			// adjust email search string to normalize the case
-			email = normalizeEmailAddress(email);
-
 			Collection rv = new Vector();
 
 			// check internal users
@@ -711,7 +713,7 @@ public class DbUserService
 			for (Iterator iUsers = users.iterator(); iUsers.hasNext();)
 			{
 				UserEdit user = (UserEdit) iUsers.next();
-				if (email.equals(user.getEmail()))
+				if (email.equalsIgnoreCase(user.getEmail()))
 				{
 					rv.add(user);
 				}

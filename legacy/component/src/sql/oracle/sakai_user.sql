@@ -19,6 +19,7 @@ ALTER TABLE SAKAI_USER_PROPERTY
 CREATE TABLE SAKAI_USER (
        USER_ID              VARCHAR2(99) NOT NULL,
        EMAIL                VARCHAR2(255) NULL,
+       EMAIL_LC             VARCHAR2(255) NULL,
        FIRST_NAME           VARCHAR2(255) NULL,
        LAST_NAME            VARCHAR2(255) NULL,
        TYPE                 VARCHAR2(255) NULL,
@@ -51,10 +52,10 @@ CREATE INDEX IE_SAKAI_USER_MODDED ON SAKAI_USER
 
 CREATE INDEX IE_SAKAI_USER_EMAIL ON SAKAI_USER
 (
-       EMAIL                          ASC
+       EMAIL_LC                       ASC
 );
 
 -- populate with the admin and postmaster users
 
-INSERT INTO SAKAI_USER VALUES ('admin', '', 'Sakai', 'Administrator', '', 'ISMvKXpXpadDiUoOSoAf', 'admin', 'admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO SAKAI_USER VALUES ('postmaster', '', 'Sakai', 'Postmaster', '', 'ISMvKXpXpadDiUoOSoAf', 'postmaster', 'postmaster', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO SAKAI_USER VALUES ('admin', '', '', 'Sakai', 'Administrator', '', 'ISMvKXpXpadDiUoOSoAf', 'admin', 'admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO SAKAI_USER VALUES ('postmaster', '', '', 'Sakai', 'Postmaster', '', 'ISMvKXpXpadDiUoOSoAf', 'postmaster', 'postmaster', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
