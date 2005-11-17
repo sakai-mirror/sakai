@@ -270,11 +270,6 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 		{
 			// do we have a usage session in the session?
 			rv = (BaseUsageSession) s.getAttribute(USAGE_SESSION_KEY);
-
-			if (rv == null)
-			{
-				M_log.warn("getSession: no usage session found in current SessionManager session: " + s.getId());
-			}
 		}
 
 		else
