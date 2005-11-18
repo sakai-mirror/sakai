@@ -11638,7 +11638,6 @@ public class SiteAction extends PagedResourceActionII
 		}
 		state.setAttribute(STATE_TOOL_HOME_SELECTED, new Boolean(has_home));
 		state.setAttribute(STATE_TOOL_EMAIL_ADDRESS, emailId);
-		state.setAttribute(STATE_TOOL_REGISTRATION_SELECTED_LIST, selectedTools); // List of ToolRegistration toolId's
 		state.setAttribute(STATE_NEWS_TITLES, titles);
 		state.setAttribute(STATE_NEWS_URLS, urls);
 		state.setAttribute(STATE_WEB_CONTENT_TITLES, wcTitles);
