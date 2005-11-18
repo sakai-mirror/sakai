@@ -107,7 +107,7 @@
 			</label>	
 			#chef_dateselectionwidget($name_OpenYear $name_OpenMonth $name_OpenDay 2002 2007 $value_OpenYear $value_OpenMonth $value_OpenDay)
 			$tlang.getString("gen.at") 
-			<select name="$name_OpenHour" id="$name_OpenHour" onchange="blur()">
+			<select name="$name_OpenHour" id="$name_OpenHour">
 				#foreach ($i in [1..12])
 					#if ($value_OpenHour==$i)
 						<option value="$i" selected="selected">$i</option>
@@ -116,7 +116,7 @@
 					#end
 				#end
 			</select>
-			<select name="$name_OpenMin" id="$name_OpenMin" onchange="blur()">
+			<select name="$name_OpenMin" id="$name_OpenMin">
 				#foreach ($i in [00, 15, 30, 45])
 					#if ($i == $value_OpenMin)
 						#if ($i == 0)
@@ -133,7 +133,7 @@
 					#end
 				#end
 			</select>
-			<select name="$name_OpenAMPM" id="$name_OpenAMPM" onchange="blur()">
+			<select name="$name_OpenAMPM" id="$name_OpenAMPM">
 				#foreach ($i in ["AM", "PM"])
 					#if ($i == $value_OpenAMPM)
 						<option value="$i" selected="selected">$i</option>
@@ -153,7 +153,7 @@
 			</label>
 			#chef_dateselectionwidget($name_DueYear $name_DueMonth $name_DueDay 2002 2007 $value_DueYear $value_DueMonth $value_DueDay)
 				$tlang.getString("gen.at") 
-			<select name="$name_DueHour" id="$name_DueHour" onchange="blur()">
+			<select name="$name_DueHour" id="$name_DueHour">
 				#foreach ($i in [1..12])
 					#if ($i == $value_DueHour)
 						<option value="$i" selected="selected">$i</option>
@@ -162,7 +162,7 @@
 					#end
 				#end
 			</select>
-			<select name="$name_DueMin" id="$name_DueMin" onchange="blur()">
+			<select name="$name_DueMin" id="$name_DueMin">
 				#foreach ($i in [0, 15, 30, 45])
 					#if ($i == $value_DueMin)
 						#if ($i == 0)
@@ -179,7 +179,7 @@
 					#end
 				#end
 			</select>
-			<select name="$name_DueAMPM" id="$name_DueAMPM" onchange="blur()">
+			<select name="$name_DueAMPM" id="$name_DueAMPM">
 				#foreach ($i in ["AM", "PM"])
 					#if ($i == $value_DueAMPM)
 						<option value="$i" selected="selected">$i</option>
@@ -197,7 +197,7 @@
 			#if ($value_EnableCloseDate)
 				#chef_dateselectionwidget($name_CloseYear $name_CloseMonth $name_CloseDay 2002 2007 $value_CloseYear $value_CloseMonth $value_CloseDay)
 				$tlang.getString("gen.at") 
-				<select name="$name_CloseHour" id="$name_CloseHour" onchange="blur()">
+				<select name="$name_CloseHour" id="$name_CloseHour">
 					#foreach ($i in [1..12])
 						#if ($i == $value_CloseHour)
 							<option value="$i" selected="selected">$i</option>
@@ -206,7 +206,7 @@
 						#end
 					#end
 				</select>
-				<select name="$name_CloseMin" id="$name_CloseMin" onchange="blur()">
+				<select name="$name_CloseMin" id="$name_CloseMin">
 					#foreach ($i in [0, 15, 30, 45])
 						#if ($i == $value_CloseMin)
 							#if ($i == 0)
@@ -223,7 +223,7 @@
 						#end
 					#end
 				</select>
-				<select name="$name_CloseAMPM" id="$name_CloseAMPM" onchange="blur()">
+				<select name="$name_CloseAMPM" id="$name_CloseAMPM">
 					#foreach ($i in ["AM", "PM"])
 						#if ($i == $value_CloseAMPM)
 							<option value="$i" selected="selected">$i</option>
@@ -306,7 +306,7 @@
 			<label for="subType">
 				$tlang.getString("gen.stusub")
 			</label>
-			<select name="$name_SubmissionType" onchange="blur()" id="subType">
+			<select name="$name_SubmissionType" id="subType">
 				#foreach ($i in [1..3])
 					#if ($i == $value_SubmissionType)
 						<option value="$i" selected="selected">$submissionTypeTable.get($i)</option>
@@ -321,7 +321,8 @@
 				<span class="reqStar">*</span>
 				<label for="$name_GradeType">
 					$tlang.getString("gen.grasca")
-				</label>				
+				</label>
+				<span class="skip">$tlang.getString("newassig.selectmessage")</span>				
 				<select id="$name_GradeType"  name="$name_GradeType" onchange="SetMaxPoint(this, $name_GradePoints)">
 					#foreach ($i in [1..5])
 						#if ($i == $value_GradeType)
