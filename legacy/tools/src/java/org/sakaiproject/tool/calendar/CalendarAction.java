@@ -818,6 +818,31 @@ extends VelocityPortletStateAction
 	}
 	
 	/**
+	 * An inner class that can be initiated to perform text formatting
+	 */
+	public class CalendarFormattedText
+	{
+		// constructor
+		public CalendarFormattedText()
+		{
+			
+		}
+		
+		/**
+		 * Use of FormattedText object's trimFormattedText function.
+		 * @param formattedText The formatted text to trim
+		 * @param maxNumOfChars The maximum number of displayed characters in the returned trimmed formatted text.
+		 * @return String A String to hold the trimmed formatted text
+		 */
+		public String trimFormattedText(String formattedText, int maxNumOfChars)
+		{
+			StringBuffer sb = new StringBuffer();
+			FormattedText.trimFormattedText(formattedText, maxNumOfChars, sb);
+			return sb.toString();
+		}
+	}
+	
+	/**
 	 * Given a current date via the calendarUtil paramter, returns a TimeRange for the week.
 	 */
 	public TimeRange getWeekTimeRange(
@@ -6266,6 +6291,9 @@ extends VelocityPortletStateAction
 		
 		context.put("selectedView", VIEW_LIST);
 		context.put("tlang",rb);
+		
+
+		context.put("calendarFormattedText", new CalendarFormattedText());
 
 	}   // buildListContext
 	

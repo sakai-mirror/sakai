@@ -242,7 +242,7 @@
 																		#set ($desc = $validator.escapeHtmlFormattedText($m.DescriptionFormatted))
 																		
 																		#if ($desc.length() > 50)
-																			$desc.substring(0, 50) ...
+																			$calendarFormattedText.trimFormattedText($desc, 50) ...
 																		#else
 																			$desc
 																		#end
