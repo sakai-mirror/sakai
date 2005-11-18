@@ -84,23 +84,23 @@
 	
 #if ($toolId == "sakai.announcements")
 	<form name="formII" action="#toolForm("$action")" method="post" style="padding:0;display:inline">
-	<p class="rightNav">
-		#if ($!goPTButton)
-			<input type="submit" name="eventSubmit_doPrev_message" value="&lt; $tlang.getString("meta.prev")" />
-		#else
-			<input type="submit" name="eventSubmit_doPrev_message" 
-				value="&lt;  $tlang.getString("meta.prev")"
-				disabled="disabled" />
-		#end
-		<input type="submit" name="eventSubmit_doLinkcancel" value="$tlang.getString("meta.retlis")" />
-		#if ($!goNTButton)
-			<input type="submit" name="eventSubmit_doNext_message" value=" $tlang.getString("meta.next") &gt;" />
-		#else
-			<input type="submit" name="eventSubmit_doNext_message" 
-				value="$tlang.getString("meta.next") &gt;"
-				disabled="disabled" />
-		#end
-	</p>
+		<div class="rightNav" style="text-align:right;float:none">
+			#if ($!goPTButton)
+				<input type="submit" name="eventSubmit_doPrev_message" value="&lt; $tlang.getString("meta.prev")" />
+			#else
+				<input type="submit" name="eventSubmit_doPrev_message" 
+					value="&lt;  $tlang.getString("meta.prev")"
+					disabled="disabled" />
+			#end
+			<input type="submit" name="eventSubmit_doLinkcancel" value="$tlang.getString("meta.retlis")" />
+			#if ($!goNTButton)
+				<input type="submit" name="eventSubmit_doNext_message" value=" $tlang.getString("meta.next") &gt;" />
+			#else
+				<input type="submit" name="eventSubmit_doNext_message" 
+					value="$tlang.getString("meta.next") &gt;"
+					disabled="disabled" />
+			#end
+		</div>
 	</form>
 #else
 	<form name="formII" action="#toolForm("$action")" method="post" style="padding:0;display:inline">
