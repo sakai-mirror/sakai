@@ -225,7 +225,7 @@ public class ResultPageBase implements ResultPageInterface {
    */
   public void doSearchParagraph(Element parent) 
   {
-	  doSearchParagraph(parent, "This is an example servlet intended to illustrate the use of the O.K.I. Repository OSID as the Sakai service for accessing data sources.");
+	  doSearchParagraph(parent, "This is an example servlet intended to illustrate the use of the O.K.I. Repository OSID as the Sakai service for accessing data sources.  Enter a search string below and select one or more repositories to search.");
   }
 
   /**
@@ -449,6 +449,7 @@ public class ResultPageBase implements ResultPageInterface {
 	  select = DomUtils.createElement(parent, "SELECT");
 	  select.setAttribute("name", "database");
 	  select.setAttribute("multiple","true");
+	  select.setAttribute("size","5");
 	  
 	  /*
 	   * This is all we can do if the search source list was never populated
