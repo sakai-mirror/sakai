@@ -333,7 +333,7 @@
 		<input type="hidden" name="sakai_action" value="doCreate" />
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
 		<p class="shorttext">
-			<label for="itemType01">$tlang.getString("addi.add")</label>
+			<label for="itemType01">$tlang.getString("addi.add")</label><span class="skip">$tlang.getString("addi.selectmessage")</span>
 			<select id="itemType01"  name="itemType" onchange="javascript:submitform('addItemForm');">
 				<option value="$TYPE_FOLDER" id="$validator.escapeJavascript("$TYPE_FOLDER")"#if("$itemType" == "$TYPE_FOLDER") selected="selected"#end>$tlang.getString("addi.folder")</option>
 				<option value="$TYPE_UPLOAD" id="$validator.escapeJavascript("$TYPE_UPLOAD")"#if("$itemType" == "$TYPE_UPLOAD") selected="selected"#end>$tlang.getString("addi.upload")</option>
@@ -368,6 +368,7 @@
 				#elseif("$itemType" == "$TYPE_URL")
 					<label for="numberOfItems">$tlang.getString("add.numurls")</label>
 				#end
+				<span class="skip">$tlang.getString("addi.selectmessage")</span>
 				#if("$itemType" == "$TYPE_UPLOAD")
 					<select name="numberOfItems" id="numberOfItems" onchange="javascript:submitWithNumberOfItems('createForm', this);">
 				#else
