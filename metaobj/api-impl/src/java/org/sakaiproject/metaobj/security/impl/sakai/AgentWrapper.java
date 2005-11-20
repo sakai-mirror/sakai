@@ -113,6 +113,10 @@ public class AgentWrapper extends IdentifiableObject implements Agent {
       return getWorksiteRoles(PortalService.getCurrentSiteId());
    }
 
+   public boolean isRole() {
+      return false;
+   }
+
    public User getSakaiUser() {
       return sakaiUser;
    }

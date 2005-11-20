@@ -86,6 +86,10 @@ public class RoleWrapper implements OspRole {
       return new ArrayList();      
    }
 
+   public boolean isRole() {
+      return true;
+   }
+
    public AuthzGroup getSakaiRealm() {
       return sakaiRealm;
    }

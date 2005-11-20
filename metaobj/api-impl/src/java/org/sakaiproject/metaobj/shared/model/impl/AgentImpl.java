@@ -172,6 +172,10 @@ public class AgentImpl implements Agent {
       return new ArrayList();
    }
 
+   public boolean isRole() {
+      return false;
+   }
+
    public void setRole(String role) {
       this.role = role;
    }

@@ -61,4 +61,6 @@ public interface Agent extends Serializable, Principal {
 
    public List getWorksiteRoles();
 
+   public boolean isRole();
+
 }

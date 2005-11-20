@@ -80,6 +80,10 @@ public class AnonymousAgent implements Agent {
       return new ArrayList();
    }
 
+   public boolean isRole() {
+      return false;
+   }
+
    /**
     * Returns the name of this principal.
     *
