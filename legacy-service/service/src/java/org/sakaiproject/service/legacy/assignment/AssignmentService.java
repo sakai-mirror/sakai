@@ -187,6 +187,13 @@ public interface AssignmentService
 	public List allowAddSubmissionUsers(String assignmentReference);
 
 	/**
+	 * Get the List of Users who can add assignment
+	 * @param context - Describes the portlet context - generated with DefaultId.getChannel().
+	 * @return the List (User) of users who can add assignment
+	 */
+	public List allowAddAssignmentUsers(String context);
+	
+	/**
 	 * Check permissions for reading a Submission.
 	 * @param submissionReference - The Submission's reference.
 	 * @return True if the current User is allowed to get the AssignmentSubmission, false if not.
