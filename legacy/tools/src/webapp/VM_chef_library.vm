@@ -123,15 +123,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="Content-Style-Type" content="text/css" />
     <title>$!{toolTitle}</title>
-    $!sakai_head
-	## setup wysiwyg editor
-	#if($wysiwyg)
-	    <script type="text/javascript" language="JavaScript">
-    			var _editor_url = "#libraryLink("htmlarea/")"
-    		</script>
-    		<script type="text/javascript" language="JavaScript" src="#libraryLink('htmlarea/htmlarea.js')">
-    		</script>
-    	#end
+    $!sakai_head	
+    
+    	## setup wysiwyg editor
+	#set($editor_path = "/vm/editor/$!sakai_editor/sakai_header.vm") 
+	<!-- $editor_path -->
+	#parse("$editor_path")
+    
 #if ($frameRefresh)
 	#foreach ($id in $frameRefresh)
 	<script type="text/javascript" language="JavaScript">
@@ -334,31 +332,28 @@
 *# ------------------------------------------------------------------
 #macro (chef_setupformattedtextarea $textarea_id)
 
-	#if($wysiwyg)
-		## Everything is in our own external JavaScript libraries, one with support for twinpeaks and one without
-		#if($twinpeaks)
-			<script type="text/javascript" src="#libraryLink('htmlarea/sakai_htmlarea_twinpeaks.js')"></script>
-		#else
-			<script type="text/javascript" src="#libraryLink('htmlarea/sakai-htmlarea.js')"></script>
-		#end
-		## Call a JavaScript function from within the library to do setup
-		<script type="text/javascript" defer="1">chef_setupformattedtextarea('$textarea_id');</script>
-	#end
+	## setup wysiwyg editor
+	#set($editor_path = "/vm/editor/$!sakai_editor/sakai_body.vm") 
+	<!-- $editor_path -->
+	#parse("$editor_path")
+
+	<script type="text/javascript" defer="1">chef_setupformattedtextarea('$textarea_id');</script>
+	
 #end
 
-
+#* ------------------------------------------------------------------
+# The standard way to instantiate a WYSIWYG full-document editing widget
+# $textarea_id - The HTML id of the textarea form element already in the HTML document
+*# ------------------------------------------------------------------
 #macro (chef_setuphtmldocumenttextarea $textarea_id)
+
+	## setup wysiwyg editor
+	#set($editor_path = "/vm/editor/$!sakai_editor/sakai_body.vm") 
+	<!-- $editor_path -->
+	#parse("$editor_path")
+
+	<script type="text/javascript" defer="1">chef_setuphtmldocumenttextarea('$textarea_id');</script>
 	
-	#if($wysiwyg)
-		## Everything is in our own external JavaScript libraries, one with support for twinpeaks and one without
-		#if($twinpeaks)
-			<script type="text/javascript" src="#libraryLink('htmlarea/sakai_htmlarea_twinpeaks.js')"></script>
-		#else
-			<script type="text/javascript" src="#libraryLink('htmlarea/sakai-htmlarea.js')"></script>
-		#end
-		## Call a JavaScript function from within the library to do setup
-		<script type="text/javascript" defer="1">chef_setuphtmldocumenttextarea('$textarea_id');</script>
-	#end
 #end
 
 #macro (sakai_courier)

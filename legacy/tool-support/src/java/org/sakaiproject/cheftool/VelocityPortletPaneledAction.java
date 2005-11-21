@@ -319,7 +319,9 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 		context.put("param_pid", ActionURL.PARAM_PID);
 		context.put("pid", getPid(req));
 
-		// indicate which version of WYSIWYG editor to use in legacy tools
+		// indicate which WYSIWYG editor to use in legacy tools
+		String editor = ServerConfigurationService.getString("wysiwyg.editor");
+		context.put("sakai_editor", editor);
 		String twinpeaks = ServerConfigurationService.getString("wysiwyg.twinpeaks");
 		if(Boolean.TRUE.toString().equalsIgnoreCase(twinpeaks))
 		{
