@@ -7,13 +7,13 @@ localized and internationalized. Translations are underway in many
 languages, as follows:
 
 1) Chinese (China)
-   Status: Completed for Sakai 2.0.1
-   Translated by: Tianhua Ding
+   Status: (Legacy tools) Completed for Sakai 2.0.1
+   Translated by: Tianhua Ding, Kun Lv
    Contact: Beth Kirschner    beth.kirschner@umich.edu
    Local ID: zh_CN
    
 2) Korean
-   Status: Completed for Sakai 2.0.1
+   Status:(Legacy tools)  Completed for Sakai 2.0.1
    Translated by: Il-hwan Kim
    Contact: Beth Kirschner    beth.kirschner@umich.edu
    Local ID: ko_KR
@@ -66,6 +66,23 @@ languages, as follows:
     Contact: Alex Ballesté   alex@asic.udl.es
     Local ID: ca_ES
     
+11) Chinese (Taiwan)
+    Status: ??
+    Translated by: Max Tsai
+    Contact: Max Tsai  mj_tsai@yahoo.com
+    Local ID: zh_TW
+    
+12) French
+    Status: ??
+    Translated by: n/a
+    Contact: Yves Epelboin (yves.epelboin@upmc.fr)
+    Local ID: fr_FR
+	 
+13) Spanish
+    Status: ??
+    Translated by: n/a
+    Contact: Cynthia Gonzaléz (gonzalez.cynthia@itesm.mx)
+    Local ID: es_MX
 
 Currently, the language locale must be defined at boot time, by
 setting the tomcat JAVA_OPTS property as follows:
