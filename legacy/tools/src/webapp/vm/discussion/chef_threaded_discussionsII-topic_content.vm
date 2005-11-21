@@ -153,7 +153,7 @@
 			#end		
 		</table>	
 		#end
-		<p class="rightNav">
+		<p class="rightNav" style="text-align:right;float:none">
 			#if ($!goPTButton)
 				<input type="submit" name="eventSubmit_doPrev_topic_content" value="$tlang.getString("content.pretop")"/>
 			#else
