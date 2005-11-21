@@ -1,3 +1,12 @@
+Revision: 4041
+Author: jimeng@umich.edu
+Date: 9:42:51 PM, Sunday, November 20, 2005
+Message:
+SAK-2885
+Adding other open-source JavaScript-based WYSIWYG editors.
+Add support to switch from one editor to another by changing a value in sakai.properties.
+----
+
 Revision: 4032
 Author: john.ellis@rsmart.com
 Date: 12:55:28 PM, Sunday, November 20, 2005
@@ -6,15 +15,6 @@ http://bugs.sakaiproject.org/jira/browse/SAK-2882
 SAK-2882
 added a role flag to the agent interface
 ----
-Modified : /trunk/sakai/metaobj/api/src/java/org/sakaiproject/metaobj/shared/model/Agent.java
-Modified : /trunk/sakai/metaobj/api-impl/src/java/org/sakaiproject/metaobj/security/AnonymousAgent.java
-Modified : 
-/trunk/sakai/metaobj/api-impl/src/java/org/sakaiproject/metaobj/security/impl/sakai/AgentWrapper.java
-Modified : 
-/trunk/sakai/metaobj/api-impl/src/java/org/sakaiproject/metaobj/security/impl/sakai/RoleWrapper.java
-Modified : /trunk/sakai/metaobj/api-impl/src/java/org/sakaiproject/metaobj/shared/model/impl/AgentImpl.java
-Modified : 
-/trunk/sakai/metaobj/tool-lib/src/java/org/sakaiproject/metaobj/shared/control/servlet/SakaiComponentDispatchServlet.java
 
 
 
