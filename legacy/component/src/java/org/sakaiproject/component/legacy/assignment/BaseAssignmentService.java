@@ -2135,6 +2135,23 @@ public abstract class BaseAssignmentService
 		return SecurityService.unlockUsers(SECURE_ADD_ASSIGNMENT_SUBMISSION, assignmentReference);
 
 	}	// allowAddSubmissionUsers
+	
+	/**
+	 * Get the List of Users who can add assignment
+	 * @param assignmentReference - a reference to an assignment
+	 * @return the List (User) of users who can addSubmission() for this assignment.
+	 */
+	public List allowAddAssignmentUsers(String context)
+	{
+		String resourceString = getAccessPoint(true) + Entity.SEPARATOR + "a" + Entity.SEPARATOR + context + Entity.SEPARATOR;
+		if(m_logger.isDebugEnabled())
+		{
+			m_logger.debug("Entering allowAddAssignmentUsers with resource string : " + resourceString);
+			m_logger.debug("                                    	context string : " + context);
+		}
+		return SecurityService.unlockUsers(SECURE_ADD_ASSIGNMENT, resourceString);
+
+	}	// allowAddAssignmentUsers
 
 	/**
 	 * Check permissions for accessing a Submission.

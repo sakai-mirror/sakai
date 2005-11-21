@@ -1634,7 +1634,16 @@ extends PagedResourceActionII
 		List studentMembers = new Vector();
 		if (assignmentsVector.size() != 0)
 		{
-			studentMembers.addAll(AssignmentService.allowAddSubmissionUsers (((Assignment)assignmentsVector.get(0)).getReference ()));
+			List allowAddAssignmentUsers = AssignmentService.allowAddAssignmentUsers((String) state.getAttribute (STATE_CONTEXT_STRING));
+			List allowAddSubmissionUsers = AssignmentService.allowAddSubmissionUsers (((Assignment)assignmentsVector.get(0)).getReference ());
+			for (int i=0; i<allowAddSubmissionUsers.size(); i++)
+			{
+				User allowAddSubmissionUser = (User) allowAddSubmissionUsers.get(i);
+				if (!allowAddAssignmentUsers.contains(allowAddSubmissionUser))
+				{
+					studentMembers.add(allowAddSubmissionUser);
+				}
+			}
 		}
 		context.put ("studentMembers", studentMembers);
 		context.put ("assignmentService", AssignmentService.getInstance());
