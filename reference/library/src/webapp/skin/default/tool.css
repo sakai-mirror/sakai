@@ -92,7 +92,7 @@ h6{font-size:100%;color:#084A87;font-weight:normal;margin:.5em 0;background:tran
 .rightNav input[type="button"]{font-size:90%;padding:.3em}
 label{color:#000;font-weight:bold;font-family:Arial,Helvetica,sans-serif;margin-top:.3em}
 .shorttext .reqStar{color:#c00;width:auto;margin:0 0 0 -1em;font-weight:bold;font-size:1em;padding:0}
-.labelindnt{font-size:1em;margin:0 0 0 15.5em}
+.labelindnt{font-size:1em;margin:0 0 0 15.5em;border:1px solid #f0f0f0}
 .shorttext input{padding:.1em .3em;border:1px solid #90A1C6}
 textarea{padding:.1em .3em;border:1px solid #90A1C6;font:100% Verdana,Arial,Helvetica,sans-serif}
 label.block{display:block}
