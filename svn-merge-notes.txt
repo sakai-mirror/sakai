@@ -1,3 +1,10 @@
+Revision: 4056
+Author: lance@indiana.edu
+Date: 9:40:50 AM, Monday, November 21, 2005
+Message:
+Removed \\ directory which was causing checkouts to fail for Windows machines.
+----
+
 Revision: 4041
 Author: jimeng@umich.edu
 Date: 9:42:51 PM, Sunday, November 20, 2005
