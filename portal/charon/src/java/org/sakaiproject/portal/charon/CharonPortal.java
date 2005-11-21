@@ -1763,7 +1763,7 @@ public class CharonPortal extends HttpServlet
 		// more dropdown
 		if (moreSites.size() > 0)
 		{
-			out.println("			<td class=\"selectCell\">");
+			out.println("			<td class=\"selectCell\"><span class=\"skip\">" + Web.escapeHtml(rb.getString("sit.selectmessage")) + "</span>");
 			out.println("				<select ");
 			out.println("						onchange=\"if (this.options[this.selectedIndex].value != '')"
 					+ " { parent.location = this.options[this.selectedIndex].value; } else { this.selectedIndex = 0; }\">");
