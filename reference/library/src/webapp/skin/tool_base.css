@@ -370,7 +370,7 @@ hr.itemSeparator  {
 
 /*added from skins*/
 .instruction  {line-height:1em; color:gray;} 
-p.instruction  {line-height:1.3em;} 
+p.instruction  {line-height:1.3em;clear:both} 
 .step{font-size: 90%;height:auto}
 .information{background-color:transparent;
 	background-image:url('images/info.gif');
