@@ -198,7 +198,7 @@ public class InputRichTextRenderer extends Renderer
      }
 
      // hook up configuration object
-     writeConfigurationScript(clientId, toolbarScript, widthPx, heightPx, locale, writer);
+     writeConfigurationScript(context, component, clientId, toolbarScript, widthPx, heightPx, locale, writer);
    }
 
   }
@@ -264,7 +264,7 @@ public class InputRichTextRenderer extends Renderer
    * @param writer
    * @throws IOException
    */
-  private void writeExternalScripts(Locale locale, ResponseWriter writer)
+  protected void writeExternalScripts(Locale locale, ResponseWriter writer)
       throws IOException {
     writer.write("<script type=\"text/javascript\">var _editor_url = \"" +
                  "/" + RESOURCE_PATH + "/" + HTMLAREA_SCRIPT_PATH + "/" +
@@ -327,8 +327,8 @@ public class InputRichTextRenderer extends Renderer
    * @param widthPx columns
    * @param heightPx rows
    */
-  private static void writeConfigurationScript(String clientId, String toolbar,
-    int widthPx, int heightPx, Locale locale, ResponseWriter writer)
+  protected void writeConfigurationScript(FacesContext context, UIComponent component, String clientId,
+    String toolbar, int widthPx, int heightPx, Locale locale, ResponseWriter writer)
     throws IOException
   {
     // script creates unique Config object
@@ -341,13 +341,33 @@ public class InputRichTextRenderer extends Renderer
     writer.write("  " + configVar + ".toolbar = " + toolbar + ";\n");
     writer.write("  " + configVar + ".width=\"" + widthPx + "px\";\n");
     writer.write("  " + configVar + ".height=\"" + heightPx + "px\";\n");
+    writeAdditionalConfig(context, component, configVar, clientId,
+          toolbar, widthPx, heightPx, locale,  writer);
     writer.write(  "sakaiSetupRichTextarea(\"");
     writer.write(clientId);
     writer.write("_inputRichText\"," + configVar + ");\n");
     writer.write("</script>\n");
   }
 
-  /**
+   /**
+    * subclasses can override to provide additonal configuration such as add buttons, etc
+    * @param context
+    * @param component
+    * @param configVar
+    * @param clientId
+    * @param toolbar
+    * @param widthPx
+    * @param heightPx
+    * @param locale
+    * @param writer
+    */
+   protected void writeAdditionalConfig(FacesContext context, UIComponent component, String configVar,
+      String clientId, String toolbar, int widthPx, int heightPx, Locale locale, ResponseWriter writer)
+      throws IOException{
+
+   }
+
+   /**
    * Built toolbar part of configuration script for a list of button commands.
    *
    * @param buttonList csv list of buttons
