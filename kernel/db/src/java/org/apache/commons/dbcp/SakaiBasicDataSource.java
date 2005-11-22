@@ -23,6 +23,7 @@
 
 package org.apache.commons.dbcp;
 
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -44,7 +45,46 @@ import org.apache.commons.pool.impl.GenericObjectPool;
 public class SakaiBasicDataSource extends BasicDataSource
 {
 	/**
-	 * <p>Sakai changes: use the SakaiPoolableConnectionFactory, removed some not-visible (damn the use of private!) code.</p>
+	 * Set the default transaction isolation level from a string value, based on the settings and values in java.sql.Connection
+	 * 
+	 * @param defaultTransactionIsolation
+	 */
+	public void setDefaultTransactionIsolationString(String defaultTransactionIsolation)
+	{
+		if (defaultTransactionIsolation == null)
+		{
+			setDefaultTransactionIsolation(PoolableConnectionFactory.UNKNOWN_TRANSACTIONISOLATION);
+		}
+		else if (defaultTransactionIsolation.equalsIgnoreCase("TRANSACTION_NONE"))
+		{
+			setDefaultTransactionIsolation(Connection.TRANSACTION_NONE);
+		}
+		else if (defaultTransactionIsolation.equalsIgnoreCase("TRANSACTION_READ_UNCOMMITTED"))
+		{
+			setDefaultTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+		}
+		else if (defaultTransactionIsolation.equalsIgnoreCase("TRANSACTION_READ_COMMITTED"))
+		{
+			setDefaultTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+		}
+		else if (defaultTransactionIsolation.equalsIgnoreCase("TRANSACTION_REPEATABLE_READ"))
+		{
+			setDefaultTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+		}
+		else if (defaultTransactionIsolation.equalsIgnoreCase("TRANSACTION_SERIALIZABLE"))
+		{
+			setDefaultTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+		}
+		else
+		{
+			setDefaultTransactionIsolation(PoolableConnectionFactory.UNKNOWN_TRANSACTIONISOLATION);			
+		}
+	}
+
+	/**
+	 * <p>
+	 * Sakai changes: use the SakaiPoolableConnectionFactory, removed some not-visible (damn the use of private!) code.
+	 * </p>
 	 * <p>
 	 * Create (if necessary) and return the internal data source we are using to manage our connections.
 	 * </p>

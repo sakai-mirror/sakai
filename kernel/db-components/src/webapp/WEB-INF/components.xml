@@ -71,7 +71,8 @@
 
     <!--  The indication of whether objects will be validated before being 
       borrowed from the pool. If the object fails to validate, it will be 
-      dropped from the pool, and we will attempt to borrow another. -->
+      dropped from the pool, and we will attempt to borrow another.
+      Note: this has been shown to cause performance problems with Oracle (leave it false) -->
     <property name="testOnBorrow">
       <value>true</value>
     </property>
@@ -91,7 +92,8 @@
 
     <!-- The SQL query that will be used to validate connections from this pool 
       before returning them to the caller. If specified, this query MUST be a 
-      SQL SELECT statement that returns at least one row. -->
+      SQL SELECT statement that returns at least one row.
+      Note: This has been shown to cause performance problems under Oracle: leave it unset. -->
     <property name="validationQuery">
       <value>select 1 from SYSTEM_USERS</value>
     </property>
@@ -106,16 +108,11 @@
       <value>false</value>
     </property>
 
-    <!-- Use TRANSACTION_READ_COMMITTED for MySQL and Oracle -->
-    <!-- Up to and including 1.7.1, HSQLDB supports only 
-      Connection.TRANSACTION_READ_UNCOMMITTED. -->
-    <property name="defaultTransactionIsolation">
-      <bean
-        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-        <property name="staticField">
-          <value>${jdbc.defaultTransactionIsolation}</value>
-        </property>
-      </bean>
+    <!-- Use TRANSACTION_READ_COMMITTED for MySQL -->
+    <!-- DO NOT SET for Oracle (the default TRANSACTION_READ_COMMITTED is fine, and setting it causes performance problems) -->
+    <!-- Up to and including 1.7.1, HSQLDB supports only Connection.TRANSACTION_READ_UNCOMMITTED. -->
+    <property name="defaultTransactionIsolationString">
+      <value>TRANSACTION_READ_UNCOMMITTED</value>
     </property>
 
     <!-- Prepared statement pooling for this pool. -->
