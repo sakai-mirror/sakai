@@ -6,7 +6,7 @@
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <f:loadBundle basename="org.sakaiproject.tool.preferences.bundle.Messages" var="msgs"/>
 <f:view>
-	<sakai:view_container title="Preferences">
+	<sakai:view_container title="#{msgs.prefs_title}">
 	<sakai:view_content>
 	
 		<h:form id="options_form">
