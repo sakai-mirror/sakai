@@ -2834,10 +2834,12 @@ public class SiteAction extends PagedResourceActionII
 		{
 			context.put("generalMembers", siteMembers);
 		}
+		Set groupMembersSet = (Set) state.getAttribute(STATE_GROUP_MEMBERS);
 		if (state.getAttribute(STATE_GROUP_MEMBERS) != null)
 		{
-			context.put("groupMembers", new SortedIterator(((Set) state.getAttribute(STATE_GROUP_MEMBERS)).iterator(), new SiteComparator (SORTED_BY_MEMBER_NAME, Boolean.TRUE.toString())));
+			context.put("groupMembers", new SortedIterator(groupMembersSet.iterator(), new SiteComparator (SORTED_BY_MEMBER_NAME, Boolean.TRUE.toString())));
 		}
+		context.put("groupMembersClone", groupMembersSet);
 		context.put("userDirectoryService", UserDirectoryService.getInstance());
 		return (String)getContext(data).get("template") + TEMPLATE[50];
     case 51:
