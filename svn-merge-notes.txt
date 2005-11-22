@@ -1,6 +1,14 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4099 | john.ellis@rsmart.com | 2005-11-21 23:12:49 -0500 (Mon, 21 Nov 2005) | 6 lines
+
+http://bugs.sakaiproject.org/jira/browse/SAK-2907
+SAK-2907
+broke up the "writeConfiguration" call to allow for subclasses to insert custom configuration code.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4032 | john.ellis@rsmart.com | 2005-11-20 12:55:28 -0500 (Sun, 20 Nov 2005) | 4 lines
 
 http://bugs.sakaiproject.org/jira/browse/SAK-2882
