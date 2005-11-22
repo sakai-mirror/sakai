@@ -19,8 +19,6 @@
 		<h4>
 			$tlang.getString("custom.display")
 		</h4>
-		<h5 class="indnt2">Announcement Display</h5>
-		
 	#if ($toolId == "sakai.announcements")
 		
 		#set ($selected = $tlang.getString("custom.sortab"))

@@ -166,6 +166,15 @@ public class AssignmentService
 
 		return service.allowAddSubmissionUsers(param0);
 	}
+	
+	public static java.util.List allowAddAssignmentUsers(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.assignment.AssignmentService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.allowAddAssignmentUsers(param0);
+	}
 
 	public static boolean allowGetSubmission(java.lang.String param0)
 	{

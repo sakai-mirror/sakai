@@ -2,6 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://www.sakaiproject.org/samigo" prefix="samigo" %>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <!-- $Id$
 <%--
 ***********************************************************************************
@@ -32,10 +36,7 @@
    <f:loadBundle
      basename="org.sakaiproject.tool.assessment.bundle.GeneralMessages"
      var="genMsg"/>
-    <f:verbatim><!DOCTYPE html
-     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-    </f:verbatim>
+   
     <html xmlns="http://www.w3.org/1999/xhtml">
       <head><%= request.getAttribute("html.head") %>
       <title><h:outputText value="#{msg.page_title}" /></title>
@@ -139,10 +140,10 @@ sorting actions for table:
       </f:facet>
       <h:outputText value="n/a" rendered="#{takeable.dueDate == null}" />
       <h:outputText value="#{takeable.dueDate}" style="color: red;" rendered="#{takeable.pastDue}">
-        <f:convertDateTime pattern="#{genMsg.output_date_picker}" />
+        <f:convertDateTime pattern="#{genMsg.output_date_no_sec}" />
       </h:outputText>
       <h:outputText value="#{takeable.dueDate}" rendered="#{!takeable.pastDue}">
-        <f:convertDateTime pattern="#{genMsg.output_date_picker}" />
+        <f:convertDateTime pattern="#{genMsg.output_date_no_sec}" />
       </h:outputText>
     </h:column>
   </h:dataTable>
@@ -300,7 +301,7 @@ sorting actions for table:
          </h:panelGroup>
       </f:facet>
       <h:outputText value="#{reviewable.feedbackDate} " rendered="#{reviewable.feedback eq 'true'}" >
-        <f:convertDateTime pattern="#{genMsg.output_date_picker}" />
+        <f:convertDateTime pattern="#{genMsg.output_date_no_sec}" />
       </h:outputText>
       <h:outputText value="Immediate" rendered="#{reviewable.feedback eq 'true'
         && reviewable.feedbackDate==null}" />
@@ -485,10 +486,9 @@ sorting actions for table:
         </h:panelGroup>
       </f:facet>
 
-      <h:outputText value="#{reviewable.submissionDate}" rendered="#{reviewable.feedback eq 'true'}" >
-        <f:convertDateTime pattern="#{genMsg.output_date_picker}"  />
+      <h:outputText value="#{reviewable.submissionDate}" >
+        <f:convertDateTime pattern="#{genMsg.output_date_no_sec}"  />
       </h:outputText>
-      <h:outputText value="#{msg.not_applicable}" rendered="#{reviewable.feedback eq 'false'}" />
     </h:column>
   </h:dataTable>
   </div></div>

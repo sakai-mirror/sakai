@@ -2,6 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://www.sakaiproject.org/samigo" prefix="samigo" %>
+  <!DOCTYPE html
+   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <!--
 * $Id$
 <%--
@@ -27,10 +31,7 @@
 --%>
 -->
 <f:view>
-  <f:verbatim><!DOCTYPE html
-   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-  </f:verbatim>
+
   <f:loadBundle
    basename="org.sakaiproject.tool.assessment.bundle.DeliveryMessages"
    var="msg"/>
@@ -165,7 +166,7 @@ function saveTime()
 
   <h:dataTable value="#{delivery.tableOfContents.partsContents}" var="part">
   <h:column>
-
+<h:panelGroup>
  <samigo:hideDivision id="hidePartDiv" title = "#{msg.p} #{part.number} - #{part.nonDefaultText}  -
        #{part.questions-part.unansweredQuestions}/#{part.questions} #{msg.ans_q}, #{part.pointsDisplayString}#{part.maxPoints} #{msg.pt}" >
 
@@ -186,12 +187,12 @@ function saveTime()
             <f:param name="partnumber" value="#{part.number}" />
             <f:param name="questionnumber" value="#{question.number}" />
           </h:commandLink>
-
         </h:panelGroup>
-<f:verbatim></div></f:verbatim>
+  <f:verbatim></div></f:verbatim>
        </h:column>
       </h:dataTable>
     </samigo:hideDivision>
+</h:panelGroup>
 <f:verbatim></div></f:verbatim>
   </h:column>
   </h:dataTable>
