@@ -1057,16 +1057,23 @@ public class ResourcesAction
 				}
 				else
 				{
-					ContentCollection db = ContentHostingService.getCollection(dropboxId);
-					expandedCollections.put(dropboxId, db);
-					List dbox = getBrowseItems(dropboxId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
-					if(dbox != null && dbox.size() > 0)
+					try
 					{
-						BrowseItem root = (BrowseItem) dbox.remove(0);
-						// context.put("site", root);
-						root.setName(ContentHostingService.getDropboxDisplayName());
-						root.addMembers(dbox);
-						this_site.add(root);
+						ContentCollection db = ContentHostingService.getCollection(dropboxId);
+						expandedCollections.put(dropboxId, db);
+						List dbox = getBrowseItems(dropboxId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+						if(dbox != null && dbox.size() > 0)
+						{
+							BrowseItem root = (BrowseItem) dbox.remove(0);
+							// context.put("site", root);
+							root.setName(ContentHostingService.getDropboxDisplayName());
+							root.addMembers(dbox);
+							this_site.add(root);
+						}
+					}
+					catch(IdUnusedException e)
+					{
+						// if an id is unused, ignore it
 					}
 				}
 			}

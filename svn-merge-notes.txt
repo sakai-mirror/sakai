@@ -1,6 +1,13 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4105 | jimeng@umich.edu | 2005-11-22 11:09:35 -0500 (Tue, 22 Nov 2005) | 3 lines
+
+SAK-2885
+Fixed problem with HTMLArea in safari.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4099 | john.ellis@rsmart.com | 2005-11-21 23:12:49 -0500 (Mon, 21 Nov 2005) | 6 lines
 
 http://bugs.sakaiproject.org/jira/browse/SAK-2907
