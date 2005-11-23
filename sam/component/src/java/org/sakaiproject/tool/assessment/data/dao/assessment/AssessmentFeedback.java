@@ -34,7 +34,6 @@ public class AssessmentFeedback
   private Long id;
   private AssessmentBaseIfc assessmentBase;
   private Integer feedbackDelivery; // immediate, on specific date , no feedback
-   private Integer feedbackAuthoring; //questionlevel, sectionlevel, both, 
   private Integer editComponents; // 0 = cannot
   private Boolean showQuestionText;
   private Boolean showStudentResponse;
@@ -54,7 +53,7 @@ public class AssessmentFeedback
   }
 
   public AssessmentFeedback(
-      Integer feedbackDelivery,Integer feedbackAuthoring, Integer editComponents,
+      Integer feedbackDelivery, Integer editComponents,
       Boolean showQuestionText,
       Boolean showStudentResponse, Boolean showCorrectResponse,
       Boolean showStudentScore,   Boolean showStudentQuestionScore, 
@@ -62,7 +61,6 @@ public class AssessmentFeedback
       Boolean showGraderComments, Boolean showStatistics)
   {
     this.feedbackDelivery = feedbackDelivery;
-    this.feedbackAuthoring = feedbackAuthoring;
     this.editComponents = editComponents;
     this.showQuestionText = showQuestionText;
     this.showStudentResponse = showStudentResponse;
@@ -77,7 +75,7 @@ public class AssessmentFeedback
 
   public Object clone() throws CloneNotSupportedException{
     Object cloned = new AssessmentFeedback(
-        this.getFeedbackDelivery(),this.getFeedbackAuthoring(), this.getEditComponents(),
+        this.getFeedbackDelivery(), this.getEditComponents(),
         this.getShowQuestionText(),
         this.getShowStudentResponse(), this.getShowCorrectResponse(),
         this.getShowStudentScore(),  this.getShowStudentQuestionScore(),
@@ -118,16 +116,6 @@ public class AssessmentFeedback
   public void setFeedbackDelivery(Integer feedbackDelivery)
   {
     this.feedbackDelivery = feedbackDelivery;
-  }
-
-  public Integer getFeedbackAuthoring()
-  {
-    return feedbackAuthoring;
-  }
-
-  public void setFeedbackAuthoring(Integer feedbackAuthoring)
-  {
-    this.feedbackAuthoring = feedbackAuthoring;
   }
 
   public Integer getEditComponents() {

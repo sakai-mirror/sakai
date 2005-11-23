@@ -82,7 +82,6 @@ public class PublishedAssessmentData
   private Boolean unlimitedSubmissions;
   private Integer submissionsAllowed;
   private Integer feedbackDelivery;
-  private Integer feedbackAuthoring;
   private Date feedbackDate;
   private String ownerSiteName;
 
@@ -150,7 +149,7 @@ public class PublishedAssessmentData
 
   public PublishedAssessmentData(Long id, String title, String releaseTo,
                                  Date startDate, Date dueDate, Date retractDate,
-                                 Date feedbackDate, Integer feedbackDelivery,  Integer feedbackAuthoring,
+                                 Date feedbackDate, Integer feedbackDelivery,
                                  Integer lateHandling,
                                  Boolean unlimitedSubmissions,
                                  Integer submissionsAllowed) {
@@ -161,7 +160,6 @@ public class PublishedAssessmentData
     this.dueDate = dueDate;
     this.retractDate = retractDate;
     this.feedbackDelivery = feedbackDelivery; //=publishedFeedback.feedbackDelivery
-    this.feedbackAuthoring = feedbackAuthoring; //=publishedFeedback.feedbackAuthoring
     this.feedbackDate = feedbackDate;
     this.lateHandling = lateHandling;
     if (unlimitedSubmissions != null)
@@ -543,11 +541,6 @@ public class PublishedAssessmentData
   public Integer getFeedbackDelivery()
   {
     return feedbackDelivery;
-  }
-
-  public Integer getFeedbackAuthoring()
-  {
-    return feedbackAuthoring;
   }
 
   public Date getFeedbackDate() {

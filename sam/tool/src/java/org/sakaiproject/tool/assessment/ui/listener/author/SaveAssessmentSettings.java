@@ -153,9 +153,7 @@ public class SaveAssessmentSettings
       feedback.setAssessmentBase(assessment.getData());
     }
     if (assessmentSettings.getFeedbackDelivery()!=null)
-     feedback.setFeedbackDelivery(new Integer(assessmentSettings.getFeedbackDelivery()));
-    if (assessmentSettings.getFeedbackAuthoring()!=null)
-     feedback.setFeedbackAuthoring(new Integer(assessmentSettings.getFeedbackAuthoring()));
+      feedback.setFeedbackDelivery(new Integer(assessmentSettings.getFeedbackDelivery()));
     feedback.setShowQuestionText(new Boolean(assessmentSettings.getShowQuestionText()));
     feedback.setShowStudentResponse(new Boolean(assessmentSettings.getShowStudentResponse()));
     feedback.setShowCorrectResponse(new Boolean(assessmentSettings.getShowCorrectResponse()));
