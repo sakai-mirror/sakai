@@ -175,8 +175,8 @@ Each page has an owner; this is normally the user who create the page.
 Each page has a SHA1 digest. If the digests of 2 pages are the same, the content of
 both pages are identical. Any change in the page, will change the digest on the page.    		
     	</div>
-	<div class="portletBody">
       <div id="rwiki_container">
+	<div class="portletBody">
 	  <div class="navIntraTool">
 	    <form action="?#" method="get" class="rwiki_searchForm">
 	      <span class="rwiki_pageLinks">
