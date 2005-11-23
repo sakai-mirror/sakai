@@ -9309,6 +9309,7 @@ public class SiteAction extends PagedResourceActionII
 		boolean hasChat = false;
 		boolean hasDiscussion = false;
 		boolean hasEmail = false;
+		boolean hasNewSiteInfo = false;
 		
 		//Special case - Worksite Setup Home comes from a hardcoded checkbox on the vm template rather than toolRegistrationList
 		//see if Home was chosen
@@ -9647,6 +9648,13 @@ public class SiteAction extends PagedResourceActionII
 			else
 			{
 				// if in chosen list but not in wSetupPageList, add it to the site (one tool on a page)
+				
+				// if Site Info tool is being newly added
+				if (toolId.equals("sakai.siteinfo"))
+				{
+					hasNewSiteInfo = true;
+				}
+				
 				Tool toolRegFound = null;
 				for (Iterator i = toolRegistrationList.iterator(); i.hasNext(); )
 				{
@@ -9725,50 +9733,6 @@ public class SiteAction extends PagedResourceActionII
 			}
 		}	// for
 		
-		//Order tools - move toolRegistrationList tools
-		int toolRegistrationNumber = 0;
-		int sitePageNumber = 0;
-		int movesUp = 0;
-		Set categories2 = new HashSet();
-		categories2.add((String) state.getAttribute(STATE_SITE_TYPE));
-		Set toolOrder = ToolManager.findTools(categories2, null);
-		boolean toolFound = false;
-		for (Iterator i = toolOrder.iterator(); i.hasNext(); )
-		{
-			Tool tool = (Tool)i.next();
-			
-			//if toolRegistration is found in wSetupPageList
-			for (ListIterator j = wSetupPageList.listIterator(); j.hasNext(); )
-			{
-				toolFound = false;
-				
-				WorksiteSetupPage wspage = (WorksiteSetupPage)j.next();
-				if(wspage.getToolId().indexOf(tool.getId()) != -1)
-				{
-					//if page is in site, move it
-					pageList = site.getPages();
-					if(pageList != null && pageList.size() != 0)
-					{
-						for (ListIterator k = pageList.listIterator(); k.hasNext() && !toolFound; )
-						{
-							SitePage page = (SitePage)k.next();
-							if((page.getId()).equals(wspage.getPageId())) 
-							{
-								toolFound = true;
-								sitePageNumber = pageList.indexOf(page);
-								movesUp = sitePageNumber - toolRegistrationNumber;
-								for (int n = 0; n < movesUp; n++)
-								{
-									page.moveUp();
-								}
-								toolRegistrationNumber++;
-							}
-						}
-					}
-				}
-			}
-		}
-		
 		if (homeInChosenList)
 		{
 			//Order tools - move Home to the top - first find it
@@ -9795,6 +9759,37 @@ public class SiteAction extends PagedResourceActionII
 				for (int n = 0; n < homePosition; n++)
 				{
 					homePage.moveUp();
+				}
+			}
+		}
+		
+		// if Site Info is newly added, more it to the last
+		if (hasNewSiteInfo)
+		{
+			SitePage siteInfoPage = null;
+			pageList = site.getPages();
+			String[] toolIds = {"sakai.siteinfo"};
+			if (pageList != null && pageList.size() != 0)
+			{
+				for (ListIterator i = pageList.listIterator(); siteInfoPage==null && i.hasNext(); )
+				{
+					SitePage page = (SitePage)i.next();
+					int s = page.getTools(toolIds).size();
+					if (s > 0) 
+					{
+						siteInfoPage = page;
+					}
+				}
+			}
+			
+			// if found, move it
+			if (siteInfoPage != null)
+			{
+				// move home from it's index to the first position
+				int siteInfoPosition = pageList.indexOf(siteInfoPage);
+				for (int n = siteInfoPosition; n<pageList.size(); n++)
+				{
+					siteInfoPage.moveDown();
 				}
 			}
 		}
@@ -9944,6 +9939,7 @@ public class SiteAction extends PagedResourceActionII
 		boolean hasAnnouncement = false;
 		boolean hasChat = false;
 		boolean hasDiscussion = false;
+		boolean hasSiteInfo = false;
 			
 		List chosenList = (List) state.getAttribute(STATE_TOOL_REGISTRATION_SELECTED_LIST);
 		
@@ -10052,6 +10048,10 @@ public class SiteAction extends PagedResourceActionII
 				{
 					hasDiscussion = true; 
 				}
+				else if (toolId.equals("sakai.siteinfo"))
+				{
+					hasSiteInfo = true;
+				}
 				 
 			}	// for
 			
@@ -10134,6 +10134,37 @@ public class SiteAction extends PagedResourceActionII
 					}
 				}
 			} // Home feature 
+			
+			// move Site Info tool, if selected, to the end of tool list
+			if (hasSiteInfo)
+			{
+				SitePage siteInfoPage = null;
+				pageList = site.getPages();
+				String[] toolIds = {"sakai.siteinfo"};
+				if (pageList != null && pageList.size() != 0)
+				{
+					for (ListIterator i = pageList.listIterator(); siteInfoPage==null && i.hasNext(); )
+					{
+						SitePage page = (SitePage)i.next();
+						int s = page.getTools(toolIds).size();
+						if (s > 0) 
+						{
+							siteInfoPage = page;
+						}
+					}
+				}
+				
+				//if found, move it
+				if (siteInfoPage != null)
+				{
+					// move home from it's index to the first position
+					int siteInfoPosition = pageList.indexOf(siteInfoPage);
+					for (int n = siteInfoPosition; n<pageList.size(); n++)
+					{
+						siteInfoPage.moveDown();
+					}
+				}
+			}	// Site Info
 		}
 
 		// commit
