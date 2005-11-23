@@ -255,7 +255,7 @@ public class BasicEmailService implements EmailService
 				while (i.hasNext())
 				{
 					String header = (String) i.next();
-					if (header.startsWith("Message-Id: "))
+					if (header.toLowerCase().startsWith("message-id: "))
 					{
 						mid = header.substring(12);
 					}
@@ -281,11 +281,11 @@ public class BasicEmailService implements EmailService
 				while (i.hasNext())
 				{
 					String header = (String) i.next();
-					if (header.startsWith("Content-Type: "))
+					if (header.toLowerCase().startsWith("content-type: "))
 					{
 						contentType = header;
 					}
-					else if (!header.startsWith("Message-Id: "))
+					else if (!header.toLowerCase().startsWith("message-id: "))
 					{
 						msg.addHeaderLine(header);
 					}
