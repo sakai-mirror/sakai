@@ -45,24 +45,43 @@ public class TagUtil
     {
     }
 
-    /**
-     * Set a string value on a component - used by tags setProperties() method.
-     * Handles value bindings.
-     */
-    public static void setString(UIComponent component, String name, String value)
-    {
-        if (value == null)
-        {
-            return;
-        }
-        if (UIComponentTag.isValueReference(value))
-        {
-            setValueBinding(component, name, value);
-        } else
-        {
-            component.getAttributes().put(name, value);
-        }
-    }
+   /**
+    * Set a string value on a component - used by tags setProperties() method.
+    * Handles value bindings.
+    */
+   public static void setString(UIComponent component, String name, String value)
+   {
+       if (value == null)
+       {
+           return;
+       }
+       if (UIComponentTag.isValueReference(value))
+       {
+           setValueBinding(component, name, value);
+       } else
+       {
+           component.getAttributes().put(name, value);
+       }
+   }
+
+   /**
+    * Set a string value on a component - used by tags setProperties() method.
+    * Handles value bindings.
+    */
+   public static void setObject(UIComponent component, String name, String value)
+   {
+       if (value == null)
+       {
+           return;
+       }
+       if (UIComponentTag.isValueReference(value))
+       {
+           setValueBinding(component, name, value);
+       } else
+       {
+           component.getAttributes().put(name, value);
+       }
+   }
 
     /**
      * Set an integer value on a component - used by tags setProperties()

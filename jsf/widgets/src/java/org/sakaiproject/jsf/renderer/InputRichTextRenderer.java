@@ -26,17 +26,20 @@
 package org.sakaiproject.jsf.renderer;
 
 import java.io.IOException;
-import java.util.Map;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
+import javax.faces.model.SelectItem;
+
 import org.sakaiproject.jsf.util.ConfigurationResource;
 import org.sakaiproject.jsf.util.RendererUtil;
-import java.util.StringTokenizer;
-import java.util.Locale;
+import org.sakaiproject.jsf.model.InitObjectContainer;
+
+import java.util.*;
+import java.text.MessageFormat;
 
 /**
  * <p>Formerly RichTextEditArea.java</p>
@@ -80,6 +83,9 @@ public class InputRichTextRenderer extends Renderer
   private static final int DEFAULT_HEIGHT_PX;
   private static final int DEFAULT_COLUMNS;
   private static final int DEFAULT_ROWS;
+  private static final String INSERT_IMAGE_LOC;
+  private static final MessageFormat LIST_ITEM_FORMAT =
+    new MessageFormat(",\"{0}\" : \"<a href=''{1}''>{0}</a>\"");
 
 
   // we have static resources for our script path and built-in toolbars etc.
@@ -96,6 +102,7 @@ public class InputRichTextRenderer extends Renderer
     DEFAULT_HEIGHT_PX = Integer.parseInt(cr.get("inputRichTextDefaultHeightPx"));
     DEFAULT_COLUMNS = Integer.parseInt(cr.get("inputRichTextDefaultTextareaColumns"));
     DEFAULT_ROWS = Integer.parseInt(cr.get("inputRichTextDefaultTextareaRows"));
+    INSERT_IMAGE_LOC = "/" + RESOURCE_PATH + "/" + cr.get("inputRichTextFileInsertImage");
   }
 
   public boolean supportsComponentType(UIComponent component)
@@ -364,7 +371,105 @@ public class InputRichTextRenderer extends Renderer
    protected void writeAdditionalConfig(FacesContext context, UIComponent component, String configVar,
       String clientId, String toolbar, int widthPx, int heightPx, Locale locale, ResponseWriter writer)
       throws IOException{
+      writeAttachedFiles(context, component, configVar, writer, toolbar);
+      registerWithParent(component, configVar, clientId);
+   }
 
+   protected void writeAttachedFiles(FacesContext context, UIComponent component, String configVar, ResponseWriter writer, String toolbar) throws IOException {
+      Object attchedFiles = RendererUtil.getAttribute(context,  component, "attachedFiles");
+      if (attchedFiles != null && getSize(attchedFiles) > 0) {
+         String arrayVar = configVar + "_Resources";
+
+         writer.write("  var " + arrayVar + "= {\n");
+         writer.write("\"select a file url to insert\" : \"\"\n");
+
+         if (attchedFiles instanceof Map) {
+            writer.write(outputFiles((Map)attchedFiles));
+         }
+         else {
+            writer.write(outputFiles((List)attchedFiles));
+         }
+
+         writer.write("};\n");
+
+         writer.write(  "sakaiRegisterResourceList(");
+         writer.write(configVar + ",'" + INSERT_IMAGE_LOC + "'," + arrayVar);
+         writer.write(");\n");
+
+         writer.write("  " + configVar + ".toolbar = " + addToolbar(toolbar) + ";\n");
+      }
+   }
+
+   protected void registerWithParent(UIComponent component, String configVar, String clientId) {
+
+      InitObjectContainer parentContainer = null;
+
+      UIComponent testContainer = component.getParent();
+      while (testContainer != null) {
+         if (testContainer instanceof InitObjectContainer) {
+            parentContainer = (InitObjectContainer)testContainer;
+
+            String script = " resetRichTextEditor(\"" + clientId +
+               "_inputRichText\"," + configVar + ");\n";
+
+            parentContainer.addInitScript(script);
+         }
+         testContainer = testContainer.getParent();
+      }
+   }
+
+   protected String outputFiles(Map map) {
+      StringBuffer sb = new StringBuffer();
+
+      for (Iterator i=map.entrySet().iterator();i.hasNext();) {
+         Map.Entry entry = (Map.Entry)i.next();
+
+         LIST_ITEM_FORMAT.format(new Object[]{entry.getValue(), entry.getKey()}, sb, null);
+      }
+
+      return sb.toString();
+   }
+
+   protected String outputFiles(List list) {
+      StringBuffer sb = new StringBuffer();
+
+      for (Iterator i=list.iterator();i.hasNext();) {
+         Object value = i.next();
+
+         String url;
+         String label;
+
+         if (value instanceof SelectItem) {
+            SelectItem item = (SelectItem)value;
+            url = item.getValue().toString();
+            label = item.getLabel();
+         }
+         else {
+            url = value.toString();
+            label = value.toString();
+         }
+
+         LIST_ITEM_FORMAT.format(new Object[]{label, url}, sb, null);
+      }
+
+      return sb.toString();
+   }
+
+   protected int getSize(Object attchedFiles) {
+      if (attchedFiles instanceof Map) {
+         return ((Map)attchedFiles).size();
+      }
+      else {
+         return ((List)attchedFiles).size();
+      }
+   }
+
+   protected String addToolbar(String toolbar) {
+      int pos = toolbar.lastIndexOf("]");
+      toolbar = toolbar.substring(0, pos) +
+         ",[\"filedropdown\", \"insertfile\", ]" +
+         toolbar.substring(pos);
+      return toolbar;
    }
 
    /**

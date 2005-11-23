@@ -1501,6 +1501,15 @@
           for this component.
       </description>
     </attribute>
+     <attribute>
+       <name>attachedFiles</name>
+       <required>false</required>
+       <rtexprvalue>false</rtexprvalue>
+       <description>
+         A list of SelectItems or a Map of link to label strings that
+         will be rendered as a list on the editor.
+       </description>
+     </attribute>
   </tag>
 
   <tag>

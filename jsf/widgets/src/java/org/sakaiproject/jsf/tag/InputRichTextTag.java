@@ -85,6 +85,7 @@ public class InputRichTextTag
   private String title;
   private String readonly;
   private String lang;
+  private String attachedFiles;
 
   public void setValue(String newValue)
   {
@@ -165,7 +166,8 @@ public class InputRichTextTag
     TagUtil.setString(component, "readonly", readonly);
     TagUtil.setString(component, "lang", lang);
     TagUtil.setString(component, "value", value);
-    TagUtil.setString(component, "justArea", justArea);
+     TagUtil.setString(component, "justArea", justArea);
+     TagUtil.setString(component, "attachedFiles", attachedFiles);
   }
 
   public void release()
@@ -200,6 +202,7 @@ public class InputRichTextTag
     title = null;
     readonly = null;
     lang = null;
+    attachedFiles = null;
   }
 
 
@@ -443,4 +446,14 @@ public class InputRichTextTag
   {
     this.lang = lang;
   }
+
+   public String getAttachedFiles()
+   {
+      return attachedFiles;
+   }
+
+   public void setAttachedFiles(String attachedFiles)
+   {
+      this.attachedFiles = attachedFiles;
+   }
 }
