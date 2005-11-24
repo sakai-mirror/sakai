@@ -132,12 +132,12 @@
 	    </div>
 	    <div class="rwiki_editControl">
 		<p class="act">
-		  <input type="submit" name="save" value="save" />
+		  <input type="submit" name="save" value="Save" />
 		  <c:if test="${(editBean.saveType eq 'preview' and nameHelperBean.submittedContent != null) or (editBean.saveType ne null and editBean.saveType ne 'preview')}">
-		    <input type="submit" name="save" value="overwrite"/>
+		    <input type="submit" name="save" value="Overwrite"/>
 		  </c:if>
-		  <input type="submit" name="save" value="preview"/>
-		  <input type="submit" name="save" value="cancel"/>
+		  <input type="submit" name="save" value="Preview"/>
+		  <input type="submit" name="save" value="Cancel"/>
 		</p>
 	      </div>
 	      <c:if test="${editBean.saveType eq 'preview'}">

@@ -586,7 +586,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 				<input type="hidden" name="panel" value="Main"/>
 				<input type="hidden" name="action" value="updatePermissions"/>
 				<input type="hidden" name="version" value="${currentRWikiObject.version.time}"/>
-				<input type="submit" name="updatePermissions" value="save"/>
+				<input type="submit" name="updatePermissions" value="Save"/>
 				<input type="hidden" name="realm" value="${currentRWikiObject.realm }"/>
 				<c:if test="${realmBean.siteUpdateAllowed}">
 				  In addition to editing the page permissions you may <a href="${realmBean.editRealmUrl}">edit site permissions</a>
