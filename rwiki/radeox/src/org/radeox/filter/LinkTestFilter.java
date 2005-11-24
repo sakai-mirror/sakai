@@ -157,7 +157,12 @@ public class LinkTestFilter extends LocaleRegexTokenFilter {
               wikiEngine.appendLink(buffer, name, view);
             }
           } else if (wikiEngine.showCreate()) {
-            wikiEngine.appendCreateLink(buffer, name, getWikiView(name));
+              
+            String view = getWikiView(name);
+            if (-1 != pipeIndex) {
+                view = alias;
+            }
+            wikiEngine.appendCreateLink(buffer, name, view);
             // links with "create" are not cacheable because
             // a missing wiki could be created
             context.getRenderContext().setCacheable(false);
