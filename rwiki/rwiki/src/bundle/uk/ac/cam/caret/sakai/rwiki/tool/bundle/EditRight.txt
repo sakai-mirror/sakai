@@ -21,8 +21,8 @@ Block modifiers:
 * \# numbered list
 
 To insert a link:
-* \[page name\] » Link to page: Page Name
-* http\://wherever » remote link
+* \[page name\] â€” Link to page: Page Name
+* http\://wherever â€” remote link
 * \[alias|Page Name\]
 
 To insert a table:
