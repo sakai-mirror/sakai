@@ -90,10 +90,7 @@ import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.framework.session.UsageSession;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.content.ContentCollection;
-import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.content.ContentResourceEdit;
+import org.sakaiproject.service.legacy.content.*;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.entity.Entity;
@@ -326,6 +323,11 @@ public class ResourcesAction
 	/** State attribute for the Vector of References, one for each attachment.
 	Using tools can pre-populate, and can read the results from here. */
 	public static final String STATE_ATTACHMENTS = "resources.attachments";
+
+   /** State Attribute for the org.sakaiproject.service.legacy.content.ContentResourceFilter
+    * object that the current filter should honor.  If this is set to null, then all files will
+    * be selectable and viewable */
+   public static final String STATE_RESOURCE_FILTER = "resources.contentResourceFilter";
 
 	/** State attribute for where there is at least one attachment before invoking attachment tool */
 	public static final String STATE_HAS_ATTACHMENT_BEFORE = "resources.has_attachment_before";
@@ -8239,7 +8241,10 @@ public class ResourcesAction
 						catch(TypeException e)
 						{}			
 						newItem.setDepth(depth + 1);
-						newItems.add(newItem);
+
+                  if (checkItemFilter((ContentResource)resource, newItem, state)) {
+						   newItems.add(newItem);
+                  }
 					}
 				}
 				
@@ -8264,8 +8269,22 @@ public class ResourcesAction
 		return newItems;
 	
 	}	// getBrowseItems
-	
-	/**
+
+   protected static boolean checkItemFilter(ContentResource resource, BrowseItem newItem, SessionState state) {
+      ContentResourceFilter filter = (ContentResourceFilter)state.getAttribute(STATE_RESOURCE_FILTER);
+
+      if (filter != null) {
+         newItem.setCanSelect(filter.allowSelect(resource));
+         return filter.allowView(resource);
+      }
+      else {
+         newItem.setCanSelect(true);
+      }
+
+      return true;
+   }
+
+   /**
 	* set the state name to be "copy" if any item has been selected for copying
 	*/
 	public void doCopyitem ( RunData data )
@@ -8964,6 +8983,7 @@ public class ResourcesAction
 		protected boolean m_isCopied;
 		protected boolean m_canAddItem;
 		protected boolean m_canAddFolder;
+      protected boolean m_canSelect;
 
 		protected List m_members;
 		protected boolean m_isEmpty;
@@ -9011,6 +9031,7 @@ public class ResourcesAction
 			m_isCopied = false;
 			m_isMoved = false;
 			m_isAttached = false;
+         m_canSelect = true; // default is true.
 			m_hasDeletableChildren = false;
 			m_hasCopyableChildren = false;
 			m_createdBy = "";
@@ -9115,6 +9136,10 @@ public class ResourcesAction
 			return m_canRead;
 		}
 
+      public boolean canSelect() {
+         return m_canSelect;
+      }
+
 		/**
 		 * @return
 		 */
@@ -9178,6 +9203,10 @@ public class ResourcesAction
 		{
 			m_canRead = canRead;
 		}
+
+      public void setCanSelect(boolean canSelect) {
+         m_canSelect = canSelect;
+      }
 
 		/**
 		 * @param canRevise
@@ -9523,7 +9552,7 @@ public class ResourcesAction
 		{
 			return m_inheritsHighlight;
 		}
-				
+
 	}	// inner class BrowseItem
 	
 	

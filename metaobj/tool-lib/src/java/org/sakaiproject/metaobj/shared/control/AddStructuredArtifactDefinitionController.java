@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.sakaiproject.api.kernel.session.SessionManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
@@ -76,6 +77,8 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
           StructuredArtifactDefinitionValidator.PICK_TRANSFORM_ACTION.equals(sad.getFilePickerAction())) {
          session.put(SAD_SESSION_TAG, sad);
          session.put(FilePickerHelper.FILE_PICKER_FROM_TEXT, request.get("filePickerFrom"));
+         session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
+            ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.metaobjFile"));
          return new ModelAndView("pickSchema");
       }
 

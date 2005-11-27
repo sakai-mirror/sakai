@@ -115,6 +115,9 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
       if (message != null) {
          sstate.setAttribute(ResourcesAction.STATE_FROM_TEXT, message);
       }
+
+      sstate.setAttribute(ResourcesAction.STATE_RESOURCE_FILTER,
+         toolSession.getAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER));
    }
 
 }

@@ -32,4 +32,10 @@ public interface FilePickerHelper {
 	 */
    public static final String FILE_PICKER_ATTACH_LINKS = "sakaiproject.filepicker.attachLinks";
 
+   /** State Attribute for the org.sakaiproject.service.legacy.content.ContentResourceFilter
+    * object that the current filter should honor.  If this is set to null, then all files will
+    * be selectable and viewable
+    */
+   public static final String FILE_PICKER_RESOURCE_FILTER = "sakaiproject.filepicker.contentResourceFilter";
+
 }

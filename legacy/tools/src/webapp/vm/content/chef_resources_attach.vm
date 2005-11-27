@@ -436,7 +436,7 @@
 											#else
 												#set ($itemsOnLine = 0)
 												####### deal with attaching item
-												#if ($member.canRead())
+												#if ($member.canRead() && $member.canSelect())
 													#if ($itemsOnLine > 0)
 														|
 													#end

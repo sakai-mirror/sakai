@@ -176,4 +176,19 @@
       <property name="idManager"><ref bean="idManager"/></property>
    </bean>
 
+   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.metaobjFile"
+      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list>
+            <value>text/xml</value>
+         </list>
+      </property>
+      <property name="acceptedExtensions">
+         <list>
+            <value>xsd</value>
+         </list>
+      </property>
+   </bean>
+
 </beans>

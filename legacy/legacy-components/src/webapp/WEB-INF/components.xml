@@ -112,6 +112,14 @@
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
 	</bean>
 
+   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.base"
+      class="org.sakaiproject.component.legacy.content.BaseExtensionResourceFilter">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list/>
+      </property>
+   </bean>
+
 	<bean id="org.sakaiproject.service.legacy.content.ContentHostingService"
 			class="org.sakaiproject.component.legacy.content.DbContentService"
 			init-method="init"
