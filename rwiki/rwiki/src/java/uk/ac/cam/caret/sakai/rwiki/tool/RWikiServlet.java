@@ -42,6 +42,7 @@ import uk.ac.cam.caret.sakai.rwiki.component.util.TimeLogger;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.HttpCommand;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.PrePopulateBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.util.WikiPageAction;
 
 /**
  * @author andrew
@@ -238,7 +239,12 @@ public class RWikiServlet extends HttpServlet {
     private boolean isPageRestorable(HttpServletRequest request) {
     		if (RequestHelper.TITLE_PANEL.equals(request.getParameter(RequestHelper.PANEL))) 
     			return false;
-    		if ( "GET".equalsIgnoreCase(request.getMethod()) ) return true;
+            
+            if (WikiPageAction.PUBLICVIEW_ACTION.getName().equals(request.getParameter(RequestHelper.ACTION))) 
+                return false;
+    		
+            if ( "GET".equalsIgnoreCase(request.getMethod()) ) return true;
+            
     		return false;
     }
 
