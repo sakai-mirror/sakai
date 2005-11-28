@@ -170,8 +170,11 @@ public class DbUserService
 			{
 				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_user");
 
-				// also load the 2.1.0.004 email_lc conversion
+				// load the 2.1.0.004 email_lc conversion
 				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_user_2_1_0_004");
+
+				// load the 2.1.0 postmaster password conversion
+				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_user_2_1_0");
 			}
 
 			super.init();
