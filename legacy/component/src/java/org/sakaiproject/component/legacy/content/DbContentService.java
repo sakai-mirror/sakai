@@ -210,6 +210,12 @@ public class DbContentService
 			if (m_autoDdl)
 			{
 				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_content");
+				
+				// add the delete table
+				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_content_delete");
+
+				// do the 2.1.0 conversions
+				m_sqlService.ddl(this.getClass().getClassLoader(), "sakai_content_2_1_0");
 			}
 
 			super.init();
