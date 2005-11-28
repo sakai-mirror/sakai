@@ -144,7 +144,7 @@ public interface AgentGroupManager extends DefaultContainer, UuidTypeResolvable
    * Polymorphic retrieve will include both Agent and Group objects.
    * 
    * @param enterpriseId
-   * @return
+   * @return null if not found.
    */
   public Agent getAgentByEnterpriseId(String enterpriseId);
 
