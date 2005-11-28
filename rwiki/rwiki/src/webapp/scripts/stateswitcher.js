@@ -67,7 +67,10 @@ function onload() {
   }
 
 }
-
+function storeCaret(el) {
+    if ( el.createTextRange ) 
+        el.caretPos = document.selection.createRange().duplicate();
+}
 function addMarkup(textareaid, contentMU, startMU, endMU) {
     var textarea;
         if ( document.all ) {
@@ -76,9 +79,9 @@ function addMarkup(textareaid, contentMU, startMU, endMU) {
 		    textarea = document.getElementById(textareaid);
 		}    
 
-	// Can a text range be created?
 	if (typeof(textarea.caretPos) != "undefined" && textarea.createTextRange)
 	{
+        
 		var caretPos = textarea.caretPos, repText = caretPos.text, temp_length = caretPos.text.length;
 		if ( temp_length == 0 )
 		    repText = contentMU;
@@ -86,7 +89,7 @@ function addMarkup(textareaid, contentMU, startMU, endMU) {
 		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? startMU + repText + endMU + ' ' : startMU + repText + endMU;
 
 		textarea.focus(caretPos);
-	}
+	} 
 	// Mozilla text range wrap.
 	else if (typeof(textarea.selectionStart) != "undefined")
 	{

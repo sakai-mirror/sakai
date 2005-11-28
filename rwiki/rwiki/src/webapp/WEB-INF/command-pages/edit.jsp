@@ -112,7 +112,7 @@
 		<div id="textarea_outer_sizing_div">
 		  <div id="textarea_inner_sizing_div">
 		    	<jsp:directive.include file="edittoolbar.jsp"/>
-		    <textarea cols="60" rows="25" name="content" id="content" >
+		    <textarea cols="60" rows="25" name="content" id="content" onselect="storeCaret(this)" onclick="storeCaret(this)" onkeyup="storeCaret(this)" >
 		      <c:choose>
 			<c:when test="${editBean.saveType eq 'preview'}">
 			  <c:out value="${editBean.previousContent}"/>
