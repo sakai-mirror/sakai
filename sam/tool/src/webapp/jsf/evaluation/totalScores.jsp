@@ -194,10 +194,12 @@ END OF TEMPORARY OUT FOR THIS RELEASE --%>
          <h:outputText value="#{description.firstName}" rendered="#{description.assessmentGradingId eq '-1'}" />
          <h:outputText value=" " rendered="#{description.assessmentGradingId eq '-1'}"/>
          <h:outputText value="#{description.lastName}" rendered="#{description.assessmentGradingId eq '-1'}" />
+         <h:outputText value="#{description.idString}" rendered="#{description.lastInitial eq 'Anonymous' && description.assessmentGradingId eq '-1'}" />
        <h:commandLink action="studentScores" immediate="true" rendered="#{description.assessmentGradingId ne '-1'}" >
          <h:outputText value="#{description.firstName}" />
          <h:outputText value=" " />
          <h:outputText value="#{description.lastName}" />
+         <h:outputText value="#{description.idString}" rendered="#{description.lastInitial eq 'Anonymous'}" />
          <f:actionListener
             type="org.sakaiproject.tool.assessment.ui.listener.evaluation.TotalScoreUpdateListener" />
          <f:actionListener
@@ -221,7 +223,7 @@ END OF TEMPORARY OUT FOR THIS RELEASE --%>
         </h:commandLink>
      </f:facet>
      <h:panelGroup>
-       <h:outputText value="" rendered="#{description.assessmentGradingId eq '-1'}"/>
+       <h:outputText value="Anonymous" rendered="#{description.assessmentGradingId eq '-1'}" />
        <h:commandLink action="studentScores" rendered="#{description.assessmentGradingId ne '-1'}" >
          <h:outputText value="#{description.assessmentGradingId}" />
          <f:actionListener
@@ -241,7 +243,7 @@ END OF TEMPORARY OUT FOR THIS RELEASE --%>
           <h:outputText value="#{msg.sub_id}" />
      </f:facet>
      <h:panelGroup>
-       <h:outputText value="" rendered="#{description.assessmentGradingId eq '-1'}"/>
+       <h:outputText value="Anonymous" rendered="#{description.assessmentGradingId eq '-1'}" />
        <h:commandLink action="studentScores" immediate="true" rendered="#{description.assessmentGradingId ne '-1'}">
          <h:outputText value="#{description.assessmentGradingId}" />
          <f:actionListener
@@ -344,7 +346,14 @@ END OF TEMPORARY OUT FOR THIS RELEASE --%>
       <f:facet name="header">
         <h:outputText value="#{msg.status}" />
       </f:facet>
-      <h:outputText value="#{description.status}"/>
+      <h:outputText value="#{msg.submitted}"
+         rendered="#{description.status == 2 && description.attemptDate != null}"/>
+      <h:outputText value=" "
+         rendered="#{description.status == 3 && description.attemptDate != null}"/>
+      <h:outputText value="#{msg.late}"
+         rendered="#{description.status == 4 && description.attemptDate != null}"/>
+      <h:outputText value="#{msg.no_submission}"
+         rendered="#{description.attemptDate == null}"/>
     </h:column>
 
     <!-- TOTAL -->
