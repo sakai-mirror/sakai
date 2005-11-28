@@ -33,6 +33,7 @@ import org.sakaiproject.api.common.agent.Group;
 import org.sakaiproject.api.common.superstructure.Node;
 import org.sakaiproject.api.common.type.Type;
 import org.sakaiproject.api.common.type.UnsupportedTypeException;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 
 /**
@@ -183,6 +184,11 @@ public class AgentGroupManagerUserDirectoryProxy implements AgentGroupManager
     try
     {
       return new AgentUserProxy(userDirectoryService.getUser(enterpriseId));
+    }
+    catch (IdUnusedException idue)
+    {
+      LOG.debug(idue.getMessage(), idue);
+      return null;
     }
     catch (Exception e)
     {
