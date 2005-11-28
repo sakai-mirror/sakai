@@ -440,7 +440,7 @@ public abstract class RWikiObjectImpl implements RWikiObject
 	
 	
 	public void init() throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(m_source)));
+		BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(m_source), "UTF-8"));
 		char[] c = new char[2048];
 		StringBuffer sb = new StringBuffer();
 		for ( int i = br.read(c); i >= 0; i = br.read(c) ) {

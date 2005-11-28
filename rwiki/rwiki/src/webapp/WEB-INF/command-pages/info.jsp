@@ -175,8 +175,8 @@ Each page has an owner; this is normally the user who create the page.
 Each page has a SHA1 digest. If the digests of 2 pages are the same, the content of
 both pages are identical. Any change in the page, will change the digest on the page.    		
     	</div>
-	<div class="portletBody">
       <div id="rwiki_container">
+	<div class="portletBody">
 	  <div class="navIntraTool">
 	    <form action="?#" method="get" class="rwiki_searchForm">
 	      <span class="rwiki_pageLinks">
@@ -586,7 +586,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 				<input type="hidden" name="panel" value="Main"/>
 				<input type="hidden" name="action" value="updatePermissions"/>
 				<input type="hidden" name="version" value="${currentRWikiObject.version.time}"/>
-				<input type="submit" name="updatePermissions" value="save"/>
+				<input type="submit" name="updatePermissions" value="Save"/>
 				<input type="hidden" name="realm" value="${currentRWikiObject.realm }"/>
 				<c:if test="${realmBean.siteUpdateAllowed}">
 				  In addition to editing the page permissions you may <a href="${realmBean.editRealmUrl}">edit site permissions</a>

@@ -120,6 +120,10 @@ public class ViewParamsHelperBean {
         
         saveType = request.getParameter(EditBean.SAVE_PARAM);
         
+        if (saveType != null) {
+            saveType = saveType.toLowerCase();
+        }
+        
         withBreadcrumbs = request.getParameter(ViewBean.PARAM_BREADCRUMB_NAME);
     }
 
@@ -297,7 +301,11 @@ public class ViewParamsHelperBean {
      * @param saveType
      */
     public void setSaveType(String saveType) {
-        this.saveType = saveType;
+        if (saveType != null) {
+            this.saveType = saveType.toLowerCase();    
+        } else {
+            this.saveType = null;
+        }
     }
 
     /**

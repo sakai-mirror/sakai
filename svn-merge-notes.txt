@@ -1,6 +1,14 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4144 | john.ellis@rsmart.com | 2005-11-23 12:17:40 -0500 (Wed, 23 Nov 2005) | 4 lines
+
+http://bugs.sakaiproject.org/jira/browse/SAK-2932
+SAK-2932
+added attribute to tag
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4134 | zqingru@stanford.edu | 2005-11-22 19:39:42 -0500 (Tue, 22 Nov 2005) | 1 line
 
 SAK-2862 schema change

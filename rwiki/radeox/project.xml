@@ -37,15 +37,50 @@
     <developerConnection>scm:svn:https://saffron.caret.cam.ac.uk/svn/projects/rwiki/trunk/radeox</developerConnection>
     <url>https://saffron.caret.cam.ac.uk/cgi-bin/viewcvs.cgi/</url>    
   </repository>
+  <properties>
+    <deploy.type>jar</deploy.type>
+  </properties>
+  
   <build>
-    <defaultGoal>full</defaultGoal>
-    <sourceDirectory>src/</sourceDirectory>
-    <!--
-			The build is ant based, so this section will not be used
-		-->
-    <!-- other resources for the jar - the message bundles -->
+    <!-- java source -->
+    <sourceDirectory>src/java</sourceDirectory>
+    
+    <!-- I have disabled all tests, If you want to run them
+    move into this folder -->
+    <unitTestSourceDirectory>src/tests</unitTestSourceDirectory>
+    <unitTest>
+      <includes>org/radeox/test/*Tests</includes>
+      <resources>
+        <resource>
+          <directory>${basedir}/src/bundle</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <filtering>false</filtering>
+        </resource>
+      </resources>
+    </unitTest>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/bundle</directory>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
   </build>
   <dependencies>
-    
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+    </dependency>
   </dependencies>
+  
 </project>
