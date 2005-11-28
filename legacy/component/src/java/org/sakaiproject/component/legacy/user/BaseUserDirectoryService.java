@@ -1781,6 +1781,8 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		*/
 		public boolean checkPassword(String pw)
 		{
+			pw = StringUtil.trimToNull(pw);
+
 			// if we have no password, or none is given, we fail
 			if ((m_pw == null) || (pw == null)) return false;
 

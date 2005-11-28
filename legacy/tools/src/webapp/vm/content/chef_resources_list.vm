@@ -259,7 +259,7 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
+									<a class="highlightlink" href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 								#end
 								####### deal with Pasting moved items 
 								#if($moveFlag && $moveFlag.equals($TRUE) && $root.canAddItem() && ! $root.isHighlighted())
@@ -267,7 +267,7 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
+									<a class="highlightlink" href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
 								#end
 								####### deal with editing/viewing file/folder information
 								##if ($atHome && !$atHome == $TRUE)
@@ -489,7 +489,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
+											<a class="highlightlink" href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 										#end
 										####### deal with Pasting moved items  3
 										#if($moveFlag && $moveFlag.equals($TRUE) && $member.canAddItem() && ! $member.isHighlighted())
@@ -497,7 +497,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
+											<a class="highlightlink" href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
 										#end
 										####### deal with viewing/editing file/folder information
 										#if ($member.canRevise())
@@ -668,7 +668,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
+											<a class="highlightlink" href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 										#end
 										####### deal with Pasting moved items 
 										#if($moveFlag && $moveFlag.equals($TRUE) && $root.canAddItem() && ! $root.isHighlighted())
@@ -676,7 +676,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
+											<a class="highlightlink" href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${root.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
 										#end
 										####### deal with editing/viewing file/folder information
 										##if ($atHome && !$atHome == $TRUE)
@@ -901,7 +901,7 @@
 														|
 													#end
 													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
+													<a class="highlightlink" href="#toolLinkParam("ResourcesAction" "doPasteitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString('list.paste1')">$tlang.getString("list.paste1").trim()</a>
 												#end
 												####### deal with Pasting moved items 
 												#if($moveFlag && $moveFlag.equals($TRUE) && $member.canAddItem() && ! $member.isHighlighted())
@@ -909,7 +909,7 @@
 														|
 													#end
 													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
+													<a class="highlightlink" href="#toolLinkParam("ResourcesAction" "doMoveitems" "collectionId=${validator.escapeUrl(${member.id})}")" title="$tlang.getString("list.paste3")">$tlang.getString("list.paste3").trim()</a>
 												#end
 												####### deal with viewing/editing file/folder information
 												#if ($member.canRevise())
