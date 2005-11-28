@@ -161,6 +161,11 @@ public class AgentGroupManagerUserDirectoryProxy implements AgentGroupManager
     {
       return new AgentUserProxy(userDirectoryService.getUser(uuid));
     }
+    catch (IdUnusedException idue)
+    {
+      LOG.debug(idue.getMessage(), idue);
+      return null;
+    }
     catch (Exception e)
     {
       LOG.error(e.getMessage(), e);
