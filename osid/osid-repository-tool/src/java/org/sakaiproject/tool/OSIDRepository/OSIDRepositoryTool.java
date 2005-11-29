@@ -37,6 +37,11 @@ import org.sakaiproject.tool.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.html.HTMLDocument;
 
+import javax.net.ssl.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.xml.parsers.*;
+
 /*
  * public class Search extends ComponentServlet {
  */
