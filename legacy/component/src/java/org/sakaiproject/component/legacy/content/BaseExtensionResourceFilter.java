@@ -30,11 +30,10 @@ import java.util.List;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
- * User: John Ellis
- * Date: Nov 26, 2005
- * Time: 10:20:48 PM
- * To change this template use File | Settings | File Templates.
+ * This class implements the typical mime type and extension filter.
+ * This will be a registered bean with the component manager that
+ * application components can extend to control the list of mime types and
+ * the list of acceptable extentions.
  */
 public class BaseExtensionResourceFilter implements ContentResourceFilter {
 
@@ -80,6 +79,13 @@ public class BaseExtensionResourceFilter implements ContentResourceFilter {
       return mimeTypes;
    }
 
+   /**
+    * The list of mime types to allow.  The passed in content resource
+    * will be tested to see if the resouce's primary mime type is included in the
+    * list (ie "text" for "text/xml") and then the whole mime type will be tested for
+    * existence in the list.
+    * @param mimeTypes
+    */
    public void setMimeTypes(List mimeTypes) {
       this.mimeTypes = mimeTypes;
    }
@@ -88,6 +94,13 @@ public class BaseExtensionResourceFilter implements ContentResourceFilter {
       return viewAll;
    }
 
+   /**
+    * boolean to indicate if all resources should be viewable.
+    *
+    * If this is false, then the viewable resources will be based on the
+    * mime types and extention set in the other properties.
+    * @param viewAll
+    */
    public void setViewAll(boolean viewAll) {
       this.viewAll = viewAll;
    }
@@ -96,6 +109,11 @@ public class BaseExtensionResourceFilter implements ContentResourceFilter {
       return acceptedExtensions;
    }
 
+   /**
+    * List of accepted file name extensions.  If this list is null,
+    * all extensions are acceptable.
+    * @param acceptedExtensions
+    */
    public void setAcceptedExtensions(List acceptedExtensions) {
       this.acceptedExtensions = acceptedExtensions;
    }
