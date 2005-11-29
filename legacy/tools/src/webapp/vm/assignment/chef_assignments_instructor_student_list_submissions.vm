@@ -18,26 +18,25 @@
 	<h3>
 		$!tlang.getString('lisofass2')
 	</h3>
-	#if ($!studentMembers.size() == 0)
-		<p class="instruction">
-			$tlang.getString("theisnostudent")
-		</p>
-	#else
-		<div>
-			<span class="leftNav">
-				<form name="viewForm" class="inlineForm" method="post" action="#toolForm("AssignmentAction")">
-					<input type="hidden" name="eventSubmit_doView" value="view" />
-					$tlang.getString("gen.view2")
-					<select name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
-						<option value="$!tlang.getString('lisofass1')" >$!tlang.getString('lisofass1')</option>
-						<option value="$!tlang.getString('lisofass2')" selected="selected" >$!tlang.getString('lisofass2')</option>
-					</select>
-				</form>
-				<span class="instruction" style="display:block">
+		<div class="leftNav">
+			<form name="viewForm" class="inlineForm" method="post" action="#toolForm("AssignmentAction")">
+				<input type="hidden" name="eventSubmit_doView" value="view" />
+				<label for="view">$tlang.getString("gen.view2")</label>
+				<select name="view" id="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+					<option value="$!tlang.getString('lisofass1')" >$!tlang.getString('lisofass1')</option>
+					<option value="$!tlang.getString('lisofass2')" selected="selected" >$!tlang.getString('lisofass2')</option>
+				</select>
+			</form>
+		</div>	
+			#if ($!studentMembers.size() == 0)
+				<p class="instruction" style="clear:both">
+					$tlang.getString("theisnostudent")
+				</p>
+			#else
+				<p class="instruction" style="clear:both">
 					$tlang.getString("stulistsunbm.chotri")
-				</span>
-			</span>
-			<span class="rightNav">
+				</p>
+			<div class="rightNav">
 				<span class="instruction">
 					Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items
 				</span>
@@ -90,8 +89,7 @@
 						</form>
 					#end
 				#end
-			</span>
-		</div>	
+			</div>
 		<form name="studentAssignmentForm" action="#toolForm("AssignmentAction")" method="post">
 	## -> shows table headers when there are no submissions (gsilver - delete this comment when done, OK?)
 			#if ($assignments.size()==0)
