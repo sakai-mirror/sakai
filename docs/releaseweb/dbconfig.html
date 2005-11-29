@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+
+<title>Database Configuration</title>
+ <link href="styles/posu.css" rel="stylesheet" type="text/css" />
+ <link href="styles/styles3.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<div id="frame">
+
+	<div id="contentheader">
+	<a href="http://www.sakaiproject.org/">
+<img src="images/logoslate160x89.jpg" alt="Sakai Logo"
+ border="0" /></a>
+	</div>
+
+	<div id="contentleft">
+
+	<div id="bar">
+	  &nbsp;
+	  <!--END BAR-->
+	</div>
+
+<div class="pad">
+<h2>Installation Guide<br>Table of Contents</h2>
+<ol>
+<li>
+<a href="InstallGuide.html">Installation Overview</a></li>
+<ul class="toc">
+	<li><a href="#choose">1.1 Choose an Install Type</a></li>
+	<li><a href="#demo">1.2 Demo Installation</a></li>
+	<li><a href="#binary">1.3 Binary Installation</a></li>
+	<li><a href="#overview">1.4 Source Install Phases</a></li>
+</ul>
+<li>
+<a href="buildenv.html">Set Up Build Environment</a>
+<ul class="toc">
+  <li><a href="buildenv.html#verify">2.1 Verify Java installation</a></li>
+  <li><a href="buildenv.html#set">2.2 Set environment variables</a></li>
+  <li><a href="buildenv.html#tomcat">2.3 Install
+  Tomcat</a></li>
+  <li><a href="buildenv.html#configurationtc">2.4 Configure Tomcat</a></li>
+  <li><a href="buildenv.html#maven">2.5 Install Maven</a></li>
+  <li><a href="buildenv.html#configurationm">2.6 Configure Maven</a></li>
+  <li><a href="buildenv.html#testm">2.7 Test Maven</a></li>
+  </li>
+ </ul>
+<li>
+<a href="build.html">
+  Build and Deploy Sakai</a>
+<ul class="toc">
+<li><a href="build.html#download">3.1 Download source</a></li>
+  <li><a href="build.html#unpack">3.2 Unpack source</a></li>
+  <li><a href="build.html#runmaven">3.3 Run maven</a></li>
+</ul>
+</li>
+
+<li>
+  <a href="postconfig.html">Post-Installation Configuration</a>
+<ul class="toc">
+<li><a href="postconfig.html#folder">4.1 Create sakai folder <br />
+for properties files</a> </li>
+  <li> <a href="postconfig.html#properties">4.2 The
+sakai.properties file</a> </li>
+  <li><a href="postconfig.html#personalize">4.3 Personalizing Sakai</a> </li>
+  <li><a href="postconfig.html#email">4.4 Email configuration</a> </li>
+  <li><a href="postconfig.html#jvm">4.5 JVM tuning</a> </li>
+  <li><a href="postconfig.html#test">4.6 Test Sakai</a> </li>
+
+</ul>
+</li>
+
+<li>
+  <a href="dbconfig.html">Database Configuration</a>
+<ul class="toc">
+  <li><a href="dbconfig.html#deployd">5.1 Deploy drivers</a> </li>
+  <li><a href="dbconfig.html#create">5.2 Create Sakai database and user</a> </li>
+  <li><a href="dbconfig.html#placeholder">5.3 The placeholder.properties file</a> </li>
+  <li><a href="dbconfig.html#sproperties">5.4 sakai.properties <br />
+    database properties</a> </li>
+  <li><a href="dbconfig.html#dbconfig">5.5 Special database configuration</a>
+</li>
+</ul>
+</li>
+<li>
+  <a href="tshoot.html">Troubleshooting</a>
+<ul class="toc">
+  <li><a href="tshoot.html#common">6.1 Common Issues</a> </li>
+  <li><a href="tshoot.html#maven">6.2 Working with Maven</a> </li>
+  <li><a href="tshoot.html#logs">6.3 Tomcat logs</a> </li>
+</li>
+</ul>
+</li>
+</ol>
+<p>&nbsp;</p>
+
+
+    <!--END PAD-->
+  </div>
+
+   <!--END LEFT-->
+</div>
+
+
+<div class="pad2">
+
+
+<h1>5. Database Configuration</h1>
+  <a name="deployd"></a>
+
+    <h2>5.1 Deploy Drivers</h2>
+    <br />The supported production-grade databases include MySQL 4.1+ and Oracle 9i+. The version of the JDBC driver (or connector) is also important. For MySQL the 3.1.10 connector should be used, while for Oracle the 10g driver should be used, even if the database is version 9i. The 9i driver will not be sufficient.
+    <table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
+	             <tbody>
+	               <tr>
+	                 <th>MySQL drivers</th>
+	               </tr>
+	               <tr>
+	                 <td class="white">There have been a number of problems reported with the 3.1.11 MySQL driver. We currently recommend 3.1.10 instead.</td>
+	               </tr>
+	             </tbody>
+    </table>
+    <p>You need to have appropriate JDBC drivers for your database installed in your $CATALINA_HOME/common/lib directory, and they are available from the official sites for both <a href="http://www.oracle.com/technology/software/tech/java/sqlj_jdbc/htdocs/jdbc101020.html">Oracle</a> and <a href="http://dev.mysql.com/downloads/connector/j/3.1.html">MySQL</a>.</p>
+    <p></p>
+
+    <a name="create"></a>
+
+    <p><h2>5.2 Create Sakai Database and User</h2></p>
+    <br/>A Sakai database and
+privileged user
+must be prepared for Sakai's use. Consult your database documentation
+for details, but here are sample commands for MySQL:</p>
+<pre><span class="code">C:\sakai\reference\sql\legacy\mysql\&gt;
+mysql -u root -p<br>Enter password: ******
+Welcome to the MySQL monitor. Commands end with ; or \g.
+
+Your MySQL connection id is 51 to server version: 4.1.5-gamma-nt
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql&gt; create database sakai default character set utf8;
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; grant all on sakai.* to sakaiuser@'localhost' identified by 'sakaipassword';<br>Query OK, 0 rows affected (0.00 sec
+
+mysql&gt; grant all on sakai.* to sakaiuser@'127.0.0.1' identified by 'sakaipassword';<br>Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; quit </span></pre>
+
+    <a name="placeholder"></a>
+
+    <p><h2>5.3 The placeholder.properties File</h2></p>
+    <br/>The placeholder properties
+are all related to&nbsp;database technology and behavior, and as
+with the sakai.properties file, placeholder.properties belongs in the
+$CATALINA_HOME/sakai directory. These placeholder properties must be
+set properly for the database you are using.&nbsp;See the sample
+placeholder.properties file in the&nbsp;source code:</p>
+    <pre><span class="code">kernel/component/src/config/org/sakaiproject/config/placeholder.properties<br></span></pre>
+    <p>To select MySQL as your
+database technology the placeholder.properties must include:</p>
+    <pre><span class="code">hibernate.dialect=net.sf.hibernate.dialect.MySQLDialect<br>auto.ddl=true</span></pre>
+    <p>To select Oracle as your
+database technology the placeholder.properties must include:</p>
+    <pre><span class="code">hibernate.dialect=net.sf.hibernate.dialect.Oracle9Dialect<br>auto.ddl=true</span></pre>
+
+    <a name="sproperties"></a>
+
+    <p><h2>5.4 sakai.properties Database Properties</h2></p>
+    <br/>There are settings in
+sakai.properties that also define the database technology and
+connection information. Appropriate sakai.properties settings for
+Oracle and MySQL, respectively, are listed below (although some pieces
+will of course need to be altered appropriately for your installation):</p>
+    <ul>
+      <li>
+        <strong>Oracle:</strong>
+<pre>defaultTransactionIsolationString@javax.sql.BaseDataSource=TRANSACTION_READ_COMMITTED<br>vendor@org.sakaiproject.service.framework.sql.SqlService=oracle<br>driverClassName@javax.sql.BaseDataSource=oracle.jdbc.driver.OracleDriver<br>url@javax.sql.BaseDataSource=jdbc:oracle:thin:@your.oracle.dns:1521:SID<br>username@javax.sql.BaseDataSource=[database user name]<br>password@javax.sql.BaseDataSource=[password]<br>validationQuery@javax.sql.BaseDataSource=select 1 from DUAL</pre>
+      </li>
+      <li>
+        <strong>MySQL:</strong>
+<pre>defaultTransactionIsolationString@javax.sql.BaseDataSource=TRANSACTION_READ_COMMITTED<br>vendor@org.sakaiproject.service.framework.sql.SqlService=mysql<br>driverClassName@javax.sql.BaseDataSource=com.mysql.jdbc.Driver<br>url@javax.sql.BaseDataSource=jdbc:mysql://127.0.0.1:3306/sakai?useUnicode=true&amp;characterEncoding=UTF-8<br>username@javax.sql.BaseDataSource=[database user name]<br>password@javax.sql.BaseDataSource=[password]<br>validationQuery@javax.sql.BaseDataSource=select 1 from DUAL</pre>
+      </li>
+    </ul>
+
+    <a name="dbconfig"></a>
+
+    <p><h2>5.5 Upgrade Scripts</h2></p>
+    <p>If you have been running version 2.0 of Sakai, you may need to apply an upgrade script to your database for the gradebook tool. A new column was added to the GB_GRADABLE_OBJECT_T table to support "Not Counted" assignments.  For existing installations, the following script may be used to update the table:
+
+<pre><span class="code">gradebook/component/src/sql/*/sakai_gradebook_2.0.1_to_2.1.sql</span</pre>
+
+</p>
+
+<!--END CONTENT-->
+</div>
+</div>
+<br clear="all" /><!-- without this little <br /> NS6 and IE5PC do not stretch the frame div down to encopass the content DIVs -->
+  <!--END FRAME-->
+</div>
+</body>
+</html>
