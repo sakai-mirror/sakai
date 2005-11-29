@@ -22,20 +22,23 @@
 **********************************************************************************/
 package org.sakaiproject.tool.OSIDRepository;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import org.sakaiproject.tool.net.*;
+import org.sakaiproject.tool.search.*;
+import org.sakaiproject.tool.util.*;
 
-import org.sakaiproject.tool.search.MatchItem;
-import org.sakaiproject.tool.search.QueryBase;
-import org.sakaiproject.tool.search.ResultPageBase;
-import org.sakaiproject.tool.search.SearchResultBase;
-import org.sakaiproject.tool.util.DomException;
-import org.sakaiproject.tool.util.DomUtils;
-import org.sakaiproject.tool.util.HttpTransactionUtils;
-import org.sakaiproject.tool.util.SearchException;
-import org.sakaiproject.tool.util.StringUtils;
-import org.w3c.dom.Element;
-import org.w3c.dom.html.HTMLDocument;
+import java.io.*;
+import java.net.*;
+import java.lang.*;
+import java.util.*;
+
+import javax.net.ssl.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.w3c.dom.html.*;
+import org.xml.sax.*;
 
 /*
  * public class Search extends ComponentServlet {
