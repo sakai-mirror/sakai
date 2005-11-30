@@ -257,7 +257,7 @@ join SAKAI_REALM_ROLE SRR on (TMPSRC.ROLE_NAME = SRR.ROLE_NAME)
 join SAKAI_REALM_FUNCTION SRF on (TMPSRC.FUNCTION_NAME = SRF.FUNCTION_NAME);
 
 -- insert the new functions into the roles of any existing realm that has the role (don't convert the "!site.helper")
-insert into SAKAI_REALM_RL_FN SRRFI (REALM_KEY, ROLE_KEY, FUNCTION_KEY)
+insert into SAKAI_REALM_RL_FN (REALM_KEY, ROLE_KEY, FUNCTION_KEY)
 select
     SRRFD.REALM_KEY, SRRFD.ROLE_KEY, TMP.FUNCTION_KEY
 from
