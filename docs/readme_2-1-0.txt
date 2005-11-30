@@ -2,6 +2,7 @@ INTRODUCTION
 
 Welcome to the Sakai Release for version 2.1.0! The new functionality of the 2.1.0 release is marked most prominently by the inclusion of course sections and making several of the bundle tools "section-aware," but there are other new tools and many improvements to the code. See the documentation identified below for fuller details.
 
+
 TABLE OF CONTENTS
 
 1. Installation Overview
@@ -28,7 +29,7 @@ Sakai is available for three different installation methods.
 
 A demo installatation is fairly brief and straightforward. The steps are as follows:
 
-   1. Verify Java Installation and Environment Variables (see the Set up Build Environment section (2.1 - 2.2) of this guide)
+   1. Verify Java Installation and Environment Variables (see install/readme_demo.txt, or the "Set up Build Environment" section of the online install guide).
    2. Download and unpack the Demo Archive (see http://cvs.sakaiproject.org/release/2.1.0 for a link to the download)
    3. Start Tomcat with the following commands from the root Tomcat directory:
    
@@ -60,7 +61,7 @@ Objects created and modified during runs of the Sakai demo will persist through 
 
 1.3 Binary Installation:
 
-The Binary Installation of Sakai provides a shortcut for those that already have Tomcat in place and configured as needed (see Set up Build Environment for details on Tomcat configuration), and it does so by providing a pre-built Sakai that can simply be dropped into Tomcat as an overlay. All you need to do is unpack the Binary archive from within the root Tomcat directory (e.g. $CATALINA_HOME). The appropriate wars, jars, etc., will be deposited in the correct locations.
+The Binary Installation of Sakai provides a shortcut for those that already have Tomcat in place and configured as needed (see install/readme_bin.txt, or the "Set up Build Environment" section of the online install guide), and it does so by providing a pre-built Sakai that can simply be dropped into Tomcat as an overlay. All you need to do is unpack the Binary archive from within the root Tomcat directory (e.g. $CATALINA_HOME). The appropriate wars, jars, etc., will be deposited in the correct locations.
 
 If you wish to configure a binary installation you'll need to manually create a 'sakai' directory in $CATALINA_HOME to hold your *.properties files, as described in Post-Installation Configuration.
 
@@ -74,15 +75,15 @@ The Demo and Binary installs described above offer much-abbreviated processes, b
    3. Perform appropriate Post-Installation Configuration of the application.
    4. Carry out the steps for Database Configuration.
 
-The Demo and Binary Installations can freely skip most of these phases, with exceptions noted above. To view detailed breakdowns of these phases please refer to the Installation Guide.
+The Demo and Binary Installations can freely skip most of these phases, with exceptions noted above. To view detailed breakdowns of these phases please refer to the Installation Guide online at http://cvs.sakaiproject.org/release/2.1.0/InstallGuide.html (or in docs/releaseweb/InstallGuide.html in the source archive or on subversion).
 
 
 2. SAKAI DOCUMENTATION
 
-Sakai documentation comes in many forms.  The first and primary set of documentation is what's found here in the docs folder of the release:
+Sakai documentation comes in many forms.  The first and primary set of documentation is what's found here in the docs folder (the demo and binary archives may not include all of these, but you can find them in subversion at https://source.sakaiproject.org/svn/trunk/sakai/docs/):
 
-* architecture folder - this holds much of the deeper, and more exhaustive documentation of Sakai's internals and configurations.  Turn to these docs when you have a working Sakai installation and want to learn more.
-* Install Guide - speaks for itself.
+* architecture - this holds much of the deeper, and more exhaustive documentation of Sakai's internals and configurations.  Turn to these docs when you have a working Sakai installation and want to learn more.
+* install - speaks for itself.
 * upgrading - notes on upgrade procedures and sql scripts will be stored here when a new release warrants it.
 * provisional - introductory notes explaining how to enable provisional tools, and what their basic functions are (see the provisional tool section below).
 
@@ -109,10 +110,10 @@ You are encouraged to use these tools taking careful care to test them in your e
 
 The provisional tools available in 2.1.0 are:
 
-    * Rwiki
-    * SU
-    * Sakaiscript
-    * Roster
-    * TwinPeaks
+    * Rwiki - a wiki tool
+    * SU - an administrative tool for taking on the identity of another system user
+    * Sakaiscript - a tool used for Sakai webservices
+    * Roster - a tool for displaying the class roster, and potentially photos where available
+    * TwinPeaks - 
     
 See the readmes in docs/provisional for details.
