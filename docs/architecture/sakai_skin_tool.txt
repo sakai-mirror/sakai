@@ -1,0 +1,436 @@
+
+[pic] |Changing the Appearance of the Sakai 2.0 Tools | |
+
+Background  1
+
+
+How it works     1
+
+
+Getting started  2
+
+
+The Tool    2
+
+
+The Elements     3
+
+  List Elements  3
+  Item Elements  5
+  Form Elements  6
+  Assorted Elements    7
+    Standard elements  7
+    Named elements:layout    7
+    Named elements:messages  7
+    Assorted elements  7
+
+Appendix A- Helpful Links    8
+
+
+Appendix B - Index     8
+
+
+Appendix C - Post 2.0 changes     8
+
+    2.0.1   9
+
+
+Background
+
+
+A tool will be produced via many different mechanisms. The actual markup in
+the response will conform with the Sakai Style Guide, and the most
+important components of the UI that are of interest in a skinning situation
+are addressable via the CSS.
+
+For skinning framework outline, and suggestions on how to work to customize
+skins in general, please see the Skinning the Sakai 2.0 Portal document.
+
+How it works
+
+
+The tool links to two css files:
+
+<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet"
+media="all" />
+<link href="/library/skin/default/tool.css" type="text/css"
+rel="stylesheet" media="all" />
+
+The first is a repository of all the rules that are meant to apply to all
+the tools in Sakai, and it is devoid of any skinning or branding.
+
+The second one holds the definitions of interest in a skinning/branding
+situation.
+
+
+Getting started
+
+
+Copy the /library/skin/default directory and rename as below.  Reminder: we
+are working on a deployed version, not the source
+
+Note - If you have started the customizing process with the portal, your
+new_skin directory should be all set - if not take a look at the Skinning
+the Sakai 2.0 Portal document.
+
+|Before                           |After                            |
+|                                 |                                 |
+|1library/skin                    |1 library/skin                   |
+|tool_base.css                    |tool_base.css                    |
+|1default                         |1default                         |
+|tool.css                         |tool.css                         |
+|portal.css                       |portal.css                       |
+|1images                          |1images                          |
+|                                 |1new_skin                        |
+|                                 |tool.css                         |
+|                                 |portal.css                       |
+|                                 |1images                          |
+
+If you are running your own version locally - you can modify the server
+configuration service's bean registration in \components\sakai2-legacy-
+components\WEB-INF\components.xml (path is in deployed version of tomcat
+root) to point to new_skin as the default skin, so:
+
+      <!-- this is the default skin -->
+      <prop key="skin.default">new_skin</prop>
+      <!-- this is the path to the skin repository -->
+      <prop key="skin.repo">/library/skin</prop>
+
+You will need to restart tomcat for this to have an effect.
+
+Again - if you see gaps in the "addressability" issue, and I will assume
+you will, or if you have any suggestions for improvements (I assume you
+will too!) - do contact <gsilver-at-umich.edu >.
+
+Note - if your local Sakai instance is compiled from CVS source, work in
+the deployed version, not in the source. If you work in the source and
+compile and deploy after every small change to see how things look you will
+go melancholy mad. Just make sure that you save your changes elsewhere so
+if you do run maven to recompile and redeploy you do not loose your work.
+
+
+The Tool
+
+The tool framework consists of a box classed as .portletBody - it is the
+child of the <body> node. Not much to say here except if you change the
+padding of this selector you will need to change the negative margins of
+elements that were designed to be flush with it (at the top, sides,
+bottom). An example below
+
+[pic]
+
+
+The Elements
+
+Since the different elements that are addressable are not present at once
+in the same tool the rest of this guide will consist of various screenshots
+of different screen "genres", highlighting the addressable element. See the
+index at end for a listing of each element - referencing a page number.
+
+Notes:
+
+    . highlighted elements will have an orange outline
+    . the callout references the selector name - providing as much
+      contextual information as may be needed
+    . the common name of the element is in the list below each screenshot -
+      paired with the selector name - it is the common name that will be
+      listed in the index
+    . the common name is also based on what the element is called in the
+      Style Guide.
+    . The selector may be found in tool_base.css, tool.css or in both. You
+      are encouraged to change only tool.css
+    . Some selectors in the css are paired up - same definitions, different
+      names- this is to help transition the different tools to the same css,
+      don't let this throw you.
+
+List Elements
+
+
+[pic]
+
+
+
+
+
+
+|Common name                      |Selector                         |
+|Toolbar                          |div.navIntraTool                 |
+|Tool header                      |h3                               |
+|List                             |table.listHier                   |
+|List/page navigator              |div.rightNav                     |
+|List actionable items            |div.itemAction                   |
+|Action inputs (buttons)          |p.act                            |
+|Default action button            |p.act input.active               |
+
+
+Item Elements
+
+[pic]
+
+|Common name                      |Selector                         |
+|Toolbar                          |div.navIntraTool                 |
+|Tool header                      |h3                               |
+|Item Summary                     |table.itemSummary                |
+|Item navigator                   |p.rightNav                       |
+|Sub header                       |h4                               |
+|Attachment list                  |ul.attachList                    |
+
+
+Form Elements
+
+[pic]
+
+
+
+|Common name                      |Selector                         |
+|Tool header                      |h3                               |
+|Instruction                      |p.instruction                    |
+|Required (in instruction)        |span.reqStarInline               |
+|Short text block                 |p.shorttext                      |
+|Required (in form)               |span.reqStar                     |
+|Long text block                  |p.longttext                      |
+
+Notes:
+
+   1. inputs are contextually defined (as children of the shorttext,
+      longtext and checkbox selectors) - you can change their appearance
+      there or globally. In the later case keep in mind that to Internet
+      Explorer 6 and below an input is an input, as attribute selectors will
+      not work with it.
+   2. longtext can have 2 types of layout -the "block" class on the label
+      above forces a top-bottom display. Minus that, it will be side by
+      side.
+
+Assorted Elements
+
+
+Standard elements
+
+      Fieldset, legend
+           Used in tools to group logical inputs together - devoid of
+           decoration
+      Textarea
+      Input
+      A, a pseudo classes
+           <a> is defined contextually in many places - table headers,
+           toolbars, etc - this is the generic one
+
+Named elements:layout
+
+      div.leftNav (left Navigator)
+           Block floated left - used when the same horizontal space is
+           shared by two UI groups (right hand is occupied by rightNav
+           block), children are accessible via inheritance.
+      p.breadCrumb
+           Displays breadcrumbs in hierarchical situations
+           > used in Resources, other places
+
+      .abc
+           Block used to display links (abc or 123) to different sections
+           of a long/complex list - display of links are contextually
+           defined
+
+Named elements:messages
+
+      p.step
+           used in wizards to display status - where user is in the process
+            > create a site to see
+      p.validation
+           used in forms to let user know that something is missing
+            > fill out form missing a required item
+      p.success
+           used in complex actions to let user know that things turned out
+           as expected
+            > create a new grade entry in gradebook
+      p.information
+           used to let used know change of status in something
+            > join a site
+      p.alert
+           general all purpose display of system alerts
+      span.inlineAlert
+           when a message of importance needs to be embedded inside a block
+           level element
+           > copy a resource in Resources to see
+
+Assorted elements
+
+      p.discTria
+           Used to display an action that will toggle the visibility of an
+           associated area
+           > see Samigo, or create and view an Assignment
+      .skip
+           Used to render an element that will be picked up by a screen
+           reader but will remain invisible to a sighted user
+      table.calendar
+           Used only in one tool the legacy Schedule - massive number of
+           children.
+
+
+Appendix A- Helpful Links
+
+See the appendix in the Changing the Appearance of the Sakai 2.0 Portal
+document.
+
+
+Appendix B - Index
+
+
+.abc  7
+.skip 8
+A, a pseudo classes    7
+Action inputs (buttons)      4
+Attachment list  5
+Default action button  4
+Div.itemaction   4
+Div.leftnav 7
+Div.navintratool 4, 5
+Div.rightnav     4
+Fieldset    7
+H3    4, 5, 6
+H4    5
+Input 7
+Instruction 6
+Item navigator   5
+Item Summary     5
+Legend      7
+List  4
+List actionable items  4
+List/page navigator    4
+Long text block  6
+P.act 4
+P.act input.active     4
+P.alert     7
+P.breadcrumb     7
+P.disctria  7
+P.information    7
+P.inlinealert    7
+P.instruction    6
+P.longttext 6
+P.rightnav  5
+P.shorttext 6
+P.step      7
+P.success   7
+P.validation     7
+Required (in form)     6
+Required (in instruction)    6
+Short text block 6
+Span.reqstar     6
+Span.reqstarinline     6
+Sub header  5
+Table.calendar   8
+Table.itemsummary      5
+Table.listhier   4
+Textarea    7
+Tool header 4, 5, 6
+Toolbar     4, 5
+Ul.attachlist    5
+
+
+Appendix C - Post 2.0 changes
+
+
+
+2.0.1
+
+
+The major changes for this version where a number of improvements for
+accessibility. This affected mostly the portal - but since a number of
+elements that "look" like they are in the portal are actually tools the
+tool.css was also affected.  The issue in that case was that the tool title
+(inside of the tool title iframe) became an <h2> - this needs to be treated
+in the tool css by overriding the default rendering of <h2> - in the case
+of Euphoria University:
+
+      .toolTitle td.title h2{
+           margin:0;
+           padding:0;
+           display:inline;
+      }
+
+You may want to adjust the font-size, font-weight, color, etc. The
+important part is to make <h2> behave like a bit of inline text instead as
+a block.
+
+
+
+-----------------------
+div.portletBody
+
+(p/div).navIntraTool
+
+div.navIntraTool
+
+div.navIntraTool a
+
+table.listHier
+
+table.listHier th
+
+table.listHier th a
+
+p.act
+
+div.itemAction
+
+p.act input
+
+p.act input.active
+
+h3
+
+[pic]
+
+div.rightNav
+
+span.instruction
+
+div.navIntraTool a
+
+div.navIntraTool
+
+table.itemSummary
+
+[pic][?]+0234KLMNjklmwxy"îäØÉØä½¯¥¯'"{"a'"VGVj?hL{¼U[pic]mHnHu[pic]?hL{¼mHnH
+u[pic]2[?]?jk$[pic]hL{¼h
+]H>*[pic]B*table.itemSummary th
+
+h3
+
+H4
+
+ul.attachList
+
+span.reqStarInline
+
+h3
+
+p.rightNav
+
+p.instruction
+
+p.shorttext
+
+p.shorttext label
+
+span.reqStar label
+
+p.longtext
+
+p.longtext label.block
+
+p.checkbox
+
+p.checkbox label
+
+p.act
+
+p.shorttext
+
+p.shorttext label
+
+p.act
+
+p.act input.active
+
+
+

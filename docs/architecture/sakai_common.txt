@@ -1,0 +1,586 @@
+
+
+                        Sakai Framework Common APIs:
+
+                           Design and Application
+
+
+                               August 14, 2005
+
+         Please direct questions or comments about this document to:
+
+        Glenn R. Golden, Sakai Framework Architect, ggolden@umich.edu
+
+
+                                  DRAFT II
+
+
+
+Introduction
+
+This documents the Sakai framework's common APIs for 2.1, specifically the
+new support added for groups and structure, and the new authorization
+model.
+
+The Common APIs are designed to be of use in common by all of the Sakai
+applications.  They are dependent only on the framework APIs and the
+utility classes.
+
+The document describes the individual concepts involved, and then covers a
+series of applications of these concepts in Sakai.
+
+Concepts:
+    - Entity
+    - Context
+    - Group
+    - Function
+    - Authorization
+    - Structure
+
+Applications:
+    - sites
+    - providers
+    - sub-grouping
+    - course management
+    - sectioning
+    - admin and affiliate users
+    - application responsible structure
+    - application structure using Sakai structure
+
+
+Concepts
+
+The following sections describe the individual concepts that make up the
+common APIs in the Sakai framework.  Common has a few additional APIs not
+described here (Agent and Authentication, for example).
+
+
+Entity
+
+
+An entity is data modeled by a Sakai application.  The granularity of
+entities are set by the applications, and usually represent the different
+"real world" domain things that the application models.
+
+Examples of entities include:
+    - chat message
+    - announcement channel
+    - file in content hosting
+    - site
+    - group
+    - user
+
+Entities are composed of many different units of data; these units are not
+usually entities.  Examples of things that are not entities are:
+    - id
+    - created-by user
+    - last-modified-by time
+
+Most applications surface their entity model by providing a Java interface,
+and a manager interface to provide access to the application's entities.
+
+Entities are persistent; they live beyond runs of a particular application
+server, and are shared by all separate application servers in a cluster.
+Sakai applications are responsible for making the data persistent and
+providing secure access to the entities.
+
+Entities are identifiable.  Each one has a Sakai-wide unique and permanent
+identifier (UUID), allocated by the application.   A framework ID service
+exists that applications can use to get unique UUID values. Applications
+should be designed to accept an identifier to locate the entity.
+
+Entities are contextualized.  The application associates each of its
+entities with one or many contexts.  Entities associated with the same
+context are related.  Applications should be designed to accept a context
+as a way to locate related collections of entities.
+
+
+Context
+
+
+A context is a name used by entities to form relations or groupings.
+Context names can be any string values that one or more applications use to
+relate entities.
+
+Applications are encouraged to use Sakai structure nodes for their context
+names, so as to make these the most common namespace for context, so that
+entities from all different Sakai applications can be related into
+contexts.  When using structure nodes as context, the node id is used as
+the context name (not the node name, which can change over time).
+
+Entities are related by their contexts.  Each entity can be part of 0, 1,
+or more contexts.  The relating of entities into contexts can be used in
+various ways by applications, and is important for the authorization
+system.
+
+
+Group
+
+
+A group is a set of people, each with a role in the group.  For example, a
+group could be:
+
+    . Chris with the "leader" role
+    . Kelly with the "member" role
+    . Shawn with the "observer" role
+
+If an application scenario exists that could use groups but does not need
+to distinguish different roles, then a group could be made of people all
+with the "member" role (or any other arbitrary string, including the empty
+string) .
+
+Group roles can be used in various descriptive and organizational ways by
+applications, and are important for authorization.
+
+
+Function
+
+
+A function is the name given to something end users do to an entity.  This
+includes any type of access or manipulation the application supports.
+Functions are defined by the applications, and registered with the Sakai
+framework. Functions are used in the authorization process.
+
+Applications are encouraged to define fine-grained functions, one for each
+possible access or manipulation of the application's entities.  This gives
+the end user the most options when designing permission assignment
+scenarios.
+
+Functions are known by the application, and are used by the application
+when asking security questions.  Functions are known to the authorization
+system, and are used when creating permission grants.   Functions are
+registered with the framework, and will receive a permanent UUID value that
+can then be used by the application and authorization system to refer to
+the function.  This value will persist past server restarts and is shared
+among the servers in a cluster.
+Functions are associated with an application, which provides a name to use
+as a function prefix when describing the function outside of the
+application's context.  This name is set when the application registers its
+functions, and must be unique among all Sakai applications.
+
+Functions each have a short name used for display purposes, such as "read"
+or "post" or "del.own".  Functions each have a longer description used in
+the permission granting interfaces, so end users know what the function is
+used for.
+
+
+Structure
+
+
+Structure is a hierarchy of nodes that are of interest to the organization
+using Sakai.  The structure will usually be derived from a combination of
+the org. chart for the institution, the navigation requirements for the
+Sakai based service, and the structure of the entities within various Sakai
+applications.
+
+Each node has a single parent, except for the single root node at the top
+of the hierarchy.  Each node has 0 or more children.  Nodes have short,
+meaningful names that are locally unique (i.e. unique among siblings), and
+a UUID for reference.  The names form a unique path from the root to each
+node.
+
+Structure can be used in various ways by applications, (examples:
+navigation, aggregation, implementing entity structure), and is important
+to the authorization system (grant inheritance) and to entities
+(applications are encouraged to use node ids for their context names).
+
+Many Sakai applications have internal structure organizing their entities.
+Applications can continue to implement their internal structure internally,
+but may instead choose to extend the Sakai structure with nodes that
+implement their internal structure.
+
+
+Authorization
+
+
+Authorization is the process of deciding if an end user can perform some
+function on an entity.
+
+Authorization is the responsibility of each Sakai application. The
+application can use the Sakai authorization manager when it needs to ask
+authorization questions, if it would like to take advantage of the features
+built into the authorization system, and participate in Sakai-wide
+permission setup.  However since the Sakai application is fully responsible
+for authorization, each one is free to choose to do things in some other
+way.
+
+The most common question supported by the Sakai authorization API is the
+boolean one:
+    - can a single user (usually the current user) do a single function on a
+      single entity
+
+The authorization API also answers various forms of Collection returning
+questions, such as:
+    - which functions a user has permission to for a given entity
+    - which users are permitted a certain function for a given entity
+    - which entities a given user is permitted a specific function to, etc.
+
+Authorization is expressed as a collection of grants.  Each grant gives
+some users permission for some set of functions on some set of entities.
+
+Note that the singular authorization question, which deals with single
+user, function and entity, is more granular than the authorization grants,
+each of which is usually multiple, referencing sets of users, functions,
+and entities. Fine-grained queries allow flexibility in making grants;
+courser grained grants make grant management easier.
+
+Grants can be given to individual users, but are usually given to groups to
+make management easier. A grant given to a group applies to all members of
+the group.  Group grants optionally include a role.  Group role grants
+apply only to the members of the group that have the role.  Group grants
+apply to the current membership of the group, and adjust to this as the
+group membership changes over time.
+
+Grants can also be made to the group-like virtual set of end users, to any
+end user (i.e. a public or "anon" grant), or to any end user who has
+authenticated (i.e. an "auth" grant).
+
+A grant can be for a single function, or a set of functions.
+
+Grants can be for individual entities, but are usually for multiple
+entities, to make management easier.  To grant to multiple entities, the
+grant is made for a context.  A grant for a context applies to all the
+entities that claim they are part of the context.  Context grants apply to
+the current set of entities in the context, and adjust to this as the
+entities that are part of the context change over time.
+
+Since applications are encouraged to use structure node ids as context
+names, grants can be made to a node in the structure (this means the grant
+is made with a context name that matches the node id in the structure).
+Grants made to a node apply to any entity that claims to be part of a
+context that matches the node id.
+
+Grants made to a node in the Sakai structure support an inheritance
+feature.  Like other context grants, they apply to any entity claiming to
+be in the context.  In addition, the grant is applied to any entity that
+claims to be in any context that matches a node id in the Sakai structure
+that is a descendent of the granted node.  Grants "flow down" the structure
+to descendents; grants are inherited from parent nodes.
+
+This inheritance is selective, and by default does not occur.  To cause a
+node to receive grants flowing down from above, an inheritance grant is
+made on that node.  This grant simply marks the node as one that inherits
+grants (it does not specify function(s) or user(s)).
+
+Normal permission grants are blocked from flowing down the hierarchy,
+flowing only along a path through the hierarchy that is made up of nodes
+granted inheritance.  Administrative grants are another form of grant that
+will flow to all descendent nodes below the granted node.  An
+administrative grant still only applies to the users and functions of the
+grant, but will apply to all the entities claiming context in any node in
+the hierarchy below, even if there are not inheritance grants along the
+path.
+
+
+Applications
+
+
+Many existing parts of Sakai will change to integrate these new features.
+New features can be added that directly take advantage of these features.
+
+
+Sites
+
+
+A Sakai site is a navigation destination; a place in Sakai for end users to
+collaborate with a particular set of users on a particular set of entities.
+ Sites have a selection of tools, each one configured for the site, and a
+page and tool layout.  Sites have a skin, a published and joinable status,
+and some descriptive information.  Before 2.1, sites provide context for
+entities.
+
+The Sakai portal (Charon) provides site navigation in the form of "tabs",
+listing the end user's site choices.  Tabs are selected based on what the
+end user has access to and the end user's preferences.  This forms a
+direct, and flat, navigation of Sites.
+
+The Site implementation has used the Realm service to handle the users and
+permissions for a site.
+
+With 2.1, the Site service and implementation will change as follows.
+
+Sites will now have context, like all other Sakai entities.  This context
+will place a site in the Sakai structure.  This allows sites to be
+organized in the structure, so that in addition to the class and project
+sites we have been using, we can have sites for organization units above
+this, and we can have "sub" sites below.
+
+It looks like sites will have just one context.  Entities in general can
+have multiple, but for a site we might need to limit it to one.
+
+Each site will probably require a new node added to the structure.  Site
+can be contextualized to existing structure nodes, but the bulk of nodes in
+the center of the structure will be nodes that do the job that site does
+now; providing a context for entities.  Creating a new site will usually
+also create a node for it.
+
+The site creation process will be extended to include the placement of the
+site in the structure; the selection of an existing node, or the selection
+of a node to act as a new node's parent for the site.
+
+The current request context will change from being a site id to being the
+site's context, a node id from the Sakai structure.  Entities will change
+from using the site id for their context, and will instead use the site's
+context (a node id) as their context.
+
+With sites contextualized at different levels of the Sakai structure, a
+Sakai portal can be made to offer hierarchical site browsing.  Site tab
+browsing can be extended to have an "up" tab, to go to the site at a parent
+node in the structure, and "down" tabs to list the sites found in
+descendent nodes of the structure.
+
+A site's participants will be made up of any group or user grants that
+allow the "site.visit" function. This replaces the use of realms for site
+participants.
+
+Joining a site is more interesting now.  The site entity model needs to
+keep track of joinable status, the role given to the joiner, and also (new)
+the group for joining.  To join a site, the end user becomes added to the
+group with the role.  The grants on this group & role determine what the
+joiner can do with the site and the entities at and below the site's
+context node in the structure.  To unjoin, the user's role relationship
+with the group is removed.
+
+The site joining feature can be extended to add finer permission control.
+Rather than letting any authenticated user join, permission to join a site
+could be limited to some other set of groups / roles.  A "site.join"
+function can be introduced, and be included in grants.
+
+To model what we allow now, to let anyone authenticated join, a "anon"
+grant of "site.join" can be made for the site's context.  Make this an
+admin grant, add a structure node above a bunch of sites, and grant to this
+node, then all the sites created below will inherit "site.join" and will be
+joinable.
+
+This could be further extended to allow different groups of users to join a
+site with different sets of permissions. Site can define a number of join
+functions, such as "site.join.1", "site.join.2", etc.  A site would keep
+track of a different joining group/role definition for each possible join
+function.  Grants of these different functions could be made to different
+groups.  The join process would determine which join functions the user has
+permission for, check with the site to see which group/role go with those
+functions, and assign the user to the appropriate group.  If there is more
+than one that applies, we can let the end user pick how they want to join
+the site.
+
+
+Providers
+
+
+Groups, structure, and grants in Sakai will need to be coordinated with
+information outside of Sakai, as well as being defined by Sakai tools and
+applications.  Providers are the software components that do this
+coordination.  They are usually hooked up to enterprise systems, and need
+to select, filter, translate, and possibly override the enterprise
+information, and merge it in with the internally defined Sakai information.
+
+The Course Management (CM) API providers are likely to supply most of the
+group and structure information for a Sakai used in an educational
+institution.  These providers, and the CM API, supply information modeling
+and terminology closer to the domain of educational institutions.  It is
+the CM implementation's responsibility to translate the provided CM
+information into group and structure and grant information.
+
+For non-educational uses, (even in educational institutions), direct
+providers for group, structure and grants can be written.
+
+
+Sub-Grouping
+
+
+
+Note: this section to be completed.
+
+
+The basic idea is that there are no sub "groups", i.e. the group concept
+does not include a sub-grop concept.  Groups consist of end users with
+roles, they do not include other groups.
+
+To support a "sub-group" like scenario, such as the desire to have a "main"
+site for a population of users, and separate sites for different subsets of
+these people, we can use the common API concepts of group, grant and
+structure.
+
+When showing a list of people to select for a subset site, the interface
+can use the "site.visit" folks from the main site.  The subset has a full
+site, group, and node in the context.   The node can be placed below the
+node used by the main site.  The group and grants and site are otherwise
+not special.
+
+
+Course Management
+
+
+
+Note: this section to be completed.
+
+
+
+Sectioning
+
+
+
+
+
+Note: this section to be completed.
+
+
+The current requirements for class sections have a single site for the
+class, with knowledge of the class sections.  (Note that in some cases end
+uses will want separate sites for sections or subgroups, and in other cases
+this single site with filtering of entities will be desired.)
+
+Each section will be modeled as a group of users with their section roles.
+The class will also have a group of users with their class roles.  These
+groups will be used to make grants for site and entity access.
+
+The class will have a site, and a node in the structure for context. All
+entities meant for the class will also be in this context.
+
+Sections will have additional nodes in the structure as children nodes to
+the class node.  These nodes will NOT have inheritance grants, so that they
+can have their own permissions.
+
+"Section aware" applications will have an additional feature related to
+assigning the context for the application's entities.  Rather than just
+assigning the entity to the current (i.e. class, or site) context, the end
+user will be asked to select the context(s) for the entity.  The end user
+will have the option to select the class context, for class level access,
+or to select from among the section contexts, for section specific
+accesses.  The end user could also be offered the choice of marking the
+entity as public.
+
+This is a process of entity context assignment, not grants or groups.
+
+Grants would already be established for the different groups created for
+the class and sections, applying to the contexts which are the class and
+section nodes in the structure.  Once an entity is assigned to it's
+context(s), it would participate in these grants.
+
+Instructor or organizer type user roles in the class can be given
+administrative grants to the class context node, so they have full access
+to all entities related to the class, no matter how they are
+contextualized.
+
+Applications can be made further aware of this situation by querying the
+Sakai structure and then getting lists of entities for the class and
+various sections, depending on which sections the current user has
+permissions to.  This can be used to organize the display of the
+information, or filter it, or make it further structure / section /
+subgroup aware.
+
+
+Admin and Affiliate Users
+
+
+Up till now, any user marked as an "admin" user could do anything anywhere
+in Sakai.  The security implementation hard coded special notice of a user
+id "admin" or any user granted "site.upd" in the realm "/site/!admin", and
+avoided any further security checks, just saying "yes".
+
+Affiliate users (this is a term from U of M's CTools for administrative
+users from various departments in the university; other institutions have
+similar needs) were given access to all of the sites in their domain.
+Affiliates are like Admin users, but restricted as to which sites they have
+access to.  These names were hard coded into the site setup tool so these
+users could be added to any site created in various contexts.
+
+Both of these applications, a full Sakai admin, or a more limited
+affiliate, can be implemented with our new common APIs.  Rather than any
+hard coding of users or sites, admin users can be granted functions to
+nodes near the root of the Sakai structure.  The context used in the grant
+determines the subset of the full structure that the grant applies; the
+grants are admin grants so they will flow all the way down the structure.
+
+A full admin is granted functions at the root of the structure.  An
+affiliate is granted functions at a node that represents the affiliate
+user's area of responsibility, a school or department, for instance.
+
+This model lets us have a much more flexible "admin" model.  Say we are
+"hosting" different administrative domains in our Sakai.  We model this as
+a set of nodes right under the root node.  Each domain would want its own
+admin users.  These are done as grants to, not the root node, but the
+children nodes of the root.
+
+
+Application Responsible Structure
+
+
+Applications that organize their entities with some internal structure can
+just continue to model that structure internally in the application.  The
+announcements application is a good example.
+
+The announcement application organizes announcements into channels.  This
+structure will continue to be handled internal to the application.
+
+The announcements are entities, as are the channels, so grants can be made
+directly to either of these.  Grants made to the channel also apply to any
+announcement in the channel; this "inheritance" must be modeled by the
+application.  This is done by making each announcement include as its
+context the channel's id, along with the real context (which was site but
+is now the site's context node).  Announcement channels can list just the
+context node for context.
+
+It looks like we have inheritance of grants from the channel to the
+messages, but we do so   without creating a node for the channel in the
+structure, and without making an inheritance grant on that node so it
+inherits grants from the structure above.  The only node we need is the
+single one that the site, the announcements and channel, and all other
+related entities use as their context.
+
+While we could create a node for each channel, and a grant for that node,
+and then use that node for the channel and message entity contexts, it is
+up to the application to choose whether to do this or not.
+
+
+Application Structure using Sakai Structure
+
+
+Applications with internal structure can use the Sakai common APIs to
+implement this structure.  The content hosting API is a good example of
+this.
+
+Content hosting models collections (folders) and resources (files).
+Collections are nested; resources live in a collection.  Collections and
+resources are both entities, so grants can be made directly on either.
+Grants made on collections also apply to any collection or resource
+contained in the collection, or any "descendent" collection.  Content
+hosting creates a hierarchy of collections, and models grant flow down the
+hierarchy.
+
+This is so close to the Sakai structure and authorization system that we
+will implement the structure of the content hosting API using Sakai
+framework's common APIs.  Each collection will be modeled as a node in the
+structure.  Information about a collection will exist as a collection
+entity, as before, which has as its context the collection's node in the
+structure.  Resources will continue to exist as entities, each with context
+set directly to the node for the containing collection.
+
+Collection nodes will each have an inheritance grant, allowing grants to
+flow down from above.  The top of the collection hierarchy for any
+organization area of Sakai (class, workgroup, my workspace, etc) would be
+contextualized to a site's context node.
+
+Grants can be made to resources.  Grants can be made to collections.
+Grants can be made to the site context.  Because all the collection nodes
+have inheritance grants, grants made to the site context or collections
+flow down the content hosting collection hierarchy to all the enclosed
+collections and resources.
+
+The content hosting implementation will call on the structure and
+authorization APIs to coordinate the content hosting data model with the
+structure and grants. As collections are added, structure and grants will
+be added; as collections are deleted, structure and grants will be removed.
+
+Collections and resources can be attached to any node in the structure, not
+just nodes setup for site organization.  This means a resource can be added
+to a department node, or a collection and resources added to a division.
+
+Even more interesting possibilities arise.  Consider if announcements
+actually did make a node for a channel, and even for each announcement.
+Then we can attach resources directly to the nodes of the announcement to
+act as attachments.
+
+Special features, such as "dropbox", can be more easily implemented without
+any special coding, just by creating structure and grants appropriately.
+

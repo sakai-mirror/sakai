@@ -1,0 +1,153 @@
+
+
+                                 Sakai URLs
+
+
+                               Glenn R. Golden
+                          Sakai Framework Architect
+
+                               March 23, 2005
+
+A number of issues have converged lately to suggest a new way for URLs to
+be handled in Sakai.  These are:
+
+    - the desire to track end user action history to the request
+    - the desire for more "back button" behavior in our tools
+    - the unexpected bookmarking even of internal URLs with expectations of
+      reuse
+
+There seems to be a solution that addresses all of these issues.
+
+
+Every function / mode of a tool will have a unique URL.
+
+Each placement of a tool will have a unique URL root.
+
+Every navigation technology (hierarchy browser, portal, etc) can define any
+URL scheme as long as it is considered "readable" by end users.
+
+Each URL will always visit the same placed tool mode or function, differing
+over time when reused only in the dynamic content that the tool delivers.
+
+No two navigation locations, no two tool placements, no two tool modes or
+functions will share the same URL.
+
+All navigation requests are done with this "readable" URL as a GET.  All
+relevant information is encoded in the URL path, not in parameters or POST
+body.
+
+All data modification requests are done to the same "readable" URL that
+produced the browser content with the form; are POSTed back to the tool,
+with all data stored in the POST body, not in the URL parameters.  Each
+data modification POST is answered with a redirect that is effected at the
+browser, either to the same URL, or to a different one corresponding to a
+navigation of some sort.
+
+
+
+
+Tools and URLs
+
+The user interface created by a tool will likely have links or form submits
+that generate new requests from the end-user browser back to the tool.
+These fall into two categories:
+
+    - navigation requests
+    - data submissions
+
+The reason to distinguish these requests is to handle refresh and back
+commands from the browser.
+
+Navigation requests to tools can cause a browser history entry, so they can
+be unwrapped, and can change the URL associated with the browser's window
+or iframe, to indicate the navigation destination within the tool, so a
+refresh would keep the tool in the same navigation state.
+
+Data requests should not cause a browser history entry, and should not
+change the URL of the browser window or iframe.  A data request changes the
+state of the tool / end-user interaction, which is not simply changed by a
+browser back command.  A refresh after a data request should not re-submit
+the data.
+
+Each Sakai navigator and portal will define a URL scheme for navigation.
+This covers the all the way to a specific tool placement.  Each Tool should
+define a URL scheme for inner-tool navigation.  These schemes will be
+modeled on a static web site, where you start general at the left of the
+URL and proceed to drill down to more specifics as you move right.
+
+Navigation requests, which have public URL visibility, should be encoded as
+requests to the navigation / portal, for this tool, context, and tool
+navigation state.  That way if the request is bookmarked or used out of
+context, there's a chance it will look good and work again.  Navigation
+requests should be HTTP or HTTPS GET requests, with all portal and tool
+navigation information encoded by some scheme known to the portal and tool
+in the request URL.
+
+Data requests should also be portal requests, back to the same URL that
+wrote the form being responded to.  Data requests should be HTTP or HTTPS
+POST requests, with all submit data in the POST body, not on the URL.  The
+portal / navigation code recognizes this and sends the POST to the
+appropriate tool.
+
+Tools should do a redirect to a portal / tool URL as a response to a POST,
+to clear the browser history.
+
+Tool URLs
+
+The Servlet spec provides an interpretation of the request URL that invokes
+a Servlet.  After the transport, server and port numbers, the full URI path
+is divided into:
+
+    - context path: the portion of the request URI that indicates the
+      context  of the request
+
+    - servlet path: the part of this request's URL that calls  the servlet
+
+    - path info: extra path information associated with  the URL
+
+The Servlet has no real control over the context path or Servlet path; the
+former is set by the container, usually the name of the webapp folder, and
+the latter set in the web.xml in the servlet mapping.
+
+When a Servlet needs to form a URL for a link or post back to itself, it
+needs to either hard code the URL, which makes assumptions about things
+outside the Servlet's control and is a problem when the Servlet is re-used
+in different environments, or it needs to construct a URL from the request.
+
+A constructed URL would include the transport, server and port from the
+request, or be a relative URL and leave these out.  Then it would need the
+context path and servlet path from the request.  This would be a URL that
+would come back to the Servlet.  Specific extra path information and
+parameters can be added for each particular URL.  The Servlet spec makes no
+provision for forming this URL; each Servlet must code it.
+
+In Sakai, Servlet technology that act as Sakai Tools do not have a direct
+URL, but are instead invoked in various ways by navigators and other Tools
+as helpers.  The navigators in Sakai are responsible for translating some
+specific form of URL path into specific Tool invocations.  In a sense, the
+navigators take the place of the Servlet container and web.xml Servlet
+mapping in setting the "context" and "servlet path" of the request to the
+Servlet.
+
+URLs made by the Servlet should still be similar to the request URL, i.e.
+URLs back to the navigator so it can make its way back to the Servlet.
+
+But this situation is really not so different from the normal context /
+mapped Servlet call.  There's a part of the request URL that the Servlet
+has to take on faith, the context and Servlet paths.  Then there's a part
+that the Servlet itself works with, the path info.  The Servlet does not
+have to parse these, in fact, it does not have the necessary data to do so.
+ It must use the pre-parsed parts of the request object.
+
+When we invoke a Tool, we set the request object so that we get the results
+we desire without the Servlet code having to do anything unusual.  We can
+take the part of the URL that the navigator uses, whichever navigator was
+invoked for this request, and place that in the context and servlet path of
+the request.  We can take the rest of the path and make that be the path
+information that the Servlet processes.
+
+Then when the Servlet forms URLs they will be back to it via the route that
+happened to be in place for this request.  Then when the Servlet wants to
+process the request path it is there pre-parsed for it and the current
+navigation would not interfere.
+

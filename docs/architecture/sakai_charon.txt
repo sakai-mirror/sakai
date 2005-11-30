@@ -1,0 +1,308 @@
+
+
+                                   Charon:
+
+                            The Sakai Site Portal
+
+
+                                July 10, 2005
+
+      Please direct questions or comments about this document to:
+
+      Glenn R. Golden, Sakai Framework Architect, ggolden@umich.edu
+
+Charon is the primary Sakai 2 portal.  It is the latest in the line of Site
+based portals (Sedna, Varuna). Charon has been re-implemented for Sakai 2.
+
+Like its predecessors, Charon presents views of Sakai Sites, Site Pages,
+and Tools.  It looks and behaves just the same as the portal in Sakai 1.5,
+except that the URL space it recognizes is slightly different.
+
+New in Charon is the ability for users to state preferences to control the
+site navigation tabs.
+
+Charon is in the portal module, in the charon project.  It builds a webapp
+called portal.war, so takes all URLs that begin with /portal.
+
+Modes of Operation
+
+Charon supports 5 modes of operation:
+
+   1) Single tool display
+   2) Single site page display
+   3) Single site display
+   4) Site "gallery" display (a site along with site navigation tabs)
+   5) Site display (a site along with portal header and navigation tabs)
+
+Single tool display shows the interface for a single tool with no extra
+portal chrome.  There is no navigation added to the display.  A tool's
+placement id is needed to invoke this display mode.
+
+Single page display shows a single page of a site, include all of the tools
+that make up the page.  Navigation to other pages in the site and to other
+sites is not included.
+
+Single site display shows an entire site, along with the first site page,
+or the site page last visited for this site.  Navigation to select other
+pages of the site is included, along with the site icon and presence (if
+enabled).  Navigation to other sites is not included.
+
+Site gallery displays a single site, along with the first (or last visited)
+site page, along with the page navigation and other site features displayed
+in the single site mode.  Added are site navigation tabs, along with
+login/logout options and a bottom banner.
+
+Site display is the full portal display, adding some site branding to the
+portal banner, and otherwise showing all that the gallery display shows.
+
+URL Space
+
+Charon takes all urls that begin with
+
+/portal
+
+This is a point of difference between Charon and the prior Sakai portals.
+All portal URLs now start with /portal.
+
+/portal/site is the most used URL, invoking full site display for a site.
+The site id, and the page id, can be specified.  If the site is left out,
+the gateway site, for non-authenticated users, or the home site, for an
+authenticated user, is used.  If the page id is left out the first page of
+the site, or the last page visited for this site by this user in this
+session, is used.
+
+The following URL forms take the user to full site mode of the portal.
+"<site id>" represents the site id, and "<page id>" represents the page id:
+
+      /portal
+      /portal/site
+      /portal/site/<site id>
+      /portal/site/<site id>/page/<page id>
+
+/portal/gallery is used to invoke the gallery site display mode.  It will
+also default the site id if not specified, and can take an optional page
+id, just like the site URLs.  The following URL patterns invoke gallery
+mode:
+
+      /portal/gallery
+      /portal/gallery/<site id>
+      /portal/gallery/<site id>/page/<page id>
+
+/portal/worksite is used to invoke a single site display with no site
+navigation (but with full page navigation within the site and other site
+decorations).  The site id must be specified.  A page id is optional.  The
+following URL patterns invoke single site display mode:
+
+      /portal/worksite/<site id>
+      /portal/worksite/<site id>/page/<page id>
+
+/portal/page is used to invoke the single page display mode, with no site
+or page navigation or decorations.  The page id must be specified.  The
+following is the URL pattern for invoking page display mode:
+
+      /portal/page/<page id>
+
+/portal/tool is used to invoke the single tool display mode.  The tool
+placement id must be specified.  The following is the URL pattern for
+invoking tool display mode:
+
+      /portal/tool/<tool placement id>
+
+/portal/title is used to invoke the title bar of a single tool.  The tool
+placement id must be specified.  This invocation is used internally by the
+portal when it generates title bar frames, and should not be invoked by
+tools directly.  See the "Sakai Tools" document (for more information on
+how the portal uses the tool's registration to output the title bar.  The
+following is the URL pattern for invoking title bar display mode:
+
+      /portal/title/<tool placement id>
+
+
+Other Portal Features
+
+Login, Logout, and Presence are all handled by the Charon portal.  So are
+all the parts of the portal display, including the site navigation.
+
+Login and Logout are mapped to the URLs:
+
+      /portal/login
+      /portal/logout
+
+Processing for these are delegated by the portal to the Login tool using
+Sakai's helper tool mechanism.
+
+Presence for a site is handled by the Charon portal.  This is mapped to the
+URL
+
+      /portal/presence/<site id>
+
+These are the URLs that are placed in to the various portal displays.  The
+portal is invoked again when the presence iframe is fetched by the browser,
+or when the user presses login or logout.
+
+Automatic Login and Security
+
+All site, page and tool access by the end user through the portal is under
+security.  The "site.visit" ability is needed by the end user to access any
+part of the site.
+
+If the end user does not have this ability for the accessed site (or the
+site which holds the accessed page or tool), the user is not granted access
+to the site.
+
+If the user has not yet authenticated, the request is routed to the Login
+process.  After successful authentication, the initial URL is returned to.
+
+If the user is logged in, and does not have permission to visit the site,
+page or tool requested, or if the user just now logged in and still does
+not have permission, the user will see the !error site display or an
+internally generated error display.
+
+Public (non-authenticated user) access to a site can be granted by adding
+the "site.visit" permission to the site's ".anon" role in its realm.  This
+grants anyone the ability to visit the site, site pages, and tools.
+Specific data access within the tools must also be provided for (perhaps by
+granting other sort of abilities to the .anon role).
+
+Site Tab Preferences
+
+Charon introduces some user preferences to control the site tabs displayed
+for each user.  Site tabs are displayed in /site and /gallery modes.
+Preferences can be set to control:
+
+    - the number of tabs displayed
+
+    - which sites are left out of the tab display
+
+    - the order of tabs displayed
+
+These preferences are managed by the Sakai (legacy) Preferences Service.
+The Preferences service keeps sets of preferences for each end user.
+Preferences for the portal are keyed using the sakai.portal.sitenav key.
+The preferences names within the Preferences associated with this key are:
+
+    - tabs: the number of tabs (an integer) to display
+
+    - exclude: a list of site ids to exclude from the tabs display
+
+    - order: a list of site ides to order first and in this order in the
+      tabs display
+
+The number of tabs to display defaults to 4, but can be overridden by the
+presence of a tabs preference in the sakai.portal.sitenav preferences for
+the end user.  This is the number of tabs to show between "myWorkspace" and
+the more dropdown.  If there is just one more tab to show than this count,
+all tabs will be shown (instead of adding a "more" dropdown for just one
+entry).
+
+Any sites that the end user does not want to show up in the tabs display at
+all can be entered in a List type preferences value under the exclude name.
+ Note that this must be a real List type value in Preferences.  The list
+contains site ids. If the user has access to any sites in the exclude list,
+they will be left out of the site navigation tabs.
+
+The order List type value is another list of site ids.  Of those in the
+list that the end user has permission to visit, these will show first, and
+in the order of the order list, among the tabs and more dropdown list.  Any
+additional sites the end user can visit will be added after these, in
+alphabetical (by title) order.
+
+Tool (Page) presentation order
+
+Site pages are an ordered collection.  Usually, the pages are displayed in
+the page navigation sections of the portal in the order they are defined in
+the Site, first at the top to last at the bottom (or left to right,
+depending on the skin). The portal "Help" feature will always follow the
+last Site page.
+
+The Worksite Setup tool does not include user interface for controlling the
+page order in a site.  The Admin Site editor does.  In Worksite Setup,
+pages are created for each tool added to a site, and the pages are sorted
+in alpha order by page (tool) title.
+
+To enforce consistency across Sites in a Sakai installation, you can
+install tool ordering.  This will override the order of pages in a Site and
+display them in this fixed order.
+
+Tool ordering is a list of tool ids, for a specific tool category.  Site
+type selects the tool category both for the tool ordering, and for the list
+of tools to offer as candidates for the site.
+
+Tool ordering is optional.  It is defined by entering some XML in a file
+called toolOrder.xml located in sakai.home.  The name of this file is a
+configured into the ServerConfigurationService, and this service is
+responsible for reading the tool ordering and making it available to the
+portal.
+
+The file might look like this:
+
+<?xml version="1.0"?>
+
+<toolOrder>
+
+      <category name="course">
+
+            <tool id = "sakai.synoptic.chat" />
+            <tool id = "sakai.synoptic.discussion" />
+            <tool id = "sakai.synoptic.announcement" />
+            <tool id = "sakai.announcements" />
+            <tool id = "sakai.resources" />
+            <tool id = "sakai.discussion" />
+            <tool id = "sakai.assignment" />
+            <tool id = "sakai.dropbox" />
+            <tool id = "sakai.chat" />
+            <tool id = "sakai.mailbox" />
+            <tool id = "sakai.news" />
+            <tool id = "sakai.siteinfo" />
+
+      </category>
+
+      <category name="project">
+
+            <tool id = "sakai.synoptic.chat" />
+            <tool id = "sakai.synoptic.discussion" />
+            <tool id = "sakai.synoptic.announcement" />
+            <tool id = "sakai.schedule" />
+            <tool id = "sakai.resources" />
+            <tool id = "sakai.discussion" />
+            <tool id = "sakai.assignment" />
+            <tool id = "sakai.chat" />
+            <tool id = "sakai.mailbox" />
+            <tool id = "sakai.news" />
+            <tool id = "sakai.iframe" />
+            <tool id = "sakai.siteinfo" />
+
+      </category>
+
+</toolOrder>
+
+This example establishes an order for "course" and "project" type Sites.
+It does NOT declare that these tools are valid to use in the site type:
+that's handled in the tool registration with the tool category.
+
+Tool order is used to order the pages in a site, but a page might have many
+tools!  The rules are:
+
+    - If a page has a tool that is listed in the order, it will go in the
+      ordered location.
+
+    - If a page has more than one ordered tool, it will go in the earliest
+      location it can go in.
+
+    - If two pages have the same tool, they will both go in the ordered
+      location, in site order among them.
+
+    - If a page has no ordered tools, it will be placed after all ordered
+      pages at the end, in site order.
+
+In the example, the "synoptic" stuff at the top catches the "Home" page as
+created by Worksite Setup.
+
+Tool order is loaded by the ServerConfigurationService, figured out by the
+SiteService, and used by the Portal.
+
+Tool order is done dynamically at runtime, and is not currently used to
+change the order of pages stored in the Site.  If you change the ordering
+in the toolOrder.xml file, the change will be reflected at the next server
+restart for all sites of the appropriate type.
+

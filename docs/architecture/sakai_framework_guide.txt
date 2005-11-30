@@ -1,0 +1,249 @@
+
+
+                             The Sakai Framework
+
+                                A Quick Guide
+
+
+                               Glenn R. Golden
+                          Sakai Framework Architect
+                               March 23, 2005
+
+The Sakai Framework is organized into a few modules with many projects.
+This document describes this organization.
+
+kernel Module
+
+The kernel of the framework is in the module kernel in the sakai2 cvs.  It
+is composed of projects that support the following features:
+
+    - ID generation
+    - Current (ThreadLocal) Support
+    - Developer Logging
+    - Components
+    - Tools
+    - Sessions
+    - Request Conditioning
+
+The kernel also provides standard components implementing the kernel APIs.
+These are packaged into a components package by another kernel module
+project.
+
+ID Generation
+
+The kernel supports the UUID generation needs for Sakai.  This is done
+using the IdManager.  A standard component of the IdManager is provided
+that produces IEFT V4 UUIDs using the Apache Commons Id package.
+
+Projects:
+|Project Name  |Description                                         |
+|id            |Id API                                              |
+|id-component  |IETF UUID Version 4 Apache Commons Id based         |
+|              |implementation of the Id API                        |
+
+Artifacts:
+|Project Name      |Artifact Name        |Type  |Deployment         |
+|id                |sakai2-id            |jar   |shared             |
+|id-component      |sakai2-id-component  |jar   |kernel-components  |
+
+
+Current (Thread Local) Support
+
+The CurrentManager helps code access data bound to the current request
+processing thread, using a "thread local" like mechanism.  Data can be
+cached for the current request here.  APIs can support their "current"
+access (such as the SessionManager's getCurrentSession) by using the
+CurrentManager.
+
+The CurrentManager is supported by the RequestFilter, to assure that all
+values bound to the current request processing thread are cleaned up when
+the thread is complete.
+
+Projects:
+|Project Name            |Description                               |
+|current                 |Current API                               |
+|current-component       |Standard implementation of the Current API|
+
+Artifacts:
+|Project Name         |Artifact Name         |Type |Deployment      |
+|current              |sakai2-current        |jar  |shared          |
+|current-component    |sakai2-current-compone|jar  |kernel-component|
+|                     |nt                    |     |s               |
+
+
+
+Developer Logging
+
+Support for runtime message logging to capture normal and unusual and error
+programming conditions is provided by the LogManager.  The kernel also
+provisions the environment to support Apache Commons logging and Log4J
+logging.
+
+http://collab.sakaiproject.org/access/content/group/1097928811887-
+22636/Architecture Docs/Sakai 2/sakai_logging.pdf
+
+Projects:
+|Project Name          |Description                                 |
+|log                   |Log API                                     |
+|log-component         |Standard implementation of the Log API      |
+|log-configure         |Log4J configuration for Sakai               |
+
+Artifacts:
+|Project Name      |Artifact Name        |Type  |Deployment        |
+|log               |sakai2-log           |jar   |shared            |
+|log-component     |sakai2-log-component |jar   |kernel-components |
+|log-configure     |sakai2-log-configure |jar   |common            |
+
+
+
+Components
+
+Sakai supports API programming practices by providing a dynamic binding
+component loading, injection and discovery system.  The kernel also
+provisions the environment to support direct use of the SpringFramework's
+component management.
+
+http://collab.sakaiproject.org/access/content/group/1097928811887-
+22636/Architecture Docs/Sakai 2/sakai_component.pdf
+
+Projects:
+|Project Name       |Description                                    |
+|component          |Component API and implementation               |
+|components-loader  |Components Package loader utility, used by the |
+|                   |Component API implementation                   |
+
+Artifacts:
+|Project Name           |Artifact Name           |Type |Deployment  |
+|component              |sakai2-component        |jar  |shared      |
+|components-loader      |sakai2-components-loader|jar  |shared      |
+
+
+
+Tools
+
+Support for Sakai tools is provided in the kernel.  Tools are registered
+and invoked with kernel support.  Tools may be used by dispatchers,
+navigators, portals, and aggregators, and by other tools in a helper mode.
+
+The ActiveTool API and component support the invocation of Tools - this is
+dependent on the Servlet API.  The Tool API supports the registration and
+discovery of tools and tool configuration and other meta-data.  This is not
+dependent on the Servlet API.
+
+http://collab.sakaiproject.org/access/content/group/1097928811887-
+22636/Architecture Docs/Sakai 2/sakai_tool.pdf
+
+Projects:
+|Project Name              |Description                             |
+|tool                      |Tool API                                |
+|active-tool               |ActiveTool API                          |
+|tool-component            |Standard implementation of the Tool API |
+|active-tool-component     |Standard implementation of the          |
+|                          |ActiveTool API                          |
+|tool-registration         |Tool registration Servlet Context       |
+|                          |Listener                                |
+
+
+
+Artifacts:
+|Project Name            |Artifact Name          |Type|Deployment     |
+|tool                    |sakai2-tool            |jar |shared         |
+|active-tool             |sakai2-active-tool     |jar |shared         |
+|tool-component          |sakai2-tool-component  |jar |kernel-componen|
+|                        |                       |    |ts             |
+|active-tool-component   |sakai2-active-tool-comp|jar |kernel-componen|
+|                        |onent                  |    |ts             |
+|tool-registration       |sakai2-tool-registratio|jar |shared         |
+|                        |n                      |    |               |
+
+
+
+Session
+
+Sakai supports a Sakai-wide http-like Session, ToolSessions scoped for each
+tool placement, and a synthetic HttpSession.
+
+http://collab.sakaiproject.org/access/content/group/1097928811887-
+22636/Architecture Docs/Sakai 2/sakai_sessions.pdf
+
+Projects:
+|Project Name            |Description                               |
+|session                 |Session API                               |
+|session-component       |Standard implementation of the Session API|
+
+Artifacts:
+|Project Name          |Artifact Name         |Type |Deployment      |
+|session               |sakai2-session        |jar  |shared          |
+|session-component     |sakai2-session-compone|jar  |kernel-component|
+|                      |nt                    |     |s               |
+
+
+Request
+
+The kernel provides support to condition each http request in the form of a
+Servlet Filter that is used in front of all Sakai Servlet technology tool
+implementations.
+
+http://collab.sakaiproject.org/access/content/group/1097928811887-
+22636/Architecture Docs/Sakai 2/sakai_request.pdf
+
+Projects:
+|Project Name      |Description                                     |
+|request           |Request processing Servlet Filter utility       |
+
+Artifacts:
+|Project Name       |Artifact Name       |Type    |Deployment       |
+|request            |sakai2-request      |jar     |shared           |
+
+
+
+Standard Components
+
+The kernel provides standard implementations of the Kernel APIs and
+packages them into a components package.
+
+Projects:
+|Project Name           |Description                                |
+|kernel-components      |Components Package for the kernel          |
+|                       |components                                 |
+
+Artifacts:
+|Project Name         |Artifact Name         |Type |Deployment        |
+|kernel-components    |sakai2-kernel-componen|war  |components        |
+|                     |ts                    |     |packages          |
+
+
+
+jsf Module
+
+The integration support for JavaServer Faces (JSF) is provided by the
+projects in the module jsf in the sakai2 cvs.
+
+jsf Projects
+
+tbd.
+
+
+
+
+common Module
+
+The common APIs of the framework is in the module common in the sakai2 cvs.
+
+common Projects
+
+tbd.
+
+
+
+
+edu Module
+
+The common educational APIs of the framework is in the module edu in the
+sakai2 cvs.
+
+edu Projects
+
+tbd.
+
+

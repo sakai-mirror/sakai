@@ -1,0 +1,301 @@
+
+
+                   Sakai 1.5 -> 2.0.0 Database Conversion
+
+
+                               Glenn R. Golden
+                          Sakai Framework Architect
+                                June 16, 2005
+
+Converting existing Sakai 1.5 based installations to 2.0 is a simple
+process, but one that requires some local customization.  The conversion
+tasks fall into these categories:
+
+    - rename tables and sequences
+    - drop unused tables and sequences
+    - create new tables, sequences, indexes
+    - expand some field lengths
+    - update site definitions with new tool ids
+    - update site types
+    - update site skins
+    - optionally replace use myWorkspace definitions
+    - optionally replace the Gateway site
+
+All the conversion can be done with SQL commands against the database.
+
+The conversion to create new tables can also be done by starting an
+instance of Sakai, with auto-ddl enabled, using the otherwise converted
+database, and letting it auto-create and populate the new tables.  Once
+this is done, your DBA might want to move things around to different table
+spaces, etc.
+
+
+The alternate to running the auto-ddl is to manually find the .sql files
+that create and populate the new tables from the source code, let your DBA
+have at them, and run them manually.
+
+The local changes to the conversion process involve picking which optional
+parts to run, what you want to do about skins and user myWorkspaces, and
+any additional changes you want to make.
+
+The examples in this document have been written for and tested with Oracle.
+ MySQL syntax may be slightly different.
+
+The SQL command part of the conversion takes just a few minutes.
+
+The commands from this document are in the source code, but not in the
+released 2.0.0 source code.  You can find them here using a browser, svn
+client, or even webdav:
+
+https://source.sakaiproject.org/svn/trunk/sakai/docs/sakai_1_5-
+2_0_conversion.sql
+
+Table Renames
+
+
+This is pretty simple:
+
+alter table CHEF_EVENT rename to SAKAI_EVENT;
+alter table CHEF_DIGEST rename to SAKAI_DIGEST;
+alter table CHEF_NOTIFICATION rename to SAKAI_NOTIFICATION;
+alter table CHEF_PREFERENCES rename to SAKAI_PREFERENCES;
+alter table CHEF_PRESENCE rename to SAKAI_PRESENCE;
+alter table CHEF_SESSION rename to SAKAI_SESSION;
+alter table SYLLABUS_DATA_T rename to SAKAI_SYLLABUS_DATA;
+alter table SYLLABUS_T rename to SAKAI_SYLLABUS_ITEM;
+
+The last two (for the Syllabus app) will fail if you don't already run
+Syllabus.
+
+There's a sequence that we also need to rename:
+
+rename CHEF_EVENT_SEQ to SAKAI_EVENT_SEQ;
+
+
+Drop Unused Tables and Sequences
+
+
+There is one sequence we no longer use:
+
+drop sequence CHEF_ID_SEQ;
+
+
+Expanded Fields
+
+
+With our new UUID generator, the fields in the database that held ids need
+to be expanded to hold 36 characters:
+
+alter table ANNOUNCEMENT_MESSAGE modify MESSAGE_ID VARCHAR2(36);
+alter table CALENDAR_EVENT modify EVENT_ID VARCHAR2(36);
+alter table CHAT_MESSAGE modify MESSAGE_ID VARCHAR2(36);
+alter table DISCUSSION_MESSAGE modify MESSAGE_ID VARCHAR2(36);
+alter table DISCUSSION_MESSAGE modify REPLY VARCHAR2(36);
+alter table MAILARCHIVE_MESSAGE modify MESSAGE_ID VARCHAR2(36);
+alter table SAKAI_EVENT modify SESSION_ID VARCHAR2(36);
+alter table SAKAI_PRESENCE modify SESSION_ID VARCHAR2(36);
+alter table SAKAI_SESSION modify SESSION_ID VARCHAR2(36);
+alter table SAKAI_LOCKS modify USAGE_SESSION_ID VARCHAR2(36);
+
+
+Tool Id Changes
+
+
+Tool ids were changes to be consistent.  These are what are stored in Site
+definitions, so we must update the sites:
+
+update SAKAI_SITE_TOOL
+set REGISTRATION=concat('sakai', substr(REGISTRATION,5)) where
+UPPER(substr(REGISTRATION,1,4)) = 'CHEF';
+update SAKAI_SITE_TOOL set REGISTRATION='sakai.preferences' where
+REGISTRATION='sakai.noti.prefs';
+update SAKAI_SITE_TOOL set REGISTRATION='sakai.online' where
+REGISTRATION='sakai.presence';
+update SAKAI_SITE_TOOL set REGISTRATION='sakai.siteinfo' where
+REGISTRATION='sakai.siteinfogeneric';
+update SAKAI_SITE_TOOL set REGISTRATION='sakai.sitesetup' where
+REGISTRATION='sakai.sitesetupgeneric';
+update SAKAI_SITE_TOOL set REGISTRATION='sakai.discussion' where
+REGISTRATION='sakai.threadeddiscussion';
+
+If you have been using the University of Michigan GradTools, you need to do
+this, also:
+
+update SAKAI_SITE_TOOL set REGISTRATION='ctools.dissertation' where
+REGISTRATION='sakai.dissertation';
+update SAKAI_SITE_TOOL set REGISTRATION='ctools.dissertation.upload' where
+REGISTRATION='sakai.dissertation.upload';
+update SAKAI_SITE_TOOL set REGISTRATION='ctools.gradToolsHelp' where
+REGISTRATION='sakai.gradToolsHelp';
+
+
+Site Types
+
+
+There may be old site types in your data.  This will update them:
+
+update sakai_site set type='project' where type='CTNG-project';
+update sakai_site set type='course' where type='CTNG-course';
+
+
+[OPTIONAL] Site Skins
+
+
+The skin model has changed in Sakai 2.  Sites with skin settings that don't
+exist in your system will look very strange until you fix their skin.  You
+might want to clear out all skins, reverting all sites to the default skin.
+
+update SAKAI_SITE set SKIN=null;
+
+At the University of Michigan, we ran code that detected the presence of
+the old skin scheme, and updated the skin and the site icon to match the
+new skin scheme.  Here's an example:
+
+update SAKAI_SITE set SKIN=null, ICON_URL='/ctlib/icon/art.gif' where
+skin='art.css';
+update SAKAI_SITE set SKIN=null, ICON_URL='/ctlib/icon/bus.gif' where
+skin='bus.css';
+update SAKAI_SITE set SKIN=null where skin='chef.css';
+
+For the fist two, we detect the old skin name, and clear the skin but set
+an icon.  In the third case, we just clear that skin, as that is not used
+any more in our system.
+
+You need to design the SQL commands to modify your site definitions to
+update your skins.
+
+[OPTIONAL] User MyWorkspace Definitions
+
+
+There are new features, such as Profile, that are available in Sakai that
+you might want to add to your user's MyWorkspace sites.
+
+One way to do this is to modify the template that is used to create new
+MyWorkspace sites, and then delete all the existing site definitions.  When
+your users log in, they will get a newly created MyWorkspace.
+
+Deleting the sites can be accomplished with this:
+
+delete from sakai_site_user where site_id like '~%' and site_id !=
+'~admin';
+delete from sakai_site_tool_property where site_id like '~%' and site_id !=
+'~admin';
+delete from sakai_site_tool where site_id like '~%' and site_id !=
+'~admin';
+delete from sakai_site_page where site_id like '~%' and site_id !=
+'~admin';
+delete from sakai_site where site_id like '~%' and site_id != '~admin';
+
+This removes all user sites (sites starting with "~") except the admin
+site, from all site related tables.
+
+Any data they might have in their workspace (such as in schedule or
+resources) will be preserved, but modifications they may have made to their
+site structure will be lost.
+
+Another option is to do nothing, and let the users modify their sites to
+pick up new features as they wish.
+
+A third option is to craft SQL that inserts site pages and site tools into
+the sites.  This should be possible, and is an exercise left to the brave.
+
+
+[OPTIONAL] Replace The Gateway Site
+
+
+You can use this code to install the newly distributed Gateway site.  You
+can also modify the Gateway site ("!gateway") using the normal tools in
+Sakai (admin site editor, options from the site itself).  Or, if you are
+happy with your Gateway site, you can leave it alone!
+
+delete from sakai_site_user where site_id = '!gateway';
+delete from sakai_site_tool_property where site_id = '!gateway';
+delete from sakai_site_tool where site_id = '!gateway';
+delete from sakai_site_page where site_id = '!gateway';
+delete from sakai_site where site_id like '!gateway';
+INSERT INTO SAKAI_SITE VALUES('!gateway', 'Gateway', null, null, 'The
+Gateway Site', null, null, null, 1, 0, 0, '', null, null, null, null, 1, 0
+);
+UPDATE SAKAI_SITE SET MODIFIEDBY='admin' WHERE SITE_ID = '!gateway';
+UPDATE SAKAI_SITE SET
+MODIFIEDON=TO_TIMESTAMP('20031126034522061','YYYYMMDDHHMISSFF3') WHERE
+SITE_ID = '!gateway';
+INSERT INTO SAKAI_SITE_PAGE VALUES('!gateway-100', '!gateway', 'Welcome',
+'0', 1 );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-110', '!gateway-100',
+'!gateway', 'sakai.motd', 1, 'Message of the day', NULL );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-120', '!gateway-100',
+'!gateway', 'sakai.iframe', 2, 'Welcome!', NULL );
+INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!gateway', '!gateway-120',
+'special', 'site' );
+INSERT INTO SAKAI_SITE_PAGE VALUES('!gateway-200', '!gateway', 'About',
+'0', 2 );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-210', '!gateway-200',
+'!gateway', 'sakai.iframe', 1, 'About', NULL );
+INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!gateway', '!gateway-210',
+'height', '500px' );
+INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!gateway', '!gateway-210',
+'source', '/library/content/gateway/about.html' );
+INSERT INTO SAKAI_SITE_PAGE VALUES('!gateway-300', '!gateway', 'Features',
+'0', 3 );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-310', '!gateway-300',
+'!gateway', 'sakai.iframe', 1, 'Features', NULL );
+INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!gateway', '!gateway-310',
+'height', '500px' );
+INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!gateway', '!gateway-310',
+'source', '/library/content/gateway/features.html' );
+INSERT INTO SAKAI_SITE_PAGE VALUES('!gateway-400', '!gateway', 'Sites',
+'0', 4 );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-410', '!gateway-400',
+'!gateway', 'sakai.sitebrowser', 1, 'Sites', NULL );
+INSERT INTO SAKAI_SITE_PAGE VALUES('!gateway-500', '!gateway', 'Training',
+'0', 5 );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-510', '!gateway-500',
+'!gateway', 'sakai.iframe', 1, 'Training', NULL );
+INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!gateway', '!gateway-510',
+'height', '500px' );
+INSERT INTO SAKAI_SITE_TOOL_PROPERTY VALUES('!gateway', '!gateway-510',
+'source', '/library/content/gateway/training.html' );
+INSERT INTO SAKAI_SITE_PAGE VALUES('!gateway-600', '!gateway', 'New
+Account', '0', 6 );
+INSERT INTO SAKAI_SITE_TOOL VALUES('!gateway-610', '!gateway-600',
+'!gateway', 'sakai.createuser', 1, 'New Account', NULL );
+
+
+Getting new Table Created and Populated
+
+
+Once your database is converted with the steps you have selected and
+customized so far, you still need to have the new Sakai applications'
+database tables created and populated.
+
+The easiest way to do this is to run an instance of Sakai with auto-ddl
+turned on.  The auto-ddl feature is by default turned on, and can be
+controlled in your placeholder,properties file.
+
+The auto-ddl feature will recognize that most of the tables you need are
+already defined, and leave them alone.  But for the new applications,
+Samigo, Gradebook, Profile, etc, tables will be created and seed data will
+be inserted.
+
+Once the Sakai instance starts up, you can shut it down and let your DBA
+study your resulting database.  She might want to move things into
+different tablespaces, and do other things that we pay them the big bucks
+to take care of.
+
+If, on the other hand, said DBA wants to modify the SQL command before
+running them, then you need to harvest the auto-ddl scripts from the source
+code.  They can be found with a little digging.
+
+Each application has some source code project that has a src/sql folder.
+In there you will find a folder for each database technology (hsqldb,
+mysql, oracle).  And in there you will find the .sql file to create and
+populate the tables for that application.
+
+For example, for the Syllabus application, the Oracle file is found:
+
+sakai-src/syllabus/syllabus-app/src/sql/oracle/sakai_syllabus.sql
+
+Find the sql files for the applications new to your Sakai, get them
+modified, and run them.
+
