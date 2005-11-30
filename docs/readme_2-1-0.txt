@@ -75,7 +75,7 @@ The Demo and Binary installs described above offer much-abbreviated processes, b
    3. Perform appropriate Post-Installation Configuration of the application.
    4. Carry out the steps for Database Configuration.
 
-The Demo and Binary Installations can freely skip most of these phases, with exceptions noted above. To view detailed breakdowns of these phases please refer to the Installation Guide online at http://cvs.sakaiproject.org/release/2.1.0/InstallGuide.html (or in docs/releaseweb/InstallGuide.html in the source archive or on subversion).
+The Demo and Binary Installations can freely skip most of these phases, with exceptions noted above. To view detailed breakdowns of these phases please refer to docs/install/readme_source.txt (or the Installation Guide online at http://cvs.sakaiproject.org/release/2.1.0/InstallGuide.html).
 
 
 2. SAKAI DOCUMENTATION
