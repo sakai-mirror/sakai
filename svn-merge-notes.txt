@@ -1,13 +1,6 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
-r4236 | jimeng@umich.edu | 2005-11-29 15:15:57 -0500 (Tue, 29 Nov 2005) | 5 lines
-
-fixing eclipse setup for osid project.
-organizing imports for osid project.
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
 r4211 | zqingru@stanford.edu | 2005-11-28 18:31:35 -0500 (Mon, 28 Nov 2005) | 1 line
 
 SAK-2942
