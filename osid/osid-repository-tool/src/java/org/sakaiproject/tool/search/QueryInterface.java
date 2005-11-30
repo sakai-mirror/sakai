@@ -19,16 +19,10 @@
 **********************************************************************************/
 package org.sakaiproject.tool.search;
 
-import org.sakaiproject.tool.net.HttpTransaction;
-import org.sakaiproject.tool.OSIDRepository.*;
-import org.sakaiproject.tool.util.*;
+import java.util.Map;
 
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.sakaiproject.tool.OSIDRepository.SessionContext;
+import org.sakaiproject.tool.util.HttpTransactionUtils;
 
 public interface QueryInterface {
 	/**

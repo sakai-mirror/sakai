@@ -19,18 +19,14 @@
 **********************************************************************************/
 package org.sakaiproject.tool.search;
 
-import org.sakaiproject.tool.OSIDRepository.*;
-import org.sakaiproject.tool.util.*;
+import java.util.Iterator;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javax.xml.parsers.*;
-
-import org.w3c.dom.*;
-import org.w3c.dom.html.*;
-import org.xml.sax.*;
+import org.sakaiproject.tool.OSIDRepository.SearchSource;
+import org.sakaiproject.tool.util.DomUtils;
+import org.sakaiproject.tool.util.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.html.HTMLDocument;
 
 /**
  * Result rendering - base class and helpers

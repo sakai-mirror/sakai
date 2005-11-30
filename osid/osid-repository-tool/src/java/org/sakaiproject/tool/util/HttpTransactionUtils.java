@@ -19,12 +19,13 @@
 **********************************************************************************/
 package org.sakaiproject.tool.util;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * HTTP utilites

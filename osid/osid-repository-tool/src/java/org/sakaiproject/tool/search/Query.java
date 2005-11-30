@@ -19,18 +19,7 @@
 **********************************************************************************/
 package org.sakaiproject.tool.search;
 
-import org.sakaiproject.tool.net.*;
-import org.sakaiproject.tool.search.*;
-import org.sakaiproject.tool.util.*;
-
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javax.xml.parsers.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import java.net.URLEncoder;
 /**
  * Send a simple query to the NYPL Digital Gallery
  */

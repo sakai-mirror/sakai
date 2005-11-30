@@ -19,13 +19,9 @@
 **********************************************************************************/
 package org.sakaiproject.tool.search;
 
-import org.sakaiproject.tool.util.*;
+import java.util.Iterator;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
 
 /**
  * Render results for the New York Public Library Digital Gallery

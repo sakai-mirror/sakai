@@ -19,21 +19,20 @@
 **********************************************************************************/
 package org.sakaiproject.tool.OSIDRepository;
 
-import org.sakaiproject.tool.net.*;
-import org.sakaiproject.tool.search.*;
-import org.sakaiproject.tool.util.*;
+import java.io.InputStream;
+import java.net.Authenticator;
+import java.util.NoSuchElementException;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.text.*;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 
-import javax.net.ssl.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.sakaiproject.tool.net.HttpAuthenticator;
+import org.sakaiproject.tool.util.DomUtils;
+import org.sakaiproject.tool.util.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Set up server side authentication handlers.  These handle server-side

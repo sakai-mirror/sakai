@@ -19,9 +19,9 @@
 **********************************************************************************/
 package org.sakaiproject.tool.util;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Parameter (name=value pair) manipulation.  In particular, this utility

@@ -17,8 +17,8 @@
 
 		<dependency>
 			<groupId>servletapi</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.4-20040521</version>
+			<artifactId>servletapi</artifactId>
+			<version>2.4</version>
 		</dependency>
 
 		<dependency>
@@ -32,7 +32,19 @@
 			<artifactId>sakai-session</artifactId>
 			<version>${sakai.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.6.2</version>
+		</dependency>
 		
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xmlParserAPIs</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+
 		<!-- to be able to access the Sakai component manager -->
 		<dependency>
 			<groupId>sakaiproject</groupId>

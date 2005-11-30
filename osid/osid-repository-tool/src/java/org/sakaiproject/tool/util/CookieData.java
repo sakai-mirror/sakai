@@ -19,9 +19,7 @@
 **********************************************************************************/
 package org.sakaiproject.tool.util;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.net.URL;
 
 /**
  * Represent a single cookie

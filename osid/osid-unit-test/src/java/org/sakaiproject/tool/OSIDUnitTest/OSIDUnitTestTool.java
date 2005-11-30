@@ -31,13 +31,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Set;
-import java.util.Iterator;
-
-import org.sakaiproject.api.kernel.session.Session;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 /**
  * A set of unit tests to print out information for the Sakai OSID implementations.

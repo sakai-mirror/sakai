@@ -19,16 +19,25 @@
 **********************************************************************************/
 package org.sakaiproject.tool.net;
 
-import org.sakaiproject.tool.util.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Iterator;
+import java.util.List;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javax.xml.parsers.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.sakaiproject.tool.util.CaseBlindHashMap;
+import org.sakaiproject.tool.util.CookieData;
+import org.sakaiproject.tool.util.CookieUtils;
+import org.sakaiproject.tool.util.DomException;
+import org.sakaiproject.tool.util.HttpTransactionUtils;
+import org.sakaiproject.tool.util.ParameterMap;
 
 /**
  * Handle HTTP based search operations.  Send (POST or GET) a query to the

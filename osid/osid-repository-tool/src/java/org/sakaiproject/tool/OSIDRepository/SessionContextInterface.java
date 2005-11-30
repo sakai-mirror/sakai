@@ -19,11 +19,7 @@
 **********************************************************************************/
 package org.sakaiproject.tool.OSIDRepository;
 
-import org.sakaiproject.tool.util.*;
-
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpSession;
 
 
 public interface SessionContextInterface {

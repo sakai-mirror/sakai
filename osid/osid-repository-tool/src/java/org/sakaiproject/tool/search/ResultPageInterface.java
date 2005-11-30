@@ -19,9 +19,7 @@
 **********************************************************************************/
 package org.sakaiproject.tool.search;
 
-import org.w3c.dom.*;
-import org.w3c.dom.html.*;
-import org.xml.sax.*;
+import org.w3c.dom.Element;
 
 /**
  * Interface for HTML result rendering
