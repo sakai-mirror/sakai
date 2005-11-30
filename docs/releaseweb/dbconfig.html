@@ -78,11 +78,8 @@ sakai.properties file</a> </li>
 <ul class="toc">
   <li><a href="dbconfig.html#deployd">5.1 Deploy drivers</a> </li>
   <li><a href="dbconfig.html#create">5.2 Create Sakai database and user</a> </li>
-  <li><a href="dbconfig.html#placeholder">5.3 The placeholder.properties file</a> </li>
-  <li><a href="dbconfig.html#sproperties">5.4 sakai.properties <br />
-    database properties</a> </li>
-  <li><a href="dbconfig.html#dbconfig">5.5 Special database configuration</a>
-</li>
+  <li><a href="dbconfig.html#sproperties">5.3 Database Properties</a> </li>
+  <li><a href="dbconfig.html#dbconfig">5.4 Upgrade Scripts</a></li>
 </ul>
 </li>
 <li>
@@ -144,32 +141,25 @@ Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
 mysql&gt; create database sakai default character set utf8;
 Query OK, 1 row affected (0.00 sec)
 
-mysql&gt; grant all on sakai.* to sakaiuser@'localhost' identified by 'sakaipassword';<br>Query OK, 0 rows affected (0.00 sec
+mysql&gt; grant all on sakai.* to sakaiuser@'localhost' identified by 'password';<br>Query OK, 0 rows affected (0.00 sec
 
-mysql&gt; grant all on sakai.* to sakaiuser@'127.0.0.1' identified by 'sakaipassword';<br>Query OK, 0 rows affected (0.00 sec)
+mysql&gt; grant all on sakai.* to sakaiuser@'127.0.0.1' identified by 'password';<br>Query OK, 0 rows affected (0.00 sec)
 
 mysql&gt; quit </span></pre>
 
-    <a name="placeholder"></a>
-
-    <p><h2>5.3 The placeholder.properties File</h2></p>
-    <br/>The placeholder properties
-are all related to&nbsp;database technology and behavior, and as
-with the sakai.properties file, placeholder.properties belongs in the
-$CATALINA_HOME/sakai directory. These placeholder properties must be
-set properly for the database you are using.&nbsp;See the sample
-placeholder.properties file in the&nbsp;source code:</p>
-    <pre><span class="code">kernel/component/src/config/org/sakaiproject/config/placeholder.properties<br></span></pre>
-    <p>To select MySQL as your
-database technology the placeholder.properties must include:</p>
-    <pre><span class="code">hibernate.dialect=net.sf.hibernate.dialect.MySQLDialect<br>auto.ddl=true</span></pre>
-    <p>To select Oracle as your
-database technology the placeholder.properties must include:</p>
-    <pre><span class="code">hibernate.dialect=net.sf.hibernate.dialect.Oracle9Dialect<br>auto.ddl=true</span></pre>
-
     <a name="sproperties"></a>
 
-    <p><h2>5.4 sakai.properties Database Properties</h2></p>
+    <p><h2>5.3 Database Properties</h2></p>
+<table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
+	             <tbody>
+	               <tr>
+	                 <th>Significant Change to DB configuration</th>
+	               </tr>
+	               <tr>
+	                 <td class="white">The process of setting database properties has changed significantly from previous versions of Sakai.  Specifically, the placeholder.properties file in its entirety has been deprecated, and all configuration settings are now made in sakai.properties.</td>
+	               </tr>
+	             </tbody>
+    </table>
     <br/>There are settings in
 sakai.properties that also define the database technology and
 connection information. Appropriate sakai.properties settings for
@@ -178,21 +168,47 @@ will of course need to be altered appropriately for your installation):</p>
     <ul>
       <li>
         <strong>Oracle:</strong>
-<pre>defaultTransactionIsolationString@javax.sql.BaseDataSource=TRANSACTION_READ_COMMITTED<br>vendor@org.sakaiproject.service.framework.sql.SqlService=oracle<br>driverClassName@javax.sql.BaseDataSource=oracle.jdbc.driver.OracleDriver<br>url@javax.sql.BaseDataSource=jdbc:oracle:thin:@your.oracle.dns:1521:SID<br>username@javax.sql.BaseDataSource=[database user name]<br>password@javax.sql.BaseDataSource=[password]<br>validationQuery@javax.sql.BaseDataSource=select 1 from DUAL</pre>
+<pre>vendor@org.sakaiproject.service.framework.sql.SqlService=oracle<br>driverClassName@javax.sql.BaseDataSource=oracle.jdbc.driver.OracleDriver<br>url@javax.sql.BaseDataSource=jdbc:oracle:thin:@your.oracle.dns:1521:SID<br>username@javax.sql.BaseDataSource=[database user name]<br>password@javax.sql.BaseDataSource=[password]<br>hibernate.dialect=net.sf.hibernate.dialect.Oracle9Dialect<br>auto.ddl=true<br>validationQuery@javax.sql.BaseDataSource=select 1 from DUAL<br>defaultTransactionIsolationString@javax.sql.BaseDataSource=TRANSACTION_READ_COMMITTED</pre>
       </li>
+      <table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
+	  	             <tbody>
+	  	               <tr>
+	  	                 <th>Oracle performance</th>
+	  	               </tr>
+	  	               <tr>
+	  	                 <td class="white">Oracle may have performance problems with some of the SQL settings
+that work for HSQL and perhaps even for MySQL. By default, Oracle
+should be set to the proper settings automatically; setting it with each
+use may affect performace. In addition, validating the connection on
+each transaction caused problems in at least one large production
+environment (University of Michigan). Sakai installations using
+Oracle should strongly consider the following settings in
+sakai.properties to avoid these problems:
+
+<pre># For improved Oracle performance (from the University of Michigan)
+validationQuery@javax.sql.BaseDataSource=
+defaultTransactionIsolationString@javax.sql.BaseDataSource=
+testOnBorrow@javax.sql.BaseDataSource=false</pre>
+
+This unsets the first two values and overrides the settings that are
+in the base (kernel) sakai.properties file.</td>
+	  	               </tr>
+	  	             </tbody>
+    </table>
       <li>
         <strong>MySQL:</strong>
-<pre>defaultTransactionIsolationString@javax.sql.BaseDataSource=TRANSACTION_READ_COMMITTED<br>vendor@org.sakaiproject.service.framework.sql.SqlService=mysql<br>driverClassName@javax.sql.BaseDataSource=com.mysql.jdbc.Driver<br>url@javax.sql.BaseDataSource=jdbc:mysql://127.0.0.1:3306/sakai?useUnicode=true&amp;characterEncoding=UTF-8<br>username@javax.sql.BaseDataSource=[database user name]<br>password@javax.sql.BaseDataSource=[password]<br>validationQuery@javax.sql.BaseDataSource=select 1 from DUAL</pre>
+<pre>vendor@org.sakaiproject.service.framework.sql.SqlService=mysql<br>driverClassName@javax.sql.BaseDataSource=com.mysql.jdbc.Driver<br>url@javax.sql.BaseDataSource=jdbc:mysql://127.0.0.1:3306/sakai?useUnicode=true&amp;characterEncoding=UTF-8<br>username@javax.sql.BaseDataSource=[database user name]<br>password@javax.sql.BaseDataSource=[password]<br>hibernate.dialect=net.sf.hibernate.dialect.MySQLDialect<br>auto.ddl=true<br>validationQuery@javax.sql.BaseDataSource=select 1 from DUAL<br>defaultTransactionIsolationString@javax.sql.BaseDataSource=TRANSACTION_READ_COMMITTED</pre>
       </li>
     </ul>
 
     <a name="dbconfig"></a>
 
-    <p><h2>5.5 Upgrade Scripts</h2></p>
-    <p>If you have been running version 2.0 of Sakai, you may need to apply an upgrade script to your database for the gradebook tool. A new column was added to the GB_GRADABLE_OBJECT_T table to support "Not Counted" assignments.  For existing installations, the following script may be used to update the table:
-
-<pre><span class="code">gradebook/component/src/sql/*/sakai_gradebook_2.0.1_to_2.1.sql</span</pre>
-
+    <p><h2>5.4 Upgrade Scripts</h2></p>
+    <p>If you have been running version 2.0 of Sakai, you will need to apply a SQL script to convert your database appropriately.  These scripts are found in <em>docs/updating</em> of the release (or on subversion), in versions for both MySQL and Oracle, respectively:
+    <ul>
+    <li>sakai_2_0-2_1_mysql_conversion.sql</li>
+    <li>sakai_2_0-2_1_oracle_conversion.sql</li>
+    </ul>
 </p>
 
 <!--END CONTENT-->
