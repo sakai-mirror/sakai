@@ -1,288 +1,164 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
+
 <head>
-  <meta content="text/html; charset=ISO-8859-1"
- http-equiv="content-type">
-  <title>Important Issues</title>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Important Issues</title>
 </head>
+
 <body>
-<h3 style="text-align: center;">Important
-Issues
-</h3>
-<p>
-</p>
-<p>This is not a complete list of
-all known issues (for that, see the
-Open Issues page), but rather a grouping of the issues considered to be
-of greatest concern, and the detailing of any known workarounds.</p>
-<br>
-<br>
-<h3>Table of Contents</h3>
-<ol>
-  <a href="#upgrade">Upgrade
-Issues</a> <li>Schema
-update for Tests&amp;Quizzes (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1321">SAK-1321</a>)</li>
-  <li>CSS changes that may affect
-skins (<a href="http://bugs.sakaiproject.org/jira/browse/SAK-1417">SAK-1417</a>)</li>
-  <li>Samigo upgrade patch for
-MySQL (<a href="http://bugs.sakaiproject.org/jira/browse/SAK-1356">SAK-1356</a>)</li>
-  <li>1.5 to 2.0 conversion
-script&nbsp;(<a href="http://bugs.sakaiproject.org/jira/browse/SAK-1623">SAK-1623</a>)</li>
-</ol>
-<ol>
-  <a href="#logs">System
-Administration Issues</a> <li>DB
-tables grow without bound (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1533">SAK-1533</a>)</li>
-  <li>Tomcat does not shut down
-cleanly (<a href="http://bugs.sakaiproject.org/jira/browse/SAK-1708">SAK-1708</a>)</li>
-</ol>
-<ol>
-  <a href="#debugging">Functionality
-Issues</a> <li>WebDAV
-on the Mac (<a href="http://bugs.sakaiproject.org/jira/browse/SAK-1306">SAK-1306</a>)</li>
-  <li>Special characters in
-uploaded files prevents deletion (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-940">SAK-940</a>)</li>
-  <li>Confusing "Import File" link
-after site creation (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1263">SAK-1263</a>)</li>
-  <li>Tests&amp;Quizzes
-default template does not allow edit of all possible settings (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1659">SAK-1659</a>)</li>
-  <li>MySQL UTF-8 encoding bug - breaks international characters (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1737">SAK-1737</a>)</li>
-</ol>
-<br>
-<!-- Guide Contents -->
-<h3><a name="upgrade"></a>Upgrade
-Issues</h3>
-<ol>
-  <li>
-    <p style="font-weight: bold;">Schema
-update for Tests&amp;Quizzes&nbsp;(<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1321">SAK-1321</a>)</p>
-    <p>If you're running Oracle or
-are upgrading from a previous Sakai version
-you should check the datatype of the
-"MEDIA" column in the SAM_MEDIA_T
-table. </p>
-    <p>The correct types for each
-database are:</p>
-    <ul>
-      <li>HSQLDB --&gt;
-varbinary</li>
-      <li>Oracle --&gt; blob</li>
-      <li>MySQL --&gt; longblob</li>
-    </ul>
-    <p>If you need to change this
-type
-for your database, this will
-also
-involve finding the primary key
-constraint, dropping it and then
-recreating it. Contact your local DBA for further information on making
-this
-change.</p>
-    <p>Below is some sample Oracle
-SQLplus output to better illustrate (SYS_C0064435 is the example
-constraint; replace it with yours): </p>
-    <table border="1" cellpadding="2" cellspacing="2">
-      <tbody>
-        <tr>
-          <td>
-          <pre>SQL&gt; alter table SAM_MEDIA_T modify MEDIA BLOB;<br><br>Table altered.<br><br>SQL&gt; select constraint_name from user_constraints where table_name='SAM_MEDIA_T' and CONSTRAINT_TYPE='P';<br><br>CONSTRAINT_NAME<br>------------------------------<br>SYS_C0064435<br><br>SQL&gt; alter table sam_media_t drop constraint SYS_C0064435;<br><br>Table altered.<br><br>SQL&gt; alter table SAM_MEDIA_T add constraint SYS_C0064435 primary key (MEDIAID);<br><br>Table altered.<br><br>SQL&gt; desc SAM_MEDIA_T;<br><br>[table with BLOB type]<br><br>SQL&gt; select constraint_name from user_constraints where table_name='SAM_MEDIA_T' and CONSTRAINT_TYPE='P';<br><br>CONSTRAINT_NAME<br>------------------------------<br>SYS_C0064435<br><br>SQL&gt; commit;<br><br>Commit complete.</pre>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <br>
-  </li>
-  <li>
-    <p style="font-weight: bold;">CSS
-changes that may affect skins (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1417">SAK-1417</a>)&nbsp;</p>
-    <p>The accessibility work for
-2.0.1 included some changes to the portal.css and tool.css files: </p>
-    <ul>
-      <li>&lt;h1&gt;
-were added to the portal before the following blocks: a) the site tabs,
-b) the tools, c) the content.</li>
-      <li> The tool titles inside
-the tool title iframe are now bracketed by &lt;h2&gt; </li>
-    </ul>
-    <p>Both these changes were
-needed to make the portal easier to navigate with a screen reader. The
-default rendering of the h
-headers, whowever, would interfere with the sighted readers experience,
-so this issue was dealt with in the CSS, namely by:</p>
-    <ol>
-      <li> adding a class to the
-portal.css to render the
-&lt;h1&gt;
-off-screen (the &lt;h1&gt; are classed "skip"):
-        <pre>.skip {<br>position:absolute; top:-999px;<br>left:-999px; height:0;width:0<br>}</pre>
-        <p>The use of this
-selector in the portal also "hides" all the "jumpto" and "skipto" links
-and targets that have been added.</p>
-      </li>
-      <li>
-        <p>addressing the
-&lt;h2&gt; in the tool titles
-contextually in the tool.css: </p>
-        <pre>.toolTitle td.title h2{<br>font: normal bold 12px Arial, sans-serif;<br>margin:0;<br>padding:0;<br>display:inline<br>}</pre>
-Your own needs may dictate a different font, etc - the important thing
-is to override the default rendering of &lt;h2&gt;, and the
-padding and margin
-and "inline" definition are important in this regard. </li>
-    </ol>
-  </li>
-  <li>
-    <p style="font-weight: bold;">Samigo
-upgrade patch for MySQL (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1356">SAK-1356</a>)&nbsp;</p>
-There is a Samigo patch for 2.0.0 databases that you should be aware
-of if you're not using a newly constituted 2.0.1 database. &nbsp;This
-patch
-is available within the Jira item that describes it (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1356">http://bugs.sakaiproject.org/jira/browse/SAK-1356</a>).
-&nbsp;If you have an existing
-MySQL instance that you installed for sakai 2.0.0,
-please run the following script to update your existing tables.
-    <pre>&gt; mysql -u username -p schemaname &lt; $HOME/sakai-src/sam/src/mysql/samigo-2.0.0.patch1.sql --force</pre>
-    <p>This will change the
-column type of date columns to 'datetime'. &nbsp;Again, you should not
-run this script on a 2.0.1 (or otherwise patched) database.</p>
-  </li>
-  <li>
-    <p style="font-weight: bold;">1.5
-to 2.0 DB conversion script (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1623">SAK-1623</a>)&nbsp;</p>
-    <p>A script included with the
-source release will need to be run on
-a Sakai 1.5 DB to perform the schema alterations necessary for Sakai
-2.0. You can find both Oracle and MySQL versions of this script in
-subversion (<a
- href="https://source.sakaiproject.org/svn/trunk/sakai/docs/">https://source.sakaiproject.org/svn/trunk/sakai/docs/</a>).</p>
-  </li>
-</ol>
-<br>
-<h3><a name="logs"></a>System
-Administration Issues</h3>
-<ol>
-  <li>
-    <p style="font-weight: bold;">DB
-tables grow without bound&nbsp;(<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1533">SAK-1533</a>)</p>
-    <p>Two tables - SAKAI_EVENT
-and SAKAI_SESSION - will grow at a rapid rate and without bound.
-&nbsp;The workaround for 2.0.1 is to have these tables periodically
-cleaned out
-by a DBA or a cron job. &nbsp;Below are sample SQL scripts for
-doing this in Oracle. &nbsp;They may be easily altered
-appropriately for MySQL. &nbsp;Consult your local DBA. </p>
-    <ul>
-      <li>
-        <p>SQL Statements to
-monitor and clean up SAKAI_SESSION:</p>
-        <pre>-- find all sessions still open from closed servers<br>select session_server, session_id, session_user, session_ip, to_char(session_start,'YYYY-MM-DD HH24:MI:SS')<br>from SAKAI_SESSION where SESSION_START = SESSION_END<br>and SESSION_SERVER not in<br>(select SERVER_ID from SAKAI_CLUSTER);</pre>
-        <pre>-- find all open sessions more than 1 day old<br>select session_server, session_id, session_user, session_ip, to_char(session_start,'YYYY-MM-DD HH24:MI:SS')<br>from SAKAI_SESSION where SESSION_START = SESSION_END<br>and (CURRENT_TIMESTAMP - SESSION_START) &gt;= interval '1' day(1);</pre>
-        <pre>-- and close them<br>update SAKAI_SESSION set SESSION_END = CURRENT_TIMESTAMP<br>where SESSION_START = SESSION_END<br>and (CURRENT_TIMESTAMP - SESSION_START) &gt;= interval '1' day(1);</pre>
-        <pre>-- find all the presence records still around from closed sessions<br>select * from SAKAI_PRESENCE where SESSION_ID not in<br>(select SESSION_ID from SAKAI_SESSION where SESSION_START = SESSION_END);</pre>
-        <pre>-- delete all the presence records still around from closed sessions<br>delete from SAKAI_PRESENCE where SESSION_ID not in<br>(select SESSION_ID from SAKAI_SESSION where SESSION_START = SESSION_END);</pre>
-      </li>
-      <li>
-        <p>SQL statement to delete
-entries older than 24 hours from SAKAI_EVENT:</p>
-        <pre>DELETE FROM SAKAI_EVENT WHERE (CURRENT_TIMESTAMP - EVENT_DATE) &gt;= interval '1' day(1)</pre>
-      </li>
-    </ul>
-  </li>
-  <li><span style="font-weight: bold;">Tomcat does not shut down
-cleanly&nbsp;</span>(<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1708">SAK-1708</a>)
-    <p>If you're running James,
-you'll find that not all processes will stop when Tomcat is shut down.
-&nbsp;Altering the James configuration is necessary to work around this
-for 2.0.1.</p>
-    <p>The James configuration
-file is located at:</p>
-    <pre>legacy/james/src/webapp/apps/james/SAR-INF/config.xml</pre>
-    <p>Look for the section of the
-config file that looks like:<br>
-    </p>
-    <pre>&lt;nntp-repository&gt;<br>[...]<br>&lt;spool&gt;<br>	&lt;configuration&gt;<br>	&lt;spoolPath&gt;file://var/nntp/spool&lt;/spoolPath&gt;<br>	&lt;!-- The number of threads that process spooler related tasks. --&gt;<br>	&lt;threadCount&gt;1&lt;/threadCount&gt;<br>	&lt;!-- The spool thread(s) should idle for some time, if it has nothing to do --&gt;<br>	&lt;threadIdleTime&gt;60000&lt;/threadIdleTime&gt;<br>	&lt;/configuration&gt;<br>&lt;/spool&gt;<br>&lt;/nntp-repository&gt;</pre>
-    <p>and change the
-'threadCount' value from 1 to 0. This should stop Tomcat from hanging
-upon shutdown.</p>
-  </li>
-</ol>
-<br>
-<h3><a name="debugging"></a>Functionality
-Issues</h3>
-<ol>
-  <li>
-    <p style="font-weight: bold;">WebDAV
-on the&nbsp;Mac&nbsp;(<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1306">SAK-1306</a>)</p>
-    <p>Some problems have been
-reported using the Goliath WebDAV client on the Mac. The native WebDAV
-client in Mac OS 10.4 (Tiger) does not appear to have these problems.</p>
-  </li>
-  <li>
-    <p style="font-weight: bold;">Special
-characters in
-uploaded files prevents deletion&nbsp;(<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-940">SAK-940</a>)</p>
-    <p>A small subset of
-characters are escaped in a non-standard way, and the consequence for
-Sakai is that uploaded resources with these characters in their
-filenames may not be able to be deleted or otherwise manipulated
-in the resources tool. This could be a significant issue, particularly
-for foreign language classes. The special characters include the carat
-(^), the question mark (?) and the semi-colon (;).</p>
-  </li>
-  <li>
-    <p style="font-weight: bold;">Confusing
-"Import File" link upon
-site creation&nbsp;(<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1263">SAK-1263</a>)</p>
-    <p>After creating a site, if
-you go to Site Info, you will see a
-new option: Import from File. The option doesn't seem to correspond
-with anything else that can be done in Sakai as a maintain user
-(meaning, there's no symmetrical "export to file", and the interface
-doesn't offer any clues as to what sort of file it wants).</p>
-    <p> The sort of file that can
-be imported is an export performed by
-the Sakai Admin Archive tool or a special 'Export
-to Sakai' tool in Indiana University's OnCourse system.</p>
-  </li>
-  <li>
-    <p style="font-weight: bold;">Tests&amp;Quizzes
-default template does not allow edit of all possible settings (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1659">SAK-1659</a>)
-    </p>
-    <p>The default template should allow assessment creators to
-view/edit all possible settings. Right now the default template only
-allows a few settings to be edited, and anyone who wants to adjust
-settings has to create their own template. This is essentially the
-workaround for 2.0.1: create a new template to gain access to all
-settings.</p>
-  </li>
-  <li>
-	<p style="font-weight: bold;"> MySQL UTF-8 encoding bug - breaks international characters (<a
- href="http://bugs.sakaiproject.org/jira/browse/SAK-1737">SAK-1737</a>)
-	</p> 
-	<p>For all releases of Sakai there is a bug appearing with MySQL where international characters 
-	are shown as ? instead of the original character. There are patches which 
-	can be applied to 2.0.x installations available in the Jira entry referenced above.  Those patches
-	can also be used as a pattern for fixing prior Sakai releases. 
-	</p>
-</li>
 
+<h1><font face="Arial">Sakai 2.1.0 </font>Important Issues</h1>
+<p><font face="Arial">This is a list of known issues considered to be of 
+greatest concern in the 2.1.0 release.&nbsp; For more 
+information please follow the individual issue links or visit
+<a href="http://bugs.sakaiproject.org">http://bugs.sakaiproject.org</a> to view 
+the list of open issues.</font></p>
+<table cellpadding="2" cellspacing="1" style="border-collapse:
+ collapse" border="1">
+	<tr>
+		<th nowrap>
+		Key</th>
+		<th>
+		Component</th>
+		<th>
+		Description</th>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-3027">SAK-3027</a></td>
+		<td>
+		Tests &amp; Quizzes (Samigo)</td>
+		<td>
+		Assessments end 0-30 seconds prematurely at the question screen level</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-3017">SAK-3017</a></td>
+		<td>
+		Tests &amp; Quizzes (Samigo)</td>
+		<td>
+		Incorrect Question display when questions are of Multiple choice</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-3003">SAK-3003</a></td>
+		<td>
+		Tests &amp; Quizzes (Samigo)</td>
+		<td>
+		When a timed assessment is created, subsequent assessments will have the 
+		same time set automatically</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-2988">SAK-2988</a></td>
+		<td>
+		Schedule</td>
+		<td>
+		Importing events to Schedule gives dates off by one day</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-2841">SAK-2841</a></td>
+		<td>
+		Tests &amp; Quizzes (Samigo)</td>
+		<td>
+		Publishing confused by different time zones </td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-2716">SAK-2716</a></td>
+		<td>
+		Announcements</td>
+		<td>
+		New Announcement notification sent with no body if admin has no email 
+		address configured</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-2704">SAK-2704</a></td>
+		<td>
+		Schedule</td>
+		<td>
+		Can create an event for a date that doesn't exist</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-2688">SAK-2688</a></td>
+		<td>
+		Tests &amp; Quizzes (Samigo)</td>
+		<td>
+		Inability to access/grade assessments on question by question basis</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-2328">SAK-2328</a></td>
+		<td>
+		Resources</td>
+		<td>
+		Replacing Resource does not update URL, so name and mime-type may become 
+		incorrect</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-2260">SAK-2260</a></td>
+		<td>
+		Worksite Information</td>
+		<td>
+		Using Resource with spaces in name fails</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-2242">SAK-2242</a></td>
+		<td>
+		Tests &amp; Quizzes (Samigo)</td>
+		<td>
+		Error message needed when session times out</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-1781">SAK-1781</a></td>
+		<td>
+		Tests &amp; Quizzes (Samigo)</td>
+		<td>
+		Timed assessments begin and end times not enforced across sessions</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-1775">SAK-1775</a></td>
+		<td>
+		E-mail Archive</td>
+		<td>
+		Email Archive sometimes incorrectly wraps URLs across multiple lines</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-1324">SAK-1324</a></td>
+		<td>
+		Global</td>
+		<td>
+		Case sensitivity of usernames</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-1307">SAK-1307</a></td>
+		<td>
+		Resources</td>
+		<td>
+		WebDAV (Windows Only) uploading or moving file triggers Resource email 
+		notification</td>
+	</tr>
+	<tr>
+		<td nowrap>
+		<a href="http://bugs.sakaiproject.org/jira/browse/SAK-1063">SAK-1063</a></td>
+		<td>
+		E-mail Archive</td>
+		<td>
+		Email Archive tool sometimes mangles headers of outgoing mail</td>
+	</tr>
+</table>
 
-</ol>
 </body>
+
 </html>
+
