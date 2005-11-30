@@ -39,10 +39,9 @@
 			<version>${sakai.version}</version>
 		</dependency>
 		
-		<!-- to be able to access the Sakai component manager -->
 		<dependency>
 			<groupId>sakaiproject</groupId>
-			<artifactId>sakai-component</artifactId>
+			<artifactId>sakai-legacy-service</artifactId>
 			<version>${sakai.version}</version>
 		</dependency>
 

@@ -19,20 +19,19 @@
 **********************************************************************************/
 package org.sakaiproject.tool.OSIDRepository;
 
-import org.sakaiproject.tool.search.*;
-import org.sakaiproject.tool.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.text.*;
-
-import org.w3c.dom.*;
-
-import org.sakaiproject.api.kernel.session.Session;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.service.framework.component.cover.ComponentManager;
+import org.sakaiproject.tool.search.QueryBase;
+import org.sakaiproject.tool.search.ResultPageBase;
+import org.sakaiproject.tool.search.SearchResultBase;
+import org.sakaiproject.tool.util.DomUtils;
+import org.sakaiproject.tool.util.SearchException;
+import org.sakaiproject.tool.util.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class SearchSource {
   /**

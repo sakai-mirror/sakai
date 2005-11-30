@@ -19,15 +19,34 @@
 **********************************************************************************/
 package org.sakaiproject.tool.util;
 
-import java.io.*;
-import java.util.*;
-import javax.xml.parsers.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.w3c.dom.*;
-import org.w3c.dom.html.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.html.dom.HTMLDocumentImpl;
-import org.apache.xml.serialize.*;
-import org.xml.sax.*;
+import org.apache.xml.serialize.HTMLSerializer;
+import org.apache.xml.serialize.Method;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.html.HTMLDocument;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 public class DomUtils {
 	/**

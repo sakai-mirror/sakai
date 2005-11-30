@@ -19,9 +19,11 @@
 **********************************************************************************/
 package org.sakaiproject.tool.util;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class CookieUtils {
 

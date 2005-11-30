@@ -19,23 +19,16 @@
 **********************************************************************************/
 package org.sakaiproject.tool.OSIDRepository;
 
-import org.sakaiproject.tool.net.*;
-import org.sakaiproject.tool.search.*;
-import org.sakaiproject.tool.util.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-import java.io.*;
-import java.net.*;
-import java.lang.*;
-import java.util.*;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import javax.net.ssl.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.xml.parsers.*;
-
-import org.w3c.dom.*;
-import org.w3c.dom.html.*;
-import org.xml.sax.*;
+import org.sakaiproject.tool.util.DomUtils;
 
 /*
  * public class Search extends ComponentServlet {

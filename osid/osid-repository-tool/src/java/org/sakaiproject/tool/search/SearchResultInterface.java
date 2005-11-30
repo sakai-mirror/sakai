@@ -19,10 +19,7 @@
 **********************************************************************************/
 package org.sakaiproject.tool.search;
 
-import java.lang.*;
-import java.util.*;
-
-import org.w3c.dom.*;
+import java.util.Iterator;
 
 /**
  * Search characteristics, all matching items

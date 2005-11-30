@@ -19,7 +19,6 @@
 **********************************************************************************/
 package org.sakaiproject.tool.search;
 
-import org.sakaiproject.tool.util.*;
 
 /**
  * Encapsulate one matching search item.  The rendering process depends

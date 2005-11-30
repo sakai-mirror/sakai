@@ -46,8 +46,9 @@ in this Software without prior written authorization from Stanford University.
 
 package org.sakaiproject.tool.util;
 
-import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * CaseBlindHashMap - a HashMap extension, using <code>String</code>s as

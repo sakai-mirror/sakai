@@ -19,20 +19,20 @@
 **********************************************************************************/
 package org.sakaiproject.tool.search;
 
-import org.sakaiproject.tool.net.*;
-import org.sakaiproject.tool.OSIDRepository.*;
-import org.sakaiproject.tool.util.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.xml.parsers.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.sakaiproject.tool.OSIDRepository.SessionContext;
+import org.sakaiproject.tool.net.HttpTransaction;
+import org.sakaiproject.tool.util.CookieUtils;
+import org.sakaiproject.tool.util.DomException;
+import org.sakaiproject.tool.util.DomUtils;
+import org.sakaiproject.tool.util.HttpTransactionUtils;
+import org.sakaiproject.tool.util.SearchException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Base class for HTTP search activities

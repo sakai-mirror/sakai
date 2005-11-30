@@ -19,23 +19,7 @@
 **********************************************************************************/
 package org.sakaiproject.tool.search;
 
-import org.sakaiproject.tool.util.*;
-
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javax.servlet.http.*;
-import javax.xml.parsers.*;
-
-import org.w3c.dom.*;
-import org.w3c.dom.html.*;
-import org.xml.sax.*;
-
-import org.sakaiproject.api.kernel.session.Session;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.service.framework.component.cover.ComponentManager;
 
 /**
  *  SRW

@@ -19,20 +19,9 @@
 **********************************************************************************/
 package org.sakaiproject.tool.OSIDRepository;
 
-import org.sakaiproject.tool.search.*;
-import org.sakaiproject.tool.util.*;
+import javax.servlet.http.HttpSession;
 
-import java.io.*;
-import java.net.*;
-import java.lang.*;
-import java.sql.*;
-import java.util.*;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.sakaiproject.tool.util.StringUtils;
 
 /**
  * Expose the servlet-level session context block
