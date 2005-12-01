@@ -39,9 +39,6 @@ import org.sakaiproject.cheftool.PagedResourceActionII;
 import org.sakaiproject.cheftool.PortletConfig;
 import org.sakaiproject.cheftool.RunData;
 import org.sakaiproject.cheftool.VelocityPortlet;
-import org.sakaiproject.cheftool.menu.Menu;
-import org.sakaiproject.cheftool.menu.MenuEntry;
-import org.sakaiproject.cheftool.menu.MenuItem;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -316,8 +313,8 @@ extends PagedResourceActionII
 	private static final String VIEW_GRADE_SUBMISSION_ID = "view_grade_submission_id";
 	
 	/****************************** modes ****************************/
-	/** The student list view of assignments*/
-	private static final String MODE_STUDENT_LIST_ASSIGNMENTS = rb.getString("stuvie");
+	/** The list view of assignments	 */
+	private static final String MODE_LIST_ASSIGNMENTS = rb.getString("lisofass1");
 	
 	/** The student view of an assignment submission	 */
 	private static final String MODE_STUDENT_VIEW_SUBMISSION = "Assignment.mode_view_submission";
@@ -330,9 +327,6 @@ extends PagedResourceActionII
 	
 	/** The student view of assignments*/
 	private static final String MODE_STUDENT_VIEW_ASSIGNMENT = "Assignment.mode_student_view_assignment";
-	
-	/** The instructor view of owned assignments	 */
-	private static final String MODE_INSTRUCTOR_LIST_ASSIGNMENTS = rb.getString("lisofass1");
 	
 	/** The instructor view of create a new assignment	 */
 	private static final String MODE_INSTRUCTOR_NEW_ASSIGNMENT = "Assignment.mode_instructor_new_assignment";
@@ -365,8 +359,8 @@ extends PagedResourceActionII
 	private static final String MODE_INSTRUCTOR_REPORT_SUBMISSIONS = rb.getString("grad4");
 	
 	/*************************** vm names ***************************/
-	/** The student list view of assignments */
-	private static final String TEMPLATE_STUDENT_LIST_ASSIGNMENTS = "_student_list_assignments";
+	/** The list view of assignments */
+	private static final String TEMPLATE_LIST_ASSIGNMENTS = "_list_assignments";
 	
 	/** The student view of assignment */
 	private static final String TEMPLATE_STUDENT_VIEW_ASSIGNMENT = "_student_view_assignment";
@@ -379,9 +373,6 @@ extends PagedResourceActionII
 	
 	/** The student view of graded submission */
 	private static final String TEMPLATE_STUDENT_VIEW_GRADE = "_student_view_grade";
-	
-	/** The instructor list view of assignments */
-	private static final String TEMPLATE_INSTRUCTOR_LIST_ASSIGNMENTS = "_instructor_list_assignments";
 	
 	/** The instructor view to create a new assignment */
 	private static final String TEMPLATE_INSTRUCTOR_NEW_ASSIGNMENT = "_instructor_new_assignment";
@@ -533,22 +524,10 @@ extends PagedResourceActionII
 		
 		String mode = (String)state.getAttribute (STATE_MODE);
 
-		if (mode.equals (MODE_STUDENT_LIST_ASSIGNMENTS))
+		if (mode.equals (MODE_LIST_ASSIGNMENTS))
 		{
-//			// enable the observer when comming to the student assignment list view
-//			// watch only for the assignment update
-//			MultipleEventsObservingCourier o = (MultipleEventsObservingCourier) state.getAttribute(STATE_OBSERVER);
-//			String pattern = AssignmentService.assignmentReference((String) state.getAttribute (STATE_CONTEXT_STRING), "");
-//			o.setResourcePattern(pattern);
-//			pattern = AssignmentService.submissionReference((String) state.getAttribute (STATE_CONTEXT_STRING), "", "");
-//			// remove the trailing "/" in order to match all the submission for all assignment
-//			// %%% not a clean solution, we can fix the service to have a null passed as the parameters we don't want to have in the reference later 
-//			o.addResourcePattern(pattern.substring(0, pattern.lastIndexOf("/")));
-//			o.enable();
-//			o.setDeliveryId(clientWindowId(state, portlet.getID()));
-
 			// build the context for the student assignment view
-			template = build_student_list_assignments_context (portlet, context, data, state);
+			template = build_list_assignments_context (portlet, context, data, state);
 		}
 		else if (mode.equals (MODE_STUDENT_VIEW_ASSIGNMENT))
 		{
@@ -575,21 +554,6 @@ extends PagedResourceActionII
 		
 			// build the context for showing one graded submission
 			template = build_student_view_grade_context (portlet, context, data, state);
-		}
-		else if (mode.equals (MODE_INSTRUCTOR_LIST_ASSIGNMENTS) && (allowAddAssignment || allowGradeSubmission))
-		{
-//			// enable the observer when comming to the instructor assignment list view
-//			// watch for both the assignment update and the submission update for any assignment
-//			MultipleEventsObservingCourier o = (MultipleEventsObservingCourier) state.getAttribute(STATE_OBSERVER);
-//			String pattern = AssignmentService.submissionReference((String) state.getAttribute (STATE_CONTEXT_STRING), "", "");
-//			// remove the trailing "/" in order to match all the submission for all assignment
-//			// %%% not a clean solution, we can fix the service to have a null passed as the parameters we don't want to have in the reference later 
-//			o.addResourcePattern(pattern.substring(0, pattern.lastIndexOf("/")));
-//			o.enable();
-//			o.setDeliveryId(clientWindowId(state, portlet.getID()));
-			
-			// build the context for the instructor assignment list view
-			template = build_instructor_list_assignments_context (portlet, context, data, state);
 		}
 		else if (mode.equals (MODE_INSTRUCTOR_NEW_ASSIGNMENT) && allowAddAssignment)
 		{
@@ -642,14 +606,6 @@ extends PagedResourceActionII
 		}
 		else if (mode.equals (MODE_INSTRUCTOR_GRADE_ASSIGNMENT) && allowGradeSubmission)
 		{
-			// change the observer to watch for the submission update for this assignment
-			/*MultipleEventsObservingCourier o = (MultipleEventsObservingCourier) state.getAttribute(STATE_OBSERVER);
-			String pattern = AssignmentService.submissionReference((String) state.getAttribute (STATE_CONTEXT_STRING), "",  (String) state.getAttribute (EXPORT_ASSIGNMENT_ID));
-			o.setResourcePattern(pattern);
-			o.enable();
-			o.setDeliveryId(clientWindowId(state, portlet.getID()));
-			*/
-			
 			// build the context for the instructor's grade assignment
 			template = build_instructor_grade_assignment_context (portlet, context, data, state);
 		}
@@ -681,31 +637,11 @@ extends PagedResourceActionII
 		}
 		else if (mode.equals (MODE_INSTRUCTOR_VIEW_STUDENTS_ASSIGNMENT) && (allowAddAssignment || allowGradeSubmission) )
 		{
-//			// set the observer to watch for both assignment and submission updates for any assignment
-//			MultipleEventsObservingCourier o = (MultipleEventsObservingCourier) state.getAttribute(STATE_OBSERVER);
-//			String pattern = AssignmentService.assignmentReference((String) state.getAttribute (STATE_CONTEXT_STRING), "");
-//			o.setResourcePattern(pattern);
-//			pattern = AssignmentService.submissionReference((String) state.getAttribute (STATE_CONTEXT_STRING), "", "");
-//			// %%% not a clean solution, we can fix the service to have a null passed as the parameters we don't want to have in the reference later 
-//			o.addResourcePattern(pattern.substring(0, pattern.lastIndexOf("/"))); 
-//			o.enable();
-//			o.setDeliveryId(clientWindowId(state, portlet.getID()));
-			
 			// build the context for the instructor's create new assignment view
 			template = build_instructor_view_students_assignment_context (portlet, context, data, state);
 		}
 		else if (mode.equals (MODE_INSTRUCTOR_REPORT_SUBMISSIONS) && (allowAddAssignment || allowGradeSubmission))
 		{
-//			// set the observer to watch for both assignment and submission updates for any assignment
-//			MultipleEventsObservingCourier o = (MultipleEventsObservingCourier) state.getAttribute(STATE_OBSERVER);
-//			String pattern = AssignmentService.assignmentReference((String) state.getAttribute (STATE_CONTEXT_STRING), "");
-//			o.setResourcePattern(pattern);
-//			pattern = AssignmentService.submissionReference((String) state.getAttribute (STATE_CONTEXT_STRING), "", "");
-//			// %%% not a clean solution, we can fix the service to have a null passed as the parameters we don't want to have in the reference later 
-//			o.addResourcePattern(pattern.substring(0, pattern.lastIndexOf("/"))); 
-//			o.enable();
-//			o.setDeliveryId(clientWindowId(state, portlet.getID()));
-			
 			// build the context for the instructor's view of report submissions
 			template = build_instructor_report_submissions (portlet, context, data, state);
 		}
@@ -713,62 +649,13 @@ extends PagedResourceActionII
 		if (template == null)
 		{
 			// default to student list view
-			state.setAttribute(STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
-			template = build_student_list_assignments_context (portlet, context, data, state);
+			state.setAttribute(STATE_MODE, MODE_LIST_ASSIGNMENTS);
+			template = build_list_assignments_context (portlet, context, data, state);
 		}
 		
 		return template;
 		
 	}	// buildNormalContext
-	
-	/**
-	 * build the student view of owned assignments list
-	 */
-	protected String build_student_list_assignments_context (	VelocityPortlet portlet,
-																Context context,
-																RunData data,
-																SessionState state)
-	{		
-		state.setAttribute(STATE_SELECTED_VIEW, rb.getString("stuvie"));
-		context.put("tlang",rb);
-		// get the assignment specific to the class and person
-		String sortedBy = (String) state.getAttribute (SORTED_BY);
-		String sortedAsc = (String) state.getAttribute (SORTED_ASC);
-		
-		// get those opened and posted assignments
-		List l = prepPage(state);
-		Iterator assignments = null;
-		if (l != null)
-		{
-			assignments = l.iterator();
-		}
-		
-		context.put ("assignments", assignments);
-		context.put ("sortedBy", sortedBy);
-		context.put ("sortedAsc", sortedAsc);
-		context.put ("currentTime", TimeService.newTime());
-		context.put ("user", (User) state.getAttribute (STATE_USER));
-		context.put ("service", AssignmentService.getInstance());
-		boolean allowSubmit = AssignmentService.allowAddSubmission((String) state.getAttribute(STATE_CONTEXT_STRING));
-		context.put("allowSubmit", new Boolean(allowSubmit));
-		
-		// build the menu
-		buildMenu (portlet, context, data, state, "studentForm", false, false, "");
-			
-		add2ndToolbarFields(data, context);
-		
-		pagingInfoToContext(state, context);
-		
-		// inform the observing courier that we just updated the page...
-		// if there are pending requests to do so they can be cleared
-		justDelivered(state);
-
-		pagingInfoToContext(state, context);
-
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_STUDENT_LIST_ASSIGNMENTS;
-		
-	}	// build_student_list_assignments_context
 	
 	/**
 	 * build the student view of showing an assignment submission
@@ -939,27 +826,47 @@ extends PagedResourceActionII
 	}	// build_student_view_grade_context
 
 	/**
-	 * build the instructor view of owned assignments list
+	 * build the view of assignments list
 	 */
-	protected String build_instructor_list_assignments_context (VelocityPortlet portlet,
+	protected String build_list_assignments_context (VelocityPortlet portlet,
 																Context context,
 																RunData data,
 																SessionState state)
 	{
 		context.put("tlang",rb);
 		context.put ("contextString", (String) state.getAttribute (STATE_CONTEXT_STRING));
+		context.put ("user", (User) state.getAttribute (STATE_USER));
 		context.put ("service", AssignmentService.getInstance());
 		context.put ("currentTime", TimeService.newTime());
 		String sortedBy = (String) state.getAttribute (SORTED_BY);
 		String sortedAsc = (String) state.getAttribute (SORTED_ASC);
 		context.put ("sortedBy", sortedBy);
 		context.put ("sortedAsc", sortedAsc);
+		if (state.getAttribute(STATE_SELECTED_VIEW) != null)
+		{
+			context.put("view", state.getAttribute(STATE_SELECTED_VIEW));
+		}
 		
-		Iterator assignments = prepPage(state).iterator();
-		context.put ("assignments", assignments);
+		boolean allowAdd = AssignmentService.allowAddAssignment((String) state.getAttribute(STATE_CONTEXT_STRING));
+		context.put("allowAdd", new Boolean(allowAdd));
 		
-		// build the menu
-		buildMenu (portlet, context, data, state, "listAssignmentsForm", true, assignments.hasNext (), "");
+		boolean allowGrade = AssignmentService.allowGradeSubmission((String) state.getAttribute(STATE_CONTEXT_STRING));
+		context.put("allowGrade", new Boolean(allowGrade));
+				
+		boolean allowSubmit = AssignmentService.allowAddSubmission((String) state.getAttribute(STATE_CONTEXT_STRING));
+		context.put("allowSubmit", new Boolean(allowSubmit));
+		
+		List assignments = prepPage(state);
+		boolean allowRemove = false;
+		for(Iterator i=assignments.iterator();!allowRemove && i.hasNext();)
+		{
+			// see if user allowed to remove at least one assignment
+			allowRemove=AssignmentService.allowRemoveAssignment(((Assignment) i.next()).getReference());
+		}
+		context.put("allowRemove", new Boolean(allowRemove));
+		
+		context.put ("assignments", assignments.iterator());
+		
 		context.put("contextString", state.getAttribute (STATE_CONTEXT_STRING));
 		
 		add2ndToolbarFields(data, context);
@@ -971,9 +878,9 @@ extends PagedResourceActionII
 		pagingInfoToContext(state, context);
 		
 		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_INSTRUCTOR_LIST_ASSIGNMENTS;
+		return template + TEMPLATE_LIST_ASSIGNMENTS;
 		
-	}	// build_instructor_list_assignments_context
+	}	// build_list_assignments_context
 	
 	/**
 	 * build the instructor view of create a new assignment
@@ -1558,8 +1465,6 @@ extends PagedResourceActionII
 		// the user directory service
 		context.put ("userDirectoryService", UserDirectoryService.getInstance());
 		
-		// build the menu
-		buildMenu (portlet, context, data, state, "listSubmissionsForm", true, false, "listSubmission");
 		context.put("tlang",rb);
 		add2ndToolbarFields(data, context);
 		
@@ -1653,9 +1558,6 @@ extends PagedResourceActionII
 			context.put ("studentListShowTable", (Hashtable) state.getAttribute (STUDENT_LIST_SHOW_TABLE));
 		}
 		
-		// build the menu
-		buildMenu (portlet, context, data, state, "studentAssignmentForm", true, false, "studentAssignment");
-		
 		add2ndToolbarFields(data, context);
 		
 		pagingInfoToContext(state, context);
@@ -1676,8 +1578,6 @@ extends PagedResourceActionII
 		context.put("tlang",rb);
 		context.put ("submissions", prepPage(state));
 		
-		// build the menu
-		buildMenu (portlet, context, data, state, "reportForm", true, false, "report");
 		context.put ("sortedBy", (String) state.getAttribute (SORTED_SUBMISSION_BY));
 		context.put ("sortedAsc", (String) state.getAttribute (SORTED_SUBMISSION_ASC));
 		
@@ -1694,122 +1594,13 @@ extends PagedResourceActionII
 	}	// build_instructor_report_submissions
 	
 	/**
-	 *	build menu
-	 */
-	private static void buildMenu (	VelocityPortlet portlet,
-	Context context,
-	RunData data,
-	SessionState state,
-	String formName,
-	boolean instructorView,
-	boolean hasNextAssignment,
-	String viewMode)
-	{
-		String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);
-		boolean allowAddAssignment = false;
-		if (AssignmentService.allowAddAssignment(contextString))
-		{
-			allowAddAssignment = true;
-		}
-				
-		// build a test menu
-		Menu bar = new Menu (portlet, data, "AssignmentAction");
-		
-		if (instructorView)
-		{
-			if (viewMode.equalsIgnoreCase ("listSubmission"))
-			{
-				// in instructor list assignment submission view
-				if (allowAddAssignment)
-				{
-					bar.add ( new MenuEntry (rb.getString("new"), null, true, MenuItem.CHECKED_NA, "doNew_assignment", formName) );
-				}
-				
-				try
-				{
-					Assignment a = AssignmentService.getAssignment ((String) state.getAttribute (EXPORT_ASSIGNMENT_REF));
-					
-					if (AssignmentService.getSubmissions(a).hasNext())
-					{
-						String accessPointUrl = (ServerConfigurationService.getAccessUrl()).concat(AssignmentService.submissionsZipReference(contextString, (String) state.getAttribute (EXPORT_ASSIGNMENT_REF)));
-						bar.add ( new MenuEntry (rb.getString("relgrad"), null, true, MenuItem.CHECKED_NA, "doRelease_grades", formName));
-						bar.add ( new MenuEntry (rb.getString("downall"), "").setUrl(accessPointUrl));
-					}
-				 }
-				 catch (Exception ignore )
-				 {
-				 }
-			}
-			else if (viewMode.equalsIgnoreCase ("report"))
-			{
-				if (allowAddAssignment)
-				{
-					bar.add ( new MenuEntry (rb.getString("new"), null, true, MenuItem.CHECKED_NA, "doNew_assignment", formName) );
-				}
-				Iterator assignments = AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING));
-				if (assignments.hasNext())
-				{
-					String accessPointUrl = ServerConfigurationService.getAccessUrl() + AssignmentService.gradesSpreadsheetReference(contextString, null);
-					bar.add ( new MenuEntry (rb.getString("downspr"), "").setUrl(accessPointUrl));	
-				}
-			}
-			else if (viewMode.equalsIgnoreCase ("studentAssignment"))
-			{
-				if (allowAddAssignment)
-				{
-					bar.add ( new MenuEntry (rb.getString("new"), null, true, MenuItem.CHECKED_NA, "doNew_assignment", formName) );
-				}
-			}
-			else
-			{
-				// in the instructor views
-				if (allowAddAssignment)
-				{
-					bar.add ( new MenuEntry (rb.getString("new"), null, true, MenuItem.CHECKED_NA, "doNew_assignment", formName) );
-				}
-				bar.add ( new MenuEntry (rb.getString("revise"), null, hasNextAssignment, MenuItem.CHECKED_NA, "doEdit_assignment", formName));
-				bar.add ( new MenuEntry (rb.getString("delet"), null, hasNextAssignment, MenuItem.CHECKED_NA, "doDelete_confirm_assignment", formName) );
-				bar.add ( new MenuEntry (rb.getString("dupli"), null,hasNextAssignment, MenuItem.CHECKED_NA, "doDuplicate_assignment", formName) );
-				if (AssignmentService.allowGradeSubmission(contextString) || allowAddAssignment)
-				{
-					bar.add ( new MenuEntry (rb.getString("grad1"), null, hasNextAssignment, MenuItem.CHECKED_NA, "doGrade_assignment", formName) );
-				}
-			}
-			
-			// add permissions, if allowed
-			if (SiteService.allowUpdateSite(PortalService.getCurrentSiteId()))
-			{
-				bar.add( new MenuEntry(rb.getString("permis"), "doPermissions") );
-			}
-
-		}
-		else
-		{
-			// in the student view, do NOT show menu buttons
-		}
-		
-
-		// Set menu state attribute
-		SessionState stateForMenus = ((JetspeedRunData)data).getPortletSessionState (portlet.getID ());
-		stateForMenus.setAttribute (MenuItem.STATE_MENU, bar);
-		
-		List items = bar.getItems();
-		if (!items.isEmpty())
-		{
-			context.put (Menu.CONTEXT_MENU, bar);
-			context.put (Menu.CONTEXT_ACTION, "AssignmentAction");
-		}
-		
-	}	// buildMenu
-	
-	/**
 	 * Go to the instructor view
 	 **/
 	public void doView_instructor (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
-		state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+		state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		state.setAttribute (SORTED_BY, SORTED_BY_DUEDATE);
 		state.setAttribute(SORTED_ASC, Boolean.TRUE.toString());
 		
@@ -1824,7 +1615,7 @@ extends PagedResourceActionII
 		
 		// to the student list of assignment view
 		state.setAttribute (SORTED_BY, SORTED_BY_DUEDATE);
-		state.setAttribute (STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
+		state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		
 	}	//doView_student
 	
@@ -2022,7 +1813,7 @@ extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
 		// back to the student list view of assignments
-		state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+		state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		
 	}	//doDone_view_assignments
 	
@@ -2061,7 +1852,7 @@ extends PagedResourceActionII
 		state.setAttribute (VIEW_ASSIGNMENT_ID, "");
 		
 		// back to the student list view of assignments
-		state.setAttribute (STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
+		state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		
 	}	// doCancel_student_view_assignment
 	
@@ -2076,7 +1867,7 @@ extends PagedResourceActionII
 		state.setAttribute (VIEW_ASSIGNMENT_ID, "");
 		
 		// back to the student list view of assignments
-		state.setAttribute (STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
+		state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		
 	}	//doCancel_show_submission
 	
@@ -2091,7 +1882,7 @@ extends PagedResourceActionII
 		state.setAttribute (DELETE_ASSIGNMENT_IDS, new Vector ());
 		
 		// back to the instructor list view of assignments
-		state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+		state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		
 	}	//doCancel_delete_assignment
 	
@@ -2103,7 +1894,7 @@ extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
 		// back to the student list view of assignments
-		state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+		state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		
 	}	//	doCancel_edit_assignment
 	
@@ -2118,7 +1909,7 @@ extends PagedResourceActionII
 		resetAssignment (state);
 		
 		// back to the student list view of assignments
-		state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+		state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		
 	}	//doCancel_new_assignment
 	
@@ -2157,7 +1948,7 @@ extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		
 		// back to the student list view of assignments
-		state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+		state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		state.setAttribute(SORTED_BY, SORTED_BY_DUEDATE);
 		
 	}	//doList_assignments
@@ -2173,7 +1964,7 @@ extends PagedResourceActionII
 		state.setAttribute (VIEW_GRADE_SUBMISSION_ID, "");
 		
 		// back to the student list view of assignments
-		state.setAttribute (STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
+		state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		
 	}	//doCancel_view_grade
 	
@@ -2518,7 +2309,7 @@ extends PagedResourceActionII
 		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{		
-			state.setAttribute (STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
+			state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 			state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
 		}
 
@@ -2775,7 +2566,7 @@ extends PagedResourceActionII
 		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
-			state.setAttribute (STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
+			state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 			state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
 		}
 
@@ -2799,7 +2590,7 @@ extends PagedResourceActionII
 			else
 			{
 				addAlert(state, rb.getString("youarenot2"));
-				state.setAttribute(STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+				state.setAttribute(STATE_MODE, MODE_LIST_ASSIGNMENTS);
 			}
 		}
 		
@@ -3232,7 +3023,7 @@ extends PagedResourceActionII
 		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{		
-			state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+			state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 			resetAssignment (state);
 		}
 		
@@ -3357,8 +3148,6 @@ extends PagedResourceActionII
 			// correct inputs
 			if (state.getAttribute(STATE_MESSAGE) == null)
 			{
-				User u = (User) state.getAttribute (STATE_USER);
-
 				String assignmentId = params.getString ("assignmentId");
 				String assignmentContentId = params.getString ("assignmentContentId");
 
@@ -3714,7 +3503,7 @@ extends PagedResourceActionII
 		
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{		
-			state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+			state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 			
 			state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
 			resetAssignment (state);
@@ -3840,8 +3629,6 @@ extends PagedResourceActionII
 
 		// correct inputs
 		if (state.getAttribute(STATE_MESSAGE) != null) return;
-
-		User u = (User) state.getAttribute (STATE_USER);
 
 		String assignmentId = params.getString ("assignmentId");
 		String assignmentContentId = params.getString ("assignmentContentId");
@@ -3997,7 +3784,7 @@ extends PagedResourceActionII
 
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{		
-			state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+			state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		
 			state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
 			resetAssignment (state);
@@ -4047,7 +3834,7 @@ extends PagedResourceActionII
 		
 		try
 		{
-			Assignment a = AssignmentService.getAssignment (assignmentId);
+			AssignmentService.getAssignment (assignmentId);
 		}
 		catch (IdUnusedException e )
 		{
@@ -4095,7 +3882,6 @@ extends PagedResourceActionII
 		
 		String assignmentId = StringUtil.trimToNull(params.getString("assignmentId"));
 		// whether the user can modify the assignment
-		String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);
 		state.setAttribute (EDIT_ASSIGNMENT_ID, assignmentId );
 		
 		try
@@ -4234,8 +4020,6 @@ extends PagedResourceActionII
 		
 		if (assignmentIds!=null)
 		{
-			String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);
-			
 			Vector ids = new Vector ();
 			for (int i=0; i<assignmentIds.length; i++)
 			{
@@ -4246,7 +4030,7 @@ extends PagedResourceActionII
 				{
 					Assignment a = AssignmentService.getAssignment (id);					
 					
-					if (!(AssignmentService.allowUpdateAssignment(id) && AssignmentService.allowRemoveAssignment(id)))
+					if (!AssignmentService.allowRemoveAssignment(id))
 					{
 						addAlert(state, rb.getString("youarenot9") + " " + "\"" + a.getTitle () + "\". ");
 					}
@@ -4381,7 +4165,7 @@ extends PagedResourceActionII
 		{
 			state.setAttribute (DELETE_ASSIGNMENT_IDS, new Vector ());
 		
-			state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+			state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		}
 		
 	}	//doDelete_Assignment
@@ -4426,7 +4210,7 @@ extends PagedResourceActionII
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{		
 			state.setAttribute (DELETE_ASSIGNMENT_IDS, new Vector ());
-			state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+			state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		}
 		
 	}	//doDeep_delete_Assignment
@@ -4689,7 +4473,6 @@ extends PagedResourceActionII
 	public void doView_students_assignment (RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		ParameterParser params = data.getParameters ();		
 		state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_VIEW_STUDENTS_ASSIGNMENT);
 		
 	}	//doView_students_Assignment
@@ -4761,7 +4544,6 @@ extends PagedResourceActionII
 	 */
 	public void doAssignment_form (RunData data)
 	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 
 		String option = (String) params.getString("option");
@@ -5248,17 +5030,7 @@ extends PagedResourceActionII
 		
 		if (state.getAttribute(STATE_MODE) == null)
 		{
-			boolean allowAddNewAssignment = AssignmentService.allowAddAssignment ((String) state.getAttribute (STATE_CONTEXT_STRING));
-			boolean allowGradeSubmission = AssignmentService.allowGradeSubmission((String) state.getAttribute (STATE_CONTEXT_STRING));
-
-			if (allowAddNewAssignment || allowGradeSubmission)
-			{
-				state.setAttribute (STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
-			}
-			else
-			{
-				state.setAttribute (STATE_MODE, MODE_STUDENT_LIST_ASSIGNMENTS);
-			}
+			state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
 		}
 		
 		if (state.getAttribute(STATE_SEARCH) == null)
@@ -5308,24 +5080,6 @@ extends PagedResourceActionII
 		int month = tB.getMonth ();
 		int day = tB.getDay ();
 		int year = tB.getYear ();
-		int hour = tB.getHour ();
-		int min = tB.getMin ();
-		String ampm= new String ();
-		if (hour>12)
-		{
-			hour = hour-12;
-			ampm="PM";
-		}
-		else if (hour == 0)
-		{
-			// for midnight point, we mark it as 12AM
-			hour = 12;
-			ampm = "AM";
-		}
-		else
-		{
-			ampm="AM";
-		}
 		
 		// set the open time to be 12:00 PM
 		state.setAttribute (NEW_ASSIGNMENT_OPENMONTH, new Integer (month));
@@ -5341,23 +5095,6 @@ extends PagedResourceActionII
 		month = tB.getMonth ();
 		day = tB.getDay ();
 		year = tB.getYear ();
-		hour = tB.getHour ();
-		min = tB.getMin ();
-		ampm= new String ();
-		if (hour>12)
-		{
-			hour = hour-12;
-			ampm="PM";
-		}
-		else if (hour==0)
-		{
-			hour = 12;
-			ampm = "AM";
-		}
-		else
-		{
-			ampm="AM";
-		}
 		
 		// set the due time to be 5:00pm
 		state.setAttribute (NEW_ASSIGNMENT_DUEMONTH, new Integer (month));
@@ -5452,42 +5189,6 @@ extends PagedResourceActionII
 		return n;
 		
 	}	// submissionTypeTable
-	
-	/**
-	 * get the AssignmentSubmission status
-	 */
-	private String getAssignmentSubmissionStatus (Assignment a, User u)
-	{
-		try
-		{
-			AssignmentSubmission submission = AssignmentService.getSubmission (a.getId (), u);
-			if (submission!=null)
-			{
-				if (submission.getSubmitted ())
-				{
-					if (submission.getGraded () && submission.getGradeReleased ())
-						return rb.getString("grad3");
-					else if (submission.getReturned ())
-						return rb.getString("return") + " " + submission.getTimeReturned ().toStringLocalFull ();
-					else
-						return rb.getString("submitt") + " "+  submission.getTimeSubmitted ().toStringLocalFull ();
-				}
-				else
-					return rb.getString("draft");
-			}
-			else
-				return rb.getString("notsta");
-			
-		}
-		catch (IdUnusedException e)
-		{
-			return rb.getString("cannotfin5");
-		}
-		catch (PermissionException e)
-		{
-			return rb.getString("youarenot16");
-		}
-	}
 	
 	/**
 	 * Sort based on the given property
@@ -6138,7 +5839,7 @@ extends PagedResourceActionII
 				// start the helper
 				state.setAttribute(PermissionsAction.STATE_MODE, PermissionsAction.MODE_MAIN);
 			}
-			state.setAttribute(STATE_MODE, MODE_INSTRUCTOR_LIST_ASSIGNMENTS);
+			state.setAttribute(STATE_MODE, MODE_LIST_ASSIGNMENTS);
 			
 			// reset the global navigaion alert flag
 			if (state.getAttribute(ALERT_GLOBAL_NAVIGATION) != null)
@@ -6174,7 +5875,7 @@ extends PagedResourceActionII
 		// all the resources for paging 
 		List returnResources = new Vector();
 		
-		if (mode.equalsIgnoreCase(MODE_INSTRUCTOR_LIST_ASSIGNMENTS))
+		if (mode.equalsIgnoreCase(MODE_LIST_ASSIGNMENTS))
 		{
 			// read all Assignments
 			Iterator allAssignmentsIterator = null;
@@ -6250,8 +5951,6 @@ extends PagedResourceActionII
 		*/
 		else if (mode.equalsIgnoreCase(MODE_INSTRUCTOR_REPORT_SUBMISSIONS))
 		{
-			List users = new Vector();
-			
 			Vector submissions = new Vector();
 			
 			Vector assignments = iterator_to_vector(AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING)));
@@ -6306,11 +6005,10 @@ extends PagedResourceActionII
 			
 			returnResources = submissions;
 		}
-		else if (mode.equalsIgnoreCase(MODE_STUDENT_LIST_ASSIGNMENTS))
+		else if (mode.equalsIgnoreCase(MODE_LIST_ASSIGNMENTS))
 		{
 			// in the student list view of assignments
 			Iterator assignments = AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING));
-			Vector v = new Vector ();
 			Time currentTime= TimeService.newTime();
 			while (assignments.hasNext ())
 			{
@@ -6426,12 +6124,16 @@ extends PagedResourceActionII
 	{
 		String mode = (String) state.getAttribute(STATE_MODE);
 		String search = (String) state.getAttribute(STATE_SEARCH);
+		String view = "";
+		if (state.getAttribute(STATE_SELECTED_VIEW) != null)
+		{
+			view = (String) state.getAttribute(STATE_SELECTED_VIEW);
+		}
 
 		// all the resources for paging 
-		List returnResources = new Vector();
 		int size = 0;
 		
-		if (mode.equalsIgnoreCase(MODE_INSTRUCTOR_LIST_ASSIGNMENTS))
+		if (mode.equalsIgnoreCase(MODE_LIST_ASSIGNMENTS) && view.equals(rb.getString("gen.liofass")))
 		{
 			size = 0;
 			
@@ -6553,7 +6255,7 @@ extends PagedResourceActionII
 				}
 			}
 		}
-		else if (mode.equalsIgnoreCase(MODE_STUDENT_LIST_ASSIGNMENTS))
+		else if (mode.equalsIgnoreCase(MODE_LIST_ASSIGNMENTS))
 		{
 			size = 0;
 			
