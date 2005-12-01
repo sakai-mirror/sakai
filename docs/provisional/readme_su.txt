@@ -12,9 +12,9 @@ The su tool is part of the standard Sakai release. The tool is only available to
 
 USING THE TOOL
 
-After the su tool is deployed, it will not appear in the list of tools in the Administrative Sites tool. It will NOT appear in the list of tools for the Worksite Setup tool, since su is intended for administrators only, and not for general use.
+After the su tool is deployed, it will appear in the list of tools in the Administrative Sites tool. It will NOT appear in the list of tools for the Worksite Setup tool, since su is intended for administrators only, and not for general use.
 
-In order to use the tool, use the Sites tool in the Administrative Workspace to edit the !admin site, add a page or edit an existing page, and place the tool on that page. The su tool will appear in the list with the title "Become User" and the id "sakai.admin.su." When you've placed the tool, remember to click the Save button.
+In order to use the tool, use the Sites tool in the Administrative Workspace to edit the !admin site, add a page or edit an existing page, and place the tool on that page. The su tool will appear in the list with the title "Become User" and the id "sakai.su." When you've placed the tool, remember to click the Save button.
 
 The tool itself is very simple. There is a text field to type a user id, and there is a Submit button. Your session will continue as though you had logged in as the specified user. This will work even if that user is already logged in at another location.
 
@@ -33,7 +33,7 @@ It's a small thing, but if you click the "View user info" button, the button sho
 
 CONTACT
 
-TRACS su is written by Zach Thomas at Texas State University. You may contact him at zach.thomas@txstate.edu
+Sakai su is written by Zach Thomas at Texas State University. You may contact him at zach.thomas@txstate.edu
 
 
 CONTRIBUTIONS
