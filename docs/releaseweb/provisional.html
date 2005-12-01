@@ -137,7 +137,7 @@ webservices.allowlogin=false</pre>
 
 <br/><strong>Security:</strong>
 
-<p>Any site enabling web-services should understand the security implications of Sakai web services. Web services should be run over HTTPS in any production environment as IDs, Passwords, and Sakai Session Keys are pased back and forth in plain text using SOAP. This is quite reasonable (and equivalent to how browser-based login and browser cookies work) but depends on HTTPS for protection of the materials contained in the SOAP envelope.</p><br/>
+<p>Any site enabling web-services should understand the security implications of Sakai web services. Web services should be run over HTTPS in any production environment as IDs, Passwords, and Sakai Session Keys are passed back and forth in plain text using SOAP. This is quite reasonable (and equivalent to how browser-based login and browser cookies work) but depends on HTTPS for protection of the materials contained in the SOAP envelope.</p><br/>
 
 <a name="roster"></a>
 <h2>Roster</h2>
@@ -151,7 +151,11 @@ webservices.allowlogin=false</pre>
 
 <br/><strong>Known Issues:</strong>
 
-<p>There is not standard way to provision the pictures in the Roster tool in this release. If you would like information on how to provision the pictures, contact Lance Speelmon (lance@indiana.edu).</p><br/>
+<p>There is no standard way to provision the pictures in the Roster tool in this release, but there is sample code you can take as a model for creating your own photo load job, and you can find it on subversion:</p>
+
+<p><a href="https://source.sakaiproject.org/svn/trunk/oncourse/src/scheduler/scheduler-component-shared/src/java/org/sakaiproject/component/app/scheduler/jobs/UpdateProfilePhotoJob.java">https://source.sakaiproject.org/svn/trunk/oncourse/src/scheduler/scheduler-component-shared/<br>src/java/org/sakaiproject/component/app/scheduler/jobs/UpdateProfilePhotoJob.java</a></p>
+
+<p>If you would like further information on how to provision the pictures, contact Lance Speelmon (lance@indiana.edu).</p><br/>
 
 <a name="twinpeaks"></a>
 <h2>TwinPeaks</h2>
