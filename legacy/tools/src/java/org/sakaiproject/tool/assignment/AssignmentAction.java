@@ -5953,7 +5953,7 @@ extends PagedResourceActionII
 				}
 				returnResources = assignments;
 			}
-			else if (AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)) && view.equals(rb.getString("lisofass2"))
+			else if (AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)) && view.equals(rb.getString("stuvie"))
 				|| !AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)))
 			{
 				// in the student list view of assignments
@@ -6258,7 +6258,7 @@ extends PagedResourceActionII
 	
 				}
 			}
-			else if (AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)) && view.equals(rb.getString("lisofass2"))
+			else if (AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)) && view.equals(rb.getString("stuvie"))
 					|| !AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)))
 			{
 				//in the student list view of assignments
