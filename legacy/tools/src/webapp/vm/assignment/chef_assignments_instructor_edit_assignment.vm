@@ -52,6 +52,8 @@
 				<a href="#" title="$!tlang.getString('gen.grarep')" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.grarep')';document.editForm.submit();return false;">$!tlang.getString("gen.grarep")</a>
 			#end
 			<a href="#" title="$!tlang.getString('gen.stuvie')" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.stuvie')';document.editForm.submit();return false;">$!tlang.getString("gen.stuvie")</a>
+		#end
+		#if ($allowUpdateSite)
 			<a href="#" title="$tlang.getString('permis')" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='permissions';document.editForm.submit();return false;">$tlang.getString('permis')</a>
 		#end
 	</div>

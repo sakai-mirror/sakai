@@ -8,6 +8,8 @@
 					<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>
 				#end
 				<span style="margin:.5em">$!tlang.getString('gen.stuvie')</span>
+		#end
+		#if ($allowUpdateSite)
 				<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
 			</div>
 		#end

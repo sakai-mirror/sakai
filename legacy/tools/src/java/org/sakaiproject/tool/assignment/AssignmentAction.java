@@ -68,6 +68,7 @@ import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
@@ -858,12 +859,20 @@ extends PagedResourceActionII
 		
 		List assignments = prepPage(state);
 		boolean allowRemove = false;
-		for(Iterator i=assignments.iterator();!allowRemove && i.hasNext();)
+		boolean allowRead = false;
+		for(Iterator i=assignments.iterator();i.hasNext();)
 		{
+			String assignmentReference = ((Assignment) i.next()).getReference();
+			
 			// see if user allowed to remove at least one assignment
-			allowRemove=AssignmentService.allowRemoveAssignment(((Assignment) i.next()).getReference());
+			allowRemove=AssignmentService.allowRemoveAssignment(assignmentReference);
+			
+			// see if user allowed to read at least one assignment
+			allowRead=AssignmentService.allowGetAssignment(assignmentReference);
+			
 		}
 		context.put("allowRemove", new Boolean(allowRemove));
+		context.put("allowRead", new Boolean(allowRead));
 		
 		context.put ("assignments", assignments.iterator());
 		
@@ -5877,43 +5886,140 @@ extends PagedResourceActionII
 		
 		if (mode.equalsIgnoreCase(MODE_LIST_ASSIGNMENTS))
 		{
-			// read all Assignments
-			Iterator allAssignmentsIterator = null;
-
-			// get those opened and posted assignments
-			allAssignmentsIterator = AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING));
-
-
-			// deal with no assignments
-			if (allAssignmentsIterator == null) return new Vector();
-			
-			Vector assignments = new Vector();
-
-			while (allAssignmentsIterator.hasNext())
+			String view = "";
+			if (state.getAttribute(STATE_SELECTED_VIEW) != null)
 			{
-				Assignment a = (Assignment) allAssignmentsIterator.next();
-
-				String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
-				if (deleted == null || deleted.equals(""))
+				view = (String) state.getAttribute(STATE_SELECTED_VIEW);
+			}
+			
+			if (AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)) && view.equals(rb.getString("lisofass1")))
+			{
+				// read all Assignments
+				Iterator allAssignmentsIterator = null;
+	
+				// get those opened and posted assignments
+				allAssignmentsIterator = AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING));
+	
+				// deal with no assignments
+				if (allAssignmentsIterator == null) return new Vector();
+				
+				Vector assignments = new Vector();
+	
+				while (allAssignmentsIterator.hasNext())
 				{
-					// not deleted, show it
-					if (search != null && !search.equals(""))
+					Assignment a = (Assignment) allAssignmentsIterator.next();
+	
+					String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
+					if (deleted == null || deleted.equals(""))
 					{
-						// filtering if searching
-						if (	StringUtil.containsIgnoreCase(a.getTitle(),search)
-							||	StringUtil.containsIgnoreCase(a.getContent().getInstructions(),search))
+						// not deleted, show it
+						if (search != null && !search.equals(""))
 						{
-							assignments.add(a);
+							// filtering if searching
+							if (	StringUtil.containsIgnoreCase(a.getTitle(),search)
+								||	StringUtil.containsIgnoreCase(a.getContent().getInstructions(),search))
+							{
+								if (a.getDraft())
+								{
+									//for draft assignment, only admin users or the creator can see it
+									if (SecurityService.isSuperUser() || a.getCreator().equals(UserDirectoryService.getCurrentUser().getId()))
+									{
+										assignments.add(a);
+									}
+								}
+								else
+								{
+									assignments.add(a);
+								}
+							}
+						}
+						else
+						{
+							if (a.getDraft())
+							{
+								//for draft assignment, only admin users or the creator can see it
+								if (SecurityService.isSuperUser() || a.getCreator().equals(UserDirectoryService.getCurrentUser().getId()))
+								{
+									assignments.add(a);
+								}
+							}
+							else
+							{
+								assignments.add(a);
+							}
 						}
 					}
-					else
+	
+				}
+				returnResources = assignments;
+			}
+			else if (AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)) && view.equals(rb.getString("lisofass2"))
+				|| !AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)))
+			{
+				// in the student list view of assignments
+				Iterator assignments = AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING));
+				Time currentTime= TimeService.newTime();
+				while (assignments.hasNext ())
+				{
+					Assignment a = (Assignment) assignments.next ();
+					try
 					{
-						assignments.add(a);
+						AssignmentSubmission submission = AssignmentService.getSubmission(a.getReference(), (User) state.getAttribute(STATE_USER));
+						String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
+						if (deleted == null || deleted.equals("") || (deleted.equalsIgnoreCase(Boolean.TRUE.toString()) && submission!=null))
+						{
+							// show not deleted assignments and those deleted assignments but the user has made submissions to them
+							Time openTime = a.getOpenTime();
+							if (openTime!=null && currentTime.after (openTime) && !a.getDraft())
+							{
+								if (search != null && !search.equals(""))
+								{
+									// search based on assignment title and instructions
+									if (	StringUtil.containsIgnoreCase(a.getTitle(),search)
+										||	StringUtil.containsIgnoreCase(a.getContent().getInstructions(),search))
+									{
+										if (a.getDraft())
+										{
+											//for draft assignment, only admin users or the creator can see it
+											if (SecurityService.isSuperUser() || a.getCreator().equals(UserDirectoryService.getCurrentUser().getId()))
+											{
+												returnResources.add(a);
+											}
+										}
+										else
+										{
+											returnResources.add(a);
+										}
+									}
+								}
+								else
+								{
+									if (a.getDraft())
+									{
+										//for draft assignment, only admin users or the creator can see it
+										if (SecurityService.isSuperUser() || a.getCreator().equals(UserDirectoryService.getCurrentUser().getId()))
+										{
+											returnResources.add(a);
+										}
+									}
+									else
+									{
+										returnResources.add(a);
+									}
+								}
+							}
+						}
+					}
+					catch (IdUnusedException e)
+					{
+						addAlert(state, rb.getString("cannotfin3"));
+					}
+					catch (PermissionException e)
+					{
+						addAlert(state, rb.getString("youarenot14"));
 					}
 				}
-
 			}
-			returnResources = assignments;
 		}
 		/*else if (mode.equalsIgnoreCase(MODE_INSTRUCTOR_VIEW_STUDENTS_ASSIGNMENT))
 		{
@@ -6005,50 +6111,6 @@ extends PagedResourceActionII
 			
 			returnResources = submissions;
 		}
-		else if (mode.equalsIgnoreCase(MODE_LIST_ASSIGNMENTS))
-		{
-			// in the student list view of assignments
-			Iterator assignments = AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING));
-			Time currentTime= TimeService.newTime();
-			while (assignments.hasNext ())
-			{
-				Assignment a = (Assignment) assignments.next ();
-				try
-				{
-					AssignmentSubmission submission = AssignmentService.getSubmission(a.getReference(), (User) state.getAttribute(STATE_USER));
-					String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
-					if (deleted == null || deleted.equals("") || (deleted.equalsIgnoreCase(Boolean.TRUE.toString()) && submission!=null))
-					{
-						// show not deleted assignments and those deleted assignments but the user has made submissions to them
-						Time openTime = a.getOpenTime();
-						if (openTime!=null && currentTime.after (openTime) && !a.getDraft())
-						{
-							if (search != null && !search.equals(""))
-							{
-								// search based on assignment title and instructions
-								if (	StringUtil.containsIgnoreCase(a.getTitle(),search)
-									||	StringUtil.containsIgnoreCase(a.getContent().getInstructions(),search))
-								{
-									returnResources.add (a);
-								}
-							}
-							else
-							{
-								returnResources.add(a);
-							}
-						}
-					}
-				}
-				catch (IdUnusedException e)
-				{
-					addAlert(state, rb.getString("cannotfin3"));
-				}
-				catch (PermissionException e)
-				{
-					addAlert(state, rb.getString("youarenot14"));
-				}
-			}
-		}
 		else if (mode.equalsIgnoreCase(MODE_INSTRUCTOR_GRADE_ASSIGNMENT))
 		{
 			try
@@ -6133,42 +6195,113 @@ extends PagedResourceActionII
 		// all the resources for paging 
 		int size = 0;
 		
-		if (mode.equalsIgnoreCase(MODE_LIST_ASSIGNMENTS) && view.equals(rb.getString("gen.liofass")))
+		if (mode.equalsIgnoreCase(MODE_LIST_ASSIGNMENTS))
 		{
 			size = 0;
 			
-			// read all Assignments
-			Iterator allAssignmentsIterator = null;
-
-			// get those opened and posted assignments
-			allAssignmentsIterator = AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING));
-
-			// deal with no assignments
-			if (allAssignmentsIterator == null) return 0;
-			
-			while (allAssignmentsIterator.hasNext())
+			if (AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)) && view.equals(rb.getString("lisofass1")))
 			{
-				Assignment a = (Assignment) allAssignmentsIterator.next();
-
-				String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
-				if (deleted == null || deleted.equals(""))
+			
+				// read all Assignments
+				Iterator allAssignmentsIterator = null;
+	
+				// get those opened and posted assignments
+				allAssignmentsIterator = AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING));
+	
+				// deal with no assignments
+				if (allAssignmentsIterator == null) return 0;
+				
+				while (allAssignmentsIterator.hasNext())
 				{
-					// not deleted, show it
-					if (search != null && !search.equals(""))
+					Assignment a = (Assignment) allAssignmentsIterator.next();
+	
+					String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
+					if (deleted == null || deleted.equals(""))
 					{
-						// filtering if searching
-						if (	StringUtil.containsIgnoreCase(a.getTitle(),search)
-							||	StringUtil.containsIgnoreCase(a.getContent().getInstructions(),search))
+						// not deleted, show it
+						if (search != null && !search.equals(""))
 						{
-							size++;
+							// filtering if searching
+							if (	StringUtil.containsIgnoreCase(a.getTitle(),search)
+								||	StringUtil.containsIgnoreCase(a.getContent().getInstructions(),search))
+							{
+								if (a.getDraft())
+								{
+									//for draft assignment, only admin users or the creator can see it
+									if (SecurityService.isSuperUser() || a.getCreator().equals(UserDirectoryService.getCurrentUser().getId()))
+									{
+										size++;
+									}
+								}
+								else
+								{
+									size++;
+								}
+							}
+						}
+						else
+						{
+							if (a.getDraft())
+							{
+								//for draft assignment, only admin users or the creator can see it
+								if (SecurityService.isSuperUser() || a.getCreator().equals(UserDirectoryService.getCurrentUser().getId()))
+								{
+									size++;
+								}
+							}
+							else
+							{
+								size++;
+							}
 						}
 					}
-					else
+	
+				}
+			}
+			else if (AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)) && view.equals(rb.getString("lisofass2"))
+					|| !AssignmentService.allowAddAssignment((String) state.getAttribute (STATE_CONTEXT_STRING)))
+			{
+				//in the student list view of assignments
+				Iterator assignments = AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING));
+				Time currentTime= TimeService.newTime();
+				while (assignments.hasNext ())
+				{
+					Assignment a = (Assignment) assignments.next ();
+					try
 					{
-						size++;
+						AssignmentSubmission submission = AssignmentService.getSubmission(a.getReference(), (User) state.getAttribute(STATE_USER));
+						String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
+						if (deleted == null || deleted.equals("") || (deleted.equalsIgnoreCase(Boolean.TRUE.toString()) && submission!=null))
+						{
+							// show not deleted assignments and those deleted assignments but the user has made submissions to them
+							Time openTime = a.getOpenTime();
+							if (openTime!=null && currentTime.after (openTime) && !a.getDraft())
+							{
+								if (search != null && !search.equals(""))
+								{
+									// search based on assignment title and instructions
+									if (	StringUtil.containsIgnoreCase(a.getTitle(),search)
+										||	StringUtil.containsIgnoreCase(a.getContent().getInstructions(),search))
+									{
+										size++;
+									}
+								}
+								else
+								{
+									size++;
+								}
+							}
+						}
+					}
+					catch (IdUnusedException e)
+					{
+						addAlert(state, rb.getString("cannotfin3"));
+					}
+					catch (PermissionException e)
+					{
+						addAlert(state, rb.getString("youarenot14"));
 					}
 				}
-
 			}
 		}
 		else if (mode.equalsIgnoreCase(MODE_INSTRUCTOR_VIEW_STUDENTS_ASSIGNMENT))
@@ -6252,52 +6385,6 @@ extends PagedResourceActionII
 						}
 					}
 					catch (Exception e){}
-				}
-			}
-		}
-		else if (mode.equalsIgnoreCase(MODE_LIST_ASSIGNMENTS))
-		{
-			size = 0;
-			
-			// in the student list view of assignments
-			Iterator assignments = AssignmentService.getAssignmentsForContext ((String) state.getAttribute (STATE_CONTEXT_STRING));
-			Time currentTime= TimeService.newTime();
-			while (assignments.hasNext ())
-			{
-				Assignment a = (Assignment) assignments.next ();
-				try
-				{
-					AssignmentSubmission submission = AssignmentService.getSubmission(a.getReference(), (User) state.getAttribute(STATE_USER));
-					String deleted = a.getProperties().getProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED);
-					if (deleted == null || deleted.equals("") || (deleted.equalsIgnoreCase(Boolean.TRUE.toString()) && submission!=null))
-					{
-						// show not deleted assignments and those deleted assignments but the user has made submissions to them
-						Time openTime = a.getOpenTime();
-						if (openTime!=null && currentTime.after (openTime) && !a.getDraft())
-						{
-							if (search != null && !search.equals(""))
-							{
-								// search based on assignment title and instructions
-								if (	StringUtil.containsIgnoreCase(a.getTitle(),search)
-									||	StringUtil.containsIgnoreCase(a.getContent().getInstructions(),search))
-								{
-									size++;
-								}
-							}
-							else
-							{
-								size++;
-							}
-						}
-					}
-				}
-				catch (IdUnusedException e)
-				{
-					addAlert(state, rb.getString("cannotfin3"));
-				}
-				catch (PermissionException e)
-				{
-					addAlert(state, rb.getString("youarenot14"));
 				}
 			}
 		}

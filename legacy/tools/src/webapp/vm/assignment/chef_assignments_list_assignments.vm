@@ -51,6 +51,7 @@
 				</form>
 			</div>
 		#end
+		#if ($!allowRead)
 		<div class="rightNav">
 			<span class="instruction">
 				Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items
@@ -105,7 +106,8 @@
 				#end
 			#end
 		</div>
-	</div>	
+	</div>
+	#end	
 		<form name="listAssignmentsForm" action="#toolForm("$action")" method="post">
 			<input type="hidden" name="source" value="0" />			
 			<table class="listHier" border="0" cellspacing="0" summary="Table contains list of assignments.">
@@ -412,9 +414,11 @@
 					#end
 				#end
 			</table>
-			<p class="act">
-				<input type="submit" class="active" name="eventSubmit_doDelete_confirm_assignment" value="$tlang.getString("update")" />
-			</p>
+			#if ($!allowRemove && $!view.equals($!tlang.getString('gen.liofass')))
+				<p class="act">
+					<input type="submit" class="active" name="eventSubmit_doDelete_confirm_assignment" value="$tlang.getString("update")" />
+				</p>
+			#end
 		</form>
 	#end
 </div>
