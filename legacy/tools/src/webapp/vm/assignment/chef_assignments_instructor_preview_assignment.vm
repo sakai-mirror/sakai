@@ -310,7 +310,7 @@
 				</p>				
 			#end
 			<div class="act">
-				<input type="submit" name="eventSubmit_doPost_assignment" value="$tlang.getString("gen.pos")" />
+				<input type="submit" class="active" name="eventSubmit_doPost_assignment" value="$tlang.getString("gen.pos")" />
 				<input type="submit" name="eventSubmit_doSave_assignment" value="$tlang.getString("gen.savdra")" />
 				#if ($!value_assignment_id.length() > 0)
 					## back to edit assignment page
