@@ -112,8 +112,8 @@ The provisional tools available in 2.1.0 are:
 
     * Rwiki - a wiki tool
     * SU - an administrative tool for taking on the identity of another system user
-    * Sakaiscript - a tool used for Sakai webservices
-    * Roster - a tool for displaying the class roster, and potentially photos where available
-    * TwinPeaks - 
+    * Sakaiscript - a set of webservice endpoints for manipulating Sakai data
+    * Roster - a tool for displaying the class roster, and potentially photos with the proper provisioning
+    * TwinPeaks - a tool for searching repositories 
     
 See the readmes in docs/provisional for details.
