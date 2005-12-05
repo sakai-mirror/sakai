@@ -85,6 +85,100 @@ function getLoaderObject(loaderObjectID) {
 }
 
 AsyncDIVLoader.prototype.loadXMLDoc = function(url,callBackFunction) {
+    this.fullLoadXMLDoc(url,callBackFunction,"GET",null,null);
+}
+AsyncDIVLoader.prototype.encodeContent = function(contentObject) {
+    var form_contents = '';
+    if ( typeof(content) == 'array' ) {
+        for (var i in object)
+            form_contents += (form_contents ? '&' : '') + i + '=' + escape(object[i]);
+    } else {
+        if ( contentObject.elements ) {
+            for( var i = 0; i < contentObject.elements.length; i++ ) {
+                  var thisElement = contentObject.elements[i];
+                  if ( thisElement.tagName.toLowerCase() == 'input' &&
+                      (thisElement.type.toLowerCase() == 'checkbox' ||
+                      thisElement.type.toLowerCase() == 'radio') ) {
+                      form_contents += (form_contents ? '&' : '') + 
+                          thisElement.name + '=' +escape(thisElement.checked);
+                                     
+                  } else {
+                      form_contents += (form_contents ? '&' : '') + 
+                          thisElement.name + '=' +escape(thisElement.value);
+                  } 
+            }
+        }
+    }
+    log("FORM Content XXX encoded as "+form_contents);
+    return form_contents;
+}
+
+AsyncDIVLoader.prototype.createFormObject = function(contentObject,url) {
+    var formObject = document.createElement("FORM");
+    formObject.action = url;
+    formObject.method = "POST";
+    if ( typeof(content) == 'array' ) {
+        for (var i in object) {
+            var formElement = document.createElement("INPUT");
+            formElement.type = "hidden";
+            formElement.name = i;
+            formElement.value = object[i];
+            formObject.appendChild(formElement);
+        }
+    } else {
+        if ( contentObject.elements ) {
+            for( var i = 0; i < contentObject.elements.length; i++ ) {
+                  var thisElement = contentObject.elements[i];
+                  if ( thisElement.tagName.toLowerCase() == 'input' &&
+                      (thisElement.type.toLowerCase() == 'checkbox' ||
+                      thisElement.type.toLowerCase() == 'radio' )) {
+                      var formElement = document.createElement("INPUT");
+                      formElement.type = thisElement.type;
+                      formElement.name = thisElement.name;
+                      formElement.checked = thisElement.checked;
+                      formObject.appendChild(formElement);
+                  } else {
+                      var formElement = document.createElement("INPUT");
+                      formElement.type = "hidden";
+                      formElement.name = thisElement.name;
+                      formElement.value = thisElement.value;
+                      formObject.appendChild(formElement);
+                  } 
+            }
+        }
+    }
+    log("FORM Content encoded as "+formObject.innerHTML);
+    return formObject;
+}
+
+AsyncDIVLoader.prototype.createFormContent = function(contentObject,url,formID) {
+    var form_contents = '<form action="'+escape(url)+'" method="POST" id="'+formID+'" >';
+    if ( typeof(content) == 'array' ) {
+        for (var i in object)
+            form_contents += '<input type="hidden" name="'+i+'" value="'+escape(object[i])+'" />"';
+    } else {
+        if ( contentObject.elements ) {
+            for( var i = 0; i < contentObject.elements.length; i++ ) {
+                  var thisElement = contentObject.elements[i];
+                  if ( thisElement.tagName.toLowerCase() == 'input' &&
+                      (thisElement.type.toLowerCase() == 'checkbox' ||
+                      thisElement.type.toLowerCase() == 'radio') ) {
+                      form_contents +=  
+                          '<input type="'+thisElement.type+'" name="'+thisElement.name+'" "'+(thisElement.checked? 'checked' : '' )+' />';
+                                        
+                  } else {
+                      form_contents +=  
+                          '<input type="hidden" name="'+thisElement.name+'" value="'+escape(thisElement.value)+'" /> "';
+                  } 
+            }
+        }
+    }
+    var form_contents = '</form>';
+    log("FORM Content encoded as "+form_contents);
+    return form_contents;
+}
+
+AsyncDIVLoader.prototype.fullLoadXMLDoc = function(url,callBackFunction,method,content) {
     		// branch for native XMLHttpRequest object
     		if ( this.async ) 
     		{		
@@ -102,9 +196,17 @@ AsyncDIVLoader.prototype.loadXMLDoc = function(url,callBackFunction) {
         					this.setOnReadyStateChange();
         					this.lastLoadMethod = "Native";
         					this.lastLoadStatus = this.lastLoadMethod+": starting";
-        					
-        					this.req.open("GET", url, true);
-        					this.req.send(null);
+        					if ( method == "GET" ) {
+        					    this.req.open("GET", url, true);
+        					    this.req.send(null);
+        					} else {
+        					    // encode the contents of the post and submit
+        					    log(" Doing a post for "+url);
+           	 			    this.req.open('POST',url,true);
+                             this.req.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+                             this.req.send(this.encodeContent(content));
+                             
+        					}
         				} 
         				else
         				{ 
@@ -150,8 +252,15 @@ AsyncDIVLoader.prototype.loadXMLDoc = function(url,callBackFunction) {
         					this.setOnReadyStateChange();
         					this.lastLoadMethod = "ActiveX";
         					this.lastLoadStatus = this.lastLoadMethod+": starting";
-           	 				this.req.open("GET", url, true);
-           	 				this.req.send();
+        					if ( this.method == "GET" ) {
+           	 			this.req.open("GET", url, true);
+           	 			    this.req.send();
+           	 			} else {
+           	 			    // encode the contents of the post and submit
+           	 			    this.req.open('POST',url,true);
+                             this.req.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+                             this.req.send(this.encodeContent(content));
+           	 			}
            	 				
         				}
         				else 
@@ -214,8 +323,15 @@ AsyncDIVLoader.prototype.loadXMLDoc = function(url,callBackFunction) {
 				
 					// 3
 					this.lastLoadMethod = "IFrame";
-					
-					this.hiddenIFrame.src=url;
+// this will cause the load.
+// in the case of a POST we need to write a form and post it
+					if ( this.method == "GET" ) {
+					    this.hiddenIFrame.src=url;
+					} else {
+					    var formObject = createFormObject(content,url);
+					    this.hiddenIFrame.appendChild(formObject);
+					    formObject.submit();
+					}
 					this.loadComplete = false;
 					this.callBackFunction = callBackFunction;
 					this.setInvokeCallback();
@@ -228,19 +344,38 @@ AsyncDIVLoader.prototype.loadXMLDoc = function(url,callBackFunction) {
 				    // This is for IE5 PC, which does not allow dynamic creation
       				// and manipulation of an iframe object. Instead, we'll fake
       				// it up by creating our own objects.
-					this.lastLoadMethod = "IFrame_FakeObject";
-      				iframeHTML='\<iframe id="'
-      				iframeHTML+=
-      				iframeHTML+='" ';
-			        iframeHTML+='"><\/iframe>';
-      				this.hiddenDiv.innerHTML+=iframeHTML;
-      				this.hiddenIFrame = new Object();
-      				this.hiddenIFrame.document = new Object();
-      				this.hiddenIFrame.document.location = new Object();
-      				this.hiddenIFrame.document.location.iframe = document.getElementById('RSIFrame');
-      				this.hiddenIFrame.document.location.replace = function(location) {
-       	 					this.iframe.src = url;
+      				if ( this.method == "GET" ) {
+    					    this.lastLoadMethod = "IFrame_FakeObject";
+      				    iframeHTML='\<iframe id="'
+      				    iframeHTML+=
+      				    iframeHTML+='" ';
+			             iframeHTML+='"><\/iframe>';
+          				this.hiddenDiv.innerHTML+=iframeHTML;
+          				this.hiddenIFrame = new Object();
+      	    		    	    this.hiddenIFrame.document = new Object();
+      		    		    this.hiddenIFrame.document.location = new Object();
+      				    this.hiddenIFrame.document.location.iframe = document.getElementById('RSIFrame');
+      				    this.hiddenIFrame.document.location.replace = function(location) {
+       	 				    	this.iframe.src = url;
       						};
+      				} else {
+      				    // write the contents of the form and submit
+      				    var formID = this.loaderName + '_AJAXForm';
+      				    iframeHTML='\<iframe id="'
+      				    iframeHTML+=
+      				    iframeHTML+='" ';
+			             iframeHTML+='">';
+			             ifremeHTML+= createFormContent(content,url,formID);
+			             iframeHTML+='<\/iframe>';
+          				this.hiddenDiv.innerHTML+=iframeHTML;
+          				this.hiddenIFrame = new Object();
+      	    		    	    this.hiddenIFrame.document = new Object();
+      		    		    this.hiddenIFrame.document.location = new Object();
+      				    this.hiddenIFrame.document.location.iframe = document.getElementById('RSIFrame');
+                         // so the form is all set up, how do I get hold of the form object to submit it ?
+                         var formObject = document.getElementById(formID);
+                         formObject.submit();      				    
+      				}
 					this.loadComplete = false;
 					this.callBackFunction = callBackFunction;
 					this.setInvokeCallback();

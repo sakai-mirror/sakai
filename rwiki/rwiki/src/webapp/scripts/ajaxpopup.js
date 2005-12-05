@@ -12,11 +12,12 @@ var popupindex = 0;
 var asyncLoad = false;
 var progressiveLoad = false;
 var hasresize = false;
+var targetForm = null;
 				
 function popupCallback(responsestring) {
 	if ( popupDivStack[popupindex] != null ) 
 	{
-		//log("popupcallback "+responsestring);
+		log("popupcallback "+responsestring);
 		popupDivStack[popupindex].innerHTML = responsestring;
 		popupDivStack[popupindex].style.visibility = "visible";
 		popupDivStack[popupindex].style.zIndex="100";
@@ -164,7 +165,7 @@ function updatePopupFocus() {
 					}
 					if ( lastPopupFocus != popupFocus ) 
 					{
-						//log("updateFormFocus, change of focus from "+lastPopupFocus+" to "+popupFocus);
+						log("updateFormFocus, change of focus from "+lastPopupFocus+" to "+popupFocus);
 						// changed focus
 						if ( popupDivStack[popupindex] != null ) 
 						{
@@ -177,7 +178,7 @@ function updatePopupFocus() {
 								var width =  popupFocus.offsetWidth;
 								var height =  popupFocus.offsetHeight;
 								pos.y += height;
-								//log("Width "+width+":"+height+":"+pos.y+":"+pos.x);
+								log("Width "+width+":"+height+":"+pos.y+":"+pos.x);
 								popupDivStack[popupindex].style.width = width;
 								popupDivStack[popupindex].style.top = pos.y+"px ";
 								popupDivStack[popupindex].style.left = pos.x+"px ";
@@ -192,10 +193,14 @@ function updatePopupFocus() {
 					var url = popupURL+"&puid="+(popupindex+1);
 					if ( lastPopupURL != url ) 
 					{
-						//log("popupFocus reload URL "+url);
+						log("popupFocus reload URL "+url);
 						lastPopupURL = url;
 						popupShowWaiting();
-						popupLoader.loadXMLDoc(url,"popupCallback"); 
+						if ( !targetForm ) {
+						    popupLoader.loadXMLDoc(url,"popupCallback"); 
+						} else {
+						    popupLoader.fullLoadXMLDoc(url,"popupCallback","POST",targetForm);
+						}
 					}
 					
 					
@@ -206,7 +211,7 @@ function updatePopupFocus() {
 }
 function popupClose(downTo) {
 
-	//log("Doing popupclose down to "+downTo);
+	log("Doing popupclose down to "+downTo);
 	for ( i = popupindex; i >= (downTo-1); i-- ) 
 	{
 		if ( popupDivStack[i] != null )
@@ -223,6 +228,9 @@ function popupClose(downTo) {
 	}
 	popupindex = downTo-1;
 	if ( popupindex < 0 ) popupindex = 0;
+	popupFocus = null;
+	lastPopupFocus = null;
+	targetForm = null;
 }
 
 
@@ -230,8 +238,13 @@ function popupClose(downTo) {
 
 	
 function ajaxRefPopup(element,url,poplevel) {
+    ajaxRefPopupPost(element,url,poplevel,null);
+}
+
+function ajaxRefPopupPost(element,url,poplevel,tForm) {
+
 	
-	//log("Doing popup on "+element+" URL "+url+" Level "+poplevel+" last "+popupindex);
+	log("Doing popup on "+element+" URL "+url+" Level "+poplevel+" last "+popupindex);
 	if ( popupLoader == null ) 
 	{
 		popupLoader = new AsyncDIVLoader();
@@ -241,17 +254,19 @@ function ajaxRefPopup(element,url,poplevel) {
 	popupindex = poplevel;
 	popupFocus = element;
 	popupURL = url;
-	//log("LOADING");
+	targetForm = tForm;
+	log("LOADING");
 	if ( asyncLoad ) {
-	   //log("Doing Async Load");
+	   log("Doing Async Load");
 	   window.setTimeout("updatePopupFocus()",100);
 	} else {
-       //log("Doing Direct Focus");	
+       log("Doing Direct Focus");	
 	   updatePopupFocus();
 	}
-	//log("Loading DONE");
+	log("Loading DONE");
 	
 }
+
 function getAbsolutePos(el) {
 					var SL = 0, ST = 0;
 					var is_div = /^div$/i.test(el.tagName);
@@ -280,7 +295,7 @@ function showPopupHere(el,divid) {
 			var width =  el.offsetWidth;
 			var height =  el.offsetHeight;
 			pos.y += height;
-			//log("Width "+width+":"+height+":"+pos.y+":"+pos.x);
+			log("Width "+width+":"+height+":"+pos.y+":"+pos.x);
 			//targetdiv.style.width = width;
 			targetdiv.style.top = pos.y+"px ";
 			targetdiv.style.left = pos.x+"px ";
