@@ -44,6 +44,9 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  */
 public class SakaiBasicDataSource extends BasicDataSource
 {
+	/** Configuration: to rollback each connection when returned to the pool. */
+	protected boolean m_rollbackOnReturn = false;
+
 	/**
 	 * Set the default transaction isolation level from a string value, based on the settings and values in java.sql.Connection
 	 * 
@@ -79,6 +82,17 @@ public class SakaiBasicDataSource extends BasicDataSource
 		{
 			setDefaultTransactionIsolation(PoolableConnectionFactory.UNKNOWN_TRANSACTIONISOLATION);			
 		}
+	}
+
+	/**
+	 * Set the rollback on borrow configuration.
+	 * 
+	 * @param value
+	 *        if true, rollback each connection when borrowed from the pool, if false, do not.
+	 */
+	public void setRollbackOnBorrow(boolean value)
+	{
+		m_rollbackOnReturn = value;
 	}
 
 	/**
@@ -202,7 +216,7 @@ public class SakaiBasicDataSource extends BasicDataSource
 		{
 			connectionFactory = new SakaiPoolableConnectionFactory(driverConnectionFactory, connectionPool, statementPoolFactory,
 					validationQuery, defaultReadOnly, defaultAutoCommit, defaultTransactionIsolation, defaultCatalog,
-					/* abandonedConfig Sakai: */ null);
+					/* abandonedConfig Sakai: */ null, m_rollbackOnReturn);
 			if (connectionFactory == null)
 			{
 				throw new SQLException("Cannot create PoolableConnectionFactory");
