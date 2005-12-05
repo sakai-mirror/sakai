@@ -137,7 +137,7 @@
 	
 	<!-- Service for creating commands in URL Processing -->
 	<bean id="commandService"
-		class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.CommandServiceImpl">
+		class="uk.ac.cam.caret.sakai.rwiki.tool.service.impl.CommandServiceImpl">
 		<property name="log"><ref bean="rwiki-logger"/></property>
 		<property name="commandMap">
 			<map>

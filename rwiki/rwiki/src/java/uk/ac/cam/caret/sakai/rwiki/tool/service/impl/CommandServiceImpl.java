@@ -20,7 +20,7 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
+package uk.ac.cam.caret.sakai.rwiki.tool.service.impl;
 
 import java.io.IOException;
 import java.text.MessageFormat;
