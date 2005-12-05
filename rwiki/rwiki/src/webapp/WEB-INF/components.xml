@@ -23,6 +23,10 @@
   + -->
   <import resource="datamigrationComponents.xml" />
   <!-- +
+  + Data migration
+  + -->
+  <import resource="messagingComponents.xml" />
+  <!-- +
   + Tool level components
   + -->
   <import resource="toolComponents.xml" />
@@ -31,12 +35,12 @@
   <bean id="rwiki-logger"
     parent="org.sakaiproject.service.framework.log.Logger">
   </bean>
-	
+
   <!-- each transaction manager, and therefore session factory must have its own data source,
   so overload here to avoid getting the central one -->
   <bean id="sakai-rwiki.javax.sql.DataSource" parent="javax.sql.DataSource">
   </bean>
-	
+
   <!-- extend the  sakai base session factory -->
   <!--
   class="org.springframework.orm.hibernate.LocalSessionFactoryBean"
@@ -49,8 +53,8 @@
     </property>
     <property name="mappingResources">
       <list>
-	<value>
-	  uk/ac/cam/caret/sakai/rwiki/component/model/impl/RWiki.hbm.xml</value>
+	<value>uk/ac/cam/caret/sakai/rwiki/component/model/impl/RWiki.hbm.xml</value>
+	<value>uk/ac/cam/caret/sakai/rwiki/component/message/model/impl/message.hbm.xml</value>
       </list>
     </property>
   </bean>
