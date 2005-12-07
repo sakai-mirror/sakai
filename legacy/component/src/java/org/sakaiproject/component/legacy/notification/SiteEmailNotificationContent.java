@@ -129,9 +129,9 @@ public class SiteEmailNotificationContent extends SiteEmailNotification
 		{
 			buf.append(rb.getString("anewres2"));
 		}
-		buf.append(" \"");
-		buf.append(rb.getString("the"));
 		buf.append(" ");
+		buf.append(rb.getString("the"));
+		buf.append(" \"");
 		buf.append(title);
 		buf.append("\" ");
 		buf.append(rb.getString("sitat"));
