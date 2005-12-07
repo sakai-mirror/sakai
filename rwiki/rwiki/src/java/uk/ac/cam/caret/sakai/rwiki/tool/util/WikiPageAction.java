@@ -61,10 +61,23 @@ public class WikiPageAction {
     
     public static final WikiPageAction EDITCOMMENT_ACTION = new WikiPageAction("commentedit");
 
+    public static final WikiPageAction LISTCOMMENT_ACTION = new WikiPageAction("commentslist");
+
     public static final WikiPageAction NEWCOMMENT_SAVE_ACTION = new WikiPageAction("commentnewsave");
     
     public static final WikiPageAction EDITCOMMENT_SAVE_ACTION = new WikiPageAction("commenteditsave");
 
+    public static final WikiPageAction LISTPRESENCE_ACTION = new WikiPageAction("presencelist");
+    
+    public static final WikiPageAction OPENPAGECHAT_ACTION = new WikiPageAction("presencechat");
+    
+    public static final WikiPageAction OPENSPACECHAT_ACTION = new WikiPageAction("presencechat");
+    
+    public static final WikiPageAction LISTPAGECHAT_ACTION = new WikiPageAction("presencechatlist");
+    
+    public static final WikiPageAction LISTSPACECHAT_ACTION = new WikiPageAction("presencechatlist");
+    
+    
     private String name;
     
     private WikiPageAction(String name) {

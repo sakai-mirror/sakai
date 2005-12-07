@@ -247,10 +247,22 @@ a:hover.rwiki_help_popup_link, a:active.rwiki_help_popup_link    {
 }
 
 .rwiki_comments {
+/*   background-color: #FFFFCC; */
    border-top: 1px solid #ccc;
    border-bottom: 1px solid #ccc;
+/*   border-left: 1px solid #ccc;
+   border-right: 1px solid #ccc; */
 }
-
+/*#rwiki_comments_sidebar {    
+    font-size: 75%;
+	float: right;
+	width: 190px;
+	\width: 200px;
+	w\idth: 190px;
+	margin: 0;
+	margin-left: 5px;
+	padding: 10px 5px 5px 0px;
+}*/
 
 .rwiki_info_page_granted {
 }

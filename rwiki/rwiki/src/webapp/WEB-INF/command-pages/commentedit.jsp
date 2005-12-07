@@ -18,7 +18,9 @@
 	</c:if>
   <c:set var="currentRWikiObject" value="${requestScope.rsacMap.currentRWikiObject}"/>
   <div class="rwiki_help_popup" >
-	    <form action="?#" method="post" >
+	    <form action="?#" method="post">
+	    <!--.AJAX based edit.-->
+	    <!--<form action="?#" method="post" onsubmit="ajaxRefPopupPost(this,'?#',2,this); return false;" >-->
 	    Edit Comment<br/>
 		<textarea cols="40" rows="10" name="content" id="content" >
 			  <c:out value="${currentRWikiObject.content}"/>

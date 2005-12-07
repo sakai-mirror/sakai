@@ -406,5 +406,39 @@ public class ViewBean {
     public String getEditCommentURL() {
         return getPageUrl(pageName,WikiPageAction.EDITCOMMENT_ACTION.getName());
     }
+    public String getListCommentsURL() {
+        return getPageUrl(pageName,WikiPageAction.LISTCOMMENT_ACTION.getName());
+    }
+    public String getListPresenceURL() {
+        return getPageUrl(pageName,WikiPageAction.LISTPRESENCE_ACTION.getName());
+    }
+
+    /**
+     * @return
+     */
+    public String getOpenPageChatURL() {
+        return getPageUrl(pageName,WikiPageAction.OPENPAGECHAT_ACTION.getName());
+    }
+
+    /**
+     * @return
+     */
+    public String getOpenSpaceChatURL() {
+        return getPageUrl(pageName,WikiPageAction.OPENSPACECHAT_ACTION.getName());
+    }
+
+    /**
+     * @return
+     */
+    public String getListPageChatURL() {
+        return getPageUrl(pageName,WikiPageAction.LISTPAGECHAT_ACTION.getName());
+    }
+
+    /**
+     * @return
+     */
+    public String getListSpaceChatURL() {
+        return getPageUrl(pageName,WikiPageAction.LISTSPACECHAT_ACTION.getName());
+    }
 
 }

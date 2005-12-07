@@ -50,6 +50,10 @@
     <property name="log"><ref bean="rwiki-logger"/></property>
     <property name="noUpdatePath"><value>/WEB-INF/command-pages/permission.jsp</value>
     </property>
+    <!--<property name="contentChangedPath"><value>/WEB-INF/command-pages/commenteditconflict.jsp</value>-->
+      <!--</property>-->
+    <!--<property name="successfulPath"><value>/WEB-INF/command-pages/commenteditcomplete.jsp</value>-->
+      <!--</property>-->
     <property name="contentChangedPath"><value>/WEB-INF/command-pages/edit.jsp</value>
     </property>
     <property name="successfulPath"><value>/WEB-INF/command-pages/view.jsp</value>
@@ -65,6 +69,10 @@
     <property name="log"><ref bean="rwiki-logger"/></property>
     <property name="noUpdatePath"><value>/WEB-INF/command-pages/permission.jsp</value>
     </property>
+    <!--<property name="contentChangedPath"><value>/WEB-INF/command-pages/commenteditconflict.jsp</value>-->
+      <!--</property>-->
+    <!--<property name="successfulPath"><value>/WEB-INF/command-pages/commenteditcomplete.jsp</value>-->
+      <!--</property>-->
     <property name="contentChangedPath"><value>/WEB-INF/command-pages/edit.jsp</value>
     </property>
     <property name="successfulPath"><value>/WEB-INF/command-pages/view.jsp</value>

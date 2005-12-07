@@ -89,6 +89,8 @@
 	  </form>
 	</div>
       <c:set var="rwikiContentStyle"  value="rwiki_content" />
+      <!--.AJAX COMMENTS.-->
+      <!--<jsp:directive.include file="comments.jsp"/>-->
 	  <jsp:directive.include file="breadcrumb.jsp"/>
 	  <!-- Creates the right hand sidebar -->
 	  <jsp:directive.include file="sidebar.jsp"/>
@@ -109,6 +111,11 @@
 	</div>
       </div>
       <jsp:directive.include file="comments.jsp"/>
+      <!--.JS LOGGING.-->
+      <!--<a href="#" onclick="document.getElementById('logdiv').innerHTML = ''; logInfo = !logInfo; return false;" >Clear</a>-->
+      <!--<div id="logdiv" >-->
+      <!--Log Info-->
+      <!--</div>-->
       <jsp:directive.include file="footer.jsp"/>
     </jsp:element>
   </html>
