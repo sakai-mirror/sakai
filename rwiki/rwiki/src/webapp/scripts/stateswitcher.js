@@ -83,10 +83,35 @@ function addMarkup(textareaid, contentMU, startMU, endMU) {
 	{
         
 		var caretPos = textarea.caretPos, repText = caretPos.text, temp_length = caretPos.text.length;
-		if ( temp_length == 0 )
+		var i=-1;
+		while (++i < repText.length && /\s/.test("" + repText.charAt(i))) {
+		}
+
+		switch (i) {
+		case 0: break;
+		case repText.length: startMU = repText + startMU;
+		repText = "";
+		break;
+		default: startMU = repText.substring(0, i) + startMU;
+		         repText = repText.substr(i);
+		}
+
+		i = repText.length;
+		while ( i > 0 && /\s/.test("" + repText.charAt(--i))) {
+		}
+
+		switch (i) {
+		case repText.length - 1: break;
+		case -1: endMU = endMU + repText; break;
+		default: endMU = endMU + repText.substr(i + 1);
+		         repText = repText.substring(0, i + 1);
+		}
+
+		
+		if ( repText.length == 0 )
 		    repText = contentMU;
 
-		caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? startMU + repText + endMU + ' ' : startMU + repText + endMU;
+		caretPos.text = startMU + repText + endMU;
 
 		textarea.focus(caretPos);
 	} 
@@ -94,22 +119,44 @@ function addMarkup(textareaid, contentMU, startMU, endMU) {
 	else if (typeof(textarea.selectionStart) != "undefined")
 	{
 		var begin = textarea.value.substr(0, textarea.selectionStart);
-		var selection = textarea.value.substr(textarea.selectionStart, textarea.selectionEnd - textarea.selectionStart);
+		var repText = textarea.value.substr(textarea.selectionStart, textarea.selectionEnd - textarea.selectionStart);
 		var end = textarea.value.substr(textarea.selectionEnd);
 		var newCursorPos = textarea.selectionStart;
 		var scrollPos = textarea.scrollTop;
-		if ( selection.length == 0 )
-		    selection = contentMU;
+		
+		var i=-1;
+		while (++i < repText.length && /\s/.test("" + repText.charAt(i))) {
+		}
+		
+		switch (i) {
+		case 0: break;
+		case repText.length: startMU = repText + startMU;
+		repText = "";
+		break;
+		default: startMU = repText.substring(0, i) + startMU;
+		         repText = repText.substr(i);
+		}
 
-        if ( selection.length > 0 && selection.charAt(selection.length-1) == ' ' ) {
-            selection = selection.substr(0,selection.length-1);
-            end = " " + end;
-        }
-		textarea.value = begin + startMU + selection + endMU + end;
+		i = repText.length;
+		while ( i > 0 && /\s/.test("" + repText.charAt(--i))) {
+		}
+
+		switch (i) {
+		case repText.length - 1: break;
+		case -1: endMU = endMU + repText; break;
+		default: endMU = endMU + repText.substr(i + 1);
+		         repText = repText.substring(0, i + 1);
+		}
+
+		
+		if ( repText.length == 0 )
+		    repText = contentMU;
+
+		textarea.value = begin + startMU + repText + endMU + end;
 
 		if (textarea.setSelectionRange)
 		{
-			textarea.setSelectionRange(newCursorPos + startMU.length, newCursorPos + startMU.length + selection.length);
+			textarea.setSelectionRange(newCursorPos + startMU.length, newCursorPos + startMU.length + repText.length);
 			textarea.focus();
 		}
 		textarea.scrollTop = scrollPos;
