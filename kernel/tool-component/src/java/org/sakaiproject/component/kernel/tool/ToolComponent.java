@@ -25,6 +25,7 @@ package org.sakaiproject.component.kernel.tool;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,6 +38,7 @@ import org.sakaiproject.api.kernel.thread_local.ThreadLocalManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.ToolManager;
+import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -85,6 +87,26 @@ public class ToolComponent implements ToolManager
 		m_threadLocalManager = manager;
 	}
 
+	/** tool ids to be stealthed. */
+	protected String[] m_stealthToolIds = null;
+
+	/**
+	 * Configuration - set the list of tool ids to be "stealthed".  A stealthed tool does not show up in a category list of tools.
+	 * @param toolIds The comma-separated list of tool ids to be stealthed.
+	 */
+	public void setStealthTools(String toolIds)
+	{
+		if ((toolIds == null) || (toolIds.length() == 0))
+		{
+			m_stealthToolIds = null;
+		}
+		else
+		{
+			m_stealthToolIds = StringUtil.split(toolIds,",");
+			Arrays.sort(m_stealthToolIds);
+		}
+	}
+
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Init and Destroy
 	 *********************************************************************************************************************************************************************************************************************************************************/
@@ -121,7 +143,11 @@ public class ToolComponent implements ToolManager
 			Tool tool = (Tool) i.next();
 			if (matchCriteria(categories, tool.getCategories()) && matchCriteria(keywords, tool.getKeywords()))
 			{
-				rv.add(tool);
+				// add if not stealthed (requests for any category include all (even stealthed) items)
+				if ((categories == null) || (m_stealthToolIds == null) || (Arrays.binarySearch(m_stealthToolIds, tool.getId()) < 0))
+				{
+					rv.add(tool);
+				}
 			}
 		}
 
