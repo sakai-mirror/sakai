@@ -302,7 +302,7 @@
 				#if ($value_CheckAddHonorPledge!="1")
 					$tlang.getString("gen.honple2")
 					<input name="Yes" type="checkbox" value="" />$tlang.getString("gen.yes")<br />
-					$tlang.getString("youmus")
+					$tlang.getString("gen.youmus")
 				#end
 			#else
 			
