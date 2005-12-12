@@ -42,6 +42,9 @@ import org.apache.commons.pool.ObjectPool;
  */
 public class SakaiPoolableConnectionFactory extends PoolableConnectionFactory
 {
+	/** Configuration: to rollback each connection when borrowed from the pool. */
+	protected boolean m_rollbackOnReturn = false;
+
 	/**
 	 * Create a new <tt>PoolableConnectionFactory</tt>.
 	 * 
@@ -57,11 +60,13 @@ public class SakaiPoolableConnectionFactory extends PoolableConnectionFactory
 	 *        the default "read only" setting for borrowed {@link Connection}s
 	 * @param defaultAutoCommit
 	 *        the default "auto commit" setting for returned {@link Connection}s
+	 * @param rollbackOnReturn The rollback on borrow setting
 	 */
 	public SakaiPoolableConnectionFactory(ConnectionFactory connFactory, ObjectPool pool, KeyedObjectPoolFactory stmtPoolFactory,
-			String validationQuery, boolean defaultReadOnly, boolean defaultAutoCommit)
+			String validationQuery, boolean defaultReadOnly, boolean defaultAutoCommit, boolean rollbackOnReturn)
 	{
 		super(connFactory, pool, stmtPoolFactory, validationQuery, defaultReadOnly, defaultAutoCommit);
+		m_rollbackOnReturn = rollbackOnReturn;
 	}
 
 	/**
@@ -81,11 +86,13 @@ public class SakaiPoolableConnectionFactory extends PoolableConnectionFactory
 	 *        the default "auto commit" setting for returned {@link Connection}s
 	 * @param defaultTransactionIsolation
 	 *        the default "Transaction Isolation" setting for returned {@link Connection}s
+	 * @param rollbackOnReturn The rollback on borrow setting
 	 */
 	public SakaiPoolableConnectionFactory(ConnectionFactory connFactory, ObjectPool pool, KeyedObjectPoolFactory stmtPoolFactory,
-			String validationQuery, boolean defaultReadOnly, boolean defaultAutoCommit, int defaultTransactionIsolation)
+			String validationQuery, boolean defaultReadOnly, boolean defaultAutoCommit, int defaultTransactionIsolation, boolean rollbackOnReturn)
 	{
 		super(connFactory, pool, stmtPoolFactory, validationQuery, defaultReadOnly, defaultAutoCommit, defaultTransactionIsolation);
+		m_rollbackOnReturn = rollbackOnReturn;
 	}
 
 	/**
@@ -105,12 +112,14 @@ public class SakaiPoolableConnectionFactory extends PoolableConnectionFactory
 	 *        the default "auto commit" setting for returned {@link Connection}s
 	 * @param config
 	 *        the AbandonedConfig if tracing SQL objects
+	 * @param rollbackOnReturn The rollback on borrow setting
 	 * @deprecated AbandonedConfig is now deprecated.
 	 */
 	public SakaiPoolableConnectionFactory(ConnectionFactory connFactory, ObjectPool pool, KeyedObjectPoolFactory stmtPoolFactory,
-			String validationQuery, boolean defaultReadOnly, boolean defaultAutoCommit, AbandonedConfig config)
+			String validationQuery, boolean defaultReadOnly, boolean defaultAutoCommit, AbandonedConfig config, boolean rollbackOnReturn)
 	{
 		super(connFactory, pool, stmtPoolFactory, validationQuery, defaultReadOnly, defaultAutoCommit, config);
+		m_rollbackOnReturn = rollbackOnReturn;
 	}
 
 	/**
@@ -132,14 +141,16 @@ public class SakaiPoolableConnectionFactory extends PoolableConnectionFactory
 	 *        the default "Transaction Isolation" setting for returned {@link Connection}s
 	 * @param config
 	 *        the AbandonedConfig if tracing SQL objects
+	 * @param rollbackOnReturn The rollback on borrow setting
 	 * @deprecated AbandonedConfig is now deprecated.
 	 */
 	public SakaiPoolableConnectionFactory(ConnectionFactory connFactory, ObjectPool pool, KeyedObjectPoolFactory stmtPoolFactory,
 			String validationQuery, boolean defaultReadOnly, boolean defaultAutoCommit, int defaultTransactionIsolation,
-			AbandonedConfig config)
+			AbandonedConfig config, boolean rollbackOnReturn)
 	{
 		super(connFactory, pool, stmtPoolFactory, validationQuery, defaultReadOnly, defaultAutoCommit, defaultTransactionIsolation,
 				config);
+		m_rollbackOnReturn = rollbackOnReturn;
 	}
 
 	/**
@@ -163,14 +174,16 @@ public class SakaiPoolableConnectionFactory extends PoolableConnectionFactory
 	 *        the default "catalog" setting for returned {@link Connection}s
 	 * @param config
 	 *        the AbandonedConfig if tracing SQL objects
+	 * @param rollbackOnReturn The rollback on borrow setting
 	 * @deprecated AbandonedConfig is now deprecated.
 	 */
 	public SakaiPoolableConnectionFactory(ConnectionFactory connFactory, ObjectPool pool, KeyedObjectPoolFactory stmtPoolFactory,
 			String validationQuery, boolean defaultReadOnly, boolean defaultAutoCommit, int defaultTransactionIsolation,
-			String defaultCatalog, AbandonedConfig config)
+			String defaultCatalog, AbandonedConfig config, boolean rollbackOnReturn)
 	{
 		super(connFactory, pool, stmtPoolFactory, validationQuery, defaultReadOnly, defaultAutoCommit, defaultTransactionIsolation,
 				defaultCatalog, config);
+		m_rollbackOnReturn = rollbackOnReturn;
 	}
 
 	/**
@@ -194,27 +207,33 @@ public class SakaiPoolableConnectionFactory extends PoolableConnectionFactory
 	 *        the default "catalog" setting for returned {@link Connection}s
 	 * @param config
 	 *        the AbandonedConfig if tracing SQL objects
+	 * @param rollbackOnReturn The rollback on borrow setting
 	 */
 	public SakaiPoolableConnectionFactory(ConnectionFactory connFactory, ObjectPool pool, KeyedObjectPoolFactory stmtPoolFactory,
 			String validationQuery, Boolean defaultReadOnly, boolean defaultAutoCommit, int defaultTransactionIsolation,
-			String defaultCatalog, AbandonedConfig config)
+			String defaultCatalog, AbandonedConfig config, boolean rollbackOnReturn)
 	{
 		super(connFactory, pool, stmtPoolFactory, validationQuery, defaultReadOnly, defaultAutoCommit, defaultTransactionIsolation,
 				defaultCatalog, config);
+		m_rollbackOnReturn = rollbackOnReturn;
 	}
 
 	/**
-	 * Sakai modification: don't set autocommit, don't rollback!
+	 * Sakai modification: don't set autocommit, don't rollback if so configured!
 	 */
 	public void passivateObject(Object obj) throws Exception
 	{
 		if (obj instanceof Connection)
 		{
 			Connection conn = (Connection) obj;
-			// if (!conn.getAutoCommit() && !conn.isReadOnly())
-			// {
-			// conn.rollback();
-			// }
+			if (m_rollbackOnReturn)
+			{
+				if (!conn.getAutoCommit() && !conn.isReadOnly())
+				{
+					 conn.rollback();
+				}
+			}
+
 			conn.clearWarnings();
 			// conn.setAutoCommit(true);
 		}
@@ -240,15 +259,15 @@ public class SakaiPoolableConnectionFactory extends PoolableConnectionFactory
 			{
 				conn.setAutoCommit(_defaultAutoCommit);
 			}
-			if (_defaultTransactionIsolation != UNKNOWN_TRANSACTIONISOLATION)
+			if ((_defaultTransactionIsolation != UNKNOWN_TRANSACTIONISOLATION) && (conn.getTransactionIsolation() != _defaultTransactionIsolation))
 			{
 				conn.setTransactionIsolation(_defaultTransactionIsolation);
 			}
-			if (_defaultReadOnly != null)
+			if ((_defaultReadOnly != null) && (conn.isReadOnly() != _defaultReadOnly.booleanValue()))
 			{
 				conn.setReadOnly(_defaultReadOnly.booleanValue());
 			}
-			if (_defaultCatalog != null)
+			if ((_defaultCatalog != null) && (conn.getCatalog() != _defaultCatalog))
 			{
 				conn.setCatalog(_defaultCatalog);
 			}

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  <!-- components context -->
+
+  <!-- Render Factory for creating Wiki Renderer Contexts -->
+  <bean id="renderContextFactory"
+    class="uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.RenderContextFactoryImpl">
+    <property name="log"><ref bean="rwiki-logger"/></property>
+
+    <property name="objectService"><ref bean="objectService"/></property>
+    <property name="securityService"><ref bean="securityService"/></property>
+  </bean>
+
+  <!-- Wiki engine factory -->
+  <bean id="renderEngineFactory"
+    class="uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.RenderEngineFactoryImpl">
+    <property name="log"><ref bean="rwiki-logger"/></property>
+
+    <property name="objectService"><ref bean="objectService"/></property>
+    <property name="renderEngine"><ref bean="baseRenderEngine"/></property>
+    <property name="externalImageLink"><value>&lt;img src="/library/image/sakai/url.gif" alt="external link: " title="external link"/&gt;</value></property>
+  </bean>
+
+
+  <bean id="securityService"
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.RWikiSecurityServiceImpl"
+    init-method="init" >
+    <property name="log"><ref bean="rwiki-logger"/></property>
+
+    <property name="portalService"><ref
+	bean="org.sakaiproject.service.framework.portal.PortalService" />
+    </property>
+    <property name="securityService"><ref
+	bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+    </property>
+    <property name="siteService"><ref
+	bean="org.sakaiproject.service.legacy.site.SiteService"/>
+    </property>
+  </bean>
+
+  <!-- The component level Render service -->
+  <bean id="renderService"
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.RenderServiceImpl">
+    <property name="log"><ref bean="rwiki-logger"/></property>
+
+    <property name="renderContextFactory"><ref bean="renderContextFactory"/>
+    </property>
+    <property name="renderEngineFactory"><ref bean="renderEngineFactory"/>
+    </property>
+    <!-- comment the cache out to disable it -->
+    <property name="renderCache"><ref bean="rwikiRenderCache"/></property>
+  </bean>
+
+  <!-- The RWiki Object service, component level -->
+  <bean id="objectService"
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.RWikiObjectServiceImpl">
+    <property name="log"><ref bean="rwiki-logger"/></property>
+    <property name="renderService"><ref bean="renderService"/></property>
+    <property name="RWikiCurrentObjectDao"><ref bean="rwikiCurrentObjectDao"/></property>
+    <property name="RWikiHistoryObjectDao"><ref bean="rwikiHistoryObjectDao"/></property>
+    <property name="securityService"><ref bean="securityService"/></property>
+  </bean>
+
+  <!-- The base level radeox render engine -->
+
+  <bean id="baseRenderEngine" class="uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.RWikiBaseRenderEngine" init-method="init">
+    <property name="log"><ref bean="rwiki-logger"/></property>
+  </bean>
+
+
+
+  <!-- The Rendered content cache, impl uses ehcache which is initialised on first use, if cache fails
+  it is re-initialised -->
+  <bean id="rwikiRenderCache" class="uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.RenderCacheImpl" 
+    init-method="init" >
+    <property name="log"><ref bean="rwiki-logger"/></property>
+    <property name="cacheName"><value>rwiki-render-cache</value></property>
+  </bean>
+
+</beans>

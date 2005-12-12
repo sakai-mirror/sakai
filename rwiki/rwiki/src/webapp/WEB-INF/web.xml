@@ -67,6 +67,7 @@
 				<script type="text/javascript" src="/sakai-rwiki/scripts/stateswitcher.js"> </script>
 				<script type="text/javascript" src="/sakai-rwiki/scripts/ajaxpopup.js" > </script>
 				<script type="text/javascript" src="/sakai-rwiki/scripts/asyncload.js" > </script>
+				<script type="text/javascript" src="/sakai-rwiki/scripts/logger.js" > </script>
 				]]>
 				
 				

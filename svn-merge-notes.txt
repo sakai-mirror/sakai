@@ -1,6 +1,12 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4413 | daisyf@stanford.edu | 2005-12-02 16:58:08 -0500 (Fri, 02 Dec 2005) | 2 lines
+
+SAK-3064
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4396 | john.ellis@rsmart.com | 2005-12-01 19:58:02 -0500 (Thu, 01 Dec 2005) | 5 lines
 
 http://bugs.sakaiproject.org/jira/browse/SAK-3055
