@@ -51,6 +51,12 @@
 			<version>${sakai.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util-java</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
