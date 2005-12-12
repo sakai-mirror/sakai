@@ -6,8 +6,12 @@
 		#end
 		<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
 		<span style="margin:.5em">$!tlang.getString('gen.grarep')</span>
-		<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString('gen.stuvie')">$!tlang.getString('gen.stuvie')</a>		
-		<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
+		#if ($allowAddAssignment)
+			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString('gen.stuvie')">$!tlang.getString('gen.stuvie')</a>		
+		#end
+		#if ($allowUpdateSite)
+			<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
+		#end
 	</div>
 	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<h3>

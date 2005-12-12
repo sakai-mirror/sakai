@@ -6,7 +6,7 @@
 	<form name="viewAssignmentsForm" action="#toolForm("AssignmentAction")" method="post">
 		<input type="hidden" name="assignmentId" value="$assignment.Reference" />
 		<input type="hidden" name="assignmentContentId" value="$assignment.ContentReference" />
-		#if (!$hideAssignmentFlag)
+		#if ($allowAddAssignment)
 		<p class="discTria">
 			<a href="#" onclick="location='#toolLink("AssignmentAction" "doHide_view_assignment")'; return false;" title="$tlang.getString("gen.hidassinf")">
 				<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("gen.opecli")" border="0" width="13" height="13" align="top" />

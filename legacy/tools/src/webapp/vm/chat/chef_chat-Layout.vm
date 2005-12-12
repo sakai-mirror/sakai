@@ -67,12 +67,9 @@
 					marginwidth="0"
 					marginheight="0"
 					scrolling="no"
-					align="middle"
+					style="clear:both;display:block"
 					src="#contentCourierLink("$panel-control")">
 				</iframe>
-			</td>
-		</tr>
-	</table>
 </div>
 #sakai_courier()
 
