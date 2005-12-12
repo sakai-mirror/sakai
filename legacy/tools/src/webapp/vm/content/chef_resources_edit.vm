@@ -365,18 +365,18 @@
 				</p>
 				#if("$REVISE" == "$intent")
 					#if ($item.isPlaintext()) 
-						<p class="shorttext"> 
-							<label for="content">&nbsp;</label>
-							<textarea name="content" id="content" rows="10" cols="40" wrap="virtual">$validator.escapeHtmlTextarea("$!{item.contentstring}")</textarea>
+						<p class="longtext"> 
+##							<label for="content">&nbsp;</label>
+							<textarea name="content" id="content" rows="10" cols="60" wrap="virtual">$validator.escapeHtmlTextarea("$!{item.contentstring}")</textarea>
 						</p>
 					#elseif ($item.isHtml())
-						<p class="shorttext"> 
-							<label for="content">&nbsp;</label>
+						<div class="longtext"> 
+##							<label for="content">&nbsp;</label>
 							<table border="0"><tr><td>
 								<textarea name="content" id="content" rows="30" cols="80" wrap="virtual">$validator.escapeHtmlTextarea("$!{item.contentstring}")</textarea>
 								#chef_setupformattedtextarea("content")
 							</td></tr></table>
-						</p>
+						</div>
 					#end
 				#else
 					<table class="itemSummary" border="0" style="clear:both;margin:left:.7em">
