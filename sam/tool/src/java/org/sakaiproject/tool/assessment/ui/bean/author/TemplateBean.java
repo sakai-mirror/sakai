@@ -260,7 +260,7 @@ public class TemplateBean implements Serializable
    */
   public String getTemplateName()
   {
-    return checker(templateName, "New Template");
+    return checker(templateName, "");
   }
 
   /**

@@ -45,8 +45,8 @@
 
       </title>
       </head>
-      <%--body onload="<%= request.getAttribute("html.body.onload") %>"--%>
- <h:outputText value="<body #{delivery.settings.bgcolor} #{delivery.settings.background}>" escape="false" />
+      <body onload="<%= request.getAttribute("html.body.onload") %>">
+ <!--h:outputText value="<body #{delivery.settings.bgcolor} #{delivery.settings.background}>" escape="false" /-->
 
  <h:outputText value="<div class='portletBody' style='background:#{delivery.settings.divBgcolor}'>" escape="false"/>
  <!-- content... -->
