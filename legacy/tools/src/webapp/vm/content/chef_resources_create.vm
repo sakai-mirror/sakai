@@ -434,25 +434,25 @@
 				</p>
 			#elseif ($item.isPlaintext()) 
 				#if($!{item.isMissing("content")})
-					<p class="shorttext validation">
+					<p class="longtext validation">
 				#else
-					<p class="shorttext">
+					<p class="longtext">
 				#end
-					<label for="content$i">&nbsp;</label>
-					<textarea name="content$i" id="content$i" rows="10" cols="40" wrap="virtual">$!validator.escapeHtmlTextarea($!{item.contentstring})</textarea>
+##					<label for="content$i">&nbsp;</label>
+					<textarea name="content$i" id="content$i" rows="10" cols="60" wrap="virtual">$!validator.escapeHtmlTextarea($!{item.contentstring})</textarea>
 				</p>
 			#elseif ($item.isHtml())
 				#if($!{item.isMissing("content")})
-					<p class="shorttext validation">
+					<div class="longtext validation">
 				#else
-					<p class="shorttext">
+					<div class="longtext">
 				#end
-					<label for="content$i">&nbsp;</label>
+##					<label for="content$i">&nbsp;</label>
 					<table border="0"><tr><td>
 						<textarea name="content$i" id="content$i" rows="30" cols="80" wrap="virtual">$validator.escapeHtmlTextarea("$!{item.contentstring}")</textarea>
 						#chef_setupformattedtextarea("content$i")
 					</td></tr></table>
-				</p>
+				</div>
 			#elseif($item.isStructuredArtifact())
 				#if($homes.isEmpty())
 					<p class="shorttext validation">
