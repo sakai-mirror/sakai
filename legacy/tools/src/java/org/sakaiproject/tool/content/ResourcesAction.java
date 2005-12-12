@@ -301,10 +301,12 @@ public class ResourcesAction
 	private static final String MIME_TYPE_DOCUMENT_HTML = "text/html";
 	public static final String MIME_TYPE_STRUCTOBJ = "application/x-osp";
 	
-	private static final String TYPE_FOLDER = "folder";
-	private static final String TYPE_UPLOAD = "file";
-	private static final String TYPE_URL = "Url";
-	private static final String TYPE_FORM = MIME_TYPE_STRUCTOBJ;
+	public static final String TYPE_FOLDER = "folder";
+	public static final String TYPE_UPLOAD = "file";
+	public static final String TYPE_URL = "Url";
+	public static final String TYPE_FORM = MIME_TYPE_STRUCTOBJ;
+	public static final String TYPE_HTML = MIME_TYPE_DOCUMENT_HTML;
+	public static final String TYPE_TEXT = MIME_TYPE_DOCUMENT_PLAINTEXT;
 	
 	private static final int CREATE_MAX_ITEMS = 10;
 	
@@ -399,6 +401,7 @@ public class ResourcesAction
 	/** modes for attachment helper */
 	public static final String MODE_ATTACHMENT_SELECT = "resources.attachment_select";
 	public static final String MODE_ATTACHMENT_CREATE = "resources.attachment_create";
+	public static final String MODE_ATTACHMENT_NEW_ITEM = "resources.attachment_new_item";
 	public static final String MODE_ATTACHMENT_CONFIRM = "resources.attachment_confirm";
 	public static final String MODE_ATTACHMENT_DONE = "resources.attachment_done";
 	
@@ -443,6 +446,7 @@ public class ResourcesAction
 	
 	/** The number of members for a collection at which this tool should refuse to expand the collection */
 	protected static final int EXPANDABLE_FOLDER_SIZE_LIMIT = 256;
+
 
 
 
@@ -3391,8 +3395,8 @@ public class ResourcesAction
 		
 		context.put("TYPE_FOLDER", TYPE_FOLDER);
 		context.put("TYPE_UPLOAD", TYPE_UPLOAD);
-		context.put("TYPE_HTML", MIME_TYPE_DOCUMENT_HTML);
-		context.put("TYPE_TEXT", MIME_TYPE_DOCUMENT_PLAINTEXT);
+		context.put("TYPE_HTML", TYPE_HTML);
+		context.put("TYPE_TEXT", TYPE_TEXT);
 		context.put("TYPE_URL", TYPE_URL);
 		context.put("TYPE_FORM", TYPE_FORM);
 		
