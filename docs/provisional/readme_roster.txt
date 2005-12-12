@@ -9,4 +9,8 @@ If you want to make it so that any user can add Roster to their site using WorkS
 
 KNOWN ISSUES
 
-There is not standard way to provision the pictures in the Roster tool in this release. If you would like information on how to provision the pictures, contact Lance Speelmon (lance@indiana.edu).
+There is no standard way to provision the pictures in the Roster tool in this release, but there is sample code you can take as a model for creating your own photo load job, and you can find it on subversion:
+
+https://source.sakaiproject.org/svn/trunk/oncourse/src/scheduler/scheduler-component-shared/src/java/org/sakaiproject/component/app/scheduler/jobs/UpdateProfilePhotoJob.java
+
+If you would like further information on how to provision the pictures, contact Lance Speelmon (lance@indiana.edu).

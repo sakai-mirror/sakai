@@ -79,11 +79,8 @@ sakai.properties file</a> </li>
 <ul class="toc">
   <li><a href="dbconfig.html#deployd">5.1 Deploy drivers</a> </li>
   <li><a href="dbconfig.html#create">5.2 Create Sakai database and user</a> </li>
-  <li><a href="dbconfig.html#placeholder">5.3 The placeholder.properties file</a> </li>
-  <li><a href="dbconfig.html#sproperties">5.4 sakai.properties <br />
-    database properties</a> </li>
-  <li><a href="dbconfig.html#dbconfig">5.5 Special database configuration</a>
-</li>
+  <li><a href="dbconfig.html#sproperties">5.3 Database Properties</a> </li>
+  <li><a href="dbconfig.html#dbconfig">5.4 Upgrade Scripts</a></li>
 </ul>
 </li>
 <li>
@@ -192,6 +189,20 @@ bottomnav.2 = &lt;a href="http://sakaiproject.org/cms" target="_blank"&gt;The Sa
 You can add more or other links to the bottom navigation bar by setting
 the proper bottomnav.count
 value and adding bottomnav.N values (1 through the number of links).
+
+<table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
+             <tbody>
+               <tr>
+                 <th>User Presence Enabled by Default</th>
+               </tr>
+               <tr>
+                 <td class="white">User presence is on automatically in this release, although it has not been in recent releases. If you do not wish to use it at your institution, you must explicitly turn it off in sakai.properties:
+
+<pre># to enable presence display in the portal
+display.users.present=true</pre></td>
+               </tr>
+             </tbody>
+    </table>
 
 <a name="email"></a>
 

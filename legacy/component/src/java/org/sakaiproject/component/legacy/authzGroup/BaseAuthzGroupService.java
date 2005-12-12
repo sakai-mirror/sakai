@@ -537,8 +537,9 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 		m_storage.save(azGroup);
 
 		// track it
-		EventTrackingService.post(EventTrackingService
-				.newEvent(((BaseAuthzGroup) azGroup).getEvent(), azGroup.getReference(), true));
+		String event = ((BaseAuthzGroup) azGroup).getEvent();
+		if (event == null) event = SECURE_UPDATE_AUTHZ_GROUP;
+		EventTrackingService.post(EventTrackingService.newEvent(event, azGroup.getReference(), true));
 
 		// close the azGroup object
 		((BaseAuthzGroup) azGroup).closeEdit();
@@ -546,6 +547,9 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 		// update the db with latest provider, and site security with the latest changes, using the updated azGroup
 		BaseAuthzGroup updatedRealm = (BaseAuthzGroup) m_storage.get(azGroup.getId());
 		updateSiteSecurity(updatedRealm);
+
+		// clear the event for next time
+		((BaseAuthzGroup) azGroup).setEvent(null);
 	}
 
 	/**

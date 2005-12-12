@@ -85,7 +85,7 @@ ALTER TABLE SAKAI_SITE_PAGE ADD (POPUP CHAR(1) DEFAULT '0' CHECK (POPUP IN (1, 0
 -- User related TABLEs changes needed after 2.1.0.004
 ALTER TABLE SAKAI_USER ADD (EMAIL_LC VARCHAR (255));
 UPDATE SAKAI_USER SET EMAIL_LC = LOWER(EMAIL);
-DROP INDEX IE_SAKAI_USER_EMAIL;
+DROP INDEX IE_SAKAI_USER_EMAIL ON SAKAI_USER;
 CREATE INDEX IE_SAKAI_USER_EMAIL ON SAKAI_USER( EMAIL_LC ASC );
 ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -257,7 +257,7 @@ JOIN SAKAI_REALM_ROLE SRR ON (TMPSRC.ROLE_NAME = SRR.ROLE_NAME)
 JOIN SAKAI_REALM_FUNCTION SRF ON (TMPSRC.FUNCTION_NAME = SRF.FUNCTION_NAME);
 
 -- insert the new functions into the roles of any existing realm that has the role (don't convert the "!site.helper")
-INSERT INTO SAKAI_REALM_RL_FN SRRFI (REALM_KEY, ROLE_KEY, FUNCTION_KEY)
+INSERT INTO SAKAI_REALM_RL_FN (REALM_KEY, ROLE_KEY, FUNCTION_KEY)
 SELECT
     SRRFD.REALM_KEY, SRRFD.ROLE_KEY, TMP.FUNCTION_KEY
 FROM
@@ -265,7 +265,7 @@ FROM
     JOIN PERMISSIONS_TEMP TMP ON (SRRFD.ROLE_KEY = TMP.ROLE_KEY)
     JOIN SAKAI_REALM SR ON (SRRFD.REALM_KEY = SR.REALM_KEY)
     WHERE SR.REALM_ID != '!site.helper'
-    AND NOT EXIST (
+    AND NOT EXISTS (
         SELECT 1
             FROM SAKAI_REALM_RL_FN SRRFI
             WHERE SRRFI.REALM_KEY=SRRFD.REALM_KEY AND SRRFI.ROLE_KEY=SRRFD.ROLE_KEY AND SRRFI.FUNCTION_KEY=TMP.FUNCTION_KEY
@@ -409,7 +409,7 @@ DELETE FROM SAKAI_REALM_FUNCTION WHERE FUNCTION_NAME='news.revise.own';
 ---------------------------------------------------------------------------------------------------------------------------------------
 -- new AuthzGroup (realm) templates "!group.template", "!group.template.course", and "!site.template.course"
 -- from file "legacy/component/src/sql/mysql/sakai_realm.sql" (partial)
-IINSERT INTO SAKAI_REALM VALUES (DEFAULT, '!site.template.course', '', (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Instructor'), 'admin', 'admin', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
+INSERT INTO SAKAI_REALM VALUES (DEFAULT, '!site.template.course', '', (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Instructor'), 'admin', 'admin', CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP());
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!site.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Instructor'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'annc.all.groups'));
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!site.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Instructor'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'annc.delete.any'));
 INSERT INTO SAKAI_REALM_RL_FN VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!site.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Instructor'), (select FUNCTION_KEY from SAKAI_REALM_FUNCTION where FUNCTION_NAME = 'annc.delete.own'));
