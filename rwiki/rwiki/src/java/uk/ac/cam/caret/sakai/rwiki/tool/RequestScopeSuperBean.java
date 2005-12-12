@@ -26,6 +26,8 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.springframework.context.ApplicationContext;
@@ -33,6 +35,7 @@ import org.springframework.context.ApplicationContext;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
+import uk.ac.cam.caret.sakai.rwiki.service.message.api.MessageService;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.PopulateService;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.ToolRenderService;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupBean;
@@ -44,6 +47,7 @@ import uk.ac.cam.caret.sakai.rwiki.tool.bean.HistoryBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.HomeBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.PermissionsBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.PrePopulateBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.PresenceBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.RecentlyVisitedBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ReferencesBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.RenderBean;
@@ -53,6 +57,7 @@ import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.AuthZGroupBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.AuthZGroupEditBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.DiffHelperBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.PresenceBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.RecentlyVisitedHelperBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ReverseHistoryHelperBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ReviewHelperBean;
@@ -94,6 +99,8 @@ public class RequestScopeSuperBean {
     private PopulateService populateService;
 
     private AuthzGroupService realmService;
+    
+    private MessageService messageService;
 
     public static RequestScopeSuperBean getFromRequest(
             HttpServletRequest request) {
@@ -120,6 +127,20 @@ public class RequestScopeSuperBean {
         toolRenderService = (ToolRenderService) context.getBean("toolRenderService");
         populateService = (PopulateService) context.getBean("populateService");
         realmService = (AuthzGroupService) context.getBean(AuthzGroupService.class.getName());
+        
+        
+        messageService = (MessageService) context.getBean(MessageService.class.getName());
+        // if the message service has been configured
+        // update the presence
+        if ( messageService != null ) {
+            Session session = SessionManager.getCurrentSession();
+        
+            messageService.updatePresence(session.getId(),
+                this.getCurrentUser(),
+                this.getCurrentPageName(),
+                this.getCurrentPageSpace());
+        }
+        
     }
 
     public HttpServletRequest getRequest() {
@@ -500,6 +521,23 @@ public class RequestScopeSuperBean {
         
         return (AuthZGroupEditBean) map.get(key);
     }
+
+    public PresenceBean getPresenceBean() {
+        String key = "presenceBean";
+        PresenceBean pb = (PresenceBean) map.get(key);
+        if (pb == null) {
+            pb = PresenceBeanHelper.createRealmBean(messageService, getCurrentUser(), getCurrentPageName(), getCurrentPageSpace());
+            map.put(key, pb);
+        }
+        return pb;
+    }
+    /**
+     * @return Returns the messageService.
+     */
+    public MessageService getMessageService() {
+        return messageService;
+    }
+
     
 }
 

@@ -22,7 +22,6 @@
  **********************************************************************************/
 package uk.ac.cam.caret.sakai.rwiki.tool.bean;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.ListProxy;
@@ -326,6 +325,10 @@ public class RenderBean {
     public void setCanEdit(boolean canEdit) {
         this.canEdit = canEdit;
     }
+    public String getListCommentsURL() {
+        ViewBean vb = new ViewBean(rwo.getName(),NameHelper.localizeSpace(rwo.getName(),rwo.getRealm()));
+        return vb.getListCommentsURL();
+    }
     
     public String getNewCommentURL() {
         ViewBean vb = new ViewBean(rwo.getName(),NameHelper.localizeSpace(rwo.getName(),rwo.getRealm()));
@@ -347,7 +350,27 @@ public class RenderBean {
         return String.valueOf(i);
     }
     
+    public String getListPresenceURL() {
+        ViewBean vb = new ViewBean(rwo.getName(),NameHelper.localizeSpace(rwo.getName(),rwo.getRealm()));
+        return vb.getListPresenceURL();
+    }
 
+    public String getOpenPageChatURL() {
+        ViewBean vb = new ViewBean(rwo.getName(),NameHelper.localizeSpace(rwo.getName(),rwo.getRealm()));
+        return vb.getOpenPageChatURL();        
+    }
+    public String getOpenSpaceChatURL() {
+        ViewBean vb = new ViewBean(rwo.getName(),NameHelper.localizeSpace(rwo.getName(),rwo.getRealm()));
+        return vb.getOpenSpaceChatURL();    
+    }
+    public String getListPageChatURL() {
+        ViewBean vb = new ViewBean(rwo.getName(),NameHelper.localizeSpace(rwo.getName(),rwo.getRealm()));
+        return vb.getListPageChatURL();    
+    }
+    public String getListSpaceChatURL() {
+        ViewBean vb = new ViewBean(rwo.getName(),NameHelper.localizeSpace(rwo.getName(),rwo.getRealm()));
+        return vb.getListSpaceChatURL();    
+    }
    
 
 }
