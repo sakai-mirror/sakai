@@ -1,6 +1,44 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4501 | daisyf@stanford.edu | 2005-12-08 11:03:36 -0500 (Thu, 08 Dec 2005) | 2 lines
+
+SAK-2862
+Skipped missing target: 'sam/tool/src/sql/mysql/patches/SAK-2862.sql'
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4500 | lydial@stanford.edu | 2005-12-08 01:47:57 -0500 (Thu, 08 Dec 2005) | 1 line
+
+SAK-2862 please do not include this in maint branch
+------------------------------------------------------------------------
+r4499 | lydial@stanford.edu | 2005-12-08 01:35:09 -0500 (Thu, 08 Dec 2005) | 1 line
+
+SAK-2862, please do not merge this into the maint. branch yet. 
+------------------------------------------------------------------------
+r4498 | daisyf@stanford.edu | 2005-12-07 23:15:12 -0500 (Wed, 07 Dec 2005) | 2 lines
+
+SAK-3064
+------------------------------------------------------------------------
+r4497 | daisyf@stanford.edu | 2005-12-07 23:07:24 -0500 (Wed, 07 Dec 2005) | 2 lines
+
+SAK-3064
+------------------------------------------------------------------------
+r4496 | daisyf@stanford.edu | 2005-12-07 23:05:06 -0500 (Wed, 07 Dec 2005) | 2 lines
+
+SAK-3064
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4493 | daisyf@stanford.edu | 2005-12-07 15:22:23 -0500 (Wed, 07 Dec 2005) | 2 lines
+
+eliminate delivery.previewAssessment, reviewAssessment and for Grading
+C    sam/tool/src/java/org/sakaiproject/tool/assessment/ui/bean/delivery/DeliveryBean.java
+U    sam/tool/src/java/org/sakaiproject/tool/assessment/ui/listener/delivery/SubmitToGradingActionListener.java
+C    sam/tool/src/java/org/sakaiproject/tool/assessment/ui/listener/delivery/DeliveryActionListener.java
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4491 | daisyf@stanford.edu | 2005-12-07 14:44:07 -0500 (Wed, 07 Dec 2005) | 2 lines
 
 SAK-3064 - eliminate previewMode, the last check in eliminate accessViaUrl & notPublished
