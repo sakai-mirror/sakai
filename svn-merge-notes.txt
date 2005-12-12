@@ -1,6 +1,12 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4491 | daisyf@stanford.edu | 2005-12-07 14:44:07 -0500 (Wed, 07 Dec 2005) | 2 lines
+
+SAK-3064 - eliminate previewMode, the last check in eliminate accessViaUrl & notPublished
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4489 | daisyf@stanford.edu | 2005-12-07 14:18:18 -0500 (Wed, 07 Dec 2005) | 2 lines
 
 SAK-3064 - elimiate delivery.previewMode and delivery.accessViaUrl
