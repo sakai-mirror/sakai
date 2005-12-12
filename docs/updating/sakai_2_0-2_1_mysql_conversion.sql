@@ -15,6 +15,7 @@
 -- from file "gradebook/component/src/sql/mysql/sakai_gradebook_2.0.1_to_2.1.sql"
 -- Gradebook related TABLEs changes needed between Sakai 2.01 and 2.1
 ALTER TABLE GB_GRADABLE_OBJECT_T ADD column (NOT_COUNTED bit);
+UPDATE GB_GRADABLE_OBJECT_T SET NOT_COUNTED=0 WHERE NOT_COUNTED IS NULL AND POINTS_POSSIBLE IS NOT NULL;
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 

@@ -36,7 +36,7 @@
 				<label for="view">
 					$tlang.getString("view.label")
 				</label>	
-				<select id="view" name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+				<select id="view" name="view" size="1" onchange="blur();document.viewForm.submit();">
 					<option value="$!tlang.getString('view.all')" #if ($!view == "$!tlang.getString('view.all')")selected="selected"#end >$!tlang.getString('view.all')</option>
 					<option value="$!tlang.getString('view.public')"  #if ($!view == "$!tlang.getString('view.public')")selected="selected"#end >$!tlang.getString('view.public')</option>
 					#if ($!groups)
@@ -297,7 +297,7 @@
 									<label for="view">
 										$tlang.getString("view.label")
 									</label>
-									<select id="view" name="view" size="1" tabindex="3" onchange="blur();document.viewForm.submit();">
+									<select id="view" name="view" size="1" onchange="blur();document.viewForm.submit();">
 										<option value="$!tlang.getString('view.all')" #if ($!view == "$!tlang.getString('view.all')")selected="selected"#end >$!tlang.getString('view.all')</option>
 										<option value="$!tlang.getString('view.public')"  #if ($!view == "$!tlang.getString('view.public')")selected="selected"#end >$!tlang.getString('view.public')</option>
 										#if ($!groups)
