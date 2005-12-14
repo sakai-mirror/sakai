@@ -47,26 +47,18 @@
       </head>
       <body onload="<%= request.getAttribute("html.body.onload") %>">
  <!--h:outputText value="<body #{delivery.settings.bgcolor} #{delivery.settings.background}>" escape="false" /-->
-<div class="portletBody">
- <!--h:outputText value="<div class='portletBody' style='background:#{delivery.settings.divBgcolor}'>" escape="false"/-->
+
+ <h:outputText value="<div class='portletBody' style='background:#{delivery.settings.divBgcolor}'>" escape="false"/>
  <!-- content... -->
 
 <h:form id="takeAssessmentForm">
 
-<h:panelGroup rendered="#{delivery.previewAssessment eq 'true' && delivery.notPublished ne 'true'}">
+<h:panelGroup rendered="#{delivery.actionString=='previewAssessment'}">
  <f:verbatim><div class="validation"></f:verbatim>
      <h:outputText value="#{msg.ass_preview}" />
      <h:commandButton value="#{msg.done}" action="editAssessment" type="submit"/>
  <f:verbatim></div></f:verbatim>
 </h:panelGroup>
-
-<h:panelGroup rendered="#{delivery.previewAssessment eq 'true' && delivery.notPublished eq 'true'}">
- <f:verbatim><div class="validation"></f:verbatim>
-     <h:outputText value="#{msg.ass_preview}" />
-     <h:commandButton value="#{msg.done}" action="editAssessment"/>
- <f:verbatim></div></f:verbatim>
-</h:panelGroup>
-
 
 <h3><h:outputText value="#{msg.begin_assessment_}" /></h3>
 <div class="indnt1">
@@ -138,34 +130,39 @@
 
 <p class="act">
 
- <h:commandButton value="#{msg.begin_assessment_}" action="#{delivery.validate}" type="submit" styleClass="active" rendered="#{delivery.previewAssessment ne 'true'}">
+<!-- BEGIN ASSESSMENT BUTTON -->
+<!-- When previewing, we don't need to check security. When take the assessment for real, we do -->
+ <h:commandButton value="#{msg.begin_assessment_}" 
+    action="#{delivery.validate}" type="submit" styleClass="active" 
+    rendered="#{delivery.actionString=='takeAssessment'
+             || delivery.actionString=='takeAssessmentViaUrl'}">
     <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.delivery.DeliveryActionListener" />
   </h:commandButton>
 
- <h:commandButton value="#{msg.begin_assessment_}" action="#{delivery.pvalidate}" type="submit" styleClass="active" rendered="#{delivery.previewAssessment eq 'true'}">
+ <h:commandButton value="#{msg.begin_assessment_}" action="#{delivery.pvalidate}" type="submit" styleClass="active" rendered="#{delivery.actionString=='previewAssessment'}">
     <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.delivery.DeliveryActionListener" />
   </h:commandButton>
 
+
+<!-- CANCEL BUTTON -->
   <h:commandButton value="#{msg.button_cancel}"  action="select" type="submit"
-     rendered="#{!delivery.accessViaUrl}" disabled="#{delivery.previewAssessment eq 'true'}">
+     rendered="#{delivery.actionString=='previewAssessment'
+             || delivery.actionString=='takeAssessment'}"
+     disabled="#{delivery.actionString=='previewAssessment'}">
     <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.select.SelectActionListener" />
   </h:commandButton>
+
   <h:commandButton value="#{msg.button_cancel}" type="button"
      style="act" onclick="javascript:window.open('/portal/','_top')"
-      rendered="#{delivery.accessViaUrl}" disabled="#{delivery.previewAssessment eq 'true'}"/>
+     rendered="#{delivery.actionString=='takeAssessmentViaUrl'}"
+     disabled="#{delivery.actionString=='previewAssessment'}"/>
 </p>
 
-<h:panelGroup rendered="#{delivery.previewAssessment eq 'true' && delivery.notPublished ne 'true'}">
+<!-- DONE BUTTON, FOR PREVIEW ONLY --> 
+<h:panelGroup rendered="#{delivery.actionString=='previewAssessment'}">
  <f:verbatim><div class="validation"></f:verbatim>
      <h:outputText value="#{msg.ass_preview}" />
      <h:commandButton value="#{msg.done}" action="editAssessment" type="submit"/>
- <f:verbatim></div></f:verbatim>
-</h:panelGroup>
-
-<h:panelGroup rendered="#{delivery.previewAssessment eq 'true' && delivery.notPublished eq 'true'}">
- <f:verbatim><div class="validation"></f:verbatim>
-     <h:outputText value="#{msg.ass_preview}" />
-     <h:commandButton value="#{msg.done}" action="editAssessment"/>
  <f:verbatim></div></f:verbatim>
 </h:panelGroup>
 
