@@ -211,6 +211,7 @@ public class TemplateUpdateListener
         template.setAssessmentFeedback(feedback);
       }
       feedback.setFeedbackDelivery(new Integer(templateBean.getFeedbackType()));
+      feedback.setFeedbackAuthoring(new Integer(templateBean.getFeedbackAuthoring()));
       feedback.setEditComponents(new Integer("1")); // dunno what goes here
       feedback.setShowQuestionText
         (templateBean.getFeedbackComponent_QuestionText());
