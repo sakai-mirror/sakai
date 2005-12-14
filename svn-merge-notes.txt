@@ -57,12 +57,6 @@ SAK-3064 - eliminate previewMode, the last check in eliminate accessViaUrl & not
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
-r4489 | daisyf@stanford.edu | 2005-12-07 14:18:18 -0500 (Wed, 07 Dec 2005) | 2 lines
-
-SAK-3064 - elimiate delivery.previewMode and delivery.accessViaUrl
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
 r4396 | john.ellis@rsmart.com | 2005-12-01 19:58:02 -0500 (Thu, 01 Dec 2005) | 5 lines
 
 http://bugs.sakaiproject.org/jira/browse/SAK-3055
