@@ -331,7 +331,7 @@ public class ContentHostingService
 		return service.allowRemoveResource(param0);
 	}
 
-	public static void removeResource(org.sakaiproject.service.legacy.content.ContentResourceEdit param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.ServerOverloadException
+	public static void removeResource(org.sakaiproject.service.legacy.content.ContentResourceEdit param0) throws org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)
@@ -340,7 +340,7 @@ public class ContentHostingService
 		service.removeResource(param0);
 	}
 
-	public static void removeResource(java.lang.String param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException, org.sakaiproject.exception.ServerOverloadException
+	public static void removeResource(java.lang.String param0) throws org.sakaiproject.exception.PermissionException, org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.TypeException, org.sakaiproject.exception.InUseException
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
 		if (service == null)

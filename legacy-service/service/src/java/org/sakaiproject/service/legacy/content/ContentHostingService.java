@@ -648,11 +648,8 @@ public interface ContentHostingService extends EntityProducer
 	 *            if the resource is a collection.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
-	 * @exception ServerOverloadException
-	 *            if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
-	public void removeResource(String id) throws PermissionException, IdUnusedException, TypeException, InUseException,
-			ServerOverloadException;
+	public void removeResource(String id) throws PermissionException, IdUnusedException, TypeException, InUseException;
 
 	/**
 	 * Remove a resource that is locked for update.
@@ -661,10 +658,8 @@ public interface ContentHostingService extends EntityProducer
 	 *        The ContentResourceEdit object to remove.
 	 * @exception PermissionException
 	 *            if the user does not have permissions to read a containing collection, or to remove this resource.
-	 * @exception ServerOverloadException
-	 *            if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
-	public void removeResource(ContentResourceEdit edit) throws PermissionException, ServerOverloadException;
+	public void removeResource(ContentResourceEdit edit) throws PermissionException;
 
 	/**
 	 * check permissions for rename().

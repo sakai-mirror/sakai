@@ -2212,10 +2212,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *            if the resource is a collection.
 	 * @exception InUseException
 	 *            if the resource is locked by someone else.
-	 * @exception ServerOverloadException
-	 * 			 if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
-	public void removeResource(String id) throws PermissionException, IdUnusedException, TypeException, InUseException, ServerOverloadException
+	public void removeResource(String id) throws PermissionException, IdUnusedException, TypeException, InUseException
 	{
 		BaseResourceEdit edit = (BaseResourceEdit) editResource(id);
 		removeResource(edit);
@@ -2229,10 +2227,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 *        The ContentResourceEdit object to remove.
 	 * @exception PermissionException
 	 *            if the user does not have permissions to read a containing collection, or to remove this resource.
-	 * @exception ServerOverloadException
-	 * 			 if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
-	public void removeResource(ContentResourceEdit edit) throws PermissionException, ServerOverloadException
+	public void removeResource(ContentResourceEdit edit) throws PermissionException
 	{
 		// check for closed edit
 		if (!edit.isActiveEdit())
@@ -2296,10 +2292,23 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 * @exception ServerOverloadException
 	 * 			 if server is configured to save resource body in filesystem and attempt to read from filesystem fails.
 	 */
-	public void addResourceToDeleteTable(ContentResourceEdit edit, String uuid, String userId) throws PermissionException, ServerOverloadException
+	public void addResourceToDeleteTable(ContentResourceEdit edit, String uuid, String userId) throws PermissionException
 	{
-		ContentResource newResource = addDeleteResource(edit.getId(), edit.getContentType(), edit.getContent(), edit
-				.getProperties(), uuid, userId, NotificationService.NOTI_OPTIONAL);
+		String id = edit.getId();
+		String content_type = edit.getContentType();
+		byte[] content = null;
+		try 
+		{
+			content = edit.getContent();
+		} 
+		catch (ServerOverloadException e) 
+		{
+			String this_method = this + ".addResourceToDeleteTable()";
+			m_logger.warn("\n\n" + this_method + "\n" + this_method + ": Unable to access file in server filesystem\n" + this_method + ": May be orphaned file: " + id + "\n" + this_method + "\n\n");
+		}
+		ResourceProperties properties = edit.getProperties();
+		
+		ContentResource newResource = addDeleteResource(id, content_type, content, properties, uuid, userId, NotificationService.NOTI_OPTIONAL);
 	}
 
 	public ContentResource addDeleteResource(String id, String type, byte[] content, ResourceProperties properties, String uuid,
@@ -2325,7 +2334,10 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		edit.setEvent(EVENT_RESOURCE_ADD);
 
 		edit.setContentType(type);
-		edit.setContent(content);
+		if(content != null)
+		{
+			edit.setContent(content);
+		}
 		addProperties(edit.getPropertiesEdit(), properties);
 
 		// complete the edit - update xml which contains properties xml and store the file content
