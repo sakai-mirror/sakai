@@ -1900,12 +1900,6 @@ public class DavServlet
 				resp.sendError(SakaidavStatus.SC_FORBIDDEN);
 				return;
 	}
-	catch (ServerOverloadException e)
-	{
-		Log.warn("sakai", "SAKAIDavServlet.doMkcol() - ServerOverloadException " + path);
-		resp.sendError(SakaidavStatus.SC_SERVICE_UNAVAILABLE);
-		return;
-	}
 
 	// Add the collection
 							
