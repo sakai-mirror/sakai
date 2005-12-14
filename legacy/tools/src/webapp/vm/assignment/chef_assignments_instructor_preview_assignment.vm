@@ -2,15 +2,14 @@
 <div class="portletBody">
 	<div class="navIntraTool">
 		#if ($allowAddAssignment)
-			$!tlang.getString("new")|
-			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title = "$!tlang.getString('gen.liofass')">$!tlang.getString("gen.liofass")</a>|
+			$!tlang.getString("new") | <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title = "$!tlang.getString('gen.liofass')">$!tlang.getString("gen.liofass")</a>
 			#if ($withGrade && $!allowGradeSubmission)
-				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>|
+				| <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>
 			#end
-			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>|
+			| <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>
 		#end
 		#if ($allowUpdateSite)
-			<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
+			| <a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
 		#end
 	</div>
 	<h3>
