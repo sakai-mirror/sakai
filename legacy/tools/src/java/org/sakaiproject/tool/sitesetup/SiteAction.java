@@ -1959,7 +1959,7 @@ public class SiteAction extends PagedResourceActionII
 				state.setAttribute("form_selectedNotify", Boolean.FALSE);
 			}
 			context.put("notify", state.getAttribute("form_selectedNotify"));
-			boolean same_role = ((Boolean) state.getAttribute("form_same_role")).booleanValue();
+			boolean same_role = state.getAttribute("form_same_role")==null?true:((Boolean) state.getAttribute("form_same_role")).booleanValue();
 			if (same_role)
 			{
 				context.put("backIndex", "19");
@@ -7070,17 +7070,17 @@ public class SiteAction extends PagedResourceActionII
 								 catch(IdInvalidException ee)
 								 {
 									 addAlert(state, emailInIdAccountName + " " + emailInIdAccount + " " +rb.getString("java.isinval") );
-									 Log.debug("chef", this + ".checkAddParticipant: UserDirectoryService addUser exception " + e.getMessage());
+									 Log.debug("chef", this + ".doSitemanage_participants_save: UserDirectoryService addUser exception " + e.getMessage());
 								 }
 								 catch(IdUsedException ee)
 								 {
 									 addAlert(state, emailInIdAccountName + " " + emailInIdAccount + " " +rb.getString("java.beenused") );
-									 Log.debug("chef", this + ".checkAddParticipant: UserDirectoryService addUser exception " + e.getMessage());
+									 Log.debug("chef", this + ".doSitemanage_participants_save: UserDirectoryService addUser exception " + e.getMessage());
 								 }
 								 catch(PermissionException ee)
 								 {
 									 addAlert(state, rb.getString("java.haveadd")+" " + emailInIdAccount);
-									 Log.debug("chef", this + ".chekcAddParticipant: UserDirectoryService addUser exception " + e.getMessage());
+									 Log.debug("chef", this + ".doSitemanage_participants_save: UserDirectoryService addUser exception " + e.getMessage());
 								 }	
 							}
 					
@@ -10578,45 +10578,53 @@ public class SiteAction extends PagedResourceActionII
 						 }
 						 catch(IdInvalidException ee)
 						 {
-							 addAlert(state, emailInIdAccountName + " " + emailInIdAccount + " "+rb.getString("java.isinval") );
-							 Log.debug("chef", this + ".checkAddParticipant: UserDirectoryService addUser exception " + e.getMessage());
+							 addAlert(state, emailInIdAccountName + " id " + emailInIdAccount + " "+rb.getString("java.isinval") );
+							 Log.debug("chef", this + ".doAdd_participant: UserDirectoryService addUser exception " + e.getMessage());
 						 }
 						 catch(IdUsedException ee)
 						 {
 							 addAlert(state, "The " + emailInIdAccountName + " " + emailInIdAccount + " " + rb.getString("java.beenused"));
-							 Log.debug("chef", this + ".checkAddParticipant: UserDirectoryService addUser exception " + e.getMessage());
+							 Log.debug("chef", this + ".doAdd_participant: UserDirectoryService addUser exception " + e.getMessage());
 						 }
 						 catch(PermissionException ee)
 						 {
 							 addAlert(state, rb.getString("java.haveadd")+ " " + emailInIdAccount);
-							 Log.debug("chef", this + ".chekcAddParticipant: UserDirectoryService addUser exception " + e.getMessage());
+							 Log.debug("chef", this + ".doAdd_participant: UserDirectoryService addUser exception " + e.getMessage());
 						 }	
 					}
 					
-					// get role 
-					String role = null;
-					if (same_role)
+					// add role if user exists
+					if (state.getAttribute(STATE_MESSAGE) == null)
 					{
-						// if all added participants have a same role
-						role = (String) state.getAttribute("form_selectedRole"); 
-					}
-					else
-					{
-						// if all added participants have different role
-						role = (String) selectedRoles.get(emailInIdAccount);
-					}
-						
-					// add property role to the emailInIdAccount account
-					if (addUserRealm(state, emailInIdAccount, role))
-					{
-						// emailInIdAccount account has been added successfully
-						addedEmailInIdAccounts.add(emailInIdAccount);
-						
-						// send notification
-						if (notify)
-						{	
-							// send notification email
-							notifyAddedParticipant(true, emailInIdAccount, emailInIdAccount, siteTitle);
+						// get role 
+						String role = null;
+						if (same_role)
+						{
+							// if all added participants have a same role
+							role = (String) state.getAttribute("form_selectedRole"); 
+						}
+						else
+						{
+							// if all added participants have different role
+							role = (String) selectedRoles.get(emailInIdAccount);
+						}
+							
+						// add property role to the emailInIdAccount account
+						if (addUserRealm(state, emailInIdAccount, role))
+						{
+							// emailInIdAccount account has been added successfully
+							addedEmailInIdAccounts.add(emailInIdAccount);
+							
+							// send notification
+							if (notify)
+							{	
+								// send notification email
+								notifyAddedParticipant(true, emailInIdAccount, emailInIdAccount, siteTitle);
+							}
+						}
+						else
+						{
+							notAddedEmailInIdAccounts = notAddedEmailInIdAccounts.concat(emailInIdAccount + "\n");
 						}
 					}
 					else

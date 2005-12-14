@@ -813,7 +813,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		id = StringUtil.trimToZeroLower(id);
 
 		// check for a valid user name
-		Validator.checkResourceId(id);
+		Validator.checkUserId(id);
 
 		// check security (throws if not permitted)
 		unlock(SECURE_ADD_USER, userReference(id));
