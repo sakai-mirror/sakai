@@ -1,6 +1,16 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4557 | jimeng@umich.edu | 2005-12-12 18:06:23 -0500 (Mon, 12 Dec 2005) | 5 lines
+
+SAK-3138
+Split out the velocity markup for creating items from the markup for deciding what kind of item to create.  This will be needed to allow 
+clients (other tools) to create/modify individual items in contexts other than Resources.
+Make the identifiers for the various  item-types public so they can be referenced from other classes.
+Added a new constant to identify the helper mode in which a client creates an individual item (ResourcesAction.MODE_ATTACHMENT_NEW_ITEM).
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4500 | lydial@stanford.edu | 2005-12-08 01:47:57 -0500 (Thu, 08 Dec 2005) | 1 line
 
 SAK-2862 please do not include this in maint branch
