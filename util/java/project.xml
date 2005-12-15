@@ -26,6 +26,17 @@
 			<version>1.0.4</version>
 		</dependency>
 
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-session</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-legacy-service</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

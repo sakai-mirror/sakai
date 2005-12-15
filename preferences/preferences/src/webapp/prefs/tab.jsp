@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%-- Sakai JSF tag library --%>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
-<f:loadBundle basename="org.sakaiproject.tool.preferences.bundle.Messages" var="msgs"/>
+
 <f:view>
 	<sakai:view_container title="#{msgs.prefs_title}">
 	<sakai:view_content>
@@ -15,6 +15,7 @@
  		    <sakai:tool_bar_item action="#{UserPrefsTool.processActionNotiFrmEdit}" value="#{msgs.prefs_noti_title}" />
  		    <sakai:tool_bar_item value="#{msgs.prefs_tab_title}" />
  		    <sakai:tool_bar_item action="#{UserPrefsTool.processActionTZFrmEdit}" value="#{msgs.prefs_timezone_title}" />
+ 		    <sakai:tool_bar_item action="#{UserPrefsTool.processActionLocFrmEdit}" value="#{msgs.prefs_lang_title}" />
    	  	</sakai:tool_bar>
 
 				<br />

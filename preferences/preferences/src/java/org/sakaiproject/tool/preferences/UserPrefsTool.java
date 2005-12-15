@@ -23,6 +23,7 @@
 
 package org.sakaiproject.tool.preferences;
 
+import java.util.Locale;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,6 +54,7 @@ import org.sakaiproject.service.legacy.preference.PreferencesService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
+import org.sakaiproject.util.java.ResourceLoader;
 
 /**
  * UserPrefsTool is a Sakai Admin tool to view and edit anyone's preferences.
@@ -203,6 +205,7 @@ public class UserPrefsTool
   private List prefExcludeItems = new ArrayList();
   private List prefOrderItems = new ArrayList();
   private List prefTimeZones = new ArrayList();
+  private List prefLocales = new ArrayList();
   private String[] selectedExcludeItems;
   private String[] selectedOrderItems;
   protected final static String EXCLUDE_SITE_LISTS = "exclude";
@@ -211,6 +214,9 @@ public class UserPrefsTool
   protected boolean tabUpdated=false ;		//display of text message upon updation
   // user's currently selected time zone
   private TimeZone m_timeZone = null;
+  // user's currently selected regional language locale
+  private Locale m_locale = null;
+  private LocaleComparator localeComparator = new LocaleComparator();
   
   /** The user id retrieved from UsageSessionService	*/
   private String userId = "";
@@ -316,7 +322,7 @@ public class UserPrefsTool
     if ( prefTimeZones.size() == 0 )
     {
        String[] timeZoneArray = TimeZone.getAvailableIDs();
-       Arrays.sort( timeZoneArray );
+       Arrays.sort( timeZoneArray, localeComparator );
        for ( int i=0; i<timeZoneArray.length; i++ )
           prefTimeZones.add( new SelectItem(timeZoneArray[i], timeZoneArray[i]) );
     }
@@ -325,7 +331,7 @@ public class UserPrefsTool
   }
 
   /**
-   * @param prefTimeZoness The prefTimeZones to set.
+   * @param prefTimeZones The prefTimeZones to set.
    */
   public void setPrefTimeZones(List prefTimeZones)
   {
@@ -335,6 +341,35 @@ public class UserPrefsTool
     }
 
     this.prefTimeZones = prefTimeZones;
+  }
+
+  /**
+   * @return Returns the prefLocales
+   */
+  public List getPrefLocales()
+  {
+    if ( prefLocales.size() == 0 )
+    {
+       Locale[] localeArray = Locale.getAvailableLocales();
+       Arrays.sort( localeArray, localeComparator );
+       for ( int i=0; i<localeArray.length; i++ )
+          prefLocales.add( new SelectItem(localeArray[i].toString(), localeArray[i].getDisplayName()) );
+    }
+      
+    return prefLocales;
+  }
+
+  /**
+   * @param prefLocales The prefLocales to set.
+   */
+  public void setPrefLocales(List prefLocales)
+  {
+    if (LOG.isDebugEnabled())
+    {
+      LOG.debug("setPrefLocales(List " + prefLocales + ")");
+    }
+
+    this.prefLocales = prefLocales;
   }
 
   /**
@@ -410,6 +445,72 @@ public class UserPrefsTool
         m_timeZone = TimeZone.getTimeZone( selectedTimeZone );
      else
         LOG.warn(this+"setSelctedTimeZone() has null TimeZone");
+  }
+
+  /**
+   * @return Returns the user's selected Locale ID
+   */
+  private Locale getSelectedLocale()
+  {
+     if ( m_locale != null )
+        return m_locale;
+
+     Preferences prefs = (PreferencesEdit) m_preferencesService
+         .getPreferences(getUserId());
+     ResourceProperties props = prefs.getProperties(ResourceLoader.SERVICE_NAME);
+     String prefLocale = props.getProperty( ResourceLoader.LOCALE_KEY );
+     
+     if ( hasValue(prefLocale) )
+     {
+        String[] locValues = prefLocale.split("_");
+        if (locValues.length > 1)
+           m_locale = new Locale( locValues[0], locValues[1] ); // language, country
+        else if (locValues.length == 1 )
+           m_locale = new Locale( locValues[0] ); // just language
+        else 
+           m_locale = Locale.getDefault();
+     }
+     else
+     {
+        m_locale = Locale.getDefault();
+     }
+        
+     return m_locale;
+  }
+
+  /**
+   * @return Returns the user's selected Locale ID
+   */
+  public String getSelectedLocaleName()
+  {
+     return getSelectedLocale().getDisplayName();
+  }
+
+  /**
+   * @return Returns the user's selected Locale ID
+   */
+  public String getSelectedLocaleString()
+  {
+     return getSelectedLocale().toString();
+  }
+
+  /**
+   * @param selectedLocale The selectedLocale to set.
+   */
+  public void setSelectedLocaleString(String selectedLocale)
+  {
+     if ( selectedLocale != null )
+     {
+        String[] locValues = selectedLocale.split("_");
+        if (locValues.length > 1)
+           m_locale = new Locale( locValues[0], locValues[1] ); // language, country
+        else if (locValues.length == 1 )
+           m_locale = new Locale( locValues[0] ); // just language
+        else 
+           m_locale = Locale.getDefault();
+     }
+     else
+        LOG.warn(this+"setSelctedLocale() has null locale id");
   }
 
   /**
@@ -838,6 +939,19 @@ public class UserPrefsTool
   }
 
   /**
+   * Process the cancel command from the edit view.
+   * @return navigation outcome to locale page (list)
+   */
+  public String processActionLocFrmEdit()
+  {
+    LOG.debug("processActionLocFrmEdit()");
+
+    cancelEdit();
+    // navigation page data are loaded through getter method as navigation is the default page for 'sakai.preferences' tool.
+    return "locale";
+  }
+
+  /**
    * This is called from edit page for navigation to refresh page
    * @return navigation outcome to refresh page (refresh)
    */
@@ -869,6 +983,7 @@ public class UserPrefsTool
     tabUpdated=false;
     notiUpdated=false;
     tzUpdated=false;    
+    locUpdated=false;    
     refreshUpdated=false;
   }
 
@@ -1026,6 +1141,7 @@ public class UserPrefsTool
   private String selectedSyllItem = ""; //syllabus notification
   protected boolean notiUpdated=false ;
   protected boolean tzUpdated=false;  
+  protected boolean locUpdated=false;  
   ///////////////////////////////////		GETTER AND SETTER		///////////////////////////////////
   //TODO chec for any preprocessor for handling request for first time. This can simplify getter() methods as below	
   /**
@@ -1204,6 +1320,21 @@ public class UserPrefsTool
     this.tzUpdated = tzUpdated;
   }
   
+  /**
+   * @return Returns the tzUpdated.
+   */
+  public boolean getLocUpdated()
+  {
+    return locUpdated;
+  }
+  /**
+   * @param notiUpdated The locUpdated to set.
+   */
+  public void setLocUpdated(boolean locUpdated)
+  {
+    this.locUpdated = locUpdated;
+  }
+  
   /////////////////////////////////////////NOTIFICATION ACTION - copied from NotificationprefsAction.java////////
   //TODO - clean up method call. These are basically copied from legacy legacy implementations.
   /**
@@ -1268,7 +1399,7 @@ public class UserPrefsTool
   }
 
   /**
-   * process notification cancel
+   * process timezone cancel
    * @return navigation outcome to timezone page
    */
   public String processActionTzCancel()
@@ -1280,6 +1411,36 @@ public class UserPrefsTool
     getSelectedTimeZone();
     
     return "timezone";
+  }
+
+  /**
+   * Process the save command from the edit view.
+   * @return navigation outcome to locale page
+   */
+  public String processActionLocSave()
+  {
+     setUserEditingOn();
+     ResourcePropertiesEdit props = m_edit.getPropertiesEdit( ResourceLoader.SERVICE_NAME );
+     props.addProperty( ResourceLoader.LOCALE_KEY, m_locale.toString()  );  
+     m_preferencesService.commit(m_edit);
+    
+     tzUpdated=true ;		//set for display of text massage
+     return "locale";
+  }
+
+  /**
+   * process locale cancel
+   * @return navigation outcome to locale page
+   */
+  public String processActionLocCancel()
+  {
+    LOG.debug("processActionLocCancel()");
+    
+    // restore original locale
+    m_locale = null; 
+    getSelectedLocale();
+    
+    return "locale";
   }
 
   /**

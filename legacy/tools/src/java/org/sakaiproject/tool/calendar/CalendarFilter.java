@@ -28,8 +28,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.ResourceBundle;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.service.legacy.calendar.CalendarEvent;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
@@ -44,7 +44,7 @@ class CalendarFilter
 {
 	
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("calendar");
+    private static ResourceLoader rb = new ResourceLoader("calendar");
 	
 	/**
 	 * Used to parse date entered by the user. This format should really be internationalized.
