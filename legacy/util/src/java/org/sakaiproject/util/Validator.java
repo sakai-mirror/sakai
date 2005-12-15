@@ -43,6 +43,9 @@ public class Validator
 	/** These characters are not allowed in a resource id */
 	protected static final String INVALID_CHARS_IN_RESOURCE_ID = "^/\\{}[]()@%*?#&=\n\r\t\b\f";
 	
+	/** These characters are not allowed in a user id */
+	protected static final String INVALID_CHARS_IN_USER_ID = "^/\\%*?\n\r\t\b\f";
+	
 	protected static final String MAP_TO_A = "âäàåÄÅáá";
 	protected static final String MAP_TO_B = "ßß";
 	protected static final String MAP_TO_C = "Çç¢¢";
@@ -497,6 +500,29 @@ public class Validator
 
 	}	// escapeJavascript
 	
+	/**
+	* Check for a valid user id.
+	* @exception IdInvalidException if the id is invalid.
+	*/
+	public static void checkUserId(String id)
+		throws IdInvalidException
+	{
+		// the rules:
+		//	Null is rejected
+		//	all blank is rejected
+		//	INVALID_CHARS_IN_USER_ID characters are rejected
+
+		if (id == null) throw new IdInvalidException(BLANK_MSG);
+		if (id.trim().length() == 0) throw new IdInvalidException(BLANK_MSG);
+		
+		// we must reject certain characters that we cannot even escape and get into Tomcat via a URL
+		for (int i = 0; i < id.length(); i++)
+		{
+			if (INVALID_CHARS_IN_USER_ID.indexOf(id.charAt(i)) != -1)
+				throw new IdInvalidException(INVALID_MSG);
+		}
+
+	}	// checkUserId
 	
 	/**
 	* Check for a valid resource id.
