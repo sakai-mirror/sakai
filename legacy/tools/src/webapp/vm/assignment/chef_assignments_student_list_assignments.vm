@@ -1,18 +1,17 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_student_list_assignments.vm,v 1.15 2005/06/07 15:28:37 zqian.umich.edu Exp $ -->
 <div class="portletBody">
-		#if($allowAddAssignment)
-			<div class="navIntraTool">
-				<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>
-				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
+		<div class="navIntraTool">
+			#if($allowAddAssignment)
+				<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a> | <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
 				#if ($withGrade && $allowGradeSubmission)
-					<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>
+					| <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>
 				#end
-				<span style="margin:.5em">$!tlang.getString('gen.stuvie')</span>
-		#end
-		#if ($allowUpdateSite)
-				<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
-			</div>
-		#end
+				| <span style="margin:.5em">$!tlang.getString('gen.stuvie')</span>
+			#end
+			#if ($allowUpdateSite)
+				| <a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
+			#end
+		</div>
 
 	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
 	<h3>

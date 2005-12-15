@@ -2,13 +2,11 @@
 <div class="portletBody">
 	<div class="navIntraTool">
 		#if ($allowAddAssignment)
-			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>
+			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a> |
 		#end
-		<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
-		<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString('gen.stuvie')">$!tlang.getString('gen.stuvie')</a>
-		#if ($withGrade)<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>#end
+		<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a> | <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString('gen.stuvie')">$!tlang.getString('gen.stuvie')</a>#if($withGrade)| <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>#end
 		#if ($allowUpdateSite)
-			<a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
+			| <a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
 		#end
 	</div>
 	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
@@ -22,7 +20,7 @@
 	#else
 		<div class="navIntraTool">
 			<a href="$accessPointUrl" title="$!tlang.getString('downall')">$!tlang.getString('downall')</a>
-			#if ($withGrade)<a href="#toolLinkParam("$action" "doRelease_grades" "assignmentId=$validator.escapeUrl($!assignment.Reference)")" title="$!tlang.getString('relgrad')">$!tlang.getString('relgrad')</a>#end
+			#if ($withGrade)| <a href="#toolLinkParam("$action" "doRelease_grades" "assignmentId=$validator.escapeUrl($!assignment.Reference)")" title="$!tlang.getString('relgrad')">$!tlang.getString('relgrad')</a>#end
 		</div>
 		<div class="rightNav">
 			<span class="instruction">
