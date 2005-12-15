@@ -1,12 +1,6 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
-r4508 | daisyf@stanford.edu | 2005-12-09 13:41:22 -0500 (Fri, 09 Dec 2005) | 2 lines
-
-SAK-3064 - added comment
-------------------------------------------------------------------------
-
-------------------------------------------------------------------------
 r4500 | lydial@stanford.edu | 2005-12-08 01:47:57 -0500 (Thu, 08 Dec 2005) | 1 line
 
 SAK-2862 please do not include this in maint branch
