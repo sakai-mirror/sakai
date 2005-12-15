@@ -94,7 +94,7 @@ languages, as follows:
     Status: ??
     Translated by: n/a
     Contact: Sebasti‡n Barreiro (sbarreiro@gmail.com)
-    Local ID: es_AR check this
+    Local ID: es_AR
 
 
 
