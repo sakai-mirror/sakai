@@ -64,6 +64,7 @@ import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.service.legacy.site.Site;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
 
@@ -115,7 +116,18 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     * @return list of published sads or sads owned by current user
     */
    public List findHomes() {
-      String query = "from StructuredArtifactDefinitionBean where owner = ? or siteState = ?  or globalState = ?";
+      // only for the appropriate worksites
+      String query = "from StructuredArtifactDefinitionBean where owner = ? or globalState = ? or (siteState = ?  and siteId in (";
+
+      List sites = getWorksiteManager().getUserSites();
+      for (Iterator i=sites.iterator();i.hasNext();) {
+         Site site = (Site)i.next();
+         query += "'" + site.getId() + "'";
+         query += ",";
+      }
+
+      query += "''))";
+
       Object[] params = new Object[]{getAuthManager().getAgent().getId().getValue(),
                                      new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                      new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED)};
