@@ -3,3 +3,7 @@ add column  (FEEDBACKAUTHORING integer);
 alter table SAM_PUBLISHEDFEEDBACK_T
 add column  (FEEDBACKAUTHORING integer);
 
+INSERT INTO SAM_ASSESSMETADATA_T ("ASSESSMENTMETADATAID", "ASSESSMENTID","LABEL",
+    "ENTRY")
+    VALUES(NEXT VALUE FOR SAM_ASSESSMETADATA_ID_S, 1, 'feedbackAuthoring_isInstructorEditable', 'true')
+;
