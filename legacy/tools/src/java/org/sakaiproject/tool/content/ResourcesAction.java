@@ -3902,10 +3902,6 @@ public class ResourcesAction
 				{
 					addAlert(state,RESOURCE_NOT_EXIST_STRING);
 				}
-				catch (ServerOverloadException e)
-				{
-					addAlert(state, rb.getString("failed"));
-				}
 				catch (TypeException e)
 				{
 					addAlert(state, rb.getString("pasteitem") + " " + originalDisplayName + " " + rb.getString("mismatch"));
