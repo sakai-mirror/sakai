@@ -37,10 +37,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.sakaiproject.api.kernel.id.IdManager;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.exception.*;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.sql.SqlReader;
 import org.sakaiproject.service.framework.sql.SqlService;
@@ -299,39 +296,64 @@ public class DbContentService
 
 		String uuid = null;
 
-		try
-		{
-		    uuid=findUuid(id);
-            
-            if (uuid!=null) return uuid;
+       uuid=findUuid(id);
 
-			//UUID not found, so create one and store it
-			
-			IdManager uuidManager=(IdManager)ComponentManager.get(IdManager.class);
-			uuid=uuidManager.createUuid();
-			
-			// get a connection for the updates
-			final Connection connection = m_sqlService.borrowConnection();
-			boolean wasCommit = connection.getAutoCommit();
-			connection.setAutoCommit(false);
+         if (uuid!=null) return uuid;
 
-			String sql = "update CONTENT_RESOURCE set RESOURCE_UUID = ? where RESOURCE_ID = ?";
-			Object[] fields = new Object[2];
-			fields[0] = uuid;
-			fields[1] = id;
-			m_sqlService.dbWrite(connection, sql, fields);
-			
-			connection.commit();
-			connection.setAutoCommit(wasCommit);
-			m_sqlService.returnConnection(connection);
-		}
-		catch (Throwable t)
-		{
-			m_logger.error(this + ".getUuid: failed: " + t);		
-		}
-		
-		return uuid;
+      //UUID not found, so create one and store it
+
+      IdManager uuidManager=(IdManager)ComponentManager.get(IdManager.class);
+      uuid=uuidManager.createUuid();
+
+      setUuidInternal(id, uuid);
+
+      return uuid;
 	}
+
+   /**
+    *
+    * @param id id of the resource to set the UUID for
+    * @param uuid the new UUID of the resource
+    * @throws IdInvalidException if the given resource already has a UUID set
+    */
+   public void setUuid(String id, String uuid) throws IdInvalidException {
+      String existingUuid = findUuid(id);
+      if (existingUuid != null) {
+         throw new IdInvalidException(id);
+      }
+
+      setUuidInternal(id, uuid);
+   }
+
+   protected void setUuidInternal(String id, String uuid) {
+      try {
+         // get a connection for the updates
+         final Connection connection = m_sqlService.borrowConnection();
+         boolean wasCommit = connection.getAutoCommit();
+         connection.setAutoCommit(false);
+
+         // set any existing one to null
+         String sql = "update CONTENT_RESOURCE set RESOURCE_UUID = ? where RESOURCE_UUID = ?";
+         Object[] fields = new Object[2];
+         fields[0] = null;
+         fields[1] = uuid;
+         m_sqlService.dbWrite(connection, sql, fields);
+
+         sql = "update CONTENT_RESOURCE set RESOURCE_UUID = ? where RESOURCE_ID = ?";
+         fields = new Object[2];
+         fields[0] = uuid;
+         fields[1] = id;
+         m_sqlService.dbWrite(connection, sql, fields);
+
+         connection.commit();
+         connection.setAutoCommit(wasCommit);
+         m_sqlService.returnConnection(connection);
+      }
+      catch (Throwable t)
+      {
+         m_logger.error(this + ".getUuid: failed: " + t);
+      }
+   }
 
     /**
      * private utility method to search for UUID for given id 

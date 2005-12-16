@@ -121,11 +121,19 @@ public interface ContentHostingService extends EntityProducer
 	/** Security function for those who may maintain dropboxes. */
 	public static final String EVENT_DROPBOX_MAINTAIN = "dropbox.maintain";
 
-	/**
-	 * For a given id, return its UUID (creating it if it does not already exist)
-	 */
+   /**
+    * For a given id, return its UUID (creating it if it does not already exist)
+    */
 
-	public String getUuid(String id);
+   public String getUuid(String id);
+
+   /**
+    *
+    * @param id id of the resource to set the UUID for
+    * @param uuid the new UUID of the resource
+    * @throws IdInvalidException if the given resource already has a UUID set
+    */
+   public void setUuid(String id, String uuid) throws IdInvalidException;
 
 	/**
 	 * For a given UUID, attempt to lookup and return the corresponding id (URI)

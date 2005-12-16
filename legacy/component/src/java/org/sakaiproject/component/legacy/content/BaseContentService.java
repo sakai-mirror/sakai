@@ -654,6 +654,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	 */
 	protected abstract Storage newStorage();
 
+   /**
+    *
+    * @param id id of the resource to set the UUID for
+    * @param uuid the new UUID of the resource
+    */   
+   protected abstract void setUuidInternal(String id, String uuid);
+
 	/**
 	 * Access the partial URL that forms the root of resource URLs.
 	 * 
@@ -2816,7 +2823,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			{
 				ContentResource newResource = addResource(new_id, thisResource.getContentType(), thisResource.getContent(), newProps,
 						NotificationService.NOTI_NONE);
-				
+
 				if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveResource successful");
 				still_trying = false;
 			}
@@ -2847,7 +2854,9 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 				newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, displayName + "-" + attempt);
 			}
 		}
-		
+
+      String oldUuid = getUuid(thisResource.getId());
+      setUuidInternal(new_id, oldUuid);
 		removeResource(thisResource);
 				
 		return new_id;
