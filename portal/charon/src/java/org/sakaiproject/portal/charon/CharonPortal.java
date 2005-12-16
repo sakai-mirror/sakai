@@ -29,7 +29,6 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.servlet.ServletConfig;
@@ -40,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -78,7 +78,7 @@ public class CharonPortal extends HttpServlet
 	private static Log M_log = LogFactory.getLog(CharonPortal.class);
 
 	/** messages. */
-	private static ResourceBundle rb = ResourceBundle.getBundle("sitenav");
+	private static ResourceLoader rb = new ResourceLoader("sitenav");
 
 	/** Session attribute root for storing a site's last page visited - just append the site id. */
 	protected static final String ATTR_SITE_PAGE = "sakai.portal.site.";
