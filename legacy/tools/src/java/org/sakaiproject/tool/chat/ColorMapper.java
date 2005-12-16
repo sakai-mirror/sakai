@@ -28,7 +28,7 @@ package org.sakaiproject.tool.chat;
 import java.lang.reflect.Array;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.ResourceBundle;
+import org.sakaiproject.util.java.ResourceLoader;
 
 /**
 * <p>ColorMapper is a wrapper for a Hashtable that maps user names (or any set of Strings) to colors.</p>
@@ -40,7 +40,7 @@ import java.util.ResourceBundle;
 public class ColorMapper
 {
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("chat");
+    private static ResourceLoader rb = new ResourceLoader("chat");
     
 	// The index of the next color in the COLORS array that will be assigned to a name
 	protected int m_next = 0;

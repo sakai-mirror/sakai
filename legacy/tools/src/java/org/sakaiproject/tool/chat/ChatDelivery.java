@@ -25,8 +25,7 @@
 package org.sakaiproject.tool.chat;
 
 // imports
-import java.util.ResourceBundle;
-
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.log.cover.Log;
@@ -58,7 +57,7 @@ public class ChatDelivery
 	extends BaseDelivery
 {
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("chat");
+    private static ResourceLoader rb = new ResourceLoader("chat");
     
 	/** The messageId. */
 	protected String m_messageId = null;

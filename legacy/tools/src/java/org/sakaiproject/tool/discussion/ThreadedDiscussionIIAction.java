@@ -29,9 +29,9 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -86,8 +86,7 @@ public class ThreadedDiscussionIIAction
 	private static final String STATE_REPLY_MSG = "replyToMsgOnly";
 
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("discussion");
-	
+   private static ResourceLoader rb = new ResourceLoader("discussion");
 	
 	/** channel exist */
 	private static final String CHANNEL_EXIST = "channel_exist";

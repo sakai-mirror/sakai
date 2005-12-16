@@ -26,9 +26,9 @@ package org.sakaiproject.tool.news;
 
 import java.net.URL;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
@@ -62,7 +62,7 @@ public class NewsAction
 	extends VelocityPortletPaneledAction
 {
 	
-	private static ResourceBundle rb = ResourceBundle.getBundle("news");
+	private static ResourceLoader rb = new ResourceLoader("news");
 	
 	/** names and values of request parameters to select sub-panels */
 	private static final String MONITOR_PANEL = "List";

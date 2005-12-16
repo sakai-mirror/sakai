@@ -27,8 +27,8 @@ package org.sakaiproject.cheftool;
 // imports
 import java.util.List;
 import java.util.Vector;
-import java.util.ResourceBundle;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.cheftool.menu.Menu;
 import org.sakaiproject.cheftool.menu.MenuDivider;
 import org.sakaiproject.cheftool.menu.MenuEntry;
@@ -47,7 +47,7 @@ import org.sakaiproject.util.courier.ObservingCourier;
 public abstract class PagedResourceActionII
 	extends VelocityPortletPaneledAction
 {
-	protected static ResourceBundle rb_praII = ResourceBundle.getBundle("pagedresourceaction");
+	protected static ResourceLoader rb_praII = new ResourceLoader("pagedresourceaction");
    
 	/** The default number of messages per page. */
 	protected final static int DEFAULT_PAGE_SIZE = 20;

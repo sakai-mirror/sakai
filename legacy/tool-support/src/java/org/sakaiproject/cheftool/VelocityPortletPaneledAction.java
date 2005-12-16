@@ -30,13 +30,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -69,7 +69,7 @@ import org.sakaiproject.vm.ActionURL;
 public abstract class VelocityPortletPaneledAction extends ToolServlet
 {
 	/** Resource bundle using current language locale */
-	private static ResourceBundle rb = ResourceBundle.getBundle("velocity");
+	private static ResourceLoader rb = new ResourceLoader("velocity");
 
 	protected static final String BUTTON = "eventSubmit_";
 

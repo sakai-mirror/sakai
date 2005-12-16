@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -56,6 +55,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.id.cover.IdManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
@@ -142,7 +142,7 @@ public class SiteAction extends PagedResourceActionII
 {
 	/** portlet configuration parameter values**/
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("sitesetupgeneric");
+    private static ResourceLoader rb = new ResourceLoader("sitesetupgeneric");
 	
 	private static final String SITE_MODE_SITESETUP = "sitesetup";
 	private static final String SITE_MODE_SITEINFO= "siteinfo";

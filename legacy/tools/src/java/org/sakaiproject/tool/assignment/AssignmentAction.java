@@ -29,9 +29,9 @@ import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -95,7 +95,7 @@ import java.util.ArrayList;
 public class AssignmentAction
 extends PagedResourceActionII
 {
-	private static ResourceBundle rb = ResourceBundle.getBundle("assignment");
+	private static ResourceLoader rb = new ResourceLoader("assignment");
 	
 	/** The attachments	 */
 	private static final String ATTACHMENTS = "Assignment.attachments";

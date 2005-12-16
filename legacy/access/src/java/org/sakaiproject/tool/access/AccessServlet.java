@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.servlet.ServletConfig;
@@ -39,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
@@ -75,7 +75,7 @@ public class AccessServlet extends VmServlet
 	private static Log M_log = LogFactory.getLog(AccessServlet.class);
 
 	/** Resource bundle using current language locale */
-	protected static ResourceBundle rb = ResourceBundle.getBundle("access");
+	protected static ResourceLoader rb = new ResourceLoader("access");
 
 	/** stream content requests if true, read all into memory and send if false. */
 	protected static final boolean STREAM_CONTENT = true;

@@ -26,7 +26,7 @@ package org.sakaiproject.util;
 
 // imports
 import java.util.Calendar;
-import java.util.ResourceBundle;
+import org.sakaiproject.util.java.ResourceLoader;
 
 /**
 * <p>CalendarUtil is a bunch of utility methods added to a java Calendar object.</p>
@@ -37,7 +37,7 @@ import java.util.ResourceBundle;
 public class CalendarUtil
 {
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("calendar");
+    private static ResourceLoader rb = new ResourceLoader("calendar");
 	
 	/** The calendar object this is based upon. */
 	Calendar m_calendar = null;

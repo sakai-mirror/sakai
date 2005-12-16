@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.Vector;
-import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -185,7 +184,7 @@ public class UserPrefsTool
   private static final Log LOG = LogFactory.getLog(UserPrefsTool.class);
 
   /*** Resource bundle messages */
-  ResourceBundle msgs = ResourceBundle.getBundle("org.sakaiproject.tool.preferences.bundle.Messages");
+  ResourceLoader msgs = new ResourceLoader("org.sakaiproject.tool.preferences.bundle.Messages");
 	
   /** The PreferencesEdit being worked on. */
   protected PreferencesEdit m_edit = null;
@@ -223,7 +222,7 @@ public class UserPrefsTool
   
   //////////////////////////////////		PROPERTY GETTER AND SETTER		////////////////////////////////////////////	
   /**
-   * @return Returns the ResourceBundle value.
+   * @return Returns the ResourceLoader value.
 	* 
 	* Note: workaround for <f:selectItem> element, which doesn't like using the <f:loadBundle> map variable 
    */

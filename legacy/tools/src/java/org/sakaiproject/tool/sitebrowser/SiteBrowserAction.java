@@ -29,9 +29,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
 import org.sakaiproject.cheftool.PagedResourceActionII;
@@ -66,7 +66,7 @@ import java.util.ArrayList;
 public class SiteBrowserAction
 	extends PagedResourceActionII
 {
-	private static ResourceBundle rb = ResourceBundle.getBundle("sitebrowser");
+	private static ResourceLoader rb = new ResourceLoader("sitebrowser");
 	private final static String SITE_TYPE_ANY = "Any";
 	private final static String SITE_TERM_ANY = "Any";
 	private final static String STATE_TERM_SELECTION = "termSelection";

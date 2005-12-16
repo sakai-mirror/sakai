@@ -26,8 +26,8 @@ package org.sakaiproject.tool.chat;
 
 // imports
 import java.util.Observable;
-import java.util.ResourceBundle;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.service.framework.courier.cover.CourierService;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.framework.log.cover.Log;
@@ -44,7 +44,7 @@ public class ChatObservingCourier
 	extends EventObservingCourier
 {
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("chat");
+    private static ResourceLoader rb = new ResourceLoader("chat");
     
 	protected boolean m_alertEnabled;
 	

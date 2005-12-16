@@ -30,8 +30,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.ResourceBundle;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
@@ -58,7 +58,8 @@ public class PresenceToolAction
 	extends VelocityPortletPaneledAction
 {
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("admin");
+	private static ResourceLoader rb = new ResourceLoader("admin");
+    
 	/** The display modes. */
 	protected static final String STATE_DISPLAY_MODE = "display_mode";
 	protected static final String MODE_LOCATIONS = "locations";

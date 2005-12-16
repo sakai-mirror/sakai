@@ -26,8 +26,8 @@ package org.sakaiproject.tool.web;
 
 // imports
 import java.util.Properties;
-import java.util.ResourceBundle;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
@@ -63,7 +63,7 @@ import org.sakaiproject.util.java.StringUtil;
 public class IFrameAction extends VelocityPortletPaneledAction
 {
 	/** Resource bundle using current language locale */
-	protected static ResourceBundle rb = ResourceBundle.getBundle("iframe");
+	protected static ResourceLoader rb = new ResourceLoader("iframe");
 
 	/** The source URL, in state, config and context. */
 	protected final static String SOURCE = "source";

@@ -26,11 +26,11 @@ package org.sakaiproject.tool.admin;
 
 // imports
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.common.authentication.Authentication;
 import org.sakaiproject.api.common.authentication.AuthenticationException;
 import org.sakaiproject.api.common.authentication.Evidence;
@@ -71,7 +71,7 @@ import org.sakaiproject.util.java.StringUtil;
  */
 public class UsersAction extends PagedResourceActionII
 {
-	private static ResourceBundle rb = ResourceBundle.getBundle("admin");
+	private static ResourceLoader rb = new ResourceLoader("admin");
 
 	/**
 	 * {@inheritDoc}

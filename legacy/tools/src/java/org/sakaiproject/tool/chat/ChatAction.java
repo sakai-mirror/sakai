@@ -27,9 +27,9 @@ package org.sakaiproject.tool.chat;
 // imports
 import java.util.Iterator;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
@@ -78,7 +78,7 @@ public class ChatAction
 	extends VelocityPortletPaneledAction
 {
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("chat");
+    private static ResourceLoader rb = new ResourceLoader("chat");
     
     
 	private static final String MODE_CONFIRM_DELETE_MESSAGE = "confirmmdeletemessage";

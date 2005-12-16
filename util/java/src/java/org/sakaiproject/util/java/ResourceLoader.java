@@ -160,19 +160,23 @@ public class ResourceLoader extends DummyMap implements Map
         Locale loc = null;
 
         //  First: find locale from Sakai user preferences, if available
-        String userId = SessionManager.getCurrentSessionUserId();
- 	     Preferences prefs = PreferencesService.getPreferences( userId );
-        ResourceProperties locProps = prefs.getProperties( SERVICE_NAME );
-      
-        String localeString = locProps.getProperty( LOCALE_KEY );
-        if ( localeString != null )
+        try
         {
-           String[] locValues = localeString.split("_");
-           if (locValues.length > 1)
-              loc = new Locale( locValues[0], locValues[1] ); // language, country
-           else if (locValues.length == 1 )
-              loc = new Locale( locValues[0] ); // just language
+           String userId = SessionManager.getCurrentSessionUserId();
+    	     Preferences prefs = PreferencesService.getPreferences( userId );
+           ResourceProperties locProps = prefs.getProperties( SERVICE_NAME );
+      
+           String localeString = locProps.getProperty( LOCALE_KEY );
+           if ( localeString != null )
+           {
+              String[] locValues = localeString.split("_");
+              if (locValues.length > 1)
+                 loc = new Locale( locValues[0], locValues[1] ); // language, country
+              else if (locValues.length == 1 )
+                 loc = new Locale( locValues[0] ); // just language
+           }
         }
+        catch (Exception e) {} // ignore and continue 
         
         // Second: find locale from user session, if available
         if (loc == null) 
@@ -182,7 +186,7 @@ public class ResourceLoader extends DummyMap implements Map
                loc = (Locale) getSession().getAttribute("locale");
                M_log.debug("get locale from session: " + loc.toString());
            } 
-           catch(NullPointerException e) {} // ignore
+           catch(NullPointerException e) {} // ignore and continue
         }
         
         // Last: find system default locale

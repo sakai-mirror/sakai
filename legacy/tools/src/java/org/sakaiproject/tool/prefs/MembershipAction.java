@@ -27,8 +27,8 @@ package org.sakaiproject.tool.prefs;
 // imports
 import java.util.List;
 import java.util.Vector;
-import java.util.ResourceBundle;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
 import org.sakaiproject.cheftool.PagedResourceActionII;
@@ -51,7 +51,7 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 public class MembershipAction extends PagedResourceActionII
 {
 	private static String STATE_VIEW_MODE = "state_view";
-	private static ResourceBundle rb = ResourceBundle.getBundle("prefs");
+	private static ResourceLoader rb = new ResourceLoader("prefs");
 	private static String SORT_ASC = "sort_asc";
 	private static String JOINABLE_SORT_ASC = "sort_asc";
 	//SAK-1606

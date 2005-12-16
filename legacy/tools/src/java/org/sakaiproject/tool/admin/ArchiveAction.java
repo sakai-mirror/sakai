@@ -28,7 +28,7 @@ package org.sakaiproject.tool.admin;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import java.util.ResourceBundle;
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
 import org.sakaiproject.cheftool.RunData;
@@ -56,7 +56,8 @@ public class ArchiveAction
 	private static final String BATCH_MODE = "batch";
 	
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("admin");
+	private static ResourceLoader rb = new ResourceLoader("admin");
+   
 	/**
 	* build the context
 	*/

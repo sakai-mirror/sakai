@@ -28,9 +28,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.regex.Pattern;
+import org.sakaiproject.util.java.ResourceLoader;
 
 /**
  * The class represents metadata properties.
@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 public class ResourcesMetadata
 {
 	/** Resource bundle using current language locale */
-	private static ResourceBundle rb = ResourceBundle.getBundle("content");
+	private static ResourceLoader rb = new ResourceLoader("content");
     
 	public static final String WIDGET_STRING = "string";
 	public static final String WIDGET_TEXTAREA = "textarea";

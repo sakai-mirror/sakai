@@ -15,13 +15,13 @@ import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.util.java.ResourceLoader;
 
 import org.sakaiproject.service.legacy.authzGroup.GroupProvider;
 
 // java classes
 import javax.faces.context.FacesContext;
 import javax.faces.application.FacesMessage;
-import java.util.ResourceBundle;
 
 // apache common logging classes (probably change to sakai logging)
 import org.apache.commons.logging.Log;
@@ -59,7 +59,7 @@ public class SuTool {
 	private String message = "";
 	private boolean confirm = false;
 	
-	ResourceBundle msgs = ResourceBundle.getBundle("org.sakaiproject.tool.su.bundle.Messages");
+	ResourceLoader msgs = new ResourceLoader("org.sakaiproject.tool.su.bundle.Messages");
 
 	// base constructor
 	public SuTool() { }

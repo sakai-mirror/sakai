@@ -27,9 +27,9 @@ package org.sakaiproject.tool.admin;
 // imports
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -65,7 +65,7 @@ public class RealmsAction
 {
 	
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("admin");
+	private static ResourceLoader rb = new ResourceLoader("admin");
     
 	/**
 	 * {@inheritDoc}

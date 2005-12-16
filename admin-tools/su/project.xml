@@ -42,6 +42,15 @@
 			</properties>        
 		</dependency>
 		
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util-java</artifactId>
+			<version>${sakai.version}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+
 		<!-- Generic Sakai JSF Tool Dependencies -->
 		<dependency>
 			<groupId>sakaiproject</groupId>

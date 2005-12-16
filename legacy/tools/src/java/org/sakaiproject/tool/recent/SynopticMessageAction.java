@@ -27,9 +27,9 @@ package org.sakaiproject.tool.recent;
 // imports
 import java.util.Iterator;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
@@ -64,7 +64,7 @@ public class SynopticMessageAction
 	extends VelocityPortletPaneledAction
 {
 	
-	private static ResourceBundle rb = ResourceBundle.getBundle("recent");
+	private static ResourceLoader rb = new ResourceLoader("recent");
 	
 	/** portlet configuration parameter names. */
 	private static final String PARAM_CHANNEL = "channel";

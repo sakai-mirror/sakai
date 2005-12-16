@@ -29,9 +29,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -84,7 +84,7 @@ public class SitesAction
 	protected static final String FORM_SEARCH_SITEID = "search_site";
 	protected static final String FORM_SEARCH_USERID = "search_user";
 
-	private static ResourceBundle rb = ResourceBundle.getBundle("admin");
+	private static ResourceLoader rb = new ResourceLoader("admin");
 
 	/**
 	 * {@inheritDoc}

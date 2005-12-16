@@ -31,10 +31,10 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -63,7 +63,7 @@ public class PermissionsAction
 {
 	
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("helper");
+    private static ResourceLoader rb = new ResourceLoader("helper");
     
 	/** State attributes for Permissions mode - when it is MODE_DONE the tool can process the results. */
 	public static final String STATE_MODE = "pemissions.mode";

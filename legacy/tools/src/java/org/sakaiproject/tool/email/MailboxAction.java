@@ -29,9 +29,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -77,7 +77,7 @@ import org.sakaiproject.util.java.StringUtil;
 public class MailboxAction
 extends PagedResourceActionII
 {
-	private static ResourceBundle rb = ResourceBundle.getBundle("email");
+	private static ResourceLoader rb = new ResourceLoader("email");
 	
 	/** portlet configuration parameter names. */
 	private static final String PARAM_CHANNEL = "channel";

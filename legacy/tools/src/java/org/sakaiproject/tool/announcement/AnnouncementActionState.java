@@ -31,10 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.tool.Tool;
@@ -60,7 +60,7 @@ import org.sakaiproject.util.java.StringUtil;
 public class AnnouncementActionState extends ControllerState implements SessionBindingListener
 {	
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("announcement");
+    private static ResourceLoader rb = new ResourceLoader("announcement");
 	
 	/**
 	 * Holds the display options for the Announcements tool

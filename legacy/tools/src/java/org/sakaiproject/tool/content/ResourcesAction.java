@@ -44,7 +44,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
@@ -52,6 +51,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
@@ -135,7 +135,7 @@ public class ResourcesAction
 	extends PagedResourceHelperAction // VelocityPortletPaneledAction
 {
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("content");
+    private static ResourceLoader rb = new ResourceLoader("content");
     
     private static final Log logger = LogFactory.getLog(ResourcesAction.class);
     

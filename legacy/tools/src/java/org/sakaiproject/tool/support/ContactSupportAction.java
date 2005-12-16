@@ -26,8 +26,8 @@ package org.sakaiproject.tool.support;
 
 // imports
 import java.util.Properties;
-import java.util.ResourceBundle;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
@@ -56,7 +56,7 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 public class ContactSupportAction extends VelocityPortletPaneledAction
 {
 	
-	private static ResourceBundle rb = ResourceBundle.getBundle("support");
+	private static ResourceLoader rb = new ResourceLoader("support");
 	
 	private final static String STATE_FORM = "form";
 	private final static String STATE_CONFIRM = "confirm";

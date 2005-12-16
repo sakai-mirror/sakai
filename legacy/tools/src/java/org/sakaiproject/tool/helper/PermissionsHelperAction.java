@@ -1,11 +1,11 @@
 package org.sakaiproject.tool.helper;
 
 import java.io.IOException;
-import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
@@ -25,7 +25,7 @@ import org.sakaiproject.service.legacy.security.PermissionsHelper;
  * To change this template use File | Settings | File Templates.
  */
 public class PermissionsHelperAction extends VelocityPortletPaneledAction {
-   private static ResourceBundle rb = ResourceBundle.getBundle("announcement");
+   private static ResourceLoader rb = new ResourceLoader("announcement");
 
    protected void toolModeDispatch(String methodBase, String methodExt,
                                    HttpServletRequest req, HttpServletResponse res) {

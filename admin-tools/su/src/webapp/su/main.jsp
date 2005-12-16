@@ -10,8 +10,6 @@
 	response.addHeader("Pragma", "no-cache");
 %>
 
-<f:loadBundle basename="org.sakaiproject.tool.su.bundle.Messages" var="msgs"/>
-
 <f:view>
 <sakai:view_container title="#{msgs.title}">
 

@@ -27,9 +27,9 @@ package org.sakaiproject.tool.helper;
 // imports
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -67,7 +67,7 @@ public class AttachmentAction
 {
 	
 	/** Resource bundle using current language locale */
-    private static ResourceBundle rb = ResourceBundle.getBundle("helper");
+    private static ResourceLoader rb = new ResourceLoader("helper");
     
 	/** State attributes for Attachments mode - when it's MODE_DONE the tool can process the results. */
 	public static final String STATE_MODE = "attachment.mode";
