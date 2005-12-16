@@ -614,6 +614,46 @@
 						</h3>
 						</th>
 					</tr>
+					<tr>
+						<td colspan="7">
+							<div class="rightNav">
+								<span class="instruction" style="margin-bottom:.3em;">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</span>
+								#if ("$pagesize" != "0")
+									#if ($goPPButton == "true")
+										<input type="button" name="List_first" value="|&lt;" title="First" onclick="javascript: document.getElementById('sakai_action').value='doList_first';document.getElementById('showForm').submit();" />
+									#else
+										<input type="button" name="List_first" value="|&lt;" disabled="disabled" />
+									#end
+									#if ($goPPButton == "true")
+										<input type="button" name="List_prev" value="&lt;" title="Previous $pagesize" onclick="javascript: document.getElementById('sakai_action').value='doList_prev';document.getElementById('showForm').submit();" />
+									#else
+										<input type="button" name="List_prev" value="&lt;" disabled="disabled" />
+									#end
+								#end
+								<!-- $pagesize  "$pagesize" -->
+								<select name="selectPageSize" onchange="javascript:blur(); document.getElementById('sakai_action').value='doChange_pagesize';document.getElementById('showForm').submit();">
+									<option value="5"#if("$pagesize" == "5") selected="selected"#end>$tlang.getString("lis.show5")</option>
+									<option value="10"#if("$pagesize" == "10") selected="selected"#end>$tlang.getString("lis.show10")</option>
+									<option value="20"#if("$pagesize" == "20") selected="selected"#end>$tlang.getString("lis.show20")</option>
+									<option value="50"#if("$pagesize" == "50") selected="selected"#end>$tlang.getString("lis.show50")</option>
+									<option value="100"#if("$pagesize" == "100") selected="selected"#end>$tlang.getString("lis.show100")</option>
+									<option value="200"#if("$pagesize" == "200") selected="selected"#end>$tlang.getString("lis.show200")</option>
+								</select>
+								#if ("$pagesize" != "0")
+									#if ($goNPButton == "true")
+										<input type="button" name="List_next" value="&gt;" title="Next $pagesize" onclick="javascript: document.getElementById('sakai_action').value='doList_next';document.getElementById('showForm').submit();" />
+									#else
+										<input type="button" name="List_next" value="&gt;" disabled="disabled" />
+									#end
+									#if ($goNPButton == "true")
+										<input type="button" name="List_last" value="&gt;|" title="Last" onclick="javascript: document.getElementById('sakai_action').value='doList_last';document.getElementById('showForm').submit();" />
+									#else
+										<input type="button" name="List_last" value="&gt;|" disabled="disabled" />
+									#end
+								#end
+							</div>
+						</td>
+					</tr>
 					#foreach($root in $other_sites)
 						############################### Show top level folder #################
 						<tr>

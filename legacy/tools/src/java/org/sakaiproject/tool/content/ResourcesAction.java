@@ -60,6 +60,9 @@ import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
+import org.sakaiproject.cheftool.PagedResourceAction;
+import org.sakaiproject.cheftool.PagedResourceHelperAction;
+import org.sakaiproject.cheftool.PortletConfig;
 import org.sakaiproject.cheftool.RunData;
 import org.sakaiproject.cheftool.VelocityPortlet;
 import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
@@ -129,7 +132,7 @@ import org.w3c.dom.Text;
 * @version $Revision$
 */
 public class ResourcesAction
-	extends VelocityPortletPaneledAction
+	extends PagedResourceHelperAction // VelocityPortletPaneledAction
 {
 	/** Resource bundle using current language locale */
     private static ResourceBundle rb = ResourceBundle.getBundle("content");
@@ -447,7 +450,20 @@ public class ResourcesAction
 	/** The number of members for a collection at which this tool should refuse to expand the collection */
 	protected static final int EXPANDABLE_FOLDER_SIZE_LIMIT = 256;
 
+	protected static final String STATE_SHOW_REMOVE_ACTION = "resources.show_remove_action";
 
+	protected static final String STATE_SHOW_MOVE_ACTION = "resources.show_move_action";
+
+	protected static final String STATE_SHOW_COPY_ACTION = "resources.show_copy_action";
+
+	protected static final String STATE_HIGHLIGHTED_ITEMS = "resources.highlighted_items";
+
+	/** The default number of messages per page. */
+	protected static final int DEFAULT_PAGE_SIZE = 50;
+
+	protected static final String PARAM_PAGESIZE = "collections_per_page";
+
+	protected static final String STATE_TOP_MESSAGE_INDEX = "resources.top_message_index";
 
 
 
@@ -579,8 +595,9 @@ public class ResourcesAction
 										SessionState state)
 	{
 		context.put("tlang",rb);
-		context.put("expandedCollections", state.getAttribute(EXPANDED_COLLECTIONS));
 		
+		context.put("expandedCollections", state.getAttribute(EXPANDED_COLLECTIONS));
+				
 		// find the ContentTypeImage service
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
 		
@@ -732,54 +749,52 @@ public class ResourcesAction
 			
 			if(atHome && show_all_sites)
 			{
-				// add user's personal workspace
-				User user = UserDirectoryService.getCurrentUser();
-				String userId = user.getId();
-				String userName = user.getDisplayName();
-				String wsId = SiteService.getUserSiteId(userId);
-				String wsCollectionId = ContentHostingService.getSiteCollection(wsId);
-				if(! collectionId.equals(wsCollectionId))
-				{
-	                	members = getBrowseItems(wsCollectionId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
-	                	if(members != null && members.size() > 0)
-				    {
-				        BrowseItem root = (BrowseItem) members.remove(0);
-						showRemoveAction = showRemoveAction || root.hasDeletableChildren();
-						showMoveAction = showMoveAction || root.hasDeletableChildren();
-						showCopyAction = showCopyAction || root.hasCopyableChildren();
-						
-				        root.addMembers(members);
-				        root.setName(userName + " " + rb.getString("gen.wsreso"));
-				        other_sites.add(root);
-				        all_roots.add(root);
-				    }
-				}
+				state.setAttribute(STATE_HIGHLIGHTED_ITEMS, highlightedItems);
+				other_sites.addAll(readAllResources(state));
+				all_roots.addAll(other_sites);
 				
-                	// add all other sites user has access to
-				/*
-				 * NOTE: This does not (and should not) get all sites for admin.  
-				 *       Getting all sites for admin is too big a request and
-				 *       would result in too big a display to render in html.
-				 */
-				Map othersites = ContentHostingService.getCollectionMap();
-				Iterator siteIt = othersites.keySet().iterator();
-				while(siteIt.hasNext())
+				List messages = prepPage(state);
+				context.put("other_sites", messages);
+				
+				if (state.getAttribute(STATE_NUM_MESSAGES) != null)
 				{
-	                  String displayName = (String) siteIt.next();
-	                  String collId = (String) othersites.get(displayName);
-	                  if(! collectionId.equals(collId) && ! wsCollectionId.equals(collId))
-	                  {
-	                      members = getBrowseItems(collId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
-	                      if(members != null && members.size() > 0)
-	                      {
-	                          BrowseItem root = (BrowseItem) members.remove(0);
-	                          root.addMembers(members);
-	                          root.setName(displayName);
-	                          other_sites.add(root);
-	                          all_roots.add(root);
-	                      }
-	                  }
-                  }
+					context.put("allMsgNumber", state.getAttribute(STATE_NUM_MESSAGES).toString());
+					context.put("allMsgNumberInt", state.getAttribute(STATE_NUM_MESSAGES));
+				}
+
+				context.put("pagesize", ((Integer) state.getAttribute(STATE_PAGESIZE)).toString());
+
+				// find the position of the message that is the top first on the page
+				if ((state.getAttribute(STATE_TOP_MESSAGE_INDEX) != null) && (state.getAttribute(STATE_PAGESIZE) != null))
+				{
+					int topMsgPos = ((Integer)state.getAttribute(STATE_TOP_MESSAGE_INDEX)).intValue() + 1;
+					context.put("topMsgPos", Integer.toString(topMsgPos));
+					int btmMsgPos = topMsgPos + ((Integer)state.getAttribute(STATE_PAGESIZE)).intValue() - 1;
+					if (state.getAttribute(STATE_NUM_MESSAGES) != null)
+					{
+						int allMsgNumber = ((Integer)state.getAttribute(STATE_NUM_MESSAGES)).intValue();
+						if (btmMsgPos > allMsgNumber)
+							btmMsgPos = allMsgNumber;
+					}
+					context.put("btmMsgPos", Integer.toString(btmMsgPos));
+				}
+			
+				boolean goPPButton = state.getAttribute(STATE_PREV_PAGE_EXISTS) != null;
+				context.put("goPPButton", Boolean.toString(goPPButton));
+				boolean goNPButton = state.getAttribute(STATE_NEXT_PAGE_EXISTS) != null;
+				context.put("goNPButton", Boolean.toString(goNPButton));
+				
+				/*
+				boolean goFPButton = state.getAttribute(STATE_FIRST_PAGE_EXISTS) != null;
+				context.put("goFPButton", Boolean.toString(goFPButton));
+				boolean goLPButton = state.getAttribute(STATE_LAST_PAGE_EXISTS) != null;
+				context.put("goLPButton", Boolean.toString(goLPButton));
+				*/
+				
+				context.put("pagesize", state.getAttribute(STATE_PAGESIZE));
+				// context.put("pagesizes", PAGESIZES);
+				
+
 			}
 			
 			context.put ("other_sites", other_sites);
@@ -7307,10 +7322,25 @@ public class ResourcesAction
 	public static void initStateAttributes(SessionState state, VelocityPortlet portlet)
 	{
 		if (state.getAttribute (STATE_INITIALIZED) != null) return;
-
+		
 		if (state.getAttribute(FILE_UPLOAD_MAX_SIZE) == null)
 		{
 			state.setAttribute(FILE_UPLOAD_MAX_SIZE, ServerConfigurationService.getString("content.upload.max", "1"));
+		}
+		
+		PortletConfig config = portlet.getPortletConfig();
+		try
+		{
+			Integer size = new Integer(config.getInitParameter(PARAM_PAGESIZE));
+			if(size == null || size.intValue() < 1)
+			{
+				size = new Integer(DEFAULT_PAGE_SIZE);
+			}
+			state.setAttribute(STATE_PAGESIZE, size);
+		}
+		catch(Exception any)
+		{
+			state.setAttribute(STATE_PAGESIZE, new Integer(DEFAULT_PAGE_SIZE));
 		}
 		
 		state.setAttribute (STATE_CONTENT_SERVICE, ContentHostingService.getInstance());
@@ -10690,5 +10720,318 @@ public class ResourcesAction
 		}
 		
 	}
+
+	/**
+	* Develop a list of all the site collections that there are to page.
+	* Sort them as appropriate, and apply search criteria.
+	*/
+	protected static List readAllResources(SessionState state) 
+	{
+		List other_sites = new Vector();
+		
+		String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
+		HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+		
+		// set the sort values
+		String sortedBy = (String) state.getAttribute (STATE_SORT_BY);
+		String sortedAsc = (String) state.getAttribute (STATE_SORT_ASC);
+		
+		Boolean showRemove = (Boolean) state.getAttribute(STATE_SHOW_REMOVE_ACTION);
+		boolean showRemoveAction = showRemove != null && showRemove.booleanValue();
+		
+		Boolean showMove = (Boolean) state.getAttribute(STATE_SHOW_MOVE_ACTION);
+		boolean showMoveAction = showMove != null && showMove.booleanValue();
+		
+		Boolean showCopy = (Boolean) state.getAttribute(STATE_SHOW_COPY_ACTION);
+		boolean showCopyAction = showCopy != null && showCopy.booleanValue();
+		
+		Set highlightedItems = (Set) state.getAttribute(STATE_HIGHLIGHTED_ITEMS);
+		
+
+		// add user's personal workspace
+		User user = UserDirectoryService.getCurrentUser();
+		String userId = user.getId();
+		String userName = user.getDisplayName();
+		String wsId = SiteService.getUserSiteId(userId);
+		String wsCollectionId = ContentHostingService.getSiteCollection(wsId);
+		if(! collectionId.equals(wsCollectionId))
+		{
+            	List members = getBrowseItems(wsCollectionId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+            	if(members != null && members.size() > 0)
+		    {
+		        BrowseItem root = (BrowseItem) members.remove(0);
+				showRemoveAction = showRemoveAction || root.hasDeletableChildren();
+				showMoveAction = showMoveAction || root.hasDeletableChildren();
+				showCopyAction = showCopyAction || root.hasCopyableChildren();
+				
+		        root.addMembers(members);
+		        root.setName(userName + " " + rb.getString("gen.wsreso"));
+		        other_sites.add(root);
+		    }
+		}
+		
+        	// add all other sites user has access to
+		/*
+		 * NOTE: This does not (and should not) get all sites for admin.  
+		 *       Getting all sites for admin is too big a request and
+		 *       would result in too big a display to render in html.
+		 */
+		Map othersites = ContentHostingService.getCollectionMap();
+		Iterator siteIt = othersites.keySet().iterator();
+		while(siteIt.hasNext())
+		{
+              String displayName = (String) siteIt.next();
+              String collId = (String) othersites.get(displayName);
+              if(! collectionId.equals(collId) && ! wsCollectionId.equals(collId))
+              {
+                  List members = getBrowseItems(collId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+                  if(members != null && members.size() > 0)
+                  {
+                      BrowseItem root = (BrowseItem) members.remove(0);
+                      root.addMembers(members);
+                      root.setName(displayName);
+                      other_sites.add(root);
+                   }
+              }
+          }
+		
+		return other_sites;
+	}
 	
+	/**
+	* Prepare the current page of site collections to display.
+	* @return List of BrowseItem objects to display on this page.
+	*/
+	protected static List prepPage(SessionState state)
+	{
+		List rv = new Vector();
+
+		// access the page size
+		int pageSize = ((Integer) state.getAttribute(STATE_PAGESIZE)).intValue();
+
+		// cleanup prior prep
+		state.removeAttribute(STATE_NUM_MESSAGES);
+
+		// are we going next or prev, first or last page?
+		boolean goNextPage = state.getAttribute(STATE_GO_NEXT_PAGE) != null;
+		boolean goPrevPage = state.getAttribute(STATE_GO_PREV_PAGE) != null;
+		boolean goFirstPage = state.getAttribute(STATE_GO_FIRST_PAGE) != null;
+		boolean goLastPage = state.getAttribute(STATE_GO_LAST_PAGE) != null;
+		state.removeAttribute(STATE_GO_NEXT_PAGE);
+		state.removeAttribute(STATE_GO_PREV_PAGE);
+		state.removeAttribute(STATE_GO_FIRST_PAGE);
+		state.removeAttribute(STATE_GO_LAST_PAGE);
+
+		// are we going next or prev message?
+		boolean goNext = state.getAttribute(STATE_GO_NEXT) != null;
+		boolean goPrev = state.getAttribute(STATE_GO_PREV) != null;
+		state.removeAttribute(STATE_GO_NEXT);
+		state.removeAttribute(STATE_GO_PREV);
+
+		// read all channel messages
+		List allMessages = readAllResources(state);
+
+		if (allMessages == null)
+		{
+			return rv;
+		}
+
+		// if we have no prev page and do have a top message, then we will stay "pinned" to the top
+		boolean pinToTop = (	(state.getAttribute(STATE_TOP_PAGE_MESSAGE) != null)
+							&&	(state.getAttribute(STATE_PREV_PAGE_EXISTS) == null)
+							&&	!goNextPage && !goPrevPage && !goNext && !goPrev && !goFirstPage && !goLastPage);
+
+		// if we have no next page and do have a top message, then we will stay "pinned" to the bottom
+		boolean pinToBottom = (	(state.getAttribute(STATE_TOP_PAGE_MESSAGE) != null)
+							&&	(state.getAttribute(STATE_NEXT_PAGE_EXISTS) == null)
+							&&	!goNextPage && !goPrevPage && !goNext && !goPrev && !goFirstPage && !goLastPage);
+
+		// how many messages, total
+		int numMessages = allMessages.size();
+
+		if (numMessages == 0)
+		{
+			return rv;
+		}
+
+		// save the number of messges
+		state.setAttribute(STATE_NUM_MESSAGES, new Integer(numMessages));
+
+		// find the position of the message that is the top first on the page
+		int posStart = 0;
+		String messageIdAtTheTopOfThePage = (String) state.getAttribute(STATE_TOP_PAGE_MESSAGE);
+		if (messageIdAtTheTopOfThePage != null)
+		{
+			// find the next page
+			posStart = findResourceInList(allMessages, messageIdAtTheTopOfThePage);
+
+			// if missing, start at the top
+			if (posStart == -1)
+			{
+				posStart = 0;
+			}
+		}
+		
+		// if going to the next page, adjust
+		if (goNextPage)
+		{
+			posStart += pageSize;
+		}
+
+		// if going to the prev page, adjust
+		else if (goPrevPage)
+		{
+			posStart -= pageSize;
+			if (posStart < 0) posStart = 0;
+		}
+		
+		// if going to the first page, adjust
+		else if (goFirstPage)
+		{
+			posStart = 0;
+		}
+		
+		// if going to the last page, adjust
+		else if (goLastPage)
+		{
+			posStart = numMessages - pageSize;
+			if (posStart < 0) posStart = 0;
+		}
+
+		// pinning
+		if (pinToTop)
+		{
+			posStart = 0;
+		}
+		else if (pinToBottom)
+		{
+			posStart = numMessages - pageSize;
+			if (posStart < 0) posStart = 0;
+		}
+
+		// get the last page fully displayed
+		if (posStart + pageSize > numMessages)
+		{
+			posStart = numMessages - pageSize;
+			if (posStart < 0) posStart = 0;
+		}
+
+		// compute the end to a page size, adjusted for the number of messages available
+		int posEnd = posStart + (pageSize-1);
+		if (posEnd >= numMessages) posEnd = numMessages-1;
+		int numMessagesOnThisPage = (posEnd - posStart) + 1;
+
+		// select the messages on this page
+		for (int i = posStart; i <= posEnd; i++)
+		{
+			rv.add(allMessages.get(i));
+		}
+
+		// save which message is at the top of the page
+		BrowseItem itemAtTheTopOfThePage = (BrowseItem) allMessages.get(posStart);
+		state.setAttribute(STATE_TOP_PAGE_MESSAGE, itemAtTheTopOfThePage.getId());
+		state.setAttribute(STATE_TOP_MESSAGE_INDEX, new Integer(posStart));
+
+
+		// which message starts the next page (if any)
+		int next = posStart + pageSize;
+		if (next < numMessages)
+		{
+			state.setAttribute(STATE_NEXT_PAGE_EXISTS, "");
+		}
+		else
+		{
+			state.removeAttribute(STATE_NEXT_PAGE_EXISTS);
+		}
+
+		// which message ends the prior page (if any)
+		int prev = posStart - 1;
+		if (prev >= 0)
+		{
+			state.setAttribute(STATE_PREV_PAGE_EXISTS, "");
+		}
+		else
+		{
+			state.removeAttribute(STATE_PREV_PAGE_EXISTS);
+		}
+
+		if (state.getAttribute(STATE_VIEW_ID) != null)
+		{
+			int viewPos = findResourceInList(allMessages, (String) state.getAttribute(STATE_VIEW_ID));
+	
+			// are we moving to the next message
+			if (goNext)
+			{
+				// advance
+				viewPos++;
+				if (viewPos >= numMessages) viewPos = numMessages-1;
+			}
+	
+			// are we moving to the prev message
+			if (goPrev)
+			{
+				// retreat
+				viewPos--;
+				if (viewPos < 0) viewPos = 0;
+			}
+			
+			// update the view message
+			state.setAttribute(STATE_VIEW_ID, ((BrowseItem) allMessages.get(viewPos)).getId());
+			
+			// if the view message is no longer on the current page, adjust the page
+			// Note: next time through this will get processed
+			if (viewPos < posStart)
+			{
+				state.setAttribute(STATE_GO_PREV_PAGE, "");
+			}
+			else if (viewPos > posEnd)
+			{
+				state.setAttribute(STATE_GO_NEXT_PAGE, "");
+			}
+			
+			if (viewPos > 0)
+			{
+				state.setAttribute(STATE_PREV_EXISTS,"");
+			}
+			else
+			{
+				state.removeAttribute(STATE_PREV_EXISTS);
+			}
+			
+			if (viewPos < numMessages-1)
+			{
+				state.setAttribute(STATE_NEXT_EXISTS,"");
+			}
+			else
+			{
+				state.removeAttribute(STATE_NEXT_EXISTS);
+			}			
+		}
+
+		return rv;
+
+	}	// prepPage
+	
+	/**
+	* Find the resource with this id in the list.
+	* @param messages The list of messages.
+	* @param id The message id.
+	* @return The index position in the list of the message with this id, or -1 if not found.
+	*/
+	protected static int findResourceInList(List resources, String id)
+	{
+		for (int i = 0; i < resources.size(); i++)
+		{
+			// if this is the one, return this index
+			if (((BrowseItem) (resources.get(i))).getId().equals(id)) return i;
+		}
+
+		// not found
+		return -1;
+
+	}	// findResourceInList
+
+
+
+
 }	// ResourcesAction
