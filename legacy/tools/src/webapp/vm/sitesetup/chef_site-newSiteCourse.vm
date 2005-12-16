@@ -24,7 +24,7 @@
 
 			#if (!$siteEdit)
 				<h5>
-					$tlang.getString("nscourse.acad")
+					<span class="reqStar">*</span> $tlang.getString("nscourse.acad")
 					$term.Id
 				</h5>
 			#else
