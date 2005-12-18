@@ -60,7 +60,6 @@ import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
-import org.sakaiproject.cheftool.PagedResourceAction;
 import org.sakaiproject.cheftool.PagedResourceHelperAction;
 import org.sakaiproject.cheftool.PortletConfig;
 import org.sakaiproject.cheftool.RunData;
@@ -797,7 +796,7 @@ public class ResourcesAction
 
 			}
 			
-			context.put ("other_sites", other_sites);
+			// context.put ("other_sites", other_sites);
 			state.setAttribute(STATE_COLLECTION_ROOTS, all_roots);
 			// context.put ("root", root);
 
@@ -1118,6 +1117,7 @@ public class ResourcesAction
 
 			context.put ("this_site", this_site);
 			
+			List other_sites = new Vector();
 			boolean show_all_sites = false;
 			
 			String allowed_to_see_other_sites = (String) state.getAttribute(STATE_SHOW_ALL_SITES);
@@ -1131,12 +1131,61 @@ public class ResourcesAction
 
 			if(show_all_sites)
 			{
-				List other_sites = new Vector();
+				
+				state.setAttribute(STATE_HIGHLIGHTED_ITEMS, highlightedItems);
+				other_sites.addAll(readAllResources(state));
+				
+				List messages = prepPage(state);
+				context.put("other_sites", messages);
+				
+				if (state.getAttribute(STATE_NUM_MESSAGES) != null)
+				{
+					context.put("allMsgNumber", state.getAttribute(STATE_NUM_MESSAGES).toString());
+					context.put("allMsgNumberInt", state.getAttribute(STATE_NUM_MESSAGES));
+				}
+
+				context.put("pagesize", ((Integer) state.getAttribute(STATE_PAGESIZE)).toString());
+
+				// find the position of the message that is the top first on the page
+				if ((state.getAttribute(STATE_TOP_MESSAGE_INDEX) != null) && (state.getAttribute(STATE_PAGESIZE) != null))
+				{
+					int topMsgPos = ((Integer)state.getAttribute(STATE_TOP_MESSAGE_INDEX)).intValue() + 1;
+					context.put("topMsgPos", Integer.toString(topMsgPos));
+					int btmMsgPos = topMsgPos + ((Integer)state.getAttribute(STATE_PAGESIZE)).intValue() - 1;
+					if (state.getAttribute(STATE_NUM_MESSAGES) != null)
+					{
+						int allMsgNumber = ((Integer)state.getAttribute(STATE_NUM_MESSAGES)).intValue();
+						if (btmMsgPos > allMsgNumber)
+							btmMsgPos = allMsgNumber;
+					}
+					context.put("btmMsgPos", Integer.toString(btmMsgPos));
+				}
+			
+				boolean goPPButton = state.getAttribute(STATE_PREV_PAGE_EXISTS) != null;
+				context.put("goPPButton", Boolean.toString(goPPButton));
+				boolean goNPButton = state.getAttribute(STATE_NEXT_PAGE_EXISTS) != null;
+				context.put("goNPButton", Boolean.toString(goNPButton));
+				
+				/*
+				boolean goFPButton = state.getAttribute(STATE_FIRST_PAGE_EXISTS) != null;
+				context.put("goFPButton", Boolean.toString(goFPButton));
+				boolean goLPButton = state.getAttribute(STATE_LAST_PAGE_EXISTS) != null;
+				context.put("goLPButton", Boolean.toString(goLPButton));
+				*/
+				
+				context.put("pagesize", state.getAttribute(STATE_PAGESIZE));
+				// context.put("pagesizes", PAGESIZES);
+				
+
+				
+				
+				// List other_sites = new Vector();
 				/*
 				 * NOTE: This does not (and should not) get all sites for admin.  
 				 *       Getting all sites for admin is too big a request and
 				 *       would result in too big a display to render in html.
 				 */
+				/*
 				Map othersites = ContentHostingService.getCollectionMap();
 				Iterator siteIt = othersites.keySet().iterator();
 				while(siteIt.hasNext())
@@ -1157,6 +1206,7 @@ public class ResourcesAction
 				}
 
 				context.put ("other_sites", other_sites);
+				*/
 			}
 
 			// context.put ("root", root);

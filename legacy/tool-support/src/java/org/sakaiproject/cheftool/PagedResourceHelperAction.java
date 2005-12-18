@@ -399,7 +399,7 @@ public abstract class PagedResourceHelperAction
 	/** 
 	* Handle a next-message (view) request.
 	**/
-	public static void doView_next(RunData runData, Context context)
+	public static void doView_next(RunData runData)
 	{
 		// access the portlet element id to find our state
 		String peid = ((JetspeedRunData)runData).getJs_peid();
@@ -413,7 +413,7 @@ public abstract class PagedResourceHelperAction
 	/** 
 	* Handle a first-message page (list) request.
 	**/
-	public static void doList_first(RunData runData, Context context)
+	public static void doList_first(RunData runData)
 	{
 		// access the portlet element id to find our state
 		String peid = ((JetspeedRunData)runData).getJs_peid();
@@ -427,7 +427,7 @@ public abstract class PagedResourceHelperAction
 	/**
 	* Handle a last-message page (list) request.
 	**/
-	public static void doList_last(RunData runData, Context context)
+	public static void doList_last(RunData runData)
 	{
 		// access the portlet element id to find our state
 		String peid = ((JetspeedRunData)runData).getJs_peid();
@@ -441,7 +441,7 @@ public abstract class PagedResourceHelperAction
 	/** 
 	* Handle a next-page (list) request.
 	**/	
-	public static  void doList_next(RunData runData, Context context)
+	public static  void doList_next(RunData runData)
 	{
 		// access the portlet element id to find our state
 		String peid = ((JetspeedRunData)runData).getJs_peid();
@@ -457,7 +457,7 @@ public abstract class PagedResourceHelperAction
 	/** 
 	* Handle a request to change the page-size.
 	**/	
-	public static void doChange_pagesize(RunData runData, Context context)
+	public static void doChange_pagesize(RunData runData)
 	{
 		// access the portlet element id to find our state
 		String peid = ((JetspeedRunData)runData).getJs_peid();
@@ -465,8 +465,7 @@ public abstract class PagedResourceHelperAction
 		ParameterParser params = runData.getParameters();
 		
 		String pagesize = params.getString("selectPageSize");
-		
-		Integer size = Integer.getInteger(pagesize);
+		Integer size = Integer.valueOf(pagesize);
 
 		state.setAttribute(STATE_PAGESIZE, size);
 		
@@ -475,7 +474,7 @@ public abstract class PagedResourceHelperAction
 	/** 
 	* Handle a prev-message (view) request.
 	**/	
-	public static void doView_prev(RunData runData, Context context)
+	public static void doView_prev(RunData runData)
 	{
 		// access the portlet element id to find our state
 		String peid = ((JetspeedRunData)runData).getJs_peid();
@@ -489,7 +488,7 @@ public abstract class PagedResourceHelperAction
 	/** 
 	* Handle a prev-page (list) request.
 	**/	
-	public static void doList_prev(RunData runData, Context context)
+	public static void doList_prev(RunData runData)
 	{
 		// access the portlet element id to find our state
 		String peid = ((JetspeedRunData)runData).getJs_peid();
@@ -503,7 +502,7 @@ public abstract class PagedResourceHelperAction
 	/** 
 	* Handle a Search request.
 	**/	
-	public static void doSearch(RunData runData, Context context)
+	public static void doSearch(RunData runData)
 	{
 		// access the portlet element id to find our state
 		String peid = ((JetspeedRunData)runData).getJs_peid();
@@ -546,7 +545,7 @@ public abstract class PagedResourceHelperAction
 	/** 
 	* Handle a Search Clear request.
 	**/	
-	public static void doSearch_clear(RunData runData, Context context)
+	public static void doSearch_clear(RunData runData)
 	{
 		// access the portlet element id to find our state
 		String peid = ((JetspeedRunData)runData).getJs_peid();
