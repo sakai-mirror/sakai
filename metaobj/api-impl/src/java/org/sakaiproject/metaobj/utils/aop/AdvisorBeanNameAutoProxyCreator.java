@@ -33,6 +33,11 @@ public class AdvisorBeanNameAutoProxyCreator extends BeanNameAutoProxyCreator {
 
    private Advisor[] advisors;
 
+
+   protected void customizeProxyFactory(ProxyFactory proxyFactory) {
+      setAdvisors(proxyFactory.getAdvisors());
+   }
+
    /**
     * Subclasses may choose to implement this: for example,
     * to change the interfaces exposed
@@ -40,11 +45,11 @@ public class AdvisorBeanNameAutoProxyCreator extends BeanNameAutoProxyCreator {
     * @param bean bean about to be autoproxied
     * @param pf   ProxyFactory that will be used to create the proxy
     *             immediably after this method returns
-    */
    protected void customizeProxyFactory(Object bean, ProxyFactory pf) {
       super.customizeProxyFactory(bean, pf);
       setAdvisors(pf.getAdvisors());
    }
+    */
 
    public Advisor[] getAdvisors() {
       return advisors;

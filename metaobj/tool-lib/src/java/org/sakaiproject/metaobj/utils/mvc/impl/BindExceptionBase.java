@@ -47,7 +47,7 @@ public class BindExceptionBase extends BindException {
       return wrapper;
    }
 
-   protected String[] resolveMessageCodes(String errorCode, String field) {
+   public String[] resolveMessageCodes(String errorCode, String field) {
       String fixedField = fixedField(field);
       Class fieldType = this.getBeanWrapper().getPropertyType(fixedField);
       if (fieldType == null) {
