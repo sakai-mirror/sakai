@@ -70,7 +70,7 @@ public class RWikiSecurityServiceImpl implements RWikiSecurityService {
         List l = FunctionManager.getRegisteredFunctions("rwiki.");
         if ( !l.contains(SECURE_READ) ) FunctionManager.registerFunction(SECURE_READ);
         if ( !l.contains(SECURE_UPDATE) ) FunctionManager.registerFunction(SECURE_UPDATE);
-        if ( !l.contains(SECURE_DELETE) ) FunctionManager.registerFunction(SECURE_DELETE);
+        if ( !l.contains(SECURE_CREATE) ) FunctionManager.registerFunction(SECURE_CREATE);
         if ( !l.contains(SECURE_SUPER_ADMIN) ) FunctionManager.registerFunction(SECURE_SUPER_ADMIN);
         if ( !l.contains(SECURE_ADMIN) ) FunctionManager.registerFunction(SECURE_ADMIN);
     }

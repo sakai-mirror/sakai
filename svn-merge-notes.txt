@@ -1,6 +1,26 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4756 | csev@umich.edu | 2005-12-18 19:18:51 -0500 (Sun, 18 Dec 2005) | 3 lines
+
+Remove unnecessary files.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4755 | csev@umich.edu | 2005-12-18 18:35:00 -0500 (Sun, 18 Dec 2005) | 4 lines
+
+Add the Sakai JSR-168 portlet - initial load.  This should not be in the maintenance
+branch.  It is intended as a provisional tool in release 2.2.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4754 | jimeng@umich.edu | 2005-12-18 14:51:34 -0500 (Sun, 18 Dec 2005) | 3 lines
+
+SAK-2443
+Added paging to two contexts used by attachment helper.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4744 | bkirschn@umich.edu | 2005-12-16 16:30:29 -0500 (Fri, 16 Dec 2005) | 2 lines
 
 SAK-3186: Make use of ResourceLoader class for dynamic language locales
