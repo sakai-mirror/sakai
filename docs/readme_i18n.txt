@@ -81,8 +81,23 @@ languages, as follows:
 13) Spanish
     Status: ??
     Translated by: n/a
-    Contact: Cynthia Gonzaléz (gonzalez.cynthia@itesm.mx)
+    Contact: Cynthia Gonzalez (gonzalez.cynthia@itesm.mx)
     Local ID: es_MX
+
+14) Spanish
+    Status: ??B
+    Translated by: n/a
+    Contact: Larisa Enriquez Vazquez (larisa@piaget.dgsca.unam.mx)
+    Local ID: es_MX
+
+15) Spanish
+    Status: ??
+    Translated by: n/a
+    Contact: Sebasti‡n Barreiro (sbarreiro@gmail.com)
+    Local ID: es_AR
+
+
+
 
 Currently, the language locale must be defined at boot time, by
 setting the tomcat JAVA_OPTS property as follows:
