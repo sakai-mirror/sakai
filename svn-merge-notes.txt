@@ -1,6 +1,13 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4721 | jimeng@umich.edu | 2005-12-15 23:03:33 -0500 (Thu, 15 Dec 2005) | 3 lines
+
+SAK-2443
+Added paged display of other sites in Resources list view.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4709 | gsilver@umich.edu | 2005-12-15 14:24:21 -0500 (Thu, 15 Dec 2005) | 1 line
 
 adding OSPI classes

@@ -24,6 +24,7 @@
 package org.sakaiproject.service.legacy.content.cover;
 
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
+import org.sakaiproject.exception.IdInvalidException;
 
 /**
 * <p>ContentHostingService is a static Cover for the {@link org.sakaiproject.service.legacy.content.ContentHostingService ContentHostingService};
@@ -69,6 +70,20 @@ public class ContentHostingService
 
 		return service.getUrl(param0);
 	}
+
+   /**
+    *
+    * @param id id of the resource to set the UUID for
+    * @param uuid the new UUID of the resource
+    * @throws org.sakaiproject.exception.IdInvalidException if the given resource already has a UUID set
+    */
+   public static void setUuid(String id, String uuid) throws IdInvalidException {
+      org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+      if (service == null)
+         return;
+
+      service.setUuid(id, uuid);
+   }
 
 	public static java.lang.String getReference(java.lang.String param0)
 	{

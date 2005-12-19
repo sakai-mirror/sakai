@@ -3831,6 +3831,8 @@ public class ResourcesAction
 						{
 							// paste the cutted resource to the new collection - no notification
 							ContentResource newResource = ContentHostingService.addResource (id, resource.getContentType (), resource.getContent (), resourceProperties, NotificationService.NOTI_NONE);
+                     String uuid = ContentHostingService.getUuid(resource.getId());
+                     ContentHostingService.setUuid(id, uuid);
 						}
 						catch (InconsistentException e)
 						{
