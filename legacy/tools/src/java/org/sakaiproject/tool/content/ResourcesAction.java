@@ -4654,6 +4654,8 @@ public class ResourcesAction
 			elements.setContainer(null);
 			elements = createHierarchicalList(elements, fields, 1);
 			
+			String instruction = home.getInstruction();
+			
 			state.setAttribute(STATE_STRUCTOBJ_ROOTNAME, docRoot);
 			state.setAttribute(STATE_STRUCT_OBJ_SCHEMA, rootSchema);
 			
@@ -4668,6 +4670,7 @@ public class ResourcesAction
 					EditItem item = (EditItem) items.get(i);
 					item.setRootname(docRoot);
 					item.setFormtype(formtype);
+					item.setInstruction(instruction);
 					item.setProperties(flatList);
 					item.setForm(elements);
 				}
@@ -4679,6 +4682,7 @@ public class ResourcesAction
 				EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
 				item.setRootname(docRoot);
 				item.setFormtype(formtype);
+				item.setInstruction(instruction);
 				item.setForm(elements);
 			}
 		}
@@ -9673,8 +9677,9 @@ public class ResourcesAction
 		
 		protected Set m_missingInformation;
 		protected boolean m_hasBeenAdded;
-		private ResourcesMetadata m_form;
-		private boolean m_isBlank;
+		protected ResourcesMetadata m_form;
+		protected boolean m_isBlank;
+		protected String m_instruction;
 		
 		
 		/**
@@ -9703,9 +9708,33 @@ public class ResourcesAction
 			m_hasBeenAdded = false;
 			m_properties = new Vector();
 			m_isBlank = true;
+			m_instruction = "";
 			
 		}
 		
+		/**
+		 * Record a value for instructions to be displayed to the user in the editor (for Form Items).
+		 * @param instruction The value of the instructions.
+		 */
+		public void setInstruction(String instruction) 
+		{
+			if(instruction == null)
+			{
+				instruction = "";
+			}
+
+			m_instruction = instruction.trim();
+		}
+		
+		/**
+		 * Access instructions to be displayed to the user in the editor (for Form Items).
+		 * @return The instructions.
+		 */
+		public String getInstruction()
+		{
+			return m_instruction;
+		}
+
 		/**
 		 * Set the character encoding type that will be used when converting content body between strings and byte arrays.
 		 * Default is "UTF-8".

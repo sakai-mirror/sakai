@@ -378,7 +378,6 @@
 				#else
 					<p class="longtext">
 				#end
-##					<label for="content$i">&nbsp;</label>
 					<textarea name="content$i" id="content$i" rows="10" cols="60" wrap="virtual">$!validator.escapeHtmlTextarea($!{item.contentstring})</textarea>
 				</p>
 			#elseif ($item.isHtml())
@@ -387,7 +386,6 @@
 				#else
 					<div class="longtext">
 				#end
-##					<label for="content$i">&nbsp;</label>
 					<table border="0"><tr><td>
 						<textarea name="content$i" id="content$i" rows="30" cols="80" wrap="virtual">$validator.escapeHtmlTextarea("$!{item.contentstring}")</textarea>
 						#chef_setupformattedtextarea("content$i")
@@ -410,13 +408,17 @@
 						#else
 							<select name="formtype" id="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('createForm');">
 						#end
-						##<select id="formtype" name="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('createForm');">
 							<option value=""#if("$!formtype" == "") selected="selected"#end></option>
 							#foreach($home in $homes)
 								<option value="$home.type.id"#if("$!home.type.id" == "$!formtype") selected="selected"#end>$home.type.description</option>
 							#end
 						</select>
 					</p>
+					#if($!item.instruction && $item.instruction != "")
+						<p class="instruction">
+							$item.instruction
+						</p>
+					#end
 					#getPropertyValues($item.properties)
 				#end
 			#else
