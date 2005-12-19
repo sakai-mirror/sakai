@@ -25,6 +25,7 @@ package org.sakaiproject.metaobj.utils.ioc.web;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationContext;
@@ -44,20 +45,25 @@ public class WebContextLoader extends ContextLoader {
    private static final String WEB_INF_PREFIX = "/WEB-INF";
 
    /**
+    * Default context class for ContextLoader.
+    * @see org.springframework.web.context.support.XmlWebApplicationContext
+    */
+   private static final Class DEFAULT_CONTEXT_CLASS_1_1_5 = XmlWebApplicationContext.class;
+
+   /**
 	 * Instantiate the root WebApplicationContext for this loader, either a default
 	 * XmlWebApplicationContext or a custom context class if specified.
 	 * This implementation expects custom contexts to implement ConfigurableWebApplicationContext.
 	 * Can be overridden in subclasses.
 	 * @throws BeansException if the context couldn't be initialized
 	 * @see #CONTEXT_CLASS_PARAM
-	 * @see #DEFAULT_CONTEXT_CLASS
 	 * @see org.springframework.web.context.ConfigurableWebApplicationContext
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext
 	 */
 	protected WebApplicationContext createWebApplicationContext(ServletContext servletContext, ApplicationContext parent)
 			throws BeansException {
       String contextClassName = servletContext.getInitParameter(CONTEXT_CLASS_PARAM);
-      Class contextClass = DEFAULT_CONTEXT_CLASS;
+      Class contextClass = DEFAULT_CONTEXT_CLASS_1_1_5;
       if (contextClassName != null) {
          try {
             contextClass = Class.forName(contextClassName, true, Thread.currentThread().getContextClassLoader());
