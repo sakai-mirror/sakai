@@ -2088,6 +2088,9 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			// complete the edit
 			m_storage.commitMessage(this, edit);
 
+			// clear out any thread local caching of this message, since it has just changed
+			CurrentService.setInThread(edit.getReference(), null);
+
 			// track event
 			Event event =
 				EventTrackingService.newEvent(
