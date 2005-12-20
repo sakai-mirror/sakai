@@ -39,13 +39,6 @@ import org.sakaiproject.service.legacy.preference.Preferences;
 import org.sakaiproject.service.legacy.preference.cover.PreferencesService;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 
-/*
- * Changes from Tatsuki's original:
- * - change package
- * - change HashMap to Hashtable
- * - Preferences
- */
- 
 /**
  * ResourceLoader provides an alternate implementation of org.util.ResourceBundle, dynamically selecting
  * the prefered locale from either the user's session or from the user's sakai preferences

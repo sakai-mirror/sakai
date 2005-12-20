@@ -3,15 +3,15 @@
 <project>
 	<pomVersion>3</pomVersion>
 	<extend>../../master/project.xml</extend>
-	<name>Sakai Java Util</name>
+	<name>Sakai Internationalization Util</name>
 	<groupId>sakaiproject</groupId>
-	<id>sakai-util-java</id>
+	<id>sakai-util-i18n</id>
 	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>
 	</organization>
-	<inceptionYear>2003</inceptionYear>
+	<inceptionYear>2005</inceptionYear>
 
 	<properties>
 		<!-- build a jar, no deploy -->
@@ -20,30 +20,27 @@
 
 	<dependencies>
 
-      <!-- This module must have NO dependency on any other Sakai code -->
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.0.4</version>
 		</dependency>
 
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-session</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-legacy-service</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
-
 		<sourceDirectory>src/java</sourceDirectory>
-
-		<!-- other resources for the jar - properties and xml files-->
-		<resources>
-			<resource>
-				<directory>${basedir}/src/config</directory>
-				<includes>
-					<include>**/*.properties</include>
-					<include>**/*.xml</include>
-				</includes>
-			</resource>
-		</resources>
-
 	</build>
 
 </project>
