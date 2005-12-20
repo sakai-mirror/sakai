@@ -1,6 +1,12 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4785 | lance@indiana.edu | 2005-12-19 11:09:34 -0500 (Mon, 19 Dec 2005) | 2 lines
+
+Migrating test-harness development to trunk per Josh Holtzman's request.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4756 | csev@umich.edu | 2005-12-18 19:18:51 -0500 (Sun, 18 Dec 2005) | 3 lines
 
 Remove unnecessary files.
