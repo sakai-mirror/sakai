@@ -11,6 +11,10 @@ r4795 | jimeng@umich.edu | 2005-12-19 14:52:44 -0500 (Mon, 19 Dec 2005) | 3 line
 
 SAK-3024
 Showing instructions for form items.
+
+U legacy/tools/src/java/org/sakaiproject/tool/content/ResourcesAction.java
+Skipped missing target: 'legacy/tools/src/webapp/vm/content/chef_resources_itemtype.vm'
+U legacy/tools/src/webapp/vm/content/chef_resources_edit.vm
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
