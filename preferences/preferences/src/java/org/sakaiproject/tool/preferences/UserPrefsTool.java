@@ -325,7 +325,7 @@ public class UserPrefsTool
     if ( prefTimeZones.size() == 0 )
     {
        String[] timeZoneArray = TimeZone.getAvailableIDs();
-       Arrays.sort( timeZoneArray, localeComparator );
+       Arrays.sort( timeZoneArray );
        for ( int i=0; i<timeZoneArray.length; i++ )
           prefTimeZones.add( new SelectItem(timeZoneArray[i], timeZoneArray[i]) );
     }
@@ -381,7 +381,7 @@ public class UserPrefsTool
        }
        else       // if no locales specified, get default list
        {
-          localeArray = Locale.getAvailableLocales();
+          localeArray = new Locale[] { Locale.getDefault() };
        }
 
        // Sort locales and add to prefLocales (removing duplicates)       
@@ -528,8 +528,6 @@ public class UserPrefsTool
   {
      if ( selectedLocale != null )
         m_locale = getLocaleFromString( selectedLocale );
-     else
-        LOG.warn(this+"setSelctedLocale() has null locale id");
   }
 
   /**
