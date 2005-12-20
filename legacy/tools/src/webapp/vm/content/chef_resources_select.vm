@@ -321,8 +321,9 @@
 						</h4>
 						</th>
 					</tr>
+					################################################################ Begin Paging widgets
 					#if($!allMsgNumber && $allMsgNumberInt && $allMsgNumberInt > 5)
-						<tr>
+						<tr class="exclude">
 							<td colspan="7">
 								<div class="rightNav">
 									<span class="instruction" style="margin-bottom:.3em;">Viewing $topMsgPos - $btmMsgPos of $allMsgNumber items</span>
@@ -363,6 +364,7 @@
 							</td>
 						</tr>
 					#end
+					################################################################ End Paging widgets
 					#foreach($root in $other_sites)
 						############################### Show top level folder #################
 						<tr>
