@@ -1,6 +1,13 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4795 | jimeng@umich.edu | 2005-12-19 14:52:44 -0500 (Mon, 19 Dec 2005) | 3 lines
+
+SAK-3024
+Showing instructions for form items.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4785 | lance@indiana.edu | 2005-12-19 11:09:34 -0500 (Mon, 19 Dec 2005) | 2 lines
 
 Migrating test-harness development to trunk per Josh Holtzman's request.
