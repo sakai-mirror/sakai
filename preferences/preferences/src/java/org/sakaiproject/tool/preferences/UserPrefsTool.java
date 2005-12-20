@@ -54,6 +54,7 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.util.java.ResourceLoader;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 
 /**
  * UserPrefsTool is a Sakai Admin tool to view and edit anyone's preferences.
@@ -220,6 +221,9 @@ public class UserPrefsTool
   /** The user id retrieved from UsageSessionService	*/
   private String userId = "";
   
+  private String  SAKAI_LOCALES = "locales";
+
+  
   //////////////////////////////////		PROPERTY GETTER AND SETTER		////////////////////////////////////////////	
   /**
    * @return Returns the ResourceLoader value.
@@ -343,16 +347,50 @@ public class UserPrefsTool
   }
 
   /**
+   ** @return Locale based on its string representation (language_region)
+   **/
+  private Locale getLocaleFromString( String localeString )
+  {
+     String[] locValues = localeString.trim().split("_");
+     if (locValues.length > 1)
+        return new Locale( locValues[0], locValues[1] ); // language, country
+     else if (locValues.length == 1 )
+        return new Locale( locValues[0] ); // just language
+     else
+        return Locale.getDefault();
+  }
+  
+  /**
    * @return Returns the prefLocales
    */
   public List getPrefLocales()
   {
+    // Initialize list of supported locales, if necessary
     if ( prefLocales.size() == 0 )
     {
-       Locale[] localeArray = Locale.getAvailableLocales();
+       Locale[] localeArray = null;
+       String   localeString = ServerConfigurationService.getString(SAKAI_LOCALES);
+       
+       if ( localeString != null && !localeString.equals("") )
+       {
+          String[] sakai_locales = localeString.split(",");
+          localeArray = new Locale[sakai_locales.length+1];
+          for (int i=0; i<sakai_locales.length; i++ )
+             localeArray[i] = getLocaleFromString( sakai_locales[i] );
+          localeArray[localeArray.length-1] = Locale.getDefault();
+       }
+       else       // if no locales specified, get default list
+       {
+          localeArray = Locale.getAvailableLocales();
+       }
+
+       // Sort locales and add to prefLocales (removing duplicates)       
        Arrays.sort( localeArray, localeComparator );
        for ( int i=0; i<localeArray.length; i++ )
-          prefLocales.add( new SelectItem(localeArray[i].toString(), localeArray[i].getDisplayName()) );
+       {
+          if ( i == 0 || ! localeArray[i].equals(localeArray[i-1]) )
+             prefLocales.add( new SelectItem(localeArray[i].toString(), localeArray[i].getDisplayName()) );
+       }
     }
       
     return prefLocales;
@@ -460,19 +498,9 @@ public class UserPrefsTool
      String prefLocale = props.getProperty( ResourceLoader.LOCALE_KEY );
      
      if ( hasValue(prefLocale) )
-     {
-        String[] locValues = prefLocale.split("_");
-        if (locValues.length > 1)
-           m_locale = new Locale( locValues[0], locValues[1] ); // language, country
-        else if (locValues.length == 1 )
-           m_locale = new Locale( locValues[0] ); // just language
-        else 
-           m_locale = Locale.getDefault();
-     }
+        m_locale = getLocaleFromString( prefLocale );
      else
-     {
         m_locale = Locale.getDefault();
-     }
         
      return m_locale;
   }
@@ -499,15 +527,7 @@ public class UserPrefsTool
   public void setSelectedLocaleString(String selectedLocale)
   {
      if ( selectedLocale != null )
-     {
-        String[] locValues = selectedLocale.split("_");
-        if (locValues.length > 1)
-           m_locale = new Locale( locValues[0], locValues[1] ); // language, country
-        else if (locValues.length == 1 )
-           m_locale = new Locale( locValues[0] ); // just language
-        else 
-           m_locale = Locale.getDefault();
-     }
+        m_locale = getLocaleFromString( selectedLocale );
      else
         LOG.warn(this+"setSelctedLocale() has null locale id");
   }

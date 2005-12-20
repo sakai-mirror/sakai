@@ -112,7 +112,7 @@ public class ResourceLoader extends DummyMap implements Map
         ResourceBundle bundle = (ResourceBundle) this.bundles.get(loc);
         if (bundle == null) 
         {
-            M_log.info("Load bundle name=" + this.baseName
+            M_log.debug("Load bundle name=" + this.baseName
                     + ", locale=" + getLocale().toString());
             bundle = loadBundle(loc);
         }
