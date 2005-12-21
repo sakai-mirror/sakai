@@ -1015,6 +1015,8 @@ public class ResourcesAction
 		context.put ("currentSortAsc", sortedAsc);
 		context.put("TRUE", Boolean.TRUE.toString());
 		
+		String current_user_id = UserDirectoryService.getCurrentUser().getId();
+		
 		try
 		{
 			try
@@ -1060,18 +1062,25 @@ public class ResourcesAction
 				{
 					for(int i = 0; i < submitters.length; i++)
 					{
-						User submitter = submitters[i]; 
+						User submitter = submitters[i];
 						String dbId = dropboxId + StringUtil.trimToZero(submitter.getId()) + "/";
-						ContentCollection db = ContentHostingService.getCollection(dbId);
-						expandedCollections.put(dbId, db);
-						List dbox = getBrowseItems(dbId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
-						if(dbox != null && dbox.size() > 0)
+						try
 						{
-							BrowseItem root = (BrowseItem) dbox.remove(0);
-							// context.put("site", root);
-							root.setName(submitter.getDisplayName() + " " + rb.getString("gen.drop"));
-							root.addMembers(dbox);
-							this_site.add(root);
+							ContentCollection db = ContentHostingService.getCollection(dbId);
+							expandedCollections.put(dbId, db);
+							List dbox = getBrowseItems(dbId, expandedCollections, highlightedItems, sortedBy, sortedAsc, (BrowseItem) null, false, state);
+							if(dbox != null && dbox.size() > 0)
+							{
+								BrowseItem root = (BrowseItem) dbox.remove(0);
+								// context.put("site", root);
+								root.setName(submitter.getDisplayName() + " " + rb.getString("gen.drop"));
+								root.addMembers(dbox);
+								this_site.add(root);
+							}
+						}
+						catch(IdUnusedException e)
+						{
+							// ignore a user's dropbox if it's not defined
 						}
 					}
 				}
@@ -7399,6 +7408,8 @@ public class ResourcesAction
 			state.setAttribute(STATE_PAGESIZE, new Integer(DEFAULT_PAGE_SIZE));
 		}
 		
+		// state.setAttribute(STATE_TOP_PAGE_MESSAGE, "");
+		
 		state.setAttribute (STATE_CONTENT_SERVICE, ContentHostingService.getInstance());
 		state.setAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE, ContentTypeImageService.getInstance());
 
@@ -10916,14 +10927,29 @@ public class ResourcesAction
 		{
 			return rv;
 		}
+		
+		String messageIdAtTheTopOfThePage = null;
+		Object topMsgId = state.getAttribute(STATE_TOP_PAGE_MESSAGE);
+		if(topMsgId == null)
+		{
+			// do nothing
+		}
+		else if(topMsgId instanceof Integer)
+		{
+			messageIdAtTheTopOfThePage = ((Integer) topMsgId).toString();
+		}
+		else if(topMsgId instanceof String)
+		{
+			messageIdAtTheTopOfThePage = (String) topMsgId;
+		}
 
 		// if we have no prev page and do have a top message, then we will stay "pinned" to the top
-		boolean pinToTop = (	(state.getAttribute(STATE_TOP_PAGE_MESSAGE) != null)
+		boolean pinToTop = (	(messageIdAtTheTopOfThePage != null)
 							&&	(state.getAttribute(STATE_PREV_PAGE_EXISTS) == null)
 							&&	!goNextPage && !goPrevPage && !goNext && !goPrev && !goFirstPage && !goLastPage);
 
 		// if we have no next page and do have a top message, then we will stay "pinned" to the bottom
-		boolean pinToBottom = (	(state.getAttribute(STATE_TOP_PAGE_MESSAGE) != null)
+		boolean pinToBottom = (	(messageIdAtTheTopOfThePage != null)
 							&&	(state.getAttribute(STATE_NEXT_PAGE_EXISTS) == null)
 							&&	!goNextPage && !goPrevPage && !goNext && !goPrev && !goFirstPage && !goLastPage);
 
@@ -10940,7 +10966,6 @@ public class ResourcesAction
 
 		// find the position of the message that is the top first on the page
 		int posStart = 0;
-		String messageIdAtTheTopOfThePage = (String) state.getAttribute(STATE_TOP_PAGE_MESSAGE);
 		if (messageIdAtTheTopOfThePage != null)
 		{
 			// find the next page
