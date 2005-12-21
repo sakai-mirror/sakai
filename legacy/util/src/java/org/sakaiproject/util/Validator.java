@@ -65,7 +65,7 @@ public class Validator
 	protected static final String ESCAPE_CHARS_IN_RESOURCE_ID = ";'\"";
 	
 	protected static final String INVALID_CHARS_IN_ZIP_ENTRY = "/\\%:*?'\"";
-	protected static final String INVALID_MSG = " cannot contain any of the following characters: / \\ % * ? # & =";
+	protected static final String INVALID_MSG = " cannot contain any of the following characters: / \\ % * ? # & = { } ( ) ^";
 	protected static final String BLANK_MSG = " cannot be blank";
 
 	/** These characters are escaped when making a URL */
