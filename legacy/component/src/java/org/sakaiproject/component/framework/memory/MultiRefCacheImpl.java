@@ -98,6 +98,7 @@ public class MultiRefCacheImpl extends MemCache implements MultiRefCache
 	public MultiRefCacheImpl(BasicMemoryService memoryService, EventTrackingService eventTrackingService, Logger logger, long sleep)
 	{
 		super(memoryService, eventTrackingService, logger, sleep, "");
+		m_softRefs = false;
 		m_refs = new ConcurrentReaderHashMap();
 	}
 
