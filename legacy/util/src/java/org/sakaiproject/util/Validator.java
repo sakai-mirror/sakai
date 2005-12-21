@@ -41,7 +41,7 @@ import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 public class Validator
 {
 	/** These characters are not allowed in a resource id */
-	protected static final String INVALID_CHARS_IN_RESOURCE_ID = "^/\\{}[]()@%*?#&=\n\r\t\b\f";
+	protected static final String INVALID_CHARS_IN_RESOURCE_ID = "^/\\{}[]()%*?#&=\n\r\t\b\f";
 	
 	/** These characters are not allowed in a user id */
 	protected static final String INVALID_CHARS_IN_USER_ID = "^/\\%*?\n\r\t\b\f";
