@@ -1,7 +1,7 @@
 The Sakai test harness provides integration testing support for sakai tools and
 services.  While all projects should include unit testing, integration testing
 is an important tool for ensuring that your tool or service is working properly
-with in a (simulated) sakai environment.
+within a (simulated) sakai environment.
 
 You can follow these steps add integration tests to your sakai project:
 
@@ -67,7 +67,7 @@ your project!) will fail.
 
 INVITATION: If you've read this far, you undoubtedly recognize how fragile the
 test harness is at this point.  I invite any and all interested developers to
-work on this project, whether than entails changing the component manager, the
+work on this project, whether that entails changing the component manager, the
 sakai plugin, or the test harness itself.
 
 Thanks,
