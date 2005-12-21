@@ -464,6 +464,8 @@ public class ResourcesAction
 
 	protected static final String STATE_TOP_MESSAGE_INDEX = "resources.top_message_index";
 
+	protected static final String STATE_REMOVED_ATTACHMENTS = "resources.removed_attachments";
+
 
 
 	/**
@@ -3088,21 +3090,13 @@ public class ResourcesAction
 		if(found && item != null)
 		{
 			attached.remove(item);
+			List removed = (List) state.getAttribute(STATE_REMOVED_ATTACHMENTS);
+			if(removed == null)
+			{
+				removed = new Vector();
+			}
+			removed.add(item);
 			
-			try
-			{
-				if(ContentHostingService.isAttachmentResource(item.getId()))
-				{
-					ContentResourceEdit edit = ContentHostingService.editResource(item.getId());
-					ContentHostingService.removeResource(edit);
-					ContentCollectionEdit coll = ContentHostingService.editCollection(item.getCollectionId());
-					ContentHostingService.removeCollection(coll);
-				}
-			}
-			catch(Exception ignore)
-			{
-				// log failure
-			}
 			state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
 		}
 
@@ -3130,6 +3124,31 @@ public class ResourcesAction
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
 		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+		List removed = (List) state.getAttribute(STATE_REMOVED_ATTACHMENTS);
+		if(removed == null)
+		{
+			removed = new Vector();
+		}
+		Iterator removeIt = removed.iterator();
+		while(removeIt.hasNext())
+		{
+			AttachItem item = (AttachItem) removeIt.next();
+			try
+			{
+				if(ContentHostingService.isAttachmentResource(item.getId()))
+				{
+					ContentResourceEdit edit = ContentHostingService.editResource(item.getId());
+					ContentHostingService.removeResource(edit);
+					ContentCollectionEdit coll = ContentHostingService.editCollection(item.getCollectionId());
+					ContentHostingService.removeCollection(coll);
+				}
+			}
+			catch(Exception ignore)
+			{
+				// log failure
+			}
+		}
+		state.removeAttribute(STATE_REMOVED_ATTACHMENTS);
 		
 		// add to the attachments vector
 		List attachments = EntityManager.newReferenceList();
@@ -3817,6 +3836,7 @@ public class ResourcesAction
 			cleanupState(state);
 			state.removeAttribute(STATE_ATTACHMENTS);
 			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+			state.removeAttribute(STATE_REMOVED_ATTACHMENTS);
 		}
 		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_CREATE.equals(helper_mode))
 		{
