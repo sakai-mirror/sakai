@@ -42,16 +42,13 @@ project.  You should also not care about the data in this database, since
 failing or poorly written tests (those that don't clean up after themselves) may
 leave garbage data in your DB.  Using an in-memory hsql database is recommended.
 
-5) Integration tests run as a postGoal to a Sakai deploy.  Set the build
-property 'maven.itest' to true, either in your ~/build.properties or on the
-command line, and override the directive in the test harness that skips running
-tests.
+5) Integration tests run as a standalone maven goal named 'itest'.  It can only
+be run on a fully built and deployed Sakai.  When running 'itest ', you must
+also override the directive in the test harness that skips running these tests
+during a normal build (since the tests will fail if the full deployment is not
+in place).
 
-maven -Dmaven.itest=true -Dmaven.test.skip=false dpl
-
-Of course, the 'sakai' goal also runs a 'dpl', so you could just as easily run:
-
-maven -Dmaven.itest=true -Dmaven.test.skip=false sakai
+maven -Dmaven.test.skip=false itest
 
 --------------------------------------------------------------------------------
 
@@ -62,6 +59,14 @@ test harness to add the new dependency.  If the test harness does not list this
 artifact as a dependency, then the any component relying on the artifact will
 not load, and any tests relying on that component (even if it isn't a test in
 your project!) will fail.
+
+The way to think about the dependencies in the test harness is this:  the test
+harness dependencies play the role of tomcat's shared/lib and common/lib
+directories.  If you expect a jar to be globally available to the entire system
+(such as an API or a JDBC driver), you would put that jar in tomcat's
+shared/lib.  If the test harness is to emulate tomcat's behavior, you should add
+the artifact as a dependency to /test-harness/project.xml so it is globally
+available in the test harness.
 
 --------------------------------------------------------------------------------
 
