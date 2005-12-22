@@ -137,6 +137,17 @@
 										#end
 									</td>
 								</tr>
+								#if ($!withGrade)
+									<tr>
+										<th>
+												$!tlang.getString('addtogradebook')
+										</th>
+										<td>
+											## if honor pledge is required
+											$!value_AddToGradebook
+										</td>
+									</tr>
+								#end
 							</table>
 							<h4>
 									$tlang.getString("gen.assinf")

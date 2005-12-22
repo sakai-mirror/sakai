@@ -320,6 +320,18 @@
 				$tlang.getString("gen.addhonple")
 			</label>
 		</p>
+		#if ($!withGrade)
+				<p class="checkbox">
+					#if ($!value_AddToGradebook.equals("true"))
+						<input id="$name_Addtogradebook" name="$name_Addtogradebook" type="checkbox" value="true" checked="checked"/>
+					#else
+						<input id="$name_Addtogradebook" name="$name_Addtogradebook" type="checkbox" value="true"/>
+					#end
+					<label for="$name_Addtogradebook">
+						$!tlang.getString('addtogradebook')
+					</label>
+				</p>
+			#end
 		<h4>
 			$tlang.getString("gen.addres")
 		</h4>	

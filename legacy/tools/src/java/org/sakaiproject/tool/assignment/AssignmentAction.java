@@ -26,6 +26,7 @@ package org.sakaiproject.tool.assignment;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +46,7 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
+import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
@@ -81,6 +83,7 @@ import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.java.StringUtil;
+import org.sakaiproject.service.gradebook.shared.GradebookService;
 
 //chen - SAK-1624 (use new file picker)
 import java.util.ArrayList;
@@ -303,6 +306,7 @@ extends PagedResourceActionII
 	private static final String NEW_ASSIGNMENT_HIDE_OPTION_FLAG = "new_assignment_hide_option_flag";
 	private static final String NEW_ASSIGNMENT_FOCUS = "new_assignment_focus";
 	private static final String NEW_ASSIGNMENT_DESCRIPTION_EMPTY = "new_assignment_description_empty";
+	private static final String NEW_ASSIGNMENT_ADD_TO_GRADEBOOK = "new_assignment_add_to_gradebook";
 	
 	private static final String ATTACHMENTS_MODIFIED = "attachments_modified";
 
@@ -903,7 +907,19 @@ extends PagedResourceActionII
 		// get the exist assignment
 		context.put ("existAssignment", AssignmentService.getAssignmentContents (UserDirectoryService.getCurrentUser()));
 		
-		// put the names and values into vm file
+		// set up context variables
+		setAssignmentFormContext(state, context);
+		
+		context.put("fField", state.getAttribute (NEW_ASSIGNMENT_FOCUS));
+		
+		String template = (String) getContext(data).get("template");
+		return template + TEMPLATE_INSTRUCTOR_NEW_ASSIGNMENT;
+		
+	}	// build_instructor_new_assignment_context
+	
+	protected void setAssignmentFormContext(SessionState state, Context context)
+	{
+		//put the names and values into vm file
 		context.put ("name_title", NEW_ASSIGNMENT_TITLE);
 		
 		context.put ("name_OpenMonth", NEW_ASSIGNMENT_OPENMONTH);
@@ -936,6 +952,13 @@ extends PagedResourceActionII
 		context.put ("name_CheckAddDueDate", ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE);
 		context.put ("name_CheckAutoAnnounce", ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE);
 		context.put ("name_CheckAddHonorPledge", NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE);
+		
+		// offer the gradebook integration choice only in the Assignments with Grading tool
+		boolean withGrade = ((Boolean) state.getAttribute(WITH_GRADES)).booleanValue();
+		if (withGrade)
+		{
+			context.put ("name_Addtogradebook", NEW_ASSIGNMENT_ADD_TO_GRADEBOOK);
+		}
 		
 		// set the values
 		context.put ("value_title", state.getAttribute (NEW_ASSIGNMENT_TITLE));
@@ -974,6 +997,7 @@ extends PagedResourceActionII
 		if (s == null)
 			s = "1";
 		context.put ("value_CheckAddHonorPledge", s);
+		context.put ("value_AddToGradebook", state.getAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK));
 		
 		context.put ("monthTable", monthTable ());
 		context.put ("gradeTypeTable", gradeTypeTable ());
@@ -982,13 +1006,7 @@ extends PagedResourceActionII
 		context.put ("attachments", state.getAttribute (ATTACHMENTS));
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
 		
-		context.put("fField", state.getAttribute (NEW_ASSIGNMENT_FOCUS));
-		
-		String template = (String) getContext(data).get("template");
-		return template + TEMPLATE_INSTRUCTOR_NEW_ASSIGNMENT;
-		
-	}	// build_instructor_new_assignment_context
-	
+	}	// setAssignmentFormContext
 	/**
 	 * build the instructor view of create a new assignment
 	 */
@@ -1073,6 +1091,7 @@ extends PagedResourceActionII
 		context.put ("value_CheckAddDueDate", state.getAttribute (ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE));
 		context.put ("value_CheckAutoAnnounce", state.getAttribute (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE));
 		context.put ("value_CheckAddHonorPledge", state.getAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE));
+		context.put ("value_AddToGradebook", state.getAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK));
 		
 		context.put ("monthTable", monthTable ());
 		context.put ("gradeTypeTable", gradeTypeTable ());
@@ -1115,87 +1134,8 @@ extends PagedResourceActionII
 			addAlert(state, rb.getString("youarenot14"));
 		}
 		
-		// put the names and values into vm file
-		context.put ("name_title", NEW_ASSIGNMENT_TITLE);
-		
-		context.put ("name_OpenMonth", NEW_ASSIGNMENT_OPENMONTH);
-		context.put ("name_OpenDay", NEW_ASSIGNMENT_OPENDAY);
-		context.put ("name_OpenYear", NEW_ASSIGNMENT_OPENYEAR);
-		context.put ("name_OpenHour", NEW_ASSIGNMENT_OPENHOUR);
-		context.put ("name_OpenMin", NEW_ASSIGNMENT_OPENMIN);
-		context.put ("name_OpenAMPM", NEW_ASSIGNMENT_OPENAMPM);
-		
-		context.put ("name_DueMonth", NEW_ASSIGNMENT_DUEMONTH);
-		context.put ("name_DueDay", NEW_ASSIGNMENT_DUEDAY);
-		context.put ("name_DueYear", NEW_ASSIGNMENT_DUEYEAR);
-		context.put ("name_DueHour", NEW_ASSIGNMENT_DUEHOUR);
-		context.put ("name_DueMin", NEW_ASSIGNMENT_DUEMIN);
-		context.put ("name_DueAMPM", NEW_ASSIGNMENT_DUEAMPM);
-		
-		context.put	("name_EnableCloseDate", NEW_ASSIGNMENT_ENABLECLOSEDATE);
-		context.put ("name_CloseMonth", NEW_ASSIGNMENT_CLOSEMONTH);
-		context.put ("name_CloseDay", NEW_ASSIGNMENT_CLOSEDAY);
-		context.put ("name_CloseYear", NEW_ASSIGNMENT_CLOSEYEAR);
-		context.put ("name_CloseHour", NEW_ASSIGNMENT_CLOSEHOUR);
-		context.put ("name_CloseMin", NEW_ASSIGNMENT_CLOSEMIN);
-		context.put ("name_CloseAMPM", NEW_ASSIGNMENT_CLOSEAMPM);
-		
-		context.put ("name_Section", NEW_ASSIGNMENT_SECTION);
-		context.put ("name_SubmissionType", NEW_ASSIGNMENT_SUBMISSION_TYPE);
-		context.put ("name_GradeType", NEW_ASSIGNMENT_GRADE_TYPE);
-		context.put ("name_GradePoints", NEW_ASSIGNMENT_GRADE_POINTS);
-		context.put ("name_Description", NEW_ASSIGNMENT_DESCRIPTION);
-		context.put ("name_CheckAddDueDate", ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE);
-		context.put ("name_CheckAutoAnnounce", ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE);
-		context.put ("name_CheckAddHonorPledge", NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE);
-		
-		// set the values
-		context.put ("value_title", state.getAttribute (NEW_ASSIGNMENT_TITLE));
-		context.put ("value_OpenMonth", state.getAttribute (NEW_ASSIGNMENT_OPENMONTH));
-		context.put ("value_OpenDay", state.getAttribute (NEW_ASSIGNMENT_OPENDAY));
-		context.put ("value_OpenYear", state.getAttribute (NEW_ASSIGNMENT_OPENYEAR));
-		context.put ("value_OpenHour", state.getAttribute (NEW_ASSIGNMENT_OPENHOUR));
-		context.put ("value_OpenMin", state.getAttribute (NEW_ASSIGNMENT_OPENMIN));
-		context.put ("value_OpenAMPM", state.getAttribute (NEW_ASSIGNMENT_OPENAMPM));
-		
-		context.put ("value_DueMonth", state.getAttribute (NEW_ASSIGNMENT_DUEMONTH));
-		context.put ("value_DueDay", state.getAttribute (NEW_ASSIGNMENT_DUEDAY));
-		context.put ("value_DueYear", state.getAttribute (NEW_ASSIGNMENT_DUEYEAR));
-		context.put ("value_DueHour", state.getAttribute (NEW_ASSIGNMENT_DUEHOUR));
-		context.put ("value_DueMin", state.getAttribute (NEW_ASSIGNMENT_DUEMIN));
-		context.put ("value_DueAMPM", state.getAttribute (NEW_ASSIGNMENT_DUEAMPM));
-		
-		context.put	("value_EnableCloseDate", state.getAttribute (NEW_ASSIGNMENT_ENABLECLOSEDATE));
-		if (!((Boolean) state.getAttribute (NEW_ASSIGNMENT_ENABLECLOSEDATE)).booleanValue())
-		{
-			addAlert(state, rb.getString("acesubdea1"));
-		}
-		context.put ("value_CloseMonth", state.getAttribute (NEW_ASSIGNMENT_CLOSEMONTH));
-		context.put ("value_CloseDay", state.getAttribute (NEW_ASSIGNMENT_CLOSEDAY));
-		context.put ("value_CloseYear", state.getAttribute (NEW_ASSIGNMENT_CLOSEYEAR));
-		context.put ("value_CloseHour", state.getAttribute (NEW_ASSIGNMENT_CLOSEHOUR));
-		context.put ("value_CloseMin", state.getAttribute (NEW_ASSIGNMENT_CLOSEMIN));
-		context.put ("value_CloseAMPM", state.getAttribute (NEW_ASSIGNMENT_CLOSEAMPM));
-		
-		context.put ("value_Sections", state.getAttribute (NEW_ASSIGNMENT_SECTION));
-		context.put ("value_SubmissionType", state.getAttribute (NEW_ASSIGNMENT_SUBMISSION_TYPE));
-		context.put ("value_GradeType", state.getAttribute (NEW_ASSIGNMENT_GRADE_TYPE));
-		String maxGrade = (String) state.getAttribute (NEW_ASSIGNMENT_GRADE_POINTS);
-		context.put ("value_GradePoints", displayGrade(state, maxGrade));
-		context.put ("value_Description", state.getAttribute (NEW_ASSIGNMENT_DESCRIPTION));
-		context.put ("value_CheckAddDueDate", state.getAttribute (ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE));
-		context.put ("value_CheckAutoAnnounce", state.getAttribute (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE));
-		String s = (String) state.getAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE);
-		if (s == null)
-			s = "1";
-		context.put ("value_CheckAddHonorPledge", s);
-		
-		context.put ("monthTable", monthTable ());
-		context.put ("gradeTypeTable", gradeTypeTable ());
-		context.put ("submissionTypeTable", submissionTypeTable ());
-		context.put ("hide_assignment_option_flag", state.getAttribute (NEW_ASSIGNMENT_HIDE_OPTION_FLAG));
-		context.put ("attachments", state.getAttribute (ATTACHMENTS));
-		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
+		// set up context variables
+		setAssignmentFormContext(state, context);
 		
 		String template = (String) getContext(data).get("template");
 		return template + TEMPLATE_INSTRUCTOR_EDIT_ASSIGNMENT;
@@ -1482,6 +1422,17 @@ extends PagedResourceActionII
 		String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);
 		context.put("accessPointUrl", (ServerConfigurationService.getAccessUrl()).concat(AssignmentService.submissionsZipReference(contextString, (String) state.getAttribute (EXPORT_ASSIGNMENT_REF))));
 		
+		// gradebook integration
+		GradebookService g = (GradebookService) (org.sakaiproject.service.gradebook.shared.GradebookService) ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
+		String gradebookUid = ToolManager.getInstance().getCurrentPlacement().getContext();
+		if (g.gradebookExists(gradebookUid))
+		{
+			context.put("withGradebook", Boolean.TRUE);
+		}
+		else
+		{
+			context.put("withGradebook", Boolean.FALSE);
+		}
 		String template = (String) getContext(data).get("template");
 		return template + TEMPLATE_INSTRUCTOR_GRADE_ASSIGNMENT;
 		
@@ -1601,6 +1552,154 @@ extends PagedResourceActionII
 		return template + TEMPLATE_INSTRUCTOR_REPORT_SUBMISSIONS;
 		
 	}	// build_instructor_report_submissions
+	
+	/**
+	 * integration with gradebook
+	 * @param state
+	 * @param assignmentRef
+	 * @param add
+	 */
+	protected void integrateGradebook (SessionState state, String assignmentRef, String submissionRef, boolean add)
+	{
+		//add or remove external grades to gradebook
+	    // a. if Gradebook does not exists, do nothing, 'cos setting should have been hidden
+	    // b. if Gradebook exists, just call addExternal and removeExternal and swallow any exception. The
+	    //    exception are indication that the assessment is already in the Gradebook or there is nothing
+	    //    to remove.
+		GradebookService g = (GradebookService) (org.sakaiproject.service.gradebook.shared.GradebookService) ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
+		String gradebookUid = ToolManager.getInstance().getCurrentPlacement().getContext();
+		
+		try
+        {
+    			Assignment a = AssignmentService.getAssignment(assignmentRef);
+    			
+    			if (a.getProperties().getProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK) != null && a.getProperties().getBooleanProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK)
+    				&& a.getContent().getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE)
+    			{
+    				// assignment has a setting to integrate with Gradebook
+				if (g.gradebookExists(gradebookUid))
+			    { 	
+			    		if (add)
+			    		{
+			    			try
+			    			{
+			    				// add assignment to gradebook
+			    				g.addExternalAssessment(gradebookUid,
+			        				assignmentRef, 
+			        				null,
+			        				a.getTitle(),
+			        				a.getContent().getMaxGradePoint()/10,
+			        				new Date(a.getDueTime().getTime()),
+			        				"Assignment");
+				        }
+				        catch(Exception e)
+				        {
+				        		Log.debug("chef", "Assignment " + assignmentRef + " must have been added already:"+e.getMessage());
+				        		try
+				        		{
+				        			g.updateExternalAssessment(gradebookUid,
+				        				assignmentRef, 
+				        				null,
+				        				a.getTitle(),
+				        				a.getContent().getMaxGradePoint()/10,
+				        				new Date(a.getDueTime().getTime()));
+				        		}
+				        		catch (Exception ee)
+				        		{
+				        		}
+				        }
+				        
+				        if (submissionRef == null)
+				        {
+				        		// add all grades for assignment into gradebook
+				        		Iterator submissions = AssignmentService.getSubmissions (a);
+				        	
+				        		// any score to copy over? get all the assessmentGradingData and copy over
+				        		while(submissions.hasNext())
+				        		{
+				        			AssignmentSubmission aSubmission = (AssignmentSubmission) submissions.next();
+				        			User[] submitters = aSubmission.getSubmitters();
+				        			g.updateExternalAssessmentScore(gradebookUid, assignmentRef, submitters[0].getId(), Double.valueOf(displayGrade(state, aSubmission.getGrade())));
+				        		}
+				        }
+				        else
+				        {
+				        		try
+				        		{
+					        		// only update one submission
+					        		AssignmentSubmission aSubmission = (AssignmentSubmission) AssignmentService.getSubmission(submissionRef);
+					        		User[] submitters = aSubmission.getSubmitters();
+				        			g.updateExternalAssessmentScore(gradebookUid, assignmentRef, submitters[0].getId(), Double.valueOf(displayGrade(state, aSubmission.getGrade())));
+				        		}
+			    				catch (Exception e)
+			    				{
+			    					Log.debug("chef", "Cannot find submission " + submissionRef + ": "+e.getMessage());
+			    				}
+				        }
+			    		}
+			    		else
+			    		{
+			    			if (submissionRef == null)
+					    {
+				    			// remove assignment and all submission grades
+				    	        try
+				    	        {	
+				    	        		g.removeExternalAssessment(gradebookUid, assignmentRef);
+				    	        }
+				    	        catch(Exception e)
+				    	        {
+				    	        		Log.debug("chef", "Assignment " + assignmentRef + " has been removed: " + e.getMessage());
+				    	        }
+					    }
+			    			else
+			    			{
+			    				// remove only one submission grade
+			    				try
+			    				{
+			    					AssignmentSubmission aSubmission = (AssignmentSubmission) AssignmentService.getSubmission(submissionRef);
+					        		User[] submitters = aSubmission.getSubmitters();
+				        			g.updateExternalAssessmentScore(gradebookUid, assignmentRef, submitters[0].getId(), null);
+			    				}
+			    				catch (Exception e)
+			    				{
+			    					Log.debug("chef", "Cannot find submission " + submissionRef + ": "+ e.getMessage());
+			    				}
+			    			}
+			    		}
+			    }
+			    else
+			    {
+			    	  	//remove assignment and all its submissions
+			        try
+			        {	
+			        		g.removeExternalAssessment(gradebookUid, assignmentRef);
+			        }
+			        catch(Exception e)
+			        {
+			        		Log.debug("chef", e.getMessage());
+			        }
+			    }
+    			}	// whether assignment is set to integrate with Gradebook?
+    			else
+    			{
+    				if (g.gradebookExists(gradebookUid))
+    			    {
+    					try
+    			        {	
+    			        		g.removeExternalAssessment(gradebookUid, assignmentRef);
+    			        }
+    			        catch(Exception e)
+    			        {
+    			        		Log.debug("chef", e.getMessage());
+    			        }
+    			    }
+    			}
+        }
+        catch(Exception e)
+        {
+        		Log.debug("chef", "Cannot find assignment " + assignmentRef + ": " + e.getMessage());
+        }
+	}	// integrateGradebook
 	
 	/**
 	 * Go to the instructor view
@@ -2177,7 +2276,22 @@ extends PagedResourceActionII
 					}
 				}
 
+				String sReference = sEdit.getReference();
+				
 				AssignmentService.commitEdit (sEdit);
+				
+				// update grades in gradebook
+				if (gradeOption.equals("release") || gradeOption.equals("return"))
+				{
+					// update grade in gradebook
+					integrateGradebook(state, a.getReference(), sReference, true);
+				}
+				else
+				{
+					// remove grade from gradebook
+					integrateGradebook(state, a.getReference(), sReference, false);
+				}
+				
 			}	// if
 		}
 		catch (IdUnusedException e)
@@ -2746,12 +2860,30 @@ extends PagedResourceActionII
 		}
 
 		String s = params.getString (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE);
-
+		
 		// set the honor pledge to be "no honor pledge"
 		if (s == null)
 			s = "1";
 		state.setAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE, s);
 
+		if (params.getString (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK)!=null && params.getString (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK).equalsIgnoreCase (Boolean.TRUE.toString ()))
+		{
+			if (gradeType != Assignment.SCORE_GRADE_TYPE)
+			{
+				// gradebook integration only available to point-grade assignment
+				addAlert(state, rb.getString("addtogradebook.wrongGradeScale"));
+				state.setAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, Boolean.FALSE.toString ());
+			}
+			else
+			{
+				state.setAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, Boolean.TRUE.toString ());
+			}
+		}
+		else
+		{
+			state.setAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, Boolean.FALSE.toString ());
+		}
+		
 		List attachments = (List) state.getAttribute (ATTACHMENTS);
 		state.setAttribute (NEW_ASSIGNMENT_ATTACHMENT, attachments);
 		
@@ -2935,110 +3067,6 @@ extends PagedResourceActionII
 	}	//doShow_view_student_view
 	
 	/**
-	 * Action is to post draft assignment
-	 **/
-	public void doPost_draft_assignment (RunData data)
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		ParameterParser params = data.getParameters ();
-		
-		String assignmentId = params.getString ("assignmentId");
-		
-		try
-		{
-			AssignmentEdit aEdit = AssignmentService.editAssignment (assignmentId);
-			aEdit.setDraft (false);
-			
-			//new assignment
-			aEdit.getPropertiesEdit().addProperty("newAssignment", Boolean.TRUE.toString());
-			
-			// add the due date to schedule
-			String checkAddDueTime = aEdit.getProperties ().getProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE);
-			if (checkAddDueTime.equalsIgnoreCase (Boolean.TRUE.toString ()) && (aEdit.getProperties ().getProperty (NEW_ASSIGNMENT_DUE_DATE_SCHEDULED)==null))
-			{
-				Time dueTime = aEdit.getDueTime ();
-				String title = aEdit.getTitle ();
-				Calendar c = (Calendar) state.getAttribute (CALENDAR);
-				if (c != null)
-				{				
-					// already has calendar object
-					try
-					{
-						CalendarEvent e = c.addEvent (	TimeService.newTimeRange(dueTime.getTime (), 0*60*1000),
-														"Due: " + title,
-														rb.getString("assig1")+ " " + title  + " " + rb.getString("isduieon") +" " + dueTime.toStringLocalFull () + ". ",
-														rb.getString("deadl"),
-														/*location*/"",
-														EntityManager.newReferenceList());
-						aEdit.getPropertiesEdit ().addProperty (NEW_ASSIGNMENT_DUE_DATE_SCHEDULED, Boolean.TRUE.toString ());
-						if (e != null)
-						{
-							aEdit.getPropertiesEdit ().addProperty (ResourceProperties.PROP_ASSIGNMENT_DUEDATE_CALENDAR_EVENT_ID, e.getId());
-						}
-					}
-					catch (PermissionException e)
-					{
-						addAlert(state, rb.getString("cannotfin1"));
-					}
-				} // if
-			}	// if
-			
-			// add the open date to annoucement
-			String checkAutoAnnounce = aEdit.getProperties ().getProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE);
-			if (checkAutoAnnounce.equalsIgnoreCase (Boolean.TRUE.toString ()) && (aEdit.getProperties ().getProperty (NEW_ASSIGNMENT_OPEN_DATE_ANNOUNCED)==null))
-			{
-				Time openTime = aEdit.getOpenTime ();
-				String title = aEdit.getTitle ();
-				AnnouncementChannel channel = (AnnouncementChannel) state.getAttribute (ANNOUNCEMENT_CHANNEL);
-				if (channel != null)
-				{				
-					// the announcement channel in place
-					try
-					{
-						AnnouncementMessage message = channel.addAnnouncementMessage (	rb.getString("assig6") +" "  + title,
-																						false,
-																						EntityManager.newReferenceList(),
-																						rb.getString("opedat") + " " + FormattedText.convertPlaintextToFormattedText(title) + " is " + openTime.toStringLocalFull () + ". ");
-						aEdit.getPropertiesEdit ().addProperty (NEW_ASSIGNMENT_OPEN_DATE_ANNOUNCED, Boolean.TRUE.toString ());
-						if (message != null)
-						{
-							aEdit.getPropertiesEdit ().addProperty (ResourceProperties.PROP_ASSIGNMENT_OPENDATE_ANNOUNCEMENT_MESSAGE_ID, message.getId());
-						}
-					}
-					catch (PermissionException e)
-					{
-						addAlert(state, "Can not make an announcement for the assignment open date.");
-					}
-				} // if
-			}	// if
-			
-			if (state.getAttribute(STATE_MESSAGE) == null)
-			{
-				AssignmentService.commitEdit (aEdit);
-			}
-		}
-		catch (IdUnusedException e)
-		{
-			addAlert(state, "Can not found such a assignment. ");
-		}
-		catch (PermissionException e)
-		{
-			addAlert(state, rb.getString("youarenot8"));
-		}
-		catch (InUseException e)
-		{
-			addAlert(state, INUSE_ERROR_MESSAGE + "assignment. ");
-		}
-		
-		if (state.getAttribute(STATE_MESSAGE) == null)
-		{		
-			state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
-			resetAssignment (state);
-		}
-		
-	} // doPost_draft_assignment
-	
-	/**
 	 * Action is to post assignment
 	 **/
 	public void doPost_assignment (RunData data)
@@ -3147,6 +3175,8 @@ extends PagedResourceActionII
 			String checkAutoAnnounce = (String) state.getAttribute (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE);
 
 			String checkAddHonorPledge = (String) state.getAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE);
+			
+			String addtoGradebook = (String) state.getAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK);
 
 			// the attachments
 			List attachments = (List) state.getAttribute (ATTACHMENTS);
@@ -3334,6 +3364,7 @@ extends PagedResourceActionII
 					}
 					aPropertiesEdit.addProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE, checkAddDueTime);
 					aPropertiesEdit.addProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE, checkAutoAnnounce);
+					aPropertiesEdit.addProperty (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, addtoGradebook);
 
 					// add the due date to schedule
 					String dueDateScheduled = a.getProperties ().getProperty (NEW_ASSIGNMENT_DUE_DATE_SCHEDULED);
@@ -3479,8 +3510,13 @@ extends PagedResourceActionII
 
 					if (state.getAttribute(STATE_MESSAGE) == null)
 					{
+						String aReference = a.getReference();
+						
 						// add to schedule and announcement is successful
 						AssignmentService.commitEdit (a);
+						
+						// add to Gradebook
+						integrateGradebook(state, aReference, null, Boolean.valueOf(addtoGradebook).booleanValue());
 					}
 					else
 					{
@@ -3631,6 +3667,8 @@ extends PagedResourceActionII
 		String checkAutoAnnounce = (String) state.getAttribute (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE);
 
 		String checkAddHonorPledge = (String) state.getAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE);
+		
+		String addToGradebook = (String) state.getAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK);
 
 		// the attachments
 		List attachments = (List) state.getAttribute (ATTACHMENTS);
@@ -3781,9 +3819,12 @@ extends PagedResourceActionII
 		{
 			aedit.setCloseTime (closeTime);
 		}
-		aedit.getPropertiesEdit ().addProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE, checkAddDueTime);
-		aedit.getPropertiesEdit ().addProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE, checkAutoAnnounce);
-
+		
+		ResourcePropertiesEdit pEdit = aedit.getPropertiesEdit ();
+		pEdit.addProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE, checkAddDueTime);
+		pEdit.addProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE, checkAutoAnnounce);
+		pEdit.addProperty (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, addToGradebook);
+		
 		// the assignment is drafted
 		aedit.setDraft (true);
 
@@ -4002,6 +4043,7 @@ extends PagedResourceActionII
 			state.setAttribute (ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE, a.getProperties ().getProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE));
 			state.setAttribute (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE, a.getProperties ().getProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE));
 			state.setAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE, Integer.toString (a.getContent ().getHonorPledge ()));
+			state.setAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, a.getProperties().getProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK));
 			state.setAttribute (ATTACHMENTS, a.getContent ().getAttachments ());
 		}
 		catch (IdUnusedException e )
@@ -4155,6 +4197,9 @@ extends PagedResourceActionII
 				pEdit.addProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED, Boolean.TRUE.toString());
 
 				AssignmentService.commitEdit (aEdit);
+				
+				// remove from Gradebook
+				integrateGradebook(state, (String) ids.get (i), null, false);
 			}
 			catch (InUseException e)
 			{
@@ -4339,6 +4384,9 @@ extends PagedResourceActionII
 		{
 			// get the assignment
 			Assignment a = AssignmentService.getAssignment (params.getString ("assignmentId"));
+			
+			String aReference = a.getReference();
+			
 			Iterator submissions = AssignmentService.getSubmissions (a);
 			while (submissions.hasNext ())
 			{
@@ -4355,6 +4403,10 @@ extends PagedResourceActionII
 				sEdit.setTimeReturned(null);
 				
 				AssignmentService.commitEdit (sEdit);
+				
+				// add grades into Gradebook
+				integrateGradebook(state, aReference, null, true);
+				
 			}	// while
 		}
 		catch (IdUnusedException e )
@@ -5132,6 +5184,8 @@ extends PagedResourceActionII
 		state.setAttribute (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE, Boolean.FALSE.toString ());
 		// make the honor pledge not include as the default
 		state.setAttribute (NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE, (new Integer (Assignment.HONOR_PLEDGE_NONE)).toString ());
+		
+		state.removeAttribute(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK);
 		
 		state.setAttribute (NEW_ASSIGNMENT_ATTACHMENT, EntityManager.newReferenceList());
 		

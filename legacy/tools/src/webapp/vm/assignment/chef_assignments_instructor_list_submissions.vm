@@ -20,7 +20,12 @@
 	#else
 		<div class="navIntraTool">
 			<a href="$accessPointUrl" title="$!tlang.getString('downall')">$!tlang.getString('downall')</a>
-			#if ($withGrade)| <a href="#toolLinkParam("$action" "doRelease_grades" "assignmentId=$validator.escapeUrl($!assignment.Reference)")" title="$!tlang.getString('relgrad')">$!tlang.getString('relgrad')</a>#end
+			#if ($withGrade)
+				| <a href="#toolLinkParam("$action" "doRelease_grades" "assignmentId=$validator.escapeUrl($!assignment.Reference)")" title="$!tlang.getString('relgrad')">$!tlang.getString('relgrad')</a>
+				#if ($assignment.getContent().getTypeOfGrade() == 3 && $withGradebook)
+					| <a href="#toolLinkParam("$action" "doAdd_to_gradebook" "assignmentId=$validator.escapeUrl($!assignment.Reference)")" title="$!tlang.getString('addtogradebook')">$!tlang.getString('addtogradebook')</a>
+				#end
+			#end
 		</div>
 		<div class="rightNav">
 			<span class="instruction">
