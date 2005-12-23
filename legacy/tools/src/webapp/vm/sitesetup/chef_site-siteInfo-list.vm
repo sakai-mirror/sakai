@@ -17,6 +17,11 @@
 						name="previous" 
 						value="&lt; $tlang.getString("sitegen.siteinfolist.previous1")" 
 						onclick="document.siteForm.option.value='$prevSite.Id';javascript:document.siteForm.submit();" />
+				#else
+					<input type="submit" 
+							name="previous" 
+							value="&lt; $tlang.getString("sitegen.siteinfolist.previous1")" 
+							disabled="disabled" />
 				#end
 				<input type="submit" 
 						name="back" 
@@ -27,6 +32,10 @@
 						name="next" 
 						value="$tlang.getString("sitegen.siteinfolist.next1") &gt;" 
 						onclick="document.siteForm.option.value='$nextSite.Id';javascript:document.siteForm.submit();" />
+				#else
+					<input type="submit" 
+						name="next" 
+						value="$tlang.getString("sitegen.siteinfolist.next1") &gt;" disabled="disabled" />
 				#end
 			</p>		
 		</form>
@@ -176,36 +185,54 @@
 			<div>
 				<div class="rightNav">
 					<span class="instruction">$tlang.getString("sitegen.siteinfolist.view") $topMsgPos - $btmMsgPos $tlang.getString("sitegen.siteinfolist.of") $allMsgNumber $tlang.getString("sitegen.siteinfolist.items")</span>
-					#if ($pagesize != 0)
-						#if ($goPPButton == "true")
-							<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
-								<input type="submit" name="eventSubmit_doList_prev" value="$tlang.getString("sitegen.siteinfolist.previous1") $pagesize" />
+						#if ($pagesize != 0)
+						#if ($goFPButton == "true")
+							<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+								<input type="submit" name="eventSubmit_doList_first" value="|<" title="$tlang.getString("gen.first")" />
 							</form>
 						#else
-							<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
-								<input type="submit" name="eventSubmit_doList_prev" value="$tlang.getString("sitegen.siteinfolist.previous1") $pagesize" disabled="disabled" />
+							<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+								<input type="submit" name="eventSubmit_doList_first" value="|<" disabled="disabled" />
 							</form>
-						#end	
+						#end
+						#if ($goPPButton == "true")
+							<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+								<input type="submit" name="eventSubmit_doList_prev" value="<" title="$tlang.getString('gen.previous') $pagesize" />
+							</form>
+						#else
+							<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+								<input type="submit" name="eventSubmit_doList_prev" value="<" disabled="disabled" />
+							</form>
+						#end
 					#end
-						<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
-							<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
-							<label for="selectPageSize" class="skip">Select page size</label>
-							<select id="selectPageSize" name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
-								#foreach ($i in $!pagesizes)
-									<option value="$i" #if($pagesize == $i) selected="selected" #end>$tlang.getString("sitegen.siteinfolist.show") $i $tlang.getString("sitegen.siteinfolist.itemspage")</option>
-								#end
-							</select>
-						</form>
+					<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
+						<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
+						<label for="selectPageSize" class="skip">Select page size</label>
+						<select id="selectPageSize" name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+							#foreach ($i in $!pagesizes)
+								<option value="$i" #if($pagesize == $i) selected="selected" #end>$tlang.getString("sitegen.siteinfolist.show") $i $tlang.getString("sitegen.siteinfolist.itemspage")</option>
+							#end
+						</select>
+					</form>
 					#if ($pagesize != 0)
 						#if ($goNPButton == "true")
 							<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
-							<input type="submit" name="eventSubmit_doList_next" value="$tlang.getString("sitegen.siteinfolist.next1") $pagesize" />
+								<input type="submit" name="eventSubmit_doList_next" value=">" title="$tlang.getString('gen.next') $pagesize" />
 							</form>
 						#else
 							<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
-								<input type="submit" name="eventSubmit_doList_next" value="$tlang.getString("sitegen.siteinfolist.next1") $pagesize" disabled="disabled" />
+								<input type="submit" name="eventSubmit_doList_next" value=">" disabled="disabled" />
 							</form>
-						#end	
+						#end
+						#if ($goLPButton == "true")
+							<form name="lastpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+								<input type="submit" name="eventSubmit_doList_last" value=">|" title="$tlang.getString('gen.last')" />
+							</form>
+						#else
+							<form name="lastpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+								<input type="submit" name="eventSubmit_doList_last" value=">|" disabled="disabled" />
+							</form>
+						#end
 					#end
 				</div>
 			</div>
