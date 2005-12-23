@@ -41,5 +41,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar"/>
 	<classpathentry kind="src" path="/metaobj"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/sections"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gradebook"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
