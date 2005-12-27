@@ -1049,7 +1049,7 @@ public interface ContentHostingService extends EntityProducer
 	public boolean containsLockedNode(String id);
 
 	/**
-	 * Convenience method that permanently removes any lock associated with id
+	 * Convenience method that permanently removes any lock associated with qualifier
 	 * 
 	 * @param id
 	 */

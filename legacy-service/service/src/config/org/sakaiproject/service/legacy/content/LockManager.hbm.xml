@@ -38,9 +38,12 @@
       from Lock w where asset_id=? and qualifier_id=?
    </query>
 
-
    <query name="getQualifierLocks">
       from Lock w where qualifier_id=?
+   </query>
+
+   <query name="activeByQualifier">
+      from Lock w where is_active=1 and qualifier_id=?
    </query>
 
 

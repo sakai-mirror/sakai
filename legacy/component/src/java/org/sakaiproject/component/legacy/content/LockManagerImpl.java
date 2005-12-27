@@ -138,10 +138,30 @@ public class LockManagerImpl extends HibernateDaoSupport implements LockManager 
      * @see org.sakaiproject.component.legacy.content.LockManagerIntf#removeAllLocks(java.lang.String)
      */
     public void removeAllLocks(String qualifier) {
-        Collection locks = getLocks(qualifier);
+        Collection locks = getQualifierLocks(qualifier);
         if (locks != null) {
             getHibernateTemplate().deleteAll(locks);
         }
     }
+
+   protected Collection getQualifierLocks(String qualifier) {
+      Collection locks = null;
+      if (logger.isDebugEnabled()) {
+          logger.debug("getLocks(" + qualifier + ")");
+      }
+      try {
+          getHibernateTemplate().setCacheQueries(true);
+          locks = getHibernateTemplate().findByNamedQuery("activeByQualifier",
+                  qualifier);
+      } catch (HibernateObjectRetrievalFailureException e) {
+          logger.error("", e);
+          throw new RuntimeException(e);
+      }
+      if (locks == null)
+          return null;
+      if (locks.isEmpty())
+          return null;
+      return locks;
+   }
 
 }
