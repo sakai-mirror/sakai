@@ -42,7 +42,7 @@
 		2. if a given select is empty (has no option children) the resultant xhtml is invalid - we may need to seed it if this is important. This is fairly standard practice and helps to provide a default width to an empty select item (ie: about 12 dashes)
 --%>	
 
-			   <table cellspacing="23" cellpadding="5%">
+			   <table cellspacing="23" cellpadding="5%" class="sidebyside">
     			  <tr>
     			    <td>
     			      <b><h:outputText value="#{msgs.tab_not_vis_inst}"/></b>
