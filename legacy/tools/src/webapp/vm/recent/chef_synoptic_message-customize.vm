@@ -120,13 +120,13 @@
 					<label for="$days_form">
 						$tlang.getString("cus.numpas")
 					</label>
-					<input type="text" id="$days_form"  name="$days_form" value="$days" />
+					<input type="text" id="$days_form"  name="$days_form" value="$days" size="3" />
 				</p>
 				<p class="shorttext">
 					<label for="$items_form">
 						$tlang.getString("cus.numof")  <span style="text-transform:capitalize">$all_items</span>
 					</label>
-					<input type="text" id="$items_form" name="$items_form" value="$items" />
+					<input type="text" id="$items_form" name="$items_form" value="$items" size="3" />
 				</p>
 				
 			#end
