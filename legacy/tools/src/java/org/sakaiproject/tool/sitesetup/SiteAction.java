@@ -3876,14 +3876,27 @@ public class SiteAction extends PagedResourceActionII
 		cleanState(state);
 		
 		List siteTypes = (List) state.getAttribute(STATE_SITE_TYPES);
-		if ((siteTypes != null) && siteTypes.size() == 1)
+		if (siteTypes != null)
 		{
-			// skip the page of choosing site type
-			setNewSiteType(state, (String) siteTypes.get(0));
-		}
-		else
-		{
-			state.setAttribute (STATE_TEMPLATE_INDEX, "1");
+			if (siteTypes.size() == 1)
+			{
+				String siteType = (String) siteTypes.get(0);
+				if (!siteType.equals(ServerConfigurationService.getString("courseSiteType", "")))
+				{
+					// if only one site type is allowed and the type isn't course type
+					// skip the select site type step
+					setNewSiteType(state, siteType);
+					state.setAttribute (STATE_TEMPLATE_INDEX, "2");
+				}
+				else
+				{
+					state.setAttribute (STATE_TEMPLATE_INDEX, "1");
+				}
+			}
+			else
+			{
+				state.setAttribute (STATE_TEMPLATE_INDEX, "1");
+			}
 		}
 		
 	}	// doNew_site
