@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springkernel.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="org.sakaiproject.api.kernel.id.IdManager"
+			class="org.sakaiproject.component.kernel.id.UuidV4IdComponent"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+	</bean>
+
+	<bean id="org.sakaiproject.api.kernel.thread_local.ThreadLocalManager"
+			class="org.sakaiproject.component.kernel.thread_local.ThreadLocalComponent"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+	</bean>
+
+	<!-- register one component to be both the ToolManager and the ActiveToolManager -->
+	<bean id="org.sakaiproject.api.kernel.tool.ActiveToolManager"
+			name="org.sakaiproject.api.kernel.tool.ToolManager org.sakaiproject.api.kernel.tool.ActiveToolManager"
+			class="org.sakaiproject.component.kernel.tool.ActiveToolComponent"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="threadLocalManager"><ref bean="org.sakaiproject.api.kernel.thread_local.ThreadLocalManager"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.api.kernel.session.SessionManager"
+			class="org.sakaiproject.component.kernel.session.SessionComponent"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="idManager"><ref bean="org.sakaiproject.api.kernel.id.IdManager"/></property>
+		<property name="threadLocalManager"><ref bean="org.sakaiproject.api.kernel.thread_local.ThreadLocalManager"/></property>
+		<property name="inactiveInterval"><value>1800</value></property>
+		<property name="checkEvery"><value>60</value></property>
+	</bean>
+
+	<bean id="org.sakaiproject.api.kernel.function.FunctionManager"
+			class="org.sakaiproject.component.kernel.function.FunctionManagerComponent"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+	</bean>
+
+</beans>

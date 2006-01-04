@@ -1,0 +1,9 @@
+hibernate.connection.driver_class=com.mysql.jdbc.Driver
+hibernate.connection.url=jdbc:mysql://yourhost.stanford.edu:3306/yourdatabase?useUnicode=true&amp;characterEncoding=UTF-8
+hibernate.connection.username=yourname
+hibernate.connection.password=yourpassword
+hibernate.dialect=net.sf.hibernate.dialect.MySQLDialect
+hibernate.show_sql=false
+hibernate.hbm2ddl.auto=update
+#hibernate.cache.provider_class=net.sf.hibernate.cache.EhCacheProvider
+database.jar=mysql-connector-java-3.1.7-bin.jar
