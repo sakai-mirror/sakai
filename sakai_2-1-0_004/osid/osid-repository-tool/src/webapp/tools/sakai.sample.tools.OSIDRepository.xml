@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.sample.tools.OSIDRepository"
+			title="Sample use of RepositoryManager Component"
+			description="Display registered Repositories and Search.">
+
+		<configuration name="integration.property.size" value="[size here]" />
+		<configuration name="integration.property.level" value="[level here]" />
+		<configuration name="integration.property.fn" value="file_name.txt" />
+
+                <category name="sakai.test" />
+
+		<keyword name="OSIDRepository" />
+
+	</tool>
+
+</registration>

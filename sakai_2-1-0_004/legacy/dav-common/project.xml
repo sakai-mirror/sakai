@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<extend>../../master/project.xml</extend>
+	<name>Sakai Dav (common)</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-dav-common</id>
+	<currentVersion>${sakai.version}</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+
+	<properties>
+		<!-- deploy as a jar -->
+		<deploy.type>jar</deploy.type>
+		<!-- deploy to "shared", "common" or "server" -->
+		<deploy.target>common</deploy.target>
+	</properties>
+
+	<dependencies>
+	</dependencies>
+
+	<build>
+
+		<!-- java source -->
+		<sourceDirectory>src/java</sourceDirectory>
+
+		<!-- other resources for the jar - the message bundles -->
+		<resources>
+			<resource>
+				<directory>${basedir}/src/bundle</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	
+	</build>
+
+</project>

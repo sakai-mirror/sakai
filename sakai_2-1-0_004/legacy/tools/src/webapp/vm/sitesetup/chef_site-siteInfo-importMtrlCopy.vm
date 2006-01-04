@@ -1,0 +1,67 @@
+##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/sitesetup/chef_site-siteInfo-importMtrlCopy.vm,v 1.2 2005/06/06 20:06:02 htripath.indiana.edu Exp $ -->
+## Might want to get these dynamically 
+<div class="portletBody">
+	##if($menu)#toolbar($menu)#end<br/><br/>
+	#if ($alertMessage)
+		<div class="alertMessage">$tlang.getString("sitinfimp.alert") $validator.escapeHtml($alertMessage)</div>
+		<div style="display:block;clear:both"></div>
+	#end
+	<h3>
+	Copy Materials from Other Sites
+	</h3>
+	<p class="step">
+	Choose material to copy this site.
+	</p>
+	<p class="instruction">
+	You can choose to re-use (copy) materials from other sites that you own. 
+	If you choose to import materials from a file, you may only copy materials from one site. 
+	All materials are copied, and all dates for such items as schedule entries are not updated.
+	</p>
+	<form name="featuresForm" action="#toolForm("$action")" method="post" >
+
+	  <br>
+	  #if (($allZipSites.size()>0) ||($finalZipSites.size()>0)) 
+	  <table width="90%" border=0 align=center cellpadding=0 cellspacing=0>
+	  	<tr>
+	  		<td width="35%" align="left">
+	  		Copy this existing material...
+	  		<br>
+					<select name="addImportSelected" class="indnt2" size="10" multiple="multiple" STYLE="width: 150px;">
+						#foreach($item in $allZipSites)
+							<option value ="$item.getId()"> $item.getLegacyTool() </option>
+						#end
+					</select>
+				<br>	
+				</td>    
+				
+				<td width="15%" align="left">		
+				<strong>Move</strong>
+				<br>
+				<input type="submit" class= "active" name="eventSubmit_doAdd_MtrlSite" value=">" />	
+				<br><br>
+				<input type="submit" class= "active" name="eventSubmit_doRemove_MtrlSite" value="<" />
+				</td>
+				
+				<td width="30%">
+				...into my current site
+	  		<br>
+					<select name="removeImportSelected" class="indnt2" size="10" multiple="multiple" STYLE="width: 150px;">
+					#foreach($item in $finalZipSites)
+						<option value ="$item.getId()"> $item.getLegacyTool() </option>
+					#end
+					</select>
+				<br>
+			</tr>
+		</table>
+		#end
+		<input type="hidden" name="template-index" value="45" />
+		<input type="hidden" name="back" value="45" />
+		
+		<p class="act">
+			<input type="submit" class="active" name="eventSubmit_doCopyMtrlSite" value="Copy Materials" />
+			<input type="submit" class="active" name="eventSubmit_doCancel" value="Cancel" />
+		</p>
+		
+					
+	</form>
+</div>
