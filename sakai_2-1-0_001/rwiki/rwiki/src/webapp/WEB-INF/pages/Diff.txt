@@ -1,0 +1,1 @@
+{generate-diff:name=$name|left=$left|right=$right}

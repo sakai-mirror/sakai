@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+  default="deploy"
+  xmlns:ant="jelly:ant"
+  xmlns:j="jelly:core">
+
+<!--  Make sure a flag variable is set when building inside Sakai -->
+<goal name="sakai:sakai.clean">
+  <j:set var="sakaiDeployIntegrated" value="true" />
+  <attainGoal name="clean:clean" />
+</goal>
+
+<goal name="sakai:sakai.build">
+  <j:set var="sakaiDeployIntegrated" value="true" />
+  <attainGoal name="war:install" />
+</goal>
+
+<postGoal name="war:webapp">
+  <!-- includes *.hbm.xml, *.properties, *.xml which live among the code -->
+  <copy todir="target/samigo/WEB-INF/classes" includeemptydirs="false"
+    verbose="false">
+    <fileset dir="src/java">
+      <exclude name="**/*.java" />
+    </fileset>
+  </copy>
+  <j:if test="${sakaiDeployIntegrated}">
+    <!--  Copy the Sakai-Samigo webapp integration files  -->
+    <copy todir="target/samigo" includeemptydirs="false"
+      verbose="false" overwrite="true">
+      <fileset dir="sakai-samigo/webapp">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+  </j:if>
+
+  <!--  Copy dependencies into the webapp based on the deploy.type of the dependency -->
+  <j:choose>
+    <j:when test="${sakaiDeployIntegrated}">
+      <j:set var="deployType" value="integrated" />
+    </j:when>
+    <j:otherwise>
+      <j:set var="deployType" value="standalone" />
+    </j:otherwise>
+  </j:choose>
+  <j:forEach var="lib" items="${pom.artifacts}">
+    <j:set var="dep" value="${lib.dependency}" />
+    <j:if test="${dep.getProperty('war.bundle')==deployType}">
+      <ant:copy todir="${maven.war.webapp.dir}/WEB-INF/lib"
+        file="${lib.path}" overwrite="true" verbose="true" />
+    </j:if>
+  </j:forEach>
+</postGoal>
+
+<preGoal name="clean">
+  <j:if test="${sakaiDeployIntegrated != true}">
+    <attainGoal name="undeploy" />
+  </j:if>
+</preGoal>
+
+<goal name="undeploy">
+  <!--  Delete Samigo from tomcat's webapps directory -->
+  <delete dir="${maven.tomcat.home}/webapps/samigo" />
+  <delete>
+    <fileset dir="${maven.tomcat.home}/webapps">
+      <include name="samigo.war" />
+    </fileset>
+  </delete>
+
+</goal>
+
+<goal name="deploy">
+  <ant:echo>deploy - SAMIGO STANDALONE</ant:echo>
+  <attainGoal name="clean" />
+  <attainGoal name="war:install" />
+
+  <!--  Copy Samigo to tomcat's webapps directory -->
+  <copy todir="${maven.tomcat.home}/webapps" filtering="false"
+    preservelastmodified="true" overwrite="true">
+    <fileset dir="target">
+      <include name="samigo.war" />
+    </fileset>
+  </copy>
+</goal>
+</project>

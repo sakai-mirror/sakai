@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="rwiki/src/java"/>
+	<classpathentry kind="src" path="rwiki-service/src/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="radeox/src"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="radeox/lib/picocontainer.jar"/>
+	<classpathentry kind="lib" path="radeox/lib/groovy.jar"/>
+	<classpathentry kind="lib" path="radeox/lib/junitperf.jar"/>
+	<classpathentry kind="lib" path="radeox/lib/junit.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/jrcs/jars/diff-1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.3.jar"/>
+	<classpathentry sourcepath="JAVA_DIR/spring-framework-1.1.5/src" kind="var" path="MAVEN_REPO/springframework/jars/spring-1.1.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-service-TRUNK.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-thread_local-TRUNK.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-session-TRUNK.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-tool-TRUNK.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-component-TRUNK.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar"/>
+	<classpathentry kind="src" path="rwiki/src/test"/>
+	<classpathentry kind="src" path="rwiki-service/src/test"/>
+	<classpathentry kind="var" path="MAVEN_REPO/easymock/jars/easymock-1.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-function-TRUNK.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

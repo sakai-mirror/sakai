@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="sakai:build"
+	xmlns:j="jelly:core">
+
+	<goal name="javadoc">
+		<j:set var="goal" value="javadoc" />
+		<attainGoal name="multiproject:goal" />
+	</goal>
+
+	<goal name="load-full">
+		<j:set var="goal" value="load-full" />
+		<j:set var="maven.multiproject.includes" value="tool/project.xml" />
+		<attainGoal name="multiproject:goal" />
+	</goal>
+
+</project>

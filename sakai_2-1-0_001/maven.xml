@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xmlns:j="jelly:core"
+	xmlns:license="license"
+	xmlns:util="jelly:util"
+	xmlns:ant="jelly:ant"
+	xmlns:artifact="artifact"
+	xmlns:maven="jelly:maven"
+	default="sakai:build">
+
+	<goal name="pack-demo"  description="package the sakai demo">
+
+		<attainGoal name="sakai:clean" />
+		<attainGoal name="sakai:build" />
+
+		<!-- clear the deploy area -->
+		<delete dir="${basedir}/target/demo/"/>
+		
+		<!-- expand the tomcat 5.5.9 zip from the repo into the target -->
+		<ant:unzip src="${maven.repo.local}/tomcat/zips/jakarta-tomcat-5.5.9.zip"
+					dest="${basedir}/target/demo/"
+					overwrite="true" />
+
+		<!-- expand the tomcat 5.5.9 compat into the target -->
+		<ant:unzip src="${maven.repo.local}/tomcat/zips/jakarta-tomcat-compat-5.5.9.zip"
+					dest="${basedir}/target/demo/"
+					overwrite="true" />
+
+		<!-- deploy sakai to this area -->
+		<j:set var="maven.tomcat.home" value="${basedir}/target/demo/jakarta-tomcat-5.5.9/" />
+		<attainGoal name="sakai:deploy" />
+
+		<!-- add in demo stuff -->
+		<copy file="${basedir}/demo/sakai.properties" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/sakai/sakai.properties" />
+		<copy file="${basedir}/demo/toolOrder.xml" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/sakai/toolOrder.xml" />
+		<copy file="${basedir}/demo/readme.txt" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/demo_readme.txt" />
+		<copy file="${basedir}/docs/readme_java.txt" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/java_readme.txt" />
+		<copy file="${basedir}/docs/readme_2-0-0.txt" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/sakai_readme.txt" />
+		<copy todir="${basedir}/target/demo/jakarta-tomcat-5.5.9/licenses/">
+			<fileset dir="${basedir}/licenses">
+				<exclude name="CVS/**"/>
+			</fileset>
+		</copy>
+		<delete file="${basedir}/target/demo/jakarta-tomcat-5.5.9/licenses/.project" />
+		<ant:copy file="${basedir}/sakai_license_1_0.txt" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/sakai_license_1_0.txt" overwrite="true" />
+		<ant:copy file="${basedir}/sakai_license_1_0.html" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/sakai_license_1_0.html" overwrite="true" />
+
+		<!-- custom Tomcat mods -->
+		<copy file="${basedir}/demo/index.html" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/webapps/ROOT/index.html" />
+		<copy overwrite="true"
+				file="${basedir}/target/demo/jakarta-tomcat-5.5.9/conf/server.xml"
+				tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/conf/server-orig.xml" />
+		<copy overwrite="true"
+				file="${basedir}/target/demo/jakarta-tomcat-5.5.9/conf/server-orig.xml"
+				tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/conf/server.xml" >
+			<filterset
+					begintoken="maxHttpHeaderSize"
+					endtoken="&quot;8192&quot;">
+				<filter token="=" value="maxHttpHeaderSize=&quot;8192&quot; URIEncoding=&quot;UTF-8&quot;"/>
+			</filterset>
+		</copy>
+
+		<!-- zip it -->
+		<delete file="sakai-demo.zip" />
+		<zip destfile="sakai-demo.zip" compress="yes" >
+			<zipfileset dir="${maven.tomcat.home}" prefix="sakai-demo" />
+		</zip>
+		<ant:echo>* * * sakai-demo.zip</ant:echo>
+
+		<!-- tar it -->
+		<delete file="sakai-demo.tar" />
+		<delete file="sakai-demo.tar.gz" />
+		<tar destfile="sakai-demo.tar" longfile="gnu" >
+			<tarfileset dir="${maven.tomcat.home}" mode="755" prefix="sakai-demo">
+				<include name="bin/*.sh"/>
+			</tarfileset>
+			<tarfileset dir="${maven.tomcat.home}" prefix="sakai-demo">
+				<exclude name="bin/*.sh"/>
+			</tarfileset>
+		</tar>
+		<gzip zipfile="sakai-demo.tar.gz" src="sakai-demo.tar"/>
+		<delete file="sakai-demo.tar" />
+		<ant:echo>* * * sakai-demo.tar.gz</ant:echo>
+
+		<delete dir="${basedir}/target/demo"/>
+	</goal>
+
+	<goal name="pack-src"  description="package the sakai source">
+
+		<zip destfile="sakai-src.zip" compress="yes" >
+			<zipfileset dir="." prefix="sakai-src" excludes="CVS/**,**/target/**,**/bin/**,sakai*.zip,sakai*.tar.gz" />
+		</zip>
+		<ant:echo>* * * sakai-src.zip</ant:echo>
+
+		<tar destfile="sakai-src.tar" longfile="gnu" >
+			<tarfileset dir="." prefix="sakai-src" excludes="CVS/**,**/target/**,**/bin/**,sakai*.zip,sakai*.tar.gz" />
+		</tar>
+		<gzip zipfile="sakai-src.tar.gz" src="sakai-src.tar"/>
+		<delete file="sakai-src.tar" />
+		<ant:echo>* * * sakai-src.tar.gz</ant:echo>
+
+	</goal>
+
+</project>
