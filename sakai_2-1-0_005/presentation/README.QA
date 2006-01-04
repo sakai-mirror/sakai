@@ -1,0 +1,123 @@
+This is a simple test plan for the Presentation Tool.  This assumes that you are familiar
+with Sakai and its administration.  See the known issues section at the end.
+
+Note that for most sites, this tool does *not* show up in Worksite Setup.  It
+must be added using the administrator interface.  Sites may choose to add it
+to worksite setup once the tool is evaluated.  This is a way to rool out a tool to 
+a limited set of users for evaluaiton before making it wiely available.
+
+Login as admin
+Create a site with WorkSite Setup adding a Resources tool 
+Modify the site to allow access to all authorized users
+
+Use the Sites tool to add a Presentation tool to the site.
+
+In admin's My Workspace select the "Sites" tool.
+
+Click on the site to enter the site.
+Scroll down and click on Pages.
+Add a new Page by pressing "New Page" at the top.
+Give the page a name (button text) such as "Presentations" and press "Tools"
+Press "New Tool"
+Find the radio button for Presentations (alphabetical order)
+Go to the vary bottom and press "Save" under "complete Site Edit"
+
+Now navigate to the newly created site.
+
+First we test that it handles the lack of presentations.
+
+Go to the site and press Presentation.  
+Press Refresh - It should say Presentations folder does not exist.
+Press Refresh again
+Press Help - read for typos
+Press Done
+
+Go to Resources and make a folder called Presentations
+
+Go back to Presentation Tool and press Refresh - should say nothing
+
+Go back to Resources and into Presentations folder.
+
+Make a sub folder called One
+
+Go back to Presentations and press Refresh - should still show nothing
+because there is one presentation and it is empty.
+
+Go back to Resources and upload an image file into Presentations/One
+
+Go back to Presentations and press Refresh.  You should see one presentation
+with one Slide.
+
+Press View.  In View Mode, press next and back and then done.
+Next does nothing at the end and back does nothing at the beginning.
+
+Go back to resources and then upload two more files.
+
+Go back to Presentations and press Refresh - You will see 3 slides.
+
+Press View, Next, and Back to test.
+
+Open another browser - preferable a different kind of browser, not just a new
+window.
+
+In the new browser, create a new User and have that user join the group.
+
+Press Presentation as the non-maintain user.  You will not see the show 
+button and the Join button should not be there.
+
+As maintain, press Show.  It should be like a view, press 
+next to get to the second slide.
+
+As Access, press Refresh.  The modified date should appear and the Join button
+should be available.
+
+As Access, press Join.  You should go to slide 2 directly.
+
+As Maintain, press Next, you should go to slide 3.
+
+Watch access for 30 seconds without pressing any buttons - slide 3 should appear 
+after a refresh.
+
+As Access press Refresh - the same image should reappear.
+
+As Access, press View.  Should switch to a view mode with Back and Next 
+buttons - Navigate back and forth.  There should always be a Join button
+in the menu bar.  Navigate to Slide 1, and then Press Join.  You should immediately
+see slide 3.
+
+As Access go back to View Mode.
+
+As Maintain, press Stop Show.  You should see the list of presentations,
+the date should be updated, and the Join button should not be present.
+
+As Access, press the Next or Previous buttons.  The Join button should 
+disappear.  navigate back and forth in the slides and make sure that the 
+Join button does not appear.
+
+As Maintain, press Show and navigate to Slide 2.
+
+As Access, navigate to Slide 1 - The Join button should reappear on the
+first slide change.  Then press Join.  You should be switched to Join mode
+and placed at slide 2.
+
+As Maintain, press Back (to Slide 1).
+
+Again watch Access for 30 seconds and insure that it goes back to Slide 1 as well.
+
+As Maintain, press Stop Show.
+
+As Access, press Refresh - You should stay on the same slide (i.e. not blow us).
+
+As Access press Exit.  The Join button should not be present.
+
+KNOWN ISSUES
+
+There is no check to insure that a file is really an image file.  Files like PDFs
+or word documents will appear as broken links on the View/Show/Watch pages.
+
+Yes, the refresh is annoying, in a future version, we can use the courier to 
+do auto refresh on the main and viewing screens - but that will take some time.
+
+-- Charles Severance and Mark Norton 12/17/2004
+
+

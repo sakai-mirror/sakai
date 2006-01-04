@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.sample.tools.browser"
+			title="Browser"
+			description="A browser sample tool.">
+
+		<configuration name="a" value="1" />
+		<configuration name="b" value="2" />
+		<configuration name="test" value="reg-value" />
+
+		<category name="sakai.sample" />
+
+		<keyword name="sample" />
+		<keyword name="browser" />
+
+	</tool>
+
+</registration>

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- 
+	Define a separate Realm for WSRP Producer. This is to support authentication of WSRP Consumer Portal 
+	rather than the authentication of each end-user that the consumer portal acts on behalf of.
+	
+	Since the WSRP Consumer is being authenticated, it doesn't necessarily make sense to map it to 
+	a normal Sakai user (who are likely to be end-users). Hence, a separate file is created here
+	that can be populated with username/passwords of trusted WSRP consumers.
+	
+	To enable authentication, you MUST enable the <security-constraint> in web.xml, which is
+	disabled by default.
+	
+	Ofcourse, you can always change the realm implementation class to leverage your own or one
+	of the other standard Realm implementations provided by the app server (tomcat).
+	
+-->
+<Context path="/sakai-wsrp-producer" docBase="sakai-wsrp-producer">
+	<Realm className="org.apache.catalina.realm.MemoryRealm" debug="1"
+		pathname="webapps/sakai-wsrp-producer/WEB-INF/trusted-consumers.xml" />
+</Context>

@@ -1,0 +1,24 @@
+The following revisions were NOT applied from the trunk to the 2.1 branch:
+
+------------------------------------------------------------------------
+r4032 | john.ellis@rsmart.com | 2005-11-20 12:55:28 -0500 (Sun, 20 Nov 2005) | 4 lines
+
+http://bugs.sakaiproject.org/jira/browse/SAK-2882
+SAK-2882
+added a role flag to the agent interface
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4041 | jimeng@umich.edu | 2005-11-20 21:42:51 -0500 (Sun, 20 Nov 2005) | 4 lines
+
+SAK-2885
+Adding other open-source JavaScript-based WYSIWYG editors.
+Add support to switch from one editor to another by changing a value in sakai.properties.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4056 | lance@indiana.edu | 2005-11-21 09:40:50 -0500 (Mon, 21 Nov 2005) | 2 lines
+
+Removed \\ directory which was causing checkouts to fail for Windows machines.
+------------------------------------------------------------------------
+
