@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>CruiseControl Configuration</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-cruisecontrol</id>
+	<currentVersion>TRUNK</currentVersion>
+	<organization>
+		<name>University of Michigan</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2003</inceptionYear>
+	<description>
+		This Maven project implements the CruiseControl build loop.
+		Its just a simple Maven script that downloads the latest
+		source, and builds it from scratch.
+	</description>
+	<properties>
+	</properties>
+
+	<dependencies>
+
+		<!-- SVN  plugin -->
+		 
+		<dependency>
+			<groupId>maven</groupId>
+			<artifactId>maven-scm-plugin</artifactId>
+			<version>1.5</version>
+			<type>plugin</type>
+		</dependency>
+		
+	</dependencies>
+
+	<build>
+
+	</build>
+
+</project>

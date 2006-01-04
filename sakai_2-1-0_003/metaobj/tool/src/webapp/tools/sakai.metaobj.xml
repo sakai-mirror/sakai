@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool id="sakai.metaobj" title="Meta Object" description="Sakai Meta Object Tool">
+       <configuration name="test" value="reg-value" />
+
+       <category name="sakai.main" />
+
+       <keyword name="structured" />
+       <keyword name="artifact"/>
+       <keyword name="definition" />
+       
+       <configuration name="theospi.resetUrl"
+            value="listStructuredArtifactDefinitions.osp" />
+       
+	</tool>
+
+</registration>
