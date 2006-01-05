@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.PropertyResourceBundle;
 
 import junit.framework.TestCase;
@@ -39,7 +38,23 @@ import org.sakaiproject.api.kernel.component.ComponentManager;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
-public class SakaiTestBase extends TestCase {
+/**
+ * An extension of JUnit's TestCase that launches the Sakai component manager.
+ * Extend this class to run tests in a simulated Sakai environment.
+ * 
+ * <p>
+ * <strong>NOTE:</strong>
+ * Starting the component manager is an expensive operation, since it loads all
+ * of the service implementations in the system, including database connection
+ * pools, hibernate mappings, etc.  To run a test suite, please collect all tests
+ * into a single class rather than running a variety of individual test cases.
+ * @see org.sakaiproject.test.SakaiIntegrationTest
+ * </p>
+ * 
+ * @author <a href="mailto:jholtzman@berkeley.edu">Josh Holtzman</a>
+ *
+ */
+public abstract class SakaiTestBase extends TestCase {
 	private static final Log log = LogFactory.getLog(SakaiTestBase.class);
 
 	protected static ComponentManager compMgr;
@@ -106,7 +121,7 @@ public class SakaiTestBase extends TestCase {
 	}
 	
 	/**
-	 * Gets a service bean from the Sakai component manager.
+	 * Convenience method to get a service bean from the Sakai component manager.
 	 * 
 	 * @param beanId The id of the service
 	 * 
@@ -117,7 +132,8 @@ public class SakaiTestBase extends TestCase {
 	}
 
 	/**
-	 * Sets the current user in sakai
+	 * Convenience method to set the current user in sakai.  By default, the user
+	 * is admin.
 	 * 
 	 * @param userUid The user to become
 	 */
@@ -127,11 +143,12 @@ public class SakaiTestBase extends TestCase {
 	}
 	
 	/**
-	 * Creates a somewhat unique site id for testing
+	 * Convenience method to create a somewhat unique site id for testing.  Useful
+	 * in tests that need to create a site to run tests upon.
 	 * 
-	 * @return
+	 * @return A string suitable for using as a site id.
 	 */
 	protected String generateSiteId() {
-		return "site-" + getClass().getName() + "-" + new Date().getTime();
+		return "site-" + getClass().getName() + "-" + Math.floor(Math.random()*100000);
 	}
 }
