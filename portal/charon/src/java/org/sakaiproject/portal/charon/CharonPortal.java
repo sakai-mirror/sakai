@@ -83,6 +83,11 @@ public class CharonPortal extends HttpServlet
 	/** Session attribute root for storing a site's last page visited - just append the site id. */
 	protected static final String ATTR_SITE_PAGE = "sakai.portal.site.";
 
+	/** Parameter value to allow anonymous users of gallery mode to be sent to 
+	    the gateway site as anonymous user (like the /portal URL)
+	    instead of making them log in (like worksite, site, and tool URLs). */
+	protected static final String PARAM_FORCE_LOGIN = "force.login";
+
 	/** ThreadLocal attribute set while we are processing an error. */
 	protected static final String ATTR_ERROR = "org.sakaiproject.portal.error";
 
@@ -164,6 +169,12 @@ public class CharonPortal extends HttpServlet
 		{
 			if (session.getUserId() == null)
 			{
+				String forceLogin = req.getParameter(PARAM_FORCE_LOGIN);
+				if ( forceLogin == null || "yes".equalsIgnoreCase(forceLogin) || "true".equalsIgnoreCase(forceLogin) )
+				{
+					doLogin(req, res, session, req.getPathInfo(), false);
+					return;
+				}
 				siteId = ServerConfigurationService.getGatewaySiteId();
 			}
 			else
@@ -251,7 +262,11 @@ public class CharonPortal extends HttpServlet
 		// start the response
 		PrintWriter out = startResponse(res, "Site Navigation", skin);
 
-		includeTabs(out, req, session, siteId, "gallery", true);
+		// Remove the logout button from gallery since it is designed to be included within
+		// some other application (like a portal) which will want to control logout.
+
+		// includeTabs(out, req, session, siteId, "gallery", true);
+		includeTabs(out, req, session, siteId, "gallery", false);
 
 		// end the response
 		endResponse(out);
@@ -619,7 +634,8 @@ public class CharonPortal extends HttpServlet
 			boolean skipContainer) throws IOException
 	{
 		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
-		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
+		// if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
+		if ( returnPath != null)
 		{
 			// where to go after
 			session.setAttribute(Tool.HELPER_DONE_URL, Web.returnUrl(req, returnPath));
@@ -637,7 +653,15 @@ public class CharonPortal extends HttpServlet
 	protected void doLogout(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath) throws IOException
 	{
 		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
-		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
+		
+		// If caller "knows" where we are supposed to go to after logout, lets go there
+		if ( returnPath != null)
+		{
+			// where to go after
+			session.setAttribute(Tool.HELPER_DONE_URL, Web.returnUrl(req, returnPath));
+		}
+		else
+		// Use the default system-wide logout URL
 		{
 			// where to go after
 			String loggedOutUrl = ServerConfigurationService.getLoggedOutUrl();
