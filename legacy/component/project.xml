@@ -161,7 +161,21 @@
 	        <artifactId>jgroups</artifactId>
 		    <version>2.2.8</version>
         </dependency>
-						
+		
+		<!-- needed for newservice -->	
+		<dependency>
+			<groupId>rome</groupId>
+			<artifactId>rome</artifactId>
+			<version>0.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.0</version>
+		</dependency>
+				
+							
 		<!-- fop: fop, avalon-framework, xercesImpl, xmlParserAPIs, batik -->
 		<dependency>
 			<groupId>fop</groupId>

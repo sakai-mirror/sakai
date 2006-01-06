@@ -33,6 +33,17 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import java.net.URL;
+import java.text.DateFormat;
+import java.util.Date;
+import java.io.InputStreamReader;
+import com.sun.syndication.feed.synd.SyndFeed;
+import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.synd.SyndImage;
+import com.sun.syndication.io.SyndFeedInput;
+import com.sun.syndication.io.XmlReader;
+
+
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.MemoryService;
@@ -414,22 +425,19 @@ public class BasicNewsService implements NewsService
 		// get the file, parse it and cache it
 		// throw NewsConnectionException if unable to get file
 		// throw NewsFormatException if file is in wrong format
+		// updated to use ROME syndication api
 		private void initChannel(String source) throws NewsConnectionException, NewsFormatException
-		{
-			Document document = null;
+		{	
+			SyndFeed feed = null;	
+			
+			
+			//Document document = null;
 			try
 			{
-				// parse the content, save header info and add items to m_items
-				URL url = new URL(source);
-				DocumentBuilderFactory docfactory = DocumentBuilderFactory.newInstance();
-				docfactory.setValidating(false);
-				DocumentBuilder parser = docfactory.newDocumentBuilder();
-				InputSource insource = new InputSource(url.toExternalForm());
-				insource.setEncoding("UTF-8");
-
-				// if insource is not XML, parser may print error message to console
-				// before throwing exception -- Needs to be fi6xed %%%%%%%%%
-				document = parser.parse(insource);
+				
+				URL feedUrl = new URL(source);
+				SyndFeedInput input = new SyndFeedInput();
+				feed = input.build(new XmlReader(feedUrl));
 			}
 			catch (MalformedURLException e)
 			{
@@ -444,106 +452,80 @@ public class BasicNewsService implements NewsService
 			}
 			catch (Exception e)
 			{
-				if (m_logger.isDebugEnabled())
-						m_logger.debug(this + ".initChannel(" + source + ") constructor: couldn't parse: " + e.getMessage());
+				m_logger.info(this + ".initChannel(" + source + ") constructor: couldn't parse: " + e.getMessage());
 				throw new NewsConnectionException("Unable to interpret news feed from " + source);
 			}
 
-			if (document.equals(null))
-			{
-				if (m_logger.isDebugEnabled()) m_logger.debug(this + ".initChannel(" + source + ") constructor: null document");
-				throw new NewsFormatException("File received from \"" + source + "\" is not in RSS format");
-			}
-
-			Node channel = null;
-
-			NodeList list = document.getElementsByTagName("channel");
-
-			if (list.getLength() != 1)
-			{
-				throw new NewsFormatException("File received from " + source + " is not in RSS format");
-			}
-
-			channel = list.item(0);
-
-			Node titlenode = getNode(channel, "title");
-
-			if (titlenode == null)
-			{
-				throw new NewsFormatException("File received from " + source + " is not in RSS format");
-			}
-			else
-			{
-				m_title = titlenode.getFirstChild().getNodeValue();
-			}
-
+			
+			m_title = feed.getTitle();
 			m_source = source;
-			m_description = getNodeValue(channel, "description", null);
+			m_description = feed.getDescription();
 			m_description = Validator.stripAllNewlines(m_description);
 
-			m_lastbuilddate = getNodeValue(channel, "lastBuildDate", null);
+			
+			m_lastbuilddate = "";
+			m_pubdate = "";
+			Date pubdate = feed.getPublishedDate();
+			if(pubdate != null){
+				m_pubdate = DateFormat.getDateInstance().format(pubdate);
+				m_lastbuilddate = m_pubdate;
+			}
+			m_pubdate = Validator.stripAllNewlines(m_pubdate);
 			m_lastbuilddate = Validator.stripAllNewlines(m_lastbuilddate);
 
-			m_pubdate = getNodeValue(channel, "pubDate", null);
-			m_pubdate = Validator.stripAllNewlines(m_pubdate);
-
-			m_copyright = getNodeValue(channel, "copyright", null);
+			m_copyright = feed.getCopyright();
 			m_copyright = Validator.stripAllNewlines(m_copyright);
 
-			m_language = getNodeValue(channel, "language", null);
+			m_language = feed.getLanguage();
 			m_language = Validator.stripAllNewlines(m_language);
 
-			m_link = getNodeValue(channel, "link", null);
+			m_link = feed.getLink();
 			m_link = Validator.stripAllNewlines(m_link);
 
-			// image
-			NodeList imageList = document.getElementsByTagName("image");
-			Node image = null;
-
-			if (imageList.getLength() == 1)
-			{
-				image = imageList.item(0);
-
-				m_imageLink = getNodeValue(image, "link", null);
+			SyndImage image = feed.getImage();
+			if(image != null){
+				m_imageLink = image.getLink();
 				m_imageLink = Validator.stripAllNewlines(m_imageLink);
 
-				m_imageTitle = getNodeValue(image, "title", null);
+				m_imageTitle = image.getTitle();
 				m_imageTitle = Validator.stripAllNewlines(m_imageTitle);
 
-				m_imageUrl = getNodeValue(image, "url", null);
+				m_imageUrl = image.getUrl();
 				m_imageUrl = Validator.stripAllNewlines(m_imageUrl);
 
-				m_imageHeight = getNodeValue(image, "height", null);
-				m_imageHeight = Validator.stripAllNewlines(m_imageHeight);
+				
+				m_imageHeight = "";
 
-				m_imageWidth = getNodeValue(image, "width", null);
-				m_imageWidth = Validator.stripAllNewlines(m_imageWidth);
-
-				m_imageDescription = getNodeValue(image, "description", null);
+				m_imageWidth = "";
+				
+				m_imageDescription = image.getDescription();
 				m_imageDescription = Validator.stripAllNewlines(m_imageDescription);
+				
 			}
-
-			// docs??
 			// others??
 			m_items = new Vector();
 
-			NodeList items = document.getElementsByTagName("item");
+			List items = feed.getEntries();
 
-			for (int i = 0; i < items.getLength(); ++i)
+			for (int i = 0; i < items.size(); ++i)
 			{
-				String iTitle = getNodeValue(items.item(i), "title", null);
+				SyndEntry entry = (SyndEntry)items.get(i);
+				
+				String iTitle = entry.getTitle();
 				iTitle = Validator.stripAllNewlines(iTitle);
 
-				String iDescription = getNodeValue(items.item(i), "description", null);
+				String iDescription = entry.getDescription().getValue();
 				iDescription = getSafeHtml(iDescription);
 				iDescription = Validator.stripAllNewlines(iDescription);
 		
-				String iLink = getNodeValue(items.item(i), "link", null);
+				String iLink = entry.getLink();
 				iLink = Validator.stripAllNewlines(iLink);
-
-				String iPubDate = getNodeValue(items.item(i), "pubDate", null);
+				String iPubDate = "";
+				Date entrydate = entry.getPublishedDate();
+				if(entrydate !=null){
+					iPubDate = DateFormat.getDateInstance().format(entrydate);
+				}
 				iPubDate = Validator.stripAllNewlines(iPubDate);
-
 				m_items.add(new BasicNewsItem(iTitle, iDescription, iLink, iPubDate));
 			}
 
