@@ -1,6 +1,39 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4879 | jholtzman@berkeley.edu | 2005-12-22 13:54:53 -0500 (Thu, 22 Dec 2005) | 1 line
+
+Updated readme to reflect the new, simplified itest sakai plugin goal.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4873 | jholtzman@berkeley.edu | 2005-12-21 19:06:55 -0500 (Wed, 21 Dec 2005) | 1 line
+
+Removed section test package.  TODO:  Move any non-kernel tests to their own projects to avoid cyclic 
+dependencies.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4872 | jholtzman@berkeley.edu | 2005-12-21 18:54:20 -0500 (Wed, 21 Dec 2005) | 1 line
+
+Fixed typos in documentation.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4871 | jholtzman@berkeley.edu | 2005-12-21 18:45:28 -0500 (Wed, 21 Dec 2005) | 1 line
+
+Added documentation on using the test harness.  This will not be accurate until the sakai plugin version 2.2 is 
+available and the master project's properties change to use plugin version 2.2.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4867 | jimeng@umich.edu | 2005-12-21 17:26:17 -0500 (Wed, 21 Dec 2005) | 4 lines
+
+SAK-2930
+Waited to delete attachments until user clicks "Finish" button.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4859 | jimeng@umich.edu | 2005-12-21 14:56:39 -0500 (Wed, 21 Dec 2005) | 3 lines
 
 SAK-3035
