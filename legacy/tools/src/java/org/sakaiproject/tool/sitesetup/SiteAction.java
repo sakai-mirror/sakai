@@ -10716,7 +10716,7 @@ public class SiteAction extends PagedResourceActionII
 			buf.append(rb.getString("java.addedto")+" " + productionSiteName + " ("+ productionSiteUrl + ") ");
 			buf.append(rb.getString("java.simpleby")+" ");
          	buf.append(UserDirectoryService.getCurrentUser().getDisplayName() + ". \n\n");
-			buf.append(rb.getString("java.passwordis1")+" " + newUserPassword + ". ");
+			buf.append(rb.getString("java.passwordis1")+"\n" + newUserPassword + "\n\n");
 			buf.append(rb.getString("java.passwordis2")+ "\n\n");
 			
 			content = buf.toString();

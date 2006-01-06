@@ -1,6 +1,12 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4855 | bkirschn@umich.edu | 2005-12-21 10:46:50 -0500 (Wed, 21 Dec 2005) | 2 lines
+
+added default locales
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4847 | bkirschn@umich.edu | 2005-12-20 17:23:36 -0500 (Tue, 20 Dec 2005) | 2 lines
 
 if not defined, list of available locales will default to system default
