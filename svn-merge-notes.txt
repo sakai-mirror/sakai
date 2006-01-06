@@ -1,6 +1,28 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4896 | zqian@umich.edu | 2005-12-23 10:23:30 -0500 (Fri, 23 Dec 2005) | 3 lines
+
+SAK-2271: Send grades from Assignment tool to Gradebook tool.
+
+Changes in legacy project.xml for integration with gradebook service.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4893 | ggolden@umich.edu | 2005-12-22 19:09:26 -0500 (Thu, 22 Dec 2005) | 1 line
+
+eclipse cleanup for assignment posting to gradebook
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4889 | zqian@umich.edu | 2005-12-22 16:45:10 -0500 (Thu, 22 Dec 2005) | 3 lines
+
+SAK-2271: Send grades from Assignment tool to Gradebook tool.
+
+First phase
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4879 | jholtzman@berkeley.edu | 2005-12-22 13:54:53 -0500 (Thu, 22 Dec 2005) | 1 line
 
 Updated readme to reflect the new, simplified itest sakai plugin goal.
