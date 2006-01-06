@@ -1,6 +1,52 @@
 The following revisions were NOT applied from the trunk to the 2.1 branch:
 
 ------------------------------------------------------------------------
+r4847 | bkirschn@umich.edu | 2005-12-20 17:23:36 -0500 (Tue, 20 Dec 2005) | 2 lines
+
+if not defined, list of available locales will default to system default
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4843 | jimeng@umich.edu | 2005-12-20 16:27:30 -0500 (Tue, 20 Dec 2005) | 3 lines
+
+SAK-3261
+Added reference to css class "exclude" for table rows containing paging widgets.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4839 | jimeng@umich.edu | 2005-12-20 16:08:38 -0500 (Tue, 20 Dec 2005) | 4 lines
+
+SAK-3237
+Paging widgets should only appear if there are more than 5 sites.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4837 | bkirschn@umich.edu | 2005-12-20 15:58:54 -0500 (Tue, 20 Dec 2005) | 2 lines
+
+Support for "locales" definition within sakai.properties, to define available language locales
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4834 | jimeng@umich.edu | 2005-12-20 15:40:55 -0500 (Tue, 20 Dec 2005) | 4 lines
+
+SAK-3230
+Links for "Finish" and "Cancel" were malformed.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4825 | ggolden@umich.edu | 2005-12-20 11:35:44 -0500 (Tue, 20 Dec 2005) | 2 lines
+
+eclipse cleanup for the resource loader move to high util
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4821 | bkirschn@umich.edu | 2005-12-20 10:08:35 -0500 (Tue, 20 Dec 2005) | 3 lines
+
+Move ResourceLoader class out of util directory, and into high-util directory (same package name).
+New jar file for dependencies is sakai-util-i18n.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 r4805 | ggolden@umich.edu | 2005-12-19 22:34:23 -0500 (Mon, 19 Dec 2005) | 1 line
 
 ignore target
