@@ -2,19 +2,17 @@
 ## Edit Site Information Confirmation page
 <div class="portletBody">
 <h3>
-		My unjoin site 
+		$tlang.getString("mb.confirm")
 	</h3>                                                                                           
 
 	#if ($alertMessage)<p class="information">$validator.escapeHtml($alertMessage)</p>#end
 
 	<form action="#toolForm("$action")" method="post">
-	Are you sure, you want to unjoin "$unjoinSite" site. 
-	<p></p>
-		<div class="itemAction">
-			<a href="#toolLink("$action" "doGoto_unjoinyes")" >Yes</a>
-			|
-			<a href="#toolLink("$action" "doGoto_unjoincancel")" >Cancel</a>
+	$tlang.getString("mb.confirm1") "$unjoinSite" $tlang.getString("mb.confirm2") 
+		<p class="act">
+			<a href="#toolLink("$action" "doGoto_unjoinyes")" ><input type="button" value="$tlang.getString("mb.unjoin")" /></a>
+			<a href="#toolLink("$action" "doGoto_unjoincancel")" ><input type="button" value="$tlang.getString("mb.cancel")" /></a>
 		
-		</div>	
+		</p>	
 	</form>
 </div>
