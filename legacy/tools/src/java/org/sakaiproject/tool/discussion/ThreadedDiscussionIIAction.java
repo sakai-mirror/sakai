@@ -499,12 +499,19 @@ public class ThreadedDiscussionIIAction
 		else if (mode!=null && mode.equals(MODE_REPLY))
 		{
 			// save the input infos for the respond message
-		    subject = ((String) params.getString ("subject")).trim();
+		    subject = params.getString ("subject").trim();
 		    state.setAttribute(RESPOND_SUBJECT, subject);
 		    
 		    String body = params.getCleanString ("body");
 		    body = processFormattedTextFromBrowser(state, body);
 		    state.setAttribute(RESPOND_BODY, body);
+		}
+		else
+		{
+			// must be inside control pannel editing draft message
+			state.setAttribute(DRAFT_MESSAGE_BODY, processFormattedTextFromBrowser(state, params.getCleanString ("body")));
+            	state.setAttribute(DRAFT_MESSAGE_SUBJECT, params.getString ("subject").trim());
+            	state.setAttribute(DRAFT_MESSAGE_REPLY_STYLE, params.getString("style"));
 		}
 		
 		Vector attachments = (Vector) state.getAttribute(ATTACHMENTS);
