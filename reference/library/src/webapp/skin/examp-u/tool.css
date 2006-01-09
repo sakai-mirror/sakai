@@ -59,6 +59,7 @@ a:hover{color:#000077 !important;text-decoration:underline;background-color:tran
 .listHier td{vertical-align:top;padding:.4em !important}
 .listHier th h3,.listHier th h4,.listHier th h5,.listHier th h6,.listHier td h3,.listHier td h4,.listHier td h5,.listHier td h6{margin:0;padding:0;font-size:1em;background:none;font-weight:normal}
 table.lines tr:hover{background-color:#f8f8f8}
+table.lines tr.exclude:hover{background:transparent}
 table.lines{border-collapse:collapse}
 table.lines td{border-bottom:1px solid #bbb}
 tr.selectedCopy{background:#ffe;border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7}

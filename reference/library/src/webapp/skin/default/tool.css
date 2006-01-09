@@ -60,6 +60,7 @@ table{font-size:1em}
 table.lines{border-collapse:collapse}
 table.lines td{border-bottom:1px solid #D7D7D7;border-top:1px solid #D7D7D7}
 .lines tr:hover{background:#fff}
+.lines tr.exclude:hover{background:transparent}
 tr.selectedCopy{background:#ffe}
 tr.selectedMove{color:#8A8A8A;background:#F8F8F8}
 tr.selectedMove a:link,tr.selectedMove a:visited{color:#8A8A8A}
