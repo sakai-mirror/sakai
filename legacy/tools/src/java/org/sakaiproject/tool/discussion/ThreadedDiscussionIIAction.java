@@ -2310,7 +2310,7 @@ public class ThreadedDiscussionIIAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState(((JetspeedRunData)data).getJs_peid());
 		ParameterParser params = data.getParameters();
-		String category = params.getString("category");	
+		String category = FormattedText.decodeNumericCharacterReferences(params.getString("category"));	
 		state.setAttribute(STATE_MODE, MODE_DELETE_CATEGORY_CONFIRM);
 		state.setAttribute(DELETE_CATEGORY, category);
 
