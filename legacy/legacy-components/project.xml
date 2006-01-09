@@ -69,7 +69,7 @@
 		<dependency>
 			<groupId>rome</groupId>
 			<artifactId>rome</artifactId>
-			<version>0.5</version>
+			<version>0.7</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
