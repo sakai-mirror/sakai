@@ -1076,11 +1076,29 @@ public class SiteAction extends PagedResourceActionII
 				context.put("defaultTools", ServerConfigurationService.getToolsRequired(siteType));
 
 				toolRegistrationSelectedList = (List) state.getAttribute(STATE_TOOL_REGISTRATION_SELECTED_LIST);
+
+				// If this is the first time through, check for tools
+				// which should be selected by default.
+				List defaultSelectedTools = ServerConfigurationService.getDefaultTools(siteType);
+				if (toolRegistrationSelectedList == null) {
+					toolRegistrationSelectedList = new Vector(defaultSelectedTools);
+				}
+
 				context.put (STATE_TOOL_REGISTRATION_SELECTED_LIST, toolRegistrationSelectedList); // String toolId's
 				context.put (STATE_TOOL_REGISTRATION_LIST, state.getAttribute(STATE_TOOL_REGISTRATION_LIST) ); // %%% use ToolRegistrations for template list
 				context.put("emailId", state.getAttribute(STATE_TOOL_EMAIL_ADDRESS));
 				context.put("serverName", ServerConfigurationService.getServerName());
-				context.put("check_home", state.getAttribute(STATE_TOOL_HOME_SELECTED));
+
+				// The "Home" tool checkbox needs special treatment to be selected by
+				// default.
+				Boolean checkHome = (Boolean)state.getAttribute(STATE_TOOL_HOME_SELECTED);
+				if (checkHome == null) {
+					if ((defaultSelectedTools != null) && defaultSelectedTools.contains("home")) {
+						checkHome = Boolean.TRUE;
+					}
+				}
+				context.put("check_home", checkHome);
+
 				//titles for news tools
 				context.put("newsTitles", state.getAttribute(STATE_NEWS_TITLES));
 				//titles for web content tools

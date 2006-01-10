@@ -226,6 +226,15 @@ public class ServerConfigurationService
 		return service.getToolsRequired(param0);
 	}
 
+	public static java.util.List getDefaultTools(java.lang.String param0)
+	{
+		org.sakaiproject.service.framework.config.ServerConfigurationService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.getDefaultTools(param0);
+	}
+
 	public static int getInt(java.lang.String param0, int param1)
 	{
 		org.sakaiproject.service.framework.config.ServerConfigurationService service = getInstance();

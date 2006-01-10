@@ -195,6 +195,13 @@ public interface ServerConfigurationService
 	 * @return A list of tool ids (String) that are required for this category, or an empty list if there are none for this category.
 	 */
 	List getToolsRequired(String category);
+
+	/**
+	 * Access the list of tool ids that are selected by default for this category.
+	 * @param category The tool category.
+	 * @return A list of tool ids (String) for this category to use by default, or an empty list if there are none for this category.
+	 */
+	List getDefaultTools(String category);
 }
 
 

@@ -79,6 +79,8 @@ public class BasicConfigurationService implements ServerConfigurationService
 	/** required tools - map keyed by category of List of tool id strings. */
 	protected Map m_toolsRequired = new HashMap();
 
+	/** default tools - map keyed by category of List of tool id strings. */
+	protected Map m_defaultTools = new HashMap();
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * Dependencies and their setter methods
 	 *********************************************************************************************************************************************************************************************************************************************************/
@@ -444,6 +446,23 @@ public class BasicConfigurationService implements ServerConfigurationService
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public List getDefaultTools(String category)
+	{
+		if (category != null)
+		{
+			List order = (List) m_defaultTools.get(category);
+			if (order != null)
+			{
+				return order;
+			}
+		}
+
+		return new Vector();
+	}
+
+	/**
 	 * Load this single file as a registration file, loading tools and locks.
 	 * 
 	 * @param in
@@ -485,6 +504,8 @@ public class BasicConfigurationService implements ServerConfigurationService
 						
 						List required = new Vector();
 						m_toolsRequired.put(name, required);
+						List defaultTools = new Vector();
+						m_defaultTools.put(name, defaultTools);
 
 						// get the kids
 						NodeList nodes = rootElement.getChildNodes();
@@ -507,6 +528,12 @@ public class BasicConfigurationService implements ServerConfigurationService
 								if ((req != null) && (Boolean.TRUE.toString().equalsIgnoreCase(req)))
 								{
 									required.add(id);
+								}
+
+								String sel = StringUtil.trimToNull(element.getAttribute("selected"));
+								if ((sel != null) && (Boolean.TRUE.toString().equalsIgnoreCase(sel)))
+								{
+									defaultTools.add(id);
 								}
 							}
 						}
