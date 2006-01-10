@@ -52,9 +52,9 @@
 							#else
 								#set($messageBody = $message.body)
 								#if ($!messageBody.length() != 0)
-									<textarea name="body" class="block" id="body" cols="65" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($message.body)</textarea>
+									<textarea name="body" class="block" id="body" cols="65" rows="30" wrap="virtual">$validator.escapeHtmlFormattedTextarea($message.body)</textarea>
 								#else
-									<textarea name="body" class="block" id="body" cols="65" rows="15" wrap="virtual"></textarea>
+									<textarea name="body" class="block" id="body" cols="65" rows="30" wrap="virtual"></textarea>
 								#end
 							#end
 							#chef_setupformattedtextarea("body")
