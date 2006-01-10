@@ -123,7 +123,7 @@
 					$tlang.getString("gen.mes2")
 				</label>
 				<table border="0" style="margin:.3em 1em"><tr><td>
-				<textarea name="body" id="body" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea("$!body")</textarea>
+				<textarea name="body" id="body" cols="80" rows="30" wrap="virtual">$validator.escapeHtmlFormattedTextarea("$!body")</textarea>
 				#chef_setupformattedtextarea("body")
 				</td></tr></table>
 			</p>	

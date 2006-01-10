@@ -423,7 +423,7 @@ function ampmChange(FieldName)
 				<table border="0">
 					<tr>
 						<td>
-							<textarea name="description" id="description" wrap="virtual" rows="15" cols="80">$validator.escapeHtmlFormattedTextarea($savedData.getDescription())</textarea>
+							<textarea name="description" id="description" wrap="virtual" rows="30" cols="80">$validator.escapeHtmlFormattedTextarea($savedData.getDescription())</textarea>
 							#chef_setupformattedtextarea("description")
 						</td>
 					</tr>
@@ -432,7 +432,7 @@ function ampmChange(FieldName)
 				<table border="0">
 					<tr>
 						<td>
-							<textarea name="description" id="description" wrap="virtual" rows="15" cols="80"></textarea>
+							<textarea name="description" id="description" wrap="virtual" rows="30" cols="80"></textarea>
 							#chef_setupformattedtextarea("description")
 						</td>
 					</tr>

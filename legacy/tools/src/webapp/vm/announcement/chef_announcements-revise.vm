@@ -45,9 +45,9 @@
 						<td>
 							#if ($new=="true")
 								#if ($!tempBody.length() != 0)
-									<textarea name="body" class="block" id="body" cols="65" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($tempBody)</textarea>
+									<textarea name="body" class="block" id="body" cols="65" rows="30" wrap="virtual">$validator.escapeHtmlFormattedTextarea($tempBody)</textarea>
 								#else
-									<textarea name="body" class="block" id="body" cols="65" rows="15" wrap="virtual"></textarea>
+									<textarea name="body" class="block" id="body" cols="65" rows="30" wrap="virtual"></textarea>
 								#end
 							#else
 								#set($messageBody = $message.body)

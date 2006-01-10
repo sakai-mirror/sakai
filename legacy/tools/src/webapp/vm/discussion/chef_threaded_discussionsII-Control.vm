@@ -110,7 +110,7 @@
 								<table style="margin:.3em 1em" border="0">
 									<tr>
 										<td>
-											<textarea name = "body" id = "body" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($draftBody)</textarea>
+											<textarea name = "body" id = "body" cols="80" rows="30" wrap="virtual">$validator.escapeHtmlFormattedTextarea($draftBody)</textarea>
 											#chef_setupformattedtextarea("body")
 										</td>
 									</tr>
