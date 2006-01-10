@@ -88,6 +88,9 @@ public class CharonPortal extends HttpServlet
 	    instead of making them log in (like worksite, site, and tool URLs). */
 	protected static final String PARAM_FORCE_LOGIN = "force.login";
 
+	/** Parameter value to indicate to look up a tool ID within a site */
+	protected static final String PARAM_SAKAI_SITE = "sakai.site";
+
 	/** ThreadLocal attribute set while we are processing an error. */
 	protected static final String ATTR_ERROR = "org.sakaiproject.portal.error";
 
@@ -309,12 +312,28 @@ public class CharonPortal extends HttpServlet
 		// recognize and dispatch the 'tool' option: [1] = "tool", [2] = placement id (of a site's tool placement), rest for the tool
 		if ((parts.length >= 2) && (parts[1].equals("tool")))
 		{
+			// Resolve the placements of the form /portal/tool/sakai.resources?sakai.site=~csev
+			String toolPlacement = getPlacement(req, res, session, parts[2] ,false);
+			if ( toolPlacement == null ) 
+			{
+				return;
+			}
+			parts[2] = toolPlacement;
+
 			doTool(req, res, session, parts[2], req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3), Web
 					.makePath(parts, 3, parts.length));
 		}
 
 		else if ((parts.length >= 2) && (parts[1].equals("title")))
 		{
+			// Resolve the placements of the form /portal/title/sakai.resources?sakai.site=~csev
+			String toolPlacement = getPlacement(req, res, session, parts[2] ,false);
+			if ( toolPlacement == null ) 
+			{
+				return;
+			}
+			parts[2] = toolPlacement;
+
 			doTitle(req, res, session, parts[2], req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3), Web
 					.makePath(parts, 3, parts.length));
 		}
@@ -322,6 +341,14 @@ public class CharonPortal extends HttpServlet
 		// recognize a dispatch the 'page' option (tools on a page)
 		else if ((parts.length == 3) && (parts[1].equals("page")))
 		{
+			// Resolve the placements of the form /portal/page/sakai.resources?sakai.site=~csev
+			String pagePlacement = getPlacement(req, res, session, parts[2] ,true);
+			if ( pagePlacement == null ) 
+			{
+				return;
+			}
+			parts[2] = pagePlacement;
+
 			doPage(req, res, session, parts[2], req.getContextPath() + req.getServletPath());
 		}
 
@@ -967,6 +994,76 @@ public class CharonPortal extends HttpServlet
 
 		// end the response
 		endResponse(out);
+	}
+
+
+	// Checks to see which form of tool or page placement we have.  The normal placement is
+	// a GUID.  However when the parameter sakai.site is added to the request, the placement
+	// can be of the form sakai.resources.  This routine determines which form of the
+	// placement id, and if this is the second type, performs the lookup and returns the 
+	// GUID of the placement.  If we cannot resolve the pllacement, we simply return
+	// the passed in placement ID.  If we cannot visit the site, we send the user to login 
+	// processing and return null to the caller.
+
+	protected String getPlacement(HttpServletRequest req, HttpServletResponse res, Session session, 
+			String placementId, boolean doPage) throws IOException
+	{
+
+		String siteId = req.getParameter(PARAM_SAKAI_SITE);
+		if ( siteId == null ) return placementId;  // Standard placement
+
+		// find the site, for visiting
+		// Sites like the !gateway site allow visits by anonymous
+		Site site = null;
+		try
+		{
+			site = SiteService.getSiteVisit(siteId);
+		}
+		catch (IdUnusedException e)
+		{
+			return placementId;   // cannot resolve placement
+		}
+		catch (PermissionException e)
+		{
+			// If we are not logged in, try again after we log in, otherwise punt
+			if (session.getUserId() == null) 
+			{
+				doLogin(req, res, session, req.getPathInfo() + "?sakai.site=" + res.encodeURL(siteId), false);
+				return null;
+			}
+			return placementId;  // cannot resolve placement
+		}
+
+		// We have the site, iterate through the pages
+		List pages = site.getPages();
+		if (pages.isEmpty())
+		{
+			return placementId; // cannot resolve placement
+		}
+
+                for (Iterator iPage = pages.iterator(); iPage.hasNext();)
+		{
+			SitePage p = (SitePage) iPage.next();
+                        List tools = p.getTools(0);
+			for (Iterator thePlace = tools.iterator(); thePlace.hasNext();)
+                        {
+                                ToolConfiguration placement = (ToolConfiguration) thePlace.next();
+                                Tool theTool = placement.getTool();
+
+				if ( placementId.equals(theTool.getId()) ) 
+				{
+					if (doPage) 
+					{
+						return p.getId();	
+					}
+					else
+					{
+						return placement.getId();
+					}
+				}
+			}
+		}
+		return placementId;  // Could not resolve
 	}
 
 	protected void doSiteTabs(HttpServletRequest req, HttpServletResponse res, Session session, String siteId) throws IOException
