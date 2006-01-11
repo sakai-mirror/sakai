@@ -1578,8 +1578,11 @@ public class DavServlet
 
 	// Parse the input XML to see what they really want
 		try {
+			InputStream is = req.getInputStream();
+
+			if (is.available() == 0) throw new Exception("Zero bytes");
 			Document document = documentBuilder.parse
-			    (new InputSource(req.getInputStream()));
+			    (new InputSource(is));
 
 			// Get the root element of the document
 			Element rootElement = document.getDocumentElement();
