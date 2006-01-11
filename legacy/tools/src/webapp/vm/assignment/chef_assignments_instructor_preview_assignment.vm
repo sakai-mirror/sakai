@@ -27,7 +27,7 @@
 							<img src = "#imageLink("sakai/collapse.gif")" border="0" title="$tlang.getString("prevassig.hidass")" alt="$tlang.getString("prevassig.hidass")" hspace="0" /></a>
 							$tlang.getString("prevassig.hidass"): $validator.escapeHtml($value_Title)
 					</p>		
-							<table class="itemSummary" border="0" summary="$tlang.getString("gen.viewasstablesummary")">  
+							<table class="itemSummary indnt1" border="0" summary="$tlang.getString("gen.viewasstablesummary")">  
 								<tr>
 								#*
 									<th>
@@ -153,7 +153,7 @@
 									$tlang.getString("gen.assinf")
 							</h4>
 							#if (($!value_Description) && ($value_Description.length()>0))
-								<div>$validator.escapeHtmlFormattedText($value_Description)</div>
+								<div class="indnt1">$validator.escapeHtmlFormattedText($value_Description)</div>
 							#end
 							#set ($size = 0)
 							#set ($props = false)
@@ -168,7 +168,7 @@
 								<h4>
 									$tlang.getString("gen.addres")
 								</h4>	
-								<ul class="attachList">
+								<ul class="attachList indnt1">
 									#foreach ($attachment in $attachments) 
 										#set ($props = false)
 										#set ($props = $attachment.Properties) 
@@ -203,7 +203,7 @@
 				<h4>
 					$value_Title
 				</h4>
-				<table class="itemSummary">
+				<table class="itemSummary indnt1">
 					<tr>
 						<th>
 							$tlang.getString("gen.due2")
@@ -246,7 +246,7 @@
 					$tlang.getString("gen.assinf")
 				</h4>	
 				#if (($!value_Description) && ($value_Description.length()>0))
-							<p>$validator.escapeHtmlFormattedText($value_Description)</span></p>
+							<p class="indnt1">$validator.escapeHtmlFormattedText($value_Description)</span></p>
 				#else
 				#end
 				#set ($size = 0)
@@ -262,7 +262,7 @@
 					<h4>
 						$tlang.getString("gen.addres")
 					</h4>	
-					<ul class="attachList">
+					<ul class="attachList indnt1">
 						#foreach ($attachment in $attachments) 
 							#set ($props = false)
 							#set ($props = $attachment.Properties) 
@@ -310,9 +310,8 @@
 				#end
 				## if honor pledge is required
 				#if ($value_CheckAddHonorPledge!="1")
-					$tlang.getString("gen.honple2")
-					<input name="Yes" type="checkbox" value="" />$tlang.getString("gen.yes")<br />
-					$tlang.getString("gen.youmus")
+					<p class="checkbox">$tlang.getString("gen.honple2")<input name="Yes" id="yes" type="checkbox" value="" /><label for="yes"> $tlang.getString("gen.yes")</label>
+					<br />$tlang.getString("gen.youmus")</p>
 				#end
 			#else
 			

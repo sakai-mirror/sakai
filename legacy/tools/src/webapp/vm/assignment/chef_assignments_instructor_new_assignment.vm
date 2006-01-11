@@ -349,7 +349,7 @@
 					$tlang.getString("gen.assinf")
 				</label>
 				<table border="0" style="margin:0"><tr><td>
-					<textarea name="$name_Description" id="$name_Description" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($value_Description)</textarea>
+					<textarea name="$name_Description" id="$name_Description" cols="80" rows="30" wrap="virtual">$validator.escapeHtmlFormattedTextarea($value_Description)</textarea>
 					#chef_setupformattedtextarea($name_Description)
 					</td></tr></table>
 			</div>
@@ -413,7 +413,7 @@
 					<input type="submit" name="attach" value="$tlang.getString('gen.addatt')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;"/>
 				</div>
 			#else
-				<ul class="attachList">
+				<ul class="attachList indnt1">
 					#foreach ($attachment in $attachments) 
 						#set ($props = false)
 						#set ($props = $attachment.Properties) 

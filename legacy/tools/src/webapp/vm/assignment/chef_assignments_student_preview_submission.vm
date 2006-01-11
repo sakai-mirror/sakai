@@ -7,7 +7,7 @@
 	<h4>
 		$tlang.getString("gen.assig")
 	</h4>	
-	<table class="itemSummary" summary="$tlang.getString("gen.assdet")" border="0" style="margin:0">
+	<table class="itemSummary indnt1" summary="$tlang.getString("gen.assdet")" border="0" style="margin:0">
 		 <tr>
 			<th>
 				$tlang.getString("gen.tit2")
@@ -93,9 +93,9 @@
 		$tlang.getString("gen.subm")
 	</h4>
 	#if ($!text.length()>0)
-		<p>
+		<div class="indnt1">
 			$validator.escapeHtmlFormattedText($text)
-		</p>	
+		</div>	
 	#end
 	#set ($size = 0)
 	#set ($props = false)
@@ -111,7 +111,7 @@
 		<h4>
 			$tlang.getString("gen.att")
 		</h4>	
-			<ul class="attachList">
+			<ul class="attachList indnt1">
 				#foreach ($attachment in $attachments) 
 					#set ($props = false)
 					#set ($props = $attachment.Properties) 
@@ -131,16 +131,23 @@
 				#end
 			</ul>
 	#end	
-
+<p></p>
 	#if ($assignment.getContent().honorPledge!=1) 
-		<p class="checkbox"> 
-			<label for="yes">$tlang.getString("gen.honple2")</label>
 		#if ($honor_pledge_yes.equals("true"))
-			<input name="Yes" type="checkbox" value="" checked="checked" id="yes"  disabled="disabled" />
+			<p class="checkbox">
+				<label for="yes">$tlang.getString("gen.honple2")</label>
+				<input name="Yes" type="checkbox" value="" checked="checked" id="yes"  disabled="disabled" />
+			</p>	
 		#else
-			<input name="Yes" type="checkbox" value="" disabled="disabled" />
-		#end Yes 
-		<br />
+			<div class="alertMessage indnt1" style="width:40%">
+				$tlang.getString("gen.honple2val")
+			</div>
+				<p class="checkbox infoBox">
+					<label for="yes">$tlang.getString("gen.honple2")</label>
+					<input name="Yes" type="checkbox" value="" disabled="disabled" />
+				</p>
+
+		#end
 		##	$tlang.getString("gen.tit1")
 		</p>
 	 #end

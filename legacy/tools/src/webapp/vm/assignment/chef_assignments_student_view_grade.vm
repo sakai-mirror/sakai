@@ -11,7 +11,7 @@
 				$tlang.getString("gen.assig")
 			</h4>
 				
-			<table class="itemSummary" summary="$tlang.getString("stuviewgrad.thegradet")">
+			<table class="itemSummary indnt1" summary="$tlang.getString("stuviewgrad.thegradet")">
 				<tr>
 					<th>
 						$tlang.getString("gen.tit2")
@@ -80,7 +80,7 @@
 		</h4>				
 							
 		#if ($!assignment.getContent().getInstructions().length()>0)
-			<p>$validator.escapeHtmlFormattedText($!assignment.getContent().getInstructions())</p>
+			<div class="indnt1">$validator.escapeHtmlFormattedText($!assignment.getContent().getInstructions())</div>
 		#else
 		#end
 		#set ($attachments = $assignment.getContent().Attachments)
@@ -99,7 +99,7 @@
 			<h4>
 				$tlang.getString("gen.addres2")
 			</h4>
-			<ul class="attachLists">
+			<ul class="attachList indnt1">
 				#foreach ($attachment in $attachments) 
 					#set ($props = false)
 					#set ($props = $attachment.Properties) 
@@ -119,17 +119,18 @@
 				#end
 			</ul>
 			#end
+			<hr class="itemSeparator" />
 			<h4>
 				$tlang.getString("stuviewgrad.inscom")
 			</h4>
 			#if ($!submission.FeedbackText && ($submission.FeedbackText.length()>0))
-				<p class="instruction">$tlang.getString("gen.orisub2")</p>
-				<p>$cheffeedbackhelper.escapeAssignmentFeedback($submission.FeedbackText)</p>
+				<h5>$tlang.getString("gen.orisub2")</h5>
+				<div class="indnt1">$cheffeedbackhelper.escapeAssignmentFeedback($submission.FeedbackText)</div>
 			#else
 				#set ($text = $submission.getSubmittedText())
 				#if ($!text && $text.length() > 0)
 					<p class="instruction">$tlang.getString("gen.orisub")</p>
-					<p>$submission.getSubmittedText()</p>
+					<div class="indnt1">$submission.getSubmittedText()</div>
 				#end
 			 #end
 			#set ($submittedAttachments = $submission.SubmittedAttachments)
@@ -144,8 +145,8 @@
 			#if ($size == 0)
 				##$tlang.getString("gen.noatt")
 			#else
-				<p class="instruction">$tlang.getString("gen.stuatt")</p>
-					<ul class="attachList">
+				<h5>$tlang.getString("gen.stuatt")</h5>
+					<ul class="attachList indnt1">
 					#foreach ($attachment in $submittedAttachments) 
 						#set ($props = false)
 						#set ($props = $attachment.Properties) 
@@ -167,8 +168,8 @@
 			#end	
 			
 			#if (($!submission.FeedbackComment) && ($submission.FeedbackComment.length()>0))
-				<p class="instruction">$tlang.getString("gen.addinst")</p>	
-				<p>$validator.escapeHtmlFormattedText($submission.FeedbackComment)</p>
+				<h5>$tlang.getString("gen.addinst")</h5>	
+				<div class="indnt1">$validator.escapeHtmlFormattedText($submission.FeedbackComment)</div>
 			#else
 			#end
 			#set ($size = 0)
@@ -184,8 +185,8 @@
 				#end
 				#if ($size == 0)
 				#else
-					<p class="instruction">$tlang.getString("gen.addinst")</p>
-					<ul class="attachList">
+					<h5>$tlang.getString("gen.addinstatts") </h5>
+					<ul class="attachList indnt1">
 						#foreach ($attachment in $feedbackAttachments) 
 							#set ($props = false)
 							#set ($props = $attachment.Properties) 

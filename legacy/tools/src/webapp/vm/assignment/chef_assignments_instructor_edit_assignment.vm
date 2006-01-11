@@ -286,7 +286,7 @@
 				$tlang.getString("gen.assinf")
 			</label>
 			<table border="0"><tr><td>
-			<textarea id="$name_Description" name="$name_Description" cols="80" rows="15" wrap="virtual">$validator.escapeHtmlFormattedTextarea($value_Description)</textarea>
+			<textarea id="$name_Description" name="$name_Description" cols="80" rows="30" wrap="virtual">$validator.escapeHtmlFormattedTextarea($value_Description)</textarea>
 			#chef_setupformattedtextarea($name_Description)
 			</td></tr></table>
 		</div>			
@@ -346,7 +346,7 @@
 			#if ($size == 0)
 				$tlang.getString("gen.noatt")
 			#else
-				<ul class="attachList">
+				<ul class="attachList indnt1">
 					#foreach ($attachment in $attachments) 
 						#set ($props = false)
 						#set ($props = $attachment.Properties) 

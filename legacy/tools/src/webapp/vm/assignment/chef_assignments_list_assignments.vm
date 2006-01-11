@@ -256,7 +256,7 @@
 												<a href="#toolLinkParam("$action" "doDuplicate_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">$!tlang.getString("dupli")</a>
 											#end
 											#if (!$assignment.draft && $allowGradeSubmission)
-												|<a href="#toolLinkParam("$action" "doGrade_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">#if ($withGrade)$!tlang.getString("grad1")#else$!tlang.getString("viewsubmissions")#end</a>
+												| <a href="#toolLinkParam("$action" "doGrade_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">#if ($withGrade)$!tlang.getString("grad1")#else$!tlang.getString("viewsubmissions")#end</a>
 											#end
 										</div>
 									#else
@@ -271,10 +271,11 @@
 											#else
 												$validator.limit($validator.escapeHtml($assignment.getTitle()), 40)
 												#if ($!allowSubmit)
-													<br />
-													<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
-														$tlang.getString("subasstudent")
-													</a>
+													<div class="itemAction">
+														<a href="#toolLinkParam("AssignmentAction" "doView_submission" "assignmentReference=$validator.escapeUrl($assignment.Reference)")">
+															$tlang.getString("subasstudent")
+														</a>
+													</div>	
 												#end
 											#end
 										#else
@@ -303,7 +304,7 @@
 												<a href="#toolLinkParam("$action" "doEdit_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">$!tlang.getString("revise")</a>
 											#end
 											#if (!$assignment.draft && $allowGradeSubmission)
-												|<a href="#toolLinkParam("$action" "doGrade_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">#if ($withGrade)$!tlang.getString("grad1")#else$!tlang.getString("viewsubmissions")#end</a>
+												| <a href="#toolLinkParam("$action" "doGrade_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">#if ($withGrade)$!tlang.getString("grad1")#else$!tlang.getString("viewsubmissions")#end</a>
 											#end
 										</div>
 									#end

@@ -1163,7 +1163,7 @@ extends PagedResourceActionII
 				if (submissions.hasNext ())
 				{
 					// if there is submission to the assignment, show the alert
-					addAlert(state, rb.getString("areyousur") + " " +  a.getTitle () + " " + rb.getString("whihassub"));
+					addAlert(state, rb.getString("areyousur") + " \"" +  a.getTitle () + "\" " + rb.getString("whihassub")  + "\n");
 				}
 				assignments.add (a);
 			}
