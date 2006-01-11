@@ -1418,7 +1418,7 @@ public class SiteAction extends PagedResourceActionII
 						for (int i = 0; i < skins.size(); i++)
 						{
 							Icon s = (Icon)skins.get(i);
-							if(s.getUrl().equals(site.getIconUrl()))
+							if(StringUtil.different(s.getUrl(), site.getIconUrl()))
 							{
 								context.put("siteUnit", s.getName());
 								break;
@@ -8457,47 +8457,6 @@ public class SiteAction extends PagedResourceActionII
 						state.setAttribute("siteIconUrl", iconUrl);
 						siteEdit.setIconUrl(iconUrl);
 					}
-					
-					/*
-					FileItem logofile = params.getFileItem ("filename");
-
-					if (logofile!=null)
-					{
-						String filename = logofile.getFileName();
-						
-						String currentSiteId = "";
-						String rootCollectionId = ContentHostingService.getSiteCollection(currentSiteId);
-						String newCollectionId = rootCollectionId + "worksite" + Resource.SEPARATOR;
-						
-						try
-						{
-							ContentCollectionEdit newCollectionEdit = ContentHostingService.addCollection(newCollectionId);
-							String resourceId = newCollectionId + Validator.escapeResourceName(filename);
-							String url = ContentHostingService.getUrl(resourceId);
-							Site.setIconUrl(url);
-							ContentHostingService.commitCollection(newCollectionEdit);
-						}
-						catch(IdUsedException err)
-						{
-							String resourceId = newCollectionId + Validator.escapeResourceName(filename);
-							String url = ContentHostingService.getUrl(resourceId);
-							Site.setIconUrl(url);
-						}
-						catch(IdInvalidException err)
-						{
-							//TODO:
-						}
-						catch(PermissionException err)
-						{
-							//TODO:
-						}
-						catch(InconsistentException err)
-						{
-							//TODO:
-						}
-						
-					}
-					*/
 						
 					String include = StringUtil.trimToNull(params.getString("include"));		
 					if (include != null && include.equalsIgnoreCase(Boolean.FALSE.toString()))
@@ -11528,7 +11487,7 @@ public class SiteAction extends PagedResourceActionII
 		for (Iterator i = icons.iterator(); i.hasNext();)
 		{
 			Icon icon = (Icon) i.next();
-			if (icon.getUrl().equals(iconUrl))
+			if (StringUtil.different(icon.getUrl(), iconUrl))
 			{
 				edit.setSkin(icon.getSkin());
 				return;
