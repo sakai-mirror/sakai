@@ -297,7 +297,7 @@ public class ResourcesAction
 	private static final String STATE_CREATE_ALERTS = "resources.create_alerts";
 	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
 	private static final String STATE_STRUCTOBJ_ROOTNAME = "resources.create_structured_object_root";
-	private static final String STATE_STRUCTOBJ_TYPE = "resources.create_structured_object_type";
+	public static final String STATE_STRUCTOBJ_TYPE = "resources.create_structured_object_type";
 	private static final String STATE_STRUCTOBJ_HOMES = "resources.create_structured_object_home";
 	private static final String STATE_STRUCT_OBJ_SCHEMA = "resources.create_structured_object_schema";
 
