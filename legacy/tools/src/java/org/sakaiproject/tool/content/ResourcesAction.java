@@ -268,7 +268,7 @@ public class ResourcesAction
 	/************** the properties context *****************************************/
 
 	/** The properties id */
-	private static final String STATE_PROPERTIES_ID = "resources.properties_id";
+	static public final String STATE_PROPERTIES_ID = "resources.properties_id";
 	private static final String STATE_PROPERTIES_COPYRIGHT = "resources.properties_copyright";
 	private static final String STATE_PROPERTIES_COPYRIGHT_CHOICE = "resources.properties_copyright_choice";
 	private static final String STATE_PROPERTIES_COPYRIGHT_ALERT = "resources.properties_copyright_alert";
@@ -278,19 +278,21 @@ public class ResourcesAction
 	/************** the edit context *****************************************/
 
 	/** The edit id */
+	public static final String STATE_EDIT_ID = "resources.edit_id";
+	public static final String STATE_EDIT_COLLECTION_ID = "resources.edit_collection_id";
+	
 	private static final String STATE_EDIT_ALERTS = "resources.edit_alerts";
-	private static final String STATE_EDIT_ID = "resources.edit_id";
 	private static final String STATE_EDIT_ITEM = "resources.edit_item";
-	private static final String STATE_EDIT_COLLECTION_ID = "resources.edit_collection_id";
 	private static final String STATE_EDIT_INTENT = "resources.properties_intent";
 	private static final String STATE_SHOW_FORM_ITEMS = "resources.show_form_items";
 
 	/************** the create contexts *****************************************/
 
-	private static final String STATE_CREATE_TYPE = "resources.create_type";
+	public static final String STATE_CREATE_TYPE = "resources.create_type";
+	public static final String STATE_CREATE_COLLECTION_ID = "resources.create_collection_id";
+	public static final String STATE_CREATE_NUMBER = "resources.create_number";
+	
 	private static final String STATE_CREATE_ITEMS = "resources.create_items";
-	private static final String STATE_CREATE_COLLECTION_ID = "resources.create_collection_id";
-	private static final String STATE_CREATE_NUMBER = "resources.create_number";
 	private static final String STATE_CREATE_ACTUAL_COUNT = "resources.create_actual_count";
 	private static final String STATE_CREATE_ALERTS = "resources.create_alerts";
 	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
@@ -354,7 +356,16 @@ public class ResourcesAction
 	 *  area.  If this value is not set, all attachments are to copies in the hidden attachments area.
 	 */
 	public static final String STATE_ATTACH_LINKS = "resources.attach_links";
-
+	
+	/** The name of the state attribute for "new-item" attachment indicating the type of item */
+	public static final String STATE_ATTACH_TEXT = "resources.attach_text";
+	
+	/** The name of the state attribute for "new-item" attachment indicating the id of the item to edit */
+	public static final String STATE_ATTACH_ITEM_ID = "resources.attach_collection_id";
+	
+	/** The name of the state attribute for "new-item" attachment indicating the id of the form-type if item-type is TYPE_FORM (ignored otherwise) */
+	public static final String STATE_ATTACH_FORM_ID = "resources.attach_form_id";
+	
 	/************** the delete context *****************************************/
 
 	/** The delete ids */
@@ -404,6 +415,7 @@ public class ResourcesAction
 	public static final String MODE_ATTACHMENT_SELECT = "resources.attachment_select";
 	public static final String MODE_ATTACHMENT_CREATE = "resources.attachment_create";
 	public static final String MODE_ATTACHMENT_NEW_ITEM = "resources.attachment_new_item";
+	public static final String MODE_ATTACHMENT_EDIT_ITEM = "resources.attachment_edit_item";
 	public static final String MODE_ATTACHMENT_CONFIRM = "resources.attachment_confirm";
 	public static final String MODE_ATTACHMENT_DONE = "resources.attachment_done";
 	
@@ -412,6 +424,7 @@ public class ResourcesAction
 	private static final String TEMPLATE_EDIT = "content/chef_resources_edit";
 	private static final String TEMPLATE_CREATE = "content/chef_resources_create";
 	private static final String TEMPLATE_DAV = "content/chef_resources_webdav";
+	private static final String TEMPLATE_ITEMTYPE = "content/chef_resources_itemtype";
 	private static final String TEMPLATE_SELECT = "content/chef_resources_select";
 	private static final String TEMPLATE_ATTACH = "content/chef_resources_attach";
 
@@ -438,7 +451,7 @@ public class ResourcesAction
 	private static final int MAXIMUM_ATTEMPTS_FOR_UNIQUENESS = 100;
 
 	/** The default value for whether to show all sites in file-picker (used if global value can't be read from server config service) */
-	static public final boolean SHOW_ALL_SITES_IN_FILE_PICKER = false;
+	public static final boolean SHOW_ALL_SITES_IN_FILE_PICKER = false;
 
 	/** The default value for whether to show all sites in resources tool (used if global value can't be read from server config service) */
 	private static final boolean SHOW_ALL_SITES_IN_RESOURCES = false;
@@ -457,7 +470,7 @@ public class ResourcesAction
 
 	protected static final String STATE_HIGHLIGHTED_ITEMS = "resources.highlighted_items";
 
-	/** The default number of messages per page. */
+	/** The default number of site collections per page. */
 	protected static final int DEFAULT_PAGE_SIZE = 50;
 
 	protected static final String PARAM_PAGESIZE = "collections_per_page";
@@ -931,9 +944,164 @@ public class ResourcesAction
 		{
 			template = buildCreateContext(portlet, context, data, state);
 		}
+		else if(MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
+		{
+			template = buildItemTypeContext(portlet, context, data, state);
+		}
+		else if(MODE_ATTACHMENT_EDIT_ITEM.equals(helper_mode))
+		{
+			String attachmentId = (String) state.getAttribute(STATE_ATTACH_ITEM_ID);
+			state.setAttribute(STATE_EDIT_ID,attachmentId);
+			String collectionId = ContentHostingService.getContainingCollectionId(attachmentId);
+			state.setAttribute(STATE_EDIT_COLLECTION_ID, collectionId);
+			
+			EditItem item = getEditItem(attachmentId, collectionId, data);
+			
+			if (state.getAttribute(STATE_MESSAGE) == null)
+			{
+				// got resource and sucessfully populated item with values
+				state.setAttribute(STATE_EDIT_ALERTS, new HashSet());
+				state.setAttribute(STATE_EDIT_ITEM, item);
+			}
+
+			template = buildEditContext(portlet, context, data, state);
+		}
 		return template;
 	}
 	
+	public static String buildItemTypeContext(VelocityPortlet portlet, Context context, RunData data, SessionState state) 
+	{
+		context.put("tlang",rb);
+		
+		initStateAttributes(state, portlet);
+		
+		String mode = (String) state.getAttribute(STATE_MODE);
+		if(mode == null || mode.trim().length() == 0)
+		{
+			mode = MODE_HELPER;
+			state.setAttribute(STATE_MODE, mode);
+		}
+		String helper_mode = null;
+		if(MODE_HELPER.equals(mode))
+		{
+			helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+			if(helper_mode == null || helper_mode.trim().length() == 0)
+			{
+				helper_mode = MODE_ATTACHMENT_NEW_ITEM;
+				state.setAttribute(STATE_RESOURCES_MODE, helper_mode);
+			}
+			if(MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
+			{
+				context.put("attaching_this_item", Boolean.TRUE.toString());
+			}
+		}
+		state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
+		
+		context.put("max_upload_size", state.getAttribute(FILE_UPLOAD_MAX_SIZE));
+		
+		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+		if(numberOfItems == null)
+		{
+			numberOfItems = new Integer(1);
+			state.setAttribute(STATE_CREATE_NUMBER, numberOfItems);
+		}
+		context.put("numberOfItems", numberOfItems);
+		context.put("max_number", new Integer(1));
+		String itemType = (String) state.getAttribute(STATE_CREATE_TYPE);
+		if(itemType == null || "".equals(itemType))
+		{
+			itemType = TYPE_UPLOAD;
+		}
+		context.put("itemType", itemType);
+		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		if(collectionId == null || collectionId.trim().length() == 0)
+		{
+			collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+		}
+		context.put("collectionId", collectionId);
+
+		List new_items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		if(new_items == null)
+		{
+			
+			String encoding = data.getRequest().getCharacterEncoding();
+			
+			new_items = new Vector();
+			for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+			{
+				EditItem item = new EditItem(itemType);
+				if(encoding != null)
+				{
+					item.setEncoding(encoding);
+				}
+				new_items.add(item);
+			}
+	
+		}
+		state.setAttribute(STATE_CREATE_ITEMS, new_items);
+		context.put("new_items", new_items);
+		
+		String show_form_items = (String) state.getAttribute(STATE_SHOW_FORM_ITEMS);
+		if(show_form_items != null)
+		{
+			context.put("show_form_items", show_form_items);
+		}
+		
+		context.put("TYPE_FOLDER", TYPE_FOLDER);
+		context.put("TYPE_UPLOAD", TYPE_UPLOAD);
+		context.put("TYPE_HTML", TYPE_HTML);
+		context.put("TYPE_TEXT", TYPE_TEXT);
+		context.put("TYPE_URL", TYPE_URL);
+		context.put("TYPE_FORM", TYPE_FORM);
+		
+		String title = (String) state.getAttribute(STATE_ATTACH_TEXT);
+		if(title != null && title.trim().length() > 0)
+		{
+			context.put("helper_title", title);
+		}
+
+		// copyright
+		copyrightChoicesIntoContext(state, context);
+
+		// put schema for metadata into context
+		metadataGroupsIntoContext(state, context);
+
+		if(TYPE_FORM.equals(itemType))
+		{
+			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+			if(listOfHomes == null)
+			{
+				setupStructuredObjects(state);
+				listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+			}
+			context.put("homes", listOfHomes);
+			
+			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			context.put("formtype", formtype);
+			
+			String rootname = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
+			context.put("rootname", rootname);
+			
+			context.put("STRING", ResourcesMetadata.WIDGET_STRING);
+			context.put("TEXTAREA", ResourcesMetadata.WIDGET_TEXTAREA);
+			context.put("BOOLEAN", ResourcesMetadata.WIDGET_BOOLEAN);
+			context.put("INTEGER", ResourcesMetadata.WIDGET_INTEGER);
+			context.put("DOUBLE", ResourcesMetadata.WIDGET_DOUBLE);
+			context.put("DATE", ResourcesMetadata.WIDGET_DATE);
+			context.put("TIME", ResourcesMetadata.WIDGET_TIME);
+			context.put("DATETIME", ResourcesMetadata.WIDGET_DATETIME);
+			context.put("ANYURI", ResourcesMetadata.WIDGET_ANYURI);
+			context.put("ENUM", ResourcesMetadata.WIDGET_ENUM);
+			context.put("NESTED", ResourcesMetadata.WIDGET_NESTED);
+			
+			context.put("today", TimeService.newTime());
+			
+			context.put("DOT", ResourcesMetadata.DOT);
+		}
+
+		return TEMPLATE_ITEMTYPE;
+	}
+
 	/**
 	* Build the context for selecting attachments
 	*/
@@ -1502,7 +1670,7 @@ public class ResourcesAction
 	/**
 	* Build the context to show the editable list of resource properties
 	*/
-	public String buildPropertiesContext (VelocityPortlet portlet,
+	public static String buildPropertiesContext (VelocityPortlet portlet,
 										Context context,
 										RunData data,
 										SessionState state)
@@ -1514,11 +1682,22 @@ public class ResourcesAction
 		context.put ("from", state.getAttribute (STATE_FROM));
 		context.put ("mycopyright", (String) state.getAttribute (STATE_MY_COPYRIGHT));
 
-		String collectionId = (String) state.getAttribute (STATE_PROPERTIES_COLLECTION_ID);
-		context.put ("collectionId", collectionId);
 		String id =(String) state.getAttribute (STATE_PROPERTIES_ID);
 		context.put ("id", id);
+		String collectionId = (String) state.getAttribute (STATE_PROPERTIES_COLLECTION_ID);
+		if(collectionId == null)
+		{
+			collectionId = service.getContainingCollectionId(id);
+		}
+		state.setAttribute(STATE_COLLECTION_ID, collectionId);
+		context.put ("collectionId", collectionId);
 		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
+		if(homeCollectionId == null)
+		{
+			homeCollectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			state.setAttribute(STATE_HOME_COLLECTION_ID, homeCollectionId);
+		}
+		state.setAttribute(STATE_NAVIGATION_ROOT, homeCollectionId);
 		context.put("homeCollectionId", homeCollectionId);
 		List collectionPath = getCollectionPath(state);	
 		context.put ("collectionPath", collectionPath);
@@ -1661,7 +1840,7 @@ public class ResourcesAction
 	/**
 	* Build the context to edit the editable list of resource properties
 	*/
-	public String buildEditContext (VelocityPortlet portlet,
+	public static String buildEditContext (VelocityPortlet portlet,
 										Context context,
 										RunData data,
 										SessionState state)
@@ -1678,6 +1857,11 @@ public class ResourcesAction
 		String id =(String) state.getAttribute (STATE_EDIT_ID);
 		context.put ("id", id);
 		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
+		if(homeCollectionId == null)
+		{
+			homeCollectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			state.setAttribute(STATE_HOME_COLLECTION_ID, homeCollectionId);
+		}
 		context.put("homeCollectionId", homeCollectionId);
 		List collectionPath = getCollectionPath(state);	
 		context.put ("collectionPath", collectionPath);
@@ -1932,11 +2116,23 @@ public class ResourcesAction
 		String flow = params.getString("flow");
 		String mode = (String) state.getAttribute(STATE_MODE);
 		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+		boolean attach_me = params.getBoolean("attach_me");
+		
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		if(alerts == null)
+		{
+			alerts = new HashSet();
+			state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		}
 		Set missing = new HashSet();
 		if(flow == null || flow.equals("cancel"))
 		{
-			if(MODE_HELPER.equals(mode))
+			if(MODE_HELPER.equals(mode) && attach_me)
+			{
+				cleanupState(state);
+				helper_mode = MODE_ATTACHMENT_DONE;
+			}
+			else if(MODE_HELPER.equals(mode))
 			{
 				helper_mode = MODE_ATTACHMENT_SELECT;
 			}
@@ -1969,7 +2165,6 @@ public class ResourcesAction
 			// Get the items
 			captureMultipleValues(state, params, true);
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
-			
 			if(alerts.isEmpty())
 			{
 				// Save the items
@@ -1978,7 +2173,12 @@ public class ResourcesAction
 				
 				if(alerts.isEmpty())
 				{
-					if(MODE_HELPER.equals(mode))
+					if(MODE_HELPER.equals(mode) && attach_me)
+					{
+						cleanupState(state);
+						helper_mode = MODE_ATTACHMENT_DONE;
+					}
+					else if(MODE_HELPER.equals(mode))
 					{
 						helper_mode = MODE_ATTACHMENT_SELECT;
 					}
@@ -2000,7 +2200,12 @@ public class ResourcesAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
-					if(MODE_HELPER.equals(mode))
+					if(MODE_HELPER.equals(mode) && attach_me)
+					{
+						cleanupState(state);
+						helper_mode = MODE_ATTACHMENT_DONE;
+					}
+					else if(MODE_HELPER.equals(mode))
 					{
 						helper_mode = MODE_ATTACHMENT_SELECT;
 					}
@@ -2022,7 +2227,12 @@ public class ResourcesAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
-					if(MODE_HELPER.equals(mode))
+					if(MODE_HELPER.equals(mode) && attach_me)
+					{
+						cleanupState(state);
+						helper_mode = MODE_ATTACHMENT_DONE;
+					}
+					else if(MODE_HELPER.equals(mode))
 					{
 						helper_mode = MODE_ATTACHMENT_SELECT;
 					}
@@ -2044,7 +2254,12 @@ public class ResourcesAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
-					if(MODE_HELPER.equals(mode))
+					if(MODE_HELPER.equals(mode) && attach_me)
+					{
+						cleanupState(state);
+						helper_mode = MODE_ATTACHMENT_DONE;
+					}
+					else if(MODE_HELPER.equals(mode))
 					{
 						helper_mode = MODE_ATTACHMENT_SELECT;
 					}
@@ -2066,7 +2281,12 @@ public class ResourcesAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
-					if(MODE_HELPER.equals(mode))
+					if(MODE_HELPER.equals(mode) && attach_me)
+					{
+						cleanupState(state);
+						helper_mode = MODE_ATTACHMENT_DONE;
+					}
+					else if(MODE_HELPER.equals(mode))
 					{
 						helper_mode = MODE_ATTACHMENT_SELECT;
 					}
@@ -2082,13 +2302,23 @@ public class ResourcesAction
 		{
 			captureMultipleValues(state, params, true);
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			if(alerts == null)
+			{
+				alerts = new HashSet();
+				state.setAttribute(STATE_CREATE_ALERTS, alerts);
+			}
 			if(alerts.isEmpty())
 			{
 				createStructuredArtifacts(state);
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
-					if(MODE_HELPER.equals(mode))
+					if(MODE_HELPER.equals(mode) && attach_me)
+					{
+						cleanupState(state);
+						helper_mode = MODE_ATTACHMENT_DONE;
+					}
+					else if(MODE_HELPER.equals(mode))
 					{
 						helper_mode = MODE_ATTACHMENT_SELECT;
 					}
@@ -2104,6 +2334,11 @@ public class ResourcesAction
 		{
 			captureMultipleValues(state, params, true);
 			alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			if(alerts == null)
+			{
+				alerts = new HashSet();
+				state.setAttribute(STATE_CREATE_ALERTS, alerts);
+			}
 			alerts.add("Invalid item type");
 			state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		}
@@ -2182,6 +2417,11 @@ public class ResourcesAction
 		}
 		
 		alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		if(alerts == null)
+		{
+			alerts = new HashSet();
+			state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		}
 		Iterator alertIt = alerts.iterator();
 		while(alertIt.hasNext())
 		{
@@ -2216,6 +2456,11 @@ public class ResourcesAction
 		// List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
 		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		if(alerts == null)
+		{
+			alerts = new HashSet();
+			state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		}
 
 		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
 		int numberOfItems = 1;
@@ -2284,13 +2529,26 @@ public class ResourcesAction
 						String mode = (String) state.getAttribute(STATE_MODE);
 						if(MODE_HELPER.equals(mode))
 						{
-							if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+							String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+							if(helper_mode != null && MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
 							{
-								attachItem(resource.getId(), state);
+								// add to the attachments vector
+								List attachments = EntityManager.newReferenceList();
+								Reference ref = EntityManager.newReference(ContentHostingService.getReference(resource.getId()));
+								attachments.add(ref);
+								cleanupState(state);
+								state.setAttribute(STATE_ATTACHMENTS, attachments);
 							}
 							else
 							{
-								attachLink(resource.getId(), state);
+								if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+								{
+									attachItem(resource.getId(), state);
+								}
+								else
+								{
+									attachLink(resource.getId(), state);
+								}
 							}
 						}
 					}
@@ -2336,8 +2594,12 @@ public class ResourcesAction
 					alerts.add(rb.getString("failed"));
 				}
 				
-				HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
-				if(!currentMap.containsKey(collectionId))
+				HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);	
+				if(currentMap == null)
+				{
+					// do nothing
+				}
+				else if(!currentMap.containsKey(collectionId))
 				{
 					try
 					{
@@ -2537,6 +2799,11 @@ public class ResourcesAction
 	protected static void createFolders(SessionState state) 
 	{
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		if(alerts == null)
+		{
+			alerts = new HashSet();
+			state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		}
 		List new_folders = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
 		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
@@ -2633,6 +2900,11 @@ public class ResourcesAction
 	protected static void createFiles(SessionState state) 
 	{
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		if(alerts == null)
+		{
+			alerts = new HashSet();
+			state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		}
 		List new_files = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
 		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
@@ -2702,16 +2974,28 @@ public class ResourcesAction
 				String mode = (String) state.getAttribute(STATE_MODE);
 				if(MODE_HELPER.equals(mode))
 				{
-					if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+					String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+					if(helper_mode != null && MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
 					{
-						attachItem(resource.getId(), state);
+						// add to the attachments vector
+						List attachments = EntityManager.newReferenceList();
+						Reference ref = EntityManager.newReference(ContentHostingService.getReference(resource.getId()));
+						attachments.add(ref);
+						cleanupState(state);
+						state.setAttribute(STATE_ATTACHMENTS, attachments);
 					}
 					else
 					{
-						attachLink(resource.getId(), state);
+						if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+						{
+							attachItem(resource.getId(), state);
+						}
+						else
+						{
+							attachLink(resource.getId(), state);
+						}
 					}
 				}
-				
 			}
 			catch(PermissionException e)
 			{
@@ -2756,28 +3040,35 @@ public class ResourcesAction
 			}
 				
 		}
-		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
-		if(!currentMap.containsKey(collectionId))
+		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);	
+		if(currentMap == null)
 		{
-			try
-			{
-				currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
-				state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
-
-				// add this folder id into the set to be event-observed
-				addObservingPattern(collectionId, state);
-			}
-			catch (IdUnusedException ignore)
-			{
-			}
-			catch (TypeException ignore)
-			{
-			}
-			catch (PermissionException ignore)
-			{
-			} 
+			// do nothing
 		}
-		state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+		else 
+		{
+			if(!currentMap.containsKey(collectionId))
+			{
+				try
+				{
+					currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
+					state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+	
+					// add this folder id into the set to be event-observed
+					addObservingPattern(collectionId, state);
+				}
+				catch (IdUnusedException ignore)
+				{
+				}
+				catch (TypeException ignore)
+				{
+				}
+				catch (PermissionException ignore)
+				{
+				} 
+			}
+			state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+		}
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}	// createFiles
@@ -3344,6 +3635,11 @@ public class ResourcesAction
 	protected static void createUrls(SessionState state) 
 	{
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		if(alerts == null)
+		{
+			alerts = new HashSet();
+			state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		}
 		List new_urls = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
 		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
@@ -3393,13 +3689,26 @@ public class ResourcesAction
 				String mode = (String) state.getAttribute(STATE_MODE);
 				if(MODE_HELPER.equals(mode))
 				{
-					if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+					String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+					if(helper_mode != null && MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
 					{
-						attachItem(resource.getId(), state);
+						// add to the attachments vector
+						List attachments = EntityManager.newReferenceList();
+						Reference ref = EntityManager.newReference(ContentHostingService.getReference(resource.getId()));
+						attachments.add(ref);
+						cleanupState(state);
+						state.setAttribute(STATE_ATTACHMENTS, attachments);
 					}
 					else
 					{
-						attachLink(resource.getId(), state);
+						if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+						{
+							attachItem(resource.getId(), state);
+						}
+						else
+						{
+							attachLink(resource.getId(), state);
+						}
 					}
 				}
 				
@@ -4331,9 +4640,26 @@ public class ResourcesAction
 
 		//Resource resource = null;
 		
-
-		// populate an EditItem object with values from the resource
-		// then put the EditItem in state
+		EditItem item = getEditItem(id, collectionId, data);
+		
+		if (state.getAttribute(STATE_MESSAGE) == null)
+		{
+			// got resource and sucessfully populated item with values
+			state.setAttribute (STATE_MODE, MODE_EDIT);
+			state.setAttribute(STATE_EDIT_ALERTS, new HashSet());
+			state.setAttribute(STATE_EDIT_ITEM, item);
+			
+		}
+		
+	}	// doEdit
+	
+	public static EditItem getEditItem(String id, String collectionId, RunData data)
+	{
+		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		
+		EditItem item = null;
+		
+		// populate an EditItem object with values from the resource and return the EditItem
 		try
 		{
 			ResourceProperties properties = ContentHostingService.getProperties(id); 
@@ -4363,7 +4689,7 @@ public class ResourcesAction
 				
 			String itemName = properties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 
-			EditItem item = new EditItem(id, itemName, itemType);
+			item = new EditItem(id, itemName, itemType);
 			
 			String encoding = data.getRequest().getCharacterEncoding();
 			if(encoding != null)
@@ -4584,7 +4910,6 @@ public class ResourcesAction
 				}
 			}
 
-			state.setAttribute(STATE_EDIT_ITEM, item);
 		}
 		catch (IdUnusedException e)
 		{
@@ -4610,15 +4935,9 @@ public class ResourcesAction
 			addAlert(state, rb.getString("failed"));
 		}
 		
-		if (state.getAttribute(STATE_MESSAGE) == null)
-		{
-			// got resource and sucessfully populated item with values
-			state.setAttribute (STATE_MODE, MODE_EDIT);
-			state.setAttribute(STATE_EDIT_ALERTS, new HashSet());
-			
-		}
+		return item;
 		
-	}	// doEdit
+	}
 
 	/**
 	 * This method updates the session state with information needed to create or modify
@@ -4937,7 +5256,7 @@ public class ResourcesAction
 	/**
 	* Edit the editable collection/resource properties
 	*/
-	public void doProperties ( RunData data)
+	public static void doProperties ( RunData data)
 	{
 		ParameterParser params = data.getParameters ();
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
@@ -5027,7 +5346,7 @@ public class ResourcesAction
 	/**
 	* Modify the properties
 	*/
-	public void doModifyproperties ( RunData data)
+	public static void doModifyproperties ( RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -5402,7 +5721,21 @@ public class ResourcesAction
 		else
 		{
 			// modify properties sucessful
-			state.setAttribute (STATE_MODE, MODE_LIST);
+			String mode = (String) state.getAttribute(STATE_MODE);
+			if(MODE_HELPER.equals(mode))
+			{
+				cleanupState(state);
+				state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+			}
+			else
+			{
+				state.setAttribute (STATE_MODE, MODE_LIST);
+			}
+			
+			
+			
+			
+			
 			// clear the unqualified fields
 			state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, (Vector) emptyVector (1).clone ());
 			// clear state variables
@@ -5466,7 +5799,7 @@ public class ResourcesAction
 	 * @param params
 	 * @param item
 	 */
-	protected void captureValues(SessionState state, ParameterParser params)
+	protected static void captureValues(SessionState state, ParameterParser params)
 	{
 
 		EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
@@ -5474,6 +5807,7 @@ public class ResourcesAction
 		if(alerts == null)
 		{
 			alerts = new HashSet();
+			state.setAttribute(STATE_EDIT_ALERTS, alerts);
 		}
 		String intent = params.getString("intent");
 		String oldintent = (String) state.getAttribute(STATE_EDIT_INTENT);
@@ -6208,6 +6542,11 @@ public class ResourcesAction
 		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
 		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		if(alerts == null)
+		{
+			alerts = new HashSet();
+			state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		}
 		int actualCount = 0;
 		Set first_item_alerts = null;
 		
@@ -6370,7 +6709,7 @@ public class ResourcesAction
 	/**
 	* Modify the properties
 	*/
-	public void doSavechanges ( RunData data)
+	public static void doSavechanges ( RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -6606,7 +6945,16 @@ public class ResourcesAction
 		if(alerts.isEmpty())
 		{
 			// modify properties sucessful
-			state.setAttribute (STATE_MODE, MODE_LIST);
+			String mode = (String) state.getAttribute(STATE_MODE);
+			if(MODE_HELPER.equals(mode))
+			{
+				cleanupState(state);
+				state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+			}
+			else
+			{
+				state.setAttribute (STATE_MODE, MODE_LIST);
+			}
 			// clear state variables
 			initPropertiesContext(state);
 		}	//if-else
@@ -6666,7 +7014,7 @@ public class ResourcesAction
 	/**
 	 * @param data
 	 */
-	protected void doToggle_intent(RunData data) 
+	protected static void doToggle_intent(RunData data) 
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
@@ -6752,7 +7100,7 @@ public class ResourcesAction
 	/**
 	 * @param data
 	 */
-	public void doShow_metadata(RunData data)
+	public static void doShow_metadata(RunData data)
 	{
 		ParameterParser params = data.getParameters ();
 		String name = params.getString("metadataGroup");
@@ -7700,7 +8048,7 @@ public class ResourcesAction
 	/**
 	* initialize properties context
 	*/
-	private void initPropertiesContext (SessionState state)
+	private static void initPropertiesContext (SessionState state)
 	{
 		state.removeAttribute(STATE_PROPERTIES_ID);
 		state.removeAttribute(STATE_PROPERTIES_COPYRIGHT_CHOICE);
@@ -7778,7 +8126,7 @@ public class ResourcesAction
 	* @param size The Vector object size -1
 	* @return The Vector object consists of null Strings
 	*/
-	private Vector emptyVector (int size)
+	private static Vector emptyVector (int size)
 	{
 		Vector v = new Vector ();
 		for (int i=0; i <= size; i++)
@@ -8479,13 +8827,26 @@ public class ResourcesAction
 				String mode = (String) state.getAttribute(STATE_MODE);
 				if(MODE_HELPER.equals(mode))
 				{
-					if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+					String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+					if(helper_mode != null && MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
 					{
-						attachItem(id, state);
+						// add to the attachments vector
+						List attachments = EntityManager.newReferenceList();
+						Reference ref = EntityManager.newReference(ContentHostingService.getReference(id));
+						attachments.add(ref);
+						cleanupState(state);
+						state.setAttribute(STATE_ATTACHMENTS, attachments);
 					}
 					else
 					{
-						attachLink(id, state);
+						if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+						{
+							attachItem(id, state);
+						}
+						else
+						{
+							attachLink(id, state);
+						}
 					}
 				}
 			}
@@ -8949,7 +9310,7 @@ public class ResourcesAction
 	 * @param p The ResourceProperties object for the resource item
 	 * @return true If it can be replaced; false otherwise
 	 */
-	private boolean replaceable(ResourceProperties p)
+	private static boolean replaceable(ResourceProperties p)
 	{
 		boolean rv = true;
 		

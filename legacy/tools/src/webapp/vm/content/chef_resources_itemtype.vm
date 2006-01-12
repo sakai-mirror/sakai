@@ -299,6 +299,9 @@
 		<input type="hidden" name="metadataGroup" id="metadataGroup" value="*" />
 		<input type="hidden" name="field"  id="field" value="no value" />
 		<input type="hidden" name="index" id="index" value="0" />
+		#if($attaching_this_item)
+			<input type="hidden" name="attach_me" value="true" />
+		#end
 		#if($max_number > 1 && ("$itemType" == "$TYPE_UPLOAD" || "$itemType" == "$TYPE_FOLDER" || "$itemType" == "$TYPE_URL"))
 			<p class="shorttext">
 				#if("$itemType" == "$TYPE_FOLDER")
@@ -331,7 +334,9 @@
 			#set($i = $n - 1)
 			######################## ================ Title Bar for Item ================ ########################
 			<h4>
-				#if("$itemType" == "$TYPE_UPLOAD")
+				#if($helper_title)
+					$helper_title
+				#elseif("$itemType" == "$TYPE_UPLOAD")
 					$tlang.getString("addi.upload")
 				#elseif("$itemType" == "$TYPE_URL")
 					$tlang.getString("addi.url")
@@ -658,9 +663,9 @@
 
 		######################## ================ Add Button, Cancel Button ================ ########################
 		<p class="act">
-			<input type="button" class="active" name="savechanges" id="saveChanges" onclick="javascript:showNotif('submitnotif','saveChanges','createForm');document.getElementById('flow').value='create'; submitform('createForm');" onkeypress="javascript:showNotif('submitnotif','saveChanges','createForm');document.getElementById('flow').value='create'; submitform('createForm');"  value="$tlang.getString("gen.add")" />
-			<input type="button" name="cancel" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "flow=cancel")';submitform('createForm');" onkeypress="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "flow=cancel")';submitform('createForm');"  value="$tlang.getString("gen.cancel")" />
-			<span id="submitnotif" style="visibility:hidden">$tlang.getString("gen.proces")</span>
+				<input type="button" class="active" name="savechanges" id="saveChanges" onclick="javascript:showNotif('submitnotif','saveChanges','createForm');document.getElementById('flow').value='create'; submitform('createForm');" onkeypress="javascript:showNotif('submitnotif','saveChanges','createForm');document.getElementById('flow').value='attach'; submitform('createForm');"  value="$tlang.getString("gen.add")" />
+				<input type="button" name="cancel" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "flow=cancel")';submitform('createForm');" onkeypress="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "flow=cancel")';submitform('createForm');"  value="$tlang.getString("gen.cancel")" />
+				<span id="submitnotif" style="visibility:hidden">$tlang.getString("gen.proces")</span>
 		</p>
 		#if("$itemType" == "$TYPE_UPLOAD")
 			<p class="shorttext">
