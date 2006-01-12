@@ -2991,6 +2991,7 @@ extends VelocityPortletStateAction
 				// select the time slot first, go to the slot containing earliest event on that day
 				
 				if (state.getPrevState() != null)
+				{
 					if ( (state.getPrevState()).equalsIgnoreCase("list")
 					|| (state.getPrevState()).equalsIgnoreCase("month")
 					|| (state.getPrevState()).equalsIgnoreCase("year"))
@@ -3025,8 +3026,9 @@ extends VelocityPortletStateAction
 									currentPage = "second";
 							}
 						}
+						state.setCurrentPage(currentPage);
 					}
-				state.setCurrentPage(currentPage);
+				}	
 				
 				if(currentPage.equals("third"))
 				{
@@ -3088,7 +3090,6 @@ extends VelocityPortletStateAction
 		context.put("helper",new Helper());
 		context.put("calObj", calObj);
 		context.put("tlang",rb);
-		//state.setCalObj(calObj);
 		state.setState("day");
 		context.put("message", state.getState());
 		
@@ -5329,6 +5330,22 @@ extends VelocityPortletStateAction
 				else
 				{
 					state.setState("week");
+				}
+				
+				// if going back to week/day view, we need to know which slot to go
+				// -- the slot containing the starting time of the new added event
+				if (state.getState().equals("week")||state.getState().equals("day"))
+				{
+					Time timeObj_p1 = TimeService.newTimeLocal(Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(day),FIRST_PAGE_START_HOUR,00,00,000);
+					Time timeObj_p2 = TimeService.newTimeLocal(Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(day),SECOND_PAGE_START_HOUR,00,00,000);
+					Time timeObj_p3 = TimeService.newTimeLocal(Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(day),THIRD_PAGE_START_HOUR,00,00,000);
+					
+					if (timeObj.after(timeObj_p2) && timeObj.before(timeObj_p3))
+						state.setCurrentPage("second");
+					else if (timeObj.before(timeObj_p2))
+						state.setCurrentPage("first");
+					else if (timeObj.after(timeObj_p3))
+						state.setCurrentPage("third");
 				}
 			}
 			catch (IdUnusedException  e)
