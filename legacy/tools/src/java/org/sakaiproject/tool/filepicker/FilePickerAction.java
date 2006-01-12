@@ -82,21 +82,26 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
       ToolSession toolSession = SessionManager.getCurrentToolSession();
 
       if (mode == null) {
-         initPicker(portlet, context, rundata, sstate);
-         sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
-         sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
-         sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
-
-         if (toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS) != null) {
-            sstate.setAttribute(ResourcesAction.STATE_ATTACH_LINKS,
-               toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS));
-            toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS);
-         }
-
-         mode = ResourcesAction.MODE_HELPER;
+         mode = initHelperAction(portlet, context, rundata, sstate, toolSession);
       }
 
       return ResourcesAction.buildHelperContext(portlet, context, rundata, sstate);
+   }
+
+   protected String initHelperAction(VelocityPortlet portlet, Context context, RunData rundata,
+                                     SessionState sstate, ToolSession toolSession) {
+      initPicker(portlet, context, rundata, sstate);
+      sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
+      sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+      sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
+
+      if (toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS) != null) {
+         sstate.setAttribute(ResourcesAction.STATE_ATTACH_LINKS,
+            toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS));
+         toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS);
+      }
+
+      return ResourcesAction.MODE_HELPER;
    }
 
    protected void initPicker(VelocityPortlet portlet, Context context, RunData rundata, SessionState sstate) {
@@ -110,14 +115,18 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
          sstate.setAttribute(ResourcesAction.STATE_ATTACHMENTS, EntityManager.newReferenceList(attachments));
       }
 
+      initMessage(toolSession, sstate);
+
+      sstate.setAttribute(ResourcesAction.STATE_RESOURCE_FILTER,
+         toolSession.getAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER));
+   }
+
+   protected void initMessage(ToolSession toolSession, SessionState sstate) {
       String message = (String)toolSession.getAttribute(FilePickerHelper.FILE_PICKER_FROM_TEXT);
       toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_FROM_TEXT);
       if (message != null) {
          sstate.setAttribute(ResourcesAction.STATE_FROM_TEXT, message);
       }
-
-      sstate.setAttribute(ResourcesAction.STATE_RESOURCE_FILTER,
-         toolSession.getAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER));
    }
 
 }
