@@ -950,13 +950,32 @@ public class DavServlet
 			              HttpServletResponse response)
 		throws IOException, ServletException {
 
+		// Call helper
+		processHead(request, response);
+	}
+
+	/**
+	 * Helper to handle set Header information
+	 *
+	 * @param request The servlet request we are processing
+	 * @param response The servlet response we are creating
+	 *
+	 * @exception IOException if an input/output error occurs
+	 * @exception ServletException if a servlet-specified error occurs
+
+	 * @return boolean false if there was an error, true if the head variable all were set
+	 */
+	private boolean processHead(HttpServletRequest request,
+			              HttpServletResponse response)
+		throws IOException, ServletException {
+
 		String path = getRelativePathSAKAI(request);
 
 		if ((path == null) ||
 			path.toUpperCase().startsWith("/WEB-INF") ||
 			path.toUpperCase().startsWith("/META-INF")) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, path);
-			return;
+			return false;
 		}
 
 		// Retrieve the resources
@@ -965,12 +984,11 @@ public class DavServlet
 
 		if (!resourceInfo.exists) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, path);
-			return;
+			return false;
 		}
 
-		if (! resourceInfo.collection) {
+		if ( !resourceInfo.collection) {
 			response.setDateHeader("Last-Modified", resourceInfo.date);
-
 		}
 
 		// Find content type by looking at the file suffix
@@ -989,7 +1007,7 @@ public class DavServlet
 		if ((!resourceInfo.collection) && (contentLength >= 0)) {
 			response.setContentLength((int) contentLength);
 		}
-
+		return true;
 	}
 
 	/**
@@ -1271,7 +1289,7 @@ public class DavServlet
 
 		String path = getRelativePathSAKAI(req);
 
-	doContent(path,req,resp);
+		doContent(path,req,resp);
 	}
 
 
@@ -1289,7 +1307,7 @@ public class DavServlet
 	    return count;
 	}
 
-        // id is known to be a collectin
+        // id is known to be a collection
         private void doDirectory(String id, HttpServletRequest req, HttpServletResponse res)
 	{
 	    // OK, it's a collection and we can read it. Do a listing.
@@ -1460,8 +1478,10 @@ public class DavServlet
 				}
 				else
 				{
+					if ( ! processHead(req, res) ) return "Error setting header values";
 					OutputStream out = res.getOutputStream();
-					res.setContentType(contentType);
+					// now set in processHead
+					// res.setContentType(contentType);
 					out.write(content);
 					out.flush();
 				}
@@ -1477,10 +1497,6 @@ public class DavServlet
 		else
 		{
 		    doDirectory(id, req, res);
-
-		    //			if (Log.getLogger("sakai").isDebugEnabled()) Log.debug("sakai","SAKAIAccess doContent is collection " + id);
-// This is bad
-			        // res.sendError(SakaidavStatus.SC_METHOD_NOT_ALLOWED);
 		}
 		
 		// no errors
