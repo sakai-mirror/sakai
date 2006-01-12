@@ -345,6 +345,11 @@ public class DavServlet
 	 */
 	protected static MessageDigest md5Helper;
 
+	/**
+	 * Array of file patterns we are not supposed to accept on PUT
+	 */
+	private String [] ignorePatterns = null;
+
 	// --------------------------------------------------------- Public Methods
 
 
@@ -385,6 +390,19 @@ public class DavServlet
 			    doProtected = (new Boolean(value)).booleanValue();
 		} catch (Throwable t) {
 			;
+		}
+
+		// load up the ignorePatterns from properties
+		ignorePatterns = ServerConfigurationService.getStrings("webdav.ignore");
+		if ( ignorePatterns != null )
+		{
+			String outVal = "";
+			for ( int i = 0; i< ignorePatterns.length; i++ )
+			{
+				if ( outVal.length() > 0 ) outVal = outVal + " : ";
+				outVal = outVal + ignorePatterns[i];
+			}
+			Log.info("sakai", ME + " ignore patterns:" + outVal);
 		}
 
 		// Load the MD5 helper used to calculate signatures.
@@ -842,7 +860,7 @@ public class DavServlet
 	/** log a request processed */
 	public void log(HttpServletRequest req, SakaidavServletInfo info)
 	{
-		Log.info("sakai", ME + " from:" + req.getRemoteAddr() + " path:" + req.getPathInfo() + " options: " +  info.optionsString());
+		Log.debug("sakai", ME + " from:" + req.getRemoteAddr() + " path:" + req.getPathInfo() + " options: " +  info.optionsString());
 
 	}   // log
 
@@ -901,6 +919,23 @@ public class DavServlet
 
 	}
 
+	/**
+	 * Determine if this path is one of the prefixes that we have been 
+	 * requested to ignore by the properties settings
+	 *
+	 * @param request The servlet request we are processing
+	 */
+	protected boolean isFileNameAllowed(HttpServletRequest req)
+	{
+		if ( ignorePatterns == null ) return true;
+
+		String sakaiPath = getRelativePathSAKAI(req);
+		for ( int i = 0; i< ignorePatterns.length; i++ )
+		{
+			if ( sakaiPath.lastIndexOf(ignorePatterns[i]) > 0 ) return false; 
+		}
+		return true;
+	}
 
 	/**
 	 * Process a HEAD request for the specified resource.
@@ -1053,11 +1088,11 @@ public class DavServlet
 			}
 		}
 		catch (PermissionException e) { 
-			Log.info("sakai","DirContextSAKAI.lookup - You do not have permission to view this resource "+path);
+			Log.debug("sakai","DirContextSAKAI.lookup - You do not have permission to view this resource "+path);
 			throw new NamingException();
 		}
 		catch (IdUnusedException e) {  
-			Log.warn("sakai","DirContextSAKAI.lookup - This resource does not exist: " + id);
+			Log.debug("sakai","DirContextSAKAI.lookup - This resource does not exist: " + id);
 			throw new NamingException(); 
 		}
 		catch (EmptyException e) {  
@@ -1214,7 +1249,7 @@ public class DavServlet
 	return tmpPath;
    }
 
-   /**
+	/**
 	 * POST Method.
 	 */
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -1223,7 +1258,7 @@ public class DavServlet
 
 		String path = getRelativePathSAKAI(req);
 
-	doContent(path,req,resp);
+		doContent(path,req,resp);
 	}
 
 
@@ -1983,6 +2018,9 @@ public class DavServlet
 	 */
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 		throws ServletException, IOException {
+
+		// Do not allow files which match patterns specified in properties
+		if ( ! isFileNameAllowed(req) ) return;
 
 		ResourceProperties oldProps = null;
 
