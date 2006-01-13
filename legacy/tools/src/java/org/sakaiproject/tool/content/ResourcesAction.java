@@ -1023,6 +1023,12 @@ public class ResourcesAction
 		List new_items = (List) state.getAttribute(STATE_CREATE_ITEMS);
 		if(new_items == null)
 		{
+			String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+			if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+			{
+				defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+				state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+			}
 			
 			String encoding = data.getRequest().getCharacterEncoding();
 			
@@ -1034,6 +1040,7 @@ public class ResourcesAction
 				{
 					item.setEncoding(encoding);
 				}
+				item.setCopyrightStatus(defaultCopyrightStatus);
 				new_items.add(item);
 			}
 	
@@ -2068,6 +2075,13 @@ public class ResourcesAction
 		
 		String encoding = data.getRequest().getCharacterEncoding();
 		
+		String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+		if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+		{
+			defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+			state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+		}
+				
 		List new_items = new Vector();
 		for(int i = 0; i < CREATE_MAX_ITEMS; i++)
 		{
@@ -2076,6 +2090,7 @@ public class ResourcesAction
 			{
 				item.setEncoding(encoding);
 			}
+			item.setCopyrightStatus(defaultCopyrightStatus);
 			new_items.add(item);
 		}
 		state.setAttribute(STATE_CREATE_ITEMS, new_items);
@@ -4697,6 +4712,15 @@ public class ResourcesAction
 				item.setEncoding(encoding);
 			}
 			
+			String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+			if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+			{
+				defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+				state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+			}
+			item.setCopyrightStatus(defaultCopyrightStatus);
+
+			
 			if(content != null)
 			{
 				item.setContent(content);
@@ -4823,6 +4847,11 @@ public class ResourcesAction
 			item.setSize(size);
 			
 			String copyrightStatus = properties.getProperty(properties.getNamePropCopyrightChoice());
+			if(copyrightStatus == null || copyrightStatus.trim().equals(""))
+			{
+				copyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+				
+			}
 			item.setCopyrightStatus(copyrightStatus);
 			String copyrightInfo = properties.getPropertyFormatted(properties.getNamePropCopyright());
 			item.setCopyrightInfo(copyrightInfo);
@@ -9348,6 +9377,7 @@ public class ResourcesAction
 		{
 			context.put("newcopyrightinput", state.getAttribute(NEW_COPYRIGHT_INPUT));
 		}
+		
 		if (state.getAttribute(COPYRIGHT_TYPES) != null)
 		{
 			List copyrightTypes = (List) state.getAttribute(COPYRIGHT_TYPES);
@@ -10101,6 +10131,7 @@ public class ResourcesAction
 			m_properties = new Vector();
 			m_isBlank = true;
 			m_instruction = "";
+			// m_copyrightStatus = ServerConfigurationService.getString("default.copyright");
 			
 		}
 		
