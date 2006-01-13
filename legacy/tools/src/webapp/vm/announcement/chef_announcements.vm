@@ -1,4 +1,3 @@
-## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/announcement/chef_announcements.vm,v 1.10 2005/05/28 03:04:35 ggolden.umich.edu Exp $
 ## this is showing the list view of all announcement, and the home view of this tool
 
 ##(gsilver - remaining issues: trimming body, <p> in body when produced with WYS, the fact that how thing look in the synopsys is still undefined - and finally - the permissions nightmare as well as the ling to Remove...
@@ -17,7 +16,7 @@
 			#end
 		#end
 	#end
-
+	
 	#set ($SiteColumnFlag = 0)
 	#foreach ($item in $showMessagesList2)
 		#set ($itemChannel = $validator.escapeHtml($item.channelDisplayName))
@@ -30,7 +29,7 @@
 		<h3>$tlang.getString("gen.announcements")</h3>
 		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 ##		#if ($messageListVector.iterator().hasNext())
-		<div class="leftNav">
+		<div class="leftNav" style="clear:both">
 			<form name="viewForm" class="inlineForm" method="post" action="#toolForm("AssignmentAction")">
 				<input type="hidden" name="eventSubmit_doView" value="view" />
 				<label for="view">
@@ -295,7 +294,7 @@
 					<h3>$tlang.getString("gen.announcements")</h3>
 					#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 ##					#if ($messageListVector.iterator().hasNext())
-						<div class="leftNav">
+						<div class="leftNav" style="clear:both">
 								<form name="viewForm" class="inlineForm" method="post" action="#toolForm("$action")">
 									<input type="hidden" name="eventSubmit_doView" value="view" />
 									<label for="view">
@@ -503,18 +502,24 @@
 									<td headers="date" style="white-space:nowrap;padding-bottom:0">
 										$ann_item.Header.Date.toStringLocalFull()
 									</td>
+									
+									#set ($itemChannel = $validator.escapeHtml($ann_item.channelDisplayName))
 									#if ($!view != $!tlang.getString('view.bygroup'))
 										#if ($channel.allowRemoveMessage($ann_item.Message))
+											#if ($currentChannelDisplayName.equals($itemChannel))
 											<td valign="top" headers="checkbox" style="text-align:center; padding-bottom:0">
 												<label for ="check-$rowCount" class="skip">$tlang.getString("gen.selectremove")</label>
 												<input title="$tlang.getString("gen.selectremove")" type="checkbox" id="check-$rowCount" name="selectedMembers" value="$ann_item.Reference" />
 											</td>
+											#end
 										#else
 									 		#if ($allow_delete)
+												#if ($currentChannelDisplayName.equals($itemChannel))
 												<td valign="top" headers="checkbox" style="text-align:center;padding-bottom:0">
 													<label for ="check-$rowCount" class="skip">$tlang.getString("gen.selectremove")</label>
 													<input title="$tlang.getString("gen.selectremove")" type="checkbox" id="check-$rowCount" name="selectedMembers" value="$ann_item.Reference" disabled="disabled"/>
 												</td>
+												#end
 											#end		
 										#end
 									#end
