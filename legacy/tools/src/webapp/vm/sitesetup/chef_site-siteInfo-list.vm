@@ -80,7 +80,7 @@
 				$tlang.getString("sitegen.siteinfolist.sitecont")
 			</th>
 			<td>
-				$validator.escapeHtml($!contactName) #if($!contactEmail && !$contactEmail.equals("")), <a href="mailto:$!contactEmail">$!contactEmail</a>#end
+				$validator.escapeHtml($!contactName)#if($!contactEmail && !$contactEmail.equals("")), <a href="mailto:$!contactEmail">$!contactEmail</a>#end
 			</td>
 		</tr>
 		<tr> 
