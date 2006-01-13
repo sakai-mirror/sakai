@@ -2163,6 +2163,7 @@ public class SiteAction extends PagedResourceActionII
 			context.put (STATE_TOOL_REGISTRATION_LIST, state.getAttribute(STATE_TOOL_REGISTRATION_LIST));
 			context.put ("selectedTools", orderToolIds(state, site_type, (List) state.getAttribute(STATE_TOOL_REGISTRATION_SELECTED_LIST))); // String toolId's
 			context.put("importSites", state.getAttribute(STATE_IMPORT_SITES));
+			context.put("importSitesTools", state.getAttribute(STATE_IMPORT_SITE_TOOL));
 			context.put("check_home", state.getAttribute(STATE_TOOL_HOME_SELECTED));
 			return (String)getContext(data).get("template") + TEMPLATE[27];
 		case 28: 
@@ -6007,10 +6008,21 @@ public class SiteAction extends PagedResourceActionII
 			// from import
 			if (((String) state.getAttribute(STATE_SITE_MODE)).equalsIgnoreCase(SITE_MODE_SITESETUP))
 			{
-				state.setAttribute(STATE_TEMPLATE_INDEX, "0");
+				// worksite setup
+				if (getStateSite(state) == null)
+				{
+					//in creating new site process
+					state.setAttribute(STATE_TEMPLATE_INDEX, "0");
+				}
+				else
+				{
+					// in editing site process
+					state.setAttribute(STATE_TEMPLATE_INDEX, "12");
+				}
 			}	
 			else if (((String) state.getAttribute(STATE_SITE_MODE)).equalsIgnoreCase(SITE_MODE_SITEINFO))
 			{	
+				// site info
 				state.setAttribute(STATE_TEMPLATE_INDEX, "12");
 			}
 			state.removeAttribute(STATE_IMPORT_SITE_TOOL);
@@ -8149,6 +8161,11 @@ public class SiteAction extends PagedResourceActionII
 						select_import_tools(params, state);
 					}
 				}
+				else
+				{
+					// read form input about import tools
+					select_import_tools(params, state);
+				}
 				if (state.getAttribute(STATE_MESSAGE) == null)
 				{
 					updateCurrentStep(state, forward);
@@ -8726,6 +8743,8 @@ public class SiteAction extends PagedResourceActionII
 		state.removeAttribute(STATE_AUTO_ADD);
 		state.removeAttribute(SITE_CREATE_TOTAL_STEPS);
 		state.removeAttribute(SITE_CREATE_CURRENT_STEP);
+		state.removeAttribute(STATE_IMPORT_SITE_TOOL);
+		state.removeAttribute(STATE_IMPORT_SITES);
 		
 	}	// removeAddClassContext
 

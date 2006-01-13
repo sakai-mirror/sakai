@@ -23,6 +23,7 @@
 			</tr>
 			#set ($toolCount=0)
 			#foreach($toolId in $selectedTools)
+			#set($selectedSites = $!importSitesTools.get($toolId))
 			#set ($toolCount=$toolCount + 1)
 				#if ($toolId == "sakai.schedule" || $toolId == "sakai.announcements" || $toolId == "sakai.resources" || $toolId == "sakai.discussion" || $toolId == "sakai.assignment" || $toolId == "sakai.assignment.grades")
 					<tr>
@@ -50,7 +51,7 @@
 									#end
 								#end
 								#if ($toolFound)
-									<input type="checkbox" id="toolSite$toolCount$siteCount" name="$toolId" value="$site.Id" />
+									<input type="checkbox" id="toolSite$toolCount$siteCount" name="$toolId" value="$site.Id" #if($!selectedSites.contains($site.Id))checked="checked"#end />
 									<label class="skip" for="toolSite$toolCount$siteCount">Select $toolTitle of $validator.escapeHtml($site.getTitle())</label>
 								#else
 									<input type="checkbox" id="toolSite$toolCount$siteCount"  name="$toolId" value="$site.Id" disabled="disabled" />
