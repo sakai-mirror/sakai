@@ -6552,12 +6552,13 @@ extends PagedResourceActionII
 	 */ 
 	private void validPointGrade(SessionState state, String grade)
 	{
+		String VALID_CHARS_FOR_INT = "-01234567890";
 		if (grade != null && !grade.equals(""))
 		{
 			if (grade.startsWith("-"))
 			{
 				// check for negative sign
-				addAlert(state, rb.getString("plesuse2"));
+				addAlert(state, rb.getString("plesuse3"));
 			}
 			else
 			{
@@ -6604,7 +6605,25 @@ extends PagedResourceActionII
 					}
 					catch (NumberFormatException e)
 					{
-						addAlert(state, rb.getString("plesuse1"));
+						boolean invalid = false;
+						// case 1: contains invalid char for int
+						for (int i = 0; i<grade.length() && !invalid; i++)
+						{
+							char c = grade.charAt(i);
+							if (VALID_CHARS_FOR_INT.indexOf(c) == -1)
+							{
+								invalid = true;
+							}
+						}
+						if (invalid)
+						{
+							addAlert(state, rb.getString("plesuse1"));
+						}
+						else
+						{
+							// case 2: input String is larger than Integer.MAX_VALUE or smaller than Integer.MIN_VALUE
+							addAlert(state, rb.getString("plesuse4") + Integer.MAX_VALUE + ".");
+						}
 					}
 				}
 			}
