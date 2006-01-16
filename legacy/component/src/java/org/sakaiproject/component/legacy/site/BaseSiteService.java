@@ -1632,7 +1632,15 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		for (Iterator i = m_entityManager.getEntityProducers().iterator(); i.hasNext();)
 		{
 			EntityProducer ep = (EntityProducer) i.next();
-			ep.syncWithSiteChange(site, change);
+			try
+			{
+				ep.syncWithSiteChange(site, change);
+			}
+			catch (Exception e)
+			{
+				m_logger.warn(this + " Exception while notifying EntityProducer of Site Change, exception below");
+				e.printStackTrace();
+			}
 		}
 	}
 
