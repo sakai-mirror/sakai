@@ -6,3 +6,4 @@
 <a href="#" onclick="addMarkup('content','|col|col|col|\n|newrow|col|col|','{table}\n','\n{table}'); return false;" >table</a>
 <a href="#" onclick="addMarkup('content','Default Test Image','{image:worksite:/wikiimages/default.gif|','}'); return false;" >image</a>
 <a href="#" onclick="addMarkup('content','Macro Link','{link:','|http://www.google.com}'); return false;" >full link</a>
+<a href="#" onclick="addAttachment('content','editForm','editControl'); return false;">Add Attachment</a>

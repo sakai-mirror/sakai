@@ -64,7 +64,7 @@
 	  <div id="${rwikiContentStyle}" >
 
 	    <h3>Edit: <span class="pageName" title="${viewBean.pageName}"><c:out value="${viewBean.localName}"/></span></h3>
-	    <form action="?#" method="post" >
+	    <form action="?#" method="post" id="editForm">
 	      <c:if test="${fn:length(errorBean.errors) gt 0}">
 		<!-- XXX This is hideous -->
 		<p class="validation" style="clear: none;">
@@ -75,7 +75,7 @@
 		</p>
 	      </c:if>
 
-	      <c:if test="${editBean.saveType != null and editBean.saveType ne 'preview'}">
+	      <c:if test="${editBean.saveType != null and editBean.saveType ne 'preview' and editBean.saveType ne 'attach'}">
 
 			<c:if test="${editBean.saveType eq 'revert'}">
 			    <c:set target="${editBean}" property="previousContent" value="${currentRWikiObject.history[editBean.previousRevision].content}"/>
@@ -104,7 +104,18 @@
 		<pre>
 		  <c:out value="${nameHelperBean.submittedContent}"/>
 		</pre>
-		
+	      </c:if>
+	      <c:if test="${editBean.saveType eq 'attach' and nameHelperBean.submittedContent != null}">
+		<p class="longtext"><label for="submittedContent">Submitted Content prior to Attach</label>
+		  <jsp:element name="input">
+		    <jsp:attribute name="type">hidden</jsp:attribute>
+		    <jsp:attribute name="name">submittedContent</jsp:attribute>
+		    <jsp:attribute name="value"><c:out value="${nameHelperBean.submittedContent}"/></jsp:attribute>
+		  </jsp:element>
+		</p>
+		<pre>
+		  <c:out value="${nameHelperBean.submittedContent}"/>
+		</pre>
 	      </c:if>
 	      
 	   <div class="longtext">
@@ -114,7 +125,7 @@
 		    	<jsp:directive.include file="edittoolbar.jsp"/>
 		    <textarea cols="60" rows="25" name="content" id="content" onselect="storeCaret(this)" onclick="storeCaret(this)" onkeyup="storeCaret(this)" >
 		      <c:choose>
-			<c:when test="${editBean.saveType eq 'preview'}">
+			<c:when test="${editBean.saveType eq 'preview' or editBean.saveType eq 'attach'}">
 			  <c:out value="${editBean.previousContent}"/>
 			</c:when>
 			<c:otherwise>
@@ -126,14 +137,14 @@
 		</div>
 		<input type="hidden" name="action" value="save"/>
 		<input type="hidden" name="panel" value="Main"/>
-		<input type="hidden" name="version" value="${editBean.saveType eq 'preview' ? editBean.previousVersion : currentRWikiObject.version.time}"/>
+		<input type="hidden" name="version" value="${(editBean.saveType eq 'preview' or editBean.saveType eq 'attach' )? editBean.previousVersion : currentRWikiObject.version.time}"/>
 		<input type="hidden" name="pageName" value="${currentRWikiObject.name}" />
 		<input type="hidden" name="realm" value="${currentRWikiObject.realm }"/>
 	    </div>
-	    <div class="rwiki_editControl">
+	    <div class="rwiki_editControl" id="editControl">
 		<p class="act">
 		  <input type="submit" name="save" value="Save" /><c:out value=" "/>
-		  <c:if test="${(editBean.saveType eq 'preview' and nameHelperBean.submittedContent != null) or (editBean.saveType ne null and editBean.saveType ne 'preview')}">
+		  <c:if test="${((editBean.saveType eq 'preview' or editBean.saveType eq 'attach') and nameHelperBean.submittedContent != null) or (editBean.saveType ne null and editBean.saveType ne 'preview' and editBean.saveType ne 'attach')}">
 		    <input type="submit" name="save" value="Overwrite"/><c:out value=" "/>
 		  </c:if>
 		  <input type="submit" name="save" value="Preview"/><c:out value=" "/>

@@ -24,6 +24,8 @@ package uk.ac.cam.caret.sakai.rwiki.tool.bean;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Iterator;
+import java.util.Map;
 
 import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.util.WikiPageAction;
@@ -34,7 +36,7 @@ import uk.ac.cam.caret.sakai.rwiki.tool.util.WikiPageAction;
  * @author andrew
  */
 //FIXME: Tool
-
+//FIXME: Need a better way of making urls!
 public class ViewBean {
 
     /**
@@ -109,7 +111,7 @@ public class ViewBean {
      * The current search criteria
      */
     private String search;
-
+    
     /**
      * Simple constructor that creates an empty view bean.
      * 
@@ -139,6 +141,14 @@ public class ViewBean {
         }
         return "";
     }
+    /**
+     * Returns a public view URL with no breadcrumbs
+     * @return
+     */
+    public String getExportUrl() {
+        return getPageUrl(pageName, WikiPageAction.EXPORT_ACTION.getName());
+    }
+
     
     /**
      * Returns a public view URL with no breadcrumbs
@@ -232,6 +242,58 @@ public class ViewBean {
     }
     
     /**
+     * Given a WikiPageAction return an url to the current page for performing that action.
+     * @param action WikiPageAction to perform
+     * @return url as string
+     */
+    public String getActionUrl(WikiPageAction action) {
+        return getActionUrl(action, true);
+    }
+    
+    /**
+     * Given a WikiPageAction return an url to the current page (with breadcrumbs on or off) for performing that action.
+     * @param action WikiPageAction to perform
+     * @param breadcrumbs false if breadcrumbs should be disabled
+     * @return url as string
+     */
+    public String getActionUrl(WikiPageAction action, boolean breadcrumbs) {
+        return getPageUrl(this.pageName, action.getName(), breadcrumbs);
+    }
+
+    /**
+     * Given a WikiPageAction return an url to the requested page (with breadcrumbs on or off) for performing that action.
+     * @param action WikiPageAction to perform
+     * @param breadcrumbs false if breadcrumbs should be disabled
+     * @return url as string
+     */
+    public String getActionUrl(String pageName, WikiPageAction action, boolean breadcrumbs) {
+        return getPageUrl(pageName, action.getName(), breadcrumbs);
+    }
+    
+    /**
+     * Given a WikiPageAction return an url to the current page with the additional parameters being set.
+     * 
+     * @param action WikiPageAction to perform
+     * @param parameters Additional query parameters to attach
+     * @return url as String
+     */
+    public String getActionUrl(WikiPageAction action, Map parameters) {
+        return getPageUrl(this.pageName, action.getName(), parameters);
+    }
+    
+    /**
+     * Given a WikiPageAction return an url to the requested page with the additional parameters being set.
+     * 
+     * @param pageName globalised pagename to perform action on
+     * @param action WikiPageAction to perform
+     * @param parameters Additional query parameters to attach
+     * @return url as String
+     */
+    public String getActionUrl(String pageName, WikiPageAction action, Map parameters) {
+        return getPageUrl(pageName, action.getName(), parameters);
+    }
+    
+    /**
      * Given a page name and an action return an url that represents it.
      * 
      * @param pageName
@@ -271,6 +333,24 @@ public class ViewBean {
             "&" + REALM_URL_ENCODED + "=" + urlEncode(localSpace);
         }
         
+    }
+    
+    protected String getPageUrl(String pageName, String action, Map params) {
+        StringBuffer url = new StringBuffer(getAnchorString());
+        url.append("?").append(PAGENAME_URL_ENCODED).append('=').append(urlEncode(pageName));
+        url.append('&').append(ACTION_URL_ENCODED).append('=').append(urlEncode(action));
+        url.append('&').append(PANEL_URL_ENCODED).append('=').append(MAIN_URL_ENCODED);
+        url.append('&').append(REALM_URL_ENCODED).append('=').append(urlEncode(localSpace));
+        
+        for (Iterator it = params.keySet().iterator(); it.hasNext();) {
+            String key = (String) it.next();
+            String value = (String) params.get(key);
+            if (!(PAGE_NAME_PARAM.equals(key) || ACTION_PARAM.equals(key) || PANEL_PARAM.equals(key) || SearchBean.REALM_PARAM.equals(key))) {
+                url.append('&').append(urlEncode(key)).append('=').append(urlEncode(value));
+            }
+        }
+        
+        return url.toString();
     }
    
     /**

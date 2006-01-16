@@ -31,17 +31,21 @@ import uk.ac.cam.caret.sakai.rwiki.tool.api.HttpCommand;
 
 // FIXME: Tool
 public class RequestHelper {
-
-	  private Logger log;
     public static final String PANEL = "panel";
 
     public static final String ACTION = "action";
 
     public static final String TITLE_PANEL = "Title";
-    
+
+    public static final String HELPER_PATH = "helper";
+
+    public static final String WIKI_PATH = "wiki";
+
     private String defaultAction = "view";
 
     private CommandService commandService;
+
+    private Logger log;
 
     public HttpCommand getCommandForRequest(HttpServletRequest request) {
         String panel = request.getParameter(PANEL);
@@ -51,7 +55,14 @@ public class RequestHelper {
         if (TITLE_PANEL.equals(panel)) {
             action = panel;
         }
-        
+
+        // Cope with helper call:
+        String requestPath = request.getRequestURI().substring(request.getContextPath().length() + request.getServletPath().length());
+        if (requestPath != null
+                && requestPath.startsWith("/" + HELPER_PATH + "/")) {
+            action = HELPER_PATH;
+        } 
+
         if (action == null) {
             action = defaultAction;
         }
@@ -75,13 +86,12 @@ public class RequestHelper {
         this.defaultAction = defaultAction;
     }
 
-	public Logger getLog() {
-		return log;
-	}
+    public Logger getLog() {
+        return log;
+    }
 
-	public void setLog(Logger log) {
-		this.log = log;
-	}
+    public void setLog(Logger log) {
+        this.log = log;
+    }
 
-    
 }
