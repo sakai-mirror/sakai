@@ -1208,16 +1208,16 @@ public class DavServlet
 
 		}
 		catch (PermissionException e) { 
-			Log.info("sakai","ResourceInfoSAKAI - You do not have permission to view this resource "+path);
+			Log.debug("sakai","ResourceInfoSAKAI - You do not have permission to view this resource "+path);
 		}
 		catch (IdUnusedException e) {  
-			Log.warn("sakai","ResourceInfoSAKAI - This resource does not exist "+path); 
+			Log.debug("sakai","ResourceInfoSAKAI - This resource does not exist "+path); 
 		}
 		catch (EmptyException e) {  
-			Log.warn("sakai","ResourceInfoSAKAI - This resource does not exist "+path);
+			Log.warn("sakai","ResourceInfoSAKAI - This resource is empty"+path);
 		}
 		catch (TypeException e) {  
-			Log.warn("sakai","ResourceInfoSAKAI - This resource does not exist "+path);
+			Log.warn("sakai","ResourceInfoSAKAI - Type Exception "+path);
 		}
 
 		httpDate = getHttpDate(modificationDate);
