@@ -239,8 +239,14 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 			UsageSession session = (UsageSession) s.getAttribute(USAGE_SESSION_KEY);
 			if (session != null)
 			{
-				M_log.warn("addSession: already have a session");
-				return session;
+				// If we have a session for this user, simply reuse
+				if ( userId != null && userId.equals(session.getUserId()) )
+				{
+					return session;
+				}
+				M_log.warn("startSession: replacing existing UsageSession with Id="+
+					session.getUserId()+" new session Id="+userId);
+				// Fall through and make a new session for this new user
 			}
 
 			// create the usage session and bind it to the session
