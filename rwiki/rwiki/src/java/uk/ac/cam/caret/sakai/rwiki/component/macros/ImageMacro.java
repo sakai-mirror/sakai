@@ -99,7 +99,17 @@ public class ImageMacro extends BaseMacro {
 			}
 			
 			String link = params.get("link");
+            
+            
 			if (link != null) {
+                // check url for sakai:// or worksite://
+                if (link.startsWith("sakai:/")) {
+                    link = "/access/content/group/" + link.substring("sakai:/".length());
+                } else if (link.startsWith("worksite:/")) {
+                    link = "/access/content/group/" + securityService.getSiteId() + "/" + link.substring("worksite:/".length());
+                }
+
+
 				writer.write("<a href=\"" + Encoder.escape(link) + "\"");
 				if (target != null) {
 					writer.write("target=\""+ Encoder.escape(target) +"\"");
