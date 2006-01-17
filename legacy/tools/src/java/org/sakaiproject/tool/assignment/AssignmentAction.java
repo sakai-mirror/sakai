@@ -1423,15 +1423,22 @@ extends PagedResourceActionII
 		context.put("accessPointUrl", (ServerConfigurationService.getAccessUrl()).concat(AssignmentService.submissionsZipReference(contextString, (String) state.getAttribute (EXPORT_ASSIGNMENT_REF))));
 		
 		// gradebook integration
-		GradebookService g = (GradebookService) (org.sakaiproject.service.gradebook.shared.GradebookService) ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
-		String gradebookUid = ToolManager.getInstance().getCurrentPlacement().getContext();
-		if (g.gradebookExists(gradebookUid))
+		try
 		{
-			context.put("withGradebook", Boolean.TRUE);
+			GradebookService g = (GradebookService) (org.sakaiproject.service.gradebook.shared.GradebookService) ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
+			String gradebookUid = ToolManager.getInstance().getCurrentPlacement().getContext();
+			if (g.gradebookExists(gradebookUid))
+			{
+				context.put("withGradebook", Boolean.TRUE);
+			}
+			else
+			{
+				context.put("withGradebook", Boolean.FALSE);
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			context.put("withGradebook", Boolean.FALSE);
+			Log.debug("chef", this + " Exception while getting site gradebook, exception below:\n" + e.getMessage());
 		}
 		String template = (String) getContext(data).get("template");
 		return template + TEMPLATE_INSTRUCTOR_GRADE_ASSIGNMENT;
@@ -1568,17 +1575,29 @@ extends PagedResourceActionII
 	    //    to remove.
 		GradebookService g = (GradebookService) (org.sakaiproject.service.gradebook.shared.GradebookService) ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
 		String gradebookUid = ToolManager.getInstance().getCurrentPlacement().getContext();
-		
+		boolean gradebookExists = false;
 		try
-        {
-    			Assignment a = AssignmentService.getAssignment(assignmentRef);
-    			
-    			if (a.getProperties().getProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK) != null && a.getProperties().getBooleanProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK)
-    				&& a.getContent().getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE)
-    			{
-    				// assignment has a setting to integrate with Gradebook
-				if (g.gradebookExists(gradebookUid))
-			    { 	
+		{
+			// assignment has a setting to integrate with Gradebook
+			if (g.gradebookExists(gradebookUid))
+		    {
+				gradebookExists = true;
+		    }
+		}
+		catch (Exception e)
+		{
+			Log.debug("chef", this + "Exception while getting site gradebook, exception below:\n" + e.getMessage());
+		}
+		
+		if (gradebookExists)
+		{
+			try
+	        {
+	    			Assignment a = AssignmentService.getAssignment(assignmentRef);
+	    			
+	    			if (a.getProperties().getProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK) != null && a.getProperties().getBooleanProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK)
+	    				&& a.getContent().getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE)
+	    			{	
 			    		if (add)
 			    		{
 			    			try
@@ -1667,10 +1686,9 @@ extends PagedResourceActionII
 			    			}
 			    		}
 			    }
-			    else
-			    {
-			    	  	//remove assignment and all its submissions
-			        try
+	    			else
+	    			{
+	    				try
 			        {	
 			        		g.removeExternalAssessment(gradebookUid, assignmentRef);
 			        }
@@ -1678,27 +1696,13 @@ extends PagedResourceActionII
 			        {
 			        		Log.debug("chef", e.getMessage());
 			        }
-			    }
-    			}	// whether assignment is set to integrate with Gradebook?
-    			else
-    			{
-    				if (g.gradebookExists(gradebookUid))
-    			    {
-    					try
-    			        {	
-    			        		g.removeExternalAssessment(gradebookUid, assignmentRef);
-    			        }
-    			        catch(Exception e)
-    			        {
-    			        		Log.debug("chef", e.getMessage());
-    			        }
-    			    }
-    			}
-        }
-        catch(Exception e)
-        {
-        		Log.debug("chef", "Cannot find assignment " + assignmentRef + ": " + e.getMessage());
-        }
+	    			}
+	        }
+	        catch(Exception e)
+	        {
+	        		Log.debug("chef", "Cannot find assignment " + assignmentRef + ": " + e.getMessage());
+	        }
+		}	// if gradebook exists
 	}	// integrateGradebook
 	
 	/**
