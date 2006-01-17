@@ -50,23 +50,7 @@
 				#end
 				<tr>
 					<td>
-						#if ($toolId.equals("sakai.siteinfo"))
-							## Site Info tool is immutable
-							#set($siteinfoChecked=false)
-							<input type="checkbox" name="selectedTools" value="$toolId" id="$toolId"
-								#if($toolRegistrationSelectedList)
-									#foreach($tId in $toolRegistrationSelectedList)
-										#if ($tId == $toolId)
-											#set($siteinfoChecked=true)
-											checked="checked" disabled="disabled"
-										#end
-									#end
-								#end
-							/>
-							#if ($siteinfoChecked)
-								<input type="hidden" name="selectedTools" value="$toolId" />
-							#end
-						#elseif (!$myworkspace_site || ($myworkspace_site && ($toolId.indexOf("sakai.news") != -1 || $toolId.indexOf("sakai.iframe") != -1 || $!defaultTools.indexOf($toolId) != -1)))
+						#if (!$myworkspace_site || ($myworkspace_site && ($toolId.indexOf("sakai.news") != -1 || $toolId.indexOf("sakai.iframe") != -1 || $!defaultTools.indexOf($toolId) != -1)))
 							<input type="checkbox" name="selectedTools" value="$toolId" id="$toolId"  
 								#if ($!defaultTools.indexOf($toolId) != -1)
 									checked="checked" disabled="disabled" 
