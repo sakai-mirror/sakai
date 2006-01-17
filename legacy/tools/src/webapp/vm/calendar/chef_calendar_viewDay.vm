@@ -107,7 +107,7 @@
 		$tlang.getString("view.yesterday")
     #else
         <a href="#" onclick="location='#toolLink("$action" "doDpagep")';return false;" title="$tlang.getString('view.goearlier')">
-        #if($page== "second") $tlang.getString("view.before") 8 AM #else $tlang.getString("view.before") 2 PM  #end
+        $tlang.getString("view.before")
     #end
     </a>
     </td>
@@ -332,11 +332,11 @@
 <tr><td align="left">
 #if ($page== "first")
     <a href="#toolLink("$action" "doDpagen")" title="$tlang.getString('view.golater')">
-    $tlang.getString('view.after') 9 AM</a>
+    $tlang.getString('view.after')</a>
 #else
     #if($page== "second")
         <a href="#toolLink("$action" "doDpagen")" title="Go later">
-        $tlang.getString('view.after') 5 PM</a>
+        $tlang.getString('view.after')</a>
     #else ## --third page
         <a href="#" onclick="location='#toolLink("$action" "doNextday")';return false;" title="$tlang.getString('view.golater')">
         $tlang.getString('view.tomorrow')</a>
