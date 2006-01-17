@@ -1442,19 +1442,23 @@ public class DeliveryActionListener
       // else set time elapsed as 0
       AssessmentGradingData ag = delivery.getAssessmentGrading();
       delivery.setBeginTime(ag.getAttemptDate());
-      if (ag.getTimeElapsed() != null) 
-        delivery.setTimeElapse(ag.getTimeElapsed().toString());
-      else  // this is a new timed assessment
-        delivery.setTimeElapse("0");
+      if (delivery.isTimeRunning() && delivery.getBeginAssessment()){
+        if (ag.getTimeElapsed() != null)
+          delivery.setTimeElapse(ag.getTimeElapsed().toString());
+        else  // this is a new timed assessment
+          delivery.setTimeElapse("0");
+        queueTimedAssessment(delivery, timeLimit);
+        delivery.setBeginAssessment(false);
+      }
+      else{ // in midst of assessment taking, sync it with timedAG
+        TimedAssessmentQueue queue = TimedAssessmentQueue.getInstance();
+        TimedAssessmentGradingModel timedAG = queue.get(ag.getAssessmentGradingId());
+        if (timedAG != null)
+          syncTimeElapsedWithServer(timedAG, delivery);
+      }
 
       if (delivery.getLastTimer()==0){
         delivery.setLastTimer((new Date()).getTime()); //set the time when the user click Begin Assessment
-      }
-
-      // if listener is evoked by beginAssessment, put in queue
-      if (delivery.getBeginAssessment()){
-        queueTimedAssessment(delivery, timeLimit);
-        delivery.setBeginAssessment(false);
       }
     }
   }
@@ -1479,13 +1483,21 @@ public class DeliveryActionListener
       // he must go through the beginAssessment screen again, hence, beginAssessment is set
       // to true again. In this case, we need to sync up the JScript time with the server time
       // We need to correct 2 settings based on timedAG: delivery.timeElapse
-      int timeElapsed = Math.round(((new Date()).getTime() - timedAG.getBeginDate().getTime())/1000);
-      System.out.println("***time passed="+timeElapsed);
-      ag.setTimeElapsed(new Integer(timeElapsed));
-      GradingService gradingService = new GradingService();
-      gradingService.saveOrUpdateAssessmentGrading(ag);
-      delivery.setTimeElapse(ag.getTimeElapsed().toString());
+      syncTimeElapsedWithServer(timedAG, delivery);
     }
+  }
+
+  private void syncTimeElapsedWithServer(TimedAssessmentGradingModel timedAG, DeliveryBean delivery){
+    AssessmentGradingData ag = delivery.getAssessmentGrading();
+    int timeElapsed  = Math.round(((new Date()).getTime() - timedAG.getBeginDate().getTime())/1000); //in sec
+    // this is to cover the scenerio when user took an assessment, Save & Exit, Then returned at a
+    // later time, we need to account for the time taht he used before
+    int timeTakenBefore = Math.round(timedAG.getTimeLimit() - timedAG.getTimeLeft()); // in sec
+    System.out.println("***time passed="+timeElapsed+timeTakenBefore);
+    ag.setTimeElapsed(new Integer(timeElapsed+timeTakenBefore));
+    GradingService gradingService = new GradingService();
+    gradingService.saveOrUpdateAssessmentGrading(ag);
+    delivery.setTimeElapse(ag.getTimeElapsed().toString());
   }
 
   private AssessmentGradingData createAssessmentGrading(
