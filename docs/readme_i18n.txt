@@ -25,7 +25,7 @@ languages, as follows:
    Local ID: ja_JP
    
 4) Dutch
-   Status: Completed for Sakai 2.0.1
+   Status: Completed for Sakai 2.1
    Translated by: n/a
    Contact: Jim Doherty   jim.doherty@gmail.com 
    Local ID: nl_NL
@@ -79,27 +79,31 @@ languages, as follows:
     Local ID: fr_FR
 	 
 13) Spanish
-    Status: ??
+    Status: Relying on translation from es_ES locale
     Translated by: n/a
     Contact: Cynthia Gonzalez (gonzalez.cynthia@itesm.mx)
+    Contact: Larisa Enriquez Vazquez (larisa@piaget.dgsca.unam.mx)
     Local ID: es_MX
 
 14) Spanish
-    Status: ??B
+    Status: nearing completion 1/13/2006
     Translated by: n/a
-    Contact: Larisa Enriquez Vazquez (larisa@piaget.dgsca.unam.mx)
-    Local ID: es_MX
+    Contact: David Roldan Martinez (darolmar@abierta.upv.es)
+    Local ID: es_ES
 
 15) Spanish
     Status: ??
     Translated by: n/a
     Contact: Sebasti‡n Barreiro (sbarreiro@gmail.com)
     Local ID: es_AR
+    
+16) Russian
+    Status: ??
+    Translated by: n/a
+    Contact: Alexander Glebovsky (glebovsky@rambler.ru)
+    Local ID: ru_RU
 
-
-
-
-Currently, the language locale must be defined at boot time, by
+The default language locale must be defined at boot time, by
 setting the tomcat JAVA_OPTS property as follows:
 
 -- catalina.sh -----------------------------------------------
