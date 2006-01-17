@@ -359,7 +359,7 @@
 			#elseif ($item.isPlaintext() || $item.isHtml())
 				<p class="shorttext">
 					<label for="intent">$tlang.getString("gen.content")</label>
-					<select name="intent" id="intent" onchange="javascript: document.getElementById('flow').value='intentChanged'; submitform('propertyForm');">
+					<select name="intent" id="intent" onchange="javascript: document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=intentChanged")'; submitform('propertyForm');">
 						<option id="intent-revise" value="revise"#if("$intent" == "$REVISE") selected="selected"#end>Revise document contents below</option>
 						<option id="intent-replace" value="replace"#if("$intent" == "$REPLACE") selected="selected"#end>Replace with document from my computer</option>
 					</select>

@@ -6912,6 +6912,8 @@ public class ResourcesAction
 					ContentHostingService.commitResource(redit, item.getNotification());
 				}
 				
+				state.setAttribute(STATE_EDIT_INTENT, INTENT_REVISE_FILE);
+				
 				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
 				{
 					// when in resource mode
