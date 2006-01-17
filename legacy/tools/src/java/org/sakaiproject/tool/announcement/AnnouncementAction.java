@@ -2076,7 +2076,7 @@ extends PagedResourceActionII
 			else if (option.equals("attach"))
 			{
 				// attach
-				readAnnouncementForm(data, context, true);
+				readAnnouncementForm(data, context, false);
 				doAttachments(data, context);
 			}
 			else if (option.equals("sortbygrouptitle"))
