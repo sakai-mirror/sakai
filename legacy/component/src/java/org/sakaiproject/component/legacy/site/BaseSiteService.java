@@ -1636,10 +1636,9 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			{
 				ep.syncWithSiteChange(site, change);
 			}
-			catch (Exception e)
+			catch (Throwable t)
 			{
-				m_logger.warn(this + " Exception while notifying EntityProducer of Site Change, exception below");
-				e.printStackTrace();
+				m_logger.warn(this + " Error encountered while notifying EntityProducer of Site Change",t);
 			}
 		}
 	}
