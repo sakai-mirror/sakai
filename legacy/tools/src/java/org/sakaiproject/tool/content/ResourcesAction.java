@@ -5838,10 +5838,14 @@ public class ResourcesAction
 			alerts = new HashSet();
 			state.setAttribute(STATE_EDIT_ALERTS, alerts);
 		}
+		String flow = params.getString("flow");
+		boolean intentChanged = "intentChanged".equals(flow);
+		String check_fileName = params.getString("check_fileName");
+		boolean expectFile = "true".equals(check_fileName);
 		String intent = params.getString("intent");
 		String oldintent = (String) state.getAttribute(STATE_EDIT_INTENT);
-		boolean upload_file = item.isFileUpload() || ((item.isHtml() || item.isPlaintext()) && INTENT_REPLACE_FILE.equals(intent) && INTENT_REPLACE_FILE.equals(oldintent));
-		boolean revise_file = (item.isHtml() || item.isPlaintext()) && INTENT_REVISE_FILE.equals(intent) && INTENT_REVISE_FILE.equals(oldintent);
+		boolean upload_file = expectFile && item.isFileUpload() || ((item.isHtml() || item.isPlaintext()) && !intentChanged && INTENT_REPLACE_FILE.equals(intent) && INTENT_REPLACE_FILE.equals(oldintent));
+		boolean revise_file = (item.isHtml() || item.isPlaintext()) && !intentChanged && INTENT_REVISE_FILE.equals(intent) && INTENT_REVISE_FILE.equals(oldintent);
 		
 		String name = params.getString("name");
 		if(name == null || "".equals(name.trim()))

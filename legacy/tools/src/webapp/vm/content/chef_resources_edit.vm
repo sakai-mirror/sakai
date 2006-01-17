@@ -294,6 +294,19 @@
 		cr_element.select();
 		cr_element.focus();
 	}
+	function checkForFile(elementId)
+	{
+		var element = document.getElementById(elementId);
+		var check = document.getElementById("check_" + elementId);
+		if(element && element.value && element.value != "" && check)
+		{
+			check.value = "true";
+		}
+		else if(check)
+		{
+			check.value = "false";
+		}
+	}
 	-->
 </script>
 <div class="portletBody">
@@ -390,7 +403,8 @@
 					</table>
 					<p class="shorttext">
 						<label for="fileName">$tlang.getString("rep.thisfile")</label>
-						<input type="file" name="fileName" id="fileName" class="upload" />
+						<input type="file" name="fileName" id="fileName" class="upload" onchange="javascript:checkForFile('fileName');" />
+						<input type="hidden" name="check_fileName" id="check_fileName" value="false" /> 
 					</p>
 				#end
 			#elseif($item.isStructuredArtifact())
@@ -432,7 +446,8 @@
 				</table>
 				<p class="shorttext">
 					<label for="fileName">$tlang.getString("rep.thisfile")</label>
-					<input type="file" name="fileName" id="fileName"  class ="upload" />
+					<input type="file" name="fileName" id="fileName"  class ="upload" onchange="javascript:checkForFile('fileName');" />
+					<input type="hidden" name="check_fileName" id="check_fileName" value="false" /> 
 				</p>
 			#end
 		#end
