@@ -313,6 +313,7 @@ else {
       if (scores.isEmpty())
         return new HashMap();
       AssessmentGradingData gdata = (AssessmentGradingData) scores.toArray()[0];
+      gdata.setItemGradingSet(getItemGradingSet(gdata.getAssessmentGradingId()));
       Iterator iter = gdata.getItemGradingSet().iterator();
       while (iter.hasNext())
       {
