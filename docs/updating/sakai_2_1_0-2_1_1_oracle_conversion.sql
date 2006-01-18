@@ -1,4 +1,4 @@
--- This is the MySQL Sakai 2.1.0 -> 2.1.1 conversion script
+-- This is the Oracle Sakai 2.1.0 -> 2.1.1 conversion script
 ----------------------------------------------------------------------------------------------------------------------------------------
 --
 -- use this to convert a Sakai database from 2.1.0 to 2.1.1.  Run this before you run your first app server.
