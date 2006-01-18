@@ -291,8 +291,11 @@
 		setMainFrameHeight('$validator.escapeJavascript("Main$pid")');	
 		cr_element = document.getElementById("newcopyright");
 		cr_element.value = cr_value;
-		cr_element.select();
-		cr_element.focus();
+		if(new_value == "$USE_THIS_COPYRIGHT")
+		{
+			cr_element.select();
+			cr_element.focus();
+		}
 	}
 	function checkForFile(elementId)
 	{
