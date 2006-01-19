@@ -24,6 +24,7 @@
 // package
 package org.sakaiproject.tool.assignment;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -32,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.JetspeedRunData;
@@ -50,8 +50,8 @@ import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.session.SessionState;
+import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.service.legacy.announcement.AnnouncementChannel;
-import org.sakaiproject.service.legacy.announcement.AnnouncementMessage;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessageEdit;
 import org.sakaiproject.service.legacy.announcement.AnnouncementMessageHeaderEdit;
 import org.sakaiproject.service.legacy.announcement.AnnouncementService;
@@ -82,12 +82,9 @@ import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ParameterParser;
-import org.sakaiproject.util.java.StringUtil;
-import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.util.Validator;
-
-//chen - SAK-1624 (use new file picker)
-import java.util.ArrayList;
+import org.sakaiproject.util.java.ResourceLoader;
+import org.sakaiproject.util.java.StringUtil;
 
 /**
  * <p>AssignmentAction is the action class for the dicussion tool.</p>

@@ -42,6 +42,6 @@
 	<classpathentry kind="src" path="/metaobj"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/sections"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gradebook"/>
-	<classpathentry kind="var" path="MAVEN_REPO/rome/jars/rome-0.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/rome/jars/rome-0.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
