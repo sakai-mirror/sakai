@@ -34,9 +34,11 @@ import org.apache.commons.logging.LogFactory;
  */
 abstract public class IdentifiableObject {
    private Id id;
+   private Id newId;
    protected final Log logger = LogFactory.getLog(this.getClass());
 
    public boolean equals(Object in) {
+      if (this == in) return true;
       if (in == null && this == null) return true;
       if (in == null && this != null) return false;
       if (this == null && in != null) return false;
@@ -56,5 +58,13 @@ abstract public class IdentifiableObject {
 
    public void setId(Id id) {
       this.id = id;
+   }
+
+   public Id getNewId() {
+      return newId;
+   }
+
+   public void setNewId(Id newId) {
+      this.newId = newId;
    }
 }
