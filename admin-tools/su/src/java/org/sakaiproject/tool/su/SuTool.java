@@ -17,6 +17,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.util.java.ResourceLoader;
 
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.authzGroup.GroupProvider;
 
 // java classes
@@ -46,6 +47,7 @@ public class SuTool {
      }
 
 	// Service instance variables
+	private AuthzGroupService M_authzGroupService = org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService.getInstance();
 	private UserDirectoryService M_uds = org.sakaiproject.service.legacy.user.cover.UserDirectoryService.getInstance();
 	private SecurityService M_security = org.sakaiproject.service.legacy.security.cover.SecurityService.getInstance();
 	private SessionManager M_session = org.sakaiproject.api.kernel.session.cover.SessionManager.getInstance();
@@ -106,7 +108,7 @@ public class SuTool {
 		sakaiSession.setUserEid( username );
 		
 		//  refesh the user's realms, so any recent changes to their site membership will take effect	
-		groupProvider.getGroupRolesForUser( this.getUsername() );
+		M_authzGroupService.refreshUser( username );
 
 		return "redirect";
 	}

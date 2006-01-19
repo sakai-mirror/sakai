@@ -24,11 +24,6 @@
 		<managed-bean-name>SuTool</managed-bean-name>
 		<managed-bean-class>org.sakaiproject.tool.su.SuTool</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
-        <managed-property>
-                       <description>authz Group Provider</description>
-                       <property-name>groupProvider</property-name>
-                       <value>#{Components["org.sakaiproject.service.legacy.authzGroup.GroupProvider"]}</value>
-        </managed-property>
 	</managed-bean>
 
 	<navigation-rule>
