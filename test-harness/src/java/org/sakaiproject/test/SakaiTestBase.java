@@ -48,7 +48,7 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
  * of the service implementations in the system, including database connection
  * pools, hibernate mappings, etc.  To run a test suite, please collect all tests
  * into a single class rather than running a variety of individual test cases.
- * @see org.sakaiproject.test.SakaiIntegrationTest
+ * See {@link org.sakaiproject.test.SakaiIntegrationTest} for an example.
  * </p>
  * 
  * @author <a href="mailto:jholtzman@berkeley.edu">Josh Holtzman</a>
