@@ -84,6 +84,7 @@ import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
+import org.sakaiproject.util.Validator;
 
 //chen - SAK-1624 (use new file picker)
 import java.util.ArrayList;
@@ -2765,6 +2766,11 @@ extends PagedResourceActionII
 			openHour = 0;
 		} 
 		Time openTime = TimeService.newTimeLocal(openYear, openMonth, openDay, openHour, openMin, 0, 0);
+		// validate date
+		if (!Validator.checkDate(openDay, openMonth, openYear))
+		{
+			addAlert(state, rb.getString("date.invalid") + rb.getString("date.opendate")+".");
+		}
 	
 		//due time
 		int dueMonth = (new Integer (params.getString (NEW_ASSIGNMENT_DUEMONTH))).intValue ();
@@ -2788,6 +2794,11 @@ extends PagedResourceActionII
 			dueHour = 0;
 		} 
 		Time dueTime = TimeService.newTimeLocal(dueYear, dueMonth, dueDay, dueHour, dueMin, 0, 0);
+		//validate date
+		if (!Validator.checkDate(dueDay, dueMonth, dueYear))
+		{
+			addAlert(state, rb.getString("date.invalid") + rb.getString("date.duedate")+".");
+		}
 
 		state.setAttribute (NEW_ASSIGNMENT_ENABLECLOSEDATE, new Boolean (true));
 		
@@ -2811,7 +2822,12 @@ extends PagedResourceActionII
 		if ((closeHour == 12) && (closeAMPM.equals ("AM")))
 		{
 			closeHour = 0;
-		} 
+		}
+		//validate date
+		if (!Validator.checkDate(closeDay, closeMonth, closeYear))
+		{
+			addAlert(state, rb.getString("date.invalid") + rb.getString("date.closedate")+".");
+		}
 		
 		// SECTION MOD
 		String sections_string = "";

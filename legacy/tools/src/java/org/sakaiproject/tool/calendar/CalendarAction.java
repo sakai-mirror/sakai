@@ -85,6 +85,7 @@ import org.sakaiproject.util.MergedList;
 import org.sakaiproject.util.MergedListEntryProviderBase;
 import org.sakaiproject.util.MergedListEntryProviderFixedListWrapper;
 import org.sakaiproject.util.ParameterParser;
+import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.StringUtil;
 
 
@@ -5267,6 +5268,12 @@ extends VelocityPortletStateAction
 			state.setState("new");
 			state.setIsPastAlertOff(false);
 		}
+		else if (!Validator.checkDate(Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year)))
+		{
+			addAlert(sstate, rb.getString("date.invalid"));
+			state.setNewData(state.getPrimaryCalendarReference(), title,description,Integer.parseInt(month),Integer.parseInt(day),year,houri,Integer.parseInt(minute),Integer.parseInt(dhour),Integer.parseInt(dminute),type,timeType,location, addfieldsMap, intentionStr);
+			state.setState("new");
+		}
 		else
 		{
 			try
@@ -5569,6 +5576,12 @@ extends VelocityPortletStateAction
 				{
 					addAlert(sstate, ALERT_ENDING_EARLIER_THAN_STARTING);
 					
+					state.setNewData(calId, title,description,Integer.parseInt(month),Integer.parseInt(day),year,houri,Integer.parseInt(minute),Integer.parseInt(dhour),Integer.parseInt(dminute),type,timeType,location, addfieldsMap, intentionStr);
+					state.setState("revise");
+				}
+				else if (!Validator.checkDate(Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year)))
+				{
+					addAlert(sstate, rb.getString("date.invalid"));
 					state.setNewData(calId, title,description,Integer.parseInt(month),Integer.parseInt(day),year,houri,Integer.parseInt(minute),Integer.parseInt(dhour),Integer.parseInt(dminute),type,timeType,location, addfieldsMap, intentionStr);
 					state.setState("revise");
 				}

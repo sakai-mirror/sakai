@@ -910,6 +910,43 @@ public class Validator
 
 		throw new IllegalArgumentException("Invalid digit:" + i);
 	}
+	
+	/**
+	 * Validate whether the date input is valid
+	 */
+	public static boolean checkDate(int day, int month, int year)
+	{
+		// Is date valid for month?
+		if (month==2)
+		{
+			// Check for leap year
+			if (((year%4==0)&&(year%100 != 0)) || (year%400==0)) 
+			{
+				// leap year
+				if (day > 29)
+				{ 
+					return false;
+				}
+			}
+			else 
+			{
+				// normal year
+				if (day > 28) 
+				{
+					return false; 
+				} 
+			}
+		}
+		else if ((month==4)||(month==6)||(month==9)||(month==11)) 
+		{
+			if (day > 30) 
+			{ 
+				return false; 
+			}
+		}
+		
+		return true;
+	}
 
 }	// Validator
 
