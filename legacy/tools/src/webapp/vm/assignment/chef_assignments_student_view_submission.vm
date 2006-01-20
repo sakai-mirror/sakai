@@ -309,7 +309,7 @@
 									#if ($currentTime.before($!closeTime))
 										<input
 											class="disableme" 
-											type="submit" 
+											type="button" 
 											name="attach" 
 											id="attach"
 											#if ($size==0) 
@@ -325,7 +325,7 @@
 									## there is no close date. Still can submit after due date
 									<input
 										class="disableme" 
-										type="submit" 
+										type="button" 
 										name="attach" 
 										id="attach"
 										#if ($size==0) 
@@ -427,7 +427,7 @@
 				#if ($!deleted.equalsIgnoreCase("true"))
 					##if the assignment has been deleted, disable the action button
 					<input 
-						type="submit" 
+						type="button" 
 						name="cancel" 
 						id="cancel" 
 						value="$tlang.getString("gen.don")"
@@ -436,7 +436,7 @@
 				#else
 					#if ($!closeTime && $currentTime.after($!closeTime) || !$allowSubmit)
 						<input 
-							type="submit" 
+							type="button" 
 							name="cancel" 
 							id="cancel" 
 							value="$tlang.getString("gen.don")"
@@ -459,7 +459,7 @@
 							/>
 							<input
 								class="disableme" 
-								type="submit" 
+								type="button" 
 								name="preview" 
 								id="preview" 
 								value="$tlang.getString("gen.pre")"
@@ -467,7 +467,7 @@
 							/>
 							<input
 								class="disableme" 
-								type="submit" 
+								type="button" 
 								name="save" 
 								id="save" 
 								value="$tlang.getString("gen.savdra")"
@@ -475,7 +475,7 @@
 							/>
 							<input 
 								class="disableme"
-								type="submit" 
+								type="button" 
 								name="cancel" 
 								id="cancel" 
 								value="$tlang.getString("gen.can")"
@@ -483,7 +483,7 @@
 							/>
 						#else
 							<input 
-								type="submit" 
+								type="button" 
 								name="cancel" 
 								id="cancel" 
 								value="$tlang.getString("gen.don")"
@@ -609,7 +609,7 @@
 					#end
 			<p class="act">
 				<input 
-					type="submit" 
+					type="button" 
 					name="cancel" 
 					id="cancel" 
 					value="$tlang.getString("gen.don")"

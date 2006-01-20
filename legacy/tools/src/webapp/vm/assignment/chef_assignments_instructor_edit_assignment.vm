@@ -368,20 +368,20 @@
 			#end							
 			<div class="act">
 				#if ($size == 0)
-					<input type="submit" name="attach" value="$tlang.getString('gen.addatt')" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='attach';document.editForm.submit();return false;" accesskey="a"/>
+					<input type="button" name="attach" value="$tlang.getString('gen.addatt')" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='attach';document.editForm.submit();return false;" accesskey="a"/>
 				#else
-					<input type="submit" name="attach" value="$tlang.getString('gen.adddroatt2')" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='attach';document.editForm.submit();return false;" accesskey="a"/>
+					<input type="button" name="attach" value="$tlang.getString('gen.adddroatt2')" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='attach';document.editForm.submit();return false;" accesskey="a"/>
 				#end
 			</div>
 			<p class="act">
-				<input type="submit" name="preview" value="$tlang.getString("gen.pre")" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='preview';document.editForm.submit();return false;" />
+				<input type="button" name="preview" value="$tlang.getString("gen.pre")" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='preview';document.editForm.submit();return false;" />
 				#if (!$assignment.draft)
-					<input type="submit" class="active" name="post" value="$tlang.getString("gen.pos")" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='post';document.editForm.submit();return false;" />
+					<input type="button" class="active" name="post" value="$tlang.getString("gen.pos")" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='post';document.editForm.submit();return false;" />
 				#else
-					<input type="submit" class="active" name="post" value="$tlang.getString("gen.pos")" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='post';document.editForm.submit();return false;" />
-					<input type="submit" name="save" value="$tlang.getString("gen.savdra")" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='save';document.editForm.submit();return false;" />
+					<input type="button" class="active" name="post" value="$tlang.getString("gen.pos")" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='post';document.editForm.submit();return false;" />
+					<input type="button" name="save" value="$tlang.getString("gen.savdra")" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='save';document.editForm.submit();return false;" />
 				#end
-				<input type="submit" name="cancel" value="$tlang.getString("gen.can")" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='canceledit';document.editForm.submit();return false;" />
+				<input type="button" name="cancel" value="$tlang.getString("gen.can")" onclick="javascript:document.editForm.onsubmit();document.getElementById('option').value='canceledit';document.editForm.submit();return false;" />
 			</p>									
 	</form>
 </div>

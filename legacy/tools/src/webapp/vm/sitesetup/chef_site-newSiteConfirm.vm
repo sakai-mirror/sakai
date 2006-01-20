@@ -184,7 +184,7 @@
 			/>
 			<input
 				class="disableme" 
-				type="submit" 
+				type="button" 
 				name="back" 
 				id="back" 
 				value="$tlang.getString('gen.back')"
@@ -192,7 +192,7 @@
 			/>
 			<input
 				class="disableme" 
-				type="submit" 
+				type="button" 
 				name="cancel" 
 				id="cancel" 
 				value="$tlang.getString('gen.cancel')"

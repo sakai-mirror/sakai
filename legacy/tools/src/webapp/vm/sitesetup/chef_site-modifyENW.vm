@@ -193,14 +193,14 @@
 		<input type="hidden" name="template-index" value="26" />
 		<input type="hidden" name="continue" value="$continue" />
 		<div class="act">
-			<input type="submit" name="Continue" 
+			<input type="button" name="Continue" 
 				class="active"
 				value="$tlang.getString('gen.continue')" 
 				onclick="document.ENWForm.option.value='continue';javascript:document.ENWForm.submit();" />
-			<input type="submit" name="Back" 
+			<input type="button" name="Back" 
 				value="$tlang.getString('gen.back')" 
 				onclick="document.ENWForm.option.value='back';javascript:document.ENWForm.submit();" />
-			<input type="submit" name="Cancel" 
+			<input type="button" name="Cancel" 
 				value="$tlang.getString('gen.cancel')" 
 				onclick="document.ENWForm.option.value='cancel';javascript:document.ENWForm.submit();" />
 		</div>

@@ -130,14 +130,14 @@
 		<input type="hidden" name="back" value="2" />
 		<input type="hidden" name="template-index" value="3" />
 		<p class="act">
-			<input type="submit" name="Continue" 
+			<input type="button" name="Continue" 
 					value="$tlang.getString('gen.continue')"
 					class="active"
 					onclick="document.featuresForm.option.value='continue';javascript:document.featuresForm.submit();" />
-			<input type="submit" value="$tlang.getString('gen.back')" 
+			<input type="button" value="$tlang.getString('gen.back')" 
 					name="Back" 
 					onclick="document.featuresForm.option.value='back';javascript:document.featuresForm.submit();" />
-			<input type="submit" value="$tlang.getString('gen.cancel')" 
+			<input type="button" value="$tlang.getString('gen.cancel')" 
 					name="Cancel" 
 					onclick="document.featuresForm.option.value='cancel';javascript:document.featuresForm.submit();" />
 		</p>

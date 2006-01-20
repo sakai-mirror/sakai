@@ -13,7 +13,7 @@
 			<input type="hidden" name="eventSubmit_doNavigate_to_site" value="x" />
 			<p class="rightNav">
 				#if ($!prevSite)
-					<input type="submit" 
+					<input type="button" 
 						name="previous" 
 						value="&lt; $tlang.getString("sitegen.siteinfolist.previous1")" 
 						onclick="document.siteForm.option.value='$prevSite.Id';javascript:document.siteForm.submit();" />
@@ -23,17 +23,17 @@
 							value="&lt; $tlang.getString("sitegen.siteinfolist.previous1")" 
 							disabled="disabled" />
 				#end
-				<input type="submit" 
+				<input type="button" 
 						name="back" 
 						value="$tlang.getString("sitegen.siteinfolist.return")" 
 						onclick="document.siteForm.option.value='';javascript:document.siteForm.submit();" />
 				#if ($!nextSite)
-					<input type="submit" 
+					<input type="button" 
 						name="next" 
 						value="$tlang.getString("sitegen.siteinfolist.next1") &gt;" 
 						onclick="document.siteForm.option.value='$nextSite.Id';javascript:document.siteForm.submit();" />
 				#else
-					<input type="submit" 
+					<input type="button" 
 						name="next" 
 						value="$tlang.getString("sitegen.siteinfolist.next1") &gt;" disabled="disabled" />
 				#end

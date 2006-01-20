@@ -410,7 +410,7 @@
 				$tlang.getString("gen.noatt")
 
 				<div class="act">
-					<input type="submit" name="attach" value="$tlang.getString('gen.addatt')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;"/>
+					<input type="button" name="attach" value="$tlang.getString('gen.addatt')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;"/>
 				</div>
 			#else
 				<ul class="attachList indnt1">
@@ -433,14 +433,14 @@
 					#end
 				</ul>
 				<div class="act">
-					<input type="submit" name="attach" value="$tlang.getString('gen.adddroatt2')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;" />
+					<input type="button" name="attach" value="$tlang.getString('gen.adddroatt2')" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='attach';document.newAssignmentForm.submit();return false;" />
 				</div>
 			#end	
 		<div class="act">
-			<input type="submit" class="active" name="post" value="$tlang.getString("gen.pos")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='post';document.newAssignmentForm.submit();return false;" />
-			<input type="submit" name="preview" value="$tlang.getString("gen.pre")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='preview';document.newAssignmentForm.submit();return false;" />
-			<input type="submit" name="save" value="$tlang.getString("gen.savdra")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='save';document.newAssignmentForm.submit();return false;" />
-			<input type="submit" name="cancel" value="$tlang.getString("gen.can")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='cancel';document.newAssignmentForm.submit();return false;" />
+			<input type="button" class="active" name="post" value="$tlang.getString("gen.pos")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='post';document.newAssignmentForm.submit();return false;" />
+			<input type="button" name="preview" value="$tlang.getString("gen.pre")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='preview';document.newAssignmentForm.submit();return false;" />
+			<input type="button" name="save" value="$tlang.getString("gen.savdra")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='save';document.newAssignmentForm.submit();return false;" />
+			<input type="button" name="cancel" value="$tlang.getString("gen.can")" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='cancel';document.newAssignmentForm.submit();return false;" />
 		</div>
 	</form>
 </div>

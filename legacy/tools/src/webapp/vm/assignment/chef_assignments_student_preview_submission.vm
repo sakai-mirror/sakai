@@ -163,7 +163,7 @@
 			#else
 				<input
 					class="disableme" 
-					type="submit" 
+					type="button" 
 					name="save" 
 					id="save" 
 					value="$tlang.getString("gen.savdra")"
@@ -185,7 +185,7 @@
 				/>
 				<input
 					class="disableme" 
-					type="submit" 
+					type="button" 
 					name="revise" 
 					id="revise" 
 					value="$tlang.getString("gen.revi")"
@@ -194,7 +194,7 @@
 			#end
 			<input
 				class="disableme" 
-				type="submit" 
+				type="button" 
 				name="revise" 
 				id="done" 
 				value="$tlang.getString("gen.don")"

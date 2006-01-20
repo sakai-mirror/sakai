@@ -243,13 +243,13 @@
 			<input type="hidden" name="template-index" value="7" />
 			<input type="hidden" name="continue" value="25" />
 			<div class ="act">
-				<input type="submit" name="Continue" 
+				<input type="button" name="Continue" 
 						value="$tlang.getString('gen.continue')" 
 						onclick="document.roleForm.option.value='continue';javascript:document.roleForm.submit();" />
-				<input type="submit" name="Back" 
+				<input type="button" name="Back" 
 						value="$tlang.getString('gen.back')" 
 						onclick="document.roleForm.option.value='back';javascript:document.roleForm.submit();" />
-				<input type="submit" name="Cancel" 
+				<input type="button" name="Cancel" 
 						value="$tlang.getString('gen.cancel')" 
 						onclick="document.roleForm.option.value='cancel';javascript:document.roleForm.submit();" />
 			</div>

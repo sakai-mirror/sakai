@@ -143,14 +143,14 @@
 			<input type="hidden" name="template-index" value="37" />
 			<input type="hidden" name="continue" value="4" />
 			<p class="act">
-				<input type="submit" name="Add" 
+				<input type="button" name="Add" 
 						value="$tlang.getString('gen.continue')" 
 						class="active" 
 						onclick="document.requestCourseForm.option.value='add'; document.requestCourseForm.submit(); return false;" />
-				<input type="submit" name="Back" 
+				<input type="button" name="Back" 
 						value="$tlang.getString('gen.back')"
 						onclick="document.requestCourseForm.option.value='back'; document.requestCourseForm.submit(); return false;" />
-				<input type="submit" name="Cancel" 
+				<input type="button" name="Cancel" 
 						value="$tlang.getString('gen.cancel')" 
 						onclick="document.requestCourseForm.option.value='cancel'; document.requestCourseForm.submit(); return false;" />
 			</p>

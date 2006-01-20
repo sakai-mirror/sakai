@@ -188,11 +188,11 @@
 			</p>
 			#if ($size == 0) <p class="instruction" style="display:block;clear:both;margin:1.3em 0 .3em 0">$tlang.getString("revise.noattach")</p>
 				<div class="act">
-					 <input type="submit" name="attach" value="$tlang.getString("revise.addatt")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='attach';document.reviseForm.submit();return false;" />
+					 <input type="button" name="attach" value="$tlang.getString("revise.addatt")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='attach';document.reviseForm.submit();return false;" />
 				</div>
 			#else
 				<div class="act">
-					 <input type="submit" name="attach" value="$tlang.getString("revise.addrem")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='attach';document.reviseForm.submit();return false;" />
+					 <input type="button" name="attach" value="$tlang.getString("revise.addrem")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='attach';document.reviseForm.submit();return false;" />
 				</div>
 			#end
 			#if ($notification)
@@ -216,16 +216,16 @@
 			#end
 		</div>	
 		<p class="act">
-				<input type="submit" class="active" name="post" value=
+				<input type="button" class="active" name="post" value=
 					#if ( $newAnn =="true")				
 						"$tlang.getString("revise.add")"
 					#else
 						"$tlang.getString("revise.savechanges")"
 					#end
 				 onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='post';document.reviseForm.submit();return false;" />
-				<input type="submit" name="preview" value="$tlang.getString("revise.preview")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='preview';document.reviseForm.submit();return false;" />
-				<input type="submit" name="save" value="$tlang.getString("revise.savedraft")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='save';document.reviseForm.submit();return false;" />
-				<input type="submit" name="cancel" value="$tlang.getString("gen.cancel")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='cancel';document.reviseForm.submit();return false;" />   
+				<input type="button" name="preview" value="$tlang.getString("revise.preview")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='preview';document.reviseForm.submit();return false;" />
+				<input type="button" name="save" value="$tlang.getString("revise.savedraft")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='save';document.reviseForm.submit();return false;" />
+				<input type="button" name="cancel" value="$tlang.getString("gen.cancel")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='cancel';document.reviseForm.submit();return false;" />   
 		</p>
 	</form>
 </div>
