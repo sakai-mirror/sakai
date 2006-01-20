@@ -711,8 +711,8 @@
 		############################################# end of section to show metadata 
 	
 		<p class="act">
-			<input type="submit" class="active" name="eventSubmit_doSavechanges" onclick="document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=update")';submitform('propertyForm');" value="$tlang.getString("edit.update")" />
-			<input type="submit" name="eventSubmit_doCancel" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "flow=cancel")';submitform('propertyForm');" value="$tlang.getString("gen.cancel")" />
+			<input type="button" class="active" name="doSavechanges" onclick="document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=update")';submitform('propertyForm');" value="$tlang.getString("edit.update")" />
+			<input type="button" name="doCancel" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "flow=cancel")';submitform('propertyForm');" value="$tlang.getString("gen.cancel")" />
 		</p>
 		
 	</form>
