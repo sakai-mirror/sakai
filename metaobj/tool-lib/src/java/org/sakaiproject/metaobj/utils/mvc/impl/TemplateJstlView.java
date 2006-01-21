@@ -29,6 +29,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
+// Added for i18n
+import org.sakaiproject.util.java.ResourceLoader;
+import java.util.Locale;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -57,7 +61,12 @@ public class TemplateJstlView extends JstlView {
     * @see #renderMergedOutputModel
     */
    public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-      SimpleBeanWrapper mapWrapper = (SimpleBeanWrapper)
+
+       // Added to be able to conform to the locale in JSTL jsp's
+	   ResourceLoader rb = new ResourceLoader();
+       model.put("locale",rb.getLocale().toString());
+	   
+	   SimpleBeanWrapper mapWrapper = (SimpleBeanWrapper)
          getWebApplicationContext().getBean(defaultTemplateDefName);
 
       Map defaultTemplateDef = (Map) mapWrapper.getWrappedBean();
