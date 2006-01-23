@@ -7,7 +7,8 @@ org.radeox.macro.CodeMacro
 org.radeox.macro.FilePathMacro
 org.radeox.macro.HelloWorldMacro
 org.radeox.macro.IsbnMacro
-org.radeox.macro.LinkMacro
+## SakaiLinkMacro replaces this.
+#org.radeox.macro.LinkMacro
 org.radeox.macro.MailToMacro
 org.radeox.macro.MacroListMacro
 org.radeox.macro.QuoteMacro
