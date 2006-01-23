@@ -4166,6 +4166,14 @@ public class ResourcesAction
 		{
 			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
 		}
+		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
+		{
+			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+		}
+		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_EDIT_ITEM.equals(helper_mode))
+		{
+			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+		}
 		else if(MODE_HELPER.equals(mode))
 		{
 			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
@@ -5018,7 +5026,14 @@ public class ResourcesAction
 		}
 		else
 		{
-			home = (StructuredArtifactHomeInterface) factory.getHome(formtype);
+			try
+			{
+				home = (StructuredArtifactHomeInterface) factory.getHome(formtype);
+			}
+			catch(NullPointerException ignore)
+			{
+				home = null;
+			}
 		}
 		
 		if(home != null)
