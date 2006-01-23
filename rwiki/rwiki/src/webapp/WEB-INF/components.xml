@@ -38,8 +38,8 @@
 
   <!-- each transaction manager, and therefore session factory must have its own data source,
   so overload here to avoid getting the central one -->
-  <bean id="sakai-rwiki.javax.sql.DataSource" parent="javax.sql.DataSource">
-  </bean>
+  <!--<bean id="sakai-rwiki.javax.sql.DataSource" parent="javax.sql.DataSource">
+  </bean>-->
 
   <!-- extend the  sakai base session factory -->
   <!--
@@ -49,7 +49,7 @@
     parent="org.sakaiproject.springframework.orm.hibernate.SessionFactoryBase">
 
     <property name="dataSource">
-      <ref local="sakai-rwiki.javax.sql.DataSource"/>
+      <ref bean="javax.sql.DataSource"/>
     </property>
     <property name="mappingResources">
       <list>
