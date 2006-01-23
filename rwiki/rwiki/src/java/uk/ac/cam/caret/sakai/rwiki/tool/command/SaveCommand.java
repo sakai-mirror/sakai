@@ -24,14 +24,18 @@ package uk.ac.cam.caret.sakai.rwiki.tool.command;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.api.kernel.session.SessionManager;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.exception.PermissionException;
@@ -44,15 +48,17 @@ import uk.ac.cam.caret.sakai.rwiki.tool.bean.ErrorBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ViewParamsHelperBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.command.helper.ErrorBeanHelper;
+import uk.ac.cam.caret.sakai.rwiki.tool.util.WikiPageAction;
 
 /**
  * @author andrew
  * 
  */
-//FIXME: Tool
-
+// FIXME: Tool
 public class SaveCommand implements HttpCommand {
 
+    private static final String ATTACHMENT_HELPER = "sakai.filepicker";
+    
     protected RWikiObjectService objectService;
 
     private Logger log;
@@ -66,6 +72,8 @@ public class SaveCommand implements HttpCommand {
     private String previewPath;
 
     private String cancelPath;
+
+    private SessionManager sessionManager;
 
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -87,16 +95,39 @@ public class SaveCommand implements HttpCommand {
         }
         if (save.equals(EditBean.OVERWRITE_VALUE)) {
             content = vphb.getSubmittedContent();
-            // Set the content as the submitted content in case we have a version exception
+            // Set the content as the submitted content in case we have a
+            // version exception
             vphb.setContent(content);
         } else if (save.equals(EditBean.PREVIEW_VALUE)) {
             this.previewDispatch(request, response);
             return;
+        } else if (save.equals(EditBean.ADD_ATTACHMENT_VALUE)) {
+                     
+            ToolSession session = sessionManager.getCurrentToolSession();
+            
+            Map parameterMap = request.getParameterMap();
+            session.setAttribute("STORED_PARAMETERS", parameterMap);
+
+            ViewBean vb = rssb.getViewBean();
+
+            // FIXME Knowledge of URL structure assumed!
+            session.setAttribute(ATTACHMENT_HELPER + Tool.HELPER_DONE_URL,
+                    request.getContextPath() + request.getServletPath()
+                            + vb.getActionUrl(WikiPageAction.ATTACHMENT_RETURN_ACTION, true));
+
+            session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, FilePickerHelper.FILE_PICKER_ATTACH_LINKS);
+            
+            response.sendRedirect(request.getContextPath()
+                            + request.getServletPath() + "/helper/"
+                            + ATTACHMENT_HELPER + "/tool");
+            return;
         } else if (save.equals(EditBean.CANCEL_VALUE)) {
             this.cancelDispatch(request, response);
-            ViewBean vb = new ViewBean(name,realm);
+            ViewBean vb = new ViewBean(name, realm);
             String requestURL = request.getRequestURL().toString();
-            SessionManager.getCurrentToolSession().setAttribute(RWikiServlet.SAVED_REQUEST_URL,requestURL+vb.getViewUrl());
+            sessionManager.getCurrentToolSession().setAttribute(
+                    RWikiServlet.SAVED_REQUEST_URL,
+                    requestURL + vb.getViewUrl());
             return;
         }
 
@@ -104,7 +135,7 @@ public class SaveCommand implements HttpCommand {
         Date versionDate = new Date(Long.parseLong(version));
 
         try {
-            doUpdate(name,user,realm,versionDate,content);
+            doUpdate(name, user, realm, versionDate, content);
         } catch (VersionException e) {
             // The page has changed underneath us...
 
@@ -118,14 +149,16 @@ public class SaveCommand implements HttpCommand {
         }
         // Successful update
         this.successfulUpdateDispatch(request, response);
-        ViewBean vb = new ViewBean(name,realm);
+        ViewBean vb = new ViewBean(name, realm);
         String requestURL = request.getRequestURL().toString();
-        SessionManager.getCurrentToolSession().setAttribute(RWikiServlet.SAVED_REQUEST_URL,requestURL+vb.getViewUrl());
+        sessionManager.getCurrentToolSession().setAttribute(
+                RWikiServlet.SAVED_REQUEST_URL, requestURL + vb.getViewUrl());
         return;
 
     }
-    
-    protected void doUpdate(String name, String user, String realm, Date versionDate, String content) {
+
+    protected void doUpdate(String name, String user, String realm,
+            Date versionDate, String content) {
         objectService.update(name, user, realm, versionDate, content);
     }
 
@@ -212,6 +245,14 @@ public class SaveCommand implements HttpCommand {
 
     public void setObjectService(RWikiObjectService objectService) {
         this.objectService = objectService;
+    }
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
     }
 
     public Logger getLog() {

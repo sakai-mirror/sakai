@@ -76,7 +76,10 @@ public class WikiPageAction {
     public static final WikiPageAction LISTPAGECHAT_ACTION = new WikiPageAction("presencechatlist");
     
     public static final WikiPageAction LISTSPACECHAT_ACTION = new WikiPageAction("presencechatlist");
+
+    public static final WikiPageAction EXPORT_ACTION = new WikiPageAction("export");
     
+    public static final WikiPageAction ATTACHMENT_RETURN_ACTION = new WikiPageAction("addAttachmentReturn");
     
     private String name;
     

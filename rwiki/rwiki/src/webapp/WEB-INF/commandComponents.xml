@@ -23,6 +23,8 @@
 	<entry key="editRealm"><ref bean="editRealmCommand"/></entry>
 	<entry key="commenteditsave"><ref bean="commentSaveCommand"/></entry>
 	<entry key="commentnewsave"><ref bean="commentNewCommand"/></entry>
+    <entry key="helper"><ref bean="helperCommand"/></entry>
+    <entry key="addAttachmentReturn"><ref bean="addAttachmentReturnCommand"/></entry>
 	<!--<entry key=""><ref bean="Command"/></entry>-->
       </map>
     </property>
@@ -44,6 +46,7 @@
     <property name="cancelPath">
       <value>/WEB-INF/command-pages/view.jsp</value></property>
     <property name="objectService"><ref bean="objectService"/></property>		
+	<property name="sessionManager"><ref bean="org.sakaiproject.api.kernel.session.SessionManager"/></property>
   </bean>
   <bean id="commentSaveCommand"
     class="uk.ac.cam.caret.sakai.rwiki.tool.command.CommentSaveCommand">
@@ -117,6 +120,12 @@
     <property name="successfulPath"><value>/WEB-INF/command-pages/info.jsp</value></property>		
     <property name="unknownRealmPath"><value>/WEB-INF/command-pages/realmUnknown.jsp</value></property>		
   </bean>
+	
+  <bean id="helperCommand"
+	class="uk.ac.cam.caret.sakai.rwiki.tool.command.HelperCommand">
+    <property name="activeToolManager"><ref bean="org.sakaiproject.api.kernel.tool.ActiveToolManager"/></property>
+	<property name="sessionManager"><ref bean="org.sakaiproject.api.kernel.session.SessionManager"/></property>
+  </bean>	
   <!--<bean id="Command" class="uk.ac.cam.caret.sakai.rwiki.tool.command.Command">
     <property name="log"><ref bean="rwiki-logger"/></property>
     <property name="servletPath">/jrwiki/.jsp</property>
@@ -126,5 +135,22 @@
     <property name="viewBeanHelper"><ref bean="viewBeanHelper"/></property>
     <property name="userHelper"><ref bean="userHelper"/></property>
   </bean>-->
+
+  <bean id="addAttachmentReturnCommand"
+	  class="uk.ac.cam.caret.sakai.rwiki.tool.command.AddAttachmentReturnCommand">
+	<property name="sessionManager"><ref bean="org.sakaiproject.api.kernel.session.SessionManager"/></property>
+	<property name="wikiMarkupTemplates">
+		<map>
+			<entry key="image/*">
+				<value><![CDATA['{'image:{1}|{2}'}']]></value>
+			</entry>
+			<entry key="*/*">
+				<value><![CDATA['{'link:{2}|{1}}]]></value>
+			</entry>
+		</map>
+	</property>
+	<property name="editPath"><value>/WEB-INF/command-pages/edit.jsp</value></property>
+
+  </bean>
 
 </beans>

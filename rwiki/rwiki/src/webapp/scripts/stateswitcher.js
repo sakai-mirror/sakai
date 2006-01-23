@@ -69,8 +69,51 @@ function onload() {
 }
 function storeCaret(el) {
     if ( el.createTextRange ) 
-        el.caretPos = document.selection.createRange().duplicate();
+        el.caretPos = document.selection.createRange().duplicate();        
 }
+
+function addAttachment(textareaid, formid, editcontrolid) {
+  var textarea;
+  var editcontrol;
+  var form;
+  var store;
+  if ( document.all ) {
+    textarea = document.all[textareaid];
+    editcontrol = document.all[editcontrolid];
+    form = document.all[formid];
+  } else {
+    textarea = document.getElementById(textareaid);
+    editcontrol = document.getElementById(editcontrolid);
+    form = document.getElementById(formid);
+  }    
+
+  if (typeof(textarea.caretPos) != "undefined" && typeof(textarea.createTextRange) != "undefined")
+  {
+    var duplicate = textarea.caretPos.duplicate();
+    var textareaRange = textarea.createTextRange();
+
+    textareaRange.select();
+    textareaRange = document.selection.createRange().duplicate();
+    duplicate.select();
+
+    var length = duplicate.text.length;
+
+    duplicate.setEndPoint("StartToStart", textareaRange); 	
+
+    var endPoint = duplicate.text.length;
+    var startPoint = endPoint - length;
+    store = startPoint + ":" + endPoint;
+  } else if (typeof(textarea.selectionStart) != "undefined") {
+    store = textarea.selectionStart + ":" + textarea.selectionEnd;
+  } else {
+    store = (textarea.text.length - 1) + ":" + (textarea.text.length - 1)
+  }
+
+  editcontrol.innerHTML += "<input type='hidden' name='save' value='Attach'/><input type='hidden' name='caretPosition' value='"+ store + "'/>";
+  form.submit();
+}
+
+
 function addMarkup(textareaid, contentMU, startMU, endMU) {
     var textarea;
         if ( document.all ) {

@@ -74,10 +74,21 @@ public class EditBean {
     public static final String SAVE_VALUE = "save";
 
     /**
-     * Value of the save parameter that indicates we wish cancel this edit
+     * Value of the save parameter that indicates we wish to cancel this edit
      */
     public static final String CANCEL_VALUE = "cancel";
 
+    /**
+     * Value of the save parameter that indicates we wish to add an attachment.
+     * This should be interpretted as a call to the file.helper.
+     */
+    public static final String ADD_ATTACHMENT_VALUE = "attach";
+
+    /**
+     *  Last position of the caret or highlights, (if available)
+     */
+    public static final String STORED_CARET_POSITION = "caretPosition";
+    
     /**
      * The version string that was sent in the last save.
      */
