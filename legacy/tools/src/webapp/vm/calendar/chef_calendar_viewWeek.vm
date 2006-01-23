@@ -422,9 +422,10 @@
 
 <tr>
 <td align="left">
-   <a href="#" onclick="location='#toolLink("$action" "doPpagew")';return false;" title="$tlang.getString('vieww.gotoe')">$tlang.getString("vieww.gotoe")</a>
-## <a href="#" onclick="location='#toolLink("$action" "doPpagew")';return false;" title="$tlang.getString('vieww.gotoe')">$tlang.getString("view.earlier")</a>
-   </td>
+	#if($page != "first")
+  		<a href="#" onclick="location='#toolLink("$action" "doPpagew")';return false;" title="$tlang.getString('vieww.gotoe')">$tlang.getString("vieww.gotoe")</a>
+  	#end
+</td>
 <td>      
 	
 </td>
@@ -907,8 +908,9 @@
 
 <table width="100%">
 	<tr><td align="left">
-	##<a href="#" onclick="location='#toolLink("$action" "doNpagew")';return false;" title="$tlang.getString('view.golater')">$tlang.getString("view.golater")</a>
-	<a href="#" onclick="location='#toolLink("$action" "doNpagew")';return false;" title="$tlang.getString('vieww.gotol')">$tlang.getString("vieww.gotol")</a>
+	#if($page != "third")
+		<a href="#" onclick="location='#toolLink("$action" "doNpagew")';return false;" title="$tlang.getString('vieww.gotol')">$tlang.getString("vieww.gotol")</a>
+	#end
 	</td></tr>
 	</table>
 <table style="margin-right:auto;margin-left:auto;margin-top:10px" cellpadding="3">
