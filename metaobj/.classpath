@@ -25,5 +25,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/commons-codec/jars/commons-codec-1.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-digester/jars/commons-digester-1.6.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/legacy-service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/high-util"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
