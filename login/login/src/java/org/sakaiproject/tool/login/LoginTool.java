@@ -393,7 +393,7 @@ public class LoginTool extends HttpServlet
             if ( returnUrl == null )
             {
                M_log.info("this.doPost(login) has null Tool.HELPER_DONE_URL");
-               returnUrl = Web.returnUrl(req, null );
+//               returnUrl = Web.returnUrl(req, null );
             }
             
 				complete(returnUrl, session, tool, res);
