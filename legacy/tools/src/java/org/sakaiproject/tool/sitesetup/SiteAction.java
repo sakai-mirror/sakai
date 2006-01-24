@@ -7061,7 +7061,7 @@ public class SiteAction extends PagedResourceActionII
 									// set password
 									//because of cosign security for emailInIdAccount account, password can be set to anything
 									Random generator = new Random(System.currentTimeMillis());
-									Integer num = new Integer(generator.nextInt());
+									Integer num = new Integer(generator.nextInt(Integer.MAX_VALUE));
 									pw = num.toString();
 									uEdit.setPassword(pw);
 									UserDirectoryService.commitEdit(uEdit);
@@ -10564,7 +10564,7 @@ public class SiteAction extends PagedResourceActionII
 							// set password
 							//because of cosign security for emailInIdAccount account, password can be set to anything
 							Random generator = new Random(System.currentTimeMillis());
-							Integer num = new Integer(generator.nextInt());
+							Integer num = new Integer(generator.nextInt(Integer.MAX_VALUE));
 							pw = num.toString();
 							uEdit.setPassword(pw);
 							UserDirectoryService.commitEdit(uEdit);
