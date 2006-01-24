@@ -402,23 +402,27 @@
 						$tlang.getString("add.noforms")
 					</p>
 				#else
-					#if($missing.contains("formtype"))
-						<p class="shorttext validation">
-					#else
+					#if($formtype_readonly)
 						<p class="shorttext">
-					#end
-						<label for="formtype">$tlang.getString("add.formtype")</label>
-						#if("$itemType" == "$TYPE_UPLOAD")
-							<select name="formtype" id="formtype" onchange="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=updateDocType")';submitform('createForm');">
+							<label for="formtype">$tlang.getString("add.ftype")</label>
+							$!rootname
+							<input type="hidden" name="formtype" id="formtype" value="$!formtype" />
+						</p>
+					#else
+						#if($missing.contains("formtype"))
+							<p class="shorttext validation">
 						#else
-							<select name="formtype" id="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('createForm');">
+							<p class="shorttext">
 						#end
-							<option value=""#if("$!formtype" == "") selected="selected"#end></option>
-							#foreach($home in $homes)
-								<option value="$home.type.id"#if("$!home.type.id" == "$!formtype") selected="selected"#end>$home.type.description</option>
-							#end
-						</select>
-					</p>
+							<label for="formtype">$tlang.getString("add.formtype")</label>
+							<select id="formtype" name="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('createForm');">
+								<option value=""#if("$!item.formtype" == "") selected="selected"#end></option>
+								#foreach($home in $homes)
+									<option value="$home.type.id"#if("$!home.type.id" == "$!item.formtype")) selected="selected"#end>$home.type.description</option>
+								#end
+							</select>
+						</p>
+					#end
 					#if($!item.instruction && $item.instruction != "")
 						<p class="instruction">
 							$item.instruction

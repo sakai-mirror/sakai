@@ -298,6 +298,7 @@ public class ResourcesAction
 	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
 	private static final String STATE_STRUCTOBJ_ROOTNAME = "resources.create_structured_object_root";
 	public static final String STATE_STRUCTOBJ_TYPE = "resources.create_structured_object_type";
+	public static final String STATE_STRUCTOBJ_TYPE_READONLY = "resources.create_structured_object_type_readonly";
 	private static final String STATE_STRUCTOBJ_HOMES = "resources.create_structured_object_home";
 	private static final String STATE_STRUCT_OBJ_SCHEMA = "resources.create_structured_object_schema";
 
@@ -1085,6 +1086,12 @@ public class ResourcesAction
 			
 			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
 			context.put("formtype", formtype);
+			
+			String formtype_readonly = (String) state.getAttribute(	STATE_STRUCTOBJ_TYPE_READONLY);
+			if(formtype_readonly != null && formtype_readonly.equals(Boolean.TRUE.toString()))
+			{
+				context.put("formtype_readonly", formtype_readonly);
+			}
 			
 			String rootname = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
 			context.put("rootname", rootname);
@@ -1906,6 +1913,15 @@ public class ResourcesAction
 			
 			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
 			context.put("homes", listOfHomes);
+			
+			String formtype_readonly = (String) state.getAttribute(	STATE_STRUCTOBJ_TYPE_READONLY);
+			if(formtype_readonly != null && formtype_readonly.equals(Boolean.TRUE.toString()))
+			{
+				context.put("formtype_readonly", formtype_readonly);
+			}
+
+			String rootname = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
+			context.put("rootname", rootname);
 
 			context.put("STRING", ResourcesMetadata.WIDGET_STRING);
 			context.put("TEXTAREA", ResourcesMetadata.WIDGET_TEXTAREA);
@@ -7795,6 +7811,8 @@ public class ResourcesAction
 		state.removeAttribute(STATE_SITE_TITLE);
 		state.removeAttribute(STATE_SORT_ASC);
 		state.removeAttribute(STATE_SORT_BY);
+		state.removeAttribute(STATE_STRUCTOBJ_TYPE);
+		state.removeAttribute(STATE_STRUCTOBJ_TYPE_READONLY);
 		
 		state.removeAttribute(STATE_INITIALIZED);
 		state.removeAttribute(VelocityPortletPaneledAction.STATE_HELPER);

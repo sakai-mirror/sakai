@@ -411,24 +411,33 @@
 					</p>
 				#end
 			#elseif($item.isStructuredArtifact())
+			
 				#if($homes.isEmpty())
 					<p class="shorttext validation">
 						$tlang.getString("add.noforms")
 					</p>
 				#else
-					#if($missing.contains("formtype"))
-						<p class="shorttext validation">
-					#else
+					#if($formtype_readonly)
 						<p class="shorttext">
+							<label for="formtype">$tlang.getString("add.ftype")</label>
+							$!rootname
+							<input type="hidden" name="formtype" id="formtype" value="$!formtype" />
+						</p>
+					#else
+						#if($missing.contains("formtype"))
+							<p class="shorttext validation">
+						#else
+							<p class="shorttext">
+						#end
+							<label for="formtype">$tlang.getString("add.formtype")</label>
+							<select id="formtype" name="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('propertyForm');">
+								<option value=""#if("$!item.formtype" == "") selected="selected"#end></option>
+								#foreach($home in $homes)
+									<option value="$home.type.id"#if("$!home.type.id" == "$!item.formtype")) selected="selected"#end>$home.type.description</option>
+								#end
+							</select>
+						</p>
 					#end
-						<label for="formtype">$tlang.getString("add.formtype")</label>
-						<select id="formtype" name="formtype" onchange="javascript:document.getElementById('flow').value='updateDocType';submitform('propertyForm');">
-							<option value=""#if("$!item.formtype" == "") selected="selected"#end></option>
-							#foreach($home in $homes)
-								<option value="$home.type.id"#if("$!home.type.id" == "$!item.formtype")) selected="selected"#end>$home.type.description</option>
-							#end
-						</select>
-					</p>
 					#if($!item.instruction && "$item.instruction" != "")
 						<p class="instruction">
 							$item.instruction
