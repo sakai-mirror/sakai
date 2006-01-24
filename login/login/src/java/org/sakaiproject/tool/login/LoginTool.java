@@ -390,6 +390,12 @@ public class LoginTool extends HttpServlet
 				// get the session info complete needs, since the logout will invalidate and clear the session
 				String returnUrl = (String) session.getAttribute(Tool.HELPER_DONE_URL);
 
+            if ( returnUrl == null )
+            {
+               M_log.info("this.doPost(login) has null Tool.HELPER_DONE_URL");
+               returnUrl = Web.returnUrl(req, null );
+            }
+            
 				complete(returnUrl, session, tool, res);
 			}
 			catch (AuthenticationException ex)
