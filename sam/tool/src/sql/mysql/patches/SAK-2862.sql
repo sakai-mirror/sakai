@@ -5,5 +5,5 @@ add column  FEEDBACKAUTHORING integer;
 
 INSERT INTO SAM_ASSESSMETADATA_T (ASSESSMENTMETADATAID, ASSESSMENTID, LABEL,
     ENTRY)
-    VALUES(NULL, 1, 'feedbackAuthoring_isInstructorEditable', 'true')
+    VALUES(30, 1, 'feedbackAuthoring_isInstructorEditable', 'true')
 ;
