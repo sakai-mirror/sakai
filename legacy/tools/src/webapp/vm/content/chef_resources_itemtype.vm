@@ -1,4 +1,4 @@
-## <!-- chef_resources_itemtype.vm, use with org.sakaiproject.tool.content.ResourcesAction.java -->
+<!-- chef_resources_itemtype.vm, use with org.sakaiproject.tool.content.ResourcesAction.java -->
 ############################################# macro getPropertyValues 
 ##
 
@@ -39,6 +39,13 @@
 						<textarea rows="4" cols="60" 
 							name="$!{tag.dottedname}" 
 							id="$validator.escapeJavascript("$!{tag.dottedname}")" >$validator.escapeHtmlTextarea($!{tag.value})</textarea>
+					#elseif("$!tag.widget" == "$!WYSIWYG")
+						<table><tr><td>
+						<textarea rows="30" cols="80" 
+							name="$!{tag.dottedname}" 
+							id="$validator.escapeJavascript("$!{tag.dottedname}")" >$validator.escapeHtmlTextarea($!{tag.value}) </textarea>
+						#chef_setupformattedtextarea("$validator.escapeJavascript($!{tag.dottedname})")
+						</td></tr></table>
 					#elseif("$!tag.widget" == "$!DATE")
 						<input type="hidden" id="$validator.escapeJavascript("$!{tag.dottedname}")" value="" />
 						#if($!{tag.value})

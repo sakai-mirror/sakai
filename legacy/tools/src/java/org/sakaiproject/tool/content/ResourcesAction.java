@@ -1107,6 +1107,7 @@ public class ResourcesAction
 			context.put("ANYURI", ResourcesMetadata.WIDGET_ANYURI);
 			context.put("ENUM", ResourcesMetadata.WIDGET_ENUM);
 			context.put("NESTED", ResourcesMetadata.WIDGET_NESTED);
+			context.put("WYSIWYG", ResourcesMetadata.WIDGET_WYSIWYG);
 			
 			context.put("today", TimeService.newTime());
 			
@@ -1934,6 +1935,7 @@ public class ResourcesAction
 			context.put("ANYURI", ResourcesMetadata.WIDGET_ANYURI);
 			context.put("ENUM", ResourcesMetadata.WIDGET_ENUM);
 			context.put("NESTED", ResourcesMetadata.WIDGET_NESTED);
+			context.put("WYSIWYG", ResourcesMetadata.WIDGET_WYSIWYG);
 			
 			context.put("today", TimeService.newTime());
 			
@@ -3904,6 +3906,7 @@ public class ResourcesAction
 			context.put("ANYURI", ResourcesMetadata.WIDGET_ANYURI);
 			context.put("ENUM", ResourcesMetadata.WIDGET_ENUM);
 			context.put("NESTED", ResourcesMetadata.WIDGET_NESTED);
+			context.put("WYSIWYG", ResourcesMetadata.WIDGET_WYSIWYG);
 			
 			context.put("today", TimeService.newTime());
 			
@@ -5124,6 +5127,12 @@ public class ResourcesAction
 			{
 				label = description;
 			}
+			boolean isRichText = false;
+			String richText = (String) annotations.get("isRichText");
+			if(richText != null && richText.equalsIgnoreCase(Boolean.TRUE.toString()))
+			{
+				isRichText = true;
+			}
 			
 			Class javaclass = node.getObjectType();
 			String typename = javaclass.getName();
@@ -5144,7 +5153,11 @@ public class ResourcesAction
 			else if(typename.equals(String.class.getName()))
 			{
 				length = node.getType().getMaxLength();
-				if(length > 100 || length < 1)
+				if(isRichText)
+				{
+					widget = ResourcesMetadata.WIDGET_WYSIWYG;
+				}
+				else if(length > 100 || length < 1)
 				{
 					widget = ResourcesMetadata.WIDGET_TEXTAREA;
 				}
@@ -9443,6 +9456,7 @@ public class ResourcesAction
 		context.put("TIME", ResourcesMetadata.WIDGET_TIME);
 		context.put("DATETIME", ResourcesMetadata.WIDGET_DATETIME);
 		context.put("ANYURI", ResourcesMetadata.WIDGET_ANYURI);
+		context.put("WYSIWYG", ResourcesMetadata.WIDGET_WYSIWYG);
 		
 		context.put("today", TimeService.newTime());
 		

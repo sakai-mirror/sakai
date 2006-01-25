@@ -95,4 +95,6 @@
 		</p>
 	</form>
 </div>
+<!-- before parse -->
 #parse("/vm/content/chef_resources_itemtype.vm")
+<!-- after parse -->
