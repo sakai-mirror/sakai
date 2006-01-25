@@ -654,15 +654,13 @@ public class CharonPortal extends HttpServlet
 		}
 
 		out.write(tailHtml);
-    }
+	}
 
-
-    protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath,
+	protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath,
 			boolean skipContainer) throws IOException
 	{
 		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
-		// if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
-		if ( returnPath != null)
+		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
 		{
 			// where to go after
 			session.setAttribute(Tool.HELPER_DONE_URL, Web.returnUrl(req, returnPath));
@@ -680,19 +678,21 @@ public class CharonPortal extends HttpServlet
 	protected void doLogout(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath) throws IOException
 	{
 		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
-		
-		// If caller "knows" where we are supposed to go to after logout, lets go there
-		if ( returnPath != null)
+		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
 		{
 			// where to go after
-			session.setAttribute(Tool.HELPER_DONE_URL, Web.returnUrl(req, returnPath));
-		}
-		else
-		// Use the default system-wide logout URL
-		{
-			// where to go after
-			String loggedOutUrl = ServerConfigurationService.getLoggedOutUrl();
-			session.setAttribute(Tool.HELPER_DONE_URL, loggedOutUrl);
+			if (returnPath == null)
+			{
+				// if no path, use the configured logged out URL
+				String loggedOutUrl = ServerConfigurationService.getLoggedOutUrl();
+				session.setAttribute(Tool.HELPER_DONE_URL, loggedOutUrl);
+			}
+			else
+			{
+				// if we have a path, use a return based on the request and this path
+				String loggedOutUrl = Web.returnUrl(req, returnPath);
+				session.setAttribute(Tool.HELPER_DONE_URL, loggedOutUrl);
+			}
 		}
 
 		ActiveTool tool = ActiveToolManager.getActiveTool("sakai.login");
