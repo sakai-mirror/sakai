@@ -50,7 +50,14 @@
 		#if ($!manualAddNumber)
 			<ul>
 				#foreach ($k in [0..$manualAddNumber])
-					<li>$!manualAddSubjects.get($k) $!manualAddCourses.get($k) $!manualAddSections.get($k)</li>
+						#set($courseFieldValues = $!fieldValues.get($k))
+						#set($bound = $!form_requiredFields.size())
+						#set($bound = $bound - 1)
+						<li>
+							#foreach ($fieldCount in [0..$!bound])
+								$!courseFieldValues.get($fieldCount)
+							#end
+						</li>
 				#end
 			</ul>
 		#end

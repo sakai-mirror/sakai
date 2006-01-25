@@ -39,13 +39,19 @@
 				$c
 			</li>
 		#end
-		#foreach($k in [0..$manualAddNumber])
-			<li>
-				$requestSubjects.get($k)
-				$requestCourses.get($k)
-				$requestSections.get($k)
-				(requested)
-			</li>
+		#if ($!manualAddNumber)
+			<ul>
+				#foreach ($k in [0..$manualAddNumber])
+						#set($courseFieldValues = $!fieldValues.get($k))
+						#set($bound = $!form_requiredFields.size())
+						#set($bound = $bound - 1)
+						<li>
+							#foreach ($fieldCount in [0..$!bound])
+								$!courseFieldValues.get($fieldCount)
+							#end
+						</li>
+				#end
+			</ul>
 		#end
 	</ul>
 		<input type="hidden" name="back" value="$backIndex" />

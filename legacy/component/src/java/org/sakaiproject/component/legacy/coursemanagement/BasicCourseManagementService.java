@@ -177,6 +177,35 @@ public class BasicCourseManagementService implements CourseManagementService
 	/*******************************************************************************
 	* CourseManagementService implementation
 	*******************************************************************************/
+	
+	/**
+	* @inheritDoc
+	*/
+	public List getCourseIdRequiredFields()
+	{
+		return m_provider.getCourseIdRequiredFields();
+    	 	
+	}	// getCourseIdRequriedFields
+     
+ 	/**
+	* @inheritDoc
+	*/
+	public List getCourseIdRequiredFieldsSizes()
+	{
+		return m_provider.getCourseIdRequiredFieldsSizes();
+     	 	
+	}	// getCourseIdRequiredFieldsSizes
+     
+	/**
+	* @inheritDoc
+	*/
+	public String getCourseId(Term term, List requiredFields)
+	{
+		return m_provider.getCourseId(term, requiredFields);
+    	 	
+	}	// getCourseId
+     
+     
 	/**
 	* Access all terms
 	* @return A course object containing the coure information

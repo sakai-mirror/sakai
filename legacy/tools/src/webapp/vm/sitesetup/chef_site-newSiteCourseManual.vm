@@ -55,46 +55,28 @@
 				</p>
 				<table  border="0" cellpadding="4" summary="Table for manual input of course information.">
 					<tr>
-						<th id="subject" style="font-weight:normal">	
-							<span class ="reqStarInline">*</span>$tlang.getString("man.subject")
-						</th>
-						<th id="course" style="font-weight:normal">	
-							<span class ="reqStarInline">*</span>$tlang.getString("man.class")
-						</th>
-						<th id="sections" style="font-weight:normal">
-							#if (!$!isFutureTerm)
-								<span class ="reqStarInline">*</span>
-							#end
-							$tlang.getString("man.sect")
-						</th>
+						#set($bound = $!form_requiredFields.size())
+						#set($bound = $bound - 1)
+						#foreach ($fieldCount in [0..$!bound])
+								#set($field = $!form_requiredFields.get($fieldCount))
+									<th id="$!field" style="font-weight:normal">	
+										<span class ="reqStarInline">*</span>$field
+									</th>
+						#end
 					</tr>
 					#set ($count = 1)
 					#foreach ($k in [0..$listSize])
+						#set($courseFieldValues = $!fieldValues.get($k))
 						<tr>
-							<td headers="subject">
-								<input type="text" name="subject$k"  tabindex="$count" size="$!subjectsize" maxlength="$!subjectsize"
-									#if($form_subject)
-										value="$!subjects.get($k)"
-									#end
-									/> 
-								#set ($count = $count + 1)
-							</td>
-							<td headers="course">
-								<input type="text" name="course$k" tabindex="$count" size="$!coursesize" maxlength="$!coursesize"
-									#if($form_course)
-										value="$!courses.get($k)"
-									#end
-									/>
-								#set ($count = $count + 1)
-							</td>
-							<td headers="sections">
-								<input type="text" name="section$k" tabindex="$count" size="$!sectionsize" maxlength="$!sectionsize"
-									#if($form_section)
-										value="$!sections.get($k)"
-									#end
-									/>
-								#set ($count = $count + 1)
-							</td>
+							#foreach ($fieldCount in [0..$!bound])
+								#set($field = $!form_requiredFields.get($fieldCount))
+								#set($fieldSize = 8)
+								#set($fieldSize = $!form_requiredFieldsSizes.get($fieldCount))
+								<td headers="$field">
+									<input type="text" name="$field$k"  tabindex="$count" size="$!fieldSize" maxlength="$!fieldSize" value="$!courseFieldValues.get($fieldCount)" /> 
+									#set ($count = $count + 1)
+								</td>
+							#end
 						</tr>
 					#end
 					<tr>

@@ -397,9 +397,7 @@ public class SiteAction extends PagedResourceActionII
 	private final static String STATE_ADD_CLASS_MANUAL = "state_add_class_manual";
 	private final static String STATE_AUTO_ADD = "state_auto_add";
 	private final static String STATE_MANUAL_ADD_COURSE_NUMBER = "state_manual_add_course_number";
-	private final static String STATE_MANUAL_ADD_COURSE_SUBJECTS = "state_manual_add_course_subjects";
-	private final static String STATE_MANUAL_ADD_COURSE_COURSES = "state_manual_add_course_courses";
-	private final static String STATE_MANUAL_ADD_COURSE_SECTIONS = "state_manual_add_course_sections";
+	private final static String STATE_MANUAL_ADD_COURSE_FIELDS = "state_manual_add_course_fields";
 	public final static String PROP_SITE_REQUEST_COURSE = "site-request-course-sections";
 	public final static String SITE_PROVIDER_COURSE_LIST = "site_provider_course_list";
 	public final static String SITE_MANUAL_COURSE_LIST = "site_manual_course_list";
@@ -601,9 +599,7 @@ public class SiteAction extends PagedResourceActionII
 		state.removeAttribute(STATE_ADD_CLASS_MANUAL);
 		state.removeAttribute(STATE_AUTO_ADD);
 		state.removeAttribute(STATE_MANUAL_ADD_COURSE_NUMBER);
-		state.removeAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS);
-		state.removeAttribute(STATE_MANUAL_ADD_COURSE_COURSES);
-		state.removeAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS);
+		state.removeAttribute(STATE_MANUAL_ADD_COURSE_FIELDS);
 		state.removeAttribute(SITE_CREATE_TOTAL_STEPS);
 		state.removeAttribute(SITE_CREATE_CURRENT_STEP);
 	}	// cleanState
@@ -1008,9 +1004,7 @@ public class SiteAction extends PagedResourceActionII
 					{
 						int number = ((Integer) state.getAttribute(STATE_MANUAL_ADD_COURSE_NUMBER)).intValue();
 						context.put ("manualAddNumber", new Integer(number - 1));
-						context.put ("manualAddSubjects", state.getAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS));
-						context.put ("manualAddCourses", state.getAttribute(STATE_MANUAL_ADD_COURSE_COURSES));
-						context.put ("manualAddSections", state.getAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS));
+						context.put ("manualAddFields", state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS));
 						context.put("back", "37");
 					}
 					else
@@ -1053,6 +1047,10 @@ public class SiteAction extends PagedResourceActionII
 				}
 				context.put("form_site_contact_name", siteInfo.site_contact_name);
 				context.put("form_site_contact_email", siteInfo.site_contact_email);
+				
+				// those manual inputs
+				context.put("form_requiredFields", CourseManagementService.getCourseIdRequiredFields());
+				context.put("fieldValues", state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS));
 				
 				return (String)getContext(data).get("template") + TEMPLATE[2];
 			case 3: 
@@ -1332,9 +1330,7 @@ public class SiteAction extends PagedResourceActionII
 					{
 						int number = ((Integer) state.getAttribute(STATE_MANUAL_ADD_COURSE_NUMBER)).intValue();
 						context.put ("manualAddNumber", new Integer(number - 1));
-						context.put ("manualAddSubjects", state.getAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS));
-						context.put ("manualAddCourses", state.getAttribute(STATE_MANUAL_ADD_COURSE_COURSES));
-						context.put ("manualAddSections", state.getAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS));
+						context.put ("manualAddFields", state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS));
 					}
 					
 					context.put ("skins", state.getAttribute(STATE_ICONS));
@@ -1380,6 +1376,10 @@ public class SiteAction extends PagedResourceActionII
 				
 				context.put("importSiteTools", state.getAttribute(STATE_IMPORT_SITE_TOOL));
 				context.put("siteService", SiteService.getInstance());
+				
+				// those manual inputs
+				context.put("form_requiredFields", CourseManagementService.getCourseIdRequiredFields());
+				context.put("fieldValues", state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS));
 
 				return (String)getContext(data).get("template") + TEMPLATE[10];
 			case 11:
@@ -2539,9 +2539,8 @@ public class SiteAction extends PagedResourceActionII
 				context.put("Site", Boolean.FALSE);
 			}
 			buildInstructorSectionsList(state, params, context);
-			context.put("form_subject", siteInfo.subject);
-			context.put("form_course", siteInfo.course);
-			context.put("form_section", siteInfo.sections);
+			context.put("form_requiredFields", CourseManagementService.getCourseIdRequiredFields());
+			context.put("form_requiredFieldsSizes", CourseManagementService.getCourseIdRequiredFieldsSizes());
 			context.put("form_additional", siteInfo.additional);
 			context.put("form_title", siteInfo.title);
 			context.put("form_description", siteInfo.description);
@@ -2555,12 +2554,7 @@ public class SiteAction extends PagedResourceActionII
 			}
 			context.put("currentNumber", new Integer(number));
 			context.put("listSize", new Integer(number-1));
-			context.put("subjectsize", new Integer(ServerConfigurationService.getString("subjectsize", "8")));
-			context.put("coursesize", new Integer(ServerConfigurationService.getString("coursesize", "3")));
-			context.put("sectionsize", new Integer(ServerConfigurationService.getString("sectionsize", "3")));
-			context.put("subjects", state.getAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS));
-			context.put("courses", state.getAttribute(STATE_MANUAL_ADD_COURSE_COURSES));
-			context.put("sections", state.getAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS));
+			context.put("fieldValues", state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS));
 			
 			if (state.getAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN) != null)
 			{
@@ -2744,15 +2738,16 @@ public class SiteAction extends PagedResourceActionII
 			{
 				int addNumber = ((Integer) state.getAttribute(STATE_MANUAL_ADD_COURSE_NUMBER)).intValue() -1;
 				context.put("manualAddNumber", new Integer(addNumber));
-				context.put("requestSubjects", state.getAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS));
-				context.put("requestCourses", state.getAttribute(STATE_MANUAL_ADD_COURSE_COURSES));
-				context.put("requestSections", state.getAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS));
+				context.put("requestFields", state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS));
 				context.put("backIndex", "37");
 			}
 			else
 			{
 				context.put("backIndex", "36");
 			}
+			//those manual inputs
+			context.put("form_requiredFields", CourseManagementService.getCourseIdRequiredFields());
+			context.put("fieldValues", state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS));
 			
 			return (String)getContext(data).get("template") + TEMPLATE[44];
       
@@ -4962,33 +4957,47 @@ public class SiteAction extends PagedResourceActionII
 		}
 		
 		// read the user input
-		Vector subjects = new Vector();
-		Vector courses = new Vector();
-		Vector sections = new Vector();
-		boolean validInput = true;
 		int validInputSites = 0;
+		boolean validInput = true;
+		List requiredFields = CourseManagementService.getCourseIdRequiredFields();
+		List multiCourseInputs = new Vector();
 		for (int i = 0; i < oldNumber; i++)
 		{
-			String subject = StringUtil.trimToZero(params.getString("subject" + i));
-			String course = StringUtil.trimToZero(params.getString("course" + i));
-			String section = StringUtil.trimToZero(params.getString("section" + i));
-			if (subject.length() != 0 && course.length() != 0 && section.length() != 0)
+			List aCourseInputs = new Vector();
+			int emptyInputNum = 0;
+			
+			// iterate through all required fields
+			for (int k = 0; k<requiredFields.size(); k++)
 			{
-				// if all the inputs are not empty
+				String field = (String) requiredFields.get(k);
+				String fieldInput = StringUtil.trimToZero(params.getString(field + i));
+				aCourseInputs.add(fieldInput);
+				if (fieldInput.length() == 0)
+				{
+					// is this an empty String input?
+					emptyInputNum++;
+				}
+			}
+			
+			// add to the multiCourseInput vector
+			multiCourseInputs.add(i, aCourseInputs);
+			
+			// is any input invalid?
+			if (emptyInputNum == 0)
+			{
+				// valid if all the inputs are not empty
 				validInputSites++;
 			}
-			else if (subject.length() == 0 && course.length() == 0 && section.length() == 0)
+			else if (emptyInputNum == requiredFields.size())
 			{
-				// if all inputs are empty
+				// ignore if all inputs are empty
 			}
 			else
 			{
 				if (state.getAttribute(STATE_FUTURE_TERM_SELECTED) != null
-					&& ((Boolean) state.getAttribute(STATE_FUTURE_TERM_SELECTED)).booleanValue()
-					&& subject.length() != 0
-					&& course.length() != 0)
+					&& ((Boolean) state.getAttribute(STATE_FUTURE_TERM_SELECTED)).booleanValue())
 				{
-					// if future term selected, then section input is not required %%%
+					// if future term selected, then not all fields are required %%%
 					validInputSites++;
 				}
 				else
@@ -4996,10 +5005,7 @@ public class SiteAction extends PagedResourceActionII
 					validInput = false;
 				}
 			}
-			subjects.add(i, subject);
-			courses.add(i, course);
-			sections.add(i, section);
-		}	// for
+		}
 		
 		//how many more course/section to include in the site?
 		String option = params.getString("option");
@@ -5008,19 +5014,23 @@ public class SiteAction extends PagedResourceActionII
 			if (params.getString("number") != null)
 			{
 				int newNumber = Integer.parseInt(params.getString("number"));
-				for (int k = 0; k<newNumber; k++)
-				{
-					subjects.add(oldNumber+k,"");
-					courses.add(oldNumber+k,"");
-					sections.add(oldNumber+k,"");
-				}
 				state.setAttribute(STATE_MANUAL_ADD_COURSE_NUMBER, new Integer(oldNumber + newNumber));
+
+				for (int j = 0; j<newNumber; j++)
+				{
+					// add a new course input
+					List aCourseInputs = new Vector();
+					// iterate through all required fields
+					for (int m = 0; m<requiredFields.size(); m++)
+					{
+						aCourseInputs.add("");
+					}
+					multiCourseInputs.add(aCourseInputs);
+				}
 			}
 		}
 		
-		state.setAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS, subjects);
-		state.setAttribute(STATE_MANUAL_ADD_COURSE_COURSES, courses);
-		state.setAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS, sections);
+		state.setAttribute(STATE_MANUAL_ADD_COURSE_FIELDS, multiCourseInputs);
 		
 		if (!option.equalsIgnoreCase("change"))
 		{
@@ -5046,9 +5056,18 @@ public class SiteAction extends PagedResourceActionII
 		}
 		List providerCourseList = (List) state.getAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN);
 		//store the manually requested sections in one site property
-		if ((providerCourseList == null) || (providerCourseList.size() == 0))
-		{
-			String title = subjects.get(0) + " " + courses.get(0) + " " + sections.get(0);
+		if ((providerCourseList == null || providerCourseList.size() == 0) && multiCourseInputs.size() > 0)
+		{ 
+			String courseId = CourseManagementService.getCourseId((Term) state.getAttribute(STATE_TERM_SELECTED), (List) multiCourseInputs.get(0)); 
+			String title = "";
+			try
+			{
+				title = CourseManagementService.getCourseName(courseId);
+			}
+			catch (IdUnusedException e)
+			{
+				// ignore
+			}
 			siteInfo.title = appendTermInSiteTitle(state, title);
 		}
 		state.setAttribute(STATE_SITE_INFO, siteInfo);
@@ -5262,18 +5281,14 @@ public class SiteAction extends PagedResourceActionII
 				ResourcePropertiesEdit rp = site.getPropertiesEdit();
 				
 				Term term = null;
-				boolean termExist = false;
 				if (state.getAttribute(STATE_TERM_SELECTED) != null)
 				{
 					term = (Term) state.getAttribute(STATE_TERM_SELECTED);
-					termExist = true;
 					rp.addProperty(PROP_SITE_TERM, term.getId());
 				}
 				
 				List providerCourseList = (List) state.getAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN);
-				List manualAddSubjects = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS);
-				List manualAddCourses = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_COURSES);
-				List manualAddSections = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS);
+				List fields = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS);
 				int manualAddNumber = 0;
 				if (state.getAttribute(STATE_MANUAL_ADD_COURSE_NUMBER) != null)
 				{
@@ -5319,16 +5334,10 @@ public class SiteAction extends PagedResourceActionII
 				{
 					// set the manual sections to the site property
 					String manualSections = "";
+					List manualCourseInputs = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS);
 					for (int j = 0; j < manualAddNumber; j++)
 					{
-						if (termExist)
-						{
-							manualSections = manualSections.concat(term.getYear() + "," + term.getTerm() + "," + "A"/*to be configured*/ + "," + manualAddSubjects.get(j) + "," + manualAddCourses.get(j) + "," + manualAddSections.get(j) + "+");
-						}
-						else
-						{
-							manualSections = manualSections.concat("," + "," + "A"/*to be configured*/ + "," + manualAddSubjects.get(j) + "," + manualAddCourses.get(j) + "," + manualAddSections.get(j) + "+");
-						}
+						manualSections = manualSections.concat(CourseManagementService.getCourseId(term, (List) manualCourseInputs.get(j))).concat("+");
 					}
 					
 					// trim the trailing plus sign
@@ -5338,7 +5347,7 @@ public class SiteAction extends PagedResourceActionII
 					}
 					rp.addProperty(PROP_SITE_REQUEST_COURSE, manualSections);
 					// send request
-					sendSiteRequest(state, "new", manualAddNumber, manualAddSubjects, manualAddCourses, manualAddSections);
+					sendSiteRequest(state, "new", manualAddNumber, manualCourseInputs);
 				}
 				
 			}
@@ -5630,7 +5639,7 @@ public class SiteAction extends PagedResourceActionII
 	* Notification sent when a course site needs to be set up by Support
 	* 
 	*/
-	private void sendSiteRequest(SessionState state, String request, int requestListSize, List subjects, List courses, List sections)
+	private void sendSiteRequest(SessionState state, String request, int requestListSize, List requestFields)
 	{
 
 		boolean sendEmailToRequestee = false;
@@ -5720,13 +5729,20 @@ public class SiteAction extends PagedResourceActionII
 							buf.append(term.getTerm() + " " + term.getYear() + "\n");
 						
 						}
+						
+						// what are the required fields shown in the UI
+						List requiredFields = CourseManagementService.getCourseIdRequiredFields();
 						for (int i = 0; i < requestListSize; i++)
 						{
-							buf.append(rb.getString("java.subject")+"\t" + subjects.get(i) + "\n");
-							buf.append(rb.getString("java.course")+"\t" + courses.get(i) + "\n");
-							buf.append(rb.getString("java.section")+"\t" + sections.get(i) + "\n\n");	
+							List requiredFieldList = (List) requestFields.get(i);
+							for (int j = 0; j < requiredFieldList.size(); j++)
+							{
+								String requiredField = (String) requiredFields.get(j);
+								
+								buf.append(requiredField +"\t" + requiredFieldList.get(j) + "\n");
+							}
 						}
-						buf.append("\n"+rb.getString("java.according")+" " + sessionUserName + " "+rb.getString("java.record"));
+						buf.append("\n\n"+rb.getString("java.according")+" " + sessionUserName + " "+rb.getString("java.record"));
 						buf.append(" " + rb.getString("java.canyou")+" "  + sessionUserName + " "+ rb.getString("java.assoc")+"\n\n");
 						buf.append(rb.getString("java.respond")+" " + sessionUserName + rb.getString("java.appoint")+"\n\n");
 						buf.append(rb.getString("java.thanks")+"\n");
@@ -5783,11 +5799,18 @@ public class SiteAction extends PagedResourceActionII
 			{
 				buf.append(" "+rb.getString("java.forthis")+"\n\n");
 			}
+			
+			//what are the required fields shown in the UI
+			List requiredFields = CourseManagementService.getCourseIdRequiredFields();
 			for (int i = 0; i < requestListSize; i++)
 			{
-				buf.append(rb.getString("java.subject")+"\t" + subjects.get(i) + "\n");
-				buf.append(rb.getString("java.course")+"\t" + courses.get(i) + "\n");
-				buf.append(rb.getString("java.section")+"\t" + sections.get(i) + "\n\n");	
+				List requiredFieldList = (List) requestFields.get(i);
+				for (int j = 0; j < requiredFieldList.size(); j++)
+				{
+					String requiredField = (String) requiredFields.get(j);
+					
+					buf.append(requiredField +"\t" + requiredFieldList.get(i) + "\n");
+				}
 			}
 			buf.append(rb.getString("java.name")+"\t" + sessionUserName + " (" + noEmailInIdAccountName + " " + sessionUserId + ")\n");
 			buf.append(rb.getString("java.email")+"\t" + replyTo + "\n\n");
@@ -8411,9 +8434,7 @@ public class SiteAction extends PagedResourceActionII
 							{	
 								// no manual add
 								state.removeAttribute(STATE_MANUAL_ADD_COURSE_NUMBER);
-								state.removeAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS);
-								state.removeAttribute(STATE_MANUAL_ADD_COURSE_COURSES);
-								state.removeAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS);
+								state.removeAttribute(STATE_MANUAL_ADD_COURSE_FIELDS);
 								state.removeAttribute(STATE_SITE_QUEST_UNIQNAME);
 								
 								if (getStateSite(state) != null)
@@ -8675,14 +8696,12 @@ public class SiteAction extends PagedResourceActionII
 						List manualList = (state.getAttribute(SITE_MANUAL_COURSE_LIST) == null)?new Vector():(List) state.getAttribute(SITE_MANUAL_COURSE_LIST);
 						int manualAddNumber = ((Integer) state.getAttribute(STATE_MANUAL_ADD_COURSE_NUMBER)).intValue();
 						
-						List manualAddSubjects = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS);
-						List manualAddCourses = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_COURSES);
-						List manualAddSections = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS);
+						List manualAddFields = (List) state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS);
 						
 						Term t = (Term) state.getAttribute(STATE_TERM_SELECTED);
 						for (int m=0; m<manualAddNumber && t!=null; m++)
 						{
-							String manualAddClassId = t.getYear() + "," + t.getTerm() + ",A," + manualAddSubjects.get(m) + "," + manualAddCourses.get(m) + "," + manualAddSections.get(m);
+							String manualAddClassId = CourseManagementService.getCourseId(t, (List) manualAddFields.get(m));
 							manualList.add(manualAddClassId);
 						}
 						state.setAttribute(SITE_MANUAL_COURSE_LIST, manualList);
@@ -8736,9 +8755,7 @@ public class SiteAction extends PagedResourceActionII
 		state.removeAttribute(STATE_ADD_CLASS_MANUAL);
 		state.removeAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN);
 		state.removeAttribute(STATE_MANUAL_ADD_COURSE_NUMBER);
-		state.removeAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS);
-		state.removeAttribute(STATE_MANUAL_ADD_COURSE_COURSES);
-		state.removeAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS);
+		state.removeAttribute(STATE_MANUAL_ADD_COURSE_FIELDS);
 		state.removeAttribute(STATE_SITE_QUEST_UNIQNAME);
 		state.removeAttribute(STATE_AUTO_ADD);
 		state.removeAttribute(SITE_CREATE_TOTAL_STEPS);
@@ -8841,9 +8858,7 @@ public class SiteAction extends PagedResourceActionII
 				sendSiteRequest(	state, 
 								"change", 
 								((Integer) state.getAttribute(STATE_MANUAL_ADD_COURSE_NUMBER)).intValue(),
-								(List) state.getAttribute(STATE_MANUAL_ADD_COURSE_SUBJECTS), 
-								(List) state.getAttribute(STATE_MANUAL_ADD_COURSE_COURSES),
-								(List) state.getAttribute(STATE_MANUAL_ADD_COURSE_SECTIONS));
+								(List) state.getAttribute(STATE_MANUAL_ADD_COURSE_FIELDS));
 			}
 			catch (Exception e)
 			{
@@ -9110,14 +9125,6 @@ public class SiteAction extends PagedResourceActionII
 		if (params.getString ("additional") != null)
 		{
 			siteInfo.additional = params.getString ("additional");
-		}
-		if (params.getString ("subject") != null)
-		{
-			siteInfo.subject = params.getString ("subject");
-		}		
-		if (params.getString ("section") != null)
-		{
-			siteInfo.sections = params.getString ("section");
 		}
 		if (params.getString ("iconUrl") != null)
 		{
@@ -12467,8 +12474,6 @@ public class SiteAction extends PagedResourceActionII
 	
 	public class SiteInfo
 	{
-		public String subject = NULL_STRING;
-		public String course = NULL_STRING;
 		public String site_id = NULL_STRING; // getId of Resource
 		public String external_id = NULL_STRING; // if matches site_id connects site with U-M course information
 		public String site_type = "";
@@ -12480,14 +12485,11 @@ public class SiteAction extends PagedResourceActionII
 		public String short_description = NULL_STRING; // the short (20 char) description of the site
 		public String description = NULL_STRING;  // the longer description of the site
 		public String additional = NULL_STRING; // additional information on crosslists, etc.
-		public String sections = NULL_STRING; // a character-delimited string of one or more class sections with access to a site
 		public boolean published = false;
 		public boolean include = true;	// include the site in the Sites index; default is true.
 		public String site_contact_name = NULL_STRING;	// site contact name
 		public String site_contact_email = NULL_STRING;	// site contact email
 		
-		public String getSubject() { return subject; }
-		public String getCourse() { return course; }
 		public String getSiteId() {return site_id;}
 		public String getSiteType() { return site_type; }
 		public String getTitle() { return title; } 
@@ -12497,29 +12499,12 @@ public class SiteAction extends PagedResourceActionII
 		public boolean getJoinable() {return joinable; }
 		public String getJoinerRole() {return joinerRole; }
 		public String getAdditional() { return additional; }
-		public String getSections() {return sections; } // this is a character-delimited string of one or more sections
 		public boolean getPublished() { return published; }
 		public boolean getInclude() {return include;}
 		public String getSiteContactName() {return site_contact_name; }
 		public String getSiteContactEmail() {return site_contact_email; }
 		
 	} // SiteInfo
-
-	public class SiteListItem
-	{
-		public String id = ""; 
-		public String title = "";
-		public String by = "";
-		public String course_subject = "";
-		public List sections = new Vector();
-		
-		public String getId() { return id; }
-		public String getTitle() { return title; }
-		public String getBy() { return by; }
-		public String getCourse_subject() { return course_subject; }
-		public List getSections() { return sections; }
-		
-	} // SiteListItem
 	
 	//dissertation tool related
 	/**
