@@ -266,8 +266,8 @@ public class LoginTool extends HttpServlet
 
 		String eidWording = rb.getString("userid");
 		String pwWording = rb.getString("log.pass");
-      String loginRequired = rb.getString("log.logreq");
-      String loginWording = rb.getString("log.login");
+		String loginRequired = rb.getString("log.logreq");
+		String loginWording = rb.getString("log.login");
 
 		if (!fragment)
 		{
@@ -390,12 +390,6 @@ public class LoginTool extends HttpServlet
 				// get the session info complete needs, since the logout will invalidate and clear the session
 				String returnUrl = (String) session.getAttribute(Tool.HELPER_DONE_URL);
 
-            if ( returnUrl == null )
-            {
-               M_log.info("this.doPost(login) has null Tool.HELPER_DONE_URL");
-//               returnUrl = Web.returnUrl(req, null );
-            }
-            
 				complete(returnUrl, session, tool, res);
 			}
 			catch (AuthenticationException ex)
@@ -426,6 +420,13 @@ public class LoginTool extends HttpServlet
 			session.removeAttribute(ATTR_MSG);
 			session.removeAttribute(ATTR_RETURN_URL);
 			session.removeAttribute(ATTR_CONTAINER_CHECKED);
+		}
+
+		// this would be bad - we have nowhere to go... but should not happen -ggolden
+		if (returnUrl == null)
+		{
+			M_log.warn("complete() has null returnUrl");
+			// returnUrl = Web.returnUrl(req, null); ??
 		}
 
 		// redirect to the done URL
