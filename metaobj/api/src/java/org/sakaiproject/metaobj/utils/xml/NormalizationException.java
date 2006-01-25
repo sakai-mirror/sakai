@@ -55,6 +55,8 @@ public class NormalizationException extends RuntimeException {
 
    public static final String INVALID_TYPE_ERROR_CODE = "Object {0} should be class {1}";
 
+   public static final String INVALID_URI = "Value {0} is a malformed URI";
+
    private String errorCode;
    private Object[] errorInfo;
 

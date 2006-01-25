@@ -63,6 +63,9 @@ public class ElementTypeFactory {
       "        xs:time" +
       "        xs:dateTime";
 
+   private static final String URI_TYPES = "" +
+      "        xs:anyURI";
+
    protected ElementTypeFactory() {
 
    }
@@ -105,6 +108,9 @@ public class ElementTypeFactory {
             parentNode, xsdNamespace).postInit(xsdNamespace);
       } else if (DATE_TYPES.indexOf(typeName) != -1) {
          return new DateFormatterElementType(typeName, schemaElement,
+            parentNode, xsdNamespace).postInit(xsdNamespace);
+      } else if (URI_TYPES.indexOf(typeName) != -1) {
+         return new UriElementType(typeName, schemaElement,
             parentNode, xsdNamespace).postInit(xsdNamespace);
       }
 
