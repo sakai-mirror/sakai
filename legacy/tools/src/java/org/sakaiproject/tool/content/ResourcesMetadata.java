@@ -51,6 +51,7 @@ public class ResourcesMetadata
 	public static final String WIDGET_ANYURI = "anyURI";
 	public static final String WIDGET_ENUM = "enumeration";
 	public static final String WIDGET_NESTED = "nested";
+	public static final String WIDGET_WYSIWYG = "wysiwig-editor";
 	
 	public static final String XSD_STRING = "string";
 	public static final String XSD_BOOLEAN = "boolean";	
