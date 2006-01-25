@@ -382,18 +382,24 @@ public class AccessServlet extends VmServlet
 	 * @param res
 	 *        HttpServletResponse object back to the client.
 	 * @param path
-	 *        The current request path
+	 *        The current request path, set ONLY if we want this to be where to redirect the user after successfull login
 	 */
 	protected void doLogin(HttpServletRequest req, HttpServletResponse res, String path)
 	{
 		// get the Sakai session
 		Session session = SessionManager.getCurrentSession();
 
-		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
-		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
+		// set the return path for after login if needed (Note: in session, not tool session, special for Login helper)
+		if (path != null)
 		{
 			// where to go after
 			session.setAttribute(Tool.HELPER_DONE_URL, Web.returnUrl(req, path));
+		}
+
+		// check that we have a return path set; might have been done earlier
+		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
+		{
+			M_log.warn("doLogin - proceeding with null HELPER_DONE_URL");
 		}
 
 		// map the request to the helper, leaving the path after ".../options" for the helper

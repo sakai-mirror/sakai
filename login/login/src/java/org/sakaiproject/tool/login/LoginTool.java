@@ -422,17 +422,14 @@ public class LoginTool extends HttpServlet
 			session.removeAttribute(ATTR_CONTAINER_CHECKED);
 		}
 
-		// this would be bad - we have nowhere to go... but should not happen -ggolden
+		// if we end up with nowhere to go, go to the portal
 		if (returnUrl == null)
 		{
-			M_log.warn("complete() has null returnUrl");
-			// returnUrl = Web.returnUrl(req, null); ??
+			returnUrl = ServerConfigurationService.getPortalUrl();
+			M_log.info("complete: nowhere set to go, going to portal");
 		}
 
 		// redirect to the done URL
 		res.sendRedirect(res.encodeRedirectURL(returnUrl));
 	}
 }
-
-
-

@@ -444,15 +444,23 @@ public class CharonPortal extends HttpServlet
 		}
 
 		// recognize and dispatch the 'login' option
+		else if ((parts.length == 2) && (parts[1].equals("relogin")))
+		{
+			// Note: here we send a null path, meaning we will NOT set it as a possible return path
+			//       we expect we are in the middle of a login screen processing, and it's already set (user login button is "ulogin") -ggolden
+			doLogin(req, res, session, null, false);
+		}
+
+		// recognize and dispatch the 'login' option
 		else if ((parts.length == 2) && (parts[1].equals("login")))
 		{
-			doLogin(req, res, session, null, false);
+			doLogin(req, res, session, "", false);
 		}
 
 		// recognize and dispatch the 'login' options
 		else if ((parts.length == 2) && ((parts[1].equals("xlogin"))))
 		{
-			doLogin(req, res, session, null, true);
+			doLogin(req, res, session, "", true);
 		}
 
 		// recognize and dispatch the 'login' option for gallery
@@ -660,7 +668,9 @@ public class CharonPortal extends HttpServlet
 			boolean skipContainer) throws IOException
 	{
 		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
-		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
+		// Note: always set this if we are passed in a return path... a blank return path is valid... to clean up from
+		//       possible abandened previous login attempt -ggolden
+		if (returnPath != null)
 		{
 			// where to go after
 			session.setAttribute(Tool.HELPER_DONE_URL, Web.returnUrl(req, returnPath));
@@ -669,30 +679,42 @@ public class CharonPortal extends HttpServlet
 		ActiveTool tool = ActiveToolManager.getActiveTool("sakai.login");
 
 		// to skip container auth for this one, forcing things to be handled internaly, set the "extreme" login path
-		String loginPath = (skipContainer ? "/xlogin" : "/login");
+		String loginPath = (skipContainer ? "/xlogin" : "/relogin");
 
 		String context = req.getContextPath() + req.getServletPath() + loginPath;
 		tool.help(req, res, context, loginPath);
 	}
 
+	/**
+	 * Process a logout
+	 * 
+	 * @param req
+	 *        Request object
+	 * @param res
+	 *        Response object
+	 * @param session
+	 *        Current session
+	 * @param returnPath
+	 *        if not null, the path to use for the end-user browser redirect after the logout is complete. Leave null to use the configured logged out URL.
+	 * @throws IOException
+	 */
 	protected void doLogout(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath) throws IOException
 	{
-		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
-		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
+		// where to go after
+		if (returnPath == null)
 		{
-			// where to go after
-			if (returnPath == null)
-			{
-				// if no path, use the configured logged out URL
-				String loggedOutUrl = ServerConfigurationService.getLoggedOutUrl();
-				session.setAttribute(Tool.HELPER_DONE_URL, loggedOutUrl);
-			}
-			else
-			{
-				// if we have a path, use a return based on the request and this path
-				String loggedOutUrl = Web.returnUrl(req, returnPath);
-				session.setAttribute(Tool.HELPER_DONE_URL, loggedOutUrl);
-			}
+			// if no path, use the configured logged out URL
+			String loggedOutUrl = ServerConfigurationService.getLoggedOutUrl();
+			session.setAttribute(Tool.HELPER_DONE_URL, loggedOutUrl);
+		}
+		else
+		{
+			// if we have a path, use a return based on the request and this path
+			// Note: this is currently used only as "/gallery"
+			//       - we should really add a ServerConfigurationService.getGalleryLoggedOutUrl()
+			//       and change the returnPath to a normal/gallery indicator -ggolden
+			String loggedOutUrl = Web.returnUrl(req, returnPath);
+			session.setAttribute(Tool.HELPER_DONE_URL, loggedOutUrl);
 		}
 
 		ActiveTool tool = ActiveToolManager.getActiveTool("sakai.login");
@@ -820,7 +842,7 @@ public class CharonPortal extends HttpServlet
 		}
 
 		// recognize and dispatch the 'login' options
-		else if ((parts.length == 2) && ((parts[1].equals("login") || (parts[1].equals("xlogin")))))
+		else if ((parts.length == 2) && ((parts[1].equals("login") || (parts[1].equals("xlogin")) || (parts[1].equals("relogin")))))
 		{
 			postLogin(req, res, session, parts[1]);
 		}
@@ -2154,6 +2176,3 @@ public class CharonPortal extends HttpServlet
 		return -1;
 	}
 }
-
-
-
