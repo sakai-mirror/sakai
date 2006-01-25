@@ -49,6 +49,21 @@ public interface CourseManagementService
 	public static final String SECURE_REMOVE_TERM = "remove.term";
 	
 	/**
+	 * Return a list of field (labels) required for constructing course id 
+	 */
+     public List getCourseIdRequiredFields();
+     
+	/**
+	* Return a list of maximum field size for course id required fields
+	*/
+	public List getCourseIdRequiredFieldsSizes();
+      
+     /**
+      * Construct course id based on provided information
+      */
+    public String getCourseId(Term term, List requiredFields);
+     
+     /**
 	* Get the course object with the course provider id specified
 	* @param the course provider id, the meaning of which is defined in the implementation
 	* @return The Course object

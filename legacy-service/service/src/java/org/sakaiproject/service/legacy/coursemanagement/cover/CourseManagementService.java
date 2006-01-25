@@ -23,6 +23,9 @@
 
 package org.sakaiproject.service.legacy.coursemanagement.cover;
 
+import java.util.List;
+import org.sakaiproject.service.legacy.coursemanagement.Term;
+
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 
 /**
@@ -54,6 +57,33 @@ public class CourseManagementService
 
 	public static java.lang.String SERVICE_NAME = org.sakaiproject.service.legacy.coursemanagement.CourseManagementService.SERVICE_NAME;
 
+	public static java.util.List getCourseIdRequiredFields()
+	{
+		org.sakaiproject.service.legacy.coursemanagement.CourseManagementService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.getCourseIdRequiredFields();
+	}
+     
+	public static java.util.List getCourseIdRequiredFieldsSizes()
+	{
+		org.sakaiproject.service.legacy.coursemanagement.CourseManagementService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.getCourseIdRequiredFieldsSizes();
+	}
+      
+	public static String getCourseId(Term term, List requiredFields)
+	{
+		org.sakaiproject.service.legacy.coursemanagement.CourseManagementService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.getCourseId(term, requiredFields);
+	}
+     
 	public static org.sakaiproject.service.legacy.coursemanagement.Course getCourse(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException
 	{
 		org.sakaiproject.service.legacy.coursemanagement.CourseManagementService service = getInstance();

@@ -37,6 +37,21 @@ import org.sakaiproject.exception.IdUnusedException;
 public interface CourseManagementProvider
 {
 	/**
+	 * Return a list of field (labels) required for constructing course id 
+	 */
+     public List getCourseIdRequiredFields();
+     
+     /**
+  	 * Return a list of maximum field size for course id required fields
+  	 */
+       public List getCourseIdRequiredFieldsSizes();
+     
+     /**
+      * Construct course id based on provided information
+      */
+     public String getCourseId(Term term, List requiredFields);
+     
+	/**
 	 * Access a course object.  Update the object with the information found.
 	 * @param String the course id
 	 * @return The course object found
