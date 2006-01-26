@@ -19,7 +19,15 @@ create table rwikipreference (id varchar(36) not null, userid varchar(64) not nu
 -- SAM
 ALTER TABLE SAM_PUBLISHEDFEEDBACK_T ADD COLUMN FEEDBACKAUTHORING integer;
 ALTER TABLE SAM_ASSESSFEEDBACK_T ADD COLUMN FEEDBACKAUTHORING integer;
+
+-- Will update the default template with the correct default value for 
+-- AuthoringSetting (default is to only show question level feedback input 
+-- fields for questions in authoring, to make the page easier to read)
 UPDATE SAM_ASSESSFEEDBACK_T SET FEEDBACKAUTHORING = 1 WHERE ASSESSMENTID = 1;
+
+-- If you want to change all the existing assessments to use this default then 
+-- you can run this version of the update statement
+-- UPDATE SAM_ASSESSFEEDBACK_T SET FEEDBACKAUTHORING = 1;
 
 INSERT INTO SAM_ASSESSMETADATA_T (ASSESSMENTMETADATAID, ASSESSMENTID, LABEL,
     ENTRY)
