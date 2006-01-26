@@ -1,7 +1,7 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/sitesetup/chef_site-newSiteCourseManual.vm,v 1.4 2005/06/03 14:08:16 gsilver.umich.edu Exp $ -->
 <div class="portletBody">
 	##if($menu)#toolbar($menu)#end<br/><br/>
-		#if (!$!siteEdit)
+		#if (!$!site)
 			<h3>$tlang.getString("man.creat")</h3>
 			<p class="step">
 				$tlang.getString("nscourse.choose")
@@ -13,7 +13,7 @@
 			<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
 			<div style="display:block;clear:both"></div>
 		#end
-			#if ($!siteEdit)
+			#if ($!site)
 				<p>
 				$tlang.getString("nscourse.already")
 				</p>	
@@ -37,7 +37,7 @@
 				</p>
 				#if ($!selectedProviderCourse)
 					<div>
-						$tlang.getString("man.sofar") #if($!siteEdit) $tlang.getString("man.toaddto") #else $tlang.getString("java.for") #end $tlang.getString("man.this") <br />
+						$tlang.getString("man.sofar") #if($!site) $tlang.getString("man.toaddto") #else $tlang.getString("java.for") #end $tlang.getString("man.this") <br />
 						<ul>
 							#foreach ($item in $!selectedProviderCourse)
 								<li>$item </li>

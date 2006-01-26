@@ -1841,7 +1841,6 @@ public class SiteAction extends PagedResourceActionII
 			if (site != null)
 			{
 				//editing existing site
-				context.put("Site", Boolean.TRUE);
 				context.put("site", site);
 				siteType = state.getAttribute(STATE_SITE_TYPE)!=null?(String)state.getAttribute(STATE_SITE_TYPE):null;
 				
@@ -1878,7 +1877,6 @@ public class SiteAction extends PagedResourceActionII
 			}
 			else
 			{
-				context.put("Site", Boolean.FALSE);
 				siteInfo = (SiteInfo) state.getAttribute(STATE_SITE_INFO);
 				
 				if ( siteInfo.site_type != null 
@@ -2457,7 +2455,7 @@ public class SiteAction extends PagedResourceActionII
 			 */
 			if (site != null)
 			{
-				context.put("Site", Boolean.TRUE);
+				context.put("site", site);
 				context.put("siteTitle", site.getTitle());
 				terms = CourseManagementService.getTerms();
 				if (terms != null && terms.size() >0)
@@ -2501,7 +2499,6 @@ public class SiteAction extends PagedResourceActionII
 			}
 			else
 			{
-				context.put("Site", Boolean.FALSE);
 				if (state.getAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN) != null)
 				{
 					context.put ("selectedProviderCourse", state.getAttribute(STATE_ADD_CLASS_PROVIDER_CHOSEN));
@@ -2530,13 +2527,9 @@ public class SiteAction extends PagedResourceActionII
 			 */
 			if (site != null)
 			{
-				context.put("Site", Boolean.TRUE);
+				context.put("site", site);
 				context.put("siteTitle", site.getTitle());
 				coursesIntoContext(state, context, site);
-			}
-			else
-			{
-				context.put("Site", Boolean.FALSE);
 			}
 			buildInstructorSectionsList(state, params, context);
 			context.put("form_requiredFields", CourseManagementService.getCourseIdRequiredFields());
