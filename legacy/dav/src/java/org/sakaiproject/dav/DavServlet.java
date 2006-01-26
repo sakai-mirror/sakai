@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+* Copyright (c) 2003, 2004, 2005, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 * 
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -828,7 +828,7 @@ public class DavServlet
 				// getUserID could be our id, null, or the
 				// wrong one. The wrong one should be rare.
 
-				if (session.getUserId() != eid)
+				if (!session.getUserId().equals(a.getUid()))
 				    LoginUtil.login(a, req);
 			    }
 			catch (AuthenticationException ex)

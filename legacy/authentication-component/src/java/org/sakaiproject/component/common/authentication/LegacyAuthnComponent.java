@@ -3,7 +3,7 @@
  * $Id$
  **********************************************************************************
  *
- * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ * Copyright (c) 2005, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
  * 
  * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -41,8 +41,7 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
  * An Authentication component working with the legacy UserDirectoryService.
  * </p>
  * 
- * @author University of Michigan, Sakai Software Development Team
- * @version $Revision$
+ * @author Sakai Software Development Team
  */
 public class LegacyAuthnComponent implements AuthenticationManager
 {
@@ -95,11 +94,13 @@ public class LegacyAuthnComponent implements AuthenticationManager
 
 			// the evidence id must match a defined User
 			User user = UserDirectoryService.authenticate(evidence.getIdentifier(),evidence.getPassword());
-			if ( user == null ) {
+			if (user == null)
+			{
 				throw new AuthenticationException("invalid login");
 			}
 			
-			Authentication rv = new org.sakaiproject.util.Authentication(evidence.getIdentifier(), evidence.getIdentifier());
+			// use the User id as both the uuid and eid
+			Authentication rv = new org.sakaiproject.util.Authentication(user.getId(), user.getId());
 			return rv;
 		}
 
@@ -117,6 +118,10 @@ public class LegacyAuthnComponent implements AuthenticationManager
 			try
 			{
 				User user = UserDirectoryService.getUser(evidence.getIdentifier());
+
+				// use the User id as both the uuid and eid
+				Authentication rv = new org.sakaiproject.util.Authentication(user.getId(), user.getId());
+				return rv;
 			}
 			catch (IdUnusedException ex)
 			{
@@ -124,10 +129,6 @@ public class LegacyAuthnComponent implements AuthenticationManager
 				// TODO: create the user record here?
 				throw new AuthenticationException("invalid login");
 			}
-
-			// use the user id as both the uuid and eid
-			Authentication rv = new org.sakaiproject.util.Authentication(evidence.getIdentifier(), evidence.getIdentifier());
-			return rv;
 		}
 
 		else
@@ -136,6 +137,3 @@ public class LegacyAuthnComponent implements AuthenticationManager
 		}
 	}
 }
-
-
-

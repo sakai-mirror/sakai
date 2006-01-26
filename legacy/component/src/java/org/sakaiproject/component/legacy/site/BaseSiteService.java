@@ -3,7 +3,7 @@
  * $Id$
  **********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ * Copyright (c) 2003, 2004, 2005, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
  * 
  * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -529,14 +529,11 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 			// if this is the current user's site, we can create it
 			if (isUserSite(id) && id.substring(1).equals(SessionManager.getCurrentSessionUserId()))
 			{
-				// use lowercase user id inside user's MyWorkspace id
-				id = id.toLowerCase();
-
 				// pick a template, type based, to clone it exactly but set this as the id
 				BaseSite template = null;
 				try
 				{
-					User user = UserDirectoryService.getUser((SessionManager.getCurrentSessionUserId()).toLowerCase());
+					User user = UserDirectoryService.getUser(SessionManager.getCurrentSessionUserId());
 					template = (BaseSite) getDefinedSite(USER_SITE_TEMPLATE + "." + user.getType());
 				}
 				catch (Throwable t)

@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+* Copyright (c) 2003, 2004, 2005, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 * 
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -132,7 +132,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	public String userReference(String id)
 	{
 		// clean up the id
-		id = StringUtil.trimToZeroLower(id);
+		id = cleanId(id);
 
 		return getAccessPoint(true) + Entity.SEPARATOR + id;
 
@@ -304,6 +304,18 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		m_entityManager = service;
 	}
 
+	/** Configuration: case sensitive user id. */
+	protected boolean m_caseSensitiveId = false;
+
+	/**
+	 * Configuration: case sensitive user id
+	 * @param value The case sensitive user ide.
+	 */
+	public void setCaseSensitiveId(String value)
+	{
+		m_caseSensitiveId = new Boolean(value).booleanValue();
+	}
+
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -379,7 +391,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	public User getUser(String id) throws IdUnusedException
 	{
 		// clean up the id
-		id = StringUtil.trimToNullLower(id);
+		id = cleanId(id);
 
 		if (id == null)
 			throw new IdUnusedException("null");
@@ -458,7 +470,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			String id = (String) i.next();
 
 			// clean up the id
-			id = StringUtil.trimToNullLower(id);
+			id = cleanId(id);
 
 			// skip nulls
 			if (id == null) continue;
@@ -566,7 +578,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	public boolean allowUpdateUser(String id)
 	{
 		// clean up the id
-		id = StringUtil.trimToNullLower(id);
+		id = cleanId(id);
 
 		// is this the user's own?
 		if (id.equals(SessionManager.getCurrentSessionUserId()))
@@ -594,7 +606,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	public UserEdit editUser(String id) throws IdUnusedException, PermissionException, InUseException
 	{
 		// clean up the id
-		id = StringUtil.trimToNullLower(id);
+		id = cleanId(id);
 
 		if (id == null)
 			throw new IdUnusedException("null");
@@ -793,7 +805,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	public boolean allowAddUser(String id)
 	{
 		// clean up the id
-		id = StringUtil.trimToNullLower(id);
+		id = cleanId(id);
 
 		return unlockCheck(SECURE_ADD_USER, userReference(id));
 
@@ -810,7 +822,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	public UserEdit addUser(String id) throws IdInvalidException, IdUsedException, PermissionException
 	{
 		// clean up the id
-		id = StringUtil.trimToZeroLower(id);
+		id = cleanId(id);
 
 		// check for a valid user name
 		Validator.checkUserId(id);
@@ -911,7 +923,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	public boolean allowRemoveUser(String id)
 	{
 		// clean up the id
-		id = StringUtil.trimToNullLower(id);
+		id = cleanId(id);
 
 		return unlockCheck(SECURE_REMOVE_USER, userReference(id));
 
@@ -973,7 +985,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	public User authenticate(String id, String password)
 	{
 		// clean up the id
-		id = StringUtil.trimToNullLower(id);
+		id = cleanId(id);
 		if (id == null) return null;
 
 		boolean authenticated = false;
@@ -1151,6 +1163,21 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		edit.m_lastModifiedTime = TimeService.newTime();
 
 	} //  addLiveUpdateProperties
+
+	/**
+	 * Adjust the id - trim it to null, and lower case IF we are case insensitive.
+	 * @param id The id to clean up.
+	 * @return A cleaned up id.
+	 */
+	protected String cleanId(String id)
+	{
+		if (!m_caseSensitiveId)
+		{
+			return StringUtil.trimToNullLower(id);
+		}
+
+		return StringUtil.trimToNull(id);
+	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
 	 * EntityProducer implementation
@@ -1420,7 +1447,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			// setup for properties
 			m_properties = new BaseResourcePropertiesEdit();
 
-			m_id = StringUtil.trimToNullLower(el.getAttribute("id"));
+			m_id = cleanId(el.getAttribute("id"));
 			m_firstName = StringUtil.trimToNull(el.getAttribute("first-name"));
 			m_lastName = StringUtil.trimToNull(el.getAttribute("last-name"));
 			setEmail(StringUtil.trimToNull(el.getAttribute("email")));

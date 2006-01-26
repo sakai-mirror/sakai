@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+* Copyright (c) 2003, 2004, 2005, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 *  
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -7118,20 +7118,18 @@ public class SiteAction extends PagedResourceActionII
 									//set email address
 									uEdit.setEmail(emailInIdAccount);
 							
-									// set id
-									uEdit.setId(emailInIdAccount);
-							
 									// set the guest user type
 									uEdit.setType("guest");
 
-									// set password
-									//because of cosign security for emailInIdAccount account, password can be set to anything
+									// set password to a random positive number
 									Random generator = new Random(System.currentTimeMillis());
 									Integer num = new Integer(generator.nextInt(Integer.MAX_VALUE));
+									if (num.intValue() < 0) num = new Integer(num.intValue() *-1);
 									pw = num.toString();
 									uEdit.setPassword(pw);
+
+									// and save
 									UserDirectoryService.commitEdit(uEdit);
-					
 								 }
 								 catch(IdInvalidException ee)
 								 {
@@ -9256,7 +9254,7 @@ public class SiteAction extends PagedResourceActionII
 						User user = UserDirectoryService.getUser(userString);
 						Participant participant = new Participant();
 						participant.name = user.getSortName();
-						participant.uniqname = userString;
+						participant.uniqname = user.getId();
 						if (r != null)
 						{
 							participant.role = r.getId();
@@ -10314,8 +10312,8 @@ public class SiteAction extends PagedResourceActionII
 		String emailInIdAccounts = "";
 		
 		//check that there is something with which to work
-		noEmailInIdAccounts = StringUtil.trimToNull((params.getString("noEmailInIdAccount")).toLowerCase());
-		emailInIdAccounts = StringUtil.trimToNull(params.getString("emailInIdAccount").toLowerCase());
+		noEmailInIdAccounts = StringUtil.trimToNull((params.getString("noEmailInIdAccount")));
+		emailInIdAccounts = StringUtil.trimToNull(params.getString("emailInIdAccount"));
 		state.setAttribute("noEmailInIdAccountValue", noEmailInIdAccounts);
 		state.setAttribute("emailInIdAccountValue", emailInIdAccounts);
 		
@@ -10347,7 +10345,7 @@ public class SiteAction extends PagedResourceActionII
 					{
 						User u = UserDirectoryService.getUser(noEmailInIdAccount);
 						participant.name = u.getDisplayName();
-						participant.uniqname = noEmailInIdAccount;
+						participant.uniqname = u.getId();
 						pList.add(participant);
 					}
 					catch (IdUnusedException e) 
@@ -10405,14 +10403,14 @@ public class SiteAction extends PagedResourceActionII
 							// if the emailInIdAccount user already exists
 							User u = UserDirectoryService.getUser(emailInIdAccount);
 							participant.name = u.getDisplayName();
-							participant.uniqname = emailInIdAccount;
+							participant.uniqname = u.getId();
 							pList.add(participant);
 						}
 						catch (IdUnusedException e)
 						{
 							// if the emailInIdAccount user is not in the system yet
 							participant.name = emailInIdAccount;
-							participant.uniqname = emailInIdAccount;
+							participant.uniqname = emailInIdAccount; // TODO: what would the UDS case this name to? -ggolden
 							pList.add(participant);
 						}
 					}
@@ -10571,26 +10569,24 @@ public class SiteAction extends PagedResourceActionII
 							//set email address
 							uEdit.setEmail(emailInIdAccount);
 							
-							// set id
-							uEdit.setId(emailInIdAccount);
-							
 							// set the guest user type
 							uEdit.setType("guest");
 
-							// set password
-							//because of cosign security for emailInIdAccount account, password can be set to anything
+							// set password to a positive random number
 							Random generator = new Random(System.currentTimeMillis());
 							Integer num = new Integer(generator.nextInt(Integer.MAX_VALUE));
+							if (num.intValue() < 0) num = new Integer(num.intValue() *-1);
 							pw = num.toString();
 							uEdit.setPassword(pw);
+							
+							// and save
 							UserDirectoryService.commitEdit(uEdit);
 							
 							boolean notifyNewUserEmail = (ServerConfigurationService.getString("notifyNewUserEmail", Boolean.TRUE.toString())).equalsIgnoreCase(Boolean.TRUE.toString());
 							if (notifyNewUserEmail)
 							{
-								notifyNewUserEmail(emailInIdAccount, emailInIdAccount, pw, siteTitle);
+								notifyNewUserEmail(uEdit.getId(), uEdit.getEmail(), pw, siteTitle);
 							}
-					
 						 }
 						 catch(IdInvalidException ee)
 						 {

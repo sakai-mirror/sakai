@@ -479,6 +479,7 @@
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
  		<property name="cacheMinutes"><value>0</value></property>
  		<property name="cacheCleanerMinutes"><value>0</value></property>
+ 		<property name="caseSensitiveId"><value>false</value></property>
 	</bean>
 
    <bean id="lockManagerHibernateMappings"

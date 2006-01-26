@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+* Copyright (c) 2003, 2004, 2005, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 * 
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -139,6 +139,12 @@ public class TestEmailService implements EmailService
 	* Work interface methods: org.sakai.service.email.EmailService
 	*******************************************************************************/
 
+	protected String listToStr(List list)
+	{
+		if (list == null) return "";
+		return arrayToStr(list.toArray());
+	}
+
 	protected String arrayToStr(Object[] array)
 	{
 		StringBuffer buf = new StringBuffer();
@@ -154,7 +160,7 @@ public class TestEmailService implements EmailService
 		}
 		else
 		{
-			buf.append("<null>");
+			buf.append("");
 		}
 
 		return buf.toString();
@@ -187,7 +193,7 @@ public class TestEmailService implements EmailService
 				+ " content: "
 				+ content
 				+ " additionalHeaders: "
-				+ arrayToStr(additionalHeaders.toArray())
+				+ listToStr(additionalHeaders)
 				);
 	}
 
@@ -211,7 +217,7 @@ public class TestEmailService implements EmailService
 				+ " content: "
 				+ content
 				+ " additionalHeaders: "
-				+ arrayToStr(additionalHeaders.toArray())
+				+ listToStr(additionalHeaders)
 				);
 	}
 }

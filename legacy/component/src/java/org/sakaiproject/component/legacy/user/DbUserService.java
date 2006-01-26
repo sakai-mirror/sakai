@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+* Copyright (c) 2003, 2004, 2005, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 * 
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -240,7 +240,7 @@ public class DbUserService
 			setSortField(m_sortField1, m_sortField2);
 
 			m_reader = this;
-			setCaseInsensitivity(true);
+			setCaseInsensitivity(!m_caseSensitiveId);
 			
 			// setup for old-new stradling
 			if (m_checkOld)
