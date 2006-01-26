@@ -94,6 +94,11 @@
 							name="$!{tag.dottedname}" 
 							id="$validator.escapeJavascript("$!{tag.dottedname}")" 
 							value="$!{tag.value}" />
+					#elseif("$!tag.widget" == "$!ANYURI")
+						ANYURI: $tag.dottedname<br />
+						$tag.widget<br />
+						"$!{tag.value}"<br />
+						
 					#else
 						$tag.dottedname<br />
 						$tag.widget<br />

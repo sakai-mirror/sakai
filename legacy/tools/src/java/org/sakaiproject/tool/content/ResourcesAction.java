@@ -5127,12 +5127,9 @@ public class ResourcesAction
 			{
 				label = description;
 			}
-			boolean isRichText = false;
+
 			String richText = (String) annotations.get("isRichText");
-			if(richText != null && richText.equalsIgnoreCase(Boolean.TRUE.toString()))
-			{
-				isRichText = true;
-			}
+			boolean isRichText = richText != null && richText.equalsIgnoreCase(Boolean.TRUE.toString());
 			
 			Class javaclass = node.getObjectType();
 			String typename = javaclass.getName();
