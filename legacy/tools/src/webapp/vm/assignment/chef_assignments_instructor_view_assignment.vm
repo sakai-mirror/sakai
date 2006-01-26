@@ -6,7 +6,8 @@
 	<form name="viewAssignmentsForm" action="#toolForm("AssignmentAction")" method="post">
 		<input type="hidden" name="assignmentId" value="$assignment.Reference" />
 		<input type="hidden" name="assignmentContentId" value="$assignment.ContentReference" />
-		#if ($allowAddAssignment)
+		#if ($allowAddAssignment && !$hideAssignmentFlag)
+		## show assignment content
 		<p class="discTria">
 			<a href="#" onclick="location='#toolLink("AssignmentAction" "doHide_view_assignment")'; return false;" title="$tlang.getString("gen.hidassinf")">
 				<img src="#imageLink("sakai/collapse.gif")" alt="$tlang.getString("gen.opecli")" border="0" width="13" height="13" align="top" />
@@ -168,13 +169,15 @@
 				#end
 			</ul>
 		#end	
-		#else
+		#elseif ($allowAddAssignment && $hideAssignmentFlag)
+			## hide the assignment content
 			<p class="discTria">
 				<a href="#" onclick="location='#toolLink("AssignmentAction" "doShow_view_assignment")'; return false;" title="$tlang.getString("viewassig.shoassinf2")">	
 				<img src="#imageLink("sakai/expand.gif")" alt="$tlang.getString("gen.opecli")" border="0" width="13" height="13" align="top" alt="$tlang.getString("viewassig.shoassinf")" /></a>
 				$tlang.getString("gen.settfor") "$validator.escapeHtml($assignment.title)"
 			</p>	
 		#end
+		## student view
 		#if (!$hideStudentViewFlag)
 			<p class="discTria">
 				<a href="#" onclick="location='#toolLink("AssignmentAction" "doHide_view_student_view")'; return false;">
