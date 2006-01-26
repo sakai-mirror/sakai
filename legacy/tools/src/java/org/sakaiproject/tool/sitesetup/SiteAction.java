@@ -221,6 +221,7 @@ public class SiteAction extends PagedResourceActionII
 	private static final String STATE_PUBLIC_CHANGEABLE_SITE_TYPES = "changeable_site_types";
 	private static final String STATE_PUBLIC_SITE_TYPES = "public_site_types";
 	private static final String STATE_PRIVATE_SITE_TYPES = "private_site_types";
+	private static final String STATE_DISABLE_JOINABLE_SITE_TYPE = "disable_joinable_site_types";
 	
 	//Names of state attributes corresponding to properties of a site
 	private final static String PROP_SITE_CONTACT_EMAIL = "contact-email";
@@ -510,6 +511,19 @@ public class SiteAction extends PagedResourceActionII
 			else
 			{
 				state.setAttribute(STATE_PRIVATE_SITE_TYPES, new Vector());
+			}
+		}
+		
+		// certain type(s) of site cannot get its "joinable" option set
+		if (state.getAttribute(STATE_DISABLE_JOINABLE_SITE_TYPE) == null)
+		{
+			if (ServerConfigurationService.getStrings("wsetup.disable.joinable") != null)
+			{
+				state.setAttribute(STATE_DISABLE_JOINABLE_SITE_TYPE, new ArrayList(Arrays.asList(ServerConfigurationService.getStrings("wsetup.disable.joinable"))));
+			}
+			else
+			{
+				state.setAttribute(STATE_DISABLE_JOINABLE_SITE_TYPE, new Vector());
 			}
 		}
 		
@@ -1837,6 +1851,7 @@ public class SiteAction extends PagedResourceActionII
 			* 
 			*/
 			List publicChangeableSiteTypes = (List) state.getAttribute(STATE_PUBLIC_CHANGEABLE_SITE_TYPES);
+			List unJoinableSiteTypes = (List) state.getAttribute(STATE_DISABLE_JOINABLE_SITE_TYPE);
 			
 			if (site != null)
 			{
@@ -1854,24 +1869,36 @@ public class SiteAction extends PagedResourceActionII
 					context.put("publicChangeable", Boolean.FALSE);
 				}
 				context.put("include", Boolean.valueOf(site.isPubView()));
-				if (state.getAttribute(STATE_JOINABLE) == null)
+				
+				if ( siteType != null && !unJoinableSiteTypes.contains(siteType))
 				{
-					state.setAttribute(STATE_JOINABLE, Boolean.valueOf(site.isJoinable()));
+					// site can be set as joinable
+					context.put("disableJoinable", Boolean.FALSE);
+					if (state.getAttribute(STATE_JOINABLE) == null)
+					{
+						state.setAttribute(STATE_JOINABLE, Boolean.valueOf(site.isJoinable()));
+					}
+					if (state.getAttribute(STATE_JOINERROLE) == null 
+						|| state.getAttribute(STATE_JOINABLE) != null && ((Boolean) state.getAttribute(STATE_JOINABLE)).booleanValue()) 
+					{
+						state.setAttribute(STATE_JOINERROLE, site.getJoinerRole());
+					}
+					
+					if (state.getAttribute(STATE_JOINABLE) != null)
+					{
+						context.put("joinable", state.getAttribute(STATE_JOINABLE));
+					}
+					if (state.getAttribute(STATE_JOINERROLE) != null)
+					{
+						context.put("joinerRole", state.getAttribute(STATE_JOINERROLE));
+					}
 				}
-				if (state.getAttribute(STATE_JOINERROLE) == null 
-					|| state.getAttribute(STATE_JOINABLE) != null && ((Boolean) state.getAttribute(STATE_JOINABLE)).booleanValue()) 
+				else
 				{
-					state.setAttribute(STATE_JOINERROLE, site.getJoinerRole());
+					//site cannot be set as joinable
+					context.put("disableJoinable", Boolean.TRUE);
 				}
 				
-				if (state.getAttribute(STATE_JOINABLE) != null)
-				{
-					context.put("joinable", state.getAttribute(STATE_JOINABLE));
-				}
-				if (state.getAttribute(STATE_JOINERROLE) != null)
-				{
-					context.put("joinerRole", state.getAttribute(STATE_JOINERROLE));
-				}
 				context.put("roles", getRoles(state));
 				context.put("back", "12");
 			}
@@ -1890,8 +1917,19 @@ public class SiteAction extends PagedResourceActionII
 				}
 				context.put("include", Boolean.valueOf(siteInfo.getInclude()));
 				context.put("published", Boolean.valueOf(siteInfo.getPublished()));
-				context.put("joinable", Boolean.valueOf(siteInfo.joinable));
-				context.put("joinerRole", siteInfo.joinerRole);
+				
+				if ( siteInfo.site_type != null && !unJoinableSiteTypes.contains(siteInfo.site_type))
+				{
+					// site can be set as joinable
+					context.put("disableJoinable", Boolean.FALSE);
+					context.put("joinable", Boolean.valueOf(siteInfo.joinable));
+					context.put("joinerRole", siteInfo.joinerRole);
+				}
+				else
+				{
+					// site cannot be set as joinable
+					context.put("disableJoinable", Boolean.TRUE);
+				}
 				
 				// use the type's template, if defined
 				String realmTemplate = "!site.template";

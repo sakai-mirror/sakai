@@ -35,12 +35,14 @@
 				$tlang.getString("ediacc.pubsit")
 			</label>
 		</p>	
-		<h4 class="insColor insBak insBor">
-			$tlang.getString("ediacc.gloacc")
-		</h4>
-		<p class="instruction">
-			$tlang.getString("ediacc.yousitcan")
-		</p>
+		#if (!$!disableJoinable || $!publicChangeable)
+			<h4 class="insColor insBak insBor">
+				$tlang.getString("ediacc.gloacc")
+			</h4>
+			<p class="instruction">
+				$tlang.getString("ediacc.yousitcan")
+			</p>
+		#end
 		#if ($!publicChangeable)
 			<p class="checkbox indnt1">
 				<input type="radio" name="include" id="access_private" value="false" #if(!$!include)checked="checked"#end />
@@ -63,32 +65,35 @@
 	##			</tr>
 			</p>
 		#end
-		<div style="display:block;clear:both"></div>
-		<div style="display:block;clear:both"></div>
-		<p class="checkbox indnt1">
-			<input type="checkbox" name="joinable" id="joinable" value="true" #if ($joinable) checked="checked"#end />
-			<label for="joinable">
-				$tlang.getString("ediacc.canbejoi")
-				<br />
-			</label>
-		</p>
-		<p class="checkbox indnt3">
-			<label for="joinerRole">
-				$tlang.getString("ediacc.rolforpep")
-			</label>
-			<select name="joinerRole" id="joinerRole">
-				<option value="">$tlang.getString("ediacc.plesel")</option>
-				#foreach($r in $roles)
-					<option value ="$r.Id"
-						#if($r.Id == $joinerRole)
-							selected="selected"
-						#end
-					>
-						$r.Id
-					</option>
-				#end
-			</select>
-		</p>
+		#if (!$!disableJoinable)
+			## set site joinable and joiner role
+			<div style="display:block;clear:both"></div>
+			<div style="display:block;clear:both"></div>
+			<p class="checkbox indnt1">
+				<input type="checkbox" name="joinable" id="joinable" value="true" #if ($joinable) checked="checked"#end />
+				<label for="joinable">
+					$tlang.getString("ediacc.canbejoi")
+					<br />
+				</label>
+			</p>
+			<p class="checkbox indnt3">
+				<label for="joinerRole">
+					$tlang.getString("ediacc.rolforpep")
+				</label>
+				<select name="joinerRole" id="joinerRole">
+					<option value="">$tlang.getString("ediacc.plesel")</option>
+					#foreach($r in $roles)
+						<option value ="$r.Id"
+							#if($r.Id == $joinerRole)
+								selected="selected"
+							#end
+						>
+							$r.Id
+						</option>
+					#end
+				</select>
+			</p>
+		#end
 		<input type="hidden" name="continue" value="$!continue" />
 		<input type="hidden" name="template-index" value="18" />
 		<input type="hidden" name="back" value="$!back" />
