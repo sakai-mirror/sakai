@@ -44,10 +44,7 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
             toolSession.setAttribute(FilePickerHelper.FILE_PICKER_CANCEL, "true");
          }
 
-         // clean up
-         sstate.removeAttribute(ResourcesAction.STATE_MODE);
-         sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
-         sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
+         cleanup(sstate);
 
          Tool tool = ToolManager.getCurrentTool();
 
@@ -68,6 +65,12 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
          super.toolModeDispatch(methodBase, methodExt, req, res);
       }
    } // toolModeDispatch
+
+   protected void cleanup(SessionState sstate) {
+      sstate.removeAttribute(ResourcesAction.STATE_MODE);
+      sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+      sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
+   }
 
    /**
     * Default is to use when Portal starts up

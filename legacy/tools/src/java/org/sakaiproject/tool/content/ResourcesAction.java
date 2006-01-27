@@ -4187,10 +4187,12 @@ public class ResourcesAction
 		}
 		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
 		{
+         cleanupState(state);
 			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
 		}
 		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_EDIT_ITEM.equals(helper_mode))
 		{
+         cleanupState(state);
 			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
 		}
 		else if(MODE_HELPER.equals(mode))
@@ -7823,7 +7825,11 @@ public class ResourcesAction
 		state.removeAttribute(STATE_SORT_BY);
 		state.removeAttribute(STATE_STRUCTOBJ_TYPE);
 		state.removeAttribute(STATE_STRUCTOBJ_TYPE_READONLY);
-		
+      state.removeAttribute(STATE_STRUCTOBJ_HOMES);
+      state.removeAttribute(STATE_STRUCT_OBJ_SCHEMA);
+      state.removeAttribute(STATE_CREATE_ITEMS);
+      state.removeAttribute(STATE_STRUCTOBJ_ROOTNAME);
+
 		state.removeAttribute(STATE_INITIALIZED);
 		state.removeAttribute(VelocityPortletPaneledAction.STATE_HELPER);
 

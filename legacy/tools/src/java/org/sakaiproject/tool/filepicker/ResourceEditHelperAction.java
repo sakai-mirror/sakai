@@ -41,6 +41,7 @@ public class ResourceEditHelperAction extends FilePickerAction {
 
    protected String initHelperAction(VelocityPortlet portlet, Context context, RunData rundata,
                                      SessionState sstate, ToolSession toolSession) {
+      Object createType = toolSession.getAttribute(ResourceEditingHelper.CREATE_TYPE);
       sstate.setAttribute(ResourcesAction.STATE_ATTACH_LINKS, Boolean.TRUE.toString());
       sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
       if (toolSession.getAttribute(ResourceEditingHelper.ATTACHMENT_ID) != null) {
@@ -48,11 +49,13 @@ public class ResourceEditHelperAction extends FilePickerAction {
          sstate.setAttribute(ResourcesAction.STATE_ATTACH_ITEM_ID,
                toolSession.getAttribute(ResourceEditingHelper.ATTACHMENT_ID));
          sstate.setAttribute(ResourcesAction.STATE_STRUCTOBJ_TYPE_READONLY, Boolean.TRUE.toString());
+         if (ResourceEditingHelper.CREATE_TYPE_FORM.equals(createType)) {
+            sstate.setAttribute(ResourcesAction.STATE_CREATE_TYPE, ResourcesAction.TYPE_FORM);
+         }
       }
       else {
          // must be create
          sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_NEW_ITEM);
-         Object createType = toolSession.getAttribute(ResourceEditingHelper.CREATE_TYPE);
 
          if (ResourceEditingHelper.CREATE_TYPE_FORM.equals(createType)) {
             sstate.setAttribute(ResourcesAction.STATE_CREATE_TYPE,
@@ -72,5 +75,27 @@ public class ResourceEditHelperAction extends FilePickerAction {
 
       initMessage(toolSession, sstate);
       return ResourcesAction.MODE_HELPER;
+   }
+
+   protected void cleanup(SessionState sstate) {
+      super.cleanup(sstate);
+      sstate.removeAttribute(ResourcesAction.STATE_ATTACH_ITEM_ID);
+      sstate.removeAttribute(ResourcesAction.STATE_STRUCTOBJ_TYPE_READONLY);
+      sstate.removeAttribute(ResourcesAction.STATE_CREATE_TYPE);
+      sstate.removeAttribute(ResourcesAction.STATE_STRUCTOBJ_TYPE);
+      sstate.removeAttribute(ResourcesAction.STATE_CREATE_NUMBER);
+      sstate.removeAttribute(ResourcesAction.STATE_CREATE_COLLECTION_ID);
+      sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+      sstate.removeAttribute(ResourcesAction.STATE_SHOW_OTHER_SITES);
+      sstate.removeAttribute(ResourcesAction.STATE_EDIT_ID);
+      sstate.removeAttribute(ResourcesAction.STATE_EDIT_COLLECTION_ID);
+      sstate.removeAttribute(ResourcesAction.STATE_ATTACH_LINKS);
+      sstate.removeAttribute(ResourcesAction.STATE_ATTACH_ITEM_ID);
+      //sstate.removeAttribute(ResourcesAction.STATE_STRUCTOBJ_HOMES);
+      //sstate.removeAttribute(ResourcesAction.STATE_EDIT_ITEM);
+      //sstate.removeAttribute(ResourcesAction.STATE_SHOW_FORM_ITEMS);
+      //sstate.removeAttribute(ResourcesAction.STATE_STRUCT_OBJ_SCHEMA);
+      //sstate.removeAttribute(ResourcesAction.STATE_STRUCTOBJ_ROOTNAME);
+      //sstate.removeAttribute(ResourcesAction.STATE_EDIT_ALERTS);
    }
 }

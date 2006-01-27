@@ -348,7 +348,11 @@
 			#end
 		#end
 	</div>	
-	<form name="propertyForm" id="propertyForm" action="#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=update")" method="post" enctype="multipart/form-data">
+	#if("$itemType" == "$TYPE_UPLOAD")
+   	<form name="propertyForm" id="propertyForm" action="#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=update")" method="post" enctype="multipart/form-data">
+	#else
+	   <form name="propertyForm" id="propertyForm" action="#toolLinkParam("ResourcesAction" "doSavechanges" "flow=update")" method="post">
+	#end
 		<input type="hidden" name="sakai_action" value="doSavechanges" />
 		<input type="hidden" name="flow" id="flow" value="update" />
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
@@ -727,7 +731,11 @@
 		############################################# end of section to show metadata 
 	
 		<p class="act">
+	#if("$itemType" == "$TYPE_UPLOAD")
 			<input type="button" class="active" name="doSavechanges" onclick="document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=update")';submitform('propertyForm');" value="$tlang.getString("edit.update")" />
+	#else
+			<input type="button" class="active" name="doSavechanges" onclick="document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "flow=update")';submitform('propertyForm');" value="$tlang.getString("edit.update")" />
+	#end
 			<input type="button" name="doCancel" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "flow=cancel")';submitform('propertyForm');" value="$tlang.getString("gen.cancel")" />
 		</p>
 		
