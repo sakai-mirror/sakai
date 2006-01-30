@@ -230,7 +230,7 @@
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
 	</bean>
 
-	<!-- for testing email - comment out the BasicEmailService and use this
+	<!-- for testing email - comment out the BasicEmailService and use this	
 	<bean id="org.sakaiproject.service.framework.email.EmailService"
 			class="org.sakaiproject.component.framework.email.TestEmailService"
 			init-method="init"
@@ -387,7 +387,6 @@
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
 		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
-		<property name="provider"><ref bean="org.sakaiproject.service.legacy.authzGroup.GroupProvider"/></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
 	</bean>
 
@@ -475,7 +474,6 @@
 		<property name="sqlService"><ref bean="org.sakaiproject.service.framework.sql.SqlService"/></property>
 		<property name="serverConfigurationService"><ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/></property>
 		<property name="entityManager"><ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/></property>
-		<property name="provider"><ref bean="org.sakaiproject.service.legacy.user.UserDirectoryProvider"/></property>
  		<property name="autoDdl"><value>${auto.ddl}</value></property>
  		<property name="cacheMinutes"><value>0</value></property>
  		<property name="cacheCleanerMinutes"><value>0</value></property>

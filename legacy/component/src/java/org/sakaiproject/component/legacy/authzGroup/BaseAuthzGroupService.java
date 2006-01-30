@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdInvalidException;
@@ -267,6 +268,12 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 			FunctionManager.registerFunction(SECURE_REMOVE_AUTHZ_GROUP);
 			FunctionManager.registerFunction(SECURE_UPDATE_AUTHZ_GROUP);
 			FunctionManager.registerFunction(SECURE_UPDATE_OWN_AUTHZ_GROUP);
+
+			// if no provider was set, see if we can find one
+			if (m_provider == null)
+			{
+				m_provider = (GroupProvider) ComponentManager.get(GroupProvider.class.getName());
+			}
 
 			m_logger.info(this + ".init(): provider: " + ((m_provider == null) ? "none" : m_provider.getClass().getName()));
 		}
