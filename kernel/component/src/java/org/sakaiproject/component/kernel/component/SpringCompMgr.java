@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.component.ComponentManager;
 import org.sakaiproject.api.kernel.component.ComponentsLoader;
 import org.sakaiproject.util.PropertyOverrideConfigurer;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -282,6 +283,11 @@ public class SpringCompMgr implements ComponentManager
 		{
 			component = m_ac.getBean(iface.getName(), iface);
 		}
+		catch (NoSuchBeanDefinitionException e)
+		{
+			M_log.info("get(" + iface.getName() + "): " + e);
+			
+		}
 		catch (Throwable t)
 		{
 			M_log.warn("get(" + iface.getName() + "): " + t);
@@ -300,6 +306,11 @@ public class SpringCompMgr implements ComponentManager
 		try
 		{
 			component = m_ac.getBean(ifaceName);
+		}
+		catch (NoSuchBeanDefinitionException e)
+		{
+			M_log.info("get(" + ifaceName + "): " + e);
+			
 		}
 		catch (Throwable t)
 		{
