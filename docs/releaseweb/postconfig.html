@@ -36,6 +36,7 @@
 	<li><a href="#demo">1.2 Demo Installation</a></li>
 	<li><a href="#binary">1.3 Binary Installation</a></li>
 	<li><a href="#overview">1.4 Source Install Phases</a></li>
+	<li><a href="#migrating">1.5 Migrating from a Previous Release</a></li>
 </ul>
 <li>
 <a href="buildenv.html">Set Up Build Environment</a>
@@ -77,10 +78,10 @@ sakai.properties file</a> </li>
 <li>
   <a href="dbconfig.html">Database Configuration</a>
 <ul class="toc">
-  <li><a href="dbconfig.html#deployd">5.1 Deploy drivers</a> </li>
-  <li><a href="dbconfig.html#create">5.2 Create Sakai database and user</a> </li>
-  <li><a href="dbconfig.html#sproperties">5.3 Database Properties</a> </li>
-  <li><a href="dbconfig.html#dbconfig">5.4 Upgrade Scripts</a></li>
+  <li><a href="dbconfig.html#updating">5.1 Migrating from a Previous Version</a></li>
+  <li><a href="dbconfig.html#deployd">5.2 Deploy drivers</a> </li>
+  <li><a href="dbconfig.html#create">5.3 Create Sakai database and user</a> </li>
+  <li><a href="dbconfig.html#sproperties">5.4 Database Properties</a> </li>
 </ul>
 </li>
 <li>
@@ -255,8 +256,8 @@ James on another, non-restricted port, then. &nbsp;For example:</p>
 	             </tbody>
     </table>
     <p>The standard way to control the JVM options when Tomcat starts up is to have an environment variable JAVA_OPTS defined with JVM startup options. &nbsp;One such set of options might be:</p>
-    <pre><span class="code">JAVA_OPTS=-server -Xms512m -Xmx512m -XX:PermSize=16m -XX:MaxPermSize=128m<br/>-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps</span></pre>
-    <p>This is a fairly good starting point: it selects server mode, sets a larger heap size for smoother performance, sizes the permanent generation to accommodate more longer-persisting objects, and turns on garbage collection details. We have found the best results when the min and max memory settings (Xms and Xmx, respectively) are set to be the same values. 512 megs is not too much memory for Sakai; 1 gig is even better.</p>
+    <pre><span class="code">JAVA_OPTS="-server -Xmx512m -Xms512m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:NewSize=128m<br/>-XX:+UseConcMarkSweepGC -XX:+UseParNewGC"</span></pre>
+    <p>This is a fairly good starting point: it selects server mode, sets a larger heap size for smoother performance, and sizes the permanent generation to accommodate more longer-persisting objects. We have found the best results when the min and max memory settings (Xms and Xmx, respectively) are set to be the same values. 512 megs is not too much memory for Sakai; 1 gig is even better.</p>
     <p>Tomcat will see this environment variable and use it. Instead of putting this in an environment variable, you might modify the $CATALINA_HOME/bin/catalina.bat or $CATALINA_HOME/bin/catalina.sh file to automatically set these values during startup.</p>
     <table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
 		             <tbody>
