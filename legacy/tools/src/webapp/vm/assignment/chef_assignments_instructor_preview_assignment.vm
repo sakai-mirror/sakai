@@ -40,7 +40,7 @@
 									<th>
 										$tlang.getString("gen.creby")
 									</th>
-									<td>$user.DisplayName ($time.toStringLocalShortDate())
+									<td>$user.DisplayName ($time.toStringLocalFull())
 									</td>
 								</tr>
 								<tr>
@@ -48,7 +48,7 @@
 										$tlang.getString("gen.mod")
 									</th>
 									<td>
-										$time.toStringLocalShortDate()
+										$time.toStringLocalFull()
 									</td>
 								</tr>
 								<tr>
@@ -56,7 +56,7 @@
 										$tlang.getString("gen.open2")
 									</th>
 									<td>
-										$value_OpenDate.toStringLocalShortDate()
+										$value_OpenDate.toStringLocalFull()
 									</td>
 								</tr>
 								<tr>
@@ -64,7 +64,7 @@
 										$tlang.getString("gen.due2")
 									</th>
 									<td>
-										$value_DueDate.toStringLocalShortDate()
+										$value_DueDate.toStringLocalFull()
 									</td>
 								</tr>
 								#if ($value_EnableCloseDate)
@@ -75,7 +75,7 @@
 
 										</th>
 										<td>
-											$value_CloseDate.toStringLocalShortDate()
+											$value_CloseDate.toStringLocalFull()
 										</td>
 									</tr>
 								#end
@@ -209,7 +209,7 @@
 							$tlang.getString("gen.due2")
 						</th>
 						<td>
-							$value_DueDate.toStringLocalShortDate()<br />
+							$value_DueDate.toStringLocalFull()<br />
 						</td>
 					</tr>
 					#if ($withGrade)
