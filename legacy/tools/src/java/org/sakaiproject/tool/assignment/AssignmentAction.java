@@ -194,11 +194,7 @@ extends PagedResourceActionII
 
 	/** state sort submission by max grade */
 	private static final String SORTED_SUBMISSION_BY_MAX_GRADE = "submission_scale";
-	
-	
-	/** assignment id */
-	private static final String ASSIGNMENT_ID = "assignment_id";
-		
+			
 	/********************** student's view assignment submission *******************************/
 	/** the assignment object been viewing **/
 	private static final String VIEW_SUBMISSION_ASSIGNMENT_REFERENCE = "Assignment.view_submission_assignment_reference";
@@ -704,7 +700,6 @@ extends PagedResourceActionII
 		}
 		
 		// name value pairs for the vm
-		context.put ("name_assignment_id", ASSIGNMENT_ID);
 		context.put ("name_submission_text", VIEW_SUBMISSION_TEXT);
 		context.put ("value_submission_text", state.getAttribute (VIEW_SUBMISSION_TEXT));
 		context.put ("name_submission_honor_pledge_yes", VIEW_SUBMISSION_HONOR_PLEDGE_YES );
@@ -787,7 +782,6 @@ extends PagedResourceActionII
 			addAlert(state, rb.getString("youarenot16"));
 		}
 		
-		context.put ("name_assignment_id", ASSIGNMENT_ID);
 		context.put ("text", state.getAttribute (PREVIEW_SUBMISSION_TEXT));
 		context.put ("honor_pledge_yes", state.getAttribute (PREVIEW_SUBMISSION_HONOR_PLEDGE_YES));
 		context.put ("attachments", state.getAttribute (PREVIEW_SUBMISSION_ATTACHMENTS));
@@ -2338,8 +2332,6 @@ extends PagedResourceActionII
 			honorPledgeYes = "false";
 		}
 		
-		String assignmentId = params.getString (ASSIGNMENT_ID);
-		
 		String aReference = (String) state.getAttribute (VIEW_SUBMISSION_ASSIGNMENT_REFERENCE);
 		User u = (User) state.getAttribute (STATE_USER);
 		
@@ -2348,6 +2340,7 @@ extends PagedResourceActionII
 			try
 			{
 				Assignment a = AssignmentService.getAssignment(aReference);
+				String assignmentId = a.getId();
 				
 				AssignmentSubmission submission= AssignmentService.getSubmission (aReference, u);
 				if (submission!=null)
@@ -2471,16 +2464,17 @@ extends PagedResourceActionII
 		{
 			honorPledgeYes = "false";
 		}
-		String assignmentId = params.getString (ASSIGNMENT_ID);
 		
 		User u = (User) state.getAttribute (STATE_USER);
 		String aReference = (String) state.getAttribute (VIEW_SUBMISSION_ASSIGNMENT_REFERENCE);
 		Assignment a = null;
+		String assignmentId = "";
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
 			try
 			{
 				a = AssignmentService.getAssignment(aReference);
+				assignmentId = a.getId();
 	
 				if (a.getContent ().getHonorPledge ()!=1)
 				{
@@ -4787,25 +4781,7 @@ extends PagedResourceActionII
 			  if(assignmentId != null)
 			  {
 			    Assignment a = AssignmentService.getAssignment (assignmentId);
-			    List existedAttachments = new ArrayList();
-			    if(((Boolean)state.getAttribute(ATTACHMENTS_MODIFIED)).booleanValue())
-			    {
-			      existedAttachments = (List) state.getAttribute (ATTACHMENTS);
-			    }
-			    else
-			    {
-			      existedAttachments = a.getContent ().getAttachments ();
-			    }
-/*			    List existedAttachments = a.getContent ().getAttachments ();
-			    List changedAttachments = new ArrayList();
-			    if(((Boolean)state.getAttribute(ATTACHMENTS_MODIFIED)).booleanValue())
-			    {
-			      changedAttachments = (List) state.getAttribute (ATTACHMENTS);
-			    }
-			    for(int i=0; i<changedAttachments.size(); i++)
-			    {
-			      existedAttachments.add(changedAttachments.get(i));
-			    }*/
+			    List existedAttachments = (List) state.getAttribute (ATTACHMENTS);
 
 			    if(existedAttachments.size() > 0)
 			    {

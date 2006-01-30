@@ -46,7 +46,7 @@
 	<form name="addSubmissionForm" action="#toolForm("AssignmentAction")" method="post" onsubmit="return true;">
 		<input type="hidden" name="eventSubmit_doRead_add_submission_form" value="x" />
 		<input type="hidden" name="option" value="cancel" />
-		<input type="hidden" name="$name_assignment_id" value="$assignment.Id" />
+		<input type="hidden" name="assignmentId" value="$assignment.Reference" />
 		<h4>$tlang.getString("gen.assdet")</h4>
 			<table class="itemSummary indnt1"  summary="$tlang.getString("gen.theassinf")">
 				<tr>

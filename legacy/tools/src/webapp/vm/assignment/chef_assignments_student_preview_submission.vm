@@ -152,7 +152,7 @@
 		</p>
 	 #end
 	<form name="addSubmissionForm" action="#toolForm("AssignmentAction")" method="post" onsubmit="return true;">
-		<input type="hidden" name="$name_assignment_id" value="$assignment.Id" />
+		<input type="hidden" name="assignmentId" value="$assignment.Id" />
 		<input type="hidden" name="eventSubmit_doRead_add_submission_form" value="x" />
 		<input type="hidden" name="option" value="cancel" />
 		<div class="act">
