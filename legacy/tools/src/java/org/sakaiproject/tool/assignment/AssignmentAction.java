@@ -2184,13 +2184,23 @@ extends PagedResourceActionII
 			{
 				addAlert(state, rb.getString("plespethe2"));
 			}
-
+			
 			if (state.getAttribute(STATE_MESSAGE) == null)
 			{
 				state.setAttribute (GRADE_SUBMISSION_GRADE, grade);
 				AssignmentSubmissionEdit sEdit = AssignmentService.editSubmission (sId);
 
-				if (grade == null)
+				boolean withGrade = state.getAttribute(WITH_GRADES) != null?((Boolean) state.getAttribute(WITH_GRADES)).booleanValue():false;
+				if (!withGrade)
+				{
+					// no grade input needed for the without-grade version of assignment tool
+					sEdit.setGraded(true);
+					if (gradeOption.equals("return") || gradeOption.equals("release"))
+					{
+						sEdit.setGradeReleased(true);
+					}
+				}
+				else if (grade == null)
 				{
 					sEdit.setGrade ("");
 					sEdit.setGraded(false);

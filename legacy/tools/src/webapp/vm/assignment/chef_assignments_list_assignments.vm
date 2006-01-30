@@ -163,7 +163,7 @@
 							#end 
 						</a>
 					</th>
-					#if ($withGrade && $!allowGradeSubmission)
+					#if ($!allowGradeSubmission)
 						#if ($!view.equals($!tlang.getString('gen.liofass')))
 						<th id="num_submissions">
 							<a href="#" onclick="location='#toolLinkParam("$action" "doSort" "criteria=num_submissions")'; return false;"  onkeypress="location='#toolLinkParam("$action" "doSort" "criteria=num_submissions")'; return false;" title="$tlang.getString("listassig.sorbynum1")">$tlang.getString("gen.in")</a>
@@ -189,6 +189,8 @@
 								#end
 						</th>
 						#end
+					#end
+					#if ($withGrade && $!allowGradeSubmission)
 						<th id="maxgrade">
 							<a href="#" onclick="location='#toolLinkParam("$action" "doSort" "criteria=max_grade")'; return false;"  onkeypress="location='#toolLinkParam("$action" "doSort" "criteria=max_grade")'; return false;" title="$tlang.getString("gen.sorbymax")">
 								$tlang.getString("gen.sca")
@@ -364,7 +366,7 @@
 							<td headers="dueDate">
 								$!assignment.dueTime.toStringLocalFull()
 							</td>
-							#if ($withGrade && $!allowGradeSubmission)
+							#if ($!allowGradeSubmission)
 								#if ($!view.equals($!tlang.getString('gen.liofass')))
 								<td headers="num_submissions" class="specialLink">
 									#set ($totalSubmission = $service.getSubmissions($assignment))
@@ -382,6 +384,8 @@
 									$totalNumber/$ungradedNumber</a>
 								</td>
 								#end
+							#end
+							#if ($withGrade && $!allowGradeSubmission)
 								<td headers="maxgrade">
 									#set ($gradeScale = $assignment.getContent().getTypeOfGrade())
 									#if ($gradeScale == -1)
