@@ -512,11 +512,17 @@ public class ClusterEventTracking extends BaseEventTrackingService implements Ru
 				{
 					synchronized (m_eventQueue)
 					{
-						myEvents.addAll(m_eventQueue);
-						m_eventQueue.clear();
+						if (m_eventQueue.size() > 0)
+						{
+							myEvents.addAll(m_eventQueue);
+							m_eventQueue.clear();
+						}
 					}
 
-					writeBatchEvents(myEvents);
+					if (myEvents.size() > 0)
+					{
+						writeBatchEvents(myEvents);
+					}
 				}
 
 				String statement;
