@@ -207,7 +207,7 @@
                         #elseif ($eventType =="Deadline")
                         <img src = "#imageLink("sakai/deadline.gif")" alt="$tlang.getString('del.dead')" border="0">
                         #elseif ($eventType =="Exam")
-                        <img src = "#imageLink("sakai/meeting.gif")" alt="$tlang.getString('del.exam')" border="0">
+                        <img src = "#imageLink("sakai/exam.gif")" alt="$tlang.getString('del.exam')" border="0">
                         #elseif ($eventType =="Meeting")
                         <img src = "#imageLink("sakai/meeting.gif")" alt="$tlang.getString('del.meet')" border="0">
                         #elseif ($eventType =="Quiz")
