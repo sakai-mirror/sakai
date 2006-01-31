@@ -6,6 +6,7 @@ Installing Sakai from source provides the greatest flexibility for configuring S
 TABLE OF CONTENTS
 
    1. Installation Overview
+   	* Migrating from a previous release
    2. Set Up Build Environment
          2.1 Verify Java installation
          2.2 Set environment variables
@@ -27,10 +28,11 @@ TABLE OF CONTENTS
          4.5 JVM tuning
          4.6 Test Sakai
    5. Database Configuration
-         5.1 Deploy drivers
-         5.2 Create Sakai database and user
-         5.3 Database Properties
-         5.4 Upgrade Scripts
+   	 5.1 Migrating from a previous version (redux)
+         5.2 Deploy drivers
+         5.3 Create Sakai database and user
+         5.4 Database Properties
+         5.5 Upgrade Scripts
    6. Troubleshooting
          6.1 Common Issues
          6.2 Working with Maven
@@ -45,6 +47,18 @@ The Demo and Binary installs described above offer much-abbreviated processes, b
    2. Build and deploy Sakai by running Maven on the source.
    3. Perform appropriate Post-Installation Configuration of the application.
    4. Carry out the steps for Database Configuration.
+   
+* Migrating from a previous release:
+
+There are database schema changes between 2.1.0 and 2.1.1, and the update scripts to be applied - in distinct versions for mysql and Oracle, respectively - are found in the docs/updating folder of the release or on subversion:
+
+MySQL: https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_mysql_conversion.sql
+Oracle: https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_oracle_conversion.sql
+
+In the same directory you'll also find conversion scripts for earlier Sakai versions. Migration from an earlier version will require the successive application of all intermediate update scripts. You cannot, for example, move from 2.0.1 to 2.1.1 by applying a single DB script. You will need to move first from 2.0.1 to 2.1.0, and then to 2.1.1.
+
+	* Examine Before Using
+As a general rule, be sure to read through these conversion scripts before applying them. The 2.0-2.1 script, in particular, includes notes about roles that may spare you a potential headache if you've been running 2.0 in production.
 
 
 2. SET UP BUILD ENVIRONMENT
@@ -52,7 +66,7 @@ The Demo and Binary installs described above offer much-abbreviated processes, b
 
 2.1 Verify Java installation
 
-Check to see if you have Java 1.4.2 (1.4.2 is required; Java 1.5 will not work) installed on your system by running the following command:
+Check to see if you have Java 1.4.2 (1.4 is required; Java 1.5 will not work) installed on your system by running the following command:
 
 Windows: 	
 C:\> java -version
@@ -77,8 +91,9 @@ Set the JAVA_HOME environment variable to point to the base directory of your Ja
 In the UNIX operating systems, you typically modify a startup file like ~/.bash_login to set and export these shell variables. In Windows XP, you go to
 Start -> Control Panel -> System -> Advanced -> Environment Variables
 And then set them as described below:
-OS 	Sample Output
+
 Windows: 	Set the environment variable JAVA_HOME to "C:\j2sdk1.4.2_04" (do not include the quotes)
+
 Mac: 	
 
 export JAVA_HOME=/Library/Java/Home
@@ -100,7 +115,7 @@ You can also look for the Sun Java Installation Instructions page at the Java we
 
 2.3 Install Tomcat
 
-The latest stable version of Tomcat 5.5 (currently 5.5.12) can be downloaded as a binary from:
+The latest stable version of Tomcat 5.5 (currently 5.5.15) can be downloaded as a binary from:
 http://tomcat.apache.org/download-55.cgi
 The distribution you want is the one labeled Core, along with the JDK 1.4 Compatability Package.
 
@@ -165,8 +180,7 @@ Mac/*nix: install_repo.sh $HOME/.maven/repository
 
 Finally, you'll need to create a build properties file in your home directory which will configure Maven for your Sakai build. Simply create a new text file with the filename build.properties in your home directory, and paste in the following contents:
 
-maven.repo.remote=http://www.ibiblio.org/maven/,http://cvs.sakaiproject.org/maven/,
-http://horde.planetmirror.com/pub/maven/
+maven.repo.remote=http://cvs.sakaiproject.org/maven/,http://www.ibiblio.org/maven/,https://source.sakaiproject.org/mirrors/ibiblio/maven/,http://horde.planetmirror.com/pub/maven/
 maven.tomcat.home=/usr/local/tomcat/
 
 **build.properties syntax**
@@ -193,14 +207,14 @@ At this point your environment is prepared to build and deploy the Sakai source 
 
 3.1 Download Source
 
-Download the Sakai Source archive from: http://cvs.sakaiproject.org/release/2.1.0
+Download the Sakai Source archive from: http://www.sakaiproject.org/release
 
 **Getting the Code from Subversion**
 Alternatively, you may check out the source code from subversion with the command:
 
-svn co https://source/sakaiproject.org/svn/tags/sakai_2-1-0
+svn co https://source/sakaiproject.org/svn/tags/sakai_2-1-1
 
-In which case you could skip the unpacking step below, and your root directory would be sakai_2-1-0 instead of sakai-src.
+In which case you could skip the unpacking step below, and your root directory would be sakai_2-1-1 instead of sakai-src.
 
 
 3.2 Unpack Source
@@ -214,7 +228,7 @@ From within sakai-src, run the command:
 
 maven sakai
 
-This will run for quite some time with fairly verbose output, particularly if it's your first build. It may take 10-15 minutes, depending on your machine and connection speed. Maven will download any dependencies into the local repository, compile the Sakai code, and deploy Sakai to Tomcat in the form of .war files in the $CATALINA_HOME/webapps directory.
+This will run for quite some time with fairly verbose output, particularly if it's your first build. Do not be alarmed by reports of sakai jar download failures during an initial clean phase: most of the sakai jars will be compiled during the build phase, yet maven will still try to look for them ahead of time. A full clean, build, and deploy cycle may take quite some time, depending on the responsiveness of remote repositories, but a normal maven build of all the Sakai source should take roughly 15-20 minutes. Maven will download any dependencies into the local repository, compile the Sakai code, and deploy Sakai to Tomcat in the form of .war files in the $CATALINA_HOME/webapps directory.
 
 If Maven completes with the message BUILD SUCCESSFUL, you should be able to move on to the next step. If you are greeted with the report BUILD FAILED read the accompanying error message carefully to troubleshoot (see the Troubleshooting section).
 
@@ -303,21 +317,17 @@ smtp@org.sakaiproject.service.framework.email.EmailService=some.smtp.org
 
 To enable Sakai to receive mail there are a few settings needed in the sakai.properties file:
 
-# dns addresses used for incoming email
-	
+# dns addresses used for incoming email	
 smtp.dns.1 = 255.255.255.1
-	
 smtp.dns.2 = 255.255.255.2
 	 
 # SMTP port on which our SMTP server runs. Default is 25.
 #Recommend running on 8025, and using a standard mailer on 25 to forward mail to Sakai.
-
 smtp.port = 25
 
-
 # flag to enable or disable our SMTP server for incoming email (true | false)
-
 smtp.enabled = true
+
 
 To disable the SMTP server for incoming email, use this in sakai.properties:
 
@@ -337,14 +347,15 @@ JVM tuning is, as a general rule, something of a black art, and we recommend tha
 
 The standard way to control the JVM options when Tomcat starts up is to have an environment variable JAVA_OPTS defined with JVM startup options.  One such set of options might be:
 
-JAVA_OPTS=-server -Xms512m -Xmx512m -XX:PermSize=16m -XX:MaxPermSize=128m -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps
+JAVA_OPTS="-server -Xmx512m -Xms512m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:NewSize=128m
+-XX:+UseConcMarkSweepGC -XX:+UseParNewGC"
 
-This is a fairly good starting point: it selects server mode, sets a larger heap size for smoother performance, sizes the permanent generation to accommodate more longer-persisting objects, and turns on garbage collection details. We have found the best results when the min and max memory settings (Xms and Xmx, respectively) are set to be the same values. 512 megs is not too much memory for Sakai; 1 gig is even better.
+This is a fairly good starting point: it selects server mode, sets a larger heap size for smoother performance, and sizes the permanent generation to accommodate more longer-persisting objects. We have found the best results when the min and max memory settings (Xms and Xmx, respectively) are set to be the same values. 512 megs is not too much memory for Sakai; 1 gig is even better.
 
 Tomcat will see this environment variable and use it. Instead of putting this in an environment variable, you might modify the $CATALINA_HOME/bin/catalina.bat or $CATALINA_HOME/bin/catalina.sh file to automatically set these values during startup.
 
 **JVM Tuning in Windows XP**
-Windows users may set Java options in a "Tomcat Properties" dialog. But you may find that the permanent generation settings mentioned above will not work appropriately if set in the Java Options: field of the dialog window. That's because these settings have their own fields in the properties GUI, under the headings Initial Memory Pool and Maximum memory pool, respectively.
+Windows users may set Java options in a "Tomcat Properties" dialog. But you may find that the permanent generation settings mentioned above will not work appropriately if set in the Java Options: field of the dialog window. That's because these settings have their own fields in the properties GUI, under the headings Initial Memory Pool and Maximum memory pool, respectively.  Windows apparently ignores attempts to alter these values through the Java Options field.
 
 
 4.6 Test Sakai
@@ -370,13 +381,27 @@ Mac/*nix: bin/catalina.sh stop
 
 5. DATABASE CONFIGURATION
 
+5.1 Migrating from a Previous Version (redux)
 
-5.1 Deploy Drivers
+There are database schema changes between 2.1.0 and 2.1.1, and the update scripts to be applied - in distinct versions for mysql and Oracle, respectively - are found in the docs/updating folder of the release or on subversion:
 
-The supported production-grade databases include MySQL 4.1+ and Oracle 9i+. The version of the JDBC driver (or connector) is also important. For MySQL the 3.1.10 connector should be used, while for Oracle the 10g driver should be used, even if the database is version 9i. The 9i driver will not be sufficient.
+MySQL: https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_mysql_conversion.sql
+Oracle: https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_oracle_conversion.sql
 
-**MySQL drivers**
-There have been a number of problems reported with the 3.1.11 MySQL driver. We currently recommend 3.1.10 instead.
+In the same directory you'll also find conversion scripts for earlier Sakai versions. Migration from an earlier version will require the successive application of all intermediate update scripts. You cannot, for example, move from 2.0.1 to 2.1.1 by applying a single DB script. You will need to move first from 2.0.1 to 2.1.0, and then to 2.1.1.
+
+* Examine Before Using
+As a general rule, be sure to read through these conversion scripts before applying them. The 2.0-2.1 script, in particular, includes notes about roles that may spare you a potential headache if you've been running 2.0 in production.
+
+
+5.2 Deploy Drivers
+
+The supported production-grade databases include MySQL 4.1+ and Oracle 9i+. The version of the JDBC driver (or connector) is also important. For MySQL the 3.1.12 connector should be used, while for Oracle the 10g driver should be used, even if the database is version 9i. The 9i driver will not be sufficient.
+
+**Driver Versions**
+Database driver versions are a common source of problems. It's worth emphasizing again that the Oracle 10g driver *must* be used for Sakai installations running against Oracle, even when Oracle 9i is the database version.
+
+Problems have been reported for both the 3.1.10 and 3.1.11 MySQL drivers. 3.1.12 is the recommended version.
 
 You need to have appropriate JDBC drivers for your database installed in your $CATALINA_HOME/common/lib directory, and they are available from the official sites for both Oracle and MySQL.
 
@@ -447,13 +472,6 @@ auto.ddl=true
 validationQuery@javax.sql.BaseDataSource=select 1 from DUAL
 defaultTransactionIsolationString@javax.sql.BaseDataSource=TRANSACTION_READ_COMMITTED
 
-
-5.4 Upgrade Scripts
-
-If you have been running version 2.0 of Sakai, you will need to apply a SQL script to convert your database appropriately. These scripts are found in docs/updating of the release (or on subversion), in versions for both MySQL and Oracle, respectively:
-
-    * sakai_2_0-2_1_mysql_conversion.sql
-    * sakai_2_0-2_1_oracle_conversion.sql
 
 
 6. TROUBLESHOOTING
