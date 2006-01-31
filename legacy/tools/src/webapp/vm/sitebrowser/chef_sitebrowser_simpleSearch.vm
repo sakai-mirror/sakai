@@ -17,7 +17,7 @@
 						<input type="hidden" name="ClassSiteFromSystem" value="true" />
 						<div class="checkbox indnt1">
 							<input  type="radio" name="siteType" id="classSite" value="$type" />
-							<label for="classSite">$tlang.getString("se.course")</label>
+							<label for="siteType$siteTypeCount"  style="text-transform: capitalize">$type</label>
 						</div>
 						<div class="indnt3">
 							<label for="selectTerm">$tlang.getString("se.term")</label>
