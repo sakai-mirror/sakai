@@ -22,6 +22,8 @@
 			<a href="$accessPointUrl" title="$!tlang.getString('downall')">$!tlang.getString('downall')</a>
 			#if ($withGrade)
 				| <a href="#toolLinkParam("$action" "doRelease_grades" "assignmentId=$validator.escapeUrl($!assignment.Reference)")" title="$!tlang.getString('relgrad')">$!tlang.getString('relgrad')</a>
+			#else
+				| <a href="#toolLinkParam("$action" "doRelease_grades" "assignmentId=$validator.escapeUrl($!assignment.Reference)")" title="$!tlang.getString('relcommented')">$!tlang.getString('relcommented')</a>
 			#end
 		</div>
 		<div class="rightNav">
@@ -218,12 +220,10 @@
 											$tlang.getString("gen.retu")
 										#end
 									#elseif ($submission.getGraded())
-										#if ($submission.getGradeReleased())
-											#if ($!withGrade)
-												$tlang.getString("grad3")
-											#else
-												$tlang.getString("gen.commented")
-											#end
+										#if ($!withGrade)
+											$tlang.getString("grad3")
+										#else
+											$tlang.getString("gen.commented")
 										#end
 									#else
 										$tlang.getString("gen.ung1")

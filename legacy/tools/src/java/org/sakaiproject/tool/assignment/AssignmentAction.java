@@ -4414,9 +4414,22 @@ extends PagedResourceActionII
 				AssignmentSubmission s = (AssignmentSubmission) submissions.next ();
 				AssignmentSubmissionEdit sEdit = AssignmentService.editSubmission (s.getReference ());
 				String grade = s.getGrade();
-				if (s.getGraded () && (grade!=null) && (!grade.equals("")))
+				if (s.getGraded ())
 				{
-					sEdit.setGradeReleased (true);
+					boolean withGrade = state.getAttribute(WITH_GRADES) != null?((Boolean) state.getAttribute(WITH_GRADES)).booleanValue():false;
+					if (withGrade)
+					{
+						// for the assignment tool with grade option, a valide grade is needed
+						if (grade!=null && !grade.equals(""))
+						{
+							sEdit.setGradeReleased (true);
+						}
+					}
+					else
+					{
+						// for the assignment tool without grade option, no grade is needed
+						sEdit.setGradeReleased (true);
+					}
 				}
 				
 				// clear the returned flag
