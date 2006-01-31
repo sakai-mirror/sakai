@@ -110,16 +110,13 @@ sakai.properties file</a> </li>
 
   <a name="updating"></a>
   <h2>5.1 Migrating from a Previous Version</h2>
-  <p>There are database schema changes between 2.1.0 and 2.1.1, and the update scripts to be applied - in distinct versions for mysql and Oracle, respectively - are found in the docs/updating folder of the release, whose contents look like:</p>
+  <p>There are database schema changes between 2.1.0 and 2.1.1, and the update scripts to be applied - in distinct versions for mysql and Oracle, respectively - are found in the <b>docs/updating</b> folder of the release or on subversion:</p>
 
-  <p>sakai_1_5-2_0_conversion.sql<br/>
-  sakai_1_5-2_0_mysql_conversion.sql<br/>
-  sakai_2_0-2_1_mysql_conversion.sql<br/>
-  sakai_2_0-2_1_oracle_conversion.sql<br/>
-  sakai_2_1_0-2_1_1_mysql_conversion.sql<br/>
-  sakai_2_1_0-2_1_1_oracle_conversion.sql</p>
+<p>MySQL: <a href="https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_mysql_conversion.sql">sakai_2_1_0-2_1_1_mysql_conversion.sql</a><br />
 
-  <p>Migration from an earlier version will require the successive application of all intermediate update scripts. You cannot, for example, move from 2.0.1 to 2.1.1 by applying a single DB script. You will need to move first from 2.0.1 to 2.1.0, and then to 2.1.1.</p>
+    Oracle: <a href="https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_oracle_conversion.sql">sakai_2_1_0-2_1_1_oracle_conversion.sql</a></p>
+
+<p>In the same directory you'll also find conversion scripts for earlier Sakai versions.  Migration from an earlier version will require the successive application of all intermediate update scripts. You cannot, for example, move from 2.0.1 to 2.1.1 by applying a single DB script. You will need to move first from 2.0.1 to 2.1.0, and then to 2.1.1.</p>
 
   <br/><table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
          <tbody>

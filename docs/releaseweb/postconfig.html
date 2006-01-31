@@ -106,14 +106,11 @@ sakai.properties file</a> </li>
 <div class="pad">
 <a name="configuration"></a>
 
-This section of the Installation Guide describes basic configuration details. For a more exhaustive treatment of Sakai configuration, refer to the <a href="http://bugs.sakaiproject.org/confluence/display/DOC/Full+Configuration">Full Configuration</a> area of the "Documentation" space on Confluence.
-<p></p>
 <a name="folder"></a>
-
 <h2>4.1 Create sakai folder for properties files</h2>
 	<br />Sakai runs with a default
 set of properties for its various components. &nbsp;To override
-them you'll want to specify them in a sakai.properties file which
+them you'll want to specify them in a <b>sakai.properties</b> file which
 should be located in $CATALINA_HOME/sakai by default. &nbsp;This
 directory is not created by maven, so you'll have to do so
 manually.
@@ -200,7 +197,7 @@ value and adding bottomnav.N values (1 through the number of links).
                  <td class="white">User presence is on automatically in this release, although it has not been in recent releases. If you do not wish to use it at your institution, you must explicitly turn it off in sakai.properties:
 
 <pre># to enable presence display in the portal
-display.users.present=true</pre></td>
+display.users.present=false</pre></td>
                </tr>
              </tbody>
     </table>
@@ -219,13 +216,10 @@ set in your sakai.properties file:</p>
     <p>To enable Sakai to receive
 mail there are a few settings needed in the sakai.properties file:</p>
     <pre><span class="code"># dns addresses used for incoming email
-	<br>smtp.dns.1 = 255.255.255.1
-	<br>smtp.dns.2 = 255.255.255.2
-	 <br># SMTP port on which our SMTP server runs. Default is 25.
-#Recommend running on 8025, and using a standard mailer on 25 to forward mail to Sakai.
-<br>smtp.port = 25<br>
-<br># flag to enable or disable our SMTP server for incoming email (true | false)
-<br>smtp.enabled = true</span></pre>
+	<br/>smtp.dns.1 = 255.255.255.1<br/>smtp.dns.2 = 255.255.255.2
+	 <br/># SMTP port on which our SMTP server runs. Default is 25.
+#Recommend running on 8025, and using a standard mailer on 25 to forward mail to Sakai.<br/>smtp.port = 25<br/>
+# flag to enable or disable our SMTP server for incoming email (true | false)<br/>smtp.enabled = true</span></pre>
     <p>To disable the SMTP server
 for incoming email, use this in sakai.properties:</p>
     <pre><span class="code">smtp.enabled = false</span></pre>
@@ -244,7 +238,8 @@ James on another, non-restricted port, then. &nbsp;For example:</p>
     <a name="jvm"></a>
 
     <p><h2>4.5 JVM Tuning</h2></p>
-    The Java virtual machine's configuration is very important to tune for best performance in any production environment, and some of Sakai's tools may not operate with the memory alloted by the default JVM.
+    The Java virtual machine's configuration is very important to tune for best performance in any production environment, and some of Sakai's tools may not operate with the memory alloted by the default JVM.<br/>
+    <p/>
     <table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
 	             <tbody>
 	               <tr>
@@ -259,13 +254,13 @@ James on another, non-restricted port, then. &nbsp;For example:</p>
     <pre><span class="code">JAVA_OPTS="-server -Xmx512m -Xms512m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:NewSize=128m<br/>-XX:+UseConcMarkSweepGC -XX:+UseParNewGC"</span></pre>
     <p>This is a fairly good starting point: it selects server mode, sets a larger heap size for smoother performance, and sizes the permanent generation to accommodate more longer-persisting objects. We have found the best results when the min and max memory settings (Xms and Xmx, respectively) are set to be the same values. 512 megs is not too much memory for Sakai; 1 gig is even better.</p>
     <p>Tomcat will see this environment variable and use it. Instead of putting this in an environment variable, you might modify the $CATALINA_HOME/bin/catalina.bat or $CATALINA_HOME/bin/catalina.sh file to automatically set these values during startup.</p>
-    <table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
+    <br/><table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
 		             <tbody>
 		               <tr>
 		                 <th>JVM Tuning in Windows XP</th>
 		               </tr>
 		               <tr>
-		                 <td class="white">Windows users may set Java options in a "Tomcat Properties" dialog. But you may find that the permanent generation settings mentioned above will not work appropriately if set in the <em>Java Options:</em> field of the dialog window. That's because these settings have their own fields in the properties GUI, under the headings <em>Initial Memory Pool</em> and <em>Maximum memory pool</em>, respectively.</td>
+		                 <td class="white">Windows users may set Java options in a "Tomcat Properties" dialog if Tomcat is installed as a service. But you may find that the permanent generation settings mentioned above will not work appropriately if set in the <em>Java Options:</em> field of the dialog window. That's because these settings have their own fields in the properties GUI, under the headings <em>Initial Memory Pool</em> and <em>Maximum memory pool</em>, respectively.  Windows apparently ignores attempts to alter these values through the <em>Java Options</em> field.</td>
 		               </tr>
 		             </tbody>
     </table>
@@ -298,11 +293,13 @@ James on another, non-restricted port, then. &nbsp;For example:</p>
       </table>
       <p>Once Tomcat has loaded the
   Sakai application (again, this can take a minute or so) point your
-  browser to
+  browser to (assuming you're running the browser from the machine where Sakai is installed):
   <pre><span style="code">http://localhost:8080/portal</span></pre>
-  <p></p>
+  <p/>
   If the gateway page does not come up, check the Tomcat logs (see <a href="tshoot.html">Troubleshooting
-  </a>). &nbsp;If the gateway page does come up, log in with the default admin account:<br> &nbsp;username = admin, password = admin. &nbsp;<br>If you can log in without errors you should be able to stop Tomcat and proceed with <a href="dbconfig.html">Database configuration</a>, if needed.</p>
+  </a>). &nbsp;If the gateway page does come up, log in with the default admin account:<br/>
+  <pre><span style="code">username = admin, password = admin.</span></pre>
+  <p/>If you can log in without errors you should be able to stop Tomcat and proceed with <a href="dbconfig.html">Database configuration</a>, if needed.</p>
       <table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
         <tbody>
           <tr>
