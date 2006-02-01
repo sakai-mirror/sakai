@@ -875,6 +875,27 @@ public class BaseSite implements Site
 	/**
 	 * {@inheritDoc}
 	 */
+	public Collection getTools(String commonToolId)
+	{
+		String [] toolIds = new String[1];
+                toolIds[0] = commonToolId;
+		return getTools(toolIds);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ToolConfiguration getToolForCommonId(String commonToolId)
+	{
+		Collection col = getTools(commonToolId);
+		if ( col == null ) return null;
+		if ( col.size() == 0 ) return null;
+		return (ToolConfiguration) col.iterator().next(); // Return first element
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public Collection getTools(String[] toolIds)
 	{
 		List rv = new Vector();
