@@ -1056,36 +1056,19 @@ public class CharonPortal extends HttpServlet
 			return placementId;  // cannot resolve placement
 		}
 
-		// We have the site, iterate through the pages
-		List pages = site.getPages();
-		if (pages.isEmpty())
+		if ( site == null ) return placementId;
+		ToolConfiguration toolConfig = site.getToolForCommonId(placementId);
+		if ( toolConfig == null ) return placementId;
+
+		if (doPage) 
 		{
-			return placementId; // cannot resolve placement
+			return toolConfig.getPageId();	
+		}
+		else
+		{
+			return toolConfig.getId();
 		}
 
-                for (Iterator iPage = pages.iterator(); iPage.hasNext();)
-		{
-			SitePage p = (SitePage) iPage.next();
-                        List tools = p.getTools(0);
-			for (Iterator thePlace = tools.iterator(); thePlace.hasNext();)
-                        {
-                                ToolConfiguration placement = (ToolConfiguration) thePlace.next();
-                                Tool theTool = placement.getTool();
-
-				if ( placementId.equals(theTool.getId()) ) 
-				{
-					if (doPage) 
-					{
-						return p.getId();	
-					}
-					else
-					{
-						return placement.getId();
-					}
-				}
-			}
-		}
-		return placementId;  // Could not resolve
 	}
 
 	protected void doSiteTabs(HttpServletRequest req, HttpServletResponse res, Session session, String siteId) throws IOException
