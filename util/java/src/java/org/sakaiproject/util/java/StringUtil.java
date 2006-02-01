@@ -26,6 +26,8 @@ package org.sakaiproject.util.java;
 
 // imports
 import java.util.Vector;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * <p>
@@ -321,8 +323,8 @@ public class StringUtil
 	 * 
 	 * @param value
 	 *        The string to limit.
-	 * @param the
-	 *        length to limit to (as an int).
+	 * @param length
+	 *        the length to limit to (as an int).
 	 * @return The limited string.
 	 */
 	public static String limit(String value, int length)
@@ -337,5 +339,49 @@ public class StringUtil
 		return buf.toString();
 
 	} // limit
+
+	/**
+	 * Determine if a String is contained in a String Collection
+	 *
+	 * @param stringCollection
+	 *	The collection of (String) to scan
+	 * @param value
+	 *	The value to look for
+	 * @return true if the string was found
+	 */
+	public static boolean contains(Collection stringCollection, String value)
+	{
+		if ( stringCollection == null || value == null ) return false;
+		if ( value.length() == 0 ) return false;
+		for (Iterator i = stringCollection.iterator(); i.hasNext(); ) 
+		{
+			Object o = i.next();
+			if ( !(o instanceof String) ) continue;
+			if ( value.equals((String) o)) return true;
+		}
+		return false;
+	}	 
+
+	/**
+	 * Determine if a String is contained in a String Collection, ignoring case
+	 *
+	 * @param stringCollection
+	 *	The collection of (String) to scan
+	 * @param value
+	 *	The value to look for
+	 * @return true if the string was found
+	 */
+	public static boolean containsIgnoreCase(Collection stringCollection, String value)
+	{
+		if ( stringCollection == null || value == null ) return false;
+		if ( value.length() == 0 ) return false;
+		for (Iterator i = stringCollection.iterator(); i.hasNext(); ) 
+		{
+			Object o = i.next();
+			if ( !(o instanceof String) ) continue;
+			if ( value.equalsIgnoreCase((String) o)) return true;
+		}
+		return false;
+	}	 
 
 } // StringUtil
