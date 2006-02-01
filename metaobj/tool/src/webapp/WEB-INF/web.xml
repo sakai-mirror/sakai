@@ -58,6 +58,12 @@
       <load-on-startup>2</load-on-startup>
    </servlet>
 
+   <servlet>
+      <servlet-name>repository</servlet-name>
+      <servlet-class>org.sakaiproject.metaobj.shared.control.servlet.FileDownloadServlet</servlet-class>
+      <load-on-startup>2</load-on-startup>
+   </servlet>
+
    
    <listener>
       <listener-class>org.sakaiproject.metaobj.utils.ioc.web.WebContextLoaderListener</listener-class>
@@ -90,6 +96,11 @@
       <taglib-uri>/spring</taglib-uri>
       <taglib-location>/WEB-INF/spring.tld</taglib-location>
    </taglib>
+   
+   <servlet-mapping>
+     <servlet-name>repository</servlet-name>
+     <url-pattern>/repository/*</url-pattern>
+  </servlet-mapping>
 
 
 </web-app>

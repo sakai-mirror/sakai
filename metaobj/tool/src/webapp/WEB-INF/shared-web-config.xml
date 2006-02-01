@@ -154,6 +154,69 @@
       <property name="formView"><value>addStructuredArtifactDefinition</value></property>
    </bean>
 
+   <bean id="importStructuredArtifactDefinitionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.sakaiproject.metaobj.shared.control.ImportStructuredArtifactDefinitionController">
+            <property name="contentHosting">
+               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+            </property>
+            <property name="entityManager">
+                <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+            </property>
+            <property name="homeFactory"><ref bean="homeFactory"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
+            <property name="authzManager"><ref bean="org.sakaiproject.metaobj.security.AuthorizationFacade"/></property>
+            <property name="worksiteManager"><ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/></property>
+            <property name="listScrollIndexer"><ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/></property>
+            <property name="toolId"><value>osp.structuredartifact</value></property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="sessionForm"><value>true</value></property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">listStructuredArtifactDefinitionsRedirectCurDir</prop>
+            <prop key="failed">importStructuredArtifactDefinitionsRedirect</prop>
+            <prop key="pickImport">pickImportRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="validator"><ref bean="org.sakaiproject.metaobj.shared.control.ImportStructuredArtifactDefinitionController"/></property>
+      <property name="commandName"><value>bean</value></property>
+      <property name="commandClass"><value>org.sakaiproject.metaobj.shared.model.FormUploadForm</value></property>
+      <property name="formView"><value>importStructuredArtifactDefinition</value></property>
+   </bean>
+   
+   
+         <bean class="org.sakaiproject.metaobj.shared.control.ImportStructuredArtifactDefinitionController">
+            <property name="contentHosting">
+               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+            </property>
+            <property name="entityManager">
+                <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+            </property>
+            <property name="homeFactory"><ref bean="homeFactory"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
+            <property name="authzManager"><ref bean="org.sakaiproject.metaobj.security.AuthorizationFacade"/></property>
+            <property name="worksiteManager"><ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/></property>
+            <property name="listScrollIndexer"><ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/></property>
+            <property name="toolId"><value>osp.structuredartifact</value></property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+            </property>
+         </bean>
+   
+
    <bean id="publishStructuredArtifactDefinitionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.shared.control.PublishStructuredArtifactDefinitionController">

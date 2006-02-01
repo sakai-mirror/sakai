@@ -137,12 +137,14 @@ public class StructuredArtifactDefinitionBean implements Comparable {
       this.documentRoot = documentRoot;
    }
    /**
+    * gets the global published state
     * @return Returns the globalState.
     */
    public int getGlobalState() {
       return globalState;
    }
    /**
+    * sets the global published state
     * @param globalState The globalState to set.
     */
    public void setGlobalState(int globalState) {
@@ -233,12 +235,14 @@ public class StructuredArtifactDefinitionBean implements Comparable {
       this.schemaFileName = schemaFileName;
    }
    /**
+    * gets the published state
     * @return Returns the siteState.
     */
    public int getSiteState() {
       return siteState;
    }
    /**
+    * sets the published state
     * @param siteState The siteState to set.
     */
    public void setSiteState(int siteState) {

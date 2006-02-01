@@ -8,7 +8,9 @@
 <c:if test="${can.create}">
       <a href="<osp:url value="/addStructuredArtifactDefinition.osp?new=true"/>"
           title="New..." >New...</a>
-</c:if>
+      <a href="<osp:url value="/importStructuredArtifactDefinition.osp"/>"
+          title="Import..." >Import...</a>
+    </c:if>
    <c:if test="${isMaintainer}">
 
       <a href="<osp:url value="sakai.permissions.helper.helper/tool?panel=Main">
@@ -23,13 +25,13 @@
    </c:if>
 </div>
 
-<div class ="chefPortletContent">
-
 <osp:url var="listUrl" value="listStructuredArtifactDefinitions.osp"/>
 <osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
+
+<h3>Meta Object Manager</h3>
 <c:if test="${!empty types}">
- <table class="chefFlatListViewTable" cellspacing="0" >
+ <table class="listHier" cellspacing="0" >
    <thead>
       <tr>
          <th scope="col">Name</th>
@@ -46,13 +48,17 @@
   <c:forEach var="home" items="${types}">
     <TR>
       <TD nowrap>
-         <c:out value="${home.type.description}" /><br/>&nbsp;&nbsp;&nbsp;
+         <c:out value="${home.type.description}" />
          <c:if test="${home.modifiable}">
-            <c:if test="${can.edit}"><a href="<osp:url value="/editStructuredArtifactDefinition.osp"/>&id=<c:out value="${home.id}" />">edit</a></c:if>
-            <c:if test="${!isGlobal && can.publish && home.canPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=site_publish&id=<c:out value="${home.id}" />">publish</a></c:if>
-            <c:if test="${isGlobal && can.publish &&  home.canGlobalPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />">global publish</a></c:if>
-            <c:if test="${!isGlobal && home.canSuggestGlobalPublish && can['suggest.global.publish']}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=suggest_global_publish&id=<c:out value="${home.id}" />">suggest for global publish</a></c:if>
-            <c:if test="${isGlobal && home.canApproveGlobalPublish && can.publish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />">approve global publish</a></c:if>
+            <div class="itemAction">
+                <c:if test="${can.edit}"><a href="<osp:url value="/editStructuredArtifactDefinition.osp"/>&id=<c:out value="${home.id}" />">edit</a> |
+                <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=structuredArtifactDefinitionManager&formId=<c:out value="${home.id.value}" />/<c:out value="${home.type.description}" /> Form.zip">export</a>
+                </c:if>
+                <c:if test="${!isGlobal && can.publish && home.canPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=site_publish&id=<c:out value="${home.id}" />">publish</a></c:if>
+                <c:if test="${isGlobal && can.publish &&  home.canGlobalPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />">global publish</a></c:if>
+                <c:if test="${!isGlobal && home.canSuggestGlobalPublish && can['suggest.global.publish']}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=suggest_global_publish&id=<c:out value="${home.id}" />">suggest for global publish</a></c:if>
+                <c:if test="${isGlobal && home.canApproveGlobalPublish && can.publish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />">approve global publish</a></c:if>
+            </div>
          </c:if>
       </TD>
       <TD>
@@ -117,16 +123,13 @@
     </TR>
   </c:forEach>
   </table>
-<div class="chefPageviewTitle">
 <br/>
 'Site State' refers to the state of this Form within the worksite (eg. unpublished/published). <br/><br/>
 'Global State' refers to the state of the Form within the system (eg. unpublished/waiting for approval/published).<br/><br/>
 Only System Administrators can approve a Form for global access.
-</div>
+
 </c:if>
 
 <c:if test="${empty types}">
 No Forms Available.  Click 'New' to create one.
 </c:if>
-
-</div>

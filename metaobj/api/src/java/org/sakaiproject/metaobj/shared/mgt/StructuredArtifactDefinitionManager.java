@@ -22,10 +22,13 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt;
 
+import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.service.legacy.site.ToolConfiguration;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -78,4 +81,5 @@ public interface StructuredArtifactDefinitionManager {
 
    public StructuredArtifactHomeInterface convertToHome(StructuredArtifactDefinitionBean sad);
 
+   public boolean importSADResource(Id worksiteId, String resourceId) throws IOException, ServerOverloadException;
 }

@@ -3,7 +3,6 @@
 
 
 
-<div class ="chefPortletContent">
 
 <c:if test="${empty bean.id}">
 <form method="POST" action="addStructuredArtifactDefinition.osp">
@@ -143,4 +142,3 @@ Pick Transformation File</a>
 
 </form>
 
-</div>

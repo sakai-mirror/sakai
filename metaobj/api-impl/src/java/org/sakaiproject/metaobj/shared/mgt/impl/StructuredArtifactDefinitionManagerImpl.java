@@ -22,8 +22,16 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.DataOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -31,12 +39,23 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.transform.TransformerException;
 
+import org.jdom.CDATA;
+import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
+import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
@@ -47,11 +66,14 @@ import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
+import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactDefinition;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
@@ -73,13 +95,16 @@ import org.springframework.orm.hibernate.support.HibernateDaoSupport;
  * @author jbush
  */
 public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
-   implements StructuredArtifactDefinitionManager, DuplicatableToolService {
+   implements StructuredArtifactDefinitionManager, DuplicatableToolService, DownloadableManager {
 
+   static final private String	DOWNLOAD_FORM_ID_PARAM = "formId";
+      
    private AuthorizationFacade authzManager = null;
    private IdManager idManager;
    private ArtifactFinderManager artifactFinderManager;
    private WorksiteManager worksiteManager;
    private ContentHostingService contentHosting;
+   private ToolManager toolManager;
 
    public StructuredArtifactDefinitionManagerImpl() {
    }
@@ -475,6 +500,19 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       this.worksiteManager = worksiteManager;
    }
 
+   public ToolManager getToolManager() {
+      return toolManager;
+   }
+
+   public void setToolManager(ToolManager toolManager) {
+      this.toolManager = toolManager;
+   }
+		
+   protected Id getToolId() {
+      Placement placement = toolManager.getCurrentPlacement();
+      return idManager.getId(placement.getId());
+   }
+
    public void importResources(ToolConfiguration fromTool, ToolConfiguration toTool, List resourceIds) {
       // select all this worksites forms and create them for the new worksite
       Map homes = getWorksiteHomes(getIdManager().getId(fromTool.getSiteId()));
@@ -508,5 +546,200 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       FunctionManager.registerFunction(SharedFunctionConstants.PUBLISH_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
    }
+   
+   public void packageForDownload(Map params, OutputStream out) throws IOException {
+	   
+	   String[] formIdObj = (String[])params.get(DOWNLOAD_FORM_ID_PARAM);
+	   packageFormForExport(formIdObj[0], out);
+   }
+   
+   public void packageFormForExport(String formId, OutputStream os)
+			throws IOException {
+		getAuthzManager().checkPermission(SharedFunctionConstants.EDIT_ARTIFACT_DEF,
+				getToolId());
 
+		CheckedOutputStream checksum = new CheckedOutputStream(os,
+				new Adler32());
+		ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(
+				checksum));
+		
+		StructuredArtifactDefinitionBean bean = loadHome(formId);
+		writeSADtoZip(bean, zos, "");
+
+		zos.finish();
+		zos.flush();
+	}
+   
+   public Document exportSADAsXML(StructuredArtifactDefinitionBean bean)
+   {
+	    Element rootNode = new Element("metaobjForm");
+	    
+	    rootNode.setAttribute("formatVersion", "1");
+	    
+		Element attrNode = new Element("description");
+		attrNode.addContent(new CDATA(bean.getDescription()));
+		rootNode.addContent(attrNode);
+		    
+		attrNode = new Element("instruction");
+		attrNode.addContent(new CDATA(bean.getInstruction()));
+		rootNode.addContent(attrNode);
+		    
+		attrNode = new Element("documentRootNode");
+		attrNode.addContent(new CDATA(bean.getDocumentRoot()));
+		rootNode.addContent(attrNode);
+		
+		return new Document(rootNode);
+   }
+   
+   public void writeSADasXMLtoStream(StructuredArtifactDefinitionBean bean, OutputStream os) throws IOException
+   {
+	   	Document doc = exportSADAsXML(bean);
+		String docStr = (new XMLOutputter()).outputString(doc);
+		os.write(docStr.getBytes());
+   }
+   
+   public void writeSADtoZip(StructuredArtifactDefinitionBean bean, ZipOutputStream zos) throws IOException
+   {
+	   writeSADtoZip(bean, zos, "");
+   }
+   public void writeSADtoZip(StructuredArtifactDefinitionBean bean, ZipOutputStream zos, String path) throws IOException
+   {
+	   // if the path is a directory without an end slash, then add one
+	   if(!path.endsWith("/") && path.length() > 0)
+		   path += "/";
+	   ZipEntry definitionFile = new ZipEntry(path + "formDefinition.xml");
+		
+	   zos.putNextEntry(definitionFile);
+	   writeSADasXMLtoStream(bean, zos);
+	   zos.closeEntry();
+
+	   ZipEntry schemeFile = new ZipEntry(path + "schema.xsd");
+		
+	   zos.putNextEntry(schemeFile);
+	   zos.write(bean.getSchema());
+	   zos.closeEntry();
+		
+   }
+   
+   
+   
+	/**
+	 * Given a resource id, this parses out the Form from its input stream.
+	 * Once the enties are found, they are inserted into the given worksite.
+	 * @param worksiteId Id
+	 * @param resourceId an String
+	 * @param replaceExisting boolean
+	 */
+	public boolean importSADResource(Id worksiteId, String resourceId) 
+		throws IOException, ServerOverloadException
+	{
+		String id = getContentHosting().resolveUuid(resourceId);
+		
+		try{ 
+			ContentResource resource = getContentHosting().getResource(id);
+			MimeType  mimeType = new MimeType(resource.getContentType());
+	
+			if(mimeType.equals(new MimeType("application/zip")) || 
+					mimeType.equals(new MimeType("application/x-zip-compressed"))) {
+				ZipInputStream zis = new ZipInputStream(resource.streamContent());
+	
+				StructuredArtifactDefinitionBean bean = readSADfromZip(zis, 
+								getWorksiteManager().getCurrentWorksiteId().getValue());
+				if(bean == null)
+					return false;
+				save(bean);
+			} else {
+				throw new OspException("Unsupported file type");
+			}
+			return true;
+		} catch(PermissionException pe) {
+	         logger.error(pe);
+		} catch(TypeException te) {
+	         logger.error(te);
+		} catch(IdUnusedException iue) {
+	         logger.error(iue);
+		}
+		return false;
+	}
+   
+   
+   public StructuredArtifactDefinitionBean readSADfromZip(ZipInputStream zis, String worksite) throws IOException
+   {
+	   StructuredArtifactDefinitionBean bean = new StructuredArtifactDefinitionBean();
+	   boolean hasXML = false, hasXSD = false;
+
+       bean.setCreated(new Date(System.currentTimeMillis()));
+	   bean.setModified(bean.getCreated());
+	       
+	   bean.setOwner(getAuthManager().getAgent());
+	   bean.setSiteId(worksite);
+	   bean.setSiteState(StructuredArtifactDefinitionBean.STATE_UNPUBLISHED);
+	   
+	   ZipEntry currentEntry = zis.getNextEntry();
+       if(currentEntry != null) {
+		   if(currentEntry.getName().endsWith("xml")) {
+			   readSADfromXML(bean, zis);
+			   hasXML = true;
+		   }
+		   if(currentEntry.getName().endsWith("xsd")) {
+			   readSADSchemaFromXML(bean, zis);
+			   hasXSD = true;
+		   }
+	       zis.closeEntry();
+       }
+       currentEntry = zis.getNextEntry();
+       if(currentEntry != null) {
+		   if(currentEntry.getName().endsWith("xml")) {
+			   readSADfromXML(bean, zis);
+			   hasXML = true;
+		   }
+		   if(currentEntry.getName().endsWith("xsd")) {
+			   readSADSchemaFromXML(bean, zis);
+			   hasXSD = true;
+		   }
+	       zis.closeEntry();
+       }
+       if(!hasXML || !hasXSD)
+    	   return null;
+	   
+	   return bean;
+   }
+   private StructuredArtifactDefinitionBean readSADfromXML(StructuredArtifactDefinitionBean bean, InputStream inStream)
+   {
+		SAXBuilder builder = new SAXBuilder();
+
+		try {
+			byte []bytes = readStreamToBytes(inStream);
+		   Document document	= builder.build(new ByteArrayInputStream(bytes));
+
+		   Element topNode = document.getRootElement();
+
+		   bean.setDescription(topNode.getChildTextTrim("description"));
+		   bean.setInstruction(topNode.getChildTextTrim("instruction"));
+		   bean.setDocumentRoot(topNode.getChildTextTrim("documentRootNode"));
+		} catch(Exception jdome) {
+	         logger.error(jdome);
+		}
+	   return bean;
+   }
+   
+   private byte[] readStreamToBytes(InputStream inStream) throws IOException
+   {
+	   ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+	   byte data[] = new byte[10*1024];
+
+       int count;
+       while ((count = inStream.read(data, 0, 10*1024)) != -1) {
+    	   bytes.write(data, 0, count);
+       }
+       byte []tmp = bytes.toByteArray();
+       bytes.close();
+       return tmp;
+   }
+   
+   private StructuredArtifactDefinitionBean readSADSchemaFromXML(StructuredArtifactDefinitionBean bean, InputStream inStream) throws IOException
+   {
+       bean.setSchema(readStreamToBytes(inStream));
+	   return bean;
+   }
 }

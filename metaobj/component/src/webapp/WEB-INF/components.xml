@@ -95,6 +95,7 @@
       <property name="authzManager"><ref bean="org.sakaiproject.metaobj.security.AuthorizationFacade"/></property>
       <property name='worksiteManager'><ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/></property>
       <property name="contentHosting"><ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/></property>
+      <property name="toolManager"><ref bean="org.sakaiproject.api.kernel.tool.ToolManager"/></property>
    </bean>
 
    <bean id="structuredArtifactDefinitionManager"
@@ -187,6 +188,23 @@
       <property name="acceptedExtensions">
          <list>
             <value>xsd</value>
+         </list>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.sakaiproject.metaobj.shared.ContentResourceFilter.formUploadStyleFile"
+      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list>
+            <value>application/zip</value>
+            <value>application/x-zip-compressed</value>
+         </list>
+      </property>
+      <property name="acceptedExtensions">
+         <list>
+            <value>zip</value>
          </list>
       </property>
    </bean>
