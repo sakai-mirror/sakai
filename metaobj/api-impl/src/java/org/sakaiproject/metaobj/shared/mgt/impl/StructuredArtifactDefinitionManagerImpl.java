@@ -574,7 +574,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    {
 	    Element rootNode = new Element("metaobjForm");
 	    
-	    rootNode.setAttribute("formatVersion", "1");
+	    rootNode.setAttribute("formatVersion", "2.1");
 	    
 		Element attrNode = new Element("description");
 		attrNode.addContent(new CDATA(bean.getDescription()));
