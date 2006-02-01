@@ -3,7 +3,7 @@
  * $Id$
  **********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ * Copyright (c) 2003, 2004, 2005, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
  * 
  * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collection;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -36,6 +37,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.util.java.StringUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.Session;
@@ -45,8 +47,12 @@ import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.service.legacy.presence.cover.PresenceService;
 import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.web.Web;
 import org.sakaiproject.util.courier.PresenceObservingCourier;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 
 /**
  * <p>
@@ -62,7 +68,13 @@ public class PresenceTool extends HttpServlet
 	private static Log M_log = LogFactory.getLog(PresenceTool.class);
 
 	/** Tool state attribute where the observer is stored. */
-	protected static final String ATTR_OBSERVER = "obsever";
+	protected static final String ATTR_OBSERVER = "observer";
+
+	/** Common Tool ID for the Sakai Chat Tool */
+	protected static final String CHAT_COMMON_ID = "sakai.chat";
+
+	/** Tool state attribute where the chat observer is stored. */
+	protected static final String ATTR_CHAT_OBSERVER = "chat_observer";
 
 	/**
 	 * Shutdown the servlet.
@@ -113,11 +125,48 @@ public class PresenceTool extends HttpServlet
 		// get the list of users at the location
 		List users = PresenceService.getPresentUsers(location);
 
+		// get SiteId from the current placement and retrieve site
+		String siteId = placement.getContext();
+
+                Site site = null;
+		ToolConfiguration toolConfig = null;
+		List chatUsers = null;
+
+		if ( siteId != null ) {
+                	try
+                	{
+                        	site = SiteService.getSiteVisit(siteId);
+                	}       
+                	catch (Exception e)
+                	{
+                        	// No problem - leave site null
+                	}
+		}
+
+		if ( site != null ) 
+		{
+                        toolConfig = site.getToolForCommonId(CHAT_COMMON_ID);
+		}
+
+		if ( toolConfig != null ) {
+			String chatLocation = toolConfig.getId();
+			chatUsers = PresenceService.getPresentUsers(chatLocation);
+
+			PresenceObservingCourier chatObserver = (PresenceObservingCourier) toolSession.getAttribute(ATTR_CHAT_OBSERVER);
+                	if (chatObserver == null)
+                	{
+				// Monitor presense changes at chatLocation and deliver them to this window's location with
+				// no sub window (null)
+                        	chatObserver = new PresenceObservingCourier(location,null,chatLocation);
+                        	toolSession.setAttribute(ATTR_CHAT_OBSERVER, chatObserver);
+                	}
+		}
+
 		// start the response
 		PrintWriter out = startResponse(req, res, "presence");
 
 		sendAutoUpdate(out, req, placement.getId(), placement.getContext());
-		sendPresence(out, users);
+		sendPresence(out, users, chatUsers);
 
 		// end the response
 		endResponse(out);
@@ -180,14 +229,51 @@ public class PresenceTool extends HttpServlet
 	 * @param out
 	 * @param users
 	 */
-	protected void sendPresence(PrintWriter out, List users)
+	protected void sendPresence(PrintWriter out, List users, List chatUsers)
 	{
+ 		String chatIcon  = ServerConfigurationService.getString("presence.inchat.icon", null);
+
 		out.println("<div class=\"presenceList\">");
+		if ( users == null ) {
+			out.println("<!-- Presence empty -->");
+			out.println("</div>");
+			return;
+		}
 
 		for (Iterator i = users.iterator(); i.hasNext();)
 		{
 			User u = (User) i.next();
-			out.println("<span class=\"chefPresenceListItem\">" + Web.escapeHtml(u.getDisplayName()) + "</span><br/>");
+			boolean inChat = false;
+			if ( chatUsers != null ) 
+			{
+				String userId = u.getId();
+				for (Iterator j = chatUsers.iterator();j.hasNext(); ) 
+				{
+					User chatUser = (User) j.next();
+					if ( userId != null && userId.equals(chatUser.getId()) )
+					{
+						inChat = true;
+					}
+				}
+			} 
+
+			if ( inChat ) 
+			{
+				out.print("<span class=\"chefPresenceListItem inChat\">");
+				out.print("<span title=\"Currently in Chat\">");
+				out.print(Web.escapeHtml(u.getDisplayName()));
+				if ( chatIcon != null ) 
+				{
+					out.print(" <img height=10px width=10px src=\""+chatIcon+"\">");
+				}
+			}
+			else
+			{
+				out.print("<span class=\"chefPresenceListItem\">");
+				out.print("<span title=\"Currently in Site\">");
+				out.print(Web.escapeHtml(u.getDisplayName()));
+			}
+			out.println("</span></span><br/>");
 		}
 
 		out.println("</div>");

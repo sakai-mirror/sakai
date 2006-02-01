@@ -41,10 +41,12 @@ import org.sakaiproject.service.legacy.presence.cover.PresenceService;
 public class PresenceObservingCourier extends EventObservingCourier
 {
 	/**
-	 * Construct, using no element for the refresh.
+	 * This variant, watches presense changes at the specified location, and sends the notifications to 
+	 * that same location.  The elementID is null so the main window is refreshed when the notification 
+	 * is received.
 	 * 
 	 * @param location
-	 *        The location changes to which are observed.
+	 *        The location under observation *and* the location for the delivery of the events.
 	 */
 	public PresenceObservingCourier(String location)
 	{
@@ -52,16 +54,34 @@ public class PresenceObservingCourier extends EventObservingCourier
 	}
 
 	/**
-	 * Construct, using an element for the refresh.
+	 * This variant watches changes in a window and sends change notifications to the same window.
+         * In the case where there are multiple iframes in the tool, elementID sends notification to 
+	 * the frame specified by elementId.
 	 * 
 	 * @param location
-	 *        The location changes to which are observed.
+	 *        The location under observation *and* the location for the delivery of the events.
 	 * @param elementId
-	 *        The html element to refresh.
+	 *        The html element to refresh.  If this is null the main window is refreshed.
 	 */
 	public PresenceObservingCourier(String location, String elementId)
 	{
 		super(location, elementId, PresenceService.presenceReference(location));
+	}
+
+	/**
+	 * This variant watches changes in one window (watchLocation) and sends the notifications to a different
+	 * window (location)..  
+	 * 
+	 * @param location
+	 *        The location which will receive the notifications.
+	 * @param elementId
+	 *        The html element to refresh.  If this is null, the main window is refreshed.
+	 * @param watchLocation
+	 *        The location being observed.
+	 */
+	public PresenceObservingCourier(String location, String elementId, String watchLocation)
+	{
+		super(location, elementId, PresenceService.presenceReference(watchLocation));
 	}
 
 	/**
@@ -120,6 +140,4 @@ public class PresenceObservingCourier extends EventObservingCourier
 		}
 	}
 }
-
-
 
