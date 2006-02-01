@@ -5512,7 +5512,7 @@ public class SiteAction extends PagedResourceActionII
 		for (Iterator i = allAffiliates.iterator(); i.hasNext(); )
 		{
 			SubjectAffiliates sa = (SubjectAffiliates)i.next();
-			if(sa.getSubject().equals(subject)) return sa.getUniqnames();
+			if(subject.equals(sa.getCampus() + "_" + sa.getSubject())) return sa.getUniqnames();
 		}
 		return rv;
 		
