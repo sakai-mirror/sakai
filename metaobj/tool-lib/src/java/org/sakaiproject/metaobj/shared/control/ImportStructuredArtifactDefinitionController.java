@@ -145,9 +145,13 @@ public class ImportStructuredArtifactDefinitionController extends AddStructuredA
 	    		ContentResource resource = null;
 	    		try {
 				resource = getContentHosting().getResource(id);
-	    		} catch(PermissionException pe) {}
-	    		catch(TypeException pe) {}
-    			catch(IdUnusedException pe) {}
+	    		} catch(PermissionException pe) {
+			           logger.warn("Failed loading content: no permission to view file", pe);
+	    		} catch(TypeException pe) {
+			           logger.warn("Wrong type", pe);
+			    } catch(IdUnusedException pe) {
+			           logger.warn("UnusedId: ", pe);
+			    }
 	    		
 	            
 	            if(ids.length() > 0)
