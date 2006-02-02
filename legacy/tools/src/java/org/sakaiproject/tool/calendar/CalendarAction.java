@@ -938,7 +938,7 @@ extends VelocityPortletStateAction
 	int day)
 	{
 		Time startTime = TimeService.newTimeLocal(year,month,day,00,00,00,000);
-		Time endTime = TimeService.newTimeLocal(year,month,day,23,00,00,000);
+		Time endTime = TimeService.newTimeLocal(year,month,day,23,59,59,000);
 		
 		return TimeService.newTimeRange(startTime,endTime,true,true);
 	}
@@ -2962,7 +2962,6 @@ extends VelocityPortletStateAction
 		int day = dateObj1.getDay();
 		
 		Vector eventVector = new Vector();
-		Vector eventVector1;
 		
 		String calId = state.getPrimaryCalendarReference();
 		
@@ -3033,29 +3032,15 @@ extends VelocityPortletStateAction
 				
 				if(currentPage.equals("third"))
 				{
-					eventVector1 = new Vector();
 					eventVector = getNewEvents(year,month,day, state, runData,THIRD_PAGE_START_HOUR,19,context,CalendarEventVectorObj);
-					
-					for(int index = 0;index<eventVector1.size();index++)
-					{
-						eventVector.add(eventVector.size(),eventVector1.get(index));
-					}
-					
 				}
 				else if (currentPage.equals("second"))
 				{
 					eventVector = getNewEvents(year,month,day, state, runData,SECOND_PAGE_START_HOUR,19,context,CalendarEventVectorObj);
 				}
-				
 				else
 				{
-					eventVector1 = new Vector();
-					eventVector1 = getNewEvents(year,month,day, state, runData,FIRST_PAGE_START_HOUR,19,context,CalendarEventVectorObj);
-					
-					for(int index = 0;index<eventVector1.size();index++)
-					{
-						eventVector.insertElementAt(eventVector1.get(index),index);
-					}
+					eventVector = getNewEvents(year,month,day, state, runData,FIRST_PAGE_START_HOUR,19,context,CalendarEventVectorObj);
 				}
 				
 				dateObj1.setEventBerDay(eventVector);
