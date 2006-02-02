@@ -64,12 +64,14 @@
 			<input type="text" name="email" id="email"#if($user) value="$validator.escapeHtml($user.Email)"#end />
 		</p>
 		<p class="shorttext">
+			#if ($pwRequired) <span class="reqStar">*</span> #end
 			<label for="pw">
 				$tlang.getString("usecre.crenewpass")
 			</label>
 			<input type="password" name="pw" id="pw"/>
 		</p>
 		<p class="shorttext">
+			#if ($pwRequired) <span class="reqStar">*</span> #end
 			<label for="pw0">
 				$tlang.getString("usecre.vernewpass")
 			</label>

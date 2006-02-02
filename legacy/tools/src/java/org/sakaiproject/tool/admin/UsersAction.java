@@ -263,7 +263,7 @@ public class UsersAction extends PagedResourceActionII
 		context.put("incPw", state.getAttribute("include-password"));
 
 		context.put("incType", Boolean.valueOf(true));
-
+		
 		return "_edit";
 
 	} // buildNewContext
@@ -275,6 +275,10 @@ public class UsersAction extends PagedResourceActionII
 	{
 		// is the type to be pre-set
 		context.put("type", state.getAttribute("create-type"));
+		
+		// password is required when using Gateway New Account tool
+		// attribute "create-user" is true only for New Account tool
+		context.put("pwRequired", state.getAttribute("create-user"));
 
 		return "_create";
 
@@ -673,6 +677,13 @@ public class UsersAction extends PagedResourceActionII
 	 */
 	private boolean readUserForm(RunData data, SessionState state)
 	{
+		//boolean parameters and values
+		// --------------Mode--singleUser-createUser-typeEnable
+		// Admin New-----new---false------false------true
+		// Admin Update--edit--false------false------true
+		// Gateway New---null---false------true-------false
+		// Account Edit--edit--true-------false------false
+		
 		// read the form
 		String id = StringUtil.trimToNull(data.getParameters().getString("id"));
 		String firstName = StringUtil.trimToNull(data.getParameters().getString("first-name"));
@@ -683,7 +694,17 @@ public class UsersAction extends PagedResourceActionII
 		String mode = (String) state.getAttribute("mode");
 		boolean singleUser = ((Boolean) state.getAttribute("single-user")).booleanValue();
 		boolean createUser = ((Boolean) state.getAttribute("create-user")).booleanValue();
-
+		
+		// if in Gateway New Account tool, password is required
+		if (createUser)
+		{
+			if (pw == null)
+			{
+				addAlert(state, rb.getString("usecre.pasismis"));
+				return false;
+			}
+		}
+		
 		boolean typeEnable = false;
 		String type = null;
 		if ((mode != null) && (mode.equalsIgnoreCase("new")))
