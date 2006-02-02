@@ -240,9 +240,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          catch (Exception e) {
             throw new OspException("Invlaid schema", e);
          }
-
          sad = new StructuredArtifactDefinition(bean);
          bean.setExternalType(sad.getExternalType());
+         bean.setSchemaHash(calculateSchemaHash(bean));
          getHibernateTemplate().saveOrUpdateCopy(bean);
    	} else {
    		throw new PersistenceException("Form name {0} exists", new Object[]{bean.getDescription()}, "description");
@@ -545,8 +545,28 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       FunctionManager.registerFunction(SharedFunctionConstants.EDIT_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.PUBLISH_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
+      updateSchemaHash();
    }
-   
+
+   protected void updateSchemaHash() {
+      List forms = getHibernateTemplate().find("from StructuredArtifactDefinitionBean a where " +
+            "schema_hash is null");
+
+      for (Iterator i=forms.iterator();i.hasNext();) {
+         StructuredArtifactDefinitionBean bean = (StructuredArtifactDefinitionBean) i.next();
+         bean.setSchemaHash(calculateSchemaHash(bean));
+         getHibernateTemplate().saveOrUpdateCopy(bean);
+      }
+   }
+
+   protected String calculateSchemaHash(StructuredArtifactDefinitionBean bean) {
+      String hashString = new String(bean.getSchema());
+      hashString += bean.getDocumentRoot();
+      hashString += bean.getDescription();
+      hashString += bean.getInstruction();
+      return hashString.hashCode() + "";
+   }
+
    public void packageForDownload(Map params, OutputStream out) throws IOException {
 	   
 	   String[] formIdObj = (String[])params.get(DOWNLOAD_FORM_ID_PARAM);
@@ -621,16 +641,14 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 		
    }
    
-   
-   
-	/**
+   /**
 	 * Given a resource id, this parses out the Form from its input stream.
 	 * Once the enties are found, they are inserted into the given worksite.
 	 * @param worksiteId Id
 	 * @param resourceId an String
-	 * @param replaceExisting boolean
+    * @param findExisting
 	 */
-	public boolean importSADResource(Id worksiteId, String resourceId) 
+	public boolean importSADResource(Id worksiteId, String resourceId, boolean findExisting)
 		throws IOException, ServerOverloadException
 	{
 		String id = getContentHosting().resolveUuid(resourceId);
@@ -641,17 +659,14 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 	
 			if(mimeType.equals(new MimeType("application/zip")) || 
 					mimeType.equals(new MimeType("application/x-zip-compressed"))) {
-				ZipInputStream zis = new ZipInputStream(resource.streamContent());
-	
-				StructuredArtifactDefinitionBean bean = readSADfromZip(zis, 
-								getWorksiteManager().getCurrentWorksiteId().getValue());
-				if(bean == null)
-					return false;
-				save(bean);
+            InputStream zipContent = resource.streamContent();
+            StructuredArtifactDefinitionBean bean = importSad(
+                  worksiteId, zipContent, findExisting, false);
+
+            return bean != null;
 			} else {
 				throw new OspException("Unsupported file type");
 			}
-			return true;
 		} catch(PermissionException pe) {
 	         logger.error(pe);
 		} catch(TypeException te) {
@@ -661,9 +676,47 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 		}
 		return false;
 	}
-   
-   
-   public StructuredArtifactDefinitionBean readSADfromZip(ZipInputStream zis, String worksite) throws IOException
+
+   public StructuredArtifactDefinitionBean importSad(Id worksiteId, InputStream in,
+                                                     boolean findExisting, boolean publish)
+         throws IOException {
+      ZipInputStream zis = new ZipInputStream(in);
+
+      StructuredArtifactDefinitionBean bean = readSADfromZip(zis, worksiteId.getValue(), publish);
+      if(bean != null) {
+         if (findExisting) {
+            StructuredArtifactDefinitionBean found = findBean(bean);
+            if (found != null) {
+               return found;
+            }
+         }
+
+         save(bean);
+         // doesn't like imported beans in batch mode???
+         getHibernateTemplate().flush();
+      }
+      return bean;
+   }
+
+   protected StructuredArtifactDefinitionBean findBean(StructuredArtifactDefinitionBean bean) {
+      String query = "from StructuredArtifactDefinitionBean where globalState = ? or " +
+         "(siteState = ?  and siteId = ?) and schema_hash = ?";
+
+      Object[] params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
+                                     new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
+                                     bean.getSiteId(), bean.getSchemaHash()};
+      List beans = getHibernateTemplate().find(query, params);
+
+      if (beans.size() > 0){
+         return (StructuredArtifactDefinitionBean) beans.get(0);
+      }
+      return null;
+   }
+
+
+   public StructuredArtifactDefinitionBean readSADfromZip(ZipInputStream zis,
+                                                          String worksite, boolean publish)
+         throws IOException
    {
 	   StructuredArtifactDefinitionBean bean = new StructuredArtifactDefinitionBean();
 	   boolean hasXML = false, hasXSD = false;
@@ -673,7 +726,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 	       
 	   bean.setOwner(getAuthManager().getAgent());
 	   bean.setSiteId(worksite);
-	   bean.setSiteState(StructuredArtifactDefinitionBean.STATE_UNPUBLISHED);
+	   bean.setSiteState(
+         publish?StructuredArtifactDefinitionBean.STATE_PUBLISHED:
+            StructuredArtifactDefinitionBean.STATE_UNPUBLISHED);
 	   
 	   ZipEntry currentEntry = zis.getNextEntry();
        if(currentEntry != null) {
@@ -701,7 +756,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
        }
        if(!hasXML || !hasXSD)
     	   return null;
-	   
+
+	   bean.setSchemaHash(calculateSchemaHash(bean));
 	   return bean;
    }
    private StructuredArtifactDefinitionBean readSADfromXML(StructuredArtifactDefinitionBean bean, InputStream inStream)

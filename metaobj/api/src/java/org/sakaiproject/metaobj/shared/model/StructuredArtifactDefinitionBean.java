@@ -39,6 +39,7 @@ public class StructuredArtifactDefinitionBean implements Comparable {
    private Agent owner;
    private Date created = new Date();
    private Date modified = new Date();
+   private String schemaHash;
 
    /**
     * system only SAD's are not available to users to populate via a web form, they are for internal system use only
@@ -374,6 +375,14 @@ public class StructuredArtifactDefinitionBean implements Comparable {
 
    public void setFilePickerAction(String filePickerAction) {
       this.filePickerAction = filePickerAction;
+   }
+
+   public String getSchemaHash() {
+      return schemaHash;
+   }
+
+   public void setSchemaHash(String schemaHash) {
+      this.schemaHash = schemaHash;
    }
 
 }

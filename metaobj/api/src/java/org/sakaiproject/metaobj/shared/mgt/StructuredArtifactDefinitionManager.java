@@ -29,6 +29,8 @@ import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -81,5 +83,12 @@ public interface StructuredArtifactDefinitionManager {
 
    public StructuredArtifactHomeInterface convertToHome(StructuredArtifactDefinitionBean sad);
 
-   public boolean importSADResource(Id worksiteId, String resourceId) throws IOException, ServerOverloadException;
+   public boolean importSADResource(Id worksiteId, String resourceId, boolean findExisting)
+         throws IOException, ServerOverloadException;
+
+   public void packageFormForExport(String formId, OutputStream os) throws IOException;
+
+   public StructuredArtifactDefinitionBean importSad(Id worksiteId, InputStream in,
+                                                     boolean findExisting, boolean publish)
+         throws IOException;
 }
