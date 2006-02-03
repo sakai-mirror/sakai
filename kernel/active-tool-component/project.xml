@@ -8,7 +8,7 @@
 	<id>sakai-active-tool-component</id>
 	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
-		<name>University of Michigan</name>
+		<name>Sakai Project</name>
 		<url>http://sakaiproject.org/</url>
 	</organization>
 	<inceptionYear>2003</inceptionYear>
@@ -19,6 +19,12 @@
 	</properties>
 
 	<dependencies>
+
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-legacy-service</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
 
 		<dependency>
 			<groupId>sakaiproject</groupId>
