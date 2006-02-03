@@ -2258,7 +2258,16 @@ public abstract class BaseAssignmentService
 				{
 					if (index == 0)
 					{
-						members = allowAddSubmissionUsers(a.getReference());
+						List allowAddAssignmentUsers = allowAddAssignmentUsers(a.getContext());
+						List allowAddSubmissionUsers = allowAddSubmissionUsers (a.getReference());
+						for (int i=0; i<allowAddSubmissionUsers.size(); i++)
+						{
+							User allowAddSubmissionUser = (User) allowAddSubmissionUsers.get(i);
+							if (!allowAddAssignmentUsers.contains(allowAddSubmissionUser))
+							{
+								members.add(allowAddSubmissionUser);
+							}
+						}
 					}
 					assignmentTypeVector.add(index, new Integer(a.getContent().getTypeOfGrade()));
 					Iterator submissions = getSubmissions(a);
