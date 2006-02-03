@@ -426,6 +426,10 @@ extends PagedResourceActionII
 	
 	/** The alert flag when doing global navigation from improper mode */
 	private static final String ALERT_GLOBAL_NAVIGATION = "alert_global_navigation";
+	
+	/** The maximum trial number to get an uniq assignment title in gradebook */
+	private static final int MAXIMUM_ATTEMPTS_FOR_UNIQUENESS = 100;
+	
 	/**
 	 * central place for dispatching the build routines based on the state name
 	 */
@@ -1555,10 +1559,12 @@ extends PagedResourceActionII
 	/**
 	 * integration with gradebook
 	 * @param state
-	 * @param assignmentRef
+	 * @param assignmentRef Assignment reference
+	 * @param newAssignment Is this a new assignment that needs to be added into Gradebook?
+	 * @param submissionRef Any submission need to be update?
 	 * @param add
 	 */
-	protected void integrateGradebook (SessionState state, String assignmentRef, String submissionRef, boolean add)
+	protected void integrateGradebook (SessionState state, String assignmentRef, String addUpdateRemoveAssignment, String submissionRef, String updateRemoveSubmission)
 	{
 		//add or remove external grades to gradebook
 	    // a. if Gradebook does not exists, do nothing, 'cos setting should have been hidden
@@ -1584,14 +1590,17 @@ extends PagedResourceActionII
 		if (gradebookExists)
 		{
 			try
-	        {
-	    			Assignment a = AssignmentService.getAssignment(assignmentRef);
-	    			
-	    			if (a.getProperties().getProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK) != null && a.getProperties().getBooleanProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK)
-	    				&& a.getContent().getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE)
-	    			{	
-			    		if (add)
-			    		{
+			{
+			    	Assignment a = AssignmentService.getAssignment(assignmentRef);
+			    	
+				if (addUpdateRemoveAssignment != null)
+				{
+					if (addUpdateRemoveAssignment.equals("add")
+					    	&& a.getProperties().getProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK) != null 
+					    	&& a.getProperties().getBooleanProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK)
+					    	&& a.getContent().getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE)
+					{
+						// add assignment into gradebook
 			    			try
 			    			{
 			    				// add assignment to gradebook
@@ -1605,21 +1614,97 @@ extends PagedResourceActionII
 				        }
 				        catch(Exception e)
 				        {
-				        		Log.debug("chef", "Assignment " + assignmentRef + " must have been added already:"+e.getMessage());
-				        		try
-				        		{
-				        			g.updateExternalAssessment(gradebookUid,
+				        		// try to modify assignment title, make sure there is no such assignment in the gradebook, and insert again
+				        		boolean trying = true;
+				    			int attempts = 1;
+				    			String titleBase = a.getTitle();
+				    			while(trying && attempts < MAXIMUM_ATTEMPTS_FOR_UNIQUENESS) 	// see end of loop for condition that enforces attempts <= limit)
+				    			{
+				    				String newTitle = titleBase + "-" + attempts;
+				    				
+				    				if(!g.isAssignmentDefined(gradebookUid, newTitle))
+				    				{
+				    					try
+						    			{
+						    				// add assignment to gradebook
+						    				g.addExternalAssessment(gradebookUid,
+						        				assignmentRef, 
+						        				null,
+						        				newTitle,
+						        				a.getContent().getMaxGradePoint()/10,
+						        				new Date(a.getDueTime().getTime()),
+						        				"Assignment");
+						    				trying = false;
+							        }
+							        catch(Exception ee)
+							        {
+							        		// try again, ignore the exception
+							        }
+				    				}
+				    				
+				    				if (trying)
+				    				{
+					    				attempts++;
+					    				if(attempts >= MAXIMUM_ATTEMPTS_FOR_UNIQUENESS)
+					    				{
+					    					// add alert prompting for change assignment title
+					    					addAlert(state, rb.getString("addtogradebook.nonUniqueTitle"));
+					    				}
+				    				}
+				    			}
+				        }
+			    		}
+					else if (addUpdateRemoveAssignment.equals("update")
+					    	&& a.getProperties().getProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK) != null 
+					    	&& a.getProperties().getBooleanProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK)
+					    	&& a.getContent().getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE)
+			    		{
+						if(!g.isAssignmentDefined(gradebookUid, a.getTitle()))
+	    					{
+		    					// add assignment to gradebook
+							try
+				    			{
+				    				g.addExternalAssessment(gradebookUid,
 				        				assignmentRef, 
 				        				null,
 				        				a.getTitle(),
 				        				a.getContent().getMaxGradePoint()/10,
-				        				new Date(a.getDueTime().getTime()));
-				        		}
-				        		catch (Exception ee)
-				        		{
-				        		}
-				        }
-				        
+				        				new Date(a.getDueTime().getTime()),
+				        				"Assignment");
+					        }
+					        catch(Exception e)
+					        {
+					        		//in case of exception, update attributes for existing assignment
+				    				g.updateExternalAssessment(gradebookUid, assignmentRef, null, a.getTitle(), a.getContent().getMaxGradePoint()/10, new Date(a.getDueTime().getTime()));
+		    					}
+	    					}
+						else
+						{
+				    			// update attributes for existing assignment
+				    			g.updateExternalAssessment(gradebookUid, assignmentRef, null, a.getTitle(), a.getContent().getMaxGradePoint()/10, new Date(a.getDueTime().getTime()));
+						}
+			    		}
+					else if (addUpdateRemoveAssignment.equals("remove"))
+					{
+						//remove assignment and all submission grades
+			    	        try
+			    	        {	
+			    	        		g.removeExternalAssessment(gradebookUid, assignmentRef);
+			    	        }
+			    	        catch(Exception e)
+			    	        {
+			    	        		addAlert(state, "Exception when removing assignment " + a.getTitle() + " and its submissions:" + e.getMessage());
+			    	        }
+					}
+				}	// addUpdateRemove != null
+				
+				if (updateRemoveSubmission != null)
+				{
+					if (updateRemoveSubmission.equals("update")
+					    	&& a.getProperties().getProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK) != null 
+					    	&& a.getProperties().getBooleanProperty(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK)
+					    	&& a.getContent().getTypeOfGrade() == Assignment.SCORE_GRADE_TYPE)
+					{
 				        if (submissionRef == null)
 				        {
 				        		// add all grades for assignment into gradebook
@@ -1630,7 +1715,7 @@ extends PagedResourceActionII
 				        		{
 				        			AssignmentSubmission aSubmission = (AssignmentSubmission) submissions.next();
 				        			User[] submitters = aSubmission.getSubmitters();
-				        			g.updateExternalAssessmentScore(gradebookUid, assignmentRef, submitters[0].getId(), Double.valueOf(displayGrade(state, aSubmission.getGrade())));
+				        			g.updateExternalAssessmentScore(gradebookUid, assignmentRef, submitters[0].getId(), StringUtil.trimToNull(aSubmission.getGrade())!=null?Double.valueOf(displayGrade(state, aSubmission.getGrade())):null);
 				        		}
 				        }
 				        else
@@ -1640,7 +1725,7 @@ extends PagedResourceActionII
 					        		// only update one submission
 					        		AssignmentSubmission aSubmission = (AssignmentSubmission) AssignmentService.getSubmission(submissionRef);
 					        		User[] submitters = aSubmission.getSubmitters();
-				        			g.updateExternalAssessmentScore(gradebookUid, assignmentRef, submitters[0].getId(), Double.valueOf(displayGrade(state, aSubmission.getGrade())));
+				        			g.updateExternalAssessmentScore(gradebookUid, assignmentRef, submitters[0].getId(), StringUtil.trimToNull(aSubmission.getGrade())!=null?Double.valueOf(displayGrade(state, aSubmission.getGrade())):null);
 				        		}
 			    				catch (Exception e)
 			    				{
@@ -1648,19 +1733,20 @@ extends PagedResourceActionII
 			    				}
 				        }
 			    		}
-			    		else
+					else if (updateRemoveSubmission.equals("remove"))
 			    		{
 			    			if (submissionRef == null)
 					    {
-				    			// remove assignment and all submission grades
-				    	        try
-				    	        {	
-				    	        		g.removeExternalAssessment(gradebookUid, assignmentRef);
-				    	        }
-				    	        catch(Exception e)
-				    	        {
-				    	        		Log.debug("chef", "Assignment " + assignmentRef + " has been removed: " + e.getMessage());
-				    	        }
+				    			// remove all submission grades (cannot think of a user case within Assignment tool for this)
+				        		Iterator submissions = AssignmentService.getSubmissions (a);
+				        	
+				        		// any score to copy over? get all the assessmentGradingData and copy over
+				        		while(submissions.hasNext())
+				        		{
+				        			AssignmentSubmission aSubmission = (AssignmentSubmission) submissions.next();
+				        			User[] submitters = aSubmission.getSubmitters();
+				        			g.updateExternalAssessmentScore(gradebookUid, assignmentRef, submitters[0].getId(), null);
+				        		}
 					    }
 			    			else
 			    			{
@@ -1677,18 +1763,7 @@ extends PagedResourceActionII
 			    				}
 			    			}
 			    		}
-			    }
-	    			else
-	    			{
-	    				try
-			        {	
-			        		g.removeExternalAssessment(gradebookUid, assignmentRef);
-			        }
-			        catch(Exception e)
-			        {
-			        		Log.debug("chef", e.getMessage());
-			        }
-	    			}
+			    }	// updateRemoveSubmission != null
 	        }
 	        catch(Exception e)
 	        {
@@ -2290,12 +2365,12 @@ extends PagedResourceActionII
 				if (gradeOption.equals("release") || gradeOption.equals("return"))
 				{
 					// update grade in gradebook
-					integrateGradebook(state, a.getReference(), sReference, true);
+					integrateGradebook(state, a.getReference(), null, sReference, "update");
 				}
 				else
 				{
 					// remove grade from gradebook
-					integrateGradebook(state, a.getReference(), sReference, false);
+					integrateGradebook(state, a.getReference(), null, sReference, "remove");
 				}
 				
 			}	// if
@@ -3537,7 +3612,20 @@ extends PagedResourceActionII
 						AssignmentService.commitEdit (a);
 						
 						// add to Gradebook
-						integrateGradebook(state, aReference, null, Boolean.valueOf(addtoGradebook).booleanValue());
+						String addUpdateRemoveAssignment = "remove";
+						if (Boolean.valueOf(addtoGradebook).booleanValue())
+						{
+							if (newAssignment)
+							{
+								addUpdateRemoveAssignment = "add";
+							}
+							else
+							{
+								addUpdateRemoveAssignment = "update";
+							}
+						}
+						
+						integrateGradebook(state, aReference, addUpdateRemoveAssignment, null, null);
 					}
 					else
 					{
@@ -4220,7 +4308,7 @@ extends PagedResourceActionII
 				AssignmentService.commitEdit (aEdit);
 				
 				// remove from Gradebook
-				integrateGradebook(state, (String) ids.get (i), null, false);
+				integrateGradebook(state, (String) ids.get (i), "remove", null, null);
 			}
 			catch (InUseException e)
 			{
@@ -4439,7 +4527,7 @@ extends PagedResourceActionII
 				AssignmentService.commitEdit (sEdit);
 				
 				// add grades into Gradebook
-				integrateGradebook(state, aReference, null, true);
+				integrateGradebook(state, aReference, null, null, "update");
 				
 			}	// while
 		}
