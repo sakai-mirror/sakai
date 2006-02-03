@@ -5889,7 +5889,7 @@ extends PagedResourceActionII
 			else if (a.getDueTime ().after (currentTime))
 				status = rb.getString("ope");
 			else if ((a.getCloseTime ()!=null)&&(a.getCloseTime ().before (currentTime)))
-				status = rb.getString("close");
+				status = rb.getString("clos");
 			else
 				status = rb.getString("due2");
 			return status;
