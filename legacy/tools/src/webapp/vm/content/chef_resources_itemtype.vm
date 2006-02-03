@@ -280,19 +280,24 @@
 		var inner_html = "";
 		if(new_value == "$USE_THIS_COPYRIGHT")
 		{
+			document.getElementById("copyright_status_" + index).style.display='block';
 			inner_html = "<p class=\"shorttext\">\n<span class=\"reqStar\">*</span>\n<label for=\"newcopyright" + index + "\">\n$tlang.getString("edit.cinfo")\n</label>\n"
 						+ "<textarea name=\"newcopyright" + index +"\" id=\"newcopyright" + index + "\" rows=\"2\" cols=\"40\" wrap=\"virtual\" ></textarea>\n</p>\n";	
 		}
 		else
 		{
-			inner_html = "<input type=\"hidden\" name=\"newcopyright" + index + "\" id=\"newcopyright" + index + "\" value=\"\" />";
+			document.getElementById("copyright_status_" + index).style.display='none';
+			inner_html = "<input type=\"hidden\"  name=\"newcopyright" + index + "\" id=\"newcopyright" + index + "\" value=\"\" />";
 		}
 		cr_div.innerHTML = inner_html;
 		setMainFrameHeight('$validator.escapeJavascript("Main$pid")');
 		cr_element = document.getElementById("newcopyright" + index);
 		cr_element.value = cr_value;
 		cr_element.select();
+		if(new_value == "$USE_THIS_COPYRIGHT")
+		{
 		cr_element.focus();
+		}	
 	}
 	//-->
 </script>
