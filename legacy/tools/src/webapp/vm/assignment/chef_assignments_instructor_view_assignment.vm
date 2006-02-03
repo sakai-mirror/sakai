@@ -23,14 +23,6 @@
 					$userDirectoryService.getUser($assignment.getCreator()).DisplayName
 				</td>
 			</tr>
-			<tr> 
-				<th>
-					$tlang.getString("gen.open2")
-				</th>
-				<td>
-					$assignment.OpenTime.toStringLocalFull()
-				</td>
-			</tr>
 			<tr>
 				<th>
 					$tlang.getString("viewassig.datcre")
@@ -41,18 +33,18 @@
 			</tr>
 			<tr> 
 				<th>
+					$tlang.getString("gen.open2")
+				</th>
+				<td>
+					$assignment.OpenTime.toStringLocalFull()
+				</td>
+			</tr>
+			<tr> 
+				<th>
 					$tlang.getString("gen.due2")
 				</th>
 				<td>
 					$assignment.DueTime.toStringLocalFull()
-				</td>
-			</tr>
-			<tr>
-				<th>
-					$tlang.getString("viewassig.datcre")
-				</th>
-				<td>
-					$assignment.TimeLastModified.toStringLocalFull()
 				</td>
 			</tr>
 			#set ($closeDate = $assignment.getCloseTime())
