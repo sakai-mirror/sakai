@@ -240,24 +240,29 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 			if (session != null)
 			{
 				// If we have a session for this user, simply reuse
-				if ( userId != null && userId.equals(session.getUserId()) )
+				if (userId != null && userId.equals(session.getUserId()))
 				{
 					return session;
 				}
-				M_log.warn("startSession: replacing existing UsageSession with Id="+
-					session.getUserId()+" new session Id="+userId);
-				// Fall through and make a new session for this new user
+				
+				// if it is for another user, we will create a new session, log a warning, and unbound/close the existing one
+				s.setAttribute(USAGE_SESSION_KEY, null);
+				M_log.warn("startSession: replacing existing UsageSession: " + session.getId() + " user: " + session.getUserId()
+						+ " for new user: " + userId);
 			}
 
 			// create the usage session and bind it to the session
-			session = new BaseUsageSession(m_idManager.createUuid(), m_serverConfigurationService.getServerIdInstance(),
-					userId, remoteAddress, userAgent, null, null);
-			s.setAttribute(USAGE_SESSION_KEY, session);
+			session = new BaseUsageSession(m_idManager.createUuid(), m_serverConfigurationService.getServerIdInstance(), userId,
+					remoteAddress, userAgent, null, null);
 
 			// store
-			m_storage.addSession(session);
+			if (m_storage.addSession(session))
+			{
+				// set as the current session
+				s.setAttribute(USAGE_SESSION_KEY, session);
 
-			return session;
+				return session;
+			}
 		}
 
 		return null;
@@ -487,8 +492,9 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 		 * 
 		 * @param session
 		 *        The usage session.
+		 * @return true if added successfully, false if not.
 		 */
-		void addSession(UsageSession session);
+		boolean addSession(UsageSession session);
 
 		/**
 		 * Access a session by id
@@ -1054,8 +1060,9 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 		 * 
 		 * @param session
 		 *        The usage session.
+		 * @return true if added successfully, false if not.
 		 */
-		public void addSession(UsageSession session)
+		public boolean addSession(UsageSession session)
 		{
 			// and store it in the db
 			String statement = "insert into SAKAI_SESSION (SESSION_ID,SESSION_SERVER,SESSION_USER,SESSION_IP,SESSION_USER_AGENT,SESSION_START,SESSION_END) values (?, ?, ?, ?, ?, ?, ?)";
@@ -1075,7 +1082,10 @@ public class UsageSessionServiceAdaptor implements UsageSessionService
 			if (!ok)
 			{
 				M_log.warn(".addSession(): dbWrite failed");
+				return false;
 			}
+			
+			return true;
 
 		} // addSession
 

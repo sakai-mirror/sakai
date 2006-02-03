@@ -55,13 +55,17 @@ public class LoginUtil
 	 */
 	public static boolean login(Authentication authn, HttpServletRequest req)
 	{
+		// establish the user's session - this has been known to fail
+		UsageSession session = UsageSessionService.startSession(authn.getUid(), req.getRemoteAddr(), req.getHeader("user-agent"));
+		if (session == null)
+		{
+			return false;
+		}
+
 		// set the user information into the current session
 		Session sakaiSession = SessionManager.getCurrentSession();
 		sakaiSession.setUserId(authn.getUid());
 		sakaiSession.setUserEid(authn.getEid());
-
-		// establish the user's session
-		UsageSession session = UsageSessionService.startSession(authn.getUid(), req.getRemoteAddr(), req.getHeader("user-agent"));
 
 		// update the user's externally provided realm definitions
 		AuthzGroupService.refreshUser(authn.getUid());

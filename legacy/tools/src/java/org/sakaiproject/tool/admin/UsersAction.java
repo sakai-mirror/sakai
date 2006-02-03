@@ -554,7 +554,10 @@ public class UsersAction extends PagedResourceActionII
 				// login - use the fact that we just created the account as external evidence
 				Evidence e = new ExternalTrustedEvidence(user.getId());
 				Authentication a = AuthenticationManager.authenticate(e);
-				LoginUtil.login(a, (HttpServletRequest) CurrentService.getInThread(RequestFilter.CURRENT_HTTP_REQUEST));
+				if (!LoginUtil.login(a, (HttpServletRequest) CurrentService.getInThread(RequestFilter.CURRENT_HTTP_REQUEST)))
+				{
+					addAlert(state, rb.getString("useact.tryloginagain"));
+				}
 			}
 			catch (AuthenticationException ex)
 			{

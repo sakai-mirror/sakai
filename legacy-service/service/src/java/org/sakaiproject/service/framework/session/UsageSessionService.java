@@ -53,7 +53,7 @@ public interface UsageSessionService
 	 * @param userId The user id.
 	 * @param remoteAddress The IP address from the user is making a request.
 	 * @param userAgent The string describing the user's browser.
-	 * @return The new UsageSession.
+	 * @return The new UsageSession, or null if one could not be created.
 	 */
 	UsageSession startSession(String userId, String remoteAddress, String userAgent);
 

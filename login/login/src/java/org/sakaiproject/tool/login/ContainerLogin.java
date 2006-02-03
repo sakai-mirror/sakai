@@ -113,24 +113,28 @@ public class ContainerLogin extends HttpServlet
 			Authentication a = AuthenticationManager.authenticate(e);
 
 			// login the user
-			LoginUtil.login(a, req);
-
-			// get the return URL
-			String url = (String) session.getAttribute(Tool.HELPER_DONE_URL);
-
-			// cleanup session
-			session.removeAttribute(Tool.HELPER_MESSAGE);
-			session.removeAttribute(Tool.HELPER_DONE_URL);
-
-			// redirect to the done URL
-			res.sendRedirect(res.encodeRedirectURL(url));
+			if (LoginUtil.login(a, req))
+			{
+				// get the return URL
+				String url = (String) session.getAttribute(Tool.HELPER_DONE_URL);
+	
+				// cleanup session
+				session.removeAttribute(Tool.HELPER_MESSAGE);
+				session.removeAttribute(Tool.HELPER_DONE_URL);
+	
+				// redirect to the done URL
+				res.sendRedirect(res.encodeRedirectURL(url));
+				
+				return;
+			}
 		}
 		catch (AuthenticationException ex)
 		{
-			// mark the session and redirect
-			session.setAttribute(LoginTool.ATTR_CONTAINER_CHECKED, LoginTool.ATTR_CONTAINER_CHECKED);
-			res.sendRedirect(res.encodeRedirectURL((String) session.getAttribute(LoginTool.ATTR_RETURN_URL)));
 		}
+
+		// mark the session and redirect (for login failuer or authentication exception)
+		session.setAttribute(LoginTool.ATTR_CONTAINER_CHECKED, LoginTool.ATTR_CONTAINER_CHECKED);
+		res.sendRedirect(res.encodeRedirectURL((String) session.getAttribute(LoginTool.ATTR_RETURN_URL)));
 	}
 }
 

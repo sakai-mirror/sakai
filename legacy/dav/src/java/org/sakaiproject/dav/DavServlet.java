@@ -813,37 +813,44 @@ public class DavServlet
 			
 			// authenticate
 			try
-			    {
+			{
 				if ((eid.length() == 0) || (pw.length() == 0))
-				    {
+				{
 					throw new AuthenticationException("missing required fields");
-				    }
-				
+				}
+
 				Authentication a = AuthenticationManager.authenticate(e);
-				
+
 				// login the user if needed. RequestFilter
-				// may have found a session with the right 
+				// may have found a session with the right
 				// userid. If so there's no need for a login
-				// as long as it's the right userid. 
+				// as long as it's the right userid.
 				// getUserID could be our id, null, or the
 				// wrong one. The wrong one should be rare.
 
 				if (!session.getUserId().equals(a.getUid()))
-				    LoginUtil.login(a, req);
-			    }
+				{
+					if (!LoginUtil.login(a, req))
+					{
+						// login failed
+						res.sendError(401);
+						return;
+					}
+				}
+			}
 			catch (AuthenticationException ex)
-			    {
+			{
 				// not authenticated
 				res.sendError(401);
 				return;
-			    }
-		    } 
+			}
+		}
 		else
-		    {
+		{
 			// user name missing, so can't authenticate
 			res.sendError(401);
 			return;
-		    }
+		}
 
 // Setup... ?
 

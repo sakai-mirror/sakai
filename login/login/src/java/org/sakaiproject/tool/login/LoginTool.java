@@ -385,12 +385,18 @@ public class LoginTool extends HttpServlet
 				Authentication a = AuthenticationManager.authenticate(e);
 
 				// login the user
-				LoginUtil.login(a, req);
-
-				// get the session info complete needs, since the logout will invalidate and clear the session
-				String returnUrl = (String) session.getAttribute(Tool.HELPER_DONE_URL);
-
-				complete(returnUrl, session, tool, res);
+				if (LoginUtil.login(a, req))
+				{
+					// get the session info complete needs, since the logout will invalidate and clear the session
+					String returnUrl = (String) session.getAttribute(Tool.HELPER_DONE_URL);
+		
+					complete(returnUrl, session, tool, res);
+				}
+				else
+				{
+					session.setAttribute(ATTR_MSG, rb.getString("log.tryagain"));
+					res.sendRedirect(res.encodeRedirectURL(Web.returnUrl(req, null)));					
+				}
 			}
 			catch (AuthenticationException ex)
 			{
