@@ -810,6 +810,7 @@ public class DavServlet
 			String eid = prin.getName();
 			String pw = ((DavPrincipal) prin).getPassword();
 			Evidence e = new IdPwEvidence(eid, pw);
+			String sessionUid = null;
 			
 			// authenticate
 			try
@@ -828,7 +829,16 @@ public class DavServlet
 				// getUserID could be our id, null, or the
 				// wrong one. The wrong one should be rare.
 
-				if (!session.getUserId().equals(a.getUid()))
+				// I have no evidence that this try is needed,
+				// but I'm trying to protect against future
+				// changes in the low-level code.
+				try {
+				    if (session != null)
+					sessionUid = session.getUserId();
+				} catch (Exception ignore) {
+				}
+
+				if (sessionUid == null || !sessionUid.equals(a.getUid()))
 				{
 					if (!LoginUtil.login(a, req))
 					{
