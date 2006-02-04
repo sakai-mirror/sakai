@@ -790,18 +790,6 @@ public class DavServlet
 	{
 		SakaidavServletInfo info = newInfo(req);
 
-		// RequestFilter will give us any session with this username,
-		// even if there's no cookie (which will normally be the case)
-		// Thus we can't assume that just because there's a session,
-		// we're authenticated. So we always check. In theory if we
-		// can verify that this is a proper cookie-based session
-		// we could skip the test. Note that there's nothing in the
-		// DAV RFC about cookies, so it's actually non-standard to
-		// use them, and I think most clients don't.
-		// See kernel/request/src/java/org/sakaiproject/util/RequestFilter.java
-
-		Session session = SessionManager.getCurrentSession();
-
 		// try to authenticate based on a Principal (one of ours) in the req
 		Principal prin = req.getUserPrincipal();
 
@@ -810,8 +798,21 @@ public class DavServlet
 			String eid = prin.getName();
 			String pw = ((DavPrincipal) prin).getPassword();
 			Evidence e = new IdPwEvidence(eid, pw);
-			String sessionUid = null;
 			
+			// in older versions of this code, we didn't authenticate
+			// if there was a session for this user. Unfortunately the 
+			// these are special non-sakai sessions, which do not
+			// have real cookies attached. The cookie looks like
+			// username-hostname. That means that they're easy to
+			// fake. Since the DAV protocol doesn't actually
+			// support sessions in the first place, most clients
+			// won't use them. So it's a security hole without
+			// any real benefit. Thus we check the password for
+			// every transaction. The underlying sessions are still
+			// a good idea, as they set the context for later
+			// operations. But we can't depend upon the cookies for
+			// authentication.
+
 			// authenticate
 			try
 			{
@@ -822,30 +823,11 @@ public class DavServlet
 
 				Authentication a = AuthenticationManager.authenticate(e);
 
-				// login the user if needed. RequestFilter
-				// may have found a session with the right
-				// userid. If so there's no need for a login
-				// as long as it's the right userid.
-				// getUserID could be our id, null, or the
-				// wrong one. The wrong one should be rare.
-
-				// I have no evidence that this try is needed,
-				// but I'm trying to protect against future
-				// changes in the low-level code.
-				try {
-				    if (session != null)
-					sessionUid = session.getUserId();
-				} catch (Exception ignore) {
-				}
-
-				if (sessionUid == null || !sessionUid.equals(a.getUid()))
+				if (!LoginUtil.login(a, req))
 				{
-					if (!LoginUtil.login(a, req))
-					{
-						// login failed
-						res.sendError(401);
-						return;
-					}
+					// login failed
+					res.sendError(401);
+					return;
 				}
 			}
 			catch (AuthenticationException ex)
