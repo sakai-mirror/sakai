@@ -85,6 +85,7 @@ package org.sakaiproject.dav;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -1626,43 +1627,76 @@ public class DavServlet
 
 		DocumentBuilder documentBuilder = getDocumentBuilder();
 
-	// Parse the input XML to see what they really want
-		try {
-			InputStream is = req.getInputStream();
+		// be careful how we get content, as we've had hangs in mod_jk
+		// Rather than passing the XML parser a stream on the network
+		// input, we read it into a buffer and pass them a stream
+		// on the buffer. This is an experiment to see if it fixes
+		// the hangs.
 
-			if (is.available() == 0) throw new Exception("Zero bytes");
-			Document document = documentBuilder.parse
-			    (new InputSource(is));
+		// Note that getContentLength can return -1. As everyone seems
+		// to use the content-length header, ignore that case for now
+		// It is strongly discouraged by the spec.
 
-			// Get the root element of the document
-			Element rootElement = document.getDocumentElement();
-			NodeList childList = rootElement.getChildNodes();
+		int contentLength = req.getContentLength();
 
-			for (int i=0; i < childList.getLength(); i++) {
-			    Node currentNode = childList.item(i);
-			    switch (currentNode.getNodeType()) {
-			    case Node.TEXT_NODE:
-			        break;
-			    case Node.ELEMENT_NODE:
-			        if (currentNode.getNodeName().endsWith("prop")) {
-			            type = FIND_BY_PROPERTY;
-			            propNode = currentNode;
-			        }
-			        if (currentNode.getNodeName().endsWith("propname")) {
-			            type = FIND_PROPERTY_NAMES;
-			        }
-			        if (currentNode.getNodeName().endsWith("allprop")) {
-			            type = FIND_ALL_PROP;
-			        }
-			        break;
-			    }
+		if (contentLength > 0) {
+
+		    byte[] byteContent = new byte[contentLength]; 
+		    InputStream inputStream = req.getInputStream();
+
+		    int lenRead = 0;
+
+		    try
+			{
+			    while (lenRead < contentLength)
+				{
+				    int read = inputStream.read(byteContent, lenRead, contentLength-lenRead);
+				    if (read <= 0) break;
+				    lenRead += read;
+				}	
 			}
-		} catch(Exception e) {
-			// Most likely there was no content : we use the defaults.
-			// TODO : Enhance that !
-		if (Log.getLogger("sakai").isDebugEnabled()) Log.debug("sakai","SAKAIDAV doPropfind exception documentBuilder");
+		    catch (Exception ignore) {}
+		    // if anything goes wrong, we treat it as find all props
+
+		    // Parse the input XML to see what they really want
+		    if (lenRead > 0)
+			try {
+			    InputStream is = new ByteArrayInputStream(byteContent, 0, lenRead);
+			    // System.out.println("have bytes");
+			    Document document = documentBuilder.parse
+				(new InputSource(is));
+
+			    // Get the root element of the document
+			    Element rootElement = document.getDocumentElement();
+			    NodeList childList = rootElement.getChildNodes();
+			    // System.out.println("have nodes " + childList.getLength());
+			    
+			    for (int i=0; i < childList.getLength(); i++) {
+				Node currentNode = childList.item(i);
+				// System.out.println("looking at node " + currentNode.getNodeName());
+				switch (currentNode.getNodeType()) {
+				case Node.TEXT_NODE:
+				    break;
+				case Node.ELEMENT_NODE:
+				    if (currentNode.getNodeName().endsWith("prop")) {
+					type = FIND_BY_PROPERTY;
+					propNode = currentNode;
+				    }
+				    if (currentNode.getNodeName().endsWith("propname")) {
+					type = FIND_PROPERTY_NAMES;
+				    }
+				    if (currentNode.getNodeName().endsWith("allprop")) {
+					type = FIND_ALL_PROP;
+				    }
+				    break;
+				}
+			    }
+			} catch (Exception ignore) {}
+		    // again, in case of exception, we'll have the default
+		    // FIND_ALL_PROP
 		}
 
+		// System.out.println("Find type " + type);
 
 		if (type == FIND_BY_PROPERTY) {
 			properties = new Vector();
@@ -2310,7 +2344,7 @@ public class DavServlet
 		path = fixDirPathSAKAI(path);	
 		destinationPath = fixDirPathSAKAI(destinationPath);	
 
-		System.out.println("doMove source="+path+" dest="+destinationPath);
+		// System.out.println("doMove source="+path+" dest="+destinationPath);
 
 		try
 		{
