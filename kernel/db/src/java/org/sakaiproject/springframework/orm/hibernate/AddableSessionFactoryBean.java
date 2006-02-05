@@ -25,6 +25,10 @@
 package org.sakaiproject.springframework.orm.hibernate;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Iterator;
+import java.util.Collections;
 
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.cfg.Configuration;
@@ -57,18 +61,28 @@ public class AddableSessionFactoryBean extends LocalSessionFactoryBean
   {
     super.postProcessConfiguration(config);
 
+     // this method is deprecated, but for some reason,
+     // stuff doesn't work with the replacement
     String[] names = applicationContext
         .getBeanDefinitionNames(AdditionalHibernateMappings.class);
 
     try
     {
+       List beans = new ArrayList();
       for (int i = 0; i < names.length; i++)
       {
         AdditionalHibernateMappings mappings = (AdditionalHibernateMappings) applicationContext
             .getBean(names[i]);
 
-        mappings.processConfig(config);
+         beans.add(mappings);
       }
+
+       Collections.sort(beans);
+
+       for (Iterator i=beans.iterator();i.hasNext();) {
+          AdditionalHibernateMappings mappings = (AdditionalHibernateMappings) i.next();
+          mappings.processConfig(config);
+       }
 
     }
     catch (IOException e)

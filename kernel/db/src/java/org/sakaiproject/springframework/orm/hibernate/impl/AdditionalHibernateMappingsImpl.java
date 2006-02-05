@@ -36,11 +36,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 public class AdditionalHibernateMappingsImpl implements
-    AdditionalHibernateMappings
+    AdditionalHibernateMappings, Comparable
 {
   protected final transient Log logger = LogFactory.getLog(getClass());
 
   private Resource[] mappingLocations;
+   private Integer sortOrder = new Integer(Integer.MAX_VALUE);
 
   public void setMappingResources(String[] mappingResources)
   {
@@ -65,4 +66,16 @@ public class AdditionalHibernateMappingsImpl implements
       config.addInputStream(this.mappingLocations[i].getInputStream());
     }
   }
+
+   public int compareTo(Object o) {
+      return getSortOrder().compareTo(((AdditionalHibernateMappingsImpl)o).getSortOrder());
+   }
+
+   public Integer getSortOrder() {
+      return sortOrder;
+   }
+
+   public void setSortOrder(Integer sortOrder) {
+      this.sortOrder = sortOrder;
+   }
 }
