@@ -1995,7 +1995,8 @@ public class DavServlet
 				return;
 	}
 
-	// Removing any lock-null resource which would be present
+		resp.setStatus(HttpServletResponse.SC_CREATED);
+		// Removing any lock-null resource which would be present
 		lockNullResources.remove(path);
 
 	}
