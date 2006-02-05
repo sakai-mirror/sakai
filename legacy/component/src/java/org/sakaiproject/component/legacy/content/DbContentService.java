@@ -592,7 +592,7 @@ public class DbContentService
 				if (m_bodyPath != null)
 				{
 					boolean ok = putResourceBodyFilesystem(edit, body);
-				if(! ok)
+					if(!ok)
 					{
 						cancelResource(edit);
 						throw new ServerOverloadException("failed to write file");
@@ -800,6 +800,12 @@ public class DbContentService
 			}
 			catch (Throwable t)
 			{
+				// If there is not supposed to be data in the file - simply return zero length byte array
+				if ( ((BaseResourceEdit)resource).m_contentLength == 0 ) {
+					return new byte[0];
+				}
+
+				// If we have a non-zero body length and reading failed, it is an error worth of note
 				m_logger.warn(this + ": failed to read resource: " + resource.getId() + " len: " + ((BaseResourceEdit)resource).m_contentLength + " : " + t);
 				throw new ServerOverloadException("failed to read resource");
 				// return null;
@@ -830,6 +836,16 @@ public class DbContentService
 			}
 		}
 
+		/**
+		 * Return an input stream.
+		 * @param resource - the resource for the stream
+		 *
+		 * It is a non-fatal error for the file not to be readible as long as the resource's expected
+		 * length is zero.   A zero length body is indicated by returning null.
+		 * We check for the body length *after* we try to read the file.  If the file is readible,
+		 * we simply read it and return it as the body.
+	         */
+
 		protected InputStream streamResourceBodyFilesystem(ContentResource resource) throws ServerOverloadException
 		{
 			// form the file name
@@ -843,12 +859,22 @@ public class DbContentService
 			}
 			catch (Throwable t)
 			{
+				// If there is not supposed to be data in the file - simply return null
+				if ( ((BaseResourceEdit)resource).m_contentLength == 0 ) {
+					return null;
+				}
+
+				// If we have a non-zero body length and reading failed, it is an error worth of note
 				m_logger.warn(this + ": failed to read resource: " + resource.getId() + " len: " + ((BaseResourceEdit)resource).m_contentLength + " : " + t);
 				throw new ServerOverloadException("failed to read resource body");
 				// return null;
 			}
 		}
 
+		/**
+		 * When resources are stored, zero length bodys are not placed in the table
+		 * hence this routine will return a null when the particular resource body is not found
+		 */
 		protected InputStream streamResourceBodyDb(ContentResource resource) throws ServerOverloadException
 		{
 			// get the resource from the db
@@ -869,6 +895,7 @@ public class DbContentService
 		* Write the resource body to the database table.
 		* @param resource The resource whose body is being written.
 		* @param body The body bytes to write.
+		* If there is no body or the body is zero bytes, no entry is inserted into the table.
 		*/
 		protected void putResourceBodyDb(ContentResourceEdit resource, byte[] body)
 		{
@@ -904,10 +931,13 @@ public class DbContentService
 		* The file name is the m_bodyPath with the resource id appended.
 		* @param resource The resource whose body is being written.
 		* @param body The body bytes to write.
+		* If there is no body or the body is zero bytes, no entry is inserted into the filesystem.
 		*/
 		protected boolean putResourceBodyFilesystem(ContentResourceEdit resource, byte[] body)
 		{
-			if ((body == null) || (body.length == 0)) return false;
+
+			// Do not create the files for resources with  zero length bodies
+			if ((body == null) || (body.length == 0)) return true;
 
 			// form the file name
 			File file = new File(externalResourceFileName(resource));
