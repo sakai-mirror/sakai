@@ -82,10 +82,10 @@
 package org.sakaiproject.dav;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -127,8 +127,6 @@ import org.sakaiproject.api.common.authentication.Authentication;
 import org.sakaiproject.api.common.authentication.AuthenticationException;
 import org.sakaiproject.api.common.authentication.Evidence;
 import org.sakaiproject.api.common.authentication.cover.AuthenticationManager;
-import org.sakaiproject.api.kernel.session.Session;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;

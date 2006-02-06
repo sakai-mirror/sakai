@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Collection;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -37,8 +36,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.util.java.StringUtil;
-import org.sakaiproject.util.java.ResourceLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.Session;
@@ -46,14 +43,15 @@ import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.legacy.presence.cover.PresenceService;
-import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.util.web.Web;
+import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.util.courier.PresenceObservingCourier;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.util.java.ResourceLoader;
+import org.sakaiproject.util.web.Web;
 
 /**
  * <p>

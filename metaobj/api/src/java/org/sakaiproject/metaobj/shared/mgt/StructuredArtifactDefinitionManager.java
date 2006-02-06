@@ -22,18 +22,17 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt;
 
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
-import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 
 public interface StructuredArtifactDefinitionManager {
    public final static String GLOBAL_SAD_QUALIFIER = "theospi.share.sad.global";

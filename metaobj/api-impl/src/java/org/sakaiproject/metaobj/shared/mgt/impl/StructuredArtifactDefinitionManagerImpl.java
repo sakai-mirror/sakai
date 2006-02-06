@@ -23,15 +23,11 @@
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.DataOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -42,8 +38,8 @@ import java.util.Map;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.xml.transform.TransformerException;
 
@@ -53,10 +49,10 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.ToolManager;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
@@ -65,13 +61,12 @@ import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
+import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactDefinition;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
-import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.OspException;
@@ -81,12 +76,11 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
 

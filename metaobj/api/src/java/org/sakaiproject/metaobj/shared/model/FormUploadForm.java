@@ -45,8 +45,6 @@ package org.sakaiproject.metaobj.shared.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.shared.model.Id;
-import java.util.List;
 
 public class FormUploadForm {
    protected final transient Log logger = LogFactory.getLog(getClass());

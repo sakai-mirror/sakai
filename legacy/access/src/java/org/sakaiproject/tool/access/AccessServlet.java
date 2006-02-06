@@ -38,7 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
@@ -50,22 +49,19 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.legacy.alias.cover.AliasService;
+import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
+import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.HttpAccess;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.util.web.Web;
-
-// for alias
-import org.sakaiproject.service.legacy.alias.cover.AliasService;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
-import org.sakaiproject.service.legacy.content.ContentCollection;
 
 /**
  * <p>

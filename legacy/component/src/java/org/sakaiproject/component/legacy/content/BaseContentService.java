@@ -28,10 +28,15 @@ package org.sakaiproject.component.legacy.content;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +51,8 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUpload;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
@@ -68,6 +75,7 @@ import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
@@ -99,9 +107,11 @@ import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
+import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ContentHostingComparator;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.Blob;
 import org.sakaiproject.util.java.StringUtil;
@@ -112,26 +122,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-// dopost
-
-import org.apache.commons.fileupload.FileUpload;
-import org.apache.commons.fileupload.FileItem;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.util.Enumeration;
-import org.sakaiproject.service.framework.log.cover.Log;
-import org.sakaiproject.service.legacy.time.TimeBreakdown;
-
-// dodir
-
-import java.util.Comparator;
-import java.io.PrintWriter;
-import org.sakaiproject.util.ContentHostingComparator;
-import java.util.Collections;
 
 /**
  * <p>
