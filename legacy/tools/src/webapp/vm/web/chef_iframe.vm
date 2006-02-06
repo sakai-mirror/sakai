@@ -8,8 +8,11 @@
 #end
 
 #if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
-	
-	<div style="padding:0; margin:3px -2em -1em  -2em">
+	#if($options_title)
+	 	<div style="padding:0; margin:3px -2em -1em  -2em">
+	#else
+		<div style="padding:0; margin:-.3em -2em -1em -2em">
+	#end
 		<iframe 
 			width="100%"
 			style="width:100%;padding:0 !important; height:$height"
