@@ -46,7 +46,7 @@
 		</div>
 ##		#end
 			#if (!$messageListVector.iterator().hasNext())
-				<p class="instruction">
+				<p class="instruction" style="clear:both;margin-top:3em">
 					#if ($!view == "$!tlang.getString('view.public')")
 						$tlang.getString("gen.therearepublic")
 					#else
@@ -311,7 +311,7 @@
 							</div>
 ##					#end		
 					#if (!$messageListVector.iterator().hasNext())
-						<p class="instruction">
+						<p class="instruction" style="clear:both;margin-top:3em">
 							#if ($!view == "$!tlang.getString('view.public')")
 								$tlang.getString("gen.therearepublic")
 							#else
