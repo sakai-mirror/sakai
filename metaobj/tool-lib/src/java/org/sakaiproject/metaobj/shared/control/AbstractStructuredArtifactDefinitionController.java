@@ -65,7 +65,8 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
 
    public void checkPermission(String function) throws AuthorizationFailedException{
       if (getStructuredArtifactDefinitionManager().isGlobal()) {
-         getAuthzManager().checkPermission(function, getIdManager().getId(StructuredArtifactDefinitionManager.GLOBAL_SAD_QUALIFIER));
+         getAuthzManager().checkPermission(function, getIdManager().getId(
+            StructuredArtifactDefinitionManager.GLOBAL_SAD_QUALIFIER));
       } else {
          getAuthzManager().checkPermission(function, getIdManager().getId(PortalService.getCurrentToolId()));
       }
@@ -90,7 +91,8 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
        model.put("isGlobal", new Boolean(global));
 
        if (global) {
-          model.put("authZqualifier",getIdManager().getId(StructuredArtifactDefinitionManager.GLOBAL_SAD_QUALIFIER));
+          model.put("authZqualifier",getIdManager().getId(
+            StructuredArtifactDefinitionManager.GLOBAL_SAD_QUALIFIER));
        } else {
           if (tool != null)
              model.put("authZqualifier",getIdManager().getId(tool.getId()));

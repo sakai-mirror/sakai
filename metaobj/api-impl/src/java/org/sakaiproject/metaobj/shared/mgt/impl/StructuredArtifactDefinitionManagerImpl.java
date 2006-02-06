@@ -105,6 +105,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    private WorksiteManager worksiteManager;
    private ContentHostingService contentHosting;
    private ToolManager toolManager;
+   private List globalSites;
+   private List globalSiteTypes;
 
    public StructuredArtifactDefinitionManagerImpl() {
    }
@@ -266,21 +268,18 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public boolean isGlobal() {
-      ToolConfiguration toolConfig =
-         getWorksiteManager().getTool(PortalService.getCurrentToolId());
-      String isGlobal = null;
-      
-      try {
-      isGlobal = toolConfig.getConfig().getProperty(TOOL_GLOBAL_SAD);
+      String siteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+
+      if (getGlobalSites().contains(siteId)) {
+         return true;
       }
-      catch(NullPointerException e) {
-         this.logger.warn("Handle when toolConfig comes back null in Mercury");
+
+      Site site = getWorksiteManager().getSite(siteId);
+      if (site.getType() != null && getGlobalSiteTypes().contains(site.getType())) {
+         return true;
       }
-      if (isGlobal == null) {
-         return false;
-      } else {
-         return (isGlobal.equals("true"));
-      }
+
+      return false;
    }
 
    public Collection getRootElements(StructuredArtifactDefinitionBean sad) {
@@ -798,4 +797,21 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
        bean.setSchema(readStreamToBytes(inStream));
 	   return bean;
    }
+
+   public List getGlobalSites() {
+      return globalSites;
+   }
+
+   public void setGlobalSites(List globalSites) {
+      this.globalSites = globalSites;
+   }
+
+   public List getGlobalSiteTypes() {
+      return globalSiteTypes;
+   }
+
+   public void setGlobalSiteTypes(List globalSiteTypes) {
+      this.globalSiteTypes = globalSiteTypes;
+   }
+
 }

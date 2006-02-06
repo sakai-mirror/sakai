@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface StructuredArtifactDefinitionManager {
-   public final static String TOOL_GLOBAL_SAD = "theospi.share.sad.global";
    public final static String GLOBAL_SAD_QUALIFIER = "theospi.share.sad.global";
 
    public Map getHomes();

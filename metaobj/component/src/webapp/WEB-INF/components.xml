@@ -96,6 +96,16 @@
       <property name='worksiteManager'><ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/></property>
       <property name="contentHosting"><ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/></property>
       <property name="toolManager"><ref bean="org.sakaiproject.api.kernel.tool.ToolManager"/></property>
+      <property name="globalSites">
+         <list>
+            <value>~admin</value>
+            <value>!admin</value>
+         </list>
+      </property>
+      <property name="globalSiteTypes">
+         <list>
+         </list>
+      </property>
    </bean>
 
    <bean id="structuredArtifactDefinitionManager"

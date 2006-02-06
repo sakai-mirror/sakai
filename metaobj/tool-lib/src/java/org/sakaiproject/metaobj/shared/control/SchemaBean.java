@@ -148,6 +148,10 @@ public class SchemaBean {
             annotations.put(entry.getKey().toString().substring(5),
                entry.getValue());
          }
+         else if (entry.getKey().toString().startsWith("sakai.")) {
+            annotations.put(entry.getKey().toString().substring(6),
+               entry.getValue());
+         }
       }
 
       return annotations;
