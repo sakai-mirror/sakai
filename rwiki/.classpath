@@ -15,8 +15,13 @@
 	<classpathentry kind="src" path="rwiki-service/src/test"/>
 	<classpathentry kind="var" path="MAVEN_REPO/easymock/jars/easymock-1.1.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/kernel"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/legacy"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/legacy-service"/>
+	<classpathentry kind="src" path="/kernel"/>
+	<classpathentry kind="src" path="/legacy"/>
+	<classpathentry kind="src" path="/legacy-service"/>
+	<classpathentry kind="src" path="rwiki-service-impl/src/java"/>
+	<classpathentry kind="src" path="rwiki-utils/src/java"/>
+	<classpathentry kind="src" path="rwiki-service-impl/src/test"/>
+	<classpathentry kind="src" path="rwiki-model/src/java"/>
+	<classpathentry kind="src" path="rwiki-utils/src/test"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

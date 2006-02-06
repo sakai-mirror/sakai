@@ -24,15 +24,12 @@ package uk.ac.cam.caret.sakai.rwiki.tool.bean;
 
 import java.util.List;
 
-import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.ListProxy;
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiCurrentObjectImpl;
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiObjectImpl;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.dao.ObjectProxy;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.service.exception.PermissionException;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.ToolRenderService;
+import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
  * Bean that renders the current rwikiObject using a set objectService and
@@ -111,7 +108,7 @@ public class RenderBean {
             this.rwo = objectService.getRWikiObject(pageName, user, pageRealm);
             this.canEdit = objectService.checkUpdate(rwo,user);
         } catch (PermissionException e) {
-            this.rwo = new RWikiCurrentObjectImpl();
+            this.rwo = objectService.createNewRWikiCurrentObject();
             rwo.setName(pageName);
             rwo.setContent(PERMISSION_PROBLEM);
         }
@@ -213,7 +210,7 @@ public class RenderBean {
                     pageRealm);
             return toolRenderService.renderPage(page, user, defaultRealm);
         } catch (PermissionException e) {
-            RWikiObjectImpl page = new RWikiCurrentObjectImpl();
+            RWikiObject page = objectService.createNewRWikiCurrentObject();
             page.setName(pageName);
             page.setContent(PERMISSION_PROBLEM);
             return toolRenderService.renderPage(page, user, defaultRealm);
@@ -238,7 +235,7 @@ public class RenderBean {
                     pageSpace);
             return toolRenderService.renderPublicPage(page, user, defaultRealm, withBreadcrumbs);
         } catch (PermissionException e) {
-            RWikiObjectImpl page = new RWikiCurrentObjectImpl();
+            RWikiObject page = objectService.createNewRWikiCurrentObject();
             page.setName(pageName);
             page.setContent(PERMISSION_PROBLEM);
             return toolRenderService.renderPublicPage(page, user, defaultRealm, withBreadcrumbs);
@@ -309,7 +306,7 @@ public class RenderBean {
                 throw new RuntimeException("Proxied list does not contain expected object type, found:"+o);
             }            
         };
-        return new ListProxy(commentsList,lop);
+        return objectService.createListProxy(commentsList,lop);
     }
 
     /**

@@ -24,10 +24,10 @@ package uk.ac.cam.caret.sakai.rwiki.tool.service.impl;
 
 import org.sakaiproject.service.framework.log.Logger;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RenderService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.ToolRenderService;
+import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
  * @author andrew

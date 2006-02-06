@@ -25,6 +25,8 @@
 
 package uk.ac.cam.caret.sakai.rwiki.service.api.model;
 
+import java.util.List;
+
 
 
 /**
@@ -35,7 +37,13 @@ package uk.ac.cam.caret.sakai.rwiki.service.api.model;
 // FIXME: Service
 public interface RWikiCurrentObject extends RWikiObject
 {
+	/**
+	 * 
+	 * @return a list of target site types
+	 */
+	List getTargetSiteTypes();
 
+	
 }
 
 /**********************************************************************************

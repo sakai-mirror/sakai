@@ -24,27 +24,27 @@ package uk.ac.cam.caret.sakai.rwiki.tool.bean.helper;
 
 import javax.servlet.http.HttpServletRequest;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiPermissionsImpl;
+import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.UpdatePermissionsBean;
 
 /**
  * @author andrew
  * 
  */
-//FIXME: Tool
+//FIXME: References component directly
 
 public class UpdatePermissionsBeanHelper {
 
     public static UpdatePermissionsBean createUpdatePermissionsBean(
-            HttpServletRequest req) {
+            HttpServletRequest req, RWikiObjectService objectService) {
         UpdatePermissionsBean ub = new UpdatePermissionsBean();
 
         if (ub.getPermissions() == null) {
-            ub.setPermissions(new RWikiPermissionsImpl());
+            ub.setPermissions(objectService.createNewRWikiPermissionsImpl());
         }
 
         if (ub.getOverwritePermissions() == null) {
-            ub.setOverwritePermissions(new RWikiPermissionsImpl());
+            ub.setOverwritePermissions(objectService.createNewRWikiPermissionsImpl());
         }
 
         String permission;

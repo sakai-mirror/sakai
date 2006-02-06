@@ -10,7 +10,8 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.DataMigrationSpecification;
+import uk.ac.cam.caret.sakai.rwiki.service.api.model.DataMigrationController;
+
 
 /**
  * @author ieb
@@ -26,9 +27,9 @@ public class ModelMigrationContextListener implements ServletContextListener {
 	 */
 	public void contextInitialized(ServletContextEvent contextEvent) {
 		try {
-        WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(contextEvent.getServletContext());
-        Logger log = (Logger)wac.getBean("rwiki-logger");
-        	DataMigrationSpecification dataMig = (DataMigrationSpecification)wac.getBean("rwikiDataMigration");
+			WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(contextEvent.getServletContext());
+        	Logger log = (Logger)wac.getBean("rwiki-logger");
+        	DataMigrationController dataMig = (DataMigrationController)wac.getBean("rwikiDataMigration");
         	dataMig.update();
 		} catch (Exception ex) {
 			throw new RuntimeException("Data Migration Failed, you should investigate this before restarting, or remove the RWiki tool from Sakai",ex);

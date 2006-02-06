@@ -497,7 +497,7 @@ public class RequestScopeSuperBean {
     public UpdatePermissionsBean getUpdatePermissionsBean() {
         String key = "updatePermissionsBean";
         if (map.get(key) == null) {
-            UpdatePermissionsBean ub = UpdatePermissionsBeanHelper.createUpdatePermissionsBean(request);
+            UpdatePermissionsBean ub = UpdatePermissionsBeanHelper.createUpdatePermissionsBean(request,objectService);
             map.put(key, ub);
         }
         return (UpdatePermissionsBean) map.get(key);

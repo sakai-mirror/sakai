@@ -9,9 +9,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.RequestScopeSuperBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ViewParamsHelperBean;
+import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
  * @author ieb

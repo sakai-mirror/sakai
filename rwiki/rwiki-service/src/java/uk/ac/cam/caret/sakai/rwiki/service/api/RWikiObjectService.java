@@ -25,6 +25,7 @@ package uk.ac.cam.caret.sakai.rwiki.service.api;
 import java.util.Date;
 import java.util.List;
 
+import uk.ac.cam.caret.sakai.rwiki.service.api.dao.ObjectProxy;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiCurrentObject;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiHistoryObject;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
@@ -233,6 +234,23 @@ public interface RWikiObjectService {
      */
     void updateNewComment(String name, String user, String realm, Date version,
             String content) throws PermissionException, VersionException;
+	/**
+	 * Create a list proxy based on the List and Object Proxy
+	 * @param commentsList
+	 * @param lop
+	 * @return
+	 */
+	List createListProxy(List commentsList, ObjectProxy lop);
+	/**
+	 * Creates a new rwiki Current Object according to the implementation
+	 * @return
+	 */
+	RWikiObject createNewRWikiCurrentObject();
+	/**
+	 * Creates a new RWiki Permissions Bean
+	 * @return
+	 */
+	RWikiPermissions createNewRWikiPermissionsImpl();
 
     
     

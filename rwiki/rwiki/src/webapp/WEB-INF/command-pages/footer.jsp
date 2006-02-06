@@ -8,7 +8,7 @@
   <jspf:scriptlet>
     {
     long endofpage = System.currentTimeMillis();
-    uk.ac.cam.caret.sakai.rwiki.component.util.TimeLogger.printTimer("END Of Page:",endofpage,endofpage);
+    uk.ac.cam.caret.sakai.rwiki.utils.TimeLogger.printTimer("END Of Page:",endofpage,endofpage);
     }
   </jspf:scriptlet>
 </jspf:root>

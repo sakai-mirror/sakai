@@ -39,7 +39,7 @@ import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.authzGroup.Role;
 
-import uk.ac.cam.caret.sakai.rwiki.component.service.impl.RWikiSecurityServiceImpl;
+import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService;
 import uk.ac.cam.caret.sakai.rwiki.tool.RWikiServlet;
 import uk.ac.cam.caret.sakai.rwiki.tool.RequestScopeSuperBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.HttpCommand;
@@ -281,33 +281,33 @@ public class EditAuthZGroupCommand implements HttpCommand {
 	private void updateRoleEdit(Role roleEdit, Map map) {
 		String id = roleEdit.getId();
 		if (map.get("create_" + id) != null) {
-			if (!roleEdit.isAllowed(RWikiSecurityServiceImpl.SECURE_CREATE)) {
-				roleEdit.allowFunction(RWikiSecurityServiceImpl.SECURE_CREATE);
+			if (!roleEdit.isAllowed(RWikiSecurityService.SECURE_CREATE)) {
+				roleEdit.allowFunction(RWikiSecurityService.SECURE_CREATE);
 			}
 		} else {
-			if (roleEdit.isAllowed(RWikiSecurityServiceImpl.SECURE_CREATE)) {
-				roleEdit.disallowFunction(RWikiSecurityServiceImpl.SECURE_CREATE);
+			if (roleEdit.isAllowed(RWikiSecurityService.SECURE_CREATE)) {
+				roleEdit.disallowFunction(RWikiSecurityService.SECURE_CREATE);
 			}                    
 		}
 		
 		if (map.get("read_" + id) != null) {
 			
-			if (!roleEdit.isAllowed(RWikiSecurityServiceImpl.SECURE_READ)) {
-				roleEdit.allowFunction(RWikiSecurityServiceImpl.SECURE_READ);
+			if (!roleEdit.isAllowed(RWikiSecurityService.SECURE_READ)) {
+				roleEdit.allowFunction(RWikiSecurityService.SECURE_READ);
 			}
 		} else {
-			if (roleEdit.isAllowed(RWikiSecurityServiceImpl.SECURE_READ)) {
-				roleEdit.disallowFunction(RWikiSecurityServiceImpl.SECURE_READ);
+			if (roleEdit.isAllowed(RWikiSecurityService.SECURE_READ)) {
+				roleEdit.disallowFunction(RWikiSecurityService.SECURE_READ);
 			}                    
 		}
 		
 		if (map.get("update_" + id) != null) {
-			if (!roleEdit.isAllowed(RWikiSecurityServiceImpl.SECURE_UPDATE)) {
-				roleEdit.allowFunction(RWikiSecurityServiceImpl.SECURE_UPDATE);
+			if (!roleEdit.isAllowed(RWikiSecurityService.SECURE_UPDATE)) {
+				roleEdit.allowFunction(RWikiSecurityService.SECURE_UPDATE);
 			}
 		} else {
-			if (roleEdit.isAllowed(RWikiSecurityServiceImpl.SECURE_UPDATE)) {
-				roleEdit.disallowFunction(RWikiSecurityServiceImpl.SECURE_UPDATE);
+			if (roleEdit.isAllowed(RWikiSecurityService.SECURE_UPDATE)) {
+				roleEdit.disallowFunction(RWikiSecurityService.SECURE_UPDATE);
 			}                    
 		}
 		
@@ -322,22 +322,22 @@ public class EditAuthZGroupCommand implements HttpCommand {
 //		}                
 		
 		if (map.get("admin_" + id) != null) {
-			if (!roleEdit.isAllowed(RWikiSecurityServiceImpl.SECURE_ADMIN)) {
-				roleEdit.allowFunction(RWikiSecurityServiceImpl.SECURE_ADMIN);
+			if (!roleEdit.isAllowed(RWikiSecurityService.SECURE_ADMIN)) {
+				roleEdit.allowFunction(RWikiSecurityService.SECURE_ADMIN);
 			}
 		} else {
-			if (roleEdit.isAllowed(RWikiSecurityServiceImpl.SECURE_ADMIN)) {
-				roleEdit.disallowFunction(RWikiSecurityServiceImpl.SECURE_ADMIN);
+			if (roleEdit.isAllowed(RWikiSecurityService.SECURE_ADMIN)) {
+				roleEdit.disallowFunction(RWikiSecurityService.SECURE_ADMIN);
 			}                    
 		}
 		
 		if (map.get("superadmin_" + id) != null) {
-			if (!roleEdit.isAllowed(RWikiSecurityServiceImpl.SECURE_SUPER_ADMIN)) {
-				roleEdit.allowFunction(RWikiSecurityServiceImpl.SECURE_SUPER_ADMIN);
+			if (!roleEdit.isAllowed(RWikiSecurityService.SECURE_SUPER_ADMIN)) {
+				roleEdit.allowFunction(RWikiSecurityService.SECURE_SUPER_ADMIN);
 			}
 		} else {
-			if (roleEdit.isAllowed(RWikiSecurityServiceImpl.SECURE_SUPER_ADMIN)) {
-				roleEdit.disallowFunction(RWikiSecurityServiceImpl.SECURE_SUPER_ADMIN);
+			if (roleEdit.isAllowed(RWikiSecurityService.SECURE_SUPER_ADMIN)) {
+				roleEdit.disallowFunction(RWikiSecurityService.SECURE_SUPER_ADMIN);
 			}                    
 		}        
 	}

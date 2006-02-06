@@ -273,6 +273,11 @@ public interface RWikiObject extends Comparable
     void setSha1(String sha1);
 
     
+    /**
+	 * @return
+	 */
+	String getSource();
+    
 }
 
 /**********************************************************************************

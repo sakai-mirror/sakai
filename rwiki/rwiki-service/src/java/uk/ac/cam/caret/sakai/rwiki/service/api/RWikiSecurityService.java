@@ -43,5 +43,24 @@ public interface RWikiSecurityService {
     boolean checkSearchPermission(String user, String realm);
 
     String getSiteId();
+    
+    /** Security function name for create. required to create */
+    public static final String SECURE_CREATE = "rwiki.create";
+
+    /** Security function name for read. required to read */
+    public static final String SECURE_READ = "rwiki.read";
+
+    /** Security function name for update. required to update */
+    public static final String SECURE_UPDATE = "rwiki.update";
+
+    /** Security function name for delete. required to delete */
+    public static final String SECURE_DELETE = "rwiki.delete";
+    
+    /** Security function name for admin. Having this overrides for the site */
+    public static final String SECURE_SUPER_ADMIN = "rwiki.superadmin";
+    
+    /** Security function name for admin. Having this is required to do admin on objects */
+    public static final String SECURE_ADMIN = "rwiki.admin";
+
 
 }

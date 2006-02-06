@@ -22,10 +22,10 @@
 **********************************************************************************/
 package uk.ac.cam.caret.sakai.rwiki.tool.service.impl;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.service.api.PageLinkRenderer;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.util.XmlEscaper;
+import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
  * A public page link renderer that renders links suitable for use in a public view

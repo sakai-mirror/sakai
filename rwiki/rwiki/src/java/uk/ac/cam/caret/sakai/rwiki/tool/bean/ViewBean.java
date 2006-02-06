@@ -27,8 +27,8 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.util.WikiPageAction;
+import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
  * This bean is a helper bean for the view view.

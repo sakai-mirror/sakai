@@ -38,11 +38,11 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import uk.ac.cam.caret.sakai.rwiki.component.util.TimeLogger;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.HttpCommand;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.PrePopulateBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.util.WikiPageAction;
+import uk.ac.cam.caret.sakai.rwiki.utils.TimeLogger;
 
 /**
  * @author andrew

@@ -27,8 +27,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.util.XmlEscaper;
+import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
  * RecentlyVisitedBean is a bean which stores in session a list of all the pages

@@ -24,11 +24,11 @@ package uk.ac.cam.caret.sakai.rwiki.tool.bean.helper;
 
 import javax.servlet.ServletRequest;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.EditBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.SearchBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
+import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
  * Bean to get common request parameters from the servlet request.

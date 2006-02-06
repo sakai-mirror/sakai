@@ -40,6 +40,7 @@
   </repository>
   <properties>
     <deploy.type>jar</deploy.type>
+	<deploy.target>shared</deploy.target>
   </properties>
   <build>
     <nagEmailAddress>andrew@caret.cam.ac.uk</nagEmailAddress>
@@ -48,8 +49,33 @@
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
     <unitTest>
       <includes>**/*Test</includes>
+      <resources>
+        <resource>
+          <directory>${basedir}/src/testBundle</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+          <filtering>false</filtering>
+        </resource>
+      </resources>
     </unitTest>
-    <defaultGoal>jar:install</defaultGoal>
+    <!-- other resources for the jar - the message bundles -->
+    <resources>
+      <resource>
+        <directory>${basedir}/src/bundle</directory>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/java</directory>
+        <includes>
+          <include>**/*.xml</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
   </build>
   <dependencies>
     <dependency>
