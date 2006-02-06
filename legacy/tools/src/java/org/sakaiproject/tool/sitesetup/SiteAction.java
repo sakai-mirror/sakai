@@ -9902,11 +9902,7 @@ public class SiteAction extends PagedResourceActionII
 			}
 			else
 			{
-				Hashtable sites = (Hashtable) state.getAttribute(STATE_IMPORT_SITES);
-				if (sites == null)
-				{
-					sites = new Hashtable();
-				}
+				Hashtable sites = new Hashtable();
 				for (int index = 0; index < importSites.size(); index ++)
 				{
 					try
