@@ -1693,7 +1693,7 @@ extends PagedResourceActionII
 			    	        }
 			    	        catch(Exception e)
 			    	        {
-			    	        		addAlert(state, "Exception when removing assignment " + a.getTitle() + " and its submissions:" + e.getMessage());
+			    	        		Log.debug("chef", "Exception when removing assignment " + a.getTitle() + " and its submissions:" + e.getMessage());
 			    	        }
 					}
 				}	// addUpdateRemove != null
