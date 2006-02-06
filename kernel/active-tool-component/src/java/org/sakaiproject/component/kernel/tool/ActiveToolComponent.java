@@ -56,14 +56,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import javax.servlet.ServletException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.service.framework.email.cover.EmailService;
-
 /**
  * <p>
  * ToolComponent is the standard implementation of the Sakai Tool API.
@@ -282,171 +274,6 @@ public class ActiveToolComponent extends ToolComponent implements ActiveToolMana
 	{
 
 		protected ServletContext m_servletContext = null;
-		
-		protected String getStackTrace(Throwable error) 
-		{
-			try 
-			{
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				PrintStream ps = new PrintStream(baos);
-				error.printStackTrace(ps);
-				ps.flush();
-				baos.flush();
-				String stackTrace = baos.toString();
-				stackTrace.replaceAll("\"", "\\\"");
-				return stackTrace;
-			} 
-			catch (Exception e) 
-			{
-				return "An error occurred whilst retrieving a stack trace from "+error+": "+e;
-			}
-		}
-
-		protected String printExceptionCause(Throwable error, PrintWriter out) 
-		{
-			Throwable cause = null;
-			if ((error.getCause() != null) && (error.getCause() != error)) 
-			{
-				cause = error.getCause();
-			}
-			if (error instanceof ServletException) 
-			{	
-				cause = ((ServletException) error).getRootCause();
-			}
-			if (cause != null) 
-			{
-				out.println("Caused by: "+cause+"\n");
-				out.println("\n");
-				out.println(getStackTrace(cause));
-				out.println("\n\n");
-				out.flush();
-				return printExceptionCause(cause, out);
-			} 
-			else 
-				return error.getClass().getName();
-		}
-
-		protected void handleErrorSubmit(HttpServletRequest request, HttpServletResponse response) 
-		{
-			String headInclude = (String) request.getAttribute("sakai.html.head");
-			String bodyOnload = (String) request.getAttribute("sakai.html.body.onload");
-			String bugEmailAddress = ServerConfigurationService.getString("bugEmailAddress");
-
-			EmailService.send("bugs@"+ServerConfigurationService.getServerName(),
-					bugEmailAddress, "[Bug Report] "+request.getParameter("exception"),
-					request.getParameter("stacktrace") + "\n\n" +
-					"User comment:\n"+
-					request.getParameter("comment"), null, null, null);
-
-			if (bodyOnload == null) { bodyOnload = ""; } 
-			else {bodyOnload = " onload=\""+bodyOnload+"\"";}
-			try 
-			{
-				PrintWriter out = response.getWriter();
-				out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
-				out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n");
-				if (headInclude != null) 
-				{
-					out.println("<head>\n");
-					out.println(headInclude);
-					out.println("\n</head>\n\n");
-				}
-				out.println("<body"+bodyOnload+">\n");
-				out.println("<div class=\"portletBody\">\n");
-				out.println("<h3>Thank You</h3>\n");
-				out.println("<p>Your report has been submitted, and we will " +
-				"look into your problem as soon as possible.</p>\n");
-				out.println("</div>\n");
-				out.println("</body>\n");
-				out.println("</html>\n");
-		  } 
-		  catch (Exception e) 
-		  {
-				M_log.warn("handleError: " + e);
-				e.printStackTrace();
-			}			
-		}
-
-		protected void handleError(HttpServletRequest request, HttpServletResponse response, Throwable error) 
-		{
-			String headInclude = (String) request.getAttribute("sakai.html.head");
-			String bodyOnload = (String) request.getAttribute("sakai.html.body.onload");
-			String bugEmailAddress = ServerConfigurationService.getString("bugEmailAddress");
-			if (bodyOnload == null) { bodyOnload = ""; } 
-			else {
-				bodyOnload = " onload=\""+bodyOnload+"\"";
-			}
-			try {
-				PrintWriter out = response.getWriter();
-				out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
-				out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n");
-				if (headInclude != null) {
-				out.println("<head>\n");
-				out.println(headInclude);
-				out.println("\n</head>\n\n");
-			}
-			out.println("<body"+bodyOnload+">\n");
-			out.println("<div class=\"portletBody\">\n");
-			out.println("<h3>Error</h3>\n");
-			out.println("<p>An unexpected error has occurred. </p>");
-
-			if (!"".equals(bugEmailAddress)) 
-			{
-				out.println(
-						"<p>Please log out, close your browser, come back " +
-						"and retrace your steps to see if you can " +
-						"reproduce the error. If you are able to reproduce " +
-						"the error, please provide us with the steps you " +
-						"took to do so in the provided space below, and " +
-						"press the submit button.</p>\n");
-
-				out.println("<form action=\"?activetoolcomponent.errorsubmit=true\" method=\"POST\">\n");
-				out.println("<input type=\"hidden\" name=\"stacktrace\" value=\"\n");
-				out.println("Unhandled Exception: "+error+"\n");
-				out.println(getStackTrace(error));
-				out.println("\n");
-				String exception = printExceptionCause(error, out);
-				out.println("\">\n");
-				out.println("<input type=\"hidden\" name=\"exception\" value=\""+exception+"\">\n");
-			
-				out.println("<h4>Problem Description</h4>\n");
-				out.println("<table class=\"itemSummary\" cellspacing=\"5\" cellpadding=\"5\">\n");
-				out.println("<tbody>\n");
-				out.println("<tr>\n");
-				out.println("<td><textarea rows=\"10\" cols=\"60\" name=\"comment\"></textarea></td>\n");
-				out.println("</tr>\n");
-				out.println("</tbody>\n");
-				out.println("</table>\n");
-				out.println("<div class=\"act\">");
-				out.println("<input type=\"submit\" value=\"Submit Report\">\n");
-				out.println("</div>\n");
-				out.println("</form>\n");
-			} 
-			else 
-			{
-				out.println("<p>Setting the <i>bugEmailAddress</i> in your sakai.properties file will " +
-						"display a friendlier message that will allow the user to submit a bug report " +
-						"to the given email address. The stack trace will still be visible by viewing " +
-						"the source of the bug submission form should you wish to do so without " +
-						"submitting a bug report.\n</p>");
-				out.println("<p>Note that all mails will be sent using <i>bugs@[serverName " +
-						"from sakai.properties] as the from address.</i></p>\n ");
-				out.println("<pre>\n");
-				out.println("Unhandled Exception: "+error+"\n");
-				out.println(getStackTrace(error));
-				out.println("\n");
-				printExceptionCause(error, out);
-				out.println("\n</pre>\n");
-			}
-			out.println("</body>\n");
-			out.println("</html>\n");
-		} 
-		catch (Exception e) 
-		{
-			M_log.warn("handleError: " + e);
-			e.printStackTrace();
-		}
-	}
 
 		/**
 		 * Construct
@@ -494,80 +321,39 @@ public class ActiveToolComponent extends ToolComponent implements ActiveToolMana
 				String toolPath)
 		{
 			
-			//WrappedRequest wreq = new WrappedRequest(req, toolContext, toolPath, placement, false, this);
-			//WrappedResponse wres = new WrappedResponse(wreq, res);
-			if (req.getParameter("activetoolcomponent.errorsubmit") != null) 
+			WrappedRequest wreq = new WrappedRequest(req, toolContext, toolPath, placement, false, this);
+			WrappedResponse wres = new WrappedResponse(wreq, res);
+			
+			try
 			{
-				handleErrorSubmit(req, res);
-			} 
-			else 
+				getDispatcher().forward(wreq, wres);
+			}
+			catch (Throwable t)
 			{
-
-			//try
-			//{
-				//getDispatcher().forward(wreq, wres);
-				WrappedRequest wreq = new WrappedRequest(req, toolContext, toolPath, placement, false, this);
-				WrappedResponse wres = new WrappedResponse(wreq, res);
-				
-				try
-				{
-					getDispatcher().forward(wreq, wres);
-				}
-				catch (Throwable t)
-				{
-					M_log.warn("forward: " + t);
-					handleError(req, res, t);
-				}
-				
-				wreq.cleanup();
+				M_log.warn("forward: " + t);
 			}
 
-			}
-			//catch (Throwable t)
-			//{
-				//M_log.warn("forward: " + t);
-			//}
-			//wreq.cleanup();
+			wreq.cleanup();
+		}
 
-		/* (non-Javadoc)
-		 * @see org.sakaiproject.api.kernel.tool.ActiveTool#include(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.sakaiproject.api.kernel.tool.Placement, java.lang.String, java.lang.String)
-		 */
 		/**
 		 * @inheritDoc
 		 */
 		public void include(HttpServletRequest req, HttpServletResponse res, Placement placement, String toolContext,
-			String toolPath)
+				String toolPath)
 		{
-			//WrappedRequest wreq = new WrappedRequest(req, toolContext, toolPath, placement, true, this);
-		
-			//try
-			//{
-				//getDispatcher().include(wreq, res);
-			if (req.getParameter("activetoolcomponent.errorsubmit") != null) 
+			WrappedRequest wreq = new WrappedRequest(req, toolContext, toolPath, placement, true, this);
+			
+			try
 			{
-				handleErrorSubmit(req, res);
-			} 
-			else 
-			{
-				WrappedRequest wreq = new WrappedRequest(req, toolContext, toolPath, placement, true, this);
-				
-				try
-				{
-					getDispatcher().include(wreq, res);
-				}
-				catch (Throwable t)
-				{
-					M_log.warn("include: " + t);
-					handleError(req, res, t);
-				}
-				wreq.cleanup();
+				getDispatcher().include(wreq, res);
 			}
-			//catch (Throwable t)
-			//{
-				//M_log.warn("include: " + t);
-			//}
+			catch (Throwable t)
+			{
+				M_log.warn("include: " + t);
+			}
 
-			//wreq.cleanup();
+			wreq.cleanup();
 		}
 
 		/**
