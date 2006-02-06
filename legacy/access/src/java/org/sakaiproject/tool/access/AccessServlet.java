@@ -59,6 +59,14 @@ import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.web.Web;
 
+// for alias
+import org.sakaiproject.service.legacy.alias.cover.AliasService;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
+import org.sakaiproject.service.legacy.content.ContentCollection;
+
 /**
  * <p>
  * Access is a servlet that provides a portal to entity access by URL for Sakai.<br />
@@ -204,6 +212,72 @@ public class AccessServlet extends VmServlet
 	}
 
 	/**
+	 * check path to see whether it's an alias. If so, redirect to the target and return
+	 * also check for ~user
+	 * otherwise throw IdUnusedException
+	 */
+
+        // we call the access handler with the mapped name rather than
+        // issuing a redirect because that makes the alias transparent
+        // to the users
+
+        public void possibleAlias(HttpServletRequest req, HttpServletResponse res, String path, Reference ref, Collection accepted)
+	    throws ServletException, IdUnusedException, PermissionException, ServerOverloadException, CopyrightException
+        {
+	    // System.out.println("possible " + path);
+	    if (!path.startsWith("/"))
+		throw new IdUnusedException(ref.getReference());
+
+	    String sitename = path.substring(1);
+            String suffix;
+
+            // separate path into sitename and suffix,
+            // so we can lookup the sitename
+
+            if (sitename.indexOf("/") > -1) {
+                suffix = sitename.substring(sitename.indexOf("/")+1);
+                sitename = sitename.substring(0, sitename.indexOf("/"));
+            } else
+                suffix = "";
+
+	    String id = null;
+
+	    // does it start with ~
+	    if (SiteService.isUserSite(sitename)) {
+		// this is easy: get URL for the collection
+		id = ContentHostingService.getSiteCollection(sitename);
+	    }  else {
+		// otherwise see if it's an alias, and if so use the alias' target
+		//   getTarget throws IdUnusedException if no alias
+		Reference tref = EntityManager.newReference(AliasService.getTarget(sitename));
+		if (tref.getType().equals(MailArchiveService.SERVICE_NAME)) {
+		    // context is the site id portion of the reference. I don't see any cleaner
+		    // way to go from a reference to the actual site name.
+		    id = ContentHostingService.getSiteCollection(tref.getContext());
+		}
+	    }
+
+	    if (id != null) {
+		// System.out.println("found id " + id);
+		ref =  EntityManager.newReference(ContentHostingService.getReference(id + suffix));
+		// System.out.println("found ref " + ref.getId());
+		EntityProducer service = ref.getEntityProducer();
+		if (service == null)
+		    throw new IdUnusedException(ref.getReference());
+		// System.out.println("found service");
+		
+		HttpAccess access = service.getHttpAccess();
+		if (access == null)
+		    throw new IdUnusedException(ref.getReference());
+		// System.out.println("found access");
+
+		access.handleAccess(req, res, ref, accepted);
+		return;
+	    }
+	    throw new IdUnusedException(ref.getReference());
+	}
+
+	/**
 	 * handle get and post communication from the user
 	 * 
 	 * @param req
@@ -217,6 +291,7 @@ public class AccessServlet extends VmServlet
 
 		// get the path info
 		String path = params.getPath();
+		// System.out.println("at dispatch path is " + path);
 		if (path == null) path = "";
 
 		if (!m_ready)
@@ -295,11 +370,17 @@ public class AccessServlet extends VmServlet
 		{
 			// make sure we have a valid reference with an entity producer we can talk to
 			EntityProducer service = ref.getEntityProducer();
-			if (service == null) throw new IdUnusedException(ref.getReference());
+			if (service == null) {
+			    possibleAlias(req, res, path, ref, accepted);
+			    return;
+			}
 
 			// get the producer's HttpAccess helper, it might not support one
 			HttpAccess access = service.getHttpAccess();
-			if (access == null) throw new IdUnusedException(ref.getReference());
+			if (access == null) {
+			    possibleAlias(req, res, path, ref, accepted);
+			    return;
+			}
 
 			// let the helper do the work
 			access.handleAccess(req, res, ref, accepted);
