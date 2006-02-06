@@ -93,6 +93,15 @@
 		</dependency>
 
 		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util-i18n</artifactId>
+			<version>${sakai.version}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+      
+		<dependency>
 			<groupId>servletapi</groupId>
 			<artifactId>servletapi</artifactId>
 			<version>2.4-20040521</version>
@@ -105,6 +114,16 @@
 		<!-- java source -->
 		<sourceDirectory>src/java</sourceDirectory>
 
+		<!-- other resources for the jar - the message bundles -->
+		<resources>
+			<resource>
+				<directory>${basedir}/src/bundle</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+      
 	</build>
 
 </project>

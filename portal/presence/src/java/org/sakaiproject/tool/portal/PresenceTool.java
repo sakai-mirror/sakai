@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.util.java.StringUtil;
+import org.sakaiproject.util.java.ResourceLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.Session;
@@ -76,6 +77,8 @@ public class PresenceTool extends HttpServlet
 	/** Tool state attribute where the chat observer is stored. */
 	protected static final String ATTR_CHAT_OBSERVER = "chat_observer";
 
+   /** Localized messages **/
+	ResourceLoader rb = new ResourceLoader("org.sakaiproject.tool.portal.bundle.Messages");
 	/**
 	 * Shutdown the servlet.
 	 */
@@ -259,8 +262,9 @@ public class PresenceTool extends HttpServlet
 
 			if ( inChat ) 
 			{
+            String msg = rb.getString("inchat");
 				out.print("<span class=\"chefPresenceListItem inChat\">");
-				out.print("<span title=\"Currently in Chat\">");
+				out.print("<span title=\"" + msg + "\">");
 				out.print(Web.escapeHtml(u.getDisplayName()));
 				if ( chatIcon != null ) 
 				{
@@ -269,8 +273,9 @@ public class PresenceTool extends HttpServlet
 			}
 			else
 			{
+            String msg = rb.getString("insite");
 				out.print("<span class=\"chefPresenceListItem\">");
-				out.print("<span title=\"Currently in Site\">");
+				out.print("<span title=\"" + msg + "\">"); 
 				out.print(Web.escapeHtml(u.getDisplayName()));
 			}
 			out.println("</span></span><br/>");
