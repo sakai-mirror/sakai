@@ -51,7 +51,7 @@
 					name="$validator.escapeJavascript("$panel-monitor")"
 					id="$validator.escapeJavascript("$panel-monitor")"
 					title="$panel-monitor"
-					width="100%"
+					width="97%"
 					height="350"
 					frameborder="0"
 					marginwidth="0"

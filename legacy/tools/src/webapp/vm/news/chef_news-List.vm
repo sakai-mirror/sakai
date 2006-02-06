@@ -2,15 +2,20 @@
 ## chef_news-List.vm, use with org.chefproject.NewsAction.java
 ##     context: $news_items: iterator of NewsItems
 ##
+	<!--[if gte IE 6]>
+		<script type="text/javascript" language="JavaScript">
+			document.body.style.width='97%'
+		</script>
+	<![endif]--> 
 
-	<div style="width:86%">
+
+	<div class="portletBody">
 		#if($alertMessage)
 			<div class="alertMessage">
 				$validator.escapeHtml($alertMessage)
 			</div>
 		#end
 		#foreach ($item in $news_items)
-			<div style="width:80%">
 				#if($item.Title)
 					<h5>
 					#set($title="$validator.escapeHtml($item.Title)")
@@ -28,7 +33,6 @@
 						#end
 					</p>	
 				#end	
-			</div>
 		#end
 	</div>
 
