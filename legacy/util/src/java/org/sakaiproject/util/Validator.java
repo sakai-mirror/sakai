@@ -30,6 +30,7 @@ import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.util.text.FormattedText;
 
 /**
 * <p>Validator is utility class that helps to validate stuff for CHEF.</p>
