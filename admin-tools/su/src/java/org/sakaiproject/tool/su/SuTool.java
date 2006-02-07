@@ -67,6 +67,7 @@ public class SuTool {
 
 	// getters for these vars
 	private String username;
+	private String validatedUserId;
 	private User userinfo;
 	private boolean allowed = false;
 
@@ -95,7 +96,8 @@ public class SuTool {
 		}
 
 		try {
-			userinfo = M_uds.getUser(username);
+			userinfo = M_uds.getUser(username.trim());
+			validatedUserId = userinfo.getId();
 		} catch (IdUnusedException e) {
 			message = msgs.getString("no_such_user") + ": " + username;
             fc.addMessage("su", new FacesMessage( FacesMessage.SEVERITY_ERROR,
@@ -106,22 +108,22 @@ public class SuTool {
 		}
 
 		if (!confirm) {
-			message = msgs.getString("displaying_info_for") + ": " + username;
+			message = msgs.getString("displaying_info_for") + ": " + validatedUserId;
             fc.addMessage("su", new FacesMessage( FacesMessage.SEVERITY_INFO,
             	message, message + ":" + userinfo.getDisplayName() ) );
 			return "unconfirmed";
 		}
 
 		// set the session user from the value supplied in the form
-		message = "Username " + sakaiSession.getUserId() + " becoming " + username;
+		message = "Username " + sakaiSession.getUserId() + " becoming " + validatedUserId;
 		M_log.info("[SuTool] " + message );
         fc.addMessage("su", new FacesMessage( FacesMessage.SEVERITY_INFO,
           	message, message + ": Currently=" + userinfo.getDisplayName() ) );
-		sakaiSession.setUserId( userinfo.getId() );
-		sakaiSession.setUserEid( userinfo.getId() );
+		sakaiSession.setUserId( validatedUserId );
+		sakaiSession.setUserEid( validatedUserId );
 		
 		//  refesh the user's realms, so any recent changes to their site membership will take effect	
-		M_authzGroupService.refreshUser( userinfo.getId() );
+		M_authzGroupService.refreshUser( validatedUserId );
 
 		return "redirect";
 	}
