@@ -2528,18 +2528,26 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		if (m_logger.isDebugEnabled()) m_logger.debug(this + ".copy(" + id + "," + new_id + ")");
 
 		// find the collection
-		ContentCollection thisCollection = findCollection(id);
-		if (thisCollection != null)
+		ContentCollection thisCollection = null;
+		try
+		{
+			thisCollection = findCollection(id);
+		}
+		catch(TypeException e)
+		{
+			thisCollection = null;
+		}
+		if (thisCollection == null)
+		{
+			thisResource = findResource(id);
+		}
+		else
 		{
 			isCollection = true;
 			if (isRootCollection(id))
 			{
 				throw new PermissionException(null, null);
 			}
-		}
-		else
-		{
-			thisResource = findResource(id);
 		}
 
 		if (thisResource == null && thisCollection == null)
