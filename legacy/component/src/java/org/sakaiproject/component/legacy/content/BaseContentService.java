@@ -4137,6 +4137,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	    PrintWriter out = null;
 	    // don't set the writer until we verify that
 	    // getallresources is going to work.
+	    boolean printedHeader = false;
+	    boolean printedDiv = false;
 
 	    try {
 		ContentCollection x = 
@@ -4157,7 +4159,6 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 		List members = x.getMemberResources();
 		// we will need resources. getting them once makes the sort a whole lot faster
-
 		// System.out.println("before sort have " + members.size());
 
 		if (sferyx || basedir != null)
@@ -4175,6 +4176,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 		if (sferyx) {
 		    out.println("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1252\"><title>Control Panel - FileBrowser</title></head><body bgcolor=\"#FFFFFF\" topmargin=\"0\" leftmargin=\"0\"><b><font color=\"#000000\" face=\"Arial\" size=\"3\">Path:&nbsp;" + access + Validator.escapeHtml(path) + "</font></b><table border=\"0\" width=\"100%\" bgcolor=\"#FFFFFF\" cellspacing=\"0\" cellpadding=\"0\">");
+		    printedHeader = true;
+
 		} else {
 		    ResourceProperties pl = x.getProperties();
 		    out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
@@ -4183,7 +4186,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		    String webappRoot = m_serverConfigurationService.getServerUrl();
 		    out.println("<link href=\"" + webappRoot + "/library/skin/default/access.css\" type=\"text/css\" rel=\"stylesheet\" media=\"screen\" />");
 		    if (basedir != null) {
-			    out.println("<script language=\"javascript\">");
+			    out.println("<script type=\"text/javascript\">");
 			    out.println("function seturl(url) {");
 			    out.println("window.opener.document.forms[0]." + field + ".value = url;  window.close();");
 			    out.println("}");
@@ -4203,7 +4206,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		    }
 
 		    out.println("<table summary=\"Directory index\">");
-
+		    printedHeader = true;
+		    printedDiv = true;
 		}
 
 		int slashes = countSlashes(path);
@@ -4353,11 +4357,16 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		    }
 		}
 
-                // Close document
-                out.println("</table></div></body></html>");
-
 	    } catch (Throwable ignore) {
 	    } 
+
+	    if (out != null && printedHeader) {
+                out.println("</table>");
+		if (printedDiv) 
+		    out.println("</div>");
+                out.println("</body></html>");
+	    }
+
 	    return null;
 	}
 
