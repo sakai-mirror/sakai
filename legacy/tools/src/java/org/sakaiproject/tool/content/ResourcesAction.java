@@ -113,7 +113,7 @@ import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.ContentHostingComparator;
 import org.sakaiproject.util.FileItem;
-import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.StringUtil;

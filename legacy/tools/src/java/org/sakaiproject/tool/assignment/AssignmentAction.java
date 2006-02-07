@@ -80,7 +80,7 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.tool.content.ResourcesAction;
 import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
-import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.ResourceLoader;

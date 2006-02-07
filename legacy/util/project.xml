@@ -70,6 +70,12 @@
 
 		<dependency>
 			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util-text</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-util-i18n</artifactId>
 			<version>${sakai.version}</version>
 		</dependency>

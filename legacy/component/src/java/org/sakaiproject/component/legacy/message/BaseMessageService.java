@@ -83,7 +83,7 @@ import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.util.Filter;
-import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.sakaiproject.util.storage.StorageUser;

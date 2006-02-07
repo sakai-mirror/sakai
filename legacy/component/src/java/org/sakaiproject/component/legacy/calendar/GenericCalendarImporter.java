@@ -51,7 +51,7 @@ import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeRange;
 import org.sakaiproject.service.legacy.time.TimeService;
-import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.text.FormattedText;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

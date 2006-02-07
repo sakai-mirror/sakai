@@ -62,7 +62,7 @@ import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.tool.helper.PermissionsAction;
-import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.courier.PresenceObservingCourier;
 import org.sakaiproject.util.java.StringUtil;

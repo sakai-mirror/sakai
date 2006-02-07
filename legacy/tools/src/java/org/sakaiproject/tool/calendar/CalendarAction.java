@@ -80,7 +80,7 @@ import org.sakaiproject.tool.content.ResourcesAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.CalendarUtil;
 import org.sakaiproject.util.FileItem;
-import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.MergedList;
 import org.sakaiproject.util.MergedListEntryProviderBase;
 import org.sakaiproject.util.MergedListEntryProviderFixedListWrapper;

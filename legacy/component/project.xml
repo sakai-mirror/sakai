@@ -88,6 +88,12 @@
 
 		<dependency>
 			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util-text</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-thread_local</artifactId>
 			<version>${sakai.version}</version>
 		</dependency>

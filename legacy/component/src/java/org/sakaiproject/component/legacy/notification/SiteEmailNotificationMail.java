@@ -39,7 +39,7 @@ import org.sakaiproject.service.legacy.notification.NotificationAction;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.notification.SiteEmailNotification;
 
 /**

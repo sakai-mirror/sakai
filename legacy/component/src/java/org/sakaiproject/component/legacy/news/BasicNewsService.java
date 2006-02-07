@@ -41,7 +41,7 @@ import org.sakaiproject.service.legacy.news.NewsFormatException;
 import org.sakaiproject.service.legacy.news.NewsItem;
 import org.sakaiproject.service.legacy.news.NewsService;
 import org.sakaiproject.util.Filter;
-import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.Validator;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
