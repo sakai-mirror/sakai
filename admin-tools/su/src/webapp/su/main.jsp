@@ -10,6 +10,8 @@
 	response.addHeader("Pragma", "no-cache");
 %>
 
+<f:loadBundle basename="org.sakaiproject.tool.su.bundle.Messages" var="msgs"/>
+
 <f:view>
 <sakai:view_container title="#{msgs.title}">
 
@@ -28,13 +30,13 @@
 		  <f:facet name="header">
 			<h:outputText value="#{msgs.userinfoheader}"/>
 		  </f:facet>
-		  <h:outputText value="Name:" />
+		  <h:outputText value="#{msgs.name}" />
 		  <h:outputText value="#{SuTool.userinfo.displayName}" />
-		  <h:outputText value="Email:" />
+		  <h:outputText value="#{msgs.email}" />
 		  <h:outputText value="#{SuTool.userinfo.email}" />
-		  <h:outputText value="Type:" />
+		  <h:outputText value="#{msgs.type}" />
 		  <h:outputText value="#{SuTool.userinfo.type}" />
-		  <h:outputText value="Created:" />
+		  <h:outputText value="#{msgs.created}" />
 		  <h:outputText value="#{SuTool.userinfo.createdTime}" />
 		</h:panelGrid>
 
