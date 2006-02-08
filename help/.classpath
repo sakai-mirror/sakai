@@ -20,5 +20,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jsf/jars/jsf-api-1.1.01.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xerces-2.4.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/high-util"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
