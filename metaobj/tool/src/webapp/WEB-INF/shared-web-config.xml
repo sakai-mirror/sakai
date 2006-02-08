@@ -118,6 +118,21 @@
       <property name="commandClass"><value>org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean</value></property>
    </bean>
 
+   <bean id="formViewController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.sakaiproject.metaobj.shared.control.FormViewController">
+            <property name="structuredArtifactDefinitionManager">
+               <ref bean="structuredArtifactDefinitionManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewForm</prop>
+         </props>
+      </property>
+   </bean>
+
    <bean id="editStructuredArtifactDefinitionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.shared.control.EditStructuredArtifactDefinitionController">
@@ -158,7 +173,7 @@
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.shared.control.ImportStructuredArtifactDefinitionController">
             <property name="contentHosting">
-               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
             </property>
             <property name="entityManager">
                 <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
@@ -194,11 +209,11 @@
       <property name="commandClass"><value>org.sakaiproject.metaobj.shared.model.FormUploadForm</value></property>
       <property name="formView"><value>importStructuredArtifactDefinition</value></property>
    </bean>
-   
-   
+
+
          <bean class="org.sakaiproject.metaobj.shared.control.ImportStructuredArtifactDefinitionController">
             <property name="contentHosting">
-               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
             </property>
             <property name="entityManager">
                 <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
@@ -215,7 +230,7 @@
                <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
             </property>
          </bean>
-   
+
 
    <bean id="publishStructuredArtifactDefinitionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">

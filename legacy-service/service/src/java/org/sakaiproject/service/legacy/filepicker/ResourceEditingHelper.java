@@ -43,4 +43,6 @@ public interface ResourceEditingHelper {
     */
    public static final String ATTACHMENT_ID = "sakaiproject.filepicker.resourceEditId";
 
+   public static final String CUSTOM_CSS = "sakaiproject.filepicker.customCss";
+   
 }

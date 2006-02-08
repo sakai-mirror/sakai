@@ -140,9 +140,6 @@
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>1.6</version>
-      <properties>
-			<war.bundle>true</war.bundle>
-		</properties>
     </dependency>
     
     <dependency>
@@ -167,9 +164,6 @@
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
       <version>1.0</version>
-      <properties>
-			<war.bundle>true</war.bundle>
-		</properties>
     </dependency>
     
     <dependency>

@@ -33,6 +33,7 @@ import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.jdom.Element;
 
 public interface StructuredArtifactDefinitionManager {
    public final static String GLOBAL_SAD_QUALIFIER = "theospi.share.sad.global";
@@ -89,4 +90,6 @@ public interface StructuredArtifactDefinitionManager {
    public StructuredArtifactDefinitionBean importSad(Id worksiteId, InputStream in,
                                                      boolean findExisting, boolean publish)
          throws IOException;
+
+   public Element createFormViewXml(String formId, String returnUrl);
 }

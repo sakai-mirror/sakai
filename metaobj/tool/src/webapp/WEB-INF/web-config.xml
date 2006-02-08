@@ -78,6 +78,7 @@
                <prop key="/editStructuredArtifactDefinition.osp">editStructuredArtifactDefinitionController</prop>
                <prop key="/importStructuredArtifactDefinition.osp">importStructuredArtifactDefinitionController</prop>
                <prop key="/confirmSADPublish.osp">publishStructuredArtifactDefinitionController</prop>
+               <prop key="/formView.osp">formViewController</prop> 
             </props>
         </property>
     </bean>
