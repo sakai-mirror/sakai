@@ -138,8 +138,12 @@
 						$tlang.getString("newsc.appear")
 					</th>
 					<td>
+						#set($selectedUrl="")
+						#set($selectedUrl=$!selectedIcon)
 						#foreach($skin in $!skins)
-							#if($selectedIcon == $skin.Url)
+							#set($skinUrl="")
+							#set($skinUrl=$!skin.Url)
+							#if($selectedUrl == $skinUrl)
 								$skin.Name
 							#end
 						#end

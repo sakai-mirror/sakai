@@ -62,8 +62,14 @@
 					</th>
 					<td>
 						#foreach ($s in $skins)
-							#if ($s.Url == $skin)
-								#if (!$!skin.equals($!oSkin))
+							#set($url="")
+							#set($url=$!s.Url)
+							#set($newSkin="")
+							#set($newSkin=$!skin)
+							#set($oldSkin="")
+							#set($oldSkin=$!oSkin)
+							#if ($url == $newSkin)
+								#if (!$newSkin.equals($!oldSkin))
 									<span style="color:#6699ff">$s.Name</span>
 								#else
 									$s.Name

@@ -104,10 +104,11 @@
 					$tlang.getString("sinfo.appear")
 				</label>
 				<select name="skin" id="skin">
-					<option value="">$tlang.getString("sinfo.appear.none")</option>
 					#foreach($skin in $!skins)
-						<option value ="$skin.Url"
-							#if($selectedSkin == $skin.Url)
+						#set($url="")
+						#set($url=$!skin.Url)
+						<option value ="$url"
+							#if($selectedSkin == $url)
 								selected="selected"
 							#end
 						>

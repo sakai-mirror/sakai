@@ -70,13 +70,10 @@ function LimitText(fieldObj,maxChars)
 				</label>
 				
 					<select name="skin" id="skin">
-						<option value="">$tlang.getString("sitediinf.app.none")</option>
 						#foreach ($s in $skins)
-							#if ($s.Url == $selectedIcon)
-								<option value="$s.Url" selected="selected">$s.Name</option>
-							#else
-								<option value="$s.Url">$s.Name</option>
-							#end
+							#set($url="")
+							#set($url=$!s.Url)
+							<option value="$url" #if ($url == $selectedIcon)selected="selected"#end>$s.Name</option>
 						#end
 					</select>
 				
