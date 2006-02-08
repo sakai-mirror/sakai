@@ -197,6 +197,12 @@ public class FormattedText
 			}
 		}
 		
+		//deal with hardcoded empty space character from Firefox 1.5
+		if (val.equals("&nbsp;"))
+		{
+			val = "";
+		}
+		
 		// close any open HTML tags (that the user may have accidentally left open)
 		StringBuffer buf = new StringBuffer();
 		trimFormattedText(val, Integer.MAX_VALUE, buf);
