@@ -26,7 +26,6 @@ package org.sakaiproject.util;
 
 // imports
 import java.util.Calendar;
-import org.sakaiproject.util.java.ResourceLoader;
 
 /**
 * <p>CalendarUtil is a bunch of utility methods added to a java Calendar object.</p>
@@ -35,10 +34,7 @@ import org.sakaiproject.util.java.ResourceLoader;
 * @version $Revision$
 */
 public class CalendarUtil
-{
-	/** Resource bundle using current language locale */
-    private static ResourceLoader rb = new ResourceLoader("calendar");
-	
+{	
 	/** The calendar object this is based upon. */
 	Calendar m_calendar = null;
 
@@ -60,30 +56,6 @@ public class CalendarUtil
 		return m_calendar.get(Calendar.YEAR);
 
 	}	// getYear
-	
-	/**
-	* Access the current month as a string.
-	* @return the current month as a string.
-	*/
-	public String getMonth() 
-	{
-		// get the index for the month. Note, the index is increased by 1, u need to deduct 1 first
-		String[] months = new String [] { rb.getString("java.jan"),rb.getString("java.feb"),rb.getString("java.mar"),
-											rb.getString("java.apr"), rb.getString("java.may"), rb.getString("java.jun"),
-											rb.getString("java.jul"), rb.getString("java.aug"), rb.getString("java.sep"),
-											rb.getString("java.oct"), rb.getString("java.nov"), rb.getString("java.dec") };
-		int l_month;
-
-		l_month= getMonthInteger();
-
-		if (l_month >12) 
-		{
-			return rb.getString("java.thismonth");
-		}
-
-		return months[l_month-1];
-
-	}	// getMonth
 	
 	
 	/**
@@ -218,29 +190,6 @@ public class CalendarUtil
 
 	}	// getWeekOfMonth
 
-	/**
-	* Get the name of the day.
-	* @return the name of the day.
-	*/
-	public String getDay() 
-	{		
-		int dayofweek = getDay_Of_Week();
-		String[] l_ndays = new String[] {rb.getString("java.sun"),rb.getString("java.mon"),
-				rb.getString("java.tue"),rb.getString("java.wed"),rb.getString("java.thu")
-				,rb.getString("java.fri"),rb.getString("java.sat")};
-		
-		if (dayofweek > 7) 
-		{
-			dayofweek = 1;
-		}
-		else if(dayofweek <=0 ) 
-		{
-			dayofweek = 7;
-		}
-		
-		return l_ndays[dayofweek - 1];
-		
-	}	// getDay
 
 	/**
 	* Get the month as an int value.

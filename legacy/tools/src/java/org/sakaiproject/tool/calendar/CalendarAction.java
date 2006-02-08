@@ -2743,7 +2743,7 @@ extends VelocityPortletStateAction
 		calObj.setDay(dateObj1.getYear(),dateObj1.getMonth(),dateObj1.getDay());
 		
 		// retrieve the information from day, month and year to calObj again since calObj changed during the process of CalMonth().
-		context.put("nameOfMonth",calObj.getMonth());
+		context.put("nameOfMonth",calendarUtilGetMonth(calObj.getMonthInteger()));
 		context.put("year", new Integer(calObj.getYear()));
 		context.put("monthArray",monthObj2);
 		context.put("tlang",rb);
@@ -3067,7 +3067,7 @@ extends VelocityPortletStateAction
 			}
 		} 
     
-		context.put("nameOfMonth",calObj.getMonth());
+		context.put("nameOfMonth",calendarUtilGetMonth(calObj.getMonthInteger()));
 		context.put("monthInt", new Integer(calObj.getMonthInteger()));
 		context.put("firstpage","true");
 		context.put("secondpage","false");
@@ -3267,8 +3267,8 @@ extends VelocityPortletStateAction
 			Vector eventVector1;
 			dateObj2 =  new MyDate();
 			dateObj2.setTodayDate(calObj.getMonthInteger(),calObj.getDayOfMonth(),calObj.getYear());
-			dateObj2.setDayName(calObj.getDay());
-			dateObj2.setNameOfMonth(calObj.getMonth());
+			dateObj2.setDayName(calendarUtilGetDay(calObj.getDay_Of_Week()));
+			dateObj2.setNameOfMonth(calendarUtilGetMonth(calObj.getMonthInteger()));
 			
 			if (calObj.getDayOfMonth() == dayObj.getDay())
 				dateObj2.setFlag(1);
@@ -3534,7 +3534,7 @@ extends VelocityPortletStateAction
 		firstDay_of_Month = m_calObj.getDay_Of_Week() - 1;
 		
 		// get the index of the day
-		monthObj.setMonthName(m_calObj.getMonth());
+		monthObj.setMonthName(calendarUtilGetMonth(m_calObj.getMonthInteger()));
 		
 		for(int i = firstDay_of_Month; i>=0;i--)
 		{
@@ -7069,6 +7069,51 @@ extends VelocityPortletStateAction
 			return strFromBrowser;
 		}
 	}
+	
+	
+	/**
+	* Access the current month as a string.
+	* @return the current month as a string.
+	*/
+	public String calendarUtilGetMonth(int l_month)
+	{
+		// get the index for the month. Note, the index is increased by 1, u need to deduct 1 first
+		String[] months = new String [] { rb.getString("java.jan"),rb.getString("java.feb"),rb.getString("java.mar"),
+											rb.getString("java.apr"), rb.getString("java.may"), rb.getString("java.jun"),
+											rb.getString("java.jul"), rb.getString("java.aug"), rb.getString("java.sep"),
+											rb.getString("java.oct"), rb.getString("java.nov"), rb.getString("java.dec") };
+
+		if (l_month >12) 
+		{
+			return rb.getString("java.thismonth");
+		}
+
+		return months[l_month-1];
+
+	}	// getMonth
+	
+	/**
+	* Get the name of the day.
+	* @return the name of the day.
+	*/
+	public String calendarUtilGetDay(int dayofweek) 
+	{		
+		String[] l_ndays = new String[] {rb.getString("java.sun"),rb.getString("java.mon"),
+				rb.getString("java.tue"),rb.getString("java.wed"),rb.getString("java.thu")
+				,rb.getString("java.fri"),rb.getString("java.sat")};
+		
+		if (dayofweek > 7) 
+		{
+			dayofweek = 1;
+		}
+		else if(dayofweek <=0 ) 
+		{
+			dayofweek = 7;
+		}
+		
+		return l_ndays[dayofweek - 1];
+		
+	}	// getDay
 
 }   // CalendarAction
 
