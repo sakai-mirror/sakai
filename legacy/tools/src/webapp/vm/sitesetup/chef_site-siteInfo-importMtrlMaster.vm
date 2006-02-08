@@ -7,23 +7,23 @@
 		<div style="display:block;clear:both"></div>
 	#end
 	<h3>
-		Import Materials from a File
+		$tlang.getString("sitedicla.import_materials")
 	</h3>
 	<p class="step">
-	Choose a file to import
+	$tlang.getString("sitedicla.choose_file")
 	</p>
 	<p class="instruction">
 		
 	</p>
 	<form name="featuresForm" action="#toolForm("$action")" method="post" enctype="multipart/form-data">
 			<p>
-			File: <input type="file" name="file" id="file" class="upload" />
+			$tlang.getString("sitedicla.file")<input type="file" name="file" id="file" class="upload" />
 			</p>					
 				
 		<input type="hidden" name="template-index" value="45" />
 		<p class="act">
-			<input type="submit" class="active" name="eventSubmit_doUploadMtrlFrmFile" value="Import" />
-			<input type="submit" class="active" name="eventSubmit_doCancel" value="Cancel" />
+			<input type="submit" class="active" name="eventSubmit_doUploadMtrlFrmFile" value="$tlang.getString("sitedicla.import")" />
+			<input type="submit" class="active" name="eventSubmit_doCancel" value="$tlang.getString("sitedicla.can")" />
 		</p>
 					
 	</form>

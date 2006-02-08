@@ -7,15 +7,13 @@
 		<div style="display:block;clear:both"></div>
 	#end
 	<h3>
-	Copy Materials from Other Sites
+	$tlang.getString("sitedicla.copy_materials")
 	</h3>
 	<p class="step">
-	Choose material to copy this site.
+	$tlang.getString("sitedicla.choose_materials")
 	</p>
 	<p class="instruction">
-	You can choose to re-use (copy) materials from other sites that you own. 
-	If you choose to import materials from a file, you may only copy materials from one site. 
-	All materials are copied, and all dates for such items as schedule entries are not updated.
+	$tlang.getString("sitedicla.copy_message")
 	</p>
 	<form name="featuresForm" action="#toolForm("$action")" method="post" >
 
@@ -24,7 +22,7 @@
 	  <table width="90%" border=0 align=center cellpadding=0 cellspacing=0>
 	  	<tr>
 	  		<td width="35%" align="left">
-	  		Copy this existing material...
+	  		$tlang.getString("sitedicla.copying")
 	  		<br>
 					<select name="addImportSelected" class="indnt2" size="10" multiple="multiple" STYLE="width: 150px;">
 						#foreach($item in $allZipSites)
@@ -35,7 +33,7 @@
 				</td>    
 				
 				<td width="15%" align="left">		
-				<strong>Move</strong>
+				<strong>$tlang.getString("sitedicla.move")</strong>
 				<br>
 				<input type="submit" class= "active" name="eventSubmit_doAdd_MtrlSite" value=">" />	
 				<br><br>
@@ -43,7 +41,7 @@
 				</td>
 				
 				<td width="30%">
-				...into my current site
+				$tlang.getString("sitedicla.move_into")
 	  		<br>
 					<select name="removeImportSelected" class="indnt2" size="10" multiple="multiple" STYLE="width: 150px;">
 					#foreach($item in $finalZipSites)
@@ -58,8 +56,8 @@
 		<input type="hidden" name="back" value="45" />
 		
 		<p class="act">
-			<input type="submit" class="active" name="eventSubmit_doCopyMtrlSite" value="Copy Materials" />
-			<input type="submit" class="active" name="eventSubmit_doCancel" value="Cancel" />
+			<input type="submit" class="active" name="eventSubmit_doCopyMtrlSite" value="$tlang.getString("sitedicla.copybtn")" />
+			<input type="submit" class="active" name="eventSubmit_doCancel" value="$tlang.getString("sitedicla.cancel")" />
 		</p>
 		
 					

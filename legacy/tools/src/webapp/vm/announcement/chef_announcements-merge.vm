@@ -23,7 +23,7 @@
 						checked
 						#end
 					/>
-					<label for="site$siteNumber">Yes</label></td>
+					<label for="site$siteNumber">$tlang.getString("java.yes")</label></td>
 				 </tr>
 				 #set($siteNumber=$siteNumber + 1)
 			#end

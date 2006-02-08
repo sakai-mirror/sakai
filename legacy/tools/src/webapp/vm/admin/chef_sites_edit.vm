@@ -219,11 +219,11 @@
 		<h4>
 			$tlang.getString("sitedi.conedi")
 		</h4>	
-		Add/edit pages
+		$tlang.getString("sitedi.addeditpages")
 		<div class="act">
 			<input type="submit" name="eventSubmit_doPages" value="$tlang.getString("sitedi.pag")" />
 		</div>
-		Add/edit groups
+		$tlang.getString("sitedi.addeditgroups")
 		<div class="act">
 			<input type="submit" name="eventSubmit_doGroups" value="$tlang.getString("sitedi.grp")" />
 		</div>

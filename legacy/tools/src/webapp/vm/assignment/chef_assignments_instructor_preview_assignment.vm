@@ -9,7 +9,7 @@
 			| <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>
 		#end
 		#if ($allowUpdateSite)
-			| <a href="#toolLink("$action" "doPermissions")" title="Permission">$tlang.getString('permis')</a>
+			| <a href="#toolLink("$action" "doPermissions")" title="$tlang.getString('permis')">$tlang.getString('permis')</a>
 		#end
 	</div>
 	<h3>
@@ -131,9 +131,9 @@
 									<td>
 										## if honor pledge is required
 										#if ($value_CheckAddHonorPledge!= "1")
-											required
+											$tlang.getString("gen.required)
 										#else
-											Not required
+											$tlang.getString("gen.notrequired")
 										#end
 									</td>
 								</tr>
@@ -282,7 +282,7 @@
 						#end
 					</ul>
 				#end	
-				<h4>Start assignment</h4>
+				<h4>$tlang.getString("gen.staass")</h4>
 				## 1- text only; 2-attachment only; 3-text and attachment
 				#if (($value_SubmissionType==1) || ($value_SubmissionType==3))
 							<div class="instruction">

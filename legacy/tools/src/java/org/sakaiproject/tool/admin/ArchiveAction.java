@@ -111,6 +111,8 @@ public class ArchiveAction
 										RunData rundata,
 										SessionState state)
 	{
+		context.put("tlang",rb);
+		
 		//build the menu
 		Menu bar = new Menu();
 		bar.add( new MenuEntry(rb.getString("archive.button.nonbatch"), "doToggle_State") );
