@@ -29,7 +29,7 @@
 <osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
 
-<h3>Meta Object Manager</h3>
+<h3>Form Manager</h3>
 <c:if test="${!empty types}">
  <table class="listHier" cellspacing="0" >
    <thead>

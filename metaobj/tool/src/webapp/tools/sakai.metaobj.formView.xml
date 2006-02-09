@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="sakai.metaobj.formView" title="Meta Object Form View" description="Sakai Meta Object Form View Tool">
+	<tool id="sakai.metaobj.formView" title="Form View" description="Sakai Form View Tool">
        <configuration name="test" value="reg-value" />
 
       <category name="sakai.helper" />
