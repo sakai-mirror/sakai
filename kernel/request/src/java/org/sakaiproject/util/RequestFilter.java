@@ -3,7 +3,7 @@
  * $Id$
  **********************************************************************************
  *
- * Copyright (c) 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ * Copyright (c) 2005, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
  *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
  * 
  * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -298,7 +298,7 @@ public class RequestFilter implements Filter
 		/** The request. */
 		protected HttpServletRequest m_req = null;
 
-		/** Wrapped Response **/
+		/** Wrapped Response * */
 		protected HttpServletResponse m_res = null;
 
 		public WrappedResponse(Session s, HttpServletRequest req, HttpServletResponse res)
@@ -757,13 +757,29 @@ public class RequestFilter implements Filter
 		Session s = null;
 		String sessionId = null;
 
+		// compute the session cookie suffix, based on this configured server id
+		String suffix = System.getProperty(SAKAI_SERVERID);
+		if ((suffix == null) || (suffix.length() == 0))
+		{
+			if (m_displayModJkWarning)
+			{
+				M_log.info("no sakai.serverId system property set - mod_jk load balancing will not function properly");
+
+				// only display warning once
+				// FYI this is not thread safe, but the side effects are negligible and not worth the overhead of synchronizing -lance
+				m_displayModJkWarning = false;
+			}
+
+			suffix = "sakai";
+		}
+
 		// automatic, i.e. not from user activite, request?
 		boolean auto = req.getParameter(PARAM_AUTO) != null;
 
 		sessionId = req.getParameter(ATTR_SESSION);
 
 		// find our session id from our cookie
-		Cookie c = findCookie(req, SESSION_COOKIE);
+		Cookie c = findCookie(req, SESSION_COOKIE, suffix);
 
 		if (sessionId == null && c != null)
 		{
@@ -771,12 +787,12 @@ public class RequestFilter implements Filter
 			sessionId = c.getValue();
 		}
 
-		if ( sessionId != null ) 
+		if (sessionId != null)
 		{
+			// remove the server id suffix
 			final int dotPosition = sessionId.indexOf(DOT);
 			if (dotPosition > -1)
-			{ // need to parse the string
-				// the serverId is at the end of the string
+			{
 				sessionId = sessionId.substring(0, dotPosition);
 			}
 			if (M_log.isDebugEnabled())
@@ -849,26 +865,7 @@ public class RequestFilter implements Filter
 		// if we have a session and had no cookie, or the cookie was to another session id, set the cookie
 		if ((s != null) && ((c == null) || (!c.getValue().equals(s.getId()))))
 		{
-			// compute the sessionId
-			sessionId = null;
-			final String serverId = System.getProperty(SAKAI_SERVERID);
-			if (serverId == null || serverId.length() < 1)
-			{
-				if (m_displayModJkWarning)
-				{
-					M_log.info("no sakai.serverId system property set - mod_jk load balancing will not function properly");
-
-					// only display warning once
-					// FYI this is not thread safe, but the side effects are negligible and not worth the overhead of synchronizing -lance
-					m_displayModJkWarning = false;
-				}
-
-				sessionId = s.getId();
-			}
-			else
-			{
-				sessionId = s.getId() + DOT + serverId;
-			}
+			sessionId = s.getId() + DOT + suffix;
 
 			// set the cookie
 			c = new Cookie(SESSION_COOKIE, sessionId);
@@ -962,15 +959,17 @@ public class RequestFilter implements Filter
 	}
 
 	/**
-	 * Find a cookie by this name from the request.
+	 * Find a cookie by this name from the request; one with a value that has the specified suffix.
 	 * 
 	 * @param req
 	 *        The servlet request.
 	 * @param name
 	 *        The cookie name
+	 * @param suffix
+	 *        The suffix string to find at the end of the found cookie value.
 	 * @return The cookie of this name in the request, or null if not found.
 	 */
-	protected Cookie findCookie(HttpServletRequest req, String name)
+	protected Cookie findCookie(HttpServletRequest req, String name, String suffix)
 	{
 		Cookie[] cookies = req.getCookies();
 		if (cookies != null)
@@ -979,7 +978,10 @@ public class RequestFilter implements Filter
 			{
 				if (cookies[i].getName().equals(name))
 				{
-					return cookies[i];
+					if ((suffix == null) || cookies[i].getValue().endsWith(suffix))
+					{
+						return cookies[i];
+					}
 				}
 			}
 		}
@@ -988,8 +990,7 @@ public class RequestFilter implements Filter
 	}
 
 	/**
-	 * Compute the URL that would return to this server based on the current request.
-	 * Note: this method is a duplicate of one in the util/Web.java
+	 * Compute the URL that would return to this server based on the current request. Note: this method is a duplicate of one in the util/Web.java
 	 * 
 	 * @param req
 	 *        The request.
@@ -1009,7 +1010,7 @@ public class RequestFilter implements Filter
 			port = Integer.parseInt(forceSecure);
 			secure = true;
 		}
-		
+
 		// otherwise use the request scheme and port
 		else
 		{
