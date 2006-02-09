@@ -385,4 +385,7 @@ public class StructuredArtifactDefinitionBean implements Comparable {
       this.schemaHash = schemaHash;
    }
 
+   public boolean isPublished() {
+      return getGlobalState() == STATE_PUBLISHED || getSiteState() == STATE_PUBLISHED;
+   }
 }
