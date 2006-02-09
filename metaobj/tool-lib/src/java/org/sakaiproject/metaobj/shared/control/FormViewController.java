@@ -20,27 +20,17 @@
 **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
-import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.api.kernel.tool.Tool;
-import org.sakaiproject.api.kernel.tool.cover.ToolManager;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.validation.Errors;
+import java.util.Map;
+
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.CDATA;
-
-import javax.xml.transform.Transformer;
-import java.util.Map;
+import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
+import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Created by IntelliJ IDEA.
