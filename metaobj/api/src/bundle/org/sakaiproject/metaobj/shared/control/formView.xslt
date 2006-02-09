@@ -5,6 +5,12 @@
 	xmlns:osp="http://www.osportfolio.org/OspML"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+   <!--xsl:template match="formView">
+      <formView>
+            <xsl:copy-of select="*"></xsl:copy-of>
+      </formView>
+   </xsl:template-->
+
 	<xsl:template match="formView">
 
 
@@ -33,16 +39,21 @@
 			<xsl:with-param name="currentParent" select="formData/artifact/structuredData" />
      	<xsl:with-param name="rootNode" select="'true'" />
 		</xsl:apply-templates>
+<xsl:if test="returnUrl">
 	<a>
 		<xsl:attribute name="href">
 			<xsl:value-of select="returnUrl" />
 		</xsl:attribute>
 		Back
 	</a>
+</xsl:if>
 </div>
 </body>
 </html>
 	</xsl:template>
+
+   <!-- todo provide specail handling templates for
+   certain element types -->
 
 	<xsl:template match="element">
     <xsl:param name="currentParent" />
@@ -60,7 +71,11 @@
 				</xsl:if>
 				<xsl:if test="$rootNode='false'">
 					<tr>
-						<td><xsl:value-of select="xs:annotation/xs:documentation[@source='ospi.label']" /></td>
+						<td>
+                     <xsl:call-template name="produce-label">
+                        <xsl:with-param name="currentSchemaNode" select="." />
+                     </xsl:call-template>
+						</td>
 						<td>
 					<xsl:call-template name="produce-fields">
 	        	<xsl:with-param name="currentSchemaNode" select="." />
@@ -74,7 +89,9 @@
 			<xsl:otherwise>
 				<tr>
 					<td>
-						<label><xsl:value-of select="xs:annotation/xs:documentation[@source='ospi.label']" /></label>
+                  <xsl:call-template name="produce-label">
+                     <xsl:with-param name="currentSchemaNode" select="." />
+                  </xsl:call-template>
 					</td>
 					<td><xsl:value-of select="$currentNode" /></td>
 				</tr>
@@ -82,6 +99,24 @@
 		</xsl:choose>
 	</xsl:template>
 
+   <xsl:template name="produce-label">
+      <xsl:param name="currentSchemaNode"/>
+      <label>
+      <xsl:choose>
+         <xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']">
+            <xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='sakai.label']" />
+         </xsl:when>
+         <xsl:when test="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']">
+            <xsl:value-of select="$currentSchemaNode/xs:annotation/xs:documentation[@source='ospi.label']" />
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:for-each select="$currentSchemaNode" >
+               <xsl:value-of select="@name" />
+            </xsl:for-each>
+         </xsl:otherwise>
+      </xsl:choose>
+      </label>
+   </xsl:template>
 
 	<xsl:template name="produce-fields">
     <xsl:param name="currentSchemaNode" />
@@ -99,7 +134,6 @@
 	    </xsl:if>
    	</table>
 	</xsl:template>
-
 
 	<xsl:template name="produce-metadata">
 		<tr>

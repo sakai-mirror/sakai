@@ -59,4 +59,11 @@ public interface ElementType {
     * on the value's range
     */
    public ValueRange getRange();
+
+   /**
+    *
+    * @return the base xml type of the associated node
+    */
+   public String getBaseType();
+
 }

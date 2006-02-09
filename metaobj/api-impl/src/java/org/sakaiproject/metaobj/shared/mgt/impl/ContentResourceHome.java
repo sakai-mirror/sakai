@@ -38,6 +38,7 @@ import org.sakaiproject.exception.TypeException;
 import org.jdom.Element;
 import org.jdom.Document;
 import org.jdom.JDOMException;
+import org.jdom.CDATA;
 import org.jdom.input.SAXBuilder;
 
 import java.util.Collection;
@@ -164,13 +165,25 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
       StructuredArtifactHomeInterface home = (StructuredArtifactHomeInterface)getHomeFactory().getHome(type);
 
       Element schemaData = new Element("schema");
+      schemaData.addContent(createInstructions(home));
       schemaData.addContent(addAnnotations(home.getRootSchema()));
       root.addContent(schemaData);
+   }
+
+   protected Element createInstructions(StructuredArtifactHomeInterface home) {
+      Element instructions = new Element("instructions");
+      instructions.setContent(new CDATA(home.getInstruction()));
+      return instructions;
    }
 
    protected Element addAnnotations(SchemaNode schema) {
       Element schemaElement = new Element("element");
       schemaElement.setAttribute("name", schema.getName());
+      if (schema.getType() != null && schema.getType().getBaseType() != null) {
+         schemaElement.setAttribute("type", schema.getType().getBaseType());
+      }
+      schemaElement.setAttribute("minOccurs", schema.getMinOccurs() + "");
+      schemaElement.setAttribute("maxOccurs", schema.getMaxOccurs() + "");
       Element annotation = schema.getSchemaElement().getChild(
          "annotation", schema.getSchemaElement().getNamespace());
 

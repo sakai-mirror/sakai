@@ -59,10 +59,11 @@ public class BaseElementType implements ElementType {
    protected Element schemaElement;
    protected SchemaNode parentNode = null;
    private List enumeration = null;
+   private String baseType;
 
    public BaseElementType(String typeName, Element schemaElement, SchemaNode parentNode,
                           Namespace xsdNamespace) {
-
+      setBaseType(typeName);
       this.schemaElement = schemaElement;
       this.parentNode = parentNode;
       init(xsdNamespace);
@@ -331,6 +332,14 @@ public class BaseElementType implements ElementType {
       }
 
       return validatedNode;
+   }
+
+   public String getBaseType() {
+      return baseType;
+   }
+
+   public void setBaseType(String baseType) {
+      this.baseType = baseType;
    }
 
 }

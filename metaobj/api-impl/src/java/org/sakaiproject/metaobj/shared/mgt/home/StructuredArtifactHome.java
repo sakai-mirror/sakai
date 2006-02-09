@@ -23,6 +23,7 @@
 package org.sakaiproject.metaobj.shared.mgt.home;
 
 import org.jdom.Element;
+import org.jdom.CDATA;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -206,15 +207,26 @@ public class StructuredArtifactHome extends XmlElementHome
       root.addContent(data);
 
       Element schemaData = new Element("schema");
+      schemaData.addContent(createInstructions());
       schemaData.addContent(addAnnotations(getRootSchema()));
       root.addContent(schemaData);
 
       return root;
    }
 
+   protected Element createInstructions() {
+      Element instructions = new Element("instructions");
+      instructions.setContent(new CDATA(getInstruction()));
+      return instructions;
+   }
+
    protected Element addAnnotations(SchemaNode schema) {
       Element schemaElement = new Element("element");
       schemaElement.setAttribute("name", schema.getName());
+      schemaElement.setAttribute("type", schema.getType().getBaseType());
+      schemaElement.setAttribute("minOccurs", schema.getMinOccurs() + "");
+      schemaElement.setAttribute("maxOccurs", schema.getMaxOccurs() + "");
+
       Element annotation = schema.getSchemaElement().getChild(
          "annotation", schema.getSchemaElement().getNamespace());
 
