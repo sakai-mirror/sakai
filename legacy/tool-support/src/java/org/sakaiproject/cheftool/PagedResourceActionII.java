@@ -248,11 +248,6 @@ public abstract class PagedResourceActionII
 							&&	(state.getAttribute(STATE_PREV_PAGE_EXISTS) == null)
 							&&	!goNextPage && !goPrevPage && !goNext && !goPrev && !goFirstPage && !goLastPage && !goViewPage);
 
-		// if we have no next page and do have a top message, then we will stay "pined" to the bottom
-		boolean pinToBottom = (	(state.getAttribute(STATE_TOP_PAGE_MESSAGE) != null)
-							&&	(state.getAttribute(STATE_NEXT_PAGE_EXISTS) == null)
-							&&	!goNextPage && !goPrevPage && !goNext && !goPrev && !goFirstPage && !goLastPage && !goViewPage);
-
 		// how many messages, total
 		int numMessages = sizeResources(state);
 
@@ -322,18 +317,6 @@ public abstract class PagedResourceActionII
 		if (pinToTop)
 		{
 			posStart = 0;
-		}
-		else if (pinToBottom)
-		{
-			posStart = numMessages - pageSize;
-			if (posStart < 0) posStart = 0;
-		}
-
-		// get the last page fully displayed
-		if (posStart + pageSize > numMessages)
-		{
-			posStart = numMessages - pageSize;
-			if (posStart < 0) posStart = 0;
 		}
 
 		// compute the end to a page size, adjusted for the number of messages available
