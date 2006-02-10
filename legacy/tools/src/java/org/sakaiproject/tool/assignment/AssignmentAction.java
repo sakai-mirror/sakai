@@ -3986,7 +3986,7 @@ extends PagedResourceActionII
 		// show the assignment portion
 		state.setAttribute (VIEW_ASSIGNMENT_HIDE_ASSIGNMENT_FLAG, new Boolean (false));
 		// show the student view portion
-		state.setAttribute (VIEW_ASSIGNMENT_HIDE_STUDENT_VIEW_FLAG, new Boolean (false));
+		state.setAttribute (VIEW_ASSIGNMENT_HIDE_STUDENT_VIEW_FLAG, new Boolean (true));
 		
 		String assignmentId = params.getString ("assignmentId");
 		state.setAttribute (VIEW_ASSIGNMENT_ID, assignmentId);
