@@ -84,12 +84,12 @@ public class ToolRenderServiceImpl implements ToolRenderService {
 		this.log = log;
 	}
 
-	public String renderPage(RWikiObject rwo, String user, boolean b) {
+	public String renderPage(RWikiObject rwo, String user, boolean cachable) {
         //SAK-2519
         String localSpace = NameHelper.localizeSpace(rwo.getName(), rwo.getRealm());
         PageLinkRendererImpl plr = new PageLinkRendererImpl(localSpace, rwo.getRealm());
-        plr.setUseCache(b);
-        plr.setCachable(b);
+        plr.setUseCache(cachable);
+        plr.setCachable(cachable);
         return renderService.renderPage(rwo, user, localSpace, plr);
 	}
 
