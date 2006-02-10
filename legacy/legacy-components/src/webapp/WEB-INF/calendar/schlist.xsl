@@ -30,22 +30,22 @@
   <fo:static-content flow-name="xsl-region-before">
    
 	
-	<fo:block font-size="18pt" 
-            font-family="sans-serif" 
+	<fo:block font-size="12pt" 
+            font-family="verdana, sans-serif" 
             line-height="1cm"
             space-after.optimum="1pt"
             color="black"
-            text-align="center"
+            text-align="left"
             padding-top="0pt">
-         Schedule for <xsl:value-of select="uid"/> 
+		Schedule for <xsl:value-of select="uid"/>  - page <fo:page-number/> 
     	</fo:block>    	
    </fo:static-content> 
 	  
   <fo:static-content flow-name="xsl-region-after">
-		<fo:block text-align="end" 
-			font-size="10pt" font-family="serif" line-height="1em + 2pt">
-			Page (<fo:page-number/>)
-      </fo:block>
+	<!--	<fo:block text-align="end" 
+			font-size="7pt" font-family="verdana,sans-serif" line-height="1em + 2pt">
+			Schedule for <xsl:value-of select="uid"/> - page <fo:page-number/>
+      </fo:block> -->
   </fo:static-content>
 
 
@@ -74,14 +74,14 @@
            the end of the item label and the start of item text
       -->
       <fo:block>
-      <fo:list-block provisional-distance-between-starts="4cm"
+      <fo:list-block provisional-distance-between-starts="2cm"
                      provisional-label-separation="2mm">
         
         <!-- list item -->
         <fo:list-item>
           <!-- insert a bullet -->
           <fo:list-item-label end-indent="label-end()">
-            <fo:block><fo:inline font-size="10pt" font-family="Symbol">
+          	<fo:block><fo:inline   font-size="7pt" font-family="verdana,sans-serif">
 			    <xsl:value-of select="@dt"/></fo:inline></fo:block>
           </fo:list-item-label>
           <!-- list text --> 
@@ -119,31 +119,41 @@
 <xsl:template name="evitem">
 <xsl:param name="ev"/>
 	<fo:block font-weight="bold" font-size="8pt" text-align="start">
-		<xsl:value-of select="grp"/>
+		Site: <xsl:value-of select="grp"/>
 	</fo:block>
 	<fo:block font-size="8pt" text-align="start">
-		<xsl:value-of select="title"/>
+		Event: <xsl:value-of select="title"/>
 	</fo:block>
 	<fo:block font-size="8pt" text-align="start">
+		<fo:inline>
+			<xsl:value-of select="@dt"/>From:</fo:inline>
 		<xsl:call-template name="dtconv">
-			<xsl:with-param name="fromdt" select="@from"/>
+		 <xsl:with-param name="fromdt" select="@from"/>
 		</xsl:call-template>-		
 		<xsl:call-template name="dtconv">
 			<xsl:with-param name="fromdt" select="@to"/>
 		</xsl:call-template>		
 	</fo:block>
-	<fo:block font-size="8pt" text-align="start">
-		<xsl:value-of select="place"/>
-	</fo:block>
+	<xsl:if test="place !=''">
+		<fo:block font-size="8pt" text-align="start">
+			Location: <xsl:value-of select="place"/>
+		</fo:block>
+	</xsl:if>
 	<fo:block font-size="8pt" text-align="start">
 		<xsl:value-of select="faculty"/>
 	</fo:block>
 	
 	<fo:block font-size="8pt" text-align="start">
-	 <xsl:value-of select="type"/>
+	 Event type: <xsl:value-of select="type"/>
 	</fo:block>
+	<xsl:if test="description !=''">
+		<fo:block font-size="7pt" text-align="start" padding="2mm">
+			<xsl:value-of select="description"/>
+		</fo:block>
+	</xsl:if>		
 	
-	<fo:block font-size="8pt" text-align="start">
+	
+	<fo:block font-size="8pt" text-align="start" space-after="3mm">
 	    <fo:leader leader-pattern="dots" 
                    leader-length="10cm"/>
     </fo:block>

@@ -4093,6 +4093,7 @@ public abstract class BaseCalendarService
 	protected static final String EVENT_NODE_NAME = "event";
 	protected static final String FACULTY_EVENT_ATTRIBUTE_NAME = "Faculty";
 	protected static final String FACULTY_NODE = "faculty";
+	protected static final String DESCRIPTION_NODE = "description";
 	protected static final String FROM_ATTRIBUTE_STRING = "from";
 	protected static final String GROUP_NODE = "grp";
 	protected static final String LIST_DATE_ATTRIBUTE_NAME = "dt";
@@ -5234,6 +5235,9 @@ public abstract class BaseCalendarService
 
 		// If a "Faculty" extra field is present, then add the node.
 		writeStringNodeToDom(doc, eventElement, FACULTY_NODE, event.getField(FACULTY_EVENT_ATTRIBUTE_NAME));
+
+		// If a "Description" field is present, then add the node.
+		writeStringNodeToDom(doc, eventElement, DESCRIPTION_NODE, event.getDescription());
 
 		parent.appendChild(eventElement);
 	}
