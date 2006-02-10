@@ -234,10 +234,10 @@ public class PresenceTool extends HttpServlet
 	{
  		String chatIcon  = ServerConfigurationService.getString("presence.inchat.icon", null);
 
-		out.println("<div class=\"presenceList\">");
+		out.println("<ul class=\"presenceList\">");
 		if ( users == null ) {
 			out.println("<!-- Presence empty -->");
-			out.println("</div>");
+			out.println("</ul>");
 			return;
 		}
 
@@ -261,25 +261,25 @@ public class PresenceTool extends HttpServlet
 			if ( inChat ) 
 			{
             String msg = rb.getString("inchat");
-				out.print("<span class=\"chefPresenceListItem inChat\">");
+				out.print("<li class=\"inChat\">");
 				out.print("<span title=\"" + msg + "\">");
 				out.print(Web.escapeHtml(u.getDisplayName()));
 				if ( chatIcon != null ) 
 				{
-					out.print(" <img height=10px width=10px src=\""+chatIcon+"\">");
+//					out.print(" <img height=10px width=10px src=\""+chatIcon+"\">");
 				}
 			}
 			else
 			{
             String msg = rb.getString("insite");
-				out.print("<span class=\"chefPresenceListItem\">");
+				out.print("<li>");
 				out.print("<span title=\"" + msg + "\">"); 
 				out.print(Web.escapeHtml(u.getDisplayName()));
 			}
-			out.println("</span></span><br/>");
+			out.println("</span></li>");
 		}
 
-		out.println("</div>");
+		out.println("</ul>");
 	}
 
 	/**

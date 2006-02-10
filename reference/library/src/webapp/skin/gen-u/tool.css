@@ -18,8 +18,20 @@ fieldset{border:none;padding:0px;margin-top:1em}
 .toolTitle td.action img{margin:0;vertical-align:text-bottom;width:16px !important}
 .toolTitle td.action a{background:url(images/help.gif) top right no-repeat}
 .toolTitle td.action a:hover{background:url(images/help_h.gif) top right no-repeat}
-.chefPresenceListItem{font-size:.8em;margin-left:3px;white-space:nowrap}
-.presenceList{background-color:#fff;border-top:1em solid #fff;border-bottom:1em solid #fff}
+.presenceList{font-size:.8em;
+	list-style: none;
+	margin: 0;
+	padding-left: .1em;
+}
+.presenceList li {
+	padding:0 0 0 .7em;
+	margin-bottom:.2em;
+/*	white-space: nowrap;*/
+	}
+
+.presenceList li.inChat {
+	background:url(images/chatpresicon.gif) -.1em center no-repeat;
+	}
 /*PART 3:CALENDAR SELECTORS*/
 table.calendar th{background-color:#FFFFCC;font-weight:normal;text-align:center}
 .bgActivity{background-color:#FFFFCA;border:1px solid #dadada;text-align:right}
