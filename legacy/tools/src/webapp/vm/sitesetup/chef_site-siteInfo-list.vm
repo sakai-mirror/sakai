@@ -347,7 +347,9 @@
 						<td headers="role">
 							#set($uRole = "")
 							#set($uRole = $participant.getRole())
-							#if ($allowUpdate)
+							#if ($!isMyWorkspace)
+								$uRole
+							#elseif ($allowUpdate)
 								<label class="skip" for="role$uniqname">Select role for $uniqname</label>
 								<select id="role$uniqname" name="role$uniqname">
 									#foreach($r in $roles)
