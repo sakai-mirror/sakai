@@ -83,7 +83,7 @@ public class ViewBeanTest extends TestCase {
         ViewBean vb = new ViewBean(localPageName, realm);
         String anchor="anchor";
         vb.setAnchor(anchor);
-        assertTrue("ViewBean doesn't set Anchor properly",("#"+anchor+ viewUrl).equals(vb.getViewUrl()));
+        assertTrue("ViewBean doesn't set Anchor properly",( viewUrl+ "#"+anchor).equals(vb.getViewUrl()));
     }
 
     public void testGetPageName() {

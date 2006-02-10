@@ -60,6 +60,17 @@ public class HeadingFilter extends LocaleRegexTokenFilter implements CacheFilter
  }
 
   public String handleMatch(MatchResult result, FilterContext context) {
-    return formatter.format(new Object[]{result.group(1).replace('.', '-'), result.group(3)});
+      String name = "";
+      char[] nameChars = result.group(3).toCharArray();
+      int end = 0;
+      for (int i = 0; i < nameChars.length; i++) {
+          if (Character.isLetterOrDigit(nameChars[i])) {
+              nameChars[end++] = nameChars[i]; 
+          }
+      }
+      if (end > 0) { 
+          name = new String(nameChars, 0, end);
+      }
+    return formatter.format(new Object[]{result.group(1).replace('.', '-'), result.group(3), name});
   }
 }

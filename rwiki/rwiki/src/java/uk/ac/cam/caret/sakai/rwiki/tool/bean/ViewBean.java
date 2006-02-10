@@ -319,24 +319,24 @@ public class ViewBean {
      */
     protected String getPageUrl(String pageName, String action, boolean withBreadcrumbs) {
         if ( withBreadcrumbs ) {
-        return getAnchorString() + 
+        return  
                 "?" + PAGENAME_URL_ENCODED + "=" + urlEncode(pageName) + 
                 "&" + ACTION_URL_ENCODED + "=" + urlEncode(action) + 
                 "&" + PANEL_URL_ENCODED + "=" + MAIN_URL_ENCODED + 
-                "&" + REALM_URL_ENCODED + "=" + urlEncode(localSpace);
+                "&" + REALM_URL_ENCODED + "=" + urlEncode(localSpace) + getAnchorString();
         } else {
-            return getAnchorString() + 
+            return 
             "?" + PAGENAME_URL_ENCODED + "=" + urlEncode(pageName) + 
             "&" + ACTION_URL_ENCODED + "=" + urlEncode(action) + 
             "&" + PANEL_URL_ENCODED + "=" + MAIN_URL_ENCODED + 
             "&" + DISBLE_BREADCRUMBS_ENCODED +
-            "&" + REALM_URL_ENCODED + "=" + urlEncode(localSpace);
+            "&" + REALM_URL_ENCODED + "=" + urlEncode(localSpace) + getAnchorString();
         }
         
     }
     
     protected String getPageUrl(String pageName, String action, Map params) {
-        StringBuffer url = new StringBuffer(getAnchorString());
+        StringBuffer url = new StringBuffer();
         url.append("?").append(PAGENAME_URL_ENCODED).append('=').append(urlEncode(pageName));
         url.append('&').append(ACTION_URL_ENCODED).append('=').append(urlEncode(action));
         url.append('&').append(PANEL_URL_ENCODED).append('=').append(MAIN_URL_ENCODED);
@@ -350,7 +350,7 @@ public class ViewBean {
             }
         }
         
-        return url.toString();
+        return url.append(getAnchorString()).toString();
     }
    
     /**

@@ -102,7 +102,17 @@ public class LinkTestFilter extends LocaleRegexTokenFilter {
 
         String hash = "";
         if (-1 != hashIndex && hashIndex != name.length() -1) {
-           hash = name.substring(hashIndex + 1);
+           char[] hashChars = name.substring(hashIndex + 1).toCharArray();
+           int end = 0;
+           for (int i = 0; i < hashChars.length; i++) {
+               if (Character.isLetterOrDigit(hashChars[i])) {
+                   hashChars[end++] = hashChars[i]; 
+               }
+           }
+           if (end > 0) { 
+               hash = new String(hashChars, 0, end);
+           }
+
            name = name.substring(0, hashIndex);
         }
 
@@ -147,7 +157,10 @@ public class LinkTestFilter extends LocaleRegexTokenFilter {
             String view = getWikiView(name);
             if (-1 != pipeIndex) {
               view = alias;
+            } else if (view.equals("")) {
+                view = hash;
             }
+            
             // Do not add hash if an alias was given
             if (-1 != hashIndex ) {
                wikiEngine.appendLink(buffer, name, view, hash);
