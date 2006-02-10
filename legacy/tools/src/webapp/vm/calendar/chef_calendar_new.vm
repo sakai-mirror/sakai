@@ -463,22 +463,100 @@ function ampmChange(FieldName)
 				#set($type = $savedData.getType())
 			#end
 			<select  id="eventType" name="eventType" onchange="blur()">
-				#if ($type=="Academic Calendar") <option>$tlang.getString("del.acad")</option> #else <option>$tlang.getString("del.acad")</option> #end
-				#if ($type=="Activity") <option selected="selected">$tlang.getString("del.activ")</option> #end
-				#if ($type=="Cancellation") <option selected="selected">$tlang.getString("del.cancell")</option> #else <option>$tlang.getString("del.cancell")</option> #end
-				#if ($type=="Class section - Discussion") <option selected="selected">$tlang.getString("del.class") - $tlang.getString("del.disc")</option> #else <option>$tlang.getString("del.class") - $tlang.getString("del.disc")</option> #end 
-				#if ($type=="Class section - Lab") <option selected="selected">$tlang.getString("del.class") - $tlang.getString("del.lab")</option> #else <option>$tlang.getString("del.class") - $tlang.getString("del.lab")</option> #end 
-				#if ($type=="Class section - Lecture") <option selected="selected">$tlang.getString("del.class") - $tlang.getString("del.lect")</option> #else <option>$tlang.getString("del.class") - $tlang.getString("del.lect")</option> #end 
-				#if ($type=="Class section - Small Group") <option selected="selected">$tlang.getString("del.class") - $tlang.getString("del.small")</option> #else <option>$tlang.getString("del.class") - $tlang.getString("del.small")</option> #end 
-				#if ($type=="Class session") <option selected="selected">$tlang.getString("del.classsession")</option> #else <option>$tlang.getString("del.classsession")</option> #end 
-				#if ($type=="Computer Session") <option selected="selected">$tlang.getString("del.computer")</option> #else <option>$tlang.getString("del.computer")</option> #end
-				#if ($type=="Deadline") <option selected="selected">$tlang.getString("del.dead")</option> #else <option>$tlang.getString("del.dead")</option> #end
-				#if ($type=="Exam") <option selected="selected">$tlang.getString("del.exam")</option> #else <option>$tlang.getString("del.exam")</option> #end
-				#if ($type=="Meeting") <option selected="selected">$tlang.getString("del.meet")</option> #else <option>$tlang.getString("del.meet")</option> #end
-				#if ($type=="Multidisciplinary Conference") <option selected="selected">$tlang.getString("del.multi")</option> #else  <option>$tlang.getString("del.multi")</option> #end
-				#if ($type=="Quiz") <option selected="selected">$tlang.getString("del.quiz")</option> #else <option>$tlang.getString("del.quiz")</option> #end
-				#if ($type=="Special event") <option selected="selected">$tlang.getString("del.special")</option> #else <option>$tlang.getString("del.special")</option> #end
-				#if ($type=="Web Assignment") <option selected="selected">$tlang.getString("del.web")</option> #else  <option>$tlang.getString("del.web")</option> #end
+				#if ($type =="Academic Calendar") 
+				<option selected="selected" value="Academic Calendar">$tlang.getString("del.acad")</option> 
+				#else  
+				<option value="Academic Calendar">$tlang.getString("del.acad")</option>  
+				#end
+				
+				#if ($type=="Activity") 
+				<option selected="selected" value="Activity">$tlang.getString("del.activ")</option>  
+				#else <option value="Activity">$tlang.getString("del.activ")</option>  
+				#end
+				
+				#if ($type =="Cancellation") 
+				<option selected="selected" value="Cancellation">$tlang.getString("del.cancell")</option>  
+				#else  
+				<option value="Cancellation">$tlang.getString("del.cancell")</option> 
+				#end
+				
+				#if ($type =="Class section - Discussion") 
+				<option selected="selected" value="Class section - Discussion">$tlang.getString("del.class") - $tlang.getString("del.disc") </option>  
+				#else 
+				<option value="Class section - Discussion">$tlang.getString("del.class") - $tlang.getString("del.disc") </option> 
+				#end
+				
+				#if ($type =="Class section - Lab") 
+				<option selected="selected" value="Class section - Lab">$tlang.getString("del.class") - $tlang.getString("del.lab") </option> 
+				#else 
+				<option value="Class section - Lab">$tlang.getString("del.class") - $tlang.getString("del.lab") </option> 
+				#end
+				
+				#if ($type =="Class section - Lecture") 
+				<option selected="selected" value="Class section - Lecture">$tlang.getString("del.class") - $tlang.getString("del.lect") </option> 
+				#else 
+				<option value="Class section - Lecture">$tlang.getString("del.class") - $tlang.getString("del.lect") </option> 
+				#end
+				
+				#if ($type =="Class section - Small Group") 
+				<option selected="selected" value="Class section - Small Group">$tlang.getString("del.class") - $tlang.getString("del.small") </option> 
+				#else 
+				<option value="Class section - Small Group">$tlang.getString("del.class") - $tlang.getString("del.small") </option> 
+				#end
+				
+				#if ($type =="Class session") 
+				<option selected="selected" value="Class session">$tlang.getString("del.classsession") </option> 
+				#else 
+				<option value="Class session">$tlang.getString("del.classsession") </option> 
+				#end
+				
+				#if ($type =="Computer Session") 
+				<option selected="selected" value="Computer Session">$tlang.getString("del.computer")</option> 
+				#else 
+				<option value="Computer Session">$tlang.getString("del.computer")</option> 
+				#end
+				
+				#if ($type =="Deadline") 
+				<option selected="selected" value="Deadline">$tlang.getString("del.dead")</option> 
+				#else 
+				<option value="Deadline">$tlang.getString("del.dead")</option> 
+				#end
+				
+				#if ($type =="Exam") 
+				<option selected="selected" value="Exam">$tlang.getString("del.exam")</option> 
+				#else 
+				<option value="Exam">$tlang.getString("del.exam")</option> 
+				#end
+				
+				#if ($type=="Meeting") 
+				<option selected="selected" value="Meeting">$tlang.getString("del.meet")</option> 
+				#else 
+				<option value="Meeting">$tlang.getString("del.meet")</option> 
+				#end
+				
+				#if ($type=="Multidisciplinary Conference") 
+				<option selected="selected" value="Multidisciplinary Conference">$tlang.getString("del.multi")</option value=> 
+				#else 
+				<option value="Multidisciplinary Conference">$tlang.getString("del.multi")</option> 
+				#end
+				
+				#if ($type =="Quiz") 
+				<option selected="selected" value="Quiz">$tlang.getString("del.quiz")</option> 
+				#else 
+				<option value="Quiz">$tlang.getString("del.quiz")</option> 
+				#end
+				
+				#if ($type =="Special event") 
+				<option selected="selected" value="Special event">$tlang.getString("del.special")</option> 
+				#else 
+				<option value="Special event">$tlang.getString("del.special")</option> 
+				#end
+				
+				#if ($type =="Web Assignment") 
+				<option selected="selected" value="Web Assignment">$tlang.getString("del.web")</option> 
+				#else 
+				<option value="Web Assignment">$tlang.getString("del.web")</option> 
+				#end
 			</select>
 		</p>
 		<p class="shorttext">
