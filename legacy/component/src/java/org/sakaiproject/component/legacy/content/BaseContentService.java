@@ -31,12 +31,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -51,8 +47,6 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUpload;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
@@ -75,11 +69,11 @@ import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
-import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
+import org.sakaiproject.service.legacy.alias.AliasService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
@@ -90,6 +84,7 @@ import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.ContentResourceEdit;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
+import org.sakaiproject.service.legacy.email.MailArchiveService;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityManager;
@@ -105,18 +100,17 @@ import org.sakaiproject.service.legacy.notification.NotificationEdit;
 import org.sakaiproject.service.legacy.notification.NotificationService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
-import org.sakaiproject.service.legacy.time.TimeBreakdown;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
-import org.sakaiproject.util.ContentHostingComparator;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.Blob;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.sakaiproject.util.storage.StorageUser;
+import org.sakaiproject.util.web.Web;
 import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -198,6 +192,34 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public void setMemoryService(MemoryService service)
 	{
 		m_memoryService = service;
+	}
+
+	/** Dependency: AliasService. */
+	protected AliasService m_aliasService = null;
+
+	/**
+	 * Dependency: AliasService.
+	 * 
+	 * @param service
+	 *        The AliasService.
+	 */
+	public void setAliasService(AliasService service)
+	{
+		m_aliasService = service;
+	}
+
+	/** Dependency: SiteService. */
+	protected SiteService m_siteService = null;
+
+	/**
+	 * Dependency: SiteService.
+	 * 
+	 * @param service
+	 *        The SiteService.
+	 */
+	public void setSiteService(SiteService service)
+	{
+		m_siteService = service;
 	}
 
 	/** Dependency: NotificationService. */
@@ -305,6 +327,46 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public void setEntityManager(EntityManager service)
 	{
 		m_entityManager = service;
+	}
+
+	/** Configuration: short refs */
+	protected boolean m_shortRefs = true;
+
+	/**
+	 * Configuration: set the short refs
+	 * 
+	 * @param value
+	 *        The short refs value.
+	 */
+	public void setShortRefs(String value)
+	{
+		try
+		{
+			m_shortRefs = new Boolean(value).booleanValue();
+		}
+		catch (Throwable t)
+		{
+		}
+	}
+
+	/** Configuration: alias for site */
+	protected boolean m_siteAlias = true;
+
+	/**
+	 * Configuration: set the alias for site
+	 * 
+	 * @param value
+	 *        The alias for site value.
+	 */
+	public void setSiteAlias(String value)
+	{
+		try
+		{
+			m_siteAlias = new Boolean(value).booleanValue();
+		}
+		catch (Throwable t)
+		{
+		}
 	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************
@@ -1918,13 +1980,13 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		{
 			checkCollection(siteCollection);
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			// add this collection
 			ContentCollectionEdit siteEdit = addCollection(siteCollection);
 			try
 			{
-				String siteTitle = SiteService.getSite(site).getTitle();
+				String siteTitle = m_siteService.getSite(site).getTitle();
 				siteEdit.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, siteTitle);
 			}
 			catch(Exception e1)
@@ -1939,7 +2001,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		{
 			checkCollection(toolCollection);
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			// add this collection
 			ContentCollectionEdit toolEdit = addCollection(toolCollection);
@@ -2947,22 +3009,6 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	}
 
 	/**
-	 * getResourceNameCHEF - Needs to become a method of resource returns the internal name for a resource.
-	 * 
-	 * @@Glenn - review this @@
-	 */
-
-	public String getResourceNameCHEF(Entity mbr)
-	{
-		String idx = mbr.getId();
-		String resourceName = isolateName(idx);
-		ResourceProperties props = mbr.getProperties();
-		if (resourceName == null) resourceName = props.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
-
-		return resourceName;
-	}
-
-	/**
 	 * Get a duplicate copy of resource properties This copies everything except for the DISPLAYNAME - DISPLAYNAME is only copied if it is different than the file name as derived from the id (path) Note to Chuck - should the add operations check for empty
 	 * Display and set it to the file name rather than putting all the code all over the place.
 	 */
@@ -3728,7 +3774,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	} // newResourceProperties
 
 	/**********************************************************************************************************************************************************************************************************************************************************
-	 * ResourceService implementation
+	 * EntityProducer implementation
 	 *********************************************************************************************************************************************************************************************************************************************************/
 
 	/**
@@ -3762,868 +3808,326 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	protected static final int STREAM_BUFFER_SIZE = 102400;
 
 	/**
-	 * {@inheritDoc}
+	 * Process the access request for a resource.
+	 * @param req
+	 * @param res
+	 * @param ref
+	 * @param copyrightAcceptedRefs
+	 * @throws PermissionException
+	 * @throws IdUnusedException
+	 * @throws ServerOverloadException
+	 * @throws CopyrightException
 	 */
-
-	protected boolean writeFile(String name, String type, byte[] data, 
-	                     String dir, HttpServletResponse resp, boolean mkdir) {
-	    // /content
-	    String accessPoint = getAccessPoint(true);  
-
-	    // System.out.println("writefile " + accessPoint + ":" + dir + " / " + name);
-	    try {
-		// validate filename. Need to be fairly careful.
-		int i = name.lastIndexOf(Entity.SEPARATOR);
-		if (i >= 0)
-		    name = name.substring(i+1);
-		if (name.length() < 1) {
-		    // System.out.println("no name left / removal");
-		    resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-		    return false;
-		}
-
-		// dirname better end in /
-		if (dir.lastIndexOf(Entity.SEPARATOR) != (dir.length()-1))
-		    dir = dir + Entity.SEPARATOR;
-
-
-		if (dir.startsWith(accessPoint))
-		    dir = dir.substring(accessPoint.length());
-
-	        String path = dir + name;
-	
-		ResourcePropertiesEdit resourceProperties = newResourceProperties();
-
-		// Try to delete the resource
-		try {
-			// System.out.println("Trying Del  "  + path);
-			//The existing document may be a collection or a file.
-			boolean isCollection = getProperties (path).getBooleanProperty (ResourceProperties.PROP_IS_COLLECTION);
-			
-			if (isCollection) {
-			    // System.out.println("Can't del, iscoll");
-			    resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-			    return false;
-			} else {
-			    // not sure why removeesource(path) didn't 
-			    // work for my workspace
-			    BaseResourceEdit edit = (BaseResourceEdit) editResource(path);
-			    // if (edit != null)
-			    //	System.out.println("Got edit");
-			    removeResource(edit);
-			}
-		} catch (IdUnusedException e) {
-			// Normal situation - nothing to do
-		} catch (Exception e) {
-			// System.out.println("Can't del, exception " + e.getClass() + ": " + e.getMessage());
-			resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-			return false;
-		}
-
-		// Add the resource
-
-		try {
-			User user = UserDirectoryService.getCurrentUser();
-			
-			TimeBreakdown timeBreakdown = TimeService.newTime().breakdownLocal();
-			String mycopyright = "copyright (c)" + " " + timeBreakdown.getYear () +", " + user.getDisplayName() + ". All Rights Reserved. ";
-			
-			resourceProperties.addProperty (ResourceProperties.PROP_COPYRIGHT, mycopyright);
-
-			resourceProperties.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
-
-			// System.out.println("Trying Add "  + path);
-			ContentResource resource = 
-			    addResource (path,
-					 type, data,
-					 resourceProperties,
-					 NotificationService.NOTI_NONE);
-
-		} catch (InconsistentException e) {
-			// get this error if containing dir doesn't exist
-			if (mkdir) {
-			    try {
-				ContentCollection collection = addCollection (dir, resourceProperties);
-				return writeFile(name, type, data, dir, resp, false);
-			    } catch (Throwable ee) {
-			    }
-			}
-			// System.out.println("Add fail, inconsistent");
-			resp.sendError(HttpServletResponse.SC_CONFLICT);
-			return false;
-		} catch (IdUsedException e) {
-			// Should not happen because we deleted above (unless tawo requests at same time)
-		        // System.out.println("Add fail, in use");
-			Log.warn("sakai","access post IdUsedException:" + e.getMessage());
-			
-			resp.sendError(HttpServletResponse.SC_CONFLICT);
-			return false;
-		} catch (Exception e) {
-			// System.out.println("Add failed, exception " + e.getClass() + ": " + e.getMessage());
-			resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-			return false;
-		}
-	    } catch (IOException e) {
-		// System.out.println("overall fail IOException " + e);
-	    }
-	    return true;
-	}
-
-	public void doPost(HttpServletRequest req, HttpServletResponse res)
+	protected void handleAccessResource(HttpServletRequest req, HttpServletResponse res, Reference ref, Collection copyrightAcceptedRefs)
+			throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException
 	{
-		String path = req.getPathInfo();
-		// System.out.println("path " + path);
-		if (path == null) path = "";
-		// assume caller has verified that it is a request for content and that it's multipart
-		// loop over attributes in request, picking out the ones
-		// that are file uploads and doing them
-		for (Enumeration e = req.getAttributeNames() ; e.hasMoreElements() ;) {
-		    String iname = (String)e.nextElement();
-		    // System.out.println("Item " + iname);
-		    Object o = req.getAttribute(iname);
-		    // NOTE: Fileitem is from
-		    // org.apache.commons.fileupload.FileItem, not
-		    // sakai's parameterparser version
-		    if (o != null && o instanceof FileItem) {
-			FileItem fi = (FileItem) o;
-			// System.out.println("found file " +  fi.getName());
-			if (!writeFile(fi.getName(),
-				       fi.getContentType(),
-				       fi.get(),
-				       path,
-				       res, true))
-			    return;
-		    }
-		}
-		return;
-	}   // doPost
+		// we only access resources, not collections
+		if (ref.getId().endsWith(Entity.SEPARATOR)) throw new IdUnusedException(ref.getReference());
 
+		// need read permission
+		if (!allowGetResource(ref.getId())) throw new PermissionException(EVENT_RESOURCE_READ, ref.getReference());
 
-	class directoryDone extends Exception
-	{
-	}
-
-	class redirectDone extends Exception
-	{
-	}
-
-	class noAccess extends Exception
-	{
-	}
-
-        public class RuComparator implements Comparator {
-
-	    public RuComparator() {}
-
-	    public int compare(Object o1, Object o2) {
-
-		ResourceProperties p1 = ((Entity)o1).getProperties();
-		ResourceProperties p2 = ((Entity)o2).getProperties();
-
-		String so1 = p1.getProperty("RU:resourceorder");
-		String so2 = p2.getProperty("RU:resourceorder");
-
-		int t1;
-		int t2;
-
-		// first sort on type, so that those with specified order
-		// come first
-
-		if (so1 != null && !so1.equals(""))
-		    t1 = 1;
-		else if (o1 instanceof ContentCollection)
-		    t1 = 2;
-		else
-		    t1 = 3;
-
-		if (so2 != null && !so2.equals(""))
-		    t2 = 1;
-		else if (o2 instanceof ContentCollection)
-		    t2 = 2;
-		else
-		    t2 = 3;
-
-		if (t1 < t2)
-		    return -1;
-		else if (t1 > t2)
-		    return 1;
-
-		// now, they are the same type, so compare within type
-		// if order properties, use them
-
-		if (so1 != null && !so1.equals("") 
-		    && so2 != null && !so2.equals("")) {
-
-		    int i1 = Integer.parseInt(so1);
-		    int i2 = Integer.parseInt(so2);
-		    if (i1 == i2)
-			return 0;
-		    else if (i1 < i2)
-			return -1;
-		    else return 1;
-		}
-
-                // else do a formatted interpretation - case insensitive
-                String s1 = p1.getPropertyFormatted (ResourceProperties.PROP_DISPLAY_NAME);
-		String s2 = p2.getPropertyFormatted (ResourceProperties.PROP_DISPLAY_NAME);
-		return s1.compareToIgnoreCase(s2);
-	    }
-	}
-
-        public int countSlashes(String s)
-        {
-	    int count = 0;
-	    int loc = s.indexOf ('/');
-
-	    while (loc >= 0) {
-		count ++;
-		loc ++;
-		loc = s.indexOf ('/', loc);
-	    }
-
-	    return count;
-	}
-
-        // see if the path is a directory
-        //   return index.html to be displayed,
-        //   do directory listing then throw directoryDone
-        //   issue a redirect then throw redirectDone
-        //   return null in which case we continue
-        // 
-        //   throwing directoryDone is done in cases where we want the
-        //     caller to return immediately, because we've handled the request
-
-    	public Reference doDirectory(Reference ref, HttpServletRequest req, HttpServletResponse res)
-	    throws PermissionException
-	{
-	    // the reason for all this magic with paths is that I'm
-	    // trying to use appropriate functions like getAccessPoint
-	    // rather than hardcoding strings like /access or /content.
-	    // also, I remove the http://host, so the redirects work
-	    // whether the user is using http or https
-
-	    // System.out.println("abs: " + getAccessPoint(false) + " rel: " + getAccessPoint(true));
-	    String path = ref.getId();
-	    String basedir = req.getParameter("sbasedir");
-	    // path may have been transformed by an alias
-	    // we need origpath to check whether there was as trailing /
-	    String origpath = req.getPathInfo();
-	    String querystring = req.getQueryString();
-	    // set access to /access/content, must skip http://host
-	    String access = getAccessPoint(false);
-	    int i = access.indexOf("://");
-	    if (i > 0) 
-		i = access.indexOf("/", i+3);
-	    if (i > 0)
-		access = access.substring(i);
-
-	    // compute string for redirect. It's the original
-	    // with slash at the end of the path.
-	    // the problem is that getpathinfo is missing /access
-	    i = access.indexOf(getAccessPoint(true));
-	    String redpath = access.substring(0, i) + origpath;
-	    if (!redpath.endsWith(Entity.SEPARATOR))
-		redpath = redpath + Entity.SEPARATOR;
-	    // if there's a query string, add it
-	    if (querystring != null && !querystring.equals(""))
-		redpath = redpath + "?" + querystring;
-
-	    // System.out.println("redpath " + redpath);
-
-	    boolean sferyx = true;
-	    if (basedir == null || basedir.equals("")) {
-		sferyx = false;
-		basedir = req.getParameter("basedir");
-	    }
-	    String field = req.getParameter("field");
-	    
-	    // System.out.println("basedir " + basedir);
-
-	    if (field == null)
-		field = "url";
-
-	    // See if we need to look up index.html. If it's a
-	    // collection name, index.html exists, and the original
-	    // path didn't end in /, we have to redirect to the name
-	    // with the slash. Otherwise any relative URL's in
-	    // index.html will fail. The redirect is necessary because
-	    // the client has to adjust it's idea of the path.
-
-	    // implement index.html 
-	    // now see if the user can access it.
-	    // This is complicated by the way collections are
-	    // implemented. We have to try adding /index.html pretty
-	    // much no matter what. Permissions are checked before
-	    // existence. But the user might not be permitted to see
-	    // the main dir but still be allowed to see index.html. So
-	    // we really have to try both
-
-	    boolean found = false;
-	    String colpath = "";
-	    Reference colref = null;
-	    boolean permitted = true;
-	    boolean iscoll = false;
-			    
-	    // permission is checked first, so the default should be true
-	    
-	    // this code only has an effect if we actually find and can
-	    // read index.html. Otherwise leave failure what it was
-	    // This is true only because permissions are never
-	    // tighter inside subdirs.
-
-	    if (path.endsWith(Entity.SEPARATOR))
-		colpath = path + "index.html";
-	    else
-		colpath = path + "/index.html";
-
-	    // System.out.println("second try " + colpath);
-	    // sferyx and basedir are file pickers. We need to see the
-	    // real directory for them, so ignore index.html
-	    // System.out.println("origpath " + origpath);
-	    if (!sferyx && basedir == null)
-	    try {
-		checkResource(colpath);
-		// if we get here, index.html exists and we can read it
-		// System.out.println("second check ok");
-		// If path doesn't end with /, redirect. The problem
-		// is that relative references won't work. That's why
-		// Apache issues redirects in the same situation.
-		if (!origpath.endsWith(Entity.SEPARATOR)) {
-		    // System.out.println("need redirect");
-		    try {
-			res.sendRedirect(redpath);
-			// System.out.println("redirect ok");
-			return null;
-		    } catch (IOException ignore) {
-			// System.out.println("redirect failed");
-			return null; // ???
-		    }
-		    // only here if redirect fails. Note sure what to do.
-		    // There's an index.html, but without the redirect
-		    // relative references on it will fail.
-		    // for the moment forget index.html.
- 		} else {
-		    // don't need redirect - process index.html
-		    return m_entityManager.newReference(getAccessPoint(true) + colpath);
-		}
-	    } catch (Throwable tt) {
-		// System.out.println("no index.html")
-		;
-	    }
-
-	    // index.html not usable, do directory listing
-
-	    if (path.endsWith(Entity.SEPARATOR))
-		colpath = path;
-	    else
-		colpath = path + "/";
-
-	    // System.out.println("colpath " + colpath);
-	    try {
-		checkCollection(colpath);
-		// if nothing thrown, it exists and we can read it
-		// System.out.println("is coll");
-	    } catch (PermissionException t) {
-		// System.out.println("permission " + ref.getReference());
-		// note that we throw the original path before any alias
-		// mapping. 
-		String throwpath = origpath;
-		if (!throwpath.endsWith(Entity.SEPARATOR))
-		    throwpath = throwpath + "/";
-		throw new PermissionException(EVENT_RESOURCE_READ, throwpath);
-	    } catch (Exception t) {
-		try {
-		    res.sendError(HttpServletResponse.SC_FORBIDDEN);
-		} catch (Exception tt) {
-		}
-		return null;
-	    }
-
-	    // OK, it's a collection and we can read it. Do a listing.
-	    // System.out.println("got to final check");
-
-	    PrintWriter out = null;
-	    // don't set the writer until we verify that
-	    // getallresources is going to work.
-	    boolean printedHeader = false;
-	    boolean printedDiv = false;
-
-	    try {
-		ContentCollection x = 
-		    getCollection(colpath);
-
-		// I want to use relative paths in the listing,
-		// so we need to redirect if there's no trailing /
-		// for the usual reasons.
-		if (!origpath.endsWith(Entity.SEPARATOR)) {
-		    // System.out.println("need redirect");
-		    try {
-			res.sendRedirect(redpath);
-			return null;
-		    } catch (IOException ignore) {
-			return null;
-		    }
-		}
-
-		List members = x.getMemberResources();
-		// we will need resources. getting them once makes the sort a whole lot faster
-		// System.out.println("before sort have " + members.size());
-
-		if (sferyx || basedir != null)
-		    Collections.sort(members, new ContentHostingComparator (ResourceProperties.PROP_DISPLAY_NAME, true));
-		else
-		    Collections.sort (members, new RuComparator ());
-
-		// System.out.println("after sort have " + members.size());
-
-		Iterator xi = members.iterator();
-
-		res.setContentType("text/html; charset=UTF-8");
-
-		out = res.getWriter();
-
-		if (sferyx) {
-		    out.println("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1252\"><title>Control Panel - FileBrowser</title></head><body bgcolor=\"#FFFFFF\" topmargin=\"0\" leftmargin=\"0\"><b><font color=\"#000000\" face=\"Arial\" size=\"3\">Path:&nbsp;" + access + Validator.escapeHtml(path) + "</font></b><table border=\"0\" width=\"100%\" bgcolor=\"#FFFFFF\" cellspacing=\"0\" cellpadding=\"0\">");
-		    printedHeader = true;
-
-		} else {
-		    ResourceProperties pl = x.getProperties();
-		    out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
-		    out.println("<html><head>");
-		    out.println("<title>" + "Index of " + pl.getProperty(ResourceProperties.PROP_DISPLAY_NAME) + "</title>");
-		    String webappRoot = m_serverConfigurationService.getServerUrl();
-		    out.println("<link href=\"" + webappRoot + "/library/skin/default/access.css\" type=\"text/css\" rel=\"stylesheet\" media=\"screen\" />");
-		    if (basedir != null) {
-			    out.println("<script type=\"text/javascript\">");
-			    out.println("function seturl(url) {");
-			    out.println("window.opener.document.forms[0]." + field + ".value = url;  window.close();");
-			    out.println("}");
-			    out.println("</script>");
-		    }
-		
-		    out.println("</head><body>");
-		    out.println("<div class=\"directoryIndex\">");
-		    // for content listing it's best to use a real title
-		    if (basedir != null)
-			out.println("<h2>Contents of " + access + path + "</h2>");
-		    else {
-			out.println("<h2>" + pl.getProperty(ResourceProperties.PROP_DISPLAY_NAME) + "</h2>");
-			String desc = pl.getProperty(ResourceProperties.PROP_DESCRIPTION);
-			if (desc != null && !desc.equals(""))
-			    out.println("<p>" + desc + "</p>");
-		    }
-
-		    out.println("<table summary=\"Directory index\">");
-		    printedHeader = true;
-		    printedDiv = true;
-		}
-
-		int slashes = countSlashes(path);
-
-		// basedir will be a full url: 
-		// http://host:8080/access/content/group/db5a4d0c-3dfd-4d10-8018-41db42ac7c8b/
-		// possibly with a file name on the end.
-		// xss is just the file name. Compute a prefix
-
-		String filepref = "";
-		//  /content
-		String relaccess = getAccessPoint(true);
-		if (basedir != null && !basedir.equals("none")) {
-		    // start bases after /access/content, since it isn't in path
-		    String bases = basedir.substring(basedir.indexOf(relaccess)+ relaccess.length());
-		    int lastslash = 0;
-		    // path is always a directory, so it ends in /
-		    // do that for base as well
-		    if (!bases.endsWith("/")) {
-			lastslash = bases.lastIndexOf("/");
-			if (lastslash > 0)
-			    bases = bases.substring(0, lastslash+1);
-		    }
-		    // path and bases should now be comparable, starting
-		    // at /user or /group and ending in /
-		    // bases: /a/b/c/
-		    // path: /a/b/d/
-		    // need ../d
-		    // this code is used in a context where we know there
-		    // actually is overlap
-		    while (bases.length() > path.length() ||
-			   (!bases.equals("/") &&
-			   !bases.equals(path.substring(0, bases.length())))) {
-			lastslash = bases.lastIndexOf("/",bases.length()-2);
-			if (lastslash < 0)
-			    break;
-			filepref = filepref + "../";
-			bases = bases.substring(0, lastslash+1);
-		    }
-		    // bases is now the common part, e.g. /a/b/  /a/b/c
-		    // add the rest of path
-		    if (path.length() > bases.length())
-			filepref = filepref + Validator.escapeUrl(path.substring(bases.length()));
-		} else if (basedir != null && basedir.equals("none")) {
-		    filepref= access + Validator.escapeUrl(path);
-		}
-
-		// for web content format, need to be able to choose main URL
-
-		String baseparam = "";
-		if (sferyx)
-		    baseparam = "?sbasedir=" + Validator.escapeUrl(basedir);
-		else if (basedir != null)
-		    baseparam = "?basedir=" + Validator.escapeUrl(basedir)
-			        + "&field=" + Validator.escapeUrl(field);
-
-		if (slashes > 3) {
-		    // go up a level
-		    String uplev = path.substring(0, path.length() - 1);
-		    uplev = access + uplev.substring(0, uplev.lastIndexOf('/')+1);
-
-		    if (sferyx)
-			out.println("<tr><td align=\"center\" left=\"50%\" height=\"20\"><b><a href=\"../" + baseparam + "\">Up one level</a></b></td><td width=\"20%\"></td><td width=\"30%\"></td></tr><form name=\"fileSelections\">");
-		    else if (basedir != null)
-			out.println("<tr><td><a href=\"../" + baseparam + "\">Up one level</a></td><td><b>Folder</b>" +
-				"</td><td>" +
-				"</td><td>" +
-				"</td><td>" +
-				"</td></tr>");
-		    else
-			out.println("<tr><td><a href=\"../\">Up one level</a> [Folder]</td><td></td></tr>");
-		} else if (sferyx) 
-		    out.println("<tr><td align=\"center\" left=\"50%\" height=\"20\">&nbsp;</td><td width=\"20%\"></td><td width=\"30%\"></td></tr><form name=\"fileSelections\">");
-
-		while (xi.hasNext()) {
-		    // System.out.println("hasnext");
-		    Entity nextres = (Entity) xi.next();
-		    ResourceProperties properties = nextres.getProperties();
-		    boolean isCollection = properties.getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION);
-		    String xs = nextres.getId();
-
-		    ContentResource content = null;
-		    if (isCollection) {
-			xs = xs.substring(0, xs.length()-1);
-			xs = xs.substring(xs.lastIndexOf('/')+1) + '/';
-		    } else {
-			content = (ContentResource)nextres;
-			xs = xs.substring(xs.lastIndexOf('/')+1);
-		    }
-
-		    // System.out.println("id " + xs);
-		    
-		    try {
-
-			if (isCollection) {
-			    if (sferyx)  
-				out.println("<tr><td bgcolor=\"#FFF678\" align=\"LEFT\"><font face=\"Arial\" size=\"3\">&nbsp;<a href=\"" + Validator.escapeUrl(xs) + baseparam + "\">" + Validator.escapeHtml(xs) + "</a></font></td><td bgcolor=\"#FFF678\" align=\"RIGHT\"><font face=\"Arial\" size=\"3\" color=\"#000000\">File Folder</font></td><td>&nbsp;</td></tr>");
-			    else if (basedir != null) 
-				out.println("<tr><td><button type=button onclick=\"seturl('" + filepref + Validator.escapeHtml(xs)+ "')\">Choose</button>&nbsp;<a href=\"" + Validator.escapeUrl(xs) + baseparam + "\">" + Validator.escapeHtml(xs) + "</a></td><td><b>Folder</b>" +
-				    "</td><td>" +
-				    "</td><td>" +
-				    "</td><td>" +
-				    "</td></tr>");
-			    else {
-				String desc = properties.getProperty(ResourceProperties.PROP_DESCRIPTION);
-				if (desc == null)
-				    desc = "";
-
-				out.println("<tr><td><a href=\"" + Validator.escapeUrl(xs) + baseparam + "\">" + Validator.escapeHtml(properties.getProperty(ResourceProperties.PROP_DISPLAY_NAME)) + "</a> [Folder]</td><td>" + Validator.escapeHtml(desc) + "</td></tr>");
-			    }
-			} else {
-			    long filesize = ((content.getContentLength() - 1) / 1024) + 1;
-			    String createdBy = properties.getUserProperty(ResourceProperties.PROP_CREATOR).getDisplayName();
-			    Time modTime = properties.getTimeProperty(ResourceProperties.PROP_MODIFIED_DATE);
-			    String modifiedTime = modTime.toStringLocalShortDate() + " " + modTime.toStringLocalShort();
-			    String filetype = content.getContentType();
-
-			    if (sferyx) 
-				out.println("<tr><td bgcolor=\"#FFFFFF\" align=\"LEFT\"><font face=\"Arial\" size=\"3\">&nbsp;&nbsp;</font><input type=\"submit\" name=\"selectedFiles\" value=\"" + filepref + Validator.escapeUrl(xs) + "\"></td><td bgcolor=\"#FFFFFF\" align=\"RIGHT\"><font face=\"Arial\" size=\"3\">" + filesize + "</font></td><td bgcolor=\"#FFFFFF\" align=\"LEFT\"><font face=\"Arial\" size=\"3\">&nbsp;&nbsp;" + modifiedTime + "</font></td></tr>");
-			    else if (basedir != null)
-				out.println("<tr><td><button type=button onclick=\"seturl('" + filepref + Validator.escapeHtml(xs)+ "')\">Choose</button>&nbsp;&nbsp;" + 
-					    Validator.escapeHtml(xs) + "</td><td>" +
-					    filesize + "</td><td>" +
-					    createdBy + "</td><td>" +
-					    filetype + "</td><td>" +
-					    modifiedTime + "</td></tr>");
-			    else {
-				String desc = properties.getProperty(ResourceProperties.PROP_DESCRIPTION);
-				if (desc == null)
-				    desc = "";
-
-				out.println("<tr><td><a href=\"" + Validator.escapeUrl(xs) + "\" target=_blank>" + Validator.escapeHtml(properties.getProperty(ResourceProperties.PROP_DISPLAY_NAME)) + "</a></td><td>" + Validator.escapeHtml(desc) + "</td></tr>");
-			    }
-			}
-		    } catch (Throwable ignore) {
-			if (sferyx) 
-			    out.println("<tr><td bgcolor=\"#FFFFFF\" align=\"LEFT\"><font face=\"Arial\" size=\"3\">&nbsp;&nbsp;</font><input type=\"submit\" name=\"selectedFiles\" value=\"" + filepref + Validator.escapeHtml(xs) + "\"></td><td bgcolor=\"#FFFFFF\" align=\"RIGHT\"><font face=\"Arial\" size=\"3\">&nbsp</font></td><td bgcolor=\"#FFFFFF\" align=\"LEFT\"><font face=\"Arial\" size=\"3\">&nbsp;&nbsp;</font></td></tr>");
-			else if (basedir != null) 
-			    out.println("<tr><td><button type=button onclick=\"seturl('" + filepref + Validator.escapeHtml(xs)+ "')\">Choose</button>&nbsp;&nbsp;" + 
-				    Validator.escapeHtml(xs) + "</td><td>" +
-				    "</td><td>" +
-				    "</td><td>" +
-				    "</td><td>" +
-				    "</td></tr>");
-			else
-			    out.println("<tr><td><a href=\"" + Validator.escapeUrl(xs) + "\" target=_blank>" + Validator.escapeHtml(xs) + "</a></td><td></tr>");
-		    }
-		}
-
-	    } catch (Throwable ignore) {
-	    } 
-
-	    if (out != null && printedHeader) {
-                out.println("</table>");
-		if (printedDiv) 
-		    out.println("</div>");
-                out.println("</body></html>");
-	    }
-
-	    return null;
-	}
-
-	public HttpAccess getHttpAccess()
-	{
-		return new HttpAccess()
+		BaseResourceEdit resource = null;
+		try
 		{
+			resource = (BaseResourceEdit) getResource(ref.getId());
+		}
+		catch (TypeException e)
+		{
+			throw new IdUnusedException(ref.getReference());
+		}
 
-			// Can't find anyplace we can import these. Please fix if you know.
-			private static final String METHOD_POST = "POST";
+		// if this entity requires a copyright agreement, and has not yet been set, get one
+		if (resource.requiresCopyrightAgreement() && !copyrightAcceptedRefs.contains(resource.getReference()))
+		{
+			throw new CopyrightException();
+		}
 
-			public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref, Collection copyrightAcceptedRefs) throws PermissionException,
-					IdUnusedException, ServerOverloadException, CopyrightException
+		try
+		{
+			ResourceProperties properties = resource.getProperties();
+
+			// changed to int from long because res.setContentLength won't take long param -- JE
+			int len = resource.getContentLength();
+			String contentType = resource.getContentType();
+
+			// for url content type, encode a redirect to the body URL
+			if (contentType.equalsIgnoreCase(ResourceProperties.TYPE_URL))
 			{
-			    // System.out.println("handleaccess " + req.getMethod());
-				if (req.getMethod().equals(METHOD_POST) && FileUpload.isMultipartContent(req)) {
-				    doPost(req, res);
-				    return;
-				}
-
-				// we only access resources, not collections
-				if (ref.getId().endsWith(Entity.SEPARATOR)) {
-				    ref = doDirectory(ref, req, res);
-				    if (ref == null)
-					return;
-				} else try {
-
-				// If the user omits the trailing /, we do
-				// want to find it. findCollection ignores
-				// permissions, so it will really tell us
-				// whether we have a collection
-
-				    ContentCollection collection = findCollection(ref.getId() + "/");
-				    if (collection != null) {
-					// only get here if it's really a collection
-					ref = doDirectory(ref, req, res);
-				        if (ref == null)
-					   return;
-				    }
-				} catch (Exception e) {
-				    // most likely not a collection
-				}
-
-				// need read permission
-				// if (!allowGetResource(ref.getId())) throw new PermissionException(EVENT_RESOURCE_READ, ref.getReference());
-				// need to use original path in case the user
-				// accessed this through an alias. getpathinfo
-				// will use the origional alias, whereas 
-				// ref.getid will be mapped.
-				if (!allowGetResource(ref.getId())) throw new PermissionException(EVENT_RESOURCE_READ, req.getPathInfo());
-
-				BaseResourceEdit resource = null;
-				try
+				byte[] content = resource.getContent();
+				if ((content == null) || (content.length == 0))
 				{
-					resource = (BaseResourceEdit) getResource(ref.getId());
+					throw new IdUnusedException(ref.getReference());
 				}
-				catch (TypeException e)
+
+				String one = new String(content);
+				String two = "";
+				for (int i = 0; i < one.length(); i++)
 				{
-				    // TypeException means it's a directory
-				    // presumably without / at the end
-				        ref = doDirectory(ref, req, res);
-					if (ref == null)
-					    return;
-					try {
-					    resource = (BaseResourceEdit) getResource(ref.getId());
-					} catch (TypeException ee) {
-					    throw new IdUnusedException(ref.getReference());
+					if (one.charAt(i) == '+')
+					{
+						two += "%2b";
 					}
-				}
-
-				// if this entity requires a copyright agreement, and has not yet been set, get one
-				if (resource.requiresCopyrightAgreement() && !copyrightAcceptedRefs.contains(ref.getReference()))
-				{
-					throw new CopyrightException();
-				}
-
-				try
-				{
-					ResourceProperties properties = resource.getProperties();
-
-					// changed to int from long because res.setContentLength won't take long param -- JE
-					int len = resource.getContentLength();
-					String contentType = resource.getContentType();
-			
-					// for url content type, encode a redirect to the body URL
-					if (contentType.equalsIgnoreCase(ResourceProperties.TYPE_URL))
-					{		
-						byte[] content = resource.getContent();
-						if ((content == null) || (content.length == 0))
-						{
-							throw new IdUnusedException(ref.getReference()	);
-						}
-
-						String one = new String(content);
-						String two = "";
-						for (int i=0; i < one.length(); i++)
-						{
-							if (one.charAt(i) == '+')
-							{
-								two += "%2b";
-							}
-							else
-							{
-								two += one.charAt(i);
-							}
-						}
-						res.sendRedirect(two);
-					}
-			
 					else
 					{
-						// use the last part, the file name part of the id, for the download file name
-						String fileName = Validator.getFileName(ref.getId());
-						fileName = Validator.escapeResourceName(fileName);
-			
-						String disposition = null;
-						if (Validator.letBrowserInline(contentType))
+						two += one.charAt(i);
+					}
+				}
+				res.sendRedirect(two);
+			}
+
+			else
+			{
+				// use the last part, the file name part of the id, for the download file name
+				String fileName = Validator.getFileName(ref.getId());
+				fileName = Validator.escapeResourceName(fileName);
+
+				String disposition = null;
+				if (Validator.letBrowserInline(contentType))
+				{
+					disposition = "inline; filename=\"" + fileName + "\"";
+				}
+				else
+				{
+					disposition = "attachment; filename=\"" + fileName + "\"";
+				}
+
+				// NOTE: Only set the encoding on the content we have to.
+				// Files uploaded by the user may have been created with different encodings, such as ISO-8859-1;
+				// rather than (sometimes wrongly) saying its UTF-8, let the browser auto-detect the encoding.
+				// If the content was created through the WYSIWYG editor, the encoding does need to be set (UTF-8).
+				String encoding = resource.getProperties().getProperty(ResourceProperties.PROP_CONTENT_ENCODING);
+				if (encoding != null && encoding.length() > 0)
+				{
+					contentType = contentType + "; charset=" + encoding;
+				}
+
+				// stream the content using a small buffer to keep memory managed
+				if (STREAM_CONTENT)
+				{
+					InputStream content = null;
+					OutputStream out = null;
+
+					try
+					{
+						content = resource.streamContent();
+						if (content == null)
 						{
-							disposition = "inline; filename=\"" + fileName+"\"";
+							throw new IdUnusedException(ref.getReference());
+						}
+
+						res.setContentType(contentType);
+						res.addHeader("Content-Disposition", disposition);
+						res.setContentLength(len);
+
+						// set the buffer of the response to match what we are reading from the request
+						if (len < STREAM_BUFFER_SIZE)
+						{
+							res.setBufferSize(len);
 						}
 						else
 						{
-							disposition = "attachment; filename=\"" + fileName +"\"";
+							res.setBufferSize(STREAM_BUFFER_SIZE);
 						}
-			
-						// NOTE:  Only set the encoding on the content we have to.
-						// Files uploaded by the user may have been created with different encodings, such as ISO-8859-1;
-						// rather than (sometimes wrongly) saying its UTF-8, let the browser auto-detect the encoding.
-						// If the content was created through the WYSIWYG editor, the encoding does need to be set (UTF-8).
-						String encoding = resource.getProperties().getProperty(ResourceProperties.PROP_CONTENT_ENCODING);
-						if (encoding != null && encoding.length() > 0)
+
+						out = res.getOutputStream();
+
+						// chunk
+						byte[] chunk = new byte[STREAM_BUFFER_SIZE];
+						int lenRead;
+						while ((lenRead = content.read(chunk)) != -1)
 						{
-							contentType = contentType + "; charset="+encoding;
+							out.write(chunk, 0, lenRead);
 						}
-						
-						// stream the content using a small buffer to keep memory managed
-						if (STREAM_CONTENT)
+					}
+					catch (ServerOverloadException e)
+					{
+						throw e;
+					}
+					catch (Throwable ignore)
+					{
+					}
+					finally
+					{
+						// be a good little program and close the stream - freeing up valuable system resources
+						if (content != null)
 						{
-							InputStream content = null;
-							OutputStream out = null;
-			
+							content.close();
+						}
+
+						if (out != null)
+						{
 							try
 							{
-								content = resource.streamContent();
-								if (content == null)
-								{
-									throw new IdUnusedException(ref.getReference());
-								}
-			
-								res.setContentType(contentType);
-								res.addHeader("Content-Disposition", disposition);
-								res.setContentLength(len);
-			
-								// set the buffer of the response to match what we are reading from the request
-								if (len < STREAM_BUFFER_SIZE)
-								{						
-									res.setBufferSize(len);
-								}
-								else
-								{
-									res.setBufferSize(STREAM_BUFFER_SIZE);
-								}
-			
-								out = res.getOutputStream();
-			
-								// chunk
-								byte[] chunk = new byte[STREAM_BUFFER_SIZE];
-								int lenRead;
-								while ((lenRead = content.read(chunk)) != -1)
-								{
-									out.write(chunk, 0, lenRead);					
-								}
-							}
-							catch (ServerOverloadException e)
-							{
-								throw e;
-							}
-							catch (Throwable ignore)
-							{
-							}
-							finally
-							{
-								// be a good little program and close the stream - freeing up valuable system resources
-								if (content != null)
-								{
-									content.close();
-								}
-			
-								if (out != null)
-								{
-									try
-									{
-										out.close();
-									}
-									catch (Throwable ignore)
-									{
-									}
-								}
-							}
-						}
-			
-						// read the entire content into memory and send it from there
-						else
-						{
-							byte[] content = resource.getContent();
-							if (content == null)
-							{
-								throw new IdUnusedException(ref.getReference());
-							}
-			
-							res.setContentType(contentType);
-							res.addHeader("Content-Disposition", disposition);
-							res.setContentLength(len);
-			
-							// Increase the buffer size for more speed. - don't - we don't want a 20 meg buffer size,right? -ggolden
-							//res.setBufferSize(len);
-			
-							OutputStream out = null;
-							try
-							{
-								out = res.getOutputStream();
-								out.write(content);
-								out.flush();
 								out.close();
 							}
 							catch (Throwable ignore)
 							{
 							}
-							finally
+						}
+					}
+				}
+
+				// read the entire content into memory and send it from there
+				else
+				{
+					byte[] content = resource.getContent();
+					if (content == null)
+					{
+						throw new IdUnusedException(ref.getReference());
+					}
+
+					res.setContentType(contentType);
+					res.addHeader("Content-Disposition", disposition);
+					res.setContentLength(len);
+
+					// Increase the buffer size for more speed. - don't - we don't want a 20 meg buffer size,right? -ggolden
+					// res.setBufferSize(len);
+
+					OutputStream out = null;
+					try
+					{
+						out = res.getOutputStream();
+						out.write(content);
+						out.flush();
+						out.close();
+					}
+					catch (Throwable ignore)
+					{
+					}
+					finally
+					{
+						if (out != null)
+						{
+							try
 							{
-								if (out != null)
-								{
-									try
-									{
-										out.close();
-									}
-									catch (Throwable ignore)
-									{
-									}
-								}
+								out.close();
+							}
+							catch (Throwable ignore)
+							{
 							}
 						}
 					}
-
-					// track event
-					EventTrackingService.post(EventTrackingService.newEvent(EVENT_RESOURCE_READ, resource.getReference(), false));
 				}
-				catch (Throwable t)
+			}
+
+			// track event
+			EventTrackingService.post(EventTrackingService.newEvent(EVENT_RESOURCE_READ, resource.getReference(), false));
+		}
+		catch (Throwable t)
+		{
+			throw new IdUnusedException(ref.getReference());
+		}
+	}
+
+	/**
+	 * Process the access request for a collection, producing the "apache" style HTML file directory listing (complete with index.html redirect if found).
+	 * @param req
+	 * @param res
+	 * @param ref
+	 * @param copyrightAcceptedRefs
+	 * @throws PermissionException
+	 * @throws IdUnusedException
+	 * @throws ServerOverloadException
+	 */
+	protected void handleAccessCollection(HttpServletRequest req, HttpServletResponse res, Reference ref, Collection copyrightAcceptedRefs)
+			throws PermissionException, IdUnusedException, ServerOverloadException
+	{
+		// we only access resources, not collections
+		if (!ref.getId().endsWith(Entity.SEPARATOR)) throw new IdUnusedException(ref.getReference());
+
+		// first, check for an index.html in the collection - redirect here if found
+		if (m_storage.checkResource(ref.getId() + "index.html"))
+		{
+			String addr = Web.returnUrl(req, req.getPathInfo()) + "index.html";
+			try
+			{
+				res.sendRedirect(addr);
+				return;
+			}
+			catch (IOException e)
+			{
+				m_logger.warn("handleAccessCollection: redirecting to " + addr + " : " + e);				
+			}
+		}
+
+		// need read permission
+		if (!allowGetResource(ref.getId())) throw new PermissionException(EVENT_RESOURCE_READ, ref.getReference());
+
+		BaseCollectionEdit collection = null;
+		try
+		{
+			collection = (BaseCollectionEdit) getCollection(ref.getId());
+		}
+		catch (TypeException e)
+		{
+			throw new IdUnusedException(ref.getReference());
+		}
+
+		try
+		{
+			// use the helper
+			CollectionAccessFormatter.format(collection, ref, req, res, getAccessPoint(true), getAccessPoint(false));
+
+			// track event
+//			EventTrackingService.post(EventTrackingService.newEvent(EVENT_RESOURCE_READ, collection.getReference(), false));
+		}
+		catch (Throwable t)
+		{
+			throw new IdUnusedException(ref.getReference());
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public HttpAccess getHttpAccess()
+	{
+		return new HttpAccess()
+		{
+			public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref, Collection copyrightAcceptedRefs) throws PermissionException,
+					IdUnusedException, ServerOverloadException, CopyrightException
+			{
+				// if the id is null, the request was for just ".../content"
+				String refId = ref.getId();
+				if (refId == null) refId = "";
+
+				// test if the given reference is a resource
+				if (m_storage.checkResource(refId))
 				{
+					handleAccessResource(req, res, ref, copyrightAcceptedRefs);	
+					return;
+				}
+	
+				// test for a collection
+				if (m_storage.checkCollection(refId))
+				{
+					handleAccessCollection(req, res, ref, copyrightAcceptedRefs);
+					return;
+				}
+				
+				// finally, try a collection that was missing it's final separator
+				if (!refId.endsWith(Entity.SEPARATOR))
+				{
+					// would it be a collection if we added the missing separator?
+					if (m_storage.checkCollection(refId + Entity.SEPARATOR))
+					{
+						// redirect to this
+						//	Note: if the request had no trailing separator, getPathInfo still returns "/" - avoid ending up with "...//" -ggolden
+						String addr = Web.returnUrl(req, req.getPathInfo()) + ("/".equals(req.getPathInfo()) ? "" : Entity.SEPARATOR);
+						try
+						{
+							res.sendRedirect(addr);
+							return;
+						}
+						catch (IOException e)
+						{
+							m_logger.warn("handleAccess: redirecting to " + addr + " : " + e);
+							throw new IdUnusedException(ref.getReference());
+						}
+					}
+					
+					// nothing we know of...
 					throw new IdUnusedException(ref.getReference());
 				}
 			}
@@ -4719,7 +4223,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			String parts[] = StringUtil.split(ref.getId(), Entity.SEPARATOR);
 			if ((parts.length > 3) && (parts[1].equals("group-user")))
 			{
-				rv.add(SiteService.siteReference(SiteService.getUserSiteId(parts[3])));
+				rv.add(m_siteService.siteReference(m_siteService.getUserSiteId(parts[3])));
 			}
 
 			// site
@@ -5259,15 +4763,47 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			// parse out the local resource id
 			id = reference.substring(getUrl("").length(), reference.length());
 		}
-		
+
 		// not mine
 		else
 		{
 			return false;
 		}
 
-		// parse out the associated site id
+		// recognize a short reference
+		if (m_shortRefs)
+		{
+			// ignoring the first separator, get the first item separated from the rest
+			String prefix[] = StringUtil.splitFirst((id.length() > 1) ? id.substring(1) : "", Entity.SEPARATOR);
+			if (prefix.length > 0)
+			{
+				// the following are recognized as full reference prefixe; if seen, the sort ref feature is not applied
+				if (!(prefix[0].equals("group") || prefix[0].equals("user") || prefix[0].equals("group-user")
+						|| prefix[0].equals("public") || prefix[0].equals("attachment")))
+				{
+					String newPrefix = null;
+
+					// a "~" starts a /user/ reference
+					if (prefix[0].startsWith("~"))
+					{
+						newPrefix = Entity.SEPARATOR + "user" + Entity.SEPARATOR + prefix[0].substring(1);
+					}
+
+					// otherwise a /group/ reference
+					else
+					{
+						newPrefix = Entity.SEPARATOR + "group" + Entity.SEPARATOR + prefix[0];
+					}
+
+					// reattach the tail (if any) to get the new id (if no taik, make sure we end with a separator if id started out with one)
+					id = newPrefix + ((prefix.length > 1) ? (Entity.SEPARATOR + prefix[1]) : (id.endsWith(Entity.SEPARATOR) ? Entity.SEPARATOR : ""));
+				}
+			}
+		}
+
+		// parse out the associated site id, with alias checking
 		String parts[] = StringUtil.split(id, Entity.SEPARATOR);
+		boolean checkForAlias = true;
 		if (parts.length >= 3)
 		{
 			if (parts[1].equals("group"))
@@ -5276,12 +4812,66 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			}
 			else if (parts[1].equals("user"))
 			{
-				context = SiteService.getUserSiteId(parts[2]);
+				context = m_siteService.getUserSiteId(parts[2]);
+				
+				// for user sites, don't check for alias
+				checkForAlias = false;
 			}
 			else if (parts[1].equals("group-user"))
 			{
 				// use just the group context
 				context = parts[2];
+			}
+
+			// recognize alias for site id - but if a site id exists that matches the requested site id, that's what we will use
+			if (m_siteAlias && checkForAlias && (context != null))
+			{
+				if (!m_siteService.siteExists(context))
+				{
+					try
+					{
+						String target = m_aliasService.getTarget(context);
+
+						// just to stay well clear of infinite looping (the newReference will call us for content references)
+						// ignore any targets that are to the content service -ggolden
+						if (!(target.startsWith(REFERENCE_ROOT) || target.startsWith(getUrl(""))))
+						{
+							Reference targetRef = m_entityManager.newReference(target);
+							boolean changed = false;
+
+							// for a site reference
+							if (SiteService.SERVICE_NAME.equals(targetRef.getType()))
+							{
+								// use the ref's id, i.e. the site id
+								context = targetRef.getId();
+								changed = true;
+							}
+
+							// for mail archive reference
+							else if (MailArchiveService.SERVICE_NAME.equals(targetRef.getType()))
+							{
+								// use the ref's context as the site id
+								context = targetRef.getContext();
+								changed = true;
+							}
+
+							// if changed, update the id
+							if (changed)
+							{
+								parts[2] = context;
+								String newId = StringUtil.unsplit(parts, Entity.SEPARATOR);
+
+								// add the trailing separator if needed
+								if (id.endsWith(Entity.SEPARATOR)) newId += Entity.SEPARATOR;
+
+								id = newId;
+							}
+						}
+					}
+					catch (IdUnusedException noAlias)
+					{
+					}
+				}
 			}
 		}
 
@@ -6046,12 +5636,12 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	{
 		String rv = null;
 
-		if (SiteService.isUserSite(siteId))
+		if (m_siteService.isUserSite(siteId))
 		{
-			rv = COLLECTION_USER + SiteService.getSiteUserId(siteId) + "/";
+			rv = COLLECTION_USER + m_siteService.getSiteUserId(siteId) + "/";
 		}
 
-		else if (!SiteService.isSpecialSite(siteId))
+		else if (!m_siteService.isSpecialSite(siteId))
 		{
 			rv = COLLECTION_SITE + siteId + "/";
 		}
@@ -6233,7 +5823,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
       User user = UserDirectoryService.getCurrentUser();
       String userId = user.getId();
-      String wsId = SiteService.getUserSiteId(userId);
+      String wsId = m_siteService.getUserSiteId(userId);
       String wsCollectionId = getSiteCollection(wsId);
 
       List wsResources = getFlatResources(wsCollectionId);
@@ -6371,7 +5961,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		String rv = null;
 
 		// make sure we are in a worksite, not a workspace
-		if (SiteService.isUserSite(siteId) || SiteService.isSpecialSite(siteId))
+		if (m_siteService.isUserSite(siteId) || m_siteService.isSpecialSite(siteId))
 		{
 			return rv;
 		}
@@ -6412,7 +6002,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public String getDropboxDisplayName(String siteId)
 	{
 		// make sure we are in a worksite, not a workspace
-		if (SiteService.isUserSite(siteId) || SiteService.isSpecialSite(siteId))
+		if (m_siteService.isUserSite(siteId) || m_siteService.isSpecialSite(siteId))
 		{
 			return null;
 		}
@@ -6448,7 +6038,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public void createDropboxCollection(String siteId)
 	{
 		// make sure we are in a worksite, not a workspace
-		if (SiteService.isUserSite(siteId) || SiteService.isSpecialSite(siteId))
+		if (m_siteService.isUserSite(siteId) || m_siteService.isSpecialSite(siteId))
 		{
 			return;
 		}
@@ -6575,14 +6165,14 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		String dropboxId = null;
 
 		// make sure we are in a worksite, not a workspace
-		if (SiteService.isUserSite(siteId) || SiteService.isSpecialSite(siteId))
+		if (m_siteService.isUserSite(siteId) || m_siteService.isSpecialSite(siteId))
 		{
 			return false;
 		}
 
 		// if the user has dropbox maintain in the site, they are the dropbox maintainer
 		// (dropbox maintain in their myWorkspace just gives them access to their own dropbox)
-		return SecurityService.unlock(EVENT_DROPBOX_MAINTAIN, SiteService.siteReference(siteId));
+		return SecurityService.unlock(EVENT_DROPBOX_MAINTAIN, m_siteService.siteReference(siteId));
 	}
 
 	/**********************************************************************************************************************************************************************************************************************************************************

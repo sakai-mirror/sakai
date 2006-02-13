@@ -48,16 +48,11 @@ import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.service.legacy.alias.cover.AliasService;
-import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
-import org.sakaiproject.service.legacy.email.cover.MailArchiveService;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.HttpAccess;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.ResourceLoader;
@@ -104,6 +99,9 @@ public class AccessServlet extends VmServlet
 
 	/** Ref accepted, request parameter for COPYRIGHT_ACCEPT request. */
 	protected static final String COPYRIGHT_ACCEPT_REF = "ref";
+
+	/** Return URL, request parameter for COPYRIGHT_ACCEPT request. */
+	protected static final String COPYRIGHT_ACCEPT_URL = "url";
 
 	/** Session attribute holding copyright-accepted references (a collection of Strings). */
 	protected static final String COPYRIGHT_ACCEPTED_REFS_ATTR = "Access.Copyright.Accepted";
@@ -180,7 +178,7 @@ public class AccessServlet extends VmServlet
 	}
 
 	/**
-	 * respond to an HTTP POST request
+	 * respond to an HTTP POST request; only to handle the login process
 	 * 
 	 * @param req
 	 *        HttpServletRequest object with the client request
@@ -203,74 +201,8 @@ public class AccessServlet extends VmServlet
 
 		else
 		{
-			dispatch(req, res);
+			sendError(res, HttpServletResponse.SC_NOT_FOUND);
 		}
-	}
-
-	/**
-	 * check path to see whether it's an alias. If so, redirect to the target and return
-	 * also check for ~user
-	 * otherwise throw IdUnusedException
-	 */
-
-        // we call the access handler with the mapped name rather than
-        // issuing a redirect because that makes the alias transparent
-        // to the users
-
-        public void possibleAlias(HttpServletRequest req, HttpServletResponse res, String path, Reference ref, Collection accepted)
-	    throws ServletException, IdUnusedException, PermissionException, ServerOverloadException, CopyrightException
-        {
-	    // System.out.println("possible " + path);
-	    if (!path.startsWith("/"))
-		throw new IdUnusedException(ref.getReference());
-
-	    String sitename = path.substring(1);
-            String suffix;
-
-            // separate path into sitename and suffix,
-            // so we can lookup the sitename
-
-            if (sitename.indexOf("/") > -1) {
-                suffix = sitename.substring(sitename.indexOf("/")+1);
-                sitename = sitename.substring(0, sitename.indexOf("/"));
-            } else
-                suffix = "";
-
-	    String id = null;
-
-	    // does it start with ~
-	    if (SiteService.isUserSite(sitename)) {
-		// this is easy: get URL for the collection
-		id = ContentHostingService.getSiteCollection(sitename);
-	    }  else {
-		// otherwise see if it's an alias, and if so use the alias' target
-		//   getTarget throws IdUnusedException if no alias
-		Reference tref = EntityManager.newReference(AliasService.getTarget(sitename));
-		if (tref.getType().equals(MailArchiveService.SERVICE_NAME)) {
-		    // context is the site id portion of the reference. I don't see any cleaner
-		    // way to go from a reference to the actual site name.
-		    id = ContentHostingService.getSiteCollection(tref.getContext());
-		}
-	    }
-
-	    if (id != null) {
-		// System.out.println("found id " + id);
-		ref =  EntityManager.newReference(ContentHostingService.getReference(id + suffix));
-		// System.out.println("found ref " + ref.getId());
-		EntityProducer service = ref.getEntityProducer();
-		if (service == null)
-		    throw new IdUnusedException(ref.getReference());
-		// System.out.println("found service");
-		
-		HttpAccess access = service.getHttpAccess();
-		if (access == null)
-		    throw new IdUnusedException(ref.getReference());
-		// System.out.println("found access");
-
-		access.handleAccess(req, res, ref, accepted);
-		return;
-	    }
-	    throw new IdUnusedException(ref.getReference());
 	}
 
 	/**
@@ -287,7 +219,6 @@ public class AccessServlet extends VmServlet
 
 		// get the path info
 		String path = params.getPath();
-		// System.out.println("at dispatch path is " + path);
 		if (path == null) path = "";
 
 		if (!m_ready)
@@ -307,6 +238,8 @@ public class AccessServlet extends VmServlet
 		if (COPYRIGHT_REQUIRE.equals(path))
 		{
 			String acceptedRef = req.getParameter(COPYRIGHT_ACCEPT_REF);
+			String returnPath = req.getParameter(COPYRIGHT_ACCEPT_URL);
+
 			Reference aRef = EntityManager.newReference(acceptedRef);
 
 			// send the copyright agreement interface
@@ -318,13 +251,12 @@ public class AccessServlet extends VmServlet
 
 			setVmReference("validator", new Validator(), req);
 			setVmReference("resource", entity, req);
-//			setVmReference("resourceUrl", entity.getUrl(), req);
 			setVmReference("tlang",rb,req);
-			setVmReference("accept", ServerConfigurationService.getAccessUrl() + COPYRIGHT_ACCEPT + "?" + COPYRIGHT_ACCEPT_REF + "=" + aRef.getReference(), req);
-//			if (ref.getId().endsWith("&copyrightAlertEmail"))
-//			{
-//				setVmReference("accessedFromEmail", Boolean.TRUE, req);
-//			}
+
+			String acceptPath = Web.returnUrl(req, COPYRIGHT_ACCEPT + "?" + COPYRIGHT_ACCEPT_REF + "=" + aRef.getReference()
+							+ "&" + COPYRIGHT_ACCEPT_URL + "=" + returnPath);
+
+			setVmReference("accept", acceptPath, req);
 			includeVm("/vm/access/copyrightAlert.vm", req, res);
 			return;		
 		}
@@ -346,15 +278,21 @@ public class AccessServlet extends VmServlet
 			// save this with the session's other accepted refs
 			accepted.add(aRef.getReference());
 			
-			// redirect to the ref's URL
+			// redirect to the original URL
+			String returnPath = req.getParameter(COPYRIGHT_ACCEPT_URL);
+
 			try
 			{
-				res.sendRedirect(aRef.getUrl());
+				res.sendRedirect(Web.returnUrl(req, returnPath));
 			}
 			catch (IOException e){}
 			return;
 		}
 		
+		// pre-process the path
+		String origPath = path;
+		path = preProcessPath(path, req);
+
 		// what is being requested?
 		Reference ref = EntityManager.newReference(path);
 
@@ -366,17 +304,11 @@ public class AccessServlet extends VmServlet
 		{
 			// make sure we have a valid reference with an entity producer we can talk to
 			EntityProducer service = ref.getEntityProducer();
-			if (service == null) {
-			    possibleAlias(req, res, path, ref, accepted);
-			    return;
-			}
+			if (service == null) throw new IdUnusedException(ref.getReference());
 
 			// get the producer's HttpAccess helper, it might not support one
 			HttpAccess access = service.getHttpAccess();
-			if (access == null) {
-			    possibleAlias(req, res, path, ref, accepted);
-			    return;
-			}
+			if (access == null) throw new IdUnusedException(ref.getReference());
 
 			// let the helper do the work
 			access.handleAccess(req, res, ref, accepted);
@@ -394,7 +326,7 @@ public class AccessServlet extends VmServlet
 			// if not permitted, and the user is the anon user, let them login
 			if (SessionManager.getCurrentSessionUserId() == null)
 			{
-				doLogin(req, res, path);
+				doLogin(req, res, origPath);
 				return;
 			}
 
@@ -413,7 +345,11 @@ public class AccessServlet extends VmServlet
 			// redirect to the copyright agreement interface for this entity
 			try
 			{
-				res.sendRedirect(ServerConfigurationService.getAccessUrl() + COPYRIGHT_REQUIRE + "?" + COPYRIGHT_ACCEPT_REF + "=" + ref.getReference());
+				// TODO: send back using a form of the request URL, encoding the real reference, and the requested reference
+				// Note: refs / requests with servlet parameters (?x=y...) are NOT supported -ggolden
+				String redirPath = COPYRIGHT_REQUIRE + "?" + COPYRIGHT_ACCEPT_REF + "=" + ref.getEntity().getReference()
+								+ "&" + COPYRIGHT_ACCEPT_URL + "=" + req.getPathInfo();
+				res.sendRedirect(Web.returnUrl(req, redirPath));
 			}
 			catch (IOException ee){}
 			return;
@@ -432,6 +368,19 @@ public class AccessServlet extends VmServlet
 				M_log.debug("from:" + req.getRemoteAddr() + " path:" + params.getPath() + " options: " + info.optionsString()
 						+ " time: " + info.getElapsedTime());
 		}
+	}
+
+	/**
+	 * Make any changes needed to the path before final "ref" processing.
+	 * 
+	 * @param path
+	 *        The path from the request.
+	 * @req The request object.
+	 * @return The path to use to make the Reference for further processing.
+	 */
+	protected String preProcessPath(String path, HttpServletRequest req)
+	{
+		return path;
 	}
 
 	/**

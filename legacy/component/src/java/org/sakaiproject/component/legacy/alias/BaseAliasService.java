@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+* Copyright (c) 2003, 2004, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
 *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
 * 
 * Licensed under the Educational Community License Version 1.0 (the "License");
@@ -43,6 +43,7 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.MemoryService;
 import org.sakaiproject.service.legacy.alias.Alias;
 import org.sakaiproject.service.legacy.alias.AliasEdit;
@@ -75,10 +76,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
-* <p>BaseAliasService is a CHEF Alias services implemented as a Turbine Service.</p>
+* <p>BaseAliasService is ...</p>
 * 
-* @author University of Michigan, CHEF Software Development Team
-* @version $Revision$
+* @author Sakai Software Development Team
 */
 public abstract class BaseAliasService
 	implements AliasService, StorageUser
@@ -88,6 +88,9 @@ public abstract class BaseAliasService
 
 	/** The initial portion of a relative access point URL. */
 	protected String m_relativeAccessPoint = null;
+
+	/** A cache of calls to the service and the results. */
+	protected Cache m_callCache = null;
 
 	/*******************************************************************************
 	* Abstractions, etc.
@@ -277,6 +280,34 @@ public abstract class BaseAliasService
 		m_entityManager = service;
 	}
 
+	/** The # seconds to cache gets. 0 disables the cache. */
+	protected int m_cacheSeconds = 0;
+
+	/**
+	 * Set the # minutes to cache a get.
+	 * 
+	 * @param time
+	 *        The # minutes to cache a get (as an integer string).
+	 */
+	public void setCacheMinutes(String time)
+	{
+		m_cacheSeconds = Integer.parseInt(time) * 60;
+	}
+
+	/** The # seconds to cache gets. 0 disables the cache. */
+	protected int m_cacheCleanerSeconds = 0;
+
+	/**
+	 * Set the # minutes between cache cleanings.
+	 * 
+	 * @param time
+	 *        The # minutes between cache cleanings. (as an integer string).
+	 */
+	public void setCacheCleanerMinutes(String time)
+	{
+		m_cacheCleanerSeconds = Integer.parseInt(time) * 60;
+	}
+
 	/*******************************************************************************
 	* Init and Destroy
 	*******************************************************************************/
@@ -294,6 +325,13 @@ public abstract class BaseAliasService
 			m_storage = newStorage();
 			m_storage.open();
 
+			// <= 0 indicates no caching desired
+			if ((m_cacheSeconds > 0) && (m_cacheCleanerSeconds > 0))
+			{
+				// build a synchronized map for the call cache, automatiaclly checking for expiration every 15 mins, expire on user events, too.
+				m_callCache = m_memoryService.newHardCache(m_cacheCleanerSeconds, aliasReference(""));
+			}
+
 			// register as an entity producer
 			m_entityManager.registerEntityProducer(this);
 
@@ -302,7 +340,7 @@ public abstract class BaseAliasService
 			FunctionManager.registerFunction(SECURE_UPDATE_ALIAS);
 			FunctionManager.registerFunction(SECURE_REMOVE_ALIAS);
 
-			m_logger.info(this +".init()");
+			m_logger.info(this +".init()" + " - caching minutes: " + m_cacheSeconds / 60 + " - cache cleaner minutes: " + m_cacheCleanerSeconds / 60);
 		}
 		catch (Throwable t)
 		{
@@ -458,8 +496,18 @@ public abstract class BaseAliasService
 	public String getTarget(String alias)
 		throws IdUnusedException
 	{
+		// check the cache
+		String ref = aliasReference(alias);
+		if ((m_callCache != null) && (m_callCache.containsKey(ref)))
+		{
+			return (String) m_callCache.get(ref);
+		}
+
 		BaseAliasEdit a = (BaseAliasEdit) m_storage.get(alias);
 		if (a == null) throw new IdUnusedException(alias);
+
+		// cache
+		if (m_callCache != null) m_callCache.put(ref, a.getTarget(), m_cacheSeconds);
 
 		return a.getTarget();
 

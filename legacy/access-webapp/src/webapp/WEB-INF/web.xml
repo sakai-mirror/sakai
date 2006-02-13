@@ -2,22 +2,8 @@
 <web-app id="WebApp_9" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-    <display-name>sakai-legacy-access</display-name>
-    <description>Sakai 2 Legacy Access</description>
-
-	<!--
-    <filter>
-        <filter-name>sakai.snoop</filter-name>
-        <filter-class>org.sakaiproject.util.web.SnoopFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>sakai.snoop</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-    </filter-mapping>
-	-->
+    <display-name>sakai-access</display-name>
+    <description>Sakai Access</description>
 
 	<!-- Sakai request filter -->
     <filter>
@@ -66,11 +52,5 @@
          /*
        </url-pattern>
     </servlet-mapping>
-
-<!--
-    <listener>
-        <listener-class>org.sakaiproject.util.ToolListener</listener-class>
-    </listener>
--->
 
 </web-app>

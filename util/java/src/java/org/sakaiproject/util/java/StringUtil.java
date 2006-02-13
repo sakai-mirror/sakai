@@ -71,6 +71,25 @@ public class StringUtil
 	} // split
 
 	/**
+	 * Reverse the split operation.
+	 * @param parts The parts to combine
+	 * @param splitter The between-parts text
+	 */
+	public static String unsplit(String[] parts, String splitter)
+	{
+		if (parts == null) return null;
+
+		StringBuffer buf = new StringBuffer();
+		for(int i = 0; i < parts.length; i++)
+		{
+			if (parts[i] != null) buf.append(parts[i]);
+			if (i < parts.length-1) buf.append(splitter);
+		}
+		
+		return buf.toString();
+	}
+
+	/**
 	 * Split the source into two strings at the first occurrence of the splitter Subsequent occurrences are not treated specially, and may be part of the second string.
 	 * 
 	 * @param source

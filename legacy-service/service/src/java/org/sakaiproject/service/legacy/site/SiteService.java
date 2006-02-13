@@ -261,6 +261,15 @@ public interface SiteService extends EntityProducer
 	boolean allowAccessSite(String id);
 
 	/**
+	 * Is this a valid site id?
+	 * 
+	 * @param id
+	 *        The site id string.
+	 * @return True if a site with this id is defined, false if not.
+	 */
+	boolean siteExists(String id);
+
+	/**
 	 * Access a site object.
 	 * 
 	 * @param id

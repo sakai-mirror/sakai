@@ -90,6 +90,15 @@ public class SiteService
 		return service.getSite(param0);
 	}
 
+	public static boolean siteExists(java.lang.String param0)
+	{
+		org.sakaiproject.service.legacy.site.SiteService service = getInstance();
+		if (service == null)
+			return false;
+
+		return service.siteExists(param0);
+	}
+
 	public static org.sakaiproject.service.legacy.site.Site getSiteVisit(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException, org.sakaiproject.exception.PermissionException
 	{
 		org.sakaiproject.service.legacy.site.SiteService service = getInstance();

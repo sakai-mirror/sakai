@@ -481,12 +481,17 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		String ref = siteReference(id);
 		if ((m_siteCache != null) && (m_siteCache.containsKey(ref)))
 		{
-			rv = (Site) m_siteCache.get(ref);
-			
-			// return a copy of the site from the cache
-			rv = new BaseSite(rv, true);
+			// some cached things are Booleans (site exists), not sites
+			Object o = m_siteCache.get(ref);
+			if ((o != null) && (o instanceof Site))
+			{
+				rv = (Site) o;
 
-			return rv;
+				// return a copy of the site from the cache
+				rv = new BaseSite(rv, true);
+	
+				return rv;
+			}
 		}
 
 		rv = m_storage.get(id);
@@ -508,6 +513,58 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 		}
 
 		return rv;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public boolean siteExists(String id)
+	{
+		if (id != null)
+		{
+			// check the cache
+			String ref = siteReference(id);
+			if ((m_siteCache != null) && (m_siteCache.containsKey(ref)))
+			{
+				Object o = m_siteCache.get(ref);
+				if (o != null)
+				{
+					if (o instanceof Site)
+					{
+						return true;
+					}
+					
+					if (o instanceof Boolean)
+					{
+						// misses are cached, too
+						return o == Boolean.TRUE;
+					}
+				}
+			}
+
+			// check the exists cache
+			if (m_storage.check(id))
+			{
+				// cache it
+				if (m_siteCache != null)
+				{
+					m_siteCache.put(siteReference(id), Boolean.TRUE, m_cacheSeconds);
+				}
+
+				return true;
+			}
+			
+			else
+			{
+				// cache the miss
+				if (m_siteCache != null)
+				{
+					m_siteCache.put(siteReference(id), Boolean.FALSE, m_cacheSeconds);
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
