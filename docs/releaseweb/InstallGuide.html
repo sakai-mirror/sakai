@@ -130,9 +130,9 @@ A demo installatation is fairly brief and straightforward.  The steps are as fol
 	<li><a href="http://cvs.sakaiproject.org/release/2.1.1/sakai_2-1-1/sakai-demo_2-1-1.zip">Windows .zip file</a></li>
 	<li><a href="http://cvs.sakaiproject.org/release/2.1.1/sakai_2-1-1/sakai-demo_2-1-1.tar.gz">Mac/*nix tarball</a></li>
 	</ul></li>
-<li>Tune your Java environment:  the default JVM is not sufficient to run Sakai out of the box, and some of its settings will need to be adjusted by setting a new environment variable called <b>JAVA_OPTS</b>, just as JAVA_HOME is set in <a href="buildenv.html#verify">Set up Build Environment</a>. The recommended value of this variable is:
-<p><pre><span class="code">JAVA_OPTS="-server -Xms512m -Xmx512m -verbose:gc -XX:+PrintGCDetails<br/>-XX:+PrintGCTimeStamps -XX:PermSize=128m -XX:MaxPermSize=128m"</span></pre></p>
-<p>See <a href="postconfig.html#jvm">JVM Tuning</a> for a fuller discussion of the details.</p><br/></li>
+<li>Tune your Java environment:  the default JVM is not sufficient to run Sakai out of the box, and some of its settings will need to be adjusted by setting a new environment variable called <b>JAVA_OPTS</b>, just as JAVA_HOME is set in <a href="buildenv.html#verify">Set up Build Environment</a>. The recommended, minimal value of this variable is:
+<p><pre><span class="code">JAVA_OPTS="-server -Xmx512m -Xms512m -XX:PermSize=128m<br>-XX:MaxPermSize=128m"</span></pre></p>
+<p>See <a href="postconfig.html#jvm">JVM Tuning</a> for a fuller discussion of the details and ways to improve performance.</p><br/></li>
 <li>Start Tomcat with the following commands from the root Tomcat directory:
 <table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
       <tbody>

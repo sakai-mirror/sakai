@@ -47,7 +47,9 @@ Mac: 	not necessary
 
 Finally, you need to set a variable to tune your Java environment.  The default JVM is not sufficient to run Sakai out of the box, and some of its settings will need to be adjusted by setting a new environment variable called JAVA_OPTS, just as you did above. The recommended value of this variable is:
 
-JAVA_OPTS="-server -Xms512m -Xmx512m -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:PermSize=128m -XX:MaxPermSize=128m"
+JAVA_OPTS="-server -Xmx512m -Xms512m -XX:PermSize=128m -XX:MaxPermSize=128m"
+
+See the "JVM Tuning" section of the online installation guide (http://cvs.sakaiproject.org/release/2.1.1/postconfig.html#jvm) for a fuller discussion of the details and ways to improve performance.
 
 You should test that these variables are set correctly.  In both Windows XP and *nix operating systems you can simply start a new shell and type the 'set' command to see your environment variables. You may run the java -version command once more (see above) as a final check.
 

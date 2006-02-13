@@ -345,14 +345,19 @@ The Java virtual machine's configuration is very important to tune for best perf
 **Disclaimer**
 JVM tuning is, as a general rule, something of a black art, and we recommend that you take the time to experiment with different memory and garbage collection settings and see what works best in your environment. We can make some minimal recommendations that should serve as a foundation for further experimentation and testing, but the following details are however offered only as samples or suggestions, and we recommend that you consult a systems administrator or local Java guru before making any such changes to a production system. See Sun's "Tuning Garbage Collection" documentation for more details.
 
-The standard way to control the JVM options when Tomcat starts up is to have an environment variable JAVA_OPTS defined with JVM startup options.  One such set of options might be:
-
-JAVA_OPTS="-server -Xmx512m -Xms512m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:NewSize=128m
--XX:+UseConcMarkSweepGC -XX:+UseParNewGC"
-
-This is a fairly good starting point: it selects server mode, sets a larger heap size for smoother performance, and sizes the permanent generation to accommodate more longer-persisting objects. We have found the best results when the min and max memory settings (Xms and Xmx, respectively) are set to be the same values. 512 megs is not too much memory for Sakai; 1 gig is even better.
-
-Tomcat will see this environment variable and use it. Instead of putting this in an environment variable, you might modify the $CATALINA_HOME/bin/catalina.bat or $CATALINA_HOME/bin/catalina.sh file to automatically set these values during startup.
+The standard way to control the JVM options when Tomcat starts up is to have an environment variable JAVA_OPTS defined with JVM startup options. Since potential Sakai installs can range from developers just wanting to kick the tires all the way up to large-scale deployments, it's hard to recommend a single set of such options as the preferred ones for every case. But we can start with a bare minimum, which provides for sufficient heap size and the permanent generation to at least avoid "Out of Memory" errors:
+      
+JAVA_OPTS="-server -Xmx512m -Xms512m -XX:PermSize=128m -XX:MaxPermSize=128m"
+      
+This is an adequate - if minimal - starting point: it selects server mode, sets an adequate heap size [We have found the best results when the min and max memory settings (Xms and Xmx, respectively) are set to be the same values], and sizes the permanent generation to accommodate more longer-persisting objects. These settings will allow things to be functional for testing, but will hardly be adequate for serving multiple concurrent users. A more suitable production environment on a 32-bit machine might use a set of options like:
+      
+JAVA_OPTS="-server -Xms1500m -Xmx1500m -XX:NewSize=400m -XX:MaxNewSize=400m -XX:PermSize=128m -XX:MaxPermSize=128m -verbose:gc -XX:+PrintGCTimeStamps -XX:+PrintGCDetails"
+      
+This is better: a larger heap size is set for smoother performance, and garbage collection messages are turned on. Another important setting is the NewSize - actually, the ratio of it to the heap size. We want as large a NewSize as we can fit in the total heap, while keeping the total heap significantly bigger than NewSize in order for Java to properly garbage collect.
+      
+As you can see, there's a lot to think about here, and in practice each implementing institution uses a different JAVA_OPTS that they've settled on for their deployment and hardware, many of which use considerably more option arguments than we've shown here. This discussion is meant only as a head start, and there is no replacement for doing your own testing.
+      
+In any event, once you set JAVA_OPTS Tomcat will see this environment variable upon startup and use it. Instead of putting this in an environment variable, you might modify the $CATALINA_HOME/bin/catalina.bat or $CATALINA_HOME/bin/catalina.sh file to automatically set these values during startup.
 
 **JVM Tuning in Windows XP**
 Windows users may set Java options in a "Tomcat Properties" dialog. But you may find that the permanent generation settings mentioned above will not work appropriately if set in the Java Options: field of the dialog window. That's because these settings have their own fields in the properties GUI, under the headings Initial Memory Pool and Maximum memory pool, respectively.  Windows apparently ignores attempts to alter these values through the Java Options field.
