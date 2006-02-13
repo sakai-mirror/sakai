@@ -26,7 +26,7 @@
     		
     	<div class="portletBody">    		
       <div class="navIntraTool">
-	<form action="?#" method="get" >
+	<form action="?#" method="get" class="rwiki_searchForm">
 	  <span class="rwiki_pageLinks">
 	    <!-- Home Link -->
 	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${homeBean.homeLinkUrl}"/></jsp:attribute><c:out value="${homeBean.homeLinkValue}"/></jsp:element>
