@@ -138,61 +138,29 @@ public class ResourcesAction
     
     private static final Log logger = LogFactory.getLog(ResourcesAction.class);
     
-	/** the maximun size for file upload */
-	private static final String FILE_UPLOAD_MAX_SIZE = "file_upload_max_size";
+	/** Name of state attribute containing a list of opened/expanded collections */
+	private static final String STATE_EXPANDED_COLLECTIONS = "resources.expanded_collections";
 	
-	/** portlet configuration parameter values**/
-	public static final String RESOURCES_MODE_RESOURCES = "resources";
-	public static final String RESOURCES_MODE_DROPBOX = "dropbox";
-	public static final String RESOURCES_MODE_HELPER = "helper";
-	
-	/** opened collection list */
-	private static final String EXPANDED_COLLECTIONS = "expanded_collections";
-	
-	/** The null/empty string */
-	private static final String NULL_STRING = "";
-
-	/** The string used when pasting the same resource to the same folder */
-	private static final String DUPLICATE_STRING = rb.getString("copyof") + " ";
-	
-	/** The string used when pasting shirtcut of the same resource to the same folder */
-	private static final String SHORTCUT_STRING = rb.getString("shortcut");
-
-	/** The copyright character (Note: could be "\u00a9" if we supported UNICODE for specials -ggolden */
-	private static final String COPYRIGHT_SYMBOL = rb.getString("cpright1");
-
-	/** The String of new copyright */
-	private static final String NEW_COPYRIGHT = "newcopyright";
-	
-	/** The maximum number of characters allowed in a new resource ID */
-	private static final int RESOURCE_ID_MAX_LENGTH = 254;
-
-	/** The resource not exist string */
-	private static final String RESOURCE_NOT_EXIST_STRING = rb.getString("notexist1");
-	
-	/** The title invalid string */
-	private static final String RESOURCE_INVALID_TITLE_STRING = rb.getString("titlecannot");
-	
-	/** The copy, cut, paste not operate on collection string */
-	private static final String RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING = rb.getString("notsupported");
-	
-	/** State attribute for state initialization.  */
+	/** Name of state attribute for status of initialization.  */
 	private static final String STATE_INITIALIZED = "resources.initialized";
 
 	/** The content hosting service in the State. */
 	private static final String STATE_CONTENT_SERVICE = "resources.content_service";
 
+	/** The content type image lookup service in the State. */
+	private static final String STATE_CONTENT_TYPE_IMAGE_SERVICE = "resources.content_type_image_service";
+
 	/** The resources, helper or dropbox mode. */
 	public static final String STATE_RESOURCES_MODE = "resources.resources_mode";
+	
+	/** state attribute for the maximum size for file upload */
+	private static final String STATE_FILE_UPLOAD_MAX_SIZE = "resources.file_upload_max_size";
 	
 	/** The name of a state attribute indicating whether the resources tool/helper is allowed to show all sites the user has access to */
 	public static final String STATE_SHOW_ALL_SITES = "resources.allow_user_to_see_all_sites";
 
 	/** The name of a state attribute indicating whether the wants to see other sites if that is enabled */
 	public static final String STATE_SHOW_OTHER_SITES = "resources.user_chooses_to_see_other_sites";
-
-	/** The content type image lookup service in the State. */
-	private static final String STATE_CONTENT_TYPE_IMAGE_SERVICE = "resources.content_type_image_service";
 
 	/** The user copyright string */
 	private static final String	STATE_MY_COPYRIGHT = "resources.mycopyright";
@@ -248,9 +216,6 @@ public class ResourcesAction
 	/** The name of the state attribute containing a java.util.Set with the id's of selected items */
 	private static final String STATE_LIST_SELECTIONS = "resources.ignore_delete_selections";
 
-	/** The from state name */
-	private static final String STATE_FROM = "resources.from";
-	
 	/** The root of the navigation breadcrumbs for a folder, either the home or another site the user belongs to */
 	private static final String STATE_NAVIGATION_ROOT = "resources.navigation_root";
 
@@ -265,40 +230,43 @@ public class ResourcesAction
 	/** The more from */
 	private static final String STATE_MORE_FROM = "resources.more_from";
 
-	/************** the properties context *****************************************/
-
-	/** The properties id */
-	static public final String STATE_PROPERTIES_ID = "resources.properties_id";
-	private static final String STATE_PROPERTIES_COPYRIGHT = "resources.properties_copyright";
-	private static final String STATE_PROPERTIES_COPYRIGHT_CHOICE = "resources.properties_copyright_choice";
-	private static final String STATE_PROPERTIES_COPYRIGHT_ALERT = "resources.properties_copyright_alert";
-	private static final String STATE_PROPERTIES_COLLECTION_ID = "resources.properties_collection_id";
-	private static final String STATE_PROPERTIES_INTENT = "resources.properties_intent";
-
 	/************** the edit context *****************************************/
 
 	/** The edit id */
-	public static final String STATE_EDIT_ID = "resources.edit_id";
-	public static final String STATE_EDIT_COLLECTION_ID = "resources.edit_collection_id";
+	public static final String STATE_STACK_EDIT_ID = "resources.stack_edit_id";
+	public static final String STATE_STATE_EDIT_COLLECTION_ID = "resources.stack_edit_collection_id";
 	
 	private static final String STATE_EDIT_ALERTS = "resources.edit_alerts";
-	private static final String STATE_EDIT_ITEM = "resources.edit_item";
-	private static final String STATE_EDIT_INTENT = "resources.properties_intent";
+	private static final String STATE_STACK_EDIT_ITEM = "resources.stack_edit_item";
+	private static final String STATE_STACK_EDIT_INTENT = "resources.stack_edit_intent";
+	
 	private static final String STATE_SHOW_FORM_ITEMS = "resources.show_form_items";
+	
+	private static final String STATE_STACK_EDIT_ITEM_TITLE = "resources.stack_title";
 
 	/************** the create contexts *****************************************/
+
+	public static final String STATE_SUSPENDED_OPERATIONS_STACK = "resources.suspended_operations_stack";
+	public static final String STATE_SUSPENDED_OPERATIONS_STACK_DEPTH = "resources.suspended_operations_stack_depth";
 
 	public static final String STATE_CREATE_TYPE = "resources.create_type";
 	public static final String STATE_CREATE_COLLECTION_ID = "resources.create_collection_id";
 	public static final String STATE_CREATE_NUMBER = "resources.create_number";
-	
-	private static final String STATE_CREATE_ITEMS = "resources.create_items";
-	private static final String STATE_CREATE_ACTUAL_COUNT = "resources.create_actual_count";
-	private static final String STATE_CREATE_ALERTS = "resources.create_alerts";
-	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
-	private static final String STATE_STRUCTOBJ_ROOTNAME = "resources.create_structured_object_root";
 	public static final String STATE_STRUCTOBJ_TYPE = "resources.create_structured_object_type";
 	public static final String STATE_STRUCTOBJ_TYPE_READONLY = "resources.create_structured_object_type_readonly";
+
+	public static final String STATE_STACK_CREATE_TYPE = "resources.stack_create_type";
+	public static final String STATE_STACK_CREATE_COLLECTION_ID = "resources.stack_create_collection_id";
+	public static final String STATE_STACK_CREATE_NUMBER = "resources.stack_create_number";
+	public static final String STATE_STACK_STRUCTOBJ_TYPE = "resources.stack_create_structured_object_type";
+	public static final String STATE_STACK_STRUCTOBJ_TYPE_READONLY = "resources.stack_create_structured_object_type_readonly";
+	
+	private static final String STATE_STACK_CREATE_ITEMS = "resources.stack_create_items";
+	private static final String STATE_STACK_CREATE_ACTUAL_COUNT = "resources.stack_create_actual_count";
+	private static final String STATE_STACK_STRUCTOBJ_ROOTNAME = "resources.stack_create_structured_object_root";
+
+	private static final String STATE_CREATE_ALERTS = "resources.create_alerts";
+	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
 	private static final String STATE_STRUCTOBJ_HOMES = "resources.create_structured_object_home";
 	private static final String STATE_STRUCT_OBJ_SCHEMA = "resources.create_structured_object_schema";
 
@@ -357,6 +325,14 @@ public class ResourcesAction
 	 *  area.  If this value is not set, all attachments are to copies in the hidden attachments area.
 	 */
 	public static final String STATE_ATTACH_LINKS = "resources.attach_links";
+	private static final String STATE_STACK_ATTACH_LINKS = "resources.state_attach_links";
+
+	/** The name of the state attribute for the title when a tool uses Resources as attachment helper (for create or attach but not for edit mode) */
+	public static final String STATE_ATTACH_TITLE = "resources.attach_title";
+	
+	/** The name of the state attribute for the instructions when a tool uses Resources as attachment helper (for create or attach but not for edit mode) */
+	public static final String STATE_ATTACH_INSTRUCTION = "resources.attach_instruction";
+	
 	
 	/** The name of the state attribute for "new-item" attachment indicating the type of item */
 	public static final String STATE_ATTACH_TEXT = "resources.attach_text";
@@ -366,6 +342,15 @@ public class ResourcesAction
 	
 	/** The name of the state attribute for "new-item" attachment indicating the id of the form-type if item-type is TYPE_FORM (ignored otherwise) */
 	public static final String STATE_ATTACH_FORM_ID = "resources.attach_form_id";
+	
+	/** The name of the state attribute for the maximum number of items to attach. The attribute value will be an Integer, usually CARDINALITY_SINGLE or CARDINALITY_MULTIPLE. */
+	public static final String STATE_ATTACH_CARDINALITY = "resources.attach_cardinality";
+	
+	/** A constant indicating maximum of one item can be attached. */
+	public static final Integer CARDINALITY_SINGLE = new Integer(1);
+	
+	/** A constant indicating any the number of attachments is unlimited. */
+	public static final Integer CARDINALITY_MULTIPLE = new Integer(Integer.MAX_VALUE);
 	
 	/************** the delete context *****************************************/
 
@@ -418,6 +403,11 @@ public class ResourcesAction
 	public static final String MODE_ATTACHMENT_NEW_ITEM = "resources.attachment_new_item";
 	public static final String MODE_ATTACHMENT_EDIT_ITEM = "resources.attachment_edit_item";
 	public static final String MODE_ATTACHMENT_CONFIRM = "resources.attachment_confirm";
+	public static final String MODE_ATTACHMENT_SELECT_INIT = "resources.attachment_select_initialized";
+	public static final String MODE_ATTACHMENT_CREATE_INIT = "resources.attachment_create_initialized";
+	public static final String MODE_ATTACHMENT_NEW_ITEM_INIT = "resources.attachment_new_item_initialized";
+	public static final String MODE_ATTACHMENT_EDIT_ITEM_INIT = "resources.attachment_edit_item_initialized";
+	public static final String MODE_ATTACHMENT_CONFIRM_INIT = "resources.attachment_confirm_initialized";
 	public static final String MODE_ATTACHMENT_DONE = "resources.attachment_done";
 	
 	/** vm files for each mode. */
@@ -479,9 +469,50 @@ public class ResourcesAction
 	protected static final String STATE_TOP_MESSAGE_INDEX = "resources.top_message_index";
 
 	protected static final String STATE_REMOVED_ATTACHMENTS = "resources.removed_attachments";
+	
+	
+	/********* Global constants *********/
 
+	/** The null/empty string */
+	private static final String NULL_STRING = "";
 
+	/** The string used when pasting the same resource to the same folder */
+	private static final String DUPLICATE_STRING = rb.getString("copyof") + " ";
+	
+	/** The string used when pasting shirtcut of the same resource to the same folder */
+	private static final String SHORTCUT_STRING = rb.getString("shortcut");
 
+	/** The copyright character (Note: could be "\u00a9" if we supported UNICODE for specials -ggolden */
+	private static final String COPYRIGHT_SYMBOL = rb.getString("cpright1");
+
+	/** The String of new copyright */
+	private static final String NEW_COPYRIGHT = "newcopyright";
+	
+	/** The maximum number of characters allowed in a new resource ID */
+	private static final int RESOURCE_ID_MAX_LENGTH = 254;
+
+	/** The resource not exist string */
+	private static final String RESOURCE_NOT_EXIST_STRING = rb.getString("notexist1");
+	
+	/** The title invalid string */
+	private static final String RESOURCE_INVALID_TITLE_STRING = rb.getString("titlecannot");
+	
+	/** The copy, cut, paste not operate on collection string */
+	private static final String RESOURCE_INVALID_OPERATION_ON_COLLECTION_STRING = rb.getString("notsupported");
+	
+	/** The maximum number of suspended operations that can be on the stack. */
+	private static final int MAXIMUM_SUSPENDED_OPERATIONS_STACK_DEPTH = 10;
+	
+	/** portlet configuration parameter values**/
+	public static final String RESOURCES_MODE_RESOURCES = "resources";
+	public static final String RESOURCES_MODE_DROPBOX = "dropbox";
+	public static final String RESOURCES_MODE_HELPER = "helper";
+	
+	/** The from state name */
+	private static final String STATE_FROM = "resources.from";
+
+	private static final String STATE_ENCODING = "resources.encoding";
+	
 	/**
 	* Build the context for normal display
 	*/
@@ -566,14 +597,6 @@ public class ResourcesAction
 			// build the context to display the property list
 			template = buildMoreContext (portlet, context, data, state);
 		}
-		else if (mode.equals (MODE_PROPERTIES))
-		{
-//			// disable the observer when not inside the list view
-//			((ContentObservingCourier) state.getAttribute(STATE_OBSERVER)).disable();
-			
-			// build the context to display the property list
-			template = buildPropertiesContext (portlet, context, data, state);
-		}
 		else if (mode.equals (MODE_EDIT))
 		{
 //			// disable the observer when not inside the list view
@@ -611,7 +634,7 @@ public class ResourcesAction
 	{
 		context.put("tlang",rb);
 		
-		context.put("expandedCollections", state.getAttribute(EXPANDED_COLLECTIONS));
+		context.put("expandedCollections", state.getAttribute(STATE_EXPANDED_COLLECTIONS));
 				
 		// find the ContentTypeImage service
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
@@ -719,7 +742,7 @@ public class ResourcesAction
 				// context.put("movedItems", movedItems);
 			}
 
-			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+			HashMap expandedCollections = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 			ContentCollection coll = contentService.getCollection(collectionId);
 			expandedCollections.put(collectionId, coll);
 			
@@ -893,78 +916,133 @@ public class ResourcesAction
 		if(state.getAttribute(STATE_INITIALIZED) == null)
 		{
 			initStateAttributes(state, portlet);
-			state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
-			
-			List attachments = (List) state.getAttribute(STATE_ATTACHMENTS);
-			if(attachments == null)
-			{
-				attachments = EntityManager.newReferenceList();
-			}
-			
-			List attached = new Vector();
-			
-			Set selectedItems = (Set) state.getAttribute(STATE_LIST_SELECTIONS);
-			if(selectedItems == null)
-			{
-				selectedItems = new TreeSet();
-				state.setAttribute(STATE_LIST_SELECTIONS, selectedItems);
-			}
-			context.put("selectedItems", selectedItems);
-			
-			Iterator it = attachments.iterator();
-			while(it.hasNext())
-			{
-				try
-				{
-					Reference ref = (Reference) it.next();
-					String itemId = ref.getId();
-					ResourceProperties properties = ref.getProperties();
-					String displayName = properties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
-					String containerId = ref.getContainer();
-					String accessUrl = ref.getUrl();
-					String contentType = properties.getProperty(ResourceProperties.PROP_CONTENT_TYPE);
-					
-					AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
-					item.setContentType(contentType);
-					attached.add(item);
-				}
-				catch(Exception ignore) {}
-			}
-			state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
-			
 		}
 		
+		Set selectedItems = (Set) state.getAttribute(STATE_LIST_SELECTIONS);
+		if(selectedItems == null)
+		{
+			selectedItems = new TreeSet();
+			state.setAttribute(STATE_LIST_SELECTIONS, selectedItems);
+		}
+		context.put("selectedItems", selectedItems);
+			
 		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+		boolean need_to_push = false;
 		
-		String template = null;
 		if(MODE_ATTACHMENT_SELECT.equals(helper_mode))
 		{
-			template = buildSelectAttachmentContext(portlet, context, data, state);
+			need_to_push = true;
+			helper_mode = MODE_ATTACHMENT_SELECT_INIT;
 		}
 		else if(MODE_ATTACHMENT_CREATE.equals(helper_mode))
 		{
-			template = buildCreateContext(portlet, context, data, state);
+			need_to_push = true;
+			helper_mode = MODE_ATTACHMENT_CREATE_INIT;
 		}
 		else if(MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
 		{
-			template = buildItemTypeContext(portlet, context, data, state);
+			need_to_push = true;
+			helper_mode = MODE_ATTACHMENT_NEW_ITEM_INIT;
 		}
 		else if(MODE_ATTACHMENT_EDIT_ITEM.equals(helper_mode))
 		{
-			String attachmentId = (String) state.getAttribute(STATE_ATTACH_ITEM_ID);
-			state.setAttribute(STATE_EDIT_ID,attachmentId);
-			String collectionId = ContentHostingService.getContainingCollectionId(attachmentId);
-			state.setAttribute(STATE_EDIT_COLLECTION_ID, collectionId);
-			
-			EditItem item = getEditItem(attachmentId, collectionId, data);
-			
-			if (state.getAttribute(STATE_MESSAGE) == null)
-			{
-				// got resource and sucessfully populated item with values
-				state.setAttribute(STATE_EDIT_ALERTS, new HashSet());
-				state.setAttribute(STATE_EDIT_ITEM, item);
-			}
+			need_to_push = true;
+			helper_mode = MODE_ATTACHMENT_EDIT_ITEM_INIT;
+		}
+		state.setAttribute(STATE_RESOURCES_MODE, helper_mode);
+		
+		Map current_stack_frame = null;
+		
+		if(need_to_push)
+		{
+			current_stack_frame = pushOnStack(state);
+			current_stack_frame.put(STATE_STACK_EDIT_INTENT, INTENT_REVISE_FILE); 
 
+			state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
+			
+			if(MODE_ATTACHMENT_EDIT_ITEM.equals(helper_mode))
+			{
+				String attachmentId = (String) state.getAttribute(STATE_ATTACH_ITEM_ID);
+				current_stack_frame.put(STATE_STACK_EDIT_ID,attachmentId);
+				String collectionId = ContentHostingService.getContainingCollectionId(attachmentId);
+				current_stack_frame.put(STATE_STATE_EDIT_COLLECTION_ID, collectionId);
+				
+				EditItem item = getEditItem(attachmentId, collectionId, data);
+				
+				if (state.getAttribute(STATE_MESSAGE) == null)
+				{
+					// got resource and sucessfully populated item with values
+					state.setAttribute(STATE_EDIT_ALERTS, new HashSet());
+					current_stack_frame.put(STATE_STACK_EDIT_ITEM, item);
+				}
+			}
+			else
+			{
+				List attachments = (List) state.getAttribute(STATE_ATTACHMENTS);
+				if(attachments == null)
+				{
+					attachments = EntityManager.newReferenceList();
+				}
+				
+				List attached = new Vector();
+				
+				Iterator it = attachments.iterator();
+				while(it.hasNext())
+				{
+					try
+					{
+						Reference ref = (Reference) it.next();
+						String itemId = ref.getId();
+						ResourceProperties properties = ref.getProperties();
+						String displayName = properties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+						String containerId = ref.getContainer();
+						String accessUrl = ref.getUrl();
+						String contentType = properties.getProperty(ResourceProperties.PROP_CONTENT_TYPE);
+						
+						AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
+						item.setContentType(contentType);
+						attached.add(item);
+					}
+					catch(Exception ignore) {}
+				}
+				current_stack_frame.put(STATE_HELPER_NEW_ITEMS, attached);
+			}
+		}
+		else
+		{
+			current_stack_frame = peekAtStack(state);
+			if(current_stack_frame.get(STATE_STACK_EDIT_INTENT) == null)
+			{
+				current_stack_frame.put(STATE_STACK_EDIT_INTENT, INTENT_REVISE_FILE); 
+			}
+		}
+		
+		String title = (String) current_stack_frame.get(STATE_STACK_EDIT_ITEM_TITLE);
+		if(title == null)
+		{
+			title = (String) state.getAttribute(STATE_ATTACH_TEXT);
+			current_stack_frame.put(STATE_STACK_EDIT_ITEM_TITLE, title);	// %%%%%%%%%
+		}
+		if(title != null && title.trim().length() > 0)
+		{
+			context.put("helper_title", title);
+		}
+		
+		String template = null;
+		if(MODE_ATTACHMENT_SELECT_INIT.equals(helper_mode))
+		{
+			template = buildSelectAttachmentContext(portlet, context, data, state);
+		}
+		else if(MODE_ATTACHMENT_CREATE_INIT.equals(helper_mode))
+		{
+			template = buildCreateContext(portlet, context, data, state);
+		}
+		else if(MODE_ATTACHMENT_NEW_ITEM_INIT.equals(helper_mode))
+		{
+			template = buildItemTypeContext(portlet, context, data, state);
+		}
+		else if(MODE_ATTACHMENT_EDIT_ITEM_INIT.equals(helper_mode))
+		{
 			template = buildEditContext(portlet, context, data, state);
 		}
 		return template;
@@ -998,30 +1076,50 @@ public class ResourcesAction
 		}
 		state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
 		
-		context.put("max_upload_size", state.getAttribute(FILE_UPLOAD_MAX_SIZE));
+		context.put("max_upload_size", state.getAttribute(STATE_FILE_UPLOAD_MAX_SIZE));
 		
-		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
-		if(numberOfItems == null)
-		{
-			numberOfItems = new Integer(1);
-			state.setAttribute(STATE_CREATE_NUMBER, numberOfItems);
-		}
-		context.put("numberOfItems", numberOfItems);
-		context.put("max_number", new Integer(1));
-		String itemType = (String) state.getAttribute(STATE_CREATE_TYPE);
-		if(itemType == null || "".equals(itemType))
-		{
-			itemType = TYPE_UPLOAD;
-		}
-		context.put("itemType", itemType);
-		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		Map current_stack_frame = peekAtStack(state);
+				
+		String collectionId = (String) current_stack_frame.get(STATE_STACK_CREATE_COLLECTION_ID);
 		if(collectionId == null || collectionId.trim().length() == 0)
 		{
-			collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+			if(collectionId == null || collectionId.trim().length() == 0)
+			{
+				collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_COLLECTION_ID, collectionId);
 		}
 		context.put("collectionId", collectionId);
 
-		List new_items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		String itemType = (String) current_stack_frame.get(STATE_STACK_CREATE_TYPE);
+		if(itemType == null || "".equals(itemType))
+		{
+			itemType = (String) state.getAttribute(STATE_CREATE_TYPE);
+			if(itemType == null || "".equals(itemType))
+			{
+				itemType = TYPE_UPLOAD;
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_TYPE, itemType);
+		}
+
+		context.put("itemType", itemType);
+		
+		Integer numberOfItems = (Integer) current_stack_frame.get(STATE_STACK_CREATE_NUMBER);
+		if(numberOfItems == null)
+		{
+			numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, numberOfItems);
+		}
+		if(numberOfItems == null)
+		{
+			numberOfItems = new Integer(1);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, numberOfItems);
+		}
+		context.put("numberOfItems", numberOfItems);
+		context.put("max_number", new Integer(1));
+		
+		List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
 		if(new_items == null)
 		{
 			String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
@@ -1046,8 +1144,8 @@ public class ResourcesAction
 			}
 	
 		}
-		state.setAttribute(STATE_CREATE_ITEMS, new_items);
 		context.put("new_items", new_items);
+		current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
 		
 		String show_form_items = (String) state.getAttribute(STATE_SHOW_FORM_ITEMS);
 		if(show_form_items != null)
@@ -1062,12 +1160,6 @@ public class ResourcesAction
 		context.put("TYPE_URL", TYPE_URL);
 		context.put("TYPE_FORM", TYPE_FORM);
 		
-		String title = (String) state.getAttribute(STATE_ATTACH_TEXT);
-		if(title != null && title.trim().length() > 0)
-		{
-			context.put("helper_title", title);
-		}
-
 		// copyright
 		copyrightChoicesIntoContext(state, context);
 
@@ -1084,16 +1176,34 @@ public class ResourcesAction
 			}
 			context.put("homes", listOfHomes);
 			
-			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			String formtype = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_TYPE);
+			if(formtype == null)
+			{
+				formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+				if(formtype == null)
+				{
+					formtype = "";
+				}
+				current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE, formtype);
+			}
 			context.put("formtype", formtype);
 			
-			String formtype_readonly = (String) state.getAttribute(	STATE_STRUCTOBJ_TYPE_READONLY);
+			String formtype_readonly = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_TYPE_READONLY);
+			if(formtype_readonly == null)
+			{
+				formtype_readonly = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE_READONLY);
+				if(formtype_readonly == null)
+				{
+					formtype_readonly = Boolean.FALSE.toString();
+				}
+				current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE_READONLY, formtype_readonly);
+			}
 			if(formtype_readonly != null && formtype_readonly.equals(Boolean.TRUE.toString()))
 			{
 				context.put("formtype_readonly", formtype_readonly);
 			}
 			
-			String rootname = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
+			String rootname = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_ROOTNAME);
 			context.put("rootname", rootname);
 			
 			context.put("STRING", ResourcesMetadata.WIDGET_STRING);
@@ -1115,6 +1225,72 @@ public class ResourcesAction
 		}
 
 		return TEMPLATE_ITEMTYPE;
+	}
+
+	/**
+	 * Access the top item on the suspended-operations stack 
+	 * @param state The current session state, including the STATE_SUSPENDED_OPERATIONS_STACK attribute.
+	 * @return The top item on the stack, or null if the stack is empty.
+	 */
+	private static Map peekAtStack(SessionState state) 
+	{
+		Map current_stack_frame = null;
+		Stack operations_stack = (Stack) state.getAttribute(STATE_SUSPENDED_OPERATIONS_STACK);
+		if(operations_stack == null)
+		{
+			operations_stack = new Stack();
+			state.setAttribute(STATE_SUSPENDED_OPERATIONS_STACK, operations_stack);
+		}
+		if(! operations_stack.isEmpty())
+		{
+			current_stack_frame = (Map) operations_stack.peek();
+		} 
+		return current_stack_frame;
+		
+	}
+
+	/**
+	 * Push an item of the suspended-operations stack.
+	 * @param state The current session state, including the STATE_SUSPENDED_OPERATIONS_STACK attribute.
+	 * @return The new item that has just been added to the stack, or null if depth limit is exceeded.
+	 */
+	private static Map pushOnStack(SessionState state) 
+	{
+		Map current_stack_frame = null;
+		Stack operations_stack = (Stack) state.getAttribute(STATE_SUSPENDED_OPERATIONS_STACK);
+		if(operations_stack == null)
+		{
+			operations_stack = new Stack();
+			state.setAttribute(STATE_SUSPENDED_OPERATIONS_STACK, operations_stack);
+		}
+		if(operations_stack.size() < MAXIMUM_SUSPENDED_OPERATIONS_STACK_DEPTH)
+		{
+			current_stack_frame = (Map) operations_stack.push(new Hashtable());
+		}
+		return current_stack_frame;
+		
+	}
+	
+	/**
+	 * Pop an item from the suspended-operations stack.
+	 * @param state The current session state, including the STATE_SUSPENDED_OPERATIONS_STACK attribute.
+	 * @return The new item that has just been added to the stack, or null if depth limit is exceeded.
+	 */
+	private static Map popFromStack(SessionState state) 
+	{
+		Map current_stack_frame = null;
+		Stack operations_stack = (Stack) state.getAttribute(STATE_SUSPENDED_OPERATIONS_STACK);
+		if(operations_stack == null)
+		{
+			operations_stack = new Stack();
+			state.setAttribute(STATE_SUSPENDED_OPERATIONS_STACK, operations_stack);
+		}
+		if(! operations_stack.isEmpty())
+		{
+			current_stack_frame = (Map) operations_stack.pop();
+		} 
+		return current_stack_frame;
+		
 	}
 
 	/**
@@ -1222,7 +1398,7 @@ public class ResourcesAction
 				contentService.checkCollection (collectionId);
 			}
 			
-			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+			HashMap expandedCollections = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 			ContentCollection coll = contentService.getCollection(collectionId);
 			expandedCollections.put(collectionId, coll);
 			
@@ -1405,7 +1581,7 @@ public class ResourcesAction
 
 			// context.put ("root", root);
 			context.put("expandedCollections", expandedCollections);
-			state.setAttribute(EXPANDED_COLLECTIONS, expandedCollections);
+			state.setAttribute(STATE_EXPANDED_COLLECTIONS, expandedCollections);
 		}
 		catch (IdUnusedException e)
 		{
@@ -1447,7 +1623,10 @@ public class ResourcesAction
 
 		// pick the template based on whether client wants links or copies
 		String template = TEMPLATE_SELECT;
-		Object attach_links = state.getAttribute(STATE_ATTACH_LINKS);
+		Map current_stack_frame = peekAtStack(state);
+		Object attach_links = current_stack_frame.get(STATE_STACK_ATTACH_LINKS);
+			
+			state.getAttribute(STATE_ATTACH_LINKS);
 		if(attach_links == null)
 		{
 			// user wants copies in hidden attachments area
@@ -1683,176 +1862,6 @@ public class ResourcesAction
 	}	// buildMoreContext
 
 	/**
-	* Build the context to show the editable list of resource properties
-	*/
-	public static String buildPropertiesContext (VelocityPortlet portlet,
-										Context context,
-										RunData data,
-										SessionState state)
-	{
-		context.put("tlang",rb);
-		// find the ContentHosting service
-		org.sakaiproject.service.legacy.content.ContentHostingService service = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
-		context.put ("service", service);
-		context.put ("from", state.getAttribute (STATE_FROM));
-		context.put ("mycopyright", (String) state.getAttribute (STATE_MY_COPYRIGHT));
-
-		String id =(String) state.getAttribute (STATE_PROPERTIES_ID);
-		context.put ("id", id);
-		String collectionId = (String) state.getAttribute (STATE_PROPERTIES_COLLECTION_ID);
-		if(collectionId == null)
-		{
-			collectionId = service.getContainingCollectionId(id);
-		}
-		state.setAttribute(STATE_COLLECTION_ID, collectionId);
-		context.put ("collectionId", collectionId);
-		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
-		if(homeCollectionId == null)
-		{
-			homeCollectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
-			state.setAttribute(STATE_HOME_COLLECTION_ID, homeCollectionId);
-		}
-		state.setAttribute(STATE_NAVIGATION_ROOT, homeCollectionId);
-		context.put("homeCollectionId", homeCollectionId);
-		List collectionPath = getCollectionPath(state);	
-		context.put ("collectionPath", collectionPath);
-		
-		String intent = (String) state.getAttribute(STATE_PROPERTIES_INTENT);
-		if(intent == null)
-		{
-			intent = INTENT_REVISE_FILE;
-			state.setAttribute(STATE_PROPERTIES_INTENT, intent);
-		}
-		context.put("intent", intent);
-		context.put("REVISE", INTENT_REVISE_FILE);
-		context.put("REPLACE", INTENT_REPLACE_FILE);
-		
-		ResourceProperties properties = null;
-		// populate the property list
-		try
-		{
-			properties = service.getProperties (id);
-			context.put("replaceable", new Boolean(replaceable(properties)));
-		}
-		catch (IdUnusedException e)
-		{
-			addAlert(state, RESOURCE_NOT_EXIST_STRING);
-		}
-		catch (PermissionException e)
-		{
-			addAlert(state," " + rb.getString("notpermis2") + " " + id);
-		}
-		metadataGroupsIntoContext(state, context);
-		
-		context.put ("unqualified_fields", state.getAttribute (STATE_UNQUALIFIED_INPUT_FIELD));
-
-		// for the resources of type URL or plain text, show the content also
-		if (properties.getProperty (ResourceProperties.PROP_IS_COLLECTION).equals (Boolean.FALSE.toString()))
-		{
-			String type = properties.getProperty (ResourceProperties.PROP_CONTENT_TYPE);
-			if ((type.equalsIgnoreCase (MIME_TYPE_DOCUMENT_PLAINTEXT)) || (type.equalsIgnoreCase (MIME_TYPE_DOCUMENT_HTML)) || (type.equalsIgnoreCase (ResourceProperties.TYPE_URL)))
-			{
-				try
-				{
-					ContentResource propertiesResource = service.getResource (id);
-					// read the body
-					String body = "";
-					byte[] content = null;
-					try
-					{
-						content = propertiesResource.getContent();
-						if (content != null)
-						{
-							body = new String (content);
-						}
-					}
-					catch(ServerOverloadException e) 
-					{
-						// this represents server's file system is temporarily unavailable
-						// report problem to user? log problem?
-					}
-					context.put ("content", body);
-				}
-				catch (IdUnusedException e)
-				{
-					addAlert(state,RESOURCE_NOT_EXIST_STRING);
-				}
-				catch (TypeException e)
-				{
-					addAlert(state, " " + rb.getString("typeex") + " ");
-				}
-				catch (PermissionException e)
-				{
-					addAlert(state," " + rb.getString("notpermis2") + " " + id + ". ");
-				}
-			}
-		}
-		
-		// for collections only
-		else
-		{
-			// setup for quota - ADMIN only, collection only
-			if (SecurityService.isSuperUser())
-			{
-				try
-				{
-					// Getting the quota as a long validates the property value
-					long quota = properties.getLongProperty(ResourceProperties.PROP_COLLECTION_BODY_QUOTA);
-					context.put("hasQuota", Boolean.TRUE);
-					context.put("quota", properties.getProperty(ResourceProperties.PROP_COLLECTION_BODY_QUOTA));
-				}
-				catch (Exception any)
-				{
-					context.put("hasQuota", Boolean.FALSE);
-				}
-
-				context.put("setQuota", Boolean.TRUE);
-			}
-		}
-
-		context.put ("properties", properties);
-
-		// copyright
-		copyrightChoicesIntoContext(state, context);
-		context.put("copyrightChoice", state.getAttribute (STATE_PROPERTIES_COPYRIGHT_CHOICE));
-		context.put("newcopyright", state.getAttribute (STATE_PROPERTIES_COPYRIGHT));
-		String alert = (String) state.getAttribute(STATE_PROPERTIES_COPYRIGHT_ALERT);
-		if (alert != null && alert.equalsIgnoreCase(Boolean.TRUE.toString()))
-		{
-			context.put("copyrightAlert", Boolean.TRUE);
-		}
-		/*
-		else
-		{
-			context.put("copyrightAlert", Boolean.FALSE);
-		}
-		*/
-		context.put("copyright_choice", state.getAttribute(STATE_PROPERTIES_COPYRIGHT_CHOICE));
-		context.put("copyright", state.getAttribute(STATE_PROPERTIES_COPYRIGHT));
-
-
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-		{
-			context.put("dropboxMode", Boolean.FALSE);
-			
-			// find out about pubview
-			context.put("pubviewset", new Boolean(ContentHostingService.isInheritingPubView(id)));
-			context.put("pubview", new Boolean(ContentHostingService.isPubView(id)));
-
-		}
-		else if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-		{
-			// notshow the public option or notification when in dropbox mode
-			context.put("dropboxMode", Boolean.TRUE);
-		}
-		context.put("siteTitle", state.getAttribute(STATE_SITE_TITLE));
-		
-		// String template = (String) getContext(data).get("template");
-		return TEMPLATE_PROPERTIES;
-
-	}	// buildPropertiesContext
-
-	/**
 	* Build the context to edit the editable list of resource properties
 	*/
 	public static String buildEditContext (VelocityPortlet portlet,
@@ -1863,13 +1872,23 @@ public class ResourcesAction
 
 		context.put("tlang",rb);
 		// find the ContentTypeImage service
+		
+		Stack operations_stack = (Stack) state.getAttribute(STATE_SUSPENDED_OPERATIONS_STACK);
+		if(operations_stack == null)
+		{
+			operations_stack = new Stack();
+			state.setAttribute(STATE_SUSPENDED_OPERATIONS_STACK, operations_stack);
+		}
+		
+		Map current_stack_frame = peekAtStack(state);
+						
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
 		context.put ("from", state.getAttribute (STATE_FROM));
 		context.put ("mycopyright", (String) state.getAttribute (STATE_MY_COPYRIGHT));
 
-		String collectionId = (String) state.getAttribute (STATE_EDIT_COLLECTION_ID);
+		String collectionId = (String) current_stack_frame.get(STATE_STATE_EDIT_COLLECTION_ID);
 		context.put ("collectionId", collectionId);
-		String id =(String) state.getAttribute (STATE_EDIT_ID);
+		String id =(String) current_stack_frame.get(STATE_STACK_EDIT_ID);
 		context.put ("id", id);
 		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
 		if(homeCollectionId == null)
@@ -1886,11 +1905,11 @@ public class ResourcesAction
 			context.put("atHome", Boolean.TRUE.toString());
 		}
 		
-		String intent = (String) state.getAttribute(STATE_PROPERTIES_INTENT);
+		String intent = (String) state.getAttribute(STATE_STACK_EDIT_INTENT);
 		if(intent == null)
 		{
 			intent = INTENT_REVISE_FILE;
-			state.setAttribute(STATE_PROPERTIES_INTENT, intent);
+			current_stack_frame.put(STATE_STACK_EDIT_INTENT, intent);
 		}
 		context.put("intent", intent);
 		context.put("REVISE", INTENT_REVISE_FILE);
@@ -1903,25 +1922,34 @@ public class ResourcesAction
 		}
 
 		// put the item into context
-		EditItem item = (EditItem)state.getAttribute(STATE_EDIT_ITEM);
+		EditItem item = (EditItem) current_stack_frame.get(STATE_STACK_EDIT_ITEM);
 
 		context.put("item", item);
 		
 		if(item.isStructuredArtifact())
 		{
 			context.put("formtype", item.getFormtype());
-			state.setAttribute(STATE_STRUCTOBJ_TYPE, item.getFormtype());
+			current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE, item.getFormtype());
 			
 			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
 			context.put("homes", listOfHomes);
 			
-			String formtype_readonly = (String) state.getAttribute(	STATE_STRUCTOBJ_TYPE_READONLY);
+			String formtype_readonly = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_TYPE_READONLY);
+			if(formtype_readonly == null)
+			{
+				formtype_readonly = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE_READONLY);
+				if(formtype_readonly == null)
+				{
+					formtype_readonly = Boolean.FALSE.toString();
+				}
+				current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE_READONLY, formtype_readonly);
+			}
 			if(formtype_readonly != null && formtype_readonly.equals(Boolean.TRUE.toString()))
 			{
 				context.put("formtype_readonly", formtype_readonly);
 			}
 
-			String rootname = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
+			String rootname = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_ROOTNAME);
 			context.put("rootname", rootname);
 
 			context.put("STRING", ResourcesMetadata.WIDGET_STRING);
@@ -2022,7 +2050,7 @@ public class ResourcesAction
 			addObservingPattern(collectionId, state);
 			
 			state.setAttribute(STATE_COLLECTION_ID, collectionId);
-			state.setAttribute(EXPANDED_COLLECTIONS, new HashMap());
+			state.setAttribute(STATE_EXPANDED_COLLECTIONS, new HashMap());
 		}
 
 		String mode = (String) state.getAttribute(STATE_MODE);
@@ -2111,17 +2139,22 @@ public class ResourcesAction
 			item.setCopyrightStatus(defaultCopyrightStatus);
 			new_items.add(item);
 		}
-		state.setAttribute(STATE_CREATE_ITEMS, new_items);
-		state.setAttribute(STATE_CREATE_NUMBER, new Integer(1));
-		state.setAttribute(STATE_CREATE_TYPE, itemType);
-		state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
-		state.setAttribute(STATE_CREATE_MISSING_ITEM, new HashSet());
-		state.removeAttribute(STATE_STRUCTOBJ_TYPE);
-		state.removeAttribute(STATE_STRUCTOBJ_HOMES);
+		
+		Map current_stack_frame = pushOnStack(state);
+		
+		current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
+		current_stack_frame.put(STATE_STACK_CREATE_TYPE, itemType);
 		
 		String collectionId = params.getString ("collectionId");
-		state.setAttribute(STATE_CREATE_COLLECTION_ID, collectionId);
+		current_stack_frame.put(STATE_STACK_CREATE_COLLECTION_ID, collectionId);
 
+		current_stack_frame.put(STATE_STACK_CREATE_NUMBER, new Integer(1));
+
+		state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
+		current_stack_frame.put(STATE_CREATE_MISSING_ITEM, new HashSet());
+		current_stack_frame.remove(STATE_STACK_STRUCTOBJ_TYPE);
+		state.removeAttribute(STATE_STRUCTOBJ_HOMES);
+		
 		String mode = (String) state.getAttribute(STATE_MODE);
 		if(MODE_HELPER.equals(mode))
 		{
@@ -2145,6 +2178,8 @@ public class ResourcesAction
 		
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
+		Map current_stack_frame = peekAtStack(state);
+				
 		String itemType = params.getString("itemType");
 		String flow = params.getString("flow");
 		String mode = (String) state.getAttribute(STATE_MODE);
@@ -2179,18 +2214,42 @@ public class ResourcesAction
 			captureMultipleValues(state, params, false);
 			int number = params.getInt("numberOfItems");
 			Integer numberOfItems = new Integer(number);
-			state.setAttribute(STATE_CREATE_NUMBER, numberOfItems);
 			
 			// clear display of error messages
 			state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
-			List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+			
+			List items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+			if(items == null)
+			{
+				String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+				if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+				{
+					defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+					state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+				}
+				
+				String encoding = data.getRequest().getCharacterEncoding();
+				
+				items = new Vector();
+				for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+				{
+					EditItem item = new EditItem(itemType);
+					if(encoding != null)
+					{
+						item.setEncoding(encoding);
+					}
+					item.setCopyrightStatus(defaultCopyrightStatus);
+					items.add(item);
+				}
+		
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_ITEMS, items);
 			Iterator it = items.iterator();
 			while(it.hasNext())
 			{
 				EditItem item = (EditItem) it.next();
 				item.clearMissing();
 			}
-			state.setAttribute(STATE_CREATE_ITEMS, items);
 			state.removeAttribute(STATE_MESSAGE);
 		}
 		else if(flow.equals("create") && TYPE_FOLDER.equals(itemType))
@@ -2219,7 +2278,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
-					state.removeAttribute(STATE_CREATE_ITEMS);
+					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
 				}
 			}
 		}
@@ -2246,7 +2305,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
-					state.removeAttribute(STATE_CREATE_ITEMS);
+					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
 				}
 			}
 		}
@@ -2273,7 +2332,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
-					state.removeAttribute(STATE_CREATE_ITEMS);
+					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
 				}
 			}
 		}
@@ -2300,7 +2359,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
-					state.removeAttribute(STATE_CREATE_ITEMS);
+					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
 				}
 			}
 		}
@@ -2327,7 +2386,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
-					state.removeAttribute(STATE_CREATE_ITEMS);
+					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
 				}
 			}
 		}
@@ -2359,7 +2418,7 @@ public class ResourcesAction
 					{
 						mode = MODE_LIST;
 					}
-					state.removeAttribute(STATE_CREATE_ITEMS);
+					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
 				}
 			}
 		}
@@ -2384,29 +2443,87 @@ public class ResourcesAction
 				alerts.add("Must select a form type");
 				missing.add("formtype");
 			}
-			state.setAttribute(STATE_STRUCTOBJ_TYPE, formtype);
+			current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE, formtype);
 			setupStructuredObjects(state);
 		}
 		else if(flow.equals("addInstance"))
 		{
 			captureMultipleValues(state, params, false);
 			String field = params.getString("field");
-			List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
-			EditItem item = (EditItem) items.get(0);
+			List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+			if(new_items == null)
+			{
+				String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+				if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+				{
+					defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+					state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+				}
+				
+				String encoding = data.getRequest().getCharacterEncoding();
+				
+				new_items = new Vector();
+				for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+				{
+					EditItem item = new EditItem(itemType);
+					if(encoding != null)
+					{
+						item.setEncoding(encoding);
+					}
+					item.setCopyrightStatus(defaultCopyrightStatus);
+					new_items.add(item);
+				}
+				current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
+		
+			}
+			EditItem item = (EditItem) new_items.get(0);
 			addInstance(field, item.getProperties());
 			ResourcesMetadata form = item.getForm();
 			List flatList = form.getFlatList();
 			item.setProperties(flatList);
+		}
+		else if(flow.equals("linkResource") && TYPE_FORM.equals(itemType))
+		{
+			captureMultipleValues(state, params, true);
+			//alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+			
+			doCreate(data);
+			
 		}
 		else if(flow.equals("showOptional"))
 		{
 			captureMultipleValues(state, params, false);
 			int twiggleNumber = params.getInt("twiggleNumber", 0);
 			String metadataGroup = params.getString("metadataGroup");
-			List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
-			if(items != null && items.size() > twiggleNumber)
+			List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+			if(new_items == null)
 			{
-				EditItem item = (EditItem) items.get(twiggleNumber);
+				String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+				if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+				{
+					defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+					state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+				}
+				
+				String encoding = data.getRequest().getCharacterEncoding();
+				
+				new_items = new Vector();
+				for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+				{
+					EditItem item = new EditItem(itemType);
+					if(encoding != null)
+					{
+						item.setEncoding(encoding);
+					}
+					item.setCopyrightStatus(defaultCopyrightStatus);
+					new_items.add(item);
+				}
+				current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
+		
+			}
+			if(new_items != null && new_items.size() > twiggleNumber)
+			{
+				EditItem item = (EditItem) new_items.get(twiggleNumber);
 				if(item != null)
 				{
 					item.showMetadataGroup(metadataGroup);
@@ -2415,23 +2532,46 @@ public class ResourcesAction
 			
 			// clear display of error messages
 			state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
-			Iterator it = items.iterator();
+			Iterator it = new_items.iterator();
 			while(it.hasNext())
 			{
 				EditItem item = (EditItem) it.next();
 				item.clearMissing();
 			}
-			state.setAttribute(STATE_CREATE_ITEMS, items);
 		}
 		else if(flow.equals("hideOptional"))
 		{
 			captureMultipleValues(state, params, false);
 			int twiggleNumber = params.getInt("twiggleNumber", 0);						
 			String metadataGroup = params.getString("metadataGroup");
-			List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
-			if(items != null && items.size() > twiggleNumber)
+			List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+			if(new_items == null)
 			{
-				EditItem item = (EditItem) items.get(twiggleNumber);
+				String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+				if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+				{
+					defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+					state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+				}
+				
+				String encoding = data.getRequest().getCharacterEncoding();
+				
+				new_items = new Vector();
+				for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+				{
+					EditItem item = new EditItem(itemType);
+					if(encoding != null)
+					{
+						item.setEncoding(encoding);
+					}
+					item.setCopyrightStatus(defaultCopyrightStatus);
+					new_items.add(item);
+				}
+				current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
+			}
+			if(new_items != null && new_items.size() > twiggleNumber)
+			{
+				EditItem item = (EditItem) new_items.get(twiggleNumber);
 				if(item != null)
 				{
 					item.hideMetadataGroup(metadataGroup);
@@ -2440,13 +2580,12 @@ public class ResourcesAction
 			
 			// clear display of error messages
 			state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
-			Iterator it = items.iterator();
+			Iterator it = new_items.iterator();
 			while(it.hasNext())
 			{
 				EditItem item = (EditItem) it.next();
 				item.clearMissing();
 			}
-			state.setAttribute(STATE_CREATE_ITEMS, items);
 		}
 		
 		alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
@@ -2462,7 +2601,7 @@ public class ResourcesAction
 			addAlert(state, alert);
 		}
 		alerts.clear();
-		state.setAttribute(STATE_CREATE_MISSING_ITEM, missing);
+		current_stack_frame.put(STATE_CREATE_MISSING_ITEM, missing);
 		
 		// remove?
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
@@ -2479,15 +2618,60 @@ public class ResourcesAction
 	}	// doCreateitem
 	
 	/**
-	 * Add a new StructuredArtifact to ContentHosting for each EditItem in the state attribute named STATE_CREATE_ITEMS.  
-	 * The number of items to be added is indicated by the state attribute named STATE_CREATE_NUMBER, and
-	 * the items are added to the collection identified by the state attribute named STATE_CREATE_COLLECTION_ID. 
+	 * Add a new StructuredArtifact to ContentHosting for each EditItem in the state attribute named STATE_STACK_CREATE_ITEMS.  
+	 * The number of items to be added is indicated by the state attribute named STATE_STACK_CREATE_NUMBER, and
+	 * the items are added to the collection identified by the state attribute named STATE_STACK_CREATE_COLLECTION_ID. 
 	 * @param state
 	 */
 	private static void createStructuredArtifacts(SessionState state) 
 	{
-		// List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
-		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		Map current_stack_frame = peekAtStack(state);
+		
+		List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+		if(new_items == null)
+		{
+			String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+			if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+			{
+				defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+				state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+			}
+			String itemType = (String) current_stack_frame.get(STATE_STACK_CREATE_TYPE);
+			if(itemType == null)
+			{
+				itemType = (String) state.getAttribute(STATE_CREATE_TYPE);
+				if(itemType == null)
+				{
+					itemType = TYPE_UPLOAD;
+				}
+				current_stack_frame.put(STATE_STACK_CREATE_TYPE, itemType);
+			}
+			String encoding = (String) state.getAttribute(STATE_ENCODING);
+			new_items = new Vector();
+			for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+			{
+				EditItem item = new EditItem(itemType);
+				if(encoding != null)
+				{
+					item.setEncoding(encoding);
+				}
+				item.setCopyrightStatus(defaultCopyrightStatus);
+				new_items.add(item);
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
+		}
+
+		String collectionId = (String) current_stack_frame.get(STATE_STACK_CREATE_COLLECTION_ID);
+		if(collectionId == null || collectionId.trim().length() == 0)
+		{
+			collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+			if(collectionId == null || collectionId.trim().length() == 0)
+			{
+				collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_COLLECTION_ID, collectionId);
+		}
+
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		if(alerts == null)
 		{
@@ -2495,20 +2679,24 @@ public class ResourcesAction
 			state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		}
 
-		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
-		int numberOfItems = 1;
-		if(number != null)
+		Integer number = (Integer) current_stack_frame.get(STATE_STACK_CREATE_NUMBER);
+		if(number == null)
 		{
-			numberOfItems = number.intValue();
+			number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+			if(number == null)
+			{
+				number = new Integer(1);
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
 		}
+		int numberOfItems = number.intValue();
 		
 		SchemaBean rootSchema = (SchemaBean) state.getAttribute(STATE_STRUCT_OBJ_SCHEMA);
 		SchemaNode rootNode = rootSchema.getSchema();
-		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
 		
 		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
-			EditItem item = (EditItem) items.get(i);
+			EditItem item = (EditItem) new_items.get(i);
 			if(item.isBlank())
 			{
 				continue;
@@ -2627,7 +2815,7 @@ public class ResourcesAction
 					alerts.add(rb.getString("failed"));
 				}
 				
-				HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);	
+				HashMap currentMap = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);	
 				if(currentMap == null)
 				{
 					// do nothing
@@ -2637,7 +2825,7 @@ public class ResourcesAction
 					try
 					{
 						currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
-						state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+						state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
 		
 						// add this folder id into the set to be event-observed
 						addObservingPattern(collectionId, state);
@@ -2652,7 +2840,7 @@ public class ResourcesAction
 					{
 					} 
 				}
-				state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+				state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
 			}
 			else
 			{
@@ -2824,9 +3012,9 @@ public class ResourcesAction
 	}	// validateStructuredArtifact
 
 	/**
-	 * Add a new folder to ContentHosting for each EditItem in the state attribute named STATE_CREATE_ITEMS.  
-	 * The number of items to be added is indicated by the state attribute named STATE_CREATE_NUMBER, and
-	 * the items are added to the collection identified by the state attribute named STATE_CREATE_COLLECTION_ID. 
+	 * Add a new folder to ContentHosting for each EditItem in the state attribute named STATE_STACK_CREATE_ITEMS.  
+	 * The number of items to be added is indicated by the state attribute named STATE_STACK_CREATE_NUMBER, and
+	 * the items are added to the collection identified by the state attribute named STATE_STACK_CREATE_COLLECTION_ID. 
 	 * @param state
 	 */
 	protected static void createFolders(SessionState state) 
@@ -2837,15 +3025,58 @@ public class ResourcesAction
 			alerts = new HashSet();
 			state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		}
-		List new_folders = (List) state.getAttribute(STATE_CREATE_ITEMS);
-		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
-		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+
+		Map current_stack_frame = peekAtStack(state);
+		
+		List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+		if(new_items == null)
+		{
+			String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+			if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+			{
+				defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+				state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+			}
+			
+			new_items = new Vector();
+			for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+			{
+				EditItem item = new EditItem(TYPE_FOLDER);
+				item.setCopyrightStatus(defaultCopyrightStatus);
+				new_items.add(item);
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
+	
+		}
+		Integer number = (Integer) current_stack_frame.get(STATE_STACK_CREATE_NUMBER);
+		if(number == null)
+		{
+			number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+		if(number == null)
+		{
+			number = new Integer(1);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+
+		String collectionId = (String) current_stack_frame.get(STATE_STACK_CREATE_COLLECTION_ID);
+		if(collectionId == null || collectionId.trim().length() == 0)
+		{
+			collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+			if(collectionId == null || collectionId.trim().length() == 0)
+			{
+				collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_COLLECTION_ID, collectionId);
+		}
+		
 		int numberOfFolders = 1;
 		numberOfFolders = number.intValue();
 		
 		outerloop: for(int i = 0; i < numberOfFolders; i++)
 		{
-			EditItem item = (EditItem) new_folders.get(i);
+			EditItem item = (EditItem) new_items.get(i);
 			if(item.isBlank())
 			{
 				continue;
@@ -2897,13 +3128,13 @@ public class ResourcesAction
 			}	// try-catch
 		}
 		
-		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
+		HashMap currentMap = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);		
 		if(!currentMap.containsKey(collectionId))
 		{
 			try
 			{
 				currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
-				state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+				state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
 
 				// add this folder id into the set to be event-observed
 				addObservingPattern(collectionId, state);
@@ -2918,16 +3149,16 @@ public class ResourcesAction
 			{
 			} 
 		}
-		state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+		state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
 		
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
 	}	// createFolders
 
 	/**
-	 * Add a new file to ContentHosting for each EditItem in the state attribute named STATE_CREATE_ITEMS.  
-	 * The number of items to be added is indicated by the state attribute named STATE_CREATE_NUMBER, and
-	 * the items are added to the collection identified by the state attribute named STATE_CREATE_COLLECTION_ID. 
+	 * Add a new file to ContentHosting for each EditItem in the state attribute named STATE_STACK_CREATE_ITEMS.  
+	 * The number of items to be added is indicated by the state attribute named STATE_STACK_CREATE_NUMBER, and
+	 * the items are added to the collection identified by the state attribute named STATE_STACK_CREATE_COLLECTION_ID. 
 	 * @param state
 	 */
 	protected static void createFiles(SessionState state) 
@@ -2938,14 +3169,57 @@ public class ResourcesAction
 			alerts = new HashSet();
 			state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		}
-		List new_files = (List) state.getAttribute(STATE_CREATE_ITEMS);
-		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
-		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+
+		Map current_stack_frame = peekAtStack(state);
+
+		List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+		if(new_items == null)
+		{
+			String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+			if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+			{
+				defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+				state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+			}
+			
+			new_items = new Vector();
+			for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+			{
+				EditItem item = new EditItem(TYPE_UPLOAD);
+				item.setCopyrightStatus(defaultCopyrightStatus);
+				new_items.add(item);
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
+	
+		}
+		Integer number = (Integer) current_stack_frame.get(STATE_STACK_CREATE_NUMBER);
+		if(number == null)
+		{
+			number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+		if(number == null)
+		{
+			number = new Integer(1);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+
+		String collectionId = (String) current_stack_frame.get(STATE_STACK_CREATE_COLLECTION_ID);
+		if(collectionId == null || collectionId.trim().length() == 0)
+		{
+			collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+			if(collectionId == null || collectionId.trim().length() == 0)
+			{
+				collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_COLLECTION_ID, collectionId);
+		}
+
 		int numberOfItems = 1;
 		numberOfItems = number.intValue();
 		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
-			EditItem item = (EditItem) new_files.get(i);
+			EditItem item = (EditItem) new_items.get(i);
 			if(item.isBlank())
 			{
 				continue;
@@ -3073,7 +3347,7 @@ public class ResourcesAction
 			}
 				
 		}
-		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);	
+		HashMap currentMap = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);	
 		if(currentMap == null)
 		{
 			// do nothing
@@ -3085,7 +3359,7 @@ public class ResourcesAction
 				try
 				{
 					currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
-					state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+					state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
 	
 					// add this folder id into the set to be event-observed
 					addObservingPattern(collectionId, state);
@@ -3100,7 +3374,7 @@ public class ResourcesAction
 				{
 				} 
 			}
-			state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+			state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
 		}
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
@@ -3117,6 +3391,8 @@ public class ResourcesAction
 		
 		captureMultipleValues(state, params, false);
 		
+		Map current_stack_frame = peekAtStack(state);
+		
 		String field = params.getString("field");
 		
 		EditItem item = null;
@@ -3124,12 +3400,16 @@ public class ResourcesAction
 		if (MODE_CREATE.equals(mode))
 		{
 			int index = params.getInt("index");
-			List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
-			item = (EditItem) items.get(index);
+			
+			List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+			if(new_items != null)
+			{
+				item = (EditItem) new_items.get(index);
+			}
 		}
 		else if(MODE_EDIT.equals(mode))
 		{
-			item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
+			item = (EditItem) current_stack_frame.get(STATE_STACK_EDIT_ITEM);
 		}
 		
 		if(item != null)
@@ -3189,7 +3469,7 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		
-		String max_file_size_mb = (String) state.getAttribute(FILE_UPLOAD_MAX_SIZE);
+		String max_file_size_mb = (String) state.getAttribute(STATE_FILE_UPLOAD_MAX_SIZE);
 		int max_bytes = 1096 * 1096;
 		try
 		{
@@ -3660,9 +3940,9 @@ public class ResourcesAction
 	}
 	
 	/**
-	 * Add a new URL to ContentHosting for each EditItem in the state attribute named STATE_CREATE_ITEMS.  
-	 * The number of items to be added is indicated by the state attribute named STATE_CREATE_NUMBER, and
-	 * the items are added to the collection identified by the state attribute named STATE_CREATE_COLLECTION_ID. 
+	 * Add a new URL to ContentHosting for each EditItem in the state attribute named STATE_STACK_CREATE_ITEMS.  
+	 * The number of items to be added is indicated by the state attribute named STATE_STACK_CREATE_NUMBER, and
+	 * the items are added to the collection identified by the state attribute named STATE_STACK_CREATE_COLLECTION_ID. 
 	 * @param state
 	 */
 	protected static void createUrls(SessionState state) 
@@ -3673,15 +3953,39 @@ public class ResourcesAction
 			alerts = new HashSet();
 			state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		}
-		List new_urls = (List) state.getAttribute(STATE_CREATE_ITEMS);
-		Integer number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
-		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+		
+		Map current_stack_frame = peekAtStack(state);
+
+		List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+		Integer number = (Integer) current_stack_frame.get(STATE_STACK_CREATE_NUMBER);
+		if(number == null)
+		{
+			number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+		if(number == null)
+		{
+			number = new Integer(1);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+
+		String collectionId = (String) current_stack_frame.get(STATE_STACK_CREATE_COLLECTION_ID);
+		if(collectionId == null || collectionId.trim().length() == 0)
+		{
+			collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+			if(collectionId == null || collectionId.trim().length() == 0)
+			{
+				collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_COLLECTION_ID, collectionId);
+		}
+
 		int numberOfItems = 1;
 		numberOfItems = number.intValue();
 		
 		outerloop: for(int i = 0; i < numberOfItems; i++)
 		{
-			EditItem item = (EditItem) new_urls.get(i);
+			EditItem item = (EditItem) new_items.get(i);
 			if(item.isBlank())
 			{
 				continue;
@@ -3789,13 +4093,13 @@ public class ResourcesAction
 			}
 		}
 		
-		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);		
+		HashMap currentMap = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);		
 		if(!currentMap.containsKey(collectionId))
 		{
 			try
 			{
 				currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
-				state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+				state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
 
 				// add this folder id into the set to be event-observed
 				addObservingPattern(collectionId, state);
@@ -3810,7 +4114,7 @@ public class ResourcesAction
 			{
 			} 
 		}
-		state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+		state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
 
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
 		
@@ -3835,16 +4139,66 @@ public class ResourcesAction
 		context.put("TYPE_URL", TYPE_URL);
 		context.put("TYPE_FORM", TYPE_FORM);
 		
-		context.put("max_upload_size", state.getAttribute(FILE_UPLOAD_MAX_SIZE));
+		context.put("max_upload_size", state.getAttribute(STATE_FILE_UPLOAD_MAX_SIZE));
+
+		Map current_stack_frame = peekAtStack(state);
 		
-		List new_items = (List) state.getAttribute(STATE_CREATE_ITEMS);
-		context.put("new_items", new_items);
-		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
-		context.put("numberOfItems", numberOfItems);
-		context.put("max_number", new Integer(CREATE_MAX_ITEMS));
-		String itemType = (String) state.getAttribute(STATE_CREATE_TYPE);
+		String itemType = (String) current_stack_frame.get(STATE_STACK_CREATE_TYPE);
+		if(itemType == null || itemType.trim().equals(""))
+		{
+			itemType = (String) state.getAttribute(STATE_CREATE_TYPE);
+			if(itemType == null || itemType.trim().equals(""))
+			{
+				itemType = TYPE_UPLOAD;
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_TYPE, itemType);
+		}
 		context.put("itemType", itemType);
-		String collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+
+		List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+		if(new_items == null)
+		{
+			String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+			if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+			{
+				defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+				state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+			}
+			
+			String encoding = data.getRequest().getCharacterEncoding();
+			
+			new_items = new Vector();
+			for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+			{
+				EditItem item = new EditItem(itemType);
+				if(encoding != null)
+				{
+					item.setEncoding(encoding);
+				}
+				item.setCopyrightStatus(defaultCopyrightStatus);
+				new_items.add(item);
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
+		}
+		context.put("new_items", new_items);
+		Integer number = (Integer) current_stack_frame.get(STATE_STACK_CREATE_NUMBER);
+		if(number == null)
+		{
+			number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+		context.put("numberOfItems", number);
+		context.put("max_number", new Integer(CREATE_MAX_ITEMS));
+		String collectionId = (String) current_stack_frame.get(STATE_STACK_CREATE_COLLECTION_ID);
+		if(collectionId == null || collectionId.trim().length() == 0)
+		{
+			collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+			if(collectionId == null || collectionId.trim().length() == 0)
+			{
+				collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_COLLECTION_ID, collectionId);
+		}
 		context.put("collectionId", collectionId);
 		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
 		context.put("homeCollectionId", homeCollectionId);
@@ -3889,10 +4243,19 @@ public class ResourcesAction
 			}
 			context.put("homes", listOfHomes);
 			
-			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			String formtype = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_TYPE);
+			if(formtype == null)
+			{
+				formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+				if(formtype == null)
+				{
+					formtype = "";
+				}
+				current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE, formtype);
+			}
 			context.put("formtype", formtype);
 			
-			String rootname = (String) state.getAttribute(STATE_STRUCTOBJ_ROOTNAME);
+			String rootname = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_ROOTNAME);
 			context.put("rootname", rootname);
 			
 			context.put("STRING", ResourcesMetadata.WIDGET_STRING);
@@ -3912,7 +4275,7 @@ public class ResourcesAction
 			
 			context.put("DOT", ResourcesMetadata.DOT);
 		}
-		Set missing = (Set) state.removeAttribute(STATE_CREATE_MISSING_ITEM);
+		Set missing = (Set) current_stack_frame.remove(STATE_CREATE_MISSING_ITEM);
 		context.put("missing", missing);
 		
 		// String template = (String) getContext(data).get("template");
@@ -4497,7 +4860,7 @@ public class ResourcesAction
 			}
 			
 			// try to expand the collection
-			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+			HashMap expandedCollections = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 			if(! expandedCollections.containsKey(collectionId))
 			{
 				org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
@@ -4652,8 +5015,9 @@ public class ResourcesAction
 	{
 		ParameterParser params = data.getParameters ();
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		state.removeAttribute(STATE_CREATE_ITEMS);
-		state.removeAttribute(STATE_EDIT_ITEM);
+
+		Map current_stack_frame = pushOnStack(state);
+
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
 		// cancel copy if there is one in progress
@@ -4677,10 +5041,10 @@ public class ResourcesAction
 			return;
 		}
 		
-		state.setAttribute (STATE_EDIT_ID, id);
+		current_stack_frame.put(STATE_STACK_EDIT_ID, id);
 
 		String collectionId = (String) params.getString("collectionId");
-		state.setAttribute(STATE_EDIT_COLLECTION_ID, collectionId);
+		current_stack_frame.put(STATE_STATE_EDIT_COLLECTION_ID, collectionId);
 
 		//Resource resource = null;
 		
@@ -4691,7 +5055,7 @@ public class ResourcesAction
 			// got resource and sucessfully populated item with values
 			state.setAttribute (STATE_MODE, MODE_EDIT);
 			state.setAttribute(STATE_EDIT_ALERTS, new HashSet());
-			state.setAttribute(STATE_EDIT_ITEM, item);
+			current_stack_frame.put(STATE_STACK_EDIT_ITEM, item);
 			
 		}
 		
@@ -4700,6 +5064,10 @@ public class ResourcesAction
 	public static EditItem getEditItem(String id, String collectionId, RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
+		
+		Stack operations_stack = (Stack) state.getAttribute(STATE_SUSPENDED_OPERATIONS_STACK);
+		
+		Map current_stack_frame = peekAtStack(state);
 		
 		EditItem item = null;
 		
@@ -4788,8 +5156,8 @@ public class ResourcesAction
 			else if(item.isStructuredArtifact())
 			{
 				String formtype = properties.getProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE);
-				state.setAttribute(STATE_STRUCTOBJ_TYPE, formtype);
-				state.setAttribute(STATE_EDIT_ITEM, item);
+				current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE, formtype);
+				current_stack_frame.put(STATE_STACK_EDIT_ITEM, item);
 				setupStructuredObjects(state);
 				Document doc = Xml.readDocumentFromString(new String(content));
 				Element root = doc.getDocumentElement();
@@ -5002,17 +5370,28 @@ public class ResourcesAction
 	 * structured artifacts in the resources tool.  Among other things, it obtains a list 
 	 * of "forms" available to the user and places that list in state indexed as 
 	 * "STATE_STRUCTOBJ_HOMES".  If the current formtype is known (in state indexed as
-	 * "STATE_STRUCTOBJ_TYPE"), the list of properties associated with that form type is
+	 * "STATE_STACK_STRUCTOBJ_TYPE"), the list of properties associated with that form type is
 	 * generated.  If we are in a "create" context, the properties are added to each of 
-	 * the items in the list of items indexed as "STATE_CREATE_ITEMS".  If we are in an 
+	 * the items in the list of items indexed as "STATE_STACK_CREATE_ITEMS".  If we are in an 
 	 * "edit" context, the properties are added to the current item being edited (a state
-	 * attribute indexed as "STATE_EDIT_ITEM").  The metaobj SchemaBean associated with
+	 * attribute indexed as "STATE_STACK_EDIT_ITEM").  The metaobj SchemaBean associated with
 	 * the current form and its root SchemaNode object are also placed in state for later 
 	 * reference.
 	 */
 	public static void setupStructuredObjects(SessionState state)
 	{
-		String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+		Map current_stack_frame = peekAtStack(state);
+		
+		String formtype = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_TYPE);
+		if(formtype == null)
+		{
+			formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			if(formtype == null)
+			{
+				formtype = "";
+			}
+			current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE, formtype);
+		}
 		
 		HomeFactory factory = (HomeFactory) ComponentManager.get("homeFactory");	
 		
@@ -5039,7 +5418,7 @@ public class ResourcesAction
 		if(formtype == null || formtype.equals(""))
 		{
 			formtype = "";
-			state.setAttribute(STATE_STRUCTOBJ_TYPE, formtype);
+			current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE, formtype);
 		}
 		else if(listOfHomes.isEmpty())
 		{
@@ -5069,30 +5448,39 @@ public class ResourcesAction
 			
 			String instruction = home.getInstruction();
 			
-			state.setAttribute(STATE_STRUCTOBJ_ROOTNAME, docRoot);
+			current_stack_frame.put(STATE_STACK_STRUCTOBJ_ROOTNAME, docRoot);
 			state.setAttribute(STATE_STRUCT_OBJ_SCHEMA, rootSchema);
 			
-			if(state.getAttribute(STATE_CREATE_ITEMS) != null)
+			List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+			if(new_items != null)
 			{
-				List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
-				Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+				Integer number = (Integer) current_stack_frame.get(STATE_STACK_CREATE_NUMBER);
+				if(number == null)
+				{
+					number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+					current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+				}
+				if(number == null)
+				{
+					number = new Integer(1);
+					current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+				}
 				List flatList = elements.getFlatList();
 				
-				for(int i = 0; i < numberOfItems.intValue(); i++)
+				for(int i = 0; i < number.intValue(); i++)
 				{
-					EditItem item = (EditItem) items.get(i);
+					EditItem item = (EditItem) new_items.get(i);
 					item.setRootname(docRoot);
 					item.setFormtype(formtype);
 					item.setInstruction(instruction);
 					item.setProperties(flatList);
 					item.setForm(elements);
 				}
-				
-				state.setAttribute(STATE_CREATE_ITEMS, items);
+				current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
 			}
-			else if(state.getAttribute(STATE_EDIT_ITEM) != null)
+			else if(current_stack_frame.get(STATE_STACK_EDIT_ITEM) != null)
 			{
-				EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
+				EditItem item = (EditItem) current_stack_frame.get(STATE_STACK_EDIT_ITEM);
 				item.setRootname(docRoot);
 				item.setFormtype(formtype);
 				item.setInstruction(instruction);
@@ -5325,497 +5713,6 @@ public class ResourcesAction
 
 	}	// importStructuredArtifact
 	
-	/**
-	* Edit the editable collection/resource properties
-	*/
-	public static void doProperties ( RunData data)
-	{
-		ParameterParser params = data.getParameters ();
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-
-		// cancel copy if there is one in progress
-		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
-		{
-			initCopyContext(state);
-		}
-
-		// cancel move if there is one in progress
-		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
-		{
-			initMoveContext(state);
-		}
-
-		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
-		
-		String id = NULL_STRING;
-		String from = params.getString ("from");
-		if ((from!=null)&&(from.equals ("revise")))
-		{
-			String[] reviseIds = data.getParameters ().getStrings ("selectedMembers");
-			if (reviseIds == null)
-			{
-				// there is no resource selected, show the alert message to the user
-				addAlert(state, rb.getString("choosefile2"));
-			}
-			else if (reviseIds.length > 1 )
-			{
-				// there is more than one resource selected, show the alert message to the user
-				addAlert(state, rb.getString("chooseonly"));
-			}
-			else
-			{
-				id = reviseIds[0];
-				state.setAttribute (STATE_FROM, MODE_LIST);
-			}
-		}
-		else
-		{
-			id = params.getString ("id");
-			state.setAttribute (STATE_FROM, MODE_LIST);
-		}
-
-		if (id.length ()>0)
-		{
-			state.setAttribute (STATE_PROPERTIES_ID, id);
-
-			String collectionId = (String) params.getString("collectionId");
-			state.setAttribute(STATE_PROPERTIES_COLLECTION_ID, collectionId);
-
-			ResourceProperties properties = null;
-
-			// populate the property list
-			try
-			{
-				properties = ContentHostingService.getProperties (id);
-				
-				String copyright = properties.getPropertyFormatted(properties.getNamePropCopyright());
-				if (! copyright.equals((String) state.getAttribute(STATE_MY_COPYRIGHT)))
-				{
-					state.setAttribute(STATE_PROPERTIES_COPYRIGHT, copyright);
-				}
-				
-				state.setAttribute(STATE_PROPERTIES_COPYRIGHT_CHOICE, properties.getProperty(properties.getNamePropCopyrightChoice()));
-				state.setAttribute(STATE_PROPERTIES_COPYRIGHT_ALERT, properties.getProperty(properties.getNamePropCopyrightAlert()));	
-			}
-			catch (IdUnusedException e)
-			{
-				addAlert(state, RESOURCE_NOT_EXIST_STRING);
-			}
-			catch (PermissionException e)
-			{
-				addAlert(state, rb.getString("notpermis2") + " " + id + ". " );
-			}
-		}	// if
-
-		if (state.getAttribute(STATE_MESSAGE) == null)
-		{
-			// find properties sucessful
-			state.setAttribute (STATE_MODE, MODE_PROPERTIES);
-		}
-
-	}	// doProperties
-
-	/**
-	* Modify the properties
-	*/
-	public static void doModifyproperties ( RunData data)
-	{
-		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		ParameterParser params = data.getParameters ();
-		
-		String flow = params.getString("flow");
-		if(flow == null || "cancel".equals(flow))
-		{
-			doCancel(data);
-			return;
-		}
-		
-		int noti = NotificationService.NOTI_OPTIONAL;
-		if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
-		{
-			// set noti to none if in dropbox mode
-			noti = NotificationService.NOTI_NONE;
-		}
-		else
-		{
-			// read the notification options
-			String notification = params.getString("notify");
-			if ("r".equals(notification))
-			{
-				noti = NotificationService.NOTI_REQUIRED;
-			}
-			else if ("n".equals(notification))
-			{
-				noti = NotificationService.NOTI_NONE;
-			}
-		}
-
-		// read the quota fields
-		String setQuota = params.getString("setQuota");
-		String hasQuota = params.getString("hasQuota");
-		String quota = params.getString("quota");
-
-		String id = (String) state.getAttribute (STATE_PROPERTIES_ID);
-		state.setAttribute (STATE_PROPERTIES_ID, id);
-
-		String mycopyright = (String) state.getAttribute (STATE_MY_COPYRIGHT);
-
-		String collectionId = (String) state.getAttribute (STATE_PROPERTIES_COLLECTION_ID);
-
-		// the unqualify fields
-		String u_fields = "";
-		
-		String filename = "";
-		
-		if (state.getAttribute(STATE_MESSAGE) == null)
-		{			
-			boolean changing_intent = false;
-			boolean copyrightRequired = true;
-			boolean isFolder = false;
-
-			// populate the property list
-			try
-			{
-				// get an edit
-				ContentCollectionEdit cedit = null;
-				ContentResourceEdit redit = null;
-				ResourcePropertiesEdit pedit = null;
-				
-				try
-				{
-					isFolder = ContentHostingService.getProperties(id).getBooleanProperty(ResourceProperties.PROP_IS_COLLECTION);
-				}
-				catch(EmptyException e)
-				{
-					// assume false if unable to retrieve value of PROP_IS_COLLECTION
-				}
-				if (isFolder)
-				{
-					cedit = ContentHostingService.editCollection(id);
-					pedit = cedit.getPropertiesEdit();
-					copyrightRequired = false;
-				}
-				else
-				{
-					redit = ContentHostingService.editResource(id);
-					pedit = redit.getPropertiesEdit();
-				}
-				
-				if(!isFolder)
-				{
-					// for the resource type of URL or plain text, update the content also
-					String type = pedit.getProperty (ResourceProperties.PROP_CONTENT_TYPE);
-					
-					if ((type!=null) && ((type.equalsIgnoreCase (MIME_TYPE_DOCUMENT_PLAINTEXT)) || (type.equalsIgnoreCase (MIME_TYPE_DOCUMENT_HTML))))
-					{
-						// choose between revising file and replacing it
-						String intent = params.getString("intent");
-						String oldintent = (String) state.getAttribute(STATE_PROPERTIES_INTENT);
-						if(intent == null)
-						{
-							intent = INTENT_REVISE_FILE;
-							state.setAttribute(STATE_PROPERTIES_INTENT, intent);
-
-						}
-						if(!intent.equals(oldintent))
-						{
-							changing_intent = true;
-						}
-					}	// if
-
-					if(!changing_intent)
-					{
-						String content = params.getCleanString ("content");
-						if(content != null)
-						{
-							redit.setContentType(type);
-							try
-							{
-								redit.setContent(content.getBytes("UTF-8"));
-							}
-							catch (UnsupportedEncodingException e)
-							{
-								redit.setContent(content.getBytes());
-								e.printStackTrace();
-							}
-						}
-
-						// check for file replacement
-						FileItem fileitem = params.getFileItem("fileName");
-						if(fileitem != null)
-						{
-							byte[] bytes = fileitem.get();
-							String contenttype = fileitem.getContentType();
-							filename = Validator.getFileName(fileitem.getFileName());
-							
-							redit.setContentType(contenttype);
-							redit.setContent(bytes);
-						}
-					}
-					
-					if(type.equalsIgnoreCase (ResourceProperties.TYPE_URL))
-					{
-						copyrightRequired = false;
-
-						String url = params.getString("Url").trim();
-						if (url.equals (NULL_STRING))
-						{
-							// ignore the empty url field
-						}
-						else if (url.indexOf ("://") == -1)
-						{
-							// if it's missing the transport, add http://
-							url = "http://" + url;
-						}
-
-						if(!url.equals(NULL_STRING))
-						{
-							// valid protocol?
-							try
-							{
-								// test to see if the input validates as a URL. 
-								// Checks string for format only.
-								URL u = new URL(url);
-								redit.setContent(url.getBytes());
-							}
-							catch (MalformedURLException e1)
-							{
-								try
-								{
-									Pattern pattern = Pattern.compile("\\s*([a-zA-Z0-9]+)://([^\\n]+)");
-									Matcher matcher = pattern.matcher(url);
-									if(matcher.matches())
-									{
-										// if URL has "unknown" protocol, check remaider with
-										// "http" protocol and accept input it that validates.
-										URL test = new URL("http://" + matcher.group(2));
-										redit.setContent(url.getBytes());
-									}
-									else
-									{
-										// invalid url
-										addAlert(state, rb.getString("validurl"));
-									}
-								}
-								catch (MalformedURLException e2)
-								{
-									// invalid url
-									addAlert(state, rb.getString("validurl"));
-								}
-							}
-						}
-					}
-				}
-				
-				boolean pubviewset = false;
-				boolean pubview = false;
-				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-				{
-					pubviewset = ContentHostingService.isInheritingPubView(id);
-					if (!pubviewset)
-					{
-						pubview = params.getBoolean("pubview");
-					}
-				}
-				
-				if (!(isFolder && (id.equals ((String) state.getAttribute (STATE_HOME_COLLECTION_ID)))))
-				{
-					String displayName = (params.getString (ResourceProperties.PROP_DISPLAY_NAME)).trim();
-					if(displayName.length() == 0 && filename.length() != 0)
-					{
-						displayName = Validator.getFileName(filename); 
-					}
-					
-					if (displayName.length ()==0)
-					{
-						// title field is null
-						addAlert(state, rb.getString("titlenotnull"));
-						u_fields = u_fields + ResourceProperties.PROP_DISPLAY_NAME;
-						pedit.addProperty (ResourceProperties.PROP_DISPLAY_NAME, "");
-					}
-					else
-					{
-						pedit.addProperty (ResourceProperties.PROP_DISPLAY_NAME, displayName);
-					}
-				}	// the home collection's title is not modificable
-
-				if (copyrightRequired)
-				{
-					String copyright = StringUtil.trimToNull(params.getString ("copyright"));
-					String newcopyright = StringUtil.trimToNull(params.getCleanString (NEW_COPYRIGHT));
-					String copyrightAlert = StringUtil.trimToNull(params.getString("copyrightAlert"));
-					if (copyright != null)
-					{
-						if (state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) != null && copyright.equals(state.getAttribute(COPYRIGHT_NEW_COPYRIGHT)))
-						{
-							if (newcopyright != null)
-							{
-								pedit.addProperty (ResourceProperties.PROP_COPYRIGHT, newcopyright);
-							}
-							else
-							{
-								addAlert(state, rb.getString("specifycp2"));
-							}
-						}
-						else if (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) != null && copyright.equals (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT)))
-						{
-							pedit.addProperty (ResourceProperties.PROP_COPYRIGHT, mycopyright);
-						}
-
-						pedit.addProperty(ResourceProperties.PROP_COPYRIGHT_CHOICE, copyright);
-					}
-					
-					if (copyrightAlert != null)
-					{
-						pedit.addProperty (ResourceProperties.PROP_COPYRIGHT_ALERT, copyrightAlert);
-					}
-					else
-					{
-						pedit.removeProperty (ResourceProperties.PROP_COPYRIGHT_ALERT);
-					}
-				}
-
-				String description = params.getCleanString (ResourceProperties.PROP_DESCRIPTION);
-				if ((description.length ()>0) && (!description.equals (pedit.getProperty (ResourceProperties.PROP_DESCRIPTION))))
-				{
-					pedit.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
-				}
-				
-				// deal with quota (collections only)
-				if ((cedit != null) && (setQuota != null))
-				{
-					if (hasQuota != null)
-					{
-						// set the quota
-						pedit.addProperty(ResourceProperties.PROP_COLLECTION_BODY_QUOTA, quota);
-					}
-
-					else
-					{
-						// clear the quota
-						pedit.removeProperty(ResourceProperties.PROP_COLLECTION_BODY_QUOTA);
-					}
-				}
-
-				List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
-				if(metadataGroups != null && !metadataGroups.isEmpty())
-				{
-					MetadataGroup group = null;
-					Iterator it = metadataGroups.iterator();
-					while(it.hasNext())
-					{
-						group = (MetadataGroup) it.next();
-						if(group.isShowing())
-						{
-							Iterator props = group.iterator();
-							while(props.hasNext())
-							{
-								ResourcesMetadata prop = (ResourcesMetadata) props.next();
-								String value = params.getString(prop.getFullname());
-								if(value != null)
-								{
-									pedit.addProperty(prop.getFullname(), value);
-								}
-						
-							}
-						}
-					}
-				}
-
-				// commit the change
-				if (cedit != null)
-				{
-					ContentHostingService.commitCollection(cedit);
-					
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						// when in resource mode
-						if (!pubviewset)
-						{
-							ContentHostingService.setPubView(cedit.getId(), pubview);
-						}
-					}
-				}
-				else
-				{
-					ContentHostingService.commitResource(redit, noti);
-					
-					if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
-					{
-						// when in resource mode
-						if (!pubviewset)
-						{
-							ContentHostingService.setPubView(redit.getId(), pubview);
-						}
-					}
-				}
-				
-			}
-			catch (TypeException e)
-			{
-				addAlert(state," " + rb.getString("typeex") + " "  + id);
-			}
-			catch (IdUnusedException e)
-			{
-				addAlert(state,RESOURCE_NOT_EXIST_STRING);
-			}
-			catch (PermissionException e)
-			{
-				addAlert(state, rb.getString("notpermis10") + " " + id + ". " );
-			}
-			catch (InUseException e)
-			{
-				addAlert(state, rb.getString("someone") + " " + id + ". ");
-			}
-			catch (ServerOverloadException e)
-			{
-				addAlert(state, rb.getString("failed"));
-			}
-			catch (OverQuotaException e)
-			{
-				addAlert(state, rb.getString("changing1") + " " + id + " " + rb.getString("changing2"));
-			}
-			catch(RuntimeException e)
-			{
-				logger.error("ResourcesAction.doModifyproperties ***** Unknown Exception ***** " + e.getMessage());
-				addAlert(state, rb.getString("failed"));
-			}
-		}	// if - else
-
-		if (state.getAttribute(STATE_MESSAGE) != null)
-		{
-			// modify properties not sucessful
-			// set the unqualified fields
-			Vector v = (Vector) emptyVector (1).clone ();
-			v.set (1, u_fields);
-			state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, v);
-		}
-		else
-		{
-			// modify properties sucessful
-			String mode = (String) state.getAttribute(STATE_MODE);
-			if(MODE_HELPER.equals(mode))
-			{
-				cleanupState(state);
-				state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
-			}
-			else
-			{
-				state.setAttribute (STATE_MODE, MODE_LIST);
-			}
-			
-			
-			
-			
-			
-			// clear the unqualified fields
-			state.setAttribute (STATE_UNQUALIFIED_INPUT_FIELD, (Vector) emptyVector (1).clone ());
-			// clear state variables
-			initPropertiesContext(state);
-		}	//if-else
-
-	}	// doModifyproperties
-	
 	protected static String validateURL(String url) throws MalformedURLException
 	{
 		if (url.equals (NULL_STRING))
@@ -5866,15 +5763,16 @@ public class ResourcesAction
 	/**
 	 * Retrieve values for an item from edit context.  Edit context contains just one item at a time of a known type 
 	 * (folder, file, text document, structured-artifact, etc).  This method retrieves the data apppropriate to the 
-	 * type and updates the values of the EditItem stored as the STATE_EDIT_ITEM attribute in state. 
+	 * type and updates the values of the EditItem stored as the STATE_STACK_EDIT_ITEM attribute in state. 
 	 * @param state
 	 * @param params
 	 * @param item
 	 */
 	protected static void captureValues(SessionState state, ParameterParser params)
 	{
+		Map current_stack_frame = peekAtStack(state);
 
-		EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
+		EditItem item = (EditItem) current_stack_frame.get(STATE_STACK_EDIT_ITEM);
 		Set alerts = (Set) state.getAttribute(STATE_EDIT_ALERTS);
 		if(alerts == null)
 		{
@@ -5886,7 +5784,7 @@ public class ResourcesAction
 		String check_fileName = params.getString("check_fileName");
 		boolean expectFile = "true".equals(check_fileName);
 		String intent = params.getString("intent");
-		String oldintent = (String) state.getAttribute(STATE_EDIT_INTENT);
+		String oldintent = (String) current_stack_frame.get(STATE_STACK_EDIT_INTENT);
 		boolean upload_file = expectFile && item.isFileUpload() || ((item.isHtml() || item.isPlaintext()) && !intentChanged && INTENT_REPLACE_FILE.equals(intent) && INTENT_REPLACE_FILE.equals(oldintent));
 		boolean revise_file = (item.isHtml() || item.isPlaintext()) && !intentChanged && INTENT_REVISE_FILE.equals(intent) && INTENT_REVISE_FILE.equals(oldintent);
 		
@@ -5915,7 +5813,7 @@ public class ResourcesAction
 		
 		if(upload_file)
 		{
-			String max_file_size_mb = (String) state.getAttribute(FILE_UPLOAD_MAX_SIZE);
+			String max_file_size_mb = (String) state.getAttribute(STATE_FILE_UPLOAD_MAX_SIZE);
 			int max_bytes = 1096 * 1096;
 			try
 			{
@@ -6048,7 +5946,16 @@ public class ResourcesAction
 		}
 		else if(item.isStructuredArtifact())
 		{
-			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			String formtype = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_TYPE);
+			if(formtype == null)
+			{
+				formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+				if(formtype == null)
+				{
+					formtype = "";
+				}
+				current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE, formtype);
+			}
 			String formtype_check = params.getString("formtype");
 			
 			if(formtype_check == null || formtype_check.equals(""))
@@ -6223,7 +6130,7 @@ public class ResourcesAction
 				}
 			}
 		}
-		state.setAttribute(STATE_EDIT_ITEM, item);
+		current_stack_frame.put(STATE_STACK_EDIT_ITEM, item);
 		state.setAttribute(STATE_EDIT_ALERTS, alerts);
 
 	}	// captureValues
@@ -6239,6 +6146,8 @@ public class ResourcesAction
 	 */
 	public static Set captureValues(EditItem item, int index, SessionState state, ParameterParser params, boolean markMissing)
 	{
+		Map current_stack_frame = peekAtStack(state);
+
 		Set item_alerts = new HashSet();
 		boolean blank_entry = true;
 		item.clearMissing();
@@ -6275,7 +6184,7 @@ public class ResourcesAction
 		
 		if(item.isFileUpload())
 		{
-			String max_file_size_mb = (String) state.getAttribute(FILE_UPLOAD_MAX_SIZE);
+			String max_file_size_mb = (String) state.getAttribute(STATE_FILE_UPLOAD_MAX_SIZE);
 			int max_bytes = 1096 * 1096;
 			try
 			{
@@ -6438,7 +6347,16 @@ public class ResourcesAction
 		}
 		else if(item.isStructuredArtifact())
 		{
-			String formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+			String formtype = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_TYPE);
+			if(formtype == null)
+			{
+				formtype = (String) state.getAttribute(STATE_STRUCTOBJ_TYPE);
+				if(formtype == null)
+				{
+					formtype = "";
+				}
+				current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE, formtype);
+			}
 			String formtype_check = params.getString("formtype");
 			
 			if(formtype_check == null || formtype_check.equals(""))
@@ -6606,7 +6524,7 @@ public class ResourcesAction
 	/**
 	 * Retrieve values for one or more items from create context.  Create context contains up to ten items at a time  
 	 * all of the same type (folder, file, text document, structured-artifact, etc).  This method retrieves the data 
-	 * apppropriate to the type and updates the values of the EditItem objects stored as the STATE_CREATE_ITEMS 
+	 * apppropriate to the type and updates the values of the EditItem objects stored as the STATE_STACK_CREATE_ITEMS 
 	 * attribute in state. If the third parameter is "true", missing/incorrect user inputs will generate error messages
 	 * and attach flags to the input elements.  
 	 * @param state
@@ -6615,8 +6533,49 @@ public class ResourcesAction
 	 */
 	protected static void captureMultipleValues(SessionState state, ParameterParser params, boolean markMissing)
 	{
-		Integer numberOfItems = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
-		List items = (List) state.getAttribute(STATE_CREATE_ITEMS);
+		Map current_stack_frame = peekAtStack(state);
+		Integer number = (Integer) current_stack_frame.get(STATE_STACK_CREATE_NUMBER);
+		if(number == null)
+		{
+			number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+		if(number == null)
+		{
+			number = new Integer(1);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+		
+		List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+		if(new_items == null)
+		{
+			String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+			if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+			{
+				defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+				state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+			}
+			
+			String itemType = (String) current_stack_frame.get(STATE_STACK_CREATE_TYPE);
+			if(itemType == null || itemType.trim().equals(""))
+			{
+				itemType = (String) state.getAttribute(STATE_CREATE_TYPE);
+				if(itemType == null || itemType.trim().equals(""))
+				{
+					itemType = TYPE_UPLOAD;
+				}
+				current_stack_frame.put(STATE_STACK_CREATE_TYPE, itemType);
+			}
+			new_items = new Vector();
+			for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+			{
+				EditItem item = new EditItem(itemType);
+				item.setCopyrightStatus(defaultCopyrightStatus);
+				new_items.add(item);
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
+		}
+		
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 		if(alerts == null)
 		{
@@ -6626,7 +6585,7 @@ public class ResourcesAction
 		int actualCount = 0;
 		Set first_item_alerts = null;
 		
-		String max_file_size_mb = (String) state.getAttribute(FILE_UPLOAD_MAX_SIZE);
+		String max_file_size_mb = (String) state.getAttribute(STATE_FILE_UPLOAD_MAX_SIZE);
 		int max_bytes = 1096 * 1096;
 		try
 		{
@@ -6650,9 +6609,9 @@ public class ResourcesAction
 			return;
 		}
 		*/
-		for(int i = 0; i < numberOfItems.intValue(); i++)
+		for(int i = 0; i < number.intValue(); i++)
 		{
-			EditItem item = (EditItem) items.get(i);
+			EditItem item = (EditItem) new_items.get(i);
 			Set item_alerts = captureValues(item, i, state, params, markMissing);
 			if(i == 0)
 			{
@@ -6670,7 +6629,7 @@ public class ResourcesAction
 		}
 		if(actualCount > 0)
 		{
-			EditItem item = (EditItem) items.get(0);
+			EditItem item = (EditItem) new_items.get(0);
 			if(item.isBlank())
 			{
 				item.clearMissing();
@@ -6681,11 +6640,9 @@ public class ResourcesAction
 			alerts.addAll(first_item_alerts);
 		}
 		state.setAttribute(STATE_CREATE_ALERTS, alerts);
-		state.setAttribute(STATE_CREATE_ACTUAL_COUNT, Integer.toString(actualCount));
+		current_stack_frame.put(STATE_STACK_CREATE_ACTUAL_COUNT, Integer.toString(actualCount));
 
 	}	// captureMultipleValues
-	
-	
 	
 	protected static void capturePropertyValues(ParameterParser params, EditItem item, List properties)
 	{
@@ -6798,10 +6755,12 @@ public class ResourcesAction
 			return;
 		}
 		
-		// get values from form and update STATE_EDIT_ITEM attribute in state
+		// get values from form and update STATE_STACK_EDIT_ITEM attribute in state
 		captureValues(state, params);
+		
+		Map current_stack_frame = peekAtStack(state);
 
-		EditItem item = (EditItem) state.getAttribute(STATE_EDIT_ITEM);
+		EditItem item = (EditItem) current_stack_frame.get(STATE_STACK_EDIT_ITEM);
 
 		if(flow.equals("showMetadata"))
 		{
@@ -6959,7 +6918,7 @@ public class ResourcesAction
 					ContentHostingService.commitResource(redit, item.getNotification());
 				}
 				
-				state.setAttribute(STATE_EDIT_INTENT, INTENT_REVISE_FILE);
+				current_stack_frame.put(STATE_STACK_EDIT_INTENT, INTENT_REVISE_FILE);
 				
 				if (((String) state.getAttribute(STATE_RESOURCES_MODE)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
 				{
@@ -6972,7 +6931,7 @@ public class ResourcesAction
 				
 				// need to refresh collection containing current edit item make changes show up 
 				String containerId = ContentHostingService.getContainingCollectionId(item.getId());
-				Map expandedCollections = (Map) state.getAttribute(EXPANDED_COLLECTIONS);
+				Map expandedCollections = (Map) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 				Object old = expandedCollections.remove(containerId);
 				if (old != null)
 				{
@@ -7034,7 +6993,7 @@ public class ResourcesAction
 				state.setAttribute (STATE_MODE, MODE_LIST);
 			}
 			// clear state variables
-			initPropertiesContext(state);
+			// initPropertiesContext(state);
 		}	//if-else
 		else
 		{
@@ -7097,7 +7056,8 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		String intent = params.getString("intent");
-		state.setAttribute(STATE_EDIT_INTENT, intent);
+		Map current_stack_frame = peekAtStack(state);
+		current_stack_frame.put(STATE_STACK_EDIT_INTENT, intent);
 		
 	}	// doToggle_intent
 	
@@ -7743,7 +7703,7 @@ public class ResourcesAction
 		}
 		state.setAttribute(STATE_LIST_SELECTIONS, selectedSet);
 		
-		state.setAttribute(EXPANDED_COLLECTIONS, new HashMap());
+		state.setAttribute(STATE_EXPANDED_COLLECTIONS, new HashMap());
 		state.setAttribute(STATE_EXPAND_ALL_FLAG, Boolean.FALSE.toString());
 
 	}	// doUnexpandall
@@ -7800,14 +7760,14 @@ public class ResourcesAction
 		state.removeAttribute(COPYRIGHT_TYPES);
 		state.removeAttribute(DEFAULT_COPYRIGHT_ALERT);
 		state.removeAttribute(DEFAULT_COPYRIGHT);
-		state.removeAttribute(EXPANDED_COLLECTIONS);
-		state.removeAttribute(FILE_UPLOAD_MAX_SIZE);
+		state.removeAttribute(STATE_EXPANDED_COLLECTIONS);
+		state.removeAttribute(STATE_FILE_UPLOAD_MAX_SIZE);
 		state.removeAttribute(NEW_COPYRIGHT_INPUT);
 		state.removeAttribute(STATE_COLLECTION_ID);
 		state.removeAttribute(STATE_COLLECTION_PATH);
 		state.removeAttribute(STATE_CONTENT_SERVICE);
 		state.removeAttribute(STATE_CONTENT_TYPE_IMAGE_SERVICE);
-		state.removeAttribute(STATE_EDIT_INTENT);
+		//state.removeAttribute(STATE_STACK_EDIT_INTENT);
 		state.removeAttribute(STATE_EXPAND_ALL_FLAG);
 		state.removeAttribute(STATE_HELPER_NEW_ITEMS);
 		state.removeAttribute(STATE_HELPER_CHANGED);
@@ -7817,19 +7777,16 @@ public class ResourcesAction
 		state.removeAttribute(STATE_MY_COPYRIGHT);
 		state.removeAttribute(STATE_NAVIGATION_ROOT);
 		state.removeAttribute(STATE_PASTE_ALLOWED_FLAG);
-		state.removeAttribute(STATE_PROPERTIES_INTENT);
 		state.removeAttribute(STATE_SELECT_ALL_FLAG);
 		state.removeAttribute(STATE_SHOW_ALL_SITES);
 		state.removeAttribute(STATE_SITE_TITLE);
 		state.removeAttribute(STATE_SORT_ASC);
 		state.removeAttribute(STATE_SORT_BY);
-		state.removeAttribute(STATE_STRUCTOBJ_TYPE);
-		state.removeAttribute(STATE_STRUCTOBJ_TYPE_READONLY);
-      state.removeAttribute(STATE_STRUCTOBJ_HOMES);
-      state.removeAttribute(STATE_STRUCT_OBJ_SCHEMA);
-      state.removeAttribute(STATE_CREATE_ITEMS);
-      state.removeAttribute(STATE_STRUCTOBJ_ROOTNAME);
-
+		state.removeAttribute(STATE_STACK_STRUCTOBJ_TYPE);
+		state.removeAttribute(STATE_STACK_STRUCTOBJ_TYPE_READONLY);
+		state.removeAttribute(STATE_STRUCTOBJ_HOMES);
+		state.removeAttribute(STATE_STRUCT_OBJ_SCHEMA);
+		// popFromStack(state);
 		state.removeAttribute(STATE_INITIALIZED);
 		state.removeAttribute(VelocityPortletPaneledAction.STATE_HELPER);
 
@@ -7839,10 +7796,10 @@ public class ResourcesAction
 	public static void initStateAttributes(SessionState state, VelocityPortlet portlet)
 	{
 		if (state.getAttribute (STATE_INITIALIZED) != null) return;
-		
-		if (state.getAttribute(FILE_UPLOAD_MAX_SIZE) == null)
+
+		if (state.getAttribute(STATE_FILE_UPLOAD_MAX_SIZE) == null)
 		{
-			state.setAttribute(FILE_UPLOAD_MAX_SIZE, ServerConfigurationService.getString("content.upload.max", "1"));
+			state.setAttribute(STATE_FILE_UPLOAD_MAX_SIZE, ServerConfigurationService.getString("content.upload.max", "1"));
 		}
 		
 		PortletConfig config = portlet.getPortletConfig();
@@ -7965,14 +7922,14 @@ public class ResourcesAction
 				title = ((Site) SiteService.getSite(PortalService.getCurrentSiteId())).getTitle();
 			}
 			catch (IdUnusedException e)
-			{
+			{	// ignore
 			}
 			state.setAttribute(STATE_SITE_TITLE, title);
 		}
 
 		HashMap expandedCollections = new HashMap();
 		//expandedCollections.add (state.getAttribute (STATE_HOME_COLLECTION_ID));
-		state.setAttribute(EXPANDED_COLLECTIONS, expandedCollections);
+		state.setAttribute(STATE_EXPANDED_COLLECTIONS, expandedCollections);
 		
 		if (state.getAttribute(COPYRIGHT_TYPES) == null)
 		{
@@ -8030,16 +7987,6 @@ public class ResourcesAction
 			}
 		}
 		
-		if(state.getAttribute(STATE_PROPERTIES_INTENT) == null)
-		{
-			state.setAttribute(STATE_PROPERTIES_INTENT, INTENT_REVISE_FILE); 
-		}
-		
-		if(state.getAttribute(STATE_EDIT_INTENT) == null)
-		{
-			state.setAttribute(STATE_EDIT_INTENT, INTENT_REVISE_FILE); 
-		}
-
 		// get resources mode from tool registry
 		String optional_properties = portlet.getPortletConfig().getInitParameter("optional_properties");
 		if(optional_properties != null && "true".equalsIgnoreCase(optional_properties))
@@ -8128,17 +8075,6 @@ public class ResourcesAction
 		state.setAttribute (STATE_CUT_FLAG, Boolean.FALSE.toString());
 
 	}	// initCutContent
-
-	/**
-	* initialize properties context
-	*/
-	private static void initPropertiesContext (SessionState state)
-	{
-		state.removeAttribute(STATE_PROPERTIES_ID);
-		state.removeAttribute(STATE_PROPERTIES_COPYRIGHT_CHOICE);
-		state.removeAttribute(STATE_PROPERTIES_COPYRIGHT);
-
-	}	// initPropertiesContext
 
 	/**
 	* find out whether there is a duplicate item in testVector
@@ -8290,7 +8226,7 @@ public class ResourcesAction
 	public static void doExpand_collection(RunData data) throws IdUnusedException, TypeException, PermissionException
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+		HashMap currentMap = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 		
 		//get the ParameterParser from RunData
 		ParameterParser params = data.getParameters ();
@@ -8307,7 +8243,7 @@ public class ResourcesAction
 		String id = params.getString("collectionId");
 		currentMap.put (id,ContentHostingService.getCollection (id)); 
 		
-		state.setAttribute(EXPANDED_COLLECTIONS, currentMap);
+		state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
 		
 		// add this folder id into the set to be event-observed
 		addObservingPattern(id, state);
@@ -8320,7 +8256,7 @@ public class ResourcesAction
 	static public void doCollapse_collection(RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
-		HashMap currentMap = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+		HashMap currentMap = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 		
 		//get the ParameterParser from RunData
 		ParameterParser params = data.getParameters ();
@@ -8351,7 +8287,7 @@ public class ResourcesAction
 			}
 		}
 		
-		state.setAttribute(EXPANDED_COLLECTIONS, newSet);
+		state.setAttribute(STATE_EXPANDED_COLLECTIONS, newSet);
 		
 		// remove this folder id into the set to be event-observed		
 		removeObservingPattern(collectionId, state);
@@ -8476,7 +8412,7 @@ public class ResourcesAction
 				if(need_to_expand_all)
 				{
 					expandedCollections.put(collectionId, collection);
-					state.setAttribute(EXPANDED_COLLECTIONS, expandedCollections);
+					state.setAttribute(STATE_EXPANDED_COLLECTIONS, expandedCollections);
 				}
 			}
 				
@@ -8994,7 +8930,7 @@ public class ResourcesAction
 				} 
 				
 				// try to expand the collection
-				HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+				HashMap expandedCollections = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 				if(! expandedCollections.containsKey(collectionId))
 				{
 					org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
@@ -9117,7 +9053,7 @@ public class ResourcesAction
 				} 
 				
 				// try to expand the collection
-				HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+				HashMap expandedCollections = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 				if(! expandedCollections.containsKey(collectionId))
 				{
 					org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
@@ -9244,7 +9180,7 @@ public class ResourcesAction
 			} 
 			
 			// try to expand the collection
-			HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+			HashMap expandedCollections = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 			if(! expandedCollections.containsKey(collectionId))
 			{
 				org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
@@ -11290,7 +11226,7 @@ public class ResourcesAction
 		List other_sites = new Vector();
 		
 		String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
-		HashMap expandedCollections = (HashMap) state.getAttribute(EXPANDED_COLLECTIONS);
+		HashMap expandedCollections = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 		
 		// set the sort values
 		String sortedBy = (String) state.getAttribute (STATE_SORT_BY);
@@ -11604,8 +11540,5 @@ public class ResourcesAction
 		return -1;
 
 	}	// findResourceInList
-
-
-
 
 }	// ResourcesAction

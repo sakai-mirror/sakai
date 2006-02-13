@@ -1,4 +1,5 @@
 <!-- chef_resources_itemtype.vm, use with org.sakaiproject.tool.content.ResourcesAction.java -->
+<!-- "$itemType" == "$TYPE_UPLOAD" -->
 ############################################# macro getPropertyValues 
 ##
 
@@ -95,6 +96,7 @@
 							id="$validator.escapeJavascript("$!{tag.dottedname}")" 
 							value="$!{tag.value}" />
 					#elseif("$!tag.widget" == "$!ANYURI")
+						<a href="#" onclick="javascript:document.getElementById('createForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=linkResource&field=$validator.escapeUrl($tag.dottedname)")';submitform('createForm');">Link to a resource</a>
 						ANYURI: $tag.dottedname<br />
 						$tag.widget<br />
 						"$!{tag.value}"<br />
@@ -301,7 +303,6 @@
 	}
 	//-->
 </script>
-
 <div class="portletBody">
 	#if("$itemType" == "$TYPE_UPLOAD")
 		<form name="createForm" id="createForm" action="#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=create&itemType=$itemType")" method="post" enctype="multipart/form-data">
