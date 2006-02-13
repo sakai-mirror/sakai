@@ -49,8 +49,11 @@ public interface ActiveTool extends Tool
 	 *        The (optional) servlet context path that is given to the tool.
 	 * @param toolPath
 	 *        The (optional) servlet pathInfo that is given to the tool.
+	 * @throws ToolException
+	 *         if there's any trouble running the tool.
 	 */
-	void forward(HttpServletRequest req, HttpServletResponse res, Placement placement, String toolContext, String toolPath);
+	void forward(HttpServletRequest req, HttpServletResponse res, Placement placement, String toolContext, String toolPath)
+			throws ToolException;
 
 	/**
 	 * Invoke the tool to handle the request by producing a fragment
@@ -65,11 +68,14 @@ public interface ActiveTool extends Tool
 	 *        The (optional) servlet context path that is given to the tool.
 	 * @param toolPath
 	 *        The (optional) servlet pathInfo that is given to the tool.
+	 * @throws ToolException
+	 *         if there's any trouble running the tool.
 	 */
-	void include(HttpServletRequest req, HttpServletResponse res, Placement placement, String toolContext, String toolPath);
+	void include(HttpServletRequest req, HttpServletResponse res, Placement placement, String toolContext, String toolPath)
+			throws ToolException;
 
 	/**
-	 * Invoke the tool to handle the complete request as a helper.  Note, the placement is shared between invoker and invoked.
+	 * Invoke the tool to handle the complete request as a helper. Note, the placement is shared between invoker and invoked.
 	 * 
 	 * @param req
 	 *        The request.
@@ -79,9 +85,8 @@ public interface ActiveTool extends Tool
 	 *        The (optional) servlet context path that is given to the tool.
 	 * @param toolPath
 	 *        The (optional) servlet pathInfo that is given to the tool.
+	 * @throws ToolException
+	 *         if there's any trouble running the tool.
 	 */
-	void help(HttpServletRequest req, HttpServletResponse res, String toolContext, String toolPath);
+	void help(HttpServletRequest req, HttpServletResponse res, String toolContext, String toolPath) throws ToolException;
 }
-
-
-

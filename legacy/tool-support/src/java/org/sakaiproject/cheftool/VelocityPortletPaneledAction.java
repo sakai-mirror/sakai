@@ -36,12 +36,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.menu.Menu;
 import org.sakaiproject.cheftool.menu.MenuEntry;
@@ -55,6 +55,7 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.courier.ObservingCourier;
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.util.web.Web;
 import org.sakaiproject.vm.ActionURL;
 
@@ -299,7 +300,7 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 	 * @param res
 	 *        The HttpServletResponse
 	 */
-	protected void toolModeDispatch(String methodBase, String methodExt, HttpServletRequest req, HttpServletResponse res)
+	protected void toolModeDispatch(String methodBase, String methodExt, HttpServletRequest req, HttpServletResponse res) throws ToolException
 	{
 		// the context wraps our real vm attribute set
 		Context context = (Context) req.getAttribute(ATTR_CONTEXT);
@@ -420,21 +421,19 @@ public abstract class VelocityPortletPaneledAction extends ToolServlet
 		}
 		catch (NoSuchMethodException e)
 		{
-			Log.warn("chef", this + " : ", e);
+			throw new ToolException(e);
 		}
 		catch (IllegalAccessException e)
 		{
-			Log.warn("chef", this + " : ", e);
+			throw new ToolException(e);
 		}
 		catch (InvocationTargetException e)
 		{
-			Throwable e2 = e;
-			if (e.getCause() != null) e2 = e.getCause();
-			Log.warn("chef", this + " : ", e2);
+			throw new ToolException(e);
 		}
 		catch (ServletException e)
 		{
-			Log.warn("chef", this + " : ", e);
+			throw new ToolException(e);
 		}
 
 	} // toolModeDispatch

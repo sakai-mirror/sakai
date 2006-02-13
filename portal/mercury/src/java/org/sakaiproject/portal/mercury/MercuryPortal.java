@@ -51,10 +51,13 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.api.kernel.tool.ToolURL;
 import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.util.java.ResourceLoader;
+import org.sakaiproject.util.portal.ErrorReporter;
 import org.sakaiproject.util.web.Web;
 
 /**
@@ -93,6 +96,9 @@ public class MercuryPortal extends HttpServlet
 {
 	/** Our log (commons). */
 	private static Log M_log = LogFactory.getLog(MercuryPortal.class);
+
+	/** messages. */
+	private static ResourceLoader rb = new ResourceLoader("sitenav");
 
 	/** Map of context+toolId -> Placement for keeping tool placements. */
 	protected Map m_placements = new HashMap();
@@ -143,44 +149,51 @@ public class MercuryPortal extends HttpServlet
 	 */
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
 	{
-		// get the Sakai session
-		Session session = SessionManager.getCurrentSession();
-
-		// recognize what to do from the path
-		String option = req.getPathInfo();
-
-		// if missing, set it to home
-		if ((option == null) || ("/".equals(option)))
+		try
 		{
-			option = "/home";
+			// get the Sakai session
+			Session session = SessionManager.getCurrentSession();
+	
+			// recognize what to do from the path
+			String option = req.getPathInfo();
+	
+			// if missing, set it to home
+			if ((option == null) || ("/".equals(option)))
+			{
+				option = "/home";
+			}
+	
+			// get the parts, [0] = "", [1] is /login, or [1] is /home, or [2] is context and [1] is known tool id and [3..n] are for the tool
+			String[] parts = option.split("/");
+	
+			// recognize and dispatch the 'home' option
+			if ((parts.length == 2) && (parts[1].equals("home")))
+			{
+				doHome(req, res, session);
+			}
+	
+			// recognize and dispatch the 'login' option
+			else if ((parts.length == 2) && (parts[1].equals("login")))
+			{
+				doLogin(req, res, session);
+			}
+	
+			// recognize and dispatch a tool request option: parts[2] is the context, parts[1] is a known tool id, parts[3..n] are for the tool
+			else if (parts.length >= 3)
+			{
+				doTool(req, res, session, parts[1], parts[2], req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3),
+						Web.makePath(parts, 3, parts.length));
+			}
+	
+			// handle an unrecognized request
+			else
+			{
+				doError(req, res, session);
+			}
 		}
-
-		// get the parts, [0] = "", [1] is /login, or [1] is /home, or [2] is context and [1] is known tool id and [3..n] are for the tool
-		String[] parts = option.split("/");
-
-		// recognize and dispatch the 'home' option
-		if ((parts.length == 2) && (parts[1].equals("home")))
+		catch (Throwable t)
 		{
-			doHome(req, res, session);
-		}
-
-		// recognize and dispatch the 'login' option
-		else if ((parts.length == 2) && (parts[1].equals("login")))
-		{
-			doLogin(req, res, session);
-		}
-
-		// recognize and dispatch a tool request option: parts[2] is the context, parts[1] is a known tool id, parts[3..n] are for the tool
-		else if (parts.length >= 3)
-		{
-			doTool(req, res, session, parts[1], parts[2], req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3),
-					Web.makePath(parts, 3, parts.length));
-		}
-
-		// handle an unrecognized request
-		else
-		{
-			doError(req, res, session);
+			doThrowableError(req, res, t);
 		}
 	}
 
@@ -324,7 +337,7 @@ public class MercuryPortal extends HttpServlet
 		out.println("</body></html>");
 	}
 
-	protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session) throws IOException
+	protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session) throws ToolException
 	{
 		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
 		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
@@ -340,7 +353,7 @@ public class MercuryPortal extends HttpServlet
 	}
 
 	protected void doTool(HttpServletRequest req, HttpServletResponse res, Session session, String toolId, String context,
-			String toolContextPath, String toolPathInfo) throws IOException
+			String toolContextPath, String toolPathInfo) throws ToolException, IOException
 	{
 		ActiveTool tool = ActiveToolManager.getActiveTool(toolId);
 		if (tool == null)
@@ -386,6 +399,12 @@ public class MercuryPortal extends HttpServlet
 		out.println("</body></html>");
 	}
 
+	protected void doThrowableError(HttpServletRequest req, HttpServletResponse res, Throwable t)
+	{
+		ErrorReporter err = new ErrorReporter(rb);
+		err.report(req, res, t);
+	}
+
 	/**
 	 * Respond to data posting requests.
 	 * 
@@ -398,48 +417,55 @@ public class MercuryPortal extends HttpServlet
 	 */
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
 	{
-		// get the Sakai session
-		Session session = SessionManager.getCurrentSession();
-
-		// recognize what to do from the path
-		String option = req.getPathInfo();
-
-		// if missing, set it to home
-		if ((option == null) || ("/".equals(option)))
+		try
 		{
-			option = "/home";
+			// get the Sakai session
+			Session session = SessionManager.getCurrentSession();
+	
+			// recognize what to do from the path
+			String option = req.getPathInfo();
+	
+			// if missing, set it to home
+			if ((option == null) || ("/".equals(option)))
+			{
+				option = "/home";
+			}
+	
+			// get the parts, [0] = "", [1] is /login, or [1] is /home, or [2] is context and [1] is known tool id and [3..n] are for the tool
+			String[] parts = option.split("/");
+	
+			// recognize and dispatch the 'home' option
+			if ((parts.length == 2) && (parts[1].equals("home")))
+			{
+				postHome(req, res, session);
+			}
+	
+			// recognize and dispatch the 'login' option
+			else if ((parts.length == 2) && (parts[1].equals("login")))
+			{
+				postLogin(req, res, session);
+			}
+	
+			// recognize and dispatch a tool request option: parts[2] is the context, parts[1] is a known tool id, parts[3..n] are for the tool
+			else if (parts.length >= 3)
+			{
+				postTool(req, res, session, parts[1], parts[2],
+						req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3), Web.makePath(parts, 3, parts.length));
+			}
+	
+			// handle an unrecognized request
+			else
+			{
+				doError(req, res, session);
+			}
 		}
-
-		// get the parts, [0] = "", [1] is /login, or [1] is /home, or [2] is context and [1] is known tool id and [3..n] are for the tool
-		String[] parts = option.split("/");
-
-		// recognize and dispatch the 'home' option
-		if ((parts.length == 2) && (parts[1].equals("home")))
+		catch (Throwable t)
 		{
-			postHome(req, res, session);
-		}
-
-		// recognize and dispatch the 'login' option
-		else if ((parts.length == 2) && (parts[1].equals("login")))
-		{
-			postLogin(req, res, session);
-		}
-
-		// recognize and dispatch a tool request option: parts[2] is the context, parts[1] is a known tool id, parts[3..n] are for the tool
-		else if (parts.length >= 3)
-		{
-			postTool(req, res, session, parts[1], parts[2],
-					req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 3), Web.makePath(parts, 3, parts.length));
-		}
-
-		// handle an unrecognized request
-		else
-		{
-			doError(req, res, session);
+			doThrowableError(req, res, t);			
 		}
 	}
 
-	protected void postLogin(HttpServletRequest req, HttpServletResponse res, Session session) throws IOException
+	protected void postLogin(HttpServletRequest req, HttpServletResponse res, Session session) throws ToolException
 	{
 		ActiveTool tool = ActiveToolManager.getActiveTool("sakai.login");
 		String context = req.getContextPath() + req.getServletPath() + "/login";
@@ -451,7 +477,7 @@ public class MercuryPortal extends HttpServlet
 	}
 
 	protected void postTool(HttpServletRequest req, HttpServletResponse res, Session session, String toolId, String context,
-			String toolContextPath, String toolPathInfo) throws IOException
+			String toolContextPath, String toolPathInfo) throws ToolException, IOException
 	{
 		ActiveTool tool = ActiveToolManager.getActiveTool(toolId);
 		if (tool == null)
@@ -478,7 +504,7 @@ public class MercuryPortal extends HttpServlet
 	 * Forward to the tool - setup JavaScript/CSS etc that the tool will render
 	 */
 	protected void forwardTool(ActiveTool tool, HttpServletRequest req, HttpServletResponse res, Placement p,
-			String toolContextPath, String toolPathInfo)
+			String toolContextPath, String toolPathInfo) throws ToolException
 	{
 		String skin = ServerConfigurationService.getString("skin.default");
 		String skinRepo = ServerConfigurationService.getString("skin.repo");

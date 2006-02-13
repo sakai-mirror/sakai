@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.RunData;
@@ -29,7 +30,7 @@ import org.sakaiproject.tool.content.ResourcesAction;
 public class FilePickerAction extends VelocityPortletPaneledAction {
 
    protected void toolModeDispatch(String methodBase, String methodExt,
-                                   HttpServletRequest req, HttpServletResponse res) {
+                                   HttpServletRequest req, HttpServletResponse res) throws ToolException {
       SessionState sstate = getState(req);
 
       if (ResourcesAction.MODE_ATTACHMENT_DONE.equals(sstate.getAttribute(ResourcesAction.STATE_RESOURCES_MODE))) {

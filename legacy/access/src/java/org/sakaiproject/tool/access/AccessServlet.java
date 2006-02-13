@@ -42,6 +42,7 @@ import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.cheftool.VmServlet;
 import org.sakaiproject.exception.CopyrightException;
@@ -410,7 +411,7 @@ public class AccessServlet extends VmServlet
 	 * @param path
 	 *        The current request path, set ONLY if we want this to be where to redirect the user after successfull login
 	 */
-	protected void doLogin(HttpServletRequest req, HttpServletResponse res, String path)
+	protected void doLogin(HttpServletRequest req, HttpServletResponse res, String path) throws ToolException
 	{
 		// get the Sakai session
 		Session session = SessionManager.getCurrentSession();

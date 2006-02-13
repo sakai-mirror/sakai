@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.cheftool.menu.Menu;
 import org.sakaiproject.service.framework.log.cover.Logger;
 import org.sakaiproject.service.framework.session.SessionState;
@@ -171,7 +172,7 @@ public abstract class ToolServlet extends VmServlet
 		String methodBase,
 		String methodExt,
 		HttpServletRequest req,
-		HttpServletResponse res)
+		HttpServletResponse res) throws ToolException
 	{
 		String methodName = null;
 		try
@@ -198,20 +199,15 @@ public abstract class ToolServlet extends VmServlet
 		}
 		catch (NoSuchMethodException e)
 		{
-			getServletContext().log(
-				"Exception calling method " + methodName + " " + e);
+			throw new ToolException(e);
 		}
 		catch (IllegalAccessException e)
 		{
-			getServletContext().log(
-				"Exception calling method " + methodName + " " + e);
+			throw new ToolException(e);
 		}
 		catch (InvocationTargetException e)
 		{
-			String xtra = "";
-			if (e.getCause() != null) xtra = " (Caused by " + e.getCause() + ")";
-			getServletContext().log(
-				"Exception calling method " + methodName + " " + e + xtra);
+			throw new ToolException(e);
 		}
 
 	} // toolModeDispatch

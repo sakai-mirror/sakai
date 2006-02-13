@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="mercury/src/java"/>
+	<classpathentry excluding="**/.DS_Store" kind="src" path="util/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="courier/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="presence/src/java"/>
 	<classpathentry excluding="**/.DS_Store" kind="src" path="charon/src/java"/>

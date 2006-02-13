@@ -36,6 +36,7 @@ import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +51,7 @@ import org.sakaiproject.api.kernel.tool.ActiveTool;
 import org.sakaiproject.api.kernel.tool.ActiveToolManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -318,55 +320,80 @@ public class ActiveToolComponent extends ToolComponent implements ActiveToolMana
 		 * @inheritDoc
 		 */
 		public void forward(HttpServletRequest req, HttpServletResponse res, Placement placement, String toolContext,
-				String toolPath)
+				String toolPath)  throws ToolException
 		{
 			
-			WrappedRequest wreq = new WrappedRequest(req, toolContext, toolPath, placement, false, this);
-			WrappedResponse wres = new WrappedResponse(wreq, res);
+			WrappedRequest wreq = null;
 			
 			try
 			{
+				wreq = new WrappedRequest(req, toolContext, toolPath, placement, false, this);
+				WrappedResponse wres = new WrappedResponse(wreq, res);
+
 				getDispatcher().forward(wreq, wres);
 			}
-			catch (Throwable t)
+			catch (IOException e)
 			{
-				M_log.warn("forward: " + t);
+				throw new ToolException(e);
 			}
-
-			wreq.cleanup();
+			catch (ToolException e)
+			{
+				throw e;
+			}
+			catch (ServletException e)
+			{
+				throw new ToolException(e);
+			}
+			finally
+			{
+				if (wreq != null) wreq.cleanup();
+			}
 		}
 
 		/**
 		 * @inheritDoc
 		 */
 		public void include(HttpServletRequest req, HttpServletResponse res, Placement placement, String toolContext,
-				String toolPath)
+				String toolPath)  throws ToolException
 		{
-			WrappedRequest wreq = new WrappedRequest(req, toolContext, toolPath, placement, true, this);
+			WrappedRequest wreq = null;
 			
 			try
 			{
+				wreq = new WrappedRequest(req, toolContext, toolPath, placement, true, this);
 				getDispatcher().include(wreq, res);
 			}
-			catch (Throwable t)
+			catch (IOException e)
 			{
-				M_log.warn("include: " + t);
+				throw new ToolException(e);
 			}
-
-			wreq.cleanup();
+			catch (ToolException e)
+			{
+				throw e;
+			}
+			catch (ServletException e)
+			{
+				throw new ToolException(e);
+			}
+			finally
+			{
+				if (wreq != null) wreq.cleanup();
+			}
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public void help(HttpServletRequest req, HttpServletResponse res, String toolContext, String toolPath)
+		public void help(HttpServletRequest req, HttpServletResponse res, String toolContext, String toolPath)  throws ToolException
 		{
 			// fragment?
 			boolean fragment = Boolean.TRUE.toString().equals(req.getAttribute(FRAGMENT));
-			WrappedRequest wreq = new WrappedRequest(req, toolContext, toolPath, null, fragment, this);
+
+			WrappedRequest wreq = null;
 
 			try
 			{
+				wreq = new WrappedRequest(req, toolContext, toolPath, null, fragment, this);
 				if (fragment)
 				{
 					getDispatcher().include(wreq, res);
@@ -376,12 +403,22 @@ public class ActiveToolComponent extends ToolComponent implements ActiveToolMana
 					getDispatcher().forward(wreq, res);
 				}
 			}
-			catch (Throwable t)
+			catch (IOException e)
 			{
-				M_log.warn("helper: " + t);
+				throw new ToolException(e);
 			}
-
-			wreq.cleanup();
+			catch (ToolException e)
+			{
+				throw e;
+			}
+			catch (ServletException e)
+			{
+				throw new ToolException(e);
+			}
+			finally
+			{
+				if (wreq != null) wreq.cleanup();
+			}
 		}
 
 		/**

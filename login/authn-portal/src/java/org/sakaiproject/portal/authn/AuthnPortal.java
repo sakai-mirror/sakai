@@ -40,6 +40,7 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.util.web.Web;
@@ -141,7 +142,7 @@ public class AuthnPortal extends HttpServlet
 		}
 	}
 
-	protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath) throws IOException
+	protected void doLogin(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath) throws ToolException
 	{
 		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
 		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
@@ -160,7 +161,7 @@ public class AuthnPortal extends HttpServlet
 		tool.help(req, res, context, null);
 	}
 
-	protected void doLogout(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath) throws IOException
+	protected void doLogout(HttpServletRequest req, HttpServletResponse res, Session session, String returnPath) throws ToolException
 	{
 		// setup for the helper if needed (Note: in session, not tool session, special for Login helper)
 		if (session.getAttribute(Tool.HELPER_DONE_URL) == null)
@@ -224,7 +225,7 @@ public class AuthnPortal extends HttpServlet
 	 * Forward to the tool - but first setup JavaScript/CSS etc that the tool will render
 	 */
 	protected void forwardTool(ActiveTool tool, HttpServletRequest req, HttpServletResponse res, Placement p, String skin,
-			String toolContextPath, String toolPathInfo)
+			String toolContextPath, String toolPathInfo) throws ToolException
 	{
 		// setup html information that the tool might need (skin, body on load, js includes, etc).
 		if (skin == null || skin.length() == 0) skin = ServerConfigurationService.getString("skin.default");

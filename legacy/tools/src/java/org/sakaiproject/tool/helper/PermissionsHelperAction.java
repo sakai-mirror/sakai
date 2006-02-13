@@ -5,10 +5,10 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.cheftool.Context;
 import org.sakaiproject.cheftool.RunData;
@@ -16,6 +16,7 @@ import org.sakaiproject.cheftool.VelocityPortlet;
 import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
 import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.security.PermissionsHelper;
+import org.sakaiproject.util.java.ResourceLoader;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +29,7 @@ public class PermissionsHelperAction extends VelocityPortletPaneledAction {
    private static ResourceLoader rb = new ResourceLoader("announcement");
 
    protected void toolModeDispatch(String methodBase, String methodExt,
-                                   HttpServletRequest req, HttpServletResponse res) {
+                                   HttpServletRequest req, HttpServletResponse res) throws ToolException {
       SessionState sstate = getState(req);
       ToolSession toolSession = SessionManager.getCurrentToolSession();
 

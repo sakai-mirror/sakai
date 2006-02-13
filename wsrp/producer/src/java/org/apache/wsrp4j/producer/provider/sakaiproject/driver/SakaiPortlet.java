@@ -34,6 +34,7 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -121,7 +122,14 @@ public abstract class SakaiPortlet implements Portlet {
     
     public void render(HttpServletRequest req, HttpServletResponse resp, Placement placement) 
     {
-        tool.include(req, resp, placement, req.getContextPath() + req.getServletPath(), req.getPathInfo());
+		try
+		{
+			tool.include(req, resp, placement, req.getContextPath() + req.getServletPath(), req.getPathInfo());
+		}
+		catch (ToolException e)
+		{
+			// TODO:
+		}
     }
 
     /* (non-Javadoc)
