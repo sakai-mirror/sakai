@@ -68,7 +68,12 @@ public class UriElementType extends BaseElementType {
    }
 
    public String getSchemaNormalizedValue(Object value) throws NormalizationException {
-      return ((URI)value).toString();
+      if (value != null) {
+         return ((URI)value).toString();
+      }
+      else {
+         return null;
+      }
    }
 
 }
