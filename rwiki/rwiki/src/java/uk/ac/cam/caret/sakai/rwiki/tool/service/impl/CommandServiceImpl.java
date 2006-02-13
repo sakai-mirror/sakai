@@ -24,12 +24,14 @@ package uk.ac.cam.caret.sakai.rwiki.tool.service.impl;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import org.sakaiproject.service.framework.log.Logger;
 
@@ -53,6 +55,29 @@ public class CommandServiceImpl implements CommandService {
     
     private String permissionPath = "/WEB-INF/command-pages/permission.jsp";
 
+    public String errorPath = "/WEB-INF/command-pages/errorpage.jsp";
+
+    private class WrappedCommand implements HttpCommand {
+        private HttpCommand command;
+        
+        public WrappedCommand(HttpCommand command) {
+            this.command = command;
+        }
+
+        public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+            try {
+                command.execute(request, response);
+            } catch (Exception e) {
+                if (request.getAttribute(PageContext.EXCEPTION) == null) {
+                    request.setAttribute(PageContext.EXCEPTION, e);
+                }
+                RequestDispatcher rd = request.getRequestDispatcher(errorPath );
+                rd.forward(request, response);
+            }
+        }
+    }
+    
+    
     private class DefaultCommand implements HttpCommand {
         private String action;
         
@@ -76,7 +101,11 @@ public class CommandServiceImpl implements CommandService {
                     rd = request.getRequestDispatcher(permissionPath);
                     rd.forward(request, response);
                 } else {
-                    throw e;
+                    if (request.getAttribute(PageContext.EXCEPTION) == null) {
+                        request.setAttribute(PageContext.EXCEPTION, e);
+                    }
+                    rd = request.getRequestDispatcher(errorPath);
+                    rd.forward(request, response);
                 }
             } catch (PermissionException e) {
                 rd = request.getRequestDispatcher(permissionPath);
@@ -98,6 +127,14 @@ public class CommandServiceImpl implements CommandService {
         }
         
     }
+
+    public void init() {
+        for (Iterator it = commandMap.keySet().iterator(); it.hasNext();) {
+            String commandName = (String) it.next();
+            HttpCommand toWrap = (HttpCommand) commandMap.get(commandName);
+            commandMap.put(commandName, new WrappedCommand(toWrap));
+        }
+    }
     
 	/* (non-Javadoc)
 	 * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiCommandService#getCommand(java.lang.String)
@@ -108,9 +145,8 @@ public class CommandServiceImpl implements CommandService {
 		
 		if (command == null) {
 			return new DefaultCommand(commandName);
-		}
-		
-		return command;
+		} 
+        return command;
 	}
 	
 	public Map getCommandMap() {
