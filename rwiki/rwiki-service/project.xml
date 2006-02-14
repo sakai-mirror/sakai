@@ -48,7 +48,9 @@
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
     <unitTest>
-      <includes>**/*Test</includes>
+      <includes>
+        <include>**/*Test</include>
+      </includes>
       <resources>
         <resource>
           <directory>${basedir}/src/testBundle</directory>

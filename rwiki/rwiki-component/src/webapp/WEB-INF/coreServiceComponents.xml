@@ -9,7 +9,7 @@
     class="uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.RenderContextFactoryImpl">
     <property name="log"><ref bean="rwiki-logger"/></property>
 
-    <property name="objectService"><ref bean="objectService"/></property>
+    <property name="objectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"/></property>
     <property name="securityService"><ref bean="securityService"/></property>
   </bean>
 
@@ -18,7 +18,7 @@
     class="uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.RenderEngineFactoryImpl">
     <property name="log"><ref bean="rwiki-logger"/></property>
 
-    <property name="objectService"><ref bean="objectService"/></property>
+    <property name="objectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"/></property>
     <property name="renderEngine"><ref bean="baseRenderEngine"/></property>
     <property name="externalImageLink"><value>&lt;img src="/library/image/sakai/url.gif" alt="external link: " title="external link"/&gt;</value></property>
   </bean>
@@ -41,7 +41,7 @@
   </bean>
 
   <!-- The component level Render service -->
-  <bean id="renderService"
+  <bean id="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"
     class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.RenderServiceImpl">
     <property name="log"><ref bean="rwiki-logger"/></property>
 
@@ -54,13 +54,21 @@
   </bean>
 
   <!-- The RWiki Object service, component level -->
-  <bean id="objectService"
-    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.RWikiObjectServiceImpl">
+  <bean id="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.RWikiObjectServiceImpl"
+    init-method="init" destroy-method="destroy" >
     <property name="log"><ref bean="rwiki-logger"/></property>
-    <property name="renderService"><ref bean="renderService"/></property>
+    <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
     <property name="RWikiCurrentObjectDao"><ref bean="rwikiCurrentObjectDao"/></property>
     <property name="RWikiHistoryObjectDao"><ref bean="rwikiHistoryObjectDao"/></property>
     <property name="securityService"><ref bean="securityService"/></property>
+    <property name="handlers">
+      <map>
+        <entry key=".html"><ref bean="rwikiHTMLHandler" /></entry>
+        <entry key=".odf"><ref bean="rwikiODFHandler" /></entry>
+        <entry key=".rss"><ref bean="rwikiRSSHandler" /></entry>
+      </map>
+    </property>
   </bean>
 
   <!-- The base level radeox render engine -->
@@ -78,5 +86,55 @@
     <property name="log"><ref bean="rwiki-logger"/></property>
     <property name="cacheName"><value>rwiki-render-cache</value></property>
   </bean>
-
+  
+  
+  <!-- these are EntityProducer handler beans, the config is bean dependant -->
+  <bean id="rwikiHTMLHandler" 
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler"  
+    init-method="init"  destroy-method="destroy" >
+      <!-- from XSLTEntityHandler -->
+      <!-- The transformer use on the stream -->
+     <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt</value></property>
+    <property name="minorType"><value>.html</value></property>    
+    <property name="logger"><ref bean="rwiki-logger"/></property>
+    <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
+    <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>
+    <property name="errorFormat"><value>Error encounvered performing transform : {0} \n {1}</value></property>
+    <property name="authZPrefix" ><value>/wiki</value></property>
+    <property name="anchorLinkFormat" ><value>/access/wiki{0}.html#{1}</value></property>
+    <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
+    <property name="hrefTagFormat" ><value>&lt; a href=\"{0}\" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="accessURLStart" ><value>/wiki/</value></property>
+  </bean>
+  <bean id="rwikiODFHandler"
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler"  
+    init-method="init"  destroy-method="destroy" >
+    <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt</value></property>
+    <property name="minorType"><value>.odf</value></property>    
+    <property name="logger"><ref bean="rwiki-logger"/></property>
+    <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
+    <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>
+    <property name="errorFormat"><value>Error encounvered performing transform : {0} \n {1}</value></property>
+    <property name="authZPrefix" ><value>/wiki</value></property>
+    <property name="anchorLinkFormat" ><value>/access/wiki{0}.html#{1}</value></property>
+    <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
+    <property name="hrefTagFormat" ><value>&lt; a href=\"{0}\" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="accessURLStart" ><value>/wiki/</value></property>
+  </bean>
+  <bean id="rwikiRSSHandler"
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler"  
+    init-method="init"  destroy-method="destroy" >
+    <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt</value></property>
+    <property name="minorType"><value>.rss</value></property>    
+    <property name="logger"><ref bean="rwiki-logger"/></property>
+    <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
+    <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>
+    <property name="errorFormat"><value>Error encounvered performing transform : {0} \n {1}</value></property>
+    <property name="authZPrefix" ><value>/wiki</value></property>
+    <property name="anchorLinkFormat" ><value>/access/wiki{0}.html#{1}</value></property>
+    <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
+    <property name="hrefTagFormat" ><value>&lt; a href=\"{0}\" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="accessURLStart" ><value>/wiki/</value></property>
+  </bean>
+  
 </beans>

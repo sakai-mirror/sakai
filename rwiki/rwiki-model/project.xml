@@ -16,7 +16,9 @@
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
     <unitTest>
-      <includes>**/*Test</includes>
+      <includes>
+        <include>**/*Test</include>
+      </includes>
       <resources>
         <resource>
           <directory>${basedir}/src/testBundle</directory>
@@ -51,5 +53,26 @@
       <artifactId>sakai-rwiki-service</artifactId>
       <version>${sakai.version}</version>
     </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-legacy-service</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-util-xml</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-legacy-util</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-rwiki-utils</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
   </dependencies>
+  
 </project>

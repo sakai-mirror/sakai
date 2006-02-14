@@ -122,7 +122,7 @@ public class RequestScopeSuperBean {
     public void init() {
         securityService = (RWikiSecurityService) context
                 .getBean("securityService");
-        objectService = (RWikiObjectService) context.getBean("objectService");
+        objectService = (RWikiObjectService) context.getBean(RWikiObjectService.class.getName());
         logger = (Logger) context.getBean("rwiki-logger");
         toolRenderService = (ToolRenderService) context.getBean("toolRenderService");
         populateService = (PopulateService) context.getBean("populateService");

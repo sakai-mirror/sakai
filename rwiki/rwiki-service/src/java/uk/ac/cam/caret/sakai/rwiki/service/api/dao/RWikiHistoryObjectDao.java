@@ -60,6 +60,7 @@ public interface RWikiHistoryObjectDao extends RWikiObjectDao {
      */
     List findRWikiHistoryObjects(RWikiObject reference);
 
+
     
 
 }

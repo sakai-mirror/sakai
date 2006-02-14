@@ -31,7 +31,7 @@ import org.apache.commons.jrcs.diff.Revision;
 import org.apache.commons.jrcs.diff.RevisionVisitor;
 import org.apache.commons.jrcs.diff.myers.MyersDiff;
 
-import uk.ac.cam.caret.sakai.rwiki.tool.util.XmlEscaper;
+import uk.ac.cam.caret.sakai.rwiki.utils.XmlEscaper;
 
 /**
  * Bean Helper class that for creating diffs.

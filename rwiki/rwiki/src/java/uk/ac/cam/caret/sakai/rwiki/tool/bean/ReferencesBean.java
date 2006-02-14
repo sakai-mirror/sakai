@@ -28,7 +28,7 @@ import java.util.List;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
-import uk.ac.cam.caret.sakai.rwiki.tool.util.XmlEscaper;
+import uk.ac.cam.caret.sakai.rwiki.utils.XmlEscaper;
 
 /**
  * Bean that uses the object service and a current rwikiObject to find the

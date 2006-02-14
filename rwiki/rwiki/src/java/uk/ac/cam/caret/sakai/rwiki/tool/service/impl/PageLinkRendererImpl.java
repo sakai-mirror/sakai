@@ -24,8 +24,8 @@ package uk.ac.cam.caret.sakai.rwiki.tool.service.impl;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.PageLinkRenderer;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
-import uk.ac.cam.caret.sakai.rwiki.tool.util.XmlEscaper;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
+import uk.ac.cam.caret.sakai.rwiki.utils.XmlEscaper;
 /**
  * Worksite page link rendered that renders links with create steps
  * @author andrew

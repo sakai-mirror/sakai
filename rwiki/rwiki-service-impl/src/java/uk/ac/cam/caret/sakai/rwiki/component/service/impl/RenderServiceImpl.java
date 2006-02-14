@@ -55,6 +55,9 @@ public class RenderServiceImpl implements RenderService {
 		this.renderCache = renderCache;
 	}
     
+	
+	
+	
     public String renderPage(RWikiObject rwo, String user, String pageSpace, PageLinkRenderer plr) {
         
         long start = System.currentTimeMillis();

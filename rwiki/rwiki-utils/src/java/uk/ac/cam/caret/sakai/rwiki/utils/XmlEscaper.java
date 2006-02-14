@@ -20,7 +20,7 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package uk.ac.cam.caret.sakai.rwiki.tool.util;
+package uk.ac.cam.caret.sakai.rwiki.utils;
 
 /**
  * @author andrew

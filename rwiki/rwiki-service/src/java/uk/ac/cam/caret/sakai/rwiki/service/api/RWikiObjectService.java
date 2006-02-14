@@ -25,6 +25,10 @@ package uk.ac.cam.caret.sakai.rwiki.service.api;
 import java.util.Date;
 import java.util.List;
 
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
+import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
+
 import uk.ac.cam.caret.sakai.rwiki.service.api.dao.ObjectProxy;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiCurrentObject;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiHistoryObject;
@@ -35,8 +39,19 @@ import uk.ac.cam.caret.sakai.rwiki.service.exception.VersionException;
 
 //FIXME: Service
 
-public interface RWikiObjectService {
+public interface RWikiObjectService extends EntityProducer {
 
+	
+	/** This string can be used to find the service in the service manager. */
+	static final String SERVICE_NAME = RWikiObjectService.class.getName();
+
+	/** This string starts the references to resources in this service. */
+	static final String REFERENCE_ROOT = Entity.SEPARATOR + "wiki";
+	
+	/** This string starts the references to resources in this service. */
+	static final String REFERENCE_LABEL =  "wiki";
+	
+	
 	/**
 	 * Gets the current object
 	 * 
@@ -252,6 +267,7 @@ public interface RWikiObjectService {
 	 */
 	RWikiPermissions createNewRWikiPermissionsImpl();
 
+	
     
     
 }

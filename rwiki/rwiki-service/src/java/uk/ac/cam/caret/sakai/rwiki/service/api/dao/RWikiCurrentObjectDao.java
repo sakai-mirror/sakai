@@ -114,4 +114,6 @@ public interface RWikiCurrentObjectDao extends RWikiObjectDao {
      * @return
      */
     RWikiObject findLastRWikiSubPage(String globalParentPageName);
+
+
 }

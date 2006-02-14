@@ -8,7 +8,7 @@
   <bean id="toolRenderService"
     class="uk.ac.cam.caret.sakai.rwiki.tool.service.impl.ToolRenderServiceImpl">
     <property name="log"><ref bean="rwiki-logger"/></property>
-    <property name="renderService"><ref bean="renderService"/></property>
+    <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
   </bean>
 </beans>	
 

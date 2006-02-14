@@ -46,7 +46,7 @@
       <value>/WEB-INF/command-pages/edit.jsp</value></property>
     <property name="cancelPath">
       <value>/WEB-INF/command-pages/view.jsp</value></property>
-    <property name="objectService"><ref bean="objectService"/></property>		
+    <property name="objectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"/></property>		
 	<property name="sessionManager"><ref bean="org.sakaiproject.api.kernel.session.SessionManager"/></property>
   </bean>
   <bean id="commentSaveCommand"
@@ -66,7 +66,7 @@
       <value>/WEB-INF/command-pages/edit.jsp</value></property>
     <property name="cancelPath">
       <value>/WEB-INF/command-pages/view.jsp</value></property>
-    <property name="objectService"><ref bean="objectService"/></property>		
+    <property name="objectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"/></property>		
   </bean>
   <bean id="commentNewCommand"
     class="uk.ac.cam.caret.sakai.rwiki.tool.command.CommentNewCommand">
@@ -85,7 +85,7 @@
       <value>/WEB-INF/command-pages/edit.jsp</value></property>
     <property name="cancelPath">
       <value>/WEB-INF/command-pages/view.jsp</value></property>
-    <property name="objectService"><ref bean="objectService"/></property>		
+    <property name="objectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"/></property>		
   </bean>
 
   <!-- Update permissions command -->
@@ -93,7 +93,7 @@
     <property name="noUpdatePath"><value>/WEB-INF/command-pages/permission.jsp</value></property>
     <property name="contentChangedPath"><value>/WEB-INF/command-pages/info.jsp</value></property>
     <property name="successfulPath"><value>/WEB-INF/command-pages/info.jsp</value></property>
-    <property name="objectService"><ref bean="objectService"/></property>
+    <property name="objectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"/></property>
   </bean>
 
   <!-- revert command -->
@@ -106,7 +106,7 @@
     </property>
     <property name="successfulPath"><value>/WEB-INF/command-pages/view.jsp</value>
     </property>
-    <property name="objectService"><ref bean="objectService"/></property>
+    <property name="objectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"/></property>
   </bean>
 
   <!-- Real/AuthZgroups edit command -->

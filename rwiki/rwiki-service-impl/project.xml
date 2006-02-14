@@ -15,7 +15,9 @@
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
     <unitTest>
-      <includes>**/*Test</includes>
+      <includes>
+      <include>**/*Test</include>
+      </includes>
       <resources>
         <resource>
           <directory>${basedir}/src/testBundle</directory>
@@ -39,6 +41,7 @@
         <directory>${basedir}/src/java</directory>
         <includes>
           <include>**/*.xml</include>
+          <include>**/*.xslt</include>
         </includes>
         <filtering>false</filtering>
       </resource>
@@ -69,11 +72,45 @@
       <version>${sakai.version}</version>
       <type>jar</type>
     </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+      <type>jar</type>
+    </dependency>
 
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-legacy-service</artifactId>
       <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    <!-- only for test -->
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-legacy-component</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    <!-- only for test -->
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-legacy-util</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    <!-- only required for testing -->
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.6.2</version>
+      <type>jar</type>
+    </dependency>
+    <!-- only required for testing -->
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.6.0</version>
       <type>jar</type>
     </dependency>
     <dependency>
@@ -103,6 +140,24 @@
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-rwiki-utils</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-util-xml</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-session</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-util-java</artifactId>
       <version>${sakai.version}</version>
       <type>jar</type>
     </dependency>
