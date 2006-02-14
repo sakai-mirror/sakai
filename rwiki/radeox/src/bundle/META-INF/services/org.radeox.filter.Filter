@@ -10,6 +10,8 @@ org.radeox.filter.NewlineFilter
 org.radeox.filter.ParagraphFilter
 org.radeox.filter.BoldFilter
 org.radeox.filter.ItalicFilter
+uk.ac.cam.caret.sakai.rwiki.component.filter.SuperscriptFilter
+uk.ac.cam.caret.sakai.rwiki.component.filter.SubscriptFilter
 org.radeox.filter.UrlFilter
 org.radeox.filter.MarkFilter
 org.radeox.filter.KeyFilter
