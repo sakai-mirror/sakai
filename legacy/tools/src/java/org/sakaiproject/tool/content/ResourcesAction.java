@@ -965,17 +965,20 @@ public class ResourcesAction
 			if(MODE_ATTACHMENT_EDIT_ITEM.equals(helper_mode))
 			{
 				String attachmentId = (String) state.getAttribute(STATE_EDIT_ID);
-				current_stack_frame.put(STATE_STACK_EDIT_ID,attachmentId);
-				String collectionId = ContentHostingService.getContainingCollectionId(attachmentId);
-				current_stack_frame.put(STATE_STACK_EDIT_COLLECTION_ID, collectionId);
-				
-				EditItem item = getEditItem(attachmentId, collectionId, data);
-				
-				if (state.getAttribute(STATE_MESSAGE) == null)
+				if(attachmentId != null)
 				{
-					// got resource and sucessfully populated item with values
-					state.setAttribute(STATE_EDIT_ALERTS, new HashSet());
-					current_stack_frame.put(STATE_STACK_EDIT_ITEM, item);
+					current_stack_frame.put(STATE_STACK_EDIT_ID, attachmentId);
+					String collectionId = ContentHostingService.getContainingCollectionId(attachmentId);
+					current_stack_frame.put(STATE_STACK_EDIT_COLLECTION_ID, collectionId);
+					
+					EditItem item = getEditItem(attachmentId, collectionId, data);
+					
+					if (state.getAttribute(STATE_MESSAGE) == null)
+					{
+						// got resource and sucessfully populated item with values
+						state.setAttribute(STATE_EDIT_ALERTS, new HashSet());
+						current_stack_frame.put(STATE_STACK_EDIT_ITEM, item);
+					}
 				}
 			}
 			else
@@ -1149,7 +1152,15 @@ public class ResourcesAction
 		context.put("new_items", new_items);
 		current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
 		
-		String show_form_items = (String) state.getAttribute(STATE_SHOW_FORM_ITEMS);
+		String show_form_items = (String) current_stack_frame.get(STATE_SHOW_FORM_ITEMS);
+		if(show_form_items == null)
+		{
+			show_form_items = (String) state.getAttribute(STATE_SHOW_FORM_ITEMS);
+			if(show_form_items != null)
+			{
+				current_stack_frame.put(STATE_SHOW_FORM_ITEMS,show_form_items);
+			}
+		}
 		if(show_form_items != null)
 		{
 			context.put("show_form_items", show_form_items);
@@ -1890,7 +1901,16 @@ public class ResourcesAction
 
 		String collectionId = (String) current_stack_frame.get(STATE_STACK_EDIT_COLLECTION_ID);
 		context.put ("collectionId", collectionId);
-		String id =(String) current_stack_frame.get(STATE_STACK_EDIT_ID);
+		String id = (String) current_stack_frame.get(STATE_STACK_EDIT_ID);
+		if(id == null)
+		{
+			id = (String) state.getAttribute(STATE_EDIT_ID);
+			if(id == null)
+			{
+				id = "";
+			}
+			current_stack_frame.put(STATE_STACK_EDIT_ID, id);
+		}
 		context.put ("id", id);
 		String homeCollectionId = (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
 		if(homeCollectionId == null)
@@ -1907,7 +1927,7 @@ public class ResourcesAction
 			context.put("atHome", Boolean.TRUE.toString());
 		}
 		
-		String intent = (String) state.getAttribute(STATE_STACK_EDIT_INTENT);
+		String intent = (String) current_stack_frame.get(STATE_STACK_EDIT_INTENT);
 		if(intent == null)
 		{
 			intent = INTENT_REVISE_FILE;
@@ -1918,6 +1938,14 @@ public class ResourcesAction
 		context.put("REPLACE", INTENT_REPLACE_FILE);
 		
 		String show_form_items = (String) state.getAttribute(STATE_SHOW_FORM_ITEMS);
+		if(show_form_items == null)
+		{
+			show_form_items = (String) state.getAttribute(STATE_SHOW_FORM_ITEMS);
+			if(show_form_items != null)
+			{
+				current_stack_frame.put(STATE_SHOW_FORM_ITEMS,show_form_items);
+			}
+		}
 		if(show_form_items != null)
 		{
 			context.put("show_form_items", show_form_items);
@@ -4213,6 +4241,14 @@ public class ResourcesAction
 		}
 			
 		String show_form_items = (String) state.getAttribute(STATE_SHOW_FORM_ITEMS);
+		if(show_form_items == null)
+		{
+			show_form_items = (String) state.getAttribute(STATE_SHOW_FORM_ITEMS);
+			if(show_form_items != null)
+			{
+				current_stack_frame.put(STATE_SHOW_FORM_ITEMS,show_form_items);
+			}
+		}
 		if(show_form_items != null)
 		{
 			context.put("show_form_items", show_form_items);
@@ -5046,10 +5082,13 @@ public class ResourcesAction
 		current_stack_frame.put(STATE_STACK_EDIT_ID, id);
 
 		String collectionId = (String) params.getString("collectionId");
+		if(collectionId == null)
+		{
+			collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			state.setAttribute(STATE_HOME_COLLECTION_ID, collectionId);
+		}
 		current_stack_frame.put(STATE_STACK_EDIT_COLLECTION_ID, collectionId);
 
-		//Resource resource = null;
-		
 		EditItem item = getEditItem(id, collectionId, data);
 		
 		if (state.getAttribute(STATE_MESSAGE) == null)
