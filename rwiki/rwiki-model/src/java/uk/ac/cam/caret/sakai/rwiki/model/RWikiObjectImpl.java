@@ -31,12 +31,17 @@ import java.util.Date;
 import java.util.Stack;
 
 import org.apache.xerces.impl.dv.util.Base64;
+import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.util.resource.BaseResourceProperties;
 import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.CDATASection;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.dao.RWikiObjectContentDao;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
@@ -528,18 +533,17 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 	 * 
 	 * 
 	 * List list = this.getHistory(); if (list == null) { list = new
-	 * ArrayList(); this.setHistory(list); } list.add(newHistoryObject);
-	 *  // finally set the new content this.setContent(content); return true; }
+	 * ArrayList(); this.setHistory(list); } list.add(newHistoryObject); //
+	 * finally set the new content this.setContent(content); return true; }
 	 */
 
 	/*
 	 * public RWikiHistoryObject getRevision(int revision) { int
 	 * numberOfRevisions = this.getNumberOfRevisions();
 	 * 
-	 * if (revision >= 0 && revision < numberOfRevisions) {
-	 *  // This needs to be a finder return ((RWikiHistoryObject)
-	 * this.getHistory().get(revision));
-	 *  } else if (revision == numberOfRevisions) { RWikiHistoryObjectImpl mock =
+	 * if (revision >= 0 && revision < numberOfRevisions) { // This needs to be
+	 * a finder return ((RWikiHistoryObject) this.getHistory().get(revision)); }
+	 * else if (revision == numberOfRevisions) { RWikiHistoryObjectImpl mock =
 	 * new RWikiHistoryObjectImpl(); mock.setContent(this.getContent());
 	 * mock.setRevision(numberOfRevisions); mock.setUser(this.getUser());
 	 * mock.setVersion(this.getVersion()); return mock; } else { throw new
@@ -646,7 +650,7 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		if (content == null)
 			content = "";
 		if (co != null) // could be null if triggered during a hibernate
-						// template load
+			// template load
 			co.setContent(content);
 		// recompute the Sha1
 		sha1 = computeSha1(content);
@@ -658,7 +662,7 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		String content = null;
 		if (co != null)
 			content = co.getContent(); // could be null if triggerd during a
-										// template load
+		// template load
 		if (content == null)
 			content = "";
 		return content;
@@ -718,7 +722,8 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 	public ResourceProperties getProperties() {
 		ResourceProperties rp = new BaseResourceProperties();
 		rp.addProperty("id", this.getId());
-		// I dont think that content is a propertyrp.addProperty("content", this.getContent());
+		// I dont think that content is a propertyrp.addProperty("content",
+		// this.getContent());
 		rp.addProperty("name", this.getName());
 		rp.addProperty("owner", this.getOwner());
 		rp.addProperty("realm", this.getRealm());
@@ -740,7 +745,6 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		return rp;
 	}
 
-	
 	public String getReference() {
 		return this.getName();
 	}
@@ -765,22 +769,21 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		wikipage.setAttribute("revision", String.valueOf(m_revision));
 		wikipage.setAttribute("user", m_user);
 		wikipage.setAttribute("owner", m_owner);
-		
-		
+
 		// I would like to be able to render this, but we cant... because its a
 		// pojo !
 		getProperties().toXml(doc, stack);
 		Element content = doc.createElement("wikicontent");
 		stack.push(content);
 		wikipage.appendChild(content);
-		content.setAttribute("enc","BASE64");
+		content.setAttribute("enc", "BASE64");
 		try {
 			String b64Content = Base64.encode(getContent().getBytes("UTF-8"));
 			CDATASection t = doc.createCDATASection(b64Content);
 			stack.push(t);
 			content.appendChild(t);
 			stack.pop();
-		} catch ( UnsupportedEncodingException usex ) {
+		} catch (UnsupportedEncodingException usex) {
 			// if UTF-8 isnt available, we are in big trouble !
 		}
 		stack.pop();
@@ -789,19 +792,54 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 
 		return wikipage;
 	}
+
 	public void fromXml(Element el, String defaultRealm) throws Exception {
-		ResourceProperties rp = new BaseResourceProperties(el);
+		NodeList nl = el.getElementsByTagName("properties");
+		if (nl == null || nl.getLength() != 1)
+			throw new Exception("Cant find a properties element in "
+					+ el.getNodeName() + " id: " + el.getAttribute("id")
+					+ " pagename: " + el.getAttribute("page-name"));
+		// only take the first properties
+		Element properties = (Element) nl.item(0);
+		ResourceProperties rp = new BaseResourceProperties(properties);
+
+		nl = el.getElementsByTagName("wikicontent");
+		if (nl == null || nl.getLength() != 1)
+			throw new Exception("Cant find a  wikiproperties element in "
+					+ el.getNodeName() + " id: " + el.getAttribute("id")
+					+ " pagename: " + el.getAttribute("page-name"));
+		// only accpet the first
+		Element wikiContents = (Element) nl.item(0);
+
+		nl = wikiContents.getChildNodes();
+		StringBuffer content = new StringBuffer();
+		for (int i = 0; i < nl.getLength(); i++) {
+			Node n = nl.item(i);
+			if (n instanceof CharacterData) {
+				CharacterData cdnode = (CharacterData) n;
+				try {
+					content.append(new String(Base64.decode(cdnode.getData()),
+							"UTF-8"));
+				} catch (Throwable t) {
+					Log.warn("","Cant decode node content for " + cdnode);
+				}
+			}
+		}
+
 		String realm = rp.getProperty("realm");
 		setId(rp.getProperty("id"));
-		setName(NameHelper.globaliseName(NameHelper.localizeName(rp.getProperty("name"),realm),defaultRealm));
+
+		setName(NameHelper.globaliseName(NameHelper.localizeName(rp
+				.getProperty("name"), realm), defaultRealm));
 		setOwner(rp.getProperty("owner"));
 		setRealm(defaultRealm);
 		setReferenced(rp.getProperty("referenced"));
-		setRwikiobjectid(rp.getProperty("rwid"));
-		setContent(rp.getProperty("content"));
+//		setRwikiobjectid(rp.getProperty("rwid"));
+		setContent(content.toString());
 
-		if ( getSha1().equals(rp.getProperty("sha1")) ) 
-				throw new Exception("Sha Checksum Missmatch on content "+rp.getProperty("sha1")+" != "+getSha1());
+		if (!getSha1().equals(rp.getProperty("sha1")))
+			throw new Exception("Sha Checksum Missmatch on content "
+					+ rp.getProperty("sha1") + " != " + getSha1());
 		setSource(rp.getProperty("source"));
 		setUser(rp.getProperty("user"));
 		setGroupAdmin(rp.getBooleanProperty("group-admin"));
@@ -815,9 +853,8 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		setPublicWrite(rp.getBooleanProperty("public-write"));
 		setRevision(new Integer(rp.getProperty("revision")));
 		setVersion(new Date(rp.getLongProperty("version")));
-		
-	}
 
+	}
 }
 
 /*******************************************************************************

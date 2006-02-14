@@ -38,6 +38,7 @@ import org.sakaiproject.util.Authentication;
 import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import sun.tools.tree.ThisExpression;
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.ComponentPageLinkRenderImpl;
@@ -276,7 +277,7 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 
 	}
 
-	public void xxxtestArchiveAccess() throws Exception {
+	public void estArchiveAccess() throws Exception {
 		rwikiObjectservice.update("HomeTestPage", "admin", site.getReference(),
 				new Date(), content[0]);
 		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPage",
@@ -313,7 +314,7 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		logger.info("Got Archive \n" + archiveResult);
 
 	}
-	public void xxxtestImport() throws Exception {
+	public void testImport() throws Exception {
 		// create 2 pages, add their ids to the list, transfer to annother site, check they were there
 		List l = new ArrayList();
 		rwikiObjectservice.update("HomeTestPage", "admin", site.getReference(),
@@ -333,7 +334,7 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		rwikiObjectservice.update("HomeTestPage2", "admin", site.getReference(),
 				rwo.getVersion(), content[1]);
 		
-		rwikiObjectservice.importEntities("/site/"+site.getReference(),"/site/"+targetSite.getReference(),l);
+		rwikiObjectservice.importEntities(site.getReference(),targetSite.getReference(),l);
 		assertEquals("HomeTestPage failed to import",true,
 				rwikiObjectservice.exists("HomeTestPage",targetSite.getReference()));
 		assertEquals("HomeTestPage failed to import",true,
@@ -343,8 +344,12 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 	public void testMerge() {
 		Document doc = Xml.readDocumentFromStream(this.getClass().getResourceAsStream(archiveContentResource));
 		String fromSiteId = doc.getDocumentElement().getAttribute("source");
-		String results = rwikiObjectservice.merge(targetSite.getId(),doc.getDocumentElement(),"/tmp",fromSiteId,new HashMap(),new HashMap(), new HashSet());
-		logger.info("Results of merge operation \n======\n"+results+"\n=======");
+		NodeList nl = doc.getElementsByTagName("uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService");
+		for ( int i = 0; i < nl.getLength(); i++ ) {
+			Element el = (Element)nl.item(i);
+			String results = rwikiObjectservice.merge(targetSite.getId(),el,"/tmp",fromSiteId,new HashMap(),new HashMap(), new HashSet());
+			logger.info("Results of merge operation \n======\n"+results+"\n=======");
+		}
 	}
 	public void testBasicMethods() {
 		assertEquals("Service was not as expected ","wiki",rwikiObjectservice.getLabel());

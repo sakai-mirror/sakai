@@ -709,7 +709,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * 
 	 */
 	public boolean willArchiveMerge() {
-		return true;
+		return false;
 	}
 
 	/**
@@ -717,7 +717,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * 
 	 */
 	public boolean willImport() {
-		return true;
+		return false;
 	}
 
 	/**
@@ -843,9 +843,11 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 								.getPermissions());
 				// this will create updates
 			} catch (Exception ex) {
+				log.error("Failed to add page ",ex);
 				SimpleCoverage.cover();
-				results.append("Failed to add " + element.getAttribute("id")
-						+ " because of " + ex.getMessage());
+				results.append("Failed to add ").append(
+						element.getAttribute("id")).append(" because of ")
+						.append(ex.getMessage()).append("\n");
 
 			}
 		}
@@ -874,10 +876,11 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			boolean transfer = true;
 			// if the list exists, is this id in the list ?
 			if (ids != null && ids.size() > 0) {
-				for (Iterator j = ids.iterator(); j.hasNext() && transfer;) {
+				transfer = false;
+				for (Iterator j = ids.iterator(); j.hasNext() && !transfer;) {
 					String id = (String) j.next();
 					if (id.equals(rwo.getRwikiobjectid())) {
-						transfer = false;
+						transfer = true;
 					}
 				}
 			}
