@@ -103,6 +103,12 @@ languages, as follows:
     Contact: Alexander Glebovsky (glebovsky@rambler.ru)
     Local ID: ru_RU
 
+16) German
+    Status: ??
+    Translated by: n/a
+    Contact: Wolf Hilzensauer (wolf.hilzensauer@salzburgresearch.at)
+    Local ID: de_AT
+
 The default language locale must be defined at boot time, by
 setting the tomcat JAVA_OPTS property as follows:
 
