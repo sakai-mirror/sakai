@@ -9461,9 +9461,9 @@ public class ResourcesAction
 			state.setAttribute(STATE_METADATA_GROUPS, metadataGroups);
 		}
 		// define DublinCore
-		if(!metadataGroups.contains(new MetadataGroup("Optional properties")))
+		if( !metadataGroups.contains(new MetadataGroup(rb.getString("opt_props"))) )
 		{
-			MetadataGroup dc = new MetadataGroup("Optional properties");
+			MetadataGroup dc = new MetadataGroup( rb.getString("opt_props") );
 			// dc.add(ResourcesMetadata.PROPERTY_DC_TITLE);
 			// dc.add(ResourcesMetadata.PROPERTY_DC_DESCRIPTION);
 			dc.add(ResourcesMetadata.PROPERTY_DC_ALTERNATIVE);
