@@ -24,6 +24,8 @@ j. text || hebrew enumerated list
 \_\_bold\_\_ | __bold__ | simple bold text
 \~\~italics\~\~ | ~~italics~~ | simple italic text
 \-\-strike\-\- | --strike-- | strike through text
+CH\%\%4\%\%|CH%%4%%| Add a subscript
+Ca\^\^2+\^\^| Ca^^2+^^| Add a superscript 
 (empty line) || produces a new paragraph
 \\\\\\ || creates a line break, please use sparingly!
 \[start\] | [start] | internal link to another document
