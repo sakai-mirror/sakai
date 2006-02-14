@@ -25,7 +25,8 @@
 	<entry key="commenteditsave"><ref bean="commentSaveCommand"/></entry>
 	<entry key="commentnewsave"><ref bean="commentNewCommand"/></entry>
     <entry key="helper"><ref bean="helperCommand"/></entry>
-    <entry key="addAttachmentReturn"><ref bean="addAttachmentReturnCommand"/></entry>
+    <entry key="addAttachmentReturnLink"><ref bean="addAttachmentReturnLinkCommand"/></entry>
+    <entry key="addAttachmentReturnEmbed"><ref bean="addAttachmentReturnEmbedCommand"/></entry>
 	<!--<entry key=""><ref bean="Command"/></entry>-->
       </map>
     </property>
@@ -137,7 +138,7 @@
     <property name="userHelper"><ref bean="userHelper"/></property>
   </bean>-->
 
-  <bean id="addAttachmentReturnCommand"
+  <bean id="addAttachmentReturnEmbedCommand"
 	  class="uk.ac.cam.caret.sakai.rwiki.tool.command.AddAttachmentReturnCommand">
 	<property name="sessionManager"><ref bean="org.sakaiproject.api.kernel.session.SessionManager"/></property>
 	<property name="wikiMarkupTemplates">
@@ -145,6 +146,20 @@
 			<entry key="image/*">
 				<value><![CDATA['{'image:{1}|{2}'}']]></value>
 			</entry>
+			<entry key="*/*">
+				<value><![CDATA['{'link:{2}|{1}}]]></value>
+			</entry>
+		</map>
+	</property>
+	<property name="editPath"><value>/WEB-INF/command-pages/edit.jsp</value></property>
+
+  </bean>
+
+  <bean id="addAttachmentReturnLinkCommand"
+	  class="uk.ac.cam.caret.sakai.rwiki.tool.command.AddAttachmentReturnCommand">
+	<property name="sessionManager"><ref bean="org.sakaiproject.api.kernel.session.SessionManager"/></property>
+	<property name="wikiMarkupTemplates">
+		<map>
 			<entry key="*/*">
 				<value><![CDATA['{'link:{2}|{1}}]]></value>
 			</entry>

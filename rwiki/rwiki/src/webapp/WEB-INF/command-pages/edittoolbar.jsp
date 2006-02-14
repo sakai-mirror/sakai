@@ -4,6 +4,6 @@
 <a href="#" onclick="addMarkup('content','Heading 2','\nh2 ','\n'); return false;" >H2</a>
 <a href="#" onclick="addMarkup('content','Heading 3','\nh3 ','\n'); return false;" >H3</a>
 <a href="#" onclick="addMarkup('content','|col|col|col|\n|newrow|col|col|','{table}\n','\n{table}'); return false;" >table</a>
-<a href="#" onclick="addMarkup('content','Default Test Image','{image:worksite:/wikiimages/default.gif|','}'); return false;" >image</a>
-<a href="#" onclick="addMarkup('content','Macro Link','{link:','|http://www.google.com}'); return false;" >full link</a>
-<a href="#" onclick="addAttachment('content','editForm','editControl'); return false;">Add Attachment</a>
+<a href="#" onclick="addMarkup('content','Link Name','{link:','|http://www.google.com}'); return false;" >external link</a>
+<a href="#" onclick="addAttachment('content','editForm','editControl', 'link'); return false;">resource link</a>
+<a href="#" onclick="addAttachment('content','editForm', 'editControl', 'embed'); return false;" >resource embed</a>

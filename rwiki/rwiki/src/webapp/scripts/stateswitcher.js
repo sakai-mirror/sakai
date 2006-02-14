@@ -72,7 +72,7 @@ function storeCaret(el) {
         el.caretPos = document.selection.createRange().duplicate();        
 }
 
-function addAttachment(textareaid, formid, editcontrolid) {
+function addAttachment(textareaid, formid, editcontrolid, type) {
   var textarea;
   var editcontrol;
   var form;
@@ -109,7 +109,7 @@ function addAttachment(textareaid, formid, editcontrolid) {
     store = (textarea.text.length - 1) + ":" + (textarea.text.length - 1)
   }
 
-  editcontrol.innerHTML += "<input type='hidden' name='save' value='Attach'/><input type='hidden' name='caretPosition' value='"+ store + "'/>";
+  editcontrol.innerHTML += "<input type='hidden' name='save' value='Attach" + type + "'/><input type='hidden' name='caretPosition' value='"+ store + "'/>";
   form.submit();
 }
 

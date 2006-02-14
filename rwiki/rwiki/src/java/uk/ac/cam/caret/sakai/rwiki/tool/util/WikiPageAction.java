@@ -79,7 +79,9 @@ public class WikiPageAction {
 
     public static final WikiPageAction EXPORT_ACTION = new WikiPageAction("export");
     
-    public static final WikiPageAction ATTACHMENT_RETURN_ACTION = new WikiPageAction("addAttachmentReturn");
+    public static final WikiPageAction LINK_ATTACHMENT_RETURN_ACTION = new WikiPageAction("addAttachmentReturnLink");
+    
+    public static final WikiPageAction EMBED_ATTACHMENT_RETURN_ACTION = new WikiPageAction("addAttachmentReturnEmbed");
     
     private String name;
     

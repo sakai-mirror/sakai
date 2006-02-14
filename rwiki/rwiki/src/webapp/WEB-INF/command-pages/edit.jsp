@@ -75,7 +75,7 @@
 		</p>
 	      </c:if>
 
-	      <c:if test="${editBean.saveType != null and editBean.saveType ne 'preview' and editBean.saveType ne 'attach'}">
+	      <c:if test="${editBean.saveType != null and editBean.saveType ne 'preview' and not(fn:startsWith(editBean.saveType, 'attach'))}">
 
 			<c:if test="${editBean.saveType eq 'revert'}">
 			    <c:set target="${editBean}" property="previousContent" value="${currentRWikiObject.history[editBean.previousRevision].content}"/>
@@ -105,7 +105,7 @@
 		  <c:out value="${nameHelperBean.submittedContent}"/>
 		</pre>
 	      </c:if>
-	      <c:if test="${editBean.saveType eq 'attach' and nameHelperBean.submittedContent != null}">
+	      <c:if test="${fn:startsWith(editBean.saveType, 'attach') and nameHelperBean.submittedContent != null}">
 		<p class="longtext"><label for="submittedContent">Submitted Content prior to Attach</label>
 		  <jsp:element name="input">
 		    <jsp:attribute name="type">hidden</jsp:attribute>
@@ -125,7 +125,7 @@
 		    	<jsp:directive.include file="edittoolbar.jsp"/>
 		    <textarea cols="60" rows="25" name="content" id="content" onselect="storeCaret(this)" onclick="storeCaret(this)" onkeyup="storeCaret(this)" >
 		      <c:choose>
-			<c:when test="${editBean.saveType eq 'preview' or editBean.saveType eq 'attach'}">
+			<c:when test="${editBean.saveType eq 'preview' or fn:startsWith(editBean.saveType, 'attach')}">
 			  <c:out value="${editBean.previousContent}"/>
 			</c:when>
 			<c:otherwise>
@@ -137,14 +137,14 @@
 		</div>
 		<input type="hidden" name="action" value="save"/>
 		<input type="hidden" name="panel" value="Main"/>
-		<input type="hidden" name="version" value="${(editBean.saveType eq 'preview' or editBean.saveType eq 'attach' )? editBean.previousVersion : currentRWikiObject.version.time}"/>
+		<input type="hidden" name="version" value="${(editBean.saveType eq 'preview' or fn:startsWith(editBean.saveType, 'attach') )? editBean.previousVersion : currentRWikiObject.version.time}"/>
 		<input type="hidden" name="pageName" value="${currentRWikiObject.name}" />
 		<input type="hidden" name="realm" value="${currentRWikiObject.realm }"/>
 	    </div>
 	    <div class="rwiki_editControl" id="editControl">
 		<p class="act">
 		  <input type="submit" name="save" value="Save" /><c:out value=" "/>
-		  <c:if test="${((editBean.saveType eq 'preview' or editBean.saveType eq 'attach') and nameHelperBean.submittedContent != null) or (editBean.saveType ne null and editBean.saveType ne 'preview' and editBean.saveType ne 'attach')}">
+		  <c:if test="${((editBean.saveType eq 'preview' or fn:startsWith(editBean.saveType, 'attach')) and nameHelperBean.submittedContent != null) or (editBean.saveType ne null and editBean.saveType ne 'preview' and not(fn:startsWith(editBean.saveType, 'attach')))}">
 		    <input type="submit" name="save" value="Overwrite"/><c:out value=" "/>
 		  </c:if>
 		  <input type="submit" name="save" value="Preview"/><c:out value=" "/>

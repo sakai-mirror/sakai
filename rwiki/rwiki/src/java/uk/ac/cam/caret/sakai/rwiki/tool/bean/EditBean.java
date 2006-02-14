@@ -65,6 +65,7 @@ public class EditBean {
 
     /**
      * Value of the save parameter that indicates we wish to preview the content
+     * (NOTE must be lowercase!)
      */
     public static final String PREVIEW_VALUE = "preview";
 
@@ -81,13 +82,23 @@ public class EditBean {
     /**
      * Value of the save parameter that indicates we wish to add an attachment.
      * This should be interpretted as a call to the file.helper.
+     * (NOTE must be lowercase!)
      */
-    public static final String ADD_ATTACHMENT_VALUE = "attach";
+    public static final String LINK_ATTACHMENT_VALUE = "attachlink";
 
+    /**
+     * Value of the save parameter that indicates we wish to embed an attachment.
+     * This should be interpretted as a call to the file.helper.
+     * (NOTE must be lowercase!)
+     */
+    public static final String EMBED_ATTACHMENT_VALUE = "attachembed";
+    
     /**
      *  Last position of the caret or highlights, (if available)
      */
     public static final String STORED_CARET_POSITION = "caretPosition";
+
+
     
     /**
      * The version string that was sent in the last save.
