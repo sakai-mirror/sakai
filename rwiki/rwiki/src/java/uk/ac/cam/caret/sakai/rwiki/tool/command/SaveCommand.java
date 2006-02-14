@@ -101,7 +101,7 @@ public class SaveCommand implements HttpCommand {
         } else if (save.equals(EditBean.PREVIEW_VALUE)) {
             this.previewDispatch(request, response);
             return;
-        } else if (save.equals(EditBean.ADD_ATTACHMENT_VALUE)) {
+        } else if (save.equals(EditBean.LINK_ATTACHMENT_VALUE) || save.equals(EditBean.EMBED_ATTACHMENT_VALUE) ) {
                      
             ToolSession session = sessionManager.getCurrentToolSession();
             
@@ -111,9 +111,13 @@ public class SaveCommand implements HttpCommand {
             ViewBean vb = rssb.getViewBean();
 
             // FIXME Knowledge of URL structure assumed!
+	    WikiPageAction returnAction = WikiPageAction.LINK_ATTACHMENT_RETURN_ACTION;
+	    if (save.equals(EditBean.EMBED_ATTACHMENT_VALUE)) {
+		    returnAction = WikiPageAction.EMBED_ATTACHMENT_RETURN_ACTION;
+	    }
             session.setAttribute(ATTACHMENT_HELPER + Tool.HELPER_DONE_URL,
                     request.getContextPath() + request.getServletPath()
-                            + vb.getActionUrl(WikiPageAction.ATTACHMENT_RETURN_ACTION, true));
+                            + vb.getActionUrl(returnAction, true));
 
             session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, FilePickerHelper.FILE_PICKER_ATTACH_LINKS);
             
