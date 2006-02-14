@@ -233,8 +233,10 @@ public class ResourcesAction
 	/************** the edit context *****************************************/
 
 	/** The edit id */
+	public static final String STATE_EDIT_ID = "resources.edit_id";
 	public static final String STATE_STACK_EDIT_ID = "resources.stack_edit_id";
-	public static final String STATE_STATE_EDIT_COLLECTION_ID = "resources.stack_edit_collection_id";
+	public static final String STATE_EDIT_COLLECTION_ID = "resources.stack_edit_collection_id";
+	public static final String STATE_STACK_EDIT_COLLECTION_ID = "resources.stack_edit_collection_id";
 	
 	private static final String STATE_EDIT_ALERTS = "resources.edit_alerts";
 	private static final String STATE_STACK_EDIT_ITEM = "resources.stack_edit_item";
@@ -962,10 +964,10 @@ public class ResourcesAction
 			
 			if(MODE_ATTACHMENT_EDIT_ITEM.equals(helper_mode))
 			{
-				String attachmentId = (String) state.getAttribute(STATE_ATTACH_ITEM_ID);
+				String attachmentId = (String) state.getAttribute(STATE_EDIT_ID);
 				current_stack_frame.put(STATE_STACK_EDIT_ID,attachmentId);
 				String collectionId = ContentHostingService.getContainingCollectionId(attachmentId);
-				current_stack_frame.put(STATE_STATE_EDIT_COLLECTION_ID, collectionId);
+				current_stack_frame.put(STATE_STACK_EDIT_COLLECTION_ID, collectionId);
 				
 				EditItem item = getEditItem(attachmentId, collectionId, data);
 				
@@ -1886,7 +1888,7 @@ public class ResourcesAction
 		context.put ("from", state.getAttribute (STATE_FROM));
 		context.put ("mycopyright", (String) state.getAttribute (STATE_MY_COPYRIGHT));
 
-		String collectionId = (String) current_stack_frame.get(STATE_STATE_EDIT_COLLECTION_ID);
+		String collectionId = (String) current_stack_frame.get(STATE_STACK_EDIT_COLLECTION_ID);
 		context.put ("collectionId", collectionId);
 		String id =(String) current_stack_frame.get(STATE_STACK_EDIT_ID);
 		context.put ("id", id);
@@ -5044,7 +5046,7 @@ public class ResourcesAction
 		current_stack_frame.put(STATE_STACK_EDIT_ID, id);
 
 		String collectionId = (String) params.getString("collectionId");
-		current_stack_frame.put(STATE_STATE_EDIT_COLLECTION_ID, collectionId);
+		current_stack_frame.put(STATE_STACK_EDIT_COLLECTION_ID, collectionId);
 
 		//Resource resource = null;
 		
