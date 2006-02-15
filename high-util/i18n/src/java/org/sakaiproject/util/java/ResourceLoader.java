@@ -23,13 +23,7 @@
 
 package org.sakaiproject.util.java;
 
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.Hashtable;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -250,6 +244,29 @@ public class ResourceLoader extends DummyMap implements Map
     {
         return getString(key.toString());
     }
+
+   public Set keySet() {
+      return getBundleAsMap().keySet();
+   }
+
+   public Collection values() {
+      return getBundleAsMap().values();
+   }
+
+   public Set entrySet() {
+      return getBundleAsMap().entrySet();
+   }
+
+   protected Map getBundleAsMap() {
+      Map bundle = new Hashtable();
+
+      for (Enumeration e = getBundle().getKeys();e.hasMoreElements();) {
+         Object key = e.nextElement();
+         bundle.put(key, getBundle().getObject((String) key));
+      }
+
+      return bundle;
+   }
 
 }
 
