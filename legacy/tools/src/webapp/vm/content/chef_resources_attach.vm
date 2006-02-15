@@ -73,7 +73,7 @@
 			$tlang.getString("att.upl")
 		</h4>
 		<p class="shorttext">
-			<label for="file">$tlang.getString("att.fil")</label>
+			<label for="upload">$tlang.getString("att.fil")</label>
 			<input type="file" name="upload" id="upload" class="upload" onchange="javascript:showNotif('submitnotif','attachButton','attachForm');document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachupload" "special=upload")';submitform('attachForm');" />
 			<span id="submitnotif" style="visibility:hidden">$tlang.getString("gen.proces")</span>
 		</p>	

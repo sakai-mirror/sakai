@@ -1369,15 +1369,25 @@ public class ResourcesAction
 		
 		initStateAttributes(state, portlet);
 		
+		Map current_stack_frame = peekAtStack(state);
+		if(current_stack_frame == null)
+		{
+			current_stack_frame = pushOnStack(state);
+		}
+		
 		state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
 		
 		Set highlightedItems = new TreeSet();
 		
-		List new_items = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+		List new_items = (List) current_stack_frame.get(STATE_HELPER_NEW_ITEMS);
 		if(new_items == null)
 		{
-			new_items = new Vector();
-			state.setAttribute(STATE_HELPER_NEW_ITEMS, new_items);
+			new_items = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+			if(new_items == null)
+			{
+				new_items = new Vector();
+			}
+			current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
 		}
 		context.put("attached", new_items);
 		context.put("last", new Integer(new_items.size() - 1));
@@ -1687,18 +1697,15 @@ public class ResourcesAction
 
 		// pick the template based on whether client wants links or copies
 		String template = TEMPLATE_SELECT;
-		if(!isStackEmpty(state))
-		{
-			Map current_stack_frame = peekAtStack(state);
-			Object attach_links = current_stack_frame.get(STATE_STACK_ATTACH_LINKS);
+		Object attach_links = current_stack_frame.get(STATE_STACK_ATTACH_LINKS);
 				
-			state.getAttribute(STATE_ATTACH_LINKS);
-			if(attach_links == null)
-			{
-				// user wants copies in hidden attachments area
-				template = TEMPLATE_ATTACH;
-			}
+		state.getAttribute(STATE_ATTACH_LINKS);
+		if(attach_links == null)
+		{
+			// user wants copies in hidden attachments area
+			template = TEMPLATE_ATTACH;
 		}
+		
 		return template;
 		
 	}	// buildSelectAttachmentContext
@@ -3610,9 +3617,9 @@ public class ResourcesAction
 			attachLink(itemId, state);
 		}
 
-		// state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
-		popFromStack(state);
-		resetCurrentMode(state);
+		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT_INIT);
+		// popFromStack(state);
+		// resetCurrentMode(state);
 
 	}
 	
@@ -3620,6 +3627,8 @@ public class ResourcesAction
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
+		
+		Map current_stack_frame = peekAtStack(state);
 		
 		String max_file_size_mb = (String) state.getAttribute(STATE_FILE_UPLOAD_MAX_SIZE);
 		int max_bytes = 1096 * 1096;
@@ -3682,10 +3691,15 @@ public class ResourcesAction
 					
 					ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, siteId, toolName, contentType, bytes, props);
 		
-					List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
-					if(attached == null)
+					List new_items = (List) current_stack_frame.get(STATE_HELPER_NEW_ITEMS);
+					if(new_items == null)
 					{
-						attached = new Vector();
+						new_items = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+						if(new_items == null)
+						{
+							new_items = new Vector();
+						}
+						current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
 					}
 					
 					String containerId = ContentHostingService.getContainingCollectionId (attachment.getId());
@@ -3693,9 +3707,10 @@ public class ResourcesAction
 					
 					AttachItem item = new AttachItem(attachment.getId(), filename, containerId, accessUrl);
 					item.setContentType(contentType);
-					attached.add(item);
+					new_items.add(item);
 					state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
-					state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
+					
+					current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
 				}
 				catch (PermissionException e)
 				{
@@ -3733,9 +3748,9 @@ public class ResourcesAction
 			}
 		}
 
-		// state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
-		popFromStack(state);
-		resetCurrentMode(state);
+		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT_INIT);
+		//popFromStack(state);
+		//resetCurrentMode(state);
 
 	}	// doAttachupload
 	
@@ -3744,6 +3759,8 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		
+		Map current_stack_frame = peekAtStack(state);
+
 		String url = params.getCleanString("url");
 		
 		ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
@@ -3764,10 +3781,15 @@ public class ResourcesAction
 		
 			ContentResource attachment = ContentHostingService.addAttachmentResource(newResourceId, siteId, toolName, ResourceProperties.TYPE_URL, newUrl, resourceProperties);
 
-			List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
-			if(attached == null)
+			List new_items = (List) current_stack_frame.get(STATE_HELPER_NEW_ITEMS);
+			if(new_items == null)
 			{
-				attached = new Vector();
+				new_items = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+				if(new_items == null)
+				{
+					new_items = new Vector();
+				}
+				current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
 			}
 			
 			String containerId = ContentHostingService.getContainingCollectionId (attachment.getId());
@@ -3775,9 +3797,9 @@ public class ResourcesAction
 			
 			AttachItem item = new AttachItem(attachment.getId(), url, containerId, accessUrl);
 			item.setContentType(ResourceProperties.TYPE_URL);
-			attached.add(item);
+			new_items.add(item);
 			state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
-			state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
+			current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
 		}
 		catch(MalformedURLException e)
 		{
@@ -3814,9 +3836,9 @@ public class ResourcesAction
 			addAlert(state, rb.getString("failed"));
 		}
 
-		// state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
-		popFromStack(state);
-		resetCurrentMode(state);
+		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT_INIT);
+		// popFromStack(state);
+		// resetCurrentMode(state);
 
 	}
 	
@@ -3825,19 +3847,26 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		
+		Map current_stack_frame = peekAtStack(state);
+		
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 		
 		String itemId = params.getString("itemId");
 		
-		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
-		if(attached == null)
+		List new_items = (List) current_stack_frame.get(STATE_HELPER_NEW_ITEMS);
+		if(new_items == null)
 		{
-			attached = new Vector();
+			new_items = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+			if(new_items == null)
+			{
+				new_items = new Vector();
+			}
+			current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
 		}
 		AttachItem item = null;
 		boolean found = false;
 		
-		Iterator it = attached.iterator();
+		Iterator it = new_items.iterator();
 		while(!found && it.hasNext())
 		{
 			item = (AttachItem) it.next();
@@ -3849,7 +3878,7 @@ public class ResourcesAction
 
 		if(found && item != null)
 		{
-			attached.remove(item);
+			new_items.remove(item);
 			List removed = (List) state.getAttribute(STATE_REMOVED_ATTACHMENTS);
 			if(removed == null)
 			{
@@ -3861,8 +3890,8 @@ public class ResourcesAction
 		}
 
 		// state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
-		popFromStack(state);
-		resetCurrentMode(state);
+		// popFromStack(state);
+		// resetCurrentMode(state);
 
 	}
 	
@@ -3884,8 +3913,19 @@ public class ResourcesAction
 		}
 		
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
+		
+		Map current_stack_frame = peekAtStack(state);
 
-		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+		List new_items = (List) current_stack_frame.get(STATE_HELPER_NEW_ITEMS);
+		if(new_items == null)
+		{
+			new_items = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+			if(new_items == null)
+			{
+				new_items = new Vector();
+			}
+			current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
+		}
 		List removed = (List) state.getAttribute(STATE_REMOVED_ATTACHMENTS);
 		if(removed == null)
 		{
@@ -3915,7 +3955,7 @@ public class ResourcesAction
 		// add to the attachments vector
 		List attachments = EntityManager.newReferenceList();
 		
-		Iterator it = attached.iterator();
+		Iterator it = new_items.iterator();
 		while(it.hasNext())
 		{
 			AttachItem item = (AttachItem) it.next();
@@ -3948,14 +3988,22 @@ public class ResourcesAction
 	public static void attachItem(String itemId, SessionState state)
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
-		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
-		if(attached == null)
+		
+		Map current_stack_frame = peekAtStack(state);
+		
+		List new_items = (List) current_stack_frame.get(STATE_HELPER_NEW_ITEMS);
+		if(new_items == null)
 		{
-			attached = new Vector();
+			new_items = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+			if(new_items == null)
+			{
+				new_items = new Vector();
+			}
+			current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
 		}
 		
 		boolean found = false;
-		Iterator it = attached.iterator();
+		Iterator it = new_items.iterator();
 		while(!found && it.hasNext())
 		{
 			AttachItem item = (AttachItem) it.next();
@@ -3991,7 +4039,7 @@ public class ResourcesAction
 						
 				AttachItem item = new AttachItem(attachment.getId(), displayName, containerId, accessUrl);
 				item.setContentType(contentType);
-				attached.add(item);
+				new_items.add(item);
 				state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
 			}
 			catch (PermissionException e)
@@ -4032,20 +4080,28 @@ public class ResourcesAction
 				addAlert(state, rb.getString("failed"));
 			}
 		}
-		state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
+		current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
 	}
 	
 	public static void attachLink(String itemId, SessionState state)
 	{
 		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
-		List attached = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
-		if(attached == null)
-		{
-			attached = new Vector();
-		}
+
+		Map current_stack_frame = peekAtStack(state);
 		
+		List new_items = (List) current_stack_frame.get(STATE_HELPER_NEW_ITEMS);
+		if(new_items == null)
+		{
+			new_items = (List) state.getAttribute(STATE_HELPER_NEW_ITEMS);
+			if(new_items == null)
+			{
+				new_items = new Vector();
+			}
+			current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
+		}
+				
 		boolean found = false;
-		Iterator it = attached.iterator();
+		Iterator it = new_items.iterator();
 		while(!found && it.hasNext())
 		{
 			AttachItem item = (AttachItem) it.next();
@@ -4075,7 +4131,7 @@ public class ResourcesAction
 						
 				AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
 				item.setContentType(contentType);
-				attached.add(item);
+				new_items.add(item);
 				state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
 			}
 			catch (PermissionException e)
@@ -4096,7 +4152,7 @@ public class ResourcesAction
 				addAlert(state, rb.getString("failed"));
 			}
 		}
-		state.setAttribute(STATE_HELPER_NEW_ITEMS, attached);
+		current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
 	}
 	
 	/**
