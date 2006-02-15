@@ -5,8 +5,8 @@
 	#end
 	
 	#if ($toolId == "sakai.announcements")
-	<form name="formII" action="#toolForm("$action")" method="post" style="padding:0;display:inline">
-	<p class="rightNav">
+	<form name="formII" action="#toolForm("$action")" method="post">
+	<p class="itemNav">
 		#if ($!goPTButton)
 			<input type="submit" name="eventSubmit_doPrev_message" value="&lt; $tlang.getString("meta.prev")" />
 		#else
@@ -28,7 +28,7 @@
 	
 	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
 	<h3>
-		$tlang.getString("meta.title") 
+		$tlang.getString("meta.title")
 	</h3>	
 	<table cellspacing="0" class="itemSummary">
 		<tr>
@@ -83,8 +83,8 @@
 	#end
 	
 #if ($toolId == "sakai.announcements")
-	<form name="formII" action="#toolForm("$action")" method="post" style="padding:0;display:inline">
-		<div class="rightNav" style="text-align:right;float:none">
+	<form name="formII" action="#toolForm("$action")" method="post">
+		<div class="itemNav">
 			#if ($!goPTButton)
 				<input type="submit" name="eventSubmit_doPrev_message" value="&lt; $tlang.getString("meta.prev")" />
 			#else
@@ -103,8 +103,10 @@
 		</div>
 	</form>
 #else
-	<form name="formII" action="#toolForm("$action")" method="post" style="padding:0;display:inline">
-		<input type="submit" name="eventSubmit_doLinkcancel" value="$tlang.getString("meta.retlis")" />
+	<form name="formII" action="#toolForm("$action")" method="post">
+		<p class="act">
+			<input type="submit" name="eventSubmit_doLinkcancel" value="$tlang.getString("meta.retlis")" />
+		</p>	
 	</form>
 #end
 

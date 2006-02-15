@@ -43,6 +43,7 @@ h4 {
 h5 {
 	background-color: #CCC;
 }
+h3.textList,h4.textList,h5.textList, h6.textList{font-size:1em;}
 /*remove border from images that might be linked. Need this because JSF doesn't allow border="0"
 in <h:graphicImage> */
 img {
@@ -159,7 +160,6 @@ text-decoration:none
 .listView, .leftNav  { 
 	float:left; 
 	vertical-align:bottom;
-    font-size:.8em; 
     text-align:left; 
 	line-height:2em;
 		 margin-top:1em
@@ -169,12 +169,17 @@ text-decoration:none
 .listNav, .rightNav  {
 	 float:right; 
     vertical-align:bottom;
-/*    font-size:.8em; */
     text-align:right; 
     line-height:2em;
 	 margin-top:1em
 
 } 
+
+/*navigator for items - non-floated */
+.itemNav{vertical-align:bottom;text-align:right;line-height:2em}
+.itemNav input,.rightNav input{padding:0 .3em}
+.itemNav input[type="submit"], .rightNav input[type="submit"]{font-size:90%;padding:.3em .6em}
+.itemNav input[type="button"], .rightNav input[type="button"]{font-size:90%;padding:.3em .6em}
 
 /*action links for list items, use with <a> tag*/
 .itemAction  { 
@@ -386,6 +391,11 @@ p.instruction  {line-height:1.3em;clear:both}
 .reqStar{color:#C00;width:auto;margin-left:-1em;font-weight:bold;font-size:1em;padding:0;float:left;}
 .reqStarInline{color:#c00;font-size:1.2em;vertical-align: middle;width:1em;}
 #submitnotif{background-color:#DDDFE4;background-image:url(images/warn.gif);background-position: 3px 3px;background-repeat:no-repeat;border:1px solid #C00;clear:none;color:#C00;font-size:x-small;text-decoration:blink;vertical-align: text-top;margin:0;padding:5px 5px 5px 25px}
+
+/*for blocks of text produced by users - use with a div, as the likely children will be <p>*/
+.textBlock{}
+/*for blocks of metadata text associated with .textBlock <p>*/
+.smaller{font-size: 90%;}
 
 /*ospi*/
 .selectedListBox{

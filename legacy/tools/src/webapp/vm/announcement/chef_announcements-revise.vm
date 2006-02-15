@@ -37,7 +37,7 @@
 				#end
 			</p>
 			<p class="longtext">
-				<label for="body" class="block" style="margin-bottom:0;important!">
+				<label for="body" class="block">
 					<span class="reqStar">*</span>$tlang.getString("revise.announcement")
 				</label>
 				<table border="0" cellpadding="0" cellspacing="0" >
@@ -98,10 +98,10 @@
 				#else
 					#set ($listDisplay="none")
 				#end
-					<table id="groupTable" style="margin-left:3em;width:80%;display:$listDisplay" class="listHier lines" border="0" cellspacing="0" summary="Table contains list of groups. First will  contain checkboxes, second will contain the group name, third the group description. Header links can be used to sort.">
+					<table id="groupTable" style="width:80%;display:$listDisplay" class="listHier lines indnt3" border="0" cellspacing="0" summary="Table contains list of groups. First will  contain checkboxes, second will contain the group name, third the group description. Header links can be used to sort.">
 					<caption class="skip" style="display:none">$tlang.getString("displayto.selected")</caption>
 						<tr>
-							<th id ="selectAllGroups" style="width:2em;padding-left:.4em">
+							<th id ="selectAllGroups" class="attach">
 								<input type="checkbox" name="selectall" id="selectall" title="toggle select all" onclick="javascript:toggleSelectAll(this, 'selectedGroups')" onkeypress="javascript:toggleSelectAll(this, 'selectedGroups')" />
 							</th>
 					 		<th id ="groupname">
@@ -129,7 +129,7 @@
 						</tr>
 						#foreach ($group in $!groups)
 							<tr>
-								<td headers="selected" style="padding-bottom:0;" style="width:2em">
+								<td headers="selected" class="attach">
 									#set($selected=false)
 									#foreach($aGroupRef in $announceToGroups)
 										#set($aGroup = $!site.getGroup($!aGroupRef))
@@ -139,7 +139,7 @@
 									#end
 									<input type="checkbox" name="selectedGroups" id="$group.Id" title="$group.Id" value="$group.Id" #if($selected) checked="checked"#end />
 								</td>
-								<td headers="name" style="padding-bottom:0;" class="checkbox">
+								<td headers="name" nowrap="nowrap">
 									<label for="$group.Id">
 										$group.Title
 									</label>	
@@ -161,7 +161,7 @@
 				#if (!$attachments.isEmpty())
 					 #set ($props = false)
 					 #set ($size =  $attachments.size())
-					 <ul class="attachList" style="display:block;clear:both;margin:.8em 0 .3em 2em">
+					 <ul class="attachList">
 						 #foreach ($attachment in $attachments)
 							#set ($props = $attachment.Properties)
 							#if (!$props)
@@ -186,7 +186,7 @@
 					</ul>	
 				#end
 			</p>
-			#if ($size == 0) <p class="instruction" style="display:block;clear:both;margin:1.3em 0 .3em 0">$tlang.getString("revise.noattach")</p>
+			#if ($size == 0) <p class="instruction">$tlang.getString("revise.noattach")</p>
 				<div class="act">
 					 <input type="button" name="attach" value="$tlang.getString("revise.addatt")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='attach';document.reviseForm.submit();return false;" />
 				</div>
@@ -216,16 +216,16 @@
 			#end
 		</div>	
 		<p class="act">
-				<input type="button" class="active" name="post" value=
+				<input type="button" class="active" name="post" accesskey="s" value=
 					#if ( $newAnn =="true")				
 						"$tlang.getString("revise.add")"
 					#else
 						"$tlang.getString("revise.savechanges")"
 					#end
 				 onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='post';document.reviseForm.submit();return false;" />
-				<input type="button" name="preview" value="$tlang.getString("revise.preview")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='preview';document.reviseForm.submit();return false;" />
-				<input type="button" name="save" value="$tlang.getString("revise.savedraft")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='save';document.reviseForm.submit();return false;" />
-				<input type="button" name="cancel" value="$tlang.getString("gen.cancel")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='cancel';document.reviseForm.submit();return false;" />   
+				<input type="button" accesskey="v" name="preview" value="$tlang.getString("revise.preview")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='preview';document.reviseForm.submit();return false;" />
+				<input type="button" accesskey="d" name="save" value="$tlang.getString("revise.savedraft")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='save';document.reviseForm.submit();return false;" />
+				<input type="button" accesskey="x" name="cancel" value="$tlang.getString("gen.cancel")" onclick="javascript:document.reviseForm.onsubmit();document.getElementById('option').value='cancel';document.reviseForm.submit();return false;" />   
 		</p>
 	</form>
 </div>

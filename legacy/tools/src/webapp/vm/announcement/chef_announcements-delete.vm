@@ -49,8 +49,8 @@
 		</table>
 	<form name="deleteTemplateForm" action="#toolForm("AnnouncementAction")" method="post">
 		<p class="act">
-			<input type="submit" class="active" name="eventSubmit_doDelete" value="$tlang.getString("gen.delete")" />
-			<input type="submit" value="$tlang.getString("gen.cancel")" name="eventSubmit_doCancel" />
+			<input type="submit" accesskey="s" class="active" name="eventSubmit_doDelete" value="$tlang.getString("gen.delete")" />
+			<input type="submit" accesskey="x" value="$tlang.getString("gen.cancel")" name="eventSubmit_doCancel" />
 		</p>
 	</form>
 </div>

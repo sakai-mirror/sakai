@@ -110,7 +110,7 @@
 		</p>
 		
 		<p class="shorttext indnt4" id="charDisplay"> 
-			<label for="changeChars" style="font-weight:normal">
+			<label for="changeChars">
 				$tlang.getString("custom.about")
 			</label>
 			## this input needs to become a select - here are some yardsticks - 50 chars per line
@@ -142,10 +142,10 @@
 	#end
 	
 		<h4>
-			$tlang.getString("custom.dplimits")
+			$tlang.getString("custom.dplimits") 
 		</h4>
-		<p class="shorttext indnt2">
-			<label for="${displayOptions.getVarNameNumberOfDaysInPast()}EntryField" style="width:16em">
+		<p class="shorttext indnt4">
+			<label for="${displayOptions.getVarNameNumberOfDaysInPast()}EntryField">
 				$tlang.getString("custom.number") 
 			</label>
 			<input type="text" id="${displayOptions.getVarNameNumberOfDaysInPast()}EntryField" name="$displayOptions.getVarNameNumberOfDaysInPast()"   size="2"
@@ -156,8 +156,8 @@
 				#end
 			/>
 		</p>
-		<p class="shorttext indnt2">	
-			<label for="${displayOptions.getVarNameNumberOfAnnouncements()}EntryField" style="width:16em">
+		<p class="shorttext indnt4">	
+			<label for="${displayOptions.getVarNameNumberOfAnnouncements()}EntryField">
 				$tlang.getString("custom.numbann") 
 			</label>
 			<input type="text" 
@@ -171,8 +171,8 @@
 			/>
 		</p>
 		<p class="act">
-			<input type="submit" class="active" name="eventSubmit_doUpdate" value="$tlang.getString("gen.update")" />
-			<input type="submit" name="eventSubmit_doCancel" value="$tlang.getString("gen.cancel")" />
+			<input type="submit" accesskey="s" class="active" name="eventSubmit_doUpdate" value="$tlang.getString("gen.update")" />
+			<input type="submit" accesskey="x" name="eventSubmit_doCancel" value="$tlang.getString("gen.cancel")" />
 		</p>
 	</form>
 </div>

@@ -1,4 +1,4 @@
-## this is showing the list view of all announcement, and the home view of this tool
+	## this is showing the list view of all announcement, and the home view of this tool
 
 ##(gsilver - remaining issues: trimming body, <p> in body when produced with WYS, the fact that how thing look in the synopsys is still undefined - and finally - the permissions nightmare as well as the ling to Remove...
 
@@ -29,7 +29,7 @@
 		<h3>$tlang.getString("gen.announcements")</h3>
 		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 ##		#if ($messageListVector.iterator().hasNext())
-		<div class="leftNav" style="clear:both">
+		<div class="listView">
 			<form name="viewForm" class="inlineForm" method="post" action="#toolForm("AssignmentAction")">
 				<input type="hidden" name="eventSubmit_doView" value="view" />
 				<label for="view">
@@ -46,39 +46,39 @@
 		</div>
 ##		#end
 			#if (!$messageListVector.iterator().hasNext())
-				<p class="instruction" style="clear:both;margin-top:3em">
+				<div class="instruction clear">
 					#if ($!view == "$!tlang.getString('view.public')")
 						$tlang.getString("gen.therearepublic")
 					#else
 						$tlang.getString("gen.thereare")
 					#end
-				</p>
+				</div>
 			#else
-				<div class="rightNav">
-					<span class="instruction">
+				<div class="listNav">
+					<div class="instruction">
 						$tlang.getString("gen.viewing") $topMsgPos - $btmMsgPos $tlang.getString("gen.separator") $allMsgNumber $tlang.getString("gen.items")
-					</span>
+					</div>
 					#if ($pagesize != 0)
 						#if ($goFPButton == "true")
-							<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="firstpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_first" value="|&lt;" title="$tlang.getString("gen.first")" />
 							</form>
 						#else
-							<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="firstpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_first" value="|&lt;" disabled="disabled" />
 							</form>
 						#end
 						#if ($goPPButton == "true")
-							<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="prevpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_prev" value="&lt;" title="$tlang.getString('gen.previous') $pagesize" />
 							</form>
 						#else
-							<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="prevpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_prev" value="&lt;" disabled="disabled" />
 							</form>
 						#end
 					#end
-					<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
+					<form name="pagesizeForm" class="inlineForm" method="post" action="#toolForm("$action")">
 						<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
 						<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
 							<option value="5" #if($pagesize == 5) selected="selected" #end>$tlang.getString("gen.show5")</option>
@@ -91,20 +91,20 @@
 					</form>
 					#if ($pagesize != 0)
 						#if ($goNPButton == "true")
-							<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="nextpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_next" value="&gt;" title="$tlang.getString('gen.next') $pagesize" />
 							</form>
 						#else
-							<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="nextpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_next" value="&gt;" disabled="disabled" />
 							</form>
 						#end
 						#if ($goLPButton == "true")
-							<form name="lastpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="lastpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_last" value="&gt;|" title="$tlang.getString('gen.last')" />
 							</form>
 						#else
-							<form name="lastpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="lastpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 								<input type="submit" name="eventSubmit_doList_last" value="&gt;|" disabled="disabled" />
 							</form>
 						#end
@@ -114,7 +114,7 @@
 				<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post">
 				<table class="listHier" border="0" cellspacing="0" summary="$tlang.getString('gen.tablecaptionworksp')">
 					<tr>
-						<th id="attach" style="width:0;padding:0;vertical-align:middle;background-color:transparent"></th>
+						<th id="attach" class="attach"></th>
 						<th id ="subject">
 							#if (!$currentSortedBy.equals("subject"))
 								<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="$tlang.getString('gen.sortby')">$tlang.getString('gen.subject')</a>
@@ -140,7 +140,7 @@
 						#if ($SiteColumnFlag > 0) ## (there are anns from other sites so show what site they are from)
 							<th id ="Site">
 								#if (!$currentSortedBy.equals("channel"))
-									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="$tlang.getString('gen.sortchannel')">$tlang.getString('gen.site')</a>
+									<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="$tlang.getString('gen.sortchannel')">$tlang.getString('gen.site')</a>1
 								#else
 									#if ($currentSortAsc.equals("true"))
 										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="$tlang.getString('gen.sortchanasc')">$tlang.getString('gen.site') <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="$tlang.getString('gen.sortchanasc')" /></a>
@@ -167,7 +167,7 @@
 					#foreach ($ann_item in $showMessagesList)
 						#set ($rowCount =$rowCount + 1)
 						<tr>
-							<td headers="attach" style="width:.5em;padding:0;vertical-align:middle;">	
+							<td headers="attach" class="attach">	
 								## show the paperclip if existing
 									#set ($size = 0)
 									#if (!$ann_item.Header.Attachments.isEmpty())
@@ -205,7 +205,7 @@
 									$validator.escapeHtml($ann_item.channelDisplayName)
 								</td>
 							#end
-							<td headers="date" style="white-space:nowrap">
+							<td headers="date">
 								$ann_item.Header.Date.toStringLocalFull()
 							</td>
 						</tr>
@@ -224,8 +224,8 @@
 												#set ($colspan="3")
 											#end	
 										#end	
-									<td colspan="$colspan" style="padding:.5em 0 2em .3em">
-										$ann_item.TrimmedBody
+									<td colspan="$colspan">
+										<div class="textBlock">$ann_item.TrimmedBody</div>
 									</td>
 								</tr>	
 							#end
@@ -241,18 +241,18 @@
 
 			#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 
-			<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post" style="margin:1em -.5em;">
+			<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post">
 				#if (!$messageListVector.iterator().hasNext())
-					<p class="instruction">
+					<div class="instruction">
       					$tlang.getString("gen.thereare")
-					</p>
+					</div>
 				#else
 					#set ($rowCount=0)
 					#foreach ($ann_item in $showMessagesList)
 						#set ($rowCount =$rowCount + 1)
 							#if ($ann_item.Header.draft)
 							#else
-							<div style="margin:.3em -.2em;">
+							<h3 class="textList">
 								<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString('gen.viewann') $validator.escapeHtml($ann_item.Header.subject)">
 								$validator.escapeHtml($ann_item.Header.subject)</a>
 								#set ($size = 0)
@@ -271,14 +271,14 @@
 									<img src = "#imageLink("sakai/attachments.gif")" border="0" alt="$tlang.getString('gen.attach')" />
 								#end
 								#if (!$displayOptions.isShowAnnouncementBody())
-										<p style="margin:.2em 1em;font-size:smaller" >($validator.escapeHtml($ann_item.Header.From.DisplayName) - $ann_item.Header.Date.toStringLocalFull())</p>
+										<p class="smaller">($validator.escapeHtml($ann_item.Header.From.DisplayName) - $ann_item.Header.Date.toStringLocalFull())</p>
 								#end
-							</div>	
+							</h3>	
 							#if ($displayOptions.isShowAnnouncementBody())
-								<div style="margin:.3em 0 0 0">
+								<div class="textBlock">
 									$ann_item.TrimmedBody
 								</div>
-								<p style="margin:.3em  0 1em 1em;font-size:smaller">
+								<p class="smaller">
 									($validator.escapeHtml($ann_item.Header.From.DisplayName) - $ann_item.Header.Date.toStringLocalFull())
 								</p>	
 							#end
@@ -294,7 +294,7 @@
 					<h3>$tlang.getString("gen.announcements")</h3>
 					#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 ##					#if ($messageListVector.iterator().hasNext())
-						<div class="leftNav" style="clear:both">
+						<div class="listView">
 								<form name="viewForm" class="inlineForm" method="post" action="#toolForm("$action")">
 									<input type="hidden" name="eventSubmit_doView" value="view" />
 									<label for="view">
@@ -311,41 +311,42 @@
 							</div>
 ##					#end		
 					#if (!$messageListVector.iterator().hasNext())
-						<p class="instruction" style="clear:both;margin-top:3em">
+						<div class="instruction clear">
 							#if ($!view == "$!tlang.getString('view.public')")
 								$tlang.getString("gen.therearepublic")
 							#else
 								$tlang.getString("gen.thereare")
 							#end
-						</p>
+						</div>
 						<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post">
 						</form>
 					#else
-						<div class="rightNav">
-							<span class="instruction" style="margin-bottom:.3em">
-							$tlang.getString("gen.viewing") $topMsgPos - $btmMsgPos $tlang.getString("gen.separator") $allMsgNumber $tlang.getString("gen.items")</span>
+						<div class="listNav">
+							<div class="instruction">
+							$tlang.getString("gen.viewing") $topMsgPos - $btmMsgPos $tlang.getString("gen.separator") $allMsgNumber $tlang.getString("gen.items")
+							</div>
 					 			#if ($pagesize != 0)
 									#if ($goFPButton == "true")
-										<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="firstpageForm" class="inlineForm"  method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_first" value="|&lt;" title="$tlang.getString("gen.first")" />
 										</form>
 									#else
-										<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="firstpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_first" value="|&lt;" disabled="disabled" />
 										</form>
 									#end
 									#if ($goPPButton == "true")
-										<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="prevpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_prev" value="&lt;" title="$tlang.getString('gen.previous') $pagesize" />
 										</form>
 									#else
-										<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="prevpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_prev" value="&lt;" disabled="disabled" />
 										</form>
 									#end
 								#end
 							
-							<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
+							<form name="pagesizeForm" class="inlineForm" method="post" action="#toolForm("$action")">
 								<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
 								<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
 									<option value="5" #if($pagesize == 5) selected="selected" #end>$tlang.getString("gen.show5")</option>
@@ -358,20 +359,20 @@
 							</form>
 							#if ($pagesize != 0)
 								#if ($goNPButton == "true")
-									<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+									<form name="nextpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 										<input type="submit" name="eventSubmit_doList_next" value="&gt;" title="$tlang.getString('gen.next') $pagesize" />
 									</form>
 								#else
-									<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+									<form name="nextpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 										<input type="submit" name="eventSubmit_doList_next" value="&gt;" disabled="disabled" />
 									</form>
 								#end
 								#if ($goLPButton == "true")
-									<form name="lastpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+									<form name="lastpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 										<input type="submit" name="eventSubmit_doList_last" value="&gt;|" title="$tlang.getString("gen.last")" />
 									</form>
 								#else
-									<form name="lastpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+									<form name="lastpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 										<input type="submit" name="eventSubmit_doList_last" value="&gt;|" disabled="disabled" />
 									</form>
 								#end
@@ -381,7 +382,7 @@
 						<form name="announcementListForm" action="#toolForm("AnnouncementAction")" method="post">
 							<table class="listHier" border="0" cellspacing="0" summary="$tlang.getString('gen.tablecaptionsite')">
 							<tr>
-							 <th id ="attach"  style="width:0;padding:0;vertical-align:middle;background-color:transparent"></th>
+							 <th id ="attach" class="attach"></th>
 							 <th id ="subject">
 									#if (!$currentSortedBy.equals("subject"))
 										<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbysubject")';return false;" title ="$tlang.getString('gen.sortby')">$tlang.getString('gen.subject')</a>
@@ -408,12 +409,12 @@
 									#if ($SiteColumnFlag > 0) ## (there are anns from other sites so show what site they are from)
 										<th id ="Site">
 											#if (!$currentSortedBy.equals("channel"))
-												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchannel")>$tlang.getString("gen.site")</a>
+												<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="$tlang.getString("gen.sortchannel")">$tlang.getString("gen.site")</a>
 											#else
 												#if ($currentSortAsc.equals("true"))
-													<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchanasc")>$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt=$tlang.getString("gen.sortchanasc") /></a>
+													<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="$tlang.getString("gen.sortchanasc")">$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt=$tlang.getString("gen.sortchanasc") /></a>
 												#else
-													<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title =$tlang.getString("gen.sortchandesc")>$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt=$tlang.getString("gen.sortchandesc")/></a>
+													<a href="#" onclick="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" onkeypress="location='#toolLink("AnnouncementAction" "doSortbychannel")';return false;" title ="$tlang.getString("gen.sortchandesc")">$tlang.getString("gen.site") <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt=$tlang.getString("gen.sortchandesc")/></a>
 												#end
 											#end
 										</th>
@@ -443,7 +444,7 @@
 								</th>
 								#if ($!view != $!tlang.getString('view.bygroup'))
 									#if ($allow_delete)
-										<th>
+										<th class="screenOnly">
 											$tlang.getString("gen.remove_question")
 										</th>
 									#end
@@ -453,7 +454,7 @@
 							 #foreach ($ann_item in $showMessagesList)
 								#set ($rowCount =$rowCount + 1)
 								<tr>
-									<td headers="attach"  style="width:.5em;padding:0;vertical-align:middle;background-color:transparent">
+									<td headers="attach" class="attach">
 										## show the paperclip if existing
 										#set ($size = 0)
 										#if (!$ann_item.Header.Attachments.isEmpty())
@@ -471,7 +472,7 @@
 											<img src = "#imageLink("sakai/attachments.gif")" border="0" alt="$tlang.getString('gen.attach')" />
 										#end
 									</td>
-									<td headers="subject" style="padding-bottom:0;">
+									<td headers="subject">
 										<h4>
 											#if ($ann_item.Header.draft)
 												<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString('gen.editdraft')"><span class="highlight">$tlang.getString("gen.draft") - </span>
@@ -486,20 +487,20 @@
 										#end
                                                                                                                                                                                                      
 									</td>
-									<td headers="author"  style="padding-bottom:0">
+									<td headers="author">
 										$validator.escapeHtml($ann_item.Header.From.DisplayName)
 									</td>
 									#if ($EnableItemCheckBoxes)
 										#if ($SiteColumnFlag > 0)
-											<td headers="channel"  style="padding-bottom:0">
+											<td headers="channel">
 												$validator.escapeHtml($ann_item.channelDisplayName)
 											</td>
 										#end
 									#end
-									<td  style="padding-bottom:0">
+									<td >
 										$!ann_item.getRange()
 									</td>
-									<td headers="date" style="white-space:nowrap;padding-bottom:0">
+									<td headers="date">
 										$ann_item.Header.Date.toStringLocalFull()
 									</td>
 									
@@ -507,7 +508,7 @@
 									#if ($!view != $!tlang.getString('view.bygroup'))
 										#if ($channel.allowRemoveMessage($ann_item.Message))
 											#if ($currentChannelDisplayName.equals($itemChannel))
-											<td valign="top" headers="checkbox" style="text-align:center; padding-bottom:0">
+											<td headers="checkbox" class="screenOnly">
 												<label for ="check-$rowCount" class="skip">$tlang.getString("gen.selectremove")</label>
 												<input title="$tlang.getString("gen.selectremove")" type="checkbox" id="check-$rowCount" name="selectedMembers" value="$ann_item.Reference" />
 											</td>
@@ -515,7 +516,7 @@
 										#else
 									 		#if ($allow_delete)
 												#if ($currentChannelDisplayName.equals($itemChannel))
-												<td valign="top" headers="checkbox" style="text-align:center;padding-bottom:0">
+												<td valign="top" headers="checkbox" class="screenOnly">
 													<label for ="check-$rowCount" class="skip">$tlang.getString("gen.selectremove")</label>
 													<input title="$tlang.getString("gen.selectremove")" type="checkbox" id="check-$rowCount" name="selectedMembers" value="$ann_item.Reference" disabled="disabled"/>
 												</td>
@@ -528,9 +529,8 @@
 									<tr>
 										<td>
 										</td>
-									## will never be more than 5 cols, so go for the max
-										<td colspan="4" style="padding:.2em  0 2em 1.5em;">
-											$ann_item.TrimmedBody
+										<td colspan="4">
+											<div class="textBlock">$ann_item.TrimmedBody</div>
 										</td>
 									</tr>	
 									#end
@@ -560,32 +560,32 @@
 							</p>
 						#else
 						
-							<div class="rightNav">
-								<span class="instruction">
+							<div class="listNav">
+								<div class="instruction">
 									##$tlang.getString("gen.viewing") $topMsgPos - $btmMsgPos / $allMsgNumber $tlang.getString("gen.items")
 									  $tlang.getString("gen.viewing") $topMsgPos - $btmMsgPos $tlang.getString("gen.separator") $allMsgNumber $tlang.getString("gen.items")
-								</span>
+								</div>
 								#if ($pagesize != 0)
 									#if ($goFPButton == "true")
-										<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="firstpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_first" value="|&lt;" title="$tlang.getString("gen.first")" />
 										</form>
 									#else
-										<form name="firstpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="firstpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_first" value="|&lt;" disabled="disabled" />
 										</form>
 									#end
 									#if ($goPPButton == "true")
-										<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="prevpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_prev" value="&lt;" title="$tlang.getString('gen.previous') $pagesize" />
 										</form>
 									#else
-										<form name="prevpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="prevpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_prev" value="&lt;" disabled="disabled" />
 										</form>									
 									#end
 								#end
-								<form name="pagesizeForm" style="display:inline" method="post" action="#toolForm("$action")">
+								<form name="pagesizeForm" class="inlineForm" method="post" action="#toolForm("$action")">
 									<input type="hidden" name="eventSubmit_doChange_pagesize" value="changepagesize" />
 									<select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
 										<option value="5" #if($pagesize == 5) selected="selected" #end>$tlang.getString("gen.show5")</option>
@@ -598,20 +598,20 @@
 								</form>
 								#if ($pagesize != 0)
 									#if ($goNPButton == "true")
-										<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="nextpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_next" value="&gt;" title="$tlang.getString('gen.next') $pagesize" />
 										</form>
 									#else
-										<form name="nextpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="nextpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_next" value="&gt;" disabled="disabled" />
 										</form>
 									#end				
 						        	#if ($goLPButton == "true")
-										<form name="lastpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="lastpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_last" value="&gt;|" title="$tlang.getString("gen.last")" />
 										</form>
 									#else
-										<form name="lastpageForm" style="display:inline" method="post" action="#toolForm("$action")">
+										<form name="lastpageForm" class="inlineForm" method="post" action="#toolForm("$action")">
 											<input type="submit" name="eventSubmit_doList_last" value="&gt;|" disabled="disabled" />
 										</form>
 									#end
@@ -626,13 +626,13 @@
 							 #foreach ($ann_item in $showMessagesList)
 								#set ($rowCount =$rowCount + 1)
 								<tr class="highLightRow">
-									 <td width="50%" style="padding-bottom:0;" >
+									 <td>
 									 	<h4>
 											#if ($ann_item.Header.draft)
-											<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.editdraft")"><span class="highlight">$tlang.getString("gen.draft") - </span>
+											<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.editdraft") $validator.escapeHtml($ann_item.Header.subject)"><span class="highlight">$tlang.getString("gen.draft") - </span>
 												$validator.escapeHtml($ann_item.Header.subject)</a>
 											#else
-												<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.viewann")">
+												<a href="#toolLinkParam("AnnouncementAction" "doShowmetadata" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.viewann") $validator.escapeHtml($ann_item.Header.subject)">
 												$validator.escapeHtml($ann_item.Header.subject)</a>
 											#end
 											#set ($size = 0)
@@ -653,11 +653,11 @@
 											</h4>
 										</td>
 										#if (!$displayOptions.isShowAnnouncementBody())
-											<td style="padding-bottom:0">
+											<td>
 										/	($validator.escapeHtml($ann_item.Header.From.DisplayName) - $ann_item.Header.Date.toStringLocalFull())
 											</td>
 										#end
-										<td style="padding-left:3em;padding-bottom:0;"
+										<td 
 										#if  ( ($channel.allowEditMessage($ann_item.Id)) || ($channel.allowRemoveMessage($ann_item.Message)) ) 
 										#end
 										>
@@ -667,19 +667,19 @@
 											#set($separator="")
 										#end
 											#if ($channel.allowEditMessage($ann_item.Id))
-												<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.editann")">$tlang.getString("gen.revise")</a>
+												<a href="#toolLinkParam("AnnouncementAction" "doReviseannouncement" "itemReference=$validator.escapeUrl($ann_item.reference)")" title="$tlang.getString("gen.editann") $validator.escapeHtml($ann_item.Header.subject)">$tlang.getString("gen.revise")</a>
 											#end
 											$separator 
 											#if ($channel.allowRemoveMessage($ann_item.Message))
-											<a href="#toolLinkParam("AnnouncementAction" "doDelete_announcement_link" "itemReference=$validator.escapeUrl($ann_item.reference)")" 	title="$tlang.getString("gen.removeann")">$tlang.getString("gen.delete")</a>
+											<a href="#toolLinkParam("AnnouncementAction" "doDelete_announcement_link" "itemReference=$validator.escapeUrl($ann_item.reference)")" 	title="$tlang.getString("gen.removeann") $validator.escapeHtml($ann_item.Header.subject)">$tlang.getString("gen.delete")</a>
 											#end
 										</td>
 									#if ($displayOptions.isShowAnnouncementBody())
 										<tr>
 											## need to test this with the WYSIWIG - if a <p> is created...										
-											<td colspan="2" class="body" style="padding-top:0">
-													<p>$ann_item.TrimmedBody</p>
-													<p style="margin:.5em 0 1em 3em !important">
+											<td colspan="2">
+													<div class="textBlock">$ann_item.TrimmedBody</div>
+													<p class="smaller">
 														($validator.escapeHtml($ann_item.Header.From.DisplayName) - $ann_item.Header.Date.toStringLocalFull())
 													</p>	
 											</td>
