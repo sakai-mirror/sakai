@@ -1,25 +1,23 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2003, 2004, 2005, 2006 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2003, 2004, 2005, 2006 The Sakai Foundation.
+ * 
+ * Licensed under the Educational Community License, Version 1.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.opensource.org/licenses/ecl1.php
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License.
+ *
+ **********************************************************************************/
 
 // package
 package org.sakaiproject.component.legacy.user;
@@ -457,6 +455,17 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		return user;
 
 	} // getUser
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public User getUserByEid(String eid) throws IdUnusedException
+	{
+		// TODO: cheating!
+		
+		// NOTE: need to cache by eid as well as id... -ggolden
+		return getUser(eid);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -989,19 +998,22 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	/**
 	 * {@inheritDoc}
 	 */
-	public User authenticate(String id, String password)
+	public User authenticate(String eid, String password)
 	{
 		// clean up the id
-		id = cleanId(id);
-		if (id == null) return null;
+		eid = cleanId(eid);
+		if (eid == null) return null;
 
 		boolean authenticated = false;
 
 		// do we have a record for this user?
-		UserEdit user = findUser(id);
+		UserEdit user = findUserByEid(eid);
 		
+		// TODO: when we implement eid / complete user records with unique UUID based id, we need to clean the following up:
+		//		we need to create a user record with this eid as an eid, with a new UUID id... -ggolden
 		if (user == null)
 		{
+			String id = eid;
 			if (m_provider != null && m_provider.createUserRecord(id))
 			{
 				try 
@@ -1023,10 +1035,10 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			}
 		}
 
-		if (m_provider != null && m_provider.authenticateWithProviderFirst(id))
+		if (m_provider != null && m_provider.authenticateWithProviderFirst(eid))
 		{
 			// 1. check provider
-			authenticated = authenticateViaProvider(id, user, password);
+			authenticated = authenticateViaProvider(eid, user, password);
 			if (!authenticated && user != null)
 			{
 				// 2. check our user record, if any, if not yet authenticated
@@ -1044,7 +1056,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			// 2. check our provider, if any, if not yet authenticated
 			if (!authenticated && m_provider != null)
 			{
-				authenticated = authenticateViaProvider(id, user, password);
+				authenticated = authenticateViaProvider(eid, user, password);
 			}
 		}
 
@@ -1057,26 +1069,26 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			{
 				try
 				{
-					rv = getUser(id);
+					rv = getUserByEid(eid);
 				}
 				catch (IdUnusedException e)
 				{
 					// we might have authenticated by provider, but don't have proper
 					// user "existance" (i.e. provider existance or internal user records) to let the user in -ggolden
-					m_logger.info(this +".authenticate(): attempt by unknown user id: " + id);
+					m_logger.info(this +".authenticate(): attempt by unknown user id: " + eid);
 				}
 				catch (Throwable e)
 				{
 					// we might have authenticated by provider, but don't have proper
 					// user "existance" (i.e. provider existance or internal user records) to let the user in -ggolden
-					m_logger.warn(this +".authenticate(): could not getUser() after auth: " + id + " : " + e);
+					m_logger.warn(this +".authenticate(): could not getUser() after auth: " + eid + " : " + e);
 				}
 			}
 			
 			// cache the user (if we didn't go through the getUser() above, which would have cached it
 			else
 			{
-				if (m_callCache != null) m_callCache.put(userReference(id), rv, m_cacheSeconds);
+				if (m_callCache != null) m_callCache.put(userReference(rv.getId()), rv, m_cacheSeconds);
 			}
 		}
 
@@ -1142,6 +1154,17 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		return user;
 
 	} // findUser
+
+	/**
+	* Find the user object, by the eid (not id) in cache or storage (only - no provider check).
+	* @param id The user id.
+	* @return The user object found in cache or storage, or null if not found.
+	*/
+	protected BaseUserEdit findUserByEid(String eid)
+	{
+		// TODO: implement this!
+		return findUser(eid);
+	}
 
 	/**
 	* Create the live properties for the user.
@@ -1638,6 +1661,15 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		} // getId
 
 		/**
+		 * @inheritDoc
+		 */
+		public String getEid()
+		{
+			// TODO: implement me, no cheating!
+			return getId();
+		}
+
+		/**
 		* Access the URL which can be used to access the resource.
 		* @return The URL which can be used to access the resource.
 		*/
@@ -1907,6 +1939,14 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			}
 
 		} // setId
+
+		/**
+		 * @inheritDoc
+		 */
+		public void setEid(String eid)
+		{
+			// TODO: implement me!
+		}
 
 		/**
 		* Set the user's first name.

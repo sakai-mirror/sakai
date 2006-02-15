@@ -5476,7 +5476,7 @@ public class SiteAction extends PagedResourceActionII
 			
 			try
 			{
-				User user = UserDirectoryService.getUser(affiliate);
+				User user = UserDirectoryService.getUserByEid(affiliate);
 				String realmId = "/site/" + (String) state.getAttribute(STATE_SITE_INSTANCE_ID);
 				if (AuthzGroupService.allowUpdate(realmId))
 				{

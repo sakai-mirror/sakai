@@ -117,7 +117,7 @@ public class LegacyAuthnComponent implements AuthenticationManager
 			// accept, so now lookup the user in our database.
 			try
 			{
-				User user = UserDirectoryService.getUser(evidence.getIdentifier());
+				User user = UserDirectoryService.getUserByEid(evidence.getIdentifier());
 
 				// use the User id as both the uuid and eid
 				Authentication rv = new org.sakaiproject.util.Authentication(user.getId(), user.getId());

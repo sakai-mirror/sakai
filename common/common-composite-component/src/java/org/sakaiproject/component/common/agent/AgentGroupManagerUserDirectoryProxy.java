@@ -188,7 +188,7 @@ public class AgentGroupManagerUserDirectoryProxy implements AgentGroupManager
 
     try
     {
-      return new AgentUserProxy(userDirectoryService.getUser(enterpriseId));
+      return new AgentUserProxy(userDirectoryService.getUserByEid(enterpriseId));
     }
     catch (IdUnusedException idue)
     {
@@ -273,7 +273,7 @@ public class AgentGroupManagerUserDirectoryProxy implements AgentGroupManager
     try
     {
       return (Group) new AgentUserProxy(userDirectoryService
-          .getUser(enterpriseId));
+          .getUserByEid(enterpriseId));
     }
     catch (Exception e)
     {
