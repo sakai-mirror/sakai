@@ -270,7 +270,7 @@ public class ResourcesAction
 	private static final String STATE_CREATE_ALERTS = "resources.create_alerts";
 	private static final String STATE_CREATE_MISSING_ITEM = "resources.create_missing_item";
 	private static final String STATE_STRUCTOBJ_HOMES = "resources.create_structured_object_home";
-	private static final String STATE_STRUCT_OBJ_SCHEMA = "resources.create_structured_object_schema";
+	private static final String STATE_STACK_STRUCT_OBJ_SCHEMA = "resources.stack_create_structured_object_schema";
 
 	private static final String MIME_TYPE_DOCUMENT_PLAINTEXT = "text/plain";
 	private static final String MIME_TYPE_DOCUMENT_HTML = "text/html";
@@ -962,7 +962,7 @@ public class ResourcesAction
 
 			state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
 			
-			if(MODE_ATTACHMENT_EDIT_ITEM.equals(helper_mode))
+			if(MODE_ATTACHMENT_EDIT_ITEM_INIT.equals(helper_mode))
 			{
 				String attachmentId = (String) state.getAttribute(STATE_EDIT_ID);
 				if(attachmentId != null)
@@ -1021,12 +1021,16 @@ public class ResourcesAction
 				current_stack_frame.put(STATE_STACK_EDIT_INTENT, INTENT_REVISE_FILE); 
 			}
 		}
+		current_stack_frame.put(STATE_RESOURCES_MODE, helper_mode);
 		
 		String title = (String) current_stack_frame.get(STATE_STACK_EDIT_ITEM_TITLE);
 		if(title == null)
 		{
 			title = (String) state.getAttribute(STATE_ATTACH_TEXT);
-			current_stack_frame.put(STATE_STACK_EDIT_ITEM_TITLE, title);	// %%%%%%%%%
+			if(title != null)
+			{
+				current_stack_frame.put(STATE_STACK_EDIT_ITEM_TITLE, title);
+			}
 		}
 		if(title != null && title.trim().length() > 0)
 		{
@@ -1058,6 +1062,8 @@ public class ResourcesAction
 		context.put("tlang",rb);
 		
 		initStateAttributes(state, portlet);
+		Map current_stack_frame = peekAtStack(state);
+		
 		
 		String mode = (String) state.getAttribute(STATE_MODE);
 		if(mode == null || mode.trim().length() == 0)
@@ -1074,7 +1080,8 @@ public class ResourcesAction
 				helper_mode = MODE_ATTACHMENT_NEW_ITEM;
 				state.setAttribute(STATE_RESOURCES_MODE, helper_mode);
 			}
-			if(MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
+			current_stack_frame.put(STATE_RESOURCES_MODE, helper_mode);
+			if(MODE_ATTACHMENT_NEW_ITEM_INIT.equals(helper_mode))
 			{
 				context.put("attaching_this_item", Boolean.TRUE.toString());
 			}
@@ -1083,8 +1090,6 @@ public class ResourcesAction
 		
 		context.put("max_upload_size", state.getAttribute(STATE_FILE_UPLOAD_MAX_SIZE));
 		
-		Map current_stack_frame = peekAtStack(state);
-				
 		String collectionId = (String) current_stack_frame.get(STATE_STACK_CREATE_COLLECTION_ID);
 		if(collectionId == null || collectionId.trim().length() == 0)
 		{
@@ -1261,6 +1266,22 @@ public class ResourcesAction
 		return current_stack_frame;
 		
 	}
+	
+	/**
+	 * Returns true if the suspended operations stack contains no elements.
+	 * @param state The current session state, including the STATE_SUSPENDED_OPERATIONS_STACK attribute.
+	 * @return true if the suspended operations stack contains no elements
+	 */
+	private static boolean isStackEmpty(SessionState state)
+	{
+		Stack operations_stack = (Stack) state.getAttribute(STATE_SUSPENDED_OPERATIONS_STACK);
+		if(operations_stack == null)
+		{
+			operations_stack = new Stack();
+			state.setAttribute(STATE_SUSPENDED_OPERATIONS_STACK, operations_stack);
+		}
+		return operations_stack.isEmpty();
+	}
 
 	/**
 	 * Push an item of the suspended-operations stack.
@@ -1280,14 +1301,19 @@ public class ResourcesAction
 		{
 			current_stack_frame = (Map) operations_stack.push(new Hashtable());
 		}
+		Object helper_mode = state.getAttribute(STATE_RESOURCES_MODE);
+		if(helper_mode != null)
+		{
+			current_stack_frame.put(STATE_RESOURCES_MODE, helper_mode);
+		}
 		return current_stack_frame;
 		
 	}
 	
 	/**
-	 * Pop an item from the suspended-operations stack.
+	 * Remove and return the top item from the suspended-operations stack.
 	 * @param state The current session state, including the STATE_SUSPENDED_OPERATIONS_STACK attribute.
-	 * @return The new item that has just been added to the stack, or null if depth limit is exceeded.
+	 * @return The item that has just been removed from the stack, or null if the stack was empty.
 	 */
 	private static Map popFromStack(SessionState state) 
 	{
@@ -1301,9 +1327,34 @@ public class ResourcesAction
 		if(! operations_stack.isEmpty())
 		{
 			current_stack_frame = (Map) operations_stack.pop();
-		} 
+		}
 		return current_stack_frame;
 		
+	}
+	
+	private static void resetCurrentMode(SessionState state)
+	{
+		String mode = (String) state.getAttribute(STATE_MODE);
+		if(isStackEmpty(state))
+		{
+			if(MODE_HELPER.equals(mode))
+			{
+				cleanupState(state);
+				state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+			}
+			else
+			{
+				state.setAttribute(STATE_MODE, MODE_LIST);
+			}
+			return;
+		}
+		Map current_stack_frame = peekAtStack(state);
+		String helper_mode = (String) current_stack_frame.get(STATE_RESOURCES_MODE);
+		if(helper_mode != null)
+		{
+			state.setAttribute(STATE_RESOURCES_MODE, helper_mode);
+		}
+			
 	}
 
 	/**
@@ -1636,16 +1687,18 @@ public class ResourcesAction
 
 		// pick the template based on whether client wants links or copies
 		String template = TEMPLATE_SELECT;
-		Map current_stack_frame = peekAtStack(state);
-		Object attach_links = current_stack_frame.get(STATE_STACK_ATTACH_LINKS);
-			
-			state.getAttribute(STATE_ATTACH_LINKS);
-		if(attach_links == null)
+		if(!isStackEmpty(state))
 		{
-			// user wants copies in hidden attachments area
-			template = TEMPLATE_ATTACH;
+			Map current_stack_frame = peekAtStack(state);
+			Object attach_links = current_stack_frame.get(STATE_STACK_ATTACH_LINKS);
+				
+			state.getAttribute(STATE_ATTACH_LINKS);
+			if(attach_links == null)
+			{
+				// user wants copies in hidden attachments area
+				template = TEMPLATE_ATTACH;
+			}
 		}
-		
 		return template;
 		
 	}	// buildSelectAttachmentContext
@@ -1886,13 +1939,6 @@ public class ResourcesAction
 		context.put("tlang",rb);
 		// find the ContentTypeImage service
 		
-		Stack operations_stack = (Stack) state.getAttribute(STATE_SUSPENDED_OPERATIONS_STACK);
-		if(operations_stack == null)
-		{
-			operations_stack = new Stack();
-			state.setAttribute(STATE_SUSPENDED_OPERATIONS_STACK, operations_stack);
-		}
-		
 		Map current_stack_frame = peekAtStack(state);
 						
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
@@ -1953,6 +1999,21 @@ public class ResourcesAction
 
 		// put the item into context
 		EditItem item = (EditItem) current_stack_frame.get(STATE_STACK_EDIT_ITEM);
+		if(item == null)
+		{
+			item = getEditItem(id, collectionId, data);
+			if(item == null)
+			{
+				// what??
+			}
+			
+			if (state.getAttribute(STATE_MESSAGE) == null)
+			{
+				// got resource and sucessfully populated item with values
+				state.setAttribute(STATE_EDIT_ALERTS, new HashSet());
+				current_stack_frame.put(STATE_STACK_EDIT_ITEM, item);
+			}
+		}
 
 		context.put("item", item);
 		
@@ -2209,11 +2270,13 @@ public class ResourcesAction
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
 		Map current_stack_frame = peekAtStack(state);
+		boolean pop = false;
+		boolean push = false;
 				
 		String itemType = params.getString("itemType");
 		String flow = params.getString("flow");
-		String mode = (String) state.getAttribute(STATE_MODE);
-		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
+		//String mode = (String) state.getAttribute(STATE_MODE);
+		//String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
 		boolean attach_me = params.getBoolean("attach_me");
 		
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
@@ -2225,6 +2288,8 @@ public class ResourcesAction
 		Set missing = new HashSet();
 		if(flow == null || flow.equals("cancel"))
 		{
+			pop = true;
+			/*
 			if(MODE_HELPER.equals(mode) && attach_me)
 			{
 				cleanupState(state);
@@ -2238,6 +2303,7 @@ public class ResourcesAction
 			{
 				mode = MODE_LIST;
 			}
+			*/
 		}
 		else if(flow.equals("updateNumber"))
 		{
@@ -2295,6 +2361,8 @@ public class ResourcesAction
 				
 				if(alerts.isEmpty())
 				{
+					pop = true;
+					/*
 					if(MODE_HELPER.equals(mode) && attach_me)
 					{
 						cleanupState(state);
@@ -2309,6 +2377,7 @@ public class ResourcesAction
 						mode = MODE_LIST;
 					}
 					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
+					*/
 				}
 			}
 		}
@@ -2322,6 +2391,8 @@ public class ResourcesAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
+					pop = true;
+					/*
 					if(MODE_HELPER.equals(mode) && attach_me)
 					{
 						cleanupState(state);
@@ -2336,6 +2407,7 @@ public class ResourcesAction
 						mode = MODE_LIST;
 					}
 					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
+					*/
 				}
 			}
 		}
@@ -2349,6 +2421,8 @@ public class ResourcesAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
+					pop = true;
+					/*
 					if(MODE_HELPER.equals(mode) && attach_me)
 					{
 						cleanupState(state);
@@ -2363,6 +2437,7 @@ public class ResourcesAction
 						mode = MODE_LIST;
 					}
 					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
+					*/
 				}
 			}
 		}
@@ -2376,6 +2451,8 @@ public class ResourcesAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
+					pop =true;
+					/*
 					if(MODE_HELPER.equals(mode) && attach_me)
 					{
 						cleanupState(state);
@@ -2390,6 +2467,7 @@ public class ResourcesAction
 						mode = MODE_LIST;
 					}
 					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
+					*/
 				}
 			}
 		}
@@ -2403,6 +2481,8 @@ public class ResourcesAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
+					pop = true;
+					/*
 					if(MODE_HELPER.equals(mode) && attach_me)
 					{
 						cleanupState(state);
@@ -2417,6 +2497,7 @@ public class ResourcesAction
 						mode = MODE_LIST;
 					}
 					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
+					*/
 				}
 			}
 		}
@@ -2435,6 +2516,8 @@ public class ResourcesAction
 				alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 				if(alerts.isEmpty())
 				{
+					pop = true;
+					/*
 					if(MODE_HELPER.equals(mode) && attach_me)
 					{
 						cleanupState(state);
@@ -2449,6 +2532,7 @@ public class ResourcesAction
 						mode = MODE_LIST;
 					}
 					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
+					*/
 				}
 			}
 		}
@@ -2514,11 +2598,11 @@ public class ResourcesAction
 		}
 		else if(flow.equals("linkResource") && TYPE_FORM.equals(itemType))
 		{
-			captureMultipleValues(state, params, true);
+			captureMultipleValues(state, params, false);
 			//alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
 			
-			doCreate(data);
-			
+			createLink(data, state);
+			push = true;
 		}
 		else if(flow.equals("showOptional"))
 		{
@@ -2633,20 +2717,56 @@ public class ResourcesAction
 		alerts.clear();
 		current_stack_frame.put(STATE_CREATE_MISSING_ITEM, missing);
 		
-		// remove?
-		state.setAttribute(STATE_CREATE_ALERTS, alerts);
-
-		if(MODE_HELPER.equals(mode))
+		if(pop)
 		{
-			state.setAttribute(STATE_RESOURCES_MODE, helper_mode);
-		}
-		else
-		{
-			state.setAttribute (STATE_MODE, mode);
+			// get list of attachments?
+			popFromStack(state);
+			resetCurrentMode(state);
 		}
 				
 	}	// doCreateitem
 	
+	private static void createLink(RunData data, SessionState state) 
+	{
+		ParameterParser params = data.getParameters ();
+		
+		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
+		state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+		boolean show_other_sites = ServerConfigurationService.getBoolean("resources.show_all_collections.helper", SHOW_ALL_SITES_IN_FILE_PICKER);
+		/** This attribute indicates whether "Other Sites" twiggle should show */
+		state.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(show_other_sites));
+		/** This attribute indicates whether "Other Sites" twiggle should be open */
+		state.setAttribute(ResourcesAction.STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
+				
+		// put a copy of the attachments into the state
+		
+		state.setAttribute(ResourcesAction.STATE_ATTACHMENTS, EntityManager.newReferenceList());
+		// whether there is already an attachment
+		/*
+		if (attachments.size() > 0)
+		{
+			sstate.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
+		}
+		else
+		{
+			sstate.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.FALSE);
+		}
+		*/
+		
+		// cancel copy if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
+		{
+			initCopyContext(state);
+		}
+
+		// cancel move if there is one in progress
+		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_MOVE_FLAG)))
+		{
+			initMoveContext(state);
+		}
+			
+	}
+
 	/**
 	 * Add a new StructuredArtifact to ContentHosting for each EditItem in the state attribute named STATE_STACK_CREATE_ITEMS.  
 	 * The number of items to be added is indicated by the state attribute named STATE_STACK_CREATE_NUMBER, and
@@ -2721,7 +2841,7 @@ public class ResourcesAction
 		}
 		int numberOfItems = number.intValue();
 		
-		SchemaBean rootSchema = (SchemaBean) state.getAttribute(STATE_STRUCT_OBJ_SCHEMA);
+		SchemaBean rootSchema = (SchemaBean) current_stack_frame.get(STATE_STACK_STRUCT_OBJ_SCHEMA);
 		SchemaNode rootNode = rootSchema.getSchema();
 		
 		outerloop: for(int i = 0; i < numberOfItems; i++)
@@ -2781,7 +2901,7 @@ public class ResourcesAction
 						if(MODE_HELPER.equals(mode))
 						{
 							String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
-							if(helper_mode != null && MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
+							if(helper_mode != null && MODE_ATTACHMENT_NEW_ITEM_INIT.equals(helper_mode))
 							{
 								// add to the attachments vector
 								List attachments = EntityManager.newReferenceList();
@@ -3312,7 +3432,7 @@ public class ResourcesAction
 				if(MODE_HELPER.equals(mode))
 				{
 					String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
-					if(helper_mode != null && MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
+					if(helper_mode != null && MODE_ATTACHMENT_NEW_ITEM_INIT.equals(helper_mode))
 					{
 						// add to the attachments vector
 						List attachments = EntityManager.newReferenceList();
@@ -3490,7 +3610,9 @@ public class ResourcesAction
 			attachLink(itemId, state);
 		}
 
-		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		// state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		popFromStack(state);
+		resetCurrentMode(state);
 
 	}
 	
@@ -3611,7 +3733,9 @@ public class ResourcesAction
 			}
 		}
 
-		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		// state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		popFromStack(state);
+		resetCurrentMode(state);
 
 	}	// doAttachupload
 	
@@ -3690,7 +3814,9 @@ public class ResourcesAction
 			addAlert(state, rb.getString("failed"));
 		}
 
-		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		// state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		popFromStack(state);
+		resetCurrentMode(state);
 
 	}
 	
@@ -3734,7 +3860,9 @@ public class ResourcesAction
 			state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
 		}
 
-		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		// state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+		popFromStack(state);
+		resetCurrentMode(state);
 
 	}
 	
@@ -3811,7 +3939,9 @@ public class ResourcesAction
 		}
 		
 		// end up in main mode
-		state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+		// state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+		popFromStack(state);
+		resetCurrentMode(state);
 		
 	}
 	
@@ -4574,30 +4704,31 @@ public class ResourcesAction
 		String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
 		
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
-		
-		if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_SELECT.equals(helper_mode))
+		/*
+		if(MODE_HELPER.equals(mode))
 		{
-			cleanupState(state);
-			state.removeAttribute(STATE_ATTACHMENTS);
-			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
-			state.removeAttribute(STATE_REMOVED_ATTACHMENTS);
-		}
-		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_CREATE.equals(helper_mode))
-		{
-			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
-		}
-		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
-		{
-         cleanupState(state);
-			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
-		}
-		else if(MODE_HELPER.equals(mode) && MODE_ATTACHMENT_EDIT_ITEM.equals(helper_mode))
-		{
-         cleanupState(state);
-			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
-		}
-		else if(MODE_HELPER.equals(mode))
-		{
+			Map current_stack_frame = popFromStack(state);
+			if(MODE_ATTACHMENT_SELECT_INIT.equals(helper_mode))
+			{
+				// cleanupState(state);
+				state.removeAttribute(STATE_ATTACHMENTS);
+				state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+				state.removeAttribute(STATE_REMOVED_ATTACHMENTS);
+			}
+			else if(MODE_ATTACHMENT_CREATE.equals(helper_mode))
+			{
+				state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
+			}
+			else if(MODE_ATTACHMENT_NEW_ITEM.equals(helper_mode))
+			{
+				cleanupState(state);
+				state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+			}
+			else if(MODE_ATTACHMENT_EDIT_ITEM.equals(helper_mode))
+			{
+				cleanupState(state);
+				state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
+			}
 			state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_SELECT);
 		}
 		else if (from != null)
@@ -4608,6 +4739,10 @@ public class ResourcesAction
 		{
 			state.setAttribute (STATE_MODE, MODE_LIST);
 		}
+		*/
+		
+		popFromStack(state);
+		resetCurrentMode(state);
 
 	}	// doCancel
 
@@ -5490,7 +5625,7 @@ public class ResourcesAction
 			String instruction = home.getInstruction();
 			
 			current_stack_frame.put(STATE_STACK_STRUCTOBJ_ROOTNAME, docRoot);
-			state.setAttribute(STATE_STRUCT_OBJ_SCHEMA, rootSchema);
+			current_stack_frame.put(STATE_STACK_STRUCT_OBJ_SCHEMA, rootSchema);
 			
 			List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
 			if(new_items != null)
@@ -6833,7 +6968,7 @@ public class ResourcesAction
 
 		if(item.isStructuredArtifact())
 		{
-			SchemaBean bean = (SchemaBean) state.getAttribute(STATE_STRUCT_OBJ_SCHEMA);
+			SchemaBean bean = (SchemaBean) current_stack_frame.get(STATE_STACK_STRUCT_OBJ_SCHEMA);
 			SaveArtifactAttempt attempt = new SaveArtifactAttempt(item, bean.getSchema());
 			validateStructuredArtifact(attempt);
 	
@@ -7024,17 +7159,8 @@ public class ResourcesAction
 		{
 			// modify properties sucessful
 			String mode = (String) state.getAttribute(STATE_MODE);
-			if(MODE_HELPER.equals(mode))
-			{
-				cleanupState(state);
-				state.setAttribute(STATE_RESOURCES_MODE, MODE_ATTACHMENT_DONE);
-			}
-			else
-			{
-				state.setAttribute (STATE_MODE, MODE_LIST);
-			}
-			// clear state variables
-			// initPropertiesContext(state);
+			popFromStack(state);
+			resetCurrentMode(state);
 		}	//if-else
 		else
 		{
@@ -7750,26 +7876,6 @@ public class ResourcesAction
 	}	// doUnexpandall
 	
 	/**
-	* Build the menu.
-	*/
-	private void buildListMenu (	VelocityPortlet portlet,
-									Context context,
-									RunData data,
-									SessionState state)
-	{
-		context.put("tlang",rb);
-
-		// build a test menu
-		Menu bar = new Menu (portlet, data, "ResourcesAction");
-		bar.add ( new MenuEntry (rb.getString("overview"),false,"") );
-		bar.add( new MenuEntry(rb.getString("permissions"), "doPermissions") );
-
-		context.put (Menu.CONTEXT_MENU, bar);
-		context.put (Menu.CONTEXT_ACTION, state.getAttribute(STATE_ACTION));
-        
-	}	// buildListMenu
-
-	/**
 	* Populate the state object, if needed - override to do something!
 	*/
 	protected void initState(SessionState state, VelocityPortlet portlet, JetspeedRunData data)
@@ -7826,7 +7932,6 @@ public class ResourcesAction
 		state.removeAttribute(STATE_STACK_STRUCTOBJ_TYPE);
 		state.removeAttribute(STATE_STACK_STRUCTOBJ_TYPE_READONLY);
 		state.removeAttribute(STATE_STRUCTOBJ_HOMES);
-		state.removeAttribute(STATE_STRUCT_OBJ_SCHEMA);
 		// popFromStack(state);
 		state.removeAttribute(STATE_INITIALIZED);
 		state.removeAttribute(VelocityPortletPaneledAction.STATE_HELPER);
