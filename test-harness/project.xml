@@ -376,7 +376,17 @@
             <artifactId>sakai-sections-comp-shared-data-sakai21</artifactId>
             <version>${sakai.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-rwiki-service</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-rwiki-model</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
+        
     </dependencies>
 
     <developers>
