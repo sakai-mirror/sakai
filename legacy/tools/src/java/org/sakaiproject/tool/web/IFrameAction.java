@@ -73,6 +73,9 @@ public class IFrameAction extends VelocityPortletPaneledAction
 
 	/** The height, in state, config and context. */
 	protected final static String HEIGHT = "height";
+	
+	/** The custom height from user input **/
+	protected final static String CUSTOM_HEIGHT = "customNumberField";
 
 	/** The special attribute, in state, config and context. */
 	protected final static String SPECIAL = "special";
@@ -93,6 +96,14 @@ public class IFrameAction extends VelocityPortletPaneledAction
 	 * Whether to pass through the PID to the URL displayed in the IFRAME. This enables integration in that the application in the IFRAME will know what site and tool it is part of.
 	 */
 	private final static String PASS_PID = "passthroughPID";
+	
+	/** Valid digits for custom height from user input **/
+	protected static final String VALID_DIGITS = "0123456789";
+	
+	/** Choices of pixels displayed in the customization page */
+	public String[] ourPixels = {"300px", "450px", "600px", "750px", "900px", "1200px", "1800px", "2400px"};
+	
+
 
 	/**
 	 * Populate the state with configuration settings
@@ -343,7 +354,24 @@ public class IFrameAction extends VelocityPortletPaneledAction
 			}
 		}
 
-		context.put(HEIGHT, state.getAttribute(HEIGHT));
+		boolean selected = false;
+		String height = state.getAttribute(HEIGHT).toString();
+		for (int i = 0; i < ourPixels.length; i++)
+		{
+			if (height.equals(ourPixels[i]))
+			{
+				selected = true;
+				continue;
+			}
+		}
+		if (!selected)
+		{
+			String[] strings = height.trim().split("px");
+			context.put("custom_height", strings[0]);
+			height = rb.getString("gen.heisomelse");
+		}
+		context.put(HEIGHT, height);
+		
 		context.put(TITLE, state.getAttribute(TITLE));
 		context.put("tlang", rb);
 
@@ -434,7 +462,20 @@ public class IFrameAction extends VelocityPortletPaneledAction
 
 		// height
 		String height = data.getParameters().getString(HEIGHT);
-		//state.setAttribute(HEIGHT, height);
+		
+		if (height.equals(rb.getString("gen.heisomelse")))
+		{
+			String customHeight = data.getParameters().getString(CUSTOM_HEIGHT);
+			state.setAttribute(HEIGHT, customHeight);
+			if (!checkDigits(customHeight))
+			{
+				addAlert(state,rb.getString("java.alert.pleentval"));
+				return;
+			}
+			height = customHeight + "px";
+		}
+
+		state.setAttribute(HEIGHT, height);
 		placement.getPlacementConfig().setProperty(HEIGHT, height);
 
 		// title
@@ -494,5 +535,21 @@ public class IFrameAction extends VelocityPortletPaneledAction
 
 		// we are done with customization... back to the main mode
 		state.removeAttribute(STATE_MODE);
+		state.removeAttribute(STATE_MESSAGE);
+	}
+	
+	/**
+	 * Check if the string from user input contains any characters other than digits
+	 * @param height String from user input
+	 * @return True if all are digits. Or False if any is not digit.
+	 */
+	private boolean checkDigits(String height)
+	{
+		for (int i=0; i<height.length(); i++)
+		{
+			if (VALID_DIGITS.indexOf(height.charAt(i)) == -1)
+					return false;
+		}
+		return true;
 	}
 }
