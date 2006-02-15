@@ -97,8 +97,9 @@ public class EntityManagerComponent implements EntityManager
 	/**
 	 * @inheritDoc
 	 */
-	public void registerEntityProducer(EntityProducer manager)
+	public void registerEntityProducer(EntityProducer manager, String referenceRoot)
 	{
+		// TODO: referenceRoot
 		m_producers.add(manager);
 	}
 

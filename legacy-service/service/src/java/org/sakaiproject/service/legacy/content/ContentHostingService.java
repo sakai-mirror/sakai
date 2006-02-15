@@ -121,6 +121,9 @@ public interface ContentHostingService extends EntityProducer
 	/** Security function for those who may maintain dropboxes. */
 	public static final String EVENT_DROPBOX_MAINTAIN = "dropbox.maintain";
 
+	/** Property name on a Resource that will cause getUrl() and getRefernce() to return an alternal root reference. */
+	public static final String PROP_ALTERNATE_REFERENCE = "sakai:reference-root";
+
    /**
     * For a given id, return its UUID (creating it if it does not already exist)
     */

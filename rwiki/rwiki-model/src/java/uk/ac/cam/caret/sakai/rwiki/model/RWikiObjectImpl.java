@@ -751,6 +751,22 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		return this.getName();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public String getReference(String rootProperty)
+	{
+		return getReference();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public String getUrl(String rootProperty)
+	{
+		return getUrl();
+	}
+
 	public Element toXml(Document doc, Stack stack) {
 		Element wikipage = doc.createElement("wikipage");
 

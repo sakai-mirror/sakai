@@ -417,7 +417,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			}
 
 			// register as an entity producer
-			m_entityManager.registerEntityProducer(this);
+			m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
 
 			// register functions
 			FunctionManager.registerFunction(EVENT_RESOURCE_ADD);
@@ -4758,6 +4758,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		}
 
 		// for content hosting resources and collections - full url
+		// TODO: really?  would this ever be used? -ggolden
 		else if (reference.startsWith(getUrl("")))
 		{
 			// parse out the local resource id
@@ -6309,6 +6310,22 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		} // getReference
 
 		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
+
+		/**
 		 * Access the id of the resource.
 		 * 
 		 * @return The id.
@@ -6817,26 +6834,57 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		} // finalize
 
 		/**
-		 * Access the URL which can be used to access the resource.
-		 * 
-		 * @return The URL which can be used to access the resource.
+		 * @inheritDoc
 		 */
 		public String getUrl()
 		{
-			return getAccessPoint(false) + m_id;
-
-		} // getUrl
+			return getUrl(PROP_ALTERNATE_REFERENCE);
+		}
 
 		/**
-		 * Access the internal reference which can be used to access the resource from within the system.
-		 * 
-		 * @return The the internal reference which can be used to access the resource from within the system.
+		 * @inheritDoc
 		 */
 		public String getReference()
 		{
-			return getAccessPoint(true) + m_id;
+			return getReference(PROP_ALTERNATE_REFERENCE);
+		}
 
-		} // getReference
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return m_serverConfigurationService.getAccessUrl() + getAlternateReferenceRoot(rootProperty) + m_relativeAccessPoint + m_id;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getAlternateReferenceRoot(rootProperty) + m_relativeAccessPoint + m_id;
+		}
+
+		/**
+		 * Compute an alternate root for a reference, based on the value of the specified property.
+		 * @param rootProperty The property name.
+		 * @return The alternate root, or "" if there is none.
+		 */
+		protected String getAlternateReferenceRoot(String rootProperty)
+		{
+			// null means don't do this
+			if (rootProperty == null) return "";
+
+			// find the property - "" if not found
+			String alternateRoot = StringUtil.trimToNull(getProperties().getProperty(PROP_ALTERNATE_REFERENCE));
+			if (alternateRoot == null) return "";
+
+			// make sure it start with a separator and does not end with one
+			if (!alternateRoot.startsWith(SEPARATOR)) alternateRoot = SEPARATOR + alternateRoot;
+			if (alternateRoot.endsWith(SEPARATOR)) alternateRoot = alternateRoot.substring(0, alternateRoot.length() - SEPARATOR.length());
+			
+			return alternateRoot;
+		}
 
 		/**
 		 * @inheritDoc

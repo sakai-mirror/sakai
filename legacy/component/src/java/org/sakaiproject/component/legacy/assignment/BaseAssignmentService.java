@@ -480,7 +480,7 @@ public abstract class BaseAssignmentService
 		}
 
 		// register as an entity producer
-		m_entityManager.registerEntityProducer(this);
+		m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
 
 		// register functions
 		FunctionManager.registerFunction(SECURE_ADD_ASSIGNMENT);
@@ -3651,6 +3651,22 @@ public abstract class BaseAssignmentService
 		}   // getReference
 	
 		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
+
+		/**
 		* Access the resource's properties.
 		* @return The resource's properties.
 		*/
@@ -4507,6 +4523,22 @@ public abstract class BaseAssignmentService
 
 		}   // getReference
 		
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
+
 		/**
 		* Access the resource's properties.
 		* @return The resource's properties.
@@ -5553,6 +5585,22 @@ public abstract class BaseAssignmentService
 			return submissionReference(m_context, m_id, m_assignment);
 
 		}   // getReference
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
 
 		/**
 	 	* Access the id of the resource.

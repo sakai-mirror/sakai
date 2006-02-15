@@ -108,7 +108,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public void init() {
 
-		EntityManager.registerEntityProducer(this);
+		EntityManager.registerEntityProducer(this, REFERENCE_ROOT);
 	}
 
 	/*

@@ -556,6 +556,22 @@ public class BaseSite implements Site
 	/**
 	 * @inheritDoc
 	 */
+	public String getReference(String rootProperty)
+	{
+		return getReference();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public String getUrl(String rootProperty)
+	{
+		return getUrl();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public ResourceProperties getProperties()
 	{
 		// if lazy, resolve

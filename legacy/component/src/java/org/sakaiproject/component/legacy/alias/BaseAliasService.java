@@ -333,7 +333,7 @@ public abstract class BaseAliasService
 			}
 
 			// register as an entity producer
-			m_entityManager.registerEntityProducer(this);
+			m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
 
 			// register functions
 			FunctionManager.registerFunction(SECURE_ADD_ALIAS);
@@ -1213,6 +1213,22 @@ public abstract class BaseAliasService
 			return aliasReference(m_id);
 
 		}   // getReference
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
 
 		/**
 		* Access the resources's properties.

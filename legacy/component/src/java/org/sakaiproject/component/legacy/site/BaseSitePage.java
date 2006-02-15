@@ -600,6 +600,22 @@ public class BaseSitePage implements SitePage, Identifiable
 	/**
 	 * @inheritDoc
 	 */
+	public String getReference(String rootProperty)
+	{
+		return getReference();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public String getUrl(String rootProperty)
+	{
+		return getUrl();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public String getId()
 	{
 		return m_id;

@@ -52,13 +52,13 @@ public class EntityManager
 	private static org.sakaiproject.service.legacy.entity.EntityManager m_instance = null;
 
 
-	public static void registerEntityProducer(org.sakaiproject.service.legacy.entity.EntityProducer param0)
+	public static void registerEntityProducer(org.sakaiproject.service.legacy.entity.EntityProducer param0, java.lang.String param1)
 	{
 		org.sakaiproject.service.legacy.entity.EntityManager service = getInstance();
 		if (service == null)
 			return;
 
-		service.registerEntityProducer(param0);
+		service.registerEntityProducer(param0, param1);
 	}
 
 	public static java.util.List getEntityProducers()

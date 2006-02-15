@@ -223,6 +223,22 @@ public class GenericCalendarImporter implements CalendarImporterService
 			return null;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
+
 		/* (non-Javadoc)
 		 * @see org.sakaiproject.service.legacy.entity.Resource#getId()
 		 */

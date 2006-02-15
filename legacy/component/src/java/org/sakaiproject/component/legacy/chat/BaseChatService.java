@@ -87,6 +87,9 @@ public abstract class BaseChatService
 		FunctionManager.registerFunction(eventId(SECURE_ADD));
 		FunctionManager.registerFunction(eventId(SECURE_REMOVE_ANY));
 		FunctionManager.registerFunction(eventId(SECURE_REMOVE_OWN));
+
+		// entity producer registration
+		m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
 	}
 
 	/*******************************************************************************

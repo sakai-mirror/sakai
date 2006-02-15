@@ -242,7 +242,7 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 			m_storage.open();
 
 			// register as an entity producer
-			m_entityManager.registerEntityProducer(this);
+			m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
 
 			// register functions
 			FunctionManager.registerFunction(SECURE_ADD_PREFS);
@@ -871,6 +871,22 @@ public abstract class BasePreferencesService implements PreferencesService, Stor
 			return preferencesReference(m_id);
 
 		} // getReference
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
 
 		/**
 		* Access the resources's properties.

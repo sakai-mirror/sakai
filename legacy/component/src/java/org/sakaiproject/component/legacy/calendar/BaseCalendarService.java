@@ -455,7 +455,7 @@ public abstract class BaseCalendarService
 		}
 
 		// register as an entity producer
-		m_entityManager.registerEntityProducer(this);
+		m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
 		
 		// register functions
 		FunctionManager.registerFunction(EVENT_ADD_CALENDAR);
@@ -1949,6 +1949,22 @@ public abstract class BaseCalendarService
 			return calendarReference(m_context, m_id);
 
 		} // getReference
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
 
 		/**
 		* Access the collection's properties.
@@ -3459,6 +3475,22 @@ public abstract class BaseCalendarService
 			return eventReference(m_calendar.getContext(), m_calendar.getId(), getId());
 
 		} // getReference
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
 
 		/**
 		* Access the event's properties.

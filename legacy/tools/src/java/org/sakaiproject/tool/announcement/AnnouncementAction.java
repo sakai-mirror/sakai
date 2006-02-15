@@ -437,6 +437,22 @@ extends PagedResourceActionII
 			return announcementMesssage.getReference();
 		}
 
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
+
 		/* (non-Javadoc)
 		 * @see org.chefproject.core.Resource#getId()
 		 */

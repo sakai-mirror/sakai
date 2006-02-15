@@ -343,7 +343,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			}
 
 			// register as an entity producer
-			m_entityManager.registerEntityProducer(this);
+			m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
 
 			// register functions
 			FunctionManager.registerFunction(SECURE_ADD_USER);
@@ -1688,6 +1688,22 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 			return userReference(m_id);
 
 		} // getReference
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
 
 		/**
 		* Access the resources's properties.

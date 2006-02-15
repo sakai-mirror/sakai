@@ -109,6 +109,9 @@ public abstract class BaseDiscussionService
 		FunctionManager.registerFunction(eventId(SECURE_REMOVE_OWN));
 		FunctionManager.registerFunction(eventId(SECURE_UPDATE_ANY));
 		FunctionManager.registerFunction(eventId(SECURE_UPDATE_OWN));
+
+		// entity producer registration
+		m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
 	}
 
 	/*******************************************************************************

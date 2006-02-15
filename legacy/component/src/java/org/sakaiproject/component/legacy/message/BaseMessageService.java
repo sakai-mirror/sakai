@@ -227,8 +227,7 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			m_logger.warn(this +".init(): ", t);
 		}
 
-		// register as an entity producer
-		m_entityManager.registerEntityProducer(this);
+		// entity producer registration in the extension services
 		
 		// Functions are registered in the extension services
 
@@ -1847,6 +1846,22 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 		} // getReference
 
 		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
+
+		/**
 		* Access the channel's properties.
 		* @return The channel's properties.
 		*/
@@ -2960,6 +2975,22 @@ public abstract class BaseMessageService implements MessageService, StorageUser,
 			return messageReference(m_channel.getContext(), m_channel.getId(), getId());
 
 		} // getReference
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
 
 		/**
 		* Access the channel's properties.

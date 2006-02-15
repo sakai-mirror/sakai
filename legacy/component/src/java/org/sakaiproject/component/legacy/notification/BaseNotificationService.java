@@ -1130,6 +1130,22 @@ public abstract class BaseNotificationService implements NotificationService, Ob
 		} // getReference
 
 		/**
+		 * @inheritDoc
+		 */
+		public String getReference(String rootProperty)
+		{
+			return getReference();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		public String getUrl(String rootProperty)
+		{
+			return getUrl();
+		}
+
+		/**
 		* Access the id of the resource.
 		* @return The id.
 		*/

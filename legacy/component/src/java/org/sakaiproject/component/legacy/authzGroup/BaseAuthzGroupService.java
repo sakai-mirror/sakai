@@ -261,7 +261,7 @@ public abstract class BaseAuthzGroupService implements AuthzGroupService, Storag
 			m_storage.open();
 
 			// register as an entity producer
-			m_entityManager.registerEntityProducer(this);
+			m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
 
 			// register functions
 			FunctionManager.registerFunction(SECURE_ADD_AUTHZ_GROUP);

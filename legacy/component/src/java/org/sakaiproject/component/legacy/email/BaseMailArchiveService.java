@@ -125,6 +125,9 @@ public abstract class BaseMailArchiveService extends BaseMessageService implemen
 			FunctionManager.registerFunction(eventId(SECURE_ADD));
 			FunctionManager.registerFunction(eventId(SECURE_REMOVE_ANY));
 
+			// entity producer registration
+			m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
+
 			m_logger.debug(this +".init()");
 		}
 		catch (Throwable t)
