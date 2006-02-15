@@ -78,6 +78,42 @@ public class SakaiSite {
 	return siteList;
     }
 
+    public String joinAllSites(String id)
+	throws AxisFault 
+    {
+	Session s = establishSession(id);
+
+	List openSites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.JOINABLE,
+		null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
+	if ( openSites == null ) 
+	{
+		return "no sites to join";
+	}
+
+	int count = 0;
+	for ( Iterator i = openSites.iterator(); i.hasNext(); ) 
+	{
+		Site theSite = (Site) i.next();
+		// System.out.println("Site "+theSite.getId());
+
+		// Ignore the mercury site
+		if ( "mercury".equalsIgnoreCase(theSite.getId()) ) continue;
+
+		// join the site
+		try
+		{
+			SiteService.join(theSite.getId());
+			count++;
+		}
+		catch (Exception  e)
+		{
+		    System.out.println("SakaiSite.joinAllSites: Failure joining site "+ theSite.getId()+" error "+e);
+		}
+	}
+	return count + " sites joined.";
+
+    }
+
     public String getSitesDom(String id, String search, int first, int last) 
 	throws AxisFault 
     {
