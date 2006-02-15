@@ -409,10 +409,12 @@ public class BaseDbFlatStorage
 			order = m_resourceTableName + "." + m_resourceTableSortField1
 					+ (m_resourceTableSortField2 == null ? "" : "," + m_resourceTableName + "." + m_resourceTableSortField2);
 		}
+      if(where == null)
+         where = "";
 
 		// read all resources from the db with a where
 		String sql = "select " + fieldList(m_resourceTableReadFields, null) + " from " + m_resourceTableName
-				+ ((join == null) ? "" : ("," + join)) + " where " + where + " order by " + order;
+				+ ((join == null) ? "" : ("," + join)) + ((where.length() > 0)? (" where " + where) : "") + " order by " + order;
 
 		List all = m_sql.dbRead(sql, values, m_reader);
 
