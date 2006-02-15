@@ -103,7 +103,7 @@
     <property name="authZPrefix" ><value>/wiki</value></property>
     <property name="anchorLinkFormat" ><value>/access/wiki{0}.html#{1}</value></property>
     <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
-    <property name="hrefTagFormat" ><value>&lt; a href=\"{0}\" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
   </bean>
   <bean id="rwikiODFHandler"
@@ -118,7 +118,7 @@
     <property name="authZPrefix" ><value>/wiki</value></property>
     <property name="anchorLinkFormat" ><value>/access/wiki{0}.html#{1}</value></property>
     <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
-    <property name="hrefTagFormat" ><value>&lt; a href=\"{0}\" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
   </bean>
   <bean id="rwikiRSSHandler"
@@ -133,7 +133,7 @@
     <property name="authZPrefix" ><value>/wiki</value></property>
     <property name="anchorLinkFormat" ><value>/access/wiki{0}.html#{1}</value></property>
     <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
-    <property name="hrefTagFormat" ><value>&lt; a href=\"{0}\" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
   </bean>
   

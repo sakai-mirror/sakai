@@ -162,13 +162,17 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 		if (!(entity instanceof RWikiObject))
 			return;
 
+		/*
 		Document doc = Xml.createDocument();
 		Stack stack = new Stack();
 		Element root = doc.createElement("entity");
-		Date now = new Date();
 		doc.appendChild(root);
 		stack.push(root);
 		root.setAttribute("date", now.toString());
+		Date now = new Date();
+		*/
+
+		
 		String user = request.getRemoteUser();
 		try {
 				PrintWriter pw = res.getWriter();
@@ -373,7 +377,34 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			InputSource ins = new InputSource(new StringReader(renderedPage));
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 			xmlReader.setContentHandler(proxy);
-			xmlReader.parse(ins);
+			try {
+				xmlReader.parse(ins);
+			} catch ( Throwable ex ) {
+
+				SimpleCoverage.cover("Failed to parse ::\n"+renderedPage+"\n:: from ::\n"+rwo.getContent());
+				Attributes dummyAttributes = new AttributesImpl();
+				ch.startElement(SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_ERROR,
+						SchemaNames.EL_NSXMLPROPERTIES, dummyAttributes);
+				ch.startElement(SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_ERRORDESC,
+						SchemaNames.EL_NSXMLPROPERTIES, dummyAttributes);
+				String s = "The Rendered Content did not parse correctly "+ex.getMessage();
+				ch.characters(s.toCharArray(),0,s.length());
+				ch.endElement(SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_ERRORDESC,
+						SchemaNames.EL_NSXMLSERVICE);
+				ch.startElement(SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_RAWCONTENT,
+						SchemaNames.EL_NSXMLPROPERTIES, dummyAttributes);
+				ch.characters(renderedPage.toCharArray(),0,renderedPage.length());
+				ch.endElement(SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_RAWCONTENT,
+						SchemaNames.EL_NSXMLSERVICE);
+				ch.endElement(SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_ERROR,
+						SchemaNames.EL_NSXMLSERVICE);
+			}
 
 		}
 	}
@@ -384,28 +415,23 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * 
 	 */
 	public Collection getAuthzGroups(Reference ref) {
-		SimpleCoverage.cover();
 		// use the resources realm, all container (folder) realms
 
 		Collection rv = new Vector();
 
 		try {
 			// try the resource, all the folders above it (don't include /)
-			SimpleCoverage.cover();
 			String paths[] = StringUtil.split(ref.getId(), Entity.SEPARATOR);
 			boolean container = ref.getId().endsWith(Entity.SEPARATOR);
 			if (paths.length > 1) {
 
-				SimpleCoverage.cover();
 				String root = authZPrefix + Entity.SEPARATOR + paths[1]
 						+ Entity.SEPARATOR;
 				rv.add(root);
 
 				for (int next = 2; next < paths.length; next++) {
-					SimpleCoverage.cover();
 					root = root + paths[next];
 					if ((next < paths.length - 1) || container) {
-						SimpleCoverage.cover();
 						root = root + Entity.SEPARATOR;
 					}
 					rv.add(root);
@@ -416,16 +442,13 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			// Workspace site
 			String parts[] = StringUtil.split(ref.getId(), Entity.SEPARATOR);
 			if ((parts.length > 3) && (parts[1].equals("group-user"))) {
-				SimpleCoverage.cover();
 				rv.add(SiteService.siteReference(SiteService
 						.getUserSiteId(parts[3])));
 			}
 
 			// site
-			SimpleCoverage.cover();
 			ref.addSiteContextAuthzGroup(rv);
 		} catch (Throwable e) {
-			SimpleCoverage.cover();
 			logger.error(this + " Problem ", e);
 		}
 

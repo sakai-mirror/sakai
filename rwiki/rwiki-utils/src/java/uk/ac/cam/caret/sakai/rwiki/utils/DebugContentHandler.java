@@ -46,12 +46,10 @@ public class DebugContentHandler implements ContentHandler {
 	}
 
 	public void startDocument() throws SAXException {
-		SimpleCoverage.cover("End Doc");
 		ch.startDocument();
 	}
 
 	public void endDocument() throws SAXException {
-		SimpleCoverage.cover("Start Doc");
 		ch.endDocument();
 	}
 

@@ -178,5 +178,11 @@ public class SchemaNames {
      */
     public static final String EL_ENTITY=  "entity";
 
+	public static final String EL_ERROR = "error";
+
+	public static final String EL_ERRORDESC = "error-description";
+
+	public static final String EL_RAWCONTENT = "wiki-content";
+
 
 }

@@ -7,7 +7,6 @@ import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.Reference;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.EntityHandler;
-import uk.ac.cam.caret.sakai.rwiki.utils.SimpleCoverage;
 
 /**
  * 
@@ -37,12 +36,10 @@ public abstract class BaseEntityHandlerImpl implements EntityHandler {
 	 * TODO
 	 */
 	public void setReference(String majorType, Reference ref, String reference) {
-		SimpleCoverage.cover("Setting reference for "+reference);
 		Decoded decoded = decode(reference);
 		if ( decoded != null ) {
 			ref.set(majorType,minorType,decoded.getId(),decoded.getContainer(),decoded.getContext());
 		} else {
-			SimpleCoverage.cover();
 			throw new RuntimeException(this
 					+ " Failed to setReference in EntityHelper " + majorType
 					+ ":" + minorType

@@ -196,7 +196,8 @@ RWikiCurrentObjectDao, ObjectProxy {
 			rwho.setRwikiobjectid(impl.getId());
 			historyDAO.update(rwho);
 		}
-		// remember to save the content
+		// remember to save the content, and make certain the contentDAO is set first
+		impl.setRwikiObjectContentDao(contentDAO);
 		impl.getRWikiObjectContent().setRwikiid(rwo.getId());
 		contentDAO.update(impl.getRWikiObjectContent());
 		

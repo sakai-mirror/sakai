@@ -74,7 +74,6 @@ import uk.ac.cam.caret.sakai.rwiki.service.exception.ReadPermissionException;
 import uk.ac.cam.caret.sakai.rwiki.service.exception.UpdatePermissionException;
 import uk.ac.cam.caret.sakai.rwiki.service.exception.VersionException;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
-import uk.ac.cam.caret.sakai.rwiki.utils.SimpleCoverage;
 import uk.ac.cam.caret.sakai.rwiki.utils.TimeLogger;
 
 /**
@@ -108,8 +107,6 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * 
 	 */
 	public void init() {
-		SimpleCoverage
-				.cover(" Registering Service component as a entity producer");
 
 		EntityManager.registerEntityProducer(this);
 	}
@@ -708,7 +705,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * 
 	 */
 	public boolean willArchiveMerge() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -716,7 +713,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * 
 	 */
 	public boolean willImport() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -758,7 +755,6 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public String archive(String siteId, Document doc, Stack stack,
 			String archivePath, List attachments) {
-		SimpleCoverage.cover();
 		// prepare the buffer for the results log
 		StringBuffer results = new StringBuffer();
 
@@ -768,12 +764,11 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		stack.push(element);
 
 		try {
-			SimpleCoverage.cover();
 			List l = cdao.findRWikiSubPages("/site/" + siteId);
 			for (Iterator i = l.iterator(); i.hasNext();) {
-				SimpleCoverage.cover();
 				RWikiObject rwo = (RWikiObject) i.next();
 				results.append("Archiving " + rwo.getName() + "\n");
+				rwo.toXml(doc, stack);
 				List lh = this.findRWikiHistoryObjects(rwo);
 				for (Iterator ih = lh.iterator(); ih.hasNext();) {
 					RWikiObject rwoh = (RWikiObject) ih.next();
@@ -781,16 +776,13 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 							+ rwoh.getVersion() + "\n");
 					rwoh.toXml(doc, stack);
 				}
-				rwo.toXml(doc, stack);
 			}
 		} catch (Exception any) {
-			SimpleCoverage.cover();
 			results.append("Error archiving pages from site: " + siteId + " "
 					+ any.toString() + "\n");
 		}
 
 		stack.pop();
-		SimpleCoverage.cover();
 
 		return results.toString();
 	}
@@ -798,24 +790,28 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * Perform a merge operation with versioning if the page exists in the
-	 * space, rejecting older version
+	 * The archive contains the current version, followed by historical versions
+	 * If any of these aer out of order, only versions upto the first
+	 * encoundered version will be merged. If the page exists, then only version
+	 * that dont exist, and are not already present will be added in practice
+	 * this means all the pages in the set will be rejected.
+	 * 
+	 * 
 	 */
 	public String merge(String siteId, Element root, String archivePath,
 			String fromSiteId, Map attachmentNames, Map userIdTrans,
 			Set userListAllowImport) {
 		// stolen :) from BaseContentService
 		// get the system name: FROM_WT, FROM_CT, FROM_SAKAI
-		SimpleCoverage.cover(" String to perform Merge");
-		String source = "";
+		//String source = null;
 		// root: <service> node
-		Node parent = root.getParentNode(); // parent: <archive> node containing
+		//Node parent = root.getParentNode(); // parent: <archive> node containing
 		// "system"
-		if (parent.getNodeType() == Node.ELEMENT_NODE) {
-			SimpleCoverage.cover();
-			Element parentEl = (Element) parent;
-			source = parentEl.getAttribute("system");
-		}
+		//if (parent.getNodeType() == Node.ELEMENT_NODE) {
+		//	Element parentEl = (Element) parent;
+		//	source = parentEl.getAttribute("system");
+		//}
+		String user = SessionManager.getCurrentSessionUserId();
 
 		// prepare the buffer for the results log
 		StringBuffer results = new StringBuffer();
@@ -823,30 +819,103 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		NodeList children = root.getChildNodes();
 		final int length = children.getLength();
 		for (int i = 0; i < length; i++) {
-			SimpleCoverage.cover();
 			Node child = children.item(i);
 			if (child.getNodeType() != Node.ELEMENT_NODE)
 				continue;
 			Element element = (Element) child;
+
 			try {
-				SimpleCoverage.cover();
-				RWikiCurrentObjectImpl rwo = new RWikiCurrentObjectImpl();
 				String defaultRealm = SiteService.getSite(siteId)
 						.getReference();
-				rwo.fromXml(element, defaultRealm);
-				String newUser = (String) userIdTrans.get(rwo.getOwner());
-				if (newUser == null)
-					newUser = rwo.getOwner();
-				update(rwo.getName(), newUser, rwo.getRealm(),
-						rwo.getVersion(), rwo.getContent(), rwo
-								.getPermissions());
-				// this will create updates
+
+
+				RWikiCurrentObjectImpl archiverwo = new RWikiCurrentObjectImpl();
+				archiverwo.fromXml(element, defaultRealm);
+				
+				// clear the ID to remove hibernate session issues and recreate a new id issues
+				archiverwo.setId(null);
+
+				String pageName = archiverwo.getName();
+
+
+				if (exists(pageName, defaultRealm)) {
+					// page exists, add to history, if the version does not
+					// exist
+					RWikiObject rwo = getRWikiObject(pageName, user,
+							defaultRealm);
+					if (archiverwo.getRevision().intValue() >= rwo
+							.getRevision().intValue()) {
+						results
+								.append("Page ")
+								.append(rwo.getName())
+								.append(" already exists with revision ")
+								.append(rwo.getRevision())
+								.append(
+										" which is earlier than the revision form the archive"
+												+ " therefore I have rejected the merge from the archive,"
+												+ " please report this a bug to JIRA if you feel that"
+												+ " this functionality is required \n");
+					} else {
+						RWikiHistoryObject rwho = getRWikiHistoryObject(rwo,
+								archiverwo.getRevision().intValue());
+						if (rwho == null) {
+							rwho = hdao.createRWikiHistoryObject(archiverwo);
+							// connect to the correct master object
+							rwho.setRwikiobjectid(rwo.getId());
+							// save
+							hdao.update(rwho);
+							
+							rwho = getRWikiHistoryObject(rwo,
+									archiverwo.getRevision().intValue());
+							results.append("Created ").append(rwho.getName())
+									.append(" revision ").append(
+											rwho.getRevision()).append(
+											" with version ").append(
+											rwho.getVersion().getTime())
+									.append(" date ").append(rwho.getVersion())
+									.append("\n");
+						} else {
+							results
+									.append("Page ")
+									.append(rwo.getName())
+									.append(" already exists with revision ")
+									.append(rwo.getRevision())
+									.append(
+											" therefore I have rejected the merge of"
+													+ " corresponding revision from the archive,"
+													+ " please report this a bug to JIRA if you feel that"
+													+ " this functionality is required \n");
+						}
+					}
+
+				} else {
+					// page does not exist, create
+					String newUser = (String) userIdTrans.get(archiverwo
+							.getOwner());
+					if (newUser == null)
+						newUser = archiverwo.getOwner();
+
+					// go direct, if we use the utility methods, all sorts of
+					// things get reset, which is bad
+					cdao.update(archiverwo, null);
+
+					RWikiObject savedrwo = getRWikiObject(archiverwo.getName(),
+							newUser, archiverwo.getRealm());
+					results.append("Created ").append(savedrwo.getName())
+							.append(" revision ")
+							.append(savedrwo.getRevision()).append(
+									" with version ").append(
+									savedrwo.getVersion().getTime()).append(
+									" date ").append(savedrwo.getVersion())
+							.append("\n");
+				}
 			} catch (Exception ex) {
-				log.error("Failed to add page ",ex);
-				SimpleCoverage.cover();
+				log.error("Failed to add page ", ex);
 				results.append("Failed to add ").append(
-						element.getAttribute("id")).append(" because of ")
-						.append(ex.getMessage()).append("\n");
+						element.getAttribute("page-name")).append(" revision ")
+						.append(element.getAttribute("revision")).append(
+								" because  ").append(ex.getMessage()).append(
+								"\n");
 
 			}
 		}
@@ -854,8 +923,8 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * 
+	 * {@inheritDoc} Only the current version of a page is imported, history is
+	 * left behind.
 	 */
 	public void importEntities(String fromContext, String toContext, List ids) {
 		if (fromContext.equals(toContext))
@@ -867,7 +936,6 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			toContext = toContext + "/";
 		}
 		String user = SessionManager.getCurrentSessionUserId();
-		SimpleCoverage.cover();
 		List pages = findRWikiSubPages(fromContext);
 
 		for (Iterator i = pages.iterator(); i.hasNext();) {
@@ -914,7 +982,6 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		EntityHandler eh = findEntityReferenceMatch(reference);
 		if (eh == null)
 			return false;
-		SimpleCoverage.cover();
 		eh.setReference(SERVICE_NAME, ref, reference);
 		return true;
 	}
@@ -925,11 +992,9 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public String getEntityDescription(Reference ref) {
 		checkReference(ref);
-		SimpleCoverage.cover();
 		EntityHandler eh = findEntityHandler(ref);
 
 		Entity e = (Entity) getEntity(ref, eh);
-		SimpleCoverage.cover();
 		return eh.getDescription(e);
 	}
 
@@ -938,10 +1003,8 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public ResourceProperties getEntityResourceProperties(Reference ref) {
 		checkReference(ref);
-		SimpleCoverage.cover();
 		EntityHandler eh = findEntityHandler(ref);
 		Entity e = (Entity) getEntity(ref, eh);
-		SimpleCoverage.cover();
 		return eh.getProperties(e);
 	}
 
@@ -950,9 +1013,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public Entity getEntity(Reference ref) {
 		checkReference(ref);
-		SimpleCoverage.cover();
 		EntityHandler eh = findEntityHandler(ref);
-		SimpleCoverage.cover();
 		return getEntity(ref, eh);
 	}
 
@@ -964,10 +1025,8 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public String getEntityUrl(Reference ref) {
 		checkReference(ref);
-		SimpleCoverage.cover();
 		EntityHandler eh = findEntityHandler(ref);
 		Entity entity = (Entity) getEntity(ref, eh);
-		SimpleCoverage.cover();
 		return eh.getUrl(entity);
 	}
 
@@ -976,9 +1035,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public Collection getEntityAuthzGroups(Reference ref) {
 		checkReference(ref);
-		SimpleCoverage.cover();
 		EntityHandler eh = findEntityHandler(ref);
-		SimpleCoverage.cover();
 		return eh.getAuthzGroups(ref);
 	}
 
@@ -986,7 +1043,6 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * {@inheritDoc}
 	 */
 	public HttpAccess getHttpAccess() {
-		SimpleCoverage.cover();
 		return new HttpAccess() {
 			public void handleAccess(HttpServletRequest req,
 					HttpServletResponse res, Reference ref,
@@ -994,53 +1050,14 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 					throws PermissionException, IdUnusedException,
 					ServerOverloadException {
 				checkReference(ref);
-				SimpleCoverage.cover();
 				try {
 
-					SimpleCoverage.cover();
 					EntityHandler eh = findEntityHandler(ref);
-					SimpleCoverage.cover(" Finding entity based on id "
-							+ ref.getId());
 					Entity entity = (Entity) getEntity(ref, eh);
 
-					SimpleCoverage.cover("Starting to process output with "
-							+ entity);
 					eh.outputContent(entity, req, res);
-					SimpleCoverage.cover("Done Processing Output with "
-							+ entity);
-					/*
-					 * 
-					 * RWikiObject rwo = (RWikiObject) ref.getEntity(); // This
-					 * doesnt actually use request to get the current site //
-					 * reference String defaultRealm =
-					 * securityService.getRealm(req); String user =
-					 * ((HttpServletRequest) req).getRemoteUser();
-					 * 
-					 * String localSpace =
-					 * NameHelper.localizeSpace(rwo.getName(), defaultRealm); //
-					 * dont render the breadcrumbs PublicPageLinkRendererImpl
-					 * plr = new PublicPageLinkRendererImpl( localSpace,
-					 * defaultRealm, false);
-					 * 
-					 * String renderedPage = renderService.renderPage(rwo, user,
-					 * localSpace, plr);
-					 * 
-					 * res.setContentType("text/html; charset=UTF-8");
-					 * PrintWriter out = res.getWriter();
-					 * 
-					 * out .println("<html><head><style type=" + "\"" +
-					 * "text/css" + "\"" + ">body{margin:
-					 * 0px;padding:1em;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:80%;}</style>"); //
-					 * add the properties of the page in an XML island
-					 * out.println("</head><body>");
-					 * 
-					 * out.println(renderedPage);
-					 * 
-					 * out.println("</body></html>");
-					 */
 				} catch (Throwable t) {
 					t.printStackTrace();
-					SimpleCoverage.cover(t.getMessage());
 
 					throw new IdUnusedException(ref.getReference());
 				}
@@ -1058,16 +1075,12 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	private EntityHandler findEntityReferenceMatch(String reference) {
 		if (!reference.startsWith(REFERENCE_ROOT))
 			return null;
-		SimpleCoverage.covered();
 		for (Iterator i = m_handlers.keySet().iterator(); i.hasNext();) {
-			SimpleCoverage.covered();
 			String s = (String) i.next();
 			EntityHandler eh = (EntityHandler) m_handlers.get(s);
 			if (eh.matches(reference))
 				return eh;
-			SimpleCoverage.covered();
 		}
-		SimpleCoverage.covered();
 		return null;
 	}
 
@@ -1087,11 +1100,9 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * @return
 	 */
 	private EntityHandler findEntityHandler(Reference ref) {
-		SimpleCoverage.cover();
 		if (!SERVICE_NAME.equals(ref.getType()))
 			return null;
 		String subtype = ref.getSubType();
-		SimpleCoverage.cover("Getting Entity Handler for Subtype " + subtype);
 		return (EntityHandler) m_handlers.get(subtype);
 	}
 
@@ -1102,7 +1113,6 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * @return
 	 */
 	private Entity getEntity(Reference ref, EntityHandler eh) {
-		SimpleCoverage.cover();
 
 		RWikiObject rwo = this.getRWikiCurrentObjectDao().findByGlobalName(
 				ref.getId());
@@ -1113,9 +1123,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 					.getRWikiHistoryObject(rwo, revision);
 			if (hrwo != null) {
 				rwo = hrwo;
-			} else {
-				SimpleCoverage.cover("Revision does not exits, using current");
-			}
+			} 
 
 		}
 		return rwo;

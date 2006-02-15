@@ -61,7 +61,7 @@ public class ComponentPageLinkRenderImpl implements PageLinkRenderer {
     /**
      * HTML markup pattern
      */
-    private String urlFormat = "< a href=\"{0}\" >{1}</a>";
+    private String urlFormat = "<a href=\"{0}\" >{1}</a>";
     
     
     public ComponentPageLinkRenderImpl(String localSpace ) {

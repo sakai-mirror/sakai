@@ -6,7 +6,6 @@ package uk.ac.cam.caret.sakai.rwiki.tool;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.sakaiproject.service.framework.log.Logger;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -28,7 +27,7 @@ public class ModelMigrationContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent contextEvent) {
 		try {
 			WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(contextEvent.getServletContext());
-        	Logger log = (Logger)wac.getBean("rwiki-logger");
+        //	Logger log = (Logger)wac.getBean("rwiki-logger");
         	DataMigrationController dataMig = (DataMigrationController)wac.getBean("rwikiDataMigration");
         	dataMig.update();
 		} catch (Exception ex) {

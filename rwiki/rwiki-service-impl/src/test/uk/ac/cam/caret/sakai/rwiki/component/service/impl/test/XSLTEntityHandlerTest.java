@@ -3,7 +3,6 @@
  */
 package uk.ac.cam.caret.sakai.rwiki.component.service.impl.test;
 
-import java.io.PrintStream;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -37,7 +36,6 @@ public class XSLTEntityHandlerTest extends TestCase {
 		XSLTEntityHandler eh = new XSLTEntityHandler();
 		eh.setAccessURLStart("/wiki/");
 		eh.setMinorType(".html");
-		PrintStream out = System.out;
 		String[] test = {
 				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465/home/sdfsdf/sdfsdf/sdfsdfsd/sdfsdfsdf/sdfsdfdsf/sdfsdf,123123.html",
 				"/wikisite/c8e34826-dab9-466c-80a9-e8e9bed50465/home/sdfsdf/sdfsdf/sdfsdfsd/sdfsdfsdf/sdfsdfdsf/sdfsdf,123123.html",
@@ -116,7 +114,7 @@ public class XSLTEntityHandlerTest extends TestCase {
 		long start = System.currentTimeMillis();
 		int iters = 10000;
 		for (int i = 0; i < iters; i++) {
-			Decoded decoded = eh.decode(test[i % test.length]);
+			eh.decode(test[i % test.length]);
 
 		}
 		float timet = (float) 1.0*(System.currentTimeMillis() - start);
@@ -129,16 +127,7 @@ public class XSLTEntityHandlerTest extends TestCase {
 		String[] test = { "/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt"
 
 		};
-		String testxml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> "
-				+ " <project xmlns=\"http://maven.apache.org/POM/3.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-				+ " xsi:noNamespaceSchemaLocation=\"http://maven.apache.org/maven-v3_0_0.xsd\">"
-				+ "  <extend>${basedir}/../project.xml</extend>"
-				+ "  <pomVersion>3</pomVersion>"
-				+ "  <name>Sakai RWiki Service Impl</name>"
-				+ "  <groupId>sakaiproject</groupId>"
-				+ "  <artifactId>sakai-rwiki-service-impl</artifactId>"
-				+ "  <currentVersion>${sakai.version}</currentVersion>"
-				+ " </project> ";
+
 		RWikiCurrentObjectImpl rwco = new RWikiCurrentObjectImpl();
 		rwco.setContent("Some Content");
 		rwco.setGroupAdmin(false);

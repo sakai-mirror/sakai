@@ -7,11 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -19,28 +17,24 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.LogFactoryImpl;
-import org.sakaiproject.component.app.help.model.CategoryBean;
 import org.sakaiproject.component.legacy.entity.ReferenceComponent;
-import org.sakaiproject.component.section.sakai21.SectionAwarenessImpl;
-import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.HttpAccess;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.service.legacy.user.UserEdit;
 import org.sakaiproject.test.SakaiTestBase;
-import org.sakaiproject.util.Authentication;
 import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import sun.tools.tree.ThisExpression;
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.ComponentPageLinkRenderImpl;
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.testutil.JUnitHttpServletRequest;
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.testutil.JUnitHttpServletResponse;
@@ -80,7 +74,7 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 	};
 
 	private static final String[] rendered = { "Some <b class=\"bold\">Simple</b> Content",
-			"Here is a \n<h3 class=\"heading-h1\">Heading type1</h3><p class=\"paragraph\"/>" };
+			"Here is a \n<h3 class=\"heading-h1\"><a name=\"Headingtype1\"></a>Heading type1</h3><p class=\"paragraph\"/>" };
 
 	private static final String archiveContentResource =  "/uk/ac/cam/caret/sakai/rwiki/component/test/archive.xml";
 	/**
@@ -201,6 +195,10 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		}
 	}
 
+	/**
+	 * A simple set of tests of the render service
+	 * @throws Exception
+	 */
 	public void xxxtestRenderPage() throws Exception {
 		SimpleCoverage.cover("Render Page Test");
 		assertEquals("Test and results sets are not the same size ",
@@ -229,8 +227,87 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		}
 		SimpleCoverage.cover("Render Page Test Ok");
 	}
+	
+	/**
+	 * A list of paths to test
+	 */
+	private static final String[] accessPaths = {
+		"/resources/some/resourcethat/shouldworl,123.html",
+		"/resources/some/resourcethat/shouldworl.html",
+		"/resources/some/resourcethat/shouldworl",
+		"/resources/some/resourcethat/shouldworl,123.html",
+		"/wiki/non-existant-context/.rss",
+		"/wiki/site/SITEID/hometestpage.html",
+		"/wiki/site/SITEID/Hometestpage.html",
+		"/wiki/site/SITEID/homeTestpage,123123.html",
+		"/wiki/site/SITEID/hometestpage,0.html",
+		"/wiki/site/SITEID/index.html",
+		"/wiki/site/SITEID/index.rss",
+		"/wiki/site/SITEID/changed.html",
+		"/wiki/site/SITEID/changed.rss"
+	};
+	/**
+	 * some page names to populate
+	 */
+	private static final String[] pageNames =  {
+		"HomeTestPage",
+		"HomeTestPage2",
+		"index",
+		"changed"
+	};
+	/**
+	 * some simple page content to use with the above pageNames
+	 */
+	private static final String[] pageContent = {
+		content[0],
+		content[1],
+		"{index}",
+		"{recent-changes}"
+	};
+	/**
+	 * Load a set of pages, and process a set of URLS
+	 * @throws Exception
+	 */
+	public void testURLAccess() throws Exception {
+		assertEquals("pageNames and pageContent must be the same length ",pageNames.length,pageContent.length);
+		
+		for( int i = 0; i < pageNames.length; i++ ) {
+			rwikiObjectservice.update(pageNames[i], "admin", site.getReference(),
+				new Date(), pageContent[i]);
+		}
+		Collection copy = new ArrayList();
+		String siteID = site.getId();
+		for ( int i = 0; i < accessPaths.length; i++ ) {
+			String testURL = accessPaths[i];
+			int ix = testURL.indexOf("SITEID");
+			if ( ix != -1 ) {
+				testURL = testURL.substring(0,ix)+siteID+testURL.substring(ix+"SITEID".length());
+			}
+			logger.info("Testing "+testURL);
+			Reference ref = EntityManager.newReference(testURL);
+			logger.info("Got "+ref);
+			EntityProducer service = ref.getEntityProducer();
+			if ( service != null ) {
+				HttpServletRequest req = new JUnitHttpServletRequest();
+				JUnitHttpServletResponse res = new JUnitHttpServletResponse();
+				HttpAccess ha = service.getHttpAccess();
+				ha.handleAccess(req, res, ref, copy);
+				logger.info("URL "+testURL+"Got response of " + res.getOutput());
+			} else {
+				logger.info("Rejected URL "+testURL+"");
+			}
+		}
+		
 
-	public void xxxtestEntityAccess() throws Exception {
+	}
+
+	/**
+	 * Test the entity access based on a URL
+	 * @throws Exception
+	 */
+	public void testEntityAccess() throws Exception {
+	
+		
 		rwikiObjectservice.update("HomeTestPage", "admin", site.getReference(),
 				new Date(), content[0]);
 		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPage",
@@ -265,7 +342,7 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 
 		RWikiObject rwo2 = (RWikiObject) rwikiObjectservice.getEntity(r);
 
-		logger.info("Got Object " + rwo.getName());
+		logger.info("Got Object " + rwo2.getName());
 
 		// try and get the access content
 		HttpAccess ha = rwikiObjectservice.getHttpAccess();
@@ -277,7 +354,7 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 
 	}
 
-	public void estArchiveAccess() throws Exception {
+	public void testArchiveAccess() throws Exception {
 		rwikiObjectservice.update("HomeTestPage", "admin", site.getReference(),
 				new Date(), content[0]);
 		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPage",

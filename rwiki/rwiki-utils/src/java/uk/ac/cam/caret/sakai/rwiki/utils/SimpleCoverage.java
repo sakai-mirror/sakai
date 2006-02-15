@@ -41,8 +41,7 @@ public class SimpleCoverage {
 		String elapsed = String.valueOf(now - last) + " ms ";
 		last = now;
 		Exception e = new Exception();
-		StackTraceElement[] ste = e.getStackTrace();
-		String method = ste[1].getMethodName();
+		StackTraceElement[] ste = e.getStackTrace();String method = ste[1].getMethodName();
 		String file = ste[1].getFileName();
 		int line = ste[1].getLineNumber();
 		String className = ste[1].getClassName();

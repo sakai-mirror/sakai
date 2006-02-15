@@ -134,9 +134,7 @@ public class JUnitHttpServletResponse implements HttpServletResponse {
 		charEncoding = arg0;
 	}
 
-	private int contentLength = 0;
 	public void setContentLength(int arg0) {
-		contentLength = arg0;
 	}
 
 	public void setContentType(String arg0) {
