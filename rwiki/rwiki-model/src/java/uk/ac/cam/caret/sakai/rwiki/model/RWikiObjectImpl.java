@@ -34,14 +34,12 @@ import org.apache.xerces.impl.dv.util.Base64;
 import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.util.resource.BaseResourceProperties;
-import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.dao.RWikiObjectContentDao;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;

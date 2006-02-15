@@ -38,7 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;

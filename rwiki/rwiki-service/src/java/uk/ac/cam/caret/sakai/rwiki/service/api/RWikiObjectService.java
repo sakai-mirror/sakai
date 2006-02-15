@@ -25,7 +25,6 @@ package uk.ac.cam.caret.sakai.rwiki.service.api;
 import java.util.Date;
 import java.util.List;
 
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
 

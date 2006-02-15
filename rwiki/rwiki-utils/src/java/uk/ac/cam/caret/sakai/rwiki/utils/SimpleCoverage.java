@@ -25,7 +25,6 @@ package uk.ac.cam.caret.sakai.rwiki.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.service.framework.log.cover.Logger;
 
 /**
  * A really simple coverage utility, prints a record of the calling method

@@ -9,8 +9,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import uk.ac.cam.caret.sakai.rwiki.utils.SimpleCoverage;
-
 public class JUnitHttpServletResponse implements HttpServletResponse {
 
 	public void addCookie(Cookie arg0) {
