@@ -24,10 +24,12 @@
 package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 
 import java.io.Writer;
+import java.util.Iterator;
+import java.util.Map;
 
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TemplatesHandler;
 import javax.xml.transform.sax.TransformerHandler;
@@ -78,12 +80,20 @@ public class XSLTTransform {
 	 * @return a content handler configured to produce output
 	 * @throws Exception
 	 */
-	public ContentHandler getOutputHandler(Writer out) throws Exception {
+	public ContentHandler getOutputHandler(Writer out, Map outputProperties) throws Exception {
 		TransformerHandler saxTH = factory.newTransformerHandler(templates);
 		Result r = new StreamResult(out);
-		saxTH.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
-		saxTH.getTransformer().setOutputProperty(
-				"{http://xml.apache.org/xslt}indent-amount", "4");
+		if ( outputProperties != null ) {
+			Transformer trans = saxTH.getTransformer();
+			for ( Iterator i = outputProperties.keySet().iterator(); i.hasNext(); ) {
+				String name = (String) i.next();
+				String value = (String) outputProperties.get(name);
+				trans.setOutputProperty(name, value);
+				
+			}
+			
+			//String s = OutputKeys.INDENT;
+		}
 		saxTH.setResult(r);
 		return saxTH;
 	}

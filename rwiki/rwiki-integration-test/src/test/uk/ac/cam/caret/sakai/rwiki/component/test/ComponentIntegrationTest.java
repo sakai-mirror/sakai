@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 
-import javax.servlet.http.HttpServletRequest;
-
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -31,13 +29,13 @@ import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.service.legacy.user.UserEdit;
 import org.sakaiproject.test.SakaiTestBase;
 import org.sakaiproject.util.xml.Xml;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.ComponentPageLinkRenderImpl;
-import uk.ac.cam.caret.sakai.rwiki.component.service.impl.testutil.JUnitHttpServletRequest;
-import uk.ac.cam.caret.sakai.rwiki.component.service.impl.testutil.JUnitHttpServletResponse;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RenderService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
@@ -288,11 +286,11 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 			logger.info("Got "+ref);
 			EntityProducer service = ref.getEntityProducer();
 			if ( service != null ) {
-				HttpServletRequest req = new JUnitHttpServletRequest();
-				JUnitHttpServletResponse res = new JUnitHttpServletResponse();
+				MockHttpServletRequest req = new MockHttpServletRequest();
+				MockHttpServletResponse res = new MockHttpServletResponse();
 				HttpAccess ha = service.getHttpAccess();
 				ha.handleAccess(req, res, ref, copy);
-				logger.info("URL "+testURL+"Got response of " + res.getOutput());
+				logger.info("URL "+testURL+"Got response of " + res.getContentAsString());
 			} else {
 				logger.info("Rejected URL "+testURL+"");
 			}
@@ -347,10 +345,10 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		// try and get the access content
 		HttpAccess ha = rwikiObjectservice.getHttpAccess();
 		Collection copy = new ArrayList();
-		HttpServletRequest req = new JUnitHttpServletRequest();
-		JUnitHttpServletResponse res = new JUnitHttpServletResponse();
+		MockHttpServletRequest req = new MockHttpServletRequest();
+		MockHttpServletResponse res = new MockHttpServletResponse();
 		ha.handleAccess(req, res, r, copy);
-		logger.info("Got response of " + res.getOutput());
+		logger.info("Got response of " + res.getContentAsString());
 
 	}
 

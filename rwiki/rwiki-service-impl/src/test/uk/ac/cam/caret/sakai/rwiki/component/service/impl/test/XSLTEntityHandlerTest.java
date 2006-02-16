@@ -10,11 +10,11 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.framework.log.CommonsLogger;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.Decoded;
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler;
-import uk.ac.cam.caret.sakai.rwiki.component.service.impl.testutil.JUnitHttpServletRequest;
-import uk.ac.cam.caret.sakai.rwiki.component.service.impl.testutil.JUnitHttpServletResponse;
 import uk.ac.cam.caret.sakai.rwiki.model.RWikiCurrentObjectImpl;
 
 /**
@@ -137,8 +137,9 @@ public class XSLTEntityHandlerTest extends TestCase {
 		rwco.setUser("The User");
 		rwco.setVersion(new Date());
 		rwco.setRevision(new Integer(5));
-		JUnitHttpServletResponse response = new JUnitHttpServletResponse();
-		JUnitHttpServletRequest request = new JUnitHttpServletRequest();
+		
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		MockHttpServletRequest request = new MockHttpServletRequest();
 		
 		
 		for (int i = 0; i < test.length; i++) {
@@ -146,7 +147,7 @@ public class XSLTEntityHandlerTest extends TestCase {
 			eh.setXslt(test[i]);
 			eh.init();
 			eh.outputContent(rwco,request,response);
-			logger.info(response.getOutput());
+			logger.info(response.getContentAsString());
 			response.reset();
 		}
 		long start = System.currentTimeMillis();

@@ -168,6 +168,12 @@
       <type>jar</type>
     </dependency>
     <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring-mock</artifactId>
+      <version>${sakai.spring.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
       <groupId>easymock</groupId>
       <artifactId>easymock</artifactId>
       <version>1.1</version>

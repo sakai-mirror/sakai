@@ -94,7 +94,7 @@
     init-method="init"  destroy-method="destroy" >
       <!-- from XSLTEntityHandler -->
       <!-- The transformer use on the stream -->
-     <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt</value></property>
+     <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/tohtml.xsl</value></property>
     <property name="minorType"><value>.html</value></property>    
     <property name="logger"><ref bean="rwiki-logger"/></property>
     <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
@@ -105,6 +105,28 @@
     <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
+    <property name="responseHeaders">
+      <map>
+        <entry key="content-type"><value>text/html</value></entry>
+      </map>     
+    </property>
+    <property name="outputProperties">
+      <map>
+        <entry key="omit-xml-declaration"><value>yes</value></entry>
+        <entry key="indent"><value>yes</value></entry>
+        <entry key="encoding"><value>UTF-8</value></entry>
+        <entry key="version"><value>4.0</value></entry>
+        <entry key="media-type"><value>text/html</value></entry>
+        <entry key="{http://xml.apache.org/xalan}indent-amount"><value>2</value></entry> 
+        <!--
+          <entry key="{http://xml.apache.org/xalan}content-handler"><value>org.apache.xml.serializer.ToHTMLStream</value></entry> 
+        <entry key="{http://xml.apache.org/xalan}entities"><value>org/apache/xml/serializer/HTMLEntities</value></entry> 
+
+-->
+        <entry key="{http://xml.apache.org/xalan}use-url-escaping"><value>yes</value></entry> 
+        <entry key="{http://xml.apache.org/xalan}omit-meta-tag"><value>no</value></entry> 
+      </map>     
+    </property>
   </bean>
   <bean id="rwikiODFHandler"
     class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler"  

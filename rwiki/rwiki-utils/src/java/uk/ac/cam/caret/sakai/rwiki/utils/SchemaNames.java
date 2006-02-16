@@ -184,5 +184,29 @@ public class SchemaNames {
 
 	public static final String EL_RAWCONTENT = "wiki-content";
 
+	public static final String EL_REQUEST_PARAM = "request-param";
+
+	public static final String EL_NSVALUE = "value";
+
+	public static final String EL_REQUEST_PARAMS = "request-params";
+
+	public static final String EL_REQUEST_PROPERTIES = "request-properties";
+
+	public static final String EL_REQUEST_ATTRIBUTES = "request-attributes";
+
+	public static final String EL_REQUEST_ATTRIBUTE = "request-attribute";
+
+	public static final String ATTR_REQUEST_PATH_INFO = "request-path-info";
+
+	public static final String ATTR_REQUEST_USER = "request-user";
+
+	public static final String ATTR_REQUEST_PROTOCOL = "request-protocol";
+
+	public static final String ATTR_REQUEST_SERVER_NAME = "request-servername";
+
+	public static final String ATTR_REQUEST_SERVER_PORT = "request-serverport";
+
+	public static final String ATTR_REQUEST_REQUEST_URL = "request-url";
+
 
 }
