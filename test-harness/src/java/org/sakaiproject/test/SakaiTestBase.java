@@ -84,8 +84,8 @@ public abstract class SakaiTestBase extends TestCase {
 					"org.sakaiproject.component.kernel.component.SpringCompMgr");
 			Constructor constructor = clazz.getConstructor(new Class[] {ComponentManager.class});
 			compMgr = (ComponentManager)constructor.newInstance(new Object[] {null});
-			Method initMethod = clazz.getMethod("init", null);
-			initMethod.invoke(compMgr, null);
+			Method initMethod = clazz.getMethod("init", new Class[0]);
+			initMethod.invoke(compMgr, new Object[0]);
 		}
 		
 		// Sign in as admin

@@ -32,6 +32,7 @@ import org.sakaiproject.component.kernel.function.test.FunctionManagerComponentT
 import org.sakaiproject.component.kernel.id.test.UuidV4IdComponentTest;
 import org.sakaiproject.component.kernel.thread_local.test.ThreadLocalManagerComponentTest;
 import org.sakaiproject.component.legacy.announcement.test.DbAnnouncementServiceTest;
+import org.sakaiproject.component.legacy.contenthosting.test.ContentHostingTest;
 
 public class SakaiIntegrationTest extends SakaiTestBase {
 	private static final Log log = LogFactory.getLog(SakaiIntegrationTest.class);
@@ -49,6 +50,7 @@ public class SakaiIntegrationTest extends SakaiTestBase {
 		suite.addTestSuite(ThreadLocalManagerComponentTest.class);
 		suite.addTestSuite(FunctionManagerComponentTest.class);
 		suite.addTestSuite(DbAnnouncementServiceTest.class);
+		suite.addTestSuite(ContentHostingTest.class);
 		
 		return suite;
 	}
