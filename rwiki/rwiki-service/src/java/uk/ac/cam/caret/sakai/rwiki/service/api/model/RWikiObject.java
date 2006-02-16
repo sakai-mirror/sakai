@@ -27,21 +27,24 @@ package uk.ac.cam.caret.sakai.rwiki.service.api.model;
 
 import java.util.Date;
 
-import org.sakaiproject.service.legacy.entity.Entity;
-
 
 /**
  * The base object for a Wiki page,  id, name, realm, permissions, revision, version, owner
  */
 //FIXME: Service
 
-public interface RWikiObject extends Comparable, Entity
+public interface RWikiObject extends Comparable
 {
 	/**
 	 * Access the unique id. 
 	 * @return The unique id.
 	 */
 	String getId();
+	/**
+	 * Set the ID, ONLY do this if you really know you must.
+	 * @return
+	 */
+	void setId(String id);
 
 	/**
 	 * Access the object's version time stamp.

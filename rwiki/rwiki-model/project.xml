@@ -53,19 +53,15 @@
       <artifactId>sakai-rwiki-service</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <dependency>
+    <!--
+      <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-legacy-service</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <dependency>
+      <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-util-xml</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-util</artifactId>
       <version>${sakai.version}</version>
     </dependency>
     <dependency>
@@ -73,6 +69,7 @@
       <artifactId>sakai-rwiki-utils</artifactId>
       <version>${sakai.version}</version>
     </dependency>
+    -->
   </dependencies>
   
 </project>

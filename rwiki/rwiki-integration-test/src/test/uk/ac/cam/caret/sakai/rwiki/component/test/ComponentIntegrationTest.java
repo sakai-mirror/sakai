@@ -15,7 +15,6 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.legacy.entity.ReferenceComponent;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.HttpAccess;
@@ -35,6 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.ComponentPageLinkRenderImpl;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RenderService;
@@ -310,8 +310,9 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 				new Date(), content[0]);
 		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPage",
 				"admin", site.getReference());
-		logger.info("Reference is " + rwo.getReference());
-		Reference r = new ReferenceComponent("/wiki" + rwo.getReference()
+		RWikiEntity rwe = new RWikiEntity(rwo);
+		logger.info("Reference is " + rwe.getReference());
+		Reference r = EntityManager.newReference("/wiki" + rwe.getReference()
 				+ ".html");
 
 		logger.info("Reference found as " + r);
@@ -338,7 +339,9 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 
 		// try and get the content
 
-		RWikiObject rwo2 = (RWikiObject) rwikiObjectservice.getEntity(r);
+		Entity entity = rwikiObjectservice.getEntity(r);
+		RWikiEntity rwentity = (RWikiEntity) entity;
+		RWikiObject rwo2 = rwentity.getRWikiObject();
 
 		logger.info("Got Object " + rwo2.getName());
 

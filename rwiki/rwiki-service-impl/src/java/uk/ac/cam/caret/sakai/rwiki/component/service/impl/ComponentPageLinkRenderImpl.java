@@ -25,7 +25,6 @@ package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 import java.text.MessageFormat;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.PageLinkRenderer;
-//import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.utils.XmlEscaper;
 

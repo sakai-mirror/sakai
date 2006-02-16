@@ -25,27 +25,13 @@
 
 package uk.ac.cam.caret.sakai.rwiki.model;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.util.Date;
-import java.util.Stack;
-
-import org.apache.xerces.impl.dv.util.Base64;
-import org.sakaiproject.service.framework.log.cover.Log;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
-import org.sakaiproject.util.resource.BaseResourceProperties;
-import org.w3c.dom.CDATASection;
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.dao.RWikiObjectContentDao;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObjectContent;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiPermissions;
-import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
  * <p>
@@ -716,159 +702,6 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		}// end for loop
 		return output.toUpperCase();
 	}// end byteArrayToHexStr
-
-	public ResourceProperties getProperties() {
-		ResourceProperties rp = new BaseResourceProperties();
-		rp.addProperty("id", this.getId());
-		// I dont think that content is a propertyrp.addProperty("content",
-		// this.getContent());
-		rp.addProperty("name", this.getName());
-		rp.addProperty("owner", this.getOwner());
-		rp.addProperty("realm", this.getRealm());
-		rp.addProperty("referenced", this.getReferenced());
-		rp.addProperty("rwid", this.getRwikiobjectid());
-		rp.addProperty("sha1", this.getSha1());
-		rp.addProperty("source", this.getSource());
-		rp.addProperty("user", this.getUser());
-		rp.addProperty("group-admin", String.valueOf(this.getGroupAdmin()));
-		rp.addProperty("group-read", String.valueOf(this.getGroupRead()));
-		rp.addProperty("group-write", String.valueOf(this.getGroupWrite()));
-		rp.addProperty("owner-admin", String.valueOf(this.getOwnerAdmin()));
-		rp.addProperty("owner-read", String.valueOf(this.getOwnerRead()));
-		rp.addProperty("owner-write", String.valueOf(this.getOwnerWrite()));
-		rp.addProperty("public-read", String.valueOf(this.getPublicRead()));
-		rp.addProperty("public-write", String.valueOf(this.getPublicWrite()));
-		rp.addProperty("revision", String.valueOf(this.getRevision()));
-		rp.addProperty("version", String.valueOf(this.getVersion().getTime()));
-		return rp;
-	}
-
-	public String getReference() {
-		return this.getName();
-	}
-
-	public String getUrl() {
-		return this.getName();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public String getReference(String rootProperty)
-	{
-		return getReference();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public String getUrl(String rootProperty)
-	{
-		return getUrl();
-	}
-
-	public Element toXml(Document doc, Stack stack) {
-		Element wikipage = doc.createElement("wikipage");
-
-		if (stack.isEmpty()) {
-			doc.appendChild(wikipage);
-		} else {
-			((Element) stack.peek()).appendChild(wikipage);
-		}
-
-		stack.push(wikipage);
-
-		wikipage.setAttribute("id", m_id);
-		wikipage.setAttribute("page-name", m_name);
-		wikipage.setAttribute("revision", String.valueOf(m_revision));
-		wikipage.setAttribute("user", m_user);
-		wikipage.setAttribute("owner", m_owner);
-
-		// I would like to be able to render this, but we cant... because its a
-		// pojo !
-		getProperties().toXml(doc, stack);
-		Element content = doc.createElement("wikicontent");
-		stack.push(content);
-		wikipage.appendChild(content);
-		content.setAttribute("enc", "BASE64");
-		try {
-			String b64Content = Base64.encode(getContent().getBytes("UTF-8"));
-			CDATASection t = doc.createCDATASection(b64Content);
-			stack.push(t);
-			content.appendChild(t);
-			stack.pop();
-		} catch (UnsupportedEncodingException usex) {
-			// if UTF-8 isnt available, we are in big trouble !
-		}
-		stack.pop();
-
-		stack.pop();
-
-		return wikipage;
-	}
-
-	public void fromXml(Element el, String defaultRealm) throws Exception {
-		NodeList nl = el.getElementsByTagName("properties");
-		if (nl == null || nl.getLength() != 1)
-			throw new Exception("Cant find a properties element in "
-					+ el.getNodeName() + " id: " + el.getAttribute("id")
-					+ " pagename: " + el.getAttribute("page-name"));
-		// only take the first properties
-		Element properties = (Element) nl.item(0);
-		ResourceProperties rp = new BaseResourceProperties(properties);
-
-		nl = el.getElementsByTagName("wikicontent");
-		if (nl == null || nl.getLength() != 1)
-			throw new Exception("Cant find a  wikiproperties element in "
-					+ el.getNodeName() + " id: " + el.getAttribute("id")
-					+ " pagename: " + el.getAttribute("page-name"));
-		// only accpet the first
-		Element wikiContents = (Element) nl.item(0);
-
-		nl = wikiContents.getChildNodes();
-		StringBuffer content = new StringBuffer();
-		for (int i = 0; i < nl.getLength(); i++) {
-			Node n = nl.item(i);
-			if (n instanceof CharacterData) {
-				CharacterData cdnode = (CharacterData) n;
-				try {
-					content.append(new String(Base64.decode(cdnode.getData()),
-							"UTF-8"));
-				} catch (Throwable t) {
-					Log.warn("","Cant decode node content for " + cdnode);
-				}
-			}
-		}
-
-		String realm = rp.getProperty("realm");
-		setId(rp.getProperty("id"));
-
-		setName(NameHelper.globaliseName(NameHelper.localizeName(rp
-				.getProperty("name"), realm), defaultRealm));
-		setOwner(rp.getProperty("owner"));
-		setRealm(defaultRealm);
-		setReferenced(rp.getProperty("referenced"));
-//		setRwikiobjectid(rp.getProperty("rwid"));
-		setContent(content.toString());
-
-		if (!getSha1().equals(rp.getProperty("sha1")))
-			throw new Exception("Sha Checksum Missmatch on content "
-					+ rp.getProperty("sha1") + " != " + getSha1());
-		setSource(rp.getProperty("source"));
-		setUser(rp.getProperty("user"));
-		setGroupAdmin(rp.getBooleanProperty("group-admin"));
-		setGroupRead(rp.getBooleanProperty("group-read"));
-		setGroupWrite(rp.getBooleanProperty("group-write"));
-		setOwnerAdmin(rp.getBooleanProperty("group-admin"));
-		setOwnerRead(rp.getBooleanProperty("owner-read"));
-		setOwnerWrite(rp.getBooleanProperty("owner-write"));
-		setGroupAdmin(rp.getBooleanProperty("owner-admin"));
-		setPublicRead(rp.getBooleanProperty("public-read"));
-		setPublicWrite(rp.getBooleanProperty("public-write"));
-		setRevision(new Integer(rp.getProperty("revision")));
-		setVersion(new Date(rp.getLongProperty("version")));
-
-	}
 }
 
 /*******************************************************************************

@@ -13,6 +13,7 @@ import org.sakaiproject.component.framework.log.CommonsLogger;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.Decoded;
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler;
 import uk.ac.cam.caret.sakai.rwiki.model.RWikiCurrentObjectImpl;
@@ -129,6 +130,7 @@ public class XSLTEntityHandlerTest extends TestCase {
 		};
 
 		RWikiCurrentObjectImpl rwco = new RWikiCurrentObjectImpl();
+		RWikiEntity rwe = new RWikiEntity(rwco);
 		rwco.setContent("Some Content");
 		rwco.setGroupAdmin(false);
 		rwco.setId("/site/sdf-sdf-sdf-sdf-sdf-sfd/SomePage/sdfgsfd/Home");
@@ -138,6 +140,7 @@ public class XSLTEntityHandlerTest extends TestCase {
 		rwco.setVersion(new Date());
 		rwco.setRevision(new Integer(5));
 		
+		
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		
@@ -146,7 +149,7 @@ public class XSLTEntityHandlerTest extends TestCase {
 			eh.setLogger(new CommonsLogger());
 			eh.setXslt(test[i]);
 			eh.init();
-			eh.outputContent(rwco,request,response);
+			eh.outputContent(rwe,request,response);
 			logger.info(response.getContentAsString());
 			response.reset();
 		}
@@ -157,7 +160,7 @@ public class XSLTEntityHandlerTest extends TestCase {
 				eh.setLogger(new CommonsLogger());
 //				eh.setXslt(test[i]);
 //				eh.init();
-				eh.outputContent(rwco,request,response);
+				eh.outputContent(rwe,request,response);
 				response.reset();
 			}
 		}

@@ -54,6 +54,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.ListProxy;
+import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.model.RWikiCurrentObjectImpl;
 import uk.ac.cam.caret.sakai.rwiki.model.RWikiPermissionsImpl;
 import uk.ac.cam.caret.sakai.rwiki.service.api.EntityHandler;
@@ -767,14 +768,16 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			List l = cdao.findRWikiSubPages("/site/" + siteId);
 			for (Iterator i = l.iterator(); i.hasNext();) {
 				RWikiObject rwo = (RWikiObject) i.next();
+				RWikiEntity rwe = new RWikiEntity(rwo);
 				results.append("Archiving " + rwo.getName() + "\n");
-				rwo.toXml(doc, stack);
+				rwe.toXml(doc, stack);
 				List lh = this.findRWikiHistoryObjects(rwo);
 				for (Iterator ih = lh.iterator(); ih.hasNext();) {
 					RWikiObject rwoh = (RWikiObject) ih.next();
+					RWikiEntity rwoeh = new RWikiEntity(rwoh);
 					results.append("Archiving " + rwoh.getName() + " version "
 							+ rwoh.getVersion() + "\n");
-					rwoh.toXml(doc, stack);
+					rwoeh.toXml(doc, stack);
 				}
 			}
 		} catch (Exception any) {
@@ -830,7 +833,8 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 
 				RWikiCurrentObjectImpl archiverwo = new RWikiCurrentObjectImpl();
-				archiverwo.fromXml(element, defaultRealm);
+				RWikiEntity rwe = new RWikiEntity(archiverwo);
+				rwe.fromXml(element, defaultRealm);
 				
 				// clear the ID to remove hibernate session issues and recreate a new id issues
 				archiverwo.setId(null);
@@ -994,7 +998,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		checkReference(ref);
 		EntityHandler eh = findEntityHandler(ref);
 
-		Entity e = (Entity) getEntity(ref, eh);
+		Entity e =  getEntity(ref, eh);
 		return eh.getDescription(e);
 	}
 
@@ -1004,7 +1008,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	public ResourceProperties getEntityResourceProperties(Reference ref) {
 		checkReference(ref);
 		EntityHandler eh = findEntityHandler(ref);
-		Entity e = (Entity) getEntity(ref, eh);
+		Entity e =  getEntity(ref, eh);
 		return eh.getProperties(e);
 	}
 
@@ -1026,7 +1030,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	public String getEntityUrl(Reference ref) {
 		checkReference(ref);
 		EntityHandler eh = findEntityHandler(ref);
-		Entity entity = (Entity) getEntity(ref, eh);
+		Entity entity = getEntity(ref, eh);
 		return eh.getUrl(entity);
 	}
 
@@ -1053,7 +1057,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 				try {
 
 					EntityHandler eh = findEntityHandler(ref);
-					Entity entity = (Entity) getEntity(ref, eh);
+					Entity entity =  getEntity(ref, eh);
 
 					eh.outputContent(entity, req, res);
 				} catch (Throwable t) {
@@ -1126,7 +1130,8 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			} 
 
 		}
-		return rwo;
+		RWikiEntity rwe = new RWikiEntity(rwo);
+		return rwe;
 	}
 
 	/**

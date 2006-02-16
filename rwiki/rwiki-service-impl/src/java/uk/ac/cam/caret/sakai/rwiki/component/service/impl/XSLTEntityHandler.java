@@ -26,9 +26,7 @@ package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -53,6 +51,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RenderService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.utils.DebugContentHandler;
@@ -141,7 +140,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * 
 	 */
 	public String getDescription(Entity entity) {
-		if (!(entity instanceof RWikiObject))
+		if (!(entity instanceof RWikiEntity))
 			return null;
 		return entity.getId();
 	}
@@ -152,7 +151,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * 
 	 */
 	public String getUrl(Entity entity) {
-		if (!(entity instanceof RWikiObject))
+		if (!(entity instanceof RWikiEntity))
 			return null;
 		return entity.getUrl();
 	}
@@ -164,7 +163,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 */
 	public void outputContent(Entity entity, HttpServletRequest request,
 			HttpServletResponse res) {
-		if (!(entity instanceof RWikiObject))
+		if (!(entity instanceof RWikiEntity))
 			return;
 
 		/*
@@ -326,8 +325,9 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 						SchemaNames.EL_NSXMLPROPERTY, propA,
 						" XSLTEntity Handler");
 			}
-			if ( entity instanceof RWikiObject ){
-				RWikiObject rwo = (RWikiObject) entity;
+			if ( entity instanceof RWikiEntity ){
+				RWikiEntity rwe = (RWikiEntity) entity;
+				RWikiObject rwo = rwe.getRWikiObject();
 				AttributesImpl propA = new AttributesImpl();
 				propA.addAttribute("", SchemaNames.ATTR_NAME,
 						SchemaNames.ATTR_NAME, "string", "_title");
@@ -341,11 +341,13 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 					SchemaNames.EL_XMLPROPERTIES,
 					SchemaNames.EL_NSXMLPROPERTIES);
 
-			if (entity instanceof RWikiObject) {
+			if ( entity instanceof RWikiEntity ){
+				RWikiEntity rwe = (RWikiEntity) entity;
+				RWikiObject rwo = rwe.getRWikiObject();
 				ch.startElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_RENDEREDCONTENT,
 						SchemaNames.EL_NSXMLPROPERTIES, dummyAttributes);
-				renderToXML((RWikiObject) entity, ch, user);
+				renderToXML(rwo, ch, user);
 				ch.endElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_RENDEREDCONTENT,
 						SchemaNames.EL_NSXMLSERVICE);

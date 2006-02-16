@@ -42,6 +42,25 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-legacy-component</artifactId>
+            <version>${sakai.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-util-xml</artifactId>
+            <version>${sakai.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-rwiki-utils</artifactId>
+            <version>${sakai.version}</version>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
             <groupId>springframework</groupId>
             <artifactId>spring-mock</artifactId>
             <version>${sakai.spring.version}</version>
