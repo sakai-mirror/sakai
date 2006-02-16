@@ -2,6 +2,20 @@ First off, thanks to Josh, this project has saved me hours of work.
 ------
 If you prefer to run you JUnit tests inside eclipse, you can with a little setup first.
 
+HOWEVER BE WARNED:
+This will break some of the seperation with classloaders, and you could end up with 
+dependencies on jars not in shared within classes that are in shared. 
+
+eg letting implementation leak into Hibernate pojos.
+
+If this happens, your app will probably not work in the real environment.
+
+So dont stop testing on the maven command line or in tomcat, and be really carefull 
+what you put where.
+
+---------
+
+
 You need to do a full maven build to get the runtime environment so follow the instructions
 in the README-INTEGRATION-TESTING.txt first.
 
