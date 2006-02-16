@@ -94,7 +94,7 @@
     init-method="init"  destroy-method="destroy" >
       <!-- from XSLTEntityHandler -->
       <!-- The transformer use on the stream -->
-     <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/tohtml.xsl</value></property>
+     <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/tohtml.xslt</value></property>
     <property name="minorType"><value>.html</value></property>    
     <property name="logger"><ref bean="rwiki-logger"/></property>
     <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
