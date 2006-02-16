@@ -51,8 +51,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RenderService;
+import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.utils.DebugContentHandler;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
@@ -153,7 +153,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	public String getUrl(Entity entity) {
 		if (!(entity instanceof RWikiEntity))
 			return null;
-		return entity.getUrl();
+		return entity.getUrl()+getMinorType();
 	}
 
 	/**
@@ -166,12 +166,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 		if (!(entity instanceof RWikiEntity))
 			return;
 
-		/*
-		 * Document doc = Xml.createDocument(); Stack stack = new Stack();
-		 * Element root = doc.createElement("entity"); doc.appendChild(root);
-		 * stack.push(root); root.setAttribute("date", now.toString()); Date now =
-		 * new Date();
-		 */
+
 
 		String user = request.getRemoteUser();
 		try {

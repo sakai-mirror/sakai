@@ -1,3 +1,28 @@
+/**********************************************************************************
+*
+* $Header$
+*
+***********************************************************************************
+*
+* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+* Copyright (c) 2005 University of Cambridge
+* 
+* Licensed under the Educational Community License Version 1.0 (the "License");
+* By obtaining, using and/or copying this Original Work, you agree that you have read,
+* understand, and will comply with the terms and conditions of the Educational Community License.
+* You may obtain a copy of the License at:
+* 
+*      http://cvs.sakaiproject.org/licenses/license_1_0.html
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*
+**********************************************************************************/
+
 package uk.ac.cam.caret.sakai.rwiki.component.test;
 
 import java.io.File;
@@ -34,10 +59,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.component.service.impl.ComponentPageLinkRenderImpl;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RenderService;
+import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.utils.SimpleCoverage;
 
@@ -197,7 +222,7 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 	 * A simple set of tests of the render service
 	 * @throws Exception
 	 */
-	public void xxxtestRenderPage() throws Exception {
+	public void testRenderPage() throws Exception {
 		SimpleCoverage.cover("Render Page Test");
 		assertEquals("Test and results sets are not the same size ",
 				content.length, rendered.length);
@@ -308,12 +333,14 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		
 		rwikiObjectservice.update("HomeTestPage", "admin", site.getReference(),
 				new Date(), content[0]);
+		
 		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPage",
 				"admin", site.getReference());
-		RWikiEntity rwe = new RWikiEntity(rwo);
+		
+		RWikiEntity rwe = (RWikiEntity) rwikiObjectservice.getEntity(rwo);
 		logger.info("Reference is " + rwe.getReference());
-		Reference r = EntityManager.newReference("/wiki" + rwe.getReference()
-				+ ".html");
+		Reference r = EntityManager.newReference(rwe.getReference()
+				+ "html");
 
 		logger.info("Reference found as " + r);
 		logger.info("Reference Container " + r.getContainer());

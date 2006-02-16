@@ -22,7 +22,6 @@ public class ViewBeanTest extends TestCase {
      */
     public void testGetViewUrl() {
         ViewBean vb = new ViewBean(localPageName, realm);
-        System.out.println(vb.getViewUrl());
         assertTrue("ViewBean doesn't create ViewUrls properly.",viewUrl.equals(vb.getViewUrl()));
     }
 

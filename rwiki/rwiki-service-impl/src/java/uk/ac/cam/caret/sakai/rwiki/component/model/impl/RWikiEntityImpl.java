@@ -1,3 +1,28 @@
+/**********************************************************************************
+*
+* $Header$
+*
+***********************************************************************************
+*
+* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+* Copyright (c) 2005 University of Cambridge
+* 
+* Licensed under the Educational Community License Version 1.0 (the "License");
+* By obtaining, using and/or copying this Original Work, you agree that you have read,
+* understand, and will comply with the terms and conditions of the Educational Community License.
+* You may obtain a copy of the License at:
+* 
+*      http://cvs.sakaiproject.org/licenses/license_1_0.html
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*
+**********************************************************************************/
+
 package uk.ac.cam.caret.sakai.rwiki.component.model.impl;
 
 import java.io.UnsupportedEncodingException;
@@ -6,7 +31,6 @@ import java.util.Stack;
 
 import org.apache.xerces.impl.dv.util.Base64;
 import org.sakaiproject.service.framework.log.cover.Log;
-import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.util.resource.BaseResourceProperties;
 import org.w3c.dom.CDATASection;
@@ -16,15 +40,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
-public class RWikiEntity implements Entity {
+public class RWikiEntityImpl implements RWikiEntity {
 
 
 	private RWikiObject rwo = null;
 	
-	public RWikiEntity( RWikiObject rwo ) {
+	public RWikiEntityImpl( RWikiObject rwo ) {
 		this.rwo = rwo;
 	}
 	/**
@@ -58,13 +83,13 @@ public class RWikiEntity implements Entity {
 	 * {@inheritDoc}
 	 */
 	public String getReference() {
-		return rwo.getName();
+		return "/wiki"+rwo.getName()+".";
 	}
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getUrl() {
-		return rwo.getName();
+		return "/wiki"+rwo.getName()+".";
 	}
 	/**
 	 * {@inheritDoc}
@@ -193,6 +218,9 @@ public class RWikiEntity implements Entity {
 	public String getId() {
 		return rwo.getId();
 	}
+	/**
+	 * {@inheritDoc}
+	 */
 	public RWikiObject getRWikiObject() {
 		return rwo;
 	}

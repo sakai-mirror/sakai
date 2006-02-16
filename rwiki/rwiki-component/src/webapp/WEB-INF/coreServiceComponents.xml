@@ -64,9 +64,10 @@
     <property name="securityService"><ref bean="securityService"/></property>
     <property name="handlers">
       <map>
-        <entry key=".html"><ref bean="rwikiHTMLHandler" /></entry>
-        <entry key=".odf"><ref bean="rwikiODFHandler" /></entry>
-        <entry key=".rss"><ref bean="rwikiRSSHandler" /></entry>
+        <entry key=""><ref bean="rwikiRAWHandler" /></entry>
+        <entry key="html"><ref bean="rwikiHTMLHandler" /></entry>
+        <entry key="odf"><ref bean="rwikiODFHandler" /></entry>
+        <entry key="rss"><ref bean="rwikiRSSHandler" /></entry>
       </map>
     </property>
   </bean>
@@ -88,6 +89,42 @@
   </bean>
   
   
+  <bean id="rwikiRAWHandler" 
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler"  
+    init-method="init"  destroy-method="destroy" >
+    <!-- from XSLTEntityHandler -->
+    <!-- The transformer use on the stream -->
+    <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt</value></property>
+    <property name="minorType"><value></value></property>    
+    <property name="logger"><ref bean="rwiki-logger"/></property>
+    <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
+    <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>
+    <property name="errorFormat"><value>Error encounvered performing transform : {0} \n {1}</value></property>
+    <property name="authZPrefix" ><value>/wiki</value></property>
+    <property name="anchorLinkFormat" ><value>/access/wiki{0}.#{1}</value></property>
+    <property name="standardLinkFormat" ><value>/access/wiki{0}.</value></property>
+    <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="accessURLStart" ><value>/wiki/</value></property>
+    <property name="responseHeaders">
+      <map>
+        <entry key="content-type"><value>text/xml</value></entry>
+      </map>     
+    </property>
+    <property name="outputProperties">
+      <map>
+        <entry key="indent"><value>yes</value></entry>
+        <entry key="encoding"><value>UTF-8</value></entry>
+        <entry key="media-type"><value>text/xml</value></entry>
+        <entry key="{http://xml.apache.org/xalan}indent-amount"><value>2</value></entry> 
+        <!--
+          <entry key="{http://xml.apache.org/xalan}content-handler"><value>org.apache.xml.serializer.ToHTMLStream</value></entry> 
+          <entry key="{http://xml.apache.org/xalan}entities"><value>org/apache/xml/serializer/HTMLEntities</value></entry> 
+          
+        -->
+      </map>     
+    </property>
+  </bean>
+  
   <!-- these are EntityProducer handler beans, the config is bean dependant -->
   <bean id="rwikiHTMLHandler" 
     class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler"  
@@ -95,7 +132,7 @@
       <!-- from XSLTEntityHandler -->
       <!-- The transformer use on the stream -->
      <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/tohtml.xslt</value></property>
-    <property name="minorType"><value>.html</value></property>    
+    <property name="minorType"><value>html</value></property>    
     <property name="logger"><ref bean="rwiki-logger"/></property>
     <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
     <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>
@@ -132,7 +169,7 @@
     class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler"  
     init-method="init"  destroy-method="destroy" >
     <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt</value></property>
-    <property name="minorType"><value>.odf</value></property>    
+    <property name="minorType"><value>odf</value></property>    
     <property name="logger"><ref bean="rwiki-logger"/></property>
     <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
     <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>
@@ -147,7 +184,7 @@
     class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler"  
     init-method="init"  destroy-method="destroy" >
     <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt</value></property>
-    <property name="minorType"><value>.rss</value></property>    
+    <property name="minorType"><value>rss</value></property>    
     <property name="logger"><ref bean="rwiki-logger"/></property>
     <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
     <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>

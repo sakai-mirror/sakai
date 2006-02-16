@@ -35,6 +35,7 @@ import java.util.Stack;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.radeox.util.logging.SystemErrLogger;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
@@ -54,7 +55,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.ListProxy;
-import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntity;
+import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntityImpl;
 import uk.ac.cam.caret.sakai.rwiki.model.RWikiCurrentObjectImpl;
 import uk.ac.cam.caret.sakai.rwiki.model.RWikiPermissionsImpl;
 import uk.ac.cam.caret.sakai.rwiki.service.api.EntityHandler;
@@ -66,6 +67,7 @@ import uk.ac.cam.caret.sakai.rwiki.service.api.dao.ObjectProxy;
 import uk.ac.cam.caret.sakai.rwiki.service.api.dao.RWikiCurrentObjectDao;
 import uk.ac.cam.caret.sakai.rwiki.service.api.dao.RWikiHistoryObjectDao;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiCurrentObject;
+import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiHistoryObject;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiPermissions;
@@ -768,13 +770,13 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			List l = cdao.findRWikiSubPages("/site/" + siteId);
 			for (Iterator i = l.iterator(); i.hasNext();) {
 				RWikiObject rwo = (RWikiObject) i.next();
-				RWikiEntity rwe = new RWikiEntity(rwo);
+				RWikiEntity rwe = (RWikiEntity) getEntity(rwo);
 				results.append("Archiving " + rwo.getName() + "\n");
 				rwe.toXml(doc, stack);
 				List lh = this.findRWikiHistoryObjects(rwo);
 				for (Iterator ih = lh.iterator(); ih.hasNext();) {
 					RWikiObject rwoh = (RWikiObject) ih.next();
-					RWikiEntity rwoeh = new RWikiEntity(rwoh);
+					RWikiEntity rwoeh = (RWikiEntity) getEntity(rwo);
 					results.append("Archiving " + rwoh.getName() + " version "
 							+ rwoh.getVersion() + "\n");
 					rwoeh.toXml(doc, stack);
@@ -833,7 +835,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 
 				RWikiCurrentObjectImpl archiverwo = new RWikiCurrentObjectImpl();
-				RWikiEntity rwe = new RWikiEntity(archiverwo);
+				RWikiEntity rwe = (RWikiEntity) getEntity(archiverwo);
 				rwe.fromXml(element, defaultRealm);
 				
 				// clear the ID to remove hibernate session issues and recreate a new id issues
@@ -987,6 +989,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		if (eh == null)
 			return false;
 		eh.setReference(SERVICE_NAME, ref, reference);
+		
 		return true;
 	}
 
@@ -1118,8 +1121,11 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	private Entity getEntity(Reference ref, EntityHandler eh) {
 
+		System.err.print("Finding "+ref.getId());
 		RWikiObject rwo = this.getRWikiCurrentObjectDao().findByGlobalName(
 				ref.getId());
+		
+		System.err.print("Finding "+ref.getId()+" as "+rwo);
 
 		int revision = eh.getRevision(ref);
 		if (revision != -1 && revision != rwo.getRevision().intValue()) {
@@ -1130,8 +1136,25 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			} 
 
 		}
-		RWikiEntity rwe = new RWikiEntity(rwo);
+		RWikiEntity rwe = (RWikiEntity) getEntity(rwo);
 		return rwe;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @param rwo
+	 * @return
+	 */
+	public Entity getEntity(RWikiObject rwo) {
+		return new RWikiEntityImpl(rwo);
+	}
+	/**
+	 * {@inheritDoc}
+	 * @param rwo
+	 * @return
+	 */
+	public Reference getReference(RWikiObject rwo ) {
+		return EntityManager.newReference(getEntity(rwo).getReference());
 	}
 
 	/**
@@ -1166,5 +1189,6 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	private void enableWiki(Site site) {
 		// ? we are not going to delete the content, so do nothing TODO
 	}
-
+	
+	
 }

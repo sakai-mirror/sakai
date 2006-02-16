@@ -54,7 +54,7 @@ public class NameHelperTest extends TestCase {
                 tests.add(array);
             }
         } catch (IOException e) {
-            System.out.println("Couldn't load testBundle: " + testBundleName
+        		throw new RuntimeException("Couldn't load testBundle: " + testBundleName
                     + " correctly. Will ignore.");
         }
     }

@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
+import org.sakaiproject.service.legacy.entity.Reference;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.dao.ObjectProxy;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiCurrentObject;
@@ -266,7 +267,20 @@ public interface RWikiObjectService extends EntityProducer {
 	 */
 	RWikiPermissions createNewRWikiPermissionsImpl();
 
+	/**
+	 * fetches the entity based on the RWikiObject
+	 * @param rwo
+	 * @return
+	 */
+	Entity getEntity(RWikiObject rwo);
 	
+	/**
+	 * Fetches the Reference Object from the Entity manager based on the RWikiObject
+	 * @param rwo
+	 * @return
+	 */
+	Reference getReference(RWikiObject rwo );
+
     
     
 }
