@@ -63,6 +63,8 @@ public class ResourcesMetadata
 	public static final String XSD_DATETIME = "dateTime";
 	public static final String XSD_DURATION = "duration";	
 	public static final String XSD_ANYURI = "anyURI";	
+	public static final String XSD_NORMALIZED_STRING = "normalizedString";
+	
 	
 	public static final String CLASS_SAKAI_RESOURCE_NAMESPACE = "http://sakaiproject.org/metadata#";
 	public static final String CLASS_SAKAI_RESOURCE_LOCALNAME = "Resource";
@@ -73,7 +75,7 @@ public class ResourcesMetadata
 	public static final String NAMESPACE_DCTERMS = "http://purl.org/dc/terms/";
 	public static final String NAMESPACE_DCTERMS_ABBREV = "dcterms:";
 	public static final String NAMESPACE_XSD = "http://www.w3.org/2001/XMLSchema#";
-	public static final String NAMESPACE_XSD_ABBREV = "xsd:";
+	public static final String NAMESPACE_XSD_ABBREV = "xs:";
 	
 	protected static Integer NamespaceNumber = new Integer(0);
 	
@@ -574,7 +576,7 @@ public class ResourcesMetadata
 
 	/** The default size of the text-input widget for strings */
 	public static final int DEFAULT_LENGTH = 50;
-		
+
 	public static ResourcesMetadata getProperty(String name)
 	{
 		ResourcesMetadata rv = null;

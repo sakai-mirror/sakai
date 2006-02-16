@@ -80,9 +80,10 @@
 	<form name="addItemForm" id="addItemForm" method="post" action="#toolForm("ResourcesAction")" >
 		<input type="hidden" name="sakai_action" value="doCreate" />
 		<input type="hidden" name="collectionId" value="$validator.escapeHtml($collectionId)" />
+		<input type="hidden" name="suspended-operations-stack" id="suspended-operations-stack" value="push" />
 		<p class="shorttext">
 			<label for="itemType01">$tlang.getString("addi.add")</label><span class="skip">$tlang.getString("addi.selectmessage")</span>
-			<select id="itemType01"  name="itemType" onchange="javascript:submitform('addItemForm');">
+			<select id="itemType01"  name="itemType" onchange="javascript:document.getElementById('suspended-operations-stack').value='peek';submitform('addItemForm');">
 				<option value="$TYPE_FOLDER" id="$validator.escapeJavascript("$TYPE_FOLDER")"#if("$itemType" == "$TYPE_FOLDER") selected="selected"#end>$tlang.getString("addi.folder")</option>
 				<option value="$TYPE_UPLOAD" id="$validator.escapeJavascript("$TYPE_UPLOAD")"#if("$itemType" == "$TYPE_UPLOAD") selected="selected"#end>$tlang.getString("addi.upload")</option>
 				<option value="$TYPE_URL" id="$validator.escapeJavascript("$TYPE_URL")"#if("$itemType" == "$TYPE_URL") selected="selected"#end>$tlang.getString("addi.url")</option>

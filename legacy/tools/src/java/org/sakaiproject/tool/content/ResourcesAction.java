@@ -2217,6 +2217,19 @@ public class ResourcesAction
 			itemType = TYPE_UPLOAD;
 		}
 		
+		//%%%%%%%  push on stack iff starting from scratch
+		String stackOp = params.getString("suspended-operations-stack");
+		
+		Map current_stack_frame = null;
+		if(stackOp != null && stackOp.equals("peek"))
+		{
+			current_stack_frame = peekAtStack(state);
+		}
+		else
+		{
+			current_stack_frame = pushOnStack(state);
+		}
+		
 		String encoding = data.getRequest().getCharacterEncoding();
 		
 		String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
@@ -2237,9 +2250,7 @@ public class ResourcesAction
 			item.setCopyrightStatus(defaultCopyrightStatus);
 			new_items.add(item);
 		}
-		
-		Map current_stack_frame = pushOnStack(state);
-		
+				
 		current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
 		current_stack_frame.put(STATE_STACK_CREATE_TYPE, itemType);
 		
@@ -3926,10 +3937,15 @@ public class ResourcesAction
 			}
 			current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
 		}
-		List removed = (List) state.getAttribute(STATE_REMOVED_ATTACHMENTS);
+		List removed = (List) current_stack_frame.get(STATE_REMOVED_ATTACHMENTS);
 		if(removed == null)
 		{
-			removed = new Vector();
+			removed = (List) state.getAttribute(STATE_REMOVED_ATTACHMENTS);
+			if(removed == null)
+			{
+				removed = new Vector();
+			}
+			current_stack_frame.put(STATE_REMOVED_ATTACHMENTS, removed);
 		}
 		Iterator removeIt = removed.iterator();
 		while(removeIt.hasNext())
@@ -5772,9 +5788,19 @@ public class ResourcesAction
 			else if(typename.equals(String.class.getName()))
 			{
 				length = node.getType().getMaxLength();
+				String baseType = node.getType().getBaseType();
+				
 				if(isRichText)
 				{
 					widget = ResourcesMetadata.WIDGET_WYSIWYG;
+				}
+				else if(baseType.trim().equalsIgnoreCase(ResourcesMetadata.NAMESPACE_XSD_ABBREV + ResourcesMetadata.XSD_NORMALIZED_STRING))
+				{
+					widget = ResourcesMetadata.WIDGET_STRING;
+					if(length > 50)
+					{
+						length = 50;
+					}
 				}
 				else if(length > 100 || length < 1)
 				{
