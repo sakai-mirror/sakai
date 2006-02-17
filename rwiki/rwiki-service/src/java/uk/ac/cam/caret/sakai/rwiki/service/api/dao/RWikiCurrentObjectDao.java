@@ -115,5 +115,15 @@ public interface RWikiCurrentObjectDao extends RWikiObjectDao {
      */
     RWikiObject findLastRWikiSubPage(String globalParentPageName);
 
+    /**
+     * Find all the pages with names starting with the supplied name cahnged since the date givem 
+     * ordered by the most recent.
+     * @param time changes after this date
+     * @param user the user
+     * @param basepath pages starting with this name
+     * @return
+     */
+	List findAllChangedSince(Date time, String basepath);
+
 
 }

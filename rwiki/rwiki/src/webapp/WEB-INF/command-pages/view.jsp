@@ -103,11 +103,6 @@
 	      </div>
 	    </div>
 	  </div>
-	      <jsp:element name="a"><!--
-		--><jsp:attribute name="href"><c:out value="${viewBean.publicViewUrl}"/></jsp:attribute><!--
-		--><jsp:attribute name="target">publicview</jsp:attribute><!--
-		-->public link<!--
-		--></jsp:element>
 	</div>
       </div>
       <jsp:directive.include file="comments.jsp"/>

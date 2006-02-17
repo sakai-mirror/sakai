@@ -25,7 +25,11 @@ package uk.ac.cam.caret.sakai.rwiki.tool.bean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.sakaiproject.service.legacy.entity.Entity;
+
+import uk.ac.cam.caret.sakai.rwiki.service.api.EntityHandler;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.utils.XmlEscaper;
@@ -77,6 +81,20 @@ public class ReferencesBean {
             }
         }
         return referenceLinks;
+    }
+    public List getFeedsLinks() {
+    		List feedsLinks = new ArrayList();
+        Map m = objectService.getHandlers();
+        for ( Iterator ii = m.keySet().iterator(); ii.hasNext(); ){
+        		String name = (String) ii.next();
+        		EntityHandler eh = (EntityHandler)m.get(name);
+    			Entity e = objectService.getEntity(rwikiObject);
+        		String displayLink = eh.getHTML(e);
+        		if ( displayLink != null  ) {
+        			feedsLinks.add(displayLink);
+        		}
+        }
+        return feedsLinks;
     }
 
     /**

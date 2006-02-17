@@ -24,6 +24,7 @@ package uk.ac.cam.caret.sakai.rwiki.service.api;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
@@ -280,6 +281,19 @@ public interface RWikiObjectService extends EntityProducer {
 	 * @return
 	 */
 	Reference getReference(RWikiObject rwo );
+	/**
+	 * A Map containing EntityHandlers for the Service, Each entity handler handles a subtype
+	 * @return
+	 */
+	Map getHandlers();
+	/**
+	 * Find all the changes under this point and under since the time specified
+	 * @param time the time after which to consider changes
+	 * @param user the user
+	 * @param basepath the base path
+	 * @return a list of RWikiCurrentObjects
+	 */
+	List findAllChangedSince(Date time, String user, String basepath);
 
     
     

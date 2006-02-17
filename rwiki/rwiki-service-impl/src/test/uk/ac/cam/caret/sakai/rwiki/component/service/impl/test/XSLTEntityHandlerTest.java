@@ -157,7 +157,7 @@ public class XSLTEntityHandlerTest extends TestCase {
 				logger.info("--getId = " + decoded.getId());
 
 			} else {
-				System.out.println("--null");
+				logger.info("--null");
 			}
 			if (result != null) {
 				logger.info("++Context = " + result.getContext());
@@ -261,7 +261,6 @@ public class XSLTEntityHandlerTest extends TestCase {
 				// eh.setXslt(test[i]);
 				// eh.init();
 				eh.outputContent(rwe, request, response);
-				response.reset();
 			}
 		}
 		float timet = (float) 1.0 * (System.currentTimeMillis() - start);

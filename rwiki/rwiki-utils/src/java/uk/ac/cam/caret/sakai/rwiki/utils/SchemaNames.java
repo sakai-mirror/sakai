@@ -208,5 +208,53 @@ public class SchemaNames {
 
 	public static final String ATTR_REQUEST_REQUEST_URL = "request-url";
 
+	public static final String EL_NSENTITYSERVICE = "entity-service";
+
+	public static final String EL_NSREQUEST_PROPERTIES = "request-properties";
+
+	public static final String EL_NSENTITY = "entity";
+
+	public static final String EL_NSRENDEREDCONTENT = "rendered-content";
+
+	public static final String EL_NSERROR = "error";
+
+	public static final String EL_NSERRORDESC = "error-description";
+
+	public static final String EL_NSRAWCONTENT = "wiki-content";
+
+	public static final String EL_NSREQUEST_ATTRIBUTES = "request-attributes";
+
+	public static final String EL_NSREQUEST_ATTRIBUTE = "request-attribute";
+
+	public static final String EL_NSREQUEST_PARAMS = "request-params";
+
+	public static final String EL_NSREQUEST_PARAM = "request-param";
+
+	public static final String EL_CHANGES = "changes";
+
+	public static final String EL_NSCHANGES = "changes";
+
+	public static final String ATTR_ID = "eid";
+
+	public static final String ATTR_OWNER = "owner";
+
+	public static final String ATTR_REALM = "pagerealm";
+
+	public static final String ATTR_REFERENCED = "referenced";
+
+	public static final String ATTR_SHA1 = "sha1";
+
+	public static final String ATTR_USER = "last-edited-by";
+
+	public static final String ATTR_REVISION = "revision";
+
+	public static final String ATTR_LAST_CHANGE = "last-modified";
+
+	public static final String EL_CHANGE = "change";
+
+	public static final String EL_NSCHANGE = "change";
+
+	public static final String ATTR_SERVER_URL = "server-url";
+
 
 }

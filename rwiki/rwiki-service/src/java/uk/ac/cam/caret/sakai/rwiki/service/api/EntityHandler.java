@@ -120,4 +120,11 @@ public interface EntityHandler {
 	 */
 	Collection getAuthzGroups(Reference entity);
 
+	/**
+	 * Generate a HTML link for the entity handler
+	 * @param e
+	 * @return
+	 */
+	String getHTML(Entity e);
+
 }

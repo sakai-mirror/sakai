@@ -777,6 +777,36 @@ both pages are identical. Any change in the page, will change the digest on the 
 		      </td>
 		    </tr>
 		    <tr>
+		    	<th>Feeds<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'feedshelp'); return false;"
+		    		onMouseOut="hidePopup('feedshelp');" >?</a></th>
+		      <td colspan="6">
+		      </td>
+		    </tr>
+		    
+		    <tr>
+		    	<th>Feeds<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'feedshelp'); return false;"
+		    		onMouseOut="hidePopup('feedshelp');" >?</a></th>
+		      <td colspan="6">
+			  <ul id="feedsLinks">
+			  <li>
+		    	      <jsp:element name="a"><!--
+		--><jsp:attribute name="href"><c:out value="${viewBean.publicViewUrl}"/></jsp:attribute><!--
+		--><jsp:attribute name="target">publicview</jsp:attribute><!--
+		-->Printer Friendly<!--
+		--></jsp:element>
+			</li>
+			<c:set var="feedsLinks"
+			  value="${referencesBean.feedsLinks }" />
+			<c:if test="${fn:length(feedsLinks) gt 0}">
+			    <c:forEach var="item" items="${feedsLinks }">
+			      <li><c:out value="${item }" escapeXml="false" /></li>
+			    </c:forEach>
+			</c:if>
+			  </ul>
+		      </td>
+		    </tr>
+		    
+		    <tr>
 		    	<th>Owner<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'ownerhelp'); return false;"
 		    		onMouseOut="hidePopup('ownerhelp');" >?</a></th>
 		      <td colspan="6"><c:out value="${currentRWikiObject.owner}"/></td>

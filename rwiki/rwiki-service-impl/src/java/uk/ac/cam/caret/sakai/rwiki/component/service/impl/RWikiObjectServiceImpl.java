@@ -1189,6 +1189,15 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	private void enableWiki(Site site) {
 		// ? we are not going to delete the content, so do nothing TODO
 	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List findAllChangedSince(Date time, String user, String basepath) {
+		// TODO: Put authz in place 
+		return cdao.findAllChangedSince(time,basepath);
+	}
 	
 	
 }

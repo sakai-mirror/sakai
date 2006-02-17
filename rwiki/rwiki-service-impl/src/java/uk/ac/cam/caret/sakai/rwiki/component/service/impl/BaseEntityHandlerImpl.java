@@ -25,6 +25,8 @@
 
 package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 
+import java.text.MessageFormat;
+
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.Reference;
 
@@ -51,6 +53,11 @@ public abstract class BaseEntityHandlerImpl implements EntityHandler {
 	 * type
 	 */
 	private String minorType = null;
+
+	/**
+	 * if the eh provides a link, this URL will give the link
+	 */
+	private String feedFormat;
 
 	/**
 	 * {@inheritDoc}
@@ -160,6 +167,28 @@ public abstract class BaseEntityHandlerImpl implements EntityHandler {
 	public void setAccessURLStart(String accessURLStart) {
 		this.accessURLStart = accessURLStart;
 	}
+	
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getHTML(Entity e) {
+		if ( feedFormat == null ) return null;
+		return MessageFormat.format(feedFormat,new Object[] {e.getUrl()});
+	}
+
+	/**
+	 * @return Returns the feedFormat.
+	 */
+	public String getFeedFormat() {
+		return feedFormat;
+	}
+
+	/**
+	 * @param feedFormat The feedFormat to set.
+	 */
+	public void setFeedFormat(String feedFormat) {
+		this.feedFormat = feedFormat;
+	}
 
 }

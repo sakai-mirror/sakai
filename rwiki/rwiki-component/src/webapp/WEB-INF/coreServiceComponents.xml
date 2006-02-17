@@ -142,6 +142,7 @@
     <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
+    <property name="feedFormat"><value>&lt;a href="/access{0}html" &gt;&lt;img src="/library/image/sakai/html.gif" border="0" /&gt;&lt;/a&gt;</value></property>
     <property name="responseHeaders">
       <map>
         <entry key="content-type"><value>text/html</value></entry>
@@ -179,11 +180,13 @@
     <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
+    <property name="feedFormat"><value>&lt;a href="/access{0}odf" &gt;&lt;img src="/library/image/sakai/word.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    
   </bean>
   <bean id="rwikiRSSHandler"
-    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XSLTEntityHandler"  
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XLSTChangesHandler"  
     init-method="init"  destroy-method="destroy" >
-    <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt</value></property>
+    <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/torss10.xslt</value></property>
     <property name="minorType"><value>rss</value></property>    
     <property name="logger"><ref bean="rwiki-logger"/></property>
     <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
@@ -194,6 +197,27 @@
     <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
+    <property name="rwikObjectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService" /></property>
+    <property name="feedFormat"><value>&lt;a href="/access{0}rss" &gt;&lt;img src="/sakai-rwiki/images/rss10.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="responseHeaders">
+      <map>
+        <entry key="content-type"><value>text/xml</value></entry>
+      </map>     
+    </property>
+    <property name="outputProperties">
+      <map>
+        <entry key="indent"><value>yes</value></entry>
+        <entry key="encoding"><value>UTF-8</value></entry>
+        <entry key="media-type"><value>text/xml</value></entry>
+        <entry key="{http://xml.apache.org/xalan}indent-amount"><value>2</value></entry> 
+        <!--
+          <entry key="{http://xml.apache.org/xalan}content-handler"><value>org.apache.xml.serializer.ToHTMLStream</value></entry> 
+          <entry key="{http://xml.apache.org/xalan}entities"><value>org/apache/xml/serializer/HTMLEntities</value></entry> 
+          
+        -->
+      </map>     
+    </property>
+    
   </bean>
   
 </beans>

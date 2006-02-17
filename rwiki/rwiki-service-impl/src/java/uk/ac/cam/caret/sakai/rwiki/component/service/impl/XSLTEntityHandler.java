@@ -194,7 +194,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 
 			ch.startDocument();
 			ch.startElement(SchemaNames.NS_CONTAINER,
-					SchemaNames.EL_ENTITYSERVICE, SchemaNames.EL_NSXMLSERVICE,
+					SchemaNames.EL_ENTITYSERVICE, SchemaNames.EL_NSENTITYSERVICE,
 					dummyAttributes);
 
 			{
@@ -220,81 +220,17 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 
 				ch.startElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_REQUEST_PROPERTIES,
-						SchemaNames.EL_NSXMLSERVICE, propA);
+						SchemaNames.EL_NSREQUEST_PROPERTIES, propA);
 			}
-			// add the attributes
-			ch.startElement(SchemaNames.NS_CONTAINER,
-					SchemaNames.EL_REQUEST_ATTRIBUTES,
-					SchemaNames.EL_NSXMLSERVICE, dummyAttributes);
-			for (Enumeration e = request.getAttributeNames(); e
-					.hasMoreElements();) {
-				String name = (String) e.nextElement();
-				Object attr = request.getAttribute(name);
-				AttributesImpl propA = new AttributesImpl();
-				propA.addAttribute("", SchemaNames.ATTR_NAME,
-						SchemaNames.ATTR_NAME, "string", name);
-				if (attr instanceof Object[]) {
-					Object[] oattr = (Object[]) attr;
-					ch.startElement(SchemaNames.NS_CONTAINER,
-							SchemaNames.EL_REQUEST_ATTRIBUTE,
-							SchemaNames.EL_NSXMLSERVICE, propA);
-					for (int i = 0; i < oattr.length; i++) {
-						addElement(ch, SchemaNames.NS_CONTAINER,
-								SchemaNames.EL_VALUE, SchemaNames.EL_NSVALUE,
-								dummyAttributes,oattr[i]);
-					}
-					ch.endElement(SchemaNames.NS_CONTAINER,
-							SchemaNames.EL_REQUEST_ATTRIBUTE,
-							SchemaNames.EL_NSXMLSERVICE);
-				} else {
-					ch.startElement(SchemaNames.NS_CONTAINER,
-							SchemaNames.EL_REQUEST_ATTRIBUTE,
-							SchemaNames.EL_NSXMLSERVICE, propA);
-					addElement(ch, SchemaNames.NS_CONTAINER,
-							SchemaNames.EL_VALUE, SchemaNames.EL_NSVALUE,
-							dummyAttributes, attr);
-					ch.endElement(SchemaNames.NS_CONTAINER,
-							SchemaNames.EL_REQUEST_ATTRIBUTE,
-							SchemaNames.EL_NSXMLSERVICE);
-				}
-			}
+			addRequestAttributes(ch,request);
+			addRequestParameters(ch,request);
 
-			ch.endElement(SchemaNames.NS_CONTAINER,
-					SchemaNames.EL_REQUEST_ATTRIBUTES,
-					SchemaNames.EL_NSXMLSERVICE);
-
-			// add the request parameters
-			ch.startElement(SchemaNames.NS_CONTAINER,
-					SchemaNames.EL_REQUEST_PARAMS, SchemaNames.EL_NSXMLSERVICE,
-					dummyAttributes);
-			for (Enumeration e = request.getParameterNames(); e
-					.hasMoreElements();) {
-				String name = (String) e.nextElement();
-				String[] attr = request.getParameterValues(name);
-				AttributesImpl propA = new AttributesImpl();
-				propA.addAttribute("", SchemaNames.ATTR_NAME,
-						SchemaNames.ATTR_NAME, "string", name);
-				ch.startElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_REQUEST_PARAM,
-						SchemaNames.EL_NSXMLSERVICE, propA);
-				for (int i = 0; i < attr.length; i++) {
-					addElement(ch, SchemaNames.NS_CONTAINER,
-							SchemaNames.EL_VALUE, SchemaNames.EL_NSVALUE,
-							dummyAttributes, attr[i]);
-				}
-				ch.endElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_REQUEST_PARAM,
-						SchemaNames.EL_NSXMLSERVICE);
-			}
-
-			ch.endElement(SchemaNames.NS_CONTAINER,
-					SchemaNames.EL_REQUEST_PARAMS, SchemaNames.EL_NSXMLSERVICE);
-
+			
 			ch.endElement(SchemaNames.NS_CONTAINER,
 					SchemaNames.EL_REQUEST_PROPERTIES,
-					SchemaNames.EL_NSXMLSERVICE);
+					SchemaNames.EL_NSREQUEST_PROPERTIES);
 			ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ENTITY,
-					SchemaNames.EL_NSXMLSERVICE, dummyAttributes);
+					SchemaNames.EL_NSENTITY, dummyAttributes);
 			ch.startElement(SchemaNames.NS_CONTAINER,
 					SchemaNames.EL_XMLPROPERTIES,
 					SchemaNames.EL_NSXMLPROPERTIES, dummyAttributes);
@@ -341,16 +277,16 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 				RWikiObject rwo = rwe.getRWikiObject();
 				ch.startElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_RENDEREDCONTENT,
-						SchemaNames.EL_NSXMLPROPERTIES, dummyAttributes);
+						SchemaNames.EL_NSRENDEREDCONTENT, dummyAttributes);
 				renderToXML(rwo, ch, user);
 				ch.endElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_RENDEREDCONTENT,
-						SchemaNames.EL_NSXMLSERVICE);
+						SchemaNames.EL_NSRENDEREDCONTENT);
 			}
 			ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ENTITY,
-					SchemaNames.EL_NSXMLSERVICE);
+					SchemaNames.EL_NSENTITY);
 			ch.endElement(SchemaNames.NS_CONTAINER,
-					SchemaNames.EL_ENTITYSERVICE, SchemaNames.EL_NSXMLSERVICE);
+					SchemaNames.EL_ENTITYSERVICE, SchemaNames.EL_NSENTITYSERVICE);
 
 			ch.endDocument();
 
@@ -379,7 +315,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * @throws SAXException
 	 *             if the underlying sax chain has a problem
 	 */
-	private void addElement(final ContentHandler ch, final String ns,
+	public void addElement(final ContentHandler ch, final String ns,
 			final String lname, final String qname, final Attributes attr,
 			final Object content) throws SAXException {
 
@@ -409,7 +345,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * @param rwo
 	 * @param ch
 	 */
-	private void renderToXML(RWikiObject rwo, final ContentHandler ch,
+	public void renderToXML(RWikiObject rwo, final ContentHandler ch,
 			String user) throws SAXException, IOException {
 
 		/**
@@ -498,24 +434,24 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 						+ "\n:: from ::\n" + rwo.getContent());
 				Attributes dummyAttributes = new AttributesImpl();
 				ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ERROR,
-						SchemaNames.EL_NSXMLPROPERTIES, dummyAttributes);
+						SchemaNames.EL_NSERROR, dummyAttributes);
 				ch.startElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_ERRORDESC,
-						SchemaNames.EL_NSXMLPROPERTIES, dummyAttributes);
+						SchemaNames.EL_NSERRORDESC, dummyAttributes);
 				String s = "The Rendered Content did not parse correctly "
 						+ ex.getMessage();
 				ch.characters(s.toCharArray(), 0, s.length());
 				ch.endElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_ERRORDESC, SchemaNames.EL_NSXMLSERVICE);
+						SchemaNames.EL_ERRORDESC, SchemaNames.EL_NSERRORDESC);
 				ch.startElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_RAWCONTENT,
-						SchemaNames.EL_NSXMLPROPERTIES, dummyAttributes);
+						SchemaNames.EL_NSRAWCONTENT, dummyAttributes);
 				ch.characters(renderedPage.toCharArray(), 0, renderedPage
 						.length());
 				ch.endElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_RAWCONTENT, SchemaNames.EL_NSXMLSERVICE);
+						SchemaNames.EL_RAWCONTENT, SchemaNames.EL_NSRAWCONTENT);
 				ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ERROR,
-						SchemaNames.EL_NSXMLSERVICE);
+						SchemaNames.EL_NSERROR);
 			}
 
 		}
@@ -786,5 +722,77 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	public void setResponseHeaders(Map responseHeaders) {
 		this.responseHeaders = responseHeaders;
 	}
+	public void addRequestAttributes(ContentHandler ch, HttpServletRequest request ) throws Exception {
+		// add the attributes
+		AttributesImpl dummyAttributes = new AttributesImpl();
+		ch.startElement(SchemaNames.NS_CONTAINER,
+				SchemaNames.EL_REQUEST_ATTRIBUTES,
+				SchemaNames.EL_NSREQUEST_ATTRIBUTES, dummyAttributes);
+		for (Enumeration e = request.getAttributeNames(); e
+				.hasMoreElements();) {
+			String name = (String) e.nextElement();
+			Object attr = request.getAttribute(name);
+			AttributesImpl propA = new AttributesImpl();
+			propA.addAttribute("", SchemaNames.ATTR_NAME,
+					SchemaNames.ATTR_NAME, "string", name);
+			if (attr instanceof Object[]) {
+				Object[] oattr = (Object[]) attr;
+				ch.startElement(SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_REQUEST_ATTRIBUTE,
+						SchemaNames.EL_NSREQUEST_ATTRIBUTE, propA);
+				for (int i = 0; i < oattr.length; i++) {
+					addElement(ch, SchemaNames.NS_CONTAINER,
+							SchemaNames.EL_VALUE, SchemaNames.EL_NSVALUE,
+							dummyAttributes,oattr[i]);
+				}
+				ch.endElement(SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_REQUEST_ATTRIBUTE,
+						SchemaNames.EL_NSREQUEST_ATTRIBUTE);
+			} else {
+				ch.startElement(SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_REQUEST_ATTRIBUTE,
+						SchemaNames.EL_NSREQUEST_ATTRIBUTE, propA);
+				addElement(ch, SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_VALUE, SchemaNames.EL_NSVALUE,
+						dummyAttributes, attr);
+				ch.endElement(SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_REQUEST_ATTRIBUTE,
+						SchemaNames.EL_NSREQUEST_ATTRIBUTE);
+			}
+		}
 
+		ch.endElement(SchemaNames.NS_CONTAINER,
+				SchemaNames.EL_REQUEST_ATTRIBUTES,
+				SchemaNames.EL_NSREQUEST_ATTRIBUTES);
+		}
+	public void addRequestParameters(ContentHandler ch, HttpServletRequest request ) throws Exception {
+		AttributesImpl dummyAttributes = new AttributesImpl();
+
+		// add the request parameters
+		ch.startElement(SchemaNames.NS_CONTAINER,
+				SchemaNames.EL_REQUEST_PARAMS, SchemaNames.EL_NSREQUEST_PARAMS,
+				dummyAttributes);
+		for (Enumeration e = request.getParameterNames(); e
+				.hasMoreElements();) {
+			String name = (String) e.nextElement();
+			String[] attr = request.getParameterValues(name);
+			AttributesImpl propA = new AttributesImpl();
+			propA.addAttribute("", SchemaNames.ATTR_NAME,
+					SchemaNames.ATTR_NAME, "string", name);
+			ch.startElement(SchemaNames.NS_CONTAINER,
+					SchemaNames.EL_REQUEST_PARAM,
+					SchemaNames.EL_NSREQUEST_PARAM, propA);
+			for (int i = 0; i < attr.length; i++) {
+				addElement(ch, SchemaNames.NS_CONTAINER,
+						SchemaNames.EL_VALUE, SchemaNames.EL_NSVALUE,
+						dummyAttributes, attr[i]);
+			}
+			ch.endElement(SchemaNames.NS_CONTAINER,
+					SchemaNames.EL_REQUEST_PARAM,
+					SchemaNames.EL_NSREQUEST_PARAM);
+		}
+
+		ch.endElement(SchemaNames.NS_CONTAINER,
+				SchemaNames.EL_REQUEST_PARAMS, SchemaNames.EL_REQUEST_PARAMS);
+		}
 }
