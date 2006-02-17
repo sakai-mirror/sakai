@@ -25,13 +25,21 @@
 		<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" ></div>
 	#end
 	<h3>
-		$tlang.getString("att.add")
+		#if($helper_title)
+			$helper_title
+		#else
+			$tlang.getString("att.add")
+		#end
 	</h3>
 	<div class="instruction">
-		$tlang.getString("att.instr")
+		#if($helper_instruction)
+			$helper_instruction
+		#else
+			$tlang.getString("att.instr")
+		#end
 		#if($attached.isEmpty())
 		#else
-			$tlang.getString("dav.win5b")
+			$tlang.getString("att.fin")
 		#end	
 	</div>
 
@@ -74,7 +82,7 @@
 		</h4>
 		<p class="shorttext">
 			<label for="upload">$tlang.getString("att.fil")</label>
-			<input type="file" name="upload" id="upload" class="upload" onchange="javascript:showNotif('submitnotif','attachButton','attachForm');document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachupload" "special=upload")';submitform('attachForm');" />
+			<input type="file" name="upload" id="upload" class="upload" onchange="javascript:showNotif('submitnotif','attachButton','attachForm');document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachupload" "special=upload")';submitform('attachForm');"#if($disable_attach_links) disabled="disabled"#end />
 			<span id="submitnotif" style="visibility:hidden">$tlang.getString("gen.proces")</span>
 		</p>	
 		<h4>
@@ -82,7 +90,7 @@
 		</h4>
 		<p class="shorttext">
 			<label for="file">$tlang.getString("edit.url")</label>
-			<input type="text" size="40" name="url" id="url" onkeypress="javascript:document.getElementById('add_url').disabled=false;" onchange="javascript:document.getElementById('add_url').disabled=true;document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachurl" "special=upload")';submitform('attachForm');" />
+			<input type="text" size="40" name="url" id="url" onkeypress="javascript:document.getElementById('add_url').disabled=false;" onchange="javascript:document.getElementById('add_url').disabled=true;document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachurl" "special=upload")';submitform('attachForm');"#if($disable_attach_links) disabled="disabled"#end />
 			<span class="act">
 				<input type="button" name="add_url" id="add_url" value="$tlang.getString("gen.add")" onclick="javascript:document.getElementById('attachForm').action='#toolLinkParam("ResourcesAction" "doAttachurl" "special=upload")';submitform('attachForm');" disabled="disabled" />
 			</span>
@@ -283,7 +291,7 @@
 												|
 											#end
 											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.copy')">$tlang.getString("att.copy").trim()</a>
+											<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.copy')"#if($disable_attach_links) disabled="disabled"#end>$tlang.getString("att.copy").trim()</a>
 										#end
 									#end
 								</div>
@@ -486,7 +494,7 @@
 														|
 													#end
 													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.copy')">$tlang.getString("att.copy").trim()</a>
+													<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.copy')"#if($disable_attach_links) disabled="disabled"#end>$tlang.getString("att.copy").trim()</a>
 												#end
 											#end
 										</div>

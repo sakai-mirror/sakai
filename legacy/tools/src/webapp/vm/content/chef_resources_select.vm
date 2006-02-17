@@ -25,13 +25,21 @@
 		<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" ></div>
 	#end
 	<h3>
-		$tlang.getString("att.add")
+		#if($helper_title)
+			$helper_title
+		#else
+			$tlang.getString("att.add")
+		#end
 	</h3>
 	<div class="instruction">
-		$tlang.getString("att.instr")
+		#if($helper_instruction)
+			$helper_instruction
+		#else
+			$tlang.getString("att.instr")
+		#end
 		#if($attached.isEmpty())
 		#else
-			$tlang.getString("dav.win5b")
+			$tlang.getString("att.fin")
 		#end	
 	</div>
 

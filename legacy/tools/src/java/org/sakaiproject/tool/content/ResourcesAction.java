@@ -335,7 +335,9 @@ public class ResourcesAction
 	/** The name of the state attribute for the instructions when a tool uses Resources as attachment helper (for create or attach but not for edit mode) */
 	public static final String STATE_ATTACH_INSTRUCTION = "resources.attach_instruction";
 	
-	
+	/** The name of the state attribute containing the name of the tool that invoked Resources as attachment helper */
+	public static final String STATE_ATTACH_TOOL_NAME = "resources.attach_tool_name";
+		
 	/** The name of the state attribute for "new-item" attachment indicating the type of item */
 	public static final String STATE_ATTACH_TEXT = "resources.attach_text";
 	
@@ -1023,6 +1025,34 @@ public class ResourcesAction
 		}
 		current_stack_frame.put(STATE_RESOURCES_MODE, helper_mode);
 		
+		String helper_title = (String) current_stack_frame.get(STATE_ATTACH_TITLE);
+		if(helper_title == null)
+		{
+			helper_title = (String) state.getAttribute(STATE_ATTACH_TITLE);
+			if(helper_title != null)
+			{
+				current_stack_frame.put(STATE_ATTACH_TITLE, helper_title);
+			}
+		}
+		if(helper_title != null)
+		{
+			context.put("helper_title", helper_title);
+		}
+		
+		String helper_instruction = (String) current_stack_frame.get(STATE_ATTACH_INSTRUCTION);
+		if(helper_instruction == null)
+		{
+			helper_instruction = (String) state.getAttribute(STATE_ATTACH_INSTRUCTION);
+			if(helper_instruction != null)
+			{
+				current_stack_frame.put(STATE_ATTACH_INSTRUCTION, helper_instruction);
+			}
+		}
+		if(helper_instruction != null)
+		{
+			context.put("helper_instruction", helper_instruction);
+		}
+		
 		String title = (String) current_stack_frame.get(STATE_STACK_EDIT_ITEM_TITLE);
 		if(title == null)
 		{
@@ -1034,7 +1064,7 @@ public class ResourcesAction
 		}
 		if(title != null && title.trim().length() > 0)
 		{
-			context.put("helper_title", title);
+			context.put("helper_subtitle", title);
 		}
 		
 		String template = null;
@@ -1392,6 +1422,23 @@ public class ResourcesAction
 		context.put("attached", new_items);
 		context.put("last", new Integer(new_items.size() - 1));
 		
+		Integer max_cardinality = (Integer) current_stack_frame.get(STATE_ATTACH_CARDINALITY);
+		if(max_cardinality == null)
+		{
+			max_cardinality = (Integer) state.getAttribute(STATE_ATTACH_CARDINALITY);
+			if(max_cardinality == null)
+			{
+				max_cardinality = CARDINALITY_MULTIPLE;
+			}
+			current_stack_frame.put(STATE_ATTACH_CARDINALITY, max_cardinality);
+		}
+		context.put("max_cardinality", max_cardinality);
+		
+		if(new_items.size() >= max_cardinality.intValue())
+		{
+			context.put("disable_attach_links", Boolean.TRUE.toString());
+		}
+		
 		if(state.getAttribute(STATE_HELPER_CHANGED) != null)
 		{
 			context.put("list_has_changed", "true");
@@ -1450,7 +1497,7 @@ public class ResourcesAction
 		context.put ("currentSortAsc", sortedAsc);
 		context.put("TRUE", Boolean.TRUE.toString());
 		
-		String current_user_id = UserDirectoryService.getCurrentUser().getId();
+		// String current_user_id = UserDirectoryService.getCurrentUser().getId();
 		
 		try
 		{
@@ -4045,6 +4092,7 @@ public class ResourcesAction
 				String resourceId = Validator.escapeResourceName(filename);
 				
 				String siteId = PortalService.getCurrentSiteId();
+				// %%%% need to get the name elsewhere for JSF tools  SAK-3892
 				String toolName = ToolManager.getCurrentTool().getTitle();
 				
 				ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, siteId, toolName, contentType, bytes, props);
@@ -4114,6 +4162,17 @@ public class ResourcesAction
 				new_items = new Vector();
 			}
 			current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
+		}
+		
+		Integer max_cardinality = (Integer) current_stack_frame.get(STATE_ATTACH_CARDINALITY);
+		if(max_cardinality == null)
+		{
+			max_cardinality = (Integer) state.getAttribute(STATE_ATTACH_CARDINALITY);
+			if(max_cardinality == null)
+			{
+				max_cardinality = CARDINALITY_MULTIPLE;
+			}
+			current_stack_frame.put(STATE_ATTACH_CARDINALITY, max_cardinality);
 		}
 				
 		boolean found = false;

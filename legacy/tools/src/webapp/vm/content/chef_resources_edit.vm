@@ -321,7 +321,9 @@
 </script>
 <div class="portletBody">
 	<h3>
-		#if($item.isFolder())
+		#if($helper_title)
+			$helper_title
+		#elseif($item.isFolder())
 			$tlang.getString("edit.folder")
 		#else
 			$tlang.getString("edit.edit") 
@@ -329,6 +331,11 @@
 	</h3>
 	
 	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+	#if($helper_instruction)
+		<p class="instruction">
+			$helper_instruction
+		</p>
+	#end
 	<p class="instruction">
 		$tlang.getString("edit.instr") <span class="reqStarInline">*</span>
 	</p>

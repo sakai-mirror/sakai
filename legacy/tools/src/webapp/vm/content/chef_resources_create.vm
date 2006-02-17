@@ -37,29 +37,28 @@
 
 <div class="portletBody">
 	######################## ================ Title, Instructions, Breadcrumb ================ ########################
-	#if("$itemType" == "$TYPE_FOLDER")
-		<h3>
+	<h3>
+		#if($helper_title)
+			$helper_title
+		#elseif("$itemType" == "$TYPE_FOLDER")
 			$tlang.getString("addf.addfolder")
-		</h3>
-		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" ></div>#end
-		<p class="instruction">
-			$tlang.getString("addf.instr")
-		</p>
-		<p class="instruction">
-			$tlang.getString("gen.instr2") <span class="reqStarInline">*</span>
-		</p>	
-	#else
-		<h3>
+		#else
 			$tlang.getString("gen.additems") 
-		</h3>
-		#if ($alertMessage)<div class="validation">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
-		<p class="instruction">
+		#end
+	</h3>
+	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" ></div>#end
+	<p class="instruction">
+		#if($helper_instruction)
+			$helper_instruction
+		#elseif("$itemType" == "$TYPE_FOLDER")
+			$tlang.getString("addf.instr")
+		#else
 			$tlang.getString("gen.instr1")
-		</p>	
-		<p class="instruction">
-			$tlang.getString("gen.instr2") <span class="reqStarInline">*</span>  
-		</p>
-	#end
+		#end
+	</p>
+	<p class="instruction">
+		$tlang.getString("gen.instr2") <span class="reqStarInline">*</span>
+	</p>	
 	<div class ="chefBreadCrumb">
 		$tlang.getString("gen.location")
 		<img src = "#imageLink($contentTypeImageService.getContentTypeImage("folder"))" border="0" alt="" />
