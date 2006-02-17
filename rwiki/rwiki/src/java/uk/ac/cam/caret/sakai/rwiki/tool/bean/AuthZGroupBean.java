@@ -78,6 +78,10 @@ public class AuthZGroupBean extends ViewBean {
         return this.getPageUrl(getPageName(), WikiPageAction.EDIT_REALM_ACTION.getName());
     }
     
+    public AuthzGroup getRealmEdit() {
+        return currentRealm;
+    }
+    
 	public String getRealmId() {
 		return realmId;
 	}
@@ -102,5 +106,9 @@ public class AuthZGroupBean extends ViewBean {
     
     public void setSiteUpdateAllowed(boolean siteUpdateAllowed) {
         this.siteUpdateAllowed = siteUpdateAllowed;
+    }
+    
+    public String getEscapedId() {
+        return realmId.replaceAll("_", "__");
     }
 }

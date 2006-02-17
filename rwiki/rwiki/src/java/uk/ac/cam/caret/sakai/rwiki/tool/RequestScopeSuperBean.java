@@ -39,6 +39,7 @@ import uk.ac.cam.caret.sakai.rwiki.service.message.api.MessageService;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.PopulateService;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.ToolRenderService;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupCollectionBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupEditBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.DiffBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.EditBean;
@@ -55,6 +56,7 @@ import uk.ac.cam.caret.sakai.rwiki.tool.bean.SearchBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.UpdatePermissionsBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.AuthZGroupBeanHelper;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.AuthZGroupCollectionBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.AuthZGroupEditBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.DiffHelperBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.PresenceBeanHelper;
@@ -522,6 +524,15 @@ public class RequestScopeSuperBean {
         return (AuthZGroupEditBean) map.get(key);
     }
 
+    public AuthZGroupCollectionBean getAuthZCollectionBean() {
+        String key = "authZGroupCollectionBean";
+        if (map.get(key) == null) {
+            AuthZGroupCollectionBean cb = AuthZGroupCollectionBeanHelper.createAuthZCollectionBean(realmService, getCurrentRWikiObject(), getViewBean(), objectService); 
+            map.put(key, cb);
+        }
+        return (AuthZGroupCollectionBean) map.get(key);
+    }
+    
     public PresenceBean getPresenceBean() {
         String key = "presenceBean";
         PresenceBean pb = (PresenceBean) map.get(key);
