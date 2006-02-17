@@ -76,7 +76,6 @@ public class AddStructuredArtifactDefinitionController extends AbstractStructure
       if (StructuredArtifactDefinitionValidator.PICK_SCHEMA_ACTION.equals(sad.getFilePickerAction()) ||
           StructuredArtifactDefinitionValidator.PICK_TRANSFORM_ACTION.equals(sad.getFilePickerAction())) {
          session.put(SAD_SESSION_TAG, sad);
-         session.put(FilePickerHelper.FILE_PICKER_FROM_TEXT, request.get("filePickerFrom"));
          session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
             ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.metaobjFile"));
          return new ModelAndView("pickSchema");

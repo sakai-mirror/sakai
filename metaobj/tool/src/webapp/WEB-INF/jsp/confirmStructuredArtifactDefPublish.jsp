@@ -1,6 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "messages"/>
 
 <div class ="chefPortletContent">
 
@@ -12,24 +14,20 @@
 </spring:bind>
 
 <fieldset>
-<legend>confirm</legend>
+<legend><fmt:message key="legend_confirm"/></legend>
 
 <div class="chefPageviewTitle">
 <spring:bind path="bean.action">
 <input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.value}"/>"/>
 <c:choose>
 <c:when test="${status.value == 'site_publish'}">
-Publishing will make this Form available to others in the worksite.
-Are you sure you want to do this?
+<fmt:message key="confirm_publish"/>
 </c:when>
 <c:when test="${status.value == 'global_publish'}">
-Global publishing will make this Form available to all users in all worksites.
-Are you sure you want to do this?
+<fmt:message key="confirm_globalPublish"/>
 </c:when>
 <c:when test="${status.value == 'suggest_global_publish'}">
-You are submitting a request that this Form be made availabe on a global basis.
-A system administator will need to approve your suggestion.
-Are you sure you want to do this?
+<fmt:message key="confirm_requestGlobalPublish"/>
 </c:when>
 </c:choose>
 </spring:bind>
@@ -41,8 +39,8 @@ Are you sure you want to do this?
 </spring:bind>
 
 <p class="act">
-<input name="publish" type="submit" value="Yes"/>
-<input name="_cancel" type="submit" value="No"/>
+<input name="publish" type="submit" value="<fmt:message key="button_yes"/>"/>
+<input name="_cancel" type="submit" value="<fmt:message key="button_no"/>"/>
 </p>
 
 </form>

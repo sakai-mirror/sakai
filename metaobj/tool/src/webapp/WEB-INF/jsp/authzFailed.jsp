@@ -3,7 +3,10 @@
 
 
 <H2>
-Authorization failed for function <c:out value="${exception.function}" /> on object <c:out value="${exception.qualifier}" />
+  <fmt:message key="text_authenticationFailed">
+    <fmt:param><c:out value="${exception.function}"/></fmt:param>
+    <fmt:param><c:out value="${exception.qualifier}"/></fmt:param>
+  </fmt:message>
 </H2>
 <P>
 

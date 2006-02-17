@@ -1,25 +1,33 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "messages"/>
+
 <osp:authZMap prefix="metaobj." var="can" qualifier="${authZqualifier}"/>
 <!-- GUID=<c:out value="${newFormId}" /> -->
 
 <div class="navIntraTool">
 <c:if test="${can.create}">
       <a href="<osp:url value="/addStructuredArtifactDefinition.osp?new=true"/>"
-          title="New..." >New...</a>
+          title="<fmt:message key="action_new_title"/>" ><fmt:message key="action_new"/></a>
       <a href="<osp:url value="/importStructuredArtifactDefinition.osp"/>"
-          title="Import..." >Import...</a>
+          title="<fmt:message key="action_import_title"/>" ><fmt:message key="action_import"/></a>
     </c:if>
    <c:if test="${isMaintainer}">
 
       <a href="<osp:url value="sakai.permissions.helper.helper/tool?panel=Main">
-       <osp:param name="session.sakaiproject.permissions.description"
-            value="Set permissions for ${tool.title} in worksite '${worksite.title}'"/>
+       <osp:param name="session.sakaiproject.permissions.description">
+         <fmt:message key="message_permissionsEdit">
+           <fmt:param><c:out value="${tool.title}"/></fmt:param>
+	   <fmt:param><c:out value="${worksite.title}"/></fmt:param>
+         </fmt:message>
+       </osp:param>
+
        <osp:param name="session.sakaiproject.permissions.siteRef"
             value="${worksite.reference}"/>
        <osp:param name="session.sakaiproject.permissions.prefix" value="metaobj."/>
-       </osp:url>"title="Permissions..." >Permissions...
+       </osp:url>"title="<fmt:message key="action_permissions"/>" ><fmt:message key="action_permissions_title"/>
      </a>
 
    </c:if>
@@ -29,19 +37,19 @@
 <osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
 
-<h3>Form Manager</h3>
+<h3><fmt:message key="title_formManager"/></h3>
 <c:if test="${!empty types}">
  <table class="listHier" cellspacing="0" >
    <thead>
       <tr>
-         <th scope="col">Name</th>
-         <th scope="col">Owner</th>
-         <th scope="col">Site Id</th>
-         <th scope="col">Last Modified</th>
+         <th scope="col"><fmt:message key="table_header_name"/></th>
+         <th scope="col"><fmt:message key="table_header_owner"/></th>
+         <th scope="col"><fmt:message key="table_header_siteId"/></th>
+         <th scope="col"><fmt:message key="table_header_modified"/></th>
          <c:if test="${isGlobal == false}">
-            <th scope="col">Site State</th>
+            <th scope="col"><fmt:message key="table_header_siteState"/></th>
          </c:if>
-         <th scope="col">Global State</th>
+         <th scope="col"><fmt:message key="table_header_globalState"/></th>
       </tr>
    </thead>
 
@@ -51,13 +59,13 @@
          <c:out value="${home.type.description}" />
          <c:if test="${home.modifiable}">
             <div class="itemAction">
-                <c:if test="${can.edit}"><a href="<osp:url value="/editStructuredArtifactDefinition.osp"/>&id=<c:out value="${home.id}" />">edit</a> |
-                <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=structuredArtifactDefinitionManager&formId=<c:out value="${home.id.value}" />/<c:out value="${home.type.description}" /> Form.zip">export</a>
+                <c:if test="${can.edit}"><a href="<osp:url value="/editStructuredArtifactDefinition.osp"/>&id=<c:out value="${home.id}" />"><fmt:message key="table_action_edit"/></a> |
+                <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=structuredArtifactDefinitionManager&formId=<c:out value="${home.id.value}" />/<c:out value="${home.type.description}" /> Form.zip"><fmt:message key="table_action_export"/></a>
                 </c:if>
-                <c:if test="${!isGlobal && can.publish && home.canPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=site_publish&id=<c:out value="${home.id}" />">publish</a></c:if>
-                <c:if test="${isGlobal && can.publish &&  home.canGlobalPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />">global publish</a></c:if>
-                <c:if test="${!isGlobal && home.canSuggestGlobalPublish && can['suggest.global.publish']}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=suggest_global_publish&id=<c:out value="${home.id}" />">suggest for global publish</a></c:if>
-                <c:if test="${isGlobal && home.canApproveGlobalPublish && can.publish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />">approve global publish</a></c:if>
+                <c:if test="${!isGlobal && can.publish && home.canPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=site_publish&id=<c:out value="${home.id}" />"><fmt:message key="table_action_publish"/></a></c:if>
+                <c:if test="${isGlobal && can.publish &&  home.canGlobalPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />"><fmt:message key="table_action_globalPublish"/></a></c:if>
+                <c:if test="${!isGlobal && home.canSuggestGlobalPublish && can['suggest.global.publish']}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=suggest_global_publish&id=<c:out value="${home.id}" />"><fmt:message key="table_action_suggestPublishGlobal"/></a></c:if>
+                <c:if test="${isGlobal && home.canApproveGlobalPublish && can.publish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />"><fmt:message key="table_action_approveGlobalPublish"/></a></c:if>
             </div>
          </c:if>
       </TD>
@@ -69,7 +77,7 @@
       <TD>
          <c:choose>
             <c:when test="${!home.modifiable}">
-               global
+               <fmt:message key="text_global"/>
             </c:when>
             <c:otherwise>
                <c:set var="site" value="${sites[home.siteId]}" />
@@ -77,26 +85,26 @@
                   <c:out value="${site.title}" />
                </c:if>
                <c:if test="${empty site}">
-                  global
+                  <fmt:message key="text_global"/>
                </c:if>
             </c:otherwise>
          </c:choose>
       </TD>
-      <TD nowrap><c:out value="${home.modified}" /></TD>
+      <TD nowrap><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${home.modified}" pattern="${dateFormat}"/></TD>
       <c:if test="${isGlobal == false}">
       <TD>
          <c:choose>
             <c:when test="${home.global}">
-               N/A
+               <fmt:message key="text_na"/>
             </c:when>
             <c:otherwise>
                <c:if test="${home.modifiable}">
                   <c:choose>
                      <c:when test="${home.siteState == 0}">
-                        unpublished
+                        <fmt:message key="text_unpublished"/>
                      </c:when>
                      <c:when test="${home.siteState == 2}">
-                        published
+                        <fmt:message key="text_published"/>
                      </c:when>
                   </c:choose>
                </c:if>
@@ -108,28 +116,27 @@
          <c:if test="${home.modifiable}">
             <c:choose>
                <c:when test="${home.globalState == 0}">
-                  unpublished
+                  <fmt:message key="text_unpublished"/>
                </c:when>
                <c:when test="${home.globalState == 1}">
-                  waiting for approval
+                  <fmt:message key="text_waitingForApproval"/>
                </c:when>
                <c:when test="${home.globalState == 2}">
-                  published
+                  <fmt:message key="text_published"/>
                </c:when>
             </c:choose>
          </c:if>
-         <c:if test="${!home.modifiable}">published</c:if>
+         <c:if test="${!home.modifiable}"><fmt:message key="text_published"/></c:if>
       </TD>
     </TR>
   </c:forEach>
   </table>
 <br/>
-'Site State' refers to the state of this Form within the worksite (eg. unpublished/published). <br/><br/>
-'Global State' refers to the state of the Form within the system (eg. unpublished/waiting for approval/published).<br/><br/>
-Only System Administrators can approve a Form for global access.
+<fmt:message key="text_explainState"/>
+<fmt:message key="text_adminsApproveGlobalAccess"/>
 
 </c:if>
 
 <c:if test="${empty types}">
-No Forms Available.  Click 'New' to create one.
+<fmt:message key="text_noFormsAvailable"/>
 </c:if>

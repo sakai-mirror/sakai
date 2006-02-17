@@ -1,8 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-
-
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "messages"/>
 
 <c:if test="${empty bean.id}">
 <form method="POST" action="addStructuredArtifactDefinition.osp">
@@ -20,28 +20,28 @@
 
 <c:if test="${empty bean.id}">
 <h3>
-Add Form
+<fmt:message key="title_addForm"/>
 </h3>
 <p class="instruction">
-Please select an XSD file that defines your new form.
+<fmt:message key="instructions_selectXSD"/>
 </p>
 <p class="instruction">
-Required items marked with <span class="reqStarInline">*</span>
+<fmt:message key="instructions_requiredItems"/>
 </p>
 </c:if>
 <c:if test="${!empty bean.id}">
 <h3>
-Edit Form
+<fmt:message key="title_editForm"/>
 </h3>
 <p class="instruction">
-Please edit your form properties
+<fmt:message key="instructions_pleaseEdit"/>
 </p>
 <p class="instruction">
-Required items marked with <span class="reqStarInline">*</span>
+<fmt:message key="instructions_requiredItems"/>
 </p>
 </c:if>
 
-<h4>Form</h4>
+<h4><fmt:message key="header_form"/></h4>
 
 <p class="shorttext">
 <spring:bind path="bean.description">
@@ -54,7 +54,7 @@ Required items marked with <span class="reqStarInline">*</span>
 <c:if test="${!bean.published}">
 <p class="shorttext">
 <c:if test="${empty bean.id}"><span class="reqStar">*</span></c:if>
-<label>Schema File (xsd)</label>
+<label><fmt:message key="label_schemaFile"/></label>
 <spring:bind path="bean.schemaFileName">
 <input type="text" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"
       disabled="true" value="<c:out value="${status.value}" />" />
@@ -69,13 +69,13 @@ Required items marked with <span class="reqStarInline">*</span>
       document.forms[0]['filePickerFrom'].value='<spring:message
          code="filePickerMessage.pickSchema" />';
       document.forms[0].submit();return false;">
-Select Schema File</a>
+<fmt:message key="text_selectXSD"/></a>
 </spring:bind>
 </p>
 
 <p class="shorttext">
 <spring:bind path="bean.documentRoot">
-<label>Document Root Node</label>
+<label><fmt:message key="label_documentRoot"/></label>
 <select name="<c:out value="${status.expression}" />" id="<c:out value="${status.expression}" />">
 <c:forEach var="element" items="${elements}" varStatus="status">
 <option value="<c:out value="${element}"/>"><c:out value="${element}"/></option>
@@ -87,7 +87,7 @@ Select Schema File</a>
 
 <p class="longtext">
 <spring:bind path="bean.instruction">
-<label class="block">Instruction</label>
+<label class="block"><fmt:message key="label_Instructions"/></label>
 <table><tr>
 <td>
 <textarea id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" cols="80" rows="25"><c:out value="${status.value}"/></textarea>
@@ -100,11 +100,11 @@ Select Schema File</a>
 </p>
 
 <p class="act">
-<input name="action" type="submit" value="Save"/>
+<input name="action" type="submit" value="<fmt:message key="button_save"/>"/>
 <input name="action" id="action" type="hidden" value=""/>
 <input name="filePickerAction" id="filePickerAction" type="hidden" value="" />
 <input name="filePickerFrom" id="filePickerFrom" type="hidden" value="" />
-<input type="button" value="Cancel" onclick="window.document.location='<osp:url value="listStructuredArtifactDefinitions.osp"/>'">
+<input type="button" value="<fmt:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="listStructuredArtifactDefinitions.osp"/>'">
 </p>
 
 </form>
