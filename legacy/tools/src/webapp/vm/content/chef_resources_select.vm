@@ -168,7 +168,10 @@
 										|
 									#end
 									#set ($itemsOnLine = $itemsOnLine + 1)
-									<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
+									#if($disable_attach_links)
+									#else
+										<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
+									#end
 								#end
 							</div>
 						#end
@@ -279,29 +282,38 @@
 										#set ($itemsOnLine = 0)
 										####### deal with adding item/folder
 										#if($member.canAddItem())
-											#if ($itemsOnLine > 0)
-												|
+											#if($disable_attach_links)
+											#else
+												#if ($itemsOnLine > 0)
+													|
+												#end
+												#set ($itemsOnLine = $itemsOnLine + 1)
+												<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${member.id})")" title="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
 											#end
-											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${member.id})")" title="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
 										#end
 									#else
 										#set ($itemsOnLine = 0)
 										####### deal with attaching item
 										#if ($member.canRead() && $member.canSelect())
-											#if ($itemsOnLine > 0)
-												|
+											#if($disable_attach_links)
+											#else
+												#if ($itemsOnLine > 0)
+													|
+												#end
+												#set ($itemsOnLine = $itemsOnLine + 1)
+												<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.select')">$tlang.getString("att.select").trim()</a>
 											#end
-											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.select')">$tlang.getString("att.select").trim()</a>
 										#end
 										####### deal with duplicating item
 										#if($member.canRead() && $member.canAddItem())
-											#if ($itemsOnLine > 0)
-												|
+											#if($disable_attach_links)
+											#else
+												#if ($itemsOnLine > 0)
+													|
+												#end
+												#set ($itemsOnLine = $itemsOnLine + 1)
+												<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}")" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
 											#end
-											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}")" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
 										#end
 									#end
 								</div>
@@ -409,11 +421,14 @@
 										#set ($itemsOnLine = 0)
 										####### deal with adding item/folder
 										#if($root.canAddItem())
-											#if ($itemsOnLine > 0)
-												|
+											#if($disable_attach_links)
+											#else
+												#if ($itemsOnLine > 0)
+													|
+												#end
+												#set ($itemsOnLine = $itemsOnLine + 1)
+												<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
 											#end
-											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${root.id})")" title ="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
 										#end
 									</div>
 								#end
@@ -520,29 +535,38 @@
 												#set ($itemsOnLine = 0)
 												####### deal with adding item/folder
 												#if($member.canAddItem())
-													#if ($itemsOnLine > 0)
-														|
+													#if($disable_attach_links)
+													#else
+														#if ($itemsOnLine > 0)
+															|
+														#end
+														#set ($itemsOnLine = $itemsOnLine + 1)
+														<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${member.id})")" title="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
 													#end
-													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doCreate" "itemType=${TYPE_UPLOAD}&collectionId=$validator.escapeUrl(${member.id})")" title="$tlang.getString('att.addnewtitle')">$tlang.getString("att.addnew").trim()</a>
 												#end
 											#else
 												#set ($itemsOnLine = 0)
 												####### deal with attaching item
 												#if ($member.canRead() && $member.canSelect())
-													#if ($itemsOnLine > 0)
-														|
+													#if($disable_attach_links)
+													#else
+														#if ($itemsOnLine > 0)
+															|
+														#end
+														#set ($itemsOnLine = $itemsOnLine + 1)
+														<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.select')">$tlang.getString("att.select").trim()</a>
 													#end
-													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.select')">$tlang.getString("att.select").trim()</a>
 												#end
 												####### deal with duplicating item
 												#if($member.canRead() && $member.canAddItem())
-													#if ($itemsOnLine > 0)
-														|
+													#if($disable_attach_links)
+													#else
+														#if ($itemsOnLine > 0)
+															|
+														#end
+														#set ($itemsOnLine = $itemsOnLine + 1)
+														<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}")" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
 													#end
-													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doPasteitem" "itemId=${validator.escapeUrl(${member.id})}&collectionId=${validator.escapeUrl(${member.container})}")" title="$tlang.getString('list.dup')">$tlang.getString("list.dup").trim()</a>
 												#end
 											#end
 										</div>

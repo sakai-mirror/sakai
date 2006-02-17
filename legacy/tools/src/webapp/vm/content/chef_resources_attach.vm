@@ -287,11 +287,14 @@
 										#set ($itemsOnLine = 0)
 										####### deal with attaching item
 										#if ($member.canRead())
-											#if ($itemsOnLine > 0)
-												|
+											#if($disable_attach_links)
+											#else
+												#if ($itemsOnLine > 0)
+													|
+												#end
+												#set ($itemsOnLine = $itemsOnLine + 1)
+												<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.copy')">$tlang.getString("att.copy").trim()</a>
 											#end
-											#set ($itemsOnLine = $itemsOnLine + 1)
-											<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.copy')"#if($disable_attach_links) disabled="disabled"#end>$tlang.getString("att.copy").trim()</a>
 										#end
 									#end
 								</div>
@@ -490,11 +493,14 @@
 												#set ($itemsOnLine = 0)
 												####### deal with attaching item
 												#if ($member.canRead() && $member.canSelect())
-													#if ($itemsOnLine > 0)
-														|
+													#if($disable_attach_links)
+													#else
+														#if ($itemsOnLine > 0)
+															|
+														#end
+														#set ($itemsOnLine = $itemsOnLine + 1)
+														<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.copy')">$tlang.getString("att.copy").trim()</a>
 													#end
-													#set ($itemsOnLine = $itemsOnLine + 1)
-													<a href="#toolLinkParam("ResourcesAction" "doAttachitem" "itemId=$validator.escapeUrl(${member.id})")" title ="$tlang.getString('att.copy')"#if($disable_attach_links) disabled="disabled"#end>$tlang.getString("att.copy").trim()</a>
 												#end
 											#end
 										</div>
