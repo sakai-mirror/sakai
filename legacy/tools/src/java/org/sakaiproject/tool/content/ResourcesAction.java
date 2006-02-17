@@ -67,6 +67,7 @@ import org.sakaiproject.cheftool.VelocityPortlet;
 import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
 import org.sakaiproject.cheftool.menu.Menu;
 import org.sakaiproject.cheftool.menu.MenuEntry;
+import org.sakaiproject.component.legacy.entity.ReferenceComponent;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdLengthException;
@@ -288,6 +289,8 @@ public class ResourcesAction
 	private static final int INTEGER_WIDGET_LENGTH = 12;
 	private static final int DOUBLE_WIDGET_LENGTH = 18;
 
+	private static final 	Pattern INDEXED_FORM_FIELD_PATTERN = Pattern.compile("(.+)\\.(\\d+)");
+
 	/************** the metadata extension of edit/create contexts *****************************************/
 
 	private static final String STATE_METADATA_GROUPS = "resources.metadata.types";
@@ -346,6 +349,9 @@ public class ResourcesAction
 	
 	/** The name of the state attribute for "new-item" attachment indicating the id of the form-type if item-type is TYPE_FORM (ignored otherwise) */
 	public static final String STATE_ATTACH_FORM_ID = "resources.attach_form_id";
+	
+	/** The name of the state attribute indicating which form field a resource should be attached to */ 
+	public static final String STATE_ATTACH_FORM_FIELD = "resources.attach_form_field";
 	
 	/** The name of the state attribute for the maximum number of items to attach. The attribute value will be an Integer, usually CARDINALITY_SINGLE or CARDINALITY_MULTIPLE. */
 	public static final String STATE_ATTACH_CARDINALITY = "resources.attach_cardinality";
@@ -516,7 +522,7 @@ public class ResourcesAction
 	private static final String STATE_FROM = "resources.from";
 
 	private static final String STATE_ENCODING = "resources.encoding";
-	
+
 	/**
 	* Build the context for normal display
 	*/
@@ -1444,6 +1450,17 @@ public class ResourcesAction
 			context.put("list_has_changed", "true");
 		}
 		
+		String form_field = (String) current_stack_frame.get(ResourcesAction.STATE_ATTACH_FORM_FIELD);
+		if(form_field == null)
+		{
+			form_field = (String) state.getAttribute(ResourcesAction.STATE_ATTACH_FORM_FIELD);
+			if(form_field != null)
+			{
+				current_stack_frame.put(ResourcesAction.STATE_ATTACH_FORM_FIELD, form_field);
+				state.removeAttribute(ResourcesAction.STATE_ATTACH_FORM_FIELD);
+			}
+		}
+		
 		// find the ContentTypeImage service
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
 		
@@ -1745,8 +1762,14 @@ public class ResourcesAction
 		// pick the template based on whether client wants links or copies
 		String template = TEMPLATE_SELECT;
 		Object attach_links = current_stack_frame.get(STATE_STACK_ATTACH_LINKS);
-				
-		state.getAttribute(STATE_ATTACH_LINKS);
+		if(attach_links == null)
+		{
+			attach_links = state.getAttribute(STATE_ATTACH_LINKS);
+			if(attach_links != null)
+			{
+				current_stack_frame.put(STATE_STACK_ATTACH_LINKS, attach_links);
+			}
+		}
 		if(attach_links == null)
 		{
 			// user wants copies in hidden attachments area
@@ -2264,7 +2287,6 @@ public class ResourcesAction
 			itemType = TYPE_UPLOAD;
 		}
 		
-		//%%%%%%%  push on stack iff starting from scratch
 		String stackOp = params.getString("suspended-operations-stack");
 		
 		Map current_stack_frame = null;
@@ -2327,6 +2349,9 @@ public class ResourcesAction
 	 * initiate creation of one or more resource items (file uploads, html docs, text docs, or urls -- not folders)
 	 * default type is file upload
 	 */
+	/**
+	 * @param data
+	 */
 	public static void doCreateitem(RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
@@ -2340,8 +2365,6 @@ public class ResourcesAction
 				
 		String itemType = params.getString("itemType");
 		String flow = params.getString("flow");
-		//String mode = (String) state.getAttribute(STATE_MODE);
-		//String helper_mode = (String) state.getAttribute(STATE_RESOURCES_MODE);
 		boolean attach_me = params.getBoolean("attach_me");
 		
 		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
@@ -2354,27 +2377,13 @@ public class ResourcesAction
 		if(flow == null || flow.equals("cancel"))
 		{
 			pop = true;
-			/*
-			if(MODE_HELPER.equals(mode) && attach_me)
-			{
-				cleanupState(state);
-				helper_mode = MODE_ATTACHMENT_DONE;
-			}
-			else if(MODE_HELPER.equals(mode))
-			{
-				helper_mode = MODE_ATTACHMENT_SELECT;
-			}
-			else
-			{
-				mode = MODE_LIST;
-			}
-			*/
 		}
 		else if(flow.equals("updateNumber"))
 		{
 			captureMultipleValues(state, params, false);
 			int number = params.getInt("numberOfItems");
 			Integer numberOfItems = new Integer(number);
+			current_stack_frame.put(ResourcesAction.STATE_STACK_CREATE_NUMBER, numberOfItems);
 			
 			// clear display of error messages
 			state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
@@ -2427,22 +2436,6 @@ public class ResourcesAction
 				if(alerts.isEmpty())
 				{
 					pop = true;
-					/*
-					if(MODE_HELPER.equals(mode) && attach_me)
-					{
-						cleanupState(state);
-						helper_mode = MODE_ATTACHMENT_DONE;
-					}
-					else if(MODE_HELPER.equals(mode))
-					{
-						helper_mode = MODE_ATTACHMENT_SELECT;
-					}
-					else
-					{
-						mode = MODE_LIST;
-					}
-					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
-					*/
 				}
 			}
 		}
@@ -2457,22 +2450,6 @@ public class ResourcesAction
 				if(alerts.isEmpty())
 				{
 					pop = true;
-					/*
-					if(MODE_HELPER.equals(mode) && attach_me)
-					{
-						cleanupState(state);
-						helper_mode = MODE_ATTACHMENT_DONE;
-					}
-					else if(MODE_HELPER.equals(mode))
-					{
-						helper_mode = MODE_ATTACHMENT_SELECT;
-					}
-					else
-					{
-						mode = MODE_LIST;
-					}
-					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
-					*/
 				}
 			}
 		}
@@ -2487,22 +2464,6 @@ public class ResourcesAction
 				if(alerts.isEmpty())
 				{
 					pop = true;
-					/*
-					if(MODE_HELPER.equals(mode) && attach_me)
-					{
-						cleanupState(state);
-						helper_mode = MODE_ATTACHMENT_DONE;
-					}
-					else if(MODE_HELPER.equals(mode))
-					{
-						helper_mode = MODE_ATTACHMENT_SELECT;
-					}
-					else
-					{
-						mode = MODE_LIST;
-					}
-					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
-					*/
 				}
 			}
 		}
@@ -2517,22 +2478,6 @@ public class ResourcesAction
 				if(alerts.isEmpty())
 				{
 					pop =true;
-					/*
-					if(MODE_HELPER.equals(mode) && attach_me)
-					{
-						cleanupState(state);
-						helper_mode = MODE_ATTACHMENT_DONE;
-					}
-					else if(MODE_HELPER.equals(mode))
-					{
-						helper_mode = MODE_ATTACHMENT_SELECT;
-					}
-					else
-					{
-						mode = MODE_LIST;
-					}
-					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
-					*/
 				}
 			}
 		}
@@ -2547,22 +2492,6 @@ public class ResourcesAction
 				if(alerts.isEmpty())
 				{
 					pop = true;
-					/*
-					if(MODE_HELPER.equals(mode) && attach_me)
-					{
-						cleanupState(state);
-						helper_mode = MODE_ATTACHMENT_DONE;
-					}
-					else if(MODE_HELPER.equals(mode))
-					{
-						helper_mode = MODE_ATTACHMENT_SELECT;
-					}
-					else
-					{
-						mode = MODE_LIST;
-					}
-					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
-					*/
 				}
 			}
 		}
@@ -2582,22 +2511,6 @@ public class ResourcesAction
 				if(alerts.isEmpty())
 				{
 					pop = true;
-					/*
-					if(MODE_HELPER.equals(mode) && attach_me)
-					{
-						cleanupState(state);
-						helper_mode = MODE_ATTACHMENT_DONE;
-					}
-					else if(MODE_HELPER.equals(mode))
-					{
-						helper_mode = MODE_ATTACHMENT_SELECT;
-					}
-					else
-					{
-						mode = MODE_LIST;
-					}
-					current_stack_frame.remove(STATE_STACK_CREATE_ITEMS);
-					*/
 				}
 			}
 		}
@@ -2664,8 +2577,6 @@ public class ResourcesAction
 		else if(flow.equals("linkResource") && TYPE_FORM.equals(itemType))
 		{
 			captureMultipleValues(state, params, false);
-			//alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
-			
 			createLink(data, state);
 			push = true;
 		}
@@ -2795,6 +2706,16 @@ public class ResourcesAction
 	{
 		ParameterParser params = data.getParameters ();
 		
+		String field = params.getString("field");
+		if(field == null)
+		{
+			
+		}
+		else
+		{
+			state.setAttribute(ResourcesAction.STATE_ATTACH_FORM_FIELD, field);
+		}
+		
 		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
 		state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
 		boolean show_other_sites = ServerConfigurationService.getBoolean("resources.show_all_collections.helper", SHOW_ALL_SITES_IN_FILE_PICKER);
@@ -2802,6 +2723,8 @@ public class ResourcesAction
 		state.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(show_other_sites));
 		/** This attribute indicates whether "Other Sites" twiggle should be open */
 		state.setAttribute(ResourcesAction.STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
+		
+		state.setAttribute(ResourcesAction.STATE_ATTACH_CARDINALITY, ResourcesAction.CARDINALITY_SINGLE);
 				
 		// put a copy of the attachments into the state
 		
@@ -2857,7 +2780,7 @@ public class ResourcesAction
 				itemType = (String) state.getAttribute(STATE_CREATE_TYPE);
 				if(itemType == null)
 				{
-					itemType = TYPE_UPLOAD;
+					itemType = ResourcesAction.TYPE_FORM;
 				}
 				current_stack_frame.put(STATE_STACK_CREATE_TYPE, itemType);
 			}
@@ -3147,6 +3070,10 @@ public class ResourcesAction
 							SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 							String formatted = df.format(date);
 							node.appendChild(doc.createTextNode(formatted));
+						}
+						else if(value instanceof Reference)
+						{
+							node.appendChild(doc.createTextNode(((Reference)value).getId()));
 						}
 						else
 						{
@@ -4054,10 +3981,13 @@ public class ResourcesAction
 		cleanupState(state);
 		state.setAttribute(STATE_ATTACHMENTS, attachments);
 
+		String field = null;
+		
 		// if there is at least one attachment
 		if (attachments.size() > 0)
 		{
 			state.setAttribute(AttachmentAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
+			field = (String) current_stack_frame.get(STATE_ATTACH_FORM_FIELD);
 		}
 		
 		// end up in main mode
@@ -4065,6 +3995,31 @@ public class ResourcesAction
 		popFromStack(state);
 		resetCurrentMode(state);
 		
+		if(field != null)
+		{
+			int index = 0;
+			String fieldname = field;
+			Matcher matcher = INDEXED_FORM_FIELD_PATTERN.matcher(field.trim());
+			if(matcher.matches())
+			{
+				fieldname = matcher.group(0);
+				index = Integer.parseInt(matcher.group(1));
+			}
+			
+			String fieldvalue = "";
+			
+			// we are trying to attach a link to a form field and there is at least one attachment
+			List items = (List) current_stack_frame.get(ResourcesAction.STATE_HELPER_NEW_ITEMS);
+			if(items == null)
+			{
+				items = (List) current_stack_frame.get(ResourcesAction.STATE_STACK_CREATE_ITEMS);
+			}
+			if(items != null && ! items.isEmpty())
+			{
+				EditItem item = (EditItem) items.get(0);
+				item.setValue(fieldname, index, attachments.get(0));
+			}
+		}
 	}
 	
 	public static void attachItem(String itemId, SessionState state)
@@ -4481,6 +4436,17 @@ public class ResourcesAction
 			current_stack_frame.put(STATE_STACK_CREATE_TYPE, itemType);
 		}
 		context.put("itemType", itemType);
+		
+		String field = (String) current_stack_frame.get(STATE_ATTACH_FORM_FIELD);
+		if(field == null)
+		{
+			field = (String) state.getAttribute(STATE_ATTACH_FORM_FIELD);
+			if(field != null)
+			{
+				current_stack_frame.put(STATE_ATTACH_FORM_FIELD, field);
+				state.removeAttribute(STATE_ATTACH_FORM_FIELD);
+			}
+		}
 
 		List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
 		if(new_items == null)
@@ -6028,6 +5994,11 @@ public class ResourcesAction
 							// use "now" as default in that case
 						}
 						property.setValue(0, time);
+					}
+					else if(ResourcesMetadata.WIDGET_ANYURI.equals(property.getWidget()))
+					{
+						Reference ref = EntityManager.newReference(ContentHostingService.getReference(value.getData()));
+						property.setValue(0, ref);
 					}
 					else
 					{
