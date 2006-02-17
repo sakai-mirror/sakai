@@ -34,6 +34,7 @@ import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.test.SakaiTestBase;
+import org.sakaiproject.test.SakaiTestTimer;
 
 public class ContentHostingTest extends SakaiTestBase {
 	private ContentHostingService contentService;
@@ -83,9 +84,13 @@ public class ContentHostingTest extends SakaiTestBase {
 		Assert.assertNotNull(contentService);
 		
 		// Add a content collection for the site
+		SakaiTestTimer timer = new SakaiTestTimer("create resource collection");
+		
 		String collectionId = contentService.getSiteCollection(site.getId());
 		ContentCollectionEdit edit = contentService.addCollection(collectionId);
 		contentService.commitCollection(edit);
+
+		timer.logTimeElapsed();
 
 		// Ensure that there aren't any members in the collection
 		ContentCollection collection = contentService.getCollection(collectionId);
