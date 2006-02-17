@@ -98,6 +98,10 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
       sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
       sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
       sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
+      
+      // state attribute ResourcesAction.STATE_ATTACH_TOOL_NAME should be set with a string to indicate name of tool
+      //String toolName = ToolManager.getCurrentTool().getTitle();
+      //sstate.setAttribute(ResourcesAction.STATE_ATTACH_TOOL_NAME, toolName);
 
       if (toolSession.getAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS) != null) {
          sstate.setAttribute(ResourcesAction.STATE_ATTACH_LINKS,

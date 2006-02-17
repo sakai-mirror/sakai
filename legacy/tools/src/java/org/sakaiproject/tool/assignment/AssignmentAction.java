@@ -4886,6 +4886,9 @@ extends PagedResourceActionII
 //chen - SAK-1624 (use new file picker)			state.setAttribute (AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 			state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
 			state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+			String toolName = ToolManager.getCurrentTool().getTitle();
+			state.setAttribute(ResourcesAction.STATE_ATTACH_TOOL_NAME, toolName);
+			
 			try
 			{
 			  String assignmentId = StringUtil.trimToNull(params.getString("assignmentId"));

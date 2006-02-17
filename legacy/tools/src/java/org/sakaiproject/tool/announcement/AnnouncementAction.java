@@ -3008,6 +3008,9 @@ extends PagedResourceActionII
 		/** This attribute indicates whether "Other Sites" twiggle should be open */
 		state.setAttribute(ResourcesAction.STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
 		
+		String toolName = ToolManager.getCurrentTool().getTitle();
+		state.setAttribute(ResourcesAction.STATE_ATTACH_TOOL_NAME, toolName);
+		
 		String subject = myState.getTempSubject();
 		String stateFromText = rb.getString("java.theann");//"the announcement";
 		if (subject != null && subject.length() > 0)

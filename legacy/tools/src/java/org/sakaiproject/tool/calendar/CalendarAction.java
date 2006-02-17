@@ -3685,6 +3685,9 @@ extends VelocityPortletStateAction
 		/** This attribute indicates whether "Other Sites" twiggle should be open */
 		sstate.setAttribute(ResourcesAction.STATE_SHOW_OTHER_SITES, Boolean.FALSE.toString());
 		
+		String toolName = ToolManager.getCurrentTool().getTitle();
+		sstate.setAttribute(ResourcesAction.STATE_ATTACH_TOOL_NAME, toolName);
+		
 		String activitytitle = rundata.getParameters().getString("activitytitle");
 		String stateFromText = rb.getString("java.schedule");
 		if (activitytitle != null && activitytitle.length() > 0)

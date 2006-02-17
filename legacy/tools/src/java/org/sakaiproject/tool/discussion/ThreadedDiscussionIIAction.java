@@ -471,7 +471,11 @@ public class ThreadedDiscussionIIAction
 		String mode = (String) state.getAttribute(STATE_MODE);
 		if (mode != null && mode.equals(MODE_NEW_TOPIC))
 		{
-		  subject = ((String) params.getString ("subject")).trim();
+		  subject = ((String) params.getString ("subject"));
+		  if(subject != null)
+		  {
+			 subject = subject.trim();
+		  }
 			state.setAttribute(NEW_TOPIC_SUBJECT, subject);
 			
 			String body = params.getCleanString ("body");
@@ -481,12 +485,20 @@ public class ThreadedDiscussionIIAction
 			String style = params.getString ("style");
 			state.setAttribute(NEW_TOPIC_REPLY_STYLE, style);
 			
-			String category = ((String) params.getString ("newcategory")).trim();		
-			if (category.length()==0)
+			String category = ((String) params.getString ("newcategory"));
+			if(category != null)
+			{
+				category = category.trim();
+			}
+			if (category == null || category.length()==0)
 			{
 				// no new category input
 				state.setAttribute(NEW_TOPIC_NEW_CATEGORY, new Boolean(Boolean.FALSE.toString()));
-				category = ((String) params.getString("category")).trim();
+				category = ((String) params.getString("category"));
+				if(category != null)
+				{
+					category = category.trim();
+				}
 				state.setAttribute(NEW_TOPIC_CATEGORY, category);
 			}
 			else
@@ -499,7 +511,11 @@ public class ThreadedDiscussionIIAction
 		else if (mode!=null && mode.equals(MODE_REPLY))
 		{
 			// save the input infos for the respond message
-		    subject = params.getString ("subject").trim();
+		    subject = params.getString ("subject");
+		    if(subject != null)
+		    	{
+		    		subject = subject.trim();
+		    	}
 		    state.setAttribute(RESPOND_SUBJECT, subject);
 		    
 		    String body = params.getCleanString ("body");
@@ -530,6 +546,9 @@ public class ThreadedDiscussionIIAction
 		}*/
 		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
 		state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+		String toolName = ToolManager.getCurrentTool().getTitle();
+		state.setAttribute(ResourcesAction.STATE_ATTACH_TOOL_NAME, toolName);
+		
 		if(attachments.size() > 0)
     {
       state.setAttribute(ResourcesAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);

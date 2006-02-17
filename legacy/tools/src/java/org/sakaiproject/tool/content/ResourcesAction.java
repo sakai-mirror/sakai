@@ -3745,7 +3745,17 @@ public class ResourcesAction
 				try
 				{
 					String siteId = PortalService.getCurrentSiteId();
-					String toolName = ToolManager.getCurrentTool().getTitle();
+					
+					String toolName = (String) current_stack_frame.get(STATE_ATTACH_TOOL_NAME);
+					if(toolName == null)
+					{
+						toolName = (String) state.getAttribute(STATE_ATTACH_TOOL_NAME);
+						if(toolName == null)
+						{
+							toolName = ToolManager.getCurrentTool().getTitle();
+						}
+						current_stack_frame.put(STATE_ATTACH_TOOL_NAME, toolName);
+					}
 					
 					ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, siteId, toolName, contentType, bytes, props);
 		
@@ -3835,7 +3845,16 @@ public class ResourcesAction
 			String newResourceId = Validator.escapeResourceName(url);
 			
 			String siteId = PortalService.getCurrentSiteId();
-			String toolName = ToolManager.getCurrentTool().getTitle();
+			String toolName = (String) current_stack_frame.get(STATE_ATTACH_TOOL_NAME);
+			if(toolName == null)
+			{
+				toolName = (String) state.getAttribute(STATE_ATTACH_TOOL_NAME);
+				if(toolName == null)
+				{
+					toolName = ToolManager.getCurrentTool().getTitle();
+				}
+				current_stack_frame.put(STATE_ATTACH_TOOL_NAME, toolName);
+			}
 		
 			ContentResource attachment = ContentHostingService.addAttachmentResource(newResourceId, siteId, toolName, ResourceProperties.TYPE_URL, newUrl, resourceProperties);
 
@@ -4092,8 +4111,16 @@ public class ResourcesAction
 				String resourceId = Validator.escapeResourceName(filename);
 				
 				String siteId = PortalService.getCurrentSiteId();
-				// %%%% need to get the name elsewhere for JSF tools  SAK-3892
-				String toolName = ToolManager.getCurrentTool().getTitle();
+				String toolName = (String) current_stack_frame.get(STATE_ATTACH_TOOL_NAME);
+				if(toolName == null)
+				{
+					toolName = (String) state.getAttribute(STATE_ATTACH_TOOL_NAME);
+					if(toolName == null)
+					{
+						toolName = ToolManager.getCurrentTool().getTitle();
+					}
+					current_stack_frame.put(STATE_ATTACH_TOOL_NAME, toolName);
+				}
 				
 				ContentResource attachment = ContentHostingService.addAttachmentResource(resourceId, siteId, toolName, contentType, bytes, props);
 				
@@ -4198,7 +4225,16 @@ public class ResourcesAction
 				String resourceId = Validator.escapeResourceName(filename);
 				
 				String siteId = PortalService.getCurrentSiteId();
-				String toolName = ToolManager.getCurrentTool().getTitle();
+				String toolName = (String) current_stack_frame.get(STATE_ATTACH_TOOL_NAME);
+				if(toolName == null)
+				{
+					toolName = (String) state.getAttribute(STATE_ATTACH_TOOL_NAME);
+					if(toolName == null)
+					{
+						toolName = ToolManager.getCurrentTool().getTitle();
+					}
+					current_stack_frame.put(STATE_ATTACH_TOOL_NAME, toolName);
+				}
 				
 				String displayName = props.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
 				String containerId = contentService.getContainingCollectionId (itemId);
