@@ -1096,6 +1096,23 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// check security
 		unlock(EVENT_RESOURCE_ADD, id);
 
+		return addValidPermittedCollection(id);
+	}
+
+	/**
+	 * Create a new collection with the given resource id, locked for update. Must commitCollection() to make official, or cancelCollection() when done!
+	 * 
+	 * @param id
+	 *        The id of the collection.
+	 * @exception IdUsedException
+	 *            if the id is already in use.
+	 * @exception InconsistentException
+	 *            if the containing collection does not exist.
+	 * @return a new ContentCollection object.
+	 */
+	protected ContentCollectionEdit addValidPermittedCollection(String id) throws IdUsedException,
+			InconsistentException
+	{
 		// make sure the containing collection exists
 		String container = isolateContainingId(id);
 		ContentCollection containingCollection = m_storage.getCollection(container);
@@ -1123,8 +1140,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		edit.setEvent(EVENT_RESOURCE_ADD);
 
 		return edit;
-
-	} // addCollection
+	}
 
 	/**
 	 * check permissions for getCollection().
@@ -6044,51 +6060,41 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			return;
 		}
 
+		// do our ONE security check to see if the current user can create the
+		// dropbox and all inner folders
+		if (!isDropboxMaintainer(siteId))
+		{
+			return;
+		}
+
 		// form the site's dropbox collection
 		String dropbox = COLLECTION_DROPBOX + siteId + "/";
 
-		// try to create if it doesn't exist
 		try
 		{
-			checkCollection(dropbox);
-		}
-		catch (IdUnusedException unused)
-		{
-			try
+			// try to create if it doesn't exist
+			if (findCollection(dropbox) == null)
 			{
-				ContentCollectionEdit edit = addCollection(dropbox);
+				ContentCollectionEdit edit = addValidPermittedCollection(dropbox);
 				ResourcePropertiesEdit props = edit.getPropertiesEdit();
 				props.addProperty(ResourceProperties.PROP_DISPLAY_NAME, siteId + DROPBOX_ID);
 				props.addProperty(ResourceProperties.PROP_DESCRIPTION, PROP_SITE_DROPBOX_DESCRIPTION);
 				commitCollection(edit);
 			}
-			catch (PermissionException permissionException)
-			{
-				return;
-			}
-			catch (IdUsedException e)
-			{
-				m_logger.warn("createDropboxCollection: IdUsedException: " + dropbox);
-				return;
-			}
-			catch (IdInvalidException e)
-			{
-				m_logger.warn("createDropboxCollection(): IdInvalidException: " + dropbox);
-				return;
-			}
-			catch (InconsistentException e)
-			{
-				m_logger.warn("createDropboxCollection(): InconsistentException: " + dropbox);
-				return;
-			}
 		}
-		catch (PermissionException e)
+		catch (TypeException e)
 		{
+			m_logger.warn("createDropboxCollection: TypeException: " + dropbox);
 			return;
 		}
-		catch (TypeException typeException)
+		catch (IdUsedException e)
 		{
-			m_logger.warn("createDropboxCollection(): typeException: " + dropbox);
+			m_logger.warn("createDropboxCollection: IdUsedException: " + dropbox);
+			return;
+		}
+		catch (InconsistentException e)
+		{
+			m_logger.warn("createDropboxCollection(): InconsistentException: " + dropbox);
 			return;
 		}
 
@@ -6102,44 +6108,29 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			// the folder id for this user's dropbox in this group
 			String userFolder = dropbox + user.getId() + "/";
 
-			// see if it exists
+			// see if it exists - add if it doesn't
 			try
 			{
-				 checkCollection(userFolder);
-			}
-			catch (IdUnusedException unused)
-			{
-				// doesn't exist, try to create it
-				try
+				if (findCollection(userFolder) == null)
 				{
-					ContentCollectionEdit edit = addCollection(userFolder);
+					ContentCollectionEdit edit = addValidPermittedCollection(userFolder);
 					ResourcePropertiesEdit props = edit.getPropertiesEdit();
 					props.addProperty(ResourceProperties.PROP_DISPLAY_NAME, user.getSortName());
 					props.addProperty(ResourceProperties.PROP_DESCRIPTION, PROP_MEMBER_DROPBOX_DESCRIPTION);
 					commitCollection(edit);
 				}
-				catch (PermissionException ignore)
-				{
-				}
-				catch (IdUsedException e)
-				{
-					m_logger.warn("createDropboxCollectionn(): idUsedException: " + userFolder);
-				}
-				catch (IdInvalidException e)
-				{
-					m_logger.warn("createDropboxCollection(): IdInvalidException: " + userFolder);
-				}
-				catch (InconsistentException e)
-				{
-					m_logger.warn("createDropboxCollection(): InconsistentException: " + userFolder);
-				}
 			}
-			catch (PermissionException ignore)
+			catch (TypeException e)
 			{
+				m_logger.warn("createDropboxCollectionn(): TypeException: " + userFolder);
 			}
-			catch (TypeException typeException)
+			catch (IdUsedException e)
 			{
-				m_logger.warn("createDropboxCollection(): TypeException: " + userFolder);
+				m_logger.warn("createDropboxCollectionn(): idUsedException: " + userFolder);
+			}
+			catch (InconsistentException e)
+			{
+				m_logger.warn("createDropboxCollection(): InconsistentException: " + userFolder);
 			}
 		}
 	}
