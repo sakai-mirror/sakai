@@ -46,7 +46,6 @@ import uk.ac.cam.caret.sakai.rwiki.tool.api.HttpCommand;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupCollectionBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupEditBean;
-import uk.ac.cam.caret.sakai.rwiki.tool.bean.ErrorBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ViewBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ViewParamsHelperBean;
 

@@ -24,7 +24,6 @@
 package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 
 import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
