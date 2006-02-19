@@ -9,12 +9,12 @@
         xmlns:maven="jelly:maven"
         default="sakai:build">
 
-<postGoal name="sakai:deploy">
+<preGoal name="war:webapp">
     
   <!--  Copy Samigo to tomcat's webapps directory -->
   <ant:copy todir="${maven.tomcat.home}/webapps/ROOT"
         file="src/webapp/icon/favicon.ico" overwrite="true" verbose="true" />
 
-</postGoal>
+</preGoal>
 
 </project>
