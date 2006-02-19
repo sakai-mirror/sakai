@@ -153,7 +153,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	public String getUrl(Entity entity) {
 		if (!(entity instanceof RWikiEntity))
 			return null;
-		return entity.getUrl()+getMinorType();
+		return entity.getUrl() + getMinorType();
 	}
 
 	/**
@@ -166,18 +166,17 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 		if (!(entity instanceof RWikiEntity))
 			return;
 
-
-
 		String user = request.getRemoteUser();
 		try {
 			PrintWriter pw = res.getWriter();
-			
-			if ( responseHeaders != null ) {
-				for ( Iterator i = responseHeaders.keySet().iterator(); i.hasNext(); ) {
+
+			if (responseHeaders != null) {
+				for (Iterator i = responseHeaders.keySet().iterator(); i
+						.hasNext();) {
 					String name = (String) i.next();
 					String value = (String) responseHeaders.get(name);
 					res.setHeader(name, value);
-					
+
 				}
 
 			}
@@ -194,8 +193,8 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 
 			ch.startDocument();
 			ch.startElement(SchemaNames.NS_CONTAINER,
-					SchemaNames.EL_ENTITYSERVICE, SchemaNames.EL_NSENTITYSERVICE,
-					dummyAttributes);
+					SchemaNames.EL_ENTITYSERVICE,
+					SchemaNames.EL_NSENTITYSERVICE, dummyAttributes);
 
 			{
 				AttributesImpl propA = new AttributesImpl();
@@ -212,20 +211,19 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 						SchemaNames.ATTR_REQUEST_SERVER_NAME, "sting", request
 								.getServerName());
 				propA.addAttribute("", SchemaNames.ATTR_REQUEST_SERVER_PORT,
-						SchemaNames.ATTR_REQUEST_SERVER_PORT, "sting", String.valueOf(request
-								.getServerPort()));
+						SchemaNames.ATTR_REQUEST_SERVER_PORT, "sting", String
+								.valueOf(request.getServerPort()));
 				propA.addAttribute("", SchemaNames.ATTR_REQUEST_REQUEST_URL,
-						SchemaNames.ATTR_REQUEST_REQUEST_URL, "sting", String.valueOf(request
-								.getRequestURL()));
+						SchemaNames.ATTR_REQUEST_REQUEST_URL, "sting", String
+								.valueOf(request.getRequestURL()));
 
 				ch.startElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_REQUEST_PROPERTIES,
 						SchemaNames.EL_NSREQUEST_PROPERTIES, propA);
 			}
-			addRequestAttributes(ch,request);
-			addRequestParameters(ch,request);
+			addRequestAttributes(ch, request);
+			addRequestParameters(ch, request);
 
-			
 			ch.endElement(SchemaNames.NS_CONTAINER,
 					SchemaNames.EL_REQUEST_PROPERTIES,
 					SchemaNames.EL_NSREQUEST_PROPERTIES);
@@ -256,37 +254,51 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 						SchemaNames.EL_NSXMLPROPERTY, propA,
 						" XSLTEntity Handler");
 			}
-			if ( entity instanceof RWikiEntity ){
+			if (entity instanceof RWikiEntity) {
 				RWikiEntity rwe = (RWikiEntity) entity;
-				RWikiObject rwo = rwe.getRWikiObject();
-				AttributesImpl propA = new AttributesImpl();
-				propA.addAttribute("", SchemaNames.ATTR_NAME,
-						SchemaNames.ATTR_NAME, "string", "_title");
-				addElement(ch, SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_XMLPROPERTY,
-						SchemaNames.EL_NSXMLPROPERTY, propA,
-						NameHelper.localizeName(rwo.getName(),rwo.getRealm())
-						);
+				if (!rwe.isContainer()) {
+					RWikiObject rwo = rwe.getRWikiObject();
+					AttributesImpl propA = new AttributesImpl();
+					propA.addAttribute("", SchemaNames.ATTR_NAME,
+							SchemaNames.ATTR_NAME, "string", "_title");
+					addElement(ch, SchemaNames.NS_CONTAINER,
+							SchemaNames.EL_XMLPROPERTY,
+							SchemaNames.EL_NSXMLPROPERTY, propA,
+							NameHelper.localizeName(rwo.getName(), rwo
+									.getRealm()));
+				} else {
+					AttributesImpl propA = new AttributesImpl();
+					propA.addAttribute("", SchemaNames.ATTR_NAME,
+							SchemaNames.ATTR_NAME, "string", "_title");
+					addElement(ch, SchemaNames.NS_CONTAINER,
+							SchemaNames.EL_XMLPROPERTY,
+							SchemaNames.EL_NSXMLPROPERTY, propA, entity
+									.getReference());
+
+				}
 			}
 			ch.endElement(SchemaNames.NS_CONTAINER,
 					SchemaNames.EL_XMLPROPERTIES,
 					SchemaNames.EL_NSXMLPROPERTIES);
 
-			if ( entity instanceof RWikiEntity ){
+			if (entity instanceof RWikiEntity) {
 				RWikiEntity rwe = (RWikiEntity) entity;
-				RWikiObject rwo = rwe.getRWikiObject();
-				ch.startElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_RENDEREDCONTENT,
-						SchemaNames.EL_NSRENDEREDCONTENT, dummyAttributes);
-				renderToXML(rwo, ch, user);
-				ch.endElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_RENDEREDCONTENT,
-						SchemaNames.EL_NSRENDEREDCONTENT);
+				if (!rwe.isContainer()) {
+					RWikiObject rwo = rwe.getRWikiObject();
+					ch.startElement(SchemaNames.NS_CONTAINER,
+							SchemaNames.EL_RENDEREDCONTENT,
+							SchemaNames.EL_NSRENDEREDCONTENT, dummyAttributes);
+					renderToXML(rwo, ch, user);
+					ch.endElement(SchemaNames.NS_CONTAINER,
+							SchemaNames.EL_RENDEREDCONTENT,
+							SchemaNames.EL_NSRENDEREDCONTENT);
+				}
 			}
 			ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ENTITY,
 					SchemaNames.EL_NSENTITY);
 			ch.endElement(SchemaNames.NS_CONTAINER,
-					SchemaNames.EL_ENTITYSERVICE, SchemaNames.EL_NSENTITYSERVICE);
+					SchemaNames.EL_ENTITYSERVICE,
+					SchemaNames.EL_NSENTITYSERVICE);
 
 			ch.endDocument();
 
@@ -436,16 +448,16 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 				ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ERROR,
 						SchemaNames.EL_NSERROR, dummyAttributes);
 				ch.startElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_ERRORDESC,
-						SchemaNames.EL_NSERRORDESC, dummyAttributes);
+						SchemaNames.EL_ERRORDESC, SchemaNames.EL_NSERRORDESC,
+						dummyAttributes);
 				String s = "The Rendered Content did not parse correctly "
 						+ ex.getMessage();
 				ch.characters(s.toCharArray(), 0, s.length());
 				ch.endElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_ERRORDESC, SchemaNames.EL_NSERRORDESC);
 				ch.startElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_RAWCONTENT,
-						SchemaNames.EL_NSRAWCONTENT, dummyAttributes);
+						SchemaNames.EL_RAWCONTENT, SchemaNames.EL_NSRAWCONTENT,
+						dummyAttributes);
 				ch.characters(renderedPage.toCharArray(), 0, renderedPage
 						.length());
 				ch.endElement(SchemaNames.NS_CONTAINER,
@@ -537,24 +549,20 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 						.getResourceAsStream(xslt)));
 				transformerHolder.set(xsltTransform);
 			}
-			ContentHandler ch = xsltTransform.getOutputHandler(out,outputProperties);
+			ContentHandler ch = xsltTransform.getOutputHandler(out,
+					outputProperties);
 			return ch;
 		} catch (Exception ex) {
-			throw new RuntimeException("Failed to create Content Handler",ex);
-/*
-			String stackTrace = null;
-			try {
-				StringWriter exw = new StringWriter();
-				PrintWriter pw = new PrintWriter(exw);
-				ex.printStackTrace(pw);
-				stackTrace = exw.toString();
-			} catch (Exception ex2) {
-				stackTrace = MessageFormat.format(defaultStackTrace,
-						new Object[] { ex.getMessage() });
-			}
-			out.write(MessageFormat.format(errorFormat, new Object[] {
-					ex.getMessage(), stackTrace }));
-					*/
+			throw new RuntimeException("Failed to create Content Handler", ex);
+			/*
+			 * String stackTrace = null; try { StringWriter exw = new
+			 * StringWriter(); PrintWriter pw = new PrintWriter(exw);
+			 * ex.printStackTrace(pw); stackTrace = exw.toString(); } catch
+			 * (Exception ex2) { stackTrace =
+			 * MessageFormat.format(defaultStackTrace, new Object[] {
+			 * ex.getMessage() }); } out.write(MessageFormat.format(errorFormat,
+			 * new Object[] { ex.getMessage(), stackTrace }));
+			 */
 		}
 	}
 
@@ -703,7 +711,8 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	}
 
 	/**
-	 * @param outputProperties The outputProperties to set.
+	 * @param outputProperties
+	 *            The outputProperties to set.
 	 */
 	public void setOutputProperties(Map outputProperties) {
 		this.outputProperties = outputProperties;
@@ -717,19 +726,21 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	}
 
 	/**
-	 * @param responseHeaders The responseHeaders to set.
+	 * @param responseHeaders
+	 *            The responseHeaders to set.
 	 */
 	public void setResponseHeaders(Map responseHeaders) {
 		this.responseHeaders = responseHeaders;
 	}
-	public void addRequestAttributes(ContentHandler ch, HttpServletRequest request ) throws Exception {
+
+	public void addRequestAttributes(ContentHandler ch,
+			HttpServletRequest request) throws Exception {
 		// add the attributes
 		AttributesImpl dummyAttributes = new AttributesImpl();
 		ch.startElement(SchemaNames.NS_CONTAINER,
 				SchemaNames.EL_REQUEST_ATTRIBUTES,
 				SchemaNames.EL_NSREQUEST_ATTRIBUTES, dummyAttributes);
-		for (Enumeration e = request.getAttributeNames(); e
-				.hasMoreElements();) {
+		for (Enumeration e = request.getAttributeNames(); e.hasMoreElements();) {
 			String name = (String) e.nextElement();
 			Object attr = request.getAttribute(name);
 			AttributesImpl propA = new AttributesImpl();
@@ -743,7 +754,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 				for (int i = 0; i < oattr.length; i++) {
 					addElement(ch, SchemaNames.NS_CONTAINER,
 							SchemaNames.EL_VALUE, SchemaNames.EL_NSVALUE,
-							dummyAttributes,oattr[i]);
+							dummyAttributes, oattr[i]);
 				}
 				ch.endElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_REQUEST_ATTRIBUTE,
@@ -752,9 +763,8 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 				ch.startElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_REQUEST_ATTRIBUTE,
 						SchemaNames.EL_NSREQUEST_ATTRIBUTE, propA);
-				addElement(ch, SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_VALUE, SchemaNames.EL_NSVALUE,
-						dummyAttributes, attr);
+				addElement(ch, SchemaNames.NS_CONTAINER, SchemaNames.EL_VALUE,
+						SchemaNames.EL_NSVALUE, dummyAttributes, attr);
 				ch.endElement(SchemaNames.NS_CONTAINER,
 						SchemaNames.EL_REQUEST_ATTRIBUTE,
 						SchemaNames.EL_NSREQUEST_ATTRIBUTE);
@@ -764,16 +774,17 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 		ch.endElement(SchemaNames.NS_CONTAINER,
 				SchemaNames.EL_REQUEST_ATTRIBUTES,
 				SchemaNames.EL_NSREQUEST_ATTRIBUTES);
-		}
-	public void addRequestParameters(ContentHandler ch, HttpServletRequest request ) throws Exception {
+	}
+
+	public void addRequestParameters(ContentHandler ch,
+			HttpServletRequest request) throws Exception {
 		AttributesImpl dummyAttributes = new AttributesImpl();
 
 		// add the request parameters
 		ch.startElement(SchemaNames.NS_CONTAINER,
 				SchemaNames.EL_REQUEST_PARAMS, SchemaNames.EL_NSREQUEST_PARAMS,
 				dummyAttributes);
-		for (Enumeration e = request.getParameterNames(); e
-				.hasMoreElements();) {
+		for (Enumeration e = request.getParameterNames(); e.hasMoreElements();) {
 			String name = (String) e.nextElement();
 			String[] attr = request.getParameterValues(name);
 			AttributesImpl propA = new AttributesImpl();
@@ -783,16 +794,15 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 					SchemaNames.EL_REQUEST_PARAM,
 					SchemaNames.EL_NSREQUEST_PARAM, propA);
 			for (int i = 0; i < attr.length; i++) {
-				addElement(ch, SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_VALUE, SchemaNames.EL_NSVALUE,
-						dummyAttributes, attr[i]);
+				addElement(ch, SchemaNames.NS_CONTAINER, SchemaNames.EL_VALUE,
+						SchemaNames.EL_NSVALUE, dummyAttributes, attr[i]);
 			}
 			ch.endElement(SchemaNames.NS_CONTAINER,
 					SchemaNames.EL_REQUEST_PARAM,
 					SchemaNames.EL_NSREQUEST_PARAM);
 		}
 
-		ch.endElement(SchemaNames.NS_CONTAINER,
-				SchemaNames.EL_REQUEST_PARAMS, SchemaNames.EL_REQUEST_PARAMS);
-		}
+		ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_REQUEST_PARAMS,
+				SchemaNames.EL_REQUEST_PARAMS);
+	}
 }

@@ -44,5 +44,32 @@ public interface RWikiEntity extends Entity {
 	 * @throws Exception
 	 */
 	void fromXml(Element el, String defaultRealm) throws Exception;
+	
+	
+	public static final String RP_ID = "id";
+	public static final String RP_OWNER = "owner";
+	public static final String RP_REALM = "realm";
+	public static final String RP_REFERENCED = "referenced";
+	public static final String RP_RWID = "rwid";
+	public static final String RP_SHA1 = "sha1";
+	public static final String RP_USER = "user";
+	public static final String RP_GROUP_ADMIN = "group-admin";
+	public static final String RP_GROUP_READ = "group-read";
+	public static final String RP_GROUP_WRITE = "group-write";
+	public static final String RP_OWNER_ADMIN = "owner-admin";
+	public static final String RP_OWNER_READ = "owner-read";
+	public static final String RP_OWNER_WRITE = "owner-write";
+	public static final String RP_PUBLIC_READ = "public-read";
+	public static final String RP_PUBLIC_WRITE = "public-write";
+	public static final String RP_REVISION = "revision";
+	public static final String RP_VERSION = "version";
+	public static final String RP_NAME = "name";
+	public static final String RP_CONTAINER = "container";
+	/**
+	 * Is the entity a container ?
+	 * @return
+	 */
+	boolean isContainer();
+
 
 }

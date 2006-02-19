@@ -44,6 +44,9 @@ import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.HttpAccess;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
+import org.sakaiproject.service.legacy.notification.NotificationEdit;
+import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
@@ -86,6 +89,8 @@ import uk.ac.cam.caret.sakai.rwiki.utils.TimeLogger;
 // FIXME: Component
 public class RWikiObjectServiceImpl implements RWikiObjectService {
 
+	
+
 	private Logger log;
 
 	private RWikiCurrentObjectDao cdao;
@@ -109,8 +114,21 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * 
 	 */
 	public void init() {
+		// register a transient notification for resources
+		 NotificationEdit edit = NotificationService.addTransientNotification();
 
-		EntityManager.registerEntityProducer(this, REFERENCE_ROOT);
+		// set functions
+		edit.setFunction(RWikiObjectService.EVENT_RESOURCE_ADD);
+		edit.addFunction(RWikiObjectService.EVENT_RESOURCE_WRITE);
+
+		// set the filter to any site related resource
+		edit.setResourceFilter(RWikiObjectService.REFERENCE_ROOT);
+		// %%% is this the best we can do? -ggolden
+
+		// set the action
+		edit.setAction(new SiteEmailNotificationRWiki());
+		
+		EntityManager.registerEntityProducer(this, RWikiObjectService.REFERENCE_ROOT);
 	}
 
 	/*
@@ -412,6 +430,11 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		}
 		try {
 			cdao.update(rwo, rwho);
+			Entity e = getEntity(rwo);
+			EventTrackingService.post(EventTrackingService.newEvent(
+					EVENT_RESOURCE_WRITE, 
+					e.getReference(), true,
+					NotificationService.PREF_IMMEDIATE));
 		} catch (HibernateOptimisticLockingFailureException e) {
 			throw new VersionException("Version has changed since: " + version,
 					e);
@@ -440,6 +463,12 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			rwo.setVersion(version);
 			try {
 				cdao.update(rwo, rwho);
+//				 track it
+				Entity e = getEntity(rwo);
+				EventTrackingService.post(EventTrackingService.newEvent(
+						EVENT_RESOURCE_WRITE, 
+						e.getReference(), true,
+						NotificationService.PREF_IMMEDIATE));
 			} catch (HibernateOptimisticLockingFailureException e) {
 				throw new VersionException("Version has changed since: "
 						+ version, e);
@@ -1120,14 +1149,15 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	private Entity getEntity(Reference ref, EntityHandler eh) {
 
-		System.err.print("Finding "+ref.getId());
 		RWikiObject rwo = this.getRWikiCurrentObjectDao().findByGlobalName(
 				ref.getId());
 		
-		System.err.print("Finding "+ref.getId()+" as "+rwo);
+			
+			
+		
 
 		int revision = eh.getRevision(ref);
-		if (revision != -1 && revision != rwo.getRevision().intValue()) {
+		if (rwo != null && revision != -1 && revision != rwo.getRevision().intValue()) {
 			RWikiObject hrwo = this.getRWikiHistoryObjectDao()
 					.getRWikiHistoryObject(rwo, revision);
 			if (hrwo != null) {
@@ -1135,10 +1165,18 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			} 
 
 		}
-		RWikiEntity rwe = (RWikiEntity) getEntity(rwo);
+		RWikiEntity rwe = null;
+		if ( rwo == null ) {
+			rwe = (RWikiEntity) getReferenceEntity(ref);
+		} else {
+			rwe = (RWikiEntity) getEntity(rwo);
+		}
 		return rwe;
 	}
 	
+	public Entity getReferenceEntity(Reference ref ) {
+		return new RWikiEntityImpl(ref);
+	}
 	/**
 	 * {@inheritDoc}
 	 * @param rwo

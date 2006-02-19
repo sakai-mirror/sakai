@@ -256,5 +256,11 @@ public class SchemaNames {
 
 	public static final String ATTR_SERVER_URL = "server-url";
 
+	public static final String EL_WIKIPAGE = "wikipage";
+
+	public static final String ATTR_PAGE_NAME = "page-name";
+
+	public static final String EL_WIKICONTENT = "wikicontent";
+
 
 }

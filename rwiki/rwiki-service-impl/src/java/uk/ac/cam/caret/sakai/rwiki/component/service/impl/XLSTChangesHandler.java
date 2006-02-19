@@ -166,6 +166,7 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 			}
 			if (entity instanceof RWikiEntity) {
 				RWikiEntity rwe = (RWikiEntity) entity;
+				if ( !rwe.isContainer() ) {
 				RWikiObject rwo = rwe.getRWikiObject();
 				AttributesImpl propA = new AttributesImpl();
 				propA.addAttribute("", SchemaNames.ATTR_NAME,
@@ -174,6 +175,16 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 						SchemaNames.EL_XMLPROPERTY,
 						SchemaNames.EL_NSXMLPROPERTY, propA, NameHelper
 								.localizeName(rwo.getName(), rwo.getRealm()));
+				} else {
+					AttributesImpl propA = new AttributesImpl();
+					propA.addAttribute("", SchemaNames.ATTR_NAME,
+							SchemaNames.ATTR_NAME, "string", "_title");
+					addElement(ch, SchemaNames.NS_CONTAINER,
+							SchemaNames.EL_XMLPROPERTY,
+							SchemaNames.EL_NSXMLPROPERTY, propA, entity
+									.getReference());
+				}
+
 			}
 			{
 				AttributesImpl propA = new AttributesImpl();
@@ -203,8 +214,8 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 
 			if (entity instanceof RWikiEntity) {
 				RWikiEntity rwe = (RWikiEntity) entity;
-				RWikiObject rwo = rwe.getRWikiObject();
-				if (rwo != null) {
+				if ( !rwe.isContainer() ) {
+					RWikiObject rwo = rwe.getRWikiObject();
 					ch.startElement(SchemaNames.NS_CONTAINER,
 							SchemaNames.EL_RENDEREDCONTENT,
 							SchemaNames.EL_NSRENDEREDCONTENT, dummyAttributes);
@@ -288,7 +299,7 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 		g.setTime(new Date());
 		g.add(GregorianCalendar.YEAR, -1);
 
-		Decoded d = decode(rwe.getReference());
+		Decoded d = decode(rwe.getReference()+getMinorType());
 		String basepath = d.getContext() + d.getContainer();
 		List changes = rwikObjectService.findAllChangedSince(g.getTime(), user,
 				basepath);

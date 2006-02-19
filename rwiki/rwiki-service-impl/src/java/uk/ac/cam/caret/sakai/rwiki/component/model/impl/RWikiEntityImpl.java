@@ -31,6 +31,7 @@ import java.util.Stack;
 
 import org.apache.xerces.impl.dv.util.Base64;
 import org.sakaiproject.service.framework.log.cover.Log;
+import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.util.resource.BaseResourceProperties;
 import org.w3c.dom.CDATASection;
@@ -40,62 +41,85 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
+import uk.ac.cam.caret.sakai.rwiki.utils.SchemaNames;
 
 public class RWikiEntityImpl implements RWikiEntity {
+	public static final String RW_ID = "id";
+	// I dont think that content is a propertyrp.addProperty("content",
+	// this.getContent());
 
-
+	
 	private RWikiObject rwo = null;
+	private Reference reference = null;
 	
 	public RWikiEntityImpl( RWikiObject rwo ) {
 		this.rwo = rwo;
+	}
+	public RWikiEntityImpl(Reference ref) {
+		this.reference = ref;
 	}
 	/**
 	 * {@inheritDoc}
 	 */
 	public ResourceProperties getProperties() {
+		if ( rwo == null ) {
+			ResourceProperties rp = new BaseResourceProperties();
+			rp.addProperty(RWikiEntity.RP_REALM,reference.getContext()+reference.getContainer());
+			rp.addProperty(RWikiEntity.RP_REALM,reference.getId());
+			rp.addProperty(RWikiEntity.RP_CONTAINER,"true");	
+			return rp;
+		} else {
 		ResourceProperties rp = new BaseResourceProperties();
 		rp.addProperty("id", this.getId());
 		// I dont think that content is a propertyrp.addProperty("content",
 		// this.getContent());
-		rp.addProperty("name", rwo.getName());
-		rp.addProperty("owner", rwo.getOwner());
-		rp.addProperty("realm", rwo.getRealm());
-		rp.addProperty("referenced", rwo.getReferenced());
-		rp.addProperty("rwid", rwo.getRwikiobjectid());
-		rp.addProperty("sha1", rwo.getSha1());
-		rp.addProperty("user", rwo.getUser());
-		rp.addProperty("group-admin", String.valueOf(rwo.getGroupAdmin()));
-		rp.addProperty("group-read", String.valueOf(rwo.getGroupRead()));
-		rp.addProperty("group-write", String.valueOf(rwo.getGroupWrite()));
-		rp.addProperty("owner-admin", String.valueOf(rwo.getOwnerAdmin()));
-		rp.addProperty("owner-read", String.valueOf(rwo.getOwnerRead()));
-		rp.addProperty("owner-write", String.valueOf(rwo.getOwnerWrite()));
-		rp.addProperty("public-read", String.valueOf(rwo.getPublicRead()));
-		rp.addProperty("public-write", String.valueOf(rwo.getPublicWrite()));
-		rp.addProperty("revision", String.valueOf(rwo.getRevision()));
-		rp.addProperty("version", String.valueOf(rwo.getVersion().getTime()));
+		rp.addProperty(RWikiEntity.RP_NAME, rwo.getName());
+		rp.addProperty(RWikiEntity.RP_OWNER, rwo.getOwner());
+		rp.addProperty(RWikiEntity.RP_REALM, rwo.getRealm());
+		rp.addProperty(RWikiEntity.RP_REFERENCED, rwo.getReferenced());
+		rp.addProperty(RWikiEntity.RP_RWID, rwo.getRwikiobjectid());
+		rp.addProperty(RWikiEntity.RP_SHA1, rwo.getSha1());
+		rp.addProperty(RWikiEntity.RP_USER, rwo.getUser());
+		rp.addProperty(RWikiEntity.RP_GROUP_ADMIN, String.valueOf(rwo.getGroupAdmin()));
+		rp.addProperty(RWikiEntity.RP_GROUP_READ, String.valueOf(rwo.getGroupRead()));
+		rp.addProperty(RWikiEntity.RP_GROUP_WRITE, String.valueOf(rwo.getGroupWrite()));
+		rp.addProperty(RWikiEntity.RP_OWNER_ADMIN, String.valueOf(rwo.getOwnerAdmin()));
+		rp.addProperty(RWikiEntity.RP_OWNER_READ, String.valueOf(rwo.getOwnerRead()));
+		rp.addProperty(RWikiEntity.RP_OWNER_WRITE, String.valueOf(rwo.getOwnerWrite()));
+		rp.addProperty(RWikiEntity.RP_PUBLIC_READ, String.valueOf(rwo.getPublicRead()));
+		rp.addProperty(RWikiEntity.RP_PUBLIC_WRITE, String.valueOf(rwo.getPublicWrite()));
+		rp.addProperty(RWikiEntity.RP_REVISION, String.valueOf(rwo.getRevision()));
+		rp.addProperty(RWikiEntity.RP_VERSION, String.valueOf(rwo.getVersion().getTime()));
+		rp.addProperty(RWikiEntity.RP_CONTAINER,"false");
+
 		return rp;
+		}
 	}
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getReference() {
-		return "/wiki"+rwo.getName()+".";
+		if ( rwo == null ) return RWikiObjectService.REFERENCE_ROOT + reference.getId()+".";
+		return RWikiObjectService.REFERENCE_ROOT +rwo.getName()+".";
 	}
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getUrl() {
-		return "/wiki"+rwo.getName()+".";
+		if ( rwo == null ) return RWikiObjectService.REFERENCE_ROOT + reference.getId()+".";
+		return RWikiObjectService.REFERENCE_ROOT +rwo.getName()+".";
 	}
 	/**
 	 * {@inheritDoc}
+	 * 
 	 */
 	public Element toXml(Document doc, Stack stack) {
-		Element wikipage = doc.createElement("wikipage");
+		if ( rwo == null ) throw new RuntimeException(" Cant serialise containers at the moment ");
+		Element wikipage = doc.createElement(SchemaNames.EL_WIKIPAGE);
 
 		if (stack.isEmpty()) {
 			doc.appendChild(wikipage);
@@ -105,16 +129,16 @@ public class RWikiEntityImpl implements RWikiEntity {
 
 		stack.push(wikipage);
 
-		wikipage.setAttribute("id", rwo.getId());
-		wikipage.setAttribute("page-name",rwo.getName());
-		wikipage.setAttribute("revision", String.valueOf(rwo.getRevision()));
-		wikipage.setAttribute("user", rwo.getUser());
-		wikipage.setAttribute("owner", rwo.getOwner());
+		wikipage.setAttribute(SchemaNames.ATTR_ID, rwo.getId());
+		wikipage.setAttribute(SchemaNames.ATTR_PAGE_NAME,rwo.getName());
+		wikipage.setAttribute(SchemaNames.ATTR_REVISION, String.valueOf(rwo.getRevision()));
+		wikipage.setAttribute(SchemaNames.ATTR_USER, rwo.getUser());
+		wikipage.setAttribute(SchemaNames.ATTR_OWNER, rwo.getOwner());
 
 		// I would like to be able to render this, but we cant... because its a
 		// pojo !
 		getProperties().toXml(doc, stack);
-		Element content = doc.createElement("wikicontent");
+		Element content = doc.createElement(SchemaNames.EL_WIKICONTENT);
 		stack.push(content);
 		wikipage.appendChild(content);
 		content.setAttribute("enc", "BASE64");
@@ -137,20 +161,24 @@ public class RWikiEntityImpl implements RWikiEntity {
 	 * {@inheritDoc}
 	 */
 	public void fromXml(Element el, String defaultRealm) throws Exception {
-		NodeList nl = el.getElementsByTagName("properties");
+		if ( rwo == null ) throw new RuntimeException(" Cant deserialise containers at the moment ");
+
+		NodeList nl = el.getElementsByTagName("properties"); 
+		//this is hard coded in BaseResourceProperties the element name properties
 		if (nl == null || nl.getLength() != 1)
 			throw new Exception("Cant find a properties element in "
-					+ el.getNodeName() + " id: " + el.getAttribute("id")
-					+ " pagename: " + el.getAttribute("page-name"));
+					+ el.getNodeName() + " id: " + el.getAttribute(SchemaNames.ATTR_ID)
+					+ " pagename: " + el.getAttribute(SchemaNames.ATTR_PAGE_NAME));
 		// only take the first properties
 		Element properties = (Element) nl.item(0);
+		
 		ResourceProperties rp = new BaseResourceProperties(properties);
 
-		nl = el.getElementsByTagName("wikicontent");
+		nl = el.getElementsByTagName(SchemaNames.EL_WIKICONTENT);
 		if (nl == null || nl.getLength() != 1)
 			throw new Exception("Cant find a  wikiproperties element in "
-					+ el.getNodeName() + " id: " + el.getAttribute("id")
-					+ " pagename: " + el.getAttribute("page-name"));
+					+ el.getNodeName() + " id: " + el.getAttribute(SchemaNames.ATTR_ID)
+					+ " pagename: " + el.getAttribute(SchemaNames.ATTR_PAGE_NAME));
 		// only accpet the first
 		Element wikiContents = (Element) nl.item(0);
 
@@ -169,32 +197,31 @@ public class RWikiEntityImpl implements RWikiEntity {
 			}
 		}
 
-		String realm = rp.getProperty("realm");
-		rwo.setId(rp.getProperty("id"));
+		String realm = rp.getProperty(RWikiEntity.RP_REALM);
+		rwo.setId(rp.getProperty(RWikiEntity.RP_ID));
 
 		rwo.setName(NameHelper.globaliseName(NameHelper.localizeName(rp
-				.getProperty("name"), realm), defaultRealm));
-		rwo.setOwner(rp.getProperty("owner"));
+				.getProperty(RWikiEntity.RP_NAME), realm), defaultRealm));
+		rwo.setOwner(rp.getProperty(RWikiEntity.RP_OWNER));
 		rwo.setRealm(defaultRealm);
-		rwo.setReferenced(rp.getProperty("referenced"));
+		rwo.setReferenced(rp.getProperty(RWikiEntity.RP_REFERENCED));
 //		rwo.setRwikiobjectid(rp.getProperty("rwid"));
 		rwo.setContent(content.toString());
 
-		if (!rwo.getSha1().equals(rp.getProperty("sha1")))
+		if (!rwo.getSha1().equals(rp.getProperty(RWikiEntity.RP_SHA1)))
 			throw new Exception("Sha Checksum Missmatch on content "
-					+ rp.getProperty("sha1") + " != " + rwo.getSha1());
-		rwo.setUser(rp.getProperty("user"));
-		rwo.setGroupAdmin(rp.getBooleanProperty("group-admin"));
-		rwo.setGroupRead(rp.getBooleanProperty("group-read"));
-		rwo.setGroupWrite(rp.getBooleanProperty("group-write"));
-		rwo.setOwnerAdmin(rp.getBooleanProperty("group-admin"));
-		rwo.setOwnerRead(rp.getBooleanProperty("owner-read"));
-		rwo.setOwnerWrite(rp.getBooleanProperty("owner-write"));
-		rwo.setGroupAdmin(rp.getBooleanProperty("owner-admin"));
-		rwo.setPublicRead(rp.getBooleanProperty("public-read"));
-		rwo.setPublicWrite(rp.getBooleanProperty("public-write"));
-		rwo.setRevision(new Integer(rp.getProperty("revision")));
-		rwo.setVersion(new Date(rp.getLongProperty("version")));
+					+ rp.getProperty(RWikiEntity.RP_SHA1) + " != " + rwo.getSha1());
+		rwo.setUser(rp.getProperty(RWikiEntity.RP_USER));
+		rwo.setGroupAdmin(rp.getBooleanProperty(RWikiEntity.RP_GROUP_ADMIN));
+		rwo.setGroupRead(rp.getBooleanProperty(RWikiEntity.RP_GROUP_READ));
+		rwo.setGroupWrite(rp.getBooleanProperty(RWikiEntity.RP_GROUP_WRITE));
+		rwo.setOwnerAdmin(rp.getBooleanProperty(RWikiEntity.RP_OWNER_ADMIN));
+		rwo.setOwnerRead(rp.getBooleanProperty(RWikiEntity.RP_OWNER_READ));
+		rwo.setOwnerWrite(rp.getBooleanProperty(RWikiEntity.RP_OWNER_WRITE));
+		rwo.setPublicRead(rp.getBooleanProperty(RWikiEntity.RP_PUBLIC_READ));
+		rwo.setPublicWrite(rp.getBooleanProperty(RWikiEntity.RP_PUBLIC_WRITE));
+		rwo.setRevision(new Integer(rp.getProperty(RWikiEntity.RP_REVISION)));
+		rwo.setVersion(new Date(rp.getLongProperty(RWikiEntity.RP_VERSION)));
 
 	}
 	/**
@@ -216,13 +243,18 @@ public class RWikiEntityImpl implements RWikiEntity {
 	 * {@inheritDoc}
 	 */
 	public String getId() {
+		if ( rwo == null ) return reference.getId();
 		return rwo.getId();
 	}
 	/**
 	 * {@inheritDoc}
 	 */
 	public RWikiObject getRWikiObject() {
+		if ( rwo == null ) throw new RuntimeException("RWiki Containers dont have objects attached ");
 		return rwo;
+	}
+	public boolean isContainer() {
+		return (rwo == null);
 	}
 
 }

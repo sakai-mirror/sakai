@@ -52,6 +52,18 @@ public interface RWikiObjectService extends EntityProducer {
 	/** This string starts the references to resources in this service. */
 	static final String REFERENCE_LABEL =  "wiki";
 	
+	/** Name of the event when creating a resource. */
+	public static final String EVENT_RESOURCE_ADD = "wiki.new";
+
+	/** Name of the event when reading a resource. */
+	public static final String EVENT_RESOURCE_READ = "wiki.read";
+
+	/** Name of the event when writing a resource. */
+	public static final String EVENT_RESOURCE_WRITE = "wiki.revise";
+
+	/** Name of the event when removing a resource. */
+	public static final String EVENT_RESOURCE_REMOVE = "wiki.delete";
+
 	
 	/**
 	 * Gets the current object

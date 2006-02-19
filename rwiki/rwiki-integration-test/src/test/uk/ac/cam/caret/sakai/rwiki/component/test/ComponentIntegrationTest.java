@@ -218,21 +218,70 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		}
 	}
 
+	boolean consolidatedtest = true;
+	public void testAll()  throws Exception  {
+		consolidatedtest = true;
+		xtestBasicMethods();
+		xtestRenderPage();
+		xtestFindAll();
+		xtestURLAccess();
+		xtestEntityAccess();
+		xtestArchiveAccess();
+		xtestMerge();
+		xtestImport();
+
+	}
+	public void dtestBasicMethods() throws Exception {
+		consolidatedtest = false;
+		xtestBasicMethods();
+
+	}
+	public void dtestRenderPage() throws Exception {
+		consolidatedtest = false;
+		xtestRenderPage();
+		
+	}
+	public void dtestURLAccess() throws Exception {
+		consolidatedtest = false;
+		xtestURLAccess();
+		
+	}
+	public void dtestEntityAccess() throws Exception {
+		consolidatedtest = false;
+		xtestEntityAccess();
+		
+	}
+	public void dtestArchiveAccess() throws Exception {
+		consolidatedtest = false;
+		xtestArchiveAccess();
+		
+	}
+	public void dtestMerge() throws Exception {
+		consolidatedtest = false;
+		xtestMerge();
+		
+	}
+	public void dtestImport() throws Exception {
+		consolidatedtest = false;
+		xtestImport();
+		
+	}
+
 	/**
 	 * A simple set of tests of the render service
 	 * @throws Exception
 	 */
-	public void testRenderPage() throws Exception {
+	public void xtestRenderPage() throws Exception {
 		SimpleCoverage.cover("Render Page Test");
 		assertEquals("Test and results sets are not the same size ",
 				content.length, rendered.length);
 		Date d = new Date();
 		for (int i = 0; i < content.length; i++) {
 			SimpleCoverage.cover("Updating page ");
-			rwikiObjectservice.update("HomeTestPage", "admin", site
+			rwikiObjectservice.update("HomeTestPageRENDER", "admin", site
 					.getReference(), d, content[i]);
 			SimpleCoverage.cover("loading page ");
-			RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPage",
+			RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPageRENDER",
 					"admin", site.getReference());
 			d = rwo.getVersion();
 			ComponentPageLinkRenderImpl cplr = new ComponentPageLinkRenderImpl(
@@ -260,23 +309,23 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		"/resources/some/resourcethat/shouldworl",
 		"/resources/some/resourcethat/shouldworl,123.html",
 		"/wiki/non-existant-context/.rss",
-		"/wiki/site/SITEID/hometestpage.html",
-		"/wiki/site/SITEID/Hometestpage.html",
-		"/wiki/site/SITEID/homeTestpage,123123.html",
-		"/wiki/site/SITEID/hometestpage,0.html",
-		"/wiki/site/SITEID/index.html",
-		"/wiki/site/SITEID/index.rss",
-		"/wiki/site/SITEID/changed.html",
-		"/wiki/site/SITEID/changed.rss"
+		"/wiki/site/SITEID/hometestpageURL.html",
+		"/wiki/site/SITEID/HometestpageURL.html",
+		"/wiki/site/SITEID/homeTestpageURL,123123.html",
+		"/wiki/site/SITEID/hometestpageURL,0.html",
+		"/wiki/site/SITEID/indexURL.html",
+		"/wiki/site/SITEID/indexURL.rss",
+		"/wiki/site/SITEID/changedURL.html",
+		"/wiki/site/SITEID/changedURL.rss"
 	};
 	/**
 	 * some page names to populate
 	 */
 	private static final String[] pageNames =  {
-		"HomeTestPage",
-		"HomeTestPage2",
-		"index",
-		"changed"
+		"HomeTestPageURL",
+		"HomeTestPage2URL",
+		"indexURL",
+		"changedURL"
 	};
 	/**
 	 * some simple page content to use with the above pageNames
@@ -291,7 +340,7 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 	 * Load a set of pages, and process a set of URLS
 	 * @throws Exception
 	 */
-	public void testURLAccess() throws Exception {
+	public void xtestURLAccess() throws Exception {
 		assertEquals("pageNames and pageContent must be the same length ",pageNames.length,pageContent.length);
 		
 		for( int i = 0; i < pageNames.length; i++ ) {
@@ -323,18 +372,26 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		
 
 	}
+	public void xtestFindAll() {
+		List l = rwikiObjectservice.findRWikiSubPages(site.getReference());
+		if ( l.size() == 0 ) {
+			logger.info("Found "+l.size()+" pages in "+site.getReference());
+			fail(" Fialed to find any pages in "+site.getReference());
+		}
+		logger.info("Found "+l.size()+" pages ");
+	}
 
 	/**
 	 * Test the entity access based on a URL
 	 * @throws Exception
 	 */
-	public void testEntityAccess() throws Exception {
+	public void xtestEntityAccess() throws Exception {
 	
 		
-		rwikiObjectservice.update("HomeTestPage", "admin", site.getReference(),
+		rwikiObjectservice.update("HomeTestPageENTITY", "admin", site.getReference(),
 				new Date(), content[0]);
 		
-		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPage",
+		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPageENTITY",
 				"admin", site.getReference());
 		
 		RWikiEntity rwe = (RWikiEntity) rwikiObjectservice.getEntity(rwo);
@@ -382,20 +439,20 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 
 	}
 
-	public void testArchiveAccess() throws Exception {
-		rwikiObjectservice.update("HomeTestPage", "admin", site.getReference(),
+	public void xtestArchiveAccess() throws Exception {
+		rwikiObjectservice.update("HomeTestPageARCHIVE", "admin", site.getReference(),
 				new Date(), content[0]);
-		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPage",
+		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPageARCHIVE",
 				"admin", site.getReference());
-		rwikiObjectservice.update("HomeTestPage", "admin", site.getReference(),
+		rwikiObjectservice.update("HomeTestPageARCHIVE", "admin", site.getReference(),
 				rwo.getVersion(), content[1]);
 		
 		
-		rwikiObjectservice.update("HomeTestPage2", "admin", site.getReference(),
+		rwikiObjectservice.update("HomeTestPage2ARCHIVE", "admin", site.getReference(),
 				new Date(), content[0]);
-		rwo = rwikiObjectservice.getRWikiObject("HomeTestPage2",
+		rwo = rwikiObjectservice.getRWikiObject("HomeTestPage2ARCHIVE",
 				"admin", site.getReference());
-		rwikiObjectservice.update("HomeTestPage2", "admin", site.getReference(),
+		rwikiObjectservice.update("HomeTestPage2ARCHIVE", "admin", site.getReference(),
 				rwo.getVersion(), content[1]);
 		
 		ArrayList attachments = new ArrayList();
@@ -419,34 +476,34 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		logger.info("Got Archive \n" + archiveResult);
 
 	}
-	public void testImport() throws Exception {
+	public void xtestImport() throws Exception {
 		// create 2 pages, add their ids to the list, transfer to annother site, check they were there
 		List l = new ArrayList();
-		rwikiObjectservice.update("HomeTestPage", "admin", site.getReference(),
+		rwikiObjectservice.update("HometestPageIMPORT", "admin", site.getReference(),
 				new Date(), content[0]);
-		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HomeTestPage",
+		RWikiObject rwo = rwikiObjectservice.getRWikiObject("HometestPageIMPORT",
 				"admin", site.getReference());
 		l.add(rwo.getId());
-		rwikiObjectservice.update("HomeTestPage", "admin", site.getReference(),
+		rwikiObjectservice.update("HometestPageIMPORT", "admin", site.getReference(),
 				rwo.getVersion(), content[1]);
 		
 		
-		rwikiObjectservice.update("HomeTestPage2", "admin", site.getReference(),
+		rwikiObjectservice.update("HometestPage2IMPORT", "admin", site.getReference(),
 				new Date(), content[0]);
-		rwo = rwikiObjectservice.getRWikiObject("HomeTestPage2",
+		rwo = rwikiObjectservice.getRWikiObject("HometestPage2IMPORT",
 				"admin", site.getReference());
 		l.add(rwo.getId());
-		rwikiObjectservice.update("HomeTestPage2", "admin", site.getReference(),
+		rwikiObjectservice.update("HometestPage2IMPORT", "admin", site.getReference(),
 				rwo.getVersion(), content[1]);
 		
 		rwikiObjectservice.importEntities(site.getReference(),targetSite.getReference(),l);
-		assertEquals("HomeTestPage failed to import",true,
-				rwikiObjectservice.exists("HomeTestPage",targetSite.getReference()));
-		assertEquals("HomeTestPage failed to import",true,
-				rwikiObjectservice.exists("HomeTestPage2",targetSite.getReference()));
+		assertEquals("HometestPage failed to import",true,
+				rwikiObjectservice.exists("HometestPageIMPORT",targetSite.getReference()));
+		assertEquals("HometestPage2 failed to import",true,
+				rwikiObjectservice.exists("HometestPage2IMPORT",targetSite.getReference()));
 	}
 	
-	public void testMerge() {
+	public void xtestMerge() {
 		Document doc = Xml.readDocumentFromStream(this.getClass().getResourceAsStream(archiveContentResource));
 		String fromSiteId = doc.getDocumentElement().getAttribute("source");
 		NodeList nl = doc.getElementsByTagName("uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService");
@@ -456,7 +513,7 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 			logger.info("Results of merge operation \n======\n"+results+"\n=======");
 		}
 	}
-	public void testBasicMethods() {
+	public void xtestBasicMethods() {
 		assertEquals("Service was not as expected ","wiki",rwikiObjectservice.getLabel());
 		assertEquals("Expected to be able to archive  ",true,rwikiObjectservice.willArchiveMerge());
 		assertEquals("Expected to be able to import  ",true,rwikiObjectservice.willImport());
