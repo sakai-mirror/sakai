@@ -78,32 +78,38 @@ languages, as follows:
     Contact: Yves Epelboin (yves.epelboin@upmc.fr)
     Local ID: fr_FR
 	 
-13) Spanish
+13) Spanish (Spain)
+    Status: to be released in 2.1.2 (mostly completed)
+    Translated by: David Roldán Martínez, Diego del Blanco, Raúl Mengod
+    Contact: David Roldan Martinez (darolmar@abierta.upv.es)
+    Local ID: es_ES
+
+14) Spanish (Mexico)
     Status: Relying on translation from es_ES locale
     Translated by: n/a
     Contact: Cynthia Gonzalez (gonzalez.cynthia@itesm.mx)
     Contact: Larisa Enriquez Vazquez (larisa@piaget.dgsca.unam.mx)
     Local ID: es_MX
 
-14) Spanish
-    Status: nearing completion 1/13/2006
-    Translated by: n/a
-    Contact: David Roldan Martinez (darolmar@abierta.upv.es)
-    Local ID: es_ES
-
-15) Spanish
+15) Spanish (Argentina)
     Status: ??
     Translated by: n/a
     Contact: Sebasti‡n Barreiro (sbarreiro@gmail.com)
     Local ID: es_AR
     
-16) Russian
+16) Spanish (Chile)
+    Status: ??
+    Translated by: n/a
+    Contact: Alejandro Fuentes de la Hoz (afd@csol.org)
+    Local ID: es_CL
+    
+17) Russian
     Status: ??
     Translated by: n/a
     Contact: Alexander Glebovsky (glebovsky@rambler.ru)
     Local ID: ru_RU
 
-16) German
+18) German
     Status: ??
     Translated by: n/a
     Contact: Wolf Hilzensauer (wolf.hilzensauer@salzburgresearch.at)
