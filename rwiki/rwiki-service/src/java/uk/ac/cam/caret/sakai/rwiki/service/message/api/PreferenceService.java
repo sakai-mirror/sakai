@@ -23,75 +23,51 @@
 
 package uk.ac.cam.caret.sakai.rwiki.service.message.api;
 
-import java.util.List;
-
 /**
+ * A service to express user preferences at a context
  * @author ieb
- * 
+ *
  */
-public interface MessageService {
-
+public interface PreferenceService {
 	/**
-	 * Updates the session presence record in the wiki
+	 * A preference type to express mail notification preference for the user on
+	 * a context
+	 */
+	public static final String MAIL_NOTIFCIATION = "mail.notify";
+	/**
+	 * Update the users preference
 	 * 
-	 * @param session
 	 * @param user
-	 * @param page
-	 * @param space
+	 * @param context
+	 *            the path to the node in the wiki space where the preference is
+	 *            bein expressed
+	 * @param type
+	 *            or preference
+	 * @param perference
 	 */
-	void updatePresence(String session, String user, String page, String space);
-
-
-	void addMessage(String session, String user, String page, String space,
-			String message);
-
+	void updatePreference(String user, String context, String type,
+			String perference);
 	/**
-	 * returns a List of the Messages associated with the session
-	 * 
-	 * @param session
+	 * Locate the most applicable preference at a given context of a given type
+	 * @param user the userid
+	 * @param context the path to the context
+	 * @param type the type of preference
 	 * @return
 	 */
-	List getSessionMessages(String session);
+	String findPreferenceAt(String user, String context, String type);
 
 	/**
-	 * Returns List of the Messages in the space
-	 * 
-	 * @param space
-	 * @return
+	 * Removes a preference and all sub prefrences
+	 * @param user
+	 * @param context
+	 * @param type
 	 */
-	List getMessagesInSpace(String space);
-
+	void deleteAllPreferences(String user, String context, String type);
 	/**
-	 * Returns List of Messages in the page
-	 * 
-	 * @param space
-	 * @param page
-	 * @return
+	 * Removes a preference 
+	 * @param user
+	 * @param context
+	 * @param type
 	 */
-	List getMessagesInPage(String space, String page);
-
-	/**
-	 * Returns List representation of the users in the space
-	 * 
-	 * @param space
-	 * @return
-	 */
-	List getUsersInSpace(String space);
-
-	/**
-	 * Returns List representation of the users on the page
-	 * 
-	 * @param space
-	 * @param page
-	 * @return
-	 */
-	List getUsersOnPage(String space, String page);
-
-	/**
-	 * @param pageSpace
-	 * @param pageName
-	 * @return
-	 */
-	List getUsersInSpaceOnly(String pageSpace, String pageName);
-
+	void deletePreference(String user, String context, String type);
 }

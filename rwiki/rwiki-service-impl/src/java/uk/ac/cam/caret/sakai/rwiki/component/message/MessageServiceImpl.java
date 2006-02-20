@@ -1,6 +1,26 @@
-/**
- * 
- */
+/**********************************************************************************
+*
+* $Header$
+*
+***********************************************************************************
+*
+* Copyright (c) 2005 University of Cambridge
+* 
+* Licensed under the Educational Community License Version 1.0 (the "License");
+* By obtaining, using and/or copying this Original Work, you agree that you have read,
+* understand, and will comply with the terms and conditions of the Educational Community License.
+* You may obtain a copy of the License at:
+* 
+*      http://cvs.sakaiproject.org/licenses/license_1_0.html
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*
+**********************************************************************************/
+
 package uk.ac.cam.caret.sakai.rwiki.component.message;
 
 import java.util.Date;
@@ -25,7 +45,6 @@ public class MessageServiceImpl implements MessageService {
 
     private MessageDao messageDao;
     private PagePresenceDao pagePresenceDao;
-    private PreferenceDao preferenceDao;
     
     /* (non-Javadoc)
      * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.MessageService#updatePresence(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
@@ -47,21 +66,7 @@ public class MessageServiceImpl implements MessageService {
 
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.MessageService#updatePreference(java.lang.String, java.lang.String)
-     */
-    public void updatePreference(String user, String preference) {
-        Preference pref = preferenceDao.findByUser(user);
-        if ( pref != null ) {
-            pref.setPreference(preference);
-            pref.setLastseen(new Date());
-            preferenceDao.update(pref);
-        } else {
-            pref = preferenceDao.createPreference(user,preference);
-            preferenceDao.update(pref);
-        }
-    }
-
+   
     /* (non-Javadoc)
      * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.MessageService#addMessage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
@@ -154,19 +159,7 @@ public class MessageServiceImpl implements MessageService {
         this.pagePresenceDao = pagePresenceDao;
     }
 
-    /**
-     * @return Returns the preferenceDao.
-     */
-    public PreferenceDao getPreferenceDao() {
-        return preferenceDao;
-    }
-
-    /**
-     * @param preferenceDao The preferenceDao to set.
-     */
-    public void setPreferenceDao(PreferenceDao preferenceDao) {
-        this.preferenceDao = preferenceDao;
-    }
+    
 
 
 

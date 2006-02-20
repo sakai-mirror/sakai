@@ -4,6 +4,11 @@
 <beans>
 
   <!-- components context -->
+  <bean id="uk.ac.cam.caret.sakai.rwiki.service.message.api.PreferenceService"
+    class="uk.ac.cam.caret.sakai.rwiki.component.message.PreferenceServiceImpl">
+    <property name="log"><ref bean="rwiki-logger"/></property>
+    <property name="preferenceDao"><ref bean="preferenceDao"/></property>
+  </bean>
 
   <!-- Service for creating commands in URL Processing -->
   <bean id="uk.ac.cam.caret.sakai.rwiki.service.message.api.MessageService"
@@ -11,7 +16,6 @@
     <property name="log"><ref bean="rwiki-logger"/></property>
     <property name="messageDao"><ref bean="messageDao" /></property>
     <property name="pagePresenceDao"><ref bean="pagePresenceDao"/></property>
-    <property name="preferenceDao"><ref bean="preferenceDao"/></property>
   </bean>
   <!-- Triggers fired on actions -->
   <bean id="uk.ac.cam.caret.sakai.rwiki.service.message.api.TriggerService"

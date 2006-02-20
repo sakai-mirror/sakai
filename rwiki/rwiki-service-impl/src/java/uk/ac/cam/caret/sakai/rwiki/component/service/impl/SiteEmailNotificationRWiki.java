@@ -132,7 +132,7 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification
 	protected String getResourceAbility()
 	{
 		return null;
-		//return RWikiSecurityService.SECURE_READ;
+//		return RWikiSecurityService.SECURE_READ;
 	}
 
 	/**

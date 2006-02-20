@@ -13,57 +13,83 @@ import uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Preference;
  */
 public class PreferenceImpl implements Preference {
     private String id;
-    private String user;
+    private String userid;
     private Date lastseen;
     private String preference;
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Preference#getId()
-     */
+    private String prefcontext;
+    private String preftype;
+	/**
+	 * {@inheritDoc}
+	 */
     public String getId() {
         return id;
     }
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Preference#setId(java.lang.String)
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public void setId(String id) {
         this.id = id;
     }
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Preference#getLastseen()
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public Date getLastseen() {
         return lastseen;
     }
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Preference#setLastseen(java.util.Date)
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public void setLastseen(Date lastseen) {
         this.lastseen = lastseen;
     }
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Preference#getPreference()
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public String getPreference() {
         return preference;
     }
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Preference#setPreference(java.lang.String)
-     */
+	/**
+	 * {@inheritDoc}
+	 */
     public void setPreference(String preference) {
         this.preference = preference;
     }
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Preference#getUser()
-     */
-    public String getUser() {
-        return user;
+	/**
+	 * {@inheritDoc}
+	 */
+    public String getUserid() {
+        return userid;
     }
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Preference#setUser(java.lang.String)
-     */
-    public void setUser(String user) {
-        this.user = user;
+	/**
+	 * {@inheritDoc}
+	 */
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getPrefcontext() {
+		return prefcontext;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setPrefcontext(String prefcontext) {
+		this.prefcontext = prefcontext;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getPreftype() {
+		return preftype;
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setPreftype(String preftype) {
+		this.preftype = preftype;
+	}
     
  
 }
