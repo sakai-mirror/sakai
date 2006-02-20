@@ -109,7 +109,7 @@ public class SaveCommand implements HttpCommand {
             session.setAttribute("STORED_PARAMETERS", parameterMap);
 
             ViewBean vb = rssb.getViewBean();
-
+            
             // FIXME Knowledge of URL structure assumed!
 	    WikiPageAction returnAction = WikiPageAction.LINK_ATTACHMENT_RETURN_ACTION;
 	    if (save.equals(EditBean.EMBED_ATTACHMENT_VALUE)) {
@@ -120,6 +120,16 @@ public class SaveCommand implements HttpCommand {
                             + vb.getActionUrl(returnAction, true));
 
             session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, FilePickerHelper.FILE_PICKER_ATTACH_LINKS);
+            
+            // FIXME internationalise this
+            String fromText;
+            if (returnAction.equals(WikiPageAction.LINK_ATTACHMENT_RETURN_ACTION)) {
+                fromText = vb.getLocalName() + " as link";
+            } else {
+                fromText = vb.getLocalName() + " as embed";
+            }
+            
+            session.setAttribute(FilePickerHelper.FILE_PICKER_FROM_TEXT, fromText);
             
             response.sendRedirect(request.getContextPath()
                             + request.getServletPath() + "/helper/"
