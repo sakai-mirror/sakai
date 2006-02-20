@@ -332,7 +332,6 @@ public class ResourcesAction
 	 *  area.  If this value is not set, all attachments are to copies in the hidden attachments area.
 	 */
 	public static final String STATE_ATTACH_LINKS = "resources.attach_links";
-	private static final String STATE_STACK_ATTACH_LINKS = "resources.state_attach_links";
 
 	/** The name of the state attribute for the title when a tool uses Resources as attachment helper (for create or attach but not for edit mode) */
 	public static final String STATE_ATTACH_TITLE = "resources.attach_title";
@@ -658,7 +657,8 @@ public class ResourcesAction
 		boolean atHome = false;
 
 		// %%STATE_MODE_RESOURCES%%
-		boolean dropboxMode = ((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX);
+		
+		boolean dropboxMode = RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES));
 		if (dropboxMode)
 		{
 			// notshow the public option or notification when in dropbox mode
@@ -916,6 +916,13 @@ public class ResourcesAction
 		{
 			initStateAttributes(state, portlet);
 		}
+		String mode = (String) state.getAttribute(STATE_MODE);
+		if(state.getAttribute(STATE_MODE_RESOURCES) == null && MODE_HELPER.equals(mode))
+		{
+			state.setAttribute(ResourcesAction.STATE_MODE_RESOURCES, ResourcesAction.MODE_HELPER);
+		}
+		
+		context.put("sysout", System.out);
 		
 		Set selectedItems = (Set) state.getAttribute(STATE_LIST_SELECTIONS);
 		if(selectedItems == null)
@@ -1473,7 +1480,7 @@ public class ResourcesAction
 		boolean atHome = false;
 
 		// %%STATE_MODE_RESOURCES%%
-		boolean dropboxMode = ((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX);
+		boolean dropboxMode = RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES));
 		
 		// make sure the channedId is set
 		String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
@@ -1758,13 +1765,13 @@ public class ResourcesAction
 
 		// pick the template based on whether client wants links or copies
 		String template = TEMPLATE_SELECT;
-		Object attach_links = current_stack_frame.get(STATE_STACK_ATTACH_LINKS);
+		Object attach_links = current_stack_frame.get(STATE_ATTACH_LINKS);
 		if(attach_links == null)
 		{
 			attach_links = state.getAttribute(STATE_ATTACH_LINKS);
 			if(attach_links != null)
 			{
-				current_stack_frame.put(STATE_STACK_ATTACH_LINKS, attach_links);
+				current_stack_frame.put(STATE_ATTACH_LINKS, attach_links);
 			}
 		}
 		if(attach_links == null)
@@ -1858,11 +1865,11 @@ public class ResourcesAction
 		
 		//  %%STATE_MODE_RESOURCES%%
 		//not show the public option when in dropbox mode
-		if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+		if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			context.put("dropboxMode", Boolean.FALSE);
 		}
-		else if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
+		else if (RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			// not show the public option or notification when in dropbox mode
 			context.put("dropboxMode", Boolean.TRUE);
@@ -1974,7 +1981,7 @@ public class ResourcesAction
 		}
 		
 		// %%STATE_MODE_RESOURCES%%
-		if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+		if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			context.put("dropboxMode", Boolean.FALSE);
 			
@@ -1983,7 +1990,7 @@ public class ResourcesAction
 			if (!pubview) pubview = ContentHostingService.isPubView(id);
 			context.put("pubview", new Boolean(pubview));
 		}
-		else if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
+		else if (RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			// notshow the public option or notification when in dropbox mode
 			context.put("dropboxMode", Boolean.TRUE);
@@ -2144,11 +2151,11 @@ public class ResourcesAction
 		metadataGroupsIntoContext(state, context);
 
 		// %%STATE_MODE_RESOURCES%%
-		if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+		if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			context.put("dropboxMode", Boolean.FALSE);
 		}
-		else if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
+		else if (RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			// notshow the public option or notification when in dropbox mode
 			context.put("dropboxMode", Boolean.TRUE);
@@ -2854,7 +2861,7 @@ public class ResourcesAction
 																					item.getNotification());
 
 						// %%STATE_MODE_RESOURCES%%
-						if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+						if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 						{
 							// deal with pubview when in resource mode//%%%
 							if (! item.isPubviewset())
@@ -2878,7 +2885,17 @@ public class ResourcesAction
 							}
 							else
 							{
-								if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+								Object attach_links = current_stack_frame.get(STATE_ATTACH_LINKS);
+								if(attach_links == null)
+								{
+									attach_links = state.getAttribute(STATE_ATTACH_LINKS);
+									if(attach_links != null)
+									{
+										current_stack_frame.put(STATE_ATTACH_LINKS, attach_links);
+									}
+								}
+
+								if(attach_links == null)
 								{
 									attachItem(resource.getId(), state);
 								}
@@ -3220,7 +3237,7 @@ public class ResourcesAction
 			
 				ContentCollection collection = ContentHostingService.addCollection (newCollectionId, resourceProperties);
 
-				if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+				if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 				{
 					// deal with pubview in resource mode//%%%
 					// boolean pubviewset = ContentHostingService.isInheritingPubView(collection.getId());
@@ -3389,7 +3406,7 @@ public class ResourcesAction
 				item.setAdded(true);
 				
 
-				if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+				if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 				{
 					// deal with pubview when in resource mode//%%%
 					if (! item.isPubviewset())
@@ -3413,7 +3430,17 @@ public class ResourcesAction
 					}
 					else
 					{
-						if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+						Object attach_links = current_stack_frame.get(STATE_ATTACH_LINKS);
+						if(attach_links == null)
+						{
+							attach_links = state.getAttribute(STATE_ATTACH_LINKS);
+							if(attach_links != null)
+							{
+								current_stack_frame.put(STATE_ATTACH_LINKS, attach_links);
+							}
+						}
+
+						if(attach_links == null)
 						{
 							attachItem(resource.getId(), state);
 						}
@@ -3571,7 +3598,19 @@ public class ResourcesAction
 
 		String itemId = params.getString("itemId");
 		
-		if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+		Map current_stack_frame = peekAtStack(state);
+		
+		Object attach_links = current_stack_frame.get(STATE_ATTACH_LINKS);
+		if(attach_links == null)
+		{
+			attach_links = state.getAttribute(STATE_ATTACH_LINKS);
+			if(attach_links != null)
+			{
+				current_stack_frame.put(STATE_ATTACH_LINKS, attach_links);
+			}
+		}
+
+		if(attach_links == null)
 		{
 			attachItem(itemId, state);
 		}
@@ -3992,11 +4031,21 @@ public class ResourcesAction
 				
 			}
 			current_stack_frame = peekAtStack(state);
+			EditItem edit_item = null;
 			List edit_items = (List) current_stack_frame.get(ResourcesAction.STATE_STACK_CREATE_ITEMS);
-			if(edit_items != null && ! edit_items.isEmpty() && new_items != null && ! new_items.isEmpty())
+			if(edit_items == null)
 			{
-				AttachItem new_item = (AttachItem) new_items.get(0);
-				EditItem edit_item = (EditItem) edit_items.get(0);
+				edit_item = (EditItem) current_stack_frame.get(ResourcesAction.STATE_STACK_EDIT_ITEM);
+			}
+			else
+			{
+				edit_item = (EditItem) edit_items.get(0);
+			}
+			if(edit_item != null)
+			{
+				//AttachItem new_item = (AttachItem) new_items.get(0);
+				
+				/*
 				List tags = edit_item.getProperties();
 				Iterator tagIt = tags.iterator();
 				while(tagIt.hasNext())
@@ -4008,7 +4057,10 @@ public class ResourcesAction
 						tag.setValue(0, attachments.get(0));
 					}
 				}
-				// edit_item.setValue(fieldname, index, attachments.get(0));
+				*/
+				Reference ref = (Reference) attachments.get(0);
+				edit_item.setValue(fieldname, index, ref);
+				edit_item.setValue(fieldname, ref);
 			}
 		}
 	}
@@ -4288,7 +4340,7 @@ public class ResourcesAction
 				
 
 				// %%STATE_MODE_RESOURCES%%
-				if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+				if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 				{
 					// deal with pubview when in resource mode//%%%
 					if (! item.isPubviewset())
@@ -4312,7 +4364,17 @@ public class ResourcesAction
 					}
 					else
 					{
-						if(state.getAttribute(STATE_ATTACH_LINKS) == null)
+						Object attach_links = current_stack_frame.get(STATE_ATTACH_LINKS);
+						if(attach_links == null)
+						{
+							attach_links = state.getAttribute(STATE_ATTACH_LINKS);
+							if(attach_links != null)
+							{
+								current_stack_frame.put(STATE_ATTACH_LINKS, attach_links);
+							}
+						}
+
+						if(attach_links == null)
 						{
 							attachItem(resource.getId(), state);
 						}
@@ -4516,11 +4578,11 @@ public class ResourcesAction
 		metadataGroupsIntoContext(state, context);
 
 		// %%STATE_MODE_RESOURCES%%
-		if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+		if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			context.put("dropboxMode", Boolean.FALSE);
 		}
-		else if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
+		else if (RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			// notshow the public option or notification when in dropbox mode
 			context.put("dropboxMode", Boolean.TRUE);
@@ -6303,7 +6365,7 @@ public class ResourcesAction
 
 		boolean pubviewset = item.isPubviewset();
 		boolean pubview = false;
-		if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+		if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			if (!pubviewset)
 			{
@@ -6314,7 +6376,7 @@ public class ResourcesAction
 		
 		int noti = NotificationService.NOTI_OPTIONAL;
 		// %%STATE_MODE_RESOURCES%%
-		if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
+		if (RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			// set noti to none if in dropbox mode
 			noti = NotificationService.NOTI_NONE;
@@ -6692,7 +6754,7 @@ public class ResourcesAction
 
 		boolean pubviewset = item.isPubviewset();
 		boolean pubview = false;
-		if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+		if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			if (!pubviewset)
 			{
@@ -6703,7 +6765,7 @@ public class ResourcesAction
 		
 		int noti = NotificationService.NOTI_OPTIONAL;
 		// %%STATE_MODE_RESOURCES%%
-		if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_DROPBOX))
+		if (RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
 			// set noti to none if in dropbox mode
 			noti = NotificationService.NOTI_NONE;
@@ -7218,7 +7280,7 @@ public class ResourcesAction
 				current_stack_frame.put(STATE_STACK_EDIT_INTENT, INTENT_REVISE_FILE);
 				
 				// %%STATE_MODE_RESOURCES%%
-				if (((String) state.getAttribute(STATE_MODE_RESOURCES)).equalsIgnoreCase(RESOURCES_MODE_RESOURCES))
+				if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 				{
 					// when in resource mode
 					if (!item.isPubviewset())
@@ -8118,7 +8180,10 @@ public class ResourcesAction
 		{
 			// get resources mode from tool registry
 			resources_mode = portlet.getPortletConfig().getInitParameter("resources_mode");
-			state.setAttribute(STATE_MODE_RESOURCES, resources_mode);
+			if(resources_mode != null)
+			{
+				state.setAttribute(STATE_MODE_RESOURCES, resources_mode);
+			}
 		}
 		
 		boolean show_other_sites = false;
@@ -8145,7 +8210,7 @@ public class ResourcesAction
 		if ((home == null) || (home.length() == 0))
 		{
 			// no home set, see if we are in dropbox mode
-			if (resources_mode.equalsIgnoreCase (RESOURCES_MODE_DROPBOX))
+			if (RESOURCES_MODE_DROPBOX.equalsIgnoreCase(resources_mode))
 			{
 				home = ContentHostingService.getDropboxCollection();
 				

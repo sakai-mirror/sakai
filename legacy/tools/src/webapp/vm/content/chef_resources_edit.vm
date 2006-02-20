@@ -96,12 +96,20 @@
 							value="$!{tag.value}" />
 					#elseif("$!tag.widget" == "$!ANYURI")
 						#set ($size = 0)
+					#if($sysout)
+					<!-- $sysout.println("building anyuri tag: *$tag.label*   tag: $tag") -->
+					#end
 						#if (!$tag.value.isEmpty())
 							#set ($props = false)
 							#set ($size = $tag.value.size())
+					#if($sysout)
+					<!-- $sysout.println("         anyuri tag: *$tag.label*  size: $size") -->
+					#end
 							<ul class="attachList">
 								#foreach ($attachment in $tag.value)
 									#set ($props = $attachment.Properties)
+									<!-- $sysout.println("                 ${attachment.url}") -->
+									##<!-- $sysout.println("                 $attachment.Properties.getPropertyFormatted('DAV:displayname')") -->
 									#if (!$props)
 										#if ($size > 0) #set ($size = $size - 1) #end
 									#else
@@ -138,11 +146,11 @@
 						#if ($size == 0) 
 							## $tlang.getString("gen.noattach")
 							<div class="act">
-								<a href="#" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=linkResource&field=$validator.escapeUrl($tag.dottedname)")';submitform('propertyForm');">Link to a resource</a>
+								<a href="#" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=linkResource&field=$validator.escapeUrl($tag.dottedname)")';submitform('propertyForm');">Link to a resource</a>
 							</div>
 						#else
 							<div class="act">
-								<a href="#" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doCreateitem" "special=upload&flow=linkResource&field=$validator.escapeUrl($tag.dottedname)")';submitform('propertyForm');">Link to a resource</a>
+								<a href="#" onclick="javascript:document.getElementById('propertyForm').action='#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=linkResource&field=$validator.escapeUrl($tag.dottedname)")';submitform('propertyForm');">Link to a resource</a>
 							</div>
 						#end
 					#else

@@ -96,10 +96,16 @@
 							id="$validator.escapeJavascript("$!{tag.dottedname}")" 
 							value="$!{tag.value}" />
 					#elseif("$!tag.widget" == "$!ANYURI")
+					#if($sysout)
+					<!-- $sysout.println("building anyuri tag: *$tag.label*   tag: $tag") -->
+					#end
 						#set ($size = 0)
 						#if (!$tag.value.isEmpty())
 							#set ($props = false)
 							#set ($size = $tag.value.size())
+					#if($sysout)
+					<!-- $sysout.println("building anyuri tag: *$tag.label*  size: $size") -->
+					#end
 							<ul class="attachList">
 								#foreach ($attachment in $tag.value)
 									#set ($props = $attachment.Properties)
