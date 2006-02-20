@@ -1089,8 +1089,27 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 					EntityHandler eh = findEntityHandler(ref);
 					Entity entity =  getEntity(ref, eh);
+					String user = req.getRemoteUser();
+					if ( entity instanceof RWikiEntity ) {
+						RWikiEntity rwe = (RWikiEntity) entity;
+						RWikiObject rwo = rwe.getRWikiObject();
+						if ( rwo != null ) {
+							if ( checkRead(rwo,user) ) {
+								eh.outputContent(entity, req, res);
+							} else {
+								res.sendError(HttpServletResponse.SC_FORBIDDEN,"No Permission to read this wiki page, sorry");
+							}
+						} else {
+							// this is a container, read on the site
+							if ( securityService.checkGetPermission(user,ref.getContext()) ) {
+								eh.outputContent(entity,req,res);
+							} else {
+								res.sendError(HttpServletResponse.SC_FORBIDDEN,"No Permission to read this wiki site, sorry");
+							}
+						}
+					} 
+					res.sendError(HttpServletResponse.SC_NOT_FOUND," Resource Now found "+ref.getReference());
 
-					eh.outputContent(entity, req, res);
 				} catch (Throwable t) {
 					t.printStackTrace();
 
