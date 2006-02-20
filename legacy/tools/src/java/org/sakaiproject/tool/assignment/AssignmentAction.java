@@ -485,7 +485,7 @@ extends PagedResourceActionII
 		}	// if
 */
 		String attachTemplate = (String) getContext(data).get("template");
-		String attachMode = (String) state.getAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+		String attachMode = (String) state.getAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
 		if (attachMode != null)
 		{
 			if (!attachMode.equals(ResourcesAction.MODE_ATTACHMENT_DONE))
@@ -507,7 +507,7 @@ extends PagedResourceActionII
 		}
 		state.removeAttribute(ResourcesAction.STATE_MODE);
 		state.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
-		state.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+		state.removeAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
 
 		String contextString = (String) state.getAttribute (STATE_CONTEXT_STRING);		
 		
@@ -4885,7 +4885,7 @@ extends PagedResourceActionII
 			// setup... we'll use the attachment action's mode
 //chen - SAK-1624 (use new file picker)			state.setAttribute (AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 			state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
-			state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+			state.setAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
 			String toolName = ToolManager.getCurrentTool().getTitle();
 			state.setAttribute(ResourcesAction.STATE_ATTACH_TOOL_NAME, toolName);
 			

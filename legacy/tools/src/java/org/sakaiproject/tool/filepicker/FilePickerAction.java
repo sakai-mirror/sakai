@@ -33,7 +33,7 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
                                    HttpServletRequest req, HttpServletResponse res) throws ToolException {
       SessionState sstate = getState(req);
 
-      if (ResourcesAction.MODE_ATTACHMENT_DONE.equals(sstate.getAttribute(ResourcesAction.STATE_RESOURCES_MODE))) {
+      if (ResourcesAction.MODE_ATTACHMENT_DONE.equals(sstate.getAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE))) {
          ToolSession toolSession = SessionManager.getCurrentToolSession();
          List attachments = (List) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
 
@@ -69,7 +69,7 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
 
    protected void cleanup(SessionState sstate) {
       sstate.removeAttribute(ResourcesAction.STATE_MODE);
-      sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+      sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
       sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
    }
 
@@ -96,7 +96,7 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
                                      SessionState sstate, ToolSession toolSession) {
       initPicker(portlet, context, rundata, sstate);
       sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
-      sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+      sstate.setAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
       sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(true));
       
       // state attribute ResourcesAction.STATE_ATTACH_TOOL_NAME should be set with a string to indicate name of tool

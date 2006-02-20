@@ -45,7 +45,7 @@ public class ResourceEditHelperAction extends FilePickerAction {
       sstate.setAttribute(ResourcesAction.STATE_ATTACH_LINKS, Boolean.TRUE.toString());
       sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
       if (toolSession.getAttribute(ResourceEditingHelper.ATTACHMENT_ID) != null) {
-         sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_EDIT_ITEM);
+         sstate.setAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_EDIT_ITEM);
          sstate.setAttribute(ResourcesAction.STATE_ATTACH_ITEM_ID,
                toolSession.getAttribute(ResourceEditingHelper.ATTACHMENT_ID));
          sstate.setAttribute(ResourcesAction.STATE_STRUCTOBJ_TYPE_READONLY, Boolean.TRUE.toString());
@@ -55,7 +55,7 @@ public class ResourceEditHelperAction extends FilePickerAction {
       }
       else {
          // must be create
-         sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_NEW_ITEM);
+         sstate.setAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_NEW_ITEM);
 
          if (ResourceEditingHelper.CREATE_TYPE_FORM.equals(createType)) {
             sstate.setAttribute(ResourcesAction.STATE_CREATE_TYPE,
@@ -85,7 +85,7 @@ public class ResourceEditHelperAction extends FilePickerAction {
       sstate.removeAttribute(ResourcesAction.STATE_STRUCTOBJ_TYPE);
       sstate.removeAttribute(ResourcesAction.STATE_CREATE_NUMBER);
       sstate.removeAttribute(ResourcesAction.STATE_CREATE_COLLECTION_ID);
-      sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+      sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
       sstate.removeAttribute(ResourcesAction.STATE_SHOW_OTHER_SITES);
       sstate.removeAttribute(ResourcesAction.STATE_EDIT_ID);
       sstate.removeAttribute(ResourcesAction.STATE_EDIT_COLLECTION_ID);

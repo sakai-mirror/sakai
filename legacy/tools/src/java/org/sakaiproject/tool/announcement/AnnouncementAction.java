@@ -753,7 +753,7 @@ extends PagedResourceActionII
 		String template = (String) getContext(rundata).get("template");
 
 		// String mode = (String) sstate.getAttribute(AttachmentAction.STATE_MODE);
-		String mode = (String) sstate.getAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+		String mode = (String) sstate.getAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
 		if (mode != null)
 		{
 			// if the mode is not done, defer to the AttachmentAction
@@ -793,7 +793,7 @@ extends PagedResourceActionII
 		// clean up
 		sstate.removeAttribute(ResourcesAction.STATE_MODE);
 		sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
-		sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+		sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
 
 		// get the current channel ID from state object or prolet initial parameter
 		String channelId = state.getChannelId();
@@ -3001,7 +3001,7 @@ extends PagedResourceActionII
 
 		// setup... we'll use the ResourcesAction's mode
 		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
-		state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+		state.setAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
 		boolean show_other_sites = ServerConfigurationService.getBoolean("resources.show_all_collections.helper", ResourcesAction.SHOW_ALL_SITES_IN_FILE_PICKER);
 		/** This attribute indicates whether "Other Sites" twiggle should show */
 		state.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(show_other_sites));

@@ -545,7 +545,7 @@ public class ThreadedDiscussionIIAction
 			state.setAttribute(AttachmentAction.STATE_ATTACHMENTS, attachments.clone());
 		}*/
 		state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
-		state.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+		state.setAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
 		String toolName = ToolManager.getCurrentTool().getTitle();
 		state.setAttribute(ResourcesAction.STATE_ATTACH_TOOL_NAME, toolName);
 		
@@ -642,7 +642,7 @@ public class ThreadedDiscussionIIAction
 		}
 		context.put("attachments", state.getAttribute(ATTACHMENTS));*/
 		String attachTemplate = (String) getContext(rundata).get("template");
-		String attachMode = (String) state.getAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+		String attachMode = (String) state.getAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
 		if (attachMode != null)
 		{
 			if (!attachMode.equals(ResourcesAction.MODE_ATTACHMENT_DONE))
@@ -660,7 +660,7 @@ public class ThreadedDiscussionIIAction
 		}
 		state.removeAttribute(ResourcesAction.STATE_MODE);
 		state.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
-		state.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+		state.removeAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
 		
 		String state_mode = (String) state.getAttribute(STATE_MODE);
 		

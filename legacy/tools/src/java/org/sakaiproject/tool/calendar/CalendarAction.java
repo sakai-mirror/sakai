@@ -2041,7 +2041,7 @@ extends VelocityPortletStateAction
 		String template = (String)getContext(runData).get("template");
 		
 		// String mode = (String) sstate.getAttribute(AttachmentAction.STATE_MODE);
-		String mode = (String) sstate.getAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+		String mode = (String) sstate.getAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
 		if (mode != null)
 		{
 			// if the mode is not done, defer to the ResourcesAction
@@ -2061,7 +2061,7 @@ extends VelocityPortletStateAction
 			
 			// clean up
 			sstate.removeAttribute(ResourcesAction.STATE_MODE);
-			sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_MODE);
+			sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
 			sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
 		}
 		
@@ -3678,7 +3678,7 @@ extends VelocityPortletStateAction
 		// setup... we'll use ResourcesAction's mode
 		// sstate.setAttribute(AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 		sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
-		sstate.setAttribute(ResourcesAction.STATE_RESOURCES_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+		sstate.setAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
 		boolean show_other_sites = ServerConfigurationService.getBoolean("resources.show_all_collections.helper", ResourcesAction.SHOW_ALL_SITES_IN_FILE_PICKER);
 		/** This attribute indicates whether "Other Sites" twiggle should show */
 		sstate.setAttribute(ResourcesAction.STATE_SHOW_ALL_SITES, Boolean.toString(show_other_sites));
