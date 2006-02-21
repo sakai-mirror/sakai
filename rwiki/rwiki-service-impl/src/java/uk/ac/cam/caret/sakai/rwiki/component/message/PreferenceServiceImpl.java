@@ -59,13 +59,24 @@ public class PreferenceServiceImpl implements PreferenceService {
     }
 
 	public String findPreferenceAt(String user, String context, String type) {
-		List l = preferenceDao.findByUser(user,context,type);
+		String baseSearch = "/";
+		List l = preferenceDao.findByUser(user,baseSearch,type);
 		Preference selected = null;
 		for ( Iterator i = l.iterator(); i.hasNext(); ) {
 			Preference p = (Preference) i.next();
 			
-			if ( selected == null ||  p.getPrefcontext().length() > selected.getPrefcontext().length() ) {
-				selected = p;
+			if ( context.startsWith(p.getPrefcontext()) ) {
+			
+				if ( selected == null ||  p.getPrefcontext().length() > selected.getPrefcontext().length() ) {
+					selected = p;
+					System.out.println("sel "+p.getPrefcontext());
+
+				} else {
+					System.out.println("rej "+p.getPrefcontext());	
+				}
+			} else {
+				System.out.println("ig "+p.getPrefcontext());	
+				
 			}
 		}
 		if ( selected == null ) return null;

@@ -67,7 +67,10 @@
         <entry key=""><ref bean="rwikiRAWHandler" /></entry>
         <entry key="html"><ref bean="rwikiHTMLHandler" /></entry>
         <entry key="odf"><ref bean="rwikiODFHandler" /></entry>
-        <entry key="rss"><ref bean="rwikiRSSHandler" /></entry>
+        <entry key="10.rss"><ref bean="rwiki10RSSHandler" /></entry>
+        <entry key="09.rss"><ref bean="rwiki09RSSHandler" /></entry>
+        <entry key="20.rss"><ref bean="rwiki20RSSHandler" /></entry>
+        <entry key="atom"><ref bean="rwikiAtomHandler" /></entry>
       </map>
     </property>
   </bean>
@@ -183,11 +186,11 @@
     <property name="feedFormat"><value>&lt;a href="/access{0}odf" &gt;&lt;img src="/library/image/sakai/word.gif" border="0" /&gt;&lt;/a&gt;</value></property>
     
   </bean>
-  <bean id="rwikiRSSHandler"
+  <bean id="rwiki10RSSHandler"
     class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XLSTChangesHandler"  
     init-method="init"  destroy-method="destroy" >
     <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/torss10.xslt</value></property>
-    <property name="minorType"><value>rss</value></property>    
+    <property name="minorType"><value>10.rss</value></property>    
     <property name="logger"><ref bean="rwiki-logger"/></property>
     <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
     <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>
@@ -198,7 +201,115 @@
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
     <property name="rwikObjectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService" /></property>
-    <property name="feedFormat"><value>&lt;a href="/access{0}rss" &gt;&lt;img src="/sakai-rwiki/images/rss10.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="feedFormat"><value>&lt;a href="/access{0}10.rss" &gt;&lt;img src="/sakai-rwiki/images/rss10.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="responseHeaders">
+      <map>
+        <entry key="content-type"><value>text/xml</value></entry>
+      </map>     
+    </property>
+    <property name="outputProperties">
+      <map>
+        <entry key="indent"><value>yes</value></entry>
+        <entry key="encoding"><value>UTF-8</value></entry>
+        <entry key="media-type"><value>text/xml</value></entry>
+        <entry key="{http://xml.apache.org/xalan}indent-amount"><value>2</value></entry> 
+        <!--
+          <entry key="{http://xml.apache.org/xalan}content-handler"><value>org.apache.xml.serializer.ToHTMLStream</value></entry> 
+          <entry key="{http://xml.apache.org/xalan}entities"><value>org/apache/xml/serializer/HTMLEntities</value></entry> 
+          
+        -->
+      </map>     
+    </property>
+    
+  </bean>
+  <bean id="rwiki09RSSHandler"
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XLSTChangesHandler"  
+    init-method="init"  destroy-method="destroy" >
+    <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/torss091.xslt</value></property>
+    <property name="minorType"><value>09.rss</value></property>    
+    <property name="logger"><ref bean="rwiki-logger"/></property>
+    <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
+    <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>
+    <property name="errorFormat"><value>Error encounvered performing transform : {0} \n {1}</value></property>
+    <property name="authZPrefix" ><value>/wiki</value></property>
+    <property name="anchorLinkFormat" ><value>/access/wiki{0}.html#{1}</value></property>
+    <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
+    <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="accessURLStart" ><value>/wiki/</value></property>
+    <property name="rwikObjectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService" /></property>
+    <property name="feedFormat"><value>&lt;a href="/access{0}09.rss" &gt;&lt;img src="/sakai-rwiki/images/rss091.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="responseHeaders">
+      <map>
+        <entry key="content-type"><value>text/xml</value></entry>
+      </map>     
+    </property>
+    <property name="outputProperties">
+      <map>
+        <entry key="indent"><value>yes</value></entry>
+        <entry key="encoding"><value>UTF-8</value></entry>
+        <entry key="media-type"><value>text/xml</value></entry>
+        <entry key="{http://xml.apache.org/xalan}indent-amount"><value>2</value></entry> 
+        <!--
+          <entry key="{http://xml.apache.org/xalan}content-handler"><value>org.apache.xml.serializer.ToHTMLStream</value></entry> 
+          <entry key="{http://xml.apache.org/xalan}entities"><value>org/apache/xml/serializer/HTMLEntities</value></entry> 
+          
+        -->
+      </map>     
+    </property>
+    
+  </bean>
+  <bean id="rwiki20RSSHandler"
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XLSTChangesHandler"  
+    init-method="init"  destroy-method="destroy" >
+    <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/torss20.xslt</value></property>
+    <property name="minorType"><value>20.rss</value></property>    
+    <property name="logger"><ref bean="rwiki-logger"/></property>
+    <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
+    <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>
+    <property name="errorFormat"><value>Error encounvered performing transform : {0} \n {1}</value></property>
+    <property name="authZPrefix" ><value>/wiki</value></property>
+    <property name="anchorLinkFormat" ><value>/access/wiki{0}.html#{1}</value></property>
+    <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
+    <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="accessURLStart" ><value>/wiki/</value></property>
+    <property name="rwikObjectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService" /></property>
+    <property name="feedFormat"><value>&lt;a href="/access{0}20.rss" &gt;&lt;img src="/sakai-rwiki/images/rss20.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="responseHeaders">
+      <map>
+        <entry key="content-type"><value>text/xml</value></entry>
+      </map>     
+    </property>
+    <property name="outputProperties">
+      <map>
+        <entry key="indent"><value>yes</value></entry>
+        <entry key="encoding"><value>UTF-8</value></entry>
+        <entry key="media-type"><value>text/xml</value></entry>
+        <entry key="{http://xml.apache.org/xalan}indent-amount"><value>2</value></entry> 
+        <!--
+          <entry key="{http://xml.apache.org/xalan}content-handler"><value>org.apache.xml.serializer.ToHTMLStream</value></entry> 
+          <entry key="{http://xml.apache.org/xalan}entities"><value>org/apache/xml/serializer/HTMLEntities</value></entry> 
+          
+        -->
+      </map>     
+    </property>
+    
+  </bean>
+  <bean id="rwikiAtomHandler"
+    class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.XLSTChangesHandler"  
+    init-method="init"  destroy-method="destroy" >
+    <property name="xslt"><value>/uk/ac/cam/caret/sakai/rwiki/component/service/impl/toatom03.xslt</value></property>
+    <property name="minorType"><value>atom</value></property>    
+    <property name="logger"><ref bean="rwiki-logger"/></property>
+    <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
+    <property name="defaultStackTrace"><value>Failed To generate Stack Trace : {0}</value></property>
+    <property name="errorFormat"><value>Error encounvered performing transform : {0} \n {1}</value></property>
+    <property name="authZPrefix" ><value>/wiki</value></property>
+    <property name="anchorLinkFormat" ><value>/access/wiki{0}.html#{1}</value></property>
+    <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
+    <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="accessURLStart" ><value>/wiki/</value></property>
+    <property name="rwikObjectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService" /></property>
+    <property name="feedFormat"><value>&lt;a href="/access{0}atom" &gt;&lt;img src="/sakai-rwiki/images/atom03.gif" border="0" /&gt;&lt;/a&gt;</value></property>
     <property name="responseHeaders">
       <map>
         <entry key="content-type"><value>text/xml</value></entry>

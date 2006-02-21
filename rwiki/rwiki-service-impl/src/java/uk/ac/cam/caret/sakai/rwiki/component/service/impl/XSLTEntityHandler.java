@@ -534,7 +534,9 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 					.getResourceAsStream(xslt)));
 			xsltTransform.getContentHandler();
 		} catch (Exception ex) {
-			logger.error("Failed to initialise XSLTTransformer context ", ex);
+			ex.printStackTrace();
+			System.err.println("Please check that the xslt is in the classpath "+xslt);
+			throw new RuntimeException("Failed to initialise XSLTTransformer context with xslt "+xslt, ex);
 		}
 	}
 

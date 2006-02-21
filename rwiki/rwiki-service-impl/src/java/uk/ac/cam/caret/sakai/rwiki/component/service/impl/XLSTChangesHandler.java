@@ -282,8 +282,9 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 			propA.addAttribute("", SchemaNames.ATTR_REVISION,
 					SchemaNames.ATTR_REVISION, "sting", String.valueOf(rwco
 							.getRevision()));
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 			propA.addAttribute("", SchemaNames.ATTR_LAST_CHANGE,
-					SchemaNames.ATTR_LAST_CHANGE, "sting", String.valueOf(rwco
+					SchemaNames.ATTR_LAST_CHANGE, "sting", sd.format(rwco
 							.getVersion()));
 
 			ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
@@ -327,8 +328,9 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 			propA.addAttribute("", SchemaNames.ATTR_REVISION,
 					SchemaNames.ATTR_REVISION, "sting", String.valueOf(rwco
 							.getRevision()));
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 			propA.addAttribute("", SchemaNames.ATTR_LAST_CHANGE,
-					SchemaNames.ATTR_LAST_CHANGE, "sting", String.valueOf(rwco
+					SchemaNames.ATTR_LAST_CHANGE, "sting", sd.format(rwco
 							.getVersion()));
 			ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
 					SchemaNames.EL_NSCHANGE, propA);

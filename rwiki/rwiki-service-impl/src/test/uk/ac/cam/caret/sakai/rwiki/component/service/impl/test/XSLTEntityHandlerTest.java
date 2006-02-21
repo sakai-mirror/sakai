@@ -82,10 +82,22 @@ public class XSLTEntityHandlerTest extends TestCase {
 				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/HelpPage..",
 				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/HelpPage..html",
 				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/HelpPage",
-				"/wiki/site/site-uk.ac.cam.caret.sakai.rwiki.component.test.componentintegrationtest-71220.0/hometestpage.html"
+				"/wiki/site/site-uk.ac.cam.caret.sakai.rwiki.component.test.componentintegrationtest-71220.0/hometestpage.html",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/HelpPage.09.rss",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/HelpPage.10.rss",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/HelpPage.20.rss",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/HelpPage.atom",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/ .09.rss",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/ .10.rss",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/ .20.rss",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/ .atom",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/subsite/ .09.rss",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/subsite/ .10.rss",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/subsite/ .20.rss",
+				"/wiki/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs/subsite/ .atom"
 
 		};
-		Decoded[] results = {
+		Decoded[] results_html = {
 				new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465",
 						"/home/sdfsdf/sdfsdf/sdfsdfsd/sdfsdfsdf/sdfsdfdsf",
 						"sdfsdf", "123123"),
@@ -119,8 +131,56 @@ public class XSLTEntityHandlerTest extends TestCase {
 				null,
 				new Decoded(
 						"/site/site-uk.ac.cam.caret.sakai.rwiki.component.test.componentintegrationtest-71220.0",
-						"/", "hometestpage", "-1") };
-		Decoded[] results2 = {
+						"/", "hometestpage", "-1"),
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //.09.rss",
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //10.rss",
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //20.rss",
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //atom",
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //09.rss",
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //10.rss",
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","  ","-1"), //20.rss",
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","","-1"), //.atom",
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //09.rss",
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //10.rss",
+				null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //20.rss",
+				null // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1") //atom"
+		};
+		Decoded[] results_09rss = {
+				null, //0
+				null, //1
+				null, //2
+				null, //3
+				null, //4
+				null, //5
+				null, //6
+				null, //7
+				null, //8
+				null, //9
+				null, //10
+				null, //11
+				null, //12
+				null, //13
+				null, //14
+				null, //15
+				null, //16
+				null, //17
+				null, //18
+				null, //19
+				null, //20
+						 new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //.09.rss", //21
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //10.rss", //22
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //20.rss", //23
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //atom", //24
+						new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //09.rss", //25
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //10.rss", //26
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //20.rss", //27
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //.atom",  //28
+						new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //09.rss", //29
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //10.rss", //30
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //20.rss", //31
+						null // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1") //atom" //32
+			};
+		Decoded[] results_ = {
 				null,
 				null,
 				null,
@@ -142,75 +202,191 @@ public class XSLTEntityHandlerTest extends TestCase {
 						"/", "HelpPage", "-1"),
 				new Decoded(
 						"/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs",
-						"/", "HelpPage.", "-1"), null, null, null };
-		assertEquals("Test and results are not setup correctly ",
-				results.length, test.length);
-		for (int j = 0; j < test.length; j++) {
-			Decoded decoded = eh.decode(test[j]);
-
-			Decoded result = results[j];
-			if (decoded != null) {
-				logger.info("--Context = " + decoded.getContext());
-				logger.info("--getContainer = " + decoded.getContainer());
-				logger.info("--getPage = " + decoded.getPage());
-				logger.info("--getVersion = " + decoded.getVersion());
-				logger.info("--getId = " + decoded.getId());
-
-			} else {
-				logger.info("--null");
-			}
-			if (result != null) {
-				logger.info("++Context = " + result.getContext());
-				logger.info("++getContainer = " + result.getContainer());
-				logger.info("++getPage = " + result.getPage());
-				logger.info("++getVersion = " + result.getVersion());
-				logger.info("++getId = " + result.getId());
-			} else {
-				logger.info("++null");
-			}
-
-			if (result != null && decoded == null)
-				fail(" Should have matched  " + test[j]);
-			if (result == null && decoded != null)
-				fail(" Should not have matched  " + test[j]);
-			if (result != null && decoded != null) {
-				assertEquals("Test " + j + " Failed Contexts not the same "
-						+ test[j], result.getContext(), decoded.getContext());
-				assertEquals("Test " + j + " Failed Container not the same "
-						+ test[j], result.getContainer(), decoded
-						.getContainer());
-				assertEquals("Test " + j + " Failed Page not the same "
-						+ test[j], result.getPage(), decoded.getPage());
-				assertEquals("Test " + j + " Failed Version not the same "
-						+ test[j], result.getVersion(), decoded.getVersion());
-				assertEquals(
-						"Test " + j + " Failed Id not the same " + test[j],
-						result.getId(), decoded.getId());
-			}
+						"/", "HelpPage.", "-1"), 
+						null, null, null, 
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //.09.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //10.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //20.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //atom",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //09.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //10.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //20.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //.atom",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //09.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //10.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //20.rss",
+						null // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1") //atom"
+			};
+		Decoded[] results_10rss = {
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				 null, null, null, 
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //.09.rss",
+						new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //10.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //20.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //atom",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //09.rss",
+						new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //10.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //20.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //.atom",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //09.rss",
+						new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //10.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //20.rss",
+						null // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1") //atom"
+			};
+		Decoded[] results_20rss = {
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				 null, null, null, 
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //.09.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //10.rss",
+						new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //20.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //atom",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //09.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //10.rss",
+						new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //20.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //.atom",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //09.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //10.rss",
+						new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //20.rss",
+						null // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1") //atom"
+			};
+		Decoded[] results_atom = {
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				 null, null, null, 
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //.09.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //10.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //20.rss",
+						 new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/","HelpPage","-1"), //atom",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //09.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //10.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //20.rss",
+						 new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/"," ","-1"), //.atom",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //09.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //10.rss",
+						null, // new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1"), //20.rss",
+						 new Decoded("/site/c8e34826-dab9-466c-80a9-e8e9bed50465sdfsdfs","/subsite"," ","-1") //atom"
+			};
+		
+		Object[] testSet = {
+				results_html,
+				results_,
+				results_09rss,
+				results_10rss,
+				results_20rss,
+				results_atom
+		};
+		String[] postfix = {
+			"html",
+			"",
+			"09.rss",
+			"10.rss",
+			"20.rss",
+			"atom"
+		};
+		assertEquals("Test sequence are not setup correctly ",
+				testSet.length, postfix.length);
+		for ( int ts = 0; ts < testSet.length; ts++ ) {
+			Decoded[] o = (Decoded[])testSet[ts];
+			assertEquals("test and result are different lengths for entry "+ts,
+					o.length, test.length);
 		}
-		eh.setMinorType("");
-		for (int j = 0; j < test.length; j++) {
-			Decoded decoded = eh.decode(test[j]);
-
-			Decoded result = results2[j];
-
-			if (result != null && decoded == null)
-				fail(" Should have matched  " + test[j]);
-			if (result == null && decoded != null)
-				fail(" Should not have matched  " + test[j]);
-			if (result != null && decoded != null) {
-				assertEquals("Test " + j + " Failed Contexts not the same "
-						+ test[j], result.getContext(), decoded.getContext());
-				assertEquals("Test " + j + " Failed Container not the same "
-						+ test[j], result.getContainer(), decoded
-						.getContainer());
-				assertEquals("Test " + j + " Failed Page not the same "
-						+ test[j], result.getPage(), decoded.getPage());
-				assertEquals("Test " + j + " Failed Version not the same "
-						+ test[j], result.getVersion(), decoded.getVersion());
-				assertEquals(
-						"Test " + j + " Failed Id not the same " + test[j],
-						result.getId(), decoded.getId());
+		assertEquals("Test sequence are not setup correctly ",
+				testSet.length, postfix.length);
+		for ( int ts = 0; ts < testSet.length; ts++ ) {
+			Decoded[] results = (Decoded[]) testSet[ts];
+			eh.setMinorType(postfix[ts]);
+			for (int j = 0; j < test.length; j++) {
+				Decoded decoded = eh.decode(test[j]);
+				
+				Decoded result = results[j];
+				if (decoded != null) {
+					logger.info("--Context = " + decoded.getContext());
+					logger.info("--getContainer = " + decoded.getContainer());
+					logger.info("--getPage = " + decoded.getPage());
+					logger.info("--getVersion = " + decoded.getVersion());
+					logger.info("--getId = " + decoded.getId());
+					
+				} else {
+					logger.info("--null");
+				}
+				if (result != null) {
+					logger.info("++Context = " + result.getContext());
+					logger.info("++getContainer = " + result.getContainer());
+					logger.info("++getPage = " + result.getPage());
+					logger.info("++getVersion = " + result.getVersion());
+					logger.info("++getId = " + result.getId());
+				} else {
+					logger.info("++null");
+				}
+				
+				if (result != null && decoded == null)
+					fail("Test Set "+ts+" minor "+postfix[ts]+" item "+j+" Should have matched  " + test[j]);
+				if (result == null && decoded != null)
+					fail(" Should not have matched  " + test[j]);
+				if (result != null && decoded != null) {
+					assertEquals("Test "+ts+":" + j + " Failed Contexts not the same "
+							+ test[j], result.getContext(), decoded.getContext());
+					assertEquals("Test "+ts+":" + j + " Failed Container not the same "
+							+ test[j], result.getContainer(), decoded
+							.getContainer());
+					assertEquals("Test "+ts+":" + j + " Failed Page not the same "
+							+ test[j], result.getPage(), decoded.getPage());
+					assertEquals("Test "+ts+":" + j + " Failed Version not the same "
+							+ test[j], result.getVersion(), decoded.getVersion());
+					assertEquals(
+							"Test "+ts+":" + j + " Failed Id not the same " + test[j],
+							result.getId(), decoded.getId());
+				}
 			}
 		}
 

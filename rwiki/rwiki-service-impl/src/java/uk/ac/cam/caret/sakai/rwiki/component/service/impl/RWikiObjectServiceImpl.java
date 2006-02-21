@@ -90,8 +90,6 @@ import uk.ac.cam.caret.sakai.rwiki.utils.TimeLogger;
 // FIXME: Component
 public class RWikiObjectServiceImpl implements RWikiObjectService {
 
-	
-
 	private Logger log;
 
 	private RWikiCurrentObjectDao cdao;
@@ -116,7 +114,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public void init() {
 		// register a transient notification for resources
-		 NotificationEdit edit = NotificationService.addTransientNotification();
+		NotificationEdit edit = NotificationService.addTransientNotification();
 
 		// set functions
 		edit.setFunction(RWikiObjectService.EVENT_RESOURCE_ADD);
@@ -127,9 +125,12 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		// %%% is this the best we can do? -ggolden
 
 		// set the action
-		edit.setAction(new SiteEmailNotificationRWiki(this,this.renderService));
-		
-		EntityManager.registerEntityProducer(this, RWikiObjectService.REFERENCE_ROOT);
+		edit
+				.setAction(new SiteEmailNotificationRWiki(this,
+						this.renderService));
+
+		EntityManager.registerEntityProducer(this,
+				RWikiObjectService.REFERENCE_ROOT);
 	}
 
 	/*
@@ -433,8 +434,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			cdao.update(rwo, rwho);
 			Entity e = getEntity(rwo);
 			EventTrackingService.post(EventTrackingService.newEvent(
-					EVENT_RESOURCE_WRITE, 
-					e.getReference(), true,
+					EVENT_RESOURCE_WRITE, e.getReference(), true,
 					NotificationService.PREF_IMMEDIATE));
 		} catch (HibernateOptimisticLockingFailureException e) {
 			throw new VersionException("Version has changed since: " + version,
@@ -464,11 +464,10 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			rwo.setVersion(version);
 			try {
 				cdao.update(rwo, rwho);
-//				 track it
+				// track it
 				Entity e = getEntity(rwo);
 				EventTrackingService.post(EventTrackingService.newEvent(
-						EVENT_RESOURCE_WRITE, 
-						e.getReference(), true,
+						EVENT_RESOURCE_WRITE, e.getReference(), true,
 						NotificationService.PREF_IMMEDIATE));
 			} catch (HibernateOptimisticLockingFailureException e) {
 				throw new VersionException("Version has changed since: "
@@ -576,9 +575,9 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 	public List findChangedSince(Date since, String user, String realm) {
 		//
-		//if (!securityService.checkSearchPermission(user, realm)) {
-		//	throw new ReadPermissionException(user, realm);
-		//}
+		// if (!securityService.checkSearchPermission(user, realm)) {
+		// throw new ReadPermissionException(user, realm);
+		// }
 
 		return cdao.findChangedSince(since, realm);
 	}
@@ -636,6 +635,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	public List findRWikiHistoryObjects(RWikiObject reference) {
 		return hdao.findRWikiHistoryObjects(reference);
 	}
+
 	public List findRWikiHistoryObjectsInReverse(RWikiObject reference) {
 		return hdao.findRWikiHistoryObjectsInReverse(reference);
 	}
@@ -841,14 +841,15 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			Set userListAllowImport) {
 		// stolen :) from BaseContentService
 		// get the system name: FROM_WT, FROM_CT, FROM_SAKAI
-		//String source = null;
+		// String source = null;
 		// root: <service> node
-		//Node parent = root.getParentNode(); // parent: <archive> node containing
+		// Node parent = root.getParentNode(); // parent: <archive> node
+		// containing
 		// "system"
-		//if (parent.getNodeType() == Node.ELEMENT_NODE) {
-		//	Element parentEl = (Element) parent;
-		//	source = parentEl.getAttribute("system");
-		//}
+		// if (parent.getNodeType() == Node.ELEMENT_NODE) {
+		// Element parentEl = (Element) parent;
+		// source = parentEl.getAttribute("system");
+		// }
 		String user = SessionManager.getCurrentSessionUserId();
 
 		// prepare the buffer for the results log
@@ -866,16 +867,15 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 				String defaultRealm = SiteService.getSite(siteId)
 						.getReference();
 
-
 				RWikiCurrentObjectImpl archiverwo = new RWikiCurrentObjectImpl();
 				RWikiEntity rwe = (RWikiEntity) getEntity(archiverwo);
 				rwe.fromXml(element, defaultRealm);
-				
-				// clear the ID to remove hibernate session issues and recreate a new id issues
+
+				// clear the ID to remove hibernate session issues and recreate
+				// a new id issues
 				archiverwo.setId(null);
 
 				String pageName = archiverwo.getName();
-
 
 				if (exists(pageName, defaultRealm)) {
 					// page exists, add to history, if the version does not
@@ -903,9 +903,9 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 							rwho.setRwikiobjectid(rwo.getId());
 							// save
 							hdao.update(rwho);
-							
-							rwho = getRWikiHistoryObject(rwo,
-									archiverwo.getRevision().intValue());
+
+							rwho = getRWikiHistoryObject(rwo, archiverwo
+									.getRevision().intValue());
 							results.append("Created ").append(rwho.getName())
 									.append(" revision ").append(
 											rwho.getRevision()).append(
@@ -1022,7 +1022,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		if (eh == null)
 			return false;
 		eh.setReference(SERVICE_NAME, ref, reference);
-		
+
 		return true;
 	}
 
@@ -1034,7 +1034,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		checkReference(ref);
 		EntityHandler eh = findEntityHandler(ref);
 
-		Entity e =  getEntity(ref, eh);
+		Entity e = getEntity(ref, eh);
 		return eh.getDescription(e);
 	}
 
@@ -1044,7 +1044,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	public ResourceProperties getEntityResourceProperties(Reference ref) {
 		checkReference(ref);
 		EntityHandler eh = findEntityHandler(ref);
-		Entity e =  getEntity(ref, eh);
+		Entity e = getEntity(ref, eh);
 		return eh.getProperties(e);
 	}
 
@@ -1087,40 +1087,47 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			public void handleAccess(HttpServletRequest req,
 					HttpServletResponse res, Reference ref,
 					Collection copyrightAcceptedRefs)
-					throws org.sakaiproject.exception.PermissionException, IdUnusedException,
-					ServerOverloadException {
+					throws org.sakaiproject.exception.PermissionException,
+					IdUnusedException, ServerOverloadException {
 				checkReference(ref);
 				try {
 
 					EntityHandler eh = findEntityHandler(ref);
-					Entity entity =  getEntity(ref, eh);
+					Entity entity = getEntity(ref, eh);
 					String user = req.getRemoteUser();
-					if ( entity instanceof RWikiEntity ) {
+					if (entity instanceof RWikiEntity) {
 						RWikiEntity rwe = (RWikiEntity) entity;
-						RWikiObject rwo = rwe.getRWikiObject();
-						if ( rwo != null ) {
-							if ( checkRead(rwo,user) ) {
+						if (!rwe.isContainer()) {
+							RWikiObject rwo = rwe.getRWikiObject();
+							if (checkRead(rwo, user)) {
 								eh.outputContent(entity, req, res);
 							} else {
-								throw new org.sakaiproject.exception.PermissionException(user,RWikiSecurityService.SECURE_READ,ref.getReference());
+								throw new org.sakaiproject.exception.PermissionException(
+										user, RWikiSecurityService.SECURE_READ,
+										ref.getReference());
 							}
 						} else {
 							// this is a container, read on the site
-							if ( securityService.checkGetPermission(user,ref.getContext()) ) {
-								eh.outputContent(entity,req,res);
+							if (securityService.checkGetPermission(user, ref
+									.getContext())) {
+								eh.outputContent(entity, req, res);
 							} else {
-								throw new org.sakaiproject.exception.PermissionException(user,RWikiSecurityService.SECURE_READ,ref.getReference());
+								throw new org.sakaiproject.exception.PermissionException(
+										user, RWikiSecurityService.SECURE_READ,
+										ref.getReference());
 							}
 						}
 					} else {
 						res.reset();
-						res.sendError(HttpServletResponse.SC_NOT_FOUND," Resource Now found "+ref.getReference());
+						res.sendError(HttpServletResponse.SC_NOT_FOUND,
+								" Resource Now found " + ref.getReference());
 					}
-				} catch ( org.sakaiproject.exception.PermissionException pex ) { 
+				} catch (org.sakaiproject.exception.PermissionException pex) {
 					throw pex;
 				} catch (Throwable t) {
-					log.warn("Error getting wiki page via access :"+ref.getReference());
-					log.debug("Stack trace was ",t);
+					log.warn("Error getting wiki page via access :"
+							+ ref.getReference());
+					log.debug("Stack trace was ", t);
 					throw new IdUnusedException(ref.getReference());
 				}
 			}
@@ -1178,46 +1185,47 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 		RWikiObject rwo = this.getRWikiCurrentObjectDao().findByGlobalName(
 				ref.getId());
-		
-			
-			
-		
 
 		int revision = eh.getRevision(ref);
-		if (rwo != null && revision != -1 && revision != rwo.getRevision().intValue()) {
+		if (rwo != null && revision != -1
+				&& revision != rwo.getRevision().intValue()) {
 			RWikiObject hrwo = this.getRWikiHistoryObjectDao()
 					.getRWikiHistoryObject(rwo, revision);
 			if (hrwo != null) {
 				rwo = hrwo;
-			} 
+			}
 
 		}
 		RWikiEntity rwe = null;
-		if ( rwo == null ) {
+		if (rwo == null) {
 			rwe = (RWikiEntity) getReferenceEntity(ref);
 		} else {
 			rwe = (RWikiEntity) getEntity(rwo);
 		}
 		return rwe;
 	}
-	
-	public Entity getReferenceEntity(Reference ref ) {
+
+	public Entity getReferenceEntity(Reference ref) {
 		return new RWikiEntityImpl(ref);
 	}
+
 	/**
 	 * {@inheritDoc}
+	 * 
 	 * @param rwo
 	 * @return
 	 */
 	public Entity getEntity(RWikiObject rwo) {
 		return new RWikiEntityImpl(rwo);
 	}
+
 	/**
 	 * {@inheritDoc}
+	 * 
 	 * @param rwo
 	 * @return
 	 */
-	public Reference getReference(RWikiObject rwo ) {
+	public Reference getReference(RWikiObject rwo) {
 		return EntityManager.newReference(getEntity(rwo).getReference());
 	}
 
@@ -1254,14 +1262,12 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		// ? we are not going to delete the content, so do nothing TODO
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
 	public List findAllChangedSince(Date time, String user, String basepath) {
-		// TODO: Put authz in place 
-		return cdao.findAllChangedSince(time,basepath);
+		// TODO: Put authz in place
+		return cdao.findAllChangedSince(time, basepath);
 	}
-	
-	
+
 }
