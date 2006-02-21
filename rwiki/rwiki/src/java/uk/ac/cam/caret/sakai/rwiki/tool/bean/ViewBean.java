@@ -27,6 +27,9 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+
+import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.tool.util.WikiPageAction;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
@@ -519,6 +522,11 @@ public class ViewBean {
      */
     public String getListSpaceChatURL() {
         return getPageUrl(pageName,WikiPageAction.LISTSPACECHAT_ACTION.getName());
+    }
+    
+    public String getBaseAccessUrl() {
+    		return ServerConfigurationService.getAccessUrl()+RWikiObjectService.REFERENCE_ROOT+pageName+".";
+
     }
 
 }

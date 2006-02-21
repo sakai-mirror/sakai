@@ -42,6 +42,7 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
+import org.sakaiproject.util.text.FormattedText;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -433,8 +434,16 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 		} else {
 			String renderedPage = renderService.renderPage(rwo, user,
 					localSpace, plr);
+			String contentDigest = FormattedText.convertFormattedTextToPlaintext(renderedPage);
+			if ( contentDigest.length() > 500 ) {
+				contentDigest = contentDigest.substring(0,500);
+			}
 
-			renderedPage = "<content>" + renderedPage + "</content>";
+			renderedPage = "<content><rendered>" 
+				+ renderedPage 
+				+ "</rendered><contentdigest>"
+				+ contentDigest 
+				+ "</contentdigest></content>";
 			InputSource ins = new InputSource(new StringReader(renderedPage));
 			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
 			xmlReader.setContentHandler(proxy);

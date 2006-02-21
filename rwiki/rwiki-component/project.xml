@@ -88,6 +88,15 @@
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
+      <artifactId>sakai-util-text</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
       <artifactId>sakai-util-xml</artifactId>
       <version>${sakai.version}</version>
       <type>jar</type>

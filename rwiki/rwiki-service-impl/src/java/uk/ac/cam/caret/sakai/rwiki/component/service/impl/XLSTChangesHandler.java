@@ -260,7 +260,7 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 	public void changeHistoryToXML(RWikiObject rwo, ContentHandler ch,
 			String user) throws Exception {
 
-		List changes = rwikObjectService.findRWikiHistoryObjects(rwo);
+		List changes = rwikObjectService.findRWikiHistoryObjectsInReverse(rwo);
 		if ( changes == null ) return;
 		for (Iterator i = changes.iterator(); i.hasNext();) {
 			RWikiHistoryObject rwco = (RWikiHistoryObject) i.next();
@@ -286,9 +286,11 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 					SchemaNames.ATTR_LAST_CHANGE, "sting", String.valueOf(rwco
 							.getVersion()));
 
-			String description = "A Wiki page, needs the content here  ";
-			addElement(ch, SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
-					SchemaNames.EL_NSCHANGE, propA, description);
+			ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
+					SchemaNames.EL_NSCHANGE, propA);
+			renderToXML(rwco,ch,user);
+			ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
+					SchemaNames.EL_NSCHANGE);
 		}
 
 	}
@@ -303,7 +305,9 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 		String basepath = d.getContext() + d.getContainer();
 		List changes = rwikObjectService.findAllChangedSince(g.getTime(), user,
 				basepath);
-		for (Iterator i = changes.iterator(); i.hasNext();) {
+		int nchanges = 0;
+		for (Iterator i = changes.iterator(); i.hasNext() && nchanges < 20;) {
+			nchanges++;
 			RWikiCurrentObject rwco = (RWikiCurrentObject) i.next();
 			AttributesImpl propA = new AttributesImpl();
 			propA.addAttribute("", SchemaNames.ATTR_ID,
@@ -326,9 +330,11 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 			propA.addAttribute("", SchemaNames.ATTR_LAST_CHANGE,
 					SchemaNames.ATTR_LAST_CHANGE, "sting", String.valueOf(rwco
 							.getVersion()));
-			String description = "A Wiki page, needs the content here  ";			
-			addElement(ch, SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
-					SchemaNames.EL_NSCHANGE, propA, description);
+			ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
+					SchemaNames.EL_NSCHANGE, propA);
+			renderToXML(rwco,ch,user);
+			ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
+					SchemaNames.EL_NSCHANGE);
 		}
 
 	}

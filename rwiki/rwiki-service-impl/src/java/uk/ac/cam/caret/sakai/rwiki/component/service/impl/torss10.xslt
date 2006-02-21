@@ -23,13 +23,13 @@
                 <items>
                     <rdf:Seq>
                         <xsl:for-each select="/entity-service/entity/changes/change">
-                            <rdf:li rdf:resource="{concat($baseurl,@name,'.html')}"/>
+                            <rdf:li rdf:resource="{concat($baseurl,'/access/wiki',@name,',',@revision,'.html')}"/>
                         </xsl:for-each>
                     </rdf:Seq>
                 </items>
             </channel>
             <xsl:for-each select="/entity-service/entity/changes/change">
-                <item rdf:about="{concat($baseurl,@name,'.html')}">
+                <item rdf:about="{concat($baseurl,'/access/wiki',@name,',',@revision,'.html')}">
                     <dc:format>text/html</dc:format>
                     <dc:source>
                         <xsl:value-of select="$baseurl"/>
@@ -38,10 +38,10 @@
                         <xsl:value-of select="@name"/>
                     </title>
                     <link>
-                        <xsl:value-of select="concat($baseurl,@name,'.html')"/>
+                        <xsl:value-of select="concat($baseurl,'/access/wiki',@name,',',@revision,'.html')"/>
                     </link>
                     <description>
-                        <xsl:value-of select="."/>
+                        <xsl:value-of select="content/contentdigest"/>
                     </description>
                 </item>
             </xsl:for-each>

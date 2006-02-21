@@ -56,6 +56,8 @@
     <head>
       <title>View: <c:out value="${renderBean.localisedPageName}"/></title>
       <jsp:expression>request.getAttribute("sakai.html.head")</jsp:expression>
+	<link rel="alternate" title="Sakai Wiki RSS" 
+ 			href="${viewBean.baseAccessUrl}rss" type="application/rss+xml" />
 
     </head>
     <jsp:element name="body">

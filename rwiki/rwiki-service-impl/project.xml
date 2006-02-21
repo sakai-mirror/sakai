@@ -162,6 +162,12 @@
       <type>jar</type>
     </dependency>
     <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-util-text</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
       <groupId>servletapi</groupId>
       <artifactId>servletapi</artifactId>
       <version>2.3</version>

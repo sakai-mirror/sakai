@@ -153,6 +153,36 @@ public class RWikiHistoryObjectDaoImpl extends HibernateDaoSupport implements
             TimeLogger.printTimer("RWikiHistoryObjectDaoImpl.getRWikiHistoryObjects: " + reference.getName(),start,finish);
         }
 	}
+	public List findRWikiHistoryObjectsInReverse(final RWikiObject reference) {
+        long start = System.currentTimeMillis();
+        try {
+        HibernateCallback callback = new HibernateCallback() {
+            public Object doInHibernate(Session session)
+                    throws HibernateException {
+                return session.createCriteria(RWikiHistoryObject.class).add(
+                        Expression.eq("rwikiobjectid", reference.getRwikiobjectid())).addOrder(
+                        		Order.desc("revision")).list();
+            }
+        };
+        List found = (List) getHibernateTemplate().execute(callback);
+        if (found.size() == 0) {
+            if (log.isDebugEnabled()) {
+                log.debug("Found " + found.size() + " objects with id "
+                        +  reference.getRwikiobjectid());
+            }
+            return null;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Found " + found.size() + " objects with id " + reference.getRwikiobjectid()
+                    + " returning most recent one.");
+        }
+        return new ListProxy(found,this);
+        } finally {
+            long finish = System.currentTimeMillis();
+            TimeLogger.printTimer("RWikiHistoryObjectDaoImpl.getRWikiHistoryObjects: " + reference.getName(),start,finish);
+        }
+	}
+
 	public Object proxyObject(Object o) {
 		if (o != null && o instanceof RWikiHistoryObjectImpl) {
 			RWikiHistoryObjectImpl rwCo = (RWikiHistoryObjectImpl) o;

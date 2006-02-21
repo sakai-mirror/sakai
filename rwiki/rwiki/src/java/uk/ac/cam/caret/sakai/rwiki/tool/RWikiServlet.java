@@ -131,24 +131,6 @@ public class RWikiServlet extends HttpServlet {
             }
         }
         log.debug("========================Page Start==========");
-        // TODO: ieb: Add server side persistance
-        /*
-         * 1. Every time we pass this point, we must store some state. This
-         * should be the URL of the page. 2. If we return, and the page being
-         * requested is the default page, we should check to see if there is
-         * state, and use that state instead. 3. Storing the request object
-         * could be expensive and unnecessary. 4. Storing anytihng else will
-         * require co-ordination underneath. 5. When we hit a post, we cant
-         * re-post, but we must generate the same output page.
-         * 
-         * Solution: We cant store request as it has loads of Framework stuf
-         * done to it in the portal Store the URL, and redirect on restore Pages
-         * that do POSTS need to set the target URL
-         * 
-         * THIS WILL NEED A MASSIVE AMMOUNT OF QA
-         * 
-         * 
-         */
         request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
         String targetURL = persistState(request);
         if (targetURL != null && targetURL.trim().length() > 0) {

@@ -241,6 +241,12 @@ public interface RWikiObjectService extends EntityProducer {
 	 * @return
 	 */
 	List findRWikiHistoryObjects(RWikiObject reference);
+	/**
+	 * Finds the history objects sorted in reverse order
+	 * @param rwo
+	 * @return
+	 */
+	List findRWikiHistoryObjectsInReverse(RWikiObject rwo);
     
     /**
      * get list of subpages of the supplied page. The list will be alphabetiallcy sorted

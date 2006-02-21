@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
+
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.entity.Entity;
@@ -126,7 +127,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		// %%% is this the best we can do? -ggolden
 
 		// set the action
-		edit.setAction(new SiteEmailNotificationRWiki());
+		edit.setAction(new SiteEmailNotificationRWiki(this,this.renderService));
 		
 		EntityManager.registerEntityProducer(this, RWikiObjectService.REFERENCE_ROOT);
 	}
@@ -574,9 +575,10 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	}
 
 	public List findChangedSince(Date since, String user, String realm) {
-		if (!securityService.checkSearchPermission(user, realm)) {
-			throw new ReadPermissionException(user, realm);
-		}
+		//
+		//if (!securityService.checkSearchPermission(user, realm)) {
+		//	throw new ReadPermissionException(user, realm);
+		//}
 
 		return cdao.findChangedSince(since, realm);
 	}
@@ -633,6 +635,9 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public List findRWikiHistoryObjects(RWikiObject reference) {
 		return hdao.findRWikiHistoryObjects(reference);
+	}
+	public List findRWikiHistoryObjectsInReverse(RWikiObject reference) {
+		return hdao.findRWikiHistoryObjectsInReverse(reference);
 	}
 
 	/**
@@ -1082,7 +1087,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			public void handleAccess(HttpServletRequest req,
 					HttpServletResponse res, Reference ref,
 					Collection copyrightAcceptedRefs)
-					throws PermissionException, IdUnusedException,
+					throws org.sakaiproject.exception.PermissionException, IdUnusedException,
 					ServerOverloadException {
 				checkReference(ref);
 				try {
@@ -1097,22 +1102,25 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 							if ( checkRead(rwo,user) ) {
 								eh.outputContent(entity, req, res);
 							} else {
-								res.sendError(HttpServletResponse.SC_FORBIDDEN,"No Permission to read this wiki page, sorry");
+								throw new org.sakaiproject.exception.PermissionException(user,RWikiSecurityService.SECURE_READ,ref.getReference());
 							}
 						} else {
 							// this is a container, read on the site
 							if ( securityService.checkGetPermission(user,ref.getContext()) ) {
 								eh.outputContent(entity,req,res);
 							} else {
-								res.sendError(HttpServletResponse.SC_FORBIDDEN,"No Permission to read this wiki site, sorry");
+								throw new org.sakaiproject.exception.PermissionException(user,RWikiSecurityService.SECURE_READ,ref.getReference());
 							}
 						}
-					} 
-					res.sendError(HttpServletResponse.SC_NOT_FOUND," Resource Now found "+ref.getReference());
-
+					} else {
+						res.reset();
+						res.sendError(HttpServletResponse.SC_NOT_FOUND," Resource Now found "+ref.getReference());
+					}
+				} catch ( org.sakaiproject.exception.PermissionException pex ) { 
+					throw pex;
 				} catch (Throwable t) {
-					t.printStackTrace();
-
+					log.warn("Error getting wiki page via access :"+ref.getReference());
+					log.debug("Stack trace was ",t);
 					throw new IdUnusedException(ref.getReference());
 				}
 			}

@@ -23,7 +23,7 @@
                             <h3><xsl:value-of select="/entity-service/entity/properties/property[@name='_title']" /></h3>
                             <div class="rwikiRenderBody">
                                 <div class="rwikiRenderedContent">
-                                    <xsl:copy-of select="/entity-service/entity/rendered-content/content"/>
+                                    <xsl:copy-of select="/entity-service/entity/rendered-content/content/rendered"/>
                                 </div>
                             </div>
                         </div>

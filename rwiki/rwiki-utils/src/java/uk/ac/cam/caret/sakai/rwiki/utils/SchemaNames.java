@@ -262,5 +262,7 @@ public class SchemaNames {
 
 	public static final String EL_WIKICONTENT = "wikicontent";
 
+	public static final String EL_NSWIKICONTENT = "wikicontent";
+
 
 }

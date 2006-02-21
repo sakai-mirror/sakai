@@ -60,6 +60,14 @@ public interface RWikiHistoryObjectDao extends RWikiObjectDao {
      */
     List findRWikiHistoryObjects(RWikiObject reference);
 
+    /**
+     * Find all revisions based on the rwikiobjectid of the reference
+     * in reverse 
+     * @param reference
+     * @return
+     */
+	List findRWikiHistoryObjectsInReverse(RWikiObject reference);
+
 
     
 

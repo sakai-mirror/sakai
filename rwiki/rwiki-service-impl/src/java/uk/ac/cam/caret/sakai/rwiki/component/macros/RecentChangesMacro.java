@@ -130,7 +130,6 @@ public class RecentChangesMacro extends BaseMacro {
 	    
     	try {
             
-            
 			List wikiObjects = objectService.findChangedSince(since, user, realm);
 
 			writer.write("<div class=\"list\">");
@@ -138,12 +137,14 @@ public class RecentChangesMacro extends BaseMacro {
 			Iterator iterator = wikiObjects.iterator();
 			while (iterator.hasNext()) {
 				RWikiObject object = (RWikiObject) iterator.next();
-				//SAK-2671 We should localize against the renderspace not the object's realm!
-				writer.write("\n* [" + NameHelper.localizeName(object.getName(), localRenderSpace) + "]");
+				if ( objectService.checkRead(object,user) ) {
+					//SAK-2671 We should localize against the renderspace not the object's realm!
+					writer.write("\n* [" + NameHelper.localizeName(object.getName(), localRenderSpace) + "]");
 
-				writer.write(" was last modified "
+					writer.write(" was last modified "
 						+ dateFormat.format(object.getVersion()));
-				writer.write(" by " + object.getUser());
+					writer.write(" by " + object.getUser());
+				} 
 
 			}
 

@@ -167,9 +167,9 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 
 		tearDown();
 
-		userDirService.addUser("test.user.1", "Jane", "Doe", "jd@foo.com",
+		userDirService.addUser("test.user.1", "Jane", "Doe", "jd1@foo.com",
 				"123", null, null);
-		userDirService.addUser("test.user.2", "Joe", "Schmoe", "js@foo.com",
+		userDirService.addUser("test.user.2", "Joe", "Schmoe", "js2@foo.com",
 				"123", null, null);
 
 		// Create a site

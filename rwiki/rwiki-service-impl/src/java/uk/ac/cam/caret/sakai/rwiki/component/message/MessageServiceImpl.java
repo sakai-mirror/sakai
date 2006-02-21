@@ -31,10 +31,8 @@ import org.sakaiproject.service.framework.log.Logger;
 import uk.ac.cam.caret.sakai.rwiki.service.message.api.MessageService;
 import uk.ac.cam.caret.sakai.rwiki.service.message.api.dao.MessageDao;
 import uk.ac.cam.caret.sakai.rwiki.service.message.api.dao.PagePresenceDao;
-import uk.ac.cam.caret.sakai.rwiki.service.message.api.dao.PreferenceDao;
 import uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Message;
 import uk.ac.cam.caret.sakai.rwiki.service.message.api.model.PagePresence;
-import uk.ac.cam.caret.sakai.rwiki.service.message.api.model.Preference;
 
 /**
  * @author ieb
