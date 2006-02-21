@@ -230,7 +230,7 @@
 									</tr>	
 								#end
 							</table>
-							#if ($!allow_send)
+							#if ($!allow-send)
 								<form action="#toolForm($action)" method="post" style="display:inline;margin:0">
 									<input type="hidden" name="topicId" value="$!topic.getId()" />
 									<p class="act" >
