@@ -165,5 +165,6 @@ public class ListFilter extends LocaleRegexTokenFilter implements CacheFilter {
   		  buffer.append(closeList.get(new Character(lastBullet[i])));
   	  }
     }
+    buffer.append('\n');
   }
 }
